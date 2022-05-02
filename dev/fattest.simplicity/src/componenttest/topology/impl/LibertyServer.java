@@ -472,7 +472,11 @@ public class LibertyServer implements LogMonitorClient {
      * @param beforeRestore beforeRestore lambda is called just before the server start
      */
     public void setCheckpoint(CheckpointPhase phase, boolean autoRestore, Consumer<LibertyServer> beforeRestoreLambda) {
-        checkpointInfo = new CheckPointInfo(phase, autoRestore, beforeRestoreLambda);
+        checkpointInfo = new CheckpointInfo(phase, autoRestore, beforeRestoreLambda);
+    }
+
+    public void setCheckpoint(CheckpointInfo checkpointInfo) {
+        this.checkpointInfo = checkpointInfo;
     }
 
     public void unsetCheckpoint() {
@@ -482,20 +486,27 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Info
      */
-    private CheckPointInfo checkpointInfo;
+    private CheckpointInfo checkpointInfo;
 
-    private static class CheckPointInfo {
+    public static class CheckpointInfo {
 
         final Consumer<LibertyServer> defaultLambda = (LibertyServer s) -> {
             Log.debug(c, "No beforeRestoreLambda supplied.");
         };
 
-        public CheckPointInfo(CheckpointPhase phase, boolean autorestore, Consumer<LibertyServer> beforeRestoreLambda) {
+        public CheckpointInfo(CheckpointPhase phase, boolean autorestore, Consumer<LibertyServer> beforeRestoreLambda) {
+            this(phase, autorestore, false, false, beforeRestoreLambda);
+        }
+
+        public CheckpointInfo(CheckpointPhase phase, boolean autorestore, boolean expectCheckpointFailure, boolean expectRestoreFailure,
+                              Consumer<LibertyServer> beforeRestoreLambda) {
             if (phase == null) {
                 throw new IllegalArgumentException("Phase must not be null");
             }
             this.checkpointPhase = phase;
             this.autoRestore = autorestore;
+            this.expectCheckpointFailure = expectCheckpointFailure;
+            this.expectRestoreFailure = expectRestoreFailure;
             if (beforeRestoreLambda == null) {
                 this.beforeRestoreLambda = defaultLambda;
             } else {
@@ -514,14 +525,16 @@ public class LibertyServer implements LogMonitorClient {
         private final boolean autoRestore; // weather or not to perform restore after checkpoint
         //AN optional function executed after checkpoint but before restore
         private final Consumer<LibertyServer> beforeRestoreLambda;
-
+        private final boolean expectCheckpointFailure;
+        private final boolean expectRestoreFailure;
         /*
          * save intermediate results of ongoing checkpoint restore test
          */
-        private boolean validateApps;
-        private boolean expectStartFailure;
-        private boolean validateTimedExit;
+        // TODO these booleans don't seem to ever get set to true
+        private final boolean validateApps = false;
+        private final boolean validateTimedExit = false;
         private Properties checkpointEnv = null;
+
     }
 
     /**
@@ -859,6 +872,7 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Copies the server.xml to the server.
+     *
      * @throws Exception
      */
     public void refreshServerXMLFromPublish() throws Exception {
@@ -1550,6 +1564,11 @@ public class LibertyServer implements LogMonitorClient {
         // Create a marker file to indicate that we're trying to start a server
         createServerMarkerFile();
 
+        if (doCheckpoint()) {
+            // save off envVars for checkpoint
+            checkpointInfo.checkpointEnv = envVars;
+        }
+
         ProgramOutput output;
         if (executeAsync) {
             if (!(machine instanceof LocalMachine)) {
@@ -1659,7 +1678,8 @@ public class LibertyServer implements LogMonitorClient {
             }
             int rc = output.getReturnCode();
             if (rc != 0) {
-                if (expectStartFailure) {
+                boolean shouldFail = doCheckpoint() ? checkpointInfo.expectCheckpointFailure : expectStartFailure;
+                if (shouldFail) {
                     Log.info(c, method, "EXPECTED: Server didn't start");
                     deleteServerMarkerFile();
                     Log.exiting(c, method);
@@ -1672,9 +1692,8 @@ public class LibertyServer implements LogMonitorClient {
             if (doCheckpoint()) {
                 checkpointValidate(output, expectStartFailure);
                 checkpointInfo.beforeRestoreLambda.accept(this);
-                checkpointInfo.checkpointEnv = envVars;
                 if (checkpointInfo.autoRestore) {
-                    checkpointRestore(false);
+                    output = checkpointRestore(false);
                 } else {
                     return output;
                 }
@@ -1720,11 +1739,11 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * After a checkpoint image has been created and basic validation
      */
-    public void checkpointRestore() throws Exception {
-        checkpointRestore(true);
+    public ProgramOutput checkpointRestore() throws Exception {
+        return checkpointRestore(true);
     }
 
-    private void checkpointRestore(boolean validate) throws Exception {
+    private ProgramOutput checkpointRestore(boolean validate) throws Exception {
         String method = "checkpointRestore";
         //Launch restore cmd mimic the process used to launch the checkpointing operation w.r.t
         // polling timeout on the launch
@@ -1754,17 +1773,24 @@ public class LibertyServer implements LogMonitorClient {
             Log.warning(c, "The output is null");
             fail("Failed to restore: no output");
         } else if (output.getReturnCode() != 0) {
-            Log.warning(c, "Restore failed with RC:" + output.getReturnCode());
-            Log.warning(c, "Restore stdout: " + output.getStdout());
-            Log.warning(c, "Restore stderr: " + output.getStderr());
-            fail("Failed to restore: " + output.getStdout() + " " + output.getStderr());
+            Log.info(c, method, "Restore failed with RC:" + output.getReturnCode());
+            Log.info(c, method, "Restore stdout: " + output.getStdout());
+            Log.info(c, method, "Restore stderr: " + output.getStderr());
+            if (!checkpointInfo.expectRestoreFailure) {
+                fail("Failed to restore: " + output.getStdout() + " " + output.getStderr());
+            } else {
+                return output;
+            }
         }
         if (validate) {
-            validateServerStarted(output, checkpointInfo.validateApps, checkpointInfo.expectStartFailure,
+            validateServerStarted(output, checkpointInfo.validateApps, checkpointInfo.expectRestoreFailure,
                                   checkpointInfo.validateTimedExit);
             Log.info(c, method, "Restored from checkpoint, mark server as started.");
-            setStarted();
+            if (output.getReturnCode() == 0) {
+                setStarted();
+            }
         }
+        return output;
     }
 
     /**
@@ -2744,7 +2770,13 @@ public class LibertyServer implements LogMonitorClient {
 
             if (!isStarted) {
                 Log.info(c, method, "Server " + serverToUse + " is not running (stop called previously).");
-                postStopServerArchive = false;
+                // The checkpointEnv will be set if a checkpoint was done.
+                // The server may never have been successfully started because
+                // the checkpoint failed or the restore failed.
+                // We archive the server in this case to ensure we get the possible error logs
+                if (checkpointInfo == null || checkpointInfo.checkpointEnv == null) {
+                    postStopServerArchive = false;
+                }
                 return output;
             }
 

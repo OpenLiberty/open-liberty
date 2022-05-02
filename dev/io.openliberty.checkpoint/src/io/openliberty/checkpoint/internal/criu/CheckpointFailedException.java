@@ -23,42 +23,36 @@ public class CheckpointFailedException extends RuntimeException {
         /**
          * CRIU not supported. The JVM we are running does not offer the org.eclipse.openj9.criu package.
          */
-        UNSUPPORTED_IN_JVM(70, CHECKPOINT_FAILED_KEY),
+        UNSUPPORTED_IN_JVM(70, false),
 
         /**
          * CRIU not supported. We are running a JVM with support but the VM was not launched with the option--XX:+EnableCRIUSupport.
          */
-        UNSUPPORTED_DISABLED_IN_JVM(71, CHECKPOINT_FAILED_KEY),
+        UNSUPPORTED_DISABLED_IN_JVM(71, false),
 
-        LIBERTY_PREPARE_FAILED(72, CHECKPOINT_FAILED_KEY),
-        JVM_CHECKPOINT_FAILED(73, CHECKPOINT_FAILED_KEY),
-        SYSTEM_CHECKPOINT_FAILED(74, CHECKPOINT_FAILED_KEY),
-        JVM_RESTORE_FAILED(75, RESTORE_FAILED_KEY),
-        LIBERTY_RESTORE_FAILED(76, RESTORE_FAILED_KEY),
-        // unknown could be a checkpoint or restore error, but most likely checkpoint
-        // may need a separate message just for unknown
-        UNKNOWN(77, CHECKPOINT_FAILED_KEY);
+        LIBERTY_PREPARE_FAILED(72, false),
+        JVM_CHECKPOINT_FAILED(73, false),
+        SYSTEM_CHECKPOINT_FAILED(74, false),
+        UNKNOWN_CHECKPOINT(75, false),
+
+        JVM_RESTORE_FAILED(76, true),
+        LIBERTY_RESTORE_FAILED(77, true),
+        UNKNOWN_RESTORE(78, true);
 
         final int errorCode;
-        final String errorMsgKey;
+        final boolean isRestore;
 
-        private Type(int errorCode, String errorMsgKey) {
+        private Type(int errorCode, boolean isRestore) {
             this.errorCode = errorCode;
-            this.errorMsgKey = errorMsgKey;
+            this.isRestore = isRestore;
         }
     }
 
-    private final int errorCode;
     private final Type type;
 
     public CheckpointFailedException(Type type, String msg, Throwable cause) {
-        this(type, msg, cause, type.errorCode);
-    }
-
-    public CheckpointFailedException(Type type, String msg, Throwable cause, int errorCode) {
         super(msg, cause);
         this.type = type;
-        this.errorCode = errorCode;
     }
 
     public Type getType() {
@@ -66,10 +60,15 @@ public class CheckpointFailedException extends RuntimeException {
     }
 
     public int getErrorCode() {
-        return errorCode;
+        return type.errorCode;
     }
 
     public String getErrorMsgKey() {
-        return type.errorMsgKey;
+        return type.isRestore ? RESTORE_FAILED_KEY : CHECKPOINT_FAILED_KEY;
     }
+
+    public boolean isRestore() {
+        return type.isRestore;
+    }
+
 }

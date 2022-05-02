@@ -39,6 +39,13 @@
 #                     appended to the end of the list of arguments and can therefore
 #                     override existing arguments, if desired.
 #
+# CRIU_RESTORE_DISABLE_RECOVERY - 
+#              When restoring a server from a checkpoint it is possible
+#              that CRIU will fail to restore the proces.  By default
+#              any failure to restore will result in the server
+#              recovering without using the checkpoint image.
+#              To disable this behavior set this to any value.
+#
 # PID_DIR    - The directory that should be used for server pid file(s).
 #              The default value is ${WLP_OUTPUT_DIR}/.pid
 #
@@ -1437,9 +1444,14 @@ restoreServer()
   IFS=$saveIFS
 
   safeEcho "$envContent" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
-
+  rm -f ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreFailedMarker
+  
   criuRestore $BACKGROUND_RESTORE
   rc=$?
+  if [ -f "${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreFailedMarker" ]; then
+    rc=`cat ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreFailedMarker`
+    return $rc
+  fi
   if [ $rc -ne 0 ]; then
     issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
   fi
@@ -1473,10 +1485,16 @@ case "$ACTION" in
     fi
 
     serverWorkingDirectory
-                  
-    if restoreServer false "$@" 
-    then
+
+    restoreServer false "$@"
+    rc=$?
+    if [ $rc = 0 ]; then
       exit 0
+    elif [ $rc -ne 1 ]; then
+      if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+        exit $rc
+      fi
+      # will try to recover with a normal launch below
     fi
 
     if checkServer true
@@ -1549,9 +1567,15 @@ case "$ACTION" in
       "1" )
         serverWorkingDirectory
 
-        if restoreServer true "$@"
-        then
+        restoreServer true "$@"
+        rc=$?
+        if [ $rc = 0 ]; then
           exit 0
+        elif [ $rc -ne 1 ]; then
+          if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+            exit $rc
+          fi
+          # will try to recover with a normal launch below
         fi
 
         mkdirs "${X_LOG_DIR}"

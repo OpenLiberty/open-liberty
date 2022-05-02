@@ -15,6 +15,8 @@ import static io.openliberty.checkpoint.spi.CheckpointPhase.CONDITION_PROCESS_RU
 import static org.osgi.service.condition.Condition.CONDITION_ID;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,6 +87,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     static final String HOOKS_REF_NAME_MULTI_THREAD = "hooksMultiThread";
     private static final String DIR_CHECKPOINT = "checkpoint/";
     private static final String FILE_RESTORE_MARKER = DIR_CHECKPOINT + ".restoreMarker";
+    private static final String FILE_RESTORE_FAILED_MARKER = DIR_CHECKPOINT + ".restoreFailedMarker";
     private static final String FILE_ENV_PROPERTIES = DIR_CHECKPOINT + ".env.properties";
     private static final String DIR_CHECKPOINT_IMAGE = DIR_CHECKPOINT + "image/";
     private static final String CHECKPOINT_LOG_FILE = "checkpoint.log";
@@ -127,7 +130,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                 }
             };
         } else {
-            this.criu = (criu == null) ? J9CRIUSupport.create() : criu;
+            this.criu = (criu == null) ? J9CRIUSupport.create(this) : criu;
         }
         this.locAdmin = locAdmin;
         this.checkpointAt = phase;
@@ -200,6 +203,11 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             checkpoint();
         } catch (CheckpointFailedException e) {
             // Allow auto FFDC here to capture the causing exception (if any)
+
+            if (e.isRestore()) {
+                // create restore failed marker with return code
+                createRestoreFailedMarker(e);
+            }
             Tr.error(tc, e.getErrorMsgKey(), e.getMessage());
             /*
              * The extra thread is needed to avoid blocking the current thread while the shutdown hooks are run
@@ -211,7 +219,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
-    @FFDCIgnore({ IllegalStateException.class, Exception.class })
+    @FFDCIgnore({ IllegalStateException.class, Exception.class, CheckpointFailedException.class })
     void checkpoint() throws CheckpointFailedException {
         debug(tc, () -> "Checkpoint for : " + checkpointAt);
 
@@ -263,7 +271,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             if (e instanceof CheckpointFailedException) {
                 throw (CheckpointFailedException) e;
             }
-            throw new CheckpointFailedException(Type.UNKNOWN, "Failed to do checkpoint.", e);
+            throw new CheckpointFailedException(getUnknownType(), "Failed to do checkpoint.", e);
         }
 
         restore(multiThreadRestoreHooks);
@@ -273,6 +281,11 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I", TimestampUtils.getElapsedTime());
 
         createRestoreMarker();
+    }
+
+    public Type getUnknownType() {
+        // check for the env properties file.  If it exists then assume this is a restore failure
+        return getEnvProperties().exists() ? Type.UNKNOWN_RESTORE : Type.UNKNOWN_CHECKPOINT;
     }
 
     private void registerRunningCondition() {
@@ -314,6 +327,16 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private void createRestoreMarker() {
         // create a marker to indicate that another restore needs to restore the workarea
         locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + FILE_RESTORE_MARKER).create();
+    }
+
+    private void createRestoreFailedMarker(CheckpointFailedException e) {
+        // create a marker to indicate that restore failed
+        WsResource failedMarker = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + FILE_RESTORE_FAILED_MARKER);
+        try (PrintStream ps = new PrintStream(failedMarker.putStream())) {
+            ps.print(String.valueOf(e.getErrorCode()));
+        } catch (IOException ioe) {
+            // auto FFDC here
+        }
     }
 
     private File getEnvProperties() {

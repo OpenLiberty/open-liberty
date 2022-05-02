@@ -131,7 +131,7 @@ public class CheckpointImplTest {
                 this.logFilename = logFileName;
                 this.workDir = workDir;
                 if (throwIOException) {
-                    throw new CheckpointFailedException(Type.SYSTEM_CHECKPOINT_FAILED, "Test failure", new IOException("failed"), 22);
+                    throw new CheckpointFailedException(Type.SYSTEM_CHECKPOINT_FAILED, "Test failure", new IOException("failed"));
                 }
                 restore.run();
             } finally {

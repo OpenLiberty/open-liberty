@@ -26,6 +26,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -83,7 +84,7 @@ public class TestWithFATServlet2 {
 
     @Test
     public void testCheckpointFeatureMissingError() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS);
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
         ServerConfiguration svrCfg = server.getServerConfiguration();
         Set<String> features = svrCfg.getFeatureManager().getFeatures();
         features.remove("checkpoint-1.0");
