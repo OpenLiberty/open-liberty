@@ -232,8 +232,7 @@ public class FileLogHolder implements TraceWriter {
      * @param newLogsOnStart   Whether to fill an existing primary file if there's space (if it exists).
      * @param isCheckpoint     Whether checkpoint is enabled or not
      */
-    private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes, boolean newLogsOnStart,
-                          boolean isRestore) {
+    private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes, boolean newLogsOnStart, boolean isRestore) {
         this.logHeader = logHeader;
         this.newLogsOnStart = newLogsOnStart;
 
@@ -388,7 +387,7 @@ public class FileLogHolder implements TraceWriter {
     /**
      * @return a new print stream
      */
-    private synchronized PrintStream createStream(boolean showError) {
+    public synchronized PrintStream createStream(boolean showError) {
 
         setStreamFromFile(null, true, 0, showError);
 

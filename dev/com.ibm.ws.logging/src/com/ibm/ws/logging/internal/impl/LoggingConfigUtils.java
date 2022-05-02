@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,12 +15,15 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.FFDCSummaryPolicy;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
+import com.ibm.ws.logging.utils.MetatypeUtils;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -112,6 +115,52 @@ public class LoggingConfigUtils {
 
         return defaultValue;
     }
+
+    /**
+     * Read long value from properties: begin by preserving the old value. If
+     * the property is found, and the new value is an integer, the new value
+     * will be returned.
+     *
+     * @param newValue
+     *            New parameter value to parse/evaluate
+     * @param defaultValue
+     *            Starting/Previous value
+     * @return defaultValue if the newValue is null or is badly
+     *         formatted, else the converted new value
+     */
+    public static long getLongValue(Object newValue, long defaultValue) {
+        if (newValue != null) {
+            if (newValue instanceof String) {
+                try {
+                    return Long.parseLong((String) newValue);
+                } catch (NumberFormatException ex) {
+                }
+            } else if (newValue instanceof Long)
+                return (Long) newValue;
+        }
+
+        return defaultValue;
+    }
+
+    /**
+     * Get Strings of ibm:type="duration" and convert them into longs unit the specified time unit
+     */
+    public static long getLongDurationValue(Object newValue, long defaultValue, TimeUnit timeUnit) {
+        if (newValue != null) {
+            if (newValue instanceof String) {
+                try {
+                    if (!((String)newValue).isEmpty()) //only convert if string is not empty, if empty set to default
+                        return MetatypeUtils.evaluateDuration​((String) newValue, timeUnit);
+                } catch (IllegalArgumentException ex) {
+                }
+            } else if (newValue instanceof Long)
+                return (Long) newValue;
+        }
+
+        return defaultValue;
+    }
+
+
 
     /**
      * If the value is null, return the defaultValue.

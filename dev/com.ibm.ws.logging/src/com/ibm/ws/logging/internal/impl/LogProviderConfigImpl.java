@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.FFDCSummaryPolicy;
@@ -131,6 +132,12 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** Allow JSON from applications write directly to System.out/System.err */
     protected volatile boolean appsWriteJson = false;
 
+    /** The rollover start time for time based log rollover */
+    protected volatile String rolloverStartTime = "";
+
+    /** The rollover interval for time based log rollover */
+    protected volatile long rolloverInterval = -1;
+
     private final boolean checkpoint;
 
     private volatile boolean restore = false;
@@ -177,6 +184,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         appsWriteJson = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_APPS_WRITE_JSON),
                                                            appsWriteJson);
+
+        rolloverStartTime = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_ROLLOVER_START_TIME), rolloverStartTime);
+
+        rolloverInterval = LoggingConfigUtils.getLongDurationValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_ROLLOVER_INTERVAL), rolloverInterval, TimeUnit.MINUTES);
 
         stackJoin = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_STACK_JOIN),
                                                        stackJoin);
@@ -265,6 +276,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         newLogsOnStart = InitConfgAttribute.NEW_LOGS_ON_START.getBooleanValue(c, newLogsOnStart, isInit);
         appsWriteJson = InitConfgAttribute.APPS_WRITE_JSON.getBooleanValueAndSaveInit(c, appsWriteJson, isInit);
+
+        rolloverStartTime = InitConfgAttribute.ROLLOVER_START_TIME.getStringValueAndSaveInit(c, rolloverStartTime, isInit);
+        rolloverInterval = InitConfgAttribute.ROLLOVER_INTERVAL.getLongDurationValueAndSaveInit(c, rolloverInterval, isInit, TimeUnit.MINUTES);
+
         stackJoin = InitConfgAttribute.STACK_JOIN_CONFIGURATION.getBooleanValueAndSaveInit(c, stackJoin, isInit);
     }
 
@@ -460,6 +475,14 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         return appsWriteJson;
     }
 
+    public String getRolloverStartTime() {
+        return rolloverStartTime;
+    }
+
+    public long getRolloverInterval() {
+        return rolloverInterval;
+    }
+
     /**
      * @return true if we should use the logger -> tr handler
      */
@@ -521,6 +544,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         JSON_ENABLE_CUSTOM_ACCESS_LOG_FIELDS("jsonAccessLogFields", "com.ibm.ws.logging.json.access.log.fields"),
         APPS_WRITE_JSON("appsWriteJson", "com.ibm.ws.logging.apps.write.json"),
+        ROLLOVER_START_TIME("rolloverStartTime", "com.ibm.ws.logging.rollover.start.time"),
+        ROLLOVER_INTERVAL("rolloverInterval", "com.ibm.ws.logging.rollover.interval"),
         NEW_LOGS_ON_START("newLogsOnStart", FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
 
         final String configKey;
@@ -555,11 +580,25 @@ public class LogProviderConfigImpl implements LogProviderConfig {
             return LoggingConfigUtils.getStringValue(value, defaultValue);
         }
 
+        long getLongValue(Map<String, Object> config, long defaultValue, boolean isInit) {
+            Object value = config.get(isInit ? propertyKey : configKey);
+            return LoggingConfigUtils.getLongValue(value, defaultValue);
+        }
+
         TraceFormat getTraceFormatValue(Map<String, Object> config, TraceFormat defaultValue, boolean isInit) {
             Object value = config.get(isInit ? propertyKey : configKey);
             TraceFormat newValue = LoggingConfigUtils.getFormatValue(value, defaultValue);
             if (isInit && newValue != defaultValue) {
                 config.put(propertyKey, newValue.name());
+            }
+            return newValue;
+        }
+
+        long getLongDurationValueAndSaveInit(Map<String, Object> config, long defaultValue, boolean isInit, TimeUnit timeUnit) {
+            Object value = config.get(isInit ? propertyKey : configKey);
+            long newValue = LoggingConfigUtils.getLongDurationValue(value, defaultValue, timeUnit);
+            if (isInit && value == null) {
+                config.put(propertyKey, Long.toString(newValue));
             }
             return newValue;
         }
