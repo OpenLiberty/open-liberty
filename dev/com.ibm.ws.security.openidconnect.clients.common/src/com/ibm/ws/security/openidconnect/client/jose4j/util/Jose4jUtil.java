@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,6 +135,9 @@ public class Jose4jUtil {
                 Hashtable<String, Object> props = new Hashtable<String, Object>();
                 props.put(Constants.ID_TOKEN, originalIdTokenString);
                 props.put(Constants.ACCESS_TOKEN, accessToken);
+                if (refreshToken != null) {
+                    props.put(Constants.REFRESH_TOKEN, refreshToken);
+                }
                 if (idToken != null) {
                     props.put(Constants.ID_TOKEN_OBJECT, idToken);
                 }
