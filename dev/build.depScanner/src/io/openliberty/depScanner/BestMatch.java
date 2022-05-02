@@ -130,6 +130,7 @@ public class BestMatch {
             model.setVersion("1.0-SNAPSHOT");
             model.setGroupId("liberty");
             model.setArtifactId("dependency-report");
+            new File(path + "/proj_" + count.intValue()).mkdirs(); //Make sure directory is created first
 
             matched.forEach(library -> {
                 if (!library.getGroupId().equals("com.ibm.ws")) {
@@ -178,7 +179,7 @@ public class BestMatch {
 
             MavenXpp3Writer writer = new MavenXpp3Writer();
             try {
-                writer.write(new FileWriter(path + "/pom_" + count.intValue() + ".xml"), model);
+                writer.write(new FileWriter(path + "/proj_" + count.intValue() + "/pom.xml"), model);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
