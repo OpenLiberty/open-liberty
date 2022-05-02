@@ -538,12 +538,37 @@ public class ScheduledTask<T> implements Callable<T> {
                     delay = Duration.of(fixedDelay, unit);
                     nextExecutionTime = now.plus(delay);
                 } else if (fixedRate != null) {
-                    // Time elapsed from when the task should have started for the first time
-                    Duration elapsed = Duration.between(taskScheduledTime, now).minus(initialDelay, unit);
-                    Duration rate = Duration.of(fixedRate, unit);
-                    long count = divide(elapsed, rate); // elapsed.dividedBy(rate); is not available in Java 8
-                    delay = rate.multipliedBy(count + 1).minus(elapsed);
-                    nextExecutionTime = now.plus(delay);
+                    // Optimistic approach: assume no overlap and just add the fixed rate
+                    ZonedDateTime newExecutionTime = nextExecutionTime.plus(fixedRate, unit);
+                    Duration newDelay = Duration.between(now, newExecutionTime);
+                    if (newDelay.compareTo(Duration.ZERO) > 0) {
+                        nextExecutionTime = newExecutionTime;
+                        delay = newDelay;
+                    } else { // overlapped what would have been the next execution
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "overlapped next fixed-rate execution, computing next from",
+                                     taskScheduledTime + " scheduleAtFixedRate invoked at",
+                                     nextExecutionTime + " current execution was expected at",
+                                     newExecutionTime + " target for subsequent execution overlapped by " + newDelay.negated(),
+                                     now + " current time",
+                                     Duration.between(taskScheduledTime, now) + " elapsed from scheduleAtFixedRate",
+                                     initialDelay + " " + unit + " initial delay");
+
+                        // Time elapsed from when the task should have started for the first time
+                        Duration elapsed = Duration.between(taskScheduledTime, now).minus(initialDelay, unit);
+                        Duration rate = Duration.of(fixedRate, unit);
+                        long count = divide(elapsed, rate); // elapsed.dividedBy(rate); is not available in Java 8
+                        delay = rate.multipliedBy(count + 1).minus(elapsed);
+                        nextExecutionTime = now.plus(delay);
+
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "next fixed-rate execution computed as",
+                                     elapsed + " elapsed from expected start of first execution",
+                                     fixedRate + " " + unit + " fixed rate is " + rate,
+                                     (count + 1) + " executions would have occurred if no overlaps or slowdowns",
+                                     delay + " delay until next execution",
+                                     nextExecutionTime + " expected next execution");
+                    }
                 } else {
                     delay = Duration.between(now, computedNextExecution);
                     nextExecutionTime = computedNextExecution;
