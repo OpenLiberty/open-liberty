@@ -22,7 +22,7 @@ package org.jboss.resteasy.spi;
 
 import java.util.concurrent.CompletionStage;
 
-import javax.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.ext.WriterInterceptor;
 
 /**
  * Writer interceptors which support async IO.

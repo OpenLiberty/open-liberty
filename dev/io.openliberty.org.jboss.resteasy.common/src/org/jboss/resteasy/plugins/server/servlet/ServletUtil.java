@@ -1,3 +1,4 @@
+//https://github.com/resteasy/resteasy/blob/1ba8cedf5ed7e30e1106ede5b622535b75fa3dd0/resteasy-core/src/main/java/org/jboss/resteasy/plugins/server/servlet/ServletUtil.java
 package org.jboss.resteasy.plugins.server.servlet;
 
 import org.jboss.resteasy.core.Headers;
@@ -7,11 +8,11 @@ import org.jboss.resteasy.specimpl.ResteasyUriInfo.InitData;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.resteasy.util.MediaTypeHelper;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.core.Cookie;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -31,8 +32,9 @@ import java.util.stream.Collectors;
  */
 public class ServletUtil
 {
-   private static final Map<InitDataCacheKey, InitData> initDataCache = new ConcurrentHashMap<InitDataCacheKey, InitData>();      // Liberty change
-    
+
+   private static final Map<InitDataCacheKey, InitData> initDataCache = new ConcurrentHashMap<InitDataCacheKey, InitData>(); // Liberty Change
+
    public static ResteasyUriInfo extractUriInfo(HttpServletRequest request, String servletPrefix)
    {
       String contextPath = request.getContextPath();
@@ -44,15 +46,15 @@ public class ServletUtil
       }
       String queryString = request.getQueryString();
       String absolute;
-      StringBuffer requestURL = request.getRequestURL();                                                // Liberty change
-      String requestURLstring = requestURL.toString();                                                  // Liberty change
+      StringBuffer requestURL = request.getRequestURL(); // Liberty Change
+      String requestURLstring = requestURL.toString(); // Liberty Change
       if (queryString != null && queryString.length() > 0)
       {
-         absolute = requestURL.append('?').append(queryString).toString();                              // Liberty change
+          absolute = requestURL.append('?').append(queryString).toString(); // Liberty change
       }
       else
       {
-         absolute = requestURLstring;                                                                   // Liberty change
+          absolute = requestURLstring; // Liberty change
       }
       if (!absolute.contains(contextPath))
       {
@@ -70,7 +72,7 @@ public class ServletUtil
             absolute = absolute.replace(encodedContextPath, contextPath);
          }
       }
-      // Liberty change begin      
+      // Liberty Change Start
       ResteasyUriInfo myResteasyUriInfo;
       if(InitData.canBeCached(absolute)) {
           InitDataCacheKey cacheKey = new InitDataCacheKey(requestURLstring, contextPath);
@@ -83,9 +85,9 @@ public class ServletUtil
       } else {
           myResteasyUriInfo = new ResteasyUriInfo(absolute, contextPath);
       }
-      
+
       return myResteasyUriInfo;
-      // Liberty change end
+      // Liberty Change End
    }
 
    public static ResteasyHttpHeaders extractHttpHeaders(HttpServletRequest request)
@@ -113,7 +115,7 @@ public class ServletUtil
       Map<String, Cookie> cookies = new HashMap<String, Cookie>();
       if (request.getCookies() != null)
       {
-         for (javax.servlet.http.Cookie cookie : request.getCookies())
+         for (jakarta.servlet.http.Cookie cookie : request.getCookies())
          {
             cookies.put(cookie.getName(), new Cookie(cookie.getName(), cookie.getValue(), cookie.getPath(),
                   cookie.getDomain(), cookie.getVersion()));
@@ -171,16 +173,16 @@ public class ServletUtil
       return requestHeaders;
    }
 
-   // Liberty change begin
+   // Liberty Change Start
    private static class InitDataCacheKey {
        private final String requestUrl;
        private final String contextPath;
-       
+
        InitDataCacheKey (final String url, final String path) {
            this.requestUrl = url;
            this.contextPath = path;
        }
-       
+
        @Override
        public boolean equals(Object o) {
            if(this == o)
@@ -192,11 +194,11 @@ public class ServletUtil
            InitDataCacheKey that = (InitDataCacheKey) o;
            return this.requestUrl.equals(that.requestUrl) && this.contextPath.equals(that.contextPath);
        }
-       
+
        @Override
        public int hashCode() {
            return Objects.hash(this.requestUrl, this.contextPath);
        }
    }
-   // Liberty change end
+   // Liberty Change End
 }

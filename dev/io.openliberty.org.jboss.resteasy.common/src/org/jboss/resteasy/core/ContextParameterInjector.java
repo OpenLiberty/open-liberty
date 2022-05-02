@@ -11,11 +11,11 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.ValueInjector;
 import org.jboss.resteasy.spi.util.Types;
 
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ext.Providers;
-import javax.ws.rs.sse.Sse;
-import javax.ws.rs.sse.SseEventSink;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.ext.Providers;
+import jakarta.ws.rs.sse.Sse;
+import jakarta.ws.rs.sse.SseEventSink;
 
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
@@ -57,7 +57,7 @@ public class ContextParameterInjector implements ValueInjector
          {
             try
             {
-               Class.forName("javax.servlet.http.HttpServletResponse", false, Thread.currentThread().getContextClassLoader());
+               Class.forName("jakarta.servlet.http.HttpServletResponse", false, Thread.currentThread().getContextClassLoader());
                Class<?> clazz = Class.forName("org.jboss.resteasy.core.ContextServletOutputStream");
                return clazz.getDeclaredConstructor(ContextParameterInjector.class, OutputStream.class);
             }
@@ -155,7 +155,7 @@ public class ContextParameterInjector implements ValueInjector
                throw new LoggableFailure(Messages.MESSAGES.unableToFindContextualData(rawType.getName()));
             }
             // Fix for RESTEASY-1721
-            if ("javax.servlet.http.HttpServletResponse".equals(rawType.getName()))
+            if ("jakarta.servlet.http.HttpServletResponse".equals(rawType.getName()))
             {
                if ("getOutputStream".equals(method.getName()))
                {

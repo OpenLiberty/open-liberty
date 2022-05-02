@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package io.openliberty.restfulWS.providers;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -22,11 +22,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.ws.rs.core.MultivaluedHashMap;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
+import jakarta.ws.rs.core.MultivaluedHashMap;
 
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public class JsonPProviderTest {
     public void testMBRforJsonObject() throws Exception {
         InputStream stream = new ByteArrayInputStream("{\"foo\": \"bar\"}".getBytes());
         assertTrue(provider.isReadable(JsonObject.class, JsonObject.class, new Annotation[] {}, APPLICATION_JSON_TYPE));
-        JsonObject obj = (JsonObject) provider.readFrom(Object.class, JsonObject.class, new Annotation[] {}, 
+        JsonObject obj = (JsonObject) provider.readFrom(Object.class, JsonObject.class, new Annotation[] {},
                                                         APPLICATION_JSON_TYPE, new MultivaluedHashMap<>(), stream);
         assertTrue(obj.containsKey("foo"));
         assertEquals("bar", obj.getString("foo"));
@@ -57,7 +57,7 @@ public class JsonPProviderTest {
     public void testMBRforJsonArray() throws Exception {
         InputStream stream = new ByteArrayInputStream("[\"foo\", \"bar\", \"baz\"]".getBytes());
         assertTrue(provider.isReadable(JsonArray.class, JsonArray.class, new Annotation[] {}, APPLICATION_JSON_TYPE));
-        JsonArray arr = (JsonArray) provider.readFrom(Object.class, JsonArray.class, new Annotation[] {}, 
+        JsonArray arr = (JsonArray) provider.readFrom(Object.class, JsonArray.class, new Annotation[] {},
                                                       APPLICATION_JSON_TYPE, new MultivaluedHashMap<>(), stream);
         assertNotNull(arr);
         assertEquals(3, arr.size());
@@ -94,7 +94,7 @@ public class JsonPProviderTest {
             public String getString() {
                 return "Hello World!";
             }
-            
+
         };
         assertTrue(provider.isWriteable(str.getClass(), str.getClass(), new Annotation[] {}, APPLICATION_JSON_TYPE));
         provider.writeTo(str, str.getClass(), str.getClass(), new Annotation[] {}, APPLICATION_JSON_TYPE, new MultivaluedHashMap<>(), stream);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,8 @@ import org.jboss.resteasy.client.jaxrs.i18n.LogMessages;
 import org.jboss.resteasy.client.jaxrs.i18n.Messages;
 import org.jboss.resteasy.client.jaxrs.internal.ClientConfiguration;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
+import org.jboss.resteasy.concurrent.ContextualExecutorService;
+import org.jboss.resteasy.concurrent.ContextualExecutors;
 
 import io.openliberty.restfulWS.client.AsyncClientExecutorService;
 import io.openliberty.restfulWS.client.ClientBuilderListener;
@@ -42,7 +44,7 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
     static {
         Class<? extends ExecutorService> clazz;
         try {
-            clazz = (Class<? extends ExecutorService>) Class.forName("javax.enterprise.concurrent.ManagedExecutorService", false,
+            clazz = (Class<? extends ExecutorService>) Class.forName("jakarta.enterprise.concurrent.ManagedExecutorService", false,
                 AccessController.doPrivileged((PrivilegedAction<ClassLoader>)() -> Thread.currentThread().getContextClassLoader()));
         } catch (Throwable t) {
             clazz = null;
@@ -52,14 +54,14 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
 
     @Override
     public ResteasyClient build() {
-        // using facade to avoid trying OSGi services unless OSGi is available 
+        // using facade to avoid trying OSGi services unless OSGi is available
         Optional<Integer> key = OsgiFacade.instance().map(facade ->
             facade.invoke(ClientBuilderListener.class, cbl -> cbl.building(this)));
 
 
         //ResteasyClient client = super.build();
         // The following lines basically do the same thing as super.build(), but avoids creating
-        // the ClientHttpEngine.  RESTEasy creates it eagerly which is less efficient, but also 
+        // the ClientHttpEngine.  RESTEasy creates it eagerly which is less efficient, but also
         // breaks our config model where things like connection and read timeouts can be set
         // _after_ creating the Client instance.
         ClientConfiguration config = new ClientConfiguration(getProviderFactory());
@@ -68,27 +70,18 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
            config.property(entry.getKey(), entry.getValue());
         }
 
-        ExecutorService executor = asyncExecutor;
         List<Runnable> closeActions = new ArrayList<>();
-
-        if (executor == null && MANAGED_EXECUTOR_SERVICE_CLASS != null) {
+        if (asyncExecutor == null && MANAGED_EXECUTOR_SERVICE_CLASS != null) {
            cleanupExecutor = false;
            OsgiFacade facade = OsgiFacade.instance().orElse(null);
            if (facade != null) {
                Object serviceRef = facade.getServiceRef(MANAGED_EXECUTOR_SERVICE_CLASS).orElse(null);
                if (serviceRef != null) {
                    closeActions.add(() -> facade.ungetService(serviceRef));
-                   executor = facade.getService(serviceRef, MANAGED_EXECUTOR_SERVICE_CLASS);
+                   asyncExecutor = new AsyncClientExecutorService(facade.getService(serviceRef, MANAGED_EXECUTOR_SERVICE_CLASS));
                }
            }
         }
-        if (executor == null)
-        {
-           cleanupExecutor = true;
-           executor = Executors.newCachedThreadPool();
-        }
-        
-        executor = new AsyncClientExecutorService(executor);
 
         boolean resetProxy = false;
         if (this.defaultProxy == null) {
@@ -100,9 +93,11 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
         if (resetProxy) {
            this.defaultProxy = null;
         }
-        ResteasyClient client = createResteasyClient(null, executor, cleanupExecutor, scheduledExecutorService, config, closeActions);
 
-        key.ifPresent(tupleKey -> OsgiFacade.instance().ifPresent(facade -> 
+        ExecutorService executor = getExecutorService();
+        ResteasyClient client = createResteasyClient(null, executor, cleanupExecutor, ContextualExecutors.wrap(scheduledExecutorService, true), config, closeActions);
+
+        key.ifPresent(tupleKey -> OsgiFacade.instance().ifPresent(facade ->
             facade.invoke(tupleKey, ClientBuilderListener.class, cbl -> cbl.built(client))));
         return client;
     }
@@ -118,7 +113,7 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
                                                   List<Runnable> closeActions) {
 
         return new LibertyResteasyClientImpl(() -> new LibertyClientHttpEngineBuilder43().resteasyClientBuilder(this).build(),
-                                             executor, cleanupExecutor, scheduledExecutorService, config, closeActions, this);
+                                             executor, cleanupExecutor, ContextualExecutors.wrap(scheduledExecutorService), config, closeActions, this);
     }
 
 
@@ -143,4 +138,11 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
             LogMessages.LOGGER.warn(Messages.MESSAGES.unableToSetHttpProxy(), e);
         }
     }
+
+    private ContextualExecutorService getExecutorService() {
+        if (asyncExecutor != null) {
+           return ContextualExecutors.wrap(asyncExecutor, !cleanupExecutor);
+        }
+        return ContextualExecutors.threadPool();
+     }
 }

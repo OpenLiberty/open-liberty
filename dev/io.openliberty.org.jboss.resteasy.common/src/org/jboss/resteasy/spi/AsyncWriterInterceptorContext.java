@@ -20,8 +20,8 @@
 
 package org.jboss.resteasy.spi;
 
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.InterceptorContext;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.InterceptorContext;
 
 import java.util.concurrent.CompletionStage;
 

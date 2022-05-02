@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,22 +17,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.annotation.HandlesTypes;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ext.Provider;
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.annotation.HandlesTypes;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.ext.Provider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.jboss.resteasy.plugins.servlet.ResteasyServletInitializer;
@@ -47,8 +45,8 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
     private final static String IBM_REST_SERVLET_NAME = "com.ibm.websphere.jaxrs.server.IBMRestServlet";
     private final static String RESTEASY_DISPATCHER_NAME = "org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher";
     private final static String RESTEASY_DISPATCHER_30_NAME = "org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher";
-    private final static String APPLICATION = "javax.ws.rs.Application";
-    private final static String EE8_APP_CLASS_NAME = transformBack("javax.ws.rs.core.Application");
+    private final static String APPLICATION = "jakarta.ws.rs.Application";
+    private final static String EE8_APP_CLASS_NAME = "javax.ws.rs.core.Application";
 
 
     public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
@@ -122,7 +120,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
 
     @Override
     protected void register(Class<?> applicationClass, Set<Class<?>> providers, Set<Class<?>> resources, ServletContext servletContext) {
-        
+
         Set<ServletRegistration> servletsForApp = getServletsForApplication(applicationClass, servletContext, true);
         // ignore @ApplicationPath if application is already mapped in web.xml
         if (!servletsForApp.isEmpty()) {
@@ -169,7 +167,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
         reg.setInitParameter(APPLICATION, applicationClass.getName());
         // resteasy.servlet.mapping.prefix
         reg.setInitParameter(RESTEASY_MAPPING_PREFIX, prefix);
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "register - mapping app " + applicationClass.getName() + " to " + mapping);
         }
@@ -216,7 +214,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
     }
 
     /**
-     * RESTEasy requires a resteasy.servlet.mapping.prefix parameter to be set if the 
+     * RESTEasy requires a resteasy.servlet.mapping.prefix parameter to be set if the
      * web.xml declares a servlet to handle RESTful WS requests AND if that servlet is mapped
      * to paths other than "/*". For example, if the IBMRestServlet is mapped to "/rest/*"
      * then the following code would also be needed in the web.xml:
@@ -226,7 +224,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
            &lt;param-value&gt;/rest&lt;/param-value&gt;
          &lt;/context-param&gt;
      * </pre>
-     * 
+     *
      * This method adds that programmatically.
      */
     private void addMappingParam(ServletContext ctx, Set<Class<?>> appClasses) {
@@ -279,9 +277,5 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                 }
             }
         }
-    }
-
-    private static String transformBack(String original) {
-        return original.replaceAll("jakarta", "javax");
     }
 }

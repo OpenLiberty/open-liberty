@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,11 +20,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.jboss.resteasy.plugins.providers.ProviderHelper;
 import org.jboss.resteasy.util.NoContent;
@@ -66,10 +66,10 @@ public class IAttachmentImpl implements IAttachment, InputPart {
 
     // Generally this ctor is used when creating IAttachment on incoming data
     public IAttachmentImpl(InputPart part) throws IOException {
-        this(part.getHeaders(), 
+        this(part.getHeaders(),
              extractFromHeader(part.getHeaders().getFirst(CONTENT_DISPOSITION_HEADER), "name")
-                  .orElseThrow(() -> new IOException("Missing required header, Content-Disposition or required attribute, name.")), 
-             extractFromHeader(part.getHeaders().getFirst(CONTENT_DISPOSITION_HEADER), "filename"), 
+                  .orElseThrow(() -> new IOException("Missing required header, Content-Disposition or required attribute, name.")),
+             extractFromHeader(part.getHeaders().getFirst(CONTENT_DISPOSITION_HEADER), "filename"),
              part.getBody(InputStream.class, null));
     }
 

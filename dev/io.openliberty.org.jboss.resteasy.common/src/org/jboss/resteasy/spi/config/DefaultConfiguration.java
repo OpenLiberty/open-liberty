@@ -19,21 +19,17 @@
 
 package org.jboss.resteasy.spi.config;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
+import org.jboss.resteasy.spi.ResteasyConfiguration;
+
 import java.math.BigDecimal;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages;
-import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
-import org.jboss.resteasy.spi.ResteasyConfiguration;
-
 /**
- * A default configuration which first attempts to use the Eclipse MicroProfile Config API. If the MicroProfile Config
- * API is not available value is searched in the following order:
+ * A default configuration which searches for a property in the following order:
  * <ol>
  *     <li>System properties</li>
  *     <li>Environment variables</li>
@@ -44,45 +40,18 @@ import org.jboss.resteasy.spi.ResteasyConfiguration;
  */
 public class DefaultConfiguration implements Configuration {
     private static final Function<String, String> DEFAULT_RESOLVER = new Resolver(null);
-    private static final Method GET_CONFIG;
-    private static final Method GET_OPTIONAL_VALUE;
-    private static final Method GET_VALUE;
-
-    static {
-        Method getConfig;
-        Method getOptionalValue;
-        Method getValue;
-        //Using MP Config 3.0 does not currently work
-//        try {
-//            final ClassLoader classLoader = getClassLoader();
-//            final Class<?> configProvider = Class.forName("org.eclipse.microprofile.config.ConfigProvider", false, classLoader);
-//            getConfig = configProvider.getDeclaredMethod("getConfig", ClassLoader.class);
-//            final Class<?> config = Class.forName("org.eclipse.microprofile.config.Config", false, classLoader);
-//            getOptionalValue = config.getDeclaredMethod("getOptionalValue", String.class, Class.class);
-//            getValue = config.getDeclaredMethod("getValue", String.class, Class.class);
-//        } catch (Throwable ignore) {
-            getConfig = null;
-            getOptionalValue = null;
-            getValue = null;
-//        }
-        GET_CONFIG = getConfig;
-        GET_OPTIONAL_VALUE = getOptionalValue;
-        GET_VALUE = getValue;
-    }
 
     private final Function<String, String> resolver;
 
     /**
-     * Creates a new configuration which uses system properties to resolve the values if the Eclipse MicroProfile Config
-     * is not on the class path.
+     * Creates a new configuration .
      */
     public DefaultConfiguration() {
         this(null);
     }
 
     /**
-     * Creates a new configuration which uses the {@linkplain ResteasyConfiguration configuration} to resolve the values
-     * if the Eclipse MicroProfile Config is not on the class path.
+     * Creates a new configuration which uses the {@linkplain ResteasyConfiguration configuration} to resolve the values.
      *
      * @param config the resolver
      */
@@ -93,14 +62,6 @@ public class DefaultConfiguration implements Configuration {
     @Override
     @SuppressWarnings("unchecked")
     public <T> Optional<T> getOptionalValue(final String name, final Class<T> type) {
-        if (GET_CONFIG != null) {
-            try {
-                final Object config = GET_CONFIG.invoke(null, getClassLoader());
-                return (Optional<T>) GET_OPTIONAL_VALUE.invoke(config, name, type);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                LogMessages.LOGGER.debugf(e, "Failed to invoke the configuration API method %s.", GET_OPTIONAL_VALUE);
-            }
-        }
         final String value = resolver.apply(name);
         if (value == null) {
             return Optional.empty();
@@ -138,28 +99,8 @@ public class DefaultConfiguration implements Configuration {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T getValue(final String name, final Class<T> type) {
-        if (GET_CONFIG != null) {
-            try {
-                final Object config = GET_CONFIG.invoke(null, getClassLoader());
-                return (T) GET_VALUE.invoke(config, name, type);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                LogMessages.LOGGER.debugf(e, "Failed to invoke the configuration API method %s.", GET_VALUE);
-            }
-        }
         return getOptionalValue(name, type).orElseThrow(() -> Messages.MESSAGES.propertyNotFound(name));
-    }
-
-    private static ClassLoader getClassLoader() {
-        if (System.getSecurityManager() == null) {
-            final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-            return tccl != null ? tccl : DefaultConfiguration.class.getClassLoader();
-        }
-        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
-            final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-            return tccl != null ? tccl : DefaultConfiguration.class.getClassLoader();
-        });
     }
 
     private static class Resolver implements Function<String, String> {

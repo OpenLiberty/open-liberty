@@ -16,9 +16,9 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 
 import javax.security.auth.Subject;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.core.HttpHeaders;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;

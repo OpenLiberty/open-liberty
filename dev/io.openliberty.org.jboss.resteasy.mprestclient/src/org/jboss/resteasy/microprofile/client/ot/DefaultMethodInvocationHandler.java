@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,7 +26,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.microprofile.client.ProxyInvocationHandler;
@@ -56,7 +56,7 @@ public class DefaultMethodInvocationHandler implements InvocationHandler {
     }
 
     private static Object createDefaultMethodTarget(Class<?> interfaceClass) {
-        return AccessController.doPrivileged((PrivilegedAction<Object>) () -> 
+        return AccessController.doPrivileged((PrivilegedAction<Object>) () ->
             Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),new Class[]{interfaceClass}, (Object proxy, Method method, Object[] arguments) -> null));
     }
 
@@ -73,7 +73,7 @@ public class DefaultMethodInvocationHandler implements InvocationHandler {
                                         .in(declaringClass);
                         // force private access so unreflectSpecial can invoke the interface's default method
                         Field f;
-                        try { 
+                        try {
                             f = MethodHandles.Lookup.class.getDeclaredField("allowedModes");
                         } catch (NoSuchFieldException nsfe) {
                             // IBM and OpenJ9 JDKs use a different field name
@@ -109,10 +109,10 @@ public class DefaultMethodInvocationHandler implements InvocationHandler {
     }
 
     /**
-     * For JDK 9+, we could use MethodHandles.privateLookupIn, which is not 
+     * For JDK 9+, we could use MethodHandles.privateLookupIn, which is not
      * available in JDK 8.
      */
-    private static Object invokeDefaultMethodUsingPrivateLookup(Class<?> declaringClass, Object o, Method m, 
+    private static Object invokeDefaultMethodUsingPrivateLookup(Class<?> declaringClass, Object o, Method m,
                                                                 Object[] params) throws WrappedException, NoSuchMethodException {
         try {
             final Method privateLookup = MethodHandles

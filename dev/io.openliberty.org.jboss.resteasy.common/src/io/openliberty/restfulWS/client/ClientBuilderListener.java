@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,8 @@
  *******************************************************************************/
 package io.openliberty.restfulWS.client;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -21,8 +21,8 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 
 /**
  * Registered ClientBuilderListeners (via DS) will be called when a
- * {@code javax.ws.rs.client.ClientBuilder} is invoked allowing
- * customization of the resulting {@code javax.ws.rs.client.Client}
+ * {@code jakarta.ws.rs.client.ClientBuilder} is invoked allowing
+ * customization of the resulting {@code jakarta.ws.rs.client.Client}
  * instance.
  */
 @Sensitive

@@ -52,7 +52,7 @@ Include-Resource:\
   META-INF=resources/META-INF
 
 -buildpath: \
-  io.openliberty.org.jboss.resteasy.common.jakarta;version=latest,\
+  io.openliberty.org.jboss.resteasy.common;version=latest,\
   io.openliberty.jakarta.annotation.2.0,\
   io.openliberty.jakarta.cdi.3.0,\
   io.openliberty.jakarta.interceptor.2.0,\

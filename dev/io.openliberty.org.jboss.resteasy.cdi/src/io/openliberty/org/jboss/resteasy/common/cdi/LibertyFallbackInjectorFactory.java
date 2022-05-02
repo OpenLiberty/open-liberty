@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,16 +18,14 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.MessageBodyReader;
 
 import org.jboss.resteasy.core.InjectorFactoryImpl;
 import org.jboss.resteasy.plugins.providers.multipart.IAttachmentImpl;
-import org.jboss.resteasy.plugins.providers.multipart.IBMMultipartProvider;
 import org.jboss.resteasy.spi.ConstructorInjector;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
@@ -51,7 +49,7 @@ public class LibertyFallbackInjectorFactory implements InjectorFactory {
     private static final TraceComponent tc = Tr.register(LibertyFallbackInjectorFactory.class);
 
     private final InjectorFactory delegate;
-    
+
     public LibertyFallbackInjectorFactory() {
         InjectorFactory factory;
         try {
@@ -83,13 +81,13 @@ public class LibertyFallbackInjectorFactory implements InjectorFactory {
     public ValueInjector createParameterExtractor(Class injectTargetClass, AccessibleObject injectTarget, String defaultName, Class type, Type genericType, Annotation[] annotations, boolean useDefault, ResteasyProviderFactory factory) {
         return delegate.createParameterExtractor(injectTargetClass, injectTarget, defaultName, type, genericType, annotations, useDefault, factory);
     }
-    
+
     @Override
     public ValueInjector createParameterExtractor(Parameter parameter, ResteasyProviderFactory providerFactory) {
         if (ParamType.FORM_PARAM.equals(parameter.getParamType()) && IAttachment.class.equals(parameter.getType())) {
             Type type = new GenericType<List<IAttachment>>() {}.getType();
             MessageBodyReader<Object> mbr = providerFactory.getMessageBodyReader((Class)List.class, type, null, MediaType.MULTIPART_FORM_DATA_TYPE);
-            
+
             return new ValueInjector() {
                 @Override
                 public Object inject(boolean unwrapAsync) {
