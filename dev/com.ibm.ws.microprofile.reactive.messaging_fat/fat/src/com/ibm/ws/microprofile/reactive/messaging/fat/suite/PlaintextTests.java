@@ -34,6 +34,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sharedLib.KafkaShare
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tck.ReactiveStreamsTckTest;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 
 /**
  * Tests which run against a plaintext Kafka broker
@@ -67,7 +68,8 @@ public class PlaintextTests {
     @ClassRule
     public static ExtendedKafkaContainer kafkaContainer = new ExtendedKafkaContainer()
                     .withStartupTimeout(Duration.ofMinutes(2))
-                    .withStartupAttempts(3);
+                    .withStartupAttempts(3)
+                    .withLogConsumer(new SimpleLogConsumer(PlaintextTests.class, "kafka"));
 
     public static Map<String, String> connectionProperties() {
         return Collections.singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());

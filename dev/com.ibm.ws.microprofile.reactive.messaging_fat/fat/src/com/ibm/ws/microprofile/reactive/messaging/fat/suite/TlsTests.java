@@ -25,6 +25,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedK
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tls.KafkaTlsTest;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 
 /**
  * Suite for tests which run against a TLS enabled kafka broker
@@ -44,7 +45,8 @@ public class TlsTests {
     public static ExtendedKafkaContainer kafkaContainer = new ExtendedKafkaContainer()
                     .withTls()
                     .withStartupTimeout(Duration.ofMinutes(2))
-                    .withStartupAttempts(3);
+                    .withStartupAttempts(3)
+                    .withLogConsumer(new SimpleLogConsumer(TlsTests.class, "kafka-tls"));
 
     public static Map<String, String> connectionProperties() {
         Map<String, String> properties = new HashMap<>();

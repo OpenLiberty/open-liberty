@@ -32,6 +32,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.xor.Li
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sasl_plain.KafkaSaslPlainTest;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 
 /**
  * Suite for tests which run against a TLS enabled kafka broker
@@ -67,7 +68,8 @@ public class SaslPlainTests {
                     .withKafkaJaasConfig(getKafkaJaasConf())
                     .withZookeeperJaasConfig(getZookeeperJaasConf())
                     .withStartupTimeout(Duration.ofMinutes(2))
-                    .withStartupAttempts(3);
+                    .withStartupAttempts(3)
+                    .withLogConsumer(new SimpleLogConsumer(SaslPlainTests.class, "kafka-sasl"));
 
     public static String generateSecret(String prefix) {
         return prefix + "-" + Base58.randomString(6);
