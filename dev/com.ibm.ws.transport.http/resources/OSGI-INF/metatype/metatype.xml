@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2021 IBM Corporation and others.
+    Copyright (c) 2011, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -354,6 +354,14 @@
             
         <AD name="%log.access.max.files" description="%log.access.max.files.desc"
             id="maxFiles" required="false" type="Integer" min="0" default="2" />
+
+        <AD name="%log.access.rollover.start.time" description="%log.access.rollover.start.time.desc" 
+            id="rolloverStartTime" required="false" type="String" default="" ibm:beta="true">
+        </AD>
+
+        <AD name="%log.access.rollover.interval" description="%log.access.rollover.interval.desc" 
+            id="rolloverInterval" required="false" type="String" ibm:type="duration(m)" default="-1" ibm:beta="true">
+        </AD>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.http.log.access">

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2021 IBM Corporation and others.
+# Copyright (c) 2002, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -205,3 +205,11 @@ headers.duplicateHeaderName.useraction=Ensure that headers that are defined by t
 headers.knownDuplicateHeader=CWWKT0044W: The [{0}] header, which is marked as a duplicate header name, was found in the {1} configuration. The [{0}] header is ignored. Any header that is defined by the {1} configuration must contain unique header names.
 headers.knownDuplicateHeader.explanation=The specified header name was already found by the remove, add, set, or setIfMissing configurations.
 headers.knownDuplicateHeader.useraction=Ensure that header names that are defined in this configuration are unique across the remove, add, set, or setIfMissing configurations.              
+
+log.rollover.start.time.format.warning=CWWKT0045W: The log rollover start time property is incorrectly formatted. As a result, the value is set to a default of '00:00', which represents midnight.
+log.rollover.start.time.format.warning.explanation=The rollover start time property must be formatted HH:MM, with 00:00 representing midnight.
+log.rollover.start.time.format.warning.useraction=Ensure that the rollover start time property value is properly formatted in HH:MM 24-hour notation, where 00:00 represents midnight.
+
+log.rollover.interval.too.short.warning=CWWKT0046W: The log rollover interval cannot be less than 1 minute long. If a value that is less than 1 minute is specified, the log rollover interval is set to a default of 1 day.
+log.rollover.interval.too.short.warning.explanation=The log rollover interval cannot be less than 1 minute long.
+log.rollover.interval.too.short.warning.useraction=Specify a log rollover interval that is equal to or greater than 1 minute.

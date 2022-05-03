@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,9 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.http.logging.LogFile;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
+import java.util.TimerTask;
+import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This utility class is the entry point for writing to the actual log file.
@@ -84,6 +87,10 @@ public class LoggerOffThread implements LogFile {
     private long maxFileSize = LogFile.UNLIMITED;
     /** Maximum number of backup files to keep around */
     private int maxBackupFiles = 1;
+    /** The rollover start time for time based accesslog rollover. */
+    private String rolloverStartTime = "";
+    /** The rollover start time for time based accesslog rollover. */
+    private long rolloverInterval = -1;
 
     /**
      * Constructor that opens a reference to the input file name. Note that
@@ -352,12 +359,51 @@ public class LoggerOffThread implements LogFile {
     }
 
     /**
+     * 
+     */
+
+    public void setRolloverStartTime(String time) {
+        this.rolloverStartTime = time;
+    }
+
+    /**
+     * 
+     */
+
+    public String getRolloverStartTime() {
+        return this.rolloverStartTime;
+    }
+
+    /**
+     * 
+     */
+
+    public void setRolloverInterval(String interval) {
+        this.rolloverInterval = MetatypeUtils.evaluateDuration(interval, TimeUnit.MINUTES);
+    }
+
+    /**
+     * 
+     */
+
+    public long getRolloverInterval() {
+        return this.rolloverInterval;
+    }
+
+    /**
+     * 
+     */
+    public WorkerThread getWorkerThread() {
+        return this.myWorker;
+    }
+
+    /**
      * Worker thread class that handles pulling data off of the outgoing queue
      * and writing each buffer to the file. Each time this wakes up it will
      * purge the entire queue to the file.
      *
      */
-    private class WorkerThread extends Thread {
+    protected class WorkerThread extends Thread {
 
         /** State of worker thread */
         private WorkerState workerState = WorkerState.RUNNING;
@@ -536,7 +582,7 @@ public class LoggerOffThread implements LogFile {
          * with a new file.
          *
          */
-        private void rotate() {
+        protected void rotate() {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, getFileName() + ": Rotating output log");
             }

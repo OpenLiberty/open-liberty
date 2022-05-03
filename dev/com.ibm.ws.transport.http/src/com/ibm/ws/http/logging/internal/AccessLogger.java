@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,12 @@ import com.ibm.wsspi.http.logging.AccessLog;
 import com.ibm.wsspi.http.logging.AccessLogForwarder;
 import com.ibm.wsspi.http.logging.AccessLogRecordData;
 import com.ibm.wsspi.http.logging.LogForwarderManager;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Implementation of an NCSA access log file. This will perform the disk IO on
@@ -65,6 +71,12 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
     private static final String PROP_MAXFILESIZE = "maxFileSize";
 
     /**  */
+    private static final String PROP_ROLLOVERSTARTTIME = "rolloverStartTime";
+
+    /**  */
+    private static final String PROP_ROLLOVERINTERVAL = "rolloverInterval";
+
+    /**  */
     private static final String PROP_LOGFORMAT = "logFormat";
 
     /**  */
@@ -72,6 +84,12 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
 
     /**  */
     private static final String PROP_ENABLED = "enabled";
+
+    /**  */
+    private static final String ROLLOVER_START_TIME_DEFAULT = "00:00";
+    
+    /**  */
+    private static final long ROLLOVER_INTERVAL_DEFAULT = 1440;
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(AccessLogger.class,
@@ -108,6 +126,22 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
 
     private FormatSegment[] parsedFormat;
 
+    private static final String ROLLOVER_START_TIME_FORMAT = "([0-1][0-9]|2[0-3]):[0-5][0-9]";
+
+    /** The rollover start time for time based accesslog rollover. */
+    private volatile String rolloverStartTime = "";
+
+    /** The rollover start time for time based accesslog rollover. */
+    private volatile long rolloverInterval = -1;
+
+    private boolean isFilePathChanged = false;
+
+    private boolean isLogRolloverScheduled = false;
+
+    private volatile Timer timedLogRollover_Timer = new Timer();
+
+    private static Boolean isBetaEdition;
+
     /**
      * Constructor of this NCSA access log file.
      *
@@ -130,6 +164,11 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
 
     @Deactivate
     protected void deactivate(ComponentContext ctx) {
+        if (this.isLogRolloverScheduled) {
+            timedLogRollover_Timer.cancel();
+            timedLogRollover_Timer.purge();
+            this.isLogRolloverScheduled = false;
+        }
         stop();
     }
 
@@ -150,7 +189,10 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
             if (!!!filename.equals(getFilePathName())) {
                 // new file name
                 setFilename(filename);
+                isFilePathChanged = true;
             }
+            else
+                isFilePathChanged = false;
 
             String logFormat = config.get(PROP_LOGFORMAT).toString();
             if (!!!logFormat.equals(getFormatString())) {
@@ -178,7 +220,7 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
                     Tr.event(tc, "Config: invalid access max files: " + value);
                 }
             }
-
+            
         } catch (FileNotFoundException e) {
             FFDCFilter.processException(e, getClass().getName() + ".modified", "name", this);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -192,6 +234,22 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
         } else {
             stop();
         }
+
+        if (betaFenceCheck())
+            scheduleTimeBasedLogRollover(config);
+    }
+
+    public Boolean betaFenceCheck() {
+        //TraceComponent tc = Tr.register(BaseTraceService.class);
+        if (isBetaEdition == null) {
+            if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
+                isBetaEdition = true;
+            } else {
+                Tr.warning(tc, "The 'rolloverInterval' and 'rolloverStartTime' logging format options are in beta and are not available in this version of OpenLiberty.");
+                isBetaEdition = false;
+            }
+        }
+        return isBetaEdition;
     }
 
     /**
@@ -628,5 +686,134 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
     @Trivial
     public String toString() {
         return super.toString() + "\n Format: " + getFormatString();
+    }
+
+    /**
+      * Schedule time based log rollover
+      */
+    private void scheduleTimeBasedLogRollover(Map<String, Object> config) {
+        setRolloverStartTime(config.get(PROP_ROLLOVERSTARTTIME).toString());
+        setRolloverInterval(config.get(PROP_ROLLOVERINTERVAL).toString());
+
+        String rolloverStartTime = getRolloverStartTime();
+        long rolloverInterval = getRolloverInterval();
+
+        //if the rollover has already been scheduled, cancel it
+        //this is either a reschedule, or a unschedule
+        if (this.isLogRolloverScheduled) {
+            //null and empty rolloverStartTime are the same
+            if (rolloverStartTime == null)
+                rolloverStartTime = "";
+            //if neither of the rollover attributes change, return without rescheduling
+            //if filePath is changed, need to reschedule with correct WorkerThread
+            if (this.rolloverStartTime.equals(rolloverStartTime) && this.rolloverInterval == rolloverInterval && !isFilePathChanged) {
+                return;
+            }
+            else {
+                timedLogRollover_Timer.cancel();
+                timedLogRollover_Timer.purge();
+                this.isLogRolloverScheduled = false;
+            }
+        }
+
+        //if both rolloverStartTime and rolloverInterval are empty, return
+        if ((rolloverStartTime == null || rolloverStartTime.isEmpty()) && (rolloverInterval < 0)) { 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Neither rolloverStartTime nor rolloverInterval are set. Returning without scheduling time based access log rollover.");
+            }
+
+            return;
+        }
+
+        //check and set time based log rollover values/defaults
+        //if rolloverInterval is less than 1 minute -- value returned from server.xml will round down to 0
+        if (rolloverInterval == 0) { 
+            Tr.warning(tc, "log.rollover.interval.too.short.warning");
+            rolloverInterval = ROLLOVER_INTERVAL_DEFAULT;
+        }
+        //set default of interval to 1d if startTime exists but interval does not
+        if (rolloverInterval < 0)
+            rolloverInterval = ROLLOVER_INTERVAL_DEFAULT;
+        if (!rolloverStartTime.isEmpty()) {
+            //check ISO date format matches HH:MM
+            if (!Pattern.matches(ROLLOVER_START_TIME_FORMAT, rolloverStartTime)) {
+                Tr.warning(tc, "log.rollover.start.time.format.warning");
+                rolloverStartTime = ROLLOVER_START_TIME_DEFAULT;
+            } 
+        }
+        else {
+            //set default of non-existing startTime if interval exists
+            rolloverStartTime = ROLLOVER_START_TIME_DEFAULT; 
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Scheduling time based log rollover...");
+            Tr.debug(tc, "rolloverInterval=" + rolloverInterval);
+            Tr.debug(tc, "rolloverStartTime=" + rolloverStartTime);
+        }
+
+
+
+        this.rolloverStartTime = rolloverStartTime;
+        this.rolloverInterval = rolloverInterval;
+
+        //parse startTimeField
+        String[] hourMinPair = rolloverStartTime.split(":");
+        int startHour = Integer.parseInt(hourMinPair[0]);
+        int startMin = Integer.parseInt(hourMinPair[1]);
+
+        //set calendar start time
+        Calendar sched = Calendar.getInstance();
+        sched.set(Calendar.HOUR_OF_DAY, startHour);
+        sched.set(Calendar.MINUTE, startMin);
+        sched.set(Calendar.SECOND, 0);
+        sched.set(Calendar.MILLISECOND, 0);
+        Calendar currCal = Calendar.getInstance();
+
+        //calculate next rollover after server update
+        //if currTime before startTime, firstRollover = startTime - n(interval)
+        if (currCal.before(sched)) { 
+            while (currCal.before(sched)) {
+                sched.add(Calendar.MINUTE, (int)rolloverInterval*(-1));
+            }
+            sched.add(Calendar.MINUTE, (int)rolloverInterval); //add back interval due to time overlap
+        }
+        //if currTime after startTime, firstRollover = startTime + n(interval)
+        else if (currCal.after(sched)) { 
+            while (currCal.after(sched)) {
+                sched.add(Calendar.MINUTE, (int)rolloverInterval);
+            }
+        }
+        //if currTime == startTime, set first rollover to next rolloverInterval
+        else if (currCal.equals(sched)) { 
+            sched.add(Calendar.MINUTE, (int)rolloverInterval);
+        }
+
+        Date firstRollover = sched.getTime();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Log rollover settings updated - next rollover will be at ... "+sched.getTime());
+        }
+
+        //schedule rollover
+        timedLogRollover_Timer = new Timer(true);
+        TimedLogRoller tlr = new TimedLogRoller(this.getWorkerThread());
+        timedLogRollover_Timer.scheduleAtFixedRate(tlr, firstRollover, rolloverInterval*60000);
+        this.isLogRolloverScheduled = true;
+    }
+
+    /**
+     * LogRoller task to be run/scheduled in timed log rollover.
+     */
+    private class TimedLogRoller extends TimerTask {
+        private WorkerThread wt;
+        
+        TimedLogRoller(WorkerThread wt) {
+            this.wt = wt;
+        }
+
+        @Override
+        public void run() {
+            wt.rotate();
+        }
     }
 }
