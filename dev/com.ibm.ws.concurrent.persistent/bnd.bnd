@@ -14,8 +14,6 @@
 
 bVersion=1.0
 
-
-
 WS-TraceGroup: persistentExecutor
     
 Export-Package:\
@@ -73,7 +71,6 @@ instrument.classesExcludes: com/ibm/ws/concurrent/persistent/resources/*.class
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.context;version=latest,\
 	com.ibm.tx.jta;version=latest,\
-	com.ibm.tx.ltc;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.kernel.service;version=latest, \

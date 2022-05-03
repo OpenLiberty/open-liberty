@@ -39,7 +39,6 @@ Service-Component: \
 	com.ibm.ws.logging,\
 	com.ibm.ws.context;version=latest,\
 	com.ibm.tx.jta;version=latest,\
-	com.ibm.tx.ltc;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\

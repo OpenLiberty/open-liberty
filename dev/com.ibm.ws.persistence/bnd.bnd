@@ -63,7 +63,6 @@ instrument.classesExcludes: com/ibm/wsspi/persistence/internal/PersistenceServic
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.ws.jdbc;version=latest,\
-	com.ibm.tx.ltc;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.appserver.api.authData;version=latest,\
 	com.ibm.tx.jta;version=latest,\

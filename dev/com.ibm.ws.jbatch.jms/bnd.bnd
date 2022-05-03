@@ -40,7 +40,6 @@ Include-Resource: \
 	com.ibm.ws.app.manager.lifecycle;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.ejbcontainer.mdb;version=latest,\
-	com.ibm.tx.ltc;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.ws.jbatch.rest;version=latest,\
