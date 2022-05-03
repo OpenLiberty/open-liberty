@@ -10,14 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.crypto.ltpakeyutil;
 
-
 import java.security.Provider;
 import java.security.Security;
+import com.ibm.ws.kernel.service.util.JavaInfo; 
 
 public final class LTPAKeyUtil {
 
   public static boolean ibmJCEAvailable = false;
   public static boolean providerChecked = false;
+  public static String IBM_JCE_PROVIDER = "com.ibm.crypto.provider.IBMJCE"; 
 
   public static byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
     return LTPACrypto.encrypt(data, key, cipher);
@@ -60,12 +61,7 @@ public final class LTPAKeyUtil {
       return ibmJCEAvailable;
     }
     else {
-      Provider[] providers = Security.getProviders();
-      for (int i = 0; i < providers.length; i++) {
-        if (providers[i].toString().contains("IBMJCE")) {
-          ibmJCEAvailable = true;
-        }
-      }
+      ibmJCEAvailable = JavaInfo.isSystemClassAvailable(IBM_JCE_PROVIDER);
       providerChecked = true;
       return ibmJCEAvailable;
     }
