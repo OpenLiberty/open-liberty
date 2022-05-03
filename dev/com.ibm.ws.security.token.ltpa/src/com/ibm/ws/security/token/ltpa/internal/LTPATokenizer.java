@@ -35,6 +35,7 @@ public class LTPATokenizer {
     private static final char STRING_ATTRIB_DELIM_CHAR_PIPE = '|';
     private static final String STRING_ATTRIB_DELIM_PIPE = "|";
     private static final char BACKSLASH = '\\';
+    private static final String SRING_TOKEN_DELIM_PERCENT = "%";
 
     /**
      * @param attributes
@@ -84,18 +85,23 @@ public class LTPATokenizer {
         char c;
 
         int signBegin = -1, expireBegin = -1;
-        // LTPA Token has 3 fields: userdata, expiration and sign
-        // userdata
+        // LTPA Token has 2 or 3 fields:
+        //    1) Support LTPAToken2 only have userdata, sign
+        //    2) Support LTPAToken and LTPAToken2 have userdata, expiration and sign
         //
-        // Example:
-        // expire:1651552864844$u:user\:BasicRealm/steven\\%1651552864844% <sign data>
+        // Example1: Only LTPAtoken2
+        // expire:1651552864844$u:user\:BasicRealm/steven\\% <sign data>
         // SSO Token has only two : userdata, and expiration
+
+        // Example2: LTPAToken2 and LTPAToken expire
+        // expire:1651552864844$u:user\:BasicRealm/steven\\%1651552864844% <sign data>
+
+        // Note: SSO Token has only two : userdata, and expiration
 
         try {
             for (int i = tokenLen - 1; i > -1; i--) {
                 c = tokenStr.charAt(i);
-                if (c == TOKEN_DELIM_PERCENT) {
-                    // we will encounter two of these
+                if (c == TOKEN_DELIM_PERCENT) { // we will encounter one or two of these
                     if (signBegin == -1) {
                         signBegin = i + 1;
                     } else {
@@ -106,11 +112,13 @@ public class LTPATokenizer {
             }
 
             if (expireBegin == -1) {
-                // only one DELIM encountered
+                // one DELIM encountered for LTPAToken2
                 expireBegin = signBegin;
                 fields[0] = tokenStr.substring(0, expireBegin - 1);
-                fields[1] = tokenStr.substring(expireBegin, tokenLen);
+                fields[1] = null;
+                fields[2] = tokenStr.substring(expireBegin, tokenLen);
             } else {
+                // two DELIM encountered for LTPAToken and LTPAToken2
                 fields[0] = tokenStr.substring(0, expireBegin - 1);
                 fields[1] = tokenStr.substring(expireBegin, signBegin - 1);
                 fields[2] = tokenStr.substring(signBegin, tokenLen);

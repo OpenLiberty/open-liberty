@@ -230,10 +230,10 @@ public class LTPAToken2 implements Token, Serializable {
             String[] fields = LTPATokenizer.parseToken(tokenString);
             String[] expirationArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_EXPIRATION);
             if (expirationArray != null && expirationArray[expirationArray.length - 1] != null) {
-                // the new expiration value inside the signature
+                // the new expiration value inside the signature for LTPAToken2
                 expirationInMilliseconds = Long.parseLong(expirationArray[expirationArray.length - 1]);
             } else {
-                // the old expiration value outside of the signature
+                // the old expiration value outside of the signature for LTPAToken
                 expirationInMilliseconds = Long.parseLong(fields[1]);
             }
 
