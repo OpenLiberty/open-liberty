@@ -696,6 +696,10 @@ serverEnv()
 {
   echo "serverEnv()" "${WLP_INSTALL_DIR}/etc/server.env"
   readServerEnv "${WLP_INSTALL_DIR}/etc/server.env"
+
+  echo !@#$ LOG_FILE=${LOG_FILE}
+  echo !@#$ CONSOLE_LOG_ILE_NAME=${CONSOLE_LOG_FILE_NAME}
+
   installEnvDefaults
 
   readServerEnv "${WLP_USER_DIR}/shared/server.env"
@@ -803,13 +807,19 @@ readServerEnv()
 {
   # By default, we do not attempt to resolve variables in server.env
   variableExpansionEnabled=0
+
+  echo !@#$ readServerEnv $1
+
+
   if [ -f "$1" ]; then
+    eval "cat $1"
     saveIFS=$IFS
     IFS=$newline
     for line in `readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'`; do
       case $line in
 
       \#*)
+           echo !@#$ readServerEnv Line is a comment
            # line is a comment.
            # A comment line enables variable expansion if it contains the keyword,
            # "enable_variable_expansion", and nothing else (ignoring case and white space).
@@ -827,6 +837,7 @@ readServerEnv()
               fi
            fi ;;
       *=*)
+        echo !@#$ readServerEnv Line is an assignment
         # Only accept alphanumeric variable names to avoid eval complexities.
         if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
            case $var in
@@ -845,14 +856,21 @@ readServerEnv()
                  # of the assignment and export it.  If a later line enables variable expansion, the source
                  # command will reassign the variable (which is already exported) to the resolved value.
                  extractValueAndEscapeForEval "${line}"
+		 echo Variable expansion is not enabled.
+		 echo eval "${var}=${escapeForEvalResult}; export ${var}"
                  eval "${var}=${escapeForEvalResult}; export ${var}"
               fi
            esac
         fi ;;
+        *)
+         echo !@#$ readServerEnv fall through:  $line
       esac
     done
     IFS=$saveIFS
+  else
+    echo !@#$ readServerEnv DOES NOT EXIST 
   fi
+   echo !@#$ readServerEnv return 
 }
 
 ##

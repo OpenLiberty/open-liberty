@@ -118,10 +118,15 @@ public class ServerEnvTest {
      * @throws Exception
      */
     public void varsExpandInServerEnv(boolean expansionEnabled) throws Exception {
-        final String METHOD_NAME = "varsExpandInServerEnv[" + expansionEnabled + "]";
+        final String METHOD_NAME = "varsExpandInServerEnv[" + expansionEnabled + "] ";
         Log.entering(c, METHOD_NAME);
 
-        // The environment variable to be referenced in etc/server.env
+        String logString;
+        StringBuffer sb = new StringBuffer("");
+
+        // *********************
+        // Create Environment Variable to be used by command
+        // *********************
         final String consoleLogEnvVar = "CONSOLE_LOG_FILE_NAME";
         String consoleLogEnvVarReference;
         if (OS.contains("win")) {
@@ -130,60 +135,86 @@ public class ServerEnvTest {
             consoleLogEnvVarReference = "${" + consoleLogEnvVar + "}";
         }
 
-        // Create server.env with or without expansion enabled.
-        // Sets the LOG_FILE variable to an environment variable reference.
-        // This should cause the name of the "console.log" to be something different.
+        // Set the log file name in an environment variable
+        String logFileName = "GiveMeLibertyOrGiveMeDeath.log";
+        Properties envVars = new Properties();
+        envVars.put(consoleLogEnvVar, logFileName);
+
+        // *********************
+        // Create server.env
+        // *********************
         String fileContents;
         if (expansionEnabled) {
             fileContents = "#enable_variable_expansion\nLOG_FILE=" + consoleLogEnvVarReference;
         } else {
             fileContents = "LOG_FILE=" + consoleLogEnvVarReference;
         }
-        Log.info(c, METHOD_NAME, "Creating /etc/server.env with contents:\n" + fileContents);
+
+        logString = "Creating /etc/server.env with contents:\n";
+
+        Log.info(c, METHOD_NAME, logString + fileContents);
+        sb.append(METHOD_NAME + logString + fileContents + "\n\n");
 
         File wlpEtcDir = new File(server.getInstallRoot(), "etc");
-        String serverEnvCreate = createServerEnvFile(fileContents, wlpEtcDir);
-        Log.info(c, METHOD_NAME, "server.env location = " + serverEnvCreate);
-        String serverEnvDebug = "\n\n server.env location =" + serverEnvCreate + " contents:\n" + fileContents + "\n";
-        assertTrue("The server.env file was not created.", serverEnvCreate.contains("server.env"));
+        Log.info(c, METHOD_NAME, "wlpEtcDir:" + wlpEtcDir.getAbsolutePath());
+        String serverEnvFileFullPath = createServerEnvFile(fileContents, wlpEtcDir, sb);
+        logString = "server.env location = " + serverEnvFileFullPath;
+        Log.info(c, METHOD_NAME, logString);
+        sb.append(METHOD_NAME + logString + "\n\n");
+        assertTrue(sb.toString() + "\n\nThe server.env file was not created.", serverEnvFileFullPath.contains("server.env"));
 
-        // Set the log file name in an environment variable
-        String logFileName = "GiveMeLibertyOrGiveMeDeath.log";
-        Properties envVars = new Properties();
-        envVars.put(consoleLogEnvVar, logFileName);
-
+        // *********************
         // Execute the server start command and display stdout and stderr
+        // *********************
         String executionDir = server.getInstallRoot() + File.separator + "bin";
         String command = "." + File.separator + "server";
         String[] parms = new String[2];
         parms[0] = "start";
         parms[1] = SERVER_NAME;
-        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
-        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
-        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
-        String stdout = "\nstdout:\n" + po.getStdout();
-        String stderr = "\nstderr:\n" + po.getStderr();
 
-        // Check for server ready
+        ProgramOutput po = server.getMachine().execute(command, parms, executionDir, envVars);
+        String po_command = po.getCommand();
+        int po_returnCode = po.getReturnCode();
+        String po_stdout = po.getStdout();
+        String po_stderr = po.getStderr();
+
+        sb.append("\n\nSB: (start server)Program output:\ncommand="
+                  + po_command + "\nrc=" + po_returnCode + "\n\nstdout:[  \n" + po_stdout + "]\n\nstderr: \n[" + po_stderr + "]");
+        Log.info(c, METHOD_NAME, sb.toString());
+        Log.info(c, METHOD_NAME, "po command: " + po_command);
+        Log.info(c, METHOD_NAME, "po rc: " + po_returnCode);
+        Log.info(c, METHOD_NAME, "po stdout: " + po_stdout);
+        Log.info(c, METHOD_NAME, "po stderr:" + po_stderr);
+
+        // *********************
+        // Check Server Ready
+        // *********************
         String serverReady = server.waitForStringInLog("CWWKF0011I");
         if (serverReady == null) {
-            Log.info(c, METHOD_NAME, "Timed out waiting for server ready message, CWWKF0011I");
+            logString = "Timed out waiting for server ready message, CWWKF0011I";
+            Log.info(c, METHOD_NAME, logString);
+            sb.append(METHOD_NAME + logString + "\n\n");
+        } else {
+            logString = "Found server ready message, CWWKF0011I";
+            Log.info(c, METHOD_NAME, logString);
+            sb.append(METHOD_NAME + logString + "\n\n");
         }
 
         // Because we didn't start the server using the LibertyServer APIs, we need
         // to have it detect its started state so it will stop and save logs properly
         server.resetStarted();
-        assertTrue("the server should have been started:" + stdout + stderr + serverEnvDebug, server.isStarted());
 
-        logDirectoryContents(METHOD_NAME, new File(server.getLogsRoot())); // DEBUG
+        assertTrue(sb.toString() + "\n\nthe server should have been started:", server.isStarted());
+
+        sb.append(logDirectoryContents(METHOD_NAME, new File(server.getLogsRoot()))); // DEBUG
 
         // Finally, verify that the log file with the new name exists when expansion is enabled
         String logFullPathName = server.getLogsRoot() + logFileName;
         File logFile = new File(logFullPathName);
         if (expansionEnabled) {
-            assertTrue("the log file with the new name [ " + logFullPathName + " ] does not exist", logFile.exists());
+            assertTrue(sb.toString() + "\n\nthe log file with the new name [ " + logFullPathName + " ] does not exist", logFile.exists());
         } else {
-            assertTrue("the log file with the new name [ " + logFullPathName + " ] exists, but it should not", !logFile.exists());
+            assertTrue(sb.toString() + "\n\nthe log file with the new name [ " + logFullPathName + " ] exists, but it should not", !logFile.exists());
         }
 
         // Test is complete, but create "console.log" file.
@@ -205,7 +236,7 @@ public class ServerEnvTest {
      * @param dir directory for server.env
      * @throws IOException
      */
-    private String createServerEnvFile(String fileContents, File dir) throws Exception {
+    private String createServerEnvFile(String fileContents, File dir, StringBuffer sb) throws Exception {
 
         File serverEnvFile = new File(dir, "server.env");
 
@@ -230,12 +261,14 @@ public class ServerEnvTest {
             Machine machine = Machine.getLocalMachine();
             if (machine.getOperatingSystem() == OperatingSystem.ZOS) {
                 w = new OutputStreamWriter(fos, Charset.forName("IBM-1047"));
+                sb.append("\n ZOS - set charset to IBM-1047\n");
             } else {
                 w = new OutputStreamWriter(fos);
+                sb.append("\n using default charset.\n");
             }
 
             pw = new PrintWriter(w);
-            pw.print(fileContents.getBytes());
+            pw.println(fileContents);
         } finally {
             if (pw != null) {
                 pw.close();
@@ -307,19 +340,23 @@ public class ServerEnvTest {
      * @param methodName
      * @param folder
      */
-    public static void logDirectoryContents(final String methodName, File folder) {
+    public static StringBuffer logDirectoryContents(final String methodName, File folder) {
 
         File[] listOfFiles = folder.listFiles();
+        StringBuffer sb = new StringBuffer("");
 
         Log.info(c, methodName, "Server logs directory contents: ");
         if (listOfFiles != null) {
             for (int i = 0; i < listOfFiles.length; i++) {
                 if (listOfFiles[i].isFile()) {
+                    sb.append(methodName + "File: " + listOfFiles[i].getName() + "\n");
                     Log.info(c, methodName, "File: " + listOfFiles[i].getName());
                 } else if (listOfFiles[i].isDirectory()) {
+                    sb.append(methodName + "Directory: " + listOfFiles[i].getName() + "\n");
                     Log.info(c, methodName, "Directory: " + listOfFiles[i].getName());
                 }
             }
         }
+        return sb;
     }
 }
