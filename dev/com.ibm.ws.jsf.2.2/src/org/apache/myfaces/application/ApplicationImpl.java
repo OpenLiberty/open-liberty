@@ -1851,7 +1851,7 @@ public class ApplicationImpl extends Application
         if(context.isProjectStage(ProjectStage.Production) && !isCachedList && dependencyList != null)
         {
             // Note at this point dependencyList cannot be null, but just let this
-            // as a sanity check.
+            // as a verification check.
             _classToResourceDependencyMap.put(inspectedClass, dependencyList);
         }
         
@@ -2316,7 +2316,7 @@ public class ApplicationImpl extends Application
         if(isProduction && !isCachedList && listenerForList != null) 
         {
             // Note at this point listenerForList cannot be null, but just let listenerForList != null
-            // as a sanity check.
+            // as a verification check.
             _classToListenerForMap.put(inspectedClass, listenerForList);
         }
     }
@@ -2463,7 +2463,7 @@ public class ApplicationImpl extends Application
         if(isProduction && !isCachedList && dependencyList != null)   
         {
             // Note at this point listenerForList cannot be null, but just let dependencyList != null
-            // as a sanity check.
+            // as a verification check.
             _classToResourceDependencyMap.put(inspectedClass, dependencyList);
         }
         
