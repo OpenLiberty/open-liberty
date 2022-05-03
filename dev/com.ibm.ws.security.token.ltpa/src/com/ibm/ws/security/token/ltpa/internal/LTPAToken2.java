@@ -87,9 +87,9 @@ public class LTPAToken2 implements Token, Serializable {
      * An LTPA2 token constructor.
      *
      * @param tokenBytes The byte representation of the LTPA2 token
-     * @param sharedKey The LTPA shared key
+     * @param sharedKey  The LTPA shared key
      * @param privateKey The LTPA private key
-     * @param publicKey The LTPA public key
+     * @param publicKey  The LTPA public key
      */
     public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey) throws InvalidTokenException {
         checkTokenBytes(tokenBytes);
@@ -107,9 +107,9 @@ public class LTPAToken2 implements Token, Serializable {
      * An LTPA2 token constructor.
      *
      * @param tokenBytes The byte representation of the LTPA2 token
-     * @param sharedKey The LTPA shared key
+     * @param sharedKey  The LTPA shared key
      * @param privateKey The LTPA private key
-     * @param publicKey The LTPA public key
+     * @param publicKey  The LTPA public key
      * @param attributes The list of attributes will be removed from the LTPA2 token
      */
     public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey,
@@ -136,11 +136,11 @@ public class LTPAToken2 implements Token, Serializable {
     /**
      * An LTPA2 token constructor.
      *
-     * @param accessID The unique user identifier
+     * @param accessID            The unique user identifier
      * @param expirationInMinutes Expiration limit of the LTPA2 token in minutes
-     * @param sharedKey The LTPA shared key
-     * @param privateKey The LTPA private key
-     * @param publicKey The LTPA public key
+     * @param sharedKey           The LTPA shared key
+     * @param privateKey          The LTPA private key
+     * @param publicKey           The LTPA public key
      */
     protected LTPAToken2(String accessID, long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey) {
         this.signature = null;
@@ -157,10 +157,10 @@ public class LTPAToken2 implements Token, Serializable {
      * An LTPA2 token constructor (Used for the clone).
      *
      * @param expirationInMinutes Expiration limit of the LTPA2 token in minutes
-     * @param sharedKey The LTPA shared key
-     * @param privateKey The LTPA private key
-     * @param publicKey The LTPA public key
-     * @param userdata The UserData
+     * @param sharedKey           The LTPA shared key
+     * @param privateKey          The LTPA private key
+     * @param publicKey           The LTPA public key
+     * @param userdata            The UserData
      */
     protected LTPAToken2(long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, UserData userdata) {
         this.signature = null;
@@ -188,7 +188,7 @@ public class LTPAToken2 implements Token, Serializable {
 
         byte[] accessID = Base64Coder.getBytes(ud);
         StringBuilder sb = new StringBuilder(DELIM);
-        sb.append(getExpiration()).append(DELIM).append(signStr);
+        sb.append(signStr);
         byte[] timeAndSign = getSimpleBytes(sb.toString());
         byte[] toBeEnc = new byte[accessID.length + timeAndSign.length];
         for (int i = 0; i < accessID.length; i++) {
