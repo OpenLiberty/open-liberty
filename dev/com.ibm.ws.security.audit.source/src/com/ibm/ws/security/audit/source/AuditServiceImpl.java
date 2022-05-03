@@ -16,6 +16,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -115,7 +118,11 @@ public class AuditServiceImpl implements AuditService, Source {
     private String[] auditData = null;
     private String[] outcome = null;
     private Map<String, Object> thisConfiguration = null;
-    private AuditEvent[] savedEvent = new AuditEvent[10];
+    //private int maxSavedEvents = 200;
+    List<AuditEvent> list = new ArrayList<AuditEvent>();
+    private List<AuditEvent> savedEvent = Collections.synchronizedList(list);
+
+    //private AuditEvent[] savedEvent = new AuditEvent[maxSavedEvents];
     private int savedEventIndex = 0;
     private final boolean savedEventEmitted = false;
     private String serverID = null;
@@ -123,6 +130,7 @@ public class AuditServiceImpl implements AuditService, Source {
     private boolean auditServiceStarted = false;
     private boolean emitted1 = false;
     private final boolean emitted2 = false;
+    private boolean emitMsgOnce = true; 
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> configuration) {
@@ -465,7 +473,18 @@ public class AuditServiceImpl implements AuditService, Source {
                         if (tc.isDebugEnabled()) {
                             Tr.debug(tc, "sendEvent, savedEventIndex = " + savedEventIndex + " saved event: " + event.toString());
                         }
-                        savedEvent[savedEventIndex++] = event;
+                        savedEvent.add(event);
+                        savedEventIndex++;
+                        //if (savedEventIndex < maxSavedEvents) {
+                        //    savedEvent[savedEventIndex++] = event;
+                        //} else {
+                        //    if (emitMsgOnce) {
+                        //        if (tc.isDebugEnabled()) {
+                        //            Tr.debug("Exceeded the maximum number of saved audit events, truncating");
+                        //        }
+                        //        emitMsgOnce = false;
+                        //    }
+                        //}
                     }
                 }
 
@@ -481,16 +500,25 @@ public class AuditServiceImpl implements AuditService, Source {
             if (bufferMgr == null)
                 Tr.debug(tc, "emitSavedEvents, bufferMgr is null");
         }
-        if (bufferMgr != null) {
+        if (bufferMgr != null) {                                
             if (!savedEventEmitted) {
-                if (savedEvent != null && savedEvent.length > 0) {
-                    for (int i = 0; i < savedEventIndex; i++) {
-                        sendEvent(savedEvent[i]);
-                    }
-                    //savedEventEmitted = true;
-                    savedEvent = new AuditEvent[10];
-                    savedEventIndex = 0;
+
+                Iterator iter = savedEvent.iterator();
+                while (iter.hasNext()) {
+                    sendEvent((AuditEvent)iter.next());
                 }
+                savedEvent.clear();
+                savedEventIndex = 0;
+                //if (savedEvent != null && savedEvent.length > 0) {
+                //    for (int i = 0; i < savedEventIndex; i++) {
+                //        if (i < maxSavedEvents) {
+                //            sendEvent(savedEvent[i]);
+                //        }
+                //    }
+                    //savedEventEmitted = true;
+                //    savedEvent = new AuditEvent[maxSavedEvents];
+                //    savedEventIndex = 0;
+                //}
             }
         }
     }
