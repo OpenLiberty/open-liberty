@@ -12,8 +12,8 @@ package com.ibm.example.jca.adapter;
 
 import java.util.TreeMap;
 
-import javax.resource.cci.ConnectionSpec;
-import javax.resource.spi.ConnectionRequestInfo;
+import jakarta.resource.cci.ConnectionSpec;
+import jakarta.resource.spi.ConnectionRequestInfo;
 
 /**
  * Example ConnectionSpec implementation with a single property, readOnly,

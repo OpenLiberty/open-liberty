@@ -20,16 +20,16 @@
           <config-property-type>java.lang.String</config-property-type>
           <config-property-value>DEFAULT</config-property-value>
         </config-property>
-        <connectionfactory-interface>javax.resource.cci.ConnectionFactory</connectionfactory-interface>
+        <connectionfactory-interface>jakarta.resource.cci.ConnectionFactory</connectionfactory-interface>
         <connectionfactory-impl-class>com.ibm.example.jca.adapter.ConnectionFactoryImpl</connectionfactory-impl-class>
-        <connection-interface>javax.resource.cci.Connection</connection-interface>
+        <connection-interface>jakarta.resource.cci.Connection</connection-interface>
         <connection-impl-class>com.ibm.example.jca.adapter.ConnectionImpl</connection-impl-class>
       </connection-definition>
     </outbound-resourceadapter>
     <inbound-resourceadapter>
       <messageadapter>
         <messagelistener>
-          <messagelistener-type>javax.resource.cci.MessageListener</messagelistener-type>
+          <messagelistener-type>jakarta.resource.cci.MessageListener</messagelistener-type>
           <activationspec>
             <activationspec-class>com.ibm.example.jca.adapter.ActivationSpecImpl</activationspec-class>
             <config-property>
@@ -47,7 +47,7 @@
       </messageadapter>
     </inbound-resourceadapter>
     <adminobject>
-      <adminobject-interface>javax.resource.cci.ConnectionSpec</adminobject-interface>
+      <adminobject-interface>jakarta.resource.cci.ConnectionSpec</adminobject-interface>
       <adminobject-class>com.ibm.example.jca.adapter.ConnectionSpecImpl</adminobject-class>
       <config-property>
         <config-property-name>readOnly</config-property-name> 
@@ -56,7 +56,7 @@
       </config-property>
     </adminobject>
     <adminobject>
-      <adminobject-interface>javax.resource.cci.InteractionSpec</adminobject-interface>
+      <adminobject-interface>jakarta.resource.cci.InteractionSpec</adminobject-interface>
       <adminobject-class>com.ibm.example.jca.adapter.InteractionSpecImpl</adminobject-class>
       <config-property>
         <description>Function name. Supported values are: ADD, FIND, REMOVE</description>

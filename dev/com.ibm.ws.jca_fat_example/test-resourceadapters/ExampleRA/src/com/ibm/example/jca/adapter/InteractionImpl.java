@@ -16,16 +16,16 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.resource.NotSupportedException;
-import javax.resource.ResourceException;
-import javax.resource.cci.Connection;
-import javax.resource.cci.Interaction;
-import javax.resource.cci.InteractionSpec;
-import javax.resource.cci.MessageListener;
-import javax.resource.cci.Record;
-import javax.resource.cci.ResourceWarning;
-import javax.resource.spi.endpoint.MessageEndpoint;
-import javax.resource.spi.endpoint.MessageEndpointFactory;
+import jakarta.resource.NotSupportedException;
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.Connection;
+import jakarta.resource.cci.Interaction;
+import jakarta.resource.cci.InteractionSpec;
+import jakarta.resource.cci.MessageListener;
+import jakarta.resource.cci.Record;
+import jakarta.resource.cci.ResourceWarning;
+import jakarta.resource.spi.endpoint.MessageEndpoint;
+import jakarta.resource.spi.endpoint.MessageEndpointFactory;
 
 /**
  * Example interaction.
@@ -38,7 +38,8 @@ public class InteractionImpl implements Interaction {
     }
 
     @Override
-    public void clearWarnings() throws ResourceException {}
+    public void clearWarnings() throws ResourceException {
+    }
 
     @Override
     public void close() throws ResourceException {

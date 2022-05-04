@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.example.jca.adapter;
 
-import javax.resource.cci.InteractionSpec;
+import jakarta.resource.cci.InteractionSpec;
 
 /**
  * Example InteractionSpec implementation with a single property, functionName,

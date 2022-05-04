@@ -12,7 +12,7 @@ package com.ibm.example.jca.adapter;
 
 import java.util.TreeMap;
 
-import javax.resource.cci.MappedRecord;
+import jakarta.resource.cci.MappedRecord;
 
 /**
  * Example MappedRecord where entries are kept in a TreeMap.

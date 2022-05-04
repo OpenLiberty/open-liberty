@@ -10,18 +10,19 @@
  *******************************************************************************/
 package com.ibm.example.jca.adapter;
 
+import jakarta.resource.NotSupportedException;
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.Connection;
+import jakarta.resource.cci.ConnectionFactory;
+import jakarta.resource.cci.ConnectionSpec;
+import jakarta.resource.cci.IndexedRecord;
+import jakarta.resource.cci.MappedRecord;
+import jakarta.resource.cci.RecordFactory;
+import jakarta.resource.cci.ResourceAdapterMetaData;
+import jakarta.resource.spi.ConnectionManager;
+
 import javax.naming.NamingException;
 import javax.naming.Reference;
-import javax.resource.NotSupportedException;
-import javax.resource.ResourceException;
-import javax.resource.cci.Connection;
-import javax.resource.cci.ConnectionFactory;
-import javax.resource.cci.ConnectionSpec;
-import javax.resource.cci.IndexedRecord;
-import javax.resource.cci.MappedRecord;
-import javax.resource.cci.RecordFactory;
-import javax.resource.cci.ResourceAdapterMetaData;
-import javax.resource.spi.ConnectionManager;
 
 import com.ibm.example.jca.adapter.ConnectionSpecImpl.ConnectionRequestInfoImpl;
 
@@ -62,9 +63,7 @@ public class ConnectionFactoryImpl implements ConnectionFactory, RecordFactory {
         ConnectionRequestInfoImpl cri = ((ConnectionSpecImpl) conSpec).createConnectionRequestInfo();
         cri.put("tableName", mcf.getTableName());
 
-        ConnectionImpl con = cm == null
-                        ? new ConnectionImpl(null, cri)
-                        : (ConnectionImpl) cm.allocateConnection(mcf, cri);
+        ConnectionImpl con = cm == null ? new ConnectionImpl(null, cri) : (ConnectionImpl) cm.allocateConnection(mcf, cri);
         con.cf = this;
         return con;
     }

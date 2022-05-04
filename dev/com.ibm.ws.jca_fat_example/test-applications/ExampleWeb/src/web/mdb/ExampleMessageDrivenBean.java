@@ -10,15 +10,15 @@
  *******************************************************************************/
 package web.mdb;
 
-import javax.ejb.MessageDriven;
-import javax.resource.ResourceException;
-import javax.resource.cci.MessageListener;
-import javax.resource.cci.Record;
+import jakarta.ejb.MessageDriven;
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.MessageListener;
+import jakarta.resource.cci.Record;
 
 @MessageDriven
 public class ExampleMessageDrivenBean implements MessageListener {
     /**
-     * @see javax.resource.cci.MessageListener#onMessage(javax.resource.cci.Record)
+     * @see jakarta.resource.cci.MessageListener#onMessage(javax.resource.cci.Record)
      */
     @Override
     public Record onMessage(Record record) throws ResourceException {
