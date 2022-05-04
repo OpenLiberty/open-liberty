@@ -50,7 +50,6 @@ instrument.disabled: true
 
 -buildpath: \
 	com.ibm.tx.jta;version=latest,\
-	com.ibm.tx.ltc;version=latest,\
 	com.ibm.tx.util;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.logging.core,\

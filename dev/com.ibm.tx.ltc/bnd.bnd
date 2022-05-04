@@ -21,32 +21,5 @@ Created-By: 2.3 (IBM Corporation)
 Bundle-ManifestVersion: 2
 Bundle-Vendor: IBM
 WS-TraceGroup: Transaction
-Import-Package: com.ibm.ws.Transaction,\
- com.ibm.tx.jta,\
- com.ibm.tx,\
- com.ibm.tx.util,\
- com.ibm.ws.uow,\
- com.ibm.wsspi.tx,\
- com.ibm.websphere.ras,\
- com.ibm.ws.ffdc,\
- javax.transaction;version="1.1.0",\
- javax.transaction.xa;version="1.1.0"
-
-# all packages have packageinfo files (package-info.java with @version javadoc)
-Export-Package: \
- com.ibm.tx.ltc,\
- com.ibm.tx.ltc.impl,\
- com.ibm.ws.LocalTransaction;version="2.0.0",\
- com.ibm.ws.LocalTransaction.resources;version="2.0.0"
-
 
 instrument.disabled: true
-
--buildpath: \
-	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-  com.ibm.ws.logging.core,\
-	com.ibm.tx.util;version=latest,\
-	com.ibm.tx.core;version=latest,\
-	com.ibm.websphere.appserver.spi.logging;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-

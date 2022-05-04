@@ -50,7 +50,6 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.serialization;version=latest,\
-	com.ibm.tx.ltc;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
