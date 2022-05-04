@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -41,6 +44,8 @@ import org.apache.kafka.common.serialization.StringSerializer;
 public class KafkaTestClient {
 
     public static final String TEST_GROUPID = "delivery-test-group";
+
+    private static final Duration TOPIC_CREATION_TIMEOUT = Duration.ofSeconds(10);
 
     private final Map<String, Object> connectionProperties;
     private final List<AutoCloseable> openClients = new ArrayList<>();
@@ -213,9 +218,17 @@ public class KafkaTestClient {
      * Throws an assertion error if the topic does not have one partition.
      */
     private TopicPartition getTopicPartition(KafkaConsumer<?, ?> kafka, String topicName) {
-        List<PartitionInfo> partitions = kafka.partitionsFor(topicName);
-        assertThat("Topic " + topicName + " doesn't have one partition", partitions, hasSize(1));
-        return new TopicPartition(topicName, partitions.get(0).partition());
+        // Calling partitionsFor() should create the topic. However, sometimes it seems that it will return before the topic
+        // creation is complete and will return no partitions, so we need to wait for it to report some partitions
+        try {
+            List<PartitionInfo> partitions = retryWithTimeout(() -> kafka.partitionsFor(topicName),
+                                                              p -> p != null && p.size() > 0,
+                                                              TOPIC_CREATION_TIMEOUT);
+            assertThat("Topic " + topicName + " doesn't have one partition", partitions, hasSize(1));
+            return new TopicPartition(topicName, partitions.get(0).partition());
+        } catch (TimeoutException e) {
+            throw new AssertionError("Timed out waiting for the " + topicName + " topic to exist with partitions after " + TOPIC_CREATION_TIMEOUT, e);
+        }
     }
 
     /**
@@ -235,6 +248,36 @@ public class KafkaTestClient {
             // No committed offset, get the earliest available offset
             return kafka.beginningOffsets(Collections.singleton(topicPartition)).get(topicPartition);
         }
+    }
+
+    /**
+     * Repeatedly calls {@code supplier} until it receives a result which satisfies {@code condition}.
+     * <p>
+     * Throws an exception if this takes longer than {@code timeout}.
+     *
+     * @param <T>       the result type
+     * @param supplier  a supplier which returns a result
+     * @param condition the test for a valid result
+     * @param timeout   the timeout
+     * @return the result
+     * @throws TimeoutException if a result which satisfies {@code condition} is not returned within {@code timeout}
+     */
+    private <T> T retryWithTimeout(Supplier<T> supplier, Predicate<T> condition, Duration timeout) throws TimeoutException {
+        long startTime = System.nanoTime();
+        T result = supplier.get();
+        while (!condition.test(result)) {
+            Duration elapsed = Duration.ofNanos(System.nanoTime() - startTime);
+            if (elapsed.compareTo(timeout) > 0) { // if (elapsed > timeout)
+                throw new TimeoutException();
+            }
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            result = supplier.get();
+        }
+        return result;
     }
 
     /**
