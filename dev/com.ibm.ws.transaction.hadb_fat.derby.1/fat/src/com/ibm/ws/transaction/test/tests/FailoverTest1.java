@@ -411,13 +411,25 @@ public class FailoverTest1 extends FailoverTest {
         List<String> lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
         assertFalse("Unexpectedly found duplicates on startup", lines.size() > 0);
 
-        runInServletAndCheck(defaultServer, SERVLET_NAME, "driveSixTransactions");
+        // The processing here, should result (through our fake jdbc driver) in duplicate rows being inserted into the recovery logs
+        boolean retry = true;
+        int attempts = 0;
+        while (retry && attempts <= 1) {
+            if (attempts == 1)
+                Log.info(this.getClass(), method, "Retry the duplicate process");
+            runInServletAndCheck(defaultServer, SERVLET_NAME, "driveSixTransactions");
 
-        Log.info(this.getClass(), method, "call checkForDuplicates");
-        StringBuilder sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
-        assertTrue("checkForDuplicates did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
+            Log.info(this.getClass(), method, "call checkForDuplicates");
+            StringBuilder sb = runTestWithResponse(defaultServer, SERVLET_NAME, "checkForDuplicates");
+            assertTrue("checkForDuplicates did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
 
-        lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
+            lines = defaultServer.findStringsInLogs("SQL TRANLOG: Found DUPLICATE row");
+            if (lines.size() > 0)
+                retry = false;
+
+            attempts++;
+        }
+
         Assert.assertTrue("Unexpectedly found no duplicates", lines.size() > 0);
         int numDups = lines.size();
 
