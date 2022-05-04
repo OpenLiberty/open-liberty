@@ -267,6 +267,25 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         } else {
             this.checkpointPhase = CheckpointPhase.getPhase(System.getProperty("io.openliberty.ejb.checkpoint.phase", ""));
         }
+
+        // For Checkpoint APPLICATIONS, pause all non-persistent timers until checkpoint restored
+        if (CheckpointPhase.APPLICATIONS == checkpointPhase && !checkpointPhase.restored()) {
+            TimerNpRunnable.pause();
+        }
+    }
+
+    @Reference(service = CheckpointPhase.class, //
+               target = "(" + CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY + "=true)", //
+               cardinality = ReferenceCardinality.OPTIONAL, //
+               policy = ReferencePolicy.DYNAMIC, //
+               unbind = "ignoreCheckpointRestored")
+    protected final void checkpointRestored(ServiceReference<?> checkpoint) {
+        // Resume all non-persistent timers on checkpoint restore
+        TimerNpRunnable.resume();
+    }
+
+    protected final void ignoreCheckpointRestored(ServiceReference<?> checkpoint) {
+        // we really don't care about this, but needed to avoid compile errors
     }
 
     @Override

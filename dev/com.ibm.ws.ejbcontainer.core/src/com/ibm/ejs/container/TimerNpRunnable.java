@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ejs.container;
+
+import java.util.Date;
 
 import com.ibm.ejs.container.util.ExceptionUtil;
 import com.ibm.websphere.ras.Tr;
@@ -25,6 +27,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 public abstract class TimerNpRunnable implements Runnable {
     private static final String CLASS_NAME = TimerNpRunnable.class.getName();
     private static final TraceComponent tc = Tr.register(TimerNpRunnable.class, "EJBContainer", "com.ibm.ejs.container.container");
+    private static final long PAUSED = -1;
 
     private BeanId ivBeanId;
     private final int ivMethodId; // F743-506
@@ -34,6 +37,7 @@ public abstract class TimerNpRunnable implements Runnable {
     protected final TimerNpImpl ivTimer;
 
     private static volatile boolean serverStopping;
+    private static volatile long earliestExpiration = 0;
 
     public TimerNpRunnable(TimerNpImpl timerNpImpl, int retryLimit, long retryInterval) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -46,8 +50,26 @@ public abstract class TimerNpRunnable implements Runnable {
         ivRetryInterval = retryInterval; // 591279
     }
 
+    /**
+     * Notify non-persistent timer service that the server is stopping; new timer expirations should stop.
+     */
     public static void serverStopping() {
         serverStopping = true;
+    }
+
+    /**
+     * Pause non-persistent timer service; timer expirations should stop until {@link #resume()}.
+     */
+    public static void pause() {
+        earliestExpiration = PAUSED;
+    }
+
+    /**
+     * Resume non-persistent timer service from {@link #pause()}; paused timers should
+     * recalculate next timeout after the current time and resume expirations.
+     */
+    public static void resume() {
+        earliestExpiration = System.currentTimeMillis();
     }
 
     /**
@@ -75,7 +97,32 @@ public abstract class TimerNpRunnable implements Runnable {
 
         if (serverStopping) {
             if (isTraceOn && tc.isEntryEnabled())
-                Tr.exit(tc, "Server shutting down; aborting");
+                Tr.exit(tc, "run: Server shutting down; aborting");
+            return;
+        }
+
+        long currentExpiration = ivTimer.getIvExpiration();
+
+        // When paused, reschedule for next expiration and exit without running
+        if (earliestExpiration == PAUSED) {
+            currentExpiration = ivTimer.calculateNextExpiration();
+            ivTimer.scheduleNext();
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(tc, "run: Timer Service paused; timer rescheduled: " + ((currentExpiration == 0) ? "NoMoreTimeouts" : new Date(currentExpiration)));
+            return;
+        }
+
+        // Skip expirations missed when the Timer Service was paused
+        if (currentExpiration < earliestExpiration) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "skipping missed timeouts: " + currentExpiration + " -> " + earliestExpiration);
+            for (; currentExpiration > 0 && currentExpiration < earliestExpiration; currentExpiration = ivTimer.calculateNextExpiration()) {
+                // just advanced to the next expiration
+            }
+            // re-schedule the alarm to go off again if it needs to and if timer had not been canceled
+            ivTimer.scheduleNext();
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(tc, "run: timer rescheduled: " + ((currentExpiration == 0) ? "NoMoreTimeouts" : new Date(currentExpiration)));
             return;
         }
 
