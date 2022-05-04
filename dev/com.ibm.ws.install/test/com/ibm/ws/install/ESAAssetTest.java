@@ -29,6 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.install.internal.InstallUtils.InputStreamFileWriter;
 import com.ibm.ws.install.internal.asset.ESAAsset;
 
@@ -138,7 +139,14 @@ public class ESAAssetTest {
             assertNotNull("ESAAsset.getLicense(Locale.CANADA)", esaAsset.getLicense(Locale.CANADA));
 
             esaAsset.delete();
-            assertFalse("ESAAsset should be deleted", esaFile.exists());
+            if (!InstallUtils.isWindows) {
+                /*
+                 * On Windows there are issues with file locks. The ESAAsset logic detects these issues and corrects them by setting the file to be deleted on JVM exit.
+                 * This file will exist on Windows after esaAsset.delete() is run. Block this check on Windows to prevent the test from failing due to a known issue with
+                 * Windows file locking.
+                 */
+                assertFalse("ESAAsset should be deleted", esaFile.exists());
+            }
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
