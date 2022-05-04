@@ -10,12 +10,14 @@
  -->
 <server>
   <featureManager>
-    <feature>mdb-3.1</feature>
-    <feature>servlet-3.0</feature>
+    <feature>componenttest-1.0</feature>
+    <feature>jca-1.7</feature>
+    <feature>mdb-3.2</feature>
+    <feature>servlet-3.1</feature>
     <feature>osgiconsole-1.0</feature>
   </featureManager>
 
-  <include optional="true" location="${shared.config.dir}/bvtTestPorts.xml"/>
+  <include location="../fatTestPorts.xml"/>
 
   <variable name="onError" value="FAIL"/>
 
@@ -39,23 +41,8 @@
     <properties.ExampleRA.InteractionSpec functionName="REMOVE"/>
   </adminObject>
 
-<!--
-  <adminObject id="MyDestination">
-    <properties.ExampleRA.Destination Destination="TheRealDestination" />
-  </adminObject>
--->
-
-<!-- This activation specification has a Destination property, 
-which means we will try to find an adminobject to go with it when mdb activates the endpoint,
-but since there is not adminObject defined in the server.xml,
-there is no administered object to configure on the resource adapter,
-which is an allowed scenario.   The Destination property should be configured
-on the activation spec. -->
   <activationSpec id="ExampleApp/ExampleWeb/ExampleMessageDrivenBean">
-    <properties.ExampleRA 
-    functionName="ADD"
-    Destination="TheRealDestination"
-    />
+    <properties.ExampleRA functionName="ADD" Destination="TheRealDestination"/>
   </activationSpec>
 
 </server>
