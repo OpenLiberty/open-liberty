@@ -74,6 +74,17 @@ import oracle.ucp.jdbc.PoolXADataSource;
                                                        maxStatements = 10,
                                                        properties = {
                                                                       "validationTimeout=30"
+                                                       }),
+                                 @DataSourceDefinition(
+                                                       name = "java:comp/env/jdbc/dsdXAUCPDS2",
+                                                       className = "oracle.ucp.jdbc.PoolXADataSourceImpl",
+                                                       url = "${env.URL}",
+                                                       initialPoolSize = 1,
+                                                       user = "${env.USER}",
+                                                       password = "${env.PASSWORD}",
+                                                       maxStatements = 10,
+                                                       properties = {
+                                                                      "validationTimeout=30"
                                                        })
 })
 
@@ -90,6 +101,9 @@ public class OracleUCPTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/ucpXADS", shareable = false)
     private DataSource ucpXADS;
 
+    @Resource(lookup = "jdbc/ucpXADS2", shareable = false)
+    private DataSource ucpXADS2;
+
     @Resource(lookup = "jdbc/ucpDS", shareable = true)
     private DataSource sharedUCPDS;
 
@@ -101,6 +115,9 @@ public class OracleUCPTestServlet extends FATServlet {
 
     @Resource(lookup = "java:comp/env/jdbc/dsdXAUCPDS", shareable = false)
     private DataSource dsdXAUCPDS;
+
+    @Resource(lookup = "java:comp/env/jdbc/dsdXAUCPDS2", shareable = false)
+    private DataSource dsdXAUCPDS2;
 
     @Resource(lookup = "jdbc/ucpDSAuthData")
     private DataSource ucpDSAuthData;
@@ -217,7 +234,7 @@ public class OracleUCPTestServlet extends FATServlet {
         Connection con2 = null;
 
         try {
-            con2 = ucpXADS.getConnection();
+            con2 = ucpXADS2.getConnection();
             tran.begin();
 
             //Add a new row to the db
@@ -497,7 +514,7 @@ public class OracleUCPTestServlet extends FATServlet {
         Connection con2 = null;
 
         try {
-            con2 = dsdXAUCPDS.getConnection();
+            con2 = dsdXAUCPDS2.getConnection();
             tran.begin();
 
             //Add a new row to the db
