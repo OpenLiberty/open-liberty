@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright (c) 2012,2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" version="1.6">
+  <resourceadapter>
+    <resourceadapter-class>com.ibm.example.jca.adapter.ResourceAdapterImpl</resourceadapter-class>
+    <outbound-resourceadapter>
+      <connection-definition>
+        <managedconnectionfactory-class>com.ibm.example.jca.adapter.ManagedConnectionFactoryImpl</managedconnectionfactory-class>
+        <config-property>
+          <config-property-name>tableName</config-property-name>
+          <config-property-type>java.lang.String</config-property-type>
+          <config-property-value>DEFAULT</config-property-value>
+        </config-property>
+        <connectionfactory-interface>javax.resource.cci.ConnectionFactory</connectionfactory-interface>
+        <connectionfactory-impl-class>com.ibm.example.jca.adapter.ConnectionFactoryImpl</connectionfactory-impl-class>
+        <connection-interface>javax.resource.cci.Connection</connection-interface>
+        <connection-impl-class>com.ibm.example.jca.adapter.ConnectionImpl</connection-impl-class>
+      </connection-definition>
+    </outbound-resourceadapter>
+    <inbound-resourceadapter>
+      <messageadapter>
+        <messagelistener>
+          <messagelistener-type>javax.resource.cci.MessageListener</messagelistener-type>
+          <activationspec>
+            <activationspec-class>com.ibm.example.jca.adapter.ActivationSpecImpl</activationspec-class>
+            <config-property>
+              <description>Function name, upon successful completion of which to invoke the message driven bean. Supported values are: ADD, REMOVE</description>
+              <config-property-name>functionName</config-property-name>
+              <config-property-type>java.lang.String</config-property-type>
+            </config-property>
+            <config-property>
+              <description>Destination with a capital D</description>
+              <config-property-name>Destination</config-property-name>
+              <config-property-type>java.lang.String</config-property-type>
+            </config-property>
+          </activationspec>
+        </messagelistener>
+      </messageadapter>
+    </inbound-resourceadapter>
+    <adminobject>
+      <adminobject-interface>javax.resource.cci.ConnectionSpec</adminobject-interface>
+      <adminobject-class>com.ibm.example.jca.adapter.ConnectionSpecImpl</adminobject-class>
+      <config-property>
+        <config-property-name>readOnly</config-property-name> 
+        <config-property-type>java.lang.Boolean</config-property-type>
+        <config-property-value>false</config-property-value> 
+      </config-property>
+    </adminobject>
+    <adminobject>
+      <adminobject-interface>javax.resource.cci.InteractionSpec</adminobject-interface>
+      <adminobject-class>com.ibm.example.jca.adapter.InteractionSpecImpl</adminobject-class>
+      <config-property>
+        <description>Function name. Supported values are: ADD, FIND, REMOVE</description>
+        <config-property-name>functionName</config-property-name> 
+        <config-property-type>java.lang.String</config-property-type> 
+      </config-property>
+    </adminobject>
+    <adminobject>
+      <adminobject-interface>com.ibm.example.jca.adapter.Destination</adminobject-interface>
+      <adminobject-class>com.ibm.example.jca.adapter.DestinationImpl</adminobject-class>
+      <config-property>
+        <description>Destination</description>
+        <config-property-name>Destination</config-property-name> 
+        <config-property-type>java.lang.String</config-property-type> 
+      </config-property>
+    </adminobject>
+  </resourceadapter>
+</connector>
