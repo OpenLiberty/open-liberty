@@ -1493,6 +1493,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.johnzon</groupId>
+      <artifactId>johnzon-core</artifactId>
+      <version>1.2.18</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-jsonb</artifactId>
       <version>1.1.5</version>
     </dependency>
@@ -1503,6 +1508,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.johnzon</groupId>
+      <artifactId>johnzon-jsonb</artifactId>
+      <version>1.2.18</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-mapper</artifactId>
       <version>1.1.5</version>
     </dependency>
@@ -1510,6 +1520,11 @@
       <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-mapper</artifactId>
       <version>1.1.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.johnzon</groupId>
+      <artifactId>johnzon-mapper</artifactId>
+      <version>1.2.18</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>

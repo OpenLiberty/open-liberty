@@ -19,11 +19,11 @@
 
 	<include location="../fatTestPorts.xml"/>
 
-    <library id="johnzon">
-      <fileset dir="${shared.resource.dir}/johnzon/1.1.5" includes="johnzon-*.jar"/>
+    <library id="jsonbImpl">
+      <fileset dir="${shared.resource.dir}/${env.JSONB_PATH}" includes="${env.JSONB_ALT_JAR}"/>
     </library>
 
-    <bell libraryRef="johnzon"/>
+    <bell libraryRef="jsonbImpl"/>
 
     <application location="jsonbapp.war"/>
     <application location="jsonbCDIapp.war"/>

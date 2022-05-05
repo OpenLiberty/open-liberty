@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,34 +8,82 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-
 configurations {
-  johnzon
-  refImpls
+  johnzon {transitive = false}
+  johnzonJakarta {transitive = false}
+  parsson {transitive = false}
+  yasson1 {transitive = false}
+  yasson2 {transitive = false}
+  yasson3 {transitive = false}
 }
 
 dependencies {
-  johnzon 'org.apache.johnzon:johnzon-core:1.1.5',
-    'org.apache.johnzon:johnzon-jsonb:1.1.5',
-    'org.apache.johnzon:johnzon-mapper:1.1.5'
-  refImpls 'org.eclipse:yasson:1.0.8',
-    'org.glassfish:javax.json:1.1.3'
+  johnzon 'org.apache.johnzon:johnzon-core:1.2.18',
+    'org.apache.johnzon:johnzon-jsonb:1.2.18',
+    'org.apache.johnzon:johnzon-mapper:1.2.18'
+    
+  configurations.johnzon.resolvedConfiguration.resolvedArtifacts.each { ResolvedArtifact ra ->
+    ModuleVersionIdentifier id = ra.moduleVersion.id
+    johnzonJakarta "${id.group}:${id.name}:${id.version}:jakarta"
+  }
+  
+  parsson 'org.eclipse.parsson:parsson:1.1.0'
+  //This is the latest implementation of yasson that uses javax packages
+  yasson1 'org.eclipse:yasson:1.0.4'
+  
+  yasson2 'org.eclipse:yasson:2.0.4'
+  //TODO update to offical release
+  yasson3 'org.eclipse:yasson:3.0.0-RC2'
 }
 
 task addJohnzon(type: Copy) {
   from configurations.johnzon
-  into "${buildDir}/autoFVT/publish/shared/resources/johnzon/1.1.5/"
+  into "${buildDir}/autoFVT/publish/shared/resources/johnzon/1.2.18/javax/"
+  rename "johnzon-core-.*.jar", "johnzon-core.jar"
+  rename "johnzon-jsonb-.*.jar", "johnzon-jsonb.jar"
+  rename "johnzon-mapper-.*.jar", "johnzon-mapper.jar"
 }
 
-task addRefImpls(type: Copy) {
-  from configurations.refImpls
-  into "${buildDir}/autoFVT/publish/shared/resources/refImpls/"
+task addJonhzonJakarta(type: Copy) {
+  from configurations.johnzonJakarta
+  include "*jakarta.jar"
+  into "${buildDir}/autoFVT/publish/shared/resources/johnzon/1.2.18/jakarta/"
+  rename "johnzon-core-.*.jar", "johnzon-core.jar"
+  rename "johnzon-jsonb-.*.jar", "johnzon-jsonb.jar"
+  rename "johnzon-mapper-.*.jar", "johnzon-mapper.jar"
+}
+
+task addParrson(type: Copy) {
+  from configurations.parsson
+  into "${buildDir}/autoFVT/publish/shared/resources/parsson/1.1.0/jakarta/"
+  rename "parsson-.*.jar", "parsson.jar"
+}
+
+task addYasson1(type: Copy) {
+  from configurations.yasson1
+  into "${buildDir}/autoFVT/publish/shared/resources/yasson/1.0.4/"
+  rename "yasson-.*.jar", "yasson.jar"
+}
+
+task addYasson2(type: Copy) {
+  from configurations.yasson2
+  into "${buildDir}/autoFVT/publish/shared/resources/yasson/2.0.4/"
+  rename "yasson-.*.jar", "yasson.jar"
+}
+
+task addYasson3(type: Copy) {
+  from configurations.yasson3
+  into "${buildDir}/autoFVT/publish/shared/resources/yasson/3.0.0-RC2/"
+  rename "yasson-.*.jar", "yasson.jar"
 }
 
 addRequiredLibraries {
   dependsOn addJohnzon
-  dependsOn addRefImpls
+  dependsOn addJonhzonJakarta
+  dependsOn addParrson
+  dependsOn addYasson1
+  dependsOn addYasson2
+  dependsOn addYasson3
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
