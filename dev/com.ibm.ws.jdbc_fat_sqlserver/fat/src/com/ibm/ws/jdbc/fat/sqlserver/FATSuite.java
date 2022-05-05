@@ -68,7 +68,7 @@ public class FATSuite {
         //Create test table
         sqlserver.withUrlParam("databaseName", DB_NAME);
         Log.info(FATSuite.class, "setupDatabase", "Attempting to setup database table with name: " + TABLE_NAME + "."
-                                          + " With connection URL: " + sqlserver.getJdbcUrl());
+                                                  + " With connection URL: " + sqlserver.getJdbcUrl());
         try (Connection conn = sqlserver.createConnection(""); Statement stmt = conn.createStatement()) {
             // Create tables
             int version = conn.getMetaData().getDatabaseMajorVersion();

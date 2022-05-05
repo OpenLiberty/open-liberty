@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.sqlserver;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.MSSQLServerContainer;
 
@@ -85,5 +88,14 @@ public class SQLServerTest extends FATServletClient {
             expectedErrorMessages.add("J2CA0027E.*commit"); // JCA message for attempted commit of already timed out XAResource
             server.stopServer(expectedErrorMessages.toArray(new String[expectedErrorMessages.size()]));
         }
+    }
+
+    @Test
+    public void testAuthenticationSchemeNTLM() throws Exception {
+        server.setTraceMarkToEndOfDefaultTrace();
+        runTest(server, APP_NAME + "/SQLServerTestServlet", testName);
+        assertTrue(server.findStringsInTrace(".*Found vendor property: authenticationScheme=NTLM.*").size() > 0);
+        assertTrue(server.findStringsInTrace(".*set authenticationScheme = NTLM.*").size() > 0);
+
     }
 }

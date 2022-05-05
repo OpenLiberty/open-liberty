@@ -64,6 +64,12 @@
     <properties user="${env.USER}" password="${env.PASSWORD}"
       databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"/>
   </dataSource>
+  
+  <dataSource jndiName="jdbc/ntlm">
+    <jdbcDriver libraryRef="SQLServerLibAnon"/>
+    <properties user="${env.USER}" password="${env.PASSWORD}"
+      databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}" authenticationScheme="NTLM" />
+  </dataSource>
 
   <javaPermission codebase="${server.config.dir}/apps/sqlserverfat.war" className="java.security.AllPermission"/>
   <javaPermission codebase="${shared.resource.dir}/anon/anomyous.jar" className="java.security.AllPermission"/>
