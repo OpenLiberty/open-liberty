@@ -48,6 +48,11 @@
     	<properties.oracle.ucp maxPoolSize="3" connectionWaitTimeout="30" URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" />
     </dataSource>
     
+    <dataSource id="ucpXADS2" jndiName="jdbc/ucpXADS2" type="javax.sql.XADataSource">
+    	<jdbcDriver libraryRef="UCPDBLib" />
+    	<properties.oracle.ucp maxPoolSize="3" connectionWaitTimeout="30" URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" />
+    </dataSource>
+    
     <dataSource id="ucpConnectionPoolDS" jndiName="jdbc/ucpConnectionPoolDS" type="javax.sql.ConnectionPoolDataSource" >
     	<jdbcDriver libraryRef="UCPDBLib" />
     	<properties.oracle.ucp URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" />
