@@ -23,7 +23,9 @@ import java.nio.charset.Charset;
 import java.util.Properties;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -47,8 +49,59 @@ public class ServerEnvTest {
 
     private static LibertyServer server;
 
+    private static Machine machine = null;
+    private static boolean isZOS = false;
+    private static String serverScriptFullPath = null;
+
     @Rule
     public TestName testName = new TestName();
+
+    @BeforeClass
+    public static void setup() {
+        String METHOD_NAME = "BeforeClass setup()";
+        try {
+            server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+
+            Log.info(c, METHOD_NAME, "Restoring server script");
+            machine = Machine.getLocalMachine();
+            isZOS = (machine.getOperatingSystem() == OperatingSystem.ZOS) ? true : false;
+
+            String serverInstallRootBinDir = server.getInstallRoot() + "/bin";
+            logDirectoryContents(METHOD_NAME, new File(serverInstallRootBinDir), serverInstallRootBinDir + "\nDirectory contents:"); // DEBUG
+
+            if (isZOS) {
+                serverScriptFullPath = server.getInstallRoot() + "/bin/server";
+                Log.info(c, METHOD_NAME, "serverScriptFullPath: " + serverScriptFullPath);
+                String fileNameBackup = serverScriptFullPath + ".BACKUP";
+
+                File originalFile = new File(serverScriptFullPath);
+                File backupFile = new File(fileNameBackup);
+                EbcdicUtils.copyFileUsingChannel(originalFile, backupFile);
+
+                EbcdicUtils.convertToEbcdic(server, serverScriptFullPath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        String serverFileName = server.getInstallRoot() + "/bin/server";
+        String fileNameBackup = serverFileName + ".backup";
+
+        File originalFile = new File(serverFileName);
+        File backupFile = new File(fileNameBackup);
+
+        try {
+            // RESTORE from BACKUP
+            Log.info(c, "tearDown()", "Restoring server script");
+            EbcdicUtils.copyFileUsingChannel(backupFile, originalFile);
+            backupFile.delete();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
 
     @Before
     public void before() {
@@ -57,9 +110,21 @@ public class ServerEnvTest {
 
     @After
     public void after() throws Exception {
+        String METHOD_NAME = "after()";
         if (server.isStarted()) {
-            logDirectoryContents("after", new File(server.getLogsRoot())); // DEBUG
+            String serverInstallRootBinDir = server.getInstallRoot() + "/bin";
+            logDirectoryContents(METHOD_NAME, new File(serverInstallRootBinDir), serverInstallRootBinDir + "\nDirectory contents:"); // DEBUG
             server.stopServer();
+        }
+    }
+
+    @Test
+    public void testEbcdicConversion() throws Exception {
+        if (isZOS) {
+            String METHOD_NAME = "testEbcdicConversion";
+            Log.info(c, METHOD_NAME, "serverScriptFullPath: " + serverScriptFullPath);
+            File f = new File(serverScriptFullPath);
+            assertTrue("The file [" + serverScriptFullPath + "] does not exist", f.exists());
         }
     }
 
@@ -122,7 +187,11 @@ public class ServerEnvTest {
         Log.entering(c, METHOD_NAME);
 
         String logString;
-        StringBuffer sb = new StringBuffer("");
+        StringBuffer sb = new StringBuffer("\n");
+
+        String serverInstallRootBinDirName = server.getInstallRoot() + "/bin";
+        sb.append(logDirectoryContents(METHOD_NAME, new File(serverInstallRootBinDirName), serverInstallRootBinDirName + "\nServer install root bin directory contents:"));
+        sb.append("\n\n");
 
         // *********************
         // Create Environment Variable to be used by command
@@ -179,7 +248,7 @@ public class ServerEnvTest {
         String po_stderr = po.getStderr();
 
         sb.append("\n\nSB: (start server)Program output:\ncommand="
-                  + po_command + "\nrc=" + po_returnCode + "\n\nstdout:[  \n" + po_stdout + "]\n\nstderr: \n[" + po_stderr + "]");
+                  + po_command + "\nrc=" + po_returnCode + "\n\nstdout:[  \n" + po_stdout + "]\n\nstderr: \n[" + po_stderr + "]\n");
         Log.info(c, METHOD_NAME, sb.toString());
         Log.info(c, METHOD_NAME, "po command: " + po_command);
         Log.info(c, METHOD_NAME, "po rc: " + po_returnCode);
@@ -206,7 +275,8 @@ public class ServerEnvTest {
 
         assertTrue(sb.toString() + "\n\nthe server should have been started:", server.isStarted());
 
-        sb.append(logDirectoryContents(METHOD_NAME, new File(server.getLogsRoot()))); // DEBUG
+        String serverLogsDirName = server.getLogsRoot();
+        sb.append(logDirectoryContents(METHOD_NAME, new File(serverLogsDirName), serverLogsDirName + "\nServer logs directory contents: ")); // DEBUG
 
         // Finally, verify that the log file with the new name exists when expansion is enabled
         String logFullPathName = server.getLogsRoot() + logFileName;
@@ -258,8 +328,7 @@ public class ServerEnvTest {
         try {
             fos = new FileOutputStream(serverEnvFile);
 
-            Machine machine = Machine.getLocalMachine();
-            if (machine.getOperatingSystem() == OperatingSystem.ZOS) {
+            if (isZOS) {
                 w = new OutputStreamWriter(fos, Charset.forName("IBM-1047"));
                 sb.append("\n ZOS - set charset to IBM-1047\n");
             } else {
@@ -340,12 +409,12 @@ public class ServerEnvTest {
      * @param methodName
      * @param folder
      */
-    public static StringBuffer logDirectoryContents(final String methodName, File folder) {
+    public static StringBuffer logDirectoryContents(final String methodName, File folder, String description) {
 
         File[] listOfFiles = folder.listFiles();
         StringBuffer sb = new StringBuffer("");
 
-        Log.info(c, methodName, "Server logs directory contents: ");
+        Log.info(c, methodName, description);
         if (listOfFiles != null) {
             for (int i = 0; i < listOfFiles.length; i++) {
                 if (listOfFiles[i].isFile()) {
