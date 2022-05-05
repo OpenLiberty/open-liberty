@@ -67,6 +67,8 @@ public abstract class BaseTestCase {
 
     @After
     public void afterTest() throws Exception {
+        TestPluginHelper.getTestPlugin().afterTest();
+
         Log.info(getClass(), "afterTest", "<<<<<<<<<<<<<<<<<<< EXITING TEST " + getClass().getName() + "." + testName.getMethodName());
     }
 
@@ -149,7 +151,6 @@ public abstract class BaseTestCase {
         if (server != null && server.isStarted()) {
             try {
                 server.stopServer(expectedExceptions);
-                server = null;
             } catch (Exception e) {
                 Log.error(BaseTestCase.class, "stopServer", e, "Encountered error stopping server " + server.getServerName());
                 throw e;

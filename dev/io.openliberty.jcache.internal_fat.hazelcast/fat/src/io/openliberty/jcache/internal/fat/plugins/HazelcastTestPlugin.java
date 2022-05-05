@@ -97,6 +97,11 @@ public class HazelcastTestPlugin implements TestPlugin {
     }
 
     @Override
+    public void afterTest() throws Exception {
+        // Nothing to do.
+    }
+
+    @Override
     public boolean cacheShouldExistBeforeTest() {
         /*
          * This occurs b/c our hazelcast configuration files contain the templates for the caches. Apparently,
