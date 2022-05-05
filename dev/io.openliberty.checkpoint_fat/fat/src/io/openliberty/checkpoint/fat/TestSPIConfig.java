@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -70,7 +71,7 @@ public class TestSPIConfig {
 
     @Test
     public void testRestoreWithDefaults() throws Exception {
-        server.startServer(getTestMethod() + ".log");
+        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
         findLogMessage("No restore config", "TESTING - restore config: ", "pida=test1 pidb=test1", 0);
         findLogMessage("No RESTORED true found in restore", "TESTING - in restore method RESTORED", " - true -- true", 500);
         findLogMessage("Restore should have null running condition", "TESTING - restore running condition: ", "null", 500);
@@ -79,13 +80,13 @@ public class TestSPIConfig {
 
     @Test
     public void testRestoreWithEnvSet() throws Exception {
-        server.startServer(getTestMethod() + ".log");
+        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
         findLogMessage("No restore config", "TESTING - modified config: pida=env2 pidb=env2", "", 0);
     }
 
     @Test
     public void testAddImmutableEnvKey() throws Exception {
-        server.startServer(getTestMethod() + ".log");
+        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
         findLogMessage("Unexpected value for mutable key", "TESTING - in restore envs -", " v1 - v2 - v3 - v4", 500);
     }
 
@@ -98,7 +99,7 @@ public class TestSPIConfig {
     @Test
     @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
     public void testFailedCheckpoint() throws Exception {
-        ProgramOutput output = server.startServer(getTestMethod() + ".log");
+        ProgramOutput output = server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
         int retureCode = output.getReturnCode();
         assertEquals("Wrong return code for failed checkpoint.", 72, retureCode);
     }
@@ -106,7 +107,7 @@ public class TestSPIConfig {
     @Test
     @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
     public void testFailedRestore() throws Exception {
-        server.startServer(getTestMethod() + ".log");
+        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
         ProgramOutput output = server.checkpointRestore();
         int retureCode = output.getReturnCode();
         assertEquals("Wrong return code for failed checkpoint.", 77, retureCode);
@@ -114,7 +115,7 @@ public class TestSPIConfig {
 
     @Before
     public void beforeEachTest() throws Exception {
-        TestMethod testMethod = getTestMethod();
+        TestMethod testMethod = getTestMethod(TestMethod.class, testName);
         try {
             server.saveServerConfiguration();
             Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
@@ -200,20 +201,6 @@ public class TestSPIConfig {
         server.restoreServerConfiguration();
         server.deleteFileFromLibertyInstallRoot("server.env");
         server.unsetCheckpoint();
-    }
-
-    public TestMethod getTestMethod() {
-        String testMethodSimpleName = testName.getMethodName();
-        int dot = testMethodSimpleName.indexOf('.');
-        if (dot != -1) {
-            testMethodSimpleName = testMethodSimpleName.substring(dot + 1);
-        }
-        try {
-            return TestMethod.valueOf(testMethodSimpleName);
-        } catch (IllegalArgumentException e) {
-            Log.info(getClass(), testName.getMethodName(), "No configuration enum: " + testMethodSimpleName);
-            return TestMethod.unknown;
-        }
     }
 
     static enum TestMethod {

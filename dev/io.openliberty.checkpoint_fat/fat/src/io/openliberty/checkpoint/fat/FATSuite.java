@@ -10,11 +10,13 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyFileManager;
@@ -36,5 +38,19 @@ public class FATSuite {
         RemoteFile appFile = server.getFileFromLibertyServerRoot("apps/" + appName + ".war");
         LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/dropins").mkdir();
         appFile.copyToDest(server.getFileFromLibertyServerRoot("dropins"));
+    }
+
+    static public <T extends Enum<T>> T getTestMethod(Class<T> type, TestName testName) {
+        String testMethodSimpleName = testName.getMethodName();
+        int dot = testMethodSimpleName.indexOf('.');
+        if (dot != -1) {
+            testMethodSimpleName = testMethodSimpleName.substring(dot + 1);
+        }
+        try {
+            return Enum.valueOf(type, testMethodSimpleName);
+        } catch (IllegalArgumentException e) {
+            Log.info(type, testName.getMethodName(), "No configuration enum: " + testName.getMethodName());
+            return Enum.valueOf(type, "unknown");
+        }
     }
 }

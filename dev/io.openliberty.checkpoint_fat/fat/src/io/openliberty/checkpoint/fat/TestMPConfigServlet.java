@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Iterator;
@@ -51,7 +52,7 @@ public class TestMPConfigServlet extends FATServletClient {
 
     @Before
     public void setUp() throws Exception {
-        TestMethod testMethod = getTestMethod();
+        TestMethod testMethod = getTestMethod(TestMethod.class, testName);
         configureBeforeCheckpoint(testMethod);
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
                              server -> {
@@ -71,20 +72,6 @@ public class TestMPConfigServlet extends FATServletClient {
             } catch (Exception e) {
                 throw new AssertionError("Unexpected error configuring test.", e);
             }
-        }
-    }
-
-    public TestMethod getTestMethod() {
-        String testMethodSimpleName = getTestMethodSimpleName();
-        int dot = testMethodSimpleName.indexOf('.');
-        if (dot != -1) {
-            testMethodSimpleName = testMethodSimpleName.substring(dot + 1);
-        }
-        try {
-            return TestMethod.valueOf(testMethodSimpleName);
-        } catch (IllegalArgumentException e) {
-            Log.info(getClass(), testName.getMethodName(), "No configuration enum: " + testMethodSimpleName);
-            return TestMethod.unknown;
         }
     }
 
