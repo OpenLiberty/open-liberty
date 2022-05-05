@@ -24,7 +24,8 @@ IBM-API-Package:\
   org.apache.ws.security.validate;  type="third-party", \
   org.apache.wss4j.common.ext; type="third-party", \
   org.apache.wss4j.common.crypto; type=third-party, \
-  com.ibm.ws.wssecurity.callback;  version="1.0"; type="internal"
+  com.ibm.ws.wssecurity.callback;  version="1.0"; type="internal", \
+  io.openliberty.wssecurity.callback;  version="1.0"; type="internal"
 IBM-ShortName: wsSecurity-1.1
 Subsystem-Name: Web Service Security 1.1
 -features=io.openliberty.servlet.api-3.0; apiJar=false; ibm.tolerates:="3.1,4.0,5.0,6.0", \

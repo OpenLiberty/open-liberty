@@ -15,8 +15,10 @@
 
 instrument.classesExcludes: org/apache/wss4j/common/cache/*.class
 
--buildpath: org.apache.wss4j:wss4j-ws-security-common;version=2.3.0, \
-   com.ibm.ws.org.slf4j.api;version=latest, \
-   com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
-   com.ibm.websphere.appserver.spi.logging;version=latest, \
-   com.ibm.ws.org.ehcache.ehcache.107.3.8.1;version=latest
+-buildpath: \
+	org.apache.wss4j:wss4j-ws-security-common;version='2.3.0',\
+	com.ibm.ws.org.slf4j.api;version=latest,\
+	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.org.ehcache.ehcache.107.3.8.1;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning

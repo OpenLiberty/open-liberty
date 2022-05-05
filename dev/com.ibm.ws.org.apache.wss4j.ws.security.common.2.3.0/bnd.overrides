@@ -17,8 +17,11 @@ WS-TraceGroup: WSS4J
 
 Export-Package: \
  org.apache.wss4j.common.*, \
- org.apache.wss4j.common.cache;version=2.3.0
-  
+ org.apache.wss4j.common.cache;version=2.3.0, \
+ io.openliberty.wssecurity.callback, \
+ org.apache.ws.security
+ 
+ 
 # these should be optional only when resolving jars from wlp/dev
 Import-Package: \
  !com.ibm.security.jgss, \

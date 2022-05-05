@@ -13,6 +13,7 @@ dependencies {
   requiredLibs project(':com.ibm.ws.wssecurity.fat.utils.common'),
                project(':io.openliberty.org.apache.commons.logging'),
                project(':io.openliberty.org.apache.commons.codec'),
+               project(':com.ibm.ws.wssecurity.3.4.1'),
                'org.apache.httpcomponents:httpclient:4.5.4',
                'org.apache.httpcomponents:httpcore:4.4.9',
                'org.apache.commons:commons-lang3:3.5',
@@ -41,6 +42,7 @@ autoFVT.doLast {
         'com.ibm.ws.wssecurity_fat.x509',
         'com.ibm.ws.wssecurity_fat.x509_1',
         'com.ibm.ws.wssecurity_fat.x509_2',
+        'com.ibm.ws.wssecurity_fat.x509_OL_Callback',,
         'com.ibm.ws.wssecurity_fat.x509mig',
         'com.ibm.ws.wssecurity_fat.x509migsym',
         'com.ibm.ws.wssecurity_fat.x509crl',
@@ -68,6 +70,7 @@ autoFVT.doLast {
         'com.ibm.ws.wssecurity_fat.x509',
         'com.ibm.ws.wssecurity_fat.x509_1',
         'com.ibm.ws.wssecurity_fat.x509_2',
+        'com.ibm.ws.wssecurity_fat.x509_OL_Callback',
         'com.ibm.ws.wssecurity_fat.x509mig',
         'com.ibm.ws.wssecurity_fat.x509migsym'
   ]
@@ -166,7 +169,8 @@ autoFVT.doLast {
 /* Copy securitykeys/x509ClientDefault*.properties to this server */
   
   servers = [
-    'com.ibm.ws.wssecurity_fat.x509_2'
+    'com.ibm.ws.wssecurity_fat.x509_2',
+    'com.ibm.ws.wssecurity_fat.x509_OL_Callback'
   ]
 
   servers.each { server ->

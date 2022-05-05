@@ -28,6 +28,7 @@ import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509ASyncTests;
 import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509BasicTests;
 import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509CrlTests;
 import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509EncTests;
+import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509OLCallbackTest;
 import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509ObjectTests;
 import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509OverRideTests;
 import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509SigTests;
@@ -48,6 +49,7 @@ import componenttest.rules.repeater.RepeatTests;
                 CxfWss11SigTests.class,
                 CxfWss11EncTests.class,
                 CxfX509BasicTests.class,
+                CxfX509OLCallbackTest.class,
                 CxfX509EncTests.class,
                 CxfX509ObjectTests.class,
                 CxfX509OverRideTests.class,
