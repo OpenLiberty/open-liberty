@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.resource.spi.work.WorkContext;
-import javax.resource.spi.work.WorkContextLifecycleListener;
+import jakarta.resource.spi.work.WorkContext;
+import jakarta.resource.spi.work.WorkContextLifecycleListener;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -43,7 +43,7 @@ public class CollectionContext implements WorkContext, WorkContextLifecycleListe
     }
 
     /**
-     * @see javax.resource.spi.work.WorkContextLifecycleListener#contextSetupComplete()
+     * @see jakarta.resource.spi.work.WorkContextLifecycleListener#contextSetupComplete()
      */
     @Override
     public void contextSetupComplete() {
@@ -52,7 +52,7 @@ public class CollectionContext implements WorkContext, WorkContextLifecycleListe
     }
 
     /**
-     * @see javax.resource.spi.work.WorkContextLifecycleListener#contextSetupFailed(java.lang.String)
+     * @see jakarta.resource.spi.work.WorkContextLifecycleListener#contextSetupFailed(java.lang.String)
      */
     @Override
     public void contextSetupFailed(String errorCode) {
@@ -76,7 +76,7 @@ public class CollectionContext implements WorkContext, WorkContextLifecycleListe
     }
 
     /**
-     * @see javax.resource.spi.work.WorkContext#getDescription()
+     * @see jakarta.resource.spi.work.WorkContext#getDescription()
      */
     @Override
     public String getDescription() {
@@ -84,7 +84,7 @@ public class CollectionContext implements WorkContext, WorkContextLifecycleListe
     }
 
     /**
-     * @see javax.resource.spi.work.WorkContext#getName()
+     * @see jakarta.resource.spi.work.WorkContext#getName()
      */
     @Override
     public String getName() {

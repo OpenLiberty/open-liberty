@@ -20,22 +20,23 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.resource.cci.Connection;
+import jakarta.resource.cci.ConnectionFactory;
+import jakarta.resource.cci.IndexedRecord;
+import jakarta.resource.cci.ResultSet;
+import jakarta.resource.spi.BootstrapContext;
+import jakarta.resource.spi.work.ExecutionContext;
+import jakarta.resource.spi.work.HintsContext;
+import jakarta.resource.spi.work.SecurityContext;
+import jakarta.resource.spi.work.WorkCompletedException;
+import jakarta.resource.spi.work.WorkContext;
+import jakarta.resource.spi.work.WorkContextErrorCodes;
+import jakarta.resource.spi.work.WorkEvent;
+import jakarta.resource.spi.work.WorkManager;
+import jakarta.resource.spi.work.WorkRejectedException;
+import jakarta.transaction.UserTransaction;
+
 import javax.naming.InitialContext;
-import javax.resource.cci.Connection;
-import javax.resource.cci.ConnectionFactory;
-import javax.resource.cci.IndexedRecord;
-import javax.resource.cci.ResultSet;
-import javax.resource.spi.BootstrapContext;
-import javax.resource.spi.work.ExecutionContext;
-import javax.resource.spi.work.HintsContext;
-import javax.resource.spi.work.SecurityContext;
-import javax.resource.spi.work.WorkCompletedException;
-import javax.resource.spi.work.WorkContext;
-import javax.resource.spi.work.WorkContextErrorCodes;
-import javax.resource.spi.work.WorkEvent;
-import javax.resource.spi.work.WorkManager;
-import javax.resource.spi.work.WorkRejectedException;
-import javax.transaction.UserTransaction;
 
 /**
  * Test cases that run from the resource adapter

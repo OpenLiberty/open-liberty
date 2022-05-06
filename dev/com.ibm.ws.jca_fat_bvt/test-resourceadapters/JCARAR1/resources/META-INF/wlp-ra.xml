@@ -12,7 +12,7 @@
   <display-name>BVT RAR1 Resource Adapter Customization</display-name>
   <resourceadapter autoStart="false">
     <outbound-resourceadapter>
-      <connection-definition connectionfactory-interface="javax.resource.cci.ConnectionFactory">
+      <connection-definition connectionfactory-interface="jakarta.resource.cci.ConnectionFactory">
         <config-property config-property-name="autoCreateTable" type="Boolean"/>
         <config-property config-property-name="numRetries" type="Short"/>
         <config-property config-property-name="retryInterval">
@@ -24,7 +24,7 @@
 
     <inbound-resourceadapter>
       <messageadapter>
-        <messagelistener messagelistener-type="javax.resource.cci.MessageListener">
+        <messagelistener messagelistener-type="jakarta.resource.cci.MessageListener">
           <activationspec activationspec-class="test.jca.adapter.BVTActivationSpec">
             <config-property config-property-name="expectedDuration" type="duration(ms)" default="500ms" min="0"/>
           </activationspec>

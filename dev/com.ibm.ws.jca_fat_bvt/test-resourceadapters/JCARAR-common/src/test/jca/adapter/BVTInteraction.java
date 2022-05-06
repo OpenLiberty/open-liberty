@@ -15,15 +15,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.resource.NotSupportedException;
-import javax.resource.ResourceException;
-import javax.resource.cci.Connection;
-import javax.resource.cci.Interaction;
-import javax.resource.cci.InteractionSpec;
-import javax.resource.cci.Record;
-import javax.resource.cci.ResourceWarning;
-import javax.resource.cci.ResultSet;
-import javax.resource.spi.LazyEnlistableConnectionManager;
+import jakarta.resource.NotSupportedException;
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.Connection;
+import jakarta.resource.cci.Interaction;
+import jakarta.resource.cci.InteractionSpec;
+import jakarta.resource.cci.Record;
+import jakarta.resource.cci.ResourceWarning;
+import jakarta.resource.cci.ResultSet;
+import jakarta.resource.spi.LazyEnlistableConnectionManager;
 
 public class BVTInteraction implements Interaction {
     BVTConnection con;

@@ -12,8 +12,8 @@ package test.jca.adapter;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.resource.spi.work.WorkEvent;
-import javax.resource.spi.work.WorkListener;
+import jakarta.resource.spi.work.WorkEvent;
+import jakarta.resource.spi.work.WorkListener;
 
 /**
  * WorkListener that puts WorkEvents onto a queue

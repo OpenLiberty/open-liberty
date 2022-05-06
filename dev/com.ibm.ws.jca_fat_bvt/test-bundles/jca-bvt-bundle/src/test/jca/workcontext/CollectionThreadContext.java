@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.RejectedExecutionException;
 
-import javax.resource.spi.work.WorkCompletedException;
-import javax.resource.spi.work.WorkContextErrorCodes;
-import javax.resource.spi.work.WorkContextLifecycleListener;
+import jakarta.resource.spi.work.WorkCompletedException;
+import jakarta.resource.spi.work.WorkContextErrorCodes;
+import jakarta.resource.spi.work.WorkContextLifecycleListener;
 
 import com.ibm.wsspi.threadcontext.ThreadContext;
 

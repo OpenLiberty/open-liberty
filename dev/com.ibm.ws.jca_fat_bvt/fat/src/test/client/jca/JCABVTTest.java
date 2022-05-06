@@ -132,8 +132,8 @@ public class JCABVTTest extends FATServletClient {
 
     @AllowedFFDC({
                    "java.util.concurrent.RejectedExecutionException", // error path test for intentionally caused failure on context apply
-                   "javax.resource.spi.work.WorkCompletedException", // error path test for unsupported work context type
-                   "javax.resource.spi.work.WorkRejectedException" // error path test with ExecutionContext and WorkContext both specified
+                   "jakarta.resource.spi.work.WorkCompletedException", // error path test for unsupported work context type
+                   "jakarta.resource.spi.work.WorkRejectedException" // error path test with ExecutionContext and WorkContext both specified
     })
     @Test
     public void testWorkContextInflow() throws Exception {

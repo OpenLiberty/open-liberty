@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.resource.spi.work.WorkContextLifecycleListener;
+import jakarta.resource.spi.work.WorkContextLifecycleListener;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -74,7 +74,7 @@ public class CollectionContextProvider extends AbstractCollection<String> implem
      */
     @Override
     public ThreadContext createDefaultThreadContext(Map<String, String> execProps) {
-        String identityName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+        String identityName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
         return new CollectionThreadContext(Collections.<String> emptySet(), null, identityName);
     }
 
@@ -92,7 +92,7 @@ public class CollectionContextProvider extends AbstractCollection<String> implem
     @Override
     public ThreadContext getInflowContext(Object jcaContext, Map<String, String> execProps) {
         WorkContextLifecycleListener listener = jcaContext instanceof WorkContextLifecycleListener ? (WorkContextLifecycleListener) jcaContext : null;
-        String identityName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+        String identityName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
         return new CollectionThreadContext(((CollectionContext) jcaContext).getCollection(), listener, identityName);
     }
 

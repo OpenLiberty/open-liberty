@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.resource.spi.work.WorkContext;
-import javax.resource.spi.work.WorkContextProvider;
+import jakarta.resource.spi.work.WorkContext;
+import jakarta.resource.spi.work.WorkContextProvider;
 
 /**
  * Generic work with inflow context
@@ -26,7 +26,7 @@ public abstract class BVTWorkWithContext<T> extends BVTWork<T> implements WorkCo
     private final AtomicReference<List<WorkContext>> workContexts = new AtomicReference<List<WorkContext>>();
 
     /**
-     * @see javax.resource.spi.work.WorkContextProvider#getWorkContexts()
+     * @see jakarta.resource.spi.work.WorkContextProvider#getWorkContexts()
      */
     @Override
     public List<WorkContext> getWorkContexts() {

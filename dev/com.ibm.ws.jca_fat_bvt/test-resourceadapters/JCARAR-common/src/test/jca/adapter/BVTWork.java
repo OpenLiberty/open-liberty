@@ -17,7 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.resource.spi.work.Work;
+import jakarta.resource.spi.work.Work;
 
 /**
  * Generic work that runs a Callable.

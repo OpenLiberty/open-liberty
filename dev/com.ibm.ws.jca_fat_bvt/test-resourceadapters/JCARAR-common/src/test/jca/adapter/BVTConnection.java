@@ -14,16 +14,16 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import javax.resource.NotSupportedException;
-import javax.resource.ResourceException;
-import javax.resource.cci.Connection;
-import javax.resource.cci.ConnectionMetaData;
-import javax.resource.cci.Interaction;
-import javax.resource.cci.LocalTransaction;
-import javax.resource.cci.ResultSetInfo;
-import javax.resource.spi.ConnectionEvent;
-import javax.resource.spi.ConnectionManager;
-import javax.resource.spi.IllegalStateException;
+import jakarta.resource.NotSupportedException;
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.Connection;
+import jakarta.resource.cci.ConnectionMetaData;
+import jakarta.resource.cci.Interaction;
+import jakarta.resource.cci.LocalTransaction;
+import jakarta.resource.cci.ResultSetInfo;
+import jakarta.resource.spi.ConnectionEvent;
+import jakarta.resource.spi.ConnectionManager;
+import jakarta.resource.spi.IllegalStateException;
 
 public class BVTConnection implements Connection, ConnectionMetaData, LocalTransaction {
     ConnectionManager cm;

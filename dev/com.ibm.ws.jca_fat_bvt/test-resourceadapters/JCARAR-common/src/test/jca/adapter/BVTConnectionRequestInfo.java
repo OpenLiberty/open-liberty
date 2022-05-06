@@ -10,7 +10,7 @@
  *******************************************************************************/
 package test.jca.adapter;
 
-import javax.resource.spi.ConnectionRequestInfo;
+import jakarta.resource.spi.ConnectionRequestInfo;
 
 public class BVTConnectionRequestInfo implements ConnectionRequestInfo {
     final String userName, password;

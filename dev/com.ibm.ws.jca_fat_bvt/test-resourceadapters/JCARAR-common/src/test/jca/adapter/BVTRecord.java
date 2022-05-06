@@ -17,8 +17,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.resource.ResourceException;
-import javax.resource.cci.IndexedRecord;
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.IndexedRecord;
 
 @SuppressWarnings("rawtypes")
 public class BVTRecord extends ArrayList implements IndexedRecord, InvocationHandler {
@@ -30,7 +30,7 @@ public class BVTRecord extends ArrayList implements IndexedRecord, InvocationHan
     // Empty IndexedRecord
     BVTRecord() {}
 
-    // InvocationHandler for javax.resource.cci.ResultSet
+    // InvocationHandler for jakarta.resource.cci.ResultSet
     BVTRecord(ResultSet resultSet) {
         this.resultSet = resultSet;
     }

@@ -13,12 +13,12 @@ package web.mdb;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.annotation.Resource;
-import javax.ejb.MessageDriven;
-import javax.ejb.MessageDrivenContext;
-import javax.resource.ResourceException;
-import javax.resource.cci.MessageListener;
-import javax.resource.cci.Record;
+import jakarta.annotation.Resource;
+import jakarta.ejb.MessageDriven;
+import jakarta.ejb.MessageDrivenContext;
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.MessageListener;
+import jakarta.resource.cci.Record;
 
 @MessageDriven
 public class BVTMessageDrivenBean implements MessageListener {
@@ -31,7 +31,7 @@ public class BVTMessageDrivenBean implements MessageListener {
     /*
      * (non-Javadoc)
      * 
-     * @see javax.resource.cci.MessageListener#onMessage(javax.resource.cci.Record)
+     * @see jakarta.resource.cci.MessageListener#onMessage(jakarta.resource.cci.Record)
      */
     @Override
     public Record onMessage(Record arg0) throws ResourceException {

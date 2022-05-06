@@ -69,9 +69,9 @@
           <config-property-type>java.lang.String</config-property-type>
           <config-property-confidential>true</config-property-confidential>
         </config-property>
-        <connectionfactory-interface>javax.resource.cci.ConnectionFactory</connectionfactory-interface> 
+        <connectionfactory-interface>jakarta.resource.cci.ConnectionFactory</connectionfactory-interface> 
         <connectionfactory-impl-class>test.jca.adapter.BVTConnectionFactory</connectionfactory-impl-class> 
-        <connection-interface>javax.resource.cci.Connection</connection-interface> 
+        <connection-interface>jakarta.resource.cci.Connection</connection-interface> 
         <connection-impl-class>test.jca.adapter.BVTConnection</connection-impl-class> 
       </connection-definition>
       <transaction-support>XATransaction</transaction-support> 

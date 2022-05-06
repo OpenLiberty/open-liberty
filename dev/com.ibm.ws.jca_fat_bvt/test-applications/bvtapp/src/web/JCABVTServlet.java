@@ -27,12 +27,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.UserTransaction;
+
 import javax.naming.InitialContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.UserTransaction;
 
 import componenttest.app.FATServlet;
 import web.mdb.BVTMessageDrivenBean;
@@ -128,8 +129,8 @@ public class JCABVTServlet extends FATServlet {
 
             Object interaction = con.getClass().getMethod("createInteraction").invoke(con);
 
-            Class<?> InteractionSpec = con.getClass().getClassLoader().loadClass("javax.resource.cci.InteractionSpec");
-            Class<?> Record = con.getClass().getClassLoader().loadClass("javax.resource.cci.Record");
+            Class<?> InteractionSpec = con.getClass().getClassLoader().loadClass("jakarta.resource.cci.InteractionSpec");
+            Class<?> Record = con.getClass().getClassLoader().loadClass("jakarta.resource.cci.Record");
             Method Interaction_execute = interaction.getClass().getMethod("execute", InteractionSpec, Record);
 
             // Clear the table contents of any previous usage
@@ -168,7 +169,7 @@ public class JCABVTServlet extends FATServlet {
             try {
                 con.getClass().getMethod("close").invoke(con);
             } catch (InvocationTargetException x) {
-                if (!"javax.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
+                if (!"jakarta.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
                     throw x.getCause();
             }
         }
@@ -194,8 +195,8 @@ public class JCABVTServlet extends FATServlet {
 
             Object interaction = con.getClass().getMethod("createInteraction").invoke(con);
 
-            Class<?> InteractionSpec = con.getClass().getClassLoader().loadClass("javax.resource.cci.InteractionSpec");
-            Class<?> Record = con.getClass().getClassLoader().loadClass("javax.resource.cci.Record");
+            Class<?> InteractionSpec = con.getClass().getClassLoader().loadClass("jakarta.resource.cci.InteractionSpec");
+            Class<?> Record = con.getClass().getClassLoader().loadClass("jakarta.resource.cci.Record");
             Method Interaction_execute = interaction.getClass().getMethod("execute", InteractionSpec, Record);
 
             // Clear the table contents of any previous usage
@@ -287,7 +288,7 @@ public class JCABVTServlet extends FATServlet {
             try {
                 con.getClass().getMethod("close").invoke(con);
             } catch (InvocationTargetException x) {
-                if (!"javax.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
+                if (!"jakarta.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
                     throw x.getCause();
             }
         }
@@ -310,7 +311,7 @@ public class JCABVTServlet extends FATServlet {
             try {
                 con.getClass().getMethod("close").invoke(con);
             } catch (InvocationTargetException x) {
-                if (!"javax.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
+                if (!"jakarta.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
                     throw x.getCause();
             }
         }
@@ -327,7 +328,7 @@ public class JCABVTServlet extends FATServlet {
             try {
                 con.getClass().getMethod("close").invoke(con);
             } catch (InvocationTargetException x) {
-                if (!"javax.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
+                if (!"jakarta.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
                     throw x.getCause();
             }
         }
@@ -353,8 +354,8 @@ public class JCABVTServlet extends FATServlet {
 
             Object interaction = con.getClass().getMethod("createInteraction").invoke(con);
 
-            Class<?> InteractionSpec = con.getClass().getClassLoader().loadClass("javax.resource.cci.InteractionSpec");
-            Class<?> Record = con.getClass().getClassLoader().loadClass("javax.resource.cci.Record");
+            Class<?> InteractionSpec = con.getClass().getClassLoader().loadClass("jakarta.resource.cci.InteractionSpec");
+            Class<?> Record = con.getClass().getClassLoader().loadClass("jakarta.resource.cci.Record");
             Interaction_execute = interaction.getClass().getMethod("execute", InteractionSpec, Record);
 
             // Clear the table contents of any previous usage
@@ -388,7 +389,7 @@ public class JCABVTServlet extends FATServlet {
                 con.getClass().getMethod("close").invoke(con);
                 throw new Exception("Expecting IllegalStateException for already closed connection.");
             } catch (InvocationTargetException x) {
-                if (!"javax.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
+                if (!"jakarta.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
                     throw x.getCause();
             }
 
@@ -420,7 +421,7 @@ public class JCABVTServlet extends FATServlet {
             try {
                 con.getClass().getMethod("close").invoke(con);
             } catch (InvocationTargetException x) {
-                if (!"javax.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
+                if (!"jakarta.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
                     throw x.getCause();
             }
         }
@@ -504,8 +505,8 @@ public class JCABVTServlet extends FATServlet {
             Object[] interactions = new Object[2];
             interactions[0] = cons[0].getClass().getMethod("createInteraction").invoke(cons[0]);
 
-            Class<?> InteractionSpec = cons[0].getClass().getClassLoader().loadClass("javax.resource.cci.InteractionSpec");
-            Class<?> Record = cons[0].getClass().getClassLoader().loadClass("javax.resource.cci.Record");
+            Class<?> InteractionSpec = cons[0].getClass().getClassLoader().loadClass("jakarta.resource.cci.InteractionSpec");
+            Class<?> Record = cons[0].getClass().getClassLoader().loadClass("jakarta.resource.cci.Record");
             Method Interaction_execute = interactions[0].getClass().getMethod("execute", InteractionSpec, Record);
 
             // Clear the table contents of any previous usage
@@ -586,7 +587,7 @@ public class JCABVTServlet extends FATServlet {
                     try {
                         con.getClass().getMethod("close").invoke(con);
                     } catch (InvocationTargetException x) {
-                        if (!"javax.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
+                        if (!"jakarta.resource.spi.IllegalStateException".equals(x.getCause().getClass().getName()))
                             throw x.getCause();
                     }
         }
