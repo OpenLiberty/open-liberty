@@ -17,10 +17,10 @@ import componenttest.rules.repeater.RepeatTestAction;
 public class RepeatWithJPA31 extends JakartaEE10Action implements RepeatTestAction {
     public static final String ID = "JPA31";
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+//    @Override
+//    public boolean isEnabled() {
+//        return true;
+//    }
 
     @Override
     public String toString() {
