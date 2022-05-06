@@ -74,6 +74,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private static final String CONFIG_KEY_URI = "uri";
     private static final String CONFIG_KEY_LIBRARY_REF = "libraryRef";
     private static final String CONFIG_KEY_PROPERTIES = "properties";
+    private static final String HAZELCAST_PROVIDER = "com.hazelcast.cache.HazelcastCachingProvider";
 
     Map<String, Object> configurationProperties;
     private static final int BASE_PREFIX_LENGTH = CONFIG_KEY_PROPERTIES.length();
@@ -162,33 +163,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
              * No CacheManagerService reference was provided. This service will handle management of the
              * provider and manager.
              */
-            Properties vendorProperties = new Properties();
-
-            String uriValue = (String) configurationProperties.get(CONFIG_KEY_URI);
-            final URI configuredURI;
-            if (uriValue != null)
-                try {
-                    configuredURI = new URI(uriValue);
-                } catch (URISyntaxException e) {
-                    throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
-                }
-            else {
-                configuredURI = null;
-            }
-
-            for (Map.Entry<String, Object> entry : configurationProperties.entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-
-                //properties start with properties.0.
-                if (key.length() > TOTAL_PREFIX_LENGTH && key.charAt(BASE_PREFIX_LENGTH) == '.' && key.startsWith(CONFIG_KEY_PROPERTIES)) {
-                    key = key.substring(TOTAL_PREFIX_LENGTH);
-                    if (!key.equals("config.referenceType")) {
-                        vendorProperties.setProperty(key, (String) value);
-                    }
-                }
-            }
-
+            
             // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
             final ClassLoader cl = library.getClassLoader();
 
@@ -202,6 +177,44 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     cachingProvider = Caching.getCachingProvider(loader);
                     String cachingProviderClassName = cachingProvider.getClass().getName();
 
+                    Properties vendorProperties = new Properties();
+
+                    String uriValue = (String) configurationProperties.get(CONFIG_KEY_URI);
+                    if (trace && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "uri attribute value = ", uriValue);
+                    }
+                    final URI configuredURI;
+                    if (uriValue != null)
+                    {
+                        if (HAZELCAST_PROVIDER.equals(cachingProviderClassName)) {
+                            vendorProperties.setProperty("hazelcast.config.location", uriValue);
+                            configuredURI = null;
+                        }
+                        else {
+                            try {
+                                configuredURI = new URI(uriValue);
+                            } catch (URISyntaxException e) {
+                                throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
+                            }
+                        }
+                    }
+                    else {
+                        configuredURI = null;
+                    }
+
+                    for (Map.Entry<String, Object> entry : configurationProperties.entrySet()) {
+                        String key = entry.getKey();
+                        Object value = entry.getValue();
+
+                        //properties start with properties.0.
+                        if (key.length() > TOTAL_PREFIX_LENGTH && key.charAt(BASE_PREFIX_LENGTH) == '.' && key.startsWith(CONFIG_KEY_PROPERTIES)) {
+                            key = key.substring(TOTAL_PREFIX_LENGTH);
+                            if (!key.equals("config.referenceType")) {
+                                vendorProperties.setProperty(key, (String) value);
+                            }
+                        }
+                    }
+
                     tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
 
                     cacheConfigUtil = new CacheConfigUtil();
@@ -210,6 +223,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     if (trace && tc.isDebugEnabled()) {
                         CacheHashMap.tcReturn("Caching", "getCachingProvider", tcCachingProvider, cachingProvider);
                         Tr.debug(this, tc, "caching provider class is " + cachingProviderClassName);
+                        Tr.debug(this, tc, "uri is " + uri);
+                        Tr.debug(this, tc, "vendor properties are " + vendorProperties);
                         CacheHashMap.tcInvoke(tcCachingProvider, "getCacheManager", uri, null, vendorProperties);
                     }
 
