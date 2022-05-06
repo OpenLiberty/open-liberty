@@ -1,0 +1,86 @@
+<!--
+    Copyright (c) 2011,2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>concurrent-1.0</feature>
+      <feature>servlet-3.0</feature>
+      <feature>ssl-1.0</feature>
+      <feature>jca-1.6</feature>
+      <feature>jndi-1.0</feature>
+      <feature>mdb-3.1</feature>
+      <feature>osgiconsole-1.0</feature>
+      <feature>jca-1.6_bvtbundle-1.0</feature>
+    </featureManager>
+
+    <include optional="true" location="${shared.config.dir}/bvtTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+
+    <connectionFactory id="cf1" jndiName="eis/cf1">
+      <containerAuthData user="CNTRUSER" password="{aes}APsFRXLhJp7FYchi1uAsgi+eFzVg87omLpRnYxeBEKiM"/>    
+      <properties.RAR1 sslSocketFactory="mySSLConfig" tableName="cf1tbl" userName="CF1USER"/>
+    </connectionFactory>
+
+    <connectionFactory jndiName="eis/cf2" connectionManagerRef="ConMgr2">
+      <properties.JCARAR2 sslSocketFactory="mySSLConfig" password="{xor}DR4NbQ8IGw==" tableName="cf2tbl"/>
+      <recoveryAuthData user="RAR2USER" password="{xor}DR4NbQ8IGw=="/>
+    </connectionFactory>
+    <connectionManager id="ConMgr2" maxPoolSize="2" connectionTimeout="0"/>
+
+    <authData id="RAR2AuthData" user="RAR2USER" password="{xor}DR4NbQ8IGw=="/>
+
+    <activationSpec id="activation1">
+      <properties.RAR1 destinationRef="queue1" expectedDuration="1s"/>
+    </activationSpec>
+
+    <adminObject id="queue1" jndiName="eis/queue1">
+      <properties.RAR1 queueName="queue1"/>
+    </adminObject>
+
+    <adminObject id="queue2" jndiName="eis/queue2">
+      <properties.RAR1 queueName="queue2"/>
+    </adminObject>
+
+    <ssl id="mySSLConfig" keyStoreRef="defaultKeyStore" />
+    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.jks" password="Liberty"/>
+
+    <resourceAdapter location="${server.config.dir}/resourceadapters/JCARAR1.rar">
+      <classloader commonLibraryRef="DerbyLib"/>
+      <contextService>
+        <jeeMetadataContext/>
+      </contextService>
+      <properties.RAR1 databaseName="jcabvtdb" createDatabase="true" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/>
+    </resourceAdapter>
+
+    <resourceAdapter location="${server.config.dir}/resourceadapters/JCARAR2.rar">
+      <classloader commonLibraryRef="DerbyLib"/>
+      <properties.JCARAR2 createDatabase="true" userName="RAR2USER"/>
+    </resourceAdapter>
+
+    <!-- This is used by the fake RAR -->
+    <library id="DerbyLib">
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+
+    <transaction heuristicRetryInterval="2"/>
+    
+    <jcaTestCFReference jcaConnectionFactory="cf1"/>
+
+	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="context"/>
+	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/> 
+	<!-- all accessClassInPackage.* perms need to be manually granted in the java.policy file also -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.jdbc.odbc"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+</server>

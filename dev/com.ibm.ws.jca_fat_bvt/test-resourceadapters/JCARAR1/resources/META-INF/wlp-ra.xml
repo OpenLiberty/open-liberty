@@ -1,0 +1,35 @@
+<!--
+    Copyright (c) 2011,2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<connector xmlns="http://websphere.ibm.com/xml/ns/javaee">
+  <display-name>BVT RAR1 Resource Adapter Customization</display-name>
+  <resourceadapter autoStart="false">
+    <outbound-resourceadapter>
+      <connection-definition connectionfactory-interface="javax.resource.cci.ConnectionFactory">
+        <config-property config-property-name="autoCreateTable" type="Boolean"/>
+        <config-property config-property-name="numRetries" type="Short"/>
+        <config-property config-property-name="retryInterval">
+          <option value="Infinite"/>
+          <option value="None"/>
+        </config-property>
+      </connection-definition>
+    </outbound-resourceadapter>
+
+    <inbound-resourceadapter>
+      <messageadapter>
+        <messagelistener messagelistener-type="javax.resource.cci.MessageListener">
+          <activationspec activationspec-class="test.jca.adapter.BVTActivationSpec">
+            <config-property config-property-name="expectedDuration" type="duration(ms)" default="500ms" min="0"/>
+          </activationspec>
+        </messagelistener>
+      </messageadapter>
+    </inbound-resourceadapter>
+  </resourceadapter>
+</connector>
