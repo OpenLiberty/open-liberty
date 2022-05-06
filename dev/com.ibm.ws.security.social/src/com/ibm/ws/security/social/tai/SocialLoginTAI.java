@@ -1,17 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -501,11 +500,7 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
 
         // have validated tokens from oidc, create the subject.
         String idToken = (String) presult.getCustomProperties().get(ClientConstants.ID_TOKEN);
-        String accessToken = (String) presult.getCustomProperties().get(ClientConstants.ACCESS_TOKEN);
-        Map<String, Object> tokens = new HashMap<String, Object>();
-        tokens.put(ClientConstants.ACCESS_TOKEN, accessToken);
-        tokens.put(ClientConstants.ID_TOKEN, idToken);
-        AuthorizationCodeAuthenticator aca = new AuthorizationCodeAuthenticator(clientConfig, tokens);
+        AuthorizationCodeAuthenticator aca = new AuthorizationCodeAuthenticator(clientConfig, presult.getCustomProperties());
 
         TAIResult authnResult = null;
         try {
@@ -515,13 +510,13 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
             String userInfo = (String) presult.getCustomProperties().get(com.ibm.ws.security.openidconnect.common.Constants.USERINFO_STR);
             if (userInfo != null) {
                 subjectUtils.setUserInfo(userInfo);
-            }       
+            }
             authnResult = subjectUtils.createResult(response, clientConfig);
         } catch (Exception e) {
             Tr.error(tc, "AUTH_CODE_ERROR_CREATING_RESULT", new Object[] { clientConfig.getUniqueId(), e.getLocalizedMessage() });
             return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
         }
-        
+
         taiWebUtils.restorePostParameters(request); // did oidc already do this?
 
         return authnResult;
@@ -529,18 +524,18 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
     }
 
     private void discoverOPAgain(ProviderAuthenticationResult presult, OidcLoginConfigImpl clientConfig) {
-		
-    	if (clientConfig.isDiscoveryInUse()) {
-    		if (presult.getStatus().compareTo(AuthResult.SUCCESS) == 0) {
-    			clientConfig.setNextDiscoveryTime();
-    		} else if (System.currentTimeMillis() > clientConfig.getNextDiscoveryTime()) {
-    			clientConfig.handleDiscoveryEndpoint(clientConfig.getDiscoveryEndpointUrl());
-    		}
-    	}
-		
-	}
 
-	/**
+        if (clientConfig.isDiscoveryInUse()) {
+            if (presult.getStatus().compareTo(AuthResult.SUCCESS) == 0) {
+                clientConfig.setNextDiscoveryTime();
+            } else if (System.currentTimeMillis() > clientConfig.getNextDiscoveryTime()) {
+                clientConfig.handleDiscoveryEndpoint(clientConfig.getDiscoveryEndpointUrl());
+            }
+        }
+
+    }
+
+    /**
      * Check for some things that will always fail and emit message about bad config.
      * Do here so 1) classic oidc messages don't change and 2) put error message closer in log to failure.
      *
