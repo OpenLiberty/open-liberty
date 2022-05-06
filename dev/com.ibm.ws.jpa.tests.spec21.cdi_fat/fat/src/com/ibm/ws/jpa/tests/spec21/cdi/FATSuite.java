@@ -33,7 +33,7 @@ public class FATSuite {
     public static RepeatTests r = RepeatTests
                     .withoutModification()
                     .andWith(FeatureReplacementAction.EE7_FEATURES())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES());
-//                    .andWith(FeatureReplacementAction.EE10_FEATURES()); // CDI for JEE 10 is not yet ready.
+                    .andWith(FeatureReplacementAction.EE9_FEATURES())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES());
     public static String repeatPhase = "";
 }

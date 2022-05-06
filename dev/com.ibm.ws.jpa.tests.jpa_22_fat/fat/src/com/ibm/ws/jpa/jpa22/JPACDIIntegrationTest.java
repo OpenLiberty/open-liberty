@@ -11,6 +11,8 @@
 
 package com.ibm.ws.jpa.jpa22;
 
+import java.util.Set;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -18,11 +20,12 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.FeatureManager;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 
 import cdi.web.ELIServlet;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -34,7 +37,6 @@ import componenttest.topology.utils.PrivHelper;
  *
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE10_FEATURES) // TODO: Remove before leaving beta
 public class JPACDIIntegrationTest {
     public static final String APP_NAME = "cdi";
     public static final String SERVLET = "eli";
@@ -53,6 +55,13 @@ public class JPACDIIntegrationTest {
         app.addPackage("cdi.web");
         app.addPackage("cdi.model");
         ShrinkHelper.addDirectory(app, resPath);
+
+        if (isLesserThanCDI4()) {
+            ShrinkHelper.addDirectory(app, "test-applications/jpa22/" + APP_NAME + "/resources.cdiLN4/");
+        } else {
+            ShrinkHelper.addDirectory(app, "test-applications/jpa22/" + APP_NAME + "/resources.cdiEGT4/");
+        }
+
         ShrinkHelper.exportAppToServer(server1, app);
         server1.addInstalledAppForValidation(APP_NAME);
 
@@ -63,5 +72,21 @@ public class JPACDIIntegrationTest {
     public static void tearDown() throws Exception {
 //        server1.dumpServer("cdi");
         server1.stopServer("CWWJP9991W"); // From Eclipselink drop-and-create tables option
+    }
+
+    private static boolean isLesserThanCDI4() {
+        try {
+            ServerConfiguration svrCfg = server1.getServerConfiguration();
+            FeatureManager fm = svrCfg.getFeatureManager();
+            Set<String> features = fm.getFeatures();
+            if (features.contains("cdi-1.2") || features.contains("cdi-2.0") || features.contains("cdi-3.0")) {
+                return true;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return true;
+        }
+
+        return false;
     }
 }

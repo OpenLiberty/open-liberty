@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.FeatureManager;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.cdi.jpalib.web.JPACDIJPALibServlet;
 import com.ibm.ws.jpa.fvt.cdi.simple.web.JPACDISimpleServlet;
@@ -42,6 +43,7 @@ public class TestCDI_WEB extends JPAFATServletClient {
     private final static String CONTEXT_ROOT_JPALIB = "TestCDIWithJPALib";
     private final static String RESOURCE_ROOT = "test-applications/CDI/";
     private final static String appFolder = "apps";
+    private final static String BEANSXML_RESDIR = "test-applications/CDI/beansxml";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
@@ -125,6 +127,11 @@ public class TestCDI_WEB extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.simple.model");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.simple.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".ear/" + appName + ".war");
+        if (isLesserThanCDI4()) {
+            ShrinkHelper.addDirectory(webApp, BEANSXML_RESDIR + "/web.resources.cdiLT4");
+        } else {
+            ShrinkHelper.addDirectory(webApp, BEANSXML_RESDIR + "/web.resources.cdiEGT4");
+        }
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
@@ -160,11 +167,21 @@ public class TestCDI_WEB extends JPAFATServletClient {
         jpalib.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.jpalib.model");
         jpalib.addPackages(false, "com.ibm.ws.jpa.fvt.cdi.jpalib");
         ShrinkHelper.addDirectory(jpalib, RESOURCE_ROOT + appFolder + "/" + appName + ".ear/lib/jpamodel.jar");
+        if (isLesserThanCDI4()) {
+            ShrinkHelper.addDirectory(jpalib, BEANSXML_RESDIR + "/jar.resources.cdiLT4");
+        } else {
+            ShrinkHelper.addDirectory(jpalib, BEANSXML_RESDIR + "/jar.resources.cdiEGT4");
+        }
 
         // TestCDISimple.war
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.jpalib.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".ear/" + appName + ".war");
+        if (isLesserThanCDI4()) {
+            ShrinkHelper.addDirectory(webApp, BEANSXML_RESDIR + "/web.resources.cdiLT4");
+        } else {
+            ShrinkHelper.addDirectory(webApp, BEANSXML_RESDIR + "/web.resources.cdiEGT4");
+        }
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
@@ -214,5 +231,21 @@ public class TestCDI_WEB extends JPAFATServletClient {
             }
             bannerEnd(TestCDI_WEB.class, timestart);
         }
+    }
+
+    private static boolean isLesserThanCDI4() {
+        try {
+            ServerConfiguration svrCfg = server.getServerConfiguration();
+            FeatureManager fm = svrCfg.getFeatureManager();
+            Set<String> features = fm.getFeatures();
+            if (features.contains("cdi-1.2") || features.contains("cdi-2.0") || features.contains("cdi-3.0")) {
+                return true;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return true;
+        }
+
+        return false;
     }
 }
