@@ -9,5 +9,5 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-  <javaPermission className="java.util.PropertyPermission"  name="jakarta.json.provider" actions="read" />
+  <javaPermission id="jakarta.json.provider" className="java.util.PropertyPermission"  name="jakarta.json.provider" actions="read" />
 </server> 
