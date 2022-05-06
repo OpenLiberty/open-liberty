@@ -97,6 +97,7 @@ Export-Package: !*.internal.*, \
     com.ibm.ws.webcontainer.webapp;provide:=true, \
     com.ibm.ws.webcontainer.servlet, \
     com.ibm.ws.webcontainer.spiadapter.collaborator, \
+    com.ibm.ws.webcontainer.facade, \
     com.ibm.ws.container
     
 Private-Package: \

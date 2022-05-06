@@ -973,7 +973,7 @@ private String getUser() {
 
   // PK80439: Check that id is of exact length permitted as determined by the session length 
   // custom property
-  private boolean checkSessionIdIsRightLength( String sessionIdOnly )
+  protected boolean checkSessionIdIsRightLength( String sessionIdOnly )
   {
       boolean correctLength = true;
       boolean forceSessionIdLengthCheck = _smc.getForceSessionIdLengthCheck();

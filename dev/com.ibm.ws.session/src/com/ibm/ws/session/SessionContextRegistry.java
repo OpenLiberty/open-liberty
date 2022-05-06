@@ -190,6 +190,47 @@ public class SessionContextRegistry {
         }
     }
 
+    /*
+     * Support servlet 6.0
+     * Overload to support SessionData60.invalidate() which can't pass itself into invalidateAll(String, String, SessionData, boolean, boolean)
+     * Called by SessionData60.invalidate()
+     * 
+     * Should call only from WAS
+     */
+    public void invalidateAll(String sessionId, String appName, boolean goRemote, boolean fromRemote) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
+            StringBuffer sb = new StringBuffer("for app ").append(appName).append(" id ").append(sessionId).append(" goRemote ").append(goRemote).append(" fromRemote ").append(fromRemote);
+            LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[INVALIDATE_ALL], sb.toString());
+        }
+
+        boolean backendUpdate = true;
+        if (sessionId.startsWith(NO_BACKEND_UPDATE_FLAG)) { // special check to prevent each zOS servant from doing db query
+            backendUpdate = false;
+            sessionId = sessionId.substring(1); // remove flag
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[INVALIDATE_ALL], "setting backendUpdate to false and removed flag - sessionId: "
+                                + sessionId);
+            }
+        }
+        
+        /* 
+         * SessionData60.invalidate()took care of its invalidation 
+         */
+
+        /* Change this to handle ApplicationSessions */
+        if (SessionManagerConfig.getUsingApplicationSessionsAndInvalidateAll()) {
+            Enumeration vEnumManagers = SessionManagerRegistry.getSessionManagerRegistry().getSessionManagers();
+            while (vEnumManagers.hasMoreElements()) {
+                IGenericSessionManager manager = (IGenericSessionManager) vEnumManagers.nextElement();
+                callInvalidateAllOnApplicationSessionManager(manager, sessionId, backendUpdate, fromRemote);
+            }
+        }
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, methodNames[INVALIDATE_ALL]);
+        }
+    }
+    
+    
     protected void callInvalidateAllOnApplicationSessionManager(IGenericSessionManager manager, String sessionId, boolean backendUpdate, boolean fromRemote) {
         // no op
         // overwritten in WsSessionContextRegistry

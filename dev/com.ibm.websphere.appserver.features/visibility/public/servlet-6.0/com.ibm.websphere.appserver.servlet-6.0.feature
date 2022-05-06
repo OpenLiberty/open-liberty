@@ -56,6 +56,8 @@ Subsystem-Category: JakartaEE10Application
  com.ibm.ws.webcontainer.servlet.4.0.jakarta, \
  com.ibm.ws.webcontainer.servlet.3.1.jakarta, \
  com.ibm.ws.session.jakarta, \
+ io.openliberty.session.6.0, \
+ io.openliberty.webcontainer.servlet.6.0, \
  com.ibm.ws.webcontainer.jakarta, \
  com.ibm.ws.webcontainer.cors.jakarta, \
  com.ibm.ws.http.plugin.merge, \

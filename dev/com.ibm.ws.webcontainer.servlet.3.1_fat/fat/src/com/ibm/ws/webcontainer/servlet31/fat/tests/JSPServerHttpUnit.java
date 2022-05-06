@@ -44,7 +44,7 @@ import componenttest.topology.impl.LibertyServer;
  * Tests to execute on the wcServer that use HttpUnit.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
+//@SkipForRepeat(EE10_FEATURES)
 public class JSPServerHttpUnit {
     private static final Logger LOG = Logger.getLogger(JSPServerHttpUnit.class.getName());
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();

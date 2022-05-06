@@ -225,7 +225,7 @@ public class WCServerHttpUnit {
     }
 
     @Test
-    @SkipForRepeat(EE10_FEATURES)
+    //@SkipForRepeat(EE10_FEATURES)
     public void testRelativeRedirect() throws Exception {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";
@@ -240,7 +240,7 @@ public class WCServerHttpUnit {
 
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat(EE10_FEATURES)
+    //@SkipForRepeat(EE10_FEATURES)
     public void testRelativeRedirectWithPathInfo() throws Exception {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";
@@ -281,7 +281,7 @@ public class WCServerHttpUnit {
     }
 
     @Test
-    @SkipForRepeat(EE10_FEATURES)
+    //@SkipForRepeat(EE10_FEATURES)
     public void testSessionCookieConfig() throws Exception {
         WebConversation wc = new WebConversation();
         String contextRoot = "/TestServlet31";
