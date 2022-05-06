@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,9 +66,9 @@ public class ConsumerRecordTest {
 
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
-                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.kafkaContainer, ConsumerRecordBean.CHANNEL_IN,
+                        .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), ConsumerRecordBean.CHANNEL_IN,
                                                                            ConsumerRecordBean.GROUP_ID))
-                        .include(ConnectorProperties.simpleOutgoingChannel(PlaintextTests.kafkaContainer, ConsumerRecordBean.CHANNEL_OUT));
+                        .include(ConnectorProperties.simpleOutgoingChannel(PlaintextTests.connectionProperties(), ConsumerRecordBean.CHANNEL_OUT));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())

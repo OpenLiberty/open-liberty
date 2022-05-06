@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,10 +50,10 @@ public class KafkaCustomSerializerTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ConnectorProperties outgoingProperties = simpleOutgoingChannel(PlaintextTests.kafkaContainer, MyDataMessagingBean.OUT_CHANNEL);
+        ConnectorProperties outgoingProperties = simpleOutgoingChannel(PlaintextTests.connectionProperties(), MyDataMessagingBean.OUT_CHANNEL);
         outgoingProperties.addProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, MyDataSerializer.class.getName());
 
-        ConnectorProperties incomingProperties = simpleIncomingChannel(PlaintextTests.kafkaContainer, MyDataMessagingBean.IN_CHANNEL, MyDataMessagingBean.GROUP_ID);
+        ConnectorProperties incomingProperties = simpleIncomingChannel(PlaintextTests.connectionProperties(), MyDataMessagingBean.IN_CHANNEL, MyDataMessagingBean.GROUP_ID);
         incomingProperties.addProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, MyDataDeserializer.class.getName());
 
         PropertiesAsset appConfig = new PropertiesAsset()

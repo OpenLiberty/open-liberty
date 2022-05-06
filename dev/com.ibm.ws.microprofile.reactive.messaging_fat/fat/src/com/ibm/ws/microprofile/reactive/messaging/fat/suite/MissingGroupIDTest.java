@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,8 +51,8 @@ public class MissingGroupIDTest {
     @BeforeClass
     public static void setup() throws Exception {
         PropertiesAsset config = new PropertiesAsset()
-                        .include(simpleOutgoingChannel(PlaintextTests.kafkaContainer, BasicMessagingBean.CHANNEL_OUT))
-                        .include(simpleIncomingChannel(PlaintextTests.kafkaContainer, BasicMessagingBean.CHANNEL_IN, "groupIDtoberemoved")
+                        .include(simpleOutgoingChannel(PlaintextTests.connectionProperties(), BasicMessagingBean.CHANNEL_OUT))
+                        .include(simpleIncomingChannel(PlaintextTests.connectionProperties(), BasicMessagingBean.CHANNEL_IN, "groupIDtoberemoved")
                                         .removeProperty(ConsumerConfig.GROUP_ID_CONFIG));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")

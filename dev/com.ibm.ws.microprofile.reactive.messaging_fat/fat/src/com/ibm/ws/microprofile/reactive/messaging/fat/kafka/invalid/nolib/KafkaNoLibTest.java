@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,9 +60,9 @@ public class KafkaNoLibTest {
     @Test
     @AllowedFFDC
     public void testDeploymentFailure() throws Exception {
-        ConnectorProperties outgoingProperties = simpleOutgoingChannel("example.com", NoLibMessagingBean.CHANNEL_OUT);
+        ConnectorProperties outgoingProperties = simpleOutgoingChannel(null, NoLibMessagingBean.CHANNEL_OUT);
 
-        ConnectorProperties incomingProperties = simpleIncomingChannel("example.com", NoLibMessagingBean.CHANNEL_IN, APP_GROUP_ID);
+        ConnectorProperties incomingProperties = simpleIncomingChannel(null, NoLibMessagingBean.CHANNEL_IN, APP_GROUP_ID);
 
         PropertiesAsset appConfig = new PropertiesAsset()
                         .include(incomingProperties)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,11 +71,11 @@ public class LibertyLoginModuleInvalidTest {
     @Test
     public void testInvalidEncodedPassword() throws Exception {
 
-        String testUser = SaslPlainTests.kafkaContainer.getTestUser();
+        String testUser = SaslPlainTests.TEST_USER;
         String testSecret = "{aes}wibbleWibbleNotValid";
 
         // Override SASL_JAAS_CONFIG in the connection props to test the liberty login module
-        Map<String, Object> connectionProps = KafkaUtils.connectionProperties(SaslPlainTests.kafkaContainer);
+        Map<String, Object> connectionProps = SaslPlainTests.connectionProperties();
         connectionProps.put(SaslConfigs.SASL_JAAS_CONFIG, "com.ibm.ws.kafka.security.LibertyLoginModule required "
                                                           + "username=\"" + testUser + "\" "
                                                           + "password=\"" + testSecret + "\";");
