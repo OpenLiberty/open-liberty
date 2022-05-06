@@ -33,6 +33,7 @@ Service-Component:\
 
 -buildpath: \
 	com.ibm.ws.common.encoder;version=latest, \
+        com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
