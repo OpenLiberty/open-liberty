@@ -17,6 +17,7 @@ Implementation-Version: 3.0.1
 
 Export-Package: jakarta.faces.*; version=${Implementation-Version}
 
+
 DynamicImport-Package: \
   com.ibm.ws.jsf.spi, \
   com.ibm.ws.managedobject, \
@@ -33,7 +34,7 @@ publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
 	org.apache.myfaces.core:myfaces-api;version=${Implementation-Version},\
-	io.openliberty.jakarta.cdi.3.0;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.openliberty.jakarta.expressionLanguage.4.0;version=latest,\
 	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
 	io.openliberty.jakarta.validation.3.0;version=latest,\

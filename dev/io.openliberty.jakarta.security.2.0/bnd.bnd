@@ -19,6 +19,10 @@ Export-Package: \
     jakarta.security.enterprise.credential;version="2.0.0", \
     jakarta.security.enterprise.identitystore;version="2.0.0"
 
+Import-Package: \
+ jakarta.enterprise.util;version="[3.0,5)",\
+ *
+
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec

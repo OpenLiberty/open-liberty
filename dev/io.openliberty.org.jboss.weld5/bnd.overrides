@@ -116,19 +116,19 @@ Import-Package: \
  sun.misc;resolution:=optional,\
  sun.reflect;resolution:=optional,\
  sun.reflect.annotation;resolution:=optional,\
- jakarta.decorator;version="[3.0,4)",\
- jakarta.enterprise.context;version="[3.0,4)",\
- jakarta.enterprise.context.control;version="[3.0,4)",\
- jakarta.enterprise.context.spi;version="[3.0,4)",\
- jakarta.enterprise.event;version="[3.0,4)",\
- jakarta.enterprise.inject;version="[3.0,4)",\
- jakarta.enterprise.inject.build.compatible.spi;version="[3.0,4)",\
- jakarta.enterprise.inject.spi;version="[3.0,4)",\
- jakarta.enterprise.inject.spi.configurator;version="[3.0,4)",\
+ jakarta.decorator;version="[4.0,5)",\
+ jakarta.enterprise.context;version="[4.0,5)",\
+ jakarta.enterprise.context.control;version="[4.0,5)",\
+ jakarta.enterprise.context.spi;version="[4.0,5)",\
+ jakarta.enterprise.event;version="[4.0,5)",\
+ jakarta.enterprise.inject;version="[4.0,5)",\
+ jakarta.enterprise.inject.build.compatible.spi;version="[4.0,5)",\
+ jakarta.enterprise.inject.spi;version="[4.0,5)",\
+ jakarta.enterprise.inject.spi.configurator;version="[4.0,5)",\
  jakarta.enterprise.lang.model;version="[4.0,5)",\
  jakarta.enterprise.lang.model.declarations;version="[4.0,5)",\
  jakarta.enterprise.lang.model.types;version="[4.0,5)",\
- jakarta.enterprise.util;version="[3.0,4)",\
+ jakarta.enterprise.util;version="[4.0,5)",\
  jakarta.inject;version="[2.0,3)",\
  javax.management,\
  javax.naming,\
