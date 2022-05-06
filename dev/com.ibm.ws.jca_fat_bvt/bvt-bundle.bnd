@@ -8,15 +8,14 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../ant_build/resources/bnd/bundle.props
--donotcopy=.jazzignore
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
 # For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
 
-Bundle-Name: JCA 1.6 BVT resource adapters bundle
-Bundle-SymbolicName: test.jca-1.6.bvt.adapter
-Bundle-Description: Test bundle for resource adapters; version=${bVersion}
+Bundle-Name: JCA BVT fake context bundle
+Bundle-SymbolicName: test.jca.fat.bvt.bundle
+Bundle-Description: Test bundle for fake context; version=${bVersion}
 
 # optional... 
 WS-TraceGroup: test
@@ -30,5 +29,7 @@ Import-Package: \
 Private-Package: \
     test.jca*
 
+Include-Resource:\
+ OSGI-INF=test-bundles/jca-bvt-bundle/resources/OSGI-INF
+
 -dsannotations=test.jca.workcontext.CollectionContextProvider, test.jca.cfreference.CFReference
--metatypeannotations=test.jca.cfreference.Config

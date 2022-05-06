@@ -13,34 +13,22 @@ package test.jca.cfreference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.metatype.annotations.Designate;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-import com.ibm.ws.bnd.metatype.annotation.Ext.Alias;
-import com.ibm.ws.bnd.metatype.annotation.Ext.Service;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 /**
  *
  */
-@Designate(ocd = Config.class, factory = true)
-@Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = "test.jca.cfreference",
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
+           immediate = true)
 public class CFReference {
 
     @Reference
     protected ResourceFactory jcaConnectionFactory;
 
-    protected void activate(Config config) {
+    protected void activate() {
         System.out.println("CFReference successfully bound resource factory");
     }
 
-}
-
-@Alias("jcaTestCFReference")
-@ObjectClassDefinition
-@interface Config {
-    @Service("com.ibm.wsspi.resource.ResourceFactory")
-    String jcaConnectionFactory();
-
-    String jcaConnectionFactory_target() default "(service.pid=${jcaConnectionFactory})";
 }

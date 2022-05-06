@@ -12,7 +12,6 @@ package web;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
@@ -30,25 +29,19 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.UserTransaction;
 
+import componenttest.app.FATServlet;
 import web.mdb.BVTMessageDrivenBean;
 
-public class JCABVTServlet extends HttpServlet {
+public class JCABVTServlet extends FATServlet {
     private static final long serialVersionUID = 7709282314904580334L;
 
     // Using this to try to speed up the bucket
     private static final ExecutorService daemon = Executors.newSingleThreadExecutor();
-
-    /**
-     * Message written to servlet to indicate that is has been successfully invoked.
-     */
-    public static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
 
     // Interval (in milliseconds) up to which tests should wait for a single task to run
     private static final long TIMEOUT = 5000;
@@ -56,37 +49,10 @@ public class JCABVTServlet extends HttpServlet {
     @Resource
     private UserTransaction tran;
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("test");
-        if (test == null)
-            return;
-        PrintWriter out = response.getWriter();
-        out.println("Starting " + test + "<br>");
-        System.out.println("Entering test.. " + test);
-
-        try {
-            getClass().getMethod(test, PrintWriter.class).invoke(this, out);
-            out.println(test + " COMPLETED SUCCESSFULLY");
-            System.out.println("Exiting test.. " + test);
-        } catch (Throwable x) {
-            while (x instanceof InvocationTargetException)
-                x = x.getCause();
-            System.out.println("Exiting test.." + test + " with exception.. " + x);
-            x.printStackTrace(System.out);
-            out.println("<pre>ERROR in " + test + ":");
-            x.printStackTrace(out);
-            out.println("</pre>");
-        }
-    }
-
     /**
      * Verify that an activationSpec can be found in the service registry.
-     * 
-     * @param out servlet output
-     * @throws Exception if an error occurs.
      */
-    public void testActivationSpec(PrintWriter out) throws Throwable {
+    public void testActivationSpec(HttpServletRequest req, HttpServletResponse res) throws Throwable {
         @SuppressWarnings("unchecked")
         Queue<String> queue = (Queue<String>) new InitialContext().lookup("java:comp/env/eis/queue2");
         queue.add("item1");
@@ -101,11 +67,8 @@ public class JCABVTServlet extends HttpServlet {
 
     /**
      * Look up administered objects.
-     * 
-     * @param out servlet output
-     * @throws Exception if an error occurs.
      */
-    public void testAdminObjects(PrintWriter out) throws Throwable {
+    public void testAdminObjects(HttpServletRequest req, HttpServletResponse res) throws Throwable {
 
         @SuppressWarnings("unchecked")
         Queue<String> queue = (Queue<String>) new InitialContext().lookup("java:comp/env/eis/queue1");
@@ -146,11 +109,8 @@ public class JCABVTServlet extends HttpServlet {
     /**
      * Lookup the JCA objects like AOs and CFs from jndi using direct lookup and
      * do a smoke test on them by invoking basic operations.
-     * 
-     * @param out servlet output
-     * @throws Throwable Exception if error occurs.
      */
-    public void testDirectLookups(PrintWriter out) throws Throwable {
+    public void testDirectLookups(HttpServletRequest req, HttpServletResponse res) throws Throwable {
         Object cf = new InitialContext().lookup("eis/cf2");
         Object cf1 = new InitialContext().lookup("eis/cf1");
         Object queue1 = new InitialContext().lookup("eis/queue1");
@@ -217,11 +177,8 @@ public class JCABVTServlet extends HttpServlet {
 
     /**
      * Look up a connection factory and use it to perform interactions.
-     * 
-     * @param out servlet output
-     * @throws Exception if an error occurs.
      */
-    public void testConnectionFactory(PrintWriter out) throws Throwable {
+    public void testConnectionFactory(HttpServletRequest req, HttpServletResponse res) throws Throwable {
 
         Object cf = new InitialContext().lookup("java:comp/env/eis/cf2");
         Object recordFactory = cf.getClass().getMethod("getRecordFactory").invoke(cf);
@@ -338,11 +295,8 @@ public class JCABVTServlet extends HttpServlet {
 
     /**
      * Look up a connection factory using a resource ref with container managed authentication.
-     * 
-     * @param out servlet output
-     * @throws Exception if an error occurs.
      */
-    public void testContainerManagedAuth(PrintWriter out) throws Throwable {
+    public void testContainerManagedAuth(HttpServletRequest req, HttpServletResponse res) throws Throwable {
 
         // Container managed auth where bindings specify an authentication-alias
         Object cf = new InitialContext().lookup("java:comp/env/eis/cf1-container-auth-ref");
@@ -381,11 +335,8 @@ public class JCABVTServlet extends HttpServlet {
 
     /**
      * Test sharable connections.
-     * 
-     * @param out servlet output
-     * @throws Exception if an error occurs.
      */
-    public void testSharing(PrintWriter out) throws Throwable {
+    public void testSharing(HttpServletRequest req, HttpServletResponse res) throws Throwable {
 
         Object cf = new InitialContext().lookup("java:comp/env/eis/cf1");
         Object recordFactory = cf.getClass().getMethod("getRecordFactory").invoke(cf);
@@ -479,11 +430,8 @@ public class JCABVTServlet extends HttpServlet {
      * Test the JCA timer.
      * Schedule a repeating timer task that cancels itself on the third run.
      * Schedule a one-shot timer task and cancel the timer before it starts.
-     * 
-     * @param out servlet output
-     * @throws Exception if an error occurs.
      */
-    public void testTimer(PrintWriter out) throws Throwable {
+    public void testTimer(HttpServletRequest req, HttpServletResponse res) throws Throwable {
         Object resourceAdapterAssociation = new InitialContext().lookup("java:comp/env/eis/queue1");
         Object adapter = resourceAdapterAssociation.getClass().getMethod("getResourceAdapter").invoke(resourceAdapterAssociation);
         adapter.getClass().getMethod("testTimer").invoke(adapter);
@@ -491,11 +439,8 @@ public class JCABVTServlet extends HttpServlet {
 
     /**
      * Tests thread context propagation for JCA work manager.
-     * 
-     * @param out servlet output
-     * @throws Exception if an error occurs.
      */
-    public void testWorkContext(PrintWriter out) throws Throwable {
+    public void testWorkContext(HttpServletRequest req, HttpServletResponse res) throws Throwable {
         Object resourceAdapterAssociation = new InitialContext().lookup("java:comp/env/eis/queue1");
         Object adapter = resourceAdapterAssociation.getClass().getMethod("getResourceAdapter").invoke(resourceAdapterAssociation);
         // Run this from the application thread, so that the context of the application is available
@@ -504,11 +449,8 @@ public class JCABVTServlet extends HttpServlet {
 
     /**
      * Tests work context inflow.
-     * 
-     * @param out servlet output
-     * @throws Exception if an error occurs.
      */
-    public void testWorkContextInflow(PrintWriter out) throws Throwable {
+    public void testWorkContextInflow(HttpServletRequest req, HttpServletResponse res) throws Throwable {
 
         Object resourceAdapterAssociation = new InitialContext().lookup("java:comp/env/eis/queue1");
         final Object adapter = resourceAdapterAssociation.getClass().getMethod("getResourceAdapter").invoke(resourceAdapterAssociation);
@@ -529,11 +471,9 @@ public class JCABVTServlet extends HttpServlet {
 
     /**
      * Cause an in-doubt transaction and verify that it gets recovered.
-     * 
-     * @param out servlet output
-     * @throws Exception if an error occurs.
      */
-    public void testXARecovery(PrintWriter out) throws Throwable {
+    public void testXARecovery(HttpServletRequest req, HttpServletResponse res) throws Throwable {
+        PrintWriter out = res.getWriter();
 
         Object[] cons = new Object[2];
         try {

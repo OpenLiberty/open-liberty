@@ -10,17 +10,18 @@
  -->
 <server>
     <featureManager>
+      <feature>componenttest-1.0</feature>
       <feature>concurrent-1.0</feature>
-      <feature>servlet-3.0</feature>
+      <feature>servlet-3.1</feature>
       <feature>ssl-1.0</feature>
-      <feature>jca-1.6</feature>
+      <feature>jca-1.7</feature>
       <feature>jndi-1.0</feature>
-      <feature>mdb-3.1</feature>
+      <feature>mdb-3.2</feature>
       <feature>osgiconsole-1.0</feature>
-      <feature>jca-1.6_bvtbundle-1.0</feature>
+      <feature>usr:jcabvtbundle-1.0</feature>
     </featureManager>
 
-    <include optional="true" location="${shared.config.dir}/bvtTestPorts.xml"/>
+    <include location="../fatTestPorts.xml"/>
 
     <variable name="onError" value="FAIL"/>
 
@@ -72,7 +73,13 @@
 
     <transaction heuristicRetryInterval="2"/>
     
-    <jcaTestCFReference jcaConnectionFactory="cf1"/>
+    <usr_jcaTestCFReference jcaConnectionFactory="cf1"/>
+
+    <javaPermission codebase="${server.config.dir}/resourceadapters/JCARAR1.rar" className="javax.security.auth.PrivateCredentialPermission"
+                    signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
+
+    <javaPermission codebase="${server.config.dir}/resourceadapters/JCARAR2.rar" className="javax.security.auth.PrivateCredentialPermission"
+                    signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
 
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="context"/>

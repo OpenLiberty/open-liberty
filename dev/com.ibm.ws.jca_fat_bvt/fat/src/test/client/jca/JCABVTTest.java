@@ -11,76 +11,66 @@
 package test.client.jca;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.File;
 
-import org.junit.After;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import test.common.SharedOutputManager;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
+import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * Basic tests covering use of a generic resource adapter.
  */
-public class JCABVTTest {
-    private static SharedOutputManager outputMgr;
+@MinimumJavaLevel(javaLevel = 11)
+@RunWith(FATRunner.class)
+public class JCABVTTest extends FATServletClient {
 
-    private static final String PORT = System.getProperty("HTTP_default", "8000");
-
-    /**
-     * Utility method to run a test on JDBCBVTServlet.
-     *
-     * @param test Test name to supply as an argument to the servlet
-     * @return output of the servlet
-     * @throws IOException if an error occurs
-     */
-    private StringBuilder runInServlet(String test) throws IOException {
-        URL url = new URL("http://localhost:" + PORT + "/bvtapp?test=" + test);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br.readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0)
-                fail("Missing success message in output. " + lines);
-
-            return lines;
-        } finally {
-            con.disconnect();
-        }
-    }
+    @Server("com.ibm.ws.jca.fat.bvt")
+    public static LibertyServer server;
 
     /**
-     * Capture stdout/stderr output to the manager.
+     * Set up application and resource adapter.
      *
      * @throws Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        // There are variations of this constructor:
-        // e.g. to specify a log location or an enabled trace spec. Ctrl-Space for suggestions
-        outputMgr = SharedOutputManager.getInstance();
-        checkMessage();
-        outputMgr.captureStreams();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "bvtapp.war")
+                        .addPackages(true, "web")
+                        .addAsWebInfResource(new File("test-applications/bvtapp/resources/WEB-INF/web.xml"))
+                        .addAsWebInfResource(new File("test-applications/bvtapp/resources/WEB-INF/ibm-web-bnd.xml"))
+                        .addAsWebInfResource(new File("test-applications/bvtapp/resources/WEB-INF/ibm-ejb-jar-bnd.xml"));
+        ShrinkHelper.exportToServer(server, "dropins", war);
+        server.addInstalledAppForValidation("bvtapp");
+
+        ResourceAdapterArchive rar1 = ShrinkWrap.create(ResourceAdapterArchive.class, "JCARAR1.rar")
+                        .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
+                                        .addPackage("test.jca.adapter"))
+                        .addAsManifestResource(new File("test-resourceadapters/JCARAR1/resources/META-INF/ra.xml"))
+                        .addAsManifestResource(new File("test-resourceadapters/JCARAR1/resources/META-INF/wlp-ra.xml"));
+        ShrinkHelper.exportToServer(server, "resourceadapters", rar1);
+
+        ResourceAdapterArchive rar2 = ShrinkWrap.create(ResourceAdapterArchive.class, "JCARAR2.rar")
+                        .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
+                                        .addPackage("test.jca.adapter"))
+                        .addAsManifestResource(new File("test-resourceadapters/JCARAR2/resources/META-INF/ra.xml"));
+        ShrinkHelper.exportToServer(server, "resourceadapters", rar2);
+
+        server.startServer();
     }
 
     /**
@@ -90,81 +80,76 @@ public class JCABVTTest {
      */
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        // Make stdout and stderr "normal"
-        outputMgr.restoreStreams();
-    }
-
-    /**
-     * Individual teardown after each test.
-     *
-     * @throws Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-        checkMessage();
-        // Clear the output generated after each method invocation
-        outputMgr.resetStreams();
+        server.stopServer(
+                          "J2CA0027E", // intentionally caused to require XA recovery
+                          "J2CA8625E.*UnsupportedContext", // error path test for unsupported work context type
+                          "J2CA8688E.*J2CA8624E.*CollectionContext", // error path test for duplicate work context
+                          "J2CA8688E.*J2CA8687E.*LONGRUNNING", // error path test for HintsContext with wrong data type
+                          "J2CA8688E.*J2CA8687E.*NAME", // error path test for HintsContext with wrong data type
+                          "WTRN0048W.*RMFAIL" // intentionally caused to require XA recovery
+        );
     }
 
     @Test
     public void testActivationSpec() throws Exception {
-        runInServlet("testActivationSpec");
+        runTest(server, "bvtapp", "testActivationSpec");
     }
 
     @Test
     public void testAdminObjects() throws Exception {
-        runInServlet("testAdminObjects");
+        runTest(server, "bvtapp", "testAdminObjects");
     }
 
     @Test
     public void testContainerManagedAuth() throws Exception {
-        runInServlet("testContainerManagedAuth");
+        runTest(server, "bvtapp", "testContainerManagedAuth");
     }
 
     @Test
     public void testConnectionFactory() throws Exception {
-        runInServlet("testConnectionFactory");
+        runTest(server, "bvtapp", "testConnectionFactory");
     }
 
     @Test
     public void testDirectLookups() throws Exception {
-        runInServlet("testDirectLookups");
+        runTest(server, "bvtapp", "testDirectLookups");
     }
 
     @Test
     public void testSharing() throws Exception {
-        runInServlet("testSharing");
+        runTest(server, "bvtapp", "testSharing");
     }
 
     @Test
     public void testTimer() throws Exception {
-        runInServlet("testTimer");
+        runTest(server, "bvtapp", "testTimer");
     }
 
     @Test
     public void testWorkContext() throws Exception {
-        runInServlet("testWorkContext");
+        runTest(server, "bvtapp", "testWorkContext");
     }
 
+    @AllowedFFDC({
+                   "java.util.concurrent.RejectedExecutionException", // error path test for intentionally caused failure on context apply
+                   "javax.resource.spi.work.WorkCompletedException", // error path test for unsupported work context type
+                   "javax.resource.spi.work.WorkRejectedException" // error path test with ExecutionContext and WorkContext both specified
+    })
     @Test
     public void testWorkContextInflow() throws Exception {
-        runInServlet("testWorkContextInflow");
+        runTest(server, "bvtapp", "testWorkContextInflow");
+    }
+
+    @AllowedFFDC({
+                   "javax.transaction.xa.XAException" // intentionally caused to require XA recovery
+    })
+    @Test
+    public void testXARecovery() throws Exception {
+        runTest(server, "bvtapp", "testXARecovery");
     }
 
     @Test
-    public void testXARecovery() throws Exception {
-        runInServlet("testXARecovery");
-    }
-
-//    @Test  Apparently its not possible to look at the whole message.log in a bvt test?
     public void testService_ObjectClassMatching() throws Exception {
-        assertTrue("Expected 'CFReference successfully bound resource factory' in log", checkMessage());
-    }
-
-    static boolean serviceObjectClassMessageFound;
-
-    private static boolean checkMessage() {
-        serviceObjectClassMessageFound |= outputMgr.checkForMessages("CFReference successfully bound resource factory");
-        return serviceObjectClassMessageFound;
+        assertTrue(server.findStringsInLogs("CFReference successfully bound resource factory").size() > 0);
     }
 }
