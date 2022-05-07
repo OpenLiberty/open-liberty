@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,16 @@ public interface TestPlugin {
     /**
      * Provider specific setup to run before a test.
      *
-     * @throws Exception
+     * @throws Exception If there was an error setting up.
      */
     public void beforeTest() throws Exception;
+
+    /**
+     * Provider specific cleanup to run after a test.
+     *
+     * @throws Exception If there was an error cleaning up.
+     */
+    public void afterTest() throws Exception;
 
     /**
      * Whether the cache should exist before the test retrieves the cache the first time.

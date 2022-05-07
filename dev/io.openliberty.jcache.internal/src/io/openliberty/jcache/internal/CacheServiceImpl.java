@@ -186,8 +186,15 @@ public class CacheServiceImpl implements CacheService {
                      */
                     try {
                         CacheManager cacheManager = cacheManagerService.getCacheManager();
+                        
+                        /*
+                         * The JCache specification says that any cache created outside of the JCache
+                         * APIs should have no types for the key or value. Some providers seem to respect
+                         * that and others don't. If we provide the types in the getCache call, we can
+                         * expect some providers to throw an exception, so don't.
+                         */
                         loadTimeMs = System.currentTimeMillis();
-                        Cache<Object, Object> jCache = cacheManager.getCache(cacheName, Object.class, Object.class);
+                        Cache<Object, Object> jCache = (Cache<Object, Object>) cacheManager.getCache(cacheName);
                         loadTimeMs = System.currentTimeMillis() - loadTimeMs;
 
                         if (jCache != null) {

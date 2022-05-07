@@ -22,6 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 import com.ibm.ws.webcontainer.security.test.servlets.ServletClient;
 
@@ -162,6 +163,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         /*
          * Hazelcast seems to need time to allow to clear remotely. Seems this shouldn't be the case.
          */
+        Log.info(getClass(), "deleteAuthCache_mbean", "SLEEPING...");
         Thread.sleep(10000);
 
         /*

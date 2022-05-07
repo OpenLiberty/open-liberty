@@ -14,6 +14,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import javax.net.ssl.SSLContext;
@@ -32,7 +34,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ManagedHttpClientConnection;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -168,8 +170,8 @@ public class HttpUtils {
         /*
          * Create the insecure HTTPs client.
          */
-        SSLContext sslContext = SSLContextBuilder.create().loadTrustMaterial(new TrustAllStrategy()).build();
-        SSLConnectionSocketFactory connectionFactory = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
+        SSLContext sslContext = SSLContextBuilder.create().loadTrustMaterial(MyTrustAllStrategy.INSTANCE).build();
+        SSLConnectionSocketFactory connectionFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
         return HttpClients.custom()
                         .setSSLSocketFactory(connectionFactory)
                         .setDefaultCredentialsProvider(credProvider)
@@ -255,5 +257,18 @@ public class HttpUtils {
         StatusLine statusLine = response.getStatusLine();
         Log.info(clazz, methodName, request.getMethod() + " " + request.getURI() + " ---> " + statusLine.getStatusCode()
                                     + " " + statusLine.getReasonPhrase());
+    }
+
+    /**
+     * This replicates the TrustAllStrategy implemented in later versions of httpclient. We define our own so
+     * earlier versions work.
+     */
+    private static class MyTrustAllStrategy implements TrustStrategy {
+        public static final MyTrustAllStrategy INSTANCE = new MyTrustAllStrategy();
+
+        @Override
+        public boolean isTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
+            return true;
+        }
     }
 }

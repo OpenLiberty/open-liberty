@@ -615,7 +615,7 @@ public class KeycloakAdmin {
         /*
          * Create an HTTP client and execute the request.
          */
-        Log.info(CLASS, METHOD_NAME, "Requesting to create realm " + realm + "at URL " + request.getURI());
+        Log.info(CLASS, METHOD_NAME, "Requesting to create realm " + realm + " at URL " + request.getURI());
         try (CloseableHttpClient httpClient = KeycloakUtils.getInsecureHttpClient()) {
             try (CloseableHttpResponse response = httpClient.execute(request)) {
                 if (HttpStatus.SC_CREATED != response.getStatusLine().getStatusCode()) {
