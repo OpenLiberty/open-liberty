@@ -12,9 +12,9 @@
 package io.openliberty.ejbcontainer.fat.checkpoint.ejb;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -27,9 +27,9 @@ public class CheckpointStatistics {
     private static final TimeUnit PRELOAD_WAIT_UNITS = TimeUnit.SECONDS;
 
     private static List<String> ClassStaticInitList = new ArrayList<String>();
-    private static Map<String, Integer> InstanceCountMap = new HashMap<String, Integer>();
-    private static Map<String, Integer> PostConstructCountMap = new HashMap<String, Integer>();
-    private static Map<String, CountDownLatch> PreloadLatchMap = new HashMap<String, CountDownLatch>();
+    private static Map<String, Integer> InstanceCountMap = new ConcurrentHashMap<String, Integer>();
+    private static Map<String, Integer> PostConstructCountMap = new ConcurrentHashMap<String, Integer>();
+    private static Map<String, CountDownLatch> PreloadLatchMap = new ConcurrentHashMap<String, CountDownLatch>();
 
     public static void beanClassInitialized(String beanName, int poolSize) {
         ClassStaticInitList.add(beanName);
