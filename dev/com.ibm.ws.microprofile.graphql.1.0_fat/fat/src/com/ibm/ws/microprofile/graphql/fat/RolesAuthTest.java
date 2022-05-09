@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ import componenttest.topology.utils.FATServletClient;
 
 import mpGraphQL10.rolesAuth.RolesAuthTestServlet;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 @RunWith(FATRunner.class)
@@ -41,6 +43,10 @@ public class RolesAuthTest extends FATServletClient {
         WebArchive webArchive = ShrinkHelper.buildDefaultApp(APP_NAME, "mpGraphQL10.rolesAuth");
         ShrinkHelper.exportAppToServer(server, webArchive);
         server.startServer();
+
+        // wait for LTPA key to be available to avoid CWWKS4000E
+        assertNotNull("CWWKS4105I.* not received on server",
+                      server.waitForStringInLog("CWWKS4105I.*"));
     }
 
     @AfterClass
