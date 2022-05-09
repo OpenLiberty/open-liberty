@@ -31,7 +31,7 @@ public class LTPATokenizer {
 
     private static final char TOKEN_DELIM_PERCENT = '%';
     private static final char USER_DATA_DELIM_DOLLAR = '$';
-    private static final char USER_ATTRIB_DELIM_COLLON = ':';
+    private static final char USER_ATTRIB_DELIM_COLON = ':';
     private static final char STRING_ATTRIB_DELIM_CHAR_PIPE = '|';
     private static final String STRING_ATTRIB_DELIM_PIPE = "|";
     private static final char BACKSLASH = '\\';
@@ -53,13 +53,13 @@ public class LTPATokenizer {
                 ArrayList<String> list = attributes.get(key);
                 String value = convertArrayListToString(list);
                 if (value != null) {
-                    sb.append(key).append(USER_ATTRIB_DELIM_COLLON).append(value).append(USER_DATA_DELIM_DOLLAR);
+                    sb.append(key).append(USER_ATTRIB_DELIM_COLON).append(value).append(USER_DATA_DELIM_DOLLAR);
                 }
             }
         } else {
             for (Entry<String, ArrayList<String>> entry : attributes.entrySet()) {
                 String value = convertArrayListToString(entry.getValue());
-                sb.append(entry.getKey()).append(USER_ATTRIB_DELIM_COLLON).append(value).append(USER_DATA_DELIM_DOLLAR);
+                sb.append(entry.getKey()).append(USER_ATTRIB_DELIM_COLON).append(value).append(USER_DATA_DELIM_DOLLAR);
             }
         }
 
@@ -145,7 +145,7 @@ public class LTPATokenizer {
         int keyIndex = 0;
         int dataLen = data.length();
         for (keyIndex = 0; keyIndex < dataLen; keyIndex++) {
-            if ((data.charAt(keyIndex) == USER_ATTRIB_DELIM_COLLON) && (data.charAt(keyIndex - 1) != BACKSLASH)) {
+            if ((data.charAt(keyIndex) == USER_ATTRIB_DELIM_COLON) && (data.charAt(keyIndex - 1) != BACKSLASH)) {
                 key = data.substring(0, keyIndex);
                 value = data.substring(keyIndex + 1, dataLen);
                 ArrayList<String> list = convertStringToArrayList(key, value);
@@ -245,7 +245,7 @@ public class LTPATokenizer {
             switch (c) {
                 case TOKEN_DELIM_PERCENT:
                 case USER_DATA_DELIM_DOLLAR:
-                case USER_ATTRIB_DELIM_COLLON:
+                case USER_ATTRIB_DELIM_COLON:
                 case STRING_ATTRIB_DELIM_CHAR_PIPE:
                     sb.append(BACKSLASH);
                     break;
@@ -275,7 +275,7 @@ public class LTPATokenizer {
             char c = str.charAt(i);
             if ((c == BACKSLASH) && (i < len - 1)) {
                 char d = str.charAt(i + 1);
-                if (!((d == USER_DATA_DELIM_DOLLAR) || (d == USER_ATTRIB_DELIM_COLLON) || (d == TOKEN_DELIM_PERCENT) || (d == BACKSLASH))) {
+                if (!((d == USER_DATA_DELIM_DOLLAR) || (d == USER_ATTRIB_DELIM_COLON) || (d == TOKEN_DELIM_PERCENT) || (d == STRING_ATTRIB_DELIM_CHAR_PIPE) || (d == BACKSLASH))) {
                     // if next char is delim, skip this escape char
                     sb.append(c);
                 }
