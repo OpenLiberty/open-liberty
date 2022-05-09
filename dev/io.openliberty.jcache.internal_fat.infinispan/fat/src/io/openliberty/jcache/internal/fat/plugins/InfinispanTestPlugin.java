@@ -78,6 +78,11 @@ public class InfinispanTestPlugin implements TestPlugin {
 
     @Override
     public boolean skipTtlTest() {
+        /*
+         * Disable b/c tests were failing due to the JCache provider not evicting in a short / timely fashion.
+         * Besides, we are only testing whether the JCache provider is evicting, which isn't really our
+         * functionality.
+         */
         return true;
     }
 }

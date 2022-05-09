@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import org.junit.After;
 import org.junit.Before;
@@ -73,24 +74,38 @@ public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
     @Server("io.openliberty.jcache.internal.fat.spnego.auth.cache.1")
     public static LibertyServer server1;
 
+    /**
+     * Use a {@link KdcResource} for this test.
+     *
+     * We pass in a {@link Callable} to set up the configuration since we can't
+     * do it in the {@link #beforeClass()} method as JUnit does not
+     * guarantee the order in which {@link ClassRule} and {@link BeforeClass}
+     * will run (it is JRE dependent). Our setup depends on the {@link KdcResource} being
+     * configured, thus why we pass it in as a {@link Callable}.
+     */
     @ClassRule
-    public static KdcResource kdcResource = new KdcResource();
+    public static KdcResource kdcResource = new KdcResource(new Callable<Void>() {
+
+        @Override
+        public Void call() throws Exception {
+            /*
+             * Create our KRB5 principle.
+             */
+            ApacheDSandKDC.createPrincipal(USER1_NAME, USER1_PASSWORD);
+
+            /*
+             * Create an SPN entry and keytab for that SPN entry.
+             * Create the KRB5 configuration file.
+             */
+            ApacheDSandKDC.createSpnegoSPNEntry(SPN_DN, SPN, SPN_PWD);
+            spnKeytabFile = ApacheDSandKDC.createSpnegoSPNKeytab(CANONICAL_HOSTNAME, SPN, SPN_PWD);
+            krb5ConfFile = ApacheDSandKDC.getDefaultConfigFile();
+            return null;
+        }
+    });
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        /*
-         * Create our KRB5 principle.
-         */
-        ApacheDSandKDC.createPrincipal(USER1_NAME, USER1_PASSWORD);
-
-        /*
-         * Create an SPN entry and keytab for that SPN entry.
-         * Create the KRB5 configuration file.
-         */
-        ApacheDSandKDC.createSpnegoSPNEntry(SPN_DN, SPN, SPN_PWD);
-        spnKeytabFile = ApacheDSandKDC.createSpnegoSPNKeytab(CANONICAL_HOSTNAME, SPN, SPN_PWD);
-        krb5ConfFile = ApacheDSandKDC.getDefaultConfigFile();
-
         /*
          * Transform apps for EE9+.
          */
