@@ -81,6 +81,7 @@ public class JCABVTTest extends FATServletClient {
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         server.stopServer(
+                          "CWWKE0700W", // TODO remove this once RTC 290586 fixed
                           "J2CA0027E", // intentionally caused to require XA recovery
                           "J2CA8625E.*UnsupportedContext", // error path test for unsupported work context type
                           "J2CA8688E.*J2CA8624E.*CollectionContext", // error path test for duplicate work context
@@ -131,6 +132,7 @@ public class JCABVTTest extends FATServletClient {
     }
 
     @AllowedFFDC({
+                   "java.util.concurrent.ExecutionException", // error path test for unsupported work context type
                    "java.util.concurrent.RejectedExecutionException", // error path test for intentionally caused failure on context apply
                    "jakarta.resource.spi.work.WorkCompletedException", // error path test for unsupported work context type
                    "jakarta.resource.spi.work.WorkRejectedException" // error path test with ExecutionContext and WorkContext both specified
