@@ -24,7 +24,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -34,6 +33,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.auth.CredentialDestroyedException;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationData;
@@ -59,7 +59,8 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
-import com.ibm.ws.webcontainer.security.HttpSessionCache;
+import com.ibm.ws.webcontainer.security.CookieHelper;
+import com.ibm.ws.webcontainer.security.OidcSessionCache;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
@@ -115,6 +116,8 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
 
     int iClientIsBeforeSso = 0;
     boolean needProviderHint = true;
+
+    private static boolean issuedBetaMessage = false;
 
     protected void setOidcClientConfig(ServiceReference<OidcClientConfig> ref) {
         synchronized (initOidcClientAuthLock) {
@@ -434,35 +437,45 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     }
 
     @Override
-    public void logoutIfSessionInactive(HttpServletRequest req, String provider) {
+    public void logoutIfSessionInvalidated(HttpServletRequest req) {
+        if (!isRunningBetaMode()) {
+            return;
+        }
+
         // don't logout if state exists (hasn't authenticated yet)
         if (requestHasStateCookie(req)) {
             return;
         }
 
+        String provider = getOidcProvider(req);
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
-        if (!oidcClientConfig.isBackchannelLogoutSupported()) {
-            return;
-        }
 
-        HttpSession httpSession = req.getSession(false);
-        if (httpSession == null) {
-            return;
-        }
-
-        String httpSessionId = httpSession.getId();
-
-        HttpSessionCache httpSessionCache = oidcClientConfig.getHttpSessionCache();
-        if (httpSessionCache.isSessionActive(httpSessionId)) {
+        OidcSessionCache oidcSessionCache = oidcClientConfig.getOidcSessionCache();
+        String wasOidcSessionId = CookieHelper.getCookieValue(req.getCookies(), ClientConstants.WAS_OIDC_SESSION);
+        if (!oidcSessionCache.isSessionInvalidated(wasOidcSessionId)) {
             return;
         }
 
         try {
             req.logout();
+            oidcSessionCache.removeInvalidatedSession(wasOidcSessionId);
         } catch (ServletException e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Could not logout inactive session. An exception is caught : " + e);
+                Tr.debug(tc, "Could not logout invalidated session. An exception is caught : " + e);
             }
+        }
+    }
+
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
         }
     }
 

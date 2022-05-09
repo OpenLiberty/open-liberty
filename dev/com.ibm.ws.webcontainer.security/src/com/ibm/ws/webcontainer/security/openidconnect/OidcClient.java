@@ -53,5 +53,5 @@ public interface OidcClient {
      */
     boolean anyClientIsBeforeSso();
 
-    void logoutIfSessionInactive(HttpServletRequest req, String provider);
+    void logoutIfSessionInvalidated(HttpServletRequest req);
 }

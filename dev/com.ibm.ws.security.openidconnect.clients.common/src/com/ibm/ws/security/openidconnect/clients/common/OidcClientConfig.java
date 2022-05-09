@@ -11,7 +11,7 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import com.ibm.ws.security.common.structures.SingleTableCache;
-import com.ibm.ws.webcontainer.security.HttpSessionCache;
+import com.ibm.ws.webcontainer.security.OidcSessionCache;
 
 public interface OidcClientConfig extends ConvergedClientConfig {
 
@@ -88,7 +88,7 @@ public interface OidcClientConfig extends ConvergedClientConfig {
 
     public SingleTableCache getCache();
 
-    public HttpSessionCache getHttpSessionCache();
+    public OidcSessionCache getOidcSessionCache();
 
     public boolean getAccessTokenCacheEnabled();
 

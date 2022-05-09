@@ -58,6 +58,7 @@ public class ClientConstants {
     public static final String WAS_REQ_URL_OIDC = "WASReqURLOidc";
     public static final String WAS_OIDC_CODE = "WASOidcCode";
     public static final String WAS_OIDC_NONCE = "WASOidcNonce";
+    public static final String WAS_OIDC_SESSION = "WASOidcSession";
 
     public final static String RESPONSEMAP_CODE = "RESPONSEMAP_CODE";
     public final static String RESPONSEMAP_METHOD = "RESPONSEMAP_METHOD";

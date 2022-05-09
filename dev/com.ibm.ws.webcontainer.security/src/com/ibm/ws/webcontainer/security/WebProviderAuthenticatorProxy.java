@@ -1,4 +1,5 @@
 /*******************************************************************************
+
  * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -587,13 +588,9 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         if (oidcClient == null) {
             return new AuthenticationResult(AuthResult.CONTINUE, "OpenID Connect client is not available, skipping OpenID Connect client...");
         }
-        String provider = oidcClient.getOidcProvider(req);
-        if (provider == null) {
-            return new AuthenticationResult(AuthResult.CONTINUE, "not an OpenID Connect client request, skipping OpenID Connect client...");
-        }
 
         if (firstCall) {
-            oidcClient.logoutIfSessionInactive(req, provider);
+            oidcClient.logoutIfSessionInvalidated(req);
 
             // let's check if any oidcClient need to be called beforeSso. If not, return
             if (!oidcClient.anyClientIsBeforeSso()) {
@@ -601,6 +598,10 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
             }
         }
 
+        String provider = oidcClient.getOidcProvider(req);
+        if (provider == null) {
+            return new AuthenticationResult(AuthResult.CONTINUE, "not an OpenID Connect client request, skipping OpenID Connect client...");
+        }
         ProviderAuthenticationResult oidcResult = oidcClient.authenticate(req, res, provider, referrerURLCookieHandler, firstCall);
 
         if (oidcResult.getStatus() == AuthResult.CONTINUE) {

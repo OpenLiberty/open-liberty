@@ -20,7 +20,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
-import com.ibm.ws.webcontainer.security.HttpSessionCache;
+import com.ibm.ws.webcontainer.security.OidcSessionCache;
 
 public class BackchannelLogoutHelper {
 
@@ -89,8 +89,8 @@ public class BackchannelLogoutHelper {
             String sub = logoutTokenClaims.getSubject();
             String sid = logoutTokenClaims.getClaimValue("sid", String.class);
 
-            HttpSessionCache httpSessionCache = clientConfig.getOidcClientConfig().getHttpSessionCache();
-            httpSessionCache.removeSession(sub, sid);
+            OidcSessionCache oidcSessionCache = clientConfig.getOidcClientConfig().getOidcSessionCache();
+            oidcSessionCache.invalidateSession(sub, sid);
         } catch (Exception e) {
             String errorMsg = Tr.formatMessage(tc, "BACKCHANNEL_LOGOUT_PERFORM_LOGOUT_FAILED", new Object[] { logoutTokenClaims, e.getMessage() });
             throw new BackchannelLogoutException(errorMsg, HttpServletResponse.SC_NOT_IMPLEMENTED);
