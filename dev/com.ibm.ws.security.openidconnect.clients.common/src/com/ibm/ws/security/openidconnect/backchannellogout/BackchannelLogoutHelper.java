@@ -92,8 +92,9 @@ public class BackchannelLogoutHelper {
             OidcSessionCache oidcSessionCache = clientConfig.getOidcClientConfig().getOidcSessionCache();
             oidcSessionCache.invalidateSession(sub, sid);
         } catch (Exception e) {
-            String errorMsg = Tr.formatMessage(tc, "BACKCHANNEL_LOGOUT_PERFORM_LOGOUT_FAILED", new Object[] { logoutTokenClaims, e.getMessage() });
-            throw new BackchannelLogoutException(errorMsg, HttpServletResponse.SC_NOT_IMPLEMENTED);
+            // should not get here
+            // sub and sid claims have been validated and invalidating the session(s) does not throw any errors
+            // if we ever get here, we should be returning a status code of 501 as per the backchannel logout spec
         }
     }
 
