@@ -64,12 +64,33 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
             return false;
         }
 
-        List<String> sessionsToInvalidate = httpSessionsStore.getSessions(sid);
-        if (sessionsToInvalidate.size() == 0) {
+        String sessionToInvalidate = httpSessionsStore.getSession(sid);
+        if (sessionToInvalidate == null) {
             return false;
         }
 
         httpSessionsStore.removeSession(sid);
+
+        return invalidatedSessions.add(sessionToInvalidate);
+    }
+
+    @Override
+    public boolean invalidateSessions(String sub) {
+        if (sub == null || sub.isEmpty()) {
+            return false;
+        }
+
+        OidcSessionsStore httpSessionsStore = subToOidcSessionsMap.get(sub);
+        if (httpSessionsStore == null) {
+            return false;
+        }
+
+        List<String> sessionsToInvalidate = httpSessionsStore.getSessions();
+        if (sessionsToInvalidate.size() == 0) {
+            return false;
+        }
+
+        httpSessionsStore.removeSessions();
 
         return invalidatedSessions.addAll(sessionsToInvalidate);
     }
@@ -102,16 +123,20 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
             return sessions.add(oidcSessionId);
         }
 
-        public List<String> getSessions(String sid) {
+        public String getSession(String sid) {
+            if (sid == null || sid.isEmpty()) {
+                return null;
+            }
+            if (!sidToSessionsMap.containsKey(sid)) {
+                return null;
+            }
+            return sidToSessionsMap.get(sid).get(0);
+        }
+
+        public List<String> getSessions() {
             List<String> sessions = new ArrayList<>();
-            if (sid != null && !sid.isEmpty()) {
-                if (sidToSessionsMap.containsKey(sid)) {
-                    sessions.addAll(sidToSessionsMap.get(sid));
-                }
-            } else {
-                for (String key : sidToSessionsMap.keySet()) {
-                    sessions.addAll(sidToSessionsMap.get(key));
-                }
+            for (String key : sidToSessionsMap.keySet()) {
+                sessions.addAll(sidToSessionsMap.get(key));
             }
             return sessions;
         }
@@ -121,6 +146,10 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
                 List<String> removedSession = sidToSessionsMap.remove(sid);
                 return removedSession != null;
             }
+            return false;
+        }
+
+        public boolean removeSessions() {
             if (sidToSessionsMap.keySet().size() == 0) {
                 return false;
             }
