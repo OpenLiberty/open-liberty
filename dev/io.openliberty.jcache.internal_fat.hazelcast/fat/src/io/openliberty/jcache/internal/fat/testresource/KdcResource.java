@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
@@ -57,6 +60,7 @@ public class KdcResource extends ExternalResource {
     private boolean sunOracleJdkV8Higher;
     private boolean otherSupportJdks;
     private boolean runTests;
+    private Callable<Void> oneTimeSetup;
 
     private static final Oid KRB5_MECH_OID;
     private static final Oid SPNEGO_MECH_OID;
@@ -76,6 +80,21 @@ public class KdcResource extends ExternalResource {
         SPNEGO_MECH_OID = spnegoMechOid;
     }
 
+    public KdcResource() {
+        /* Default constructor. */
+    }
+
+    /**
+     * Construct a {@link KdcResource} instance that includes a one-time setup
+     * {@link Callable} that will be run after all other services have been
+     * initialized.
+     *
+     * @param oneTimeSetup The one time setup {@link Callable} to call.
+     */
+    public KdcResource(Callable<Void> oneTimeSetup) {
+        this.oneTimeSetup = oneTimeSetup;
+    }
+
     @Override
     protected void before() throws Exception {
         final String thisMethod = "before";
@@ -88,6 +107,16 @@ public class KdcResource extends ExternalResource {
          */
         if (runTests) {
             ApacheDSandKDC.setupService();
+
+            /*
+             * Perform any one time setup.
+             */
+            if (oneTimeSetup != null) {
+                Log.info(c, thisMethod, "Started running one time setup...");
+                Future<Void> future = Executors.newSingleThreadExecutor().submit(oneTimeSetup);
+                future.get();
+                Log.info(c, thisMethod, "Finished running one time setup.");
+            }
         }
 
         Log.info(c, thisMethod, "Configuring SpengoResource is complete.");
