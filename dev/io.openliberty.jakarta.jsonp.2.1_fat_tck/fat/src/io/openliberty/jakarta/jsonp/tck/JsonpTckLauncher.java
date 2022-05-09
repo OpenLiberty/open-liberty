@@ -56,9 +56,7 @@ public class JsonpTckLauncher {
         // Opened an issue against the jsonp tck https://github.com/eclipse-ee4j/jsonp/issues/376
         if (System.getProperty("os.name").contains("Windows")) {
             Log.info(JsonpTckLauncher.class, "setUp", "Skipping JSONP Signature Test on Windows and Semeru JDK");
-            additionalProps.put("exclude.tests", "ee.jakarta.tck.jsonp.signaturetest.jsonp.JSONPSigTest.java,ee.jakarta.tck.jsonp.api.provider.JsonProviderTest.java");
-        } else {
-            additionalProps.put("exclude.tests", "ee.jakarta.tck.jsonp.api.provider.JsonProviderTest.java");
+            additionalProps.put("exclude.tests", "ee.jakarta.tck.jsonp.signaturetest.jsonp.JSONPSigTest.java");
         }
 
     }
