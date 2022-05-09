@@ -49,7 +49,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     public static final String ID = "EE9_FEATURES";
 
     private static final String TRANSFORMER_RULES_APPEND_ROOT = System.getProperty("user.dir") + "/publish/rules/";
-    private static final String TRANSFORMER_RULES_ROOT = System.getProperty("user.dir") + "/autoFVT-templates/";
+    static final String TRANSFORMER_RULES_ROOT = System.getProperty("user.dir") + "/autoFVT-templates/";
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap();
 
@@ -67,7 +67,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         //   (other xml properties files as referenced by 'jakarta-text.properties'
         DEFAULT_TRANSFORMATION_RULES.put("-tr", TRANSFORMER_RULES_ROOT + "jakarta-renames.properties"); // Package renames
         DEFAULT_TRANSFORMATION_RULES.put("-ts", TRANSFORMER_RULES_ROOT + "jakarta-selections.properties"); // File selections and omissions
-        DEFAULT_TRANSFORMATION_RULES.put("-tv", TRANSFORMER_RULES_ROOT + "jakarta-versions.properties"); // Package version updates
+        DEFAULT_TRANSFORMATION_RULES.put("-tv", TRANSFORMER_RULES_ROOT + "jakarta-versions-ee9.properties"); // Package version updates
         DEFAULT_TRANSFORMATION_RULES.put("-tb", TRANSFORMER_RULES_ROOT + "jakarta-bundles.properties"); // bundle identity updates
         DEFAULT_TRANSFORMATION_RULES.put("-td", TRANSFORMER_RULES_ROOT + "jakarta-direct.properties"); // exact java string constant updates
         DEFAULT_TRANSFORMATION_RULES.put("-tf", TRANSFORMER_RULES_ROOT + "jakarta-text.properties"); // text updates
@@ -332,6 +332,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {
+        transformApp(appPath, newAppPath, DEFAULT_TRANSFORMATION_RULES, TRANSFORMATION_RULES_APPEND);
+    }
+
+    protected static void transformApp(Path appPath, Path newAppPath, Map<String, String> defaultTransformationRules,
+                                       Map<String, String> transformationRulesAppend) {
         final String m = "transformApp";
         Log.info(c, m, "Transforming app: " + appPath);
 
@@ -391,7 +396,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
         try {
             // Invoke the jakarta transformer
-            String[] args = new String[15 + TRANSFORMATION_RULES_APPEND.size() * 2];
+            String[] args = new String[15 + transformationRulesAppend.size() * 2];
 
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
@@ -401,27 +406,27 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             // override jakarta default properties, which are
             // packaged in the transformer jar
             args[3] = "-tr"; // package-renames
-            args[4] = DEFAULT_TRANSFORMATION_RULES.get("-tr");
+            args[4] = defaultTransformationRules.get("-tr");
             args[5] = "-ts"; // file selections and omissions
-            args[6] = DEFAULT_TRANSFORMATION_RULES.get("-ts");
+            args[6] = defaultTransformationRules.get("-ts");
             args[7] = "-tv"; // package version updates
-            args[8] = DEFAULT_TRANSFORMATION_RULES.get("-tv");
+            args[8] = defaultTransformationRules.get("-tv");
             args[9] = "-tb"; // bundle identity updates
-            args[10] = DEFAULT_TRANSFORMATION_RULES.get("-tb");
+            args[10] = defaultTransformationRules.get("-tb");
             args[11] = "-td"; // exact java string constant updates
-            args[12] = DEFAULT_TRANSFORMATION_RULES.get("-td");
+            args[12] = defaultTransformationRules.get("-td");
             args[13] = "-tf"; // text updates
-            args[14] = DEFAULT_TRANSFORMATION_RULES.get("-tf");
+            args[14] = defaultTransformationRules.get("-tf");
 
             // Go through the additions
-            if (TRANSFORMATION_RULES_APPEND.size() > 0) {
-                String[] additions = new String[TRANSFORMATION_RULES_APPEND.size() * 2];
+            if (transformationRulesAppend.size() > 0) {
+                String[] additions = new String[transformationRulesAppend.size() * 2];
                 int index = 0;
-                for (Entry<String, String> addition : TRANSFORMATION_RULES_APPEND.entrySet()) {
+                for (Entry<String, String> addition : transformationRulesAppend.entrySet()) {
                     additions[index++] = addition.getKey();
                     additions[index++] = addition.getValue();
                 }
-                System.arraycopy(additions, 0, args, 15, TRANSFORMATION_RULES_APPEND.size() * 2);
+                System.arraycopy(additions, 0, args, 15, transformationRulesAppend.size() * 2);
             }
 
             Log.info(c, m, "Initializing transformer with args: " + Arrays.toString(args));

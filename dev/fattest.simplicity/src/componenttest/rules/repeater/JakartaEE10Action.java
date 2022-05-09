@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,8 +39,28 @@ public class JakartaEE10Action extends FeatureReplacementAction {
     public static final String ID = "EE10_FEATURES";
 
     private static final String TRANSFORMER_RULES_APPEND_ROOT = System.getProperty("user.dir") + "/publish/rules/";
+    private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap();
 
+    static {
+        // Fill the default transformation rules for the transformer
+        // The rules are copied from 'open-liberty/dev/wlp-jakartaee-transform/rules' to
+        // the user 'autoFVT-templates' folder.
+        //
+        //   jakarta-selections.properties
+        //   jakarta-renames.properties
+        //   jakarta-versions.properties
+        //   jakarta-bundles.properties
+        //   jakarta-direct.properties
+        //   jakarta-text.properties
+        //   (other xml properties files as referenced by 'jakarta-text.properties'
+        DEFAULT_TRANSFORMATION_RULES.put("-tr", JakartaEE9Action.TRANSFORMER_RULES_ROOT + "jakarta-renames.properties"); // Package renames
+        DEFAULT_TRANSFORMATION_RULES.put("-ts", JakartaEE9Action.TRANSFORMER_RULES_ROOT + "jakarta-selections.properties"); // File selections and omissions
+        DEFAULT_TRANSFORMATION_RULES.put("-tv", JakartaEE9Action.TRANSFORMER_RULES_ROOT + "jakarta-versions-ee10.properties"); // Package version updates
+        DEFAULT_TRANSFORMATION_RULES.put("-tb", JakartaEE9Action.TRANSFORMER_RULES_ROOT + "jakarta-bundles.properties"); // bundle identity updates
+        DEFAULT_TRANSFORMATION_RULES.put("-td", JakartaEE9Action.TRANSFORMER_RULES_ROOT + "jakarta-direct.properties"); // exact java string constant updates
+        DEFAULT_TRANSFORMATION_RULES.put("-tf", JakartaEE9Action.TRANSFORMER_RULES_ROOT + "jakarta-text.properties"); // text updates
+    }
     // TODO This will eventually be a list of Jakarta EE 10 features.
     // TODO Replace EE 9 features in the list below with EE 10 features when they are added.
     //
@@ -271,10 +291,19 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param appPath The application path to be transformed to Jakarta
      */
     public static void transformApp(Path appPath) {
-        if (TRANSFORMATION_RULES_APPEND.isEmpty())
-            JakartaEE9Action.transformApp(appPath, null);
-        else
-            JakartaEE9Action.transformApp(appPath, null, TRANSFORMATION_RULES_APPEND);
+        transformApp(appPath, null);
+    }
+
+    /**
+     * Invoke the Jakarta transformer on an application with added transformation rules.
+     *
+     * @param appPath                   The application path to be transformed to Jakarta
+     * @param newAppPath                The application path of the transformed file (or <code>null<code>)
+     * @param transformationRulesAppend The map with the additional transformation rules to add
+     */
+    public static void transformApp(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
+        TRANSFORMATION_RULES_APPEND.putAll(transformationRulesAppend);
+        transformApp(appPath, newAppPath);
     }
 
     /**
@@ -291,9 +320,6 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {
-        if (TRANSFORMATION_RULES_APPEND.isEmpty())
-            JakartaEE9Action.transformApp(appPath, newAppPath);
-        else
-            JakartaEE9Action.transformApp(appPath, newAppPath, TRANSFORMATION_RULES_APPEND);
+        JakartaEE9Action.transformApp(appPath, newAppPath, DEFAULT_TRANSFORMATION_RULES, TRANSFORMATION_RULES_APPEND);
     }
 }

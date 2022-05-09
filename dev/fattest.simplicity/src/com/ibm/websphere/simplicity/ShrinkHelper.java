@@ -34,6 +34,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyClient;
@@ -217,7 +218,8 @@ public class ShrinkHelper {
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents) {
         // overwrite by default when transforming to EE9 to EE10
-        return exportArtifact(a, dest, printArchiveContents, JakartaEE9Action.isActive() || JakartaEE10Action.isActive());
+        return exportArtifact(a, dest, printArchiveContents,
+                              RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID));
     }
 
     /**
@@ -251,9 +253,9 @@ public class ShrinkHelper {
         exportedArchives.add(outputFile);
         if (outputFile.exists() && !overWrite) {
             Log.info(ShrinkHelper.class, "exportArtifact", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
-            if (JakartaEE9Action.isActive()) {
+            if (RepeatTestFilter.isRepeatActionActive(JakartaEE9Action.ID)) {
                 JakartaEE9Action.transformApp(outputFile.toPath());
-            } else if (JakartaEE10Action.isActive()) {
+            } else if (RepeatTestFilter.isRepeatActionActive(JakartaEE10Action.ID)) {
                 JakartaEE10Action.transformApp(outputFile.toPath());
             }
             return a;
@@ -266,9 +268,9 @@ public class ShrinkHelper {
         }
         if (printArchiveContents)
             Log.info(ShrinkHelper.class, "exportArtifact", a.toString(true));
-        if (JakartaEE9Action.isActive()) {
+        if (RepeatTestFilter.isRepeatActionActive(JakartaEE9Action.ID)) {
             JakartaEE9Action.transformApp(outputFile.toPath());
-        } else if (JakartaEE10Action.isActive()) {
+        } else if (RepeatTestFilter.isRepeatActionActive(JakartaEE10Action.ID)) {
             JakartaEE10Action.transformApp(outputFile.toPath());
         }
         return a;

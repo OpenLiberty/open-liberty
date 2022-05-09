@@ -636,7 +636,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         for (ExpectedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
                 String[] exceptionClasses = ffdc.value();
-                if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+                if (RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID)) {
                     String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
                     System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
                     int index = 0;
@@ -690,7 +690,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         for (AllowedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
                 String[] exceptionClasses = ffdc.value();
-                if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+                if (RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID)) {
                     String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
                     System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
                     int index = 0;

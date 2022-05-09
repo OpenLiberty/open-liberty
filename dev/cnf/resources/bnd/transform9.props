@@ -9,11 +9,11 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
-# Used to transform bundles so that imported versions work with Jakarta EE 9 or higher.
+# Used to transform bundles so that imported versions work with Jakarta EE 9, but not necessarily with EE 10.
 
 -transformer: \
    renames;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-renames.properties, \
    selection;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-selections.properties, \
-   versions;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-versions.properties, \
+   versions;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-versions-ee9.properties, \
    direct;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-direct.properties, \
    text;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-text.properties
