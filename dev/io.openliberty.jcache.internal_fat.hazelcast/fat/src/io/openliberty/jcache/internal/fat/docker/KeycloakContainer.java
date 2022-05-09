@@ -46,9 +46,9 @@ public class KeycloakContainer extends GenericContainer<KeycloakContainer> {
 
     /*
      * Defined realms for the Keycloak IDP. The default realm is a restricted word,
-     * so we create a test realm to use for tests. This prevents the word from 
+     * so we create a test realm to use for tests. This prevents the word from
      * needing to be used anywhere else other than this class.
-     * 
+     *
      * If future versions of Keycloak come pre-configured with a suitable realm
      * name we can simply use that realm.
      */
@@ -121,14 +121,27 @@ public class KeycloakContainer extends GenericContainer<KeycloakContainer> {
          *
          * The default realm the Keycloak docker image ships configured with is a restricted word,
          * so to avoid it proliferating across our source and configuration, create a new realm here.
-         * 
+         *
          * We can still use the same admin user from the default realm.
          */
-        try {
-            keycloakAdmin.createRealm(TEST_REALM);
-        } catch (Exception e) {
-            Log.error(CLASS, "start", e, CLASS.getName() + " failed to create realm " + TEST_REALM + " .");
-            throw new RuntimeException("Failed to create realm " + TEST_REALM, e);
+        long end = System.currentTimeMillis() + 60000; // Retry for 1 minute.
+        while (true) {
+            try {
+                keycloakAdmin.createRealm(TEST_REALM);
+                break;
+            } catch (Exception e) {
+                if (System.currentTimeMillis() > end) {
+                    Log.error(CLASS, "start", e, CLASS.getName() + " failed to create realm " + TEST_REALM + " .");
+                    throw new RuntimeException("Failed to create realm " + TEST_REALM, e);
+                } else {
+                    Log.error(CLASS, "start", e, CLASS.getName() + " failed to create realm " + TEST_REALM + " . Retrying in 5 seconds...");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ie) {
+                        // Ignore.
+                    }
+                }
+            }
         }
     }
 
