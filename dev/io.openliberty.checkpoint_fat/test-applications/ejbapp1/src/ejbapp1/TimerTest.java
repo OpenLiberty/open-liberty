@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
+import javax.ejb.Timer;
 
 @Singleton
 public class TimerTest {
@@ -26,7 +27,7 @@ public class TimerTest {
     private final AtomicBoolean failed = new AtomicBoolean(false);
 
     @Schedule(hour = "*", minute = "*", second = "*/1", persistent = false)
-    public void everyOneSeconds() {
+    public void everyOneSeconds(Timer timer) {
         long currentTime = System.nanoTime();
         long lastTime = lastRun.getAndSet(currentTime);
         if (lastTime == -1) {
@@ -34,7 +35,7 @@ public class TimerTest {
         }
         long deltaTime = currentTime - lastTime;
         long deltaMillis = TimeUnit.NANOSECONDS.toMillis(deltaTime);
-        // here we assume if delta is less than 700 millis then something is wrong
+        // here we assume if delta is less than 800 millis then something is wrong
         if (deltaMillis < 800) {
             failed.set(true);
         }
@@ -45,6 +46,7 @@ public class TimerTest {
             } else {
                 System.out.println("TIMER TEST - PASSED");
             }
+            timer.cancel();
         }
     }
 }
