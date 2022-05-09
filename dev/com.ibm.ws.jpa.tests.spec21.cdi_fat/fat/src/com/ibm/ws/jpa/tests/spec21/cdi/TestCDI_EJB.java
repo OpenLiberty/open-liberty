@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.FeatureManager;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.cdi.jpalib.ejb.web.JPACDIWithJPALibEJBServlet;
 import com.ibm.ws.jpa.fvt.cdi.simple.ejb.web.JPACDISimpleEJBServlet;
@@ -46,6 +47,8 @@ public class TestCDI_EJB extends JPAFATServletClient {
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
+
+    private final static String BEANSXML_RESDIR = "test-applications/CDI/beansxml";
 
     private static long timestart = 0;
 
@@ -131,6 +134,11 @@ public class TestCDI_EJB extends JPAFATServletClient {
         cdiSimpleEjb.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.simple.model");
         cdiSimpleEjb.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.simple.ejb");
         ShrinkHelper.addDirectory(cdiSimpleEjb, RESOURCE_ROOT + appFolder + "/" + appNameEar + "/" + appName + ".jar");
+        if (isLesserThanCDI4()) {
+            ShrinkHelper.addDirectory(cdiSimpleEjb, BEANSXML_RESDIR + "/jar.resources.cdiLT4");
+        } else {
+            ShrinkHelper.addDirectory(cdiSimpleEjb, BEANSXML_RESDIR + "/jar.resources.cdiEGT4");
+        }
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
@@ -168,6 +176,11 @@ public class TestCDI_EJB extends JPAFATServletClient {
         jpalib.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.jpalib.model");
         jpalib.addPackages(false, "com.ibm.ws.jpa.fvt.cdi.jpalib");
         ShrinkHelper.addDirectory(jpalib, RESOURCE_ROOT + appFolder + "/" + appNameEar + "/lib/jpamodel.jar");
+        if (isLesserThanCDI4()) {
+            ShrinkHelper.addDirectory(jpalib, BEANSXML_RESDIR + "/jar.resources.cdiLT4");
+        } else {
+            ShrinkHelper.addDirectory(jpalib, BEANSXML_RESDIR + "/jar.resources.cdiEGT4");
+        }
 
         // TestCDIWithJPALib.war
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
@@ -178,6 +191,11 @@ public class TestCDI_EJB extends JPAFATServletClient {
         JavaArchive cdiJPALibEjb = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
         cdiJPALibEjb.addPackages(false, "com.ibm.ws.jpa.fvt.cdi.jpalib.ejb");
         ShrinkHelper.addDirectory(cdiJPALibEjb, RESOURCE_ROOT + appFolder + "/" + appNameEar + "/" + appName + ".jar");
+        if (isLesserThanCDI4()) {
+            ShrinkHelper.addDirectory(cdiJPALibEjb, BEANSXML_RESDIR + "/jar.resources.cdiLT4");
+        } else {
+            ShrinkHelper.addDirectory(cdiJPALibEjb, BEANSXML_RESDIR + "/jar.resources.cdiEGT4");
+        }
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
@@ -228,5 +246,21 @@ public class TestCDI_EJB extends JPAFATServletClient {
             }
             bannerEnd(TestCDI_EJB.class, timestart);
         }
+    }
+
+    private static boolean isLesserThanCDI4() {
+        try {
+            ServerConfiguration svrCfg = server.getServerConfiguration();
+            FeatureManager fm = svrCfg.getFeatureManager();
+            Set<String> features = fm.getFeatures();
+            if (features.contains("cdi-1.2") || features.contains("cdi-2.0") || features.contains("cdi-3.0")) {
+                return true;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return true;
+        }
+
+        return false;
     }
 }
