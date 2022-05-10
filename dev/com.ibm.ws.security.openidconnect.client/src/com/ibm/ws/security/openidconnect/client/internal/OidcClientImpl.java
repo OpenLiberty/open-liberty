@@ -49,10 +49,6 @@ import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.oauth20.util.OAuth20ProviderUtils;
-import com.ibm.ws.security.openidconnect.client.AccessTokenAuthenticator;
-import com.ibm.ws.security.openidconnect.client.AttributeToSubjectExt;
-import com.ibm.ws.security.openidconnect.client.OidcClientAuthenticator;
-import com.ibm.ws.security.openidconnect.client.OidcClientCache;
 import com.ibm.ws.security.openidconnect.client.web.OidcRedirectServlet;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
@@ -448,6 +444,10 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         }
 
         String provider = getOidcProvider(req);
+        if (provider == null) {
+            return;
+        }
+
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
 
         OidcSessionCache oidcSessionCache = oidcClientConfig.getOidcSessionCache();
