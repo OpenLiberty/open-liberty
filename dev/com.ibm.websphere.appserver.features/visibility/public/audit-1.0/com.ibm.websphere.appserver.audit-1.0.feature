@@ -8,6 +8,7 @@ Subsystem-Name: Audit 1.0
   io.openliberty.audit1.0.internal.ee-6.0; ibm.tolerates:="9.0, 10.0", \
   com.ibm.websphere.appserver.auditCollector-1.0
 -bundles=com.ibm.ws.security.audit.utils, \
- com.ibm.json4j
+  com.ibm.ws.security.audit.file, \
+  com.ibm.json4j
 kind=ga
 edition=core

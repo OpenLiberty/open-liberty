@@ -9,7 +9,6 @@ visibility = private
   io.openliberty.appSecurity-5.0
   
 -bundles=\
-  com.ibm.ws.security.audit.file.jakarta,\
   com.ibm.ws.request.probe.audit.servlet.jakarta
 
 kind=noship
