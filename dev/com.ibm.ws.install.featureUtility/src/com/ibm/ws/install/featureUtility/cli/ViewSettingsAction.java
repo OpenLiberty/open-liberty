@@ -143,7 +143,7 @@ public class ViewSettingsAction implements ActionHandler {
                 } catch (UnsupportedCryptoAlgorithmException ucae) {
                     throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.CONNECTION_FAILED);
                 }
-//                }
+           }
 
                 sb.append(PropertiesUtils.getMessage("FIELD_NAME") + " " + r).append(InstallUtils.NEWLINE);
                 sb.append(PropertiesUtils.getMessage("FIELD_LOCATION") + " " + url).append(InstallUtils.NEWLINE);
@@ -158,8 +158,7 @@ public class ViewSettingsAction implements ActionHandler {
                     }
                 }
                 sb.append(InstallUtils.NEWLINE);
-            }
-        }
+           }
 
         System.out.println(PropertiesUtils.getMessage("MSG_CONFIG_REPO_LABEL"));
         System.out.println(PropertiesUtils.CmdlineConstants.DASHES);
