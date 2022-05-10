@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/ConcurrencyTestEJB/src"/>
 	<classpathentry kind="src" path="test-applications/ConcurrencyTestWeb/src"/>
-	<classpathentry kind="src" path="test-applications/ConcurrencyJSPTestApp/src"/>
 	<classpathentry kind="src" path="test-applications/ConcurrencyTestError/src"/>
 	<classpathentry kind="src" path="test-libraries/LocationUtils/src"/>
 	<classpathentry kind="src" path="test-libraries/PriorityContext/src"/>
