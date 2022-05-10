@@ -37,7 +37,7 @@ Import-Package: \
    javax.annotation;version=!,\
    *
 
-Include-Resource: OSGI-INF=resources/OSGI-INF
+Include-Resource: OSGI-INF=../com.ibm.ws.jaxrs.2.0.server/resources/OSGI-INF
     
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 

@@ -25,6 +25,9 @@ Import-Package: \
 Export-Package: \
 	com.ibm.ws.webcontainer.monitor
 
+# ServletStatsMXBean is duplicated into a private package in this bundle in
+# addition to in com.ibm.ws.webcontainer so that when monitor-1.0 feature is 
+# removed from the server.xml it doesn't require the web container to be restarted.
 Private-Package: \
 	com.ibm.websphere.webcontainer
 

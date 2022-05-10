@@ -23,7 +23,6 @@ Export-Package: com.ibm.js.test, \
                 com.ibm.mqst.jetsam
 
 -buildpath: \
-	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.websphere.javaee.jms.1.1;version=latest,\
 	com.ibm.ws.messaging.utils;version=latest,\
 	com.ibm.ws.container.service;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,20 +32,6 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
  */
 public class ArchiveExpander {
 
-    private static final UnixModeHelper helper;
-
-    static {
-        UnixModeHelper helper2 = null;
-        try {
-            Class.forName("java.nio.file.attribute.PosixFilePermission");
-            helper2 = new Java7UnixModeHelper();
-        } catch (ClassNotFoundException e) {
-            // Expected on Java 6, in which case we don't use the helper and cope.
-            helper2 = new ChmodUnixModeHelper();
-        }
-        helper = helper2;
-    }
-
     /**
      * @param args the source and target locations, as absolute paths.
      */
@@ -62,10 +48,10 @@ public class ArchiveExpander {
     /**
      * Expand the specified archive to the specified location
      * <p>
-     * 
+     *
      * @param sourcePath path of the archive to be expanded.
      * @param targetPath location to where the archive is to be expanded.
-     *            <p>
+     *                       <p>
      * @returns true if the archive was successfully expanded, false otherwise.
      */
     public static boolean expandArchive(String sourcePath, String targetPath) {
@@ -109,9 +95,7 @@ public class ArchiveExpander {
 
                 if (ending == '/' || ending == '\\') {
                     fileMkDirs(targetFile);
-                    if (helper != null) {
-                        helper.setPermissions(targetFile, entry.getUnixMode());
-                    }
+                    Java7UnixModeHelper.setPermissions(targetFile, entry.getUnixMode());
                     continue;
                 } else {
                     fileMkDirs(targetFile.getParentFile());
@@ -128,9 +112,7 @@ public class ArchiveExpander {
                 // Close the streams
                 out.close();
 
-                if (helper != null) {
-                    helper.setPermissions(targetFile, entry.getUnixMode());
-                }
+                Java7UnixModeHelper.setPermissions(targetFile, entry.getUnixMode());
 
                 out = null;
             }
