@@ -16,6 +16,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -27,6 +28,7 @@ import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.LeaseInfo;
@@ -123,6 +125,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             Tr.exit(tc, "SQLSharedServerStatusLog", this);
     }
 
+    @FFDCIgnore({ SQLException.class, SQLRecoverableException.class })
     @Override
     public synchronized void getLeasesForPeers(final PeerLeaseTable peerLeaseTable, String recoveryGroup) throws Exception {
         if (tc.isEntryEnabled())
@@ -167,15 +170,24 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Lease retrieval failed with exception: " + sqlex);
-            Tr.audit(tc, "WTRN0107W: " +
-                         "Caught SQLException when retrieving peer leases, exc: " + sqlex);
+            if (_serverStopping) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The server is stopping, lease retrieval failed with exception: " + sqlex);
+            } else {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught SQLException when retrieving peer leases, exc: " + sqlex);
+            }
             // Set the exception that will be reported
             currentSqlEx = sqlex;
         } catch (Throwable exc) {
-            Tr.audit(tc, "WTRN0107W: " +
-                         "Caught non-SQLException Throwable when retrieving peer leases, exc: " + exc);
+            if (_serverStopping) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The server is stopping, lease retrieval failed with exception: " + exc);
+            } else {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught non-SQLException Throwable when retrieving peer leases, exc: " + exc);
+            }
+            // Set the exception that will be reported
             nonTransientException = exc;
         } finally {
 
@@ -192,9 +204,14 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                         conn.close();
                     }
                 } catch (Throwable exc) {
-                    // Trace the exception
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Tidy up Failed, after lease retrieval failure, got exception: " + exc);
+                    // Report the exception
+                    if (_serverStopping) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "The server is stopping. Tidy up failed, after lease retrieval failure, with exception: " + exc);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Tidy up failed, after lease retrieval failure, with exception: " + exc);
+                    }
                 }
 
                 // if the server is stopping, we should simply return without driving any retry logic
@@ -345,6 +362,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
      * @param leaseTime
      * @throws Exception
      */
+    @FFDCIgnore({ SQLException.class, SQLRecoverableException.class })
     @Override
     public synchronized void updateServerLease(String recoveryIdentity, String recoveryGroup, boolean isServerStartup) throws Exception {
         if (tc.isEntryEnabled())
@@ -423,13 +441,24 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
-            Tr.audit(tc, "WTRN0107W: " +
-                         "Caught SQLException when updating server lease: " + sqlex);
+            if (_serverStopping) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The server is stopping, lease update failed with exception: " + sqlex);
+            } else {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught SQLException when updating server lease, exc: " + sqlex);
+            }
             // Set the exception that will be reported
             currentSqlEx = sqlex;
         } catch (Throwable exc) {
-            Tr.audit(tc, "WTRN0107W: " +
-                         "Caught non-SQLException Throwable when updating server lease: " + exc);
+            if (_serverStopping) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The server is stopping, lease update failed with exception: " + exc);
+            } else {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught non-SQLException Throwable when updating server lease, exception: " + exc);
+            }
+            // Set the exception that will be reported
             nonTransientException = exc;
         } finally {
 
@@ -446,9 +475,14 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                         conn.close();
                     }
                 } catch (Throwable exc) {
-                    // Trace the exception
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Tidy up Failed, after lease update failure, got exception: " + exc);
+                    // Report the exception
+                    if (_serverStopping) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "The server is stopping. Tidy up failed, after lease update failure, with exception: " + exc);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Tidy up failed, after lease update failure, with exception: " + exc);
+                    }
                 }
 
                 // if the server is stopping, we should simply return without driving any retry logic
@@ -926,6 +960,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 //TODO:HEY ISSUE HERE IS THAT in the case where we are doing peer recovery we will have updated the lease ourselves at the start of peer
 //TODO:recovery. How do we know if original server has re-started and needs the lease to NOT be deleted? Or does it matter? ie if the lease
 //TODO:is deleted by a peer, could the original server not simply (re)insert its own row?
+    @FFDCIgnore({ SQLException.class, SQLRecoverableException.class })
     @Override
     public synchronized void deleteServerLease(String recoveryIdentity) throws Exception {
         if (tc.isEntryEnabled())
@@ -972,15 +1007,24 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Lease delete failed with exception: " + sqlex);
-            Tr.audit(tc, "WTRN0107W: " +
-                         "Caught SQLException when deleting lease for server with identity: " + recoveryIdentity + ", exc: " + sqlex);
+            if (_serverStopping) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The server is stopping, lease delete failed for server with identity: " + recoveryIdentity + ", exception: " + sqlex);
+            } else {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught SQLException when deleting lease for server with identity: " + recoveryIdentity + ", exception: " + sqlex);
+            }
             // Set the exception that will be reported
             currentSqlEx = sqlex;
         } catch (Throwable exc) {
-            Tr.audit(tc, "WTRN0107W: " +
-                         "Caught non-SQLException Throwable when deleting lease for server with identity: " + recoveryIdentity + ", exc: " + exc);
+            if (_serverStopping) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The server is stopping, lease delete failed for server with identity: " + recoveryIdentity + ", exception: " + exc);
+            } else {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught non-SQLException Throwable when deleting lease for server with identity: " + recoveryIdentity + ", exception: " + exc);
+            }
+            // Set the exception that will be reported
             nonTransientException = exc;
         } finally {
 
@@ -995,9 +1039,14 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                         conn.close();
                     }
                 } catch (Throwable exc) {
-                    // Trace the exception
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Tidy up Failed, after lease delete failure, got exception: " + exc);
+                    // Report the exception
+                    if (_serverStopping) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "The server is stopping. Tidy up failed, after lease delete failure, with exception: " + exc);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Tidy up failed, after lease delete failure, with exception: " + exc);
+                    }
                 }
 
                 // if the server is stopping, we should simply return without driving any retry logic
@@ -1076,6 +1125,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
      * @param myRecoveryIdentity
      * @throws Exception
      */
+    @FFDCIgnore({ SQLException.class, SQLRecoverableException.class })
     @Override
     public synchronized boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception {
         if (tc.isEntryEnabled())
@@ -1122,17 +1172,32 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Lease claim failed with exception: " + sqlex);
-            Tr.audit(tc, "WTRN0107W: " +
-                         "Caught SQLException for server with recovery identity " + myRecoveryIdentity +
-                         " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover + ", exc: " + sqlex);
+            if (_serverStopping) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The server is stopping, caught SQLException for server with recovery identity " + myRecoveryIdentity +
+                                 " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover +
+                                 ", exception: " + sqlex);
+            } else {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught SQLException for server with recovery identity " + myRecoveryIdentity +
+                             " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover +
+                             ", exception: " + sqlex);
+            }
             // Set the exception that will be reported
             currentSqlEx = sqlex;
         } catch (Throwable exc) {
-            Tr.audit(tc, "WTRN0107W: " +
-                         "Caught non-SQLException Throwable for server with recovery identity " + myRecoveryIdentity +
-                         " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover + ", exc: " + exc);
+            if (_serverStopping) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The server is stopping, caught non-SQLException Throwable for server with recovery identity " + myRecoveryIdentity +
+                                 " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover +
+                                 ", exception: " + exc);
+            } else {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught non-SQLException Throwable for server with recovery identity " + myRecoveryIdentity +
+                             " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover +
+                             ", exception: " + exc);
+            }
+            // Set the exception that will be reported
             nonTransientException = exc;
         } finally {
 
@@ -1151,9 +1216,14 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                         conn.close();
                     }
                 } catch (Throwable exc) {
-                    // Trace the exception
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Tidy up Failed, after lease claim failure, got exception: " + exc);
+                    // Report the exception
+                    if (_serverStopping) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "The server is stopping. Tidy up failed, after lease claim failure, with exception: " + exc);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Tidy up failed, after lease claim failure, with exception: " + exc);
+                    }
                 }
 
                 // if the server is stopping, we should simply return without driving any retry logic
