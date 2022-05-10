@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright (c) 2011,2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" version="1.6">
+  <description>This is the ra.xml for RAR2</description> 
+  <display-name>BVT Resource Adapter II</display-name> 
+  <vendor-name>IBM</vendor-name> 
+  <eis-type>Derby</eis-type> 
+  <resourceadapter-version>1.0</resourceadapter-version> 
+  <resourceadapter>
+    <resourceadapter-class>test.jca.adapter.BVTResourceAdapter</resourceadapter-class>
+    <config-property>
+      <description>Create database if doesn't exist?</description>
+      <config-property-name>createDatabase</config-property-name> 
+      <config-property-type>java.lang.Boolean</config-property-type>
+    </config-property>
+    <config-property>
+      <description>Name of database</description>
+      <config-property-name>databaseName</config-property-name> 
+      <config-property-type>java.lang.String</config-property-type> 
+      <config-property-value>jcabvtdb</config-property-value>
+    </config-property>
+    <config-property>
+      <description>Default user name</description>
+      <config-property-name>userName</config-property-name> 
+      <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+      <description>Default password</description>
+      <config-property-name>password</config-property-name> 
+      <config-property-type>java.lang.String</config-property-type>
+      <config-property-confidential>true</config-property-confidential>
+    </config-property>
+    <outbound-resourceadapter>
+      <connection-definition>
+        <managedconnectionfactory-class>test.jca.adapter.BVTManagedConnectionFactory</managedconnectionfactory-class>
+        <config-property>
+          <description>Create a default table if it doesn't exist?</description>
+          <config-property-name>autoCreateTable</config-property-name> 
+          <config-property-type>java.lang.Boolean</config-property-type> 
+          <config-property-value>true</config-property-value>
+        </config-property> 
+        <config-property>
+          <description>Name of database table</description>
+          <config-property-name>tableName</config-property-name> 
+          <config-property-type>java.lang.String</config-property-type> 
+        </config-property>
+        <config-property>
+          <description>SSL socket factory</description>
+          <config-property-name>sslSocketFactory</config-property-name> 
+          <config-property-type>java.lang.String</config-property-type> 
+        </config-property>
+        <config-property>
+          <description>User name</description>
+          <config-property-name>userName</config-property-name> 
+          <config-property-type>java.lang.String</config-property-type> 
+        </config-property>
+        <config-property>
+          <description>Password</description>
+          <config-property-name>password</config-property-name> 
+          <config-property-type>java.lang.String</config-property-type>
+          <config-property-confidential>true</config-property-confidential>
+        </config-property>
+        <connectionfactory-interface>jakarta.resource.cci.ConnectionFactory</connectionfactory-interface> 
+        <connectionfactory-impl-class>test.jca.adapter.BVTConnectionFactory</connectionfactory-impl-class> 
+        <connection-interface>jakarta.resource.cci.Connection</connection-interface> 
+        <connection-impl-class>test.jca.adapter.BVTConnection</connection-impl-class> 
+      </connection-definition>
+      <transaction-support>XATransaction</transaction-support> 
+      <reauthentication-support>false</reauthentication-support> 
+    </outbound-resourceadapter>
+  </resourceadapter>
+</connector>

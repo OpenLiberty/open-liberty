@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2011,2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: JCA BVT fake context bundle
+Bundle-SymbolicName: test.jca.fat.bvt.bundle
+Bundle-Description: Test bundle for fake context; version=${bVersion}
+
+# optional... 
+WS-TraceGroup: test
+
+Export-Package: \
+    test.jca.workcontext
+
+Import-Package: \
+    !*.internal.*, *
+
+Private-Package: \
+    test.jca*
+
+Include-Resource:\
+ OSGI-INF=test-bundles/jca-bvt-bundle/resources/OSGI-INF
+
+-dsannotations=test.jca.workcontext.CollectionContextProvider, test.jca.cfreference.CFReference
