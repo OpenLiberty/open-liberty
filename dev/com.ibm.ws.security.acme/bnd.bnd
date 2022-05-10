@@ -38,7 +38,6 @@ Export-Package: \
     com.ibm.ws.security.acme;version="1.0.0"
  
 Private-Package: \
-    com.ibm.ws.config.xml.internal.nester, \
     com.ibm.ws.security.acme.internal.*,\
     org.bouncycastle.*,\
     org.shredzone.*,\
@@ -80,7 +79,6 @@ instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.websphere.appserver.spi.httptransport;version=latest,\
 	com.ibm.websphere.appserver.spi.ssl;version=latest,\
-	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
 	com.ibm.ws.context;version=latest,\
 	com.ibm.ws.javaee.metadata.context;version=latest,\
@@ -105,7 +103,8 @@ instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.ws.rest.handler;version=latest,\
 	com.ibm.ws.management.security;version=latest,\
-	com.ibm.ws.kernel.feature;version=latest
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.config;version=latest
 	
 
 -testpath: \

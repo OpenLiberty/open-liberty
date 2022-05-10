@@ -29,10 +29,9 @@ Export-Package: \
   com.ibm.wsspi.security.common.auth.module;thread-context=true
 
 Import-Package: \
-  com.ibm.ws.common.internal.encoder, \
-  !*.internal.*, \
-  !com.ibm.ws.kernel.boot.cmdline, \
-  *
+	!*.internal.*,\
+	!com.ibm.ws.kernel.boot.cmdline,\
+	*
 
 Private-Package: \
   com.ibm.ws.security.authentication.internal.*
@@ -126,7 +125,6 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.security.token;version=latest,\
-	com.ibm.ws.common.encoder,\
 	com.ibm.ws.security.common,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.security.credentials;version=latest,\

@@ -53,7 +53,7 @@ instrument.disabled: true
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.ws.common.encoder;version=latest, \
+	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.logging;version=latest,\

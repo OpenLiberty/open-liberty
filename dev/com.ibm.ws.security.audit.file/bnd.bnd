@@ -20,15 +20,13 @@ WS-TraceGroup: audit
 Export-Package:
 
 Private-Package: \
-   com.ibm.ws.config.xml.internal.nester, \
    com.ibm.ws.security.audit.file, \
    com.ibm.ws.security.audit.logutils, \
    com.ibm.ws.security.audit.file.internal.resources
 
 DynamicImport-Package: \
   com.ibm.wsspi.request.probe.*, \
-  com.ibm.webcontainer.security.*, \
-  com.ibm.ws.common.internal.encoder
+  com.ibm.webcontainer.security.*
 
 Include-Resource: \
    OSGI-INF=resources/OSGI-INF

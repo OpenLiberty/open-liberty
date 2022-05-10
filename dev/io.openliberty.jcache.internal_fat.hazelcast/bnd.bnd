@@ -42,5 +42,6 @@ generate.replacement: true
 	com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1;version=latest,\
 	com.ibm.ws.security.spnego.fat.common;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
-	com.ibm.ws.security.oauth.oidc_fat.common;version=latest
+	com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
+	com.ibm.ws.kernel.service;version=latest
     

@@ -47,7 +47,7 @@ public class LoggedOutJwtSsoCookieCache {
             md.update(input.getBytes("UTF-8"));
         } catch (UnsupportedEncodingException e) {
         }
-        String result = com.ibm.ws.common.internal.encoder.Base64Coder.base64EncodeToString(md.digest());
+        String result = com.ibm.ws.common.encoder.Base64Coder.base64EncodeToString(md.digest());
         return result;
     }
 

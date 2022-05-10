@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.common.internal.encoder;
+package com.ibm.ws.common.encoder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -30,7 +30,7 @@ public class Base64CoderTest {
     public TestRule managerRule = outputMgr;
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(byte[])}.
      */
     @Test
     public void base64DecodeByteArray_null() {
@@ -39,7 +39,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(byte[])}.
      */
     @Test
     public void base64DecodeByteArray_zeroSizeArray() {
@@ -48,7 +48,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(byte[])}.
      */
     @Test
     public void base64DecodeByteArray_1SizeArray() {
@@ -57,7 +57,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(byte[])}.
      */
     @Test
     public void base64DecodeByteArray_2SizeArray() {
@@ -66,7 +66,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(byte[])}.
      */
     @Test
     public void base64DecodeByteArray_3SizeArray() {
@@ -75,7 +75,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(byte[])}.
      */
     @Test
     public void base64DecodeByteArray_4SizeArray() {
@@ -84,7 +84,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_null() {
@@ -93,7 +93,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_1Length() {
@@ -102,7 +102,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_2Length() {
@@ -111,7 +111,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_3Length() {
@@ -120,7 +120,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_4Length() {
@@ -129,7 +129,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_5Length() {
@@ -138,7 +138,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_6Length() {
@@ -147,7 +147,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_7Length() {
@@ -156,7 +156,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_8Length() {
@@ -165,7 +165,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Decode(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Decode(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_longerString() {
@@ -173,7 +173,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#toString(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#toString(byte[])}.
      */
     @Test
     public void toStringByteArray_null() {
@@ -181,7 +181,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#toString(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#toString(byte[])}.
      */
     @Test
     public void toStringByteArray_emptyArray() {
@@ -190,7 +190,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#toString(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#toString(byte[])}.
      */
     @Test
     public void toStringByteArray_validArray() {
@@ -201,7 +201,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Encode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Encode(byte[])}.
      */
     @Test
     public void base64Encode_nullBytes() {
@@ -210,7 +210,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Encode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Encode(byte[])}.
      */
     @Test
     public void base64Encode_nullString() {
@@ -219,7 +219,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Encode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Encode(byte[])}.
      */
     @Test
     public void base64Encode_emptyArray() {
@@ -229,7 +229,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Encode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Encode(byte[])}.
      */
     @Test
     public void base64Encode_zeroValueSingleByteArray() {
@@ -239,7 +239,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Encode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Encode(byte[])}.
      */
     @Test
     public void base64Encode_singleCharString() {
@@ -249,7 +249,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Encode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Encode(byte[])}.
      */
     @Test
     public void base64Encode_twoCharString() {
@@ -259,7 +259,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Encode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Encode(byte[])}.
      */
     @Test
     public void base64Encode_longString() {
@@ -269,7 +269,7 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64DecodeString(java.lang.String)}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64DecodeString(java.lang.String)}.
      */
     @Test
     public void base64DecodeString_nullString() {
@@ -284,11 +284,11 @@ public class Base64CoderTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.common.internal.encoder.Base64Coder#base64Encode(byte[])}.
+     * Test method for {@link com.ibm.ws.common.encoder.Base64Coder#base64Encode(byte[])}.
      */
     @Test
     public void base64EncodeToString_longString() {
-        byte [] bytes = "4TUZR3aU8II+cWveDgIB7ffDQZaKxx1VKlUBW7KsLa2AQjiB6RWBoNuoH+OIUbtntMIsS2956ZvdzSshAuPNuk7y30BhN00WclWtMY6AD7je2aecQxsGNrV/ogCAOip9EobBue4N1zU8S7yD1jEajykfN8Eo2rIqnMK/DraTV65gmlE378VS3Wy6IFHmZm9BBlaSNqPLBkyJ1Xh98PACMr8f/bF290AD75nGrrB0oXODaeoA85/hpiHpvxSNCFx+P3QDvRly5Bb16SQRhHmUhX0uegAdURKAaeX3gmu8zXQ=".getBytes();
+        byte[] bytes = "4TUZR3aU8II+cWveDgIB7ffDQZaKxx1VKlUBW7KsLa2AQjiB6RWBoNuoH+OIUbtntMIsS2956ZvdzSshAuPNuk7y30BhN00WclWtMY6AD7je2aecQxsGNrV/ogCAOip9EobBue4N1zU8S7yD1jEajykfN8Eo2rIqnMK/DraTV65gmlE378VS3Wy6IFHmZm9BBlaSNqPLBkyJ1Xh98PACMr8f/bF290AD75nGrrB0oXODaeoA85/hpiHpvxSNCFx+P3QDvRly5Bb16SQRhHmUhX0uegAdURKAaeX3gmu8zXQ=".getBytes();
         assertTrue("The size of the encoding is always a multiple of 4 bytes",
                    (Base64Coder.base64EncodeToString(bytes).length() % 4) == 0);
     }

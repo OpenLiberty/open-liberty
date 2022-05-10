@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ Export-Package: \
   com.ibm.wsspi.security.csiv2.*
 
 Private-Package: \
-  com.ibm.ws.config.xml.internal.nester, \
   com.ibm.ws.security.csiv2.internal.resources, \
   com.ibm.ws.transport.iiop.yoko.helper, \
   com.ibm.ws.transport.iiop.asn1*
@@ -36,6 +35,7 @@ com.ibm.websphere.ras;version="[1.2,2)", \
 com.ibm.websphere.ras.annotation;version="[1.0,2)", \
 com.ibm.websphere.security.cred;version="[1.2,2)", \
 com.ibm.websphere.ssl;version="[1.1,2)", \
+com.ibm.ws.config.xml.nester;version="[1.0,2)", \
 com.ibm.ws.ffdc;version="[1.0,2)", \
 com.ibm.ws.ras.instrument.annotation;version="[1.0,2)", \
 com.ibm.ws.security.authentication;version="[1.0,2)", \
@@ -101,7 +101,8 @@ instrument.classesExcludes: com/ibm/ws/security/csiv2/internal/resources/*.class
 	com.ibm.ws.ssl;version=latest,\
 	com.ibm.ws.transport.iiop;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.security.mp.jwt.proxy;version=latest
+	com.ibm.ws.security.mp.jwt.proxy;version=latest,\
+	com.ibm.ws.config;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

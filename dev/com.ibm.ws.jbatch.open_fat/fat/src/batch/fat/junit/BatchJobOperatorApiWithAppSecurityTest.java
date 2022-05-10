@@ -50,7 +50,7 @@ import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DataSourceProperties;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.jbatch.test.FatUtils;
 import com.ibm.ws.jbatch.test.BatchAppUtils;
 import com.ibm.ws.jbatch.test.dbservlet.DbServletClient;

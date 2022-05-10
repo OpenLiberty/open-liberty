@@ -37,6 +37,7 @@ dependencies {
                project(':com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1'),
                project(':com.ibm.ws.security.spnego.fat.common'),
                project(':com.ibm.ws.security.jaas.common'),
+               project(':com.ibm.ws.kernel.service'),
                'jtidy:jtidy:4aug2000r7-dev',
                'rhino:js:1.6R5',
                'net.sourceforge.htmlunit:htmlunit:2.59.0'
