@@ -248,6 +248,7 @@ public class HungRequestTiming {
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         int previous = lines.size();
+        CommonTasks.writeLogMsg(Level.INFO, "----> 1 - No of Hung detection warnings found : " + previous);
         assertTrue("No Hung detection warning found!!!", (previous > 0));
 
         String line1 = lines.get(previous - 1);
@@ -267,19 +268,19 @@ public class HungRequestTiming {
 
         lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         int current = lines.size();
-        CommonTasks.writeLogMsg(Level.INFO, "----> Hung Warnings found : " + current);
+        CommonTasks.writeLogMsg(Level.INFO, "----> 2 - No of Hung detection warnings found : " + current);
 
         // Retry the request again, since sometimes in the SOE builds, the feature update takes
         // some time, and the request is created before the feature is properly updated,
         // and the requestTiming warning does not registered in time.
-        if (current == 0) {
+        if (current - previous == 0) {
             CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry the request because no hung request warning found!");
             createRequest(4000);
             server.waitForStringInLogUsingMark("TRAS0114W", 30000);
             lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
             current = lines.size();
         }
-        assertTrue("No Hung detection warning found!!!", (current - previous > 0));
+        assertTrue("No new Hung detection warning found!!!", (current - previous > 0));
 
         String line2 = lines.get(current - 1);
         CommonTasks.writeLogMsg(Level.INFO, "----> Hung RequestWarning 2 : " + line2);
@@ -319,12 +320,13 @@ public class HungRequestTiming {
         CommonTasks.writeLogMsg(Level.INFO, "********* Added Request Timing Feature..! *********");
 
         server.setMarkToEndOfLog();
-        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
-        server.setServerConfigurationFile("server_hungRequestThreshold2.xml");
+        // Disabling thread dumps, so server stops gracefully, instead of waiting for all thread dumps to be generated.
+        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s, with thread dumps disabled");
+        server.setServerConfigurationFile("server_hungRequestThreshold2_disableThreadDumps.xml");
 
-        server.waitForStringInLogUsingMark("CWWKG0017I", 50000);
-        server.waitForStringInLogUsingMark("CWWKZ0018I", 10000);
-        server.waitForStringInLogUsingMark("CWWKT0016I", 10000);
+        server.waitForStringInLogUsingMark("CWWKG0017I", 50000); // server config successfully completed.
+        server.waitForStringInLogUsingMark("CWWKF0012I", 10000); // server successfully installed requestTiming feature.
+        server.waitForStringInLogUsingMark("CWWKF0008I", 10000); // feature update completed.
 
         createRequest(3000);
         server.waitForStringInLogUsingMark("TRAS0114W", 90000);
@@ -338,8 +340,9 @@ public class HungRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testHungRequestDynamicDisable() throws Exception {
-        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
-        server.setServerConfigurationFile("server_hungRequestThreshold2.xml");
+        // Disabling thread dumps, so server stops gracefully, instead of waiting for all thread dumps to be generated.
+        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s, with thread dumps disabled");
+        server.setServerConfigurationFile("server_hungRequestThreshold2_disableThreadDumps.xml");
         String srvConfigCompletedMsg = server.waitForStringInLog("CWWKG0017I|CWWKG0018I", 90000);
 
         assertNotNull("The server configuration was successfully updated message was not found!", srvConfigCompletedMsg);
