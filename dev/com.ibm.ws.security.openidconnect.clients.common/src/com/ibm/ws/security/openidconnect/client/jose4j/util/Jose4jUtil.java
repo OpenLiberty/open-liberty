@@ -34,6 +34,7 @@ import org.jose4j.keys.HmacKey;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
@@ -193,7 +194,7 @@ public class Jose4jUtil {
         return oidcResult;
     }
 
-    private void createWASOidcSession(OidcClientRequest oidcClientRequest, JwtClaims jwtClaims) throws MalformedClaimException {
+    private void createWASOidcSession(OidcClientRequest oidcClientRequest, @Sensitive JwtClaims jwtClaims) throws MalformedClaimException {
         OidcClientConfig oidcClientConfig = oidcClientRequest.getOidcClientConfig();
 
         String configId = oidcClientConfig.getId();
