@@ -12,8 +12,8 @@
 bVersion: 1.0
 
 #Common Versions
-testContainerVersion: 1.16.3
-dockerJavaVersion: 3.2.12
+testContainerVersion: 1.17.1
+dockerJavaVersion: 3.2.13
 
 Bundle-Name: FAT Testcontainer Bundle
 Bundle-SymbolicName: io.openliberty.org.testcontainers
@@ -22,7 +22,6 @@ Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
 #Notice: com.sun.jna.*;version="5.8.0"
 # Will cause many bnd build warnings as many of it's packages contain
 # binary files instead of class files. This is expected and necessary
-
 Export-Package: \
 	com.github.*;version="${dockerJavaVersion}",\
 	com.sun.jna.*;version="5.8.0",\
@@ -61,6 +60,6 @@ generate.replacement: true
 	org.testcontainers:selenium;version=${testContainerVersion},\
 	org.apache.commons:commons-compress;version=1.21,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.ws.org.slf4j.simple;version=latest,\
+	com.ibm.ws.org.slf4j.api;version=latest,\
 	net.java.dev.jna:jna;version=5.8.0
