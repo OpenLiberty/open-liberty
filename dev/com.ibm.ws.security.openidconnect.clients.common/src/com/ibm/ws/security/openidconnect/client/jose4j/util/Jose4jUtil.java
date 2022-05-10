@@ -47,13 +47,13 @@ import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorU
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.clients.common.TraceConstants;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.jose4j.Jose4jValidator;
 import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException;
 import com.ibm.ws.webcontainer.security.AuthResult;
-import com.ibm.ws.webcontainer.security.OidcSessionCache;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.ssl.SSLSupport;

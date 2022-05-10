@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.webcontainer.security;
+package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.util.ArrayList;
 import java.util.Collections;

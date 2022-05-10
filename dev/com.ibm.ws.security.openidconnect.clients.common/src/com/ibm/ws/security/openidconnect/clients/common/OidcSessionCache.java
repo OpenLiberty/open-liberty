@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.webcontainer.security;
+package com.ibm.ws.security.openidconnect.clients.common;
 
 /**
  * Interface for cache used to keep track of oidc sessions based on the sub, sid, and the oidc session id.

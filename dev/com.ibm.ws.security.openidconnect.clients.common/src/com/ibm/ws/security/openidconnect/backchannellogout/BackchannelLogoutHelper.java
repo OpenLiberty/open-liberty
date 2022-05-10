@@ -20,7 +20,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
-import com.ibm.ws.webcontainer.security.OidcSessionCache;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 
 public class BackchannelLogoutHelper {
 
