@@ -84,10 +84,25 @@ public class JsonpTckLauncher {
                                            Collections.emptySet() //additional jars
         );
 
+        // Including jakarta.json-tck-tests and jakarta.json-tck-tests-pluggability together causes
+        // exceptions due to collisions, so created 2 separate profiles which are then
+        // run individually
+        additionalProps.put("run-tck-tests-pluggability", "true");
+        int result2 = MvnUtils.runTCKMvnCmd(
+                                            DONOTSTART, //server to run on
+                                            "io.openliberty.jakarta.jsonp.2.1_fat_tck", //bucket name
+                                            this.getClass() + ":launchJsonpTCK", //launching method
+                                            null, //suite file to run
+                                            additionalProps, //additional props
+                                            Collections.emptySet() //additional jars
+        );
+
         resultInfo.put("results_type", "Jakarta");
         resultInfo.put("feature_name", "jsonp");
         resultInfo.put("feature_version", "2.1");
         MvnUtils.preparePublicationFile(resultInfo);
         assertEquals(0, result);
+        assertEquals(0, result2);
+
     }
 }

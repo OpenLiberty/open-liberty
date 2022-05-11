@@ -45,23 +45,109 @@
 		<!-- Test versions -->
 		<targetDirectory>${project.basedir}/target</targetDirectory>
 	</properties>
+	
+	<!-- Including jakarta.json-tck-tests and jakarta.json-tck-tests-pluggability together causes
+	      execeptions due to collisions, so need to create 2 separate profiles which are then
+	      run separately by the JsonTCKLauncher  -->
+	<profiles>
+		<!-- runs just the tck tests -->
+	    <profile>
+	        <id>tck-tests</id>
+	        <activation>
+        		<activeByDefault>true</activeByDefault>
+      		</activation>
+	        <dependencies>
+				<!-- tck - jsonp - external artifact -->
+				<dependency>
+					<groupId>jakarta.json</groupId>
+					<artifactId>jakarta.json-tck-tests</artifactId>
+					<version>${jakarta.json.tck.version}</version>
+					<scope>test</scope>
+					<!-- Try to force TCK to  use version 1.6 instead of 1.4 -->
+				    <exclusions>
+				        <exclusion>
+				            <groupId>org.netbeans.tools</groupId>
+				            <artifactId>sigtest-maven-plugin</artifactId>
+				        </exclusion>
+				    </exclusions>
+				</dependency>
+	        </dependencies>
+	        
+	        <build>
+		        <plugins>
+			        <plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>3.0.0-M5</version>
+						<configuration>
+							<trimStackTrace>false</trimStackTrace>
+							<failIfNoTests>true</failIfNoTests>
+							<forkCount>1</forkCount>
+		                    <reuseForks>false</reuseForks>
+							<dependenciesToScan>jakarta.json:jakarta.json-tck-tests</dependenciesToScan>
+							<systemPropertyVariables>
+								<jimage.dir>${project.build.directory}/jdk11-bundle</jimage.dir>
+								<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.json-api.jar:${project.build.directory}/jdk11-bundle/java.base:${project.build.directory}/jdk11-bundle/java.rmi:${project.build.directory}/jdk11-bundle/java.sql:${project.build.directory}/jdk11-bundle/java.naming</signature.sigTestClasspath>
+							</systemPropertyVariables>
+							<excludes>
+								<exclude>${exclude.tests}</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+	        </build>
+	    </profile>
+	    
+	    <!-- runs just the tck pluggability tests -->
+	    <profile>
+	        <id>tck-tests-pluggability</id>
+	        <activation>
+		        <property>
+	            	<name>run-tck-tests-pluggability</name>
+	            	<value>true</value>
+	        	</property>
+        	</activation>
+	        <dependencies>
+	            <dependency>
+					<groupId>jakarta.json</groupId>
+					<artifactId>jakarta.json-tck-tests-pluggability</artifactId>
+					<version>${jakarta.json.tck.version}</version>
+					<scope>test</scope>
+					<!-- Try to force TCK to  use version 1.6 instead of 1.4 -->
+				    <exclusions>
+				        <exclusion>
+				            <groupId>org.netbeans.tools</groupId>
+				            <artifactId>sigtest-maven-plugin</artifactId>
+				        </exclusion>
+				    </exclusions>
+				</dependency>
+	        </dependencies>
+	        
+	        <build>
+		        <plugins>
+			        <plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>3.0.0-M5</version>
+						<configuration>
+							<trimStackTrace>false</trimStackTrace>
+							<failIfNoTests>true</failIfNoTests>
+							<forkCount>1</forkCount>
+		                    <reuseForks>false</reuseForks>
+							<dependenciesToScan>jakarta.json:jakarta.json-tck-tests-pluggability</dependenciesToScan>
+							<systemPropertyVariables>
+								<jimage.dir>${project.build.directory}/jdk11-bundle</jimage.dir>
+							</systemPropertyVariables>
+							<excludes>
+								<exclude>${exclude.tests}</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+	        </build>
+	    </profile>
+	</profiles>
 
 
 	<dependencies>
-		<!-- tck - jsonp - external artifact -->
-		<dependency>
-			<groupId>jakarta.json</groupId>
-			<artifactId>jakarta.json-tck-tests</artifactId>
-			<version>${jakarta.json.tck.version}</version>
-			<scope>test</scope>
-			<!-- Try to force TCK to  use version 1.6 instead of 1.4 -->
-		    <exclusions>
-		        <exclusion>
-		            <groupId>org.netbeans.tools</groupId>
-		            <artifactId>sigtest-maven-plugin</artifactId>
-		        </exclusion>
-		    </exclusions>
-		</dependency>
 		<!-- api - jsonp - internal bundle -->
 		<dependency>
 			<groupId>jakarta.json</groupId>
@@ -70,7 +156,7 @@
 			<systemPath>${io.openliberty.jakarta.jsonp.2.1}</systemPath> 
 			<scope>system</scope>
 		</dependency>
-		<!-- impl - jsonp - passon - internal bundle -->
+		<!-- impl - jsonp - parsson - internal bundle -->
 		<dependency>
 			<groupId>org.eclipse.parsson</groupId>
 			<artifactId>parsson</artifactId>
@@ -109,24 +195,6 @@
 			            </configuration>
 			        </execution>
 			    </executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
-				<configuration>
-					<trimStackTrace>false</trimStackTrace>
-					<failIfNoTests>true</failIfNoTests>
-					<forkCount>1</forkCount>
-                    <reuseForks>false</reuseForks>
-					<dependenciesToScan>jakarta.json:jakarta.json-tck-tests</dependenciesToScan>
-					<systemPropertyVariables>
-						<jimage.dir>${project.build.directory}/jdk11-bundle</jimage.dir>
-						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.json-api.jar:${project.build.directory}/jdk11-bundle/java.base:${project.build.directory}/jdk11-bundle/java.rmi:${project.build.directory}/jdk11-bundle/java.sql:${project.build.directory}/jdk11-bundle/java.naming</signature.sigTestClasspath>
-					</systemPropertyVariables>
-					<excludes>
-						<exclude>${exclude.tests}</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
