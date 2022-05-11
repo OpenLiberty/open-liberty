@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import javax.servlet.http.HttpSession;
 import com.ibm.websphere.security.WSSecurityHelper;
 import com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException;
 import com.ibm.ws.security.core.SecurityContext;
+import com.ibm.ws.session.AbstractSessionData;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionAffinityManager;
 import com.ibm.ws.session.SessionApplicationParameters;
@@ -139,7 +140,7 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
           LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[UNLOCK_SESSION]);
       }
-      SessionData session= (SessionData)sess;
+      AbstractSessionData session= (AbstractSessionData)sess;
       Object obj = session.getSessionLock(Thread.currentThread());
       if (obj!=null) {
           LinkedList linkList = session.getLockList();
@@ -240,14 +241,15 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
       LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[IS_VALID]);
     }
 
-    ISession isess = ((SessionData) sess).getISession();
+//    ISession isess = ((SessionData) sess).getISession();
+    ISession isess = ((AbstractSessionData) sess).getISession();
     boolean valid = isess.isValid();
     if (valid)
     {
       if (_smc.getIntegrateSecurity())
       {
           try {
-              checkSecurity((SessionData)sess, req); // PK01801 check security here - 
+              checkSecurity((AbstractSessionData)sess, req); // PK01801 check security here - 
                                                      // may result in UnauthorizedSessionRequestException
           } 
           catch (UnauthorizedSessionRequestException unauthException) {
@@ -538,7 +540,7 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
       createdOnThisRequest = true;
     }
 
-    SessionData sd = (SessionData) session;
+    AbstractSessionData sd = (AbstractSessionData) session;
 
 
     if (sd != null) {
@@ -549,7 +551,7 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
                 boolean reuseId = shouldReuseId(_request,sac) && 
                         checkSessionIdIsRightLength(_sam.getInUseSessionID(_request, sac)); 
                 session = (HttpSession) _coreHttpSessionManager.createSession(_request, _response, sac, reuseId);
-                sd = (SessionData)session;
+                sd = (AbstractSessionData)session;
                 createdOnThisRequest = true;
                 securityCheckObject = doSecurityCheck(sd, _request, create); //shouldn't have an issue with the session being owned by someone else since we invalidated the previous session and created a brand new session
             }
@@ -574,7 +576,7 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
         // want to throw an exception if the response is committed)
         if (!_response.isCommitted())
         {
-          setSIPCookieIfApplicable(_request, _response, sd);
+          setSIPCookieIfApplicable(_request, _response, (SessionData) sd);
         }
       }
     }
@@ -599,7 +601,7 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
 
   }
   
-  private SecurityCheckObject doSecurityCheck(SessionData sd, HttpServletRequest _request, boolean create) {
+  private SecurityCheckObject doSecurityCheck(AbstractSessionData sd, HttpServletRequest _request, boolean create) {
       SecurityCheckObject securityCheckObject = new SecurityCheckObject();
       if (sd.isNew()) { // set user name
           String userName = null;
@@ -713,7 +715,7 @@ private String getUser() {
    * session. This ensures we can safely give out session to collaborators while
    * denying applications with the UnauthorizedSessionRequestException.
    */
-  protected void checkSecurity(SessionData s, HttpServletRequest req)
+  protected void checkSecurity(AbstractSessionData s, HttpServletRequest req)
   {
     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE))
     {
@@ -973,7 +975,7 @@ private String getUser() {
 
   // PK80439: Check that id is of exact length permitted as determined by the session length 
   // custom property
-  private boolean checkSessionIdIsRightLength( String sessionIdOnly )
+  protected boolean checkSessionIdIsRightLength( String sessionIdOnly )
   {
       boolean correctLength = true;
       boolean forceSessionIdLengthCheck = _smc.getForceSessionIdLengthCheck();
@@ -1010,12 +1012,12 @@ private String getUser() {
   } // end "checkSessionIdIsRightLength"
 
   private static class SecurityCheckObject {
-      private SessionData sd=null;
+      private AbstractSessionData sd=null;
       private boolean doSecurityCheckAgain=false;
       
       SecurityCheckObject() {}
       
-      SessionData getSessionObject() {
+      AbstractSessionData getSessionObject() {
           return sd;
       }
       
@@ -1023,7 +1025,7 @@ private String getUser() {
           return doSecurityCheckAgain;
       }
       
-      void setSessionObject(SessionData sd) {
+      void setSessionObject(AbstractSessionData sd) {
           this.sd=sd;
       }
       

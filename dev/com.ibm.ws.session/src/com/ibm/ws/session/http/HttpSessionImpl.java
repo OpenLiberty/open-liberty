@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2007 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,46 +15,31 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionBindingListener;
 import javax.servlet.http.HttpSessionContext;
 
 import com.ibm.ws.session.utils.LoggingUtil;
+import com.ibm.ws.session.AbstractHttpSessionFacade;
+import com.ibm.ws.session.AbstractSessionData;
+import com.ibm.ws.session.HttpSessionFacade;
+import com.ibm.ws.session.SessionContext;
 import com.ibm.wsspi.session.ISession;
 
 /**
  * This class provides the adapted version of the ISession.
  * It simply wrappers the session and proxies any of its method calls to
  * the underlying ISession object.
- * 
- * @author dettlaff
+ * <p> 
+ * Updated for Servlet 6.0:
+ * This class now provides specific API up to servlet 5.0.  
+ * Common APIs are moved up into the AbstractHttpSession
  */
-public class HttpSessionImpl implements HttpSession {
+public class HttpSessionImpl extends AbstractSessionData {
 
-    // ----------------------------------------
-    // Private Members
-    // ----------------------------------------
-    /*
-     * For logging.
-     */
     private static final String methodClassName = "HttpSessionImpl";
     /*
      * For logging the CMVC file version once.
      */
     private static boolean _loggedVersion = false;
-
-    // TODO Do isValid checks all over the place and throw IllegalStateExceptions
-
-    /*
-     * A reference to the wrapper iManagedSession object
-     */
-    private ISession _iSession;
-
-    /*
-     * A reference to the ServletContext object returns for all http sessions
-     * created in this SessionManager.
-     */
-    private ServletContext _servletContext;
 
     /*
      * A reference to the HttpSessionContext singleton that will
@@ -63,15 +48,12 @@ public class HttpSessionImpl implements HttpSession {
      * @deprecated
      */
     private static final HttpSessionContext _httpSessionContext = new HttpSessionContextImpl();
-    
+
     /*
      * Adding a message for when IllegalStateException is thrown
      */
     private static final String iseMessage = "The method is called on an invalidated session: ";
 
-    // ----------------------------------------
-    // Constructor
-    // ----------------------------------------
     /**
      * Class Constructor
      * <p>
@@ -80,94 +62,42 @@ public class HttpSessionImpl implements HttpSession {
      * @param session
      */
     protected HttpSessionImpl(ISession session) {
+        super(session);
+
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
             if (!_loggedVersion) {
-                LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, "", "CMVC Version 1.6 10/16/08 11:56:10");
+                LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " Constructor (ISession)");
                 _loggedVersion = true;
             }
         }
-        _iSession = session;
+    }
+    
+    protected HttpSessionImpl(ISession session, SessionContext sessCtx, ServletContext servCtx) {
+        super(session, sessCtx, servCtx);
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            if (!_loggedVersion) {
+                LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " Constructor (ISession, SessionContext, ServletContext)");
+                _loggedVersion = true;
+            }
+        }
+    }
+    
+    /*
+     * Servlet 6 - moved up from SessionData
+     */
+    
+    @Override
+    protected AbstractHttpSessionFacade returnFacade() {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " returnFacade HttpSessionFacade");
+        }
+        return new HttpSessionFacade(this);
     }
 
     // ----------------------------------------
     // Public Methods
     // ----------------------------------------
-    /**
-     * Method getCreationTime
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#getCreationTime()
-     */
-    public long getCreationTime() {
-        if (!_iSession.isValid())
-            throw new IllegalStateException(iseMessage+_iSession.getId());
-        return _iSession.getCreationTime();
-    }
-
-    /**
-     * Method getId
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#getId()
-     */
-    public String getId() {
-        return _iSession.getId();
-    }
-
-    /**
-     * Method getLastAccessedTime
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#getLastAccessedTime()
-     */
-    public long getLastAccessedTime() {
-        if (!_iSession.isValid())
-            throw new IllegalStateException(iseMessage+_iSession.getId());
-        return _iSession.getLastAccessedTime();
-    }
-
-    /**
-     * Method setServletContext
-     * <p>
-     * 
-     * @param context
-     * @return ServletContext
-     * @see javax.servlet.http.HttpSession#getServletContext()
-     */
-    public ServletContext setServletContext(ServletContext context) {
-        return _servletContext = context;
-    }
-
-    /**
-     * Method getServletContext
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#getServletContext()
-     */
-    public ServletContext getServletContext() {
-        return _servletContext;
-    }
-
-    /**
-     * Method setMaxInactiveInterval
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#setMaxInactiveInterval(int)
-     */
-    public void setMaxInactiveInterval(int maxInactiveInterval) {
-        _iSession.setMaxInactiveInterval(maxInactiveInterval);
-
-    }
-
-    /**
-     * Method getMaxInactiveInterval
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#getMaxInactiveInterval()
-     */
-    public int getMaxInactiveInterval() {
-        return _iSession.getMaxInactiveInterval();
-    }
 
     /**
      * Method getSessionContext
@@ -178,20 +108,6 @@ public class HttpSessionImpl implements HttpSession {
      */
     public HttpSessionContext getSessionContext() {
         return _httpSessionContext;
-    }
-
-    /**
-     * Method getAttribute
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String attributeName) {
-        synchronized (_iSession) {
-            if (!_iSession.isValid())
-                throw new IllegalStateException(iseMessage+_iSession.getId());
-            return _iSession.getAttribute(attributeName);
-        }
     }
 
     /**
@@ -206,20 +122,6 @@ public class HttpSessionImpl implements HttpSession {
     }
 
     /**
-     * Method getAttributeNames
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#getAttributeNames()
-     */
-    public Enumeration getAttributeNames() {
-        synchronized (_iSession) {
-            if (!_iSession.isValid())
-                throw new IllegalStateException(iseMessage+_iSession.getId());
-            return _iSession.getAttributeNames();
-        }
-    }
-
-    /**
      * Method getValueNames
      * <p>
      * 
@@ -227,8 +129,8 @@ public class HttpSessionImpl implements HttpSession {
      * @see javax.servlet.http.HttpSession#getValueNames()
      */
     public String[] getValueNames() {
-        if (!_iSession.isValid())
-            throw new IllegalStateException(iseMessage+_iSession.getId());
+        if (!getISession().isValid())
+            throw new IllegalStateException(iseMessage + getISession().getId());
         Enumeration enumeration = this.getAttributeNames();
         Vector valueNames = new Vector();
         String name = null;
@@ -238,26 +140,6 @@ public class HttpSessionImpl implements HttpSession {
         }
         String[] names = new String[valueNames.size()];
         return (String[]) valueNames.toArray(names);
-    }
-
-    /**
-     * Method setAttribute
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#setAttribute(java.lang.String, java.lang.Object)
-     */
-    public void setAttribute(String attributeName, Object value) {
-        synchronized (_iSession) {
-            if (!_iSession.isValid())
-                throw new IllegalStateException(iseMessage+_iSession.getId());
-            if (null != value) {
-                if (!(value instanceof HttpSessionBindingListener)) {
-                    _iSession.setAttribute(attributeName, value, Boolean.FALSE);
-                } else {
-                    _iSession.setAttribute(attributeName, value, Boolean.TRUE);
-                }
-            }
-        }
     }
 
     /**
@@ -273,20 +155,6 @@ public class HttpSessionImpl implements HttpSession {
     }
 
     /**
-     * Method removeAttribute
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#removeAttribute(java.lang.String)
-     */
-    public void removeAttribute(String attributeName) {
-        synchronized (_iSession) {
-            if (!_iSession.isValid())
-                throw new IllegalStateException(iseMessage+_iSession.getId());
-            Object object = _iSession.removeAttribute(attributeName);
-        }
-    }
-
-    /**
      * Method removeValue
      * <p>
      * 
@@ -298,31 +166,6 @@ public class HttpSessionImpl implements HttpSession {
     }
 
     /**
-     * Method invalidate
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#invalidate()
-     */
-    public void invalidate() {
-        if (!_iSession.isValid())
-            throw new IllegalStateException(iseMessage+_iSession.getId());
-        _iSession.invalidate();
-    }
-
-    /**
-     * Method isNew
-     * <p>
-     * 
-     * @see javax.servlet.http.HttpSession#isNew()
-     */
-    public boolean isNew() {
-        if (!_iSession.isValid())
-            throw new IllegalStateException(iseMessage+_iSession.getId());
-        return _iSession.isNew();
-
-    }
-
-    /**
      * Method toString
      * <p>
      * 
@@ -330,18 +173,7 @@ public class HttpSessionImpl implements HttpSession {
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append("# HttpSessionImpl # \n { ").append("\n _iSession=").append(_iSession).append("\n _httpSessionContext=").append(_httpSessionContext).append("\n } \n");
+        sb.append("# HttpSessionImpl # \n { ").append("\n _iSession=").append(getISession()).append("\n _httpSessionContext=").append(_httpSessionContext).append("\n } \n");
         return sb.toString();
     }
-
-    /**
-     * Method getISession
-     * <p>
-     * 
-     * @return ISession
-     */
-    public ISession getISession() {
-        return _iSession;
-    }
-
 }

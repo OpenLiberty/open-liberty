@@ -17,6 +17,8 @@ import com.ibm.ws.webcontainer.session.impl.SessionContextRegistryImpl;
 import com.ibm.ws.webcontainer.session.impl.SessionContextRegistryImplFactory;
 import com.ibm.ws.webcontainer31.session.impl.SessionContextRegistry31Impl;
 
+import io.openliberty.webcontainer60.session.impl.SessionContextRegistryImpl60;
+
 /**
  *
  */
@@ -30,7 +32,7 @@ public class SessionContextRegistryImplFactory60Impl implements SessionContextRe
      */
     @Override
     public SessionContextRegistryImpl createSessionContextRegistryImpl(SessionManager smgr) {
-        return new SessionContextRegistry31Impl(smgr);
+        return new SessionContextRegistryImpl60(smgr);
     }
 
 }
