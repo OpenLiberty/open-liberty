@@ -133,8 +133,4 @@ public interface ConvergedClientConfig extends JwtConsumerConfig {
 
     String getIntrospectionTokenTypeHint();
 
-    public boolean isBackchannelLogoutSupported();
-
-    public boolean isBackchannelLogoutSessionRequired();
-
 }
