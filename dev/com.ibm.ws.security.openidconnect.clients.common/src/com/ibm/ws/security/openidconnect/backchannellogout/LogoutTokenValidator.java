@@ -24,7 +24,6 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.jwt.Claims;
-import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
@@ -70,7 +69,7 @@ public class LogoutTokenValidator {
      * Valides an OIDC back-channel logout token per https://openid.net/specs/openid-connect-backchannel-1_0.html.
      */
     @FFDCIgnore(Exception.class)
-    public JwtToken validateToken(String logoutTokenString) throws BackchannelLogoutException {
+    public JwtClaims validateToken(String logoutTokenString) throws BackchannelLogoutException {
         try {
             JwtContext jwtContext = jose4jUtil.validateJwtStructureAndGetContext(logoutTokenString, config);
             JwtClaims claims = jose4jUtil.validateJwsSignature(jwtContext, config);
@@ -82,11 +81,11 @@ public class LogoutTokenValidator {
             verifyNonceClaimNotPresent(claims);
             doOptionalVerificationChecks();
 
+            return claims;
         } catch (Exception e) {
             String errorMsg = Tr.formatMessage(tc, "BACKCHANNEL_LOGOUT_TOKEN_ERROR", new Object[] { e });
             throw new BackchannelLogoutException(errorMsg, e);
         }
-        return null;
     }
 
     void verifyAllRequiredClaimsArePresent(JwtClaims claims) throws MalformedClaimException, BackchannelLogoutException {

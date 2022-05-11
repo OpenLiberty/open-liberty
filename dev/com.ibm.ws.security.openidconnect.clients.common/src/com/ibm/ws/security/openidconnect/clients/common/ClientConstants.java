@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,6 +58,7 @@ public class ClientConstants {
     public static final String WAS_REQ_URL_OIDC = "WASReqURLOidc";
     public static final String WAS_OIDC_CODE = "WASOidcCode";
     public static final String WAS_OIDC_NONCE = "WASOidcNonce";
+    public static final String WAS_OIDC_SESSION = "WASOidcSession";
 
     public final static String RESPONSEMAP_CODE = "RESPONSEMAP_CODE";
     public final static String RESPONSEMAP_METHOD = "RESPONSEMAP_METHOD";

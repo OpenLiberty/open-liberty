@@ -70,8 +70,10 @@ import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.HashUtils;
+import com.ibm.ws.security.openidconnect.clients.common.InMemoryOidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.common.ConfigUtils;
 import com.ibm.ws.security.openidconnect.common.OidcCommonClientRequest;
@@ -300,6 +302,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     private boolean useSystemPropertiesForHttpClientConnections = false;
     private boolean tokenReuse = false;
+
+    private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
 
     // see defect 218708
     static String firstRandom = OidcUtil.generateRandom(32);
@@ -2041,6 +2045,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public SingleTableCache getCache() {
         return cache;
+    }
+
+    @Override
+    public OidcSessionCache getOidcSessionCache() {
+        return oidcSessionCache;
     }
 
 }
