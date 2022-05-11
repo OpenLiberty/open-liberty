@@ -357,6 +357,11 @@ public abstract class AbstractTestLogic {
         return instFeatureSet.contains("persistence-3.0");
     }
 
+    protected boolean isUsingJPA31Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("persistence-3.1");
+    }
+
     protected boolean isUsingJPA21ContainerFeature(boolean onlyContainerFeature) {
         Set<String> instFeatureSet = getInstalledFeatures();
         if (onlyContainerFeature && instFeatureSet.contains("jpa-2.1"))

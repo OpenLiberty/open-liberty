@@ -21,6 +21,8 @@ src: \
     test-applications/olgh17407/src,\
     test-applications/olgh19185/src,\
     test-applications/olgh19342/src,\
+    test-applications/olgh19998/src,\
+    test-applications/olgh20890/src,\
     test-applications/svlquery/src,\
     test-applications/helpers/DatabaseManagement/src
 
