@@ -105,7 +105,11 @@ public class CacheUtil {
     private OAuth20Token getAccessToken(OAuth20Token idtoken) {
         OAuth20Token access = null;
         if (OIDCConstants.TOKENTYPE_ID_TOKEN.equals(idtoken.getType())) {
-            access = cache.get(((OAuth20TokenImpl) idtoken).getAccessTokenKey());
+            String accessTokenKey = ((OAuth20TokenImpl) idtoken).getAccessTokenKey();
+            if (accessTokenKey != null && OidcOAuth20Util.isJwtToken(accessTokenKey)) {
+                accessTokenKey = HashUtils.digest(accessTokenKey);
+            }
+            access = cache.get(accessTokenKey);
         }
         return access;
 
