@@ -170,7 +170,7 @@ public class ApacheDSandKDC {
 
         try {
             directoryService.addPartition(p);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Log.error(c, methodName, e, "Partition creation failed, trying a second time");
             Thread.sleep(5000);
             directoryService.addPartition(p);
