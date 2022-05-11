@@ -10,3 +10,4 @@ com.ibm.ws.jpa.tests.jpa_fat
 com.ibm.ws.jpa.tests.jpa_22_fat
 com.ibm.ws.jpa.tests.jpa_30_fat
 com.ibm.ws.jpa.tests.eclipselink_fat
+com.ibm.ws.jpa.tests.eclipselink.query_jpa_2.1_fat
