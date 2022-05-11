@@ -68,7 +68,7 @@ public class NettyIOBaseContext {
 	         if (chan != ((NettyNetworkConnection) conn).getVirtualConnection())
 	         {
 	            // The connection is different - nothing else to do but create a new instance
-	            retConn = new NettyNetworkConnection(chan);
+	            retConn = new NettyNetworkConnection(chan, ((NettyNetworkConnection) conn).isInbound());
 	         }
 	      }
 	      

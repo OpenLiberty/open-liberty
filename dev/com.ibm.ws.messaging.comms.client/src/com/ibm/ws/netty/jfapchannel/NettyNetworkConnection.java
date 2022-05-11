@@ -57,6 +57,8 @@ public class NettyNetworkConnection implements NetworkConnection{
 	   	   
 	   private CommsOutboundChain chain;
 	   
+	   private boolean isInbound;
+	   
 	   
 
 	   /**
@@ -64,7 +66,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 	    * @param chainName The chain name to which the channel belongs to
 	    * @throws FrameworkException 
 	    */
-	   public NettyNetworkConnection(Bootstrap bootstrap, String chainName) throws FrameworkException
+	   public NettyNetworkConnection(Bootstrap bootstrap, String chainName, boolean isInbound) throws FrameworkException
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>" ,new Object[] {bootstrap, chainName});
 	      
@@ -73,16 +75,18 @@ public class NettyNetworkConnection implements NetworkConnection{
 	      //TODO: Check if this is the best way to link a chain with the channel
 	      this.chain = CommsOutboundChain.getChainDetails(chainName);
 	      
+	      this.isInbound = isInbound;
+	      
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "<init>", new Object[] {bootstrap, chainName, chain});
 	   }
 	   
-	   public NettyNetworkConnection(Channel chan)
+	   public NettyNetworkConnection(Channel chan, boolean isInbound)
 	   {
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>", chan);
 	      
 	      this.chan = chan;
 	      // TODO: Check if this is fired and adapt to Netty accordingly
-	      this.chain = CommsOutboundChain.getChainDetails(chan.attr(JMSClientInboundHandler.CHAIN_ATTR_KEY).get());
+	      this.isInbound = isInbound;
 	      
 	      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "<init>", new Object[] {chan, chain});
 	   }
@@ -151,7 +155,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 	    * @throws NettyException 
 	    */
 	   public void setHearbeatInterval(int timeout) throws NettyException {
-		   if(chan == null || chain == null) {
+		   if(chan == null) {
 		    	  throw new NettyException("Haven't registered channel to set timeout");
 		   }
 		   ChannelPipeline pipeline = this.chan.pipeline();
@@ -164,7 +168,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 	   
 	   
 	   private long getHearbeatInterval() throws NettyException {
-		   if(chan == null || chain == null) {
+		   if(chan == null) {
 		    	  throw new NettyException("Haven't registered channel to get timeout");
 		   }
 		   ChannelPipeline pipeline = this.chan.pipeline();
@@ -175,17 +179,24 @@ public class NettyNetworkConnection implements NetworkConnection{
 	   protected SSLSession getSSLSession() {
 		   if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getSSLSession", new Object[] {chan, chain});
 		   SSLSession session = null;
-		   if(this.chain.isSSL() && CommsOutboundChain.getChainDetails(chainName).getSslOptions() != null) {
-			   ChannelHandler handler = this.chan.pipeline().get(NettyNetworkConnectionFactory.SSL_HANDLER_KEY);
-			   if(handler == null || !(handler instanceof SslHandler)) {
-				   if (tc.isWarningEnabled())
-		                  SibTr.warning(tc, "getSSLSession: Found SSL turned on but no valid SSL Handler found. This shouldn't happen.", new Object[] {this.chan, this.chain});
-			   }else {
-				   session = ((SslHandler)handler).engine().getSession();
-			   }
+		   ChannelHandler handler = this.chan.pipeline().get(NettyNetworkConnectionFactory.SSL_HANDLER_KEY);
+		   if(handler == null || !(handler instanceof SslHandler)) {
+			   if (tc.isWarningEnabled())
+	                  SibTr.warning(tc, "getSSLSession: No valid SSL Handler found.", new Object[] {this.chan, this.chain});
 		   }else {
-			   if(tc.isDebugEnabled()) SibTr.debug(tc, "getSSLSession: No SSL Found for session.", new Object[] {this.chan, this.chain});
+			   session = ((SslHandler)handler).engine().getSession();
 		   }
+//		   if(this.chain.isSSL() && CommsOutboundChain.getChainDetails(chainName).getSslOptions() != null) {
+//			   ChannelHandler handler = this.chan.pipeline().get(NettyNetworkConnectionFactory.SSL_HANDLER_KEY);
+//			   if(handler == null || !(handler instanceof SslHandler)) {
+//				   if (tc.isWarningEnabled())
+//		                  SibTr.warning(tc, "getSSLSession: Found SSL turned on but no valid SSL Handler found. This shouldn't happen.", new Object[] {this.chan, this.chain});
+//			   }else {
+//				   session = ((SslHandler)handler).engine().getSession();
+//			   }
+//		   }else {
+//			   if(tc.isDebugEnabled()) SibTr.debug(tc, "getSSLSession: No SSL Found for session.", new Object[] {this.chan, this.chain});
+//		   }
 		   if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getSSLSession", session);
 		   return session;
 	   }
@@ -237,7 +248,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 		          	this.chan.pipeline().addFirst(NettyNetworkConnectionFactory.SSL_HANDLER_KEY, new SslHandler(engine, false));
 		          }
 	    	  
-	    	  
+				// TODO: Use the Netty bundle here to make things cleaner
 				channelFuture = chan.connect(target.getRemoteAddress());
 				NettyNetworkConnection parent = this;
 				
@@ -287,5 +298,9 @@ public class NettyNetworkConnection implements NetworkConnection{
 	   public String getChainName() {
 		   return chainName;
 	   }
+
+	public boolean isInbound() {
+		return isInbound;
+	}
 
 }

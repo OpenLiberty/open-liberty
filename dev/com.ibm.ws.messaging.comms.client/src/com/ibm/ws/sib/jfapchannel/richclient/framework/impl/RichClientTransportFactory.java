@@ -97,7 +97,7 @@ public class RichClientTransportFactory implements NetworkTransportFactory
             		// Check what to do here appropriately
             		if(CommsOutboundChain.getChainDetails(chainName) != null && CommsOutboundChain.getChainDetails(chainName).isSSL() && CommsOutboundChain.getChainDetails(chainName).getSslOptions() == null)
             			throw new InvalidChainNameException("Chain configuration not found in framework, " + chainName);
-                	connFactory = new NettyNetworkConnectionFactory(chainName);
+                	connFactory = new NettyNetworkConnectionFactory(chainName, false);
             	}else {
             		VirtualConnectionFactory vcFactory = CommsClientServiceFacade.getChannelFramework().getOutboundVCFactory(chainName);
                     connFactory = new CFWNetworkConnectionFactory(vcFactory);

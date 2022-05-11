@@ -62,9 +62,10 @@ public class InboundConnection extends Connection {
                              NetworkConnection vc,
                              AcceptListener al,
                              int heartbeatInterval,
-                             int heartbeatTimeout) throws FrameworkException {
+                             int heartbeatTimeout,
+                             boolean useNetty) throws FrameworkException {
     	// TODO: Adapt to use Netty as needed
-        super(channel, vc, heartbeatInterval, heartbeatTimeout, false);
+        super(channel, vc, heartbeatInterval, heartbeatTimeout, useNetty);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>",

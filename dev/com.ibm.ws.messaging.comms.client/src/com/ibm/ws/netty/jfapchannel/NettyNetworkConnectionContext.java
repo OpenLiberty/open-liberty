@@ -59,7 +59,7 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
 			
 			@Override
 			public boolean isInbound() {
-				return false;
+				return conn.isInbound();
 			}
 			
 			@Override

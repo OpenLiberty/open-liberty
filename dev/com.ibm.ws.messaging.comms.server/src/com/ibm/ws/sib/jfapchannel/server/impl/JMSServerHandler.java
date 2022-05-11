@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2010 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,154 +8,84 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-// NOTE: D181601 is not changed flagged as it modifies every line of trace and FFDC.
-
 package com.ibm.ws.sib.jfapchannel.server.impl;
 
 import java.util.Map;
 
-import com.ibm.websphere.channelfw.ChainData;
-import com.ibm.websphere.channelfw.ChannelData;
-import com.ibm.websphere.channelfw.ChannelFactoryData;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.exception.SIException;
 import com.ibm.websphere.sib.exception.SIResourceException;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.jfap.inbound.channel.NettyInboundChain;
+import com.ibm.ws.netty.jfapchannel.NettyIOReadRequestContext;
+import com.ibm.ws.netty.jfapchannel.NettyNetworkConnection;
+import com.ibm.ws.netty.jfapchannel.NettyNetworkConnectionContext;
 import com.ibm.ws.sib.jfapchannel.AcceptListener;
 import com.ibm.ws.sib.jfapchannel.Conversation;
-import com.ibm.ws.sib.jfapchannel.ConversationMetaData;
 import com.ibm.ws.sib.jfapchannel.ConversationReceiveListener;
 import com.ibm.ws.sib.jfapchannel.Dispatchable;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
-import com.ibm.ws.sib.jfapchannel.MetaDataProvider;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
 import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
+import com.ibm.ws.sib.jfapchannel.framework.IOReadCompletedCallback;
+import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
+import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.impl.Connection;
 import com.ibm.ws.sib.jfapchannel.impl.ConversationImpl;
-import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWNetworkConnection;
-import com.ibm.ws.sib.jfapchannel.richclient.framework.impl.CFWNetworkConnectionContext;
-import com.ibm.ws.sib.jfapchannel.richclient.impl.ConversationMetaDataImpl;
-import com.ibm.ws.sib.jfapchannel.richclient.impl.JFapChannelFactory;
+import com.ibm.ws.sib.jfapchannel.impl.NettyConnectionReadCompletedCallback;
 import com.ibm.ws.sib.utils.RuntimeInfo;
 import com.ibm.ws.sib.utils.ras.SibTr;
-import com.ibm.wsspi.channelfw.ChannelFramework;
-import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
-import com.ibm.wsspi.channelfw.VirtualConnection;
-import com.ibm.wsspi.channelfw.base.InboundApplicationLink;
-import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.sib.core.exception.SIConnectionLostException;
 
-/**
- * Object that represents a single inbound connection. This is required to
- * participate as a channel in the Channel Framework.
- */
-public class JFapInboundConnLink extends InboundApplicationLink implements MetaDataProvider {
-    private static final TraceComponent tc = SibTr.register(JFapInboundConnLink.class,
-                                                            JFapChannelConstants.MSG_GROUP,
-                                                            JFapChannelConstants.MSG_BUNDLE);
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 
-    static {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.server.impl/src/com/ibm/ws/sib/jfapchannel/impl/JFapInboundConnLink.java, SIB.comms, WASX.SIB, aa1225.01 1.38");
-    }
+public class JMSServerHandler extends SimpleChannelInboundHandler<WsByteBuffer>{
 
-    // Configuration information for this connlink.
-    private final ChannelData config; // F177053
+	/** Trace */
+	private static final TraceComponent tc = SibTr.register(JMSServerHandler.class,
+			JFapChannelConstants.MSG_GROUP,
+			JFapChannelConstants.MSG_BUNDLE);
 
-    private ConversationMetaData metaData; // D196678.10.1
+	/** Log class info on load */
+	static
+	{
+		if (tc.isDebugEnabled())
+			SibTr.debug(tc,
+					"@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/sib/jfapchannel/server/impl/JMSServerHandler.java, SIB.comms, WASX.SIB, uu1215.01 1.1");
+	}
 
-    /**
-     * Creates a new connection link.
-     * 
-     * @param vc
-     * @param channelFactoryData
-     * @param cc
-     */
-    public JFapInboundConnLink(VirtualConnection vc,
-                               ChannelFactoryData channelFactoryData,
-                               ChannelData cc) // F177053, D196678.10.1
-    {
-        super(); // F177053
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "<init>", new Object[] { vc, channelFactoryData, cc }); // F196678.10.1	
 
-        ChannelFramework cfw = ChannelFrameworkFactory.getChannelFramework();
-        // begin D196678.10.1
-        config = cc;
-
-        try {
-            ChainData[] chainDataArray = null;
-            String channelName = config.getName();
-            chainDataArray = cfw.getInternalRunningChains(channelName); // D232185
-
-            if (chainDataArray != null) {
-                if (chainDataArray.length != 1) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        SibTr.debug(this, tc, "chain data contains more than one entry!");
-                }
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    SibTr.debug(this, tc, "channelName=" + channelName + " chainData=" + chainDataArray[0]);
-
-                metaData = new ConversationMetaDataImpl(chainDataArray[0], this); // F206161.5
-            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "cannot find a running chain for channel: " + channelName);
-        } catch (ChannelException e) {
-            FFDCFilter.processException
-                            (e, "com.ibm.ws.sib.jfapchannel.impl.JFapInboundConnLink",
-                             JFapChannelConstants.JFAPINBOUNDCONNLINK_INIT_01,
-                             cfw); // D232185
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                SibTr.exception(this, tc, e);
-        }
-        // end D196678.10.1
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "<init>");
-    }
-
-    /**
-     * Notification that this inbound connection link has been established and can now be used. This
-     * drives the start of the first conversation on this link.
-     * 
-     * @param readyVc
-     */
-    public void ready(VirtualConnection readyVc) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "ready", readyVc);
-
-        AcceptListener acceptListener = (AcceptListener) config.getPropertyBag()
-                        .get(JFapChannelFactory.ACCEPT_LISTENER);
-
-        // begin F189351
-        if (acceptListener == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "null accept listener - obtaining one from factory");
-            acceptListener =
-                            ServerConnectionManagerImpl.getAcceptListenerFactory().manufactureAcceptListener();
-        }
-
-        // begin F196678.10
-        Map properties = config.getPropertyBag();
-        int heartbeatInterval = determineHeartbeatInterval(properties);
-        int heartbeatTimeout = determineHeartbeatTimeout(properties);
-        // end F196678.10
-
-        // At this point here we leave explicit channel framework land and trot into the land of
-        // abstraction. As such, create the channel framework implementation classes directly and
-        // pass them into the JFap channel common code.
-        CFWNetworkConnection conn = new CFWNetworkConnection(readyVc);
-
-        InboundConnection connection = null;
-        try {
-            connection = new InboundConnection(new CFWNetworkConnectionContext(conn, this),
+	protected final static AttributeKey<InboundConnection> CONNECTION_KEY = AttributeKey.valueOf("InboundConnection");
+	public final static AttributeKey<String> CHAIN_ATTR_KEY = AttributeKey.valueOf("CHAIN_NAME");
+	public final static AttributeKey<NettyInboundChain> ATTR_KEY = AttributeKey.valueOf("CHAIN");
+	
+	/** Called when a new connection is established */
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		if (tc.isEntryEnabled())
+			SibTr.entry(this, tc, "channelActive", ctx.channel());
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			SibTr.debug(this, tc, "channelActive", ctx.channel().remoteAddress() + " connected for chain " + ctx.channel().attr(CHAIN_ATTR_KEY).get() + " running: " + ctx.channel().attr(ATTR_KEY).get().isRunning());
+		}
+		AcceptListener acceptListener = ServerConnectionManagerImpl.getAcceptListenerFactory().manufactureAcceptListener();
+		
+		// begin F196678.10
+		//TODO: Determine hearbeat
+		// end F196678.10
+		
+		NettyNetworkConnection conn = new NettyNetworkConnection(ctx.channel(), true);
+		
+		InboundConnection connection = null;
+		try {
+            connection = new InboundConnection(new NettyNetworkConnectionContext(conn),
                                             conn,
                                             acceptListener,
-                                            heartbeatInterval,
-                                            heartbeatTimeout,
-                                            false);
+                                            300,
+                                            7,
+                                            true);
         } catch (FrameworkException fe) {
             //At this point the underlying TCP/IP connection has gone away.
             //We can't throw an Exception so there is little we can do here other than FFDC.
@@ -168,6 +98,7 @@ public class JFapInboundConnLink extends InboundApplicationLink implements MetaD
         }
 
         if (connection != null) {
+        	ctx.channel().attr(CONNECTION_KEY).set(connection);
             ConversationImpl conversation = new ConversationImpl(Connection.FIRST_CONVERSATION_ID,
                                                               true,
                                                               connection,
@@ -225,12 +156,86 @@ public class JFapInboundConnLink extends InboundApplicationLink implements MetaD
             }
         }
         // end F176003
+		
+		// At this point here we leave explicit channel framework land and trot into the land of
+        // abstraction. As such, create the channel framework implementation classes directly and
+        // pass them into the JFap channel common code.
+		
+		if (tc.isEntryEnabled())
+			SibTr.exit(this, tc, "channelActive", ctx.channel());
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "ready");
-    }
+	}
 
-    // begin F196678.10
+	@Override
+	protected void channelRead0(ChannelHandlerContext ctx, WsByteBuffer msg) throws Exception {
+		if (tc.isEntryEnabled())
+			SibTr.entry(this, tc, "channelRead0", ctx.channel());
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			SibTr.debug(this, tc, "channelRead0", ctx.channel() + ". [" + msg.array() + "] bytes received");
+		}
+
+		if(!ctx.channel().attr(ATTR_KEY).get().isRunning()) {
+			SibTr.debug(this, tc, "channelRead0", "Got read after channel is not running so ignoring and closing.");
+//			ctx.close();
+//			return;
+		}
+		Attribute<InboundConnection> attr = ctx.channel().attr(CONNECTION_KEY);
+		InboundConnection connection = attr.get();
+
+		//TODO: Check if connection is closed
+		if (connection != null) {
+			IOReadCompletedCallback callback = connection.getReadCompletedCallback();
+			IOReadRequestContext readCtx = connection.getReadRequestContext();
+			NetworkConnection networkConnection = connection.getNetworkConnection();
+			if(
+					callback instanceof NettyConnectionReadCompletedCallback && 
+					readCtx instanceof NettyIOReadRequestContext && 
+					networkConnection instanceof NettyNetworkConnection) {
+				((NettyConnectionReadCompletedCallback)callback).readCompleted(msg, readCtx, (NettyNetworkConnection)networkConnection);
+			}else {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					SibTr.debug(this, tc, "channelRead0: Something's wrong. Callback or read context is not netty specific. Cry cause not sure what happened.", new Object[] {connection, callback, readCtx});
+				}
+			}
+
+		} else {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				SibTr.debug(this, tc, "channelRead0", "could not associate an incoming message with a Connection. Message will be ignored.");
+			}
+		}
+		if (tc.isEntryEnabled())
+			SibTr.exit(this, tc, "channelRead0", ctx.channel());
+
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		if (tc.isEntryEnabled())
+			SibTr.entry(this, tc, "channelInactive", ctx.channel());
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			SibTr.debug(this, tc, "channelInactive", ctx.channel().remoteAddress() + " has been disconnected");
+		}
+		// TODO: Check how to manage inactive channels
+		InboundConnection connection = ctx.channel().attr(CONNECTION_KEY).get();
+		ctx.channel().attr(CONNECTION_KEY).set(null);
+		if (tc.isEntryEnabled())
+			SibTr.exit(this, tc, "channelInactive", ctx.channel());
+	}
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		if (tc.isEntryEnabled())
+			SibTr.entry(this, tc, "exceptionCaught", ctx.channel());
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			SibTr.debug(this, tc, "exceptionCaught", cause);
+		}
+		// TODO: Check how to manage an exception
+		ctx.close();
+		if (tc.isEntryEnabled())
+			SibTr.exit(this, tc, "exceptionCaught", ctx.channel());
+	}
+	
+	// begin F196678.10
     private int determineHeartbeatInterval(Map properties) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "determineHeartbeatInterval", properties);
@@ -297,8 +302,8 @@ public class JFapInboundConnLink extends InboundApplicationLink implements MetaD
     }
 
     // end F196678.10
-
-    /**
+	
+	/**
      * "Dummy" conversation receive listener. This does nothing and is only registered
      * because we need a instance while we close the conversation.
      */
@@ -340,52 +345,4 @@ public class JFapInboundConnLink extends InboundApplicationLink implements MetaD
 
     // end F176003
 
-    /**
-     * From a functional perspective, this method is not required. All it does it invoke the
-     * identical method on its superclass. It does, however, give us the opportunity to
-     * trace pertinant exception information as it flows through.
-     */
-    // begin D181601
-    @Override
-    public void close(VirtualConnection vc, Exception e) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "close", new Object[] { vc, e });
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled() && (e != null))
-            SibTr.exception(this, tc, e);
-        super.close(vc, e);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "close");
-    }
-
-    // end D181601
-
-    /**
-     * From a functional perspective, this method is not required. All it does it invoke the
-     * identical method on its superclass. It does, however, give us the opportunity to
-     * trace pertinant exception information as it flows through.
-     */
-    // begin D181601
-    @Override
-    public void destroy(Exception e) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "destroy", e);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled() && (e != null))
-            SibTr.exception(this, tc, e);
-        //Romil liberty changes
-        //  super.destroy(e);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "destroy");
-    }
-
-    // end D181601
-
-    // begin D196678.10.1
-    public ConversationMetaData getMetaData() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "getMetaData");
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "getMetaData", metaData);
-        return metaData;
-    }
-    // end D196678.10.1
 }

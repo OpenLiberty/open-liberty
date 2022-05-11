@@ -22,6 +22,7 @@ import com.ibm.websphere.event.EventEngine;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.sib.admin.JsAdminService;
 import com.ibm.ws.sib.admin.JsConstants;
 import com.ibm.ws.sib.admin.JsEngineComponent;
@@ -36,6 +37,8 @@ import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelConfiguration;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 /**
  * 
@@ -50,16 +53,24 @@ public class CommsServerServiceFacade {
 
     private String endpointName = null;
 
-    private final CommsInboundChain inboundChain = new CommsInboundChain(this, false);
-    private final CommsInboundChain inboundSecureChain = new CommsInboundChain(this, true);
+    private InboundChain inboundChain;
+    private InboundChain inboundSecureChain;
 
     private int wasJmsPort;
     private String host = null;
     private int wasJmsSSLPort;
     private boolean iswasJmsEndpointEnabled = true;
+    /** If useNettyTransport is set to true in the outbound connection configuration */
+    private boolean _useNettyTransport = false;
+    
+    private static final String USE_NETTY = "useNettyTransport";
+    
+    /** Optional,dynamic reference to NettyTlsProvider service */
+    private final AtomicServiceReference<NettyTlsProvider> _tlsProviderService = new AtomicServiceReference<NettyTlsProvider>("tlsProviderService");
 
     private static CHFWBundle _chfw_bunlde;
     private static final AtomicServiceReference<CHFWBundle> _chfwRef = new AtomicServiceReference<CHFWBundle>("chfwBundle");
+    private static final AtomicServiceReference<NettyFramework> _nettyRef = new AtomicServiceReference<NettyFramework>("nettyBundle");
 
     private static final AtomicServiceReference<ChannelConfiguration> _tcpOptionsRef = new AtomicServiceReference<ChannelConfiguration>("tcpOptions");
 
@@ -90,9 +101,11 @@ public class CommsServerServiceFacade {
             endpointName = Inbound_ConfigAlias + cid;
 
         _chfwRef.activate(context);
+        _nettyRef.activate(context);
         _tcpOptionsRef.activate(context);
         _sslOptionsRef.activate(context);
         _sslFactoryProviderRef.activate(context);
+        _tlsProviderService.activate(context);
 
         _commonServiceFacadeRef.activate(context);
         _commsClientServiceRef.activate(context);
@@ -105,9 +118,23 @@ public class CommsServerServiceFacade {
 
         //Go ahead and Register JFAPChannel with Channel Framework by providing JFAPServerInboundChannelFactory
         _chfw_bunlde.getFramework().registerFactory("JFAPChannel", JFAPServerInboundChannelFactory.class);
+        
+        _useNettyTransport = ProductInfo.getBetaEdition() ? 
+				MetatypeUtils.parseBoolean(Inbound_ConfigAlias, USE_NETTY, properties.get(USE_NETTY), true):
+				false;
 
-        inboundChain.init(endpointName, getCHFWBundle());
-        inboundSecureChain.init(endpointName + "-ssl", getCHFWBundle());
+        if(useNetty()) {
+        	inboundChain = new NettyInboundChain(this, false);
+        	inboundSecureChain = new NettyInboundChain(this, true);
+        	((NettyInboundChain)inboundChain).init(endpointName, getNettyBundle());
+        	((NettyInboundChain)inboundSecureChain).init(endpointName + "-ssl", getNettyBundle());
+        }else {
+        	inboundChain = new CommsInboundChain(this, false);
+        	inboundSecureChain = new CommsInboundChain(this, true);
+        	((CommsInboundChain)inboundChain).init(endpointName, getCHFWBundle());
+        	((CommsInboundChain)inboundSecureChain).init(endpointName + "-ssl", getCHFWBundle());
+        }
+        
 
         modified(context, properties);
 
@@ -125,9 +152,11 @@ public class CommsServerServiceFacade {
         performAction(stopSSLChainAction);
 
         _chfwRef.deactivate(ctx);
+        _nettyRef.deactivate(ctx);
         _tcpOptionsRef.deactivate(ctx);
         _sslOptionsRef.deactivate(ctx);
         _sslFactoryProviderRef.deactivate(ctx);
+        _tlsProviderService.deactivate(ctx);
 
         _commonServiceFacadeRef.deactivate(ctx);
         _commsClientServiceRef.deactivate(ctx);
@@ -153,6 +182,9 @@ public class CommsServerServiceFacade {
         wasJmsSSLPort = MetatypeUtils.parseInteger(Inbound_ConfigAlias, "wasJmsSSLPort",
                                                    properties.get("wasJmsSSLPort"),
                                                    -1);
+        _useNettyTransport = ProductInfo.getBetaEdition() ? 
+				MetatypeUtils.parseBoolean(Inbound_ConfigAlias, USE_NETTY, properties.get(USE_NETTY), true):
+				false;
 
         Config = properties;
 
@@ -310,6 +342,41 @@ public class CommsServerServiceFacade {
     private CHFWBundle getCHFWBundle() {
         return _chfwRef.getService();
     }
+    
+    protected void setNettyBundle(ServiceReference<NettyFramework> ref) {
+    	_nettyRef.setReference(ref);
+    }
+
+    protected void unsetNettyBundle(ServiceReference<NettyFramework> ref) {
+    	_nettyRef.unsetReference(ref);
+    }
+
+    private NettyFramework getNettyBundle() {
+        return _nettyRef.getService();
+    }
+    
+    protected NettyTlsProvider getTlsProviderService() {
+    	return _tlsProviderService.getService();
+    }
+    
+    protected void setTlsProviderService(ServiceReference<NettyTlsProvider> ref) {
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            Tr.event(this, tc, "setNettyTlsProvider", ref);
+        _tlsProviderService.setReference(ref);
+        if ((Config != null) && (wasJmsSSLPort >= 0))
+            inboundSecureChain.enable(true);
+
+        performAction(updateSSLChainAction);
+    }
+
+    protected void unsetTlsProviderService(ServiceReference<NettyTlsProvider> ref) {
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            Tr.event(this, tc, "unsetNettyTlsProvider", ref);
+        if (this._tlsProviderService.unsetReference(ref)) {
+        	//TODO: Check if this is enough
+        	inboundSecureChain.enable(false);
+        }
+    }
 
     @Trivial
     protected void setSslSupport(ServiceReference<ChannelFactoryProvider> ref) {
@@ -460,4 +527,12 @@ public class CommsServerServiceFacade {
     String getConfigured_Host() {
         return host;
     }
+    
+    /**
+	 * Query if Netty has been enabled for this endpoint
+	 * @return true if Netty should be used for this endpoint
+	 */
+	public boolean useNetty() {
+	    return _useNettyTransport;
+	}
 }

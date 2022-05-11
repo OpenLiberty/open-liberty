@@ -324,6 +324,7 @@ public class CommsOutboundChain {
             }
         }
 
+        // TODO: Remove this
         StringBuilder mapAsString = new StringBuilder("{");
         for (String key : chainList.keySet()) {
             mapAsString.append(key + "=" + chainList.get(key) + ", ");
@@ -350,6 +351,7 @@ public class CommsOutboundChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             SibTr.debug(this, tc, "CommsOutboundChain: Destroying " + (_isSSLChain ? "Secure" : "Non-Secure") + " chain ", _chainName);
         
+        // TODO: Remove this
         StringBuilder mapAsString = new StringBuilder("{");
         for (String key : chainList.keySet()) {
             mapAsString.append(key + "=" + chainList.get(key) + ", ");

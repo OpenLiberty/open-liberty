@@ -19,6 +19,11 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
+    
+Import-Package: \
+  io.openliberty.netty.internal*,\
+  !*.internal.*,\
+  *
 
 Export-Package: \
 com.ibm.ws.jfap.inbound.channel,\
@@ -32,15 +37,17 @@ Service-Component: \
    com.ibm.ws.messaging.comms.server;\
    implementation:=com.ibm.ws.jfap.inbound.channel.CommsServerServiceFacade;\
    chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle;\
+   nettyBundle=io.openliberty.netty.internal.NettyFramework;\
    tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
    sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
+   tlsProviderService=io.openliberty.netty.internal.tls.NettyTlsProvider;\
    sslSupport=com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;\
    commonServiceFacade=com.ibm.ws.sib.common.service.CommonServiceFacade;\
    commsClientService=com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface;\
    eventService=com.ibm.websphere.event.EventEngine;\
-   dynamic:='tcpOptions,sslOptions,sslSupport';\
-   optional:='commonServiceFacade,sslOptions,sslSupport';\
-   greedy:='tcpOptions,sslOptions,sslSupport';\
+   dynamic:='tcpOptions,sslOptions,sslSupport,tlsProviderService';\
+   optional:='commonServiceFacade,sslOptions,sslSupport,tlsProviderService';\
+   greedy:='tcpOptions,sslOptions,sslSupport,tlsProviderService';\
    configuration-policy:=require;\
    modified:=modified; \
    immediate:=true;\
@@ -62,7 +69,13 @@ instrument.disabled: true
 	com.ibm.ws.serialization;version=latest,\
 	com.ibm.ws.messaging.common;version=latest,\
 	com.ibm.ws.messaging.comms.client;version=latest,\
-	com.ibm.ws.messaging.utils;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.websphere.security;version=latest 
+	com.ibm.ws.messaging.utils;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	io.openliberty.io.netty;version=latest,\
+	io.openliberty.netty.internal;version=latest,\
+	io.openliberty.netty.internal.impl;version=latest,\
+	com.ibm.ws.kernel.boot.core,\
+	io.netty.handler,\
+	io.openliberty.endpoint
 	

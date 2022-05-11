@@ -23,6 +23,7 @@ Export-Package: \
   io.openliberty.netty.internal.udp
 
 Import-Package: \
+  com.ibm.ws.channelfw.internal.chains, \
   com.ibm.ws.bytebuffer.internal, \
   io.openliberty.netty.internal, \
   io.openliberty.netty.internal.exception, \
@@ -53,7 +54,8 @@ Private-Package: \
     com.ibm.ws.wsbytebuffer,\
     io.openliberty.accesslists.internal,\
     io.openliberty.io.netty;version=latest,\
-    io.openliberty.netty.internal;version=latest
+    io.openliberty.netty.internal;version=latest,\
+    io.openliberty.endpoint
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \

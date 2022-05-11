@@ -44,23 +44,26 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
     Bootstrap bootstrap = new Bootstrap();
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
     private String chainName;
+    private boolean isInbound;
     
-    protected static String HEARTBEAT_HANDLER_KEY = "heartBeatHandler";
-    protected static String SSL_HANDLER_KEY = "sslHandler";
-    protected static String DECODER_HANDLER_KEY = "decoder";
-    protected static String ENCODER_HANDLER_KEY = "encoder";
-    protected static String JMS_CLIENT_HANDLER_KEY = "jmsClientHandler";
+    public static final String HEARTBEAT_HANDLER_KEY = "heartBeatHandler";
+    public static final String SSL_HANDLER_KEY = "sslHandler";
+    public static final String DECODER_HANDLER_KEY = "decoder";
+    public static final String ENCODER_HANDLER_KEY = "encoder";
+    public static final String JMS_CLIENT_HANDLER_KEY = "jmsClientHandler";
+    public static final String JMS_SERVER_HANDLER_KEY = "jmsServerHandler";
 
     /**
      * Constructor.
      * 
      * @param chainName
      */
-    public NettyNetworkConnectionFactory(String chainName)
+    public NettyNetworkConnectionFactory(String chainName, boolean isInbound)
     {
         if (tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>", chainName);
         this.chainName = chainName;
+        this.isInbound = isInbound;
         bootstrap.group(workerGroup).channel(NioSocketChannel.class);
         bootstrap.attr(JMSClientInboundHandler.CHAIN_ATTR_KEY, chainName);
         
@@ -105,7 +108,7 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 
         NetworkConnection conn = null;
         
-        conn = new NettyNetworkConnection(bootstrap, chainName);
+        conn = new NettyNetworkConnection(bootstrap, chainName, isInbound);
         
         if (tc.isEntryEnabled())
             SibTr.exit(this, tc, "createConnection", conn);
