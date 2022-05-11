@@ -46,7 +46,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.docker.KeycloakContainer;
-import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
 /**
  * Test OAuth2 with distributed authentication cache.
@@ -104,11 +103,7 @@ public class JCacheOauth20AuthenticationCacheTest extends BaseTestCase {
         startServer1(server1, groupName, null, null);
         waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
-        if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
-            waitForExistingJCache(server1, AUTH_CACHE_NAME);
-        } else {
-            waitForCreatedJCache(server1, AUTH_CACHE_NAME);
-        }
+        waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
          * Update and start server 2.
@@ -116,7 +111,7 @@ public class JCacheOauth20AuthenticationCacheTest extends BaseTestCase {
         startServer2(server2, groupName);
         waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
-        waitForExistingJCache(server2, AUTH_CACHE_NAME);
+        waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
 
         /*
          * Register server1 as an OAuth20 client in Keycloak.

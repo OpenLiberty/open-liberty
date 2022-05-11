@@ -33,7 +33,6 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
 /**
  * Contains distributed JCache authentication cache tests for the DeleteAuthCache Mbean.
@@ -75,11 +74,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         basicAuthClient1 = new BasicAuthClient(server1);
         waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
-        if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
-            waitForExistingJCache(server1, AUTH_CACHE_NAME);
-        } else {
-            waitForCreatedJCache(server1, AUTH_CACHE_NAME);
-        }
+        waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
          * Start server2.
@@ -89,7 +84,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         basicAuthClient2 = new BasicAuthClient(server2);
         waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
-        waitForExistingJCache(server2, AUTH_CACHE_NAME);
+        waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
     }
 
     @After

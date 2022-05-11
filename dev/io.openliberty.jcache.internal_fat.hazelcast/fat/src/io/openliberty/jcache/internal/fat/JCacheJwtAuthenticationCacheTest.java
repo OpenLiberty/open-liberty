@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,11 +73,7 @@ public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
         startServer1(server1, groupName.toString(), 25000, TTL_SECONDS);
         waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
-        if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
-            waitForExistingJCache(server1, AUTH_CACHE_NAME);
-        } else {
-            waitForCreatedJCache(server1, AUTH_CACHE_NAME);
-        }
+        waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
          * Start server 2.
@@ -86,7 +82,7 @@ public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
         startServer2(server2, groupName.toString());
         waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
-        waitForExistingJCache(server2, AUTH_CACHE_NAME);
+        waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
 
         basicAuthClient1 = new SSLBasicAuthClient(server1);
         basicAuthClient2 = new SSLBasicAuthClient(server2);

@@ -15,17 +15,16 @@
 		<feature>jsp-2.3</feature>
 		<feature>jwtSso-1.0</feature>
 		<feature>servlet-4.0</feature>
-		<feature>timedexit-1.0</feature>
-		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
 	</featureManager>
 
-	<httpEndpoint id="defaultHttpEndpoint"
-		httpPort="${bvt.prop.HTTP_default}"
-		httpsPort="${bvt.prop.HTTP_default.secure}" />
 
 	<!--
 		Include common configuration. 
 	 -->
+	<include
+		location="${shared.resource.dir}/configs/testingConfig.xml" />
+	<include
+		location="${shared.resource.dir}/configs/httpEndpoint1.xml" />
 	<include
 		location="${shared.resource.dir}/configs/basicRegistry.xml" />
 	<include
@@ -34,6 +33,8 @@
 		location="${shared.resource.dir}/configs/libraries.xml" />
 	<include
 		location="${shared.resource.dir}/configs/ssl.xml" />
+	<include
+		location="${shared.resource.dir}/configs/appBasicAuth1.xml" />
 
 	<!--
 		Configure the JCache instances.
@@ -60,17 +61,5 @@
 	<jwtBuilder id="myJwtBuilder" />
 	<mpJwt id="myMpJwt" issuer="ALL_ISSUERS"
 		jwksUri="https://localhost:${bvt.prop.HTTP_default.secure}/jwt/ibm/api/defaultJWT/jwk" />
-
-	<!-- 
-		Applications.
-	 -->
-	<application type="war" id="basicauth" name="basicauth"
-		location="${server.config.dir}/apps/basicauth.war">
-		<application-bnd>
-			<security-role name="AllAuthenticated">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-		</application-bnd>
-	</application>
 
 </server>
