@@ -40,7 +40,7 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
-    private static final int TTL_SECONDS = 10;
+    private static final Integer TTL_SECONDS = TestPluginHelper.getTestPlugin().skipTtlTest() ? null : 15;
 
     @Server("io.openliberty.jcache.internal.fat.jwt.auth.cache.1")
     public static LibertyServer server1;

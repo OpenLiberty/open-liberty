@@ -42,7 +42,7 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
 
     private static BasicAuthClient basicAuthClient1;
     private static BasicAuthClient basicAuthClient2;
-    private static final int TTL_SECONDS = 10;
+    private static final Integer TTL_SECONDS = TestPluginHelper.getTestPlugin().skipTtlTest() ? null : 15;
 
     @Server("io.openliberty.jcache.internal.fat.auth.cache.1")
     public static LibertyServer server1;
