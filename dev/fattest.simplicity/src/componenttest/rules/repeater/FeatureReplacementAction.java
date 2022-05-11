@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,7 +130,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * Adds beta option to all the servers and clients
      */
     public static FeatureReplacementAction BETA_OPTION() {
-        return new FeatureReplacementAction().withID(BETA_ID).withOptions(BETA_EDITION_OPTION);
+        return new FeatureReplacementAction().withID(BETA_ID).withOptions(BETA_EDITION_TRUE);
     }
 
     private boolean forceAddFeatures = true;
@@ -154,7 +154,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private static final String pathToAutoFVTTestServers = "publish/servers/";
     private static final String pathToAutoFVTTestClients = "publish/clients/";
 
-    public static final String BETA_EDITION_OPTION = "-Dcom.ibm.ws.beta.edition=true";
+    public static final String BETA_EDITION_TRUE = "-Dcom.ibm.ws.beta.edition=true";
     public static final String BETA_ID = "BETA_JVM_OPTIONS";
 
     public FeatureReplacementAction() {}
@@ -404,7 +404,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     public FeatureReplacementAction withBeta() {
-        this.withOptions(BETA_EDITION_OPTION);
+        this.withOptions(BETA_EDITION_TRUE);
         return this;
     }
 
@@ -741,7 +741,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
                 // Create it
                 File jvmOptionsCreated = new File(pathToAutoFVTTestServers + serverName + "/jvm.options");
                 if (jvmOptionsCreated.createNewFile()) {
-                    Log.info(c, m, "Succesfully created jvm.options in: " + serverName);
+                    Log.info(c, m, "Successfully created jvm.options in: " + serverName);
                     optionFilesCreated.add(jvmOptionsCreated);
                 } else
                     Log.info(c, m, "Failed to create jvm.options in: " + serverName);
@@ -771,7 +771,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
                 // Create it
                 File jvmOptionsCreated = new File(pathToAutoFVTTestServers + clientName + "/jvm.options");
                 if (jvmOptionsCreated.createNewFile()) {
-                    Log.info(c, m, "Succesfully created jvm.options in: " + clientName);
+                    Log.info(c, m, "Successfully created jvm.options in: " + clientName);
                     optionFilesCreated.add(jvmOptionsCreated);
                 } else
                     Log.info(c, m, "Failed to create jvm.options in: " + clientName);
