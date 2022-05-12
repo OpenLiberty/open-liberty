@@ -102,8 +102,9 @@ Design preliminaries determine whether a formal design, which will be provided b
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Implementation**
 
-A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) and socialized (or `No Design Approved`) before any implementation work may begin and is the minimum before any beta code may be delivered.  All new Liberty content must be inaccessible in our GA releases until it is [Feature Complete](#feature-complete) by either marking it `kind=noship` or [beta fencing](#beta-code) it.  
-Code may not GA until this feature has obtained the "Design Approved" or "No Design Approved" label, along with all other tasks outlines in [GA](#ga) section.
+A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) before any implementation work may begin to be delivered (inaccessible/no-ship).  However, a design focused approach should still be applied to features, and developers should think about the feature design prior to writing and delivering any code.  
+Besides being prioritized, a feature must also be socialized (or No Design Approved) before any beta code may be delivered.  All new Liberty content must be inaccessible in our GA releases until it is [Feature Complete](#feature-complete) by either marking it `kind=noship` or [beta fencing](#beta-code) it.  
+Code may not GA until this feature has obtained the "Design Approved" or "No Design Approved" label, along with all other tasks outlined in the [GA](#ga) section.
 
 ### **Feature Development Begins**
 - [ ] Add the `In Progress` label
@@ -157,18 +158,18 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
 These occur only after GA of this feature is requested (by adding a `target:ga` label).  GA of this feature may not occur until all approvals are obtained.
 
 ### **All Features**
-- [ ] **FAT** All Tests complete and running successfully in SOE or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
-  - Approver adds label `focalApproved:fat`.
+- [ ] **APIs/Externals** Externals have been reviewed or N/A.  ([OpenLiberty/externals-approvers](https://github.com/orgs/OpenLiberty/teams/externals-approvers))
+  - Approver adds label `focalApproved:externals` 
 - [ ] **Demo** Demo is scheduled for an upcoming EOI or N/A. ([OpenLiberty/demo-approvers](https://github.com/orgs/OpenLiberty/teams/demo-approvers))
   - Approver adds label `focalApproved:demo`.
+- [ ] **FAT** All Tests complete and running successfully in SOE or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
+  - Approver adds label `focalApproved:fat`.
 - [ ] **Globalization** Translation and TVT are complete or N/A. ([OpenLiberty/globalization-approvers](https://github.com/orgs/OpenLiberty/teams/globalization-approvers))
   - Approver adds label `focalApproved:globalization`.
 
 ### **Design Approved Features**
 - [ ] **Accessibility** Accessibility testing completed or N/A. ([OpenLiberty/accessibility-approvers](https://github.com/orgs/OpenLiberty/teams/accessibility-approvers))
   - Approver adds label `focalApproved:accessibility`.
-- [ ] **APIs/Externals** Externals have been reviewed or N/A.  ([OpenLiberty/externals-approvers](https://github.com/orgs/OpenLiberty/teams/externals-approvers))
-  - Approver adds label `focalApproved:externals` 
 - [ ] **ID** Documentation is complete or N/A. ([OpenLiberty/id-approvers](https://github.com/orgs/OpenLiberty/teams/id-approvers))
   - Approver adds label `focalApproved:id`.
   - > **_NOTE:_**  If only trivial documentation changes are required, you may reach out to the ID Feature Focal to request a `ID Required - Trivial` label.  Unlike features with regular ID requirement, those with `ID Required - Trivial` label do not have a hard requirement for a Design/UFO.
