@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -345,7 +345,7 @@ public class FailoverTest2 extends FailoverTest {
      * Simulate an unexpected sqlcode on the first attempt to connect to the database
      */
     @Test
-    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException", "java.sql.SQLException", })
+    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", })
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
                            "java.sql.SQLException",
@@ -368,7 +368,7 @@ public class FailoverTest2 extends FailoverTest {
 
         // Should see a message like
         // WTRN0112E: An unexpected error occured whilst opening the recovery log. The log configuration was SQLMultiScopeRecoveryLog.......
-        assertNotNull("No error message signifying log failure", server.waitForStringInLog("An unexpected error occured whilst opening the recovery log"));
+        assertNotNull("No error message signifying log failure", server.waitForStringInLog("HADB Peer locking, local recovery failed"));
     }
 
     /**
@@ -397,7 +397,7 @@ public class FailoverTest2 extends FailoverTest {
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
-        assertNotNull("No warning message signifying failover", server.waitForStringInLog("Have recovered from SQLException when opening SQL RecoveryLog"));
+        assertNotNull("No warning message signifying failover", server.waitForStringInTrace("Have recovered from SQLException when claiming local recovery logs"));
     }
 
     /**
@@ -427,6 +427,6 @@ public class FailoverTest2 extends FailoverTest {
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when opening SQL RecoveryLog
-        assertNotNull("No warning message signifying failover", server.waitForStringInLog("Have recovered from SQLException when opening SQL RecoveryLog"));
+        assertNotNull("No warning message signifying failover", server.waitForStringInTrace("Have recovered from SQLException when claiming local recovery logs"));
     }
 }

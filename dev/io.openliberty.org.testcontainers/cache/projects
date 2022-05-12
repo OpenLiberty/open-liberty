@@ -122,6 +122,7 @@ com.ibm.ws.transaction.cloud_fat.postgresql.2
 com.ibm.ws.transaction.cloud_fat.sqlserver.0
 com.ibm.ws.transaction.cloud_fat.sqlserver.1
 com.ibm.ws.transaction.cloud_fat.sqlserver.2
+com.ibm.ws.transaction.db2_fat
 com.ibm.ws.transaction.db_fat
 com.ibm.ws.transaction.hadb_fat.db2.1
 com.ibm.ws.transaction.hadb_fat.db2.2
