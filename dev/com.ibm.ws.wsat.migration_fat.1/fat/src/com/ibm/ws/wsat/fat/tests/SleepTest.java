@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
@@ -70,6 +71,13 @@ public class SleepTest extends WSATTest {
 
 		server.setServerStartTimeout(START_TIMEOUT);
 		server2.setServerStartTimeout(START_TIMEOUT);
+		
+		// None of these tests take into account client inactivity timeout so we'll set it infinite
+		ServerConfiguration config = server2.getServerConfiguration();
+		
+		config.getTransaction().setClientInactivityTimeout("0");
+		
+		server2.updateServerConfiguration(config);
 
 		meanStartupTime = FATUtils.startServers(server, server2);
 
