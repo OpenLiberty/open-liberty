@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ public class BeansAsset extends ClassLoaderAsset {
      * All the possible values of bean-discovery-mode
      */
     public static enum DiscoveryMode {
-        NONE, ALL, ANNOTATED
+        NONE, ALL, ANNOTATED, DEFAULT
     };
 
     /**
@@ -63,7 +63,7 @@ public class BeansAsset extends ClassLoaderAsset {
     static {
         for (DiscoveryMode mode : DiscoveryMode.values()) {
             for (CDIVersion version : CDIVersion.values()) {
-                if ((version == CDIVersion.CDI10 && mode == DiscoveryMode.ALL) ||
+                if ((version == CDIVersion.CDI10 && mode == DiscoveryMode.DEFAULT) ||
                     (version != CDIVersion.CDI10)) {
                     ASSETS[mode.ordinal()][version.ordinal()] = new BeansAsset(mode, version);
                 }
@@ -90,8 +90,10 @@ public class BeansAsset extends ClassLoaderAsset {
      */
     public static BeansAsset getBeansAsset(DiscoveryMode mode, CDIVersion version) {
 
-        if (version == CDIVersion.CDI10 && mode != DiscoveryMode.ALL) {
-            throw new IllegalArgumentException("Only DiscoveryMode.ALL is supported with CDI 1.0");
+        if (version == CDIVersion.CDI10 && mode != DiscoveryMode.DEFAULT) {
+            //When using a CDI (implementation) prior to 4.0, a CDI 1.0 beans.xml would have been treated as discovery mode ALL
+            //When using a CDI (implementation) 4.0 or higher, a CDI 1.0 beans.xml will now default to discovery mode ANNOTATED
+            throw new IllegalArgumentException("Only DiscoveryMode.DEFAULT is supported with CDI 1.0");
         }
 
         return ASSETS[mode.ordinal()][version.ordinal()];
@@ -108,8 +110,8 @@ public class BeansAsset extends ClassLoaderAsset {
         String beans;
         if (version == CDIVersion.CDI10) {
             beans = "beans10_";
-            if (mode != DiscoveryMode.ALL) {
-                throw new IllegalArgumentException("Only DiscoveryMode.ALL is supported with CDI 1.0");
+            if (mode != DiscoveryMode.DEFAULT) {
+                throw new IllegalArgumentException("Only DiscoveryMode.DEFAULT is supported with CDI 1.0");
             }
         } else if (version == CDIVersion.CDI11) {
             beans = "beans11_";
@@ -122,12 +124,19 @@ public class BeansAsset extends ClassLoaderAsset {
         } else {
             throw new IllegalArgumentException("Unknown CDI Version: " + version);
         }
+
         if (mode == DiscoveryMode.ALL) {
             beans = beans + "all.xml";
         } else if (mode == DiscoveryMode.ANNOTATED) {
             beans = beans + "annotated.xml";
         } else if (mode == DiscoveryMode.NONE) {
             beans = beans + "none.xml";
+        } else if (mode == DiscoveryMode.DEFAULT) {
+            if (version == CDIVersion.CDI10) {
+                beans = beans + "default.xml"; //CDI 1.0 is an implied equivalent of ALL
+            } else {
+                beans = beans + "annotated.xml"; //CDI 1.1 onwards, ANNOTATED is the default
+            }
         } else {
             throw new IllegalArgumentException("Unknown CDI Discovery Mode: " + mode);
         }

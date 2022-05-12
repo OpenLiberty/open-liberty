@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,15 @@ public class CDIArchiveHelper {
     }
 
     /**
+     * Create a CDI 1.1 WEB-INF/beans.xml file in a war with a default discovery mode
+     *
+     * @param webArchive The WAR to create the beans.xml in
+     */
+    public static WebArchive addBeansXML(WebArchive webArchive) {
+        return addBeansXML(webArchive, CDIVersion.CDI11);
+    }
+
+    /**
      * Create a CDI 1.1 WEB-INF/beans.xml file in a war
      *
      * @param webArchive The WAR to create the beans.xml in
@@ -60,6 +69,17 @@ public class CDIArchiveHelper {
      */
     public static WebArchive addBeansXML(WebArchive webArchive, DiscoveryMode mode, CDIVersion version) {
         BeansAsset beans = BeansAsset.getBeansAsset(mode, version);
+        return addBeansXML(webArchive, beans);
+    }
+
+    /**
+     * Create a WEB-INF/beans.xml file in a war with the default discovery mode
+     *
+     * @param webArchive The WAR to create the beans.xml in
+     * @param version    The beans.xml version to use; CDI11 (Java EE) or CDI30 (Jakarta EE)
+     */
+    public static WebArchive addBeansXML(WebArchive webArchive, CDIVersion version) {
+        BeansAsset beans = BeansAsset.getBeansAsset(DiscoveryMode.DEFAULT, version);
         return addBeansXML(webArchive, beans);
     }
 
@@ -121,6 +141,15 @@ public class CDIArchiveHelper {
      */
     public static JavaArchive addEmptyBeansXML(JavaArchive archive) {
         return addBeansXML(archive, EmptyAsset.INSTANCE);
+    }
+
+    /**
+     * Create a CDI 1.1 META-INF/beans.xml file in a jar with a default discovery mode
+     *
+     * @param archive The archive to create the beans.xml in
+     */
+    public static JavaArchive addBeansXML(JavaArchive archive) {
+        return addBeansXML(archive, DiscoveryMode.DEFAULT, CDIVersion.CDI11);
     }
 
     /**

@@ -28,6 +28,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 import io.openliberty.cdi40.internal.fat.startupEvents.ear.lib.EarLibApplicationScopedBean;
 import io.openliberty.cdi40.internal.fat.startupEvents.ear.war.StartupEventsServlet;
 import io.openliberty.cdi40.internal.fat.startupEvents.ear.war.WarApplicationScopedBean;
@@ -35,7 +36,7 @@ import io.openliberty.cdi40.internal.fat.startupEvents.sharedLib.AbstractObserve
 import io.openliberty.cdi40.internal.fat.startupEvents.sharedLib.SharedLibApplicationScopedBean;
 
 @RunWith(FATRunner.class)
-public class StartupEventsTest {
+public class StartupEventsTest extends FATServletClient {
     public static final String SERVER_NAME = "StartupEventsServer";
 
     public static final String STARTUP_EVENTS_APP_NAME = "StartupEvents";

@@ -33,7 +33,7 @@ public class AnnotatedBeansServlet extends FATServlet {
     private Instance<UnannotatedBean> unannotatedBean;
 
     @Test
-    public void testEmptyBeansXml() {
+    public void testAnnotatedBeansInjected() {
         assertNotNull(requestScopedBean);
         assertEquals("RequestScopedBean", requestScopedBean.test());
 

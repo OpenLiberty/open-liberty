@@ -84,7 +84,7 @@ public class CDI12ExtensionTest {
         WebArchive helloWorldExtensionTest = ShrinkWrap.create(WebArchive.class, "helloWorldExtensionTest.war");
         helloWorldExtensionTest.addClass(HelloWorldExtensionTestServlet.class);
         helloWorldExtensionTest.addClass(HelloWorldExtensionBean.class);
-        CDIArchiveHelper.addBeansXML(helloWorldExtensionTest, DiscoveryMode.ALL, CDIVersion.CDI10);
+        CDIArchiveHelper.addBeansXML(helloWorldExtensionTest, DiscoveryMode.DEFAULT, CDIVersion.CDI10);
 
         EnterpriseArchive helloWorldExension = ShrinkWrap.create(EnterpriseArchive.class,
                                                                  "helloWorldExension.ear");
