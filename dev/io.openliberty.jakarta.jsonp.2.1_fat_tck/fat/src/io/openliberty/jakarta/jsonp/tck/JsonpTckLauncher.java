@@ -41,6 +41,7 @@ import componenttest.topology.utils.MvnUtils;
 public class JsonpTckLauncher {
 
     final static Map<String, String> additionalProps = new HashMap<>();
+    final static Map<String, String> additionalPluggabilityProps = new HashMap<>();
 
     //This is a standalone test no server needed
     @Server
@@ -89,5 +90,40 @@ public class JsonpTckLauncher {
         resultInfo.put("feature_version", "2.1");
         MvnUtils.preparePublicationFile(resultInfo);
         assertEquals(0, result);
+    }
+
+    /**
+     * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
+     */
+    @Test
+    @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
+    public void launchJsonpPluggabilityTCK() throws Exception {
+
+        Map<String, String> resultInfo = MvnUtils.getResultInfo(DONOTSTART);
+
+        /**
+         * The runTCKMvnCmd will set the following properties for use by arquillian
+         * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
+         * and then run the mvn test command.
+         */
+        // Including jakarta.json-tck-tests and jakarta.json-tck-tests-pluggability together causes
+        // exceptions due to collisions, so created 2 separate profiles which are then
+        // run individually
+        additionalPluggabilityProps.put("run-tck-tests-pluggability", "true");
+        int result2 = MvnUtils.runTCKMvnCmd(
+                                            DONOTSTART, //server to run on
+                                            "io.openliberty.jakarta.jsonp.2.1_fat_tck", //bucket name
+                                            this.getClass() + ":launchJsonpPluggabilityTCK", //launching method
+                                            null, //suite file to run
+                                            additionalPluggabilityProps, //additional props
+                                            Collections.emptySet() //additional jars
+        );
+
+        resultInfo.put("results_type", "Jakarta");
+        resultInfo.put("feature_name", "jsonp-pluggability");
+        resultInfo.put("feature_version", "2.1");
+        MvnUtils.preparePublicationFile(resultInfo);
+        assertEquals(0, result2);
+
     }
 }
