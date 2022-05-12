@@ -274,7 +274,6 @@ public class WCServerTest extends LoggingTest {
      *                       if validation fails, or if an unexpected error occurs
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)
     public void test_SessionIdListenerChangeServlet() throws Exception {
         // Make sure the test framework knows that SRVE9014E is expected
 
@@ -289,7 +288,6 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)
     public void test_SessionIdListenerRegisteredWebXml() throws Exception {
         // Make sure the test framework knows that SRVE9014E is expected
 
@@ -304,7 +302,6 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)
     public void test_SessionIdListenerServletContextAddListener() throws Exception {
         // Make sure the test framework knows that SRVE9014E is expected
 
@@ -327,7 +324,6 @@ public class WCServerTest extends LoggingTest {
     }
 
     @Test
-    @SkipForRepeat(EE10_FEATURES)
     public void test_RequestedSessionId() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
         this.verifyResponse(wb, "/TestServlet31/SessionIdTest;jsessionid=mysessionid",

@@ -36,7 +36,7 @@ import componenttest.topology.utils.HttpUtils;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE10_FEATURES })
+@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
 public class WC5GetContextPath {
 
     private static final Logger LOG = Logger.getLogger(WC5GetContextPath.class.getName());

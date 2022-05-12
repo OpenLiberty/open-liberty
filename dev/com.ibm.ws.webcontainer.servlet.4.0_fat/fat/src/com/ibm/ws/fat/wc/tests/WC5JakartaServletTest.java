@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -48,7 +47,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, EE10_FEATURES })
+@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
 public class WC5JakartaServletTest {
 
     private static final Logger LOG = Logger.getLogger(WC5JakartaServletTest.class.getName());
