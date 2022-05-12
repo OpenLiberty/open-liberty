@@ -26,6 +26,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 import io.openliberty.cdi40.internal.fat.bce.basicear.lib.EarBCEExtension;
 import io.openliberty.cdi40.internal.fat.bce.basicear.lib.LibTestBean;
 import io.openliberty.cdi40.internal.fat.bce.basicear.war1.EarBCETestServlet1;
@@ -41,7 +42,7 @@ import io.openliberty.cdi40.internal.fat.bce.extensionarchivenotscanned.Extensio
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 
 @RunWith(FATRunner.class)
-public class BuildCompatibleExtensionsTest {
+public class BuildCompatibleExtensionsTest extends FATServletClient {
 
     @Server("cdiBceTestServer")
     @TestServlets({ @TestServlet(contextRoot = "war1", servlet = EarBCETestServlet1.class),
