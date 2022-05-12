@@ -28,23 +28,24 @@
   </library>
 	
   <authData id="cloudantAuthData" user="${CLOUDANT_USER}" password="${CLOUDANT_PASS}"/>
-  <authData id="travisAuthData" user="travis" password="password"/>
-  <authData id="kevinAuthData" user="kevin" password="password"/>
-  <authData id="invalidAuthData" user="baduser" password="badpassword"/>
+  <authData id="travisAuthData"   user="travis"           password="password"/>
+  <authData id="kevinAuthData"    user="kevin"            password="password"/>
+  <authData id="invalidAuthData"  user="baduser"          password="badpassword"/>
 	
-  <cloudant id="cloudantProps" jndiName="cloudant/cloudantProps" username="${CLOUDANT_USER}" password="${CLOUDANT_PASS}" libraryRef="CloudantLib" url="${CLOUDANT_URL}"/>
-  <cloudant id="oldCloudant" jndiName="cloudant/oldCloudant" libraryRef="CloudantLibOld" url="${CLOUDANT_URL}" containerAuthDataRef="cloudantAuthData"/>
-  <cloudant id="cloudantContainerAuth" jndiName="cloudant/cloudantContainerAuth" libraryRef="CloudantLib" url="${CLOUDANT_URL}">
+  <cloudant id="cloudantProps"         jndiName="cloudant/cloudantProps"         libraryRef="CloudantLib"    url="${CLOUDANT_URL}" username="${CLOUDANT_USER}" password="${CLOUDANT_PASS}"  />
+  <cloudant id="oldCloudant"           jndiName="cloudant/oldCloudant"           libraryRef="CloudantLibOld" url="${CLOUDANT_URL}" containerAuthDataRef="cloudantAuthData"/>
+  <cloudant id="cloudantNoAuth"        jndiName="cloudant/cloudantNoAuth"        libraryRef="CloudantLib"    url="${CLOUDANT_URL}"/>
+  <cloudant id="cloudantContainerAuth" jndiName="cloudant/cloudantContainerAuth" libraryRef="CloudantLib"    url="${CLOUDANT_URL}">
     <containerAuthData user="${CLOUDANT_USER}" password="${CLOUDANT_PASS}"/>
   </cloudant>
-  <cloudant id="cloudantNoAuth" jndiName="cloudant/cloudantNoAuth" libraryRef="CloudantLib" url="${CLOUDANT_URL}"/>
+  
 
-  <cloudantDatabase jndiName="cloudant/dbNoAuth" cloudantRef="cloudantNoAuth" databaseName="${CLOUDANT_DB_NAME}" create="true"/>
-  <cloudantDatabase id="dbAuthProps" jndiName="cloudant/dbAuthProps" cloudantRef="cloudantProps" databaseName="${CLOUDANT_DB_NAME}" create="true"/>
-  <cloudantDatabase id="dbCtrAuth" jndiName="cloudant/dbCtrAuth" cloudantRef="cloudantContainerAuth" databaseName="${CLOUDANT_DB_NAME}" create="true"/>
-  <cloudantDatabase id="dbIncorrectName" jndiName="cloudant/dbIncorrectName" cloudantRef="cloudantProps" databaseName="invalidDBName" create="false"/>
-  <cloudantDatabase id="dbCloudantOld" jndiName="cloudant/dbCloudantOld" cloudantRef="oldCloudant" databaseName="${CLOUDANT_DB_NAME}" create="true"/>
-  <cloudantDatabase id="dbTestAuth" jndiName="cloudant/dbTestAuth" cloudantRef="cloudantNoAuth" databaseName="testauthdb" create="false"/>
+  <cloudantDatabase id="dbNoAuth"        jndiName="cloudant/dbNoAuth"        cloudantRef="cloudantNoAuth"        databaseName="${CLOUDANT_DB_NAME}" create="true"/>
+  <cloudantDatabase id="dbAuthProps"     jndiName="cloudant/dbAuthProps"     cloudantRef="cloudantProps"         databaseName="${CLOUDANT_DB_NAME}" create="true"/>
+  <cloudantDatabase id="dbCtrAuth"       jndiName="cloudant/dbCtrAuth"       cloudantRef="cloudantContainerAuth" databaseName="${CLOUDANT_DB_NAME}" create="true"/>
+  <cloudantDatabase id="dbIncorrectName" jndiName="cloudant/dbIncorrectName" cloudantRef="cloudantProps"         databaseName="invalidDBName"       create="false"/>
+  <cloudantDatabase id="dbCloudantOld"   jndiName="cloudant/dbCloudantOld"   cloudantRef="oldCloudant"           databaseName="${CLOUDANT_DB_NAME}" create="true"/>
+  <cloudantDatabase id="dbTestAuth"      jndiName="cloudant/dbTestAuth"      cloudantRef="cloudantNoAuth"        databaseName="testauthdb"          create="false"/>
     
   <include location="../fatTestPorts.xml"/>
     

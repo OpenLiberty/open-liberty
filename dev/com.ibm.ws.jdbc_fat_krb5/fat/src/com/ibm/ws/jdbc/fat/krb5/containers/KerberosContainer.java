@@ -31,7 +31,6 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.InternetProtocol;
 import com.github.dockerjava.api.model.Ports;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -91,7 +90,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
     @Override
     protected void containerIsStarted(InspectContainerResponse containerInfo) {
-        String udp99 = containerInfo.getNetworkSettings().getPorts().getBindings().get(new ExposedPort(99, InternetProtocol.UDP))[0].getHostPortSpec();
+        String udp99 = containerInfo.getNetworkSettings().getPorts().getBindings().get(ExposedPort.udp(99))[0].getHostPortSpec();
         udp_99 = Integer.valueOf(udp99);
     }
 

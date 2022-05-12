@@ -80,12 +80,12 @@ public class TestCouchDbWar extends FATServletClient {
 
         // Setup environment variables for server configuration, using values from test container
         server.addEnvVar("couchdb_host", couchdb.getHost());
-        server.addEnvVar("couchdb_port", couchdb.getPort(false));
+        server.addEnvVar("couchdb_port", String.valueOf(couchdb.getDatabasePort()));
         server.addEnvVar("couchdb_url", couchdb.getURL(false));
         server.addEnvVar("couchdb_username", couchdb.getUser());
         server.addEnvVar("couchdb_password", couchdb.getPassword());
         logger.info("setup : couchdb_host=" + couchdb.getHost());
-        logger.info("setup : couchdb_port=" + couchdb.getPort(false));
+        logger.info("setup : couchdb_port=" + String.valueOf(couchdb.getDatabasePort()));
         logger.info("setup : couchdb_url=" + couchdb.getURL(false));
         logger.info("setup : couchdb_username=" + couchdb.getUser());
         logger.info("setup : couchdb_password=" + couchdb.getPassword());
