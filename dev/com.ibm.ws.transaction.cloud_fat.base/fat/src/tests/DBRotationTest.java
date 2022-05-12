@@ -67,6 +67,10 @@ public class DBRotationTest extends FATServletClient {
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2;
 
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD002.nopeerlocking")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer server2nopeerlocking;
+
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longLeaseCompeteServer1;
@@ -82,6 +86,7 @@ public class DBRotationTest extends FATServletClient {
     public static String[] serverNames = new String[] {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD002",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD002.nopeerlocking",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown",
@@ -109,6 +114,7 @@ public class DBRotationTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(longLeaseCompeteServer1, app, dO);
         ShrinkHelper.exportAppToServer(longLeaseLogFailServer1, app, dO);
         ShrinkHelper.exportAppToServer(noShutdownServer1, app, dO);
+        ShrinkHelper.exportAppToServer(server2nopeerlocking, app, dO);
     }
 
     public static void setUp(LibertyServer server) throws Exception {
@@ -333,13 +339,13 @@ public class DBRotationTest extends FATServletClient {
             serversToCleanup = new LibertyServer[] { longLeaseLogFailServer1, server2 };
 
             longLeaseLogFailServer1.setFFDCChecking(false);
-            server2.setHttpDefaultPort(cloud2ServerPort);
+            server2nopeerlocking.setHttpDefaultPort(cloud2ServerPort);
             try {
-                FATUtils.startServers(runner, longLeaseLogFailServer1, server2);
+                FATUtils.startServers(runner, longLeaseLogFailServer1, server2nopeerlocking);
             } catch (Exception e) {
                 Log.error(c, method, e);
                 // If we're here, the test will fail but we need to make sure both servers are stopped so the next test has a chance
-                FATUtils.stopServers(longLeaseLogFailServer1, server2);
+                FATUtils.stopServers(longLeaseLogFailServer1, server2nopeerlocking);
                 throw e;
             }
 
@@ -347,8 +353,8 @@ public class DBRotationTest extends FATServletClient {
             // (from server1's point of view) acquire server1's log and recover it.
 
             //  Check for key string to see whether peer recovery has succeeded
-            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
-            FATUtils.stopServers(server2);
+            assertNotNull("peer recovery failed", server2nopeerlocking.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
+            FATUtils.stopServers(server2nopeerlocking);
 
             // server1 now attempts some 2PC and will fail and terminate because its logs have been taken
             try {
@@ -374,13 +380,13 @@ public class DBRotationTest extends FATServletClient {
             serversToCleanup = new LibertyServer[] { noShutdownServer1, server2 };
 
             noShutdownServer1.setFFDCChecking(false);
-            server2.setHttpDefaultPort(cloud2ServerPort);
+            server2nopeerlocking.setHttpDefaultPort(cloud2ServerPort);
             try {
-                FATUtils.startServers(runner, noShutdownServer1, server2);
+                FATUtils.startServers(runner, noShutdownServer1, server2nopeerlocking);
             } catch (Exception e) {
                 Log.error(c, method, e);
                 // If we're here, the test will fail but we need to make sure both servers are stopped so the next test has a chance
-                FATUtils.stopServers(noShutdownServer1, server2);
+                FATUtils.stopServers(noShutdownServer1, server2nopeerlocking);
                 throw e;
             }
 
@@ -388,8 +394,8 @@ public class DBRotationTest extends FATServletClient {
             // (from server1's point of view) acquire server1's log and recover it.
 
             //  Check for key string to see whether peer recovery has succeeded
-            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
-            FATUtils.stopServers(server2);
+            assertNotNull("peer recovery failed", server2nopeerlocking.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
+            FATUtils.stopServers(server2nopeerlocking);
 
             // server1 now attempts some 2PC which will fail because its logs have been taken but the server will NOT terminate
             runTest(noShutdownServer1, SERVLET_NAME, "setupRecLostLog");
