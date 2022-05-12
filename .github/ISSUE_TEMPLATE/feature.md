@@ -80,7 +80,8 @@ Design preliminaries determine whether a formal design, which will be provided b
 ### **Design**
 - [ ] POC Design / UFO review requested.
   - Owner adds label `Design Review Request`
-- [ ] POC Design / UFO review scheduled. (David Chang)
+- [ ] POC Design / UFO review scheduled.
+  - Follow the [Adding an Agenda Item](https://github.ibm.com/websphere/POC-Forum#adding-an-agenda-item) instructions
 - [ ] POC Design / UFO review completed.
 - [ ] POC / UFO Review follow-ons completed.
 - [ ] Design / UFO approved. ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) or N/A
