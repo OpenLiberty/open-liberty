@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsat.fat.tests;
+package com.ibm.ws.wsat.fat;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -41,7 +42,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class SleepTest extends WSATTest {
+public class SleepTest extends DBTestBase {
 
 	private static LibertyServer server;
 	private static String BASE_URL;

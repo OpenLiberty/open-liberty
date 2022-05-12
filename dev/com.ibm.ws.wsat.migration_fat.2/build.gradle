@@ -17,13 +17,6 @@ dependencies {
                project(':io.openliberty.org.apache.commons.logging')
 }
 
-task copyFAT {
-    copy {
-      from project(':com.ibm.ws.wsat.migration_fat.1').file('fat/src/com/ibm/ws/wsat/fat/tests')
-      into new File('fat/src/com/ibm/ws/wsat/fat/tests')
-    }
-}
-
 task copyCommonFiles {
   doLast {
     /*
@@ -44,7 +37,6 @@ task copyCommonFiles {
   }
 }
 
-addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 jar {
@@ -62,8 +54,5 @@ clean.doLast {
   }
   if (file('build').exists()){
     file('build').deleteDir()
-  }
-  if (file('fat/src/com/ibm/ws/wsat/fat/tests').exists()){
-    file('fat/src/com/ibm/ws/wsat/fat/tests').deleteDir()
   }
 }

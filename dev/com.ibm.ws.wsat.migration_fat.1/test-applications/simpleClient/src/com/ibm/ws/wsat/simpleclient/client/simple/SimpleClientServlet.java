@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -96,10 +97,6 @@ public class SimpleClientServlet extends HttpServlet {
 				// To all intents and purposes, tran is going to start now.
 				tranEndTime = Instant.now().plusSeconds((long)timeout);
 				System.out.println("Transaction is due to timeout at " + tranEndTime.toString());
-				
-				// Sleep tests are specified to either just timeout or just not timeout
-				// In the former case we'll sleep for just a bit longer than the remaining time in the tran
-				// In the latter we'll sleep for half the remaining time in the tran
 			}
 
 			String[] noXARes = new String[]{};
@@ -560,18 +557,8 @@ public class SimpleClientServlet extends HttpServlet {
 				}
 				System.out.println("execute enlistXAResouces(): " + result);
 			}
-
-			Duration serverSleepTime = Duration.ZERO;
-			switch (sleepTimeServer) {
-			case LONG_SLEEP:
-				// 1.5 times the time left in the tran
-				serverSleepTime = Duration.between(Instant.now(), tranEndTime).multipliedBy(15).dividedBy(10);
-				break;
-			case SHORT_SLEEP:
-				// 0.5 times the time left in the tran
-				serverSleepTime = Duration.between(Instant.now(), tranEndTime).multipliedBy(5).dividedBy(10);
-				break;
-			}
+			
+			final Duration serverSleepTime = calculateSleepTime(sleepTimeServer);
 
 			String output1 = "", output2 = "No second web service call.";
 			output1 = " Get response: " + callWebservice(BASE_URL, ParticipantXAResouces, expectedDirection, (int)serverSleepTime.getSeconds(), true) + ".";
@@ -620,23 +607,11 @@ public class SimpleClientServlet extends HttpServlet {
 				}
 				System.out.println("execute enlistXAResouces(): " + result);
 			}
-			
-			switch (sleepTimeClient) {
-			case LONG_SLEEP:
-				// 1.5 times the time left in the tran
-				Duration longSleepTime = Duration.between(Instant.now(), tranEndTime).multipliedBy(15).dividedBy(10);
-				System.out.println(">>>>>>>>>Thread is hanging for " + longSleepTime.toString() + "!");
-			  	Thread.sleep(longSleepTime.getSeconds() * 1000);
-			  	System.out.println(">>>>>>>>>Woken up!");
-				break;
-			case SHORT_SLEEP:
-				// 0.5 times the time left in the tran
-				Duration shortSleepTime = Duration.between(Instant.now(), tranEndTime).multipliedBy(5).dividedBy(10);
-				System.out.println(">>>>>>>>>Thread is hanging for " + shortSleepTime.getSeconds() + " seconds!");
-			  	Thread.sleep(shortSleepTime.getSeconds() * 1000);
-			  	System.out.println(">>>>>>>>>Woken up!");
-				break;
-			}
+
+			final long sleepTime = calculateSleepTime(sleepTimeClient).getSeconds();
+			System.out.println(">>>>>>>>>Client thread is hanging for " + sleepTime + " seconds!");
+			Thread.sleep(sleepTime * 1000);
+		  	System.out.println(">>>>>>>>>Woken up!");
 
 			// User Transaction Commit / Rollback
 			System.out.println("execute commitRollback(): " + commitRollback);
@@ -666,6 +641,37 @@ public class SimpleClientServlet extends HttpServlet {
 			e.printStackTrace();
 			return output + " Exception happens: " + e.toString() + ". Test failed.";
 		}
+	}
+	
+	
+	// Sleep tests are specified to either just timeout or just not timeout
+	// In the former case we'll sleep for just a bit longer than the remaining time in the tran (min 10s)
+	// In the latter we'll sleep for half the remaining time in the tran (max 10s)
+	private Duration calculateSleepTime(int type) {
+		Duration sleepTime;
+
+		final Duration limit = Duration.ofSeconds(10);
+		switch (type) {
+		case LONG_SLEEP:
+			// 1.5 times the time left in the tran
+			sleepTime = Duration.between(Instant.now(), tranEndTime).multipliedBy(3).dividedBy(2);
+			if (sleepTime.compareTo(limit) < 0) {
+				sleepTime = limit;
+			}
+			break;
+		case SHORT_SLEEP:
+			// 0.5 times the time left in the tran
+			sleepTime = Duration.between(Instant.now(), tranEndTime).multipliedBy(1).dividedBy(2);
+			if (sleepTime.compareTo(limit) > 0) {
+				sleepTime = limit;
+			}
+			break;
+		default:
+			sleepTime = Duration.ZERO;
+			break;
+		}
+		
+		return sleepTime;
 	}
 
 	private String callWebservice(String BASE_URL, String[] XAResouces, int expectedDirection, int sleepTimeServer, boolean clearXAResource)
