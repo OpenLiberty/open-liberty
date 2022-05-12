@@ -371,7 +371,11 @@ public class FailoverTest2 extends FailoverTest {
 
         // Should see a message like
         // WTRN0112E: An unexpected error occured whilst opening the recovery log. The log configuration was SQLMultiScopeRecoveryLog.......
+<<<<<<< HEAD
         assertNotNull("No error message signifying log failure", server.waitForStringInTrace("Local recovery failed"));
+=======
+        assertNotNull("No error message signifying log failure", server.waitForStringInLog("HADB Peer locking, local recovery failed"));
+>>>>>>> 1d9333198b (Default enablement of Transaction Log Peer Locking)
     }
 
     /**

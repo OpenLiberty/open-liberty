@@ -61,6 +61,8 @@ public class DBRotationTest extends FATServletClient {
     public static LibertyServer server2;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD002.nopeerlocking")
+
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2nopeerlocking;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete")
