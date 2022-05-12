@@ -101,10 +101,10 @@ public class MetatypeUtils {
         }
 
         // Otherwise, parse the duration with unit descriptors.
-        return evaluateDuration(strVal, endUnit, UNIT_DESCRIPTORS);
+        return evaluateDuration​(strVal, endUnit, UNIT_DESCRIPTORS);
     }
 
-    private static Long evaluateDuration(String strVal, TimeUnit endUnit, Map<String, TimeUnit> unitDescriptors) {
+    private static Long evaluateDuration​(String strVal, TimeUnit endUnit, Map<String, TimeUnit> unitDescriptors) {
         Matcher m = INTERVAL_STRING.matcher(strVal);
         long retVal = 0;
         boolean somethingParsed = false;

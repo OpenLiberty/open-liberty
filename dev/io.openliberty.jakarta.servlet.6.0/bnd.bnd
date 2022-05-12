@@ -15,6 +15,8 @@ bVersion=1.0
 javac.source: 11
 javac.target: 11
 
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Bundle-SymbolicName: io.openliberty.jakarta.servlet.6.0; singleton:=true
 Bundle-Description: Jakarta Servlet, version 6.0
 
