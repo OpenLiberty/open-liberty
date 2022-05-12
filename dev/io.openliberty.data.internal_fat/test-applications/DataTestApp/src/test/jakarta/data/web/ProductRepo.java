@@ -8,25 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data;
+package test.jakarta.data.web;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import jakarta.enterprise.util.Nonbinding;
+import io.openliberty.data.Data;
 
 /**
- * Annotation to experiment with.
+ *
  */
-@Documented
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Data {
-    @Nonbinding
-    String value() default "java:comp/DefaultDataSource";
+@Data
+public interface ProductRepo {
+    public String findItem(long id);
 }

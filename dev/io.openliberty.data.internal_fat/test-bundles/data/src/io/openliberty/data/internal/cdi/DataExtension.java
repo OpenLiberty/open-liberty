@@ -10,22 +10,49 @@
  *******************************************************************************/
 package io.openliberty.data.internal.cdi;
 
-import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.spi.AnnotatedType;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
-import jakarta.enterprise.inject.spi.Extension;
+import java.util.ArrayList;
+import java.util.HashSet;
 
-import com.ibm.ws.cdi.CDIServiceUtils;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.WithAnnotations;
 
 import io.openliberty.data.Data;
 
 public class DataExtension implements Extension {
-    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
-        // register the interceptor binding and the interceptor
-        AnnotatedType<Data> bindingType = beanManager.createAnnotatedType(Data.class);
-        beforeBeanDiscovery.addInterceptorBinding(bindingType);
-        AnnotatedType<DataInterceptor> interceptorType = beanManager.createAnnotatedType(DataInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(interceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, getClass()));
+    private final ArrayList<Bean<?>> beans = new ArrayList<>();
+    private final HashSet<AnnotatedType<?>> beanTypes = new HashSet<>();
+
+    public <T> void processAnnotatedType(@Observes @WithAnnotations(Data.class) ProcessAnnotatedType<T> event) {
+        System.out.println("processAnnotatedType");
+
+        AnnotatedType<T> type = event.getAnnotatedType();
+        System.out.println("    found " + type.getAnnotation(Data.class) + " on " + type.getJavaClass());
+        beanTypes.add(type);
+    }
+
+    public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
+        System.out.println("afterTypeDiscovery");
+
+        for (AnnotatedType<?> type : beanTypes) {
+            BeanAttributes<?> attrs = beanMgr.createBeanAttributes(type);
+            beans.add(beanMgr.createBean(attrs, type.getJavaClass(), new BeanProducerFactory<>()));
+        }
+    }
+
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {
+        System.out.println("afterBeanDiscovery");
+
+        for (Bean<?> bean : beans) {
+            System.out.println("    adding " + bean);
+            event.addBean(bean);
+        }
     }
 }

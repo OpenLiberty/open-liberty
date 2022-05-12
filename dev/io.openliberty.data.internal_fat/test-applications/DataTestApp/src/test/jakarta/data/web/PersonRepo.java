@@ -10,17 +10,12 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import jakarta.enterprise.context.ApplicationScoped;
-
 import io.openliberty.data.Data;
 
 /**
  *
  */
-@ApplicationScoped
 @Data
-public class PersonRepo {
-    public String findByName(String firstName, String lastName) {
-        return "defaultValue";
-    }
+public interface PersonRepo {
+    public String findByName(String firstName, String lastName);
 }

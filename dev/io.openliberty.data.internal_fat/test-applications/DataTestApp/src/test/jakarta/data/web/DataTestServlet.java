@@ -29,7 +29,7 @@ import io.openliberty.data.Data;
 public class DataTestServlet extends FATServlet {
 
     @Inject
-    PersonRepo repo;
+    ProductRepo products;
 
     @Resource
     private UserTransaction tran;
@@ -44,11 +44,11 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * See if the interceptor is invoked
+     * See if the producer is invoked
      */
     @Test
-    public void testDataInterceptor() throws Throwable {
-        assertEquals("Data", repo.findByName("First", "Last"));
+    public void testProducer() throws Throwable {
+        assertEquals("TheResult", products.findItem(1));
     }
 
     /**
