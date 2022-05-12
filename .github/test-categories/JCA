@@ -1,4 +1,5 @@
 com.ibm.ws.jca_fat
+com.ibm.ws.jca_fat_example
 com.ibm.ws.jca_fat_bval
 com.ibm.ws.jca_fat_bvt
 com.ibm.ws.jca_fat_classloading
