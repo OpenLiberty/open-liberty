@@ -48,8 +48,8 @@ public class CommonWebServerTests20 extends CommonWebServerTests {
         return SPRING_BOOT_20_APP_BASE;
     }
 
-    @Test
-    public void test_useJarUrls_enabled() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+    //@Test
+    public void test_useJarUrls_enabled() throws FailingHttpStatusCodeException, MalformedURLException, IOException, InterruptedException {
 
         @SuppressWarnings("resource")
         WebClient webClient = new WebClient();

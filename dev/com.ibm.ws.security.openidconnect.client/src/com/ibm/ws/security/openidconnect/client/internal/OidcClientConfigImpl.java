@@ -70,8 +70,10 @@ import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.HashUtils;
+import com.ibm.ws.security.openidconnect.clients.common.InMemoryOidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.common.ConfigUtils;
 import com.ibm.ws.security.openidconnect.common.OidcCommonClientRequest;
@@ -173,8 +175,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
     public static final String CFG_KEY_ACCESS_TOKEN_CACHE_ENABLED = "accessTokenCacheEnabled";
     public static final String CFG_KEY_ACCESS_TOKEN_CACHE_TIMEOUT = "accessTokenCacheTimeout";
-    public static final String CFG_KEY_BACKCHANNEL_LOGOUT_SUPPORTED = "backchannelLogoutSupported";
-    public static final String CFG_KEY_BACKCHANNEL_LOGOUT_SESSION_REQUIRED = "backchannelLogoutSessionRequired";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -270,8 +270,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String keyManagementKeyAlias;
     private boolean accessTokenCacheEnabled = true;
     private long accessTokenCacheTimeout = 1000 * 60 * 5;
-    private boolean backchannelLogoutSupported = false;
-    private boolean backchannelLogoutSessionRequired = false;
 
     private String oidcClientCookieName;
     private boolean authnSessionDisabled;
@@ -304,6 +302,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     private boolean useSystemPropertiesForHttpClientConnections = false;
     private boolean tokenReuse = false;
+
+    private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
 
     // see defect 218708
     static String firstRandom = OidcUtil.generateRandom(32);
@@ -548,8 +548,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         keyManagementKeyAlias = configUtils.getConfigAttribute(props, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS);
         accessTokenCacheEnabled = configUtils.getBooleanConfigAttribute(props, CFG_KEY_ACCESS_TOKEN_CACHE_ENABLED, accessTokenCacheEnabled);
         accessTokenCacheTimeout = configUtils.getLongConfigAttribute(props, CFG_KEY_ACCESS_TOKEN_CACHE_TIMEOUT, accessTokenCacheTimeout);
-        backchannelLogoutSupported = configUtils.getBooleanConfigAttribute(props, CFG_KEY_BACKCHANNEL_LOGOUT_SUPPORTED, backchannelLogoutSupported);
-        backchannelLogoutSessionRequired = configUtils.getBooleanConfigAttribute(props, CFG_KEY_BACKCHANNEL_LOGOUT_SESSION_REQUIRED, backchannelLogoutSessionRequired);
         // TODO - 3Q16: Check the validationEndpointUrl to make sure it is valid
         // before continuing to process this config
         // checkValidationEndpointUrl();
@@ -626,8 +624,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "forwardLoginParameter:" + forwardLoginParameter);
             Tr.debug(tc, "accessTokenCacheEnabled:" + accessTokenCacheEnabled);
             Tr.debug(tc, "accessTokenCacheTimeout:" + accessTokenCacheTimeout);
-            Tr.debug(tc, "backchannelLogoutSupported:" + backchannelLogoutSupported);
-            Tr.debug(tc, "backchannelLogoutSessionRequired:" + backchannelLogoutSessionRequired);
         }
     }
 
@@ -1948,16 +1944,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     @Override
-    public boolean isBackchannelLogoutSupported() {
-        return backchannelLogoutSupported;
-    }
-
-    @Override
-    public boolean isBackchannelLogoutSessionRequired() {
-        return backchannelLogoutSessionRequired;
-    }
-
-    @Override
     @Sensitive
     public Key getJweDecryptionKey() throws GeneralSecurityException {
         String keyAlias = getKeyManagementKeyAlias();
@@ -2059,6 +2045,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public SingleTableCache getCache() {
         return cache;
+    }
+
+    @Override
+    public OidcSessionCache getOidcSessionCache() {
+        return oidcSessionCache;
     }
 
 }

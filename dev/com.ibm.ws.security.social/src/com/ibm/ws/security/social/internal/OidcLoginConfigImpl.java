@@ -129,10 +129,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private List<String> forwardLoginParameter = null;
     public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
     private String keyManagementKeyAlias = null;
-    public static final String CFG_KEY_BACKCHANNEL_LOGOUT_SUPPORTED = "backchannelLogoutSupported";
-    private boolean backchannelLogoutSupported = false;
-    public static final String CFG_KEY_BACKCHANNEL_LOGOUT_SESSION_REQUIRED = "backchannelLogoutSessionRequired";
-    private boolean backchannelLogoutSessionRequired = false;
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -211,8 +207,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
 
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, uniqueId, CFG_KEY_FORWARD_LOGIN_PARAMETER);
         keyManagementKeyAlias = configUtils.getConfigAttribute(props, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS);
-        backchannelLogoutSupported = configUtils.getBooleanConfigAttribute(props, CFG_KEY_BACKCHANNEL_LOGOUT_SUPPORTED, backchannelLogoutSupported);
-        backchannelLogoutSessionRequired = configUtils.getBooleanConfigAttribute(props, CFG_KEY_BACKCHANNEL_LOGOUT_SESSION_REQUIRED, backchannelLogoutSessionRequired);
 
         if (discovery) {
             String OIDC_CLIENT_DISCOVERY_COMPLETE = "CWWKS6110I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
@@ -410,8 +404,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             Tr.debug(tc, KEY_resource + " = " + resource);
             Tr.debug(tc, CFG_KEY_FORWARD_LOGIN_PARAMETER + " = " + forwardLoginParameter);
             Tr.debug(tc, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS + " = " + keyManagementKeyAlias);
-            Tr.debug(tc, CFG_KEY_BACKCHANNEL_LOGOUT_SUPPORTED + " = " + backchannelLogoutSupported);
-            Tr.debug(tc, CFG_KEY_BACKCHANNEL_LOGOUT_SESSION_REQUIRED + " = " + backchannelLogoutSessionRequired);
         }
     }
 
@@ -921,16 +913,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             return JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
         }
         return null;
-    }
-
-    @Override
-    public boolean isBackchannelLogoutSupported() {
-        return backchannelLogoutSupported;
-    }
-
-    @Override
-    public boolean isBackchannelLogoutSessionRequired() {
-        return backchannelLogoutSessionRequired;
     }
 
 }

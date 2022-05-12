@@ -35,6 +35,10 @@ import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19185_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19185_Web;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19342_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19342_Web;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19998_EJB;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19998_Web;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH20890_EJB;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH20890_Web;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH8014_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH8014_Web;
 
@@ -58,6 +62,10 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH19185_Web.class,
                 TestOLGH19342_EJB.class,
                 TestOLGH19342_Web.class,
+                TestOLGH19998_EJB.class,
+                TestOLGH19998_Web.class,
+                TestOLGH20890_EJB.class,
+                TestOLGH20890_Web.class,
                 TestSVLQuery_Web.class,
                 TestSVLQuery_Bulkupdate_Web.class,
                 TestSVLLoopAnoQuery_Web.class,

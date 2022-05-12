@@ -1,0 +1,1 @@
+DROP TABLE SimpleEntityOLGH20890;

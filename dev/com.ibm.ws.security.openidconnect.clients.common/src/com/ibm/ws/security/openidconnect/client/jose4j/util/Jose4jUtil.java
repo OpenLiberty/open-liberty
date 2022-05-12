@@ -19,10 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.security.auth.Subject;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
@@ -32,7 +34,9 @@ import org.jose4j.keys.HmacKey;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.jwt.utils.JweHelper;
@@ -41,7 +45,10 @@ import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.JtiNonceCache;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
+import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
+import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.clients.common.TraceConstants;
 import com.ibm.ws.security.openidconnect.common.Constants;
@@ -61,6 +68,8 @@ public class Jose4jUtil {
     private static final String SIGNATURE_ALG_NONE = "none";
     private final SSLSupport sslSupport;
     private static final JtiNonceCache jtiCache = new JtiNonceCache(); // Jose4jUil has only one instance
+
+    private static boolean issuedBetaMessage = false;
 
     // set org.jose4j.jws.default-allow-none to true to behave the same as old jwt
     // allow signatureAlgorithme as none
@@ -177,13 +186,47 @@ public class Jose4jUtil {
             //doIdAssertion(customProperties, payload, clientConfig);
             oidcResult = attributeToSubject.doMapping(customProperties, subject);
             //oidcResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, username, subject, customProperties, null);
-
+            if (oidcResult.getStatus() == AuthResult.SUCCESS && isRunningBetaMode()) {
+                createWASOidcSession(oidcClientRequest, jwtClaims);
+            }
         } catch (Exception e) {
             Tr.error(tc, "OIDC_CLIENT_IDTOKEN_VERIFY_ERR", new Object[] { e.getLocalizedMessage(), clientId });
             oidcResult = new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         return oidcResult;
+    }
+
+    private void createWASOidcSession(OidcClientRequest oidcClientRequest, @Sensitive JwtClaims jwtClaims) throws MalformedClaimException {
+        OidcClientConfig oidcClientConfig = oidcClientRequest.getOidcClientConfig();
+
+        String configId = oidcClientConfig.getId();
+        String sub = jwtClaims.getSubject();
+        String sid = jwtClaims.getClaimValue("sid", String.class);
+        String timestamp = OidcUtil.getTimeStamp();
+
+        String wasOidcSessionId = String.join(":", configId, sub, sid != null ? sid : "", timestamp);
+
+        OidcSessionCache oidcSessionCache = oidcClientConfig.getOidcSessionCache();
+        oidcSessionCache.insertSession(sub, sid, wasOidcSessionId);
+
+        Cookie cookie = OidcClientUtil.createCookie(ClientConstants.WAS_OIDC_SESSION, wasOidcSessionId, oidcClientRequest.getRequest());
+        cookie.setSecure(true);
+
+        oidcClientRequest.getResponse().addCookie(cookie);
+    }
+
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
     }
 
     String getIdToken(Map<String, String> tokens, ConvergedClientConfig clientConfig) {
