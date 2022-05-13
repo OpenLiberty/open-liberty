@@ -240,6 +240,97 @@ public class InMemoryOidcSessionCacheTest {
     }
 
     @Test
+    public void test_invalidateSessionBySessionId() {
+        populateCache();
+
+        boolean invalidated = cache.invalidateSessionBySessionId("testsub", "testoidcsessionid1");
+
+        assertTrue("Session should have been invalidated.", invalidated);
+        verifyInvalidatedSessions(true, false, false, false);
+    }
+
+    @Test
+    public void test_invalidateSessionBySessionId_sub2() {
+        populateCache();
+
+        boolean invalidated = cache.invalidateSessionBySessionId("testsub2", "testoidcsessionid4");
+
+        assertTrue("Session should have been invalidated.", invalidated);
+        verifyInvalidatedSessions(false, false, false, true);
+    }
+
+    @Test
+    public void test_invalidateSessionBySessionId_alreadyInvalidated() {
+        populateCache();
+        cache.invalidateSessionBySessionId("testsub", "testoidcsessionid1");
+
+        boolean invalidated = cache.invalidateSessionBySessionId("testsub", "testoidcsessionid1");
+
+        assertFalse("Should return false if the session has already been invalidated.", invalidated);
+        verifyInvalidatedSessions(true, false, false, false);
+    }
+
+    @Test
+    public void test_invalidateSessionBySessionId_sidIsNull() {
+        populateCache();
+
+        boolean invalidated = cache.invalidateSessionBySessionId("testsub", null);
+
+        assertFalse("Sessions should not have been invalidated.", invalidated);
+        verifyInvalidatedSessions(false, false, false, false);
+    }
+
+    @Test
+    public void test_invalidateSessionBySessionId_sidIsEmpty() {
+        populateCache();
+
+        boolean invalidated = cache.invalidateSessionBySessionId("testsub", "");
+
+        assertFalse("Sessions should not have been invalidated.", invalidated);
+        verifyInvalidatedSessions(false, false, false, false);
+    }
+
+    @Test
+    public void test_invalidateSessionBySessionId_sidDoesNotExist() {
+        populateCache();
+
+        boolean invalidated = cache.invalidateSessionBySessionId("testsub", "doesnotexist");
+
+        assertFalse("Should not be able to invalidate a session for a sid that does not exist.", invalidated);
+        verifyInvalidatedSessions(false, false, false, false);
+    }
+
+    @Test
+    public void test_invalidateSessionBySessionId_subIsNull() {
+        populateCache();
+
+        boolean invalidated = cache.invalidateSessionBySessionId(null, "testsid");
+
+        assertFalse("Should not be able to invalidate a session if no sub is provided.", invalidated);
+        verifyInvalidatedSessions(false, false, false, false);
+    }
+
+    @Test
+    public void test_invalidateSessionBySessionId_subIsEmpty() {
+        populateCache();
+
+        boolean invalidated = cache.invalidateSessionBySessionId("", "testsid");
+
+        assertFalse("Should not be able to invalidate a session if the sub is empty.", invalidated);
+        verifyInvalidatedSessions(false, false, false, false);
+    }
+
+    @Test
+    public void test_invalidateSessionBySessionId_subDoesNotExist() {
+        populateCache();
+
+        boolean invalidated = cache.invalidateSessionBySessionId("doesnotexist", "testsid");
+
+        assertFalse("Should not be able to invalidate a session if the sub does not exist.", invalidated);
+        verifyInvalidatedSessions(false, false, false, false);
+    }
+
+    @Test
     public void test_invalidateSessions() {
         populateCache();
 

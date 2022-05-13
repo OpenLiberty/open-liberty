@@ -54,6 +54,8 @@ import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionHelper;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.CookieHelper;
@@ -458,7 +460,6 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
 
         try {
             req.logout();
-            oidcSessionCache.removeInvalidatedSession(wasOidcSessionId);
         } catch (ServletException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Could not logout invalidated session. An exception is caught : " + e);
@@ -714,8 +715,12 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         synchronized (oidcClientConfigRef) {
             Iterator<OidcClientConfig> services = oidcClientConfigRef.getServices();
 
+            String wasOidcSessionId = CookieHelper.getCookieValue(request.getCookies(), ClientConstants.WAS_OIDC_SESSION);
+            OidcSessionInfo sessionInfo = OidcSessionHelper.getSessionInfo(wasOidcSessionId);
+
             while (services.hasNext()) {
                 OidcClientConfig oidcClientConfig = services.next();
+                handleOidcSession(request, response, wasOidcSessionId, sessionInfo, oidcClientConfig);
                 OidcClientRequest oidcClientRequest = new OidcClientRequest(request, response, oidcClientConfig, (ReferrerURLCookieHandler) null);
                 if (handleOidcCookie(request, response, oidcClientRequest, userName, bSetSubject)) {
                     bSetSubject = true;
@@ -723,6 +728,49 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             }
         }
         return bSetSubject;
+    }
+
+    private void handleOidcSession(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String oidcSessionId,
+            OidcSessionInfo sessionInfo,
+            OidcClientConfig oidcClientConfig) {
+        if (!isRunningBetaMode()) {
+            return;
+        }
+
+        if (sessionInfo == null) {
+            return;
+        }
+
+        String configId = sessionInfo.getConfigId();
+        if (!oidcClientConfig.getId().equals(configId)) {
+            return;
+        }
+
+        String sub = sessionInfo.getSub();
+        String sid = sessionInfo.getSid();
+
+        OidcSessionCache oidcSessionCache = oidcClientConfig.getOidcSessionCache();
+        if (!oidcSessionCache.isSessionInvalidated(oidcSessionId)) {
+            if (sid != null && !sid.isEmpty()) {
+                oidcSessionCache.invalidateSession(sub, sid);
+            } else {
+                oidcSessionCache.invalidateSessionBySessionId(sub, oidcSessionId);
+            }
+        }
+        oidcSessionCache.removeInvalidatedSession(oidcSessionId);
+
+        removeOidcSessionCookie(request, response);
+    }
+
+    private void removeOidcSessionCookie(HttpServletRequest request, HttpServletResponse response) {
+        Cookie cookie = new Cookie(ClientConstants.WAS_OIDC_SESSION, "");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        cookie.setSecure(true);
+        response.addCookie(cookie);
     }
 
     /**
