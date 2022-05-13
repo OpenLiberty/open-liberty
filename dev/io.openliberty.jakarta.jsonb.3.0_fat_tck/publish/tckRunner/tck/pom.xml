@@ -64,7 +64,7 @@
 		</dependency>
 		<!-- api - jsonb - internal bundle -->
 		<dependency>
-			<groupId>io.openliberty.jakarta.json.bind</groupId>
+			<groupId>jakarta.json.bind</groupId>
 			<artifactId>jakarta.json.bind-api</artifactId>
 			<version>${jakarta.jsonb.version}</version>
 			<scope>system</scope>
