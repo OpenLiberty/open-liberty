@@ -38,6 +38,7 @@ public class BeansXMLTest extends FATServletClient {
     public static final String SERVER_NAME = "CDI40Server";
 
     public static final String EMPTY_BEANS_APP_NAME = "EmptyBeans";
+    public static final String BEANS10_APP_NAME = "Beans10";
     public static final String ANNOTATED_BEANS_APP_NAME = "AnnotatedBeans";
     public static final String ALL_BEANS_APP_NAME = "AllBeans";
 
@@ -45,7 +46,8 @@ public class BeansXMLTest extends FATServletClient {
     @TestServlets({
                     @TestServlet(servlet = AllBeansServlet.class, contextRoot = ALL_BEANS_APP_NAME),
                     @TestServlet(servlet = AnnotatedBeansServlet.class, contextRoot = EMPTY_BEANS_APP_NAME),
-                    @TestServlet(servlet = AnnotatedBeansServlet.class, contextRoot = ANNOTATED_BEANS_APP_NAME)
+                    @TestServlet(servlet = AnnotatedBeansServlet.class, contextRoot = ANNOTATED_BEANS_APP_NAME),
+                    @TestServlet(servlet = AnnotatedBeansServlet.class, contextRoot = BEANS10_APP_NAME)
     })
     public static LibertyServer server;
 
@@ -60,6 +62,18 @@ public class BeansXMLTest extends FATServletClient {
                                                 .addClass(RequestScopedBean.class);
         CDIArchiveHelper.addEmptyBeansXML(emptyBeansXMLWar);
         ShrinkHelper.exportDropinAppToServer(server, emptyBeansXMLWar, DeployOptions.SERVER_ONLY);
+
+        //AnnotatedBeansServlet expects not to find a UnannotatedBean bean
+        //When using CDI 4.0, a v1.0 beans.xml means that UnannotatedBean should not be found
+        WebArchive beans10XMLWar = ShrinkWrap.create(WebArchive.class, BEANS10_APP_NAME + ".war")
+                                             .addClass(AnnotatedBeansServlet.class)
+                                             .addClass(UnannotatedBean.class)
+                                             .addClass(RequestScopedBean.class);
+        //A CDI 1.0 beans.xml does not really have a discovery mode.
+        //Before CDI 4.0, we treated this as meaning ALL
+        //In CDI 4.0 this would now default to a discovery mode of ANNOTATED
+        CDIArchiveHelper.addBeansXML(beans10XMLWar, CDIVersion.CDI10);
+        ShrinkHelper.exportDropinAppToServer(server, beans10XMLWar, DeployOptions.SERVER_ONLY);
 
         //AnnotatedBeansServlet expects not to find a UnannotatedBean bean
         WebArchive annotatedBeansXMLWar = ShrinkWrap.create(WebArchive.class, ANNOTATED_BEANS_APP_NAME + ".war")
