@@ -112,13 +112,6 @@
 					<artifactId>jakarta.json-tck-tests-pluggability</artifactId>
 					<version>${jakarta.json.tck.version}</version>
 					<scope>test</scope>
-					<!-- Try to force TCK to  use version 1.6 instead of 1.4 -->
-				    <exclusions>
-				        <exclusion>
-				            <groupId>org.netbeans.tools</groupId>
-				            <artifactId>sigtest-maven-plugin</artifactId>
-				        </exclusion>
-				    </exclusions>
 				</dependency>
 	        </dependencies>
 	        
@@ -133,9 +126,6 @@
 							<forkCount>1</forkCount>
 		                    <reuseForks>false</reuseForks>
 							<dependenciesToScan>jakarta.json:jakarta.json-tck-tests-pluggability</dependenciesToScan>
-							<systemPropertyVariables>
-								<jimage.dir>${project.build.directory}/jdk11-bundle</jimage.dir>
-							</systemPropertyVariables>
 							<excludes>
 								<exclude>${exclude.tests}</exclude>
 							</excludes>
