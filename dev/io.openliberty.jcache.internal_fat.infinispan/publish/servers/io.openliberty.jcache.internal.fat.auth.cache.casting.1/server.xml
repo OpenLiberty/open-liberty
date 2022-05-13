@@ -13,17 +13,15 @@
 	<featureManager>
 		<feature>appSecurity-3.0</feature>
 		<feature>servlet-4.0</feature>
-		<feature>timedexit-1.0</feature>
-		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
 	</featureManager>
-
-	<httpEndpoint id="defaultHttpEndpoint"
-		httpPort="${bvt.prop.HTTP_default}"
-		httpsPort="${bvt.prop.HTTP_default.secure}" />
 
 	<!-- 
 		Common include files.
 	 -->
+	<include
+		location="${shared.resource.dir}/configs/testingConfig.xml" />
+	<include
+		location="${shared.resource.dir}/configs/httpEndpoint1.xml" />
 	<include
 		location="${shared.resource.dir}/configs/basicRegistry.xml" />
 	<include

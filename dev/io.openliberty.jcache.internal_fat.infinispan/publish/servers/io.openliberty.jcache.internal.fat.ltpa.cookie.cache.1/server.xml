@@ -14,17 +14,14 @@
 		<feature>appSecurity-2.0</feature>
 		<feature>jsp-2.3</feature>
 		<feature>servlet-4.0</feature>
-		<feature>timedexit-1.0</feature>
-		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
 	</featureManager>
-
-	<httpEndpoint id="defaultHttpEndpoint"
-		httpPort="${bvt.prop.HTTP_default}"
-		httpsPort="${bvt.prop.HTTP_default.secure}" />
-
 	<!--
 		Include common configuration. 
 	 -->
+	<include
+		location="${shared.resource.dir}/configs/testingConfig.xml" />
+	<include
+		location="${shared.resource.dir}/configs/httpEndpoint1.xml" />
 	<include
 		location="${shared.resource.dir}/configs/basicRegistry.xml" />
 	<include
@@ -33,6 +30,8 @@
 		location="${shared.resource.dir}/configs/libraries.xml" />
 	<include
 		location="${shared.resource.dir}/configs/ssl.xml" />
+	<include
+		location="${shared.resource.dir}/configs/appFormLogin.xml" />
 
     <!-- 
         Configure the CachingProvider and CacheManager.
@@ -73,20 +72,5 @@
 	<webAppSecurity
 		loggedOutCookieCacheRef="LoggedOutCookieCache"
 		trackLoggedOutSSOCookies="false" />
-
-	<!-- 
-		Applications.
-	 -->
-	<application type="war" id="formlogin" name="formlogin"
-		location="${server.config.dir}/apps/formlogin.war">
-		<application-bnd>
-			<security-role name="Employee">
-				<user name="user1" />
-			</security-role>
-			<security-role name="AllAuthenticated">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-		</application-bnd>
-	</application>
 
 </server>

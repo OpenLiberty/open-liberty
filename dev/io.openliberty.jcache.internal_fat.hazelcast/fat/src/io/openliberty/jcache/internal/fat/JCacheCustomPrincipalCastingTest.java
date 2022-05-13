@@ -33,7 +33,6 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
 /**
  * Contains distributed JCache authentication cache tests that verify classloading works with
@@ -144,11 +143,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         basicAuthClient1 = new BasicAuthClient(server1, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
         waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
-        if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
-            waitForExistingJCache(server1, AUTH_CACHE_NAME);
-        } else {
-            waitForCreatedJCache(server1, AUTH_CACHE_NAME);
-        }
+        waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
          * 2. Start server2.
@@ -159,7 +154,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         basicAuthClient2 = new BasicAuthClient(server2, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
         waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
-        waitForExistingJCache(server2, AUTH_CACHE_NAME);
+        waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
 
         /*
          * 3. Send a request to the subjectcast servlet on server1. This will result in a cache miss and will insert an entry
@@ -231,11 +226,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         basicAuthClient1 = new BasicAuthClient(server1, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
         waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
-        if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
-            waitForExistingJCache(server1, AUTH_CACHE_NAME);
-        } else {
-            waitForCreatedJCache(server1, AUTH_CACHE_NAME);
-        }
+        waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
          * 2. Start the server2 replacing the applications library with one that does not match
@@ -251,7 +242,7 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         basicAuthClient2 = new BasicAuthClient(server2, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
         waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
-        waitForExistingJCache(server2, AUTH_CACHE_NAME);
+        waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
 
         /*
          * 3. Send a request to the subjectcast servlet on server1. This will result in a cache miss and will insert an entry

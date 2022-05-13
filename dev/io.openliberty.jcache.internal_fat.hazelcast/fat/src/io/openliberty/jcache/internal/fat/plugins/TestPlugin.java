@@ -33,13 +33,6 @@ public interface TestPlugin {
     public void afterTest() throws Exception;
 
     /**
-     * Whether the cache should exist before the test retrieves the cache the first time.
-     *
-     * @return True if the cache should exist before the test.
-     */
-    public boolean cacheShouldExistBeforeTest();
-
-    /**
      * Get the caching provider classname.
      *
      * @return The class name for the caching provider.

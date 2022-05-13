@@ -20,7 +20,6 @@ import io.openliberty.jcache.internal.fat.FATSuite;
  *
  * https://docs.jboss.org/infinispan/12.1/apidocs/org/infinispan/client/hotrod/configuration/package-summary.html
  */
-@SuppressWarnings("restriction")
 public class InfinispanTestPlugin implements TestPlugin {
 
     @Override
@@ -69,11 +68,6 @@ public class InfinispanTestPlugin implements TestPlugin {
     @Override
     public void afterTest() throws Exception {
         // Nothing to do.
-    }
-
-    @Override
-    public boolean cacheShouldExistBeforeTest() {
-        return false;
     }
 
     @Override

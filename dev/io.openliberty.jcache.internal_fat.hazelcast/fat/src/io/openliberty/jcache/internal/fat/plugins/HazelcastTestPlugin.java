@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,16 +99,6 @@ public class HazelcastTestPlugin implements TestPlugin {
     @Override
     public void afterTest() throws Exception {
         // Nothing to do.
-    }
-
-    @Override
-    public boolean cacheShouldExistBeforeTest() {
-        /*
-         * This occurs b/c our hazelcast configuration files contain the templates for the caches. Apparently,
-         * Hazelcast returns caches that have been defined in configuration without having to call create on
-         * them first.
-         */
-        return true;
     }
 
     @Override

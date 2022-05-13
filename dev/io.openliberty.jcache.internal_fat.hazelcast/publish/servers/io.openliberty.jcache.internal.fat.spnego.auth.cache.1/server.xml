@@ -15,17 +15,15 @@
 		<feature>jsp-2.3</feature>
 		<feature>servlet-3.1</feature>
 		<feature>spnego-1.0</feature>
-		<feature>timedexit-1.0</feature>
-		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
 	</featureManager>
-
-	<httpEndpoint id="defaultHttpEndpoint"
-		httpPort="${bvt.prop.HTTP_default}"
-		httpsPort="${bvt.prop.HTTP_default.secure}" />
 
 	<!--
 		Include common configuration. 
 	 -->
+	<include
+		location="${shared.resource.dir}/configs/testingConfig.xml" />
+	<include
+		location="${shared.resource.dir}/configs/httpEndpoint1.xml" />
 	<include
 		location="${shared.resource.dir}/configs/basicRegistry.xml" />
 	<include
@@ -34,6 +32,8 @@
 		location="${shared.resource.dir}/configs/libraries.xml" />
 	<include
 		location="${shared.resource.dir}/configs/ssl.xml" />
+	<include
+		location="${shared.resource.dir}/configs/appBasicAuth2.xml" />
 
 	<!--
 		Configure the JCache instances.
@@ -61,18 +61,4 @@
 		krb5Keytab="${server.config.dir}/resources/security/kerberos/krb5.keytab"
 		servicePrincipalNames="HTTP/myLibertyMachine.example.com" />
 
-	<application type="war" id="basicauth" name="basicauth"
-		location="${server.config.dir}/apps/basicauth.war">
-		<application-bnd>
-			<security-role name="Employee">
-				<user name="user1" />
-			</security-role>
-			<security-role name="Manager">
-				<user name="user1" />
-			</security-role>
-			<security-role name="AllAuthenticated">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-		</application-bnd>
-	</application>
 </server>
