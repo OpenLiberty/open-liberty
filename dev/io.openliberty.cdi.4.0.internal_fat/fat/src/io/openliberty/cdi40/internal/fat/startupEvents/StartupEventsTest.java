@@ -29,11 +29,10 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.cdi40.internal.fat.startupEvents.ear.ejb.StartupSingletonEJB;
 import io.openliberty.cdi40.internal.fat.startupEvents.ear.lib.EarLibApplicationScopedBean;
 import io.openliberty.cdi40.internal.fat.startupEvents.ear.war.StartupEventsServlet;
-import io.openliberty.cdi40.internal.fat.startupEvents.ear.war.WarApplicationScopedBean;
 import io.openliberty.cdi40.internal.fat.startupEvents.sharedLib.AbstractObserver;
-import io.openliberty.cdi40.internal.fat.startupEvents.sharedLib.SharedLibApplicationScopedBean;
 
 @RunWith(FATRunner.class)
 public class StartupEventsTest extends FATServletClient {
@@ -51,21 +50,24 @@ public class StartupEventsTest extends FATServletClient {
     public static void setUp() throws Exception {
 
         JavaArchive startupEventsSharedLib = ShrinkWrap.create(JavaArchive.class, STARTUP_EVENTS_APP_NAME + "SharedLib.jar")
-                                                       .addClass(AbstractObserver.class)
-                                                       .addClass(SharedLibApplicationScopedBean.class);
+                                                       .addPackage(AbstractObserver.class.getPackage());
 
         JavaArchive startupEventsEarLib = ShrinkWrap.create(JavaArchive.class, STARTUP_EVENTS_APP_NAME + ".jar")
-                                                    .addClass(EarLibApplicationScopedBean.class);
+                                                    .addPackage(EarLibApplicationScopedBean.class.getPackage());
         CDIArchiveHelper.addBeansXML(startupEventsEarLib, DiscoveryMode.ANNOTATED);
 
         WebArchive startupEventsWar = ShrinkWrap.create(WebArchive.class, STARTUP_EVENTS_APP_NAME + ".war")
-                                                .addClass(StartupEventsServlet.class)
-                                                .addClass(WarApplicationScopedBean.class);
+                                                .addPackage(StartupEventsServlet.class.getPackage());
         CDIArchiveHelper.addBeansXML(startupEventsWar, DiscoveryMode.ANNOTATED);
+
+        JavaArchive startupEventsEJBLib = ShrinkWrap.create(JavaArchive.class, STARTUP_EVENTS_APP_NAME + "EJB.jar")
+                                                    .addPackage(StartupSingletonEJB.class.getPackage());
+        CDIArchiveHelper.addBeansXML(startupEventsEJBLib, DiscoveryMode.ANNOTATED);
 
         EnterpriseArchive startupEventsEar = ShrinkWrap.create(EnterpriseArchive.class, STARTUP_EVENTS_APP_NAME + ".ear")
                                                        .addAsLibrary(startupEventsEarLib)
-                                                       .addAsModule(startupEventsWar);
+                                                       .addAsModule(startupEventsWar)
+                                                       .addAsModule(startupEventsEJBLib);
 
         ShrinkHelper.exportToServer(server, "StartupEventsSharedLibrary", startupEventsSharedLib, DeployOptions.SERVER_ONLY);
 

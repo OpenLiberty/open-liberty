@@ -14,17 +14,16 @@
 		<feature>appSecurity-3.0</feature>
 		<feature>socialLogin-1.0</feature>
 		<feature>jaxrs-2.1</feature>
-		<feature>timedexit-1.0</feature>
-		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
 	</featureManager>
 
-	<httpEndpoint id="defaultHttpEndpoint"
-		httpPort="${bvt.prop.HTTP_secondary}"
-		httpsPort="${bvt.prop.HTTP_secondary.secure}" />
 
 	<!--
 		Include common configuration. 
 	 -->
+	<include
+		location="${shared.resource.dir}/configs/testingConfig.xml" />
+	<include
+		location="${shared.resource.dir}/configs/httpEndpoint2.xml" />
 	<include
 		location="${shared.resource.dir}/configs/basicRegistry.xml" />
 	<include
@@ -33,6 +32,8 @@
 		location="${shared.resource.dir}/configs/libraries.xml" />
 	<include
 		location="${shared.resource.dir}/configs/ssl.xml" />
+	<include
+		location="${shared.resource.dir}/configs/appHelloWorld.xml" />
 
     <!-- 
         Configure the CachingProvider and CacheManager.
@@ -85,33 +86,5 @@
 	</oauth2Login>
 	
     <jwtBuilder id="myJwtBuilder"/>
-	
-	<!-- 
-		Applications.
-	 -->
-    <application
-        type="war"
-        id="helloworldApp"
-        name="helloworld"
-        location="${server.config.dir}/apps/helloworld.war">
-
-      <application-bnd>
-        <security-role name="Employee">
-          <special-subject type="ALL_AUTHENTICATED_USERS" />
-        </security-role>
-        <security-role name="Manager">
-          <special-subject type="ALL_AUTHENTICATED_USERS" />
-        </security-role>
-        <security-role name="AllAuthenticated">
-          <special-subject type="ALL_AUTHENTICATED_USERS" />
-        </security-role>
-      </application-bnd>
-    </application>
-
-    <javaPermission
-        codebase="${server.config.dir}/apps/helloworld.war"
-        className="java.security.AllPermission"
-        name="*"
-        actions="*" />
 
 </server>

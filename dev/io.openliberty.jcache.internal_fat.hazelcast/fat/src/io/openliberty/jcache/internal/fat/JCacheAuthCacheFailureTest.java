@@ -34,7 +34,6 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
 /**
  * Test failover to the local in-memory authentication cache when there are failures with retrieving
@@ -75,11 +74,7 @@ public class JCacheAuthCacheFailureTest extends BaseTestCase {
         basicAuthClient1 = new BasicAuthClient(server1);
         waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
-        if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
-            waitForExistingJCache(server1, AUTH_CACHE_NAME);
-        } else {
-            waitForCreatedJCache(server1, AUTH_CACHE_NAME);
-        }
+        waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
          * Start server 2.
@@ -89,7 +84,7 @@ public class JCacheAuthCacheFailureTest extends BaseTestCase {
         basicAuthClient2 = new BasicAuthClient(server2);
         waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, AUTH_CACHE_NAME);
-        waitForExistingJCache(server2, AUTH_CACHE_NAME);
+        waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
     }
 
     @After

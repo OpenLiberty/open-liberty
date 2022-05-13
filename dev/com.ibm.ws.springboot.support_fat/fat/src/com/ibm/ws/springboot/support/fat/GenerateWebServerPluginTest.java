@@ -83,7 +83,7 @@ public class GenerateWebServerPluginTest extends AbstractSpringTests {
     }
 
     public void exerciseAppOnConfiguredServer() throws Exception {
-        HttpUtils.findStringInUrl(server, "/myAppContextPath", "HELLO SPRING BOOT!!");
+        HttpUtils.findStringInUrl(server, "/myAppContextPath/", "HELLO SPRING BOOT!!");
         //wait a short time for the plugin generation logic to write out the file
         String pluginCfgRelativePath = "logs/state/plugin-cfg.xml";
         long startTime = System.currentTimeMillis();

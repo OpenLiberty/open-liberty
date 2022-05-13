@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,10 +24,6 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 CommonWebServerTests20Servlet40.class,
                 CommonWebFluxTests20.class,
                 CommonWebFluxTests20Servlet40.class,
-                CommonWebServerTests21.class,
-                CommonWebServerTests22.class,
-                CommonWebServerTests23.class,
-                WebFluxWrongSpringBootVersionTests.class,
                 UnsupportedConfigWarningTest15.class,
                 UnsupportedConfigWarningTest20.class,
                 ConfigDropinRootTests20.class,

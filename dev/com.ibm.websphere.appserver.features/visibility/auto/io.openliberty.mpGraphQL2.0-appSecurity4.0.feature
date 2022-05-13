@@ -7,5 +7,5 @@ IBM-Provision-Capability: \
 -bundles=com.ibm.ws.microprofile.graphql.authorization.jakarta,\
   com.ibm.ws.security.authorization.util.jakarta
 IBM-Install-Policy: when-satisfied
-kind=beta
+kind=ga
 edition=core

@@ -14,17 +14,14 @@
 		<feature>appSecurity-3.0</feature>
 		<feature>jsp-2.3</feature>
 		<feature>servlet-4.0</feature>
-		<feature>timedexit-1.0</feature>
-		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
 	</featureManager>
-
-	<httpEndpoint id="defaultHttpEndpoint"
-		httpPort="${bvt.prop.HTTP_secondary}"
-		httpsPort="${bvt.prop.HTTP_secondary.secure}" />
-
 	<!-- 
 		Include common configuration. 
 	 -->
+	<include
+		location="${shared.resource.dir}/configs/testingConfig.xml" />
+	<include
+		location="${shared.resource.dir}/configs/httpEndpoint2.xml" />
 	<include
 		location="${shared.resource.dir}/configs/basicRegistry.xml" />
 	<include
@@ -33,6 +30,8 @@
 		location="${shared.resource.dir}/configs/libraries.xml" />
 	<include
 		location="${shared.resource.dir}/configs/ssl.xml" />
+	<include
+		location="${shared.resource.dir}/configs/appBasicAuth1.xml" />
 
     <!-- 
         Configure the CachingProvider and CacheManager.
@@ -65,17 +64,5 @@
 		Configure the authentication cache to use the JCache. 
      -->
 	<authCache cacheRef="AuthCache" />
-
-	<!-- 
-		Applications.
-	 -->
-	<application type="war" id="basicauth" name="basicauth"
-		location="${server.config.dir}/apps/basicauth.war">
-		<application-bnd>
-			<security-role name="AllAuthenticated">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-		</application-bnd>
-	</application>
 
 </server>

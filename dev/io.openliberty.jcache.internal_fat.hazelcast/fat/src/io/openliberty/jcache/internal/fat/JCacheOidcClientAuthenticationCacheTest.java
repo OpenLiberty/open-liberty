@@ -47,7 +47,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.docker.KeycloakContainer;
-import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
 /**
  * Test OIDC with distributed authentication cache using the openidConnectClient configuation element.
@@ -121,11 +120,7 @@ public class JCacheOidcClientAuthenticationCacheTest extends BaseTestCase {
         startServer1(server1, groupName, null, null);
         waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, AUTH_CACHE_NAME);
-        if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
-            waitForExistingJCache(server1, AUTH_CACHE_NAME);
-        } else {
-            waitForCreatedJCache(server1, AUTH_CACHE_NAME);
-        }
+        waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
 //        /*
 //         * Update and start server 2.

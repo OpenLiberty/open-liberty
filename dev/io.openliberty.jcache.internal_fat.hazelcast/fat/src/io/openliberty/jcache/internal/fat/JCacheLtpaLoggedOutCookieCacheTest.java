@@ -32,7 +32,6 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
 /**
  * Contains distributed JCache logged out cookie cache tests for LTPA.
@@ -71,11 +70,7 @@ public class JCacheLtpaLoggedOutCookieCacheTest extends BaseTestCase {
         startServer1(server1, groupName.toString(), null, null);
         waitForDefaultHttpsEndpoint(server1);
         waitForCachingProvider(server1, COOKIE_CACHE_NAME);
-        if (TestPluginHelper.getTestPlugin().cacheShouldExistBeforeTest()) {
-            waitForExistingJCache(server1, COOKIE_CACHE_NAME);
-        } else {
-            waitForCreatedJCache(server1, COOKIE_CACHE_NAME);
-        }
+        waitForCreatedOrExistingJCache(server1, COOKIE_CACHE_NAME);
 
         /*
          * Start server2.
@@ -84,7 +79,7 @@ public class JCacheLtpaLoggedOutCookieCacheTest extends BaseTestCase {
         startServer2(server2, groupName.toString());
         waitForDefaultHttpsEndpoint(server2);
         waitForCachingProvider(server2, COOKIE_CACHE_NAME);
-        waitForExistingJCache(server2, COOKIE_CACHE_NAME);
+        waitForCreatedOrExistingJCache(server2, COOKIE_CACHE_NAME);
 
         formLoginClient1 = new SSLFormLoginClient(server1, FormLoginClient.DEFAULT_SERVLET_NAME, FormLoginClient.DEFAULT_CONTEXT_ROOT);
         formLoginClient2 = new SSLFormLoginClient(server2, FormLoginClient.DEFAULT_SERVLET_NAME, FormLoginClient.DEFAULT_CONTEXT_ROOT);

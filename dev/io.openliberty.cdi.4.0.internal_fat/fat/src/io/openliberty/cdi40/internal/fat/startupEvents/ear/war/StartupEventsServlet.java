@@ -15,8 +15,10 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.cdi40.internal.fat.startupEvents.ear.ejb.StartupSingletonEJB;
 import io.openliberty.cdi40.internal.fat.startupEvents.ear.lib.EarLibApplicationScopedBean;
 import io.openliberty.cdi40.internal.fat.startupEvents.sharedLib.SharedLibApplicationScopedBean;
+import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -31,6 +33,9 @@ public class StartupEventsServlet extends FATServlet {
 
     @Inject
     private SharedLibApplicationScopedBean sharedLibApplicationScopedBean;
+
+    @EJB
+    private StartupSingletonEJB startupSingletonEJB;
 
     @Test
     public void testWarStartupEvents() {
@@ -48,5 +53,11 @@ public class StartupEventsServlet extends FATServlet {
     public void testSharedLibStartupEvents() {
         assertNotNull(sharedLibApplicationScopedBean);
         sharedLibApplicationScopedBean.test();
+    }
+
+    @Test
+    public void testStartupEJBStartupEvents() {
+        assertNotNull(startupSingletonEJB);
+        startupSingletonEJB.test();
     }
 }
