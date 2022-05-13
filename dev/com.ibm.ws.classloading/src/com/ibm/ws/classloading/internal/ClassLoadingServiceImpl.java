@@ -38,6 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 
 import org.eclipse.equinox.region.RegionDigraph;
 import org.osgi.framework.Bundle;
@@ -78,6 +79,7 @@ import com.ibm.ws.classloading.serializable.ClassLoaderIdentityImpl;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.kernel.service.util.KeyBasedLockStore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -101,16 +103,22 @@ import com.ibm.wsspi.logging.Introspector;
            property = "service.vendor=IBM")
 public class ClassLoadingServiceImpl implements LibertyClassLoadingService<LibertyLoader>, ClassLoaderIdentifierService, Introspector {
     static final TraceComponent tc = Tr.register(ClassLoadingServiceImpl.class);
-    private final Map<ClassLoader, StackTraceElement[]> leakDetectionMap = new HashMap<ClassLoader, StackTraceElement[]>();
+    private final Map<ClassLoader, StackTraceElement[]> leakDetectionMap = new ConcurrentHashMap<ClassLoader, StackTraceElement[]>();
     private final Set<AppClassLoader> appClassLoaders = Collections.newSetFromMap(new WeakHashMap<AppClassLoader, Boolean>());
 
     private static final int TCCL_LOCK_WAIT = Integer.getInteger("com.ibm.ws.classloading.tcclLockWaitTimeMillis", 15000);
     static final String REFERENCE_GENERATORS = "generators";
 
+    private static final KeyBasedLockStore<String, ReentrantLock> tcclLockStore = new KeyBasedLockStore<>(new Supplier<ReentrantLock>() {
+        @Override
+        public ReentrantLock get() {
+            return new ReentrantLock();
+        }
+    });
+    
     private BundleContext bundleContext;
     private CanonicalStore<ClassLoaderIdentity, AppClassLoader> aclStore;
     private CanonicalStore<String, ThreadContextClassLoader> tcclStore;
-    private final ReentrantLock tcclStoreLock = new ReentrantLock();
     private RegionDigraph digraph;
     private ClassRedefiner redefiner = new ClassRedefiner(null);
     private final BundleListener listener = new BundleListener() {
@@ -584,15 +592,19 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         }
 
         ThreadContextClassLoader result;
+        final ReentrantLock tcclStoreLock = tcclLockStore.getLock(key);
         try {
             if (tcclStoreLock.tryLock(TCCL_LOCK_WAIT, TimeUnit.MILLISECONDS)) {
+                // using an anonymous inner class here for clarity - the object should be GCable as soon as the method call returns
+                Factory<ThreadContextClassLoader> factory = new Factory<ThreadContextClassLoader>() {
+                    @Override
+                    public ThreadContextClassLoader createInstance() {
+                        return ClassLoadingServiceImpl.this.createTCCL(applicationClassLoader, key);
+                    }
+                };
+
                 do {
-                    result = this.tcclStore.retrieveOrCreate(key, new Factory<ThreadContextClassLoader>() {
-                        @Override
-                        public ThreadContextClassLoader createInstance() {
-                            return ClassLoadingServiceImpl.this.createTCCL(applicationClassLoader, key);
-                        }
-                    }); // using an anonymous inner class here for clarity - the object should be GCable as soon as the method call returns
+                    result = this.tcclStore.retrieveOrCreate(key, factory); 
                     if (!!!result.isFor(applicationClassLoader)) {
                         // this is a stale entry for a previous ClassLoader that had the same key
                         this.tcclStore.remove(result);
@@ -685,9 +697,10 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     @Override
     public void destroyThreadContextClassLoader(ClassLoader loader) {
         if (loader instanceof ThreadContextClassLoader) {
+            ThreadContextClassLoader tccl = (ThreadContextClassLoader) loader;
+            ReentrantLock tcclStoreLock = tcclLockStore.getLock(tccl.getKey());
             tcclStoreLock.lock();
             try {
-                ThreadContextClassLoader tccl = (ThreadContextClassLoader) loader;
                 if (tccl.decrementRefCount() <= 0) {
                     this.tcclStore.remove(tccl);
                     leakDetectionMap.remove(tccl);
