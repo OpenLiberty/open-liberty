@@ -11,11 +11,10 @@ IBM-API-Package: \
  org.apache.cxf.databinding;type="internal"
 -features=com.ibm.websphere.appserver.eeCompatible-10.0, \
   com.ibm.websphere.appserver.servlet-6.0, \
-  com.ibm.websphere.appserver.globalhandler-1.0, \
   io.openliberty.xmlws.common-4.0
 -bundles=\
  com.ibm.ws.javaee.ddmodel.ws, \
- com.ibm.ws.jaxws.2.3.common.jakarta;start-phase:=CONTAINER_LATE, \
+ io.openliberty.xmlws.4.0.common;start-phase:=CONTAINER_LATE, \
  com.ibm.ws.jaxws.webcontainer.jakarta, \
  com.ibm.ws.jaxws.2.3.web.jakarta, \
  com.ibm.ws.jaxws.2.3.wsat, \
@@ -27,10 +26,7 @@ IBM-API-Package: \
  bin/xmlWS/wsimport.bat, \
  bin/xmlWS/tools/ws-wsimport.jar, \
  bin/xmlWS/wsgen.bat, \
- bin/xmlWS/tools/ws-wsgen.jar, \
- dev/spi/ibm/javadoc/io.openliberty.globalhandler.spi_1.0-javadoc.zip
--jars=\
-  io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
+ bin/xmlWS/tools/ws-wsgen.jar
 kind=noship
 edition=full
 WLP-AlsoKnownAs: jaxws-4.0
