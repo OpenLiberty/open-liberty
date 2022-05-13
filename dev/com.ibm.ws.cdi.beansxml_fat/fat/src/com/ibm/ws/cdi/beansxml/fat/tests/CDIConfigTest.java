@@ -26,7 +26,6 @@ import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -87,7 +86,13 @@ public class CDIConfigTest {
     }
 
     @Test
-    @SkipForRepeat(EERepeatActions.EE10_ID)
+    /**
+     * Initially we were going to output a warning if emptyBeansXMLExplicitBeanArchive was set when using a CDI version less than 4.0.
+     * However, in the design review it was decided that this should just silently ignore the property. Therefore we change this test
+     * to just start the server and shut down again, checking there were NO unexpected warnings/errors
+     *
+     * @throws Exception
+     */
     public void testCdiEmptyBeansXMLExplicitBeanArchiveWarning() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         ConfigElementList<Cdi> cdis = config.getCdi();
@@ -98,12 +103,9 @@ public class CDIConfigTest {
         server.updateServerConfiguration(config);
         try {
             server.startServer();
-            List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The emptyBeansXMLExplicitBeanArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.");
-            assertTrue("Message CWOWB1016W not found", warningMessages.size() > 0);
-            assertEquals("Message CWOWB1016W was found more than once", 1, warningMessages.size());
         } finally {
             if (server.isStarted()) {
-                server.stopServer("CWOWB1015W", "CWOWB1016W");
+                server.stopServer("CWOWB1015W");
             }
         }
     }
