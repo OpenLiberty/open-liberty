@@ -1,0 +1,1 @@
+-Xtrace:print=mt,trigger=method{java/lang/Thread.interrupt,jstacktrace}
