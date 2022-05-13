@@ -217,13 +217,14 @@ public class ServerStartTest {
 
         assertTrue("the server should have been started", server.isStarted());
 
-        // Use jcmd to generate a heap dump
+        // Use jcmd to find the server pid
         String pid = findServerPid();
         if (pid == null) {
             Log.info(c, METHOD_NAME, "Unable to execute the jcmd.exe application installed for the current jdk.  Skipping this test!");
             assumeTrue(false);
         }
 
+        // Use jcmd to generate a heap dump
         String[] execParameters = new String[] { "jcmd", pid, "GC.heap_dump", METHOD_NAME + ".hprof" };
         Process process = Runtime.getRuntime().exec(execParameters);
         try (Reader reader = new InputStreamReader(process.getInputStream());
@@ -308,8 +309,15 @@ public class ServerStartTest {
 
         assertTrue("the server should have been started", server.isStarted());
 
+        // Use jcmd to find the server pid
+        String pid = findServerPid();
+        if (pid == null) {
+            Log.info(c, METHOD_NAME, "Unable to execute the jcmd.exe application installed for the current jdk.  Skipping this test!");
+            assumeTrue(false);
+        }
+
         // Use jcmd to generate a heap dump
-        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        String[] execParameters = new String[] { "jcmd", pid, "GC.heap_dump", METHOD_NAME + ".hprof" };
         Process process = Runtime.getRuntime().exec(execParameters);
         try (Reader reader = new InputStreamReader(process.getInputStream());
                         BufferedReader br = new BufferedReader(reader);) {
@@ -390,8 +398,15 @@ public class ServerStartTest {
 
         assertTrue("the server should have been started", server.isStarted());
 
+        // Use jcmd to find the server pid
+        String pid = findServerPid();
+        if (pid == null) {
+            Log.info(c, METHOD_NAME, "Unable to execute the jcmd.exe application installed for the current jdk.  Skipping this test!");
+            assumeTrue(false);
+        }
+
         // Use jcmd to generate a heap dump
-        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        String[] execParameters = new String[] { "jcmd", pid, "GC.heap_dump", METHOD_NAME + ".hprof" };
         Process process = Runtime.getRuntime().exec(execParameters);
         try (Reader reader = new InputStreamReader(process.getInputStream());
                         BufferedReader br = new BufferedReader(reader);) {
@@ -552,8 +567,15 @@ public class ServerStartTest {
 
         assertTrue("the server should have been started", server.isStarted());
 
+        // Use jcmd to find the server pid
+        String pid = findServerPid();
+        if (pid == null) {
+            Log.info(c, METHOD_NAME, "Unable to execute the jcmd.exe application installed for the current jdk.  Skipping this test!");
+            assumeTrue(false);
+        }
+
         // Use jcmd to generate a heap dump
-        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        String[] execParameters = new String[] { "jcmd", pid, "GC.heap_dump", METHOD_NAME + ".hprof" };
         Process process = Runtime.getRuntime().exec(execParameters);
 
         try (Reader reader = new InputStreamReader(process.getInputStream());
@@ -640,8 +662,15 @@ public class ServerStartTest {
 
         assertTrue("the server should have been started", server.isStarted());
 
+        // Use jcmd to find the server pid
+        String pid = findServerPid();
+        if (pid == null) {
+            Log.info(c, METHOD_NAME, "Unable to execute the jcmd.exe application installed for the current jdk.  Skipping this test!");
+            assumeTrue(false);
+        }
+
         // Use jcmd to generate a heap dump
-        String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+        String[] execParameters = new String[] { "jcmd", pid, "GC.heap_dump", METHOD_NAME + ".hprof" };
         Process process = Runtime.getRuntime().exec(execParameters);
 
         try (Reader reader = new InputStreamReader(process.getInputStream());
@@ -790,7 +819,10 @@ public class ServerStartTest {
             try (Reader reader = new InputStreamReader(process.getInputStream());
                             BufferedReader br = new BufferedReader(reader);) {
                 String output = null;
+                int count = 0;
                 while ((output = br.readLine()) != null) {
+                    Log.info(c, method, "Process output [" + count + "] = " + output);
+                    count++;
                     if (output.contains("ws-server.jar")) {
                         pid = output.substring(0, output.indexOf(" "));
                         return pid;
@@ -809,6 +841,9 @@ public class ServerStartTest {
         } catch (NullPointerException npe) {
             Log.info(c, method, "cmd = " + Arrays.toString(cmd) + " resulted in  = " + npe.getMessage());
         }
+
+        if (pid == null)
+            Log.info(c, method, "pid = null; which indicates a defunct java process interfering with jcmd results.");
 
         return pid;
     }
