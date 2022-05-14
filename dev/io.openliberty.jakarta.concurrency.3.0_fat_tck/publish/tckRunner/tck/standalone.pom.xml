@@ -39,7 +39,9 @@
         <targetDirectory>${project.basedir}/target</targetDirectory>
     </properties>
 
-	<repositories> <!-- For artifacts not yet in Maven Central -->
+	<repositories>
+		<!-- For artifacts not yet in Maven Central -->
+		<!-- Enable the following during development of a vNext release to use a staged TCK rather than a local -SNAPSHOT
 		<repository>
 			<id>sonatype-nexus-staging</id>
 			<name>Sonatype Nexus Staging</name>
@@ -51,6 +53,7 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		-->
 	</repositories>
 
     <dependencyManagement>
