@@ -972,16 +972,14 @@ public class WSKeyStore extends Properties {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(tc, "KeyStore does not exist");
                         FFDCFilter.processException(e, getClass().getName(), "do_getKeyStore", this);
+                        throw e;
                     }
 
                     ks1 = JSSEProviderFactory.getInstance().getKeyStoreInstance(type, provider);
 
                     // if keyStore does not exists, if it is a default, or if create is
                     // true then load a new one.
-                    if (null == is
-                        && (create || (name != null && (name.endsWith(Constants.DEFAULT_KEY_STORE) || name.endsWith(Constants.DEFAULT_TRUST_STORE)
-                                                        || name.endsWith(Constants.DEFAULT_ROOT_STORE) || name.endsWith(Constants.DEFAULT_DELETED_STORE)
-                                                        || name.endsWith(Constants.DEFAULT_SIGNERS_STORE) || name.endsWith("LTPAKeys"))))) {
+                    if (null == is && (create)) {
                         ks1.load(null, password.toCharArray());
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(tc, "do_getKeyStore (loaded)");
