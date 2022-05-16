@@ -75,30 +75,32 @@ public class CanonicalStore<K, V extends Keyed<K>> {
     }
 
     private V retrieveOrCreate(K key, Factory<V> factory, FutureRef<V> futureRef) {
-        Ref<V> canonicalRef = map.putIfAbsent(key, futureRef);
-        V value;
-        if (canonicalRef == null) {
-            // CREATOR THREAD: this thread won the race to create the canonical classloader for this ID.
-            try {
-                // 1) Create the classloader, 
-                futureRef.result = value = factory.createInstance();
-            } finally {
-                // 2) Let any waiting threads see the result (or lack of one)
-                futureRef.latch.countDown();
+        V value = null;
+        do {
+            Ref<V> canonicalRef = map.putIfAbsent(key, futureRef);
+            if (canonicalRef == null) {
+                // CREATOR THREAD: this thread won the race to create the canonical classloader for this ID.
+                try {
+                    // 1) Create the classloader, 
+                    futureRef.result = value = factory.createInstance();
+                } finally {
+                    // 2) Let any waiting threads see the result (or lack of one)
+                    futureRef.latch.countDown();
+                }
+                // 3) Then replace the FutureRef with a WeakRef in the map
+                WeakKeyedRef<K, V> weakRef = new WeakKeyedRef<K, V>(key, value, this.q);
+                this.map.replace(key, futureRef, weakRef);
+            } else {
+                // NON-CREATOR THREAD: some other thread already created the canonical classloader for this ID.
+                value = canonicalRef.get();
+                if (value == null) {
+                    // the loader was null: could have failed in creation or been GC'd
+                    // either way, loop to try creating a new loader
+                    map.remove(key, canonicalRef);
+                }
             }
-            // 3) Then replace the FutureRef with a WeakRef in the map
-            WeakKeyedRef<K, V> weakRef = new WeakKeyedRef<K, V>(key, value, this.q);
-            this.map.replace(key, futureRef, weakRef);
-        } else {
-            // NON-CREATOR THREAD: some other thread already created the canonical classloader for this ID.
-            value = canonicalRef.get();
-            if (value == null) {
-                // the loader was null: could have failed in creation or been GC'd
-                // either way, recurse to try creating a new loader
-                map.remove(key, canonicalRef);
-                value = retrieveOrCreate(key, factory, futureRef);
-            }
-        }
+        } while (value == null);
+
         return value;
     }
 
