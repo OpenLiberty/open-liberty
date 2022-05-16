@@ -10,15 +10,10 @@
  *******************************************************************************/
 package io.openliberty.cdi40.internal.fat.config;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
@@ -97,14 +92,5 @@ public class LegacyConfigTest extends FATServletClient {
         ConfigElementList<Cdi> cdis = config.getCdi();
         cdis.clear();
         server.updateServerConfiguration(config);
-    }
-
-    /*
-     * Testing that the warning is NOT output on CDI 4.0
-     */
-    @Test
-    public void testCdiEmptyBeansXMLExplicitBeanArchiveWarning() throws Exception {
-        List<String> warningMessages = server.findStringsInLogs("CWOWB1016W: The emptyBeansXMLExplicitBeanArchive attribute of the cdi configuration element is supported only on CDI 4.0 or newer. This attribute is ignored.");
-        assertEquals("Message CWOWB1016W was found when it should not have been", 0, warningMessages.size());
     }
 }
