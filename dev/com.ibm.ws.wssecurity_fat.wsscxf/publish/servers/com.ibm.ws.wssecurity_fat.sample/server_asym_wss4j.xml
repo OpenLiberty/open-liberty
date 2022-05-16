@@ -12,7 +12,7 @@
 <server>
 	<featureManager>
 		<feature>ssl-1.0</feature>
-		<feature>usr:wsseccbh-1.0</feature>
+		<feature>usr:wsseccbh-2.0</feature>
 		<feature>servlet-3.1</feature>
 		<feature>appSecurity-2.0</feature>
 		<feature>jsp-2.2</feature>
@@ -26,12 +26,6 @@
 		keyStoreRef="myKeyStore"
 		trustStoreRef="myTrustStore"
 		clientAuthenticationSupported="true" />
-	<!-- ##for testing with SSL/https between WebSphere and Liberty ##You may 
-		want to copy the key.p12 and trust.p12 from WebSphere configuration over 
-		##here and using these settings for a quick test. <keyStore id="myKeyStore" 
-		password="WebAS" type="PKCS12" location="${server.config.dir}/key.p12" /> 
-		<keyStore id="myTrustStore" password="WebAS" type="PKCS12" location="${server.config.dir}/trust.p12" 
-		/> -->
 	<keyStore
 		id="myKeyStore"
 		password="Liberty"
@@ -42,6 +36,7 @@
 		password="LibertyServer"
 		type="jks"
 		location="${server.config.dir}/sslServerTrust.jks" />
+
 
 	<include location="../fatTestPorts.xml" />
 
@@ -94,40 +89,43 @@
 		id="default"
 		ws-security.password="security"
 		ws-security.username="user1"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 	>
-        <!-- 2/2021 EE8 Callbackhandler -->
-	
+	  <!-- 2/2021 EE8 Callbackhandler -->
+	  
 		<signatureProperties
+			signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="sampleapp"
-			org.apache.ws.security.crypto.merlin.keystore.alias="alice"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/sender.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
 		<encryptionProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="sampleapp"
-			org.apache.ws.security.crypto.merlin.keystore.alias="bob"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/sender.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client2"
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecondCert"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientSecond.jks" />
 	</wsSecurityClient>
 
 	<wsSecurityProvider
 		id="default"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 	>
 	<!-- 2/2021 EE8 Callbackhandler -->
-	
+
 		<signatureProperties
+			signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="sampleapp"
-			org.apache.ws.security.crypto.merlin.keystore.alias="bob"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/receiver.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server2"
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecond"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
 		<encryptionProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="sampleapp"
-			org.apache.ws.security.crypto.merlin.keystore.alias="alice"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/receiver.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefaultCert"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks" />
 	</wsSecurityProvider>
-
+  
     <include location="imports/java2Permissions.xml" />
     
 </server>
+

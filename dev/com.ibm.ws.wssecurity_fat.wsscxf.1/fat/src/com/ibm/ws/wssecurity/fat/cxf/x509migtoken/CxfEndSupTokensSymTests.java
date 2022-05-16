@@ -60,9 +60,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
 
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-        commonSetUp(serverName, "server_sym_wss4j.xml", true,
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        commonSetUp(serverName, "server_sym.xml", true,
                     "/endsuptokensclient/CxfEndSupTokensSvcClient");
 
     }
