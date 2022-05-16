@@ -87,9 +87,9 @@ public class CDIConfigTest {
 
     @Test
     /**
-     * Initially we were going to output a warning if emptyBeansXMLExplicitBeanArchive was set when using a CDI version less than 4.0.
-     * However, in the design review it was decided that this should just silently ignore the property. Therefore we change this test
-     * to just start the server and shut down again, checking there were NO unexpected warnings/errors
+     * If emptyBeansXMLExplicitBeanArchive is set when using a CDI version less than 4.0, the attribute should be just
+     * silently ignored. This test set the attribute, starts the server and shuts down again. It checks there were NO
+     * unexpected warnings/errors. This should remain the case even when using CDI 4.0.
      *
      * @throws Exception
      */
