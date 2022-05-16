@@ -16,7 +16,7 @@ bVersion=1.0
 
 
 Export-Package: \
-   javax.cache.*;version="1.1";thread-context=true
+   javax.cache.*;version="1.1"
 
 Import-Package: \
    javax.enterprise.util;resolution:=optional
