@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.audit.utils;
+package com.ibm.ws.security.audit.source.utils;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;

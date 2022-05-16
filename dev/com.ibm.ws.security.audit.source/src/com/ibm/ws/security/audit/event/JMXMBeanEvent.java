@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
-import com.ibm.ws.security.audit.utils.AuditUtils;
-import com.ibm.ws.security.audit.utils.ParameterUtils;
+import com.ibm.ws.security.audit.source.utils.AuditUtils;
+import com.ibm.ws.security.audit.source.utils.ParameterUtils;
 
 /**
  * Class with default values for jmx notification events

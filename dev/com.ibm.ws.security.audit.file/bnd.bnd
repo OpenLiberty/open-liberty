@@ -10,19 +10,20 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-
--sub: *.bnd
-
 bVersion=1.0
 
+Bundle-Name: Security Audit
+Bundle-SymbolicName: com.ibm.ws.security.audit.file
+Bundle-Description: Security Audit: Security Audit File Handler; version=${bVersion}
 WS-TraceGroup: audit
-
 
 Export-Package:
 
 Private-Package: \
    com.ibm.ws.config.xml.internal.nester, \
-   com.ibm.ws.security.audit.*
+   com.ibm.ws.security.audit.file, \
+   com.ibm.ws.security.audit.logutils, \
+   com.ibm.ws.security.audit.file.internal.resources
 
 DynamicImport-Package: \
   com.ibm.wsspi.request.probe.*, \

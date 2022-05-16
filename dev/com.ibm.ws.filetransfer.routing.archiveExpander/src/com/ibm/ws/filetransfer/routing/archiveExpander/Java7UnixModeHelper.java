@@ -8,64 +8,69 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+/**
+ * 
+ */
 package com.ibm.ws.filetransfer.routing.archiveExpander;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.HashSet;
+import java.util.Set;
 
-public class ChmodUnixModeHelper implements UnixModeHelper {
+/**
+ */
+public class Java7UnixModeHelper {
 
-  @Override
-  public void setPermissions(File f, int unixMode) throws IOException {
-    int owner = 0;
-    int group = 0;
-    int other = 0;
+  public static void setPermissions(File f, int unixMode) throws IOException {
+
+    Set<PosixFilePermission> perms = new HashSet<PosixFilePermission>();
     
     if ((unixMode ^ 1) == 1) {
-      other += 1;
+      perms.add(PosixFilePermission.OTHERS_EXECUTE);
     }
     
     if ((unixMode ^ 2) == 2) {
-      other += 2;
+      perms.add(PosixFilePermission.OTHERS_WRITE);
     } 
     
     if ((unixMode ^ 4) == 4) {
-      other += 4;
+      perms.add(PosixFilePermission.OTHERS_READ);
     } 
     
     if ((unixMode ^ 8) == 8) {
-      group += 1;
+      perms.add(PosixFilePermission.GROUP_EXECUTE);
     }
     
     if ((unixMode ^ 16) == 16) {
-      group += 2;
+      perms.add(PosixFilePermission.GROUP_WRITE);
     }
     
     if ((unixMode ^ 32) == 32) {
-      group += 4;
+      perms.add(PosixFilePermission.GROUP_READ);
     }
     
     if ((unixMode ^ 64) == 64) {
-      owner += 1;
+      perms.add(PosixFilePermission.OWNER_EXECUTE);
     } 
     
     if ((unixMode ^ 128) == 128) {
-      owner += 2;
+      perms.add(PosixFilePermission.OWNER_WRITE);
     }
     
     if ((unixMode ^ 256) == 256) {
-      owner += 4;
+      perms.add(PosixFilePermission.OWNER_READ);
     }
     
-    String perms = "" + owner + group + other;
-    
-    ProcessBuilder builder = new ProcessBuilder("chmod", perms, f.getAbsolutePath());
     try {
-      builder.start().waitFor();
-    } catch (IOException ioe) {
-      // ignore
-    } catch (InterruptedException e) {
-      // ignore
+      Files.setPosixFilePermissions(f.toPath(), perms);
+    } catch (IOException e) {
+      throw e;
+    } catch (UnsupportedOperationException e) {
+      // this means the FS doesn't support POSIX permissions.
+        ChmodUnixModeHelper.setPermissions(f, unixMode);
     }
   }
 

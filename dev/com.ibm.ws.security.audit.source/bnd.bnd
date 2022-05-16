@@ -20,11 +20,14 @@ WS-TraceGroup: audit
 
 
 Export-Package: \
+	com.ibm.ws.security.audit.encryption,\
 	com.ibm.ws.security.audit.event,\
 	com.ibm.ws.security.audit.pipeline
 
 Private-Package: \
-   com.ibm.ws.security.audit.*
+   com.ibm.ws.security.audit.source,\
+   com.ibm.ws.security.audit.source.utils,\
+   com.ibm.ws.security.audit.source.internal.resources
    
 DynamicImport-Package: \
   com.ibm.wsspi.request.probe.*, \
@@ -35,7 +38,7 @@ Include-Resource: \
 
 -dsannotations: \
    com.ibm.ws.security.audit.source.AuditServiceImpl, \
-   com.ibm.ws.security.audit.utils.AuditUtils, \
+   com.ibm.ws.security.audit.source.utils.AuditUtils, \
    com.ibm.ws.security.audit.pipeline.AuditJMXPipeline
 
 -buildpath: \

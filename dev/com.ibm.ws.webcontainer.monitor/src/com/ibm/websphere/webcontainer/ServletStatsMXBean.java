@@ -14,7 +14,7 @@ import com.ibm.websphere.monitor.jmx.Counter;
 import com.ibm.websphere.monitor.jmx.StatisticsMeter;
 
 /**
- * Management12 interface for MBeans with names of the form "WebSphere:type=ServletStats,name=*"
+ * Management interface for MBeans with names of the form "WebSphere:type=ServletStats,name=*"
  * where * is the name of a servlet within an application under the Liberty profile of the form <appName>.<servletName>. For example, myApp.DemoServlet. One such MBean for each servlet in the system is available
  * from the Liberty profile platform MBean server when the monitor-1.0 feature is enabled. This interface can be used to request a proxy object via the {@link javax.management.JMX#newMMBeanProxy} method.
  * 
