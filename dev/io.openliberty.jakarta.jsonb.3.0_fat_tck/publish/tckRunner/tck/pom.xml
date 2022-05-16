@@ -63,21 +63,20 @@
 		    </exclusions>
 		</dependency>
 		<!-- api - jsonb - internal bundle -->
-		<!-- TODO revert to jakarta.json.bind when GA version is in GHE -->
 		<dependency>
-			<groupId>io.openliberty.jakarta.json.bind</groupId>
+			<groupId>jakarta.json.bind</groupId>
 			<artifactId>jakarta.json.bind-api</artifactId>
 			<version>${jakarta.jsonb.version}</version>
 			<scope>system</scope>
 			<systemPath>${io.openliberty.jakarta.jsonb.3.0}</systemPath>
 		</dependency>
-		<!-- api - jsonp - external artifact -->
-		<!-- TODO change to use internal bundle for jsonp -->
+		<!-- api - jsonp - internal bundle -->
 		<dependency>
 			<groupId>jakarta.json</groupId>
 			<artifactId>jakarta.json-api</artifactId>
 			<version>${jakarta.json.version}</version>
-			<scope>provided</scope>
+			<systemPath>${io.openliberty.jakarta.jsonp.2.1}</systemPath> 
+			<scope>system</scope>
 		</dependency>
 		<!-- impl - jsonb - yasson - internal bundle -->
 		<!-- TODO revert to org.eclipse when GA version is in GHE -->
@@ -88,13 +87,13 @@
 			<scope>system</scope>
 			<systemPath>${io.openliberty.org.eclipse.yasson.3.0}</systemPath>
 		</dependency>
-		<!-- impl - jsonp - passon - external artifact -->
-		<!-- TODO change to use internal bundle for parsson -->
+		<!-- impl - jsonp - parsson - internal bundle -->
 		<dependency>
 			<groupId>org.eclipse.parsson</groupId>
 			<artifactId>parsson</artifactId>
 			<version>1.1.0</version>
-			<scope>test</scope>
+			<scope>system</scope>
+			<systemPath>${io.openliberty.org.eclipse.parsson.1.1}</systemPath>
 		</dependency>
 		<!-- impl - cdi - weld - external artifact -->
 		<!-- TODO change to use internal bundle for weld -->
@@ -123,45 +122,6 @@
 	<build>
 		<directory>${targetDirectory}</directory>
 		<plugins>
-			<!-- Plugin used to copy external artifacts to signaturedirectory for signature tests -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.2.0</version>
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<!-- This artifact is being copied from the system instead								
-								<artifactItem>
-									<groupId>jakarta.json.bind</groupId>
-									<artifactId>jakarta.json.bind-api</artifactId>
-									<version>${jakarta.json.bind.version}</version>
-									<type>jar</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/signaturedirectory</outputDirectory>
-									<destFileName>jakarta.json.bind-api.jar</destFileName>
-								</artifactItem> 
-								-->
-								<artifactItem>
-									<groupId>jakarta.json</groupId>
-									<artifactId>jakarta.json-api</artifactId>
-									<version>${jakarta.json.version}</version>
-									<type>jar</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/signaturedirectory</outputDirectory>
-									<destFileName>jakarta.json-api.jar</destFileName>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<!-- Plugin used to internal bundles to signaturedirectory for signature tests -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -177,7 +137,7 @@
 			            <configuration>
 			              <target>
 			                <copy file="${io.openliberty.jakarta.jsonb.3.0}" tofile="${project.build.directory}/signaturedirectory/jakarta.json.bind-api.jar"/>
-			                <!-- copy file="${io.openliberty.jakarta.jsonp.2.1}" tofile="${project.build.directory}/signaturedirectory/jakarta.json-api.jar"/ -->
+			                <copy file="${io.openliberty.jakarta.jsonp.2.1}" tofile="${project.build.directory}/signaturedirectory/jakarta.json-api.jar"/>
 			              </target>
 			            </configuration>
 			        </execution>
