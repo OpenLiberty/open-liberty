@@ -59,9 +59,9 @@ public class CxfPasswordDigestTests extends CommonTests {
     private static String httpPortNumber = "";
     private static String httpsPortNumber = "";
 
-    private static String pwdCBHVersion = "EE8";
+    private static String pwdCBHVersion = "EE7";
     //issue 18363
-    private static String featureVersion = "EE8";
+    private static String featureVersion = "EE7";
 
     static String strJksLocation = "./securitykeys/sslClientDefault.jks";
 
@@ -96,18 +96,18 @@ public class CxfPasswordDigestTests extends CommonTests {
         Set<String> features = config.getFeatureManager().getFeatures();
         //The feature flag here is for the AltClientPWDigestCallbackHandler used in the test methods with id 'altCallback1' and 'altCallback2'
         //The PWDigestCallbackHandler version doesn't use this flag but determined by the server.xml/server_wss4j.xml/server_withClCallback.xml/server_withClCallback_wss4j.xml
-        /*if (features.contains("jaxws-2.2")) {
+        if (features.contains("jaxws-2.2")) {
             pwdCBHVersion = "EE7";
             //issue 18363
             featureVersion = "EE7";
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         } else if (features.contains("jaxws-2.3")) {
             pwdCBHVersion = "EE8";
             //issue 18363
             featureVersion = "EE8";
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-        }*/
+        }        
         
-        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         WebArchive pwdigestclient_war = ShrinkHelper.buildDefaultApp("pwdigestclient", "com.ibm.ws.wssecurity.fat.pwdigestclient", "fats.cxf.pwdigest.wssec",
                                                                      "fats.cxf.pwdigest.wssec.types");
         WebArchive pwdigest_war = ShrinkHelper.buildDefaultApp("pwdigest", "com.ibm.ws.wssecurity.fat.pwdigest");

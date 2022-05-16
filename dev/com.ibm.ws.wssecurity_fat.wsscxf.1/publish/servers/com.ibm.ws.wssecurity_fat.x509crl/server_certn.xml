@@ -49,6 +49,7 @@
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 		ws-security.signature.username="myx509certN"
 		ws-security.enableRevocation="true"
+                ws-security.return.security.error="true"
 	>
 		<signatureProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"

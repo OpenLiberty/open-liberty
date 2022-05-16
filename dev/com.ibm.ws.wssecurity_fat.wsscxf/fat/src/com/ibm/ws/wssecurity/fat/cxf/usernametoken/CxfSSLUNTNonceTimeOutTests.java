@@ -67,7 +67,7 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
         copyFromFile = System.getProperty("user.dir") +
                         File.separator +
                         server.getPathToAutoFVTNamedServer() +
-                        "server_customize_ee8.xml";
+                        "server_customize.xml";
 
         ShrinkHelper.defaultDropinApp(server, "untsslclient", "com.ibm.ws.wssecurity.fat.untsslclient", "fats.cxf.basicssl.wssec", "fats.cxf.basicssl.wssec.types");
         ShrinkHelper.defaultDropinApp(server, "untoken", "com.ibm.ws.wssecurity.fat.untoken");

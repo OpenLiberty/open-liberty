@@ -52,10 +52,10 @@ public class CxfX509ASyncTests extends CommonTests {
     public static void setUp() throws Exception {
 
         //6/2021 need to update CommonTest.java to get req parameter of CBHVersion; comment out for now
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-        CBHVersion = "EE8";
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+        CBHVersion = "EE7";
 
         ShrinkHelper.defaultDropinApp(server, "x509aSyncclient", "com.ibm.ws.wssecurity.fat.x509Asyncclient", "test.wssecfvt.x509async", "test.wssecfvt.x509async.types");
         ShrinkHelper.defaultDropinApp(server, "x509aSync", "com.ibm.ws.wssecurity.fat.x509async", "test.wssecfvt.x509async", "test.wssecfvt.x509async.types");

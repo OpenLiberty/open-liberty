@@ -67,6 +67,7 @@
 	<wsSecurityProvider
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.fat.pwdigest.PWDigestCallbackHandler"
+                ws-security.return.security.error="true"
 	>
 	</wsSecurityProvider>
 

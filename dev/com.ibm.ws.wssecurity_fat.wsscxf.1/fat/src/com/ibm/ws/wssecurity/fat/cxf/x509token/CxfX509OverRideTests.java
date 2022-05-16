@@ -72,9 +72,9 @@ public class CxfX509OverRideTests {
 
         String thisMethod = "setup";
 
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         ShrinkHelper.defaultDropinApp(server, "x509client", "com.ibm.ws.wssecurity.fat.x509client", "test.wssecfvt.basicplcy", "test.wssecfvt.basicplcy.types");
         ShrinkHelper.defaultDropinApp(server, "x509token", "basicplcy.wssecfvt.test");
 
@@ -94,7 +94,7 @@ public class CxfX509OverRideTests {
                       server.waitForStringInLog("CWWKO0219I.*" + portNumberSecure));
 
         x509ClientUrl = "http://localhost:" + portNumber
-                        + "/x509client/CxfX509SvcClientWss4j";
+                        + "/x509client/CxfX509SvcClient";
 
         Log.info(thisClass, thisMethod, "****portNumber is(2):" + portNumber);
         Log.info(thisClass, thisMethod, "****portNumberSecure is(2):" + portNumberSecure);
