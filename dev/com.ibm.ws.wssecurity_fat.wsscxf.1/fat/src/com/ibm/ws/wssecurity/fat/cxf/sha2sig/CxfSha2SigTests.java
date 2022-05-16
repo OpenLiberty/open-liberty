@@ -24,14 +24,12 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -54,11 +52,11 @@ public class CxfSha2SigTests extends CommonTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         //issue 18363
-        featureVersion = "EE8";
+        featureVersion = "EE7";
         ShrinkHelper.defaultDropinApp(server, "sha2sigclient", "com.ibm.ws.wssecurity.fat.sha2sigclient", "test.wssecfvt.sha2sig", "test.wssecfvt.sha2sig.types");
         ShrinkHelper.defaultDropinApp(server, "sha2sig", "com.ibm.ws.wssecurity.fat.sha2sig");
 
@@ -315,10 +313,36 @@ public class CxfSha2SigTests extends CommonTests {
                         "",
                         "Response: javax.xml.ws.soap.SOAPFaultException",
                         // expected response from server
+                        "An error was discovered processing the <wsse:Security> header",
+                        // msg to issue if do NOT get the expected result
+                        "The test did not receive the expected exception from the server.");
+            /*
+            genericTest(
+                        // test name for logging
+                        thisMethod,
+                        // Svc Client Url that generic test code should use
+                        clientHttpUrl,
+                        // Port that svc client code should use
+                        "",
+                        // user that svc client code should use
+                        "user1",
+                        // pw that svc client code should use
+                        "security",
+                        // wsdl sevice that svc client code should use
+                        "Sha2SigService5",
+                        // wsdl that the svc client code should use
+                        // newClientWsdl,
+                        "",
+                        // wsdl port that svc client code should use
+                        "UrnSha2Sig5",
+                        // msg to send from svc client to server
+                        "",
+                        "Response: javax.xml.ws.soap.SOAPFaultException",
+                        // expected response from server
                         "The signature method does not match the requirement",
                         // msg to issue if do NOT get the expected result
                         "The test did not receive the expected exception from the server.");
-
+              */
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
         } else if (featureVersion.equals("EE8")) {
