@@ -67,7 +67,7 @@ public class JwtUtilsTest {
         String jsonString1 = "{ \"schemas\":[\"urn:scim:schemas:core:2.0:User\"],\"userName\":\"janedoe\", " +
                 "\"externalId\":\"janedoe\", " +
                 "\"name\":{ \"formatted\":\"Ms. Jane J Doe \", \"familyName\":\"Doe\", \"givenName\":\"Jane\" }, " +
-                "\"password\":\"asdf\", " +
+                "\"password\":null, " +
                 "\"phoneNumbers\":[ { \"value\": \"555-555-8377\", \"type\":\"work\" }, { \"value\": \"555-555-8378\", \"type\":\"fax\" } ], " +
                 "\"emails\":[ { \"value\": \"jdoe@rabitmail.com\", \"type\":\"personal\" }, { \"value\": \"jdoe@turtlemail.com\", \"type\":\"work\" } ]," + 
                 "\"addresses\": [ { \"type\": \"work\", \"streetAddress\": \"100 Universal City Plaza\", \"locality\": \"Hollywood\", " +
