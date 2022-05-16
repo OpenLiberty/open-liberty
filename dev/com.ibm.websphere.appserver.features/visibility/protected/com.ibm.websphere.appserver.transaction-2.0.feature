@@ -31,7 +31,6 @@ Subsystem-Name: Jakarta Transactions 2.0
  com.ibm.tx.jta.jakarta, \
  io.openliberty.transaction.internal.cdi20.jakarta, \
  com.ibm.tx.util.jakarta, \
- com.ibm.tx.ltc.jakarta, \
  com.ibm.rls.jdbc.jakarta, \
  com.ibm.ws.tx.embeddable.jakarta, \
  com.ibm.ws.recoverylog, \

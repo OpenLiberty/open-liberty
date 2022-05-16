@@ -30,7 +30,6 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  com.ibm.ws.transaction; start-phase:=CONTAINER_LATE, \
  com.ibm.tx.jta, \
  com.ibm.tx.util, \
- com.ibm.tx.ltc, \
  com.ibm.rls.jdbc, \
  com.ibm.ws.tx.embeddable, \
  com.ibm.ws.recoverylog, \
