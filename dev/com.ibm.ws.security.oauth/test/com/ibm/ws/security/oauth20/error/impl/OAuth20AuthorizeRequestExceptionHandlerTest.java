@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,32 +40,50 @@ public class OAuth20AuthorizeRequestExceptionHandlerTest {
     private final HttpServletResponse rsp = mockery.mock(HttpServletResponse.class);
     private final OAuthResult result = mockery.mock(OAuthResult.class);
     private final String formattedErrorMessage = "Test formatted error message.";
+    private final String errorMessage_zh_TW = "CWOAU0033E: \\u907a\\u6f0f\\u5fc5\\u8981\\u7684\\u57f7\\u884c\\u6642\\u671f\\u53c3\\u6578\\uff1aclient_id";
 
     @Test
     public void informResourceOwner() throws Exception {
-        createRequestExpectations();
-        createResponseExpectations();
-        createResultExpectations();
-        String responseType = OAuth20Constants.RESPONSE_TYPE_CODE;
-        String redirectUri = "https://localhost/oidcclient/redirect/client01";
-        String templateUrl = "";
-        OAuth20AuthorizeRequestExceptionHandler handler = new OAuth20AuthorizeRequestExceptionHandler(responseType, redirectUri, templateUrl);
+        createInformResourceOwnerExpectations("en_us", formattedErrorMessage);
+        OAuth20AuthorizeRequestExceptionHandler handler = createHandler();
 
         handler.handleResultException(req, rsp, result);
     }
 
-    private void createRequestExpectations() {
+    @Test
+    public void informResourceOwner_differentLocale() throws Exception {
+        createInformResourceOwnerExpectations("zh_TW", errorMessage_zh_TW);
+        OAuth20AuthorizeRequestExceptionHandler handler = createHandler();
+
+        handler.handleResultException(req, rsp, result);
+    }
+
+    private OAuth20AuthorizeRequestExceptionHandler createHandler() {
+        String responseType = OAuth20Constants.RESPONSE_TYPE_CODE;
+        String redirectUri = "https://localhost/oidcclient/redirect/client01";
+        String templateUrl = "";
+        return new OAuth20AuthorizeRequestExceptionHandler(responseType, redirectUri, templateUrl);
+    }
+
+    private void createInformResourceOwnerExpectations(String localeLanguage, String errorMessage) throws Exception {
+        Locale locale = new Locale(localeLanguage);
+        createRequestExpectations(locale);
+        createResponseExpectations(locale, errorMessage);
+        createResultExpectations(locale, errorMessage);
+    }
+
+    private void createRequestExpectations(final Locale locale) {
         mockery.checking(new Expectations() {
             {
                 allowing(req).getCharacterEncoding();
                 will(returnValue("utf-8"));
                 allowing(req).getLocale();
-                will(returnValue(new Locale("en_us")));
+                will(returnValue(locale));
             }
         });
     }
 
-    private void createResultExpectations() {
+    private void createResultExpectations(final Locale locale, final String errorMessage) {
         final OAuthException oauthException = mockery.mock(OAuth20Exception.class);
         mockery.checking(new Expectations() {
             {
@@ -77,19 +95,20 @@ public class OAuth20AuthorizeRequestExceptionHandlerTest {
                 will(returnValue("unauthorized_client"));
                 one(oauthException).getError();
                 will(returnValue("unauthorized_client"));
-                one(oauthException).formatSelf(with(any(Locale.class)), with(any(String.class)));
-                will(returnValue("Test formatted error message."));
+                one(oauthException).formatSelf(with(locale), with(any(String.class)));
+                will(returnValue(errorMessage));
             }
         });
     }
 
-    private void createResponseExpectations() throws IOException {
+    private void createResponseExpectations(final Locale locale, final String errorMessage) throws IOException {
         final PrintWriter pw = mockery.mock(PrintWriter.class);
         mockery.checking(new Expectations() {
             {
+                one(rsp).setLocale(locale);
                 one(rsp).getWriter();
                 will(returnValue(pw));
-                one(pw).print(formattedErrorMessage);
+                one(pw).print(errorMessage);
             }
         });
     }
