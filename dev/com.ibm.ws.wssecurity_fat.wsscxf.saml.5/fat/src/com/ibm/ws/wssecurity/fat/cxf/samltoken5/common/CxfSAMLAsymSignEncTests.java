@@ -135,7 +135,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
         updatedTestSettings.updatePartnerInSettings("sp1", true);
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, null, null, "SAMLAsymSignService",
                 "SAMLAsymSignPort", "", "False", null, commonUtils.processClientWsdl("ClientAsymOmitSign.wsdl", servicePort));
-
+        /*
         //issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     		genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_SERVICE_CLIENT_NOT_SIGN));
@@ -143,7 +143,8 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
            //@AV999, the client sends a signed supporting token even though the policy says supporting token? is this just with saml token or any supporting token? TODO
            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_ASYM_SIGN_SERVICE));
     	} //End of 18363
-    	
+    	*/
+    	genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_ASYM_SIGN_SERVICE));
     }
     
     @Test
@@ -292,7 +293,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
         updatedTestSettings.updatePartnerInSettings("sp1", true);
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, null, null, "SAMLAsymSignEncrService",
                 "SAMLAsymSignEncrPort", "", "False", null, commonUtils.processClientWsdl("ClientAsymOmitSignKeepEncr.wsdl", servicePort));
-
+        /*
         //issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     		genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE_CLIENT_NOT_SIGN_OR_ENCR));
@@ -300,7 +301,9 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
             //@AV999 TODO need to check whether the new runtime is correct in implementing the policy
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_ASYM_SIGN_ENCR_SERVICE));
     	}//End of 18363
+    	*/
     	
+    	genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_ASYM_SIGN_ENCR_SERVICE));
     }
     
     @Test

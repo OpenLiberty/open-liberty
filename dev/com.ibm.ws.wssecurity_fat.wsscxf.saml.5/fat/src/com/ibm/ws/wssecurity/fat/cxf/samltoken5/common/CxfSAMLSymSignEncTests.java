@@ -137,13 +137,15 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
         updatedTestSettings.updatePartnerInSettings("sp1", true);
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, null, null, "SAMLSymSignService",
                 "SAMLSymSignPort", "", "False", null, commonUtils.processClientWsdl("ClientSymOmitSign.wsdl", servicePort));
-
+        /*
         //issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     		genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_SERVICE_CLIENT_NOT_SIGN));
     	} else if ("EE8".equals(getFeatureVersion())) {
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_SERVICE));
     	}//End of 18363
+    	*/
+    	genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_SERVICE));
     	
     } 
     
@@ -298,13 +300,15 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
         updatedTestSettings.updatePartnerInSettings("sp1", true);
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, null, null, "SAMLSymSignEncrService",
                 "SAMLSymSignEncrPort", "", "False", null, commonUtils.processClientWsdl("ClientSymOmitSignKeepEncr.wsdl", servicePort));
-      
+        /*
         //issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
     		genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE_CLIENT_NOT_SIGN_OR_ENCR));
     	} else if ("EE8".equals(getFeatureVersion())) {
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE));
     	}//End of 18363
+    	*/
+    	genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE));
     	
     }
   
