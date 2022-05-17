@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2021 IBM Corporation and others.
+# Copyright (c) 2002, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -71,6 +71,7 @@ DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
 DEFAULT_VHOST_ERROR=CWWKT0014E: Es ist ein interner Fehler aufgetreten. Der virtuelle Standardhost kann nicht erstellt werden. Ausnahme: {0}
 DEFAULT_VHOST_ERROR.explanation=CMSG0001
 DEFAULT_VHOST_ERROR.useraction=CMSG0002                                                   
+
 missingPorts.endpointDisabled=CWWKT0015W: Es wurden keine Ports f\u00fcr den Endpunkt {0} konfiguriert. Der Endpunkt wurde inaktiviert.
 missingPorts.endpointDisabled.explanation=Ein HTTP-Endpunkt erfordert, dass mindestens ein Port konfiguriert wird.
 missingPorts.endpointDisabled.useraction=Ordnen Sie httpPort und/oder httpsPort einen g\u00fcltigen Portwert zu.
@@ -97,18 +98,13 @@ config.httpChain.error=CWWKT0019E: Beim Konfigurieren des Endpunkts {0} ist ein 
 config.httpChain.error.explanation=Der HTTP-Endpunkt konnte wegen eines Konfigurationsproblems nicht gestartet werden.
 config.httpChain.error.useraction=Suchen Sie in den Nachrichten- und Ausnahmeprotokollen nach zugeh\u00f6rigen Fehlern.
 
-
 start.httpChain.error=CWWKT0020E: Beim Starten des Endpunkts {0} ist ein Problem aufgetreten:: {1}
 start.httpChain.error.explanation=Der HTTP-Endpunkt konnte wegen eines unerwarteten Problems nicht gestartet werden. 
 start.httpChain.error.useraction=Suchen Sie in den Nachrichten- und Ausnahmeprotokollen nach zugeh\u00f6rigen Fehlern.
 
-
-httpChain.error.shutdown=CWWKT0021I: Der Server wird aufgrund eines m\u00f6glichen Konfigurationsfehlers gestoppt. \
-Der Endpunkt {0} kann nicht gestartet werden. Dieser Fehler kann auftreten, weil der konfigurierte Port bereits im Gebrauch ist.
+httpChain.error.shutdown=CWWKT0021I: Der Server wird aufgrund eines m\u00f6glichen Konfigurationsfehlers gestoppt. Der Endpunkt {0} kann nicht gestartet werden. Dieser Fehler kann auftreten, weil der konfigurierte Port bereits im Gebrauch ist.
 httpChain.error.shutdown.explanation=Der HTTP-Endpunkt wurde mit der Einstellung onError=FAIL konfiguriert. Daher wird der Server gestoppt, wenn beim Starten des Endpunkts ein Fehler auftritt. 
-httpChain.error.shutdown.useraction=Suchen Sie in den Nachrichten- und Ausnahmeprotokollen nach zugeh\u00f6rigen Fehlern. \
-\
-Wenn Sie verhindern m\u00f6chten, dass der Server aufgrund eines Fehlers beim Starten des Endpunkts gestoppt wird, stellen Sie sicher, dass die Einstellung onError auf WARN (Warnung) oder IGNORE (Ignorieren) gesetzt ist.
+httpChain.error.shutdown.useraction=Suchen Sie in den Nachrichten- und Ausnahmeprotokollen nach zugeh\u00f6rigen Fehlern. Wenn Sie verhindern m\u00f6chten, dass der Server aufgrund eines Fehlers beim Starten des Endpunkts gestoppt wird, stellen Sie sicher, dass die Einstellung onError auf WARN (Warnung) oder IGNORE (Ignorieren) gesetzt ist.
 
 unresolveableHost=CWWKT0022E: Der konfigurierte Host {0} f\u00fcr den HTTP-Endpunkt {1} konnte nicht aufgel\u00f6st werden. Der Endpunkt wurde inaktiviert.
 unresolveableHost.explanation=Ein HTTP-Endpunkt setzt einen Hostwert voraus, der in eine aktive Netzschnittstelle aufgel\u00f6st werden kann.
@@ -123,8 +119,7 @@ defaultHostDisabled.explanation=F\u00fcr die Laufzeitumgebung ist der virtuelle 
 defaultHostDisabled.useraction=Es ist keine Aktion erforderlich.
 
 noHostAliases=CWWKT0025W: Der virtuelle Host {0} hat keine konfigurierten Hostaliasnamen. Er empf\u00e4ngt keine eingehenden Anforderungen.
-noHostAliases.explanation=Alle virtuellen Hosts, die keine Standardhosts sind, m\u00fcssen mindestens einen Hostalias (Host:Port) definieren, um an diesen virtuellen Host weiterzuleitende eingehende Anforderungen zu ermitteln. \
-Der angegebene virtuelle Host hat keinen einzigen definierten Hostalias, sodass keine Anforderungen an ihn weitergeleitet werden.
+noHostAliases.explanation=Alle virtuellen Hosts, die keine Standardhosts sind, m\u00fcssen mindestens einen Hostalias (Host:Port) definieren, um an diesen virtuellen Host weiterzuleitende eingehende Anforderungen zu ermitteln. Der angegebene virtuelle Host hat keinen einzigen definierten Hostalias, sodass keine Anforderungen an ihn weitergeleitet werden.
 noHostAliases.useraction=Aktualisieren Sie das Element virtualHost in der Datei server.xml, um mindestens ein hostAlias-Attribut zu definieren.
 
 invalidAlias=CWWKT0026W: Ein konfigurierter Hostalias f\u00fcr den virtuellen Host {0} ist ung\u00fcltig  und wird ignoriert. {1}
@@ -205,3 +200,11 @@ headers.duplicateHeaderName.useraction=Stellen Sie sicher, dass von den remove-,
 headers.knownDuplicateHeader=CWWKT0044W: Der als doppelter Headername markierte Header [{0}] wurde in der Konfiguration {1} gefunden. Der Header [{0}] wird ignoriert. Alle von der Konfiguration {1} definierten Header m\u00fcssen eindeutige Headernamen enthalten.
 headers.knownDuplicateHeader.explanation=Der angegebene Headername wurde bereits von den remove-, add-, set- oder setIfMissing-Konfigurationen gefunden.
 headers.knownDuplicateHeader.useraction=Stellen Sie sicher, dass in dieser Konfiguration definierte Headernamen in den remove-, add-, set- und setIfMissing-Konfigurationen eindeutig sind. 
+
+log.rollover.start.time.format.warning=CWWKT0045W: Die Eigenschaft f\u00fcr die Startzeit des Protokollrollover ist falsch formatiert. Daher wird der Wert auf den Standardwert '00:00' gesetzt, der Mitternacht darstellt.
+log.rollover.start.time.format.warning.explanation=Die Eigenschaft f\u00fcr die Rollover-Startzeit muss das Format HH:MM haben, wobei 00:00 f\u00fcr Mitternacht steht.
+log.rollover.start.time.format.warning.useraction=Stellen Sie sicher, dass der Eigenschaftswert f\u00fcr die Rollover-Startzeit ordnungsgem\u00e4\u00df in der 24-Stunden-Notation HH:MM formatiert ist, wobei 00:00 f\u00fcr Mitternacht steht.
+
+log.rollover.interval.too.short.warning=CWWKT0046W: Das Protokollumlaufintervall darf nicht k\u00fcrzer als 1 Minute sein. Wenn ein Wert kleiner als 1 Minute angegeben wird, wird das Protokoll\u00fcberlaufintervall auf einen Standardwert von 1 Tag gesetzt.
+log.rollover.interval.too.short.warning.explanation=Das Protokollumlaufintervall darf nicht k\u00fcrzer als 1 Minute sein.
+log.rollover.interval.too.short.warning.useraction=Geben Sie ein Protokollumlaufintervall an, das gr\u00f6\u00dfer-gleich 1 Minute ist.

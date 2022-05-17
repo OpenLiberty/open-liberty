@@ -1551,6 +1551,14 @@ UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Nem lehet \u00f6sszerendelni 
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=A t\u00e1voli EJB-komponens \u00f6sszerendel\u00e9s nem hozhat\u00f3 l\u00e9tre, mert a CORBA n\u00e9vkiszolg\u00e1l\u00f3 nem \u00e9rhet\u0151 el.
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Ellen\u0151rizze a napl\u00f3f\u00e1jlban az ORB vagy CORBA n\u00e9vkiszolg\u00e1l\u00f3 inicializ\u00e1l\u00e1s\u00e1hoz kapcsol\u00f3d\u00f3 kiv\u00e9teleket.
 
+CNTR0342E_INCORRECT_ASYNC_ANNO=CNTR0342E: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban tal\u00e1lhat\u00f3 {0} komponens rendelkezik n\u00e9h\u00e1ny jakarta.enterprise.concurrent. Assynchronous annot\u00e1ci\u00f3t tartalmaz\u00f3 met\u00f3dussal, ami nem haszn\u00e1lhat\u00f3 EJB-komponenseken. A jakarta.ejb.Asynchronous annot\u00e1ci\u00f3 aszinkron met\u00f3dusokat biztos\u00edt az EJB-komponensekre vonatkoz\u00f3an.
+CNTR0342E_INCORRECT_ASYNC_ANNO.explanation=A Jakarta Concurrency specifik\u00e1ci\u00f3 nem teszi lehet\u0151v\u00e9 a jakarta.enterprise.concurrent.Asynchronous annot\u00e1ci\u00f3 haszn\u00e1lat\u00e1t Jakarta Enterprise Bean komponensek eset\u00e9ben.
+CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=T\u00e1vol\u00edtsa el a jakarta.enterprise.concurrent.Asynchronous annot\u00e1ci\u00f3t a met\u00f3dusb\u00f3l vagy oszt\u00e1lyb\u00f3l. Az aszinkron EJB komponens met\u00f3dusokat azonos\u00edtsa jakarta.ejb.Asynshcronous annot\u00e1ci\u00f3 seg\u00edts\u00e9g\u00e9vel.
+
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: A(z) {0} \u00fczleti csatol\u00f3 jakarta.enterprise.concurrent.Asynchronous annot\u00e1ci\u00f3t tartalmaz. Az aszinkron annot\u00e1ci\u00f3k semmilyen fel\u00fcleten nem \u00e9rv\u00e9nyesek, \u00e9s a Jakarta Enterprise Beans t\u00e1rol\u00f3 figyelmen k\u00edv\u00fcl hagyja \u0151ket.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=A jakarta.enterprise.concurrent.Asynchronous annot\u00e1ci\u00f3 nem haszn\u00e1lhat\u00f3 Jakarta Enterprise komponensekkel. A Jakarta Enterprise Beans t\u00e1rol\u00f3 figyelmen k\u00edv\u00fcl hagyja a fel\u00fcleteken ezeket az annot\u00e1ci\u00f3kat. Ha a met\u00f3dusok az ejb-jar.xml telep\u00edt\u00e9sle\u00edr\u00f3ban nem aszinkronk\u00e9nt vannak deklar\u00e1lva, illetve a komponensoszt\u00e1lyokon vagy komponensoszt\u00e1ly met\u00f3dusokon nem jakarta.ejb.Asynchronous annot\u00e1ci\u00f3 van megadva, akkor a komponens met\u00f3dusok szinkron m\u00f3don futnak.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=T\u00e1vol\u00edtsa el a jakarta.enterprise.concurrent.Asynchronous annot\u00e1ci\u00f3t a megadott \u00fczleti fel\u00fcletr\u0151l, \u00e9s ellen\u0151rizze, hogy a jakarta.ejb.Asynchronous annot\u00e1ci\u00f3 helyesen van-e megadva a komponensoszt\u00e1lyban.
+
 #-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
@@ -2207,4 +2215,3 @@ CNTR9424E_NO_URL_JNDINAME_SPECIFIED.useraction=Adjon a tulajdons\u00e1gf\u00e1jl
 CNTR9425E_NO_URL_SPEC_SPECIFIED=CNTR9425E: A be\u00e1gyazhat\u00f3 Enterprise JavaBeans (EJB) t\u00e1rol\u00f3nak a(z) {0} URL er\u0151forr\u00e1sra vonatkoz\u00f3 tulajdons\u00e1gai nem tartalmazz\u00e1k a specifik\u00e1ci\u00f3 tulajdons\u00e1got.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=A be\u00e1gyazhat\u00f3 Enterprise JavaBeans (EJB) t\u00e1rol\u00f3 \u00e1ltal haszn\u00e1lt tulajdons\u00e1gok \u00e1ltal tartalmazott URL er\u0151forr\u00e1sban nincs megadva specifik\u00e1ci\u00f3.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.useraction=Adjon a tulajdons\u00e1gf\u00e1jlhoz egy specifik\u00e1ci\u00f3 tulajdons\u00e1got az URL er\u0151forr\u00e1s sz\u00e1m\u00e1ra.
-

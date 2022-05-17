@@ -29,7 +29,7 @@ use.options=Optionen:
 option-key.ignorePids=--ignorePidsFile
 option-desc.ignorePids=Ein Dateiname, der eine Liste der zu ignorierenden PIDs enth\u00e4lt.
 option-key.encoding=--encoding
-option-desc.encoding=Die f\u00fcr die Ausgabe zu verwendende Zeichencodierung.
+option-desc.encoding=Die f\u00fcr die Ausgabe zu verwendende Zeichencodierung.     \nDie Standardcodierung ist "UTF-8".
 option-key.locale=--locale
 option-desc.locale=Die beim Erstellen der Ausgabedatei zu verwendende Sprache. Diese Angabe besteht aus dem zweistelligen ISO-639-Sprachencode in Kleinbuchstaben, dem optional ein Unterstreichungszeichen und der zweistellige ISO-3166-Landescode in Gro\u00dfbuchstaben folgen kann.
 

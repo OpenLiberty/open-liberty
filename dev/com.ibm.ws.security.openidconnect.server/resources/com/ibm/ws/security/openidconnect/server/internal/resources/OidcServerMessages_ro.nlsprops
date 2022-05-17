@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS1600 - CWWKS1649
+# Message prefix block: CWWKS1600 - CWWKS1649, CWWKS1950 - CWWKS1999
 OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: Configura\u0163ia furnizorului OpenID Connect {0} a fost procesat\u0103 cu succes.
 OIDC_SERVER_CONFIG_PROCESSED.explanation=Configura\u0163ia furnizorului OpenID Connect a fost procesat\u0103 cu succes.
 OIDC_SERVER_CONFIG_PROCESSED.useraction=F\u0103r\u0103
@@ -192,9 +192,9 @@ LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Furnizorul OpenID Co
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Jetonul de ID ar putea fi format gre\u0219it sau o revendicare din jeton ar putea avea o valoare care este un tip de date nea\u0219teptat. Sau din jeton ar putea lipsi revendic\u0103ri care sunt necesare, sau emitentul jetonului nu este emitentul a\u0219teptat.
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul de ID este formatat corect. Pentru mai multe informa\u021bii, vede\u021bi eroarea care este inclus\u0103 \u00een mesaj.
 
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Furnizorul OpenID Connect nu poate determina setul de clien\u021bi OpenID Connect pentru delogare, din cauza urm\u0103toarei erori: {0}
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Furnizorul nu a reu\u0219it s\u0103 extrag\u0103 setul de clien\u021bi care sunt \u00eenregistra\u021bi sau revendic\u0103rile jetonului de ID ar putea fi formate gre\u0219it.
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea care este inclus\u0103 \u00een mesaj.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS=CWWKS1644E: Furnizorul OpenID Connect {0} a detectat urm\u0103toarea eroare c\u00e2nd a extras clientul {1} pentru a construi jetoanele de delogare back-channel: {2}
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.explanation=Clientul OAuth nu exist\u0103 sau a ap\u0103rut alt\u0103 eroare.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea inclus\u0103 \u00een mesaj.
 
 # NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Versiunea Java folosit\u0103 de acest runtime [{0}] nu este suportat\u0103 de ID token Mediator SPI. Versiunea suportat\u0103 de Java este 1.7 sau mai \u00eenalt\u0103.
@@ -209,4 +209,32 @@ ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Jetonul de ID nu este valid, deoare
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=Specifica\u021bia OpenID Connect cere ca revendicarea sau revendic\u0103rile care sunt enumerate \u00een mesajul de eroare s\u0103 fie prezente \u00een jetonul de ID.
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul de ID con\u021bine toate revendic\u0103rile necesare.
 
-# NOTE: Stop at CWWKS1649
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL=CWWKS1648E: A e\u0219uat o cerere de delogare back-channel trimis\u0103 de furnizorul OpenID Connect {0} la {1} cu un jeton de delogare cu revendic\u0103rile {2}. Codul de stare de r\u0103spuns este {3} \u0219i corpul de r\u0103spuns este [{4}].
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.explanation=Clientul OpenID Connect nu a returnat un cod de stare de succes pentru cererea de delogare back-channel. Dac\u0103 codul de stare este 400, cererea de delogare nu a fost valid\u0103. Dac\u0103 codul de stare este 501, a e\u0219uat delogarea la clientul OpenID Connect. Dac\u0103 codul de stare este 504,a reu\u0219it delogarea local\u0103 la clientul OpenID Connect, dar au e\u0219uat unele \u00eencerc\u0103ri de delogare \u00een aval.
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.useraction=Trimite\u021bi alt\u0103 cerere de delogare, pentru a re\u00eencerca delogarea back-channel. Pentru mai multe informa\u021bii, vede\u021bi eroarea inclus\u0103 \u00een mesaj.
+
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION=CWWKS1649E: O cerere de delogare back-channel trimis\u0103 de furnizorul OpenID Connect {0} la {1} cu un jeton de delogare cu revendic\u0103rile {2} a detectat o eroare: {3}
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.explanation=Cererea de delogare back-channel a dep\u0103\u0219it pragul de timeout, a aruncat o excep\u021bie, a fost anulat\u0103 sau a fost \u00eentrerupt\u0103.
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.useraction=Asigura\u021bi-v\u0103 c\u0103 URI-ul de delogare back-cannel este func\u021bional. Actualiza\u021bi atributul de configurare backchannelLogoutRequestTimeout \u00een furnizorul OpenID Connect dac\u0103 cererea de delogare back-channel necesit\u0103 mai mult timp. Pentru mai multe informa\u021bii, vede\u021bi eroarea inclus\u0103 \u00een mesaj.
+
+# STOP at CWWKS1649
+
+#
+# NOTE: Start of new NLS prefix block: CWWKS1950 - CWWKS1999
+#
+
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED=CWWKS1950E: Furnizorul OpenID Connect {0} a detectat o eroare la trimiterea cererilor de delogare back-channel: {1}
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.explanation=Cererile trimise la URI-urile de delogare back-channel au fost \u00eentrerupte sau a ap\u0103rut alt\u0103 eroare \u00een planificarea cererilor pentru rulare.
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.useraction=Trimite\u021bi alt\u0103 cerere de delogare, pentru a re\u00eencerca delogarea back-channel. Pentru mai multe informa\u021bii, vede\u021bi eroarea inclus\u0103 \u00een mesaj.
+
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST=CWWKS1951E: Furnizorul OpenID Connect {0} a detectat o eroare la construirea sau trimiterea unei cereri de delogare back-channel la {1}: {2}
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.explanation=Conexiunea HTTP a detectat o eroare sau conexiunea a e\u0219uat.
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.useraction=Trimite\u021bi alt\u0103 cerere de delogare, pentru a re\u00eencerca delogarea back-channel. Pentru mai multe informa\u021bii, vede\u021bi eroarea inclus\u0103 \u00een mesaj.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN=CWWKS1952E: Un jeton de delogare back-channel bazat pe un jeton de ID memorat \u00een cache pentru clientul {0} nu poate fi creat, din cauza urm\u0103toarei erori: {1}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.explanation=O ap\u0103rut o eroare la construirea \u0219irului jetonului de delogare. Mai este posibil ca emitentul jetonului de ID memorat \u00een cache s\u0103 nu se potriveasc\u0103 cu acest furnizor OpenID Connect sau ca jetonului de ID din cache s\u0103-i lipseasc\u0103 unele revendic\u0103ri.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea inclus\u0103 \u00een mesaj.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Un jeton de delogare back-channel bazat pe un jeton de ID memorat \u00een cache cu revendic\u0103rile [{0}] pentru clientul {1} nu poate fi creat, din cauza urm\u0103toarei erori: {2}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=O ap\u0103rut o eroare la construirea \u0219irului jetonului de delogare. Mai este posibil ca emitentul jetonului de ID memorat \u00een cache s\u0103 nu se potriveasc\u0103 cu acest furnizor OpenID Connect sau ca jetonului de ID din cache s\u0103-i lipseasc\u0103 unele revendic\u0103ri.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea inclus\u0103 \u00een mesaj.

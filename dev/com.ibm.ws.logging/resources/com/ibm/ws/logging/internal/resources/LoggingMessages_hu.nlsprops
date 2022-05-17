@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2020 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,6 +155,14 @@ JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Az elfogadott forr\u00e1sok: message
 JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: \u00c9rv\u00e9nytelen karakter lett megadva a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1gban
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Csak bet\u0171k, sz\u00e1mok \u00e9s : elfogadott a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1gban
 JSON_FIELDS_INVALID_CHARACHTER.useraction= M\u00f3dos\u00edtsa a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az \u00e9rv\u00e9nytelen karakterek elt\u00e1vol\u00edt\u00e1s\u00e1val
+
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3012W: A napl\u00f3\u00e1tford\u00edt\u00e1s kezd\u0151 id\u0151pontja tulajdons\u00e1g nem megfelel\u0151en van form\u00e1zva. Ez\u00e9rt az \u00e9rt\u00e9ket az alap\u00e9rtelmezett '00:00' \u00e9rt\u00e9kre \u00e1ll\u00edtja be a rendszer, ami az \u00e9jf\u00e9l \u00e1br\u00e1zol\u00e1sa.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=Az \u00e1tford\u00edt\u00e1s kezd\u0151 id\u0151pontja tulajdons\u00e1got \u00d3\u00d3:PP form\u00e1tumban kell megadni, ahol a 00:00 \u00f3ra jelent\u00e9se \u00e9jf\u00e9l.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e1tford\u00edt\u00e1s kezd\u0151 id\u0151pontja tulajdons\u00e1g \u00e9rt\u00e9ke megfelel\u0151en van form\u00e1zva a \u00d3\u00d3:PP 24 \u00f3r\u00e1s jel\u00f6l\u00e9ssel, ahol 00:00 az \u00e9jf\u00e9l.
+
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: A napl\u00f3\u00e1tford\u00edt\u00e1s intervalluma nem lehet 1 percn\u00e9l r\u00f6videbb. Ha egy 1 percn\u00e9l kisebb \u00e9rt\u00e9k van megadva, akkor a napl\u00f3\u00e1tford\u00edt\u00e1si intervallum az alap\u00e9rtelmezett 1 napra lesz be\u00e1ll\u00edtva.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=TRAS3013W: A napl\u00f3\u00e1tford\u00edt\u00e1s intervalluma nem lehet 1 percn\u00e9l r\u00f6videbb.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=TRAS3013W: Adjon meg 1 perces vagy nagyobb napl\u00f3\u00e1tford\u00edt\u00e1si intervallumot.
 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Legal\u00e1bb egy accessLogging logFormat mez\u0151 eset\u00e9n hi\u00e1nyzik a fejl\u00e9c neve: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=A JSON napl\u00f3z\u00e1s a logFormat attrib\u00fatumot haszn\u00e1lja az accessLogging sor\u00e1n, amikor kiv\u00e1lasztja a szerepeltetett http_access.log \u00fczenetmez\u0151ket. A(z) %i vagy %o mez\u0151k haszn\u00e1latakor az accessLogging logFormat attrib\u00fatumban meg kell adni egy fejl\u00e9cnevet.

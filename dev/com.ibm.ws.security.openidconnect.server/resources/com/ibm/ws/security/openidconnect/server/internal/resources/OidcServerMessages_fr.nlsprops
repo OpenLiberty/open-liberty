@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS1600 - CWWKS1649
+# Message prefix block: CWWKS1600 - CWWKS1649, CWWKS1950 - CWWKS1999
 OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: Le traitement de la configuration du fournisseur OpenID Connect {0} a abouti.
 OIDC_SERVER_CONFIG_PROCESSED.explanation=Le traitement de la configuration du fournisseur de connexion OpenID a abouti.
 OIDC_SERVER_CONFIG_PROCESSED.useraction=Aucun
@@ -192,9 +192,9 @@ LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Le fournisseur OpenI
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Le jeton d'ID peut \u00eatre mal form\u00e9 ou une r\u00e9clamation dans le jeton peut avoir une valeur qui est un type de donn\u00e9es inattendu. Sinon, le jeton peut manquer des r\u00e9clamations qui sont requises ou l'\u00e9metteur du jeton n'est pas l'\u00e9metteur attendu.
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=V\u00e9rifiez que le jeton d'ID est correctement format\u00e9. Consultez l'erreur incluse dans le message pour plus d'informations.
 
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Le fournisseur OpenID Connect ne peut pas d\u00e9terminer l''ensemble des clients OpenID Connect pour se d\u00e9connecter en raison de l''erreur suivante : {0}
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Le fournisseur n'a pas r\u00e9ussi \u00e0 extraire l'ensemble de clients qui sont enregistr\u00e9s, ou les r\u00e9clamations de jeton d'ID peuvent \u00eatre incorrectement form\u00e9es.
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Consultez l'erreur incluse dans le message pour plus d'informations.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS=CWWKS1644E: Le fournisseur {0} OpenID Connect a rencontr\u00e9 l''erreur suivante lorsqu''il a extrait le client {1} pour g\u00e9n\u00e9rer des jetons de d\u00e9connexion de canal arri\u00e8re : {2}
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.explanation=Le client OAuth n'existe pas ou une autre erreur s'est produite.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.useraction=Pour plus d'informations, voir l'erreur incluse dans le message.
 
 # NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: La version Java utilis\u00e9e par cet environnement d''ex\u00e9cution [{0}] n''est pas prise en charge par le SPI Mediator du jeton d''ID. Celle prise en charge est la version Java 1.7, ou ult\u00e9rieure.
@@ -209,4 +209,32 @@ ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Le jeton d''ID n''est pas valide ca
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=La sp\u00e9cification OpenID Connect requiert que la ou les revendications r\u00e9pertori\u00e9es dans le message d'erreur soient pr\u00e9sentes dans le jeton d'ID.
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=V\u00e9rifiez que le jeton d'ID contient toutes les demandes requises.
 
-# NOTE: Stop at CWWKS1649
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL=CWWKS1648E: Une demande de d\u00e9connexion de canal arri\u00e8re envoy\u00e9e par le fournisseur {0} OpenID Connect \u00e0 {1} avec un jeton de d\u00e9connexion avec les r\u00e9clamations {2} n''a pas abouti. Le code de statut de r\u00e9ponse est {3} et le corps de la r\u00e9ponse est [{4}].
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.explanation=Le client OpenID Connect n'a pas renvoy\u00e9 un code d'\u00e9tat r\u00e9ussi pour la demande de d\u00e9connexion de canal arri\u00e8re. Si le code d'\u00e9tat est 400, la demande de d\u00e9connexion n'est pas valide. Si le code d'\u00e9tat est 501, la d\u00e9connexion du client OpenID Connect a \u00e9chou\u00e9. Si le code d'\u00e9tat est 504, la d\u00e9connexion locale sur le client OpenID Connect a abouti mais certaines tentatives de d\u00e9connexion en aval ont \u00e9chou\u00e9.
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.useraction=Envoyez une autre demande de d\u00e9connexion pour relancer la d\u00e9connexion du canal arri\u00e8re. Pour plus d'informations, voir l'erreur incluse dans le message.
+
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION=CWWKS1649E: Une demande de d\u00e9connexion de canal retour envoy\u00e9e par le fournisseur {0} OpenID Connect \u00e0 {1} avec un jeton de d\u00e9connexion avec les demandes {2} a rencontr\u00e9 une erreur : {3}
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.explanation=La demande de d\u00e9connexion du canal arri\u00e8re a expir\u00e9, a \u00e9mis une exception, a \u00e9t\u00e9 annul\u00e9e ou a \u00e9t\u00e9 interrompue.
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.useraction=V\u00e9rifiez que l'URI de d\u00e9connexion du canal arri\u00e8re est r\u00e9active. Mettez \u00e0 jour l'attribut de configuration backchannelLogoutRequestTimeout dans le fournisseur OpenID Connect si la demande de d\u00e9connexion de canal arri\u00e8re a besoin de plus de temps. Pour plus d'informations, voir l'erreur incluse dans le message.
+
+# STOP at CWWKS1649
+
+#
+# NOTE: Start of new NLS prefix block: CWWKS1950 - CWWKS1999
+#
+
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED=CWWKS1950E: Le fournisseur {0} OpenID Connect a rencontr\u00e9 une erreur lors de la soumission des demandes de d\u00e9connexion de canal arri\u00e8re : {1}
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.explanation=Les demandes envoy\u00e9es aux URI de d\u00e9connexion du canal arri\u00e8re ont \u00e9t\u00e9 interrompues ou une autre erreur s'est produite lors de la planification des demandes \u00e0 ex\u00e9cuter.
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.useraction=Envoyez une autre demande de d\u00e9connexion pour relancer la d\u00e9connexion du canal arri\u00e8re. Pour plus d'informations, voir l'erreur incluse dans le message.
+
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST=CWWKS1951E: Le fournisseur {0} OpenID Connect a rencontr\u00e9 une erreur lors de la g\u00e9n\u00e9ration ou de l''envoi d''une demande de d\u00e9connexion de canal retour \u00e0 {1} : {2}
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.explanation=La connexion HTTP a rencontr\u00e9 une erreur ou la connexion a \u00e9chou\u00e9.
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.useraction=Envoyez une autre demande de d\u00e9connexion pour relancer la d\u00e9connexion du canal arri\u00e8re. Pour plus d'informations, voir l'erreur incluse dans le message.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN=CWWKS1952E: Un jeton de d\u00e9connexion de canal arri\u00e8re bas\u00e9 sur un jeton d''ID mis en cache pour le client {0} ne peut pas \u00eatre cr\u00e9\u00e9 en raison de l''erreur suivante : {1}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.explanation=Une erreur s'est produite lors de la g\u00e9n\u00e9ration de la cha\u00eene de jeton de d\u00e9connexion. Sinon, l'\u00e9metteur du jeton d'ID mis en cache risque de ne pas correspondre \u00e0 ce fournisseur OpenID Connect, ou le jeton d'ID mis en cache peut manquer certaines r\u00e9clamations requises.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Pour plus d'informations, voir l'erreur incluse dans le message.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Un jeton de d\u00e9connexion de canal arri\u00e8re bas\u00e9 sur un jeton d''ID mis en cache avec des r\u00e9clamations [{0}] pour le client {1} ne peut pas \u00eatre cr\u00e9\u00e9 en raison de l''erreur suivante : {2}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Une erreur s'est produite lors de la g\u00e9n\u00e9ration de la cha\u00eene de jeton de d\u00e9connexion. Sinon, l'\u00e9metteur du jeton d'ID mis en cache risque de ne pas correspondre \u00e0 ce fournisseur OpenID Connect, ou le jeton d'ID mis en cache peut manquer certaines r\u00e9clamations requises.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Pour plus d'informations, voir l'erreur incluse dans le message.

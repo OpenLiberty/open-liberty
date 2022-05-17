@@ -171,192 +171,187 @@
 #NLS_ENCODING=UNICODE
 
 #-----------------------------------------------------------------------
-ERR_INT_ERROR=WLTC0001E: Une erreur interne s''est produite dans la m\u00e9thode {0} de la classe {1} ; la trace de pile de l''exception est la suivante : {2}.
+ERR_INT_ERROR=WLTC0001E : une erreur interne s''est produite dans la m\u00e9thode {0} de la classe {1} ; la trace de pile d''exceptions suit : {2}.
 ERR_INT_ERROR.explanation=CMSG0001
 ERR_INT_ERROR.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_BEGIN_TX_GLB_ACT=WLTC0002E: Impossible de commencer une transaction LocalTransactionContainment car une transaction globale est active.
+ERR_BEGIN_TX_GLB_ACT=WLTC0002E : impossible de d\u00e9marrer LocalTransactionContainment car une transaction globale est active.
 ERR_BEGIN_TX_GLB_ACT.explanation=Tentative de d\u00e9marrage d'une transaction locale alors qu'une transaction globale est active, ce qui n'est pas autoris\u00e9.
 ERR_BEGIN_TX_GLB_ACT.useraction=V\u00e9rifiez que les transactions globales sont termin\u00e9es avant d'effectuer une op\u00e9ration dans une transaction locale.
 
 #-----------------------------------------------------------------------
-ERR_RESUME_TX_GLB_ACT=WLTC0003E: Impossible de reprendre une transaction LocalTransactionContainment car une transaction globale est active.
+ERR_RESUME_TX_GLB_ACT=WLTC0003E : impossible de reprendre LocalTransactionContainment car une transaction globale est active.
 ERR_RESUME_TX_GLB_ACT.explanation=Le conteneur ne peut pas reprendre une transaction LocalTransactionContainment car une transaction globale est active.
 ERR_RESUME_TX_GLB_ACT.useraction=V\u00e9rifiez que les transactions globales sont termin\u00e9es ou interrompues avant de reprendre une transaction LocalTransactionContainment.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_TX_GLB_ACT=WLTC0004E: Impossible d'inscrire une ressource de transaction locale car une transaction globale est active.
+ERR_ENLIST_TX_GLB_ACT=WLTC0004E : impossible d'inscrire une ressource de transaction locale car une transaction globale est active.
 ERR_ENLIST_TX_GLB_ACT.explanation=Une connexion de transaction locale ne peut pas \u00eatre utilis\u00e9e car une transaction globale est active.
 ERR_ENLIST_TX_GLB_ACT.useraction=V\u00e9rifiez que les transactions globales sont termin\u00e9es avant d'effectuer une op\u00e9ration dans une transaction locale.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_TX_CLEANUP=WLTC0005E: Impossible d'inscrire la ressource. La valeur de contr\u00f4le de la r\u00e9solution des transactions locales est Application ; les ressources ne peuvent donc \u00eatre inscrites que pour le nettoyage.
+ERR_ENLIST_TX_CLEANUP=WLTC0005E : impossible d'inscrire la ressource. La valeur de contr\u00f4le de la r\u00e9solution des transactions locales est Application ; les ressources ne peuvent donc \u00eatre inscrites que pour le nettoyage.
 ERR_ENLIST_TX_CLEANUP.explanation=Le conteneur a tent\u00e9 d'inscrire une ressource alors que la valeur de contr\u00f4le de la r\u00e9solution n'est pas ContainerAtBoundary.
 ERR_ENLIST_TX_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_LTC_COMPLETE=WLTC0006E: Impossible d'inscrire la ressource. La transaction LocalTransactionContainment se termine ou est termin\u00e9e.
+ERR_ENLIST_LTC_COMPLETE=WLTC0006E : impossible d'inscrire la ressource. La transaction LocalTransactionContainment se termine ou est termin\u00e9e.
 ERR_ENLIST_LTC_COMPLETE.explanation=La transaction LocalTransactionContainment ne se trouve pas dans un \u00e9tat o\u00f9 une ressource peut \u00eatre inscrite.
 ERR_ENLIST_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E: Impossible d'inscrire une ressource pour nettoyage car une transaction globale est active.
+ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E : impossible d'inscrire la ressource pour le nettoyage car une transaction globale est active.
 ERR_ENLIST_CLN_TX_GLB_ACT.explanation=Une connexion de transaction locale ne peut pas \u00eatre utilis\u00e9e car une transaction globale est active.
 ERR_ENLIST_CLN_TX_GLB_ACT.useraction=V\u00e9rifiez que les transactions globales sont termin\u00e9es avant d'effectuer une op\u00e9ration dans une transaction locale.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E: Impossible d'inscrire une ressource pour nettoyage. La valeur de contr\u00f4le de la r\u00e9solution des transactions locales est ContainerAtBoundary ; les ressources ne peuvent donc pas \u00eatre inscrites que pour nettoyage.
+ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E : impossible d'inscrire la ressource pour le nettoyage. La valeur de contr\u00f4le de la r\u00e9solution des transactions locales est ContainerAtBoundary ; les ressources ne peuvent donc pas \u00eatre inscrites que pour nettoyage.
 ERR_ENLIST_CLN_TX_CLEANUP.explanation=L'application utilisant la connexion de transaction locale est configur\u00e9e de sorte que le conteneur soit responsable du d\u00e9marrage et de la r\u00e9solution des transactions locales, mais l'application a d\u00e9marr\u00e9 une transaction locale elle-m\u00eame.
 ERR_ENLIST_CLN_TX_CLEANUP.useraction=L'application doit respecter le mod\u00e8le get-use-model de la syntaxe des connexions lorsqu'elle utilise des transactions locales r\u00e9solues par le conteneur.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E: Impossible d'inscrire une ressource pour nettoyage. La transaction LocalTransactionContainment se termine ou est termin\u00e9e.
+ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E : impossible d'inscrire la ressource pour le nettoyage. La transaction LocalTransactionContainment se termine ou est termin\u00e9e.
 ERR_ENLIST_CLN_LTC_COMPLETE.explanation=La transaction LocalTransactionContainment ne se trouve pas dans un \u00e9tat o\u00f9 une ressource peut \u00eatre inscrite.
 ERR_ENLIST_CLN_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DELIST_TX_GLB_ACT=WLTC0010E: Impossible d'annuler l'inscription d'une ressource car une transaction globale est active.
+ERR_DELIST_TX_GLB_ACT=WLTC0010E : impossible de retirer Rsourcee car une transaction globale est active.
 ERR_DELIST_TX_GLB_ACT.explanation=La transaction LocalTransactionContainment ne peut pas annuler l'inscription d'une ressource, car une transaction globale est active.
 ERR_DELIST_TX_GLB_ACT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DELIST_NOT_ENLISTED=WLTC0011E: Impossible d'annuler l'inscription de la ressource. Elle n'est pas inscrite pour nettoyage dans la transaction LocalTransactionContainment.
+ERR_DELIST_NOT_ENLISTED=WLTC0011E : impossible de retirer la ressource. Elle n'est pas inscrite pour nettoyage dans la transaction LocalTransactionContainment.
 ERR_DELIST_NOT_ENLISTED.explanation=La transaction LocalTransactionContainment ne peut pas annuler l'inscription d'une ressource non inscrite pour le nettoyage.
 ERR_DELIST_NOT_ENLISTED.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DELIST_LTC_COMPLETE=WLTC0012E: Impossible d'annuler l'inscription de la ressource. La transaction LocalTransactionContainment se termine ou est termin\u00e9e.
+ERR_DELIST_LTC_COMPLETE=WLTC0012E : impossible de retirer la ressource. La transaction LocalTransactionContainment se termine ou est termin\u00e9e.
 ERR_DELIST_LTC_COMPLETE.explanation=La transaction LocalTransactionContainment ne se trouve pas dans un \u00e9tat o\u00f9 l'inscription d'une ressource peut \u00eatre annul\u00e9e.
 ERR_DELIST_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E: Impossible d'inscrire la synchronisation car une transaction globale est active.
+ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E : impossible d'inscrire la synchronisation car une transaction globale est active.
 ERR_ENLIST_SYNCH_TX_GLB_ACT.explanation=Une synchronisation ne peut pas \u00eatre inscrite avec la transaction LocalTransactionContainment car une transaction globale est active.
 ERR_ENLIST_SYNCH_TX_GLB_ACT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E: Impossible d'inscrire la synchronisation. La transaction LocalTransactionContainment se termine ou est termin\u00e9e.
+ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E : impossible d'inscrire la synchronisation. La transaction LocalTransactionContainment se termine ou est termin\u00e9e.
 ERR_ENLIST_SYNCH_LTC_COMPLETE.explanation=La transaction LocalTransactionContainment ne se trouve pas dans un \u00e9tat o\u00f9 une synchronisation peut \u00eatre inscrite.
 ERR_ENLIST_SYNCH_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_START=WLTC0015E: La ressource {0} n''a pas pu d\u00e9marrer. Trace de pile d''exceptions : {1}
+ERR_XA_RESOURCE_START=WLTC0015E : \u00e9chec du d\u00e9marrage de la ressource {0}. Trace de pile d''exceptions : {1}
 ERR_XA_RESOURCE_START.explanation=Le conteneur n'a pas pu d\u00e9marrer la transaction locale.
 ERR_XA_RESOURCE_START.useraction=Recherchez pourquoi dans le gestionnaire des ressources.
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_COMPLETE=WLTC0016E: Echec de la ressource {0}. Trace de pile d''exceptions : {1}
+ERR_XA_RESOURCE_COMPLETE=WLTC0016E : \u00e9chec du d\u00e9marrage de la ressource {0}. Trace de pile d''exceptions : {1}
 ERR_XA_RESOURCE_COMPLETE.explanation=Le conteneur n'a pas pu terminer la transaction locale.
 ERR_XA_RESOURCE_COMPLETE.useraction=Recherchez pourquoi dans le gestionnaire des ressources.
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: Ressources annul\u00e9es car la m\u00e9thode setRollbackOnly() a \u00e9t\u00e9 appel\u00e9e.
+ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E : les ressources ont \u00e9t\u00e9 annul\u00e9es en raison de l'appel de setRollbackOnly ().
 ERR_XA_RESOURCE_ROLLEDBACK.explanation=Les ressources inscrites aupr\u00e8s du LocalTransactionContainment (LTC) ont \u00e9t\u00e9 annul\u00e9es en raison d'un appel \u00e0 la m\u00e9thode setRollbackOnly() sur le LTC.
-ERR_XA_RESOURCE_ROLLEDBACK.useraction=Aucune action n'est requise. Ce message est fourni pour information uniquement.
+ERR_XA_RESOURCE_ROLLEDBACK.useraction=Aucune action n'est requise. Il s'agit d'un simple message d'information.
 
 #-----------------------------------------------------------------------
-ERR_BEGIN_LTC_ACT=WLTC0018E: Impossible de commencer une transaction LocalTransactionContainment. Une transaction LocalTransactionContainment est d\u00e9j\u00e0 active.
+ERR_BEGIN_LTC_ACT=WLTC0018E : impossible de d\u00e9marrer LocalTransactionContainment. Une transaction LocalTransactionContainment est d\u00e9j\u00e0 active.
 ERR_BEGIN_LTC_ACT.explanation=Une transaction LocalTransactionContainment \u00e9tait d\u00e9j\u00e0 active lorsque le syst\u00e8me a tent\u00e9 d'en d\u00e9marrer une nouvelle.
 ERR_BEGIN_LTC_ACT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_STATE_RB_ONLY=WLTC0019E: Impossible d'effectuer cette op\u00e9ration. La transaction LocalTransactionContainment a \u00e9t\u00e9 marqu\u00e9e pour annulation seulement.
+ERR_STATE_RB_ONLY=WLTC0019E : impossible d'effectuer l'op\u00e9ration. La transaction LocalTransactionContainment a \u00e9t\u00e9 marqu\u00e9e pour annulation seulement.
 ERR_STATE_RB_ONLY.explanation=La transaction LocalTransactionContainment sous laquelle l'op\u00e9ration qui a \u00e9chou\u00e9 a \u00e9t\u00e9 effectu\u00e9e a \u00e9t\u00e9 marqu\u00e9e pour annulation seulement par le conteneur.
 ERR_STATE_RB_ONLY.useraction=Utilisez la trace pour d\u00e9terminer pourquoi la transaction LocalTransactionContainment a \u00e9t\u00e9 marqu\u00e9e pour annulation seulement.
 
 #-----------------------------------------------------------------------
-ERR_LTC_COMPLETE=WLTC0020E: Impossible d'effectuer cette op\u00e9ration. La transaction LocalTransactionContainment se termine ou est termin\u00e9e.
+ERR_LTC_COMPLETE=WLTC0020E : impossible d'effectuer l'op\u00e9ration. La transaction LocalTransactionContainment se termine ou est termin\u00e9e.
 ERR_LTC_COMPLETE.explanation=La transaction LocalTransactionContainment sous laquelle l'op\u00e9ration qui a \u00e9chou\u00e9 a \u00e9t\u00e9 effectu\u00e9e se termine ou est d\u00e9j\u00e0 termin\u00e9e.
 ERR_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NP_INCONSISTENT=WLTC0021E: L'\u00e9tat termin\u00e9 de la ressource n'est pas coh\u00e9rent.
+ERR_NP_INCONSISTENT=WLTC0021E : l'\u00e9tat termin\u00e9 de la ressource est incoh\u00e9rent.
 ERR_NP_INCONSISTENT.explanation=La transaction LocalTransactionCoordinator inscrite comme ressource ActivitySessionResource s'est termin\u00e9e avec des r\u00e9sultats incoh\u00e9rents.
 ERR_NP_INCONSISTENT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NP_ROLLEDBACK=WLTC0022E: La ressource a \u00e9t\u00e9 red\u00e9finie car la m\u00e9thode setRollbackOnly a \u00e9t\u00e9 appel\u00e9e sur le coordinateur LTC.
+ERR_NP_ROLLEDBACK=WLTC0022E : la ressource a \u00e9t\u00e9 r\u00e9initialis\u00e9e en raison de l'appel de setRollbackOnly sur LTC
 ERR_NP_ROLLEDBACK.explanation=La transaction LocalTransactionCoordinator inscrite comme ressource ActivitySessionResource a \u00e9t\u00e9 red\u00e9finie car la m\u00e9thode setRollbackOnly a \u00e9t\u00e9 appel\u00e9e sur le LocalTransactionContainment.
-ERR_NP_ROLLEDBACK.useraction=Aucune action n'est requise. Ce message est fourni pour information uniquement.
+ERR_NP_ROLLEDBACK.useraction=Aucune action n'est requise. Il s'agit d'un simple message d'information.
 
 #-----------------------------------------------------------------------
-ERR_NP_ILLEGAL=WLTC0023E: La ressource n'a pas pu se terminer car son \u00e9tat est incorrect.
+ERR_NP_ILLEGAL=WLTC0023E : \u00e9chec de l'ex\u00e9cution de la ressource en raison d'un \u00e9tat interdit.
 ERR_NP_ILLEGAL.explanation=L'\u00e9tat de la transaction LocalTransactionCoordinator inscrite comme ressource ActivitySessionResource est non valide ; elle ne peut pas \u00eatre effectu\u00e9e.
 ERR_NP_ILLEGAL.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_AS_LOOKUP_ASM=WLTC0024E: Impossible de contacter le service ActivitySession. Echec de la recherche d'ActivitySessionManager.
+ERR_AS_LOOKUP_ASM=WLTC0024E : impossible de contacter le service ActivitySession. Echec de la recherche d'ActivitySessionManager.
 ERR_AS_LOOKUP_ASM.explanation=L'objet ActivitySessionManager est introuvable dans l'espace de travail JNDI.
 ERR_AS_LOOKUP_ASM.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_AS_ILLEGAL_STATE=WLTC0025E: Inscription au service ActivitySession impossible. L'\u00e9tat d'ActivitySession est incorrect.
+ERR_AS_ILLEGAL_STATE=WLTC0025E : impossible d'\u00e9tablir une liste avec le service ActivitySession. L'\u00e9tat d'ActivitySession est incorrect.
 ERR_AS_ILLEGAL_STATE.explanation=L'\u00e9tat de l'objet ActivitySession actuel ne permet pas au LocalTransactionContainment de s'inscrire comme ressource.
 ERR_AS_ILLEGAL_STATE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_AS_UNEXPECTED=WLTC0026E: Erreur inattendue lors de l'interaction avec le service ActivitySession.
+ERR_AS_UNEXPECTED=WLTC0026E : une erreur inattendue s'est produite lors de l'interaction avec le service ActivitySession.
 ERR_AS_UNEXPECTED.explanation=Une erreur inattendue est survenue lors de la tentative d'inscription du LocalTransactionContainment au service ActivitySession.
 ERR_AS_UNEXPECTED.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NO_LTC_CLEANUP=WLTC0027E: Aucune transaction LocalTransactionCoordinator \u00e0 nettoyer.
+ERR_NO_LTC_CLEANUP=WLTC0027E : pas de LocalTransactionCoordinator pour le nettoyage.
 ERR_NO_LTC_CLEANUP.explanation=Aucun LocalTransactionCoordinator n'est associ\u00e9 \u00e0 l'unit\u00e9 d'ex\u00e9cution (thread) en cours. L'op\u00e9ration de nettoyage est donc sans objet.
 ERR_NO_LTC_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NO_LTC_COMPLETE=WLTC0028E: Aucun LocalTransactionCoordinator \u00e0 terminer.
+ERR_NO_LTC_COMPLETE=WLTC0028E : pas de LocalTransactionCoordinator \u00e0 terminer.
 ERR_NO_LTC_COMPLETE.explanation=Aucun LocalTransactionCoordinator n'est associ\u00e9 \u00e0 l'unit\u00e9 d'ex\u00e9cution (thread) en cours. L'op\u00e9ration de terminaison est donc sans objet.
 ERR_NO_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DEPLOY=WLTC0029E: L''installation de l''application a \u00e9chou\u00e9. Le composant de l''application {0} poss\u00e8de des extensions de descripteur de d\u00e9ploiement WebSphere qui ne sont pas activ\u00e9s dans la version install\u00e9e de WebSphere Application Server. Leur utilisation peut entra\u00eener la perte de l''int\u00e9grit\u00e9 des donn\u00e9es. ActivationPolicy correspond \u00e0 {1} ; LocalTransactionBoundary correspond \u00e0 {2}.
-ERR_DEPLOY.explanation=L'application identifi\u00e9e dans le message a \u00e9t\u00e9 assembl\u00e9e avec des extensions qui ne sont pas prises en charge dans la version install\u00e9e du produit. \
-Si le produit autorisait l'ex\u00e9cution de l'application sans l'utilisation des extensions pr\u00e9vues, le comportement du syst\u00e8me serait modifi\u00e9 et pourrait avoir une incidence sur l'int\u00e9grit\u00e9 des donn\u00e9es. Par exemple, les mises \u00e0 jour des donn\u00e9es de transaction peuvent \u00eatre effectu\u00e9es dans plusieurs transactions alors que le support des extensions appliquerait ces mises \u00e0 jour \u00e0 une seule transaction. \
-De ce fait, l'installation de l'application pr\u00e9sente des risques.
-ERR_DEPLOY.useraction=Examinez l'application que vous n'avez pas pu installer. \
-Si elle peut s'ex\u00e9cuter sans le support d'extensions, r\u00e9assemblez l'applications sans indiquer les extensions. \
-Si l'application requiert le support \u00e9tendu, installez-le uniquement sur des serveurs d'applications dot\u00e9s de ce support.
+ERR_DEPLOY=WLTC0029E : l''installation de l''application a \u00e9chou\u00e9 ; le composant d''application {0} a des extensions de descripteur de d\u00e9ploiement WebSphere qui ne sont pas activ\u00e9es dans l''\u00e9dition install\u00e9e de WebSphere Application Server ; leur utilisation peut entra\u00eener une perte d''int\u00e9grit\u00e9 des donn\u00e9es : ActivationPolicy est {1} ; LocalTransactionBoundary est {2}.
+ERR_DEPLOY.explanation=L'application identifi\u00e9e dans le message a \u00e9t\u00e9 assembl\u00e9e avec des extensions qui ne sont pas prises en charge dans la version install\u00e9e du produit. Si le produit autorisait l'ex\u00e9cution de l'application sans l'utilisation des extensions pr\u00e9vues, le comportement du syst\u00e8me serait modifi\u00e9 et pourrait avoir une incidence sur l'int\u00e9grit\u00e9 des donn\u00e9es. Par exemple, les mises \u00e0 jour des donn\u00e9es de transaction peuvent \u00eatre effectu\u00e9es dans plusieurs transactions alors que le support des extensions appliquerait ces mises \u00e0 jour \u00e0 une seule transaction. De ce fait, l'installation de l'application pr\u00e9sente des risques.
+ERR_DEPLOY.useraction=Examinez l'application que vous n'avez pas pu installer. Si elle peut s'ex\u00e9cuter sans le support d'extensions, r\u00e9assemblez l'applications sans indiquer les extensions. Si l'application requiert le support \u00e9tendu, installez-le uniquement sur des serveurs d'applications dot\u00e9s de ce support.
 
 #-----------------------------------------------------------------------
-ERR_DEPLOY_RESOLUTION=WLTC0030E: L''installation de l''application a \u00e9chou\u00e9 ; le bean d''application {0} est configur\u00e9 pour g\u00e9rer ses propres transactions mais il poss\u00e8de le param\u00e8tre de contr\u00f4le de la r\u00e9solution des transactions locales ContainerAtBoundary qui est incompatible.
+ERR_DEPLOY_RESOLUTION=WLTC0030E : l''installation de l''application a \u00e9chou\u00e9 ; le bean d''application {0} est configur\u00e9 pour g\u00e9rer ses propres transactions, mais il dispose d''un param\u00e8tre de contr\u00f4le de r\u00e9solution de transaction locale incompatible de ContainerAtBoundary.
 ERR_DEPLOY_RESOLUTION.explanation=Le bean identifi\u00e9 dans le message a \u00e9t\u00e9 assembl\u00e9 avec des extensions qui ne sont pas prises en charge. Pour cette raison, l'application n'a pas \u00e9t\u00e9 install\u00e9e.
 ERR_DEPLOY_RESOLUTION.useraction=L'application qui n'a pas pu \u00eatre install\u00e9e doit \u00eatre r\u00e9assembl\u00e9e avec une autre configuration pour le bean.
 
 #-----------------------------------------------------------------------
-ERR_DEPLOY_FAILURE=WLTC0031E: L''installation de l''application a \u00e9chou\u00e9 ; le composant de l''application {0} n''a pas pu \u00eatre install\u00e9.
+ERR_DEPLOY_FAILURE=WLTC0031E : l''installation de l''application a \u00e9chou\u00e9 ; le composant d''application {0} n''a pas pu \u00eatre install\u00e9.
 ERR_DEPLOY_FAILURE.explanation=L'application identifi\u00e9e dans le message n'a pas pu \u00eatre install\u00e9e correctement et n'est pas disponible.
 ERR_DEPLOY_FAILURE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: Une ou plusieurs ressources de transaction locales ont \u00e9t\u00e9 annul\u00e9es lors du nettoyage d'un \u00e9l\u00e9ment LocalTransactionContainment.
+WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W : une ou plusieurs ressources de transaction locales ont \u00e9t\u00e9 annul\u00e9es lors du nettoyage d'un \u00e9l\u00e9ment LocalTransactionContainment.
 WRN_LTC_UNRESOLVED_ROLLEDBACK.explanation=Un \u00e9l\u00e9ment LocalTransactionContainment avec des ressources de transaction locales non compl\u00e8tes s'est arr\u00eat\u00e9 et a provoqu\u00e9 l'annulation des ressources.
-WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=Aucune action n'est requise. Ce message est fourni pour information uniquement.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=Aucune action n'est requise. Il s'agit d'un simple message d'information.
 
 #-----------------------------------------------------------------------
-WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: Ressource {0} annul\u00e9e lors du nettoyage de l''\u00e9l\u00e9ment LocalTransactionContainment.
-WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=La ressource de transaction n'a pas \u00e9t\u00e9 r\u00e9solue \u00e0 la fin de \
-LocalTransactionContainment et a \u00e9t\u00e9 annul\u00e9e.
-WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=Aucune action n'est requise. Ce message est fourni pour information uniquement.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W : la ressource {0} a \u00e9t\u00e9 annul\u00e9e lors du nettoyage de LocalTransactionContainment.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=La ressource de transaction n'a pas \u00e9t\u00e9 r\u00e9solue \u00e0 la fin de LocalTransactionContainment et a \u00e9t\u00e9 annul\u00e9e.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=Aucune action n'est requise. Il s'agit d'un simple message d'information.
 
 #-----------------------------------------------------------------------
-ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: L'\u00e9tat termin\u00e9 de LocalTransactionContainment n'est pas coh\u00e9rent lors du nettoyage.
+ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E : l'\u00e9tat termin\u00e9 de LocalTransactionContainment est incoh\u00e9rent lors du nettoyage.
 ERR_NP_INCONSISTENT_CLEANUP.explanation=Le LocalTransactionCoordinator inscrit en tant que ActivitySessionSynchronization a g\u00e9n\u00e9r\u00e9 des r\u00e9sultats incoh\u00e9rents lors du nettoyage.
 ERR_NP_INCONSISTENT_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W: Un LocalTransactionContainment non r\u00e9solu a \u00e9t\u00e9 r\u00e9initialis\u00e9 lors du nettoyage.
+WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W : une op\u00e9ration LocalTransactionContainment non r\u00e9solue a \u00e9t\u00e9 r\u00e9initialis\u00e9e lors du nettoyage.
 WRN_NP_ROLLEDBACK_CLEANUP.explanation=Un LocalTransactionCoordinator inscrit en tant que ActivitySessionSynchronization a \u00e9t\u00e9 r\u00e9initialis\u00e9.
 WRN_NP_ROLLEDBACK_CLEANUP.useraction=Une erreur s'est peut-\u00eatre produite au niveau de l'application. Examinez les \u00e9ventuels messages associ\u00e9s pour d\u00e9terminer la cause de la r\u00e9initialisation.
 
 #-----------------------------------------------------------------------
-ERR_NP_ILLEGAL_CLEANUP=WLTC0036E: Une ou plusieurs ressources inscrites dans un LocalTransactionContainment n'ont pas pu s'ex\u00e9cuter lors du nettoyage en raison d'un \u00e9tat non autoris\u00e9.
+ERR_NP_ILLEGAL_CLEANUP=WLTC0036E : une ou plusieurs ressources enregistr\u00e9es dans un \u00e9l\u00e9ment LocalTransactionContainment n'ont pas pu \u00eatre termin\u00e9es lors du nettoyage en raison d'un \u00e9tat non autoris\u00e9.
 ERR_NP_ILLEGAL_CLEANUP.explanation=Un LocalTransactionCoordinator inscrit en tant que ActivitySessionSynchronization contient une ou plusieurs ressources dans un \u00e9tat non autoris\u00e9 pour effectuer une ex\u00e9cution lors du nettoyage.
 ERR_NP_ILLEGAL_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_BEGIN_GLOBAL_TX=WLTC0037E: Impossible de lancer une transaction globale. Une transaction LocalTransactionContainment effectue d\u00e9j\u00e0 un travail.
+ERR_BEGIN_GLOBAL_TX=WLTC0037E : impossible de d\u00e9marrer une transaction globale. Une transaction LocalTransactionContainment effectue d\u00e9j\u00e0 un travail.
 ERR_BEGIN_GLOBAL_TX.explanation=Tentative de d\u00e9marrage d'une transaction globale alors qu'une transaction LocalTransactionContainment \u00e9tait d\u00e9j\u00e0 active.
 ERR_BEGIN_GLOBAL_TX.useraction=CMSG0002
 

@@ -241,19 +241,19 @@ ERR_ENLIST_SYNCH_LTC_COMPLETE.explanation=O LocalTransactionContainment n\u00e3o
 ERR_ENLIST_SYNCH_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_START=WLTC0015E: Falha do recurso {0} ao iniciar. O rastreio da pilha de exce\u00e7\u00e3o : {1}.
+ERR_XA_RESOURCE_START=WLTC0015E: Falha ao iniciar o Recurso {0}. O rastreio da pilha de exce\u00e7\u00e3o : {1}.
 ERR_XA_RESOURCE_START.explanation=O cont\u00eainer n\u00e3o p\u00f4de iniciar a transa\u00e7\u00e3o local.
 ERR_XA_RESOURCE_START.useraction=Investigue o gerenciador de recursos.
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_COMPLETE=WLTC0016E: Falha do recurso {0} ao concluir. O rastreio da pilha de exce\u00e7\u00e3o : {1}.
+ERR_XA_RESOURCE_COMPLETE=WLTC0016E: Falha ao concluir o Recurso {0}. O rastreio da pilha de exce\u00e7\u00e3o : {1}.
 ERR_XA_RESOURCE_COMPLETE.explanation=O cont\u00eainer n\u00e3o p\u00f4de concluir a transa\u00e7\u00e3o local.
 ERR_XA_RESOURCE_COMPLETE.useraction=Investigue o gerenciador de recursos.
 
 #-----------------------------------------------------------------------
 ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: Os recursos foram revertidos porque setRollbackOnly() est\u00e1 sendo chamado.
 ERR_XA_RESOURCE_ROLLEDBACK.explanation=Os Recursos inscritos com o LocalTransactionContainment (LTC) foram recuperados, em vez de confirmados, porque setRollbackOnly() foi chamado no LTC.
-ERR_XA_RESOURCE_ROLLEDBACK.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Essa mensagem \u00e9 apenas informativa.
+ERR_XA_RESOURCE_ROLLEDBACK.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Essa mensagem destina-se apenas para fins informativos.
 
 #-----------------------------------------------------------------------
 ERR_BEGIN_LTC_ACT=WLTC0018E: N\u00e3o \u00e9 poss\u00edvel iniciar um LocalTransactionContainment. Um LocalTransactionContainment j est\u00e1 ativo.
@@ -261,12 +261,12 @@ ERR_BEGIN_LTC_ACT.explanation=Um LocalTransactionContainment j estava ativo quan
 ERR_BEGIN_LTC_ACT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_STATE_RB_ONLY=WLTC0019E: N\u00e3o \u00e9 poss\u00edvel executar opera\u00e7\u00e3o. O LocalTransactionContainment foi marcado somente para revers\u00e3o.
+ERR_STATE_RB_ONLY=WLTC0019E: N\u00e3o \u00e9 poss\u00edvel executar a opera\u00e7\u00e3o. O LocalTransactionContainment foi marcado somente para revers\u00e3o.
 ERR_STATE_RB_ONLY.explanation=O LocalTransactionContainment sob o qual a opera\u00e7\u00e3o com falha foi executada foi marcado como somente revers\u00e3o pelo cont\u00eainer.
 ERR_STATE_RB_ONLY.useraction=Utilize o rastreio para determinar a razo pela qual o LocalTransactionContainment foi marcado como somente revers\u00e3o.
 
 #-----------------------------------------------------------------------
-ERR_LTC_COMPLETE=WLTC0020E: N\u00e3o \u00e9 poss\u00edvel executar opera\u00e7\u00e3o. O LocalTransactionContainment est\u00e1 sendo conclu\u00eddo ou est\u00e1 conclu\u00eddo.
+ERR_LTC_COMPLETE=WLTC0020E: N\u00e3o \u00e9 poss\u00edvel executar a opera\u00e7\u00e3o. O LocalTransactionContainment est\u00e1 sendo conclu\u00eddo ou est\u00e1 conclu\u00eddo.
 ERR_LTC_COMPLETE.explanation=O LocalTransactionContainment sob o qual a opera\u00e7\u00e3o com falha foi executada est\u00e1 concluindo ou conclu\u00eddo.
 ERR_LTC_COMPLETE.useraction=CMSG0002
 
@@ -278,7 +278,7 @@ ERR_NP_INCONSISTENT.useraction=CMSG0002
 #-----------------------------------------------------------------------
 ERR_NP_ROLLEDBACK=WLTC0022E: O Recurso foi definido porque setRollbackOnly est\u00e1 sendo chamado no LTC
 ERR_NP_ROLLEDBACK.explanation=O LocalTransactionCoordinator inscrito como ActivitySessionResource foi reconfigurado porque setRollbackOnly foi chamado no LocalTransactionContainment.
-ERR_NP_ROLLEDBACK.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Essa mensagem \u00e9 apenas informativa.
+ERR_NP_ROLLEDBACK.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Essa mensagem destina-se apenas para fins informativos.
 
 #-----------------------------------------------------------------------
 ERR_NP_ILLEGAL=WLTC0023E: O Recurso falhou ao concluir devido a um estado inv\u00e1lido.
@@ -311,18 +311,9 @@ ERR_NO_LTC_COMPLETE.explanation=Um LocalTransactionCoordinator n\u00e3o est\u00e
 ERR_NO_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DEPLOY=WLTC0029E: A instala\u00e7\u00e3o deste aplicativo falhou; o \
-componente do aplicativo {0} possui extens\u00f5es de descritor de \
-implementa\u00e7\u00e3o do WebSphere que n\u00e3o est\u00e3o ativadas na edi\u00e7\u00e3o instalada \
-do WebSphere Application Server; seu uso pode resultar na perda \
-de integridade dos dados: ActivationPolicy \u00e9 {1}; \
-LocalTransactionBoundary \u00e9 {2}.
-ERR_DEPLOY.explanation=O aplicativo identificado na mensagem foi montado com extens\u00f5es que n\u00e3o s\u00e3o suportadas na edi\u00e7\u00e3o instalada do produto. \
-Se o produto permitiu que o aplicativo fosse executado na aus\u00eancia do suporte de extens\u00e3o esperado, o comportamento poder\u00e1 ser alterado de uma maneira que impactar\u00e1 a integridade de dados; por exemplo, poder\u00e3o ocorrer atualiza\u00e7\u00f5es em dados transacionais sob v\u00e1rias transa\u00e7\u00f5es quando a presen\u00e7a do suporte de extens\u00e3o far\u00e1 com que eles ocorram na mesma transa\u00e7\u00e3o. \
-Portanto, n\u00e3o \u00e9 seguro instalar o aplicativo.
-ERR_DEPLOY.useraction=Examine o aplicativo que falhou ao ser instalado. \
-Se ele puder ser executado sem o suporte de extenso, monte novamente o aplicativo sem especificar as extenses. \
-Se o aplicativo precisar de suporte estendido, instale-o apenas em servidores de aplicativos que oferecem esse suporte.
+ERR_DEPLOY=WLTC0029E: A instala\u00e7\u00e3o deste aplicativo falhou; o\ncomponente do aplicativo {0} possui extens\u00f5es de descritor de\nimplementa\u00e7\u00e3o do WebSphere que n\u00e3o est\u00e3o ativadas na edi\u00e7\u00e3o instalada\ndo WebSphere Application Server; seu uso pode resultar na perda\nde integridade dos dados: ActivationPolicy \u00e9 {1};\nLocalTransactionBoundary \u00e9 {2}.
+ERR_DEPLOY.explanation=O aplicativo identificado na mensagem foi montado com extens\u00f5es que n\u00e3o s\u00e3o suportadas na edi\u00e7\u00e3o instalada do produto. Se o produto permitiu que o aplicativo fosse executado na aus\u00eancia do suporte de extens\u00e3o esperado, o comportamento poder\u00e1 ser alterado de uma maneira que impactar\u00e1 a integridade de dados; por exemplo, poder\u00e3o ocorrer atualiza\u00e7\u00f5es em dados transacionais sob v\u00e1rias transa\u00e7\u00f5es quando a presen\u00e7a do suporte de extens\u00e3o far\u00e1 com que eles ocorram na mesma transa\u00e7\u00e3o. Portanto, n\u00e3o \u00e9 seguro instalar o aplicativo.
+ERR_DEPLOY.useraction=Examine o aplicativo que falhou ao ser instalado. Se ele puder ser executado sem o suporte de extenso, monte novamente o aplicativo sem especificar as extenses. Se o aplicativo precisar de suporte estendido, instale-o apenas em servidores de aplicativos que oferecem esse suporte.
 
 #-----------------------------------------------------------------------
 ERR_DEPLOY_RESOLUTION=WLTC0030E: Falha na instala\u00e7\u00e3o do aplicativo; o bean do aplicativo {0} est\u00e1 configurado para gerenciar suas pr\u00f3prias transa\u00e7\u00f5es mas tem uma defini\u00e7\u00e3o de controle de resolu\u00e7\u00e3o de transa\u00e7\u00e3o local incompat\u00edvel de ContainerAtBoundary.
@@ -335,14 +326,14 @@ ERR_DEPLOY_FAILURE.explanation=O aplicativo identificado na mensagem falhou ao i
 ERR_DEPLOY_FAILURE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: Um ou mais recursos de transa\u00e7\u00e3o locais foram revertidos durante a limpeza de um LocalTransactionContainment.
+WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: Um ou mais recursos de transa\u00e7\u00e3o local foram retrocedidos durante a limpeza de um LocalTransactionContainment.
 WRN_LTC_UNRESOLVED_ROLLEDBACK.explanation=Um LocalTransactionContainment com recursos de transa\u00e7\u00e3o local incompletos foi encerrado e provocou a recupera\u00e7\u00e3o dos recursos.
-WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Essa mensagem \u00e9 apenas informativa.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Essa mensagem destina-se apenas para fins informativos.
 
 #-----------------------------------------------------------------------
-WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: Recurso {0} revertido na limpeza de LocalTransactionContainment.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: Recurso {0} retrocedido na limpeza do LocalTransactionContainment.
 WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=O recurso de transa\u00e7\u00e3o local no foi processado na concluso do LocalTransactionContainment e sofreu revers\u00e3o.
-WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Essa mensagem \u00e9 apenas informativa.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Essa mensagem destina-se apenas para fins informativos.
 
 #-----------------------------------------------------------------------
 ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: O estado conclu\u00eddo do LocalTransactionContainment est\u00e1 inconsistente durante a limpeza.
@@ -360,7 +351,7 @@ ERR_NP_ILLEGAL_CLEANUP.explanation=Um LocalTransactionCoordinator que \u00e9 ins
 ERR_NP_ILLEGAL_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_BEGIN_GLOBAL_TX=WLTC0037E: Imposs\u00edvel iniciar uma transa\u00e7\u00e3o global. Um LocalTransactionContainment j est\u00e1 ativo com o trabalho.
+ERR_BEGIN_GLOBAL_TX=WLTC0037E: N\u00e3o pode iniciar uma transa\u00e7\u00e3o global. Um LocalTransactionContainment j est\u00e1 ativo com o trabalho.
 ERR_BEGIN_GLOBAL_TX.explanation=Um LocalTransactionContainment j\u00e1 estava ativo quando foi feita uma tentativa de iniciar uma transa\u00e7\u00e3o global.
 ERR_BEGIN_GLOBAL_TX.useraction=CMSG0002
 

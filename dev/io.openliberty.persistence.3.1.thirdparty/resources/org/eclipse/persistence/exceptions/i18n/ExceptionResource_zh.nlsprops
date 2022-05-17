@@ -53,7 +53,6 @@ NoExceptionTranslationForThisLocale=\uff08\u6b64\u5f02\u5e38\u6ca1\u6709\u7ffb\u
 
 QueryHeader=\u67e5\u8be2\uff1a
 
-
 RuntimeExceptionsHeader=\u8fd0\u884c\u65f6\u5f02\u5e38\uff1a
 
 TargetInvocationExceptionHeader=\u76ee\u6807\u8c03\u7528\u5f02\u5e38\uff1a

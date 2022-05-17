@@ -483,5 +483,9 @@ error.unknownSchemaVersion=CWWKG0108E: Die Schemaversion {0} wird nicht unterst\
 error.unknownSchemaVersion.explanation=Der mit der Option \u201e--schemaVersion\u201c angegebene Wert ist ung\u00fcltig.
 error.unknownSchemaVersion.useraction=Um g\u00fcltige Optionen anzuzeigen, geben Sie den Befehl \u201e./schemaGen --help\u201c ein.
 
+schemagen.info.schema.file.created=CWWKG0109I: Das Schema wurde in der Datei [{0}] erstellt.
+schemagen.info.schema.file.created.explanation=Der Befehl wurde erfolgreich ausgef\u00fchrt.
+schemagen.info.schema.file.created.useraction=Es ist keine Aktion erforderlich.
+
 # Non-TR message
 error.invalidOCDRef=FEHLER: Die Metatyp-PID [{0}] gibt die ID einer nicht vorhandenen Objektklassendefinition [{1}] an.

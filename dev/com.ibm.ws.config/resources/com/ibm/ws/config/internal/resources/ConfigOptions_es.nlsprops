@@ -29,7 +29,7 @@ use.options=Opciones:
 option-key.ignorePids=--ignorePidsFile
 option-desc.ignorePids=Nombre de archivo que contiene una lista de pids que se deben ignorar.
 option-key.encoding=--encoding
-option-desc.encoding=La codificaci\u00f3n de caracteres que se debe utilizar para la salida.
+option-desc.encoding=La codificaci\u00f3n de caracteres que se debe utilizar para la salida.     \nLa codificaci\u00f3n predeterminada es "UTF-8".
 option-key.locale=--locale
 option-desc.locale=El idioma que se debe utilizar al crear el archivo de salida. Esta serie se compone de un c\u00f3digo de idioma de dos letras ISO-639\nen min\u00fascula, seguido de un car\u00e1cter de subrayado y el c\u00f3digo de pa\u00eds de dos letras\nISO-3166 en may\u00fascula.
 

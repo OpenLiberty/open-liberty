@@ -171,191 +171,187 @@
 #NLS_ENCODING=UNICODE
 
 #-----------------------------------------------------------------------
-ERR_INT_ERROR=WLTC0001E: Bels\u0151 hiba t\u00f6rt\u00e9nt a(z) {1} oszt\u00e1ly {0} met\u00f3dus\u00e1ban; a kiv\u00e9telverem tartalma: {2}.
+ERR_INT_ERROR=WLTC0001E: Bels\u0151 hiba t\u00f6rt\u00e9nt a(z) {0} met\u00f3dus {1} oszt\u00e1ly\u00e1ban; a kiv\u00e9telverem nyomk\u00f6vet\u00e9s a k\u00f6vetkez\u0151: {2}.
 ERR_INT_ERROR.explanation=CMSG0001
 ERR_INT_ERROR.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_BEGIN_TX_GLB_ACT=WLTC0002E: LocalTransactionContainment nem ind\u00edthat\u00f3, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_BEGIN_TX_GLB_ACT=WLTC0002E: Nem ind\u00edthat\u00f3 LocalTransactionContainment, mert egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
 ERR_BEGIN_TX_GLB_ACT.explanation=Nem megengedett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy helyi tranzakci\u00f3 ind\u00edt\u00e1s\u00e1ra, mik\u00f6zben egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
 ERR_BEGIN_TX_GLB_ACT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden glob\u00e1lis tranzakci\u00f3 befejez\u0151dik miel\u0151tt helyi tranzakci\u00f3val v\u00e9gezne munk\u00e1t.
 
 #-----------------------------------------------------------------------
-ERR_RESUME_TX_GLB_ACT=WLTC0003E: LocalTransactionContainment nem folytathat\u00f3, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_RESUME_TX_GLB_ACT=WLTC0003E: Nem folytathat\u00f3 a LocalTransactionContainment, mert egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
 ERR_RESUME_TX_GLB_ACT.explanation=A t\u00e1rol\u00f3 nem tud folytatni egy LocalTransactionContainment m\u0171veletet, mivel egy glob\u00e1lis tranzakci\u00f3 jelenleg akt\u00edv.
 ERR_RESUME_TX_GLB_ACT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden glob\u00e1lis tranzakci\u00f3 befejez\u0151dik vagy felf\u00fcggeszt\u00e9sre ker\u00fcl, miel\u0151tt visszat\u00e9r egy LocalTransactionContainment m\u0171velethez.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_TX_GLB_ACT=WLTC0004E: Nem lehet bejegyezni egy helyi tranzakci\u00f3s er\u0151forr\u00e1st, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
-ERR_ENLIST_TX_GLB_ACT.explanation=Egy helyi tranzakci\u00f3s kapcsolat nem haszn\u00e1lhat\u00f3, mivel egy glob\u00e1lis tranzakci\u00f3 jelenleg akt\u00edv.
-ERR_ENLIST_TX_GLB_ACT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden glob\u00e1lis tranzakci\u00f3 befejez\u0151dik miel\u0151tt helyi tranzakci\u00f3val v\u00e9gezne munk\u00e1t.
+ERR_ENLIST_TX_GLB_ACT=WLTC0004E: Nem vehet\u0151 ig\u00e9nybe helyi tranzakci\u00f3s er\u0151forr\u00e1s, mert egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_ENLIST_TX_GLB_ACT.explanation=Helyi tranzakci\u00f3s kapcsolat nem haszn\u00e1lhat\u00f3, mivel egy glob\u00e1lis tranzakci\u00f3 jelenleg akt\u00edv.
+ERR_ENLIST_TX_GLB_ACT.useraction=Miel\u0151tt helyi tranzakci\u00f3val v\u00e9gezne munk\u00e1t, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden glob\u00e1lis tranzakci\u00f3 befejez\u0151d\u00f6tt.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_TX_CLEANUP=WLTC0005E: Az er\u0151forr\u00e1st nem lehet bejegyezni. A local-transaction resolution-control \u00e9rt\u00e9ke Application, \u00edgy az er\u0151forr\u00e1sokat csak t\u00f6rl\u00e9sre lehet bejegyezni.
+ERR_ENLIST_TX_CLEANUP=WLTC0005E: Nem vehet\u0151 ig\u00e9nybe er\u0151forr\u00e1s. A local-transaction resolution-control \u00e9rt\u00e9ke Application, \u00edgy az er\u0151forr\u00e1sokat csak t\u00f6rl\u00e9sre lehet bejegyezni.
 ERR_ENLIST_TX_CLEANUP.explanation=A t\u00e1rol\u00f3 megpr\u00f3b\u00e1lt bejegyezni egy er\u0151forr\u00e1st, amikor a resolution-control \u00e9rt\u00e9ke nem ContainerAtBoundary.
 ERR_ENLIST_TX_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_LTC_COMPLETE=WLTC0006E: Az er\u0151forr\u00e1st nem lehet bejegyezni. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
-ERR_ENLIST_LTC_COMPLETE.explanation=A LocalTransactionContainment nincs olyan \u00e1llapotban, ahol egy er\u0151forr\u00e1st be lehet jegyezni.
+ERR_ENLIST_LTC_COMPLETE=WLTC0006E: Nem vehet\u0151 ig\u00e9nybe az er\u0151forr\u00e1s. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_ENLIST_LTC_COMPLETE.explanation=A LocalTransactionContainment nincs olyan \u00e1llapotban, ahol er\u0151forr\u00e1st be lehet jegyezni.
 ERR_ENLIST_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E: Nem lehet bejegyezni az er\u0151forr\u00e1st t\u00f6rl\u00e9sre, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
-ERR_ENLIST_CLN_TX_GLB_ACT.explanation=Egy helyi tranzakci\u00f3s kapcsolat nem haszn\u00e1lhat\u00f3, mivel egy glob\u00e1lis tranzakci\u00f3 jelenleg akt\u00edv.
-ERR_ENLIST_CLN_TX_GLB_ACT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden glob\u00e1lis tranzakci\u00f3 befejez\u0151dik miel\u0151tt helyi tranzakci\u00f3val v\u00e9gezne munk\u00e1t.
+ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E: Nem vehet\u0151 ig\u00e9nybe er\u0151forr\u00e1s a takar\u00edt\u00e1shoz, mert egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_ENLIST_CLN_TX_GLB_ACT.explanation=Helyi tranzakci\u00f3s kapcsolat nem haszn\u00e1lhat\u00f3, mivel egy glob\u00e1lis tranzakci\u00f3 jelenleg akt\u00edv.
+ERR_ENLIST_CLN_TX_GLB_ACT.useraction=Miel\u0151tt helyi tranzakci\u00f3val v\u00e9gezne munk\u00e1t, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden glob\u00e1lis tranzakci\u00f3 befejez\u0151d\u00f6tt.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E: Nem lehet bejegyezni az er\u0151forr\u00e1st t\u00f6rl\u00e9sre. A local-transaction resolution-control \u00e9rt\u00e9ke ContainerAtBoundary, \u00edgy az er\u0151forr\u00e1sokat nem lehet bejegyezni t\u00f6rl\u00e9sre.
+ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E: Nem vehet\u0151 ig\u00e9nybe az er\u0151forr\u00e1s a takar\u00edt\u00e1shoz. A local-transaction resolution-control \u00e9rt\u00e9ke ContainerAtBoundary, \u00edgy az er\u0151forr\u00e1sokat nem lehet bejegyezni t\u00f6rl\u00e9sre.
 ERR_ENLIST_CLN_TX_CLEANUP.explanation=A helyi tranzakci\u00f3s kapcsolatot haszn\u00e1l\u00f3 alkalmaz\u00e1s be van \u00e1ll\u00edtva a t\u00e1rol\u00f3hoz a helyi tranzakci\u00f3k ind\u00edt\u00e1s\u00e1nak \u00e9s felbont\u00e1s\u00e1nak felel\u0151sek\u00e9nt, de az alkalmaz\u00e1s maga ind\u00edtott egy helyi tranzakci\u00f3t.
 ERR_ENLIST_CLN_TX_CLEANUP.useraction=Az alkalmaz\u00e1snak a t\u00e1rol\u00f3 \u00e1ltal felbontott helyi tranzakci\u00f3k haszn\u00e1lat\u00e1n\u00e1l k\u00f6vetnie kell a kapcsolathaszn\u00e1lat get-use-model elem\u00e9t.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E: Nem lehet bejegyezni az er\u0151forr\u00e1st t\u00f6rl\u00e9sre. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
-ERR_ENLIST_CLN_LTC_COMPLETE.explanation=A LocalTransactionContainment nincs olyan \u00e1llapotban, ahol egy er\u0151forr\u00e1st be lehet jegyezni.
+ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E: Nem vehet\u0151 ig\u00e9nybe az er\u0151forr\u00e1s a takar\u00edt\u00e1shoz. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_ENLIST_CLN_LTC_COMPLETE.explanation=A LocalTransactionContainment nincs olyan \u00e1llapotban, ahol er\u0151forr\u00e1st be lehet jegyezni.
 ERR_ENLIST_CLN_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DELIST_TX_GLB_ACT=WLTC0010E: Nem lehet kit\u00f6r\u00f6lni az er\u0151forr\u00e1st, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
-ERR_DELIST_TX_GLB_ACT.explanation=A LocalTransactionContainment nem tud kit\u00f6r\u00f6lni egy er\u0151forr\u00e1st, mivel egy glob\u00e1lis tranzakci\u00f3 pillanatnyilag akt\u00edv.
+ERR_DELIST_TX_GLB_ACT=WLTC0010E: Nem mondhat\u00f3 le az er\u0151forr\u00e1s, mert egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_DELIST_TX_GLB_ACT.explanation=A LocalTransactionContainment nem tud kit\u00f6r\u00f6lni er\u0151forr\u00e1st, mivel egy glob\u00e1lis tranzakci\u00f3 pillanatnyilag akt\u00edv.
 ERR_DELIST_TX_GLB_ACT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DELIST_NOT_ENLISTED=WLTC0011E: Nem lehet kit\u00f6r\u00f6lni az er\u0151forr\u00e1st. Nincs bejegyezve t\u00f6rl\u00e9sre a LocalTransactionContainment eszk\u00f6zn\u00e9l.
+ERR_DELIST_NOT_ENLISTED=WLTC0011E: Nem mondhat\u00f3 le az er\u0151forr\u00e1s. Nincs bejegyezve t\u00f6rl\u00e9sre a LocalTransactionContainment eszk\u00f6zn\u00e9l.
 ERR_DELIST_NOT_ENLISTED.explanation=A LocalTransactionContainment nem tud kit\u00f6r\u00f6lni egy olyan er\u0151forr\u00e1st, amely nem volt bejegyezve t\u00f6rl\u00e9sre.
 ERR_DELIST_NOT_ENLISTED.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DELIST_LTC_COMPLETE=WLTC0012E: Nem lehet kit\u00f6r\u00f6lni az er\u0151forr\u00e1st. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_DELIST_LTC_COMPLETE=WLTC0012E: Nem mondhat\u00f3 le az er\u0151forr\u00e1s. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
 ERR_DELIST_LTC_COMPLETE.explanation=A LocalTransactionContainment nincs olyan \u00e1llapotban, ahol egy er\u0151forr\u00e1st ki lehet t\u00f6r\u00f6lni.
 ERR_DELIST_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E: Nem lehet bejegyezni a szinkroniz\u00e1l\u00e1st, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E: Nem vehet\u0151 ig\u00e9nybe szinkroniz\u00e1l\u00e1s, mert egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
 ERR_ENLIST_SYNCH_TX_GLB_ACT.explanation=A szinkroniz\u00e1l\u00e1s nem jegyezhet\u0151 be, mivel egy glob\u00e1lis tranzakci\u00f3 jelenleg akt\u00edv.
 ERR_ENLIST_SYNCH_TX_GLB_ACT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E: A szinkroniz\u00e1l\u00e1s nem jegyezhet\u0151 be. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E: Nem vehet\u0151 ig\u00e9nybe a szinkroniz\u00e1l\u00e1s. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
 ERR_ENLIST_SYNCH_LTC_COMPLETE.explanation=A LocalTransactionContainment nincs olyan \u00e1llapotban, ahol egy szinkroniz\u00e1l\u00e1st be lehet jegyezni.
 ERR_ENLIST_SYNCH_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_START=WLTC0015E: A(z) {0} er\u0151forr\u00e1s ind\u00edt\u00e1sa nem siker\u00fclt. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+ERR_XA_RESOURCE_START=WLTC0015E: A(z) {0} er\u0151forr\u00e1s indul\u00e1sa meghi\u00fasult. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
 ERR_XA_RESOURCE_START.explanation=A t\u00e1rol\u00f3 nem tudta elind\u00edtani a helyi tranzakci\u00f3t.
 ERR_XA_RESOURCE_START.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-kezel\u0151t.
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_COMPLETE=WLTC0016E: A(z) {0} er\u0151forr\u00e1s befejez\u00e9se meghi\u00fasult. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+ERR_XA_RESOURCE_COMPLETE=WLTC0016E: A(z) {0} er\u0151forr\u00e1s v\u00e9grehajt\u00e1sa meghi\u00fasult. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
 ERR_XA_RESOURCE_COMPLETE.explanation=A t\u00e1rol\u00f3 nem tudta befejezni a helyi tranzakci\u00f3t.
 ERR_XA_RESOURCE_COMPLETE.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-kezel\u0151t.
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: Az er\u0151forr\u00e1sok visszag\u00f6rgetve a setRollbackOnly() megh\u00edv\u00e1sa miatt.
+ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: Az er\u0151forr\u00e1sokat visszag\u00f6rgette a rendszer a setRollbackOnly () megh\u00edv\u00e1sa miatt.
 ERR_XA_RESOURCE_ROLLEDBACK.explanation=Az LocalTransactionContainment (LTC) elemn\u00e9l bejegyzett er\u0151forr\u00e1sok vissza lettek g\u00f6rgetve, mivel a setRollbackOnly() meg lett h\u00edvva az LTC-n.
-ERR_XA_RESOURCE_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+ERR_XA_RESOURCE_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
 
 #-----------------------------------------------------------------------
-ERR_BEGIN_LTC_ACT=WLTC0018E: Nem lehet LocalTransactionContainment elemet kezdeni. M\u00e1r akt\u00edv egy LocalTransactionContainment.
-ERR_BEGIN_LTC_ACT.explanation=Egy LocalTransactionContainment m\u00e1r akt\u00edv volt, amikor k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy \u00faj ind\u00edt\u00e1s\u00e1ra.
+ERR_BEGIN_LTC_ACT=WLTC0018E: Nem ind\u00edthat\u00f3 LocalTransactionContainment. M\u00e1r akt\u00edv egy LocalTransactionContainment.
+ERR_BEGIN_LTC_ACT.explanation=M\u00e1r akt\u00edv volt egy LocalTransactionContainment, amikor k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy \u00faj ind\u00edt\u00e1s\u00e1ra.
 ERR_BEGIN_LTC_ACT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_STATE_RB_ONLY=WLTC0019E: A m\u0171veletet nem lehet v\u00e9grehajtani. A LocalTransactionContainment csak visszag\u00f6rgethet\u0151k\u00e9nt lett megjel\u00f6lve.
+ERR_STATE_RB_ONLY=WLTC0019E: A m\u0171velet nem hajthat\u00f3 v\u00e9gre. A LocalTransactionContainment csak visszag\u00f6rgethet\u0151k\u00e9nt lett megjel\u00f6lve.
 ERR_STATE_RB_ONLY.explanation=A LocalTransactionContainment eszk\u00f6zt, amely alatt a meghi\u00fasult m\u0171velet el lett v\u00e9gezve, a t\u00e1rol\u00f3 csak visszag\u00f6rgethet\u0151k\u00e9nt jel\u00f6lte meg.
 ERR_STATE_RB_ONLY.useraction=Haszn\u00e1lja a nyomk\u00f6vet\u00e9st annak meghat\u00e1roz\u00e1s\u00e1ra, hogy a LocalTransactionContainment mi\u00e9rt lett csak visszag\u00f6rgethet\u0151nek megjel\u00f6lve.
 
 #-----------------------------------------------------------------------
-ERR_LTC_COMPLETE=WLTC0020E: A m\u0171veletet nem lehet v\u00e9grehajtani. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_LTC_COMPLETE=WLTC0020E: A m\u0171velet nem hajthat\u00f3 v\u00e9gre. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
 ERR_LTC_COMPLETE.explanation=A LocalTransactionContainment eszk\u00f6z, amely alatt a meghi\u00fasult m\u0171velet el lett v\u00e9gezve, befejez\u0151dik vagy befejez\u0151d\u00f6tt.
 ERR_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NP_INCONSISTENT=WLTC0021E: Az er\u0151forr\u00e1s befejez\u0151d\u00f6tt \u00e1llapota ellentmond\u00f3.
+ERR_NP_INCONSISTENT=WLTC0021E: Az er\u0151forr\u00e1s befejezett \u00e1llapota nem konzisztens.
 ERR_NP_INCONSISTENT.explanation=Az ActivitySessionResource eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator ellentmond\u00f3 eredm\u00e9nnyel fejez\u0151d\u00f6tt be.
 ERR_NP_INCONSISTENT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NP_ROLLEDBACK=WLTC0022E: Az er\u0151forr\u00e1s alaphelyzetbe \u00e1ll\u00edtva egy setRollbackOnly h\u00edv\u00e1sa miatt az LTC-n.
+ERR_NP_ROLLEDBACK=WLTC0022E: Az er\u0151forr\u00e1st a rendszer vissza\u00e1ll\u00edtotta a setRollbackOnly megh\u00edv\u00e1sa miatt az LTC hat\u00f3k\u00f6rben
 ERR_NP_ROLLEDBACK.explanation=Az ActivitySessionResource eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator alaphelyzetbe lett \u00e1ll\u00edtva, mivel egy setRollbackOnly lett megh\u00edvva az LocalTransactionContainment eszk\u00f6z\u00f6n.
-ERR_NP_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+ERR_NP_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
 
 #-----------------------------------------------------------------------
-ERR_NP_ILLEGAL=WLTC0023E: Az er\u0151forr\u00e1s befejez\u00e9se meghi\u00fasult egy illeg\u00e1lis \u00e1llapot miatt.
+ERR_NP_ILLEGAL=WLTC0023E: Er\u0151forr\u00e1s v\u00e9grehajt\u00e1sa illeg\u00e1lis \u00e1llapot miatt meghi\u00fasult.
 ERR_NP_ILLEGAL.explanation=Az ActivitySessionResource eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator \u00e9rv\u00e9nytelen \u00e1llapotban van a befejez\u00e9shez.
 ERR_NP_ILLEGAL.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_AS_LOOKUP_ASM=WLTC0024E: Nem lehet kapcsolatot l\u00e9tes\u00edteni az ActivitySession szolg\u00e1ltat\u00e1ssal. Az ActivitySessionManager kikeres\u00e9se meghi\u00fasult.
+ERR_AS_LOOKUP_ASM=WLTC0024E: Az ActivitySession szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. Az ActivitySessionManager kikeres\u00e9se meghi\u00fasult.
 ERR_AS_LOOKUP_ASM.explanation=Az ActivitySessionManager objektum nem tal\u00e1lhat\u00f3 a JNDI n\u00e9vt\u00e9rben.
 ERR_AS_LOOKUP_ASM.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_AS_ILLEGAL_STATE=WLTC0025E: Nem lehet bejegyezni az ActivitySession szolg\u00e1ltat\u00e1sn\u00e1l. Az ActivitySession illeg\u00e1lis \u00e1llapotban van.
+ERR_AS_ILLEGAL_STATE=WLTC0025E: Nem lehet regisztr\u00e1lni az ActivitySession szolg\u00e1ltat\u00e1ssal. Az ActivitySession illeg\u00e1lis \u00e1llapotban van.
 ERR_AS_ILLEGAL_STATE.explanation=A jelenlegi ActivitySession nincs megfelel\u0151 \u00e1llapotban, hogy az LocalTransactionContainment sz\u00e1m\u00e1ra er\u0151forr\u00e1sk\u00e9nt be lehessen jegyezni.
 ERR_AS_ILLEGAL_STATE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_AS_UNEXPECTED=WLTC0026E: V\u00e1ratlan hiba t\u00f6rt\u00e9nt az ActivitySession szolg\u00e1ltat\u00e1ssal egy\u00fcttm\u0171k\u00f6d\u00e9s k\u00f6zben.
+ERR_AS_UNEXPECTED=WLTC0026E: V\u00e1ratlan hiba t\u00f6rt\u00e9nt az ActivitySession szolg\u00e1ltat\u00e1ssal val\u00f3 egy\u00fcttm\u0171k\u00f6d\u00e9s sor\u00e1n.
 ERR_AS_UNEXPECTED.explanation=V\u00e1ratlan hiba t\u00f6rt\u00e9nt a LocalTransactionContainment az ActivitySession szolg\u00e1ltat\u00e1sn\u00e1l bejegyz\u00e9s\u00e9re tett k\u00eds\u00e9rlete sor\u00e1n.
 ERR_AS_UNEXPECTED.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NO_LTC_CLEANUP=WLTC0027E: Nincs takar\u00edtand\u00f3 LocalTransactionCoordinator
+ERR_NO_LTC_CLEANUP=WLTC0027E: Nem \u00e1ll rendelkez\u00e9sre LocalTransactionCoordinator a takar\u00edt\u00e1shoz.
 ERR_NO_LTC_CLEANUP.explanation=A LocalTransactionCoordinator nincs hozz\u00e1rendelve a jelenlegi sz\u00e1lhoz, \u00edgy az nem takar\u00edthat\u00f3 ki.
 ERR_NO_LTC_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NO_LTC_COMPLETE=WLTC0028E: Nincs befejezend\u0151 LocalTransactionCoordinator.
+ERR_NO_LTC_COMPLETE=WLTC0028E: Nincs v\u00e9grehajtand\u00f3 LocalTransactionCoordinator.
 ERR_NO_LTC_COMPLETE.explanation=A LocalTransactionCoordinator nincs hozz\u00e1rendelve a jelenlegi sz\u00e1lhoz, \u00edgy az nem fejezhet\u0151 be.
 ERR_NO_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DEPLOY=WLTC0029E: Az alkalmaz\u00e1stelep\u00edt\u00e9s meghi\u00fasult; a(z) {0} alkalmaz\u00e1s-\u00f6sszetev\u0151 olyan telep\u00edt\u00e9sle\u00edr\u00f3 kiterjeszt\u00e9sekkel rendelkezik, amelyek nem enged\u00e9lyezettek a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 telep\u00edtett kiad\u00e1s\u00e1ban; haszn\u00e1latuk adatveszt\u00e9st eredm\u00e9nyezhet: az ActivationPolicy: {1}; a LocalTransactionBoundary: {2}.
-ERR_DEPLOY.explanation=Az \u00fczenetben azonos\u00edtott alkalmaz\u00e1s olyan kiterjeszt\u00e9sekkel lett \u00f6ssze\u00e1ll\u00edtva, amelyek a term\u00e9k telep\u00edtett kiad\u00e1s\u00e1ban nem t\u00e1mogatottak. \
-Ha a term\u00e9k enged\u00e9lyezte, hogy az alkalmaz\u00e1s a v\u00e1rt kiterjeszt\u00e9st\u00e1mogat\u00e1s hi\u00e1ny\u00e1ban fusson, akkor a viselked\u00e9sm\u00f3d m\u00f3dosulhat olyan m\u00f3don, hogy az az adatok integrit\u00e1s\u00e1ra legyen hat\u00e1ssal; p\u00e9ld\u00e1ul a tranzakci\u00f3s adatok friss\u00edt\u00e9se t\u00f6bb tranzakci\u00f3 sor\u00e1n mehet v\u00e9gbe, m\u00edg a kiterjeszt\u00e9st\u00e1mogat\u00e1s jelenl\u00e9t\u00e9ben ezek ugyanazon tranzakci\u00f3 alatt menn\u00e9nek v\u00e9gbe. \
-Ez\u00e9rt az alkalmaz\u00e1s telep\u00edt\u00e9se nem biztons\u00e1gos.
-ERR_DEPLOY.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1st, amely telep\u00edt\u00e9se meghi\u00fasult. \
-Ha futtathat\u00f3 a kiterjeszt\u00e9st\u00e1mogat\u00e1s n\u00e9lk\u00fcl, \u00e1ll\u00edtsa \u00f6ssze \u00fajra az alkalmaz\u00e1st a kiterjeszt\u00e9sek megad\u00e1sa n\u00e9lk\u00fcl. \
-Ha az alkalmaz\u00e1snak sz\u00fcks\u00e9ge van a kiterjesztett t\u00e1mogat\u00e1sra, akkor azt csak olyan alkalmaz\u00e1skiszolg\u00e1l\u00f3kra telep\u00edtse, amelyek biztos\u00edtj\u00e1k ezt a fajta t\u00e1mogat\u00e1st.
+ERR_DEPLOY=WLTC0029E: Az alkalmaz\u00e1s telep\u00edt\u00e9se meghi\u00fasult; a(z) {0} alkalmaz\u00e1s \u00f6sszetev\u0151 olyan WebSphere telep\u00edt\u00e9sle\u00edr\u00f3 kiterjeszt\u00e9sekkel rendelkezik, amelyek nem enged\u00e9lyezettek a WebSphere Application Server telep\u00edtett kiad\u00e1s\u00e1ban; haszn\u00e1latuk az adatintegrit\u00e1s elveszt\u00e9s\u00e9hez vezethet: ActivationPolicy:  {1}; LocalTransactionBoundary: {2}.
+ERR_DEPLOY.explanation=Az \u00fczenetben azonos\u00edtott alkalmaz\u00e1s olyan kiterjeszt\u00e9sekkel lett \u00f6ssze\u00e1ll\u00edtva, amelyek a term\u00e9k telep\u00edtett kiad\u00e1s\u00e1ban nem t\u00e1mogatottak. Ha a term\u00e9k enged\u00e9lyezte, hogy az alkalmaz\u00e1s a v\u00e1rt kiterjeszt\u00e9st\u00e1mogat\u00e1s hi\u00e1ny\u00e1ban fusson, akkor a viselked\u00e9sm\u00f3d m\u00f3dosulhat olyan m\u00f3don, hogy az az adatok integrit\u00e1s\u00e1ra legyen hat\u00e1ssal; p\u00e9ld\u00e1ul a tranzakci\u00f3s adatok friss\u00edt\u00e9se t\u00f6bb tranzakci\u00f3 sor\u00e1n mehet v\u00e9gbe, m\u00edg a kiterjeszt\u00e9st\u00e1mogat\u00e1s jelenl\u00e9t\u00e9ben ezek ugyanazon tranzakci\u00f3 alatt menn\u00e9nek v\u00e9gbe. Ez\u00e9rt az alkalmaz\u00e1s telep\u00edt\u00e9se nem biztons\u00e1gos.
+ERR_DEPLOY.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1st, amelynek telep\u00edt\u00e9se meghi\u00fasult. Ha futtathat\u00f3 kiterjeszt\u00e9st\u00e1mogat\u00e1s n\u00e9lk\u00fcl, akkor \u00e1ll\u00edtsa \u00f6ssze \u00fajra az alkalmaz\u00e1st a kiterjeszt\u00e9sek megad\u00e1sa n\u00e9lk\u00fcl. Ha az alkalmaz\u00e1snak sz\u00fcks\u00e9ge van a kiterjesztett t\u00e1mogat\u00e1sra, akkor azt csak olyan alkalmaz\u00e1skiszolg\u00e1l\u00f3kra telep\u00edtse, amelyek biztos\u00edtj\u00e1k ezt a fajta t\u00e1mogat\u00e1st.
 
 #-----------------------------------------------------------------------
-ERR_DEPLOY_RESOLUTION=WLTC0030E: Az alkalmaz\u00e1s telep\u00edt\u00e9se meghi\u00fasult; a(z) {0} alkalmaz\u00e1skomponens a saj\u00e1t tranzakci\u00f3inak kezel\u00e9s\u00e9re van be\u00e1ll\u00edtva, de a ContainerAtBoundary inkompatibilis helyi tranzakci\u00f3felold\u00e1si vez\u00e9rl\u0151be\u00e1ll\u00edt\u00e1ssal rendelkezik.
+ERR_DEPLOY_RESOLUTION=WLTC0030E: Az alkalmaz\u00e1s telep\u00edt\u00e9se meghi\u00fasult; az {0} alkalmaz\u00e1skomponens a saj\u00e1t tranzakci\u00f3inak kezel\u00e9s\u00e9re be van \u00e1ll\u00edtva, de nem kompatibilis ContainerAtBoundary helyi tranzakci\u00f3felold\u00e1si vez\u00e9rl\u0151elem be\u00e1ll\u00edt\u00e1ssal rendelkezik.
 ERR_DEPLOY_RESOLUTION.explanation=Az \u00fczenetben azonos\u00edtott komponens nem t\u00e1mogatott kiterjeszt\u00e9sekkel lett \u00f6ssze\u00e1ll\u00edtva. Emiatt az alkalmaz\u00e1s nem ker\u00fclt telep\u00edt\u00e9sre.
-ERR_DEPLOY_RESOLUTION.useraction=Az alkalmaz\u00e1st, amely telep\u00edt\u00e9se meghi\u00fasult, \u00fajra \u00f6ssze kell \u00e1ll\u00edtani a komponens egy alternat\u00edv konfigur\u00e1ci\u00f3j\u00e1val.
+ERR_DEPLOY_RESOLUTION.useraction=Az alkalmaz\u00e1st, amelynek telep\u00edt\u00e9se meghi\u00fasult, \u00fajra \u00f6ssze kell \u00e1ll\u00edtani a komponens egy alternat\u00edv konfigur\u00e1ci\u00f3j\u00e1val.
 
 #-----------------------------------------------------------------------
-ERR_DEPLOY_FAILURE=WLTC0031E: Az alkalmaz\u00e1s telep\u00edt\u00e9se meghi\u00fasult; a(z) {0} alkalmaz\u00e1s-\u00f6sszetev\u0151 nem telep\u00edthet\u0151.
+ERR_DEPLOY_FAILURE=WLTC0031E: Az alkalmaz\u00e1s telep\u00edt\u00e9se meghi\u00fasult; a(z) {0} alkalmaz\u00e1s \u00f6sszetev\u0151 nem telep\u00edthet\u0151.
 ERR_DEPLOY_FAILURE.explanation=Az \u00fczenetben azonos\u00edtott alkalmaz\u00e1s megfelel\u0151 telep\u00edt\u00e9se meghi\u00fasult, \u00e9s az alkalmaz\u00e1s nem el\u00e9rhet\u0151.
 ERR_DEPLOY_FAILURE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: N\u00e9h\u00e1ny helyi tranzakci\u00f3s er\u0151forr\u00e1s vissza lett g\u00f6rgetve egy LocalTransactionContainment t\u00f6rl\u00e9se k\u00f6zben.
+WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: N\u00e9h\u00e1ny helyi tranzakci\u00f3s er\u0151forr\u00e1s visszag\u00f6rget\u00e9sre ker\u00fclt a LocalTransactionContainment takar\u00edt\u00e1sa sor\u00e1n.
 WRN_LTC_UNRESOLVED_ROLLEDBACK.explanation=Egy befejezetlen helyi tranzakci\u00f3s er\u0151forr\u00e1sokkal rendelkez\u0151 LocalTransactionContainment befejez\u0151d\u00f6tt, \u00e9s az er\u0151forr\u00e1sok visszag\u00f6rget\u00e9s\u00e9t okozta.
-WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
 
 #-----------------------------------------------------------------------
-WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: A(z) {0} er\u0151forr\u00e1s visszag\u00f6rgetve a LocalTransactionContainment t\u00f6rl\u00e9se sor\u00e1n.
-WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=A visszag\u00f6rget tranzakci\u00f3s er\u0151forr\u00e1s nem volt feloldva a LocalTransactionContainment befejez\u00e9sekor \u00e9s vissza lett g\u00f6rgetve.
-WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: A(z) {0} er\u0151forr\u00e1st visszag\u00f6rgette a rendszer a LocalTransactionContainment takar\u00edt\u00e1sa sor\u00e1n.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=A helyi tranzakci\u00f3s er\u0151forr\u00e1s nem volt feloldva a LocalTransactionContainment befejez\u00e9sekor \u00e9s vissza lett g\u00f6rgetve.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
 
 #-----------------------------------------------------------------------
-ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: A LocalTransactionContainment befejez\u0151d\u00f6tt \u00e1llapota ellentmond\u00f3 a t\u00f6rl\u00e9s sor\u00e1n.
+ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: A LocalTransactionContainment befejezett \u00e1llapota nem konzisztens a takar\u00edt\u00e1skor.
 ERR_NP_INCONSISTENT_CLEANUP.explanation=Az ActivitySessionSynchronization eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator ellentmond\u00f3 eredm\u00e9nnyel fejez\u0151d\u00f6tt be a t\u00f6rl\u00e9s sor\u00e1n.
 ERR_NP_INCONSISTENT_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W: Egy feloldatlan LocalTransactionContainment alaphelyzetbe lett \u00e1ll\u00edtva a t\u00f6rl\u00e9s sor\u00e1n.
+WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W: Egy feloldatlan LocalTransactionContainment alaphelyzetbe \u00e1llt a takar\u00edt\u00e1s sor\u00e1n.
 WRN_NP_ROLLEDBACK_CLEANUP.explanation=Az ActivitySessionSynchronization eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator alaphelyzetbe lett \u00e1ll\u00edtva.
-WRN_NP_ROLLEDBACK_CLEANUP.useraction=Egy alkalmaz\u00e1shiba t\u00f6rt\u00e9nt. Az alaphelyzetbe \u00e1ll\u00edt\u00e1s ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kapcsol\u00f3d\u00f3 \u00fczeneteket.
+WRN_NP_ROLLEDBACK_CLEANUP.useraction=Elk\u00e9pzelhet\u0151, hogy alkalmaz\u00e1shiba t\u00f6rt\u00e9nt. Az alaphelyzetbe \u00e1ll\u00edt\u00e1s ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kapcsol\u00f3d\u00f3 \u00fczeneteket.
 
 #-----------------------------------------------------------------------
-ERR_NP_ILLEGAL_CLEANUP=WLTC0036E: N\u00e9h\u00e1ny, egy LocalTransactionContainment eszk\u00f6zben bejegyzett er\u0151forr\u00e1s befejez\u0151d\u00e9se meghi\u00fasult a t\u00f6rl\u00e9s sor\u00e1n, illeg\u00e1lis \u00e1llapot miatt.
+ERR_NP_ILLEGAL_CLEANUP=WLTC0036E: Illeg\u00e1lis \u00e1llapot k\u00f6vetkez\u00e9ben a LocalTransactionContainment hat\u00f3k\u00f6r\u00e9ben regisztr\u00e1lt n\u00e9h\u00e1ny er\u0151forr\u00e1s v\u00e9grehajt\u00e1sa sikertelen volt.
 ERR_NP_ILLEGAL_CLEANUP.explanation=Egy ActivitySessionSynchronization eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator n\u00e9h\u00e1ny er\u0151forr\u00e1st \u00e9rv\u00e9nytelen \u00e1llapotban tartalmaz a befejez\u00e9shez a t\u00f6rl\u00e9s k\u00f6zben.
 ERR_NP_ILLEGAL_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_BEGIN_GLOBAL_TX=WLTC0037E: Nem lehet glob\u00e1lis tranzakci\u00f3t ind\u00edtani. M\u00e1r akt\u00edv egy LocalTransactionContainment.
-ERR_BEGIN_GLOBAL_TX.explanation=Egy LocalTransactionContainment m\u00e1r akt\u00edv volt, amikor k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy glob\u00e1lis tranzakci\u00f3 ind\u00edt\u00e1s\u00e1ra.
+ERR_BEGIN_GLOBAL_TX=WLTC0037E: Nem ind\u00edthat\u00f3 glob\u00e1lis tranzakci\u00f3. M\u00e1r van akt\u00edv haszn\u00e1latban LocalTransactionContainment.
+ERR_BEGIN_GLOBAL_TX.explanation=M\u00e1r akt\u00edv volt egy LocalTransactionContainment, amikor k\u00eds\u00e9rlet t\u00f6rt\u00e9nt glob\u00e1lis tranzakci\u00f3 ind\u00edt\u00e1s\u00e1ra.
 ERR_BEGIN_GLOBAL_TX.useraction=CMSG0002
 

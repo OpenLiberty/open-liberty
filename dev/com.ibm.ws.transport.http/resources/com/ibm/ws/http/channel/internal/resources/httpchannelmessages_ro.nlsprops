@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2021 IBM Corporation and others.
+# Copyright (c) 2002, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -102,11 +102,9 @@ start.httpChain.error=CWWKT0020E: A ap\u0103rut o problem\u0103 \u00een timpul p
 start.httpChain.error.explanation=Punctul final HTTP nu a putut fi pornit datorit\u0103 unei probleme nea\u015fteptate. 
 start.httpChain.error.useraction=Examina\u0163i mesajul \u015fi istoricele de excep\u0163ii pentru erori \u00eenrudite. 
 
-httpChain.error.shutdown=CWWKT0021I: Serverul se opre\u015fte din cauza unei posibile erori de configurare. \
-Punctul final {0} nu poate fi pornit; asta s-ar putea \u00eent\u00e2mpla dac\u0103 portul configurat este deja \u00een uz.
+httpChain.error.shutdown=CWWKT0021I: Serverul se opre\u015fte din cauza unei posibile erori de configurare. Punctul final {0} nu poate fi pornit; asta s-ar putea \u00eent\u00e2mpla dac\u0103 portul configurat este deja \u00een uz.
 httpChain.error.shutdown.explanation=Punctul final HTTP a fost configurat cu onError=FAIL, ceea ce face ca serverul s\u0103 se opreasc\u0103 dac\u0103 exist\u0103 o problem\u0103 cu pornirea punctului final. 
-httpChain.error.shutdown.useraction=Examina\u0163i mesajul \u015fi istoricele de excep\u0163ii pentru erori \u00eenrudite. \
-Pentru a \u00eempiedica serverul s\u0103 se opreasc\u0103 datorit\u0103 unei probleme la pornirea punctului final, asigura\u0163i-v\u0103 c\u0103 onError este setat la WARN sau IGNORE.
+httpChain.error.shutdown.useraction=Examina\u0163i mesajul \u015fi istoricele de excep\u0163ii pentru erori \u00eenrudite. Pentru a \u00eempiedica serverul s\u0103 se opreasc\u0103 datorit\u0103 unei probleme la pornirea punctului final, asigura\u0163i-v\u0103 c\u0103 onError este setat la WARN sau IGNORE.
 
 unresolveableHost=CWWKT0022E: Gazda configurat\u0103 {0} pentru punctul final HTTP {1} nu a putut fi rezolvat\u0103. Punctul final a fost dezactivat.
 unresolveableHost.explanation=Un punct final HTTP necesit\u0103 o valoare de gazd\u0103 care poate fi rezolvat\u0103 \u00eentr-o interfa\u0163\u0103 activ\u0103 de re\u0163ea.
@@ -121,8 +119,7 @@ defaultHostDisabled.explanation=Gazda implicit\u0103 virtual\u0103 este cerut\u0
 defaultHostDisabled.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 noHostAliases=CWWKT0025W: Gazda virtual\u0103 {0} nu are niciun alias gazd\u0103 configurat, nu va primi cereri de intrare.
-noHostAliases.explanation=Toate gazdele virtuale care nu sunt implicite trebuie s\u0103 defineasc\u0103 cel pu\u0163in un alias gazd\u0103 (host:port) pentru a identifica cererile de intrare care ar trebui rutate la acea gazd\u0103 virtual\u0103. \
-Gazda virtual\u0103 specificat\u0103 nu are definit niciun alias gazd\u0103, ceea ce va \u00eempiedica rutarea oric\u0103rei cereri la ea.
+noHostAliases.explanation=Toate gazdele virtuale care nu sunt implicite trebuie s\u0103 defineasc\u0103 cel pu\u0163in un alias gazd\u0103 (host:port) pentru a identifica cererile de intrare care ar trebui rutate la acea gazd\u0103 virtual\u0103. Gazda virtual\u0103 specificat\u0103 nu are definit niciun alias gazd\u0103, ceea ce va \u00eempiedica rutarea oric\u0103rei cereri la ea.
 noHostAliases.useraction=Actualiza\u0163i elementul virtualHost element \u00een fi\u015fierul server.xml pentru a defini cel pu\u0163in un atribut hostAlias.
 
 invalidAlias=CWWKT0026W: Un alias gazd\u0103 configurat pentru gazda virtual\u0103 {0} este invalid \u015fi va fi ignorat. {1}
@@ -203,3 +200,11 @@ headers.duplicateHeaderName.useraction=Asigura\u0163i-v\u0103 c\u0103 anteturile
 headers.knownDuplicateHeader=CWWKT0044W: Antetul [{0}], care este marcat ca un nume de antet duplicat, a fost g\u0103sit \u00een configura\u0163ia {1}. Antetul [{0}] este ignorat. Orice antet care este definit \u00een configura\u0163ia {1} trebuie s\u0103 con\u0163in\u0103 nume de antet unice.
 headers.knownDuplicateHeader.explanation=Numele de antet specificat a fost deja g\u0103sit de configura\u0163iile remove, add, set sau setIfMissing.
 headers.knownDuplicateHeader.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de anteturi care sunt definite \u00een aceast\u0103 configura\u0163ie sunt unice \u00een configura\u0163iile remove, add, set sau setIfMissing.
+
+log.rollover.start.time.format.warning=CWWKT0045W: Proprietatea pentru timpul de pornire a reutiliz\u0103rii istoricului are un format incorect. Ca urmare, valoarea este setat\u0103 la valoarea implicit\u0103 '00:00', care reprezint\u0103 miezul nop\u021bii.
+log.rollover.start.time.format.warning.explanation=Proprietatea pentru timpul de pornire a reutiliz\u0103rii trebuie s\u0103 aib\u0103 formatul HH:MM, cu 00:00 reprezent\u00e2nd miezul nop\u021bii.
+log.rollover.start.time.format.warning.useraction=Asigura\u021bi-v\u0103 c\u0103 valoarea propriet\u0103\u021bii pentru timpul de pornire a reutiliz\u0103rii are formatul corespunz\u0103tor HH:MM, cu nota\u021bia pentru 24 de ore, unde 00:00 reprezint\u0103 miezul nop\u021bii.
+
+log.rollover.interval.too.short.warning=CWWKT0046W: Intervalul de reutilizare a istoricului nu poate fi mai mic de 1 minut. Dac\u0103 este specificat\u0103 o valoare mai mic\u0103 dec\u00e2t 1 minut, intervalul de reutilizare a istoricului este setat la valoarea implicit\u0103 de 1 zi.
+log.rollover.interval.too.short.warning.explanation=Intervalul de reutilizare a istoricului nu poate fi mai mic de 1 minut.
+log.rollover.interval.too.short.warning.useraction=Specifica\u021bi un interval de reutilizare a istoricului care este egal sau mai mare dec\u00e2t 1 minut.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2021 IBM Corporation and others.
+# Copyright (c) 2002, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -102,12 +102,9 @@ start.httpChain.error=CWWKT0020E: Wyst\u0105pi\u0142 problem podczas uruchamiani
 start.httpChain.error.explanation=Nie mo\u017cna uruchomi\u0107 punktu ko\u0144cowego HTTP z powodu nieoczekiwanego problemu.
 start.httpChain.error.useraction=Sprawd\u017a, czy dzienniki komunikat\u00f3w i wyj\u0105tk\u00f3w nie zawieraj\u0105 pokrewnych b\u0142\u0119d\u00f3w. 
 
-httpChain.error.shutdown=CWWKT0021I: Serwer jest zatrzymywany z powodu mo\u017cliwego b\u0142\u0119du konfiguracji. \
-Nie mo\u017cna uruchomi\u0107 punktu ko\u0144cowego {0}. Mo\u017ce tak si\u0119 zdarzy\u0107 w przypadku, gdy skonfigurowany port jest ju\u017c w u\u017cyciu.
+httpChain.error.shutdown=CWWKT0021I: Serwer jest zatrzymywany z powodu mo\u017cliwego b\u0142\u0119du konfiguracji. Nie mo\u017cna uruchomi\u0107 punktu ko\u0144cowego {0}. Mo\u017ce tak si\u0119 zdarzy\u0107 w przypadku, gdy skonfigurowany port jest ju\u017c w u\u017cyciu.
 httpChain.error.shutdown.explanation=Punkt ko\u0144cowy HTTP zosta\u0142 skonfigurowany z w\u0142a\u015bciwo\u015bci\u0105 onError=FAIL, co powoduje zatrzymanie serwera w przypadku wyst\u0105pienia problemu z uruchomieniem punktu ko\u0144cowego. 
-httpChain.error.shutdown.useraction=Sprawd\u017a, czy dzienniki komunikat\u00f3w i wyj\u0105tk\u00f3w nie zawieraj\u0105 \
-pokrewnych b\u0142\u0119d\u00f3w. \
-Aby zapobiec zatrzymaniu serwera ze wzgl\u0119du na problem zwi\u0105zany z uruchamianiem punktu ko\u0144cowego, upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 onError ma warto\u015b\u0107 WARN lub IGNORE.
+httpChain.error.shutdown.useraction=Sprawd\u017a, czy dzienniki komunikat\u00f3w i wyj\u0105tk\u00f3w nie zawieraj\u0105 pokrewnych b\u0142\u0119d\u00f3w. Aby zapobiec zatrzymaniu serwera ze wzgl\u0119du na problem zwi\u0105zany z uruchamianiem punktu ko\u0144cowego, upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 onError ma warto\u015b\u0107 WARN lub IGNORE.
 
 unresolveableHost=CWWKT0022E: Nie mo\u017cna rozstrzygn\u0105\u0107 skonfigurowanego hosta {0} dla punktu ko\u0144cowego HTTP {1}. Punkt ko\u0144cowy zosta\u0142 wy\u0142\u0105czony.
 unresolveableHost.explanation=Punkt ko\u0144cowy HTTP wymaga warto\u015bci hosta, kt\u00f3r\u0105 mo\u017cna rozstrzygn\u0105\u0107 na aktywny interfejs sieciowy.
@@ -122,8 +119,7 @@ defaultHostDisabled.explanation=Domy\u015blny host wirtualny jest wymagany przez
 defaultHostDisabled.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 noHostAliases=CWWKT0025W: Host wirtualny {0} nie ma skonfigurowanych alias\u00f3w hosta. Nie b\u0119dzie on otrzymywa\u0142 \u017c\u0105da\u0144 przychodz\u0105cych.
-noHostAliases.explanation=Wszystkie hosty wirtualne inne ni\u017c domy\u015blny musz\u0105 definiowa\u0107 co najmniej jeden alias hosta (host:port) na potrzeby identyfikowania \u017c\u0105da\u0144 przychodz\u0105cych, kt\u00f3re powinny by\u0107 kierowane do tego hosta wirtualnego. \
-Okre\u015blony host wirtualny nie ma zdefiniowanych \u017cadnych alias\u00f3w hosta, co uniemo\u017cliwi kierowanie do niego jakichkolwiek \u017c\u0105da\u0144.
+noHostAliases.explanation=Wszystkie hosty wirtualne inne ni\u017c domy\u015blny musz\u0105 definiowa\u0107 co najmniej jeden alias hosta (host:port) na potrzeby identyfikowania \u017c\u0105da\u0144 przychodz\u0105cych, kt\u00f3re powinny by\u0107 kierowane do tego hosta wirtualnego. Okre\u015blony host wirtualny nie ma zdefiniowanych \u017cadnych alias\u00f3w hosta, co uniemo\u017cliwi kierowanie do niego jakichkolwiek \u017c\u0105da\u0144.
 noHostAliases.useraction=Zaktualizuj element virtualHost w pliku server.xml, aby definiowa\u0142 co najmniej jeden atrybut hostAlias.
 
 invalidAlias=CWWKT0026W: Skonfigurowany alias hosta dla hosta wirtualnego {0} jest niepoprawny i zostanie zignorowany. {1}
@@ -204,3 +200,11 @@ headers.duplicateHeaderName.useraction=Dopilnuj, aby nag\u0142\u00f3wki definiow
 headers.knownDuplicateHeader=CWWKT0044W: W konfiguracji {1} napotkano nag\u0142\u00f3wek [{0}] oznaczony jako zduplikowana nazwa nag\u0142\u00f3wka. Nag\u0142\u00f3wek [{0}] zosta\u0142 zignorowany. Wszystkie nag\u0142\u00f3wki definiowane przez konfiguracj\u0119 {1} musz\u0105 mie\u0107 unikalne nazwy.
 headers.knownDuplicateHeader.explanation=Podana nazwa nag\u0142\u00f3wka zosta\u0142a ju\u017c znaleziona przez konfiguracj\u0119 remove, add, set lub setIfMissing.
 headers.knownDuplicateHeader.useraction=Nazwy nag\u0142\u00f3wk\u00f3w definiowane w tej konfiguracji musz\u0105 by\u0107 unikalne w\u015br\u00f3d konfiguracji remove, add, set lub setIfMissing.
+
+log.rollover.start.time.format.warning=CWWKT0045W: W\u0142a\u015bciwo\u015b\u0107 czasu rozpocz\u0119cia zast\u0119powania dziennika jest niepoprawnie sformatowana. W rezultacie warto\u015b\u0107 zostanie ustawiona na warto\u015b\u0107 domy\u015bln\u0105 '00:00', kt\u00f3ra oznacza p\u00f3\u0142noc.
+log.rollover.start.time.format.warning.explanation=W\u0142a\u015bciwo\u015b\u0107 czasu rozpocz\u0119cia zast\u0105pienia musi by\u0107 sformatowana w formacie GG:MM, a warto\u015b\u0107 00:00 oznacza p\u00f3\u0142noc.
+log.rollover.start.time.format.warning.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 w\u0142a\u015bciwo\u015bci czasu rozpocz\u0119cia zast\u0105pienia jest poprawnie sformatowana w notacji 24-godzinnej (GG:MM), gdzie 00:00 oznacza p\u00f3\u0142noc.
+
+log.rollover.interval.too.short.warning=CWWKT0046W: Odst\u0119p czasu zast\u0105pienia dziennika nie mo\u017ce by\u0107 kr\u00f3tszy od 1 minuty. Je\u015bli zostanie podana warto\u015b\u0107 kr\u00f3tsza od minuty, odst\u0119p czasu zast\u0105pienia dziennika zostanie ustawiony na warto\u015b\u0107 domy\u015bln\u0105 wynosz\u0105c\u0105 1 dzie\u0144.
+log.rollover.interval.too.short.warning.explanation=Odst\u0119p czasu zast\u0105pienia dziennika nie mo\u017ce by\u0107 kr\u00f3tszy od 1 minuty.
+log.rollover.interval.too.short.warning.useraction=Nale\u017cy poda\u0107 odst\u0119p czasu zast\u0105pienia dziennika, kt\u00f3ry jest r\u00f3wny lub d\u0142u\u017cszy od 1 minuty.

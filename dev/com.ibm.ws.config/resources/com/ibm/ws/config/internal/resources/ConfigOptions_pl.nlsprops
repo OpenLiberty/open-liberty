@@ -29,7 +29,7 @@ use.options=Opcje:
 option-key.ignorePids=--ignorePidsFile
 option-desc.ignorePids=Nazwa pliku zawieraj\u0105cego list\u0119 identyfikator\u00f3w PID, kt\u00f3re maj\u0105 by\u0107 ignorowane.
 option-key.encoding=--encoding
-option-desc.encoding=Kodowanie znak\u00f3w, kt\u00f3re ma by\u0107 u\u017cywane w danych wyj\u015bciowych.
+option-desc.encoding=Kodowanie znak\u00f3w, kt\u00f3re ma by\u0107 u\u017cywane w danych wyj\u015bciowych.     \nDomy\u015blnym kodowaniem jest "UTF-8".
 option-key.locale=--locale
 option-desc.locale=J\u0119zyk, kt\u00f3ry ma by\u0107 u\u017cywany podczas tworzenia pliku wyj\u015bciowego. Ten \u0142a\u0144cuch sk\u0142ada si\u0119 z dwuliterowego kodu j\u0119zyka w standardzie ISO-639 (ma\u0142e litery), po kt\u00f3rym opcjonalnie mo\u017ce znajdowa\u0107 si\u0119 podkre\u015blenie oraz dwuliterowy kod kraju w standardzie ISO-3166 (du\u017ce litery).
 
