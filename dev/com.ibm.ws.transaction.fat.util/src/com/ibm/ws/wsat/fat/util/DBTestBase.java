@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsat.fat.tests;
+package com.ibm.ws.wsat.fat.util;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -37,12 +37,6 @@ public abstract class DBTestBase extends WSATTest {
 	public static final String exception = "exception";
 	public static final String setrollbackonly = "setrollbackonly";
 	public static final String transcommit = "transcommit";
-
-
-	// Basic URL
-	public static LibertyServer client;
-	public static LibertyServer server1;
-	public static LibertyServer server2;
 
 	public static final String basicURL = "http://localhost";
 	public static String CLient_URL;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,16 +13,8 @@
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.wsat.migration_fat.1"),
-  			   project(":com.ibm.ws.transaction.fat.util"),
+               project(":com.ibm.ws.transaction.fat.util"),
                project(':io.openliberty.org.apache.commons.logging')
-}
-
-
-task copyFAT {
-    copy {
-      from project(':com.ibm.ws.wsat.migration_fat.1').file('fat/src/com/ibm/ws/wsat/fat/tests')
-      into new File('fat/src/com/ibm/ws/wsat/fat/tests')
-    }
 }
 
 task copyCommonFiles {
@@ -45,7 +37,6 @@ task copyCommonFiles {
   }
 }
 
-addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 jar {
@@ -63,8 +54,5 @@ clean.doLast {
   }
   if (file('build').exists()){
     file('build').deleteDir()
-  }
-  if (file('fat/src/com/ibm/ws/wsat/fat/tests').exists()){
-    file('fat/src/com/ibm/ws/wsat/fat/tests').deleteDir()
   }
 }

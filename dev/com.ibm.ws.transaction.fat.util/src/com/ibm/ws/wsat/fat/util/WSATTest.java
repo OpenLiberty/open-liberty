@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsat.fat.tests;
+package com.ibm.ws.wsat.fat.util;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
