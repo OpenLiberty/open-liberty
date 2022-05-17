@@ -29,6 +29,8 @@ import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
+import com.ibm.websphere.simplicity.LocalFile;
+
 public class CDIExtensionRepeatActions {
 
     public static final String BUNDLE_PATH = "publish/bundles/";
@@ -179,7 +181,14 @@ public class CDIExtensionRepeatActions {
     }
 
     public static void uninstallUserBundle(LibertyServer server, String bundleID) throws Exception {
-        server.uninstallUserBundle(getBundleName(bundleID, isJakartaActive()));
+        String bundleName = getBundleName(bundleID, isJakartaActive());
+        server.uninstallUserBundle(bundleName);
+        if(isJakartaActive()) {
+            //Destroy the old file the transformer created to prevent a collision when the next transformation happens. 
+            //This may or may not fix https://wasrtc.hursley.ibm.com:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/290609
+            LocalFile bundleFile = new LocalFile(getBundlePath(bundleName));
+            bundleFile.delete();
+        }
     }
 
     public static void uninstallUserFeature(LibertyServer server, String bundleID) throws Exception {
