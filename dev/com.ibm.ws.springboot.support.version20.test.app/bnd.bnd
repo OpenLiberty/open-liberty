@@ -40,4 +40,5 @@ bVersion=1.0
 	org.springframework.security:spring-security-web;strategy=exact;version=5.6.2, \
 	org.springframework.security:spring-security-config;strategy=exact;version=5.6.2, \
 	org.springframework.security:spring-security-core;strategy=exact;version=5.6.2, \
+	org.springframework.security:spring-security-crypto;strategy=exact;version=5.6.2, \
 	com.ibm.websphere.javaee.servlet.4.0
