@@ -64,8 +64,9 @@ public class ConfigurableWABTests extends AbstractWABTests {
     @AfterClass
     public static void stopServer() throws Exception {
         if (server != null && server.isStarted()) {
-            // we expect a conflict error from the conflict test
-            server.stopServer("CWWKZ0208E");
+            // ignore conflict error from the conflict test
+            // ignore warning about virtual host not found
+            server.stopServer("CWWKZ0208E", "SRVE9956W");
         }
     }
 
