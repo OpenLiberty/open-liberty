@@ -89,7 +89,7 @@ public class CxfSSLSAMLBasic1ServerTests extends CxfSSLSAMLBasicTests {
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
 
         //issue 18363
-        setFeatureVersion("EE8");
+        setFeatureVersion("EE7");
         
     }
 }

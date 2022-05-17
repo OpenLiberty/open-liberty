@@ -56,7 +56,7 @@ public class CxfSSLSAMLBasic2ServerTests extends CxfSSLSAMLBasicTests {
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
 
-        setFeatureVersion("EE8");
+        setFeatureVersion("EE7");
         // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires
         List<String> extraMsgs = new ArrayList<String>();
