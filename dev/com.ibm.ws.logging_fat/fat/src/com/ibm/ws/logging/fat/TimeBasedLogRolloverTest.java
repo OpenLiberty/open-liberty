@@ -338,6 +338,12 @@ public class TimeBasedLogRolloverTest {
     @Test
     public void testInvalidRolloverStartTime() throws Exception {
         setUp(server_xml, "testInvalidRolloverStartTime");
+        
+        //wait to do a server config update at the start of the minute
+        if (Calendar.getInstance().get(Calendar.SECOND) != 0) {
+            Thread.sleep((60000 - Calendar.getInstance().get(Calendar.SECOND)*1000));
+            Thread.sleep(2000); //padding
+        }
         setServerConfiguration(true, false, false, "24:00", "", 0);
         List<String> lines = serverInUse.findStringsInLogs("TRAS3012W");
         LOG.logp(Level.INFO, CLASS_NAME, "testInvalidRolloverInterval", "Found warning: "+lines.toString());
@@ -351,6 +357,12 @@ public class TimeBasedLogRolloverTest {
     @Test
     public void testInvalidRolloverInterval() throws Exception {
         setUp(server_xml, "testInvalidRolloverInterval");
+
+        //wait to do a server config update at the start of the minute
+        if (Calendar.getInstance().get(Calendar.SECOND) != 0) {
+            Thread.sleep((60000 - Calendar.getInstance().get(Calendar.SECOND)*1000));
+            Thread.sleep(2000); //padding
+        }
         setServerConfiguration(false, true, false, "", "30s", 0);
         List<String> lines = serverInUse.findStringsInLogs("TRAS3013W");
         LOG.logp(Level.INFO, CLASS_NAME, "testInvalidRolloverInterval", "Found warning: "+lines.toString());
