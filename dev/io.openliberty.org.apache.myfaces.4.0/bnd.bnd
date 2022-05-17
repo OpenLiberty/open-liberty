@@ -130,7 +130,7 @@ Import-Package: \
   com.ibm.ws.anno;version=latest,\
   com.ibm.ws.managedobject;version=latest,\
   com.ibm.ws.jsp;version=latest,\
-  io.openliberty.jakarta.expressionLanguage.4.0;version=latest,\
+  io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
   io.openliberty.jakarta.servlet.5.0;version=latest, \
   io.openliberty.jakarta.cdi.4.0;version=latest,\
   com.ibm.ws.logging.core,\
