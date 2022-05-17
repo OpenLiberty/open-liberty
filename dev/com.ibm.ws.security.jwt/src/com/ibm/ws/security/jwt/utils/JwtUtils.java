@@ -213,28 +213,8 @@ public class JwtUtils {
 	public static Map claimsFromJsonObject(String jsonFormattedString) throws JoseException {
 		Map<String, Object> claimsMap = Collections.synchronizedMap(new HashMap<>());
 
-		// JSONObject jobj = JSONObject.parse(jsonFormattedString);
 		Map<String, Object> jobj = org.jose4j.json.JsonUtil.parseJson(jsonFormattedString);
-		Set<Entry<String, Object>> entries = jobj.entrySet();
-		Iterator<Entry<String, Object>> it = entries.iterator();
-
-		while (it.hasNext()) {
-			Entry<String, Object> entry = it.next();
-
-			String key = entry.getKey();
-			Object value = entry.getValue();
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "Key : " + key + ", Value: " + value);
-			}
-			if (!isNullEmpty(key) && value != null) {
-				claimsMap.put(key, value);
-			}
-
-			// JsonElement jsonElem = entry.getValue();
-		}
-
-		// claims.putAll(jobj.entrySet());
-
+		claimsMap.putAll(jobj);
 		return claimsMap;
 	}
 

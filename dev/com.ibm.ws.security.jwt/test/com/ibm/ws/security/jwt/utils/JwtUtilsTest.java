@@ -91,7 +91,11 @@ public class JwtUtilsTest {
             String givenName = (String) map2.get("givenName");
             Assert.assertEquals("The expected family name is Doe", "Doe", familyName);
             Assert.assertEquals("The expected given name is Jane","Jane", givenName);
-            
+
+            Assert.assertTrue("Map did not contain \"password\" entry.", map.containsKey("password"));
+            Object passwordValue = map.get("password");
+            Assert.assertNull("Value in map for \"password\" was not null as expected, but was [" + passwordValue + "].", passwordValue);
+
             Object list = map.get("schemas");
             if (list instanceof List) {
                 List list2 = (List) list;
