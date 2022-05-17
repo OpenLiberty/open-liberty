@@ -99,3 +99,6 @@ enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: The enableImplicitBea
 enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=Although you can set the enableImplicitBeanArchives attribute on both of the cdi12 and cdi configuration element configuration elements, you should not set this attribute with different values in the same server configuration.
 enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Update your server.xml to fix the conflict. The recommended action is to remove the cdi12 configuration element because it is superseded by the cdi configuration element.
 
+unversioned.beansXML.warning.CWOWB1018W=CWOWB1018W: Using an unversioned CDI beans.xml file may lead to unexpected behaviour when using CDI 4.0 or higher: {0}
+unversioned.beansXML.warning.CWOWB1018W.explanation=Prior to CDI 4.0, a non-empty but unversioned beans.xml file meant that the archive should be treated as an explicit bean archive (all classes may be beans). In CDI 4.0 or higher, the archive is taken to be an implicit bean archive (only annotated classes may be beans).
+unversioned.beansXML.warning.CWOWB1018W.useraction=Update the beans.xml file within your application.

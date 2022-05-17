@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.cdi40.internal.weld;
 
+import java.net.URL;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,12 +25,16 @@ import org.jboss.weld.transaction.spi.TransactionServices;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.internal.interfaces.CDIContainerEventManager;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 
 import jakarta.enterprise.event.Shutdown;
 import jakarta.enterprise.event.Startup;
 import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.spi.DeploymentException;
 
 @Trivial
 @Component(name = "io.openliberty.cdi40.internal.weld.CDI40ContainerEventManagerImpl",
@@ -36,6 +42,8 @@ import jakarta.enterprise.inject.Any;
                 property = { "service.vendor=IBM" },
                 configurationPolicy = ConfigurationPolicy.IGNORE)
 public class CDI40ContainerEventManagerImpl implements CDIContainerEventManager {
+
+    private static final TraceComponent tc = Tr.register(CDI40ContainerEventManagerImpl.class);
 
     private static Environment LIBERTY_EE_ENVIRONMENT = new LibertyEEEnvironment();
 
@@ -54,6 +62,9 @@ public class CDI40ContainerEventManagerImpl implements CDIContainerEventManager 
         return LIBERTY_EE_ENVIRONMENT;
     }
 
+    /**
+     * This is the same as Weld Environments.EE except that automaticallyHandleStartupShutdownEvents() returns false
+     */
     private static class LibertyEEEnvironment implements Environment {
 
         private final Set<Class<? extends Service>> requiredBeanDeploymentArchiveServices = new HashSet<Class<? extends Service>>();
@@ -69,7 +80,7 @@ public class CDI40ContainerEventManagerImpl implements CDIContainerEventManager 
 
         @Override
         public boolean automaticallyHandleStartupShutdownEvents() {
-            return false;
+            return false; //this is where our Environment differs from Weld Environments.EE
         }
 
         @Override
@@ -87,5 +98,18 @@ public class CDI40ContainerEventManagerImpl implements CDIContainerEventManager 
             return true;
         }
 
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void processDeploymentException(WebSphereCDIDeployment webSphereCDIDeployment, DeploymentException e) throws DeploymentException {
+        //this extension point allows us to output an additional warning message when a DeploymentException is caught
+        if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+            Collection<URL> unversionedBeansXmlURLs = webSphereCDIDeployment.getUnversionedBeansXmlURLs();
+            if (unversionedBeansXmlURLs != null && !unversionedBeansXmlURLs.isEmpty()) {
+                Tr.warning(tc, "unversioned.beansXML.warning.CWOWB1018W", unversionedBeansXmlURLs);
+            }
+        }
+        throw e;
     }
 }

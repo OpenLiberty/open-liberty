@@ -662,9 +662,8 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     @Override
     public BeansXml getBeansXml() {
         if (this.beansXml == null) {
-            Resource beansXmlResource = archive.getBeansXml();
-            if (beansXmlResource != null) {
-                URL beansXmlUrl = beansXmlResource.getURL();
+            URL beansXmlUrl = getBeansXmlResourceURL();
+            if (beansXmlUrl != null) {
                 final ClassLoader origTCCL = getContextClassLoader();
                 try {
                     // Must use this class's loader as the context classloader to ensure
@@ -678,6 +677,17 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             }
         }
         return this.beansXml;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public URL getBeansXmlResourceURL() {
+        URL beansXmlResourceURL = null;
+        Resource beansXmlResource = archive.getBeansXml();
+        if (beansXmlResource != null) {
+            beansXmlResourceURL = beansXmlResource.getURL();
+        }
+        return beansXmlResourceURL;
     }
 
     /**
@@ -1095,4 +1105,5 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             }
         });
     }
+
 }
