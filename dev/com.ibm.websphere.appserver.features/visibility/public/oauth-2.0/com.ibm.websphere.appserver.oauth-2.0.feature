@@ -24,7 +24,7 @@ Subsystem-Name: OAuth 2.0
   com.ibm.websphere.appserver.internal.slf4j-1.7, \
   com.ibm.websphere.appserver.ldapRegistry-3.0
 -bundles=\
-  com.ibm.ws.com.google.gson.2.2.4, \
+  io.openliberty.com.google.gson, \
   com.ibm.ws.org.jose4j, \
   io.openliberty.org.apache.commons.codec, \
   com.ibm.ws.security.common.jsonwebkey, \

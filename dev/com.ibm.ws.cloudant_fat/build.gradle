@@ -18,7 +18,7 @@ dependencies {
            'com.cloudant:cloudant-http:2.16.0',
            project(':io.openliberty.org.apache.commons.codec'),
            project(':com.ibm.ws.org.apache.commons.io'),
-           'com.google.code.gson:gson:2.2.4'
+           project(':io.openliberty.com.google.gson')
 }
 
 task copyCloudant(type: Copy) {

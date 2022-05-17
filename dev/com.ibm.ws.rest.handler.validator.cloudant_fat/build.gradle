@@ -21,7 +21,7 @@ dependencies {
       cloudantOld         'com.cloudant:cloudant-client:2.8.0',
                           'com.cloudant:cloudant-http:2.8.0'
       cloudantCommonDeps  project(':com.ibm.ws.org.apache.commons.io'),
-      					  'com.google.code.gson:gson:2.8.0'
+      					  project(':io.openliberty.com.google.gson')
 }
 
 task copyCloudant(type: Copy) {
