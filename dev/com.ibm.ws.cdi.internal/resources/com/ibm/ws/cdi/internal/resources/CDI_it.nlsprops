@@ -89,9 +89,9 @@ bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: La classe {0} non implementa l
 bce.does.not.implement.bce.CWOWB1014E.explanation=L'applicazione include un file META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension che comprende la classe, ma la classe non implementa jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension
 bce.does.not.implement.bce.CWOWB1014E.useraction=Modificare la classe in modo che implementi jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension.
 
-cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: L'elemento di configurazione cdi12 \u00e8 sostituito dall'elemento di configurazione cdi.
-cdi12.element.type.superceded.CWOWB1015W.explanation=L'elemento di configurazione cdi sostituisce l'elemento di configurazione cdi12 e contiene tutte le stesse opzioni, pi\u00f9 delle nuove opzioni.
-cdi12.element.type.superceded.CWOWB1015W.useraction=Modificare la configurazione di server.xml per utilizzare l'elemento di configurazione cdi invece dell'elemento di configurazione cdi12.
+cdi12.element.type.superceded.CWOWB1015I=CWOWB1015I: L'elemento di configurazione cdi12 \u00e8 sostituito dall'elemento di configurazione cdi.
+cdi12.element.type.superceded.CWOWB1015I.explanation=L'elemento di configurazione cdi sostituisce l'elemento di configurazione cdi12 e contiene tutte le stesse opzioni, pi\u00f9 delle nuove opzioni.
+cdi12.element.type.superceded.CWOWB1015I.useraction=Modificare la configurazione di server.xml per utilizzare l'elemento di configurazione cdi invece dell'elemento di configurazione cdi12.
 
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: L'attributo emptyBeansXMLExplicitBeanArchive dell'elemento di configurazione cdi \u00e8 supportato solo su CDI 4.0 o successive. Questo attributo viene ignorato.
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=L'attributo emptyBeansXMLExplicitBeanArchive non ha alcun effetto quando viene utilizzato con una versione CDI antecedente alla 4.0.

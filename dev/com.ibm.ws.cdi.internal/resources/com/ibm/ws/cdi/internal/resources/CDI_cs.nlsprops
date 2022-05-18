@@ -89,9 +89,9 @@ bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: T\u0159\u00edda {0} neimplemen
 bce.does.not.implement.bce.CWOWB1014E.explanation=Aplikace zahrnuje soubor META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension, kter\u00fd zahrnuje t\u0159\u00eddu, ale t\u0159\u00edda neimplementuje jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension
 bce.does.not.implement.bce.CWOWB1014E.useraction=Zm\u011b\u0148te t\u0159\u00eddu tak, aby implementovala soubor jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension.
 
-cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: Prvek konfigurace cdi12 je nahrazen prvkem konfigurace cdi.
-cdi12.element.type.superceded.CWOWB1015W.explanation=Prvek konfigurace cdi nahrad\u00ed prvek konfigurace cdi12 a obsahuje v\u0161echny stejn\u00e9 volby plus nov\u00e9 volby.
-cdi12.element.type.superceded.CWOWB1015W.useraction=Upravte konfiguraci server.xml tak, aby m\u00edsto prvku konfigurace cdi12 pou\u017e\u00edvala prvek konfigurace cdi.
+cdi12.element.type.superceded.CWOWB1015I=CWOWB1015I: Prvek konfigurace cdi12 je nahrazen prvkem konfigurace cdi.
+cdi12.element.type.superceded.CWOWB1015I.explanation=Prvek konfigurace cdi nahrad\u00ed prvek konfigurace cdi12 a obsahuje v\u0161echny stejn\u00e9 volby plus nov\u00e9 volby.
+cdi12.element.type.superceded.CWOWB1015I.useraction=Upravte konfiguraci server.xml tak, aby m\u00edsto prvku konfigurace cdi12 pou\u017e\u00edvala prvek konfigurace cdi.
 
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: Atribut emptyBeansXMLExplicitBeanArchive prvku konfigurace cdi je podporov\u00e1n pouze ve verzi CDI 4.0 nebo nov\u011bj\u0161\u00ed.  Tento atribut je ignorov\u00e1n.
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Atribut emptyBeansXMLExplicitBeanArchive nem\u00e1 \u017e\u00e1dn\u00fd vliv, je-li pou\u017eit s verz\u00ed CDI ni\u017e\u0161\u00ed ne\u017e 4.0. 
