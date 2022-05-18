@@ -420,7 +420,6 @@ public class PermissionManager implements PermissionsCombiner {
             }
             ArrayList<Permission> permissions = codeBasePermissionMap.get(codeBase);
             // Add the granted permissions to an arraylist
-            Iterator it = grantedPermissions.iterator();
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Adding grantedPermissions to codeBase: " + codeBase);
             }
