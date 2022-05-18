@@ -69,7 +69,7 @@ public class BackchannelLogoutHelper {
         }
         String httpMethod = request.getMethod();
         if (!"POST".equalsIgnoreCase(httpMethod)) {
-            throw new BackchannelLogoutException(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            throw new BackchannelLogoutException("HTTP " + HttpServletResponse.SC_METHOD_NOT_ALLOWED + " Method Not Allowed (" + httpMethod + ")", HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
         String logoutTokenParameter = request.getParameter(LOGOUT_TOKEN_PARAM_NAME);
         if (logoutTokenParameter == null || logoutTokenParameter.isEmpty()) {
