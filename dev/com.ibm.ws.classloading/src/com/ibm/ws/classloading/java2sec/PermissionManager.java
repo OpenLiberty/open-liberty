@@ -419,6 +419,13 @@ public class PermissionManager implements PermissionsCombiner {
                 Tr.debug(tc, "codeBase = " + codeBase);
             }
             ArrayList<Permission> permissions = codeBasePermissionMap.get(codeBase);
+            // Add the granted permissions to an arraylist
+            Iterator it = grantedPermissions.iterator();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Adding grantedPermissions to codeBase: " + codeBase);
+            }
+                
+            permissions.addAll(grantedPermissions);
 
             if (tc.isDebugEnabled()) {
                 for (int i = 0; i < permissions.size(); i++) {
