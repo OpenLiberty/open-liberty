@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,15 +19,6 @@ import com.ibm.ws.ui.internal.rest.exceptions.RESTException;
  *
  */
 public interface URLUtility {
-
-    /**
-     * Logic used to grab the HTTP GET status of a URL.
-     * 
-     * @param url The URL to inspect. Must not be {@code null}.
-     * @return A JSON object with the URL and the HTTP status code which represents the status of a GET for the URL
-     * @throws RESTException If the reaching the URL encountered an error
-     */
-    Map<String, Object> getStatus(final URL url) throws RESTException;
 
     /**
      * Attempts to construct a Tool object from the given URL by attempting
