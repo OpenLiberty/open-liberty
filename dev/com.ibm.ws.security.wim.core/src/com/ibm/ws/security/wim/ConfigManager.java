@@ -335,6 +335,8 @@ public class ConfigManager implements RuntimeUpdateListener {
                 Tr.debug(tc,
                          "failed response login delay is enabled with the following min/max (ms): " + failResponseDelayMin + " and " + failResponseDelayMax);
             }
+        } else {
+            Tr.warning(tc, WIMMessageKey.FAILED_LOGIN_DELAY_DISABLED, CONFIG_PROP_FAIL_RESPONSE_DELAY_MIN, CONFIG_PROP_FAIL_RESPONSE_DELAY_MAX);
         }
         updatedConfig.put(CONFIG_PROP_FAIL_RESPONSE_DELAY_MAX, failResponseDelayMax);
         updatedConfig.put(CONFIG_PROP_FAIL_RESPONSE_DELAY_MIN, failResponseDelayMin);

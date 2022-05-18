@@ -72,6 +72,11 @@ MISSING_REGISTRY_DEFINITION=CWIMK0011E: The user registry operation could not be
 MISSING_REGISTRY_DEFINITION.explanation=A user registry was not defined or could not be initialized due to a configuration error. A valid user registry includes an LDAP registry or other supported registries or repositories.
 MISSING_REGISTRY_DEFINITION.useraction=If a user registry was defined in the configuration file, review the logs for configuration errors during server start up. Add or correct the user registry definition in the server.xml file.
 
+FAILED_LOGIN_DELAY_DISABLED=CWIMK0012W: The failed login delay for the federated repositories is disabled. This disablement exposes the server to user enumeration attacks. To enable delay for failed logins, remove the {0} and the {1} federated repository attributes so that the default minimum and maximum values of 0 and 5000 milliseconds are used. Alternatively, set the {1} federated repository attribute to a value greater than zero. 
+FAILED_LOGIN_DELAY_DISABLED.explanation=When the failed login delay is disabled, the server is vulnerable to a user enumeration style attack.
+FAILED_LOGIN_DELAY_DISABLED.useraction=Enable the failed login delay by removing the attributes to use the default minimum and maximum padding delay of zero and 5000 milliseconds or set the attributes to a custom configuration. 
+
+
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: The user registry operation could not be completed. The identifier of the entity was not found. Specify the correct identifier as the input parameter. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=The identifier of the entity was not specified. The system cannot find the entity. The user registry operation cannot continue without finding this entity. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Ensure that the entity in the input object contains an identifier property.

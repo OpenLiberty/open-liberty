@@ -1695,4 +1695,11 @@ public interface WIMMessageKey {
      * LDAP_WIM_CONFIG_UPDATED_FAILED.useraction=Review the logs for the cause of this error and take appropriate corrective actions.
      */
     String LDAP_WIM_CONFIG_UPDATED_FAILED = "LDAP_WIM_CONFIG_UPDATED_FAILED";
+
+    /**
+     * CWIMK0012W: The failed login delay for the federated repositories is disabled. This disablement exposes the server to user enumeration attacks. To enable delay for failed
+     * logins, remove the {0} and the {1} federated repository attributes so that the default minimum and maximum values of 0 and 5000 milliseconds are used. Alternatively, set the
+     * {1} federated repository attribute to a value greater than zero.
+     */
+    String FAILED_LOGIN_DELAY_DISABLED = "FAILED_LOGIN_DELAY_DISABLED";
 }
