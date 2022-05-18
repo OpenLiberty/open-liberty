@@ -53,7 +53,6 @@ public class ConsumerServlet extends FATServlet {
 
     @Test
     public void countCars() throws Exception {
-        consumer.createTables();
         long personId = testPersist();
 
         int cars = consumer.getNumCars(personId);
