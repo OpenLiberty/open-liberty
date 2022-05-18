@@ -293,5 +293,10 @@ LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: The value for the "{0}" me
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=The corresponding member value must be a JSON object. The expected value is "{}", an empty JSON object.
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Ensure that the "events" claim in the logout token is formatted correctly.
 
+# Do not translate jti
+LOGOUT_TOKEN_DUP_JTI=CWWKS1551E: Another logout token with the same [{0}] "jti" claim has already been received by the [{1}] OpenID Connect client.
+LOGOUT_TOKEN_DUP_JTI.explanation=The "jti" claim uniquely identifies a logout token. Another logout token with this "jti" has already been used, so the token cannot be used again.
+LOGOUT_TOKEN_DUP_JTI.useraction=Ensure the logout token contains a unique "jti" value and that logout tokens are not used multiple times.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

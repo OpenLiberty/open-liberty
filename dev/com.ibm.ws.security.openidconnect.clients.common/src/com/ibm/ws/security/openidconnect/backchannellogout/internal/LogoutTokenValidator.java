@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.backchannellogout;
+package com.ibm.ws.security.openidconnect.backchannellogout.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.structures.SingleTableCache;
+import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
@@ -41,6 +43,7 @@ public class LogoutTokenValidator {
     public static final String EVENTS_MEMBER_NAME = "http://schemas.openid.net/event/backchannel-logout";
 
     private static SSLSupport SSL_SUPPORT = null;
+    private static SingleTableCache jtiCache = new SingleTableCache(10 * 60 * 1000);
 
     private ConvergedClientConfig config = null;
     private Jose4jUtil jose4jUtil = null;
@@ -79,7 +82,7 @@ public class LogoutTokenValidator {
             verifySubAndOrSidPresent(claims);
             verifyEventsClaim(claims);
             verifyNonceClaimNotPresent(claims);
-            doOptionalVerificationChecks();
+            doOptionalVerificationChecks(claims);
 
             return claims;
         } catch (Exception e) {
@@ -179,12 +182,49 @@ public class LogoutTokenValidator {
         }
     }
 
-    void doOptionalVerificationChecks() {
+    void doOptionalVerificationChecks(JwtClaims claims) throws BackchannelLogoutException {
+        verifyTokenWithSameJtiNotRecentlyReceived(claims);
         // TODO;
-        // 7. Optionally verify that another Logout Token with the same jti value has not been recently received.
         // 8. Optionally verify that the iss Logout Token Claim matches the iss Claim in an ID Token issued for the current session or a recent session of this RP with the OP.
         // 9. Optionally verify that any sub Logout Token Claim matches the sub Claim in an ID Token issued for the current session or a recent session of this RP with the OP.
         // 10. Optionally verify that any sid Logout Token Claim matches the sid Claim in an ID Token issued for the current session or a recent session of this RP with the OP.
+    }
+
+    /**
+     * Verify that another Logout Token with the same jti value has not been recently received.
+     */
+    @FFDCIgnore(MalformedClaimException.class)
+    void verifyTokenWithSameJtiNotRecentlyReceived(JwtClaims claims) throws BackchannelLogoutException {
+        String jti;
+        try {
+            jti = claims.getJwtId();
+        } catch (MalformedClaimException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception extracting jti from JWT claims: " + e);
+            }
+            return;
+        }
+        if (jti == null) {
+            return;
+        }
+        String configId = config.getId();
+        JtiCacheKey cacheKey = createJtiCacheKey(jti, configId);
+        Object cachedJwtContext = jtiCache.get(cacheKey);
+        if (cachedJwtContext != null) {
+            String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_DUP_JTI", jti, configId);
+            throw new BackchannelLogoutException(errorMsg);
+        }
+        // Logout token with this jti is not in the cache, so put the token data in the cache and allow validation to continue
+        long clockSkew = config.getClockSkew();
+        jtiCache.put(cacheKey, createJtiCacheValue(claims, clockSkew), clockSkew);
+    }
+
+    JtiCacheKey createJtiCacheKey(String jti, String configId) {
+        return new JtiCacheKey(jti, configId);
+    }
+
+    JtiCacheValue createJtiCacheValue(JwtClaims claims, long clockSkew) {
+        return new JtiCacheValue(claims, clockSkew);
     }
 
 }
