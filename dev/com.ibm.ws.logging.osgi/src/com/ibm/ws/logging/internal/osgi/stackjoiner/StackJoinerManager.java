@@ -47,6 +47,8 @@ import org.objectweb.asm.commons.SimpleRemapper;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Bundle;
 
+import io.openliberty.asm.ASMHelper;
+
 public class StackJoinerManager {
     
     private static final TraceComponent tc = Tr.register(StackJoinerManager.class);
@@ -341,7 +343,7 @@ public class StackJoinerManager {
     String getClassInternalName(URL classUrl) throws IOException {
         InputStream inputStream = classUrl.openStream();
         ClassReader reader = new ClassReader(inputStream);
-        reader.accept(new ClassVisitor(Opcodes.ASM7) {}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        reader.accept(new ClassVisitor(ASMHelper.getCurrentASM()) {}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
         inputStream.close();
         return reader.getClassName();
     }
