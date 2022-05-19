@@ -15,7 +15,9 @@ import io.openliberty.data.Data;
 /**
  *
  */
-@Data
+@Data(Product.class) // TODO remove parameter and let it be inferred
 public interface ProductRepo {
-    public String findItem(long id);
+    void insert(Product p);
+
+    Product findItem(String id);
 }

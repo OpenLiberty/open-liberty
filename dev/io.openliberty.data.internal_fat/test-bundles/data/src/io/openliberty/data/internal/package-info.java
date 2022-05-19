@@ -8,18 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
-
-import java.util.List;
-
-import io.openliberty.data.Data;
-
 /**
- *
+ * @version 1.0
  */
-@Data(Person.class)
-public interface PersonRepo {
-    void insert(Person p);
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "data", messageBundle = "io.openliberty.data.internal.resources.CWWKDMessages")
+package io.openliberty.data.internal;
 
-    List<Person> find(String lastName);
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;

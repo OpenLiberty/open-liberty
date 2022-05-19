@@ -14,6 +14,7 @@
     <feature>componenttest-2.0</feature>
     <feature>data-1.0</feature>
     <feature>jndi-1.0</feature>
+    <feature>persistence-3.0</feature> <!-- exposes JPA API to applications -->
     <feature>servlet-5.0</feature>
   </featureManager>
 
@@ -21,10 +22,13 @@
 
   <application location="DataTestApp.war"/>
 
-  <dataSource id="DefaultDataSource">
+  <databaseStore id="DefaultDataStore" createTables="true" dataSourceRef="DerbyDataSource">
+    <authData user="dbuser1" password="dbpwd1"/>
+  </databaseStore>
+
+  <dataSource id="DerbyDataSource">
     <jdbcDriver libraryRef="DerbyLib"/>
     <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
-    <containerAuth user="dbuser1" password="dbpwd1"/>
   </dataSource>
 
   <library id="DerbyLib">

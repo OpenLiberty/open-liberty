@@ -31,4 +31,5 @@ Private-Package: \
 -cdiannotations:
 
 -dsannotations: \
+  io.openliberty.data.internal.DataPersistence,\
   io.openliberty.data.internal.cdi.DataExtensionMetadata

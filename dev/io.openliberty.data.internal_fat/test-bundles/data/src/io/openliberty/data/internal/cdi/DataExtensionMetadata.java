@@ -25,6 +25,7 @@ import io.openliberty.data.Data;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = CDIExtensionMetadata.class) // TODO property to identify class?
 public class DataExtensionMetadata implements CDIExtensionMetadata {
+
     @Override
     public Set<Class<? extends Annotation>> getBeanDefiningAnnotationClasses() {
         return Collections.singleton(Data.class);

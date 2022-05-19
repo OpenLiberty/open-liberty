@@ -10,16 +10,20 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import java.util.List;
-
-import io.openliberty.data.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  *
  */
-@Data(Person.class)
-public interface PersonRepo {
-    void insert(Person p);
+@Entity // TODO remove the JPA annotations
+public class Product {
+    public String description;
 
-    List<Person> find(String lastName);
+    @Id
+    public String id;
+
+    public String name;
+
+    public float price;
 }

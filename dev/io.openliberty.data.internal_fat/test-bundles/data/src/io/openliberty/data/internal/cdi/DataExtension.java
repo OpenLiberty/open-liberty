@@ -11,7 +11,11 @@
 package io.openliberty.data.internal.cdi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
@@ -24,7 +28,11 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+
 import io.openliberty.data.Data;
+import io.openliberty.data.internal.DataPersistence;
 
 public class DataExtension implements Extension {
     private final ArrayList<Bean<?>> beans = new ArrayList<>();
@@ -41,10 +49,41 @@ public class DataExtension implements Extension {
     public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
         System.out.println("afterTypeDiscovery");
 
-        for (AnnotatedType<?> type : beanTypes) {
-            BeanAttributes<?> attrs = beanMgr.createBeanAttributes(type);
-            beans.add(beanMgr.createBean(attrs, type.getJavaClass(), new BeanProducerFactory<>()));
+        Map<String, Map<ClassLoader, List<Class<?>>>> classesPerLoaderPerDataStore = new HashMap<>();
+
+        for (AnnotatedType<?> beanType : beanTypes) {
+            Class<?> beanInterface = beanType.getJavaClass();
+            ClassLoader loader = beanInterface.getClassLoader();
+            Data data = beanType.getAnnotation(Data.class);
+            String dataStore = data.dataStore();
+
+            BeanAttributes<?> attrs = beanMgr.createBeanAttributes(beanType);
+            beans.add(beanMgr.createBean(attrs, beanInterface, new BeanProducerFactory<>()));
+
+            Map<ClassLoader, List<Class<?>>> classesPerLoader = classesPerLoaderPerDataStore.get(dataStore);
+            if (classesPerLoader == null)
+                classesPerLoaderPerDataStore.put(dataStore, classesPerLoader = new HashMap<>());
+            List<Class<?>> classes = classesPerLoader.get(loader);
+            if (classes == null)
+                classesPerLoader.put(loader, classes = new ArrayList<>());
+            for (Class<?> entityClass : data.value())
+                classes.add(entityClass);
         }
+
+        BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
+        DataPersistence persistence = bc.getService(bc.getServiceReference(DataPersistence.class));
+
+        for (Entry<String, Map<ClassLoader, List<Class<?>>>> dsEntry : classesPerLoaderPerDataStore.entrySet())
+            for (Entry<ClassLoader, List<Class<?>>> clEntry : dsEntry.getValue().entrySet())
+                try {
+                    String dataStore = dsEntry.getKey();
+                    ClassLoader loader = clEntry.getKey();
+                    List<Class<?>> classes = clEntry.getValue();
+                    persistence.defineEntities(dataStore, loader, classes);
+                } catch (Exception x) {
+                    x.printStackTrace();
+                    System.err.println("ERROR: Unable to define entities for " + dsEntry.getKey() + ": " + clEntry.getValue());
+                }
     }
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {

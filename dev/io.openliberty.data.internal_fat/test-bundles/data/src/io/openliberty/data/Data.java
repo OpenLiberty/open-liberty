@@ -28,5 +28,8 @@ import jakarta.enterprise.util.Nonbinding;
 @Target(ElementType.TYPE)
 public @interface Data {
     @Nonbinding
-    String value() default "java:comp/DefaultDataSource";
+    Class<?>[] value() default {}; // infer from return types if empty
+
+    @Nonbinding
+    String dataStore() default "DefaultDataStore";
 }

@@ -10,16 +10,18 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import java.util.List;
-
-import io.openliberty.data.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  *
  */
-@Data(Person.class)
-public interface PersonRepo {
-    void insert(Person p);
+@Entity
+public class Person {
+    public String firstName;
 
-    List<Person> find(String lastName);
+    public String lastName;
+
+    @Id
+    public long ssn;
 }
