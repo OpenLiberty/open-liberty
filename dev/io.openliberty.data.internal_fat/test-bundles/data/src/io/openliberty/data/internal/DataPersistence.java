@@ -10,11 +10,18 @@
  *******************************************************************************/
 package io.openliberty.data.internal;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+
+import jakarta.persistence.Entity;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -31,11 +38,14 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
-// TODO ought to be used as OSGi service component, not static!
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = DataPersistence.class)
 public class DataPersistence {
-    private static final ConcurrentHashMap<SimpleImmutableEntry<String, ClassLoader>, PersistenceServiceUnit> units = new ConcurrentHashMap<>();
+    private static final String EOLN = String.format("%n");
+
+    private static final ConcurrentHashMap<//
+                    Entry<String, ClassLoader>, //
+                    Entry<PersistenceServiceUnit, List<Class<?>>>> units = new ConcurrentHashMap<>();
 
     @Reference
     protected LocalTransactionCurrent localTranCurrent;
@@ -64,21 +74,91 @@ public class DataPersistence {
             throw new IllegalArgumentException("Not found: " + dbStoreId);
 
         DatabaseStore dbstore = bc.getService(refs.iterator().next());
+        String tablePrefix = dbstore.getTablePrefix();
 
-        String[] classNames = new String[classList.size()];
-        int i = 0;
-        for (Class<?> c : classList)
-            classNames[i++] = c.getName();
+        // Classes explicitly annotated with JPA @Entity:
+        ArrayList<String> entityClassNames = new ArrayList<>(classList.size());
 
-        PersistenceServiceUnit punit = dbstore.createPersistenceServiceUnit(loader, new HashMap<>(), classNames);
-        units.put(new SimpleImmutableEntry<>(dbStoreId, loader), punit);
+        // XML to make all other classes into JPA entities:
+        ArrayList<String> entityClassInfo = new ArrayList<>(classList.size());
+
+        for (Class<?> c : classList) {
+            if (c.getAnnotation(Entity.class) == null) {
+                String primaryKey = getPrimaryKey(c);
+                StringBuilder xml = new StringBuilder(500)
+                                .append(" <entity class=\"" + c.getName() + "\">")
+                                .append(EOLN)
+                                .append("  <table name=\"" + tablePrefix + c.getSimpleName() + "\"/>")
+                                .append(EOLN)
+                                .append("  <attributes>")
+                                .append(EOLN)
+                                .append("   <id name=\"" + primaryKey + "\">")
+                                .append(EOLN)
+                                .append("    <column name=\"" + primaryKey + "\" nullable=\"false\"/>")
+                                .append(EOLN)
+                                .append("   </id>")
+                                .append(EOLN)
+                                .append("  </attributes>")
+                                .append(EOLN)
+                                .append(" </entity>")
+                                .append(EOLN);
+
+                entityClassInfo.add(xml.toString());
+            } else {
+                entityClassNames.add(c.getName());
+            }
+        }
+
+        Map<String, ?> properties = Collections.singletonMap("io.openliberty.persistence.internal.entityClassInfo",
+                                                             entityClassInfo.toArray(new String[entityClassInfo.size()]));
+
+        PersistenceServiceUnit punit = dbstore.createPersistenceServiceUnit(loader,
+                                                                            properties,
+                                                                            entityClassNames.toArray(new String[entityClassNames.size()]));
+        units.put(new SimpleImmutableEntry<>(dbStoreId, loader),
+                  new SimpleImmutableEntry<PersistenceServiceUnit, List<Class<?>>>(punit, classList));
     }
 
-    PersistenceServiceUnit getPersistenceUnit(String dbStoreId, ClassLoader loader) {
+    Entry<PersistenceServiceUnit, List<Class<?>>> getPersistenceInfo(String dbStoreId, ClassLoader loader) {
         System.out.println("Available persistence service units: " + units);
-        SimpleImmutableEntry<String, ClassLoader> key = new SimpleImmutableEntry<>(dbStoreId, loader);
-        PersistenceServiceUnit unit = units.get(key);
-        System.out.println("Found " + unit + " using key ");
-        return unit;
+        Entry<String, ClassLoader> key = new SimpleImmutableEntry<>(dbStoreId, loader);
+        Entry<PersistenceServiceUnit, List<Class<?>>> unitInfo = units.get(key);
+        System.out.println("Found " + unitInfo + " using key: " + dbStoreId + "," + loader);
+        return unitInfo;
+    }
+
+    private static String getPrimaryKey(Class<?> c) {
+        // TODO Could allow primary key to be identified on @Data annotation.
+        // For now, choosing "id" or any field that ends with id
+        String primaryKey = null;
+        String primaryKeyUpperCase = null;
+        for (Field field : c.getFields()) {
+            String name = field.getName().toUpperCase();
+            if ("ID".equals(name))
+                return field.getName();
+            else if (name.endsWith("ID"))
+                if (primaryKeyUpperCase == null || name.compareTo(primaryKeyUpperCase) < 0) {
+                    primaryKeyUpperCase = name;
+                    primaryKey = field.getName();
+                }
+        }
+        for (Method method : c.getMethods()) {
+            if (method.getParameterCount() == 0) {
+                String name = method.getName();
+                if (name.startsWith("get")) {
+                    name = name.substring(3).toUpperCase();
+                    if ("ID".equals(name))
+                        return method.getName().substring(3);
+                    else if (name.endsWith("ID"))
+                        if (primaryKeyUpperCase == null || name.compareTo(primaryKeyUpperCase) < 0) {
+                            primaryKeyUpperCase = name;
+                            primaryKey = method.getName().substring(3);
+                        }
+                }
+            }
+        }
+        if (primaryKey == null)
+            throw new IllegalArgumentException(c + " lacks public primary key field/method of the form *ID");
+        return primaryKey;
     }
 }

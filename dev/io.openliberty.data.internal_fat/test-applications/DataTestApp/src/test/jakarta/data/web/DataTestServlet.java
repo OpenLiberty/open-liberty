@@ -71,12 +71,12 @@ public class DataTestServlet extends FATServlet {
         Person jane = new Person();
         jane.firstName = "Jane";
         jane.lastName = "TestFindMultiple";
-        jane.ssn = 123456789;
+        jane.personID = 123456789;
 
         Person joe = new Person();
         joe.firstName = "Joe";
         joe.lastName = "TestFindMultiple";
-        joe.ssn = 987654321;
+        joe.personID = 987654321;
 
         tran.begin();
         try {
@@ -97,16 +97,16 @@ public class DataTestServlet extends FATServlet {
         Person p2expected;
         assertEquals("TestFindMultiple", p1.lastName);
         if (jane.firstName.equals(p1.firstName)) {
-            assertEquals(jane.ssn, p1.ssn);
+            assertEquals(jane.personID, p1.personID);
             p2expected = joe;
         } else {
-            assertEquals(joe.ssn, p1.ssn);
+            assertEquals(joe.personID, p1.personID);
             p2expected = jane;
         }
 
         Person p2 = found.get(1);
         assertEquals(p2expected.lastName, p2.lastName);
         assertEquals(p2expected.firstName, p2.firstName);
-        assertEquals(p2expected.ssn, p2.ssn);
+        assertEquals(p2expected.personID, p2.personID);
     }
 }

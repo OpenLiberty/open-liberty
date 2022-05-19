@@ -10,18 +10,14 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
 /**
  *
  */
-@Entity
 public class Person {
+
     public String firstName;
 
     public String lastName;
 
-    @Id
-    public long ssn;
+    public long personID;
 }

@@ -11,6 +11,7 @@
 package test.jakarta.data.web;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Query;
 
 /**
  *
@@ -19,5 +20,6 @@ import io.openliberty.data.Data;
 public interface ProductRepo {
     void insert(Product p);
 
+    @Query("SELECT o FROM Product o WHERE o.id=?1")
     Product findItem(String id);
 }

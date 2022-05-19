@@ -13,6 +13,7 @@ package test.jakarta.data.web;
 import java.util.List;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Query;
 
 /**
  *
@@ -21,5 +22,6 @@ import io.openliberty.data.Data;
 public interface PersonRepo {
     void insert(Person p);
 
+    @Query("SELECT o FROM Person o WHERE o.lastName=?1")
     List<Person> find(String lastName);
 }
