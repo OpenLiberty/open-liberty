@@ -1551,6 +1551,14 @@ UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Incapabil s\u0103 lege interf
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=Legarea la distan\u021b\u0103 a componentelor EJB nu poate fi creat\u0103 deoarece serverul de nume CORBA nu este disponibil.
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Verifica\u021bi fi\u0219ierul jurnal pentru excep\u021bii referitoare la ini\u021bializarea serverului de nume ORB sau CORBA.
 
+CNTR0342E_INCORRECT_ASYNC_ANNO=CNTR0342E: Bean-ul {0} din modulul {1} al aplica\u021biei {2} are una sau mai multe metode cu adnotarea jakarta.enterprise.concurrent.Asynchronous, care trebuie s\u0103 nu fie utilizat\u0103 pentru bean-uri enterprise. Adnotarea jakarta.ejb.Asynchronous furnizeaz\u0103 metode asincrone pentru bean-urile enterprise.
+CNTR0342E_INCORRECT_ASYNC_ANNO.explanation=Specifica\u021bia Jakarta Concurrency nu permite utilizarea adnot\u0103rii jakarta.enterprise.concurrent.Asynchronous pentru Jakarta Enterprise Beans.
+CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=Elimina\u021bi adnotarea jakarta.enterprise.concurrent.Asynchronous din metod\u0103 sau clas\u0103. Utiliza\u021bi adnotarea jakarta.ejb.Asynchronous pentru a identifica metodele asincrone pentru bean-uri enterprise.
+
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: Interfa\u021ba opera\u021bional\u0103 {0} con\u021bine o adnotare jakarta.enterprise.concurrent.Asynchronous. Adnot\u0103rile asincrone nu sunt valide pentru nicio interfa\u021b\u0103, iar containerul Jakarta Enterprise Beans le ignor\u0103.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=Adnotarea jakarta.enterprise.concurrent.Asynchronous trebuie s\u0103 nu fie utilizat\u0103 cu Jakarta Enterprise Beans. Containerul Jakarta Enterprise Beans ignor\u0103 aceste adnot\u0103ri pentru interfe\u021be. Cu excep\u021bia cazului \u00een care metodele sunt declarate asincrone \u00een descriptorul de implementare ejb-jar.xml sau este specificat\u0103 adnotarea jakarta.ejb.Asynchronous pentru clasa de bean sau o metod\u0103 a clasei de bean, metodele bean-ului ruleaz\u0103 sincron.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Elimina\u021bi orice adnotare jakarta.enterprise.concurrent.Asynchronous din interfa\u021ba opera\u021bional\u0103 specificat\u0103 \u0219i verifica\u021bi dac\u0103 adnotarea jakarta.ejb.Asynchronous este specificat\u0103 corect \u00een clasa de bean.
+
 #-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
@@ -2208,4 +2216,3 @@ CNTR9424E_NO_URL_JNDINAME_SPECIFIED.useraction=Ad\u0103uga\u0163i o proprietate 
 CNTR9425E_NO_URL_SPEC_SPECIFIED=CNTR9425E: Propriet\u0103\u0163ile containerului imbricabil Enterprise JavaBeans (EJB) pentru resursa de URL {0} nu con\u0163in proprietatea, specifica\u0163ie.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=Propriet\u0103\u0163ile pe care le utilizeaz\u0103 containerul imbricabil Enterprise JavaBeans (EJB) con\u0163in o resurs\u0103 URL f\u0103r\u0103 nicio specifica\u0163ie specificat\u0103.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.useraction=Ad\u0103uga\u0163i o proprietate de specifica\u0163ie  pentru aceast\u0103 resurs\u0103 URL la fi\u015fierul de propriet\u0103\u0163i.
-

@@ -1551,6 +1551,14 @@ UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Nelze sv\u00e1zat rozhran\u00
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=Vazbu vzd\u00e1len\u00e9ho objektu typu enterprise bean nelze vytvo\u0159it, proto\u017ee server n\u00e1zv\u016f CORBA nen\u00ed k dispozici.
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Zkontrolujte, zda soubor protokolu neobsahuje v\u00fdjimky souvisej\u00edc\u00ed s inicializac\u00ed n\u00e1zvu ORB nebo CORBA.
 
+CNTR0342E_INCORRECT_ASYNC_ANNO=CNTR0342E: Objekt typu bean {0} v modulu {1} aplikace {2} m\u00e1 jednu nebo v\u00edce metod s anotac\u00ed jakarta.enterprise.concurrent.Asynchronous, kter\u00e1 nesm\u00ed b\u00fdt pou\u017eita v objektech enterprise bean. Anotace jakarta.ejb.Asynchronous poskytuje asynchronn\u00ed metody pro objekty enterprise bean.
+CNTR0342E_INCORRECT_ASYNC_ANNO.explanation=Specifikace Jakarta Concurrency nepovoluje pou\u017eit\u00ed anotace jakarta.enterprise.concurrent.Asynchronous v objektech Jakarta Enterprise Bean.
+CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=Odeberte anotaci jakarta.enterprise.concurrent.Asynchronous z metody nebo t\u0159\u00eddy. Pomoc\u00ed anotace jacarta.ejb.Asynchronous identifikujete asynchronn\u00ed metody objekt\u016f enterprise bean.
+
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: Obchodn\u00ed rozhran\u00ed {0} obsahuje anotaci jakarta.enterprise.concurrent.Asynchronous. Asynchronn\u00ed anotace nejsou v \u017e\u00e1dn\u00e9m rozhran\u00ed platn\u00e9 a kontejner objekt\u016f Jakarta Enterprise Bean je ignoruje.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=Anotace jakarta.enterprise.concurrent.Asynchronous nesm\u00ed b\u00fdt pou\u017e\u00edv\u00e1na spolu s objekty Jakarta Enterprise Bean. Kontejner objekt\u016f Jakarta Enterprise Bean tyto anotace na rozhran\u00edch ignoruje. Pokud nejsou metody v deskriptoru implementace ejb-jar.xml deklarov\u00e1ny jako asynchronn\u00ed nebo nen\u00ed v metod\u011b t\u0159\u00eddy objektu typu bean nebo ve t\u0159\u00edd\u011b objektu typu bean ur\u010dena anotace jakarta.ejb.Asynchronous, metody objektu bean b\u011b\u017e\u00ed synchronn\u011b.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Odeberte v\u0161echny anotace jakarta.enterprise.concurrent.Asynchronous z uveden\u00e9ho obchodn\u00edho rozhran\u00ed a ov\u011b\u0159te, zda je anotace jakarta.ejb.Asynchronous ve t\u0159\u00edd\u011b objektu typu bean spr\u00e1vn\u011b ur\u010dena. 
+
 #-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
@@ -2207,4 +2215,3 @@ CNTR9424E_NO_URL_JNDINAME_SPECIFIED.useraction=P\u0159idejte do souboru vlastnos
 CNTR9425E_NO_URL_SPEC_SPECIFIED=CNTR9425E: Vlastnosti vkl\u00e1dan\u00e9ho kontejneru EJB (Enterprise JavaBeans) pro prost\u0159edek adresy URL {0} neobsahuj\u00ed vlastnost specification.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=Vlastnosti, kter\u00e9 pou\u017e\u00edv\u00e1 vkl\u00e1dan\u00fd kontejner EJB (Enterprise JavaBeans), obsahuj\u00ed prost\u0159edek adresy URL bez zadan\u00e9 vlastnosti specification.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.useraction=P\u0159idejte do souboru vlastnost\u00ed vlastnost specification pro uveden\u00fd prost\u0159edek adresy URL.
-

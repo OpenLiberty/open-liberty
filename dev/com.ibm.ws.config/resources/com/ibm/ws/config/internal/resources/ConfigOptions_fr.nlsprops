@@ -29,7 +29,7 @@ use.options=Options :
 option-key.ignorePids=--ignorePidsFile
 option-desc.ignorePids=Nom de fichier contenant une liste de pids \u00e0 ignorer.
 option-key.encoding=--encoding
-option-desc.encoding=Codage de caract\u00e8res \u00e0 utiliser pour la sortie.
+option-desc.encoding=Codage de caract\u00e8res \u00e0 utiliser pour la sortie.     \nLe codage par d\u00e9faut est "UTF-8".
 option-key.locale=--locale
 option-desc.locale=La langue \u00e0 utiliser lorsque vous cr\u00e9ez le fichier de sortie. Cette cha\u00eene se compose du code de langue constitu\u00e9 de deux lettres minuscules ISO-639, \u00e9ventuellement suivi d'un trait de soulignement et du code de pays constitu\u00e9 de deux lettres majuscules ISO-3166.
 

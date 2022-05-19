@@ -30,6 +30,7 @@
 22101=Der JNDI-Kontext konnte nicht abgerufen werden. Vergewissern Sie sich, dass die Eigenschaften ordnungsgem\u00e4\u00df definiert sind.
 
 22102=Die Verbindung konnte nicht im lokalen Benennungsservice mit dem Namen {0} \u00fcbergeben werden.
+
 22103=Lookup der fernen Verbindung unter dem Namen {0} mit der URL {1} nicht m\u00f6glich.
 
 22104=Lookup des Hostnamen nicht m\u00f6glich.

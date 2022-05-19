@@ -483,5 +483,9 @@ error.unknownSchemaVersion=CWWKG0108E: Versiunea de schem\u0103, {0}, nu este su
 error.unknownSchemaVersion.explanation=Valoarea furnizat\u0103 cu op\u021biunea "-- schemaVersion" nu este valid\u0103.
 error.unknownSchemaVersion.useraction=Pentru a vedea op\u021biunile valide, introduce\u021bi comanda "./schemaGen --help".
 
+schemagen.info.schema.file.created=CWWKG0109I: Schema a fost creat\u0103 \u00een fi\u0219ierul [{0}].
+schemagen.info.schema.file.created.explanation=Comanda s-a finalizat cu succes.
+schemagen.info.schema.file.created.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
 # Non-TR message
 error.invalidOCDRef=EROARE: PID-ul metatipului [{0}] specific\u0103 un ID al defini\u0163iei de clas\u0103 de obiecte inexistent [{1}]

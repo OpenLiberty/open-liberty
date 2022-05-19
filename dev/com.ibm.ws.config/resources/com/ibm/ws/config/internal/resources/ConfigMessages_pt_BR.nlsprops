@@ -483,5 +483,9 @@ error.unknownSchemaVersion=CWWKG0108E: A vers\u00e3o do esquema, {0}, n\u00e3o \
 error.unknownSchemaVersion.explanation=O valor fornecido com a op\u00e7\u00e3o "--schemaVersion" n\u00e3o \u00e9 v\u00e1lido.
 error.unknownSchemaVersion.useraction=Para ver as op\u00e7\u00f5es v\u00e1lidas, insira o comando "./schemaGen --help".
 
+schemagen.info.schema.file.created=CWWKG0109I: O esquema foi criado no arquivo [{0}].
+schemagen.info.schema.file.created.explanation=O comando foi conclu\u00eddo com \u00eaxito.
+schemagen.info.schema.file.created.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
 # Non-TR message
 error.invalidOCDRef=ERRO: A PID de metatipo [{0}] especifica o ID de defini\u00e7\u00e3o de classe de objeto n\u00e3o existente [{1}]

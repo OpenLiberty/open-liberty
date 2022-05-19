@@ -483,5 +483,9 @@ error.unknownSchemaVersion=CWWKG0108E: A (z) {0} s\u00e9mav\u00e1ltozat nem t\u0
 error.unknownSchemaVersion.explanation=A "-- schemaVersion" param\u00e9terben megadott \u00e9rt\u00e9k \u00e9rv\u00e9nytelen.
 error.unknownSchemaVersion.useraction=Az \u00e9rv\u00e9nyes be\u00e1ll\u00edt\u00e1sok megtekint\u00e9s\u00e9hez \u00edrja be a " ./schemaGen -- help" parancsot.
 
+schemagen.info.schema.file.created=CWWKG0109I: A s\u00e9ma a(z) [{0}] f\u00e1jlban j\u00f6tt l\u00e9tre.
+schemagen.info.schema.file.created.explanation=A parancs v\u00e9grehajt\u00e1sa sikeresen megt\u00f6rt\u00e9nt.
+schemagen.info.schema.file.created.useraction=Nincs teend\u0151.
+
 # Non-TR message
 error.invalidOCDRef=HIBA: A(z) [{0}] metat\u00edpus PID nem l\u00e9tez\u0151 objektumoszt\u00e1ly meghat\u00e1roz\u00e1s azonos\u00edt\u00f3t ([{1}]) ad meg.

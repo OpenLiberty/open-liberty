@@ -483,5 +483,9 @@ error.unknownSchemaVersion=CWWKG0108E: Verze sch\u00e9matu, {0}, nen\u00ed podpo
 error.unknownSchemaVersion.explanation=Hodnota poskytnut\u00e1 s volbou "--schemaVersion" nen\u00ed platn\u00e1.
 error.unknownSchemaVersion.useraction=Chcete-li zobrazit platn\u00e9 volby, zadejte p\u0159\u00edkaz "./schemaGen --help".
 
+schemagen.info.schema.file.created=CWWKG0109I: Sch\u00e9ma bylo vytvo\u0159eno v souboru [{0}].
+schemagen.info.schema.file.created.explanation=P\u0159\u00edkaz byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+schemagen.info.schema.file.created.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
 # Non-TR message
 error.invalidOCDRef=CHYBA: PID metatypu [{0}] ur\u010duje neexistuj\u00edc\u00ed ID definice t\u0159\u00eddy objekt\u016f [{1}].

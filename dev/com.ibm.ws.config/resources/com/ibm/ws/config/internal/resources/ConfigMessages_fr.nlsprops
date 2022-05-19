@@ -483,5 +483,9 @@ error.unknownSchemaVersion=CWWKG0108E: La version du sch\u00e9ma, {0}, n''est pa
 error.unknownSchemaVersion.explanation=La valeur fournie avec l'option "-- schemaVersion" n'est pas valide.
 error.unknownSchemaVersion.useraction=Pour afficher les options valides, entrez la commande "./schemaGen -- help".
 
+schemagen.info.schema.file.created=CWWKG0109I: Le sch\u00e9ma a \u00e9t\u00e9 cr\u00e9\u00e9 dans le fichier [{0}].
+schemagen.info.schema.file.created.explanation=La commande s'est correctement ex\u00e9cut\u00e9e.
+schemagen.info.schema.file.created.useraction=Aucune\naction n'est requise.
+
 # Non-TR message
 error.invalidOCDRef=ERREUR : Le PID [{0}] du m\u00e9tatype sp\u00e9cifie un ID de d\u00e9finition de classe d''objets qui n''existe pas [{1}]

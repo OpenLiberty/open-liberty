@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS1600 - CWWKS1649
+# Message prefix block: CWWKS1600 - CWWKS1649, CWWKS1950 - CWWKS1999
 OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: Konfigurace poskytovatele p\u0159ipojen\u00ed OpenID {0} byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
 OIDC_SERVER_CONFIG_PROCESSED.explanation=Konfigurace poskytovatele p\u0159ipojen\u00ed OpenID byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
 OIDC_SERVER_CONFIG_PROCESSED.useraction=Nen\u00ed
@@ -192,9 +192,9 @@ LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Poskytovatel OpenID 
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Identifika\u010dn\u00ed token m\u016f\u017ee chybn\u00fd nebo m\u016f\u017ee m\u00edt n\u00e1rok v tokenu hodnotu s neo\u010dek\u00e1van\u00fdm datov\u00fdm typem. P\u0159\u00edpadn\u011b m\u016f\u017ee v tokenu chyb\u011bt po\u017eadovan\u00fd n\u00e1rok nebo vydavatel tokenu nen\u00ed o\u010dek\u00e1van\u00fdm vydavatelem.
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Ujist\u011bte se, \u017ee identifika\u010dn\u00ed token je spr\u00e1vn\u011b naform\u00e1tov\u00e1n. Dal\u0161\u00ed informace naleznete v popisu chyby uveden\u00e9m ve zpr\u00e1v\u011b. 
 
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Poskytovatel OpenID Connect nem\u016f\u017ee ur\u010dit sadu klient\u016f OpenID Connect, kte\u0159\u00ed maj\u00ed b\u00fdt odhl\u00e1\u0161eni, kv\u016fli t\u00e9to chyb\u011b: {0}
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Poskytovateli se nepoda\u0159ilo na\u010d\u00edst sadu registrovan\u00fdch klient\u016f, nebo mohou b\u00fdt chybn\u00e9 n\u00e1roky identifika\u010dn\u00edho tokenu.
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Dal\u0161\u00ed informace naleznete v popisu chyby uveden\u00e9m ve zpr\u00e1v\u011b. 
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS=CWWKS1644E: Poskytovatel OpenID Connect {0} zjistil n\u00e1sleduj\u00edc\u00ed chybu p\u0159i na\u010d\u00edt\u00e1n\u00ed klienta {1} za \u00fa\u010delem sestaven\u00ed token\u016f odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu: {2}
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.explanation=Klient OAuth neexistuje, nebo do\u0161lo k jin\u00e9 chyb\u011b.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.useraction=Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b obsa\u017een\u00e9 ve zpr\u00e1v\u011b. 
 
 # NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Verze jazyka Java pou\u017eit\u00e1 t\u00edmto b\u011bhov\u00fdm prost\u0159ed\u00edm [{0}] nen\u00ed podporov\u00e1na rozhran\u00edm poskytovatele slu\u017eeb medi\u00e1tora tokenu ID. Podporovan\u00e1 verze Java je 1.7 nebo vy\u0161\u0161\u00ed.
@@ -209,4 +209,32 @@ ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Identifika\u010dn\u00ed token nen\u
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=Specifikace OpenID Connect vy\u017eaduje, aby byl v identifika\u010dn\u00edm tokenu uveden n\u00e1rok nebo n\u00e1roky, kter\u00e9 jsou uvedeny v chybov\u00e9 zpr\u00e1v\u011b.
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Ujist\u011bte se, \u017ee identifika\u010dn\u00ed token obsahuje v\u0161echny po\u017eadovan\u00e9 n\u00e1roky.
 
-# NOTE: Stop at CWWKS1649
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL=CWWKS1648E: Po\u017eadavek na odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu odeslan\u00fd poskytovatelem OpenID Connect {0} na {1} s tokenem odhl\u00e1\u0161en\u00ed s n\u00e1roky {2} nebyl \u00fasp\u011b\u0161n\u00fd. Stavov\u00fd k\u00f3d odezvy je {3} a t\u011blo odezvy je [{4}].
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.explanation=Klient OpenID Connect nevr\u00e1til pro po\u017eadavek na odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu \u00fasp\u011b\u0161n\u00fd stavov\u00fd k\u00f3d. Je-li stavov\u00fd k\u00f3d 400, po\u017eadavek na odhl\u00e1\u0161en\u00ed nebyl platn\u00fd. Je-li stavov\u00fd k\u00f3d 501, odhl\u00e1\u0161en\u00ed klienta OpenID Connect se nezda\u0159ilo. Je-li stavov\u00fd k\u00f3d 504, lok\u00e1ln\u00ed odhl\u00e1\u0161en\u00ed na klientovi OpenID Connect prob\u011bhlo \u00fasp\u011b\u0161n\u011b, ale n\u011bkter\u00e9 n\u00e1sledn\u00e9 pokusy o odhl\u00e1\u0161en\u00ed se nezda\u0159ily.
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.useraction=Ode\u0161lete dal\u0161\u00ed po\u017eadavek na odhl\u00e1\u0161en\u00ed a zopakujte odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu. Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b obsa\u017een\u00e9 ve zpr\u00e1v\u011b. 
+
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION=CWWKS1649E: Po\u017eadavek na odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu odeslan\u00fd poskytovatelem OpenID Connect {0} na {1} s tokenem odhl\u00e1\u0161en\u00ed s n\u00e1roky {2} zjistil chybu: {3}
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.explanation=Po\u017eadavek na odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu bu\u010f p\u0159ekro\u010dil \u010dasov\u00fd limit, vyvolal v\u00fdjimku, byl zru\u0161en, nebo byl p\u0159eru\u0161en.
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.useraction=Ujist\u011bte se, \u017ee identifik\u00e1tor URI odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu je responzivn\u00ed. Aktualizujte atribut konfigurace backchannelLogoutRequestTimeout v poskytovateli OpenID Connect, pokud po\u017eadavek na odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu pot\u0159ebuje v\u00edce \u010dasu. Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b obsa\u017een\u00e9 ve zpr\u00e1v\u011b. 
+
+# STOP at CWWKS1649
+
+#
+# NOTE: Start of new NLS prefix block: CWWKS1950 - CWWKS1999
+#
+
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED=CWWKS1950E: Poskytovatel OpenID Connect {0} zjistil chybu p\u0159i odes\u00edl\u00e1n\u00ed po\u017eadavk\u016f na odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu: {1}
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.explanation=Po\u017eadavky odeslan\u00e9 do identifik\u00e1tor\u016f URI odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu byly p\u0159eru\u0161eny nebo do\u0161lo k jin\u00e9 chyb\u011b p\u0159i pl\u00e1nov\u00e1n\u00ed po\u017eadavk\u016f ke spu\u0161t\u011bn\u00ed.
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.useraction=Ode\u0161lete dal\u0161\u00ed po\u017eadavek na odhl\u00e1\u0161en\u00ed a zopakujte odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu. Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b obsa\u017een\u00e9 ve zpr\u00e1v\u011b. 
+
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST=CWWKS1951E: Poskytovatel OpenID Connect {0} zjistil chybu p\u0159i sestavov\u00e1n\u00ed nebo odes\u00edl\u00e1n\u00ed po\u017eadavku na odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu do {1}: {2}
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.explanation=P\u0159i p\u0159ipojen\u00ed p\u0159es HTTP do\u0161lo k chyb\u011b nebo do\u0161lo k selh\u00e1n\u00ed p\u0159ipojen\u00ed.
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.useraction=Ode\u0161lete dal\u0161\u00ed po\u017eadavek na odhl\u00e1\u0161en\u00ed a zopakujte odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu. Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b obsa\u017een\u00e9 ve zpr\u00e1v\u011b. 
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN=CWWKS1952E: Token odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu, kter\u00fd je zalo\u017een na token ID ulo\u017een\u00e9m v mezipam\u011bti pro klienta {0}, nelze vytvo\u0159it kv\u016fli n\u00e1sleduj\u00edc\u00ed chyb\u011b: {1}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.explanation=Do\u0161lo k chyb\u011b p\u0159i sestavov\u00e1n\u00ed \u0159et\u011bzce tokenu odhl\u00e1\u0161en\u00ed. Nebo vydavatel token ID ulo\u017een\u00e9ho v mezipam\u011bti nemus\u00ed odpov\u00eddat tomuto poskytovateli OpenID Connect, nebo token ID v mezipam\u011bti postr\u00e1d\u00e1 n\u011bkter\u00e9 n\u00e1roky, kter\u00e9 jsou vy\u017eadov\u00e1ny.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b obsa\u017een\u00e9 ve zpr\u00e1v\u011b. 
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Token odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu, kter\u00fd je zalo\u017een na token ID v mezipam\u011bti s n\u00e1roky [{0}] pro klienta {1}, nelze vytvo\u0159it kv\u016fli n\u00e1sleduj\u00edc\u00ed chyb\u011b: {2}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Do\u0161lo k chyb\u011b p\u0159i sestavov\u00e1n\u00ed \u0159et\u011bzce tokenu odhl\u00e1\u0161en\u00ed. Nebo vydavatel token ID ulo\u017een\u00e9ho v mezipam\u011bti nemus\u00ed odpov\u00eddat tomuto poskytovateli OpenID Connect, nebo token ID v mezipam\u011bti postr\u00e1d\u00e1 n\u011bkter\u00e9 n\u00e1roky, kter\u00e9 jsou vy\u017eadov\u00e1ny.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b obsa\u017een\u00e9 ve zpr\u00e1v\u011b. 

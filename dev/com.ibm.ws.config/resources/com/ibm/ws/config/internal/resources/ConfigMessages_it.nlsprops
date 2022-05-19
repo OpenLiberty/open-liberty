@@ -483,5 +483,9 @@ error.unknownSchemaVersion=CWWKG0108E: La versione dello schema, {0}, non \u00e8
 error.unknownSchemaVersion.explanation=Il valore fornito con l'opzione "-- schemaVersion" non \u00e8 valido.
 error.unknownSchemaVersion.useraction=Per visualizzare le opzioni valide, immettere il comando "./schemaGen -- help".
 
+schemagen.info.schema.file.created=CWWKG0109I: Lo schema \u00e8 stato creato nel file [{0}].
+schemagen.info.schema.file.created.explanation=Il comando \u00e8 stato completato correttamente.
+schemagen.info.schema.file.created.useraction=Non \u00e8 richiesta alcuna azione.
+
 # Non-TR message
 error.invalidOCDRef=ERRORE: il PID metatipo [{0}] specifica un ID di definizione della classe oggetto inesistente [{1}]

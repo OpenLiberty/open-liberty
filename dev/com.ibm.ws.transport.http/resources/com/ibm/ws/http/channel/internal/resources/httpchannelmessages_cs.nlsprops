@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2021 IBM Corporation and others.
+# Copyright (c) 2002, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -102,11 +102,9 @@ start.httpChain.error=CWWKT0020E: Do\u0161lo k probl\u00e9mu p\u0159i spou\u0161
 start.httpChain.error.explanation=Koncov\u00fd bod HTTP nelze spustit kv\u016fli neo\u010dek\u00e1van\u00e9mu probl\u00e9mu. 
 start.httpChain.error.useraction=Zkontrolujte protokoly v\u00fdjimek a zpr\u00e1v, zda v nich nejsou souvisej\u00edc\u00ed chyby. 
 
-httpChain.error.shutdown=CWWKT0021I: Server se zastavuje kv\u016fli mo\u017en\u00e9 chyb\u011b konfigurace. \
-Koncov\u00fd bod {0} nelze spustit. K tomu m\u016f\u017ee doj\u00edt, pokud je nakonfigurovan\u00fd port ji\u017e pou\u017e\u00edv\u00e1n.
+httpChain.error.shutdown=CWWKT0021I: Server se zastavuje kv\u016fli mo\u017en\u00e9 chyb\u011b konfigurace. Koncov\u00fd bod {0} nelze spustit. K tomu m\u016f\u017ee doj\u00edt, pokud je nakonfigurovan\u00fd port ji\u017e pou\u017e\u00edv\u00e1n.
 httpChain.error.shutdown.explanation=Koncov\u00fd bod HTTP byl nakonfigurov\u00e1n s nastaven\u00edm onError=FAIL, kter\u00e9 v p\u0159\u00edpad\u011b, \u017ee se vyskytne probl\u00e9m se spu\u0161t\u011bn\u00edm koncov\u00e9ho bodu, zp\u016fsob\u00ed zastaven\u00ed serveru. 
-httpChain.error.shutdown.useraction=Zkontrolujte protokoly v\u00fdjimek a zpr\u00e1v, zda v nich nejsou souvisej\u00edc\u00ed chyby. \
-Chcete-li zabr\u00e1nit zastaven\u00ed serveru kv\u016fli probl\u00e9mu se spu\u0161t\u011bn\u00edm tohoto koncov\u00e9ho bodu, zajist\u011bte, aby byla vlastnost onError nastavena na hodnotu WARN nebo IGNORE.
+httpChain.error.shutdown.useraction=Zkontrolujte protokoly v\u00fdjimek a zpr\u00e1v, zda v nich nejsou souvisej\u00edc\u00ed chyby. Chcete-li zabr\u00e1nit zastaven\u00ed serveru kv\u016fli probl\u00e9mu se spu\u0161t\u011bn\u00edm tohoto koncov\u00e9ho bodu, zajist\u011bte, aby byla vlastnost onError nastavena na hodnotu WARN nebo IGNORE.
 
 unresolveableHost=CWWKT0022E: Nelze interpretovat nakonfigurovan\u00e9ho hostitele {0} pro koncov\u00fd bod HTTP {1}. Koncov\u00fd bod byl zak\u00e1z\u00e1n.
 unresolveableHost.explanation=Koncov\u00fd bod HTTP vy\u017eaduje hodnotu hostitele, kterou lze interpretovat jako aktivn\u00ed s\u00ed\u0165ov\u00e9 rozhran\u00ed.
@@ -121,8 +119,7 @@ defaultHostDisabled.explanation=V\u00fdchoz\u00ed virtu\u00e1ln\u00ed hostitel j
 defaultHostDisabled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 noHostAliases=CWWKT0025W: Virtu\u00e1ln\u00ed hostitel {0} nem\u00e1 nakonfigurovan\u00e9 \u017e\u00e1dn\u00fd alias hostitele, tak\u017ee nebude p\u0159ij\u00edmat p\u0159\u00edchoz\u00ed po\u017eadavky.
-noHostAliases.explanation=Ka\u017ed\u00fd virtu\u00e1ln\u00ed hostitel krom\u011b v\u00fdchoz\u00edho mus\u00ed definovat nejm\u00e9n\u011b jeden alias hostitele (hostitel:port), a identifikovat tak p\u0159\u00edchoz\u00ed po\u017eadavky, kter\u00e9 maj\u00ed b\u00fdt k tomuto virtu\u00e1ln\u00edmu hostiteli sm\u011brov\u00e1ny. \
-Uveden\u00fd virtu\u00e1ln\u00ed hostitel nem\u00e1 nadefinov\u00e1n \u017e\u00e1dn\u00fd alias hostitele, tak\u017ee nebude mo\u017en\u00e9 k n\u011bmu sm\u011brovat \u017e\u00e1dn\u00e9 po\u017eadavky.
+noHostAliases.explanation=Ka\u017ed\u00fd virtu\u00e1ln\u00ed hostitel krom\u011b v\u00fdchoz\u00edho mus\u00ed definovat nejm\u00e9n\u011b jeden alias hostitele (hostitel:port), a identifikovat tak p\u0159\u00edchoz\u00ed po\u017eadavky, kter\u00e9 maj\u00ed b\u00fdt k tomuto virtu\u00e1ln\u00edmu hostiteli sm\u011brov\u00e1ny. Uveden\u00fd virtu\u00e1ln\u00ed hostitel nem\u00e1 nadefinov\u00e1n \u017e\u00e1dn\u00fd alias hostitele, tak\u017ee nebude mo\u017en\u00e9 k n\u011bmu sm\u011brovat \u017e\u00e1dn\u00e9 po\u017eadavky.
 noHostAliases.useraction=Aktualizujte prvek virtualHost v souboru server.xml tak, aby definoval alespo\u0148 jeden atribut hostAlias.
 
 invalidAlias=CWWKT0026W: Alias hostitele nakonfigurovan\u00fd pro virtu\u00e1ln\u00edho hostitele {0} je neplatn\u00fd a bude ignorov\u00e1n. {1}
@@ -203,3 +200,11 @@ headers.duplicateHeaderName.useraction=Ujist\u011bte se, \u017ee z\u00e1hlav\u00
 headers.knownDuplicateHeader=CWWKT0044W: Z\u00e1hlav\u00ed [{0}], kter\u00e9 je ozna\u010deno jako duplicitn\u00ed n\u00e1zev z\u00e1hlav\u00ed, bylo nalezeno v konfiguraci {1}. Z\u00e1hlav\u00ed [{0}] je ignorov\u00e1no. Ka\u017ed\u00e9 z\u00e1hlav\u00ed definovan\u00e9 konfigurac\u00ed {1} mus\u00ed obsahovat jedine\u010dn\u00e9 n\u00e1zvy z\u00e1hlav\u00ed.
 headers.knownDuplicateHeader.explanation=Ur\u010den\u00fd n\u00e1zev z\u00e1hlav\u00ed byl ji\u017e nalezen konfiguracemi remove, add, set nebo setIfMissing.
 headers.knownDuplicateHeader.useraction=Ujist\u011bte se, \u017ee n\u00e1zvy z\u00e1hlav\u00ed definovan\u00e9 v t\u00e9to konfiguraci jsou jedine\u010dn\u00e9 nap\u0159\u00ed\u010d konfiguracemi remove, add, set nebo setIfMissing. 
+
+log.rollover.start.time.format.warning=CWWKT0045W: Vlastnost pro \u010das spu\u0161t\u011bn\u00ed p\u0159eto\u010den\u00ed protokolu m\u00e1 chybn\u00fd form\u00e1t. V d\u016fsledku toho je hodnota nastavena na v\u00fdchoz\u00ed hodnotu '00:00', kter\u00e1 p\u0159edstavuje p\u016flnoc.
+log.rollover.start.time.format.warning.explanation=Vlastnost pro \u010das spu\u0161t\u011bn\u00ed p\u0159eto\u010den\u00ed mus\u00ed b\u00fdt ve form\u00e1tu HH:MM, p\u0159i\u010dem\u017e 00:00 p\u0159edstavuje p\u016flnoc.
+log.rollover.start.time.format.warning.useraction=Ujist\u011bte se, \u017ee hodnota vlastnosti \u010dasu spu\u0161t\u011bn\u00ed p\u0159eto\u010den\u00ed je \u0159\u00e1dn\u011b naform\u00e1tov\u00e1na ve 24hodinov\u00e9 notaci HH:MM, kde 00:00 p\u0159edstavuje p\u016flnoc.
+
+log.rollover.interval.too.short.warning=CWWKT0046W: Interval p\u0159eto\u010den\u00ed protokolu nesm\u00ed b\u00fdt krat\u0161\u00ed ne\u017e 1 minuta. Je-li uvedena hodnota men\u0161\u00ed ne\u017e 1 minuta, interval p\u0159eto\u010den\u00ed protokolu je nastaven na v\u00fdchoz\u00ed hodnotu 1 den.
+log.rollover.interval.too.short.warning.explanation=Interval p\u0159eto\u010den\u00ed protokolu nesm\u00ed b\u00fdt krat\u0161\u00ed ne\u017e 1 minuta.
+log.rollover.interval.too.short.warning.useraction=Zadejte interval p\u0159eto\u010den\u00ed protokolu, kter\u00fd se rovn\u00e1 nebo je del\u0161\u00ed ne\u017e 1 minuta.

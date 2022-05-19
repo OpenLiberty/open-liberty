@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS1600 - CWWKS1649
+# Message prefix block: CWWKS1600 - CWWKS1649, CWWKS1950 - CWWKS1999
 OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: Die OpenID Connect-Providerkonfiguration {0} wurde erfolgreich verarbeitet.
 OIDC_SERVER_CONFIG_PROCESSED.explanation=Die OpenID Connect-Providerkonfiguration wurde erfolgreich verarbeitet.
 OIDC_SERVER_CONFIG_PROCESSED.useraction=Keine.
@@ -192,9 +192,9 @@ LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Der OpenID Connect-P
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Das ID-Token ist m\u00f6glicherweise fehlerhaft oder eine Anforderung innerhalb des Tokens weist einen Wert mit einem unerwarteten Datentyp auf. Alternativ kann das Token fehlende Anforderungen enthalten, die erforderlich sind, oder der Aussteller des Tokens ist nicht der erwartete Aussteller.
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Stellen Sie sicher, dass das ID-Token ordnungsgem\u00e4\u00df formatiert ist. Weitere Informationen enth\u00e4lt der Fehler, der in der Nachricht angegeben ist.
 
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Der OpenID Connect-Provider kann die Gruppe der OpenID Connect-Clients f\u00fcr die Abmeldung aufgrund des folgenden Fehlers nicht bestimmen: {0}
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Der Provider konnte die Gruppe der registrierten Clients nicht abrufen oder die ID-Token-Anforderungen sind m\u00f6glicherweise fehlerhaft.
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Weitere Informationen enth\u00e4lt der Fehler, der in der Nachricht angegeben ist.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS=CWWKS1644E: Der OpenID Connect-Provider von {0} hat beim Abrufen des {1}-Clients zum Erstellen von Back-Channel-Abmeldetoken den folgenden Fehler festgestellt: {2}
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.explanation=Der OAuth-Client ist nicht vorhanden oder es ist ein anderer Fehler aufgetreten.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.useraction=Weitere Informationen finden Sie in der Fehlernachricht.
 
 # NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Die von dieser Laufzeitumgebung [{0}] verwendete Java-Version wird von der Mediator-SPI des ID-Tokens nicht unterst\u00fctzt. Die unterst\u00fctzte Java-Version ist 1.7 oder h\u00f6her.
@@ -209,4 +209,32 @@ ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Das ID-Token ist ung\u00fcltig, da 
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=Die OpenID Connect-Spezifikation erfordert, dass die in der Fehlernachricht aufgelisteten Anforderungen im ID-Token vorhanden sein m\u00fcssen.
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Stellen Sie sicher, dass das ID-Token alle erforderlichen Anforderungen enth\u00e4lt.
 
-# NOTE: Stop at CWWKS1649
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL=CWWKS1648E: Eine vom {0} OpenID Connect-Provider an {1} gesendete Back-Channel-Abmeldeanforderung mit einem Abmeldetoken mit den Anspr\u00fcchen {2} war nicht erfolgreich. Der Antwortstatuscode ist {3} und der Antworthauptteil ist [{4}].
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.explanation=Der OpenID Connect-Client hat keinen erfolgreichen Statuscode f\u00fcr die Back-Channel-Abmeldeanforderung zur\u00fcckgegeben. Wenn der Statuscode 400 lautet, war die Abmeldeanforderung ung\u00fcltig. Wenn der Statuscode 501 lautet, ist die Abmeldung beim OpenID Connect-Client fehlgeschlagen. Wenn der Statuscode 504 lautet, war die lokale Abmeldung beim OpenID Connect-Client erfolgreich, aber einige Downstream-Abmeldeversuche sind fehlgeschlagen.
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.useraction=Senden Sie eine weitere Abmeldeanforderung, um die R\u00fcckkanalabmeldung zu wiederholen. Weitere Informationen finden Sie in der Fehlernachricht.
+
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION=CWWKS1649E: In einer vom {0} OpenID Connect-Provider an {1} gesendeten Back-Channel-Abmeldeanforderung mit einem Abmeldetoken mit Anspr\u00fcchen {2} ist ein Fehler aufgetreten: {3}
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.explanation=Die Back-Channel-Abmeldeanforderung hat das zul\u00e4ssige Zeitlimit \u00fcberschritten, hat eine Ausnahme ausgel\u00f6st, wurde abgebrochen oder wurde unterbrochen.
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.useraction=Stellen Sie sicher, dass der Back-Channel-Abmelde-URI antwortet. Aktualisieren Sie das Konfigurationsattribut backchannelLogoutRequestTimeout im OpenID Connect-Provider, wenn die Back-Channel-Abmeldeanforderung mehr Zeit ben\u00f6tigt. Weitere Informationen finden Sie in der Fehlernachricht.
+
+# STOP at CWWKS1649
+
+#
+# NOTE: Start of new NLS prefix block: CWWKS1950 - CWWKS1999
+#
+
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED=CWWKS1950E: Der {0} OpenID Connect-Provider hat bei der \u00dcbergabe von Back-Channel-Abmeldeanforderungen einen Fehler festgestellt: {1}
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.explanation=Anforderungen, die an die Back-Channel-Abmelde-URIs gesendet wurden, wurden unterbrochen oder es ist ein anderer Fehler bei der Planung der Ausf\u00fchrung der Anforderungen aufgetreten.
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.useraction=Senden Sie eine weitere Abmeldeanforderung, um die R\u00fcckkanalabmeldung zu wiederholen. Weitere Informationen finden Sie in der Fehlernachricht.
+
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST=CWWKS1951E: Der OpenID Connect-Provider {0} hat beim Erstellen oder Senden einer Back-Channel-Abmeldeanforderung an {1}einen Fehler festgestellt: {2}
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.explanation=Die HTTP-Verbindung hat einen Fehler festgestellt oder die Verbindung ist fehlgeschlagen.
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.useraction=Senden Sie eine weitere Abmeldeanforderung, um die R\u00fcckkanalabmeldung zu wiederholen. Weitere Informationen finden Sie in der Fehlernachricht.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN=CWWKS1952E: Ein Back-Channel-Abmeldetoken, das auf einem zwischengespeicherten ID-Token f\u00fcr den {0}-Client basiert, kann aufgrund des folgenden Fehlers nicht erstellt werden: {1}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.explanation=Beim Erstellen der Abmeldetokenzeichenfolge ist ein Fehler aufgetreten. Alternativ kann es sein, dass der Aussteller des zwischengespeicherten ID-Tokens nicht mit diesem OpenID Connect-Provider \u00fcbereinstimmt oder dass im zwischengespeicherten ID-Token einige erforderliche Claims fehlen.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Weitere Informationen finden Sie in der Fehlernachricht.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Ein Back-Channel-Abmeldetoken, das auf einem zwischengespeicherten ID-Token mit Claims [{0}] f\u00fcr den {1}-Client basiert, kann aufgrund des folgenden Fehlers nicht erstellt werden: {2}.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Beim Erstellen der Abmeldetokenzeichenfolge ist ein Fehler aufgetreten. Alternativ kann es sein, dass der Aussteller des zwischengespeicherten ID-Tokens nicht mit diesem OpenID Connect-Provider \u00fcbereinstimmt oder dass im zwischengespeicherten ID-Token einige erforderliche Claims fehlen.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Weitere Informationen finden Sie in der Fehlernachricht.

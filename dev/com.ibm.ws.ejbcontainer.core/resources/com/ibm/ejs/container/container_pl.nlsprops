@@ -1550,6 +1550,14 @@ UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Nie mo\u017cna powi\u0105za\u
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=Nie mo\u017cna utworzy\u0107 powi\u0105zania zdalnego komponentu EJB, poniewa\u017c serwer nazw CORBA nie jest dost\u0119pny.
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Sprawd\u017a plik dziennika pod k\u0105tem wyj\u0105tk\u00f3w zwi\u0105zanych z inicjowaniem serwera ORB lub serwera nazw CORBA.
 
+CNTR0342E_INCORRECT_ASYNC_ANNO=CNTR0342E: Komponent bean {0} w module {1} aplikacji {2} ma jedn\u0105 lub kilka metod z adnotacj\u0105 jakarta.enterprise.concurrent.Asynchronous, kt\u00f3ra nie mo\u017ce by\u0107 u\u017cywana w korporacyjnych komponentach bean. Adnotacja jakarta.ejb.Asynchronous udost\u0119pnia asynchroniczne metody dla korporacyjnych komponent\u00f3w bean.
+CNTR0342E_INCORRECT_ASYNC_ANNO.explanation=Specyfikacja Jakarta Concurrency nie zezwala na u\u017cycie adnotacji jakarta.enterprise.concurrent.Asynchronous w korporacyjnych komponentach Jakarta bean.
+CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=Usu\u0144 z metody lub klasy adnotacj\u0119 jakarta.enterprise.concurrent.Asynchronous. Adnotacja jakarta.ejb.Asynchronous s\u0142u\u017cy do identyfikowania asynchronicznych metod korporacyjnych komponent\u00f3w bean.
+
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: Interfejs biznesowy {0} zawiera adnotacj\u0119 jakarta.enterprise.concurrent.Asynchronous. Adnotacje asynchroniczne nie s\u0105 poprawne w \u017cadnym interfejsie, a kontener Jakarta Enterprise Beans ignoruje je.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=Adnotacja jakarta.enterprise.concurrent.Asynchronous nie mo\u017ce by\u0107 u\u017cywana z korporacyjnymi komponentami bean Jakarta. Kontener Jakarta Enterprise Beans ignoruje te adnotacje w interfejsach. Je\u015bli metody nie s\u0105 zadeklarowane jako asynchronicznie w deskryptorze wdra\u017cania ejb-jar.xml albo adnotacja jakarta.ejb.Asynchronous nie jest okre\u015blona w klasie komponentu bean lub w metodzie klasy komponentu bean, metody komponentu bean s\u0105 uruchamiane synchronicznie.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Usu\u0144 adnotacj\u0119 jakarta.enterprise.concurrent.Asynchronous z podanego interfejsu biznesowego i sprawd\u017a, czy adnotacja jakarta.ejb.Asynchronous zosta\u0142a poprawnie okre\u015blona w klasie komponentu bean.
+
 #-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
@@ -2206,4 +2214,3 @@ CNTR9424E_NO_URL_JNDINAME_SPECIFIED.useraction=Dodaj w\u0142a\u015bciwo\u015b\u0
 CNTR9425E_NO_URL_SPEC_SPECIFIED=CNTR9425E: W\u0142a\u015bciwo\u015bci mo\u017cliwego do osadzenia kontenera EJB dla zasobu adresu URL {0} nie zawieraj\u0105 w\u0142a\u015bciwo\u015bci specification.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=W\u0142a\u015bciwo\u015bci u\u017cywane przez mo\u017cliwy do osadzenia kontener EJB zawieraj\u0105 zas\u00f3b adresu URL, dla kt\u00f3rego nie okre\u015blono specyfikacji.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.useraction=Dodaj w\u0142a\u015bciwo\u015b\u0107 specification dla tego zasobu adresu URL do pliku w\u0142a\u015bciwo\u015bci.
-
