@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS1600 - CWWKS1649
+# Message prefix block: CWWKS1600 - CWWKS1649, CWWKS1950 - CWWKS1999
 OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: La configuraci\u00f3n del proveedor de OpenID Connect {0} se ha procesado correctamente.
 OIDC_SERVER_CONFIG_PROCESSED.explanation=La configuraci\u00f3n del proveedor de OpenID Connect se ha procesado satisfactoriamente.
 OIDC_SERVER_CONFIG_PROCESSED.useraction=Ninguna.
@@ -192,9 +192,9 @@ LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: El proveedor de Open
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Es posible que la se\u00f1al de ID est\u00e9 mal formada o que una reclamaci\u00f3n dentro de la se\u00f1al tenga un valor que sea un tipo de datos inesperado. De forma alternativa, es posible que falten las reclamaciones necesarias o que el emisor de la se\u00f1al no sea el emisor que se espera.
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Aseg\u00farese de que la se\u00f1al de ID est\u00e1 formateada correctamente. Consulte el error que se incluye en el mensaje para obtener m\u00e1s informaci\u00f3n.
 
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: El proveedor de OpenID Connect no puede determinar el conjunto de clientes de OpenID Connect para cerrar la sesi\u00f3n debido al siguiente error: {0}
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=El proveedor no ha podido recuperar el conjunto de clientes que est\u00e1n registrados o las reclamaciones de se\u00f1al de ID pueden estar mal formadas.
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Consulte el error que se incluye en el mensaje para obtener m\u00e1s informaci\u00f3n.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS=CWWKS1644E: El proveedor de {0} OpenID Connect ha encontrado el siguiente error al recuperar el cliente de {1} para crear se\u00f1ales de cierre de sesi\u00f3n de canal de fondo: {2}
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.explanation=El cliente de OAuth no existe, o se ha producido otro error.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el error incluido en el mensaje.
 
 # NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: La SPI de mediador de se\u00f1al de ID no soporta la versi\u00f3n Java utilizada por este tiempo de ejecuci\u00f3n [{0}]. La versi\u00f3n de Java soportada es 1.7 o posteriores.
@@ -209,4 +209,32 @@ ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: El s\u00edmbolo de ID no es v\u00e1
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=La especificaci\u00f3n de OpenID Connect requiere que la reclamaci\u00f3n o las reclamaciones que se muestran en el mensaje de error est\u00e9n presentes en la se\u00f1al de ID.
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Aseg\u00farese de que el s\u00edmbolo de ID contiene todas las reclamaciones necesarias.
 
-# NOTE: Stop at CWWKS1649
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL=CWWKS1648E: Una solicitud de cierre de sesi\u00f3n de canal de fondo enviada por el proveedor de {0} OpenID Connect a {1} con una se\u00f1al de fin de sesi\u00f3n con reclamaciones de {2} no se ha realizado correctamente. El c\u00f3digo de estado de respuesta es {3} y el cuerpo de respuesta es [{4}].
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.explanation=El cliente de OpenID Connect no ha devuelto un c\u00f3digo de estado satisfactorio para la solicitud de cierre de sesi\u00f3n de canal de fondo. Si el c\u00f3digo de estado es 400, la solicitud de cierre de sesi\u00f3n no era v\u00e1lida. Si el c\u00f3digo de estado es 501, el cierre de sesi\u00f3n en el cliente de OpenID Connect ha fallado. Si el c\u00f3digo de estado es 504, el cierre de sesi\u00f3n local en el cliente de OpenID Connect ha sido satisfactorio, pero han fallado algunos intentos de cierre de sesi\u00f3n en sentido descendente.
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.useraction=Env\u00ede otra solicitud de cierre de sesi\u00f3n para reintentar el cierre de sesi\u00f3n de canal de fondo. Para obtener m\u00e1s informaci\u00f3n, consulte el error incluido en el mensaje.
+
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION=CWWKS1649E: Una solicitud de cierre de sesi\u00f3n de canal de fondo enviada por el proveedor de {0} OpenID Connect a {1} con una se\u00f1al de cierre de sesi\u00f3n con reclamaciones {2} ha encontrado un error: {3}
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.explanation=La solicitud de cierre de sesi\u00f3n de canal de fondo ha excedido el tiempo de espera, ha generado una excepci\u00f3n, se ha cancelado o se ha interrumpido.
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.useraction=Aseg\u00farese de que el URI de cierre de sesi\u00f3n de canal de fondo responda. Actualice el atributo de configuraci\u00f3n backchannelLogoutRequestTimeout en el proveedor de OpenID Connect si la solicitud de cierre de sesi\u00f3n del canal de fondo necesita m\u00e1s tiempo. Para obtener m\u00e1s informaci\u00f3n, consulte el error incluido en el mensaje.
+
+# STOP at CWWKS1649
+
+#
+# NOTE: Start of new NLS prefix block: CWWKS1950 - CWWKS1999
+#
+
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED=CWWKS1950E: El proveedor de {0} OpenID Connect ha encontrado un error al enviar solicitudes de cierre de sesi\u00f3n de canal de fondo: {1}
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.explanation=Las solicitudes enviadas a los URI de cierre de sesi\u00f3n de canal de fondo se han interrumpido, o se ha producido otro error al planificar las solicitudes de ejecuci\u00f3n.
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.useraction=Env\u00ede otra solicitud de cierre de sesi\u00f3n para reintentar el cierre de sesi\u00f3n de canal de fondo. Para obtener m\u00e1s informaci\u00f3n, consulte el error incluido en el mensaje.
+
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST=CWWKS1951E: El proveedor de {0} OpenID Connect ha encontrado un error al crear o enviar una solicitud de cierre de sesi\u00f3n de canal de fondo a {1}: {2}
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.explanation=La conexi\u00f3n HTTP ha encontrado un error, o la conexi\u00f3n ha fallado.
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.useraction=Env\u00ede otra solicitud de cierre de sesi\u00f3n para reintentar el cierre de sesi\u00f3n de canal de fondo. Para obtener m\u00e1s informaci\u00f3n, consulte el error incluido en el mensaje.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN=CWWKS1952E: No se puede crear una se\u00f1al de cierre de sesi\u00f3n de canal de fondo basada en una se\u00f1al de ID en memoria cach\u00e9 para el cliente de {0} debido al error siguiente: {1}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.explanation=Se ha generado un error durante la creaci\u00f3n de la serie de la se\u00f1al de cierre de sesi\u00f3n. De forma alternativa, es posible que el emisor de la se\u00f1al de ID en memoria cach\u00e9 no coincida con este proveedor de OpenID Connect o que falte la se\u00f1al de ID almacenada en memoria cach\u00e9 falte en algunas reclamaciones que son necesarias.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el error incluido en el mensaje.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: No se puede crear una se\u00f1al de cierre de sesi\u00f3n de canal de fondo basada en una se\u00f1al de ID en memoria cach\u00e9 con reclamaciones [{0}] para el cliente de {1} debido al error siguiente: {2}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Se ha generado un error durante la creaci\u00f3n de la serie de la se\u00f1al de cierre de sesi\u00f3n. De forma alternativa, es posible que el emisor de la se\u00f1al de ID en memoria cach\u00e9 no coincida con este proveedor de OpenID Connect o que falte la se\u00f1al de ID almacenada en memoria cach\u00e9 falte en algunas reclamaciones que son necesarias.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el error incluido en el mensaje.

@@ -171,98 +171,98 @@
 #NLS_ENCODING=UNICODE
 
 #-----------------------------------------------------------------------
-ERR_INT_ERROR=WLTC0001E: Se ha producido un error interno en el m\u00e9todo {0} de clase {1}; el rastreo de pila de excepciones es el siguiente: {2}.
+ERR_INT_ERROR=WLTC0001E: Se ha generado un error interno en el m\u00e9todo {0} en la clase {1}; el rastreo de la pila de excepciones es el siguiente: {2}.
 ERR_INT_ERROR.explanation=CMSG0001
 ERR_INT_ERROR.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_BEGIN_TX_GLB_ACT=WLTC0002E: No se puede iniciar un LocalTransactionContainment porque hay una transacci\u00f3n global activa.
-ERR_BEGIN_TX_GLB_ACT.explanation=Se ha producido un intento para iniciar una transacci\u00f3n local mientras estaba activa una transacci\u00f3n global, lo que no est\u00e1 permitido.
+ERR_BEGIN_TX_GLB_ACT=WLTC0002E: No se puede iniciar LocalTransactionContainment debido a que una transacci\u00f3n global est\u00e1 activa.
+ERR_BEGIN_TX_GLB_ACT.explanation=Se ha producido un intento para iniciar una transacci\u00f3n local mientras estaba activa una transacci\u00f3n global, lo cual no est\u00e1 permitido.
 ERR_BEGIN_TX_GLB_ACT.useraction=Aseg\u00farese de que las transacciones globales finalicen antes de realizar el trabajo en una transacci\u00f3n local.
 
 #-----------------------------------------------------------------------
-ERR_RESUME_TX_GLB_ACT=WLTC0003E: No se puede reanudar un LocalTransactionContainment porque hay una transacci\u00f3n global activa.
+ERR_RESUME_TX_GLB_ACT=WLTC0003E: No se puede reanudar LocalTransactionContainment debido a que una transacci\u00f3n global est\u00e1 activa.
 ERR_RESUME_TX_GLB_ACT.explanation=El contenedor no puede reanudar un LocalTransactionContainment porque hay una transacci\u00f3n global activa actualmente.
 ERR_RESUME_TX_GLB_ACT.useraction=Aseg\u00farese de que las transacciones globales finalicen o se suspendan antes de reanudar un LocalTransactionContainment.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_TX_GLB_ACT=WLTC0004E: No se puede incluir una recurso de transacci\u00f3n local porque hay una transacci\u00f3n global activa.
+ERR_ENLIST_TX_GLB_ACT=WLTC0004E: No se puede incluir en la lista un recurso de transacci\u00f3n local debido a que una transacci\u00f3n global est\u00e1 activa.
 ERR_ENLIST_TX_GLB_ACT.explanation=No se puede utilizar una conexi\u00f3n de transacci\u00f3n global porque hay una transacci\u00f3n global actualmente activa.
 ERR_ENLIST_TX_GLB_ACT.useraction=Aseg\u00farese de que las transacciones globales finalicen antes de realizar el trabajo en una transacci\u00f3n local.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_TX_CLEANUP=WLTC0005E: No se puede incluir el recurso. El valor de control de resoluci\u00f3n es Application y, por lo tanto, los recursos s\u00f3lo se pueden incluir para limpieza.
+ERR_ENLIST_TX_CLEANUP=WLTC0005E: No se puede listar el recurso. El valor de control de resoluci\u00f3n de la transacci\u00f3n local es Application y, por lo tanto, los recursos s\u00f3lo se pueden incluir para limpieza.
 ERR_ENLIST_TX_CLEANUP.explanation=El contenedor ha intentado incluir un recurso cuando el valor de control de resoluci\u00f3n no es ContainerAtBoundary.
 ERR_ENLIST_TX_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_LTC_COMPLETE=WLTC0006E: No se puede incluir el recurso. LocalTransactionContainment est\u00e1 finalizando o ha finalizado.
+ERR_ENLIST_LTC_COMPLETE=WLTC0006E: No se puede listar el recurso. LocalTransactionContainment est\u00e1 finalizando o ha finalizado.
 ERR_ENLIST_LTC_COMPLETE.explanation=LocalTransactionContainment no est\u00e1 en un estado en el que se pueda incluir un recurso.
 ERR_ENLIST_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E: No se puede incluir un recurso para limpieza porque hay una transacci\u00f3n global activa.
+ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E: No se puede listar el recurso para la limpieza porque una transacci\u00f3n global est\u00e1 activa.
 ERR_ENLIST_CLN_TX_GLB_ACT.explanation=No se puede utilizar una conexi\u00f3n de transacci\u00f3n global porque hay una transacci\u00f3n global actualmente activa.
 ERR_ENLIST_CLN_TX_GLB_ACT.useraction=Aseg\u00farese de que las transacciones globales finalicen antes de realizar el trabajo en una transacci\u00f3n local.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E: No se puede incluir un recurso para limpieza. El valor de control de resoluci\u00f3n es ContainerAtBoundary y, por lo tanto, los recursos no se pueden incluir para limpieza.
+ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E: No se puede listar el recurso para limpieza. El valor de control de resoluci\u00f3n de la transacci\u00f3n local es ContainerAtBoundary y, por lo tanto, los recursos no se pueden incluir para limpieza.
 ERR_ENLIST_CLN_TX_CLEANUP.explanation=La aplicaci\u00f3n que utiliza la conexi\u00f3n de la transacci\u00f3n global est\u00e1 configurada para el contenedor como responsable del inicio y la resoluci\u00f3n de las transacciones locales pero la aplicaci\u00f3n ha iniciado por s\u00ed misma una transacci\u00f3n local.
 ERR_ENLIST_CLN_TX_CLEANUP.useraction=La aplicaci\u00f3n debe seguir el modelo get-use de utilizaci\u00f3n de la conexi\u00f3n cuando utilice transacciones locales que el contenedor ha resuelto.
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E: No se puede incluir un recurso para limpieza. LocalTransactionContainment est\u00e1 finalizando o ha finalizado.
+ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E: No se puede incluir el recurso para limpieza. LocalTransactionContainment est\u00e1 finalizando o ha finalizado.
 ERR_ENLIST_CLN_LTC_COMPLETE.explanation=LocalTransactionContainment no est\u00e1 en un estado en el que se pueda incluir un recurso.
 ERR_ENLIST_CLN_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DELIST_TX_GLB_ACT=WLTC0010E: No se puede excluir un recurso porque hay una transacci\u00f3n global activa.
+ERR_DELIST_TX_GLB_ACT=WLTC0010E: El recurso no se puede eliminar de la lista debido a que una transacci\u00f3n global est\u00e1 activa.
 ERR_DELIST_TX_GLB_ACT.explanation=LocalTransactionContainment no puede excluir un recurso porque actualmente est\u00e1 activa una transacci\u00f3n global.
 ERR_DELIST_TX_GLB_ACT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DELIST_NOT_ENLISTED=WLTC0011E: No se puede excluir el recurso. No est\u00e1 incluido para limpieza en LocalTransactionContainment.
+ERR_DELIST_NOT_ENLISTED=WLTC0011E: El recurso no se puede eliminar de la lista. No est\u00e1 incluido para limpieza en LocalTransactionContainment.
 ERR_DELIST_NOT_ENLISTED.explanation=LocalTransactionContainment no puede excluir un recurso que no se haya incluido para la limpieza.
 ERR_DELIST_NOT_ENLISTED.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DELIST_LTC_COMPLETE=WLTC0012E: No se puede excluir el recurso. LocalTransactionContainment est\u00e1 finalizando o ha finalizado.
+ERR_DELIST_LTC_COMPLETE=WLTC0012E: El recurso no se puede eliminar de la lista. LocalTransactionContainment est\u00e1 finalizando o ha finalizado.
 ERR_DELIST_LTC_COMPLETE.explanation=LocalTransactionContainment no est\u00e1 en un estado en el que se pueda excluir un recurso.
 ERR_DELIST_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E: No se puede incluir una sincronizaci\u00f3n porque hay una transacci\u00f3n global activa.
+ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E: No se puede listar la sincronizaci\u00f3n debido a que una transacci\u00f3n global est\u00e1 activa.
 ERR_ENLIST_SYNCH_TX_GLB_ACT.explanation=No se puede incluir una sincronizaci\u00f3n con LocalTransactionContainment porque hay una transacci\u00f3n activa actualmente.
 ERR_ENLIST_SYNCH_TX_GLB_ACT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E: No se puede incluir la sincronizaci\u00f3n. LocalTransactionContainment est\u00e1 finalizando o ha finalizado.
+ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E: No se puede listar la sincronizaci\u00f3n. LocalTransactionContainment est\u00e1 finalizando o ha finalizado.
 ERR_ENLIST_SYNCH_LTC_COMPLETE.explanation=LocalTransactionContainment no est\u00e1 en un estado en el que se pueda incluir una sincronizaci\u00f3n.
 ERR_ENLIST_SYNCH_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_START=WLTC0015E: El recurso {0} no ha conseguido iniciarse. Rastreo de pilas de excepci\u00f3n: {1}.
+ERR_XA_RESOURCE_START=WLTC0015E: No se ha podido iniciar el  Recurso {0}. Rastreo de pilas de excepci\u00f3n: {1}.
 ERR_XA_RESOURCE_START.explanation=El contenedor no ha podido iniciar la transacci\u00f3n local.
 ERR_XA_RESOURCE_START.useraction=Investigue el problema en el gestor de recursos.
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_COMPLETE=WLTC0016E: El recurso {0} no ha conseguido finalizar. Rastreo de pilas de excepci\u00f3n: {1}.
+ERR_XA_RESOURCE_COMPLETE=WLTC0016E: El recurso {0} no se ha podido completar. Rastreo de pilas de excepci\u00f3n: {1}.
 ERR_XA_RESOURCE_COMPLETE.explanation=El contenedor no ha podido finalizar la transacci\u00f3n local.
 ERR_XA_RESOURCE_COMPLETE.useraction=Investigue el problema en el gestor de recursos.
 
 #-----------------------------------------------------------------------
-ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: Los recursos se han retrotra\u00eddo porque se ha llamado a setRollbackOnly().
+ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: Los recursos se retrotraen debido a que se est\u00e1 invocando setRollbackOnly().
 ERR_XA_RESOURCE_ROLLEDBACK.explanation=Los recursos incluidos con el LocalTransactionContainment (LTC) se han retrotra\u00eddo en lugar de comprometerse debido a que se ha llamado a setRollbackOnly() en el LTC.
-ERR_XA_RESOURCE_ROLLEDBACK.useraction=No es necesaria ninguna acci\u00f3n. Este mensaje s\u00f3lo es informativo.
+ERR_XA_RESOURCE_ROLLEDBACK.useraction=No se requiere ninguna acci\u00f3n. Este mensaje es meramente informativo.
 
 #-----------------------------------------------------------------------
-ERR_BEGIN_LTC_ACT=WLTC0018E: No se puede iniciar LocalTransactionContainment. Ya hay un LocalTransactionContainment activo.
+ERR_BEGIN_LTC_ACT=WLTC0018E: No se puede iniciar un LocalTransactionContainment. Ya hay un LocalTransactionContainment activo.
 ERR_BEGIN_LTC_ACT.explanation=Ya hab\u00eda un LocalTransactionContainment activo cuando se ha intentado iniciar uno nuevo.
 ERR_BEGIN_LTC_ACT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
 ERR_STATE_RB_ONLY=WLTC0019E: No se puede realizar la operaci\u00f3n. LocalTransactionContainment se ha marcado como s\u00f3lo de retrotracci\u00f3n.
-ERR_STATE_RB_ONLY.explanation=El contenedor ha marcado el LocalTransactionContainment en el que se ha realizado la operaci\u00f3n an\u00f3mala como s\u00f3lo de retrotracci\u00f3n.
+ERR_STATE_RB_ONLY.explanation=El contenedor ha marcado LocalTransactionContainment en el que se ha realizado la operaci\u00f3n an\u00f3mala como s\u00f3lo de retrotracci\u00f3n.
 ERR_STATE_RB_ONLY.useraction=Utilice el rastreo para determinar por qu\u00e9 LocalTransactionContainment se ha marcado como s\u00f3lo de retrotracci\u00f3n.
 
 #-----------------------------------------------------------------------
@@ -276,12 +276,12 @@ ERR_NP_INCONSISTENT.explanation=LocalTransactionCoordinator incluido como Activi
 ERR_NP_INCONSISTENT.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NP_ROLLEDBACK=WLTC0022E: El recurso se ha restablecido debido a que se est\u00e1 llamando a setRollbackOnly en LTC
+ERR_NP_ROLLEDBACK=WLTC0022E: El recurso se ha restablecido debido a que se ha invocado setRollbackOnly en LTC
 ERR_NP_ROLLEDBACK.explanation=El LocalTransactionCoordinator incluido como ActivitySessionResource se ha restablecido porque se ha llamado a setRollbackOnly en el LocalTransactionContainment.
-ERR_NP_ROLLEDBACK.useraction=No es necesaria ninguna acci\u00f3n. Este mensaje s\u00f3lo es informativo.
+ERR_NP_ROLLEDBACK.useraction=No se requiere ninguna acci\u00f3n. Este mensaje es meramente informativo.
 
 #-----------------------------------------------------------------------
-ERR_NP_ILLEGAL=WLTC0023E: El recurso no ha podido completarse debido a un estado no permitido.
+ERR_NP_ILLEGAL=WLTC0023E: El recurso no se ha completado debido a un estado no permitido.
 ERR_NP_ILLEGAL.explanation=El LocalTransactionCoordinator incluido como ActivitySessionResource se encuentra en un estado no v\u00e1lido para completarse.
 ERR_NP_ILLEGAL.useraction=CMSG0002
 
@@ -291,66 +291,62 @@ ERR_AS_LOOKUP_ASM.explanation=El objeto ActivitySessionManager no se ha encontra
 ERR_AS_LOOKUP_ASM.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_AS_ILLEGAL_STATE=WLTC0025E: No se puede incluir con el servicio ActivitySession. ActivitySession se encuentra en un estado no permitido.
+ERR_AS_ILLEGAL_STATE=WLTC0025E: No se puede listar en el servicio ActivitySession. ActivitySession se encuentra en un estado no permitido.
 ERR_AS_ILLEGAL_STATE.explanation=La ActivitySession actual no se encuentra en el estado correcto para que el LocalTransactionContainment la incluya como recurso.
 ERR_AS_ILLEGAL_STATE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_AS_UNEXPECTED=WLTC0026E: Se ha producido un error inesperado al interactuar con el servicio ActivitySession.
+ERR_AS_UNEXPECTED=WLTC0026E: Se ha generado un error imprevisto al interactuar con el servicio ActivitySession.
 ERR_AS_UNEXPECTED.explanation=Se ha producido un error inesperado al intentar incluir el LocalTransactionContainment en el servicio ActivitySession.
 ERR_AS_UNEXPECTED.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NO_LTC_CLEANUP=WLTC0027E: No hay ning\u00fan LocalTransactionCoordinator que deba limpiarse.
+ERR_NO_LTC_CLEANUP=WLTC0027E: No hay ning\u00fan LocalTransactionCoordinator para limpieza.
 ERR_NO_LTC_CLEANUP.explanation=No hay ning\u00fan LocalTransactionCoordinator asociado con la hebra actual y, por lo tanto, no se puede limpiar.
 ERR_NO_LTC_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_NO_LTC_COMPLETE=WLTC0028E: No hay ning\u00fan LocalTransactionCoordinator por finalizar.
+ERR_NO_LTC_COMPLETE=WLTC0028E: No hay ning\u00fan LocalTransactionCoordinator que completar.
 ERR_NO_LTC_COMPLETE.explanation=No hay ning\u00fan LocalTransactionCoordinator asociado con la hebra actual y, por lo tanto, no se puede finalizar.
 ERR_NO_LTC_COMPLETE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-ERR_DEPLOY=WLTC0029E: Se ha producido un error al instalar la aplicaci\u00f3n; el componente de la aplicaci\u00f3n {0} tiene extensiones del descriptor de despliegue de WebSphere que no est\u00e1n habilitadas en la edici\u00f3n instalada de WebSphere Application Server; si se utilizan se puede producir p\u00e9rdida de la integridad de datos: ActivationPolicy es {1}; LocalTransactionBoundary es {2}.
-ERR_DEPLOY.explanation=La aplicaci\u00f3n identificada en el mensaje se ha ensamblado con extensiones que no est\u00e1n soportadas en la edici\u00f3n instalada del producto. \
-Si el producto permitiera que la aplicaci\u00f3n se ejecutase sin el soporte de extensi\u00f3n esperado, podr\u00eda afectar a la integridad de los datos; por ejemplo, las actualizaciones a datos transaccionales pueden realizarse en diversas transacciones cuando la presencia de soporte de extensi\u00f3n provocar\u00eda que se produjeran en la misma transacci\u00f3n. \
-Por tanto, no es seguro instalar la aplicaci\u00f3n.
-ERR_DEPLOY.useraction=Examine la aplicaci\u00f3n que no se ha podido instalar. \
-Si puede ejecutarse sin el soporte de extensi\u00f3n, vuelva a ensamblar la aplicaci\u00f3n sin especificar las extensiones. \
-Si la aplicaci\u00f3n necesita el soporte de extensi\u00f3n, inst\u00e1lelo s\u00f3lo en servidores de aplicaci\u00f3n que proporcionen este soporte.
+ERR_DEPLOY=WLTC0029E: Ha fallado la instalaci\u00f3n de la aplicaci\u00f3n; el componente de aplicaci\u00f3n {0} tiene extensiones del descriptor de despliegue de WebSphere que no est\u00e1n habilitadas en la edici\u00f3n instalada de WebSphere Application Server; su uso puede generar la p\u00e9rdida de integridad de los datos: ActivationPolicy es {1}; LocalTransactionBoundary es {2}.
+ERR_DEPLOY.explanation=La aplicaci\u00f3n identificada en el mensaje se ha ensamblado con extensiones que no est\u00e1n soportadas en la edici\u00f3n instalada del producto. Si el producto permitiera que la aplicaci\u00f3n se ejecutase sin el soporte de extensi\u00f3n esperado, podr\u00eda afectar a la integridad de los datos; por ejemplo, las actualizaciones a datos transaccionales pueden realizarse en diversas transacciones cuando la presencia de soporte de extensi\u00f3n provocar\u00eda que se produjeran en la misma transacci\u00f3n. Por tanto, no es seguro instalar la aplicaci\u00f3n.
+ERR_DEPLOY.useraction=Examine la aplicaci\u00f3n que no se ha podido instalar. Si puede ejecutarse sin el soporte de extensi\u00f3n, vuelva a ensamblar la aplicaci\u00f3n sin especificar las extensiones. Si la aplicaci\u00f3n necesita el soporte de extensi\u00f3n, inst\u00e1lelo s\u00f3lo en servidores de aplicaci\u00f3n que proporcionen este soporte.
 
 #-----------------------------------------------------------------------
-ERR_DEPLOY_RESOLUTION=WLTC0030E: Error al instalar la aplicaci\u00f3n; el bean de aplicaci\u00f3n {0} est\u00e1 configurado para gestionar sus propias transacciones pero tiene un valor de control de resoluci\u00f3n de transacci\u00f3n local incompatible: ContainerAtBoundary.
+ERR_DEPLOY_RESOLUTION=WLTC0030E: La instalaci\u00f3n de la aplicaci\u00f3n ha fallado; el bean de la aplicaci\u00f3n {0} se ha configurado de modo que gestione sus propias transacciones, pero tiene un valor de control de resoluci\u00f3n de transacciones locales ContainerAtBoundary incompatible.
 ERR_DEPLOY_RESOLUTION.explanation=El bean identificado en el mensaje se ha ensamblado con extensiones que no est\u00e1n soportadas. Por este motivo, no se ha instalado la aplicaci\u00f3n.
 ERR_DEPLOY_RESOLUTION.useraction=La aplicaci\u00f3n que no se ha podido instalar tiene que volver a ensamblarse con una configuraci\u00f3n alternativa para el bean.
 
 #-----------------------------------------------------------------------
-ERR_DEPLOY_FAILURE=WLTC0031E: Error al instalar la aplicaci\u00f3n; el componente {0} de la aplicaci\u00f3n no se ha podido instalar.
+ERR_DEPLOY_FAILURE=WLTC0031E: Ha fallado la instalaci\u00f3n de la aplicaci\u00f3n; el componente de aplicaci\u00f3n {0} no se ha podido instalar.
 ERR_DEPLOY_FAILURE.explanation=La aplicaci\u00f3n identificada en el mensaje no ha podido instalarse correctamente y la aplicaci\u00f3n no est\u00e1 disponible.
 ERR_DEPLOY_FAILURE.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: Uno o m\u00e1s recursos de transacciones locales se han retrotra\u00eddo durante la limpieza de un LocalTransactionContainment.
+WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: Uno o varios recursos de la transacci\u00f3n local se han retrotra\u00eddo durante la limpieza de un LocalTransactionContainment.
 WRN_LTC_UNRESOLVED_ROLLEDBACK.explanation=Un LocalTransactionContainment con recursos de transacciones locales incompletas ha finalizado y ha provocado que los recursos se retrotraigan.
-WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=No es necesaria ninguna acci\u00f3n. Este mensaje s\u00f3lo es informativo.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=No se requiere ninguna acci\u00f3n. Este mensaje es meramente informativo.
 
 #-----------------------------------------------------------------------
-WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: El recurso {0} se ha retrotra\u00eddo en la limpieza de LocalTransactionContainment.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: El recurso {0} se ha retrotra\u00eddo durante la limpieza de LocalTransactionContainment.
 WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=El recurso de transacci\u00f3n local no se ha resuelto al finalizar LocalTransactionContainment y se ha retrotra\u00eddo.
-WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=No es necesaria ninguna acci\u00f3n. Este mensaje s\u00f3lo es informativo.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=No se requiere ninguna acci\u00f3n. Este mensaje es meramente informativo.
 
 #-----------------------------------------------------------------------
-ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: El estado completado de LocalTransactionContainment no es coherente durante la limpieza.
+ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: El estado completado de LocalTransactionContainment es incoherente durante la limpieza.
 ERR_NP_INCONSISTENT_CLEANUP.explanation=El LocalTransactionCoordinator incluido como una ActivitySessionSynchronization se complet\u00f3 durante la limpieza con resultados incoherentes.
 ERR_NP_INCONSISTENT_CLEANUP.useraction=CMSG0002
 
 #-----------------------------------------------------------------------
-WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W: Se ha restablecido una LocalTransactionContainment no resuelta durante la limpieza.
-WRN_NP_ROLLEDBACK_CLEANUP.explanation=Se ha restablecido el LocalTransactionCoordinator incluido como una ActivitySessionSynchronization.
+WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W: Se ha restablecido un LocalTransactionContainment no resuelto durante la limpieza.
+WRN_NP_ROLLEDBACK_CLEANUP.explanation=Se ha restablecido el LocalTransactionCoordinator incluido como ActivitySessionSynchronization.
 WRN_NP_ROLLEDBACK_CLEANUP.useraction=Puede haberse producido un error de aplicaci\u00f3n. Examine los mensajes relacionados para determinar la causa del restablecimiento.
 
 #-----------------------------------------------------------------------
-ERR_NP_ILLEGAL_CLEANUP=WLTC0036E: No se han completado uno o m\u00e1s de los recursos registrados en una LocalTransactionContainment durante la limpieza debido a un estado no permitido.
+ERR_NP_ILLEGAL_CLEANUP=WLTC0036E: Debido a un estado no permitido, no se han podido completar uno o m\u00e1s recursos registrados en un LocalTransactionContainment durante la limpieza.
 ERR_NP_ILLEGAL_CLEANUP.explanation=Un LocalTransactionCoordinator incluido como una ActivitySessionSynchronization contiene uno o m\u00e1s recursos en estado no v\u00e1lido para que se completen durante la limpieza.
 ERR_NP_ILLEGAL_CLEANUP.useraction=CMSG0002
 

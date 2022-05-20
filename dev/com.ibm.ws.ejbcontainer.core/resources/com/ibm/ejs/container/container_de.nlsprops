@@ -1550,6 +1550,14 @@ UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Die Schnittstelle {0} der Bea
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=Die ferne Enterprise-Bean-Bindung kann nicht erstellt werden, weil der CORBA-Namensserver nicht verf\u00fcgbar ist.
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=\u00dcberpr\u00fcfen Sie die Protokolldatei auf Ausnahmebedingungen, die sich auf die Initialisierung des ORB oder des CORBA-Namensservers beziehen.
 
+CNTR0342E_INCORRECT_ASYNC_ANNO=CNTR0342E: Die Bean {0} im Modul {1} der Anwendung {2} hat mindestens eine Methode mit der Annotation "jakarta.enterprise.concurrent.Asynchronous", die nicht f\u00fcr Enterprise-Beans verwendet werden darf. Die Annotation "jakarta.ejb.Asynchronous" stellt asynchrone Methoden f\u00fcr Enterprise-Beans bereit.
+CNTR0342E_INCORRECT_ASYNC_ANNO.explanation=Die Spezifikation Jakarta Concurrency l\u00e4sst die Verwendung der Annotation "jakarta.enterprise.concurrent.Asynchronous" in Jakarta Enterprise Beans nicht zu.
+CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=Entfernen Sie die Annotation "jakarta.enterprise.concurrent.Asynchronous" aus der Methode oder Klasse. Verwenden Sie die Annotation "jakarta.ejb.Asynchronous", um Methoden asynchroner Enterprise-Beans zu identifizieren.
+
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: Die Gesch\u00e4ftsschnittstelle {0} enth\u00e4lt eine Annotation "jakarta.enterprise.concurrent.Asynchronous". Asynchrone Annotationen sind in keiner Schnittstelle g\u00fcltig, und der Jakarta Enterprise Beans-Container ignoriert sie.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=Die Annotation "jakarta.enterprise.concurrent.Asynchronous" darf nicht mit Jakarta Enterprise Beans verwendet werden. Der Jakarta Enterprise Beans-Container ignoriert diese Annotationen in Schnittstellen. Wenn die Methoden nicht im Implementierungsdeskriptor ejb-jar.xml als asynchron deklariert werden oder die Annotation "jakarta.ejb.Asynchronous" in der Bean-Klasse oder einer Bean-Klassenmethode angegeben ist, werden die Bean-Methoden synchron ausgef\u00fchrt.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Entfernen Sie alle Annotationen "jakarta.enterprise.concurrent.Asynchronous" aus der angegebenen Gesch\u00e4ftsschnittstelle und stellen Sie sicher, dass die Annotation "jakarta.ejb.Asynchronous" in der Bean-Klasse ordnungsgem\u00e4\u00df angegeben ist.
+
 #-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
@@ -2206,4 +2214,3 @@ CNTR9424E_NO_URL_JNDINAME_SPECIFIED.useraction=F\u00fcgen Sie der Eigenschaftend
 CNTR9425E_NO_URL_SPEC_SPECIFIED=CNTR9425E: Die Eigenschaften des integrierbaren EJB-Containers f\u00fcr die URL-Ressource {0} enthalten die Eigenschaft specification nicht.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=Die Eigenschaften, die der integrierbare EJB-Container verwendet, enthalten eine URL-Ressource ohne definierte Spezifikation.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.useraction=F\u00fcgen Sie der Eigenschaftendatei eine Eigenschaft specification f\u00fcr diese URL-Ressource hinzu.
-

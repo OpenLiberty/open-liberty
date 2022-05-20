@@ -35,7 +35,9 @@ import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
+import com.ibm.ws.security.openidconnect.clients.common.InMemoryOidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.common.ConfigUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
@@ -133,6 +135,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
     DiscoveryConfigUtils discoveryUtil = new DiscoveryConfigUtils();
+
+    private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
 
     @Override
     protected void checkForRequiredConfigAttributes(Map<String, Object> props) {
@@ -913,6 +917,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             return JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
         }
         return null;
+    }
+    
+    @Override
+    public OidcSessionCache getOidcSessionCache() {
+    	return this.oidcSessionCache;
     }
 
 }

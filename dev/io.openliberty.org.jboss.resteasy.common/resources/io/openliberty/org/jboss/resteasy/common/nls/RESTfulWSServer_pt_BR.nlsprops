@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -38,6 +38,8 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+#RANGE 1300 - 1399 
+#Message range shared with io.openliberty.org.jboss.resteasy.server
 #
 #   Strings in this file which contain replacement variables are processed by the MessageFormat
 #   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
@@ -52,18 +54,6 @@
 #
 #-------------------------------------------------------------------------------
 
-MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: V\u00e1rios servlets REST est\u00e3o definidos para o m\u00f3dulo da web, {0}. Somente zero ou um servlet REST \u00e9 permitido por m\u00f3dulo da web.
-MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=\u00c9 permitido que somente um servlet REST seja definido por m\u00f3dulo da web. Um servlet REST \u00e9 qualquer servlet que usa um dos seguintes nomes de classe: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher ou org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Esta mensagem indica que mais de um servlet foi especificado no web.xml ou configurado dinamicamente. 
-MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Revise o web.xml para esses servlets e remova todos ou todos menos um.
-
-MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: V\u00e1rios mapeamentos de servlet REST est\u00e3o definidos para o m\u00f3dulo da web, {0}. Um servlet REST pode ser associado somente a um \u00fanico mapeamento de caminho.
-MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=\u00c9 permitido que um servlet REST seja configurado somente com zero ou um mapeamento de caminho. Um servlet REST \u00e9 qualquer servlet que usa um dos seguintes nomes de classe: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher ou org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Esta mensagem indica que mais de um mapeamento est\u00e1 associado a um servlet REST no web.xml. 
-MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Revise o web.xml para os mapeamentos de servlet que est\u00e3o associados ao servlet REST e remova todos ou todos menos um.
-
-INVALID_LONG_PROPERTY_CWWKW1302W=CWWKW1302W: A propriedade do cliente {0} deve ser um n\u00famero inteiro longo, mas foi configurada incorretamente com {1}. Essa configura\u00e7\u00e3o ser\u00e1 ignorada.
-INVALID_LONG_PROPERTY_CWWKW1302W.explanation=As propriedades do cliente, como configura\u00e7\u00f5es de tempo limite, devem ser configuradas como um n\u00famero inteiro longo positivo ou uma sequ\u00eancia que pode ser convertida em um n\u00famero inteiro longo. Esta mensagem indica que uma propriedade do cliente foi configurada com um valor inv\u00e1lido. Essa propriedade ser\u00e1 ignorada.
-INVALID_LONG_PROPERTY_CWWKW1302W.useraction=Revise o c\u00f3digo do aplicativo e a configura\u00e7\u00e3o do servidor para determinar onde essa propriedade foi configurada incorretamente e remova a propriedade ou mude-a para um valor de n\u00famero inteiro longo v\u00e1lido.
-
 INVALID_INT_PROPERTY_CWWKW1303W=CWWKW1303W: A propriedade do cliente {0} deve ser um n\u00famero inteiro, mas foi configurada incorretamente com {1}. Essa configura\u00e7\u00e3o ser\u00e1 ignorada.
 INVALID_INT_PROPERTY_CWWKW1303W.explanation=As propriedades do cliente, como configura\u00e7\u00f5es de porta de proxy, devem ser configuradas como um n\u00famero inteiro positivo ou uma sequ\u00eancia que pode ser convertida em um n\u00famero inteiro. Esta mensagem indica que uma propriedade do cliente foi configurada com um valor inv\u00e1lido. Essa propriedade ser\u00e1 ignorada.
 INVALID_INT_PROPERTY_CWWKW1303W.useraction=Revise o c\u00f3digo do aplicativo e a configura\u00e7\u00e3o do servidor para determinar onde esta propriedade foi configurada incorretamente e remova a propriedade ou mude-a para um valor de n\u00famero inteiro v\u00e1lido.
@@ -76,8 +66,30 @@ INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: O servidor est\u00e1 ignorando o provedo
 INVALID_PROVIDER_CWWKW1305W.explanation=A classe de provedor especificada provavelmente n\u00e3o cont\u00e9m um construtor p\u00fablico v\u00e1lido ou n\u00e3o implementa uma interface de provedor REST Jakarta. Os requisitos para uma implementa\u00e7\u00e3o de provedor v\u00e1lida est\u00e3o documentados na se\u00e7\u00e3o 4 da especifica\u00e7\u00e3o Jakarta RESTful Web Services.
 INVALID_PROVIDER_CWWKW1305W.useraction=Revise o c\u00f3digo do aplicativo para assegurar que o provedor especificado implemente adequadamente a interface do provedor e contenha um construtor p\u00fablico v\u00e1lido por meio dos requisitos de especifica\u00e7\u00e3o.
 
+INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: A propriedade do cliente {0} deve ser um n\u00famero inteiro longo, mas foi configurada incorretamente com {1}. Essa configura\u00e7\u00e3o \u00e9 ignorada.
+INVALID_LONG_PROPERTY_CWWKW1306W.explanation=As propriedades do cliente, como configura\u00e7\u00f5es de tempo limite, devem ser configuradas como um n\u00famero inteiro longo positivo ou uma sequ\u00eancia que pode ser convertida em um n\u00famero inteiro longo. Esta mensagem indica que uma propriedade do cliente foi configurada com um valor inv\u00e1lido. Como resultado, esta propriedade \u00e9 ignorada.
+INVALID_LONG_PROPERTY_CWWKW1306W.useraction=Revise o c\u00f3digo do aplicativo e a configura\u00e7\u00e3o do servidor para determinar onde essa propriedade foi configurada incorretamente e remova a propriedade ou mude-a para um valor de n\u00famero inteiro longo v\u00e1lido.
 
-# Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+# Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
+
+warn.invalid.authorization.token.type=CWWKW0061W: O tipo de token de autoriza\u00e7\u00e3o {0} especificado na configura\u00e7\u00e3o do servidor \u00e9 inv\u00e1lido e ser\u00e1 ignorado.
+warn.invalid.authorization.token.type.explanation=O tipo de token de autoriza\u00e7\u00e3o especificado na configura\u00e7\u00e3o do servidor \u00e9 inv\u00e1lido.
+warn.invalid.authorization.token.type.useraction=Especifique um tipo de token de autoriza\u00e7\u00e3o v\u00e1lido.
+
+# Same messages as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: Ocorreu uma exce\u00e7\u00e3o ao tentar usar a API PropagationHelper de SAML. A exce\u00e7\u00e3o foi: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Ocorreu uma exce\u00e7\u00e3o ao chamar a API PropagationHelper para recuperar o token SAML do assunto.
+failed_to_extract_saml_token_from_subject.useraction=Assegure que o server.xml tenha o recurso samlWeb-2.0 especificado. Al\u00e9m disso, verifique os logs do servidor para obter informa\u00e7\u00f5es adicionais referentes \u00e0 exce\u00e7\u00e3o. 
+
+failed_run_as_subject=CWWKW0706E: Ocorreu uma exce\u00e7\u00e3o ao tentar obter o RunAsSubject. A exce\u00e7\u00e3o era: [{0}].
+failed_run_as_subject.explanation=Ocorreu uma exce\u00e7\u00e3o ao obter o RunAsSubject.
+failed_run_as_subject.useraction=Certifique-se de que o servidor tenha sido configurado e iniciado corretamente.
+
 warn_missing_mpjwt_token=CWWKW0707W: O atributo [{0}] na configura\u00e7\u00e3o [{1}] est\u00e1 definido para [{2}], mas o MicroProfile JSON Web Token (JWT) n\u00e3o est\u00e1 dispon\u00edvel. A solicita\u00e7\u00e3o n\u00e3o cont\u00e9m um cabe\u00e7alho de Autoriza\u00e7\u00e3o com o token.
 warn_missing_mpjwt_token.explanation=O tempo de execu\u00e7\u00e3o falhou ao localizar o MicroProfile JWT no assunto runAs. Esse erro geralmente indica um problema com a autentica\u00e7\u00e3o. Certifique-se de que nenhum erro seja encontrado enquanto o recurso MicroProfile JWT autenticar um usu\u00e1rio.
 warn_missing_mpjwt_token.useraction=Verifique a a\u00e7\u00e3o do usu\u00e1rio para quaisquer erros anteriores que o servidor registrou.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: O servi\u00e7o MicroProfile JWT Propagation n\u00e3o est\u00e1 dispon\u00edvel. O tempo de\nexecu\u00e7\u00e3o n\u00e3o pode acessar o token para inclu\u00ed-lo no cabe\u00e7alho de autoriza\u00e7\u00e3o.
+warn_mpjwt_prop_service_notavail.explanation=O servi\u00e7o MicroProfile JWT Propagation requer o recurso mpJwt-1.0. 
+warn_mpjwt_prop_service_notavail.useraction=Certifique-se de que o servidor esteja executando com o recurso\nrequerido.

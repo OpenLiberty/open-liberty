@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -148,8 +149,10 @@ public class OAuth20AuthorizeRequestExceptionHandler implements
                             if (_templateUrl != null && !"".equals(_templateUrl.trim())) {
                                 renderErrorPage(req, rsp, e2);
                             } else {
+                                Locale locale = req.getLocale();
+                                rsp.setLocale(locale);
                                 PrintWriter pw = rsp.getWriter();
-                                pw.print(e2.formatSelf(req.getLocale(), encoding));
+                                pw.print(e2.formatSelf(locale, encoding));
                             }
                             handled = true;
                         } catch (IOException ioe) {

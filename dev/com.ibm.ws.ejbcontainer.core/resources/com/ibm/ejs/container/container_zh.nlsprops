@@ -1547,9 +1547,17 @@ NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=\u672c\u5730\u7ed1\u5
 NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=\u8bf7\u66f4\u6b63 ibm-ejb-jar-bnd.xml \u7ed1\u5b9a\u6587\u4ef6\u4ee5\u5bf9\u6b64 bean \u6307\u5b9a\u6709\u6548 JNDI \u7ed1\u5b9a\u540d\u79f0\uff08\u901a\u8fc7\u79fb\u9664\u65e0\u6548\u540d\u79f0\u7a7a\u95f4\uff09\u3002
 
 #-------------------------------------------------------------------------------
-UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W\uff1a\u65e0\u6cd5\u5c06 {3} \u5e94\u7528\u7a0b\u5e8f\u7684 {2} \u6a21\u5757\u4e2d {1} bean \u7684 {0} \u63a5\u53e3\u7ed1\u5b9a\u81f3 {4} \u540d\u79f0\u4f4d\u7f6e\u3002 CORBA \u540d\u79f0\u670d\u52a1\u5668\u4e0d\u53ef\u7528\u3002
+UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: \u65e0\u6cd5\u5c06 {3} \u5e94\u7528\u7a0b\u5e8f\u7684 {2} \u6a21\u5757\u4e2d {1} bean \u7684 {0} \u63a5\u53e3\u7ed1\u5b9a\u81f3 {4} \u540d\u79f0\u4f4d\u7f6e\u3002 CORBA \u540d\u79f0\u670d\u52a1\u5668\u4e0d\u53ef\u7528\u3002
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=\u7531\u4e8e CORBA \u540d\u79f0\u670d\u52a1\u5668\u4e0d\u53ef\u7528\uff0c\u56e0\u6b64\u65e0\u6cd5\u521b\u5efa\u8fdc\u7a0b\u4f01\u4e1a bean \u7ed1\u5b9a\u3002
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=\u8bf7\u68c0\u67e5\u65e5\u5fd7\u6587\u4ef6\u4ee5\u4e86\u89e3\u4e0e ORB \u6216 CORBA \u540d\u79f0\u670d\u52a1\u5668\u521d\u59cb\u5316\u76f8\u5173\u7684\u5f02\u5e38\u3002
+
+CNTR0342E_INCORRECT_ASYNC_ANNO=CNTR0342E: {2} \u5e94\u7528\u7a0b\u5e8f\u7684 {1} \u6a21\u5757\u4e2d\u7684 {0} bean \u5177\u6709\u4e00\u4e2a\u6216\u591a\u4e2a\u5177\u6709 jakarta.enterprise.concurrent.Asynchronous \u6ce8\u91ca\u7684\u65b9\u6cd5\uff0c\u8fd9\u4e9b\u65b9\u6cd5\u4e0d\u5f97\u5728\u4f01\u4e1a bean \u4e0a\u4f7f\u7528\u3002 jakarta.ejb.Asynchronous \u6ce8\u91ca\u4e3a\u4f01\u4e1a Bean \u63d0\u4f9b\u5f02\u6b65\u65b9\u6cd5\u3002
+CNTR0342E_INCORRECT_ASYNC_ANNO.explanation=Jakarta Concurrency \u89c4\u8303\u4e0d\u5141\u8bb8\u5728 Jakarta.enterprise.concurrent.Asynchronous \u6ce8\u91ca\u5728 Jakarta Enterprise Bean \u4e0a\u4f7f\u7528\u3002
+CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=\u4ece\u65b9\u6cd5\u6216\u7c7b\u4e2d\u9664\u53bb jakarta.enterprise.concurrent.Asynchronous \u6ce8\u91ca\u3002 \u4f7f\u7528 jakarta.ejb.Asynchronous \u6ce8\u91ca\u6807\u8bc6\u5f02\u6b65\u4f01\u4e1a Bean \u65b9\u6cd5\u3002
+
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: {0} \u4e1a\u52a1\u63a5\u53e3\u5305\u542b jakarta.enterprise.concurrent.Asynchronous \u6ce8\u91ca\u3002 \u5f02\u6b65\u6ce8\u91ca\u5728\u4efb\u4f55\u63a5\u53e3\u4e0a\u90fd\u65e0\u6548\uff0c\u5e76\u4e14 Jakarta Enterprise Beans \u5bb9\u5668\u5c06\u5ffd\u7565\u8fd9\u4e9b\u6ce8\u91ca\u3002
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=jakarta.enterprise.concurrent.Asynchronous \u6ce8\u91ca\u4e0d\u5f97\u4e0e Jakarta Enterprise Bean \u914d\u5408\u4f7f\u7528\u3002 Jakarta Enterprise Beans \u5bb9\u5668\u5ffd\u7565\u63a5\u53e3\u4e0a\u7684\u8fd9\u4e9b\u6ce8\u91ca\u3002 \u9664\u975e\u5728 ejb-jar.xml \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u58f0\u660e\u4e86\u8fd9\u4e9b\u65b9\u6cd5\uff0c\u6216\u8005\u5728 bean \u7c7b\u6216 bean \u7c7b\u65b9\u6cd5\u4e0a\u6307\u5b9a\u4e86 jakarta.ejb.Asynchronous \u6ce8\u91ca\uff0c\u5426\u5219 bean \u65b9\u6cd5\u5c06\u540c\u6b65\u8fd0\u884c\u3002
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=\u4ece\u6307\u5b9a\u7684\u4e1a\u52a1\u63a5\u53e3\u4e2d\u9664\u53bb\u4efb\u4f55 jakarta.enterprise.concurrent.Asynchronous \u6ce8\u91ca\uff0c\u5e76\u9a8c\u8bc1\u662f\u5426\u5728 bean \u7c7b\u4e2d\u6b63\u786e\u6307\u5b9a\u4e86 jakarta.ejb.Asynchronous \u6ce8\u91ca\u3002
 
 #-------------------------------------------------------------------------------
 #
@@ -2207,4 +2215,3 @@ CNTR9424E_NO_URL_JNDINAME_SPECIFIED.useraction=\u8bf7\u5c06\u6b64 URL \u8d44\u6e
 CNTR9425E_NO_URL_SPEC_SPECIFIED=CNTR9425E: URL \u8d44\u6e90 {0} \u7684\u53ef\u5d4c\u5165 Enterprise JavaBeans (EJB) \u5bb9\u5668\u5c5e\u6027\u4e0d\u5305\u542b\u5c5e\u6027 specification\u3002
 CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=\u53ef\u5d4c\u5165 Enterprise JavaBeans (EJB) \u5bb9\u5668\u6240\u4f7f\u7528\u7684\u5c5e\u6027\u5305\u542b\u672a\u6307\u5b9a specification \u7684 URL \u8d44\u6e90\u3002
 CNTR9425E_NO_URL_SPEC_SPECIFIED.useraction=\u8bf7\u5c06\u6b64 URL \u8d44\u6e90\u7684 specification \u5c5e\u6027\u6dfb\u52a0\u5230\u5c5e\u6027\u6587\u4ef6\u3002
-

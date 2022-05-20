@@ -72,6 +72,10 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     private final String client3Secret = "client3secret";
     private final String subject = "testuser";
     private final String sid = "somesidvalue";
+    private final String idToken1Id = "idToken1";
+    private final String idToken2Id = "idToken2";
+    private final String idToken3Id = "idToken3";
+    private final String customIdTokenId = "customIdToken";
 
     private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     private final OidcServerConfig oidcServerConfig = mockery.mock(OidcServerConfig.class);
@@ -111,9 +115,10 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     @Before
     public void setUp() throws Exception {
         System.out.println("Entering test: " + testName.getMethodName());
-        builder = new MockLogoutTokenBuilder(request, oidcServerConfig);
         mockery.checking(new Expectations() {
             {
+                one(oauth20provider).getTokenCache();
+                will(returnValue(tokenCache));
                 allowing(oidcServerConfig).getProviderId();
                 will(returnValue("OP"));
                 allowing(client1).getClientId();
@@ -132,20 +137,27 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(client1Id));
                 allowing(idToken1).getTokenString();
                 will(returnValue(getIdToken1String()));
+                allowing(idToken1).getId();
+                will(returnValue(idToken1Id));
                 allowing(idToken2).getType();
                 will(returnValue(OAuth20Constants.ID_TOKEN));
                 allowing(idToken2).getClientId();
                 will(returnValue(client2Id));
                 allowing(idToken2).getTokenString();
                 will(returnValue(getIdToken2String()));
+                allowing(idToken2).getId();
+                will(returnValue(idToken2Id));
                 allowing(idToken3).getType();
                 will(returnValue(OAuth20Constants.ID_TOKEN));
                 allowing(idToken3).getClientId();
                 will(returnValue(client3Id));
                 allowing(idToken3).getTokenString();
                 will(returnValue(getIdToken3String()));
+                allowing(idToken3).getId();
+                will(returnValue(idToken3Id));
             }
         });
+        builder = new MockLogoutTokenBuilder(request, oidcServerConfig);
     }
 
     @After
@@ -190,6 +202,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(issuerIdentifier));
                 one(client1).getBackchannelLogoutUri();
                 will(returnValue("https://localhost/my/logout/uri/client1"));
+                one(tokenCache).remove(idToken1Id);
             }
         });
         setJwtCreationExpectations(client1, client1Secret);
@@ -216,14 +229,15 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
-                one(client1).getBackchannelLogoutUri();
-                will(returnValue("https://localhost/my/logout/uri/client1"));
-                one(client1).getBackchannelLogoutUri();
+                allowing(client1).getBackchannelLogoutUri();
                 will(returnValue("https://localhost/my/logout/uri/client1"));
                 one(client2).getBackchannelLogoutUri();
                 will(returnValue(null));
                 one(client3).getBackchannelLogoutUri();
                 will(returnValue("https://localhost/my/logout/uri/client3"));
+                one(tokenCache).remove(idToken1Id);
+                one(tokenCache).remove(customIdTokenId);
+                one(tokenCache).remove(idToken3Id);
             }
         });
         // Should create three logout tokens
@@ -629,6 +643,12 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
         clientsToLogOut.put(client1, new ArrayList<>());
 
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
         Map<OidcBaseClient, Set<String>> clientsToLogoutTokens = builder.buildLogoutTokensForClients(clientsToLogOut);
 
         verifyLogoutTokensMapContainsExpectedClients(clientsToLogoutTokens);
@@ -643,6 +663,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
+                one(tokenCache).remove(idToken1Id);
             }
         });
         setJwtCreationExpectations(client1, client1Secret);
@@ -681,6 +702,11 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
+                one(tokenCache).remove(idToken1Id);
+                one(tokenCache).remove(customIdTokenId);
+                one(tokenCache).remove(idToken2Id);
+                one(tokenCache).remove(idToken3Id);
+                one(tokenCache).remove(customIdTokenId);
             }
         });
         setJwtCreationExpectations(client1, client1Secret);
@@ -709,6 +735,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
+                one(tokenCache).remove(idToken1Id);
             }
         });
         setJwtCreationExpectations(client1, client1Secret);
@@ -741,6 +768,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
+                one(tokenCache).remove(idToken1Id);
+                one(tokenCache).remove(customIdTokenId);
             }
         });
         // Should create two logout tokens
@@ -1111,8 +1140,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     private void setTokenCacheExpectations(String user, OAuth20Token... tokens) {
         mockery.checking(new Expectations() {
             {
-                one(oauth20provider).getTokenCache();
-                will(returnValue(tokenCache));
                 one(tokenCache).getAllUserTokens(subject);
                 will(returnValue(Arrays.asList(tokens)));
             }
@@ -1128,6 +1155,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(idTokenClientId));
                 allowing(customIdToken).getTokenString();
                 will(returnValue(idTokenString));
+                allowing(customIdToken).getId();
+                will(returnValue(customIdTokenId));
             }
         });
     }

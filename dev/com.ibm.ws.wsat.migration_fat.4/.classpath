@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/wsat/fat/FATSuite.java"/>
-	<classpathentry kind="src" path="com.ibm.ws.wsat.migration_fat.1-fatsrc" excluding="com/ibm/ws/wsat/fat/FATSuite.java"/>
 	<classpathentry kind="src" path="com.ibm.ws.wsat.migration_fat.1-LPSClient"/>
+	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="com.ibm.ws.wsat.migration_fat.1-LPSServer"/>
 	<classpathentry kind="src" path="com.ibm.ws.wsat.migration_fat.1-simpleServer"/>
 	<classpathentry kind="src" path="com.ibm.ws.wsat.migration_fat.1-simpleClient"/>

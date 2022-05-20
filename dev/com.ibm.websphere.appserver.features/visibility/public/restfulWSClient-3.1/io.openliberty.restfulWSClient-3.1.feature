@@ -46,7 +46,7 @@ Subsystem-Name: Jakarta RESTful Web Services 3.1 Client
   com.ibm.ws.org.apache.httpcomponents, \
   com.ibm.ws.org.jboss.logging, \
   io.openliberty.org.jboss.resteasy.common.jakarta, \
-  io.openliberty.restfulWS.internal.globalhandler.jakarta
+  io.openliberty.restfulWS.internal.globalhandler
 -jars=\
   io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
 -files=\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,6 @@ define("js/toolbox/addBookmark",
                  has) 
 {
     "use strict";
-    var ignoreInaccessibleURL = false;
     var ignoreInvalidURL = false;
     var previousURL = "";
     
@@ -151,38 +150,7 @@ define("js/toolbox/addBookmark",
                     // "The URL is invalid. Enter a valid URL" will appear on a per 
                     // keystroke basis
                     urlField.validator = originalValidator;
-                    // check if the url is accessible
-                    utils.isUrlAccessible(url).then( function(value) {
-                        if ( url !== previousURL )
-                        {
-                            ignoreInaccessibleURL = false;
-                        }
-                        if ( value === true || ignoreInaccessibleURL === true)
-                        {
-                            me.addBookmark();
-                        }
-                        else
-                        {
-                            me.displayError("bookmarkURL", i18n.TOOL_URL_INACCESSIBLE );
-                            previousURL = processURL(urlField.get("value"));
-                            ignoreInaccessibleURL = true;
-                        }
-                    }, function(err) {
-                        if ( registry.byId("bookmarkURL").value !== previousURL )
-                        {
-                            ignoreInaccessibleURL = false;
-                        }
-                        if ( ignoreInaccessibleURL === true)
-                        {
-                            me.addBookmark();
-                        }
-                        else
-                        {
-                            me.displayError("bookmarkURL", i18n.TOOL_URL_INACCESSIBLE );
-                            previousURL = processURL(urlField.get("value"));
-                            ignoreInaccessibleURL = true;
-                        }
-                    });
+                    me.addBookmark();
                 })
             }, this.addButton).startup();
         },
@@ -221,7 +189,6 @@ define("js/toolbox/addBookmark",
                 var urlField = registry.byId("bookmarkURL");
                 nameField.reset();
                 urlField.reset(); 
-                ignoreInaccessibleURL = false;
                 previousURL = "";
             }, function(err) {
                 console.error("addBookmark.addBookmark error: ", err.message);

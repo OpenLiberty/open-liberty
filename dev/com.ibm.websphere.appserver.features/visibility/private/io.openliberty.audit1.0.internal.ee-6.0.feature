@@ -9,7 +9,6 @@ visibility = private
   com.ibm.websphere.appserver.appSecurity-2.0; ibm.tolerates:="3.0"
 
 -bundles=\
-  com.ibm.ws.security.audit.file, \
   com.ibm.ws.request.probe.audit.servlet
 
 kind=ga

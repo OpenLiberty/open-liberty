@@ -89,8 +89,6 @@ testsrc: test/src
         com.ibm.ws.webcontainer;version=latest,\
         com.ibm.ws.org.apache.commons.lang3;version=latest,\
         org.eclipse.osgi;version=latest,\
-        com.ibm.ws.microprofile.health;version=latest,\
-        io.openliberty.microprofile.health.internal.common,\
         io.openliberty.microprofile.health.3.0.internal;version=latest
 
 -testpath: \

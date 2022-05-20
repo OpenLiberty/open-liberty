@@ -483,5 +483,9 @@ error.unknownSchemaVersion=CWWKG0108E: \uc2a4\ud0a4\ub9c8 \ubc84\uc804 {0}\uc740
 error.unknownSchemaVersion.explanation="-- schemaVersion" \uc635\uc158\uacfc \ud568\uaed8 \uc81c\uacf5\ub41c \uac12\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 error.unknownSchemaVersion.useraction=\uc62c\ubc14\ub978 \uc635\uc158\uc744 \ubcf4\ub824\uba74 "./schemaGen -- help" \uba85\ub839\uc744 \uc785\ub825\ud569\ub2c8\ub2e4.
 
+schemagen.info.schema.file.created=CWWKG0109I: \uc2a4\ud0a4\ub9c8\uac00 [{0}] \ud30c\uc77c\uc5d0 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+schemagen.info.schema.file.created.explanation=\uba85\ub839\uc774 \uc131\uacf5\uc801\uc73c\ub85c \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+schemagen.info.schema.file.created.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
 # Non-TR message
 error.invalidOCDRef=\uc624\ub958: Metatype PID [{0}]\uc5d0 \uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc624\ube0c\uc81d\ud2b8 \ud074\ub798\uc2a4 \uc815\uc758 ID [{1}]\uc774(\uac00) \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.

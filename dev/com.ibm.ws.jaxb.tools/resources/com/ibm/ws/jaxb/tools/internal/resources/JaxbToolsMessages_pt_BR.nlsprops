@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -9,15 +9,17 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 
-#CMVCPATHNAME com.ibm.ws.jaxws.ejb/resources/com/ibm/ws/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#CMVCPATHNAME com.ibm.ws.jaxb.tools/resources/com/ibm/ws/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW
 #COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
-#RANGE 0700 - 0799
+#RANGE 1400 - 1499
+#Message range shared with com.ibm.ws.jaxb.tools.2.3 and io.openliberty.xmlbinding.3.0.internal.tools
+
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-error.parameter.target.missed=CWWKW0700E: O par\u00e2metro de destino necess\u00e1rio n\u00e3o foi especificado.
+error.parameter.target.missed=CWWKW1400E: O par\u00e2metro -target necess\u00e1rio n\u00e3o foi especificado. Os valores v\u00e1lidos s\u00e3o 2,0, 2,1 ou 2,2.
 error.parameter.target.missed.explanation=Se o par\u00e2metro de destino for especificado, aplicativos existentes poder\u00e3o ser gerados novamente, sem que seus comportamentos sejam alterados quando o n\u00edvel de especifica\u00e7\u00e3o JAXB suportado pelo Perfil Liberty for atualizado.
-error.parameter.target.missed.useraction=Insira o n\u00edvel de especifica\u00e7\u00e3o JAXB com qual o c\u00f3digo gerado est\u00e1 em conformidade. Valores v\u00e1lidos s\u00e3o 2.0, 2.1 ou 2.2.
+error.parameter.target.missed.useraction=Insira o n\u00edvel de especifica\u00e7\u00e3o JAXB com qual o c\u00f3digo gerado est\u00e1 em conformidade. Os valores v\u00e1lidos s\u00e3o 2,0, 2,1 ou 2,2.
