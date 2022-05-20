@@ -31,9 +31,19 @@
 	<include
 		location="${shared.resource.dir}/configs/libraries.xml" />
 	<include
-		location="${shared.resource.dir}/configs/ssl.xml" />
-	<include
 		location="${shared.resource.dir}/configs/appHelloWorld.xml" />
+
+	<!-- 
+		We need to generate the truststore in the test since it will need to contain
+		the IDP's cert.
+	 -->
+	<include
+		location="${shared.resource.dir}/configs/ssl.xml" />
+	<ssl id="defaultSSLConfig" trustDefaultCerts="true"
+		keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" />
+	<keyStore id="defaultTrustStore"
+		location="${server.config.dir}/resources/security/truststore.p12"
+		password="trustPassword" />
 
 	<!--
 		Configure the JCache instances.

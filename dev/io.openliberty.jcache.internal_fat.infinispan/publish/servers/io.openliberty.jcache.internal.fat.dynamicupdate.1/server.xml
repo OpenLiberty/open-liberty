@@ -15,6 +15,7 @@
 		<feature>jsp-2.3</feature>
 		<feature>servlet-4.0</feature>
 	</featureManager>
+	
 	<!-- 
 		Include common configuration. 
 	 -->
@@ -32,6 +33,5 @@
 		location="${shared.resource.dir}/configs/ssl.xml" />
 	<include
 		location="${shared.resource.dir}/configs/appBasicAuth1.xml" />
-
 
 </server>

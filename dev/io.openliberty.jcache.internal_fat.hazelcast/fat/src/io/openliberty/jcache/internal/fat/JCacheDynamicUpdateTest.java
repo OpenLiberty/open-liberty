@@ -82,12 +82,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         CacheManager cacheManager = new CacheManager("CacheManager", cachingProviderRef, uri);
 
         Properties properties = new Properties();
-        properties.setExtraAttribute("infinispan.client.hotrod.auth_realm", "default");
-        properties.setExtraAttribute("infinispan.client.hotrod.auth_server_name", "infinispan");
         properties.setExtraAttribute("infinispan.client.hotrod.uri", "${infinispan.client.hotrod.uri}");
-        properties.setExtraAttribute("infinispan.client.hotrod.sasl_mechanism", "DIGEST-MD5");
-        properties.setExtraAttribute("infinispan.client.hotrod.java_serial_allowlist", ".*");
-        properties.setExtraAttribute("infinispan.client.hotrod.marshaller", "org.infinispan.commons.marshall.JavaSerializationMarshaller");
         cacheManager.setProps(properties);
 
         CachingProvider cachingProvider = new CachingProvider("CachingProvider", libraryRef, providerClass);
@@ -109,7 +104,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
     public void addAndRemoveCaches() throws Exception {
         // Create a working cache configuration
         updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib,CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispan.xml");
+                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props");
         ServerConfiguration current = server1.getServerConfiguration();
 
         // Add second and third cache
@@ -142,7 +137,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
      * libraryRef="InfinispanLibBad,CustomLoginLib" />
      *
      * <cacheManager cachingProviderRef="CachingProviderBad" id="CacheManager"
-     * uri="file:///${shared.resource.dir}/infinispan/infinispanbad.xml">
+     * uri="file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props">
      *
      * <properties
      * ... />
@@ -161,7 +156,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
     @AllowedFFDC(value = { "javax.cache.CacheException" })
     public void dynamicUpdate() throws Exception {
         updateLibertyServer("CacheManagerBad", "CachingProviderBad", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLibBad,CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispanbad.xml");
+                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
         /**
          * First look for two warnings: bad cacheManagerRef and bad cachingProviderRef.
          */
@@ -173,7 +168,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
 
         //Update server to have correct cacheManagerRef and cachingProviderRef (bad JCachingProvider, libraryRef and uri)
         updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLibBad,CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispanbad.xml");
+                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
 
         /**
          * Next issue is bad cachingProvider providerClass.
@@ -189,7 +184,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
 
         //Update server to have correct JCachingProvider (bad libraryRef and uri)
         updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLibBad,CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispanbad.xml");
+                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
 
         /**
          * The providerClass is fixed. Look for libraryRef warning.
@@ -200,20 +195,20 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
 
         //Update server to have the correct library (bad uri)
         updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib,CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispanbad.xml");
+                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
 
         /**
          * The providerClass and libraryRef are fixed. Look for bad uri error.
          * CWLJC0011E: Error encountered while retrieving the AuthCache JCache: javax.cache.CacheException: Could not load configuration
-         * Caused by: java.io.FileNotFoundException: /Users/eschr/libertyGit/open-liberty/dev/build.image/wlp/usr/shared/resources/infinispan/infinispanbad.xml (No such file or
-         * directory)
+         * Caused by: java.io.FileNotFoundException: /Users/eschr/libertyGit/open-liberty/dev/build.image/wlp/usr/shared/resources/infinispan/infinispan_hotrod_bad.props (No such
+         * file or directory)
          */
         error = "CWLJC0011E: Error encountered while retrieving the AuthCache JCache: javax.cache.CacheException: Could not load configuration";
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
 
         //Update to working server
         updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib,CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispan.xml");
+                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props");
 
         /**
          * All issues have been fixed, so wait for the auth cache to start.

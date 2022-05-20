@@ -119,7 +119,7 @@ public class MpJwtHelper {
     protected void deactivate(ComponentContext cc) {
         JsonWebTokenUtilRef.deactivate(cc);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "MpJwtHelper service is activated");
+            Tr.debug(tc, "MpJwtHelper service is deactivated");
         }
     }
 }

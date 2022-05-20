@@ -36,15 +36,13 @@
 	 -->
 	<cache id="AuthCache" name="AuthCache">
 		<cacheManager
-			uri="file:///${shared.resource.dir}/infinispan/infinispan.xml">
+			uri="file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props">
 
+            <!-- 
+                 The system property can't be read from the Hotrod properties file, so define it here.
+             -->
 			<properties
-				infinispan.client.hotrod.uri="${infinispan.client.hotrod.uri}"
-				infinispan.client.hotrod.auth_realm="default"
-				infinispan.client.hotrod.auth_server_name="infinispan"
-				infinispan.client.hotrod.sasl_mechanism="DIGEST-MD5"
-				infinispan.client.hotrod.java_serial_allowlist=".*"
-				infinispan.client.hotrod.marshaller="org.infinispan.commons.marshall.JavaSerializationMarshaller" />
+				infinispan.client.hotrod.uri="${infinispan.client.hotrod.uri}" />
 
 			<cachingProvider
 				providerClass="org.infinispan.jcache.remote.JCachingProvider"
