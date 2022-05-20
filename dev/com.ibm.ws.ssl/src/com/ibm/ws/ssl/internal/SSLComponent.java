@@ -52,6 +52,8 @@ import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * Component for the SSL configuration bundle.
  */
@@ -85,6 +87,13 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
     private boolean transportSecurityEnabled;
 
     private ExtComponentContext componentContext;
+
+    private final CheckpointPhase checkpointPhase;
+
+    @Activate
+    public SSLComponent(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
+        this.checkpointPhase = checkpointPhase;
+    }
 
     /**
      * DS method to activate this component.
@@ -332,6 +341,9 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
                                                              isServer,
                                                              transportSecurityEnabled,
                                                              repertoirePIDMap);
+                if (checkpointPhase != null) {
+                    SSLSocketFactory.getDefault();
+                }
             } catch (SSLException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Exception processing SSL configuration; " + e);
