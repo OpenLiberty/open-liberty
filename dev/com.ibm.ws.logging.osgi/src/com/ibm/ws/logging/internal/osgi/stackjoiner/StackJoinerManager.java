@@ -211,11 +211,17 @@ public class StackJoinerManager {
          * env var is set to true but no stackJoin server.xml value has been set.
          */
         if (serverConfigMap != null) {
-            if (((Boolean) serverConfigMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME)) == true) {
-                isStackJoinEnabled = true;
-            } else if (((Boolean) serverConfigMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME)) == false){
-                isStackJoinEnabled = false;
+            
+            Object o;
+            if ((o = serverConfigMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME)) != null) {
+                if (((Boolean) o) == true) {
+                    isStackJoinEnabled = true;
+                } else if (((Boolean) o) == false){
+                    isStackJoinEnabled = false;
+                }
             }
+            
+
         }
         
         if (isStackJoinEnabled) {
