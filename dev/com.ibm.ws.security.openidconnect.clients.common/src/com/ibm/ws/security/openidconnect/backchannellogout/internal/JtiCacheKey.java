@@ -19,6 +19,8 @@ class JtiCacheKey {
     private final String jti;
     private final String configId;
 
+    private int hashCode = 0;
+
     public JtiCacheKey(@Sensitive String jti, String configId) {
         this.jti = jti;
         this.configId = configId;
@@ -26,7 +28,10 @@ class JtiCacheKey {
 
     @Override
     public int hashCode() {
-        return Objects.hash(jti, configId);
+        if (hashCode == 0) {
+            hashCode = Objects.hash(jti, configId);
+        }
+        return hashCode;
     }
 
     @Override
