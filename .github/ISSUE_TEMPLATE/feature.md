@@ -81,7 +81,7 @@ Design preliminaries determine whether a formal design, which will be provided b
 - [ ] POC Design / UFO review requested.
   - Owner adds label `Design Review Request`
 - [ ] POC Design / UFO review scheduled.
-  - Follow the [Adding an Agenda Item](https://github.ibm.com/websphere/POC-Forum#adding-an-agenda-item) instructions
+  - Follow the instructions in POC-Forum repo
 - [ ] POC Design / UFO review completed.
 - [ ] POC / UFO Review follow-ons completed.
 - [ ] Design / UFO approved. ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) or N/A
@@ -197,10 +197,9 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Other Deliverables**
 
-- [ ] **OL Guides** OL Guides assessment is complete or N/A. ([Yee-Kang Chang](https://github.com/yeekangc))
 - [ ] **Standalone Feature Blog Post** A blog post specifically about your feature or N/A.  ([OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect))
   - This should be strongly considered for larger or more prominent features.
   - Follow [instructions](https://github.com/OpenLiberty/blogs/tree/draft#writing-and-publishing-blog-posts-on-the-openlibertyio-blog) in the blogs repo.
-- [ ] **WDT** Liberty Developer Tools work is complete or N/A. (Leonard Theivendra)
-
+- [ ] **OL Guides** OL Guides assessment is complete or N/A. ([OpenLiberty/guide-assessment](https://github.com/orgs/OpenLiberty/teams/guide-assessment/members))
+- [ ] **Dev Experience** Developer Experience & Tools work is complete or N/A. ([OpenLiberty/dev-experience](https://github.com/orgs/OpenLiberty/teams/dev-experience/members))
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
