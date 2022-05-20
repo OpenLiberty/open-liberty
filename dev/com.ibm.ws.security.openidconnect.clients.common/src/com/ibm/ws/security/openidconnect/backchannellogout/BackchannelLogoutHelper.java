@@ -89,7 +89,7 @@ public class BackchannelLogoutHelper {
             String sub = logoutTokenClaims.getSubject();
             String sid = logoutTokenClaims.getClaimValue("sid", String.class);
 
-            OidcSessionCache oidcSessionCache = clientConfig.getOidcClientConfig().getOidcSessionCache();
+            OidcSessionCache oidcSessionCache = clientConfig.getOidcSessionCache();
             if (sid != null && !sid.isEmpty()) {
                 oidcSessionCache.invalidateSession(sub, sid);
             } else {
