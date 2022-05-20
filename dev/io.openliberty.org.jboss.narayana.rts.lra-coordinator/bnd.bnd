@@ -28,6 +28,7 @@ Bundle-SymbolicName: io.openliberty.org.jboss.narayana.rts.lra-coordinator; sing
 -wab
 -outputmask: mpLRACoordinator.jar
 
+publish.wlp.jar.include: mpLRACoordinator*.jar
   
 Private-Package: \
     com.arjuna*, \
