@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -159,19 +157,8 @@ public class FATSuite {
 
     @AfterClass
     public static void afterSuite() throws Exception {
-        //Remove previously transformed bundle from AutoFVT
-        if (JakartaEE10Action.isActive() || JakartaEE9Action.isActive()) {
-            for (String bundle : TEST_BUNDLES) {
-                File newBundleFile = Paths.get("lib/LibertyFATTestFiles/bundles", bundle + ".jakarta.jar").toFile();
-                if (newBundleFile.exists()) {
-                    assertTrue("Should have deleted transformed bundle as a cleanup step for Jakarta testing", newBundleFile.delete());
-                }
-            }
-        }
-
         // Remove the user extension added during setup
         server.deleteDirectoryFromLibertyInstallRoot("usr/extension/");
-
     }
 
     /**
