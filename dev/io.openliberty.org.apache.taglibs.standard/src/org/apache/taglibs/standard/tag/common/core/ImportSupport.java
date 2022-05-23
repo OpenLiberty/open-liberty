@@ -121,7 +121,7 @@ public abstract class ImportSupport extends BodyTagSupport
 
     // determines what kind of import and variable exposure to perform 
     public int doStartTag() throws JspException {
-	// Sanity check
+	// Verify
 	if (context != null
 	        && (!context.startsWith("/") || !url.startsWith("/"))) {
 	    throw new JspTagException(

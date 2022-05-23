@@ -146,7 +146,7 @@ public final class JSDynamic extends JSField implements JMFDynamicType {
   public Object decode(byte[] frame, int offset, int indirect, JMFMessageData msg)
       throws JMFSchemaViolationException, JMFModelNotImplementedException, JMFMessageCorruptionException {
     int length = ArrayUtil.readInt(frame, offset);
-    JSListCoder.sanityCheck(length, frame, offset);
+    JSListCoder.evaluateMessageLength(length, frame, offset);
     int model = ArrayUtil.readInt(frame, offset + 4);
     if (model == JMFPart.MODEL_ID_JMF) {
       length -= 12; // original length includes model and schema

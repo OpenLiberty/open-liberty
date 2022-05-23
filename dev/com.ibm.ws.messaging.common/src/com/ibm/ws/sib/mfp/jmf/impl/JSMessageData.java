@@ -646,7 +646,7 @@ public abstract class JSMessageData extends AbstractList implements JMFMessageDa
                         oldLen = 0;
                     }
 
-                    JSListCoder.sanityCheck(oldLen, contents, offset);
+                    JSListCoder.evaluateMessageLength(oldLen, contents, offset);
 
                     if (newLen != oldLen) {
                         // Changing the size of a varying length field.

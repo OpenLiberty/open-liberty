@@ -161,7 +161,7 @@ public class ConfigDropinsServlet extends HttpServlet {
     }
 
     public void testDefaultsOrdering() throws Exception {
-        // Value from server.xml is used. Not testing much here, just sanity. 
+        // Value from server.xml is used. Not testing much here, just validating. 
         checkLibraryValue(TEST1, SERVER);
     }
 

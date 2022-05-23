@@ -65,15 +65,15 @@ public class BeanManagerInvocationHandler implements InvocationHandler {
         }
 
         try {
-            //This method takes an argument of ExtendedBeanManager.LifecycleListener but this class is not available at compile time. 
+            //This method takes an argument of ExtendedBeanManager.LifecycleListener but this class is not available at compile time.
             if (methodName.equals("registerLifecycleListener")) {
                 if (args.length != 1) {
-                    throw new IllegalStateException("registerLifecycleListener should have one argument"); //Basic sanity check without doing a classloader lookup.
-                } 
-                Object listener = args[0]; //only one argument. 
+                    throw new IllegalStateException("registerLifecycleListener should have one argument"); //Basic evaluation without doing a classloader lookup.
+                }
+                Object listener = args[0]; //only one argument.
                 Method proxyMethod = extendedBeanManager.getClass().getMethod("registerLifecycleListener", Object.class);
                 ret = proxyMethod.invoke(extendedBeanManager, listener);
-            //All other methods will be going to the bean manager, not the extended bean manager.
+                //All other methods will be going to the bean manager, not the extended bean manager.
             } else {
                 ret = method.invoke(getTarget(), args);
             }
@@ -93,7 +93,7 @@ public class BeanManagerInvocationHandler implements InvocationHandler {
         if (target == null) {
             //We call getCurrentModuleBeanManager instead of the more common getCurrentBeanManager because this class will be in a BDA. We want to find the correct application archive bean manager, not the bean manager for this internal liberty jar.
             BeanManager bm = cdiService.getCurrentModuleBeanManager();
-            //As a fallback we can use a stack walk. 
+            //As a fallback we can use a stack walk.
             if (bm == null) {
                 bm = cdiService.getCurrentBeanManager();
             }

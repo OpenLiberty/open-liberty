@@ -164,7 +164,7 @@ define([
 
         app.subscribe(observer);
 
-        // Initial sanity check
+        // Initial test
         assert.equal(app.state,         'STARTED',   'AppOnServer.state did not have the correct initialized value');
 
         // Simulate the app state change event
@@ -263,7 +263,7 @@ define([
 
         app.subscribe(observer);
 
-        // Initial sanity check
+        // Initial test
         assert.equal('STARTED',   app.state,         'AppOnServer.state did not have the correct initialized value');
 
         // Simulate the app state change event
@@ -285,7 +285,7 @@ define([
 
         app.subscribe(observer);
 
-        // Initial sanity check
+        // Initial test
         assert.equal(app.cluster,       null,        'AppOnServer.cluster did not have the correct initialized value - should have no cluster');
 
         // Simulate the cluster event
@@ -317,7 +317,7 @@ define([
 
         app.subscribe(observer);
 
-        // Initial sanity check
+        // Initial test
         assert.equal(app.cluster,       'cluster1',  'AppOnServer.cluster did not have the correct initialized value');
 
         // Simulate the cluster change event
@@ -349,7 +349,7 @@ define([
 
         app.subscribe(observer);
 
-        // Initial sanity check
+        // Initial test
         assert.equal(app.cluster,       'cluster1',  'AppOnServer.cluster did not have the correct initialized value');
 
         // Simulate the cluster change event
@@ -381,7 +381,7 @@ define([
 
         app.subscribe(observer);
 
-        // Initial sanity check
+        // Initial test
         assert.equal(app.scalingPolicy,  null,        'AppOnServer.scalingPolicy did not have the correct initialized value');
 
         // Simulate the scaling policy change event
@@ -413,7 +413,7 @@ define([
 
         app.subscribe(observer);
 
-        // Initial sanity check
+        // Initial test
         assert.equal(app.scalingPolicy,  'default',   'AppOnServer.scalingPolicy did not have the correct initialized value');
 
         // Simulate the scaling policy change event
@@ -445,7 +445,7 @@ define([
 
         app.subscribe(observer);
 
-        // Initial sanity check
+        // Initial test
         assert.equal(app.scalingPolicy,  'default',   'AppOnServer.scalingPolicy did not have the correct initialized value');
 
         // Simulate the scaling policy change event
@@ -477,7 +477,7 @@ define([
 
         app.subscribe(observer);
 
-        // Initial sanity check
+        // Initial test
         assert.equal(app.scalingPolicy, 'default',    'AppOnServer.scalingPolicy did not have the correct initialized value');
         assert.isTrue(app.scalingPolicyEnabled,       'AppOnServer.scalingPolicyEnabled did not have the correct initialized value');
 

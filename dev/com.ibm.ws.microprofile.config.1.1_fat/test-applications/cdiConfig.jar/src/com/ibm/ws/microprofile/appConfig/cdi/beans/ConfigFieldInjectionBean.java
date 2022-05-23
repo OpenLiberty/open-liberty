@@ -84,7 +84,7 @@ public class ConfigFieldInjectionBean {
     String MISSING_KEY_WITH_DEFAULT_VALUE;
 
     /**
-     * This is the sanity test to check PIZZA_GOOD_KEY will be resolved to a good Pizza. The default value is not used.
+     * This is the test to check PIZZA_GOOD_KEY will be resolved to a good Pizza. The default value is not used.
      */
     @Inject
     @ConfigProperty(name = "PIZZA_GOOD_KEY", defaultValue = "")

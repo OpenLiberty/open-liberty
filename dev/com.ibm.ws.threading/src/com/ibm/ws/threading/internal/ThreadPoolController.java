@@ -1129,7 +1129,7 @@ public final class ThreadPoolController {
                 // work waiting, lean weakly (0.5) toward growing ...
                 growScore = (flipCoin()) ? 0.5 : 0.0;
             } else
-            // next are sanity checks to reduce likelihood of random growth, if a broader-scope
+            // next are some checks to reduce likelihood of random growth, if a broader-scope
             // look at the available data suggests growth is not very likely to help
             if (growScore > 0.0) {
                 if (flippedCoin) {

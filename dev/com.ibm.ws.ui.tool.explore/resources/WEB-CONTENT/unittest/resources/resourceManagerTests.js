@@ -27,7 +27,7 @@ define([
                 resourceManager.__reset();
               });
               
-              tdd.test("resourceManager.getCached - sanity check all return null when not loaded", function() {
+              tdd.test("resourceManager.getCached - Verify all return null when not loaded", function() {
                 var LOAD_ALL_NULL_MSG = 'resourceManager has not loaded anything, all cached requests should return null';
                 
                 assert.equal(resourceManager.getCached('applications'), null, LOAD_ALL_NULL_MSG);
@@ -39,7 +39,7 @@ define([
                 assert.equal(resourceManager.getCached('host', 'h1'), null, LOAD_ALL_NULL_MSG);
               });
 
-              tdd.test("resourceManager.getCached - sanity check all when populated", function() {
+              tdd.test("resourceManager.getCached - Verify all when populated", function() {
                 var LOAD_OK_MSG = 'When the resourceManager has fake loaded things, the calls should returned the cached value';
                 var LOAD_NULL_MSG = 'resourceManager has not loaded this resource, so null should be returned';
                 

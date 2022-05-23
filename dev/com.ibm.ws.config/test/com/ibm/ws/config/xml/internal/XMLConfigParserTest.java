@@ -611,7 +611,7 @@ public class XMLConfigParserTest {
         WsResource resource;
         base = CONFIG_ROOT;
 
-        // Just sanity checking that the include process isn't doing anything crazy with the path
+        // Just checking that the include process isn't doing anything crazy with the path
         XMLConfigParser parser = new XMLConfigParser(wsLocation, variableRegistry);
         resource = parser.resolveInclude("${wlp.user.dir}/server.xml", base, wsLocation);
         String expected = "file:" + variableRegistry.resolveString("${wlp.user.dir}/server.xml");

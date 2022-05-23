@@ -106,18 +106,18 @@ public class JSONBTestServlet extends FATServlet {
 
         Squad wendigo = new Squad("Wendigo", (byte) 10, H230, 21.2f);
 
-        Tribe appPlatform = new Tribe();
+        SquadOfSquads appPlatform = new SquadOfSquads();
         appPlatform.name = "App Platform Server";
         appPlatform.squads.add(wendigo);
         appPlatform.squads.add(zombieApocalypse);
 
         json = jsonb.toJson(appPlatform);
-        System.out.println("JSON for Tribe object: " + json);
-        Tribe tribe = jsonb.fromJson(json, Tribe.class);
-        assertEquals(appPlatform.toString(), tribe.toString());
+        System.out.println("JSON for SquadOfSquads object: " + json);
+        SquadOfSquads squadOfSquads = jsonb.fromJson(json, SquadOfSquads.class);
+        assertEquals(appPlatform.toString(), squadOfSquads.toString());
 
         LinkedHashMap<?, ?> appPlatformMap = jsonb.fromJson(json, LinkedHashMap.class);
-        System.out.println("Tribe object unmarshalled as LinkedHashMap: ");
+        System.out.println("SquadOfSquads object unmarshalled as LinkedHashMap: ");
         assertEquals("App Platform Server", appPlatformMap.get("name"));
         List<?> squadList = (List<?>) appPlatformMap.get("squads");
         assertEquals(2, squadList.size());

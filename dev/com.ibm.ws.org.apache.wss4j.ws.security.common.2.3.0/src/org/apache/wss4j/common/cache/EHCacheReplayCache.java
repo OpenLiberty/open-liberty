@@ -66,7 +66,7 @@ public class EHCacheReplayCache implements ReplayCache {
         this.diskstorePath = diskstorePath;
         this.persistent = persistent;
 
-        // Do some sanity checking on the arguments
+        // Do some evaluation on the arguments
         if (key == null || persistent && diskstorePath == null) {
             throw new NullPointerException();
         }

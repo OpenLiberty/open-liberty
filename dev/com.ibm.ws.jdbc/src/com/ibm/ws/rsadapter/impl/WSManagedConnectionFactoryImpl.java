@@ -1212,7 +1212,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         WSRdbManagedConnectionImpl matchedmc = null;
 
         // the J2c component will always send us a set of one and only one mc.  Therefore, there
-        // is no need to go through a loop. Just far sanity check, i am printing the size in a debug
+        // is no need to go through a loop. Just for validating, i am printing the size in a debug
         if (isTraceOn && tc.isDebugEnabled()) 
             Tr.debug(this, tc, "the size of the set should be 1, and it is", connectionSet.size()); 
 

@@ -577,7 +577,7 @@ public final class SharedPool {
 
         final boolean isTracingEnabled = TraceComponent.isAnyTracingEnabled();
 
-        //Used to sanity check that the mcWrapperList was reduced by one.
+        //Used to check that the mcWrapperList was reduced by one.
         int sizeDifference;
 
         if (isTracingEnabled && tc.isEntryEnabled()) {
