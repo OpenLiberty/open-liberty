@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,15 +71,15 @@ public class CommonTestHelper {
     /**
      * Reconfigures the current server to use the new server configuration provided.
      *
-     * @param newServerXml - Either an absolute path to a server config file or the name of the server config file to
-     *            use under the server's configs/ directory
+     * @param newServerXml       - Either an absolute path to a server config file or the name of the server config file to
+     *                               use under the server's configs/ directory
      * @param testName
-     * @param waitForMessages - List of regular expressions to be waited for upon server start
-     * @param restartServer - boolean indicating whether the server should be restarted
+     * @param waitForMessages    - List of regular expressions to be waited for upon server start
+     * @param restartServer      - boolean indicating whether the server should be restarted
      * @param needsJDKConversion - boolean indicates whether the server needs to be reconfigured for jdk 11 testing.
      * @throws Exception
      */
-    public void reconfigureServer(String newServerXml, String testName, List<String> waitForMessages, boolean restartServer) throws Exception {
+    public void reconfigureServer(String newServerXml, String testName, List<String> waitForMessages, boolean restartServer, boolean checkforAuthFilterMsg) throws Exception {
         String thisMethod = "reconfigureServer";
 
         Log.info(thisClass, thisMethod, "Starting server.xml update for: " + testName);
@@ -117,7 +117,7 @@ public class CommonTestHelper {
 
             if (server.isStarted()) {
                 Log.info(thisClass, thisMethod, "Server is already running during reconfig; waiting for appropriate messages");
-                waitForServer(testName, waitForMessages);
+                waitForServer(testName, waitForMessages, checkforAuthFilterMsg);
             } else {
                 Log.info(thisClass, thisMethod, "Server was not running during reconfig; starting server and waiting for appropriate messages");
                 startServer(null, null, waitForMessages);
@@ -131,11 +131,11 @@ public class CommonTestHelper {
     /**
      * Restarts the current server using the server configuration file provided.
      *
-     * @param serverXml - Either an absolute path to a server config file or the name of the server config file to use
-     *            under the server's configs/ directory. If null, a server.xml file is expected to be present in the
-     *            server's root directory.
+     * @param serverXml       - Either an absolute path to a server config file or the name of the server config file to use
+     *                            under the server's configs/ directory. If null, a server.xml file is expected to be present in the
+     *                            server's root directory.
      * @param testName
-     * @param checkApps - List of apps to be validated as ready upon server restart
+     * @param checkApps       - List of apps to be validated as ready upon server restart
      * @param waitForMessages - List of regular expressions to be waited for upon server restart
      * @throws Exception
      */
@@ -161,10 +161,10 @@ public class CommonTestHelper {
      * Starts the current server using the server configuration file provided. If no serverXml value is provided, a
      * server.xml file is expected to exist in the server's root directory.
      *
-     * @param serverXml - Either an absolute path to a server config file or the name of the server config file to use
-     *            under the server's configs/ directory. If null, a server.xml file is expected to be present in the
-     *            server's root directory.
-     * @param checkApps - List of apps to be validated as ready upon server start
+     * @param serverXml       - Either an absolute path to a server config file or the name of the server config file to use
+     *                            under the server's configs/ directory. If null, a server.xml file is expected to be present in the
+     *                            server's root directory.
+     * @param checkApps       - List of apps to be validated as ready upon server start
      * @param waitForMessages - List of regular expressions to be waited for upon server start
      * @throws Exception
      */
@@ -235,7 +235,7 @@ public class CommonTestHelper {
      * @param startMessages - List of regular expressions to be waited for
      * @throws Exception
      */
-    private void waitForServer(String testName, List<String> startMessages) throws Exception {
+    private void waitForServer(String testName, List<String> startMessages, boolean checkforAuthFilterMsg) throws Exception {
         String thisMethod = "waitForServer";
         try {
             // Check that the server detected the update; go on in either case - msgs will be logged either way
@@ -246,6 +246,10 @@ public class CommonTestHelper {
             }
 
             server.waitForStringInLogUsingMark("CWWKG001[7-8]I", 10000);
+            if (checkforAuthFilterMsg) { // wait for AuthenticationFilter service to activate or modify
+                server.waitForStringInLogUsingMark("CWWKS435[8-9]I", 10000);
+            }
+
             waitForMessages(startMessages, true);
 
             Log.info(thisClass, thisMethod, "Completed server.xml update: " + testName);
@@ -338,9 +342,9 @@ public class CommonTestHelper {
      * Searches and waits for message strings in the default log and reports success/failure of the search via a
      * message and JUnit. If expectedResult is false, the passed messages are expected NOT to be found.
      *
-     * @param messages - List of regular expression strings to wait for in the default log
+     * @param messages       - List of regular expression strings to wait for in the default log
      * @param expectedResult - If true, the messages specified are expected to be found. Otherwise, the passed messages
-     *            are expected NOT to be found.
+     *                           are expected NOT to be found.
      * @throws Exception
      */
     public void waitForMessages(List<String> messages, boolean expectedResult) throws Exception {
@@ -369,9 +373,9 @@ public class CommonTestHelper {
      * Logs the state of the test assertion and then invokes the JUnit assertTrue or assertFalse methods, depending on
      * the value of expectedResult, to record the test "status" with JUnit.
      *
-     * @param caller - Routine that is requesting the check be performed
-     * @param msg - Message that will be recorded if the test assertion fails
-     * @param trueFalse - State of the test assertion
+     * @param caller         - Routine that is requesting the check be performed
+     * @param msg            - Message that will be recorded if the test assertion fails
+     * @param trueFalse      - State of the test assertion
      * @param expectedResult - Expected result of the test assertion
      * @return
      */
@@ -395,7 +399,7 @@ public class CommonTestHelper {
      * Adds the system property values specified to the bootstrap.properties file for use in server configurations for
      * the server provided.
      *
-     * @param server - Server for which bootstrap properties file needs to be updated
+     * @param server     - Server for which bootstrap properties file needs to be updated
      * @param properties - Map of bootstrap property names and values to be set
      * @throws Exception
      */
