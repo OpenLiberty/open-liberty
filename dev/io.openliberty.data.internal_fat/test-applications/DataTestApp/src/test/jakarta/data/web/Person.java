@@ -19,5 +19,5 @@ public class Person {
 
     public String lastName;
 
-    public long personID;
+    public long ssn;
 }

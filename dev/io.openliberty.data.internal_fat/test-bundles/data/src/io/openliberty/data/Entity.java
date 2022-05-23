@@ -17,16 +17,42 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.enterprise.util.Nonbinding;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
- * Annotation to experiment with.
+ * Indicates the entity class for a repository.
  */
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Data {
-    @Nonbinding
-    String value() default "DefaultDataStore";
+public @interface Entity {
+    public final static String AUTO_DETECT_ID = "";
+
+    String id() default AUTO_DETECT_ID;
+
+    /**
+     * Entity class.
+     */
+    Class<?> value();
+
+    public abstract class Literal extends AnnotationLiteral<Entity> implements Entity {
+        private static final long serialVersionUID = 1L;
+
+        public static Literal of(Class<?> entityClass, String id) {
+            return new Literal() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public String id() {
+                    return id;
+                }
+
+                @Override
+                public Class<?> value() {
+                    return entityClass;
+                }
+            };
+        }
+    }
 }

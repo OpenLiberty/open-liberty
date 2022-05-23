@@ -20,14 +20,17 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.Producer;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Entity;
 import io.openliberty.data.internal.QueryHandler;
 
 public class BeanProducer<T> implements Producer<T> {
     private final Bean<T> bean;
+    private final Entity entity;
 
-    public BeanProducer(Bean<T> bean) {
-        System.out.println("Producer created for " + bean);
+    public BeanProducer(Bean<T> bean, Entity entity) {
+        System.out.println("Producer created for " + bean + ". Entity is " + entity);
         this.bean = bean;
+        this.entity = entity;
     }
 
     @Override
@@ -46,6 +49,6 @@ public class BeanProducer<T> implements Producer<T> {
         Class<T> c = (Class<T>) bean.getBeanClass();
         System.out.println("Producer.produce for " + c + " with " + c.getAnnotation(Data.class));
 
-        return c.cast(Proxy.newProxyInstance(c.getClassLoader(), new Class<?>[] { c }, new QueryHandler<T>(bean)));
+        return c.cast(Proxy.newProxyInstance(c.getClassLoader(), new Class<?>[] { c }, new QueryHandler<T>(bean, entity)));
     }
 }

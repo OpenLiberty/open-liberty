@@ -13,12 +13,14 @@ package test.jakarta.data.web;
 import java.util.List;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Entity;
 import io.openliberty.data.Query;
 
 /**
  *
  */
-@Data(Person.class)
+@Data
+@Entity(value = Person.class, id = "ssn")
 public interface PersonRepo {
     void insert(Person p);
 

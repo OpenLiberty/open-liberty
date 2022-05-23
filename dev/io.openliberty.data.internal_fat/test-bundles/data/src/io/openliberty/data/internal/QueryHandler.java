@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.persistence.EntityManager;
@@ -27,6 +28,7 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Entity;
 import io.openliberty.data.Query;
 
 public class QueryHandler<T> implements InvocationHandler {
@@ -36,24 +38,26 @@ public class QueryHandler<T> implements InvocationHandler {
 
     private final Class<T> beanClass;
     private final Data data;
-    private final List<Class<?>> dataClasses;
+    private final Entity entity;
+    private final Set<Class<?>> entityClassesAvailable; // TODO is this information needed?
     private final DataPersistence persistence;
     private final PersistenceServiceUnit punit;
 
     @SuppressWarnings("unchecked")
-    public QueryHandler(Bean<T> bean) {
+    public QueryHandler(Bean<T> bean, Entity entity) {
         beanClass = (Class<T>) bean.getBeanClass();
         data = beanClass.getAnnotation(Data.class);
+        this.entity = entity;
 
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         persistence = bc.getService(bc.getServiceReference(DataPersistence.class));
 
-        Entry<PersistenceServiceUnit, List<Class<?>>> persistenceInfo = //
-                        persistence.getPersistenceInfo(data.dataStore(), beanClass.getClassLoader());
+        Entry<PersistenceServiceUnit, Set<Class<?>>> persistenceInfo = //
+                        persistence.getPersistenceInfo(data.value(), beanClass.getClassLoader());
         if (persistenceInfo == null)
             throw new RuntimeException("Persistence layer unavailable for " + data);
         punit = persistenceInfo.getKey();
-        dataClasses = persistenceInfo.getValue();
+        entityClassesAvailable = persistenceInfo.getValue();
     }
 
     @Override
@@ -72,6 +76,7 @@ public class QueryHandler<T> implements InvocationHandler {
 
         System.out.println("Handler invoke " + method);
 
+        Class<?> returnType = method.getReturnType();
         Object returnValue;
         QueryType queryType;
         boolean requiresTransaction;
@@ -85,8 +90,19 @@ public class QueryHandler<T> implements InvocationHandler {
             queryType = QueryType.INSERT;
             requiresTransaction = Status.STATUS_NO_TRANSACTION == persistence.tranMgr.getStatus();
         } else {
-            queryType = QueryType.SELECT;
-            requiresTransaction = false;
+            String q = jpql.toUpperCase();
+            if (q.startsWith("SELECT")) {
+                queryType = QueryType.SELECT;
+                requiresTransaction = false;
+            } else if (q.startsWith("UPDATE")) {
+                queryType = QueryType.UPDATE;
+                requiresTransaction = true;
+            } else if (q.startsWith("DELETE")) {
+                queryType = QueryType.DELETE;
+                requiresTransaction = true;
+            } else {
+                throw new UnsupportedOperationException(jpql);
+            }
         }
 
         LocalTransactionCoordinator suspendedLTC = null;
@@ -101,32 +117,45 @@ public class QueryHandler<T> implements InvocationHandler {
             em = punit.createEntityManager();
 
             switch (queryType) {
-                case DELETE:
-                    throw new UnsupportedOperationException("not implemented");
                 case INSERT:
                     em.persist(args[0]);
                     em.flush();
                     returnValue = null;
                     break;
                 case SELECT:
-                    Class<?> returnType = method.getReturnType();
-                    Class<?> resultType = dataClasses.contains(returnType) ? returnType : dataClasses.get(0); // TODO what if multiple? Specify on method-level anno?
+                    Class<?> returnArrayType = returnType.getComponentType();
+                    Class<?> resultType;
+                    if (returnArrayType == null)
+                        if (Iterable.class.isAssignableFrom(returnType))
+                            resultType = entity.value();
+                        else
+                            resultType = returnType;
+                    else
+                        resultType = returnArrayType;
 
                     TypedQuery<?> query = em.createQuery(jpql, resultType);
                     for (int i = 0; i < args.length; i++)
                         query.setParameter(i + 1, args[i]);
+
                     List<?> results = query.getResultList();
 
                     if (resultType.equals(returnType))
                         returnValue = results.isEmpty() ? null : results.iterator().next();
-                    // TODO could have other return types
-                    else if (List.class.equals(method.getReturnType()))
+                    else if (returnType.isInstance(results))
                         returnValue = results;
-                    else
+                    else // TODO convert return type
                         throw new UnsupportedOperationException(methodName + " with return type " + returnType);
                     break;
                 case UPDATE:
-                    throw new UnsupportedOperationException("not implemented");
+                case DELETE:
+                    jakarta.persistence.Query update = em.createQuery(jpql);
+                    for (int i = 0; i < args.length; i++)
+                        update.setParameter(i + 1, args[i]);
+
+                    int updateCount = update.executeUpdate();
+
+                    returnValue = toReturnValue(updateCount, returnType);
+                    break;
                 default:
                     throw new UnsupportedOperationException(queryType.name());
             }
@@ -153,5 +182,18 @@ public class QueryHandler<T> implements InvocationHandler {
             }
         }
         return returnValue;
+    }
+
+    private static final Object toReturnValue(int i, Class<?> returnType) {
+        if (int.class.equals(returnType) || Integer.class.equals(returnType) || Number.class.equals(returnType))
+            return i;
+        else if (long.class.equals(returnType) || Long.class.equals(returnType))
+            return Long.valueOf(i);
+        else if (boolean.class.equals(returnType) || Boolean.class.equals(returnType))
+            return i != 0;
+        else if (void.class.equals(returnType) || Void.class.equals(returnType))
+            return null;
+        else
+            throw new UnsupportedOperationException("Return update count as " + returnType);
     }
 }
