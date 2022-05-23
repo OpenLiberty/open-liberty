@@ -53,6 +53,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap();
 
+    private static final Set<Path> exportedArchives = new HashSet<>();
+
     static {
         // Fill the default transformation rules for the transformer
         // The rules are copied from 'open-liberty/dev/wlp-jakartaee-transform/rules' to
@@ -394,6 +396,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             outputPath = newAppPath;
         }
 
+        checkAndCleanExportedArchives(outputPath);
+
         try {
             // Invoke the jakarta transformer
             String[] args = new String[15 + transformationRulesAppend.size() * 2];
@@ -470,6 +474,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                 fos.close();
             } catch (IOException e) {
             }
+
+            checkAndCacheExportedArchives(outputPath);
             Log.info(c, m, "Transforming complete app: " + outputPath);
         }
     }
@@ -477,5 +483,27 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     // uses the initialisation-on-demand holder idiom to provide safe and fast lazy loading
     private static class TransformerHolder {
         public static final TransformSubAction _INSTANCE = new componenttest.rules.repeater.TransformSubActionImpl();
+    }
+
+    private static void checkAndCleanExportedArchives(Path newAppPath) {
+        if (exportedArchives.contains(newAppPath)) {
+            File newAppFile = newAppPath.toFile();
+            if (newAppFile.exists()) {
+                Log.info(ShrinkHelper.class, "checkAndCleanExportedArchives", "Deleting archive from cache: " + newAppFile.getAbsolutePath());
+                newAppFile.delete();
+            } else {
+                Log.info(ShrinkHelper.class, "checkAndCleanExportedArchives", "No archive at: " + newAppFile.getAbsolutePath());
+            }
+        }
+        exportedArchives.remove(newAppPath);
+    }
+
+    private static void checkAndCacheExportedArchives(Path newAppPath) {
+        File newAppFile = newAppPath.toFile();
+        if (newAppFile.exists()) {
+            Log.info(ShrinkHelper.class, "checkAndCacheExportedArchives", "Adding archive to cache: " + newAppFile.getAbsolutePath());
+        }
+
+        exportedArchives.add(newAppPath);
     }
 }
