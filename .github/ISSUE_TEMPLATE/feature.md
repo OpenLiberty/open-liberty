@@ -201,5 +201,5 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
   - This should be strongly considered for larger or more prominent features.
   - Follow [instructions](https://github.com/OpenLiberty/blogs/tree/draft#writing-and-publishing-blog-posts-on-the-openlibertyio-blog) in the blogs repo.
 - [ ] **OL Guides** OL Guides assessment is complete or N/A. ([OpenLiberty/guide-assessment](https://github.com/orgs/OpenLiberty/teams/guide-assessment/members))
-- [ ] **Dev Experience** Developer Experience & Tools work is complete or N/A. ([OpenLiberty/dev-experience](https://github.com/orgs/OpenLiberty/teams/dev-experience/members))
+- [ ] **Dev Experience** Developer Experience & Tools work is complete or N/A. ([OpenLiberty/dev-experience-assessment](https://github.com/orgs/OpenLiberty/teams/dev-experience-assessment/members))
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
