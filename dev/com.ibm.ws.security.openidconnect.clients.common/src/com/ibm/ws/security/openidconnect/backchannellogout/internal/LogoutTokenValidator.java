@@ -32,6 +32,7 @@ import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionsStore;
 import com.ibm.ws.security.openidconnect.jose4j.Jose4jValidator;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException;
@@ -187,8 +188,8 @@ public class LogoutTokenValidator {
     void doOptionalVerificationChecks(JwtClaims claims) throws BackchannelLogoutException {
         verifyTokenWithSameJtiNotRecentlyReceived(claims);
         verifyIssClaimMatchesRecentSession(claims);
+        verifySubClaimMatchesRecentSession(claims);
         // TODO;
-        // 9. Optionally verify that any sub Logout Token Claim matches the sub Claim in an ID Token issued for the current session or a recent session of this RP with the OP.
         // 10. Optionally verify that any sid Logout Token Claim matches the sid Claim in an ID Token issued for the current session or a recent session of this RP with the OP.
     }
 
@@ -239,6 +240,33 @@ public class LogoutTokenValidator {
         Map<String, Set<OidcSessionInfo>> issToSessionsMap = oidcSessionCache.getIssMap();
         if (!issToSessionsMap.containsKey(iss)) {
             String errorMsg = Tr.formatMessage(tc, "NO_RECENT_SESSIONS_WITH_CLAIM", config.getId(), iss, Claims.ISSUER);
+            throw new BackchannelLogoutException(errorMsg);
+        }
+    }
+
+    /**
+     * Verify that any sub Logout Token Claim matches the sub Claim in an ID Token issued for the current session or a recent
+     * session of this RP with the OP.
+     */
+    @FFDCIgnore(MalformedClaimException.class)
+    void verifySubClaimMatchesRecentSession(JwtClaims claims) throws BackchannelLogoutException {
+        String sub;
+        try {
+            sub = claims.getSubject();
+        } catch (MalformedClaimException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception extracting sub from JWT claims: " + e);
+            }
+            return;
+        }
+        if (sub == null) {
+            // Token is not required to contain a sub claim
+            return;
+        }
+        OidcSessionCache oidcSessionCache = config.getOidcSessionCache();
+        Map<String, OidcSessionsStore> subToSessionsMap = oidcSessionCache.getSubMap();
+        if (!subToSessionsMap.containsKey(sub)) {
+            String errorMsg = Tr.formatMessage(tc, "NO_RECENT_SESSIONS_WITH_CLAIM", config.getId(), sub, Claims.SUBJECT);
             throw new BackchannelLogoutException(errorMsg);
         }
     }

@@ -159,6 +159,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1549E_BACK_CHANNEL_LOGOUT_NONCE_CLAIM = "CWWKS1549E";
 
     public static final String CWWKS1551E_LOGOUT_TOKEN_DUP_JTI = "CWWKS1551E";
+    public static final String CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIM = "CWWKS1552E";
 
     public static final String CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES = "CWWKS5207W";
 

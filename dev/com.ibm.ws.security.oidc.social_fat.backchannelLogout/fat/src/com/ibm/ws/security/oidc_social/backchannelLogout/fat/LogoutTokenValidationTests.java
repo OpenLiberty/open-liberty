@@ -881,19 +881,24 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      *
      * @throws Exception
      */
-    // TODO runtime doesn't check at this time @Test
+    @Test
     public void LogoutTokenValidationTests_invalid_sub_omit_sid() throws Exception {
 
         JWTTokenBuilder builder = loginAndReturnIdTokenData(defaultClient);
-        builder.setSubject("someBadValue");
+        String badSub = "someBadValue";
+        builder.setSubject(badSub);
         builder.unsetClaim(Constants.PAYLOAD_SESSION_ID);
 
         String logutOutEndpoint = buildBackchannelLogoutUri(defaultClient);
 
         List<endpointSettings> parms = createParmFromBuilder(builder);
 
-        // TODO - check for the appropriate error message
         List<validationData> expectations = setInvalidBCLRequestExpectations(null);
+        // TODO - The second, more specific error message needs to be used once the session cache functionality is added to social.
+        // Right now the CWWKS1552E message is emitted as expected, but it's complaining about not finding the iss claim in the cache.
+        // That's because the session cache functionality isn't up and running in social, so nothing's getting put in the cache at all.
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a recent session for the subject couldn't be found.", MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIM);
+        //        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a recent session for the subject couldn't be found.", MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIM + ".*" + badSub + ".*" + "sub");
 
         invokeBcl(logutOutEndpoint, parms, expectations);
 
