@@ -116,6 +116,45 @@ task SubjectCast_WAR(type: Zip, dependsOn: classes) {
   }
 }
 
+/******************************************************************
+ ******************************************************************
+ **
+ ** providerinapp.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProviderInApp_WAR(type: War, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "providerinapp.war"
+  
+  from('test-applications/providerinapp/resources') {
+    include '**/*'
+  }
+  
+  webInf {
+  	from ('build/classes/java/main') {
+    	include 'web/providerinapp/*.class' 
+    	into 'classes'
+    }
+  }
+  webInf {
+    from configurations.hazelcastClient {
+      include "hazelcast-client-${hazelcastVersion}.jar"
+      into 'lib'
+    }
+  }
+  webInf {
+    from configurations.hazelcast {
+      include "hazelcast-${hazelcastVersion}.jar"
+      into 'lib'
+    }
+  }
+  
+  manifest {
+    attributes("Class-Path": "WEB-INF/lib/hazelcast-client-${hazelcastVersion}.jar WEB-INF/lib/hazelcast-${hazelcastVersion}.jar")
+  }
+}
+
 
 /******************************************************************
  ******************************************************************
@@ -128,7 +167,8 @@ assemble {
 
   dependsOn \
     CustomLoginModule_JAR, \
-    SubjectCast_WAR
+    SubjectCast_WAR, \
+    ProviderInApp_WAR
     
 }
 
@@ -227,6 +267,19 @@ autoFVT.doLast {
       from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, "test-application/helloworld.war.zip")
       into new File(autoFvtDir, "publish/servers/" + server + '/apps')
       rename 'helloworld.war.zip', 'helloworld.war'
+    }
+  }
+  
+  /*
+   * Copy the providerinapp.war into test servers.
+   */
+  servers = [
+    'io.openliberty.jcache.internal.fat.provider.in.app.1'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(buildDir, 'test-application/providerinapp.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }
   

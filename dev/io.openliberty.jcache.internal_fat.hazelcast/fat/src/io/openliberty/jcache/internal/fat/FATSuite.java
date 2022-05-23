@@ -40,7 +40,8 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
                 JCacheSpnegoAuthenticationCacheTest.class,
                 JCacheOauth20AuthenticationCacheTest.class,
                 JCacheOidcClientAuthenticationCacheTest.class,
-                JCacheOidcLoginAuthenticationCacheTest.class
+                JCacheOidcLoginAuthenticationCacheTest.class,
+                JCacheProviderInAppTest.class
 })
 public class FATSuite {
 
