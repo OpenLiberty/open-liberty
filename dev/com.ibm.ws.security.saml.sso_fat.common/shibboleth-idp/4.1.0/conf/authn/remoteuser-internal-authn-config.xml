@@ -41,7 +41,7 @@
         -->
     </util:list>
     
-    <!-- Uncomment/configure to install username, and/or match expressions. -->
+    <!-- Uncomment/configure to install username restrictions (allowing/blocking lists), and/or match expressions. -->
     
     <util:list id="shibboleth.authn.RemoteUser.whitelistedUsernames">
         <!--
