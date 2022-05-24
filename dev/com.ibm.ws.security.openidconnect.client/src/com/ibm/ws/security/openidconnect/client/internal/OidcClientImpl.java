@@ -54,7 +54,6 @@ import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
-import com.ibm.ws.security.openidconnect.clients.common.OidcSessionHelper;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
@@ -454,7 +453,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
 
         OidcSessionCache oidcSessionCache = oidcClientConfig.getOidcSessionCache();
         String wasOidcSessionId = CookieHelper.getCookieValue(req.getCookies(), ClientConstants.WAS_OIDC_SESSION);
-        if (!oidcSessionCache.isSessionInvalidated(wasOidcSessionId)) {
+        if (!oidcSessionCache.isSessionInvalidated(OidcSessionInfo.getSessionInfo(wasOidcSessionId))) {
             return;
         }
 
@@ -716,7 +715,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             Iterator<OidcClientConfig> services = oidcClientConfigRef.getServices();
 
             String wasOidcSessionId = CookieHelper.getCookieValue(request.getCookies(), ClientConstants.WAS_OIDC_SESSION);
-            OidcSessionInfo sessionInfo = OidcSessionHelper.getSessionInfo(wasOidcSessionId);
+            OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(wasOidcSessionId);
 
             while (services.hasNext()) {
                 OidcClientConfig oidcClientConfig = services.next();
@@ -753,14 +752,14 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         String sid = sessionInfo.getSid();
 
         OidcSessionCache oidcSessionCache = oidcClientConfig.getOidcSessionCache();
-        if (!oidcSessionCache.isSessionInvalidated(oidcSessionId)) {
+        if (!oidcSessionCache.isSessionInvalidated(sessionInfo)) {
             if (sid != null && !sid.isEmpty()) {
                 oidcSessionCache.invalidateSession(sub, sid);
             } else {
                 oidcSessionCache.invalidateSessionBySessionId(sub, oidcSessionId);
             }
         }
-        oidcSessionCache.removeInvalidatedSession(oidcSessionId);
+        oidcSessionCache.removeInvalidatedSession(sessionInfo);
 
         removeOidcSessionCookie(request, response);
     }
