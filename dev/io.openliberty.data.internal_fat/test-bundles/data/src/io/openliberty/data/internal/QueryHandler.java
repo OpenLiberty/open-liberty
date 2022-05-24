@@ -12,8 +12,11 @@ package io.openliberty.data.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.enterprise.inject.spi.Bean;
@@ -30,16 +33,18 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 import io.openliberty.data.Data;
 import io.openliberty.data.Entity;
 import io.openliberty.data.Query;
+import io.openliberty.data.Repository;
 
 public class QueryHandler<T> implements InvocationHandler {
     private static enum QueryType {
-        DELETE, INSERT, SELECT, UPDATE
+        DELETE, MERGE, SELECT, UPDATE
     };
 
     private final Class<T> beanClass;
     private final Data data;
     private final Entity entity;
     private final Set<Class<?>> entityClassesAvailable; // TODO is this information needed?
+    private final String entityName;
     private final DataPersistence persistence;
     private final PersistenceServiceUnit punit;
 
@@ -48,6 +53,7 @@ public class QueryHandler<T> implements InvocationHandler {
         beanClass = (Class<T>) bean.getBeanClass();
         data = beanClass.getAnnotation(Data.class);
         this.entity = entity;
+        entityName = entity.value().getSimpleName();
 
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         persistence = bc.getService(bc.getServiceReference(DataPersistence.class));
@@ -60,11 +66,35 @@ public class QueryHandler<T> implements InvocationHandler {
         entityClassesAvailable = persistenceInfo.getValue();
     }
 
+    private String getRepositoryQuery(String methodName, Object[] args, Class<?>[] paramTypes) {
+        if (args == null) {
+            if ("count".equals(methodName))
+                return "SELECT COUNT(o) FROM " + entityName + " o";
+        } else if (args.length == 1) {
+            if ("save".equals(methodName))
+                return null; // default handling covers this
+            if (Iterable.class.equals(paramTypes[0])) {
+                if ("findById".equals(methodName))
+                    return "SELECT o FROM " + entityName + " o WHERE o." + entity.id() + " IN ?1";
+                else if ("deleteById".equals(methodName))
+                    return "DELETE FROM " + entityName + " o WHERE o." + entity.id() + " IN ?1";
+            } else {
+                if ("findById".equals(methodName))
+                    return "SELECT o FROM " + entityName + " o WHERE o." + entity.id() + "=?1";
+                else if ("existsById".equals(methodName))
+                    return "SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM " + entityName + " o WHERE o." + entity.id() + "=?1";
+                else if ("deleteById".equals(methodName))
+                    return "DELETE FROM " + entityName + " o WHERE o." + entity.id() + "=?1";
+            }
+        }
+        throw new UnsupportedOperationException("Repository method " + methodName + " with parameters " + Arrays.toString(paramTypes));
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
 
-        if (args == null || args.length == 0) {
+        if (args == null) {
             if ("hashCode".equals(methodName))
                 return System.identityHashCode(proxy);
             else if ("toString".equals(methodName))
@@ -84,10 +114,14 @@ public class QueryHandler<T> implements InvocationHandler {
         Query dataQuery = method.getAnnotation(Query.class);
         String jpql = dataQuery == null ? null : dataQuery.value();
 
+        // Repository built-in methods
+        if (jpql == null && Repository.class.equals(method.getDeclaringClass()))
+            jpql = getRepositoryQuery(methodName, args, method.getParameterTypes());
+
         // TODO Actual implementation is lacking so we are cheating by
-        // temporarily sending in the JPQL directly and assuming SELECT queries only:
+        // temporarily sending in the JPQL directly:
         if (jpql == null) {
-            queryType = QueryType.INSERT;
+            queryType = QueryType.MERGE;
             requiresTransaction = Status.STATUS_NO_TRANSACTION == persistence.tranMgr.getStatus();
         } else {
             String q = jpql.toUpperCase();
@@ -96,10 +130,10 @@ public class QueryHandler<T> implements InvocationHandler {
                 requiresTransaction = false;
             } else if (q.startsWith("UPDATE")) {
                 queryType = QueryType.UPDATE;
-                requiresTransaction = true;
+                requiresTransaction = Status.STATUS_NO_TRANSACTION == persistence.tranMgr.getStatus();
             } else if (q.startsWith("DELETE")) {
                 queryType = QueryType.DELETE;
-                requiresTransaction = true;
+                requiresTransaction = Status.STATUS_NO_TRANSACTION == persistence.tranMgr.getStatus();
             } else {
                 throw new UnsupportedOperationException(jpql);
             }
@@ -117,16 +151,30 @@ public class QueryHandler<T> implements InvocationHandler {
             em = punit.createEntityManager();
 
             switch (queryType) {
-                case INSERT:
-                    em.persist(args[0]);
-                    em.flush();
-                    returnValue = null;
+                case MERGE:
+                    if (entityClassesAvailable.contains(args[0].getClass()) ||
+                        entityClassesAvailable.contains(method.getParameterTypes()[0])) {
+                        em.merge(args[0]);
+                        em.flush();
+                        returnValue = returnType.isInstance(args[0]) ? args[0] : null;
+                    } else if (Iterable.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                        ArrayList<Object> results = new ArrayList<>();
+                        for (Object e : ((Iterable<?>) args[0])) {
+                            em.merge(e);
+                            results.add(e);
+                        }
+                        em.flush();
+                        returnValue = returnType.isInstance(results) ? results : null;
+                    } else {
+                        throw new UnsupportedOperationException(method.toString());
+                    }
                     break;
                 case SELECT:
                     Class<?> returnArrayType = returnType.getComponentType();
                     Class<?> resultType;
                     if (returnArrayType == null)
-                        if (Iterable.class.isAssignableFrom(returnType))
+                        if (Iterable.class.isAssignableFrom(returnType) ||
+                            Optional.class.equals(returnType))
                             resultType = entity.value();
                         else
                             resultType = returnType;
@@ -134,8 +182,9 @@ public class QueryHandler<T> implements InvocationHandler {
                         resultType = returnArrayType;
 
                     TypedQuery<?> query = em.createQuery(jpql, resultType);
-                    for (int i = 0; i < args.length; i++)
-                        query.setParameter(i + 1, args[i]);
+                    if (args != null)
+                        for (int i = 0; i < args.length; i++)
+                            query.setParameter(i + 1, args[i]);
 
                     List<?> results = query.getResultList();
 
@@ -143,14 +192,17 @@ public class QueryHandler<T> implements InvocationHandler {
                         returnValue = results.isEmpty() ? null : results.iterator().next();
                     else if (returnType.isInstance(results))
                         returnValue = results;
+                    else if (Optional.class.equals(returnType))
+                        returnValue = results.isEmpty() ? Optional.empty() : Optional.of(results.iterator().next());
                     else // TODO convert return type
                         throw new UnsupportedOperationException(methodName + " with return type " + returnType);
                     break;
                 case UPDATE:
                 case DELETE:
                     jakarta.persistence.Query update = em.createQuery(jpql);
-                    for (int i = 0; i < args.length; i++)
-                        update.setParameter(i + 1, args[i]);
+                    if (args != null)
+                        for (int i = 0; i < args.length; i++)
+                            update.setParameter(i + 1, args[i]);
 
                     int updateCount = update.executeUpdate();
 

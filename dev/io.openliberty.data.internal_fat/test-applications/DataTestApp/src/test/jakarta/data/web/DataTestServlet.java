@@ -12,9 +12,15 @@ package test.jakarta.data.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.annotation.Resource;
@@ -36,6 +42,9 @@ public class DataTestServlet extends FATServlet {
 
     @Inject
     ProductRepo products;
+
+    @Inject
+    Reservations reservations;
 
     @Resource
     private UserTransaction tran;
@@ -145,6 +154,134 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p2expected.lastName, p2.lastName);
         assertEquals(p2expected.firstName, p2.firstName);
         assertEquals(p2expected.ssn, p2.ssn);
+    }
+
+    /**
+     * Use a Repository<T, K> interface that is a copy of Jakarta NoSQL's.
+     */
+    @Test
+    public void testRepository() {
+        ZoneId CENTRAL = ZoneId.of("America/Chicago");
+
+        assertEquals(0, reservations.count()); // assumes no other tests insert to this table
+
+        Reservation r1 = new Reservation();
+        r1.host = "testRepository-host1@example.org";
+        r1.invitees = Set.of("testRepository-1a@example.org", "testRepository-1b@example.org");
+        r1.location = "050-2 G105";
+        r1.meetingID = 10020001;
+        r1.start = ZonedDateTime.of(2022, 5, 23, 9, 0, 0, 0, CENTRAL);
+        r1.stop = ZonedDateTime.of(2022, 5, 23, 10, 0, 0, 0, CENTRAL);
+
+        assertEquals(false, reservations.existsById(r1.meetingID));
+
+        Reservation inserted = reservations.save(r1);
+        assertEquals(r1.host, inserted.host);
+        assertEquals(r1.invitees, inserted.invitees);
+        assertEquals(r1.location, inserted.location);
+        assertEquals(r1.meetingID, inserted.meetingID);
+        assertEquals(r1.start, inserted.start);
+        assertEquals(r1.stop, inserted.stop);
+
+        assertEquals(true, reservations.existsById(r1.meetingID));
+
+        assertEquals(1, reservations.count());
+
+        Reservation r2 = new Reservation();
+        r2.host = "testRepository-host2@example.org";
+        r2.invitees = Set.of("testRepository-2a@example.org", "testRepository-2b@example.org");
+        r2.location = "050-2 B120";
+        r2.meetingID = 10020002;
+        r2.start = ZonedDateTime.of(2022, 5, 23, 9, 0, 0, 0, CENTRAL);
+        r2.stop = ZonedDateTime.of(2022, 5, 23, 10, 0, 0, 0, CENTRAL);
+
+        Reservation r3 = new Reservation();
+        r3.host = "testRepository-host2@example.org";
+        r3.invitees = Set.of("testRepository-3a@example.org");
+        r3.location = "030-2 A312";
+        r3.meetingID = 10020003;
+        r3.start = ZonedDateTime.of(2022, 5, 24, 8, 30, 0, 0, CENTRAL);
+        r3.stop = ZonedDateTime.of(2022, 5, 24, 10, 00, 0, 0, CENTRAL);
+
+        Reservation r4 = new Reservation();
+        r4.host = "testRepository-host1@example.org";
+        r4.invitees = Collections.emptySet();
+        r4.location = "050-2 G105";
+        r4.meetingID = 10020004;
+        r4.start = ZonedDateTime.of(2022, 5, 24, 9, 0, 0, 0, CENTRAL);
+        r4.stop = ZonedDateTime.of(2022, 5, 24, 10, 0, 0, 0, CENTRAL);
+
+        r1.invitees = Set.of("testRepository-1a@example.org", "testRepository-1b@example.org", "testRepository-1c@example.org");
+
+        Iterable<Reservation> insertedOrUpdated = reservations.save(new Iterable<>() {
+            @Override
+            public Iterator<Reservation> iterator() {
+                return Arrays.asList(r1, r2, r3, r4).iterator();
+            }
+        });
+
+        Iterator<Reservation> it = insertedOrUpdated.iterator();
+        Reservation r;
+        assertEquals(true, it.hasNext());
+        assertNotNull(r = it.next());
+        assertEquals(r1.meetingID, r.meetingID);
+        assertEquals(r1.invitees, r.invitees);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(r = it.next());
+        assertEquals(r2.meetingID, r.meetingID);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(r = it.next());
+        assertEquals(r3.meetingID, r.meetingID);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(r = it.next());
+        assertEquals(r4.meetingID, r.meetingID);
+
+        assertEquals(false, it.hasNext());
+
+        assertEquals(true, reservations.existsById(r3.meetingID));
+
+        assertEquals(4, reservations.count());
+
+        Reservation r2found = null, r4found = null;
+        for (Reservation found : reservations.findById(List.of(r4.meetingID, r2.meetingID))) {
+            if (found.meetingID == r2.meetingID && r2found == null)
+                r2found = found;
+            else if (found.meetingID == r4.meetingID && r4found == null)
+                r4found = found;
+            else
+                fail("Found unexpected entity with meetingID of " + found.meetingID);
+        }
+        assertNotNull(r2found);
+        assertNotNull(r4found);
+        assertEquals(r2.location, r2found.location);
+        assertEquals(r4.location, r4found.location);
+
+        reservations.deleteById(r2.meetingID);
+
+        Optional<Reservation> r2optional = reservations.findById(r2.meetingID);
+        assertNotNull(r2optional);
+        assertEquals(true, r2optional.isEmpty());
+
+        assertEquals(3, reservations.count());
+
+        reservations.deleteById(Set.of(r1.meetingID, r4.meetingID));
+
+        assertEquals(false, reservations.existsById(r4.meetingID));
+
+        assertEquals(1, reservations.count());
+
+        Optional<Reservation> r3optional = reservations.findById(r3.meetingID);
+        assertNotNull(r3optional);
+        Reservation r3found = r3optional.get();
+        assertEquals(r3.host, r3found.host);
+        assertEquals(r3.invitees, r3found.invitees);
+        assertEquals(r3.location, r3found.location);
+        assertEquals(r3.meetingID, r3found.meetingID);
+        assertEquals(r3.start, r3found.start);
+        assertEquals(r3.stop, r3found.stop);
     }
 
     /**
