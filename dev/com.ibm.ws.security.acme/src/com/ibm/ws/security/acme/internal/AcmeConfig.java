@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLConfig;
-import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.config.xml.nester.Nester;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.internal.util.AcmeConstants;

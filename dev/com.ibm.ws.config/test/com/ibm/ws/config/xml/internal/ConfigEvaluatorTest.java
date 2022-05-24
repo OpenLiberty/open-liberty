@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ import com.ibm.ws.config.xml.internal.ConfigEvaluator.UnresolvedService;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
 import com.ibm.ws.config.xml.internal.metatype.MetaTypeHelper;
-import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.config.xml.nester.Nester;
 import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.SymbolRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;

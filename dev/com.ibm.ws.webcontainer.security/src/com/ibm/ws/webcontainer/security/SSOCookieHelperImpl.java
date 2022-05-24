@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;

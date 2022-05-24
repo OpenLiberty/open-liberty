@@ -45,7 +45,7 @@ Export-Package: \
  com.ibm.ws.cache*; provide:=true, \
  com.ibm.wsspi.cache; provide:=true
 
-Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
 
 -dsannotations: \
   com.ibm.ws.cache.MBeans, \
@@ -67,7 +67,7 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.crypto.passwordutil,\
 	com.ibm.ws.serialization;version=latest,\
 	com.ibm.ws.resource;version=latest, \

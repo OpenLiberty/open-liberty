@@ -31,7 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.security.cred.WSCredential;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.cache.AuthCacheConfig;
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;

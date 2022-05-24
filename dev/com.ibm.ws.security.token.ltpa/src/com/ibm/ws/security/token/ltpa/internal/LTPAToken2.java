@@ -25,7 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyUtil;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;

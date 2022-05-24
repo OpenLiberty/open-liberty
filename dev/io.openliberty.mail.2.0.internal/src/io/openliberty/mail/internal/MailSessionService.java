@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.config.xml.nester.Nester;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.resource.ResourceFactory;

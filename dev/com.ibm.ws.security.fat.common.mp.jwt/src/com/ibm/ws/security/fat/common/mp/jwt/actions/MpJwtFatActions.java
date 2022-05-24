@@ -25,7 +25,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.actions.JwtTokenActions;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwtFatConstants;

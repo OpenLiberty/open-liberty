@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ import javax.websocket.server.ServerEndpointConfig;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.wsoc.external.ExtensionExt;
 import com.ibm.ws.wsoc.external.HandshakeRequestExt;
 import com.ibm.ws.wsoc.external.HandshakeResponseExt;
@@ -93,7 +93,8 @@ public class HandshakeProcessor {
 
     private final ParametersOfInterest things = new ParametersOfInterest();
 
-    public HandshakeProcessor() {}
+    public HandshakeProcessor() {
+    }
 
     public void initialize(HttpServletRequest _hsr, HttpServletResponse resp, Map<String, String> extraParams) {
         httpRequest = _hsr;

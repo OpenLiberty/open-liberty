@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ Export-Package: \
 	com.ibm.ws.security.sso.common.*,\
 	com.ibm.wsspi.security.saml2.*
 
-Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
 
 Private-Package: \
         com.ibm.ws.security.sso.common.internal.*
@@ -32,6 +32,6 @@ instrument.classesExcludes: com/ibm/ws/security/sso/common/internal/resources/*.
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
-	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.websphere.security;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

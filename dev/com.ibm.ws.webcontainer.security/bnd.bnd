@@ -31,7 +31,9 @@ Export-Package: \
   com.ibm.ws.webcontainer.security.openid20, \
   com.ibm.ws.webcontainer.security.openidconnect
 
-Import-Package: com.ibm.ws.common.internal.encoder, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: \
+	!com.ibm.ws.kernel.boot.cmdline,\
+	*
 
 Private-Package: \
   com.ibm.ws.webcontainer.security.jacc, \
@@ -79,7 +81,7 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.security.authorization;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
-	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
@@ -121,5 +123,4 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.ws.threading,\
 	com.ibm.ws.org.apache.commons.io;version=latest, \
 	com.ibm.ws.org.apache.commons.fileupload;version=latest, \
-	com.ibm.ws.security.mp.jwt.proxy;version=latest, \
-	com.ibm.ws.kernel.service;version=latest	
+	com.ibm.ws.security.mp.jwt.proxy;version=latest

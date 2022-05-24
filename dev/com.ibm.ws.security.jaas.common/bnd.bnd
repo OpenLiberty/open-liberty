@@ -31,16 +31,15 @@ Export-Package: \
   com.ibm.wsspi.security.auth.callback;provide:=true;thread-context=true  
   
 Import-Package: \
-  com.ibm.ws.common.internal.encoder, \
-  !*.internal.*, \
-  !javax.resource.spi.*, \
-  !com.ibm.wsspi.application.*, \
-  *
+	!*.internal.*,\
+	!javax.resource.spi.*,\
+	!com.ibm.wsspi.application.*,\
+	*
 
 DynamicImport-Package: \
   javax.resource.spi.*
 
-Private-Package: com.ibm.ws.config.xml.internal.nester, \
+Private-Package: \
   com.ibm.ws.security.jaas.common.internal.*, \
   com.ibm.ws.security.jaas.config.internal.*
 
@@ -79,7 +78,6 @@ instrument.classesExcludes: com/ibm/ws/security/jaas/common/internal/resources/*
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
-	com.ibm.ws.common.encoder,\
 	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.config,\

@@ -31,7 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.cred.WSCredential;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.AuthenticationConstants;

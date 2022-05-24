@@ -84,7 +84,6 @@ Include-Resource: \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.org.apache.httpcomponents;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
-	com.ibm.ws.common.encoder;version=latest,\
 	com.ibm.ws.app.manager.wab;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\

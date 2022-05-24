@@ -62,7 +62,7 @@ src: \
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
-	com.ibm.ws.common.encoder,\
+	com.ibm.ws.kernel.service,\
 	com.ibm.ws.security.token,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.ws.ejbcontainer.core;version=latest,\

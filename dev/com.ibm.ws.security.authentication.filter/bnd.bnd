@@ -25,8 +25,7 @@ WS-TraceGroup: Filter
 Export-Package: com.ibm.ws.security.authentication.filter;provider:=true
 
 Private-Package: \
-    com.ibm.ws.security.authentication.filter.internal.*,\
-    com.ibm.ws.config.xml.internal.nester
+    com.ibm.ws.security.authentication.filter.internal.*
 
  Include-Resource: OSGI-INF=resources/OSGI-INF
 

@@ -57,7 +57,7 @@ import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
 import com.ibm.websphere.ssl.SSLConfigurationNotAvailableException;
 import com.ibm.websphere.ssl.SSLException;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
