@@ -28,11 +28,11 @@ import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.social.SocialConstants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.ibm.ws.security.oidc_social.backchannelLogout.fat.CommonTests.BackChannelLogoutCommonTests;
+import com.ibm.ws.security.oidc_social.backchannelLogout.fat.utils.Constants;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -54,6 +54,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
 public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
 
     public static Class<?> thisClass = LogoutTokenValidationTests.class;
+    public static final String defaultClient = "clientSignHS256";
 
     // Repeat tests using the OIDC and Social endpoints
     @ClassRule

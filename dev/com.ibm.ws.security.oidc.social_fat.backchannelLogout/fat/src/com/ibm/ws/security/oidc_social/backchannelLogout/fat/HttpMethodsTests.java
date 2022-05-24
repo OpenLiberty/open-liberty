@@ -25,12 +25,12 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 import com.ibm.ws.security.fat.common.social.SocialConstants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.ibm.ws.security.oidc_social.backchannelLogout.fat.CommonTests.BackChannelLogoutCommonTests;
+import com.ibm.ws.security.oidc_social.backchannelLogout.fat.utils.Constants;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -120,7 +120,7 @@ public class HttpMethodsTests extends BackChannelLogoutCommonTests {
         builder.setGeneratedJwtId(); // will ensure a unique jti for each test
 
         JSONObject events = new JSONObject();
-        events.put(logoutEventKey, new JSONObject());
+        events.put(Constants.logoutEventKey, new JSONObject());
         builder.setClaim("events", events); // required
 
         return builder;

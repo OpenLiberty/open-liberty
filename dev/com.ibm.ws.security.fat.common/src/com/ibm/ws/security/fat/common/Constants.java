@@ -133,6 +133,7 @@ public class Constants {
     /********************** Page Values *********************/
     public static final String FORM_LOGIN_HEADING = "Form Login Page";
     public static final String FORM_LOGIN_TITLE = "login.jsp";
+    public static final String FORMLOGIN_SERVLET = "ServletName: FormLoginServlet";
 
     /********************** Server Info *********************/
     public static final String BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME = "fat.server.hostname";
@@ -219,6 +220,8 @@ public class Constants {
     public static final String RESPONSE_HEADER_CACHE_CONTROL = "Cache-Control";
     public static final String RESPONSE_HEADER_PRAGMA = "Pragma";
 
+    /* ********************** Cookies *********************** */
+    public static final String JSESSION_ID_COOKIE = "JSESSIONID";
     /* ****************** test apps ************************* */
     public static final String TESTMARKER_START_APP = "testmarker";
 

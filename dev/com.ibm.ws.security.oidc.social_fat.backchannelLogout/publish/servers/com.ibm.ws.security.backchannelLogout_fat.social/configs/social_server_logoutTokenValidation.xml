@@ -25,5 +25,7 @@
 	<include location="${server.config.dir}/imports/formlogin_1.xml" />
 
 	<include location="${server.config.dir}/imports/rp_fatTestPorts.xml" />
+	
+	<include location="${server.config.dir}/imports/clientMisc.xml" />
 
 </server>

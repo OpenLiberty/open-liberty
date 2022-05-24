@@ -10,9 +10,15 @@
  -->
 <server>
 
-	<httpSession cookieHttpOnly="false" />
+	<httpSession 
+		cookieHttpOnly="false" 
+		cookieName="OPJSESSIONID" />
 
 	<webAppSecurity
 		httpOnlyCookies="false"
+		ssoCookieName="testOPCookie"
 		allowFailOverToBasicAuth="true" />
+			
+	<javaPermission className="java.net.URLPermission" name="https://localhost:-/-" actions="POST:" />
+		
 </server>

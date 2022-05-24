@@ -14,6 +14,7 @@ bVersion=1.0
 src: \
   fat/src, \
   test-applications/backchannelLogoutTestApp/src, \
+  test-applications/simpleLogoutTestApp/src
 
 Import-Package: \
     !*.internal.*, \
@@ -32,7 +33,7 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.com.google.guice.2.0;version=latest,\
 	com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
 	httpunit:httpunit;version='1.7',\
-	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
 	com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest,\
 	com.ibm.ws.org.openid4java.0.9.7;version=latest,\
 	com.ibm.ws.security.fat.common;version=latest,\
@@ -48,5 +49,6 @@ publish.wlp.jar.disabled: true
 	com.ibm.json4j;version=latest,\
 	org.bitbucket.b_c.jose4j,\
 	com.ibm.ws.security.fat.common.social;version=latest,\
-	com.ibm.ws.security.jwt;version=latest
+	com.ibm.ws.security.jwt;version=latest,\
+	com.ibm.ws.webcontainer.security
 
