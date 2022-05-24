@@ -13,6 +13,7 @@ package com.ibm.ws.security.openidconnect.backchannellogout.internal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -29,6 +30,8 @@ import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutExce
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.jose4j.Jose4jValidator;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException;
@@ -183,8 +186,8 @@ public class LogoutTokenValidator {
 
     void doOptionalVerificationChecks(JwtClaims claims) throws BackchannelLogoutException {
         verifyTokenWithSameJtiNotRecentlyReceived(claims);
+        verifyIssClaimMatchesRecentSession(claims);
         // TODO;
-        // 8. Optionally verify that the iss Logout Token Claim matches the iss Claim in an ID Token issued for the current session or a recent session of this RP with the OP.
         // 9. Optionally verify that any sub Logout Token Claim matches the sub Claim in an ID Token issued for the current session or a recent session of this RP with the OP.
         // 10. Optionally verify that any sid Logout Token Claim matches the sid Claim in an ID Token issued for the current session or a recent session of this RP with the OP.
     }
@@ -215,6 +218,29 @@ public class LogoutTokenValidator {
         // Logout token with this jti is not in the cache, so put the token data in the cache and allow validation to continue
         long clockSkew = config.getClockSkew();
         jtiCache.put(jti, configId, claims, clockSkew);
+    }
+
+    /**
+     * Verify that the iss Logout Token Claim matches the iss Claim in an ID Token issued for the current session or a recent
+     * session of this RP with the OP.
+     */
+    @FFDCIgnore(MalformedClaimException.class)
+    void verifyIssClaimMatchesRecentSession(JwtClaims claims) throws BackchannelLogoutException {
+        String iss;
+        try {
+            iss = claims.getIssuer();
+        } catch (MalformedClaimException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception extracting iss from JWT claims: " + e);
+            }
+            return;
+        }
+        OidcSessionCache oidcSessionCache = config.getOidcSessionCache();
+        Map<String, Set<OidcSessionInfo>> issToSessionsMap = oidcSessionCache.getIssMap();
+        if (!issToSessionsMap.containsKey(iss)) {
+            String errorMsg = Tr.formatMessage(tc, "NO_RECENT_SESSIONS_WITH_CLAIM", config.getId(), iss, Claims.ISSUER);
+            throw new BackchannelLogoutException(errorMsg);
+        }
     }
 
 }

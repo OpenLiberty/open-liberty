@@ -13,6 +13,10 @@ package com.ibm.ws.security.openidconnect.backchannellogout.internal;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -31,6 +35,8 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
@@ -50,6 +56,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     final String CWWKS1549E_LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM = "CWWKS1549E";
     final String CWWKS1550E_LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON = "CWWKS1550E";
     final String CWWKS1551E_LOGOUT_TOKEN_DUP_JTI = "CWWKS1551E";
+    final String CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIM = "CWWKS1552E";
 
     final String CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR = "CWWKS1751E";
     final String CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR = "CWWKS1754E";
@@ -67,6 +74,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     final ConvergedClientConfig clientConfig = mockery.mock(ConvergedClientConfig.class);
     final ConsumerUtils consumerUtils = mockery.mock(ConsumerUtils.class);
+    final OidcSessionCache oidcSessionCache = mockery.mock(OidcSessionCache.class);
 
     LogoutTokenValidator validator;
 
@@ -216,6 +224,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         String logoutTokenString = encode(getJwsHeader("none")) + "." + encode(getMinimumClaimsNoSid()) + ".";
         try {
             setConfigExpectations("none", null, 300L, ISSUER);
+            setSuccessfulOptionalTokenValidationExpectations();
 
             validator.validateToken(logoutTokenString);
         } catch (BackchannelLogoutException e) {
@@ -257,6 +266,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
         try {
             setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
+            setSuccessfulOptionalTokenValidationExpectations();
 
             validator.validateToken(logoutTokenString);
         } catch (BackchannelLogoutException e) {
@@ -566,6 +576,47 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         }
     }
 
+    @Test
+    public void test_verifyTokenWithSameJtiNotRecentlyReceived_malformedIss() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty(Claims.ISSUER, false);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        // Malformed iss should essentially be ignored
+        validator.verifyIssClaimMatchesRecentSession(claims);
+    }
+
+    @Test
+    public void test_verifyTokenWithSameJtiNotRecentlyReceived_issNotFound() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getOidcSessionCache();
+                will(returnValue(oidcSessionCache));
+                one(oidcSessionCache).getIssMap();
+                will(returnValue(new HashMap<>()));
+            }
+        });
+        try {
+            validator.verifyIssClaimMatchesRecentSession(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIM + ".*" + ISSUER);
+        }
+    }
+
+    @Test
+    public void test_verifyTokenWithSameJtiNotRecentlyReceived_issFound() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        setSuccessfulOptionalTokenValidationExpectations();
+
+        validator.verifyIssClaimMatchesRecentSession(claims);
+    }
+
     private JsonObject getJwsHeader(String alg) {
         JsonObject header = new JsonObject();
         header.addProperty("typ", "JWT");
@@ -638,6 +689,20 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
                 }
             });
         }
+    }
+
+    private void setSuccessfulOptionalTokenValidationExpectations() {
+        Map<String, Set<OidcSessionInfo>> issToSessionsMap = new HashMap<>();
+        issToSessionsMap.put(ISSUER, new HashSet<>());
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getOidcSessionCache();
+                will(returnValue(oidcSessionCache));
+                allowing(oidcSessionCache).getIssMap();
+                will(returnValue(issToSessionsMap));
+            }
+        });
     }
 
 }
