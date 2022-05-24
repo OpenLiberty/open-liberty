@@ -30,7 +30,7 @@ public interface AuthCacheService {
      * Inserts the subject into the cache using a X509Certicate as the key.
      *
      * @param subject
-     * @param client certificate
+     * @param client  certificate
      */
     public void insert(Subject subject, java.security.cert.X509Certificate[] certChain);
 
@@ -65,4 +65,23 @@ public interface AuthCacheService {
      */
     public void removeAllEntries();
 
+    /**
+     * Removes all entries from the cache.
+     *
+     * @param force Whether to force the clearing of the cache.
+     */
+    public void removeAllEntries(boolean force);
+
+    /**
+     * Whether to automatically clear cache entries. This is intended for distributed caches
+     * where over-zealous clearing could lead to performance degradation.
+     */
+    public boolean getAutoClearCache();
+
+    /**
+     * Return whether the server is started.
+     *
+     * @return True if the server is started.
+     */
+    public boolean isServerStarted();
 }

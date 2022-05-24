@@ -19,8 +19,10 @@ public interface AuthCache {
 
     /**
      * Clear all entries in the cache.
+     *
+     * @param force Whether to force the clearing of the cache.
      */
-    public void clearAllEntries();
+    public void clearAllEntries(boolean force);
 
     /**
      * Get the value for the specified key from the cache.
