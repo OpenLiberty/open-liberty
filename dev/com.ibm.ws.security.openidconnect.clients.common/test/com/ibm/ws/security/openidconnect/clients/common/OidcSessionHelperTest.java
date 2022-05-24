@@ -47,6 +47,58 @@ public class OidcSessionHelperTest {
     }
 
     @Test
+    public void test_createSessionId_configIdIsNull() {
+        String configId = null;
+        String sub = "testSub";
+        String sid = "testSid";
+        String timestamp = "12345";
+
+        String actualSessionId = OidcSessionHelper.createSessionId(configId, sub, sid, timestamp);
+        String expectedSesssionId = ":dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=";
+
+        assertEquals("Expected to replace the configId with an empty string.", expectedSesssionId, actualSessionId);
+    }
+
+    @Test
+    public void test_createSessionId_subIsNull() {
+        String configId = "testConfigId";
+        String sub = null;
+        String sid = "testSid";
+        String timestamp = "12345";
+
+        String actualSessionId = OidcSessionHelper.createSessionId(configId, sub, sid, timestamp);
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk::dGVzdFNpZA==:MTIzNDU=";
+
+        assertEquals("Expected to replace the sub with an empty string.", expectedSesssionId, actualSessionId);
+    }
+
+    @Test
+    public void test_createSessionId_sidIsNull() {
+        String configId = "testConfigId";
+        String sub = "testSub";
+        String sid = null;
+        String timestamp = "12345";
+
+        String actualSessionId = OidcSessionHelper.createSessionId(configId, sub, sid, timestamp);
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==::MTIzNDU=";
+
+        assertEquals("Expected to replace the sid with an empty string.", expectedSesssionId, actualSessionId);
+    }
+
+    @Test
+    public void test_createSessionId_timestampIsNull() {
+        String configId = "testConfigId";
+        String sub = "testSub";
+        String sid = "testSid";
+        String timestamp = null;
+
+        String actualSessionId = OidcSessionHelper.createSessionId(configId, sub, sid, timestamp);
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==:dGVzdFNpZA==:";
+
+        assertEquals("Expected to replace the timestamp with an empty string.", expectedSesssionId, actualSessionId);
+    }
+
+    @Test
     public void test_getSessionInfo() {
         String sessionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=";
 
@@ -59,7 +111,7 @@ public class OidcSessionHelperTest {
     }
 
     @Test
-    public void test_getSessinoInfo_sidWasEmpty() {
+    public void test_getSessinoInfo_sidWasEmptyOrNull() {
         String sessionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==::MTIzNDU=";
 
         OidcSessionInfo sessionInfo = OidcSessionHelper.getSessionInfo(sessionId);

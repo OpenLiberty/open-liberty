@@ -25,7 +25,6 @@ public class OidcSessionHelper {
      * Generate a new session id using the config id, sub, sid, and timestamp in the
      * format of 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.
      * It is assumed that the inputs have been validated before creating the session id.
-     * If a value does not exist (e.g., the sid claim), an empty string should be passed in.
      *
      * @param configId The oidc config id.
      * @param sub The sub claim.
@@ -34,6 +33,11 @@ public class OidcSessionHelper {
      * @return A session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.
      */
     public static String createSessionId(String configId, String sub, String sid, String timestamp) {
+        if (configId == null) configId = "";
+        if (sub == null) sub = "";
+        if (sid == null) sid = "";
+        if (timestamp == null) timestamp = "";
+        
         String encodedConfigId = new String(Base64.encodeBase64(configId.getBytes()));
         String encodedSub = new String(Base64.encodeBase64(sub.getBytes()));
         String encodedSid = new String(Base64.encodeBase64(sid.getBytes()));
