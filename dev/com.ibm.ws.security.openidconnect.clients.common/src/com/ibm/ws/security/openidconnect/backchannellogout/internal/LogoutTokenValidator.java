@@ -25,7 +25,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
@@ -43,7 +42,7 @@ public class LogoutTokenValidator {
     public static final String EVENTS_MEMBER_NAME = "http://schemas.openid.net/event/backchannel-logout";
 
     private static SSLSupport SSL_SUPPORT = null;
-    private static SingleTableCache jtiCache = new SingleTableCache(10 * 60 * 1000);
+    private static BackchannelLogoutJtiCache jtiCache = new BackchannelLogoutJtiCache(10 * 60 * 1000);
 
     private ConvergedClientConfig config = null;
     private Jose4jUtil jose4jUtil = null;
@@ -208,23 +207,14 @@ public class LogoutTokenValidator {
             return;
         }
         String configId = config.getId();
-        JtiCacheKey cacheKey = createJtiCacheKey(jti, configId);
-        Object cachedJwtContext = jtiCache.get(cacheKey);
+        Object cachedJwtContext = jtiCache.get(jti, configId);
         if (cachedJwtContext != null) {
             String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_DUP_JTI", jti, configId);
             throw new BackchannelLogoutException(errorMsg);
         }
         // Logout token with this jti is not in the cache, so put the token data in the cache and allow validation to continue
         long clockSkew = config.getClockSkew();
-        jtiCache.put(cacheKey, createJtiCacheValue(claims, clockSkew), clockSkew);
-    }
-
-    JtiCacheKey createJtiCacheKey(String jti, String configId) {
-        return new JtiCacheKey(jti, configId);
-    }
-
-    JtiCacheValue createJtiCacheValue(JwtClaims claims, long clockSkew) {
-        return new JtiCacheValue(claims, clockSkew);
+        jtiCache.put(jti, configId, claims, clockSkew);
     }
 
 }
