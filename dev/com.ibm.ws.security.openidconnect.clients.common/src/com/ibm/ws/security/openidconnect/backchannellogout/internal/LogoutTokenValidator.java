@@ -185,28 +185,18 @@ public class LogoutTokenValidator {
         }
     }
 
-    void doOptionalVerificationChecks(JwtClaims claims) throws BackchannelLogoutException {
+    void doOptionalVerificationChecks(JwtClaims claims) throws MalformedClaimException, BackchannelLogoutException {
         verifyTokenWithSameJtiNotRecentlyReceived(claims);
-        verifyIssClaimMatchesRecentSession(claims);
-        verifySubClaimMatchesRecentSession(claims);
-        // TODO;
-        // 10. Optionally verify that any sid Logout Token Claim matches the sid Claim in an ID Token issued for the current session or a recent session of this RP with the OP.
+        Map<String, Set<String>> issToSubsAndSidsMap = verifyIssClaimMatchesRecentSession(claims);
+        verifySubClaimMatchesRecentSession(claims, issToSubsAndSidsMap);
+        verifySidClaimMatchesRecentSession(claims, issToSubsAndSidsMap);
     }
 
     /**
      * Verify that another Logout Token with the same jti value has not been recently received.
      */
-    @FFDCIgnore(MalformedClaimException.class)
-    void verifyTokenWithSameJtiNotRecentlyReceived(JwtClaims claims) throws BackchannelLogoutException {
-        String jti;
-        try {
-            jti = claims.getJwtId();
-        } catch (MalformedClaimException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception extracting jti from JWT claims: " + e);
-            }
-            return;
-        }
+    void verifyTokenWithSameJtiNotRecentlyReceived(JwtClaims claims) throws MalformedClaimException, BackchannelLogoutException {
+        String jti = claims.getJwtId();
         if (jti == null) {
             return;
         }
@@ -225,50 +215,81 @@ public class LogoutTokenValidator {
      * Verify that the iss Logout Token Claim matches the iss Claim in an ID Token issued for the current session or a recent
      * session of this RP with the OP.
      */
-    @FFDCIgnore(MalformedClaimException.class)
-    void verifyIssClaimMatchesRecentSession(JwtClaims claims) throws BackchannelLogoutException {
-        String iss;
-        try {
-            iss = claims.getIssuer();
-        } catch (MalformedClaimException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception extracting iss from JWT claims: " + e);
-            }
-            return;
-        }
+    Map<String, Set<String>> verifyIssClaimMatchesRecentSession(JwtClaims claims) throws MalformedClaimException, BackchannelLogoutException {
+        String iss = claims.getIssuer();
         OidcSessionCache oidcSessionCache = config.getOidcSessionCache();
-        Map<String, Set<OidcSessionInfo>> issToSessionsMap = oidcSessionCache.getIssMap();
-        if (!issToSessionsMap.containsKey(iss)) {
+        Map<String, Map<String, Set<String>>> issToSubsAndSidsMap = oidcSessionCache.getIssToSubAndSidMap();
+        if (!issToSubsAndSidsMap.containsKey(iss)) {
             String errorMsg = Tr.formatMessage(tc, "NO_RECENT_SESSIONS_WITH_CLAIM", config.getId(), iss, Claims.ISSUER);
             throw new BackchannelLogoutException(errorMsg);
         }
+        return issToSubsAndSidsMap.get(iss);
     }
 
     /**
      * Verify that any sub Logout Token Claim matches the sub Claim in an ID Token issued for the current session or a recent
      * session of this RP with the OP.
      */
-    @FFDCIgnore(MalformedClaimException.class)
-    void verifySubClaimMatchesRecentSession(JwtClaims claims) throws BackchannelLogoutException {
-        String sub;
-        try {
-            sub = claims.getSubject();
-        } catch (MalformedClaimException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception extracting sub from JWT claims: " + e);
-            }
-            return;
-        }
+    void verifySubClaimMatchesRecentSession(JwtClaims claims, Map<String, Set<String>> subsAndSidsForIssMap) throws MalformedClaimException, BackchannelLogoutException {
+        String sub = claims.getSubject();
         if (sub == null) {
             // Token is not required to contain a sub claim
             return;
         }
+        Set<String> subsForIss = subsAndSidsForIssMap.get(OidcSessionCache.MAP_KEY_SUBS);
+        if (!subsForIss.contains(sub)) {
+            String errorMsg = Tr.formatMessage(tc, "NO_RECENT_SESSIONS_WITH_CLAIM", config.getId(), sub, Claims.SUBJECT);
+            throw new BackchannelLogoutException(errorMsg);
+        }
+    }
+
+    /**
+     * Verify that any sid Logout Token Claim matches the sid Claim in an ID Token issued for the current session or a recent
+     * session of this RP with the OP.
+     */
+    void verifySidClaimMatchesRecentSession(JwtClaims claims, Map<String, Set<String>> subsAndSidsForIssMap) throws MalformedClaimException, BackchannelLogoutException {
+        String sid = claims.getStringClaimValue("sid");
+        if (sid == null) {
+            // Token is not required to contain a sid claim
+            return;
+        }
+        Set<String> sidsForIss = subsAndSidsForIssMap.get(OidcSessionCache.MAP_KEY_SIDS);
+        if (!sidsForIss.contains(sid)) {
+            String errorMsg = Tr.formatMessage(tc, "NO_RECENT_SESSIONS_WITH_CLAIM", config.getId(), sid, "sid");
+            throw new BackchannelLogoutException(errorMsg);
+        }
+        verifySubMatchesCachedSessionAssociatedWithIssAndSid(claims, sid);
+    }
+
+    void verifySubMatchesCachedSessionAssociatedWithIssAndSid(JwtClaims claims, String sid) throws MalformedClaimException, BackchannelLogoutException {
+        String sub = claims.getSubject();
+        if (sub == null) {
+            return;
+        }
+        String sessionIss = getIssAssociatedWithSubAndSid(sub, sid);
+        String iss = claims.getIssuer();
+        if (!iss.equals(sessionIss)) {
+            String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_ISS_DOES_NOT_MATCH_SAME_SID", iss, sid, sub, sessionIss);
+            throw new BackchannelLogoutException(errorMsg);
+        }
+    }
+
+    String getIssAssociatedWithSubAndSid(String sub, String sid) throws BackchannelLogoutException {
+        // Get the session info associated with the logout token's sub claim
         OidcSessionCache oidcSessionCache = config.getOidcSessionCache();
         Map<String, OidcSessionsStore> subToSessionsMap = oidcSessionCache.getSubMap();
         if (!subToSessionsMap.containsKey(sub)) {
             String errorMsg = Tr.formatMessage(tc, "NO_RECENT_SESSIONS_WITH_CLAIM", config.getId(), sub, Claims.SUBJECT);
             throw new BackchannelLogoutException(errorMsg);
         }
+        OidcSessionsStore sessionInfoForSub = subToSessionsMap.get(sub);
+        // Find the session associated with the sid
+        OidcSessionInfo session = sessionInfoForSub.getSession(sid);
+        if (session == null) {
+            String errorMsg = Tr.formatMessage(tc, "NO_RECENT_SESSIONS_WITH_CLAIM", config.getId(), sid, "sid");
+            throw new BackchannelLogoutException(errorMsg);
+        }
+        return session.getIss();
     }
 
 }

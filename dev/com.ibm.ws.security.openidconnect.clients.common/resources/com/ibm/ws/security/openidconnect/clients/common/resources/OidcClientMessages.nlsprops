@@ -303,5 +303,10 @@ NO_RECENT_SESSIONS_WITH_CLAIM=CWWKS1552E: The [{0}] OpenID Connect client cannot
 NO_RECENT_SESSIONS_WITH_CLAIM.explanation=The OpenID Connect client does not have any recent sessions with an OpenID Connect provider that matches the claim that is specified in the message. The claim that is specified in the message must have a value in the logout token that matches the same claim of an ID token that was received recently.
 NO_RECENT_SESSIONS_WITH_CLAIM.useraction=Ensure that claim that is specified in the message matches an ID token that was recently obtained from an OpenID Connect provider.
 
+# Do not translate "sid" or "sub"
+LOGOUT_TOKEN_ISS_DOES_NOT_MATCH_SAME_SID=CWWKS1553E: The [{0}] issuer of the logout token with the [{1}] "sid" claim and [{2}] "sub" claim does not match the [{3}] issuer that is associated with that session in the cache.
+LOGOUT_TOKEN_ISS_DOES_NOT_MATCH_SAME_SID.explanation=The issuer of the logout token does not match the issuer that is associated with the same session in the OpenID Connect client cache. The logout token must be issued by the same provider that is associated with the session.
+LOGOUT_TOKEN_ISS_DOES_NOT_MATCH_SAME_SID.useraction=Ensure that the logout token is issued by the same provider that is associated with the session.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 
