@@ -28,27 +28,27 @@ public class OidcSessionHelperTest {
         String timestamp = "12345";
 
         String actualSessionId = OidcSessionHelper.createSessionId(configId, sub, sid, timestamp);
-        String expectedSesssionId = "dGVzdENvbmZpZ0lkLHRlc3RTdWIsdGVzdFNpZCwxMjM0NQ==";
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=";
 
-        assertEquals("Should have concatenated the parts using ',' and then base64 encoding the result.", expectedSesssionId, actualSessionId);
+        assertEquals("Expected to the return the session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.", expectedSesssionId, actualSessionId);
     }
 
     @Test
-    public void test_createSessionId_emptySid() {
+    public void test_createSessionId_sidIsEmpty() {
         String configId = "testConfigId";
         String sub = "testSub";
         String sid = "";
         String timestamp = "12345";
 
         String actualSessionId = OidcSessionHelper.createSessionId(configId, sub, sid, timestamp);
-        String expectedSesssionId = "dGVzdENvbmZpZ0lkLHRlc3RTdWIsLDEyMzQ1";
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==::MTIzNDU=";
 
-        assertEquals("Should have concatenated the parts using ',' and then base64 encoding the result.", expectedSesssionId, actualSessionId);
+        assertEquals("Expected to the return the session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.", expectedSesssionId, actualSessionId);
     }
 
     @Test
     public void test_getSessionInfo() {
-        String sessionId = "dGVzdENvbmZpZ0lkLHRlc3RTdWIsdGVzdFNpZCwxMjM0NQ==";
+        String sessionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=";
 
         OidcSessionInfo sessionInfo = OidcSessionHelper.getSessionInfo(sessionId);
 
@@ -60,7 +60,7 @@ public class OidcSessionHelperTest {
 
     @Test
     public void test_getSessinoInfo_sidWasEmpty() {
-        String sessionId = "dGVzdENvbmZpZ0lkLHRlc3RTdWIsLDEyMzQ1";
+        String sessionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==::MTIzNDU=";
 
         OidcSessionInfo sessionInfo = OidcSessionHelper.getSessionInfo(sessionId);
 
@@ -90,7 +90,7 @@ public class OidcSessionHelperTest {
 
     @Test
     public void test_getSessionInfo_decodedSessionIdDoesNotHaveFourParts() {
-        String sessionId = "dGVzdENvbmZpZ0lkLHRlc3RTdWI=";
+        String sessionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==";
 
         OidcSessionInfo sessionInfo = OidcSessionHelper.getSessionInfo(sessionId);
 

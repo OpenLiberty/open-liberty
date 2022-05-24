@@ -19,11 +19,11 @@ import org.apache.commons.codec.binary.Base64;
  * sessions in the RP.
  */
 public class OidcSessionHelper {
-    private static String DELIMITER = ",";
+    private static String DELIMITER = ":";
 
     /**
-     * Generate a new session id using the config id, sub, sid, and timestamp by
-     * concatenating them using a delimiter and then base64 encoding the result.
+     * Generate a new session id using the config id, sub, sid, and timestamp in the
+     * format of 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.
      * It is assumed that the inputs have been validated before creating the session id.
      * If a value does not exist (e.g., the sid claim), an empty string should be passed in.
      *
@@ -31,31 +31,39 @@ public class OidcSessionHelper {
      * @param sub The sub claim.
      * @param sid The sid claim.
      * @param timestamp The current time.
-     * @return A base64 encoded session id.
+     * @return A session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.
      */
     public static String createSessionId(String configId, String sub, String sid, String timestamp) {
-        String sessionId = String.join(DELIMITER, configId, sub, sid, timestamp);
-        return new String(Base64.encodeBase64(sessionId.getBytes()));
+        String encodedConfigId = new String(Base64.encodeBase64(configId.getBytes()));
+        String encodedSub = new String(Base64.encodeBase64(sub.getBytes()));
+        String encodedSid = new String(Base64.encodeBase64(sid.getBytes()));
+        String encodedTimestamp = new String(Base64.encodeBase64(timestamp.getBytes()));
+        
+        return String.join(DELIMITER, encodedConfigId, encodedSub, encodedSid, encodedTimestamp);
     }
 
     /**
-     * Takes a base64 encoded session id and returns an OidcSessionInfo object
-     * which contains the config id, sub, sid, and timestamp embedded in the session id.
+     * Takes a session id and returns an OidcSessionInfo object which contains 
+     * the config id, sub, sid, and timestamp embedded in the session id.
      *
-     * @param encodedSessionId The base64 encoded session id.
+     * @param sessionId The session id.
      * @return An OidcSessionInfo object containing info parsed from the session id.
      */
-    public static OidcSessionInfo getSessionInfo(String encodedSessionId) {
-        if (encodedSessionId == null || encodedSessionId.isEmpty()) {
+    public static OidcSessionInfo getSessionInfo(String sessionId) {
+        if (sessionId == null || sessionId.isEmpty()) {
             return null;
         }
 
-        String sessionId = new String(Base64.decodeBase64(encodedSessionId));
         String[] parts = sessionId.split(DELIMITER);
         if (parts.length != 4) {
             return null;
         }
+        
+        String configId = new String(Base64.decodeBase64(parts[0]));
+        String sub = new String(Base64.decodeBase64(parts[1]));
+        String sid = new String(Base64.decodeBase64(parts[2]));
+        String timestamp = new String(Base64.decodeBase64(parts[3]));
 
-        return new OidcSessionInfo(parts[0], parts[1], parts[2], parts[3]);
+        return new OidcSessionInfo(configId, sub, sid, timestamp);
     }
 }
