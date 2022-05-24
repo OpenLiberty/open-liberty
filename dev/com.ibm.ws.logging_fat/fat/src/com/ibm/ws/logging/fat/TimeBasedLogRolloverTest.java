@@ -382,7 +382,7 @@ public class TimeBasedLogRolloverTest {
 
         //hit QuickLogTest endpoint (run for 10s)
         long startTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startTime < 25000) {
+        while (System.currentTimeMillis() - startTime < 60000) {
             hitWebPage("logger-servlet", "LoggerServlet", false, null);
         }
 
