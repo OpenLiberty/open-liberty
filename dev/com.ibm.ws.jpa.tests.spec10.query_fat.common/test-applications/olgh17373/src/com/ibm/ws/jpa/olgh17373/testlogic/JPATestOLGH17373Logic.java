@@ -59,6 +59,8 @@ public class JPATestOLGH17373Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -83,6 +85,11 @@ public class JPATestOLGH17373Logic extends AbstractTestLogic {
 
             Assert.assertEquals("Sample", dto02.get(0));
             Assert.assertEquals("B", dto02.get(1));
+
+            // TODO: Regression in Hibernate 6.0.0 (JPA 3.1) (https://hibernate.atlassian.net/browse/HHH-15291)
+            if (JPAPersistenceProvider.HIBERNATE.equals(provider) && this.isUsingJPA31ContainerFeature(true)) {
+                return;
+            }
 
             // test 1 equivalent CriteriaBuilder
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -177,6 +184,11 @@ public class JPATestOLGH17373Logic extends AbstractTestLogic {
             Assert.assertEquals("Sample", dto02.get(0));
             Assert.assertEquals("B", dto02.get(1));
 
+            // TODO: Regression in Hibernate 6.0.0 (JPA 3.1) (https://hibernate.atlassian.net/browse/HHH-15291)
+            if (JPAPersistenceProvider.HIBERNATE.equals(provider) && this.isUsingJPA31ContainerFeature(true)) {
+                return;
+            }
+
             // test 1 equivalent CriteriaBuilder
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<SimpleEntityOLGH17373> cquery = cb.createQuery(SimpleEntityOLGH17373.class);
@@ -219,6 +231,7 @@ public class JPATestOLGH17373Logic extends AbstractTestLogic {
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
+            t.printStackTrace();
             // Catch any Exceptions thrown by the test case for proper error logging.
             Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
