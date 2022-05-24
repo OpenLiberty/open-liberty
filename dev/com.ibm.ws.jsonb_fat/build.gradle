@@ -51,6 +51,12 @@ task addJonhzonJakarta(type: Copy) {
   rename "johnzon-core-.*.jar", "johnzon-core.jar"
   rename "johnzon-jsonb-.*.jar", "johnzon-jsonb.jar"
   rename "johnzon-mapper-.*.jar", "johnzon-mapper.jar"
+  //This is the first time we have an artifact with a classifier being used in Open Liberty. 
+  //Produce this extra trace just incase we get errors when pulling this artifact from Artifactory on our build systems. 
+  eachFile {
+    println "file $it.name copied to $destinationDir/$it.path" 
+    println "Initial source path: ${it.getFile().getCanonicalPath()}"
+  }
 }
 
 task addParrson(type: Copy) {
