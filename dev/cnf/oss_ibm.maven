@@ -1,6 +1,6 @@
-biz.aQute.bnd:biz.aQute.bnd.annotation:6.3.0-M1
-biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0-M1
-biz.aQute.bnd:biz.aQute.bnd:6.3.0-M1
+biz.aQute.bnd:biz.aQute.bnd.annotation:6.3.0-RC2
+biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0-RC2
+biz.aQute.bnd:biz.aQute.bnd:6.3.0-RC2
 com.googlecode.jsontoken:jsontoken:1.1.0-ibm-s20140416-2113
 com.ibm.ws.com.icegreen:greenmail:2.0.0.fd826131f671b0d3230b0d0e1638d8c4
 com.ibm.ws.commons-collections:commons-collections:3.2.1
