@@ -99,7 +99,7 @@ public class UserEnumerationTest {
     @AfterClass
     public static void teardownClass() throws Exception {
         if (libertyServer != null) {
-            libertyServer.stopServer("CWIML4537E", "CWIML4529E"); // Messages we get for invalid users
+            libertyServer.stopServer("CWIML4537E", "CWIML4529E", "CWIMK0012W"); // Messages we get for invalid users
         }
     }
 
@@ -149,6 +149,9 @@ public class UserEnumerationTest {
          */
         assertFalse("Should have logged that delay is disabled",
                     libertyServer.findStringsInLogsAndTrace("failed response login delay is disabled: failedLoginDelayMax=0").isEmpty());
+
+        assertFalse("Should have logged that delay is disabled with official warning - CWIMK0012W",
+                    libertyServer.findStringsInLogsAndTrace("CWIMK0012W").isEmpty());
 
         runLoginTestCommon(false);
     }
