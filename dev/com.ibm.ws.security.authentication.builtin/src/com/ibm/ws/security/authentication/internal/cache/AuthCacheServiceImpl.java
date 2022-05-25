@@ -61,7 +61,8 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     private final Set<CacheEvictionListener> cacheEvictionListenerSet = new HashSet<CacheEvictionListener>();
     private final AtomicServiceReference<CredentialsService> credServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIAL_SERVICE);
     private CacheService cacheService = null;
-    private static boolean isServerStarted = false;
+    private boolean isServerStarted = false;
+    private boolean autoClearCache = false;
 
     /** {@inheritDoc} */
     @FFDCIgnore(Exception.class)
@@ -174,7 +175,13 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     /** {@inheritDoc} */
     @Override
     public void removeAllEntries() {
-        cache.clearAllEntries();
+        removeAllEntries(false);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeAllEntries(boolean force) {
+        cache.clearAllEntries(force);
     }
 
     protected CacheObject getCachedObject(Object cacheKey) {
@@ -194,6 +201,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
         maxSize = (Integer) newProperties.get("maxSize");
         timeoutInMilliSeconds = (Long) newProperties.get("timeout");
         allowBasicAuthLookup = (Boolean) newProperties.get("allowBasicAuthLookup");
+        autoClearCache = (Boolean) newProperties.get("autoClearCache");
         if (initialSize > maxSize) {
             initialSize = maxSize;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -209,7 +217,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
          */
         AuthCache inMemoryCache = new InMemoryAuthCache(initialSize, maxSize, timeoutInMilliSeconds, cacheEvictionListenerSet);
         if (cacheService != null) {
-            cache = new JCacheAuthCache(cacheService, inMemoryCache);
+            cache = new JCacheAuthCache(cacheService, inMemoryCache, this);
         } else {
             cache = inMemoryCache;
         }
@@ -305,12 +313,13 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
         isServerStarted = false;
     }
 
-    /**
-     * Return whether the server is started.
-     *
-     * @return True if the server is started.
-     */
-    public static boolean isServerStarted() {
-        return isServerStarted;
+    @Override
+    public boolean isServerStarted() {
+        return this.isServerStarted;
+    }
+
+    @Override
+    public boolean getAutoClearCache() {
+        return this.autoClearCache;
     }
 }
