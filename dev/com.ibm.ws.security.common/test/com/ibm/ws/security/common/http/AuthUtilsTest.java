@@ -42,6 +42,8 @@ public class AuthUtilsTest extends CommonTestClass {
         outputMgr.resetStreams();
     }
 
+// TODO: add unit test for first method
+
     @Test
     public void test_getBearerTokenFromHeader_nullHeaderValue() {
         String rawHeaderValue = null;
