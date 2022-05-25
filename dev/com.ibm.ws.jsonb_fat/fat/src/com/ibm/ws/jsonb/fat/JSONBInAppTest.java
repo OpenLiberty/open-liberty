@@ -16,41 +16,41 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import web.jsonbtest.JSONBTestServlet;
-import web.jsonbtest.JohnzonTestServlet;
+import web.jsonbtest.YassonTestServlet;
 
 @RunWith(FATRunner.class)
 public class JSONBInAppTest extends FATServletClient {
 
-    private static final String javaeeServer = "com.ibm.ws.jsonb.inapp";
-    private static final String jakartaee9Server = "com.ibm.ws.jsonb.ee9.inapp";
-
+    @Server("com.ibm.ws.jsonb.inapp")
     @TestServlets({
                     @TestServlet(servlet = JSONBTestServlet.class, contextRoot = JSONB_APP),
-                    @TestServlet(servlet = JohnzonTestServlet.class, contextRoot = JSONB_APP) // TODO: once https://github.com/eclipse-ee4j/jsonp/issues/78 is resolved, switch back to Yasson
+                    @TestServlet(servlet = YassonTestServlet.class, contextRoot = JSONB_APP) //This test suite always uses Yasson
     })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        if (JakartaEE9Action.isActive()) {
-            server = LibertyServerFactory.getLibertyServer(jakartaee9Server);
-        } else {
-            server = LibertyServerFactory.getLibertyServer(javaeeServer);
-        }
+        Log.info(JSONBInAppTest.class, "setUp", "=====> Start JSONBInAppTest");
+
+        FATSuite.configureImpls(server);
         FATSuite.jsonbApp(server);
+
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+
+        Log.info(JSONBInAppTest.class, "tearDown", "<===== Stop JSONBInAppTest");
     }
 }
