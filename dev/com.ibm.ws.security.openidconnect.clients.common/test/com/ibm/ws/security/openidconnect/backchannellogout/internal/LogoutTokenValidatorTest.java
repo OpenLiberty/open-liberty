@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.backchannellogout;
+package com.ibm.ws.security.openidconnect.backchannellogout.internal;
 
 import static org.junit.Assert.fail;
 
@@ -29,6 +29,7 @@ import org.junit.Test;
 import com.google.gson.JsonObject;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
+import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.test.common.CommonTestClass;
@@ -48,6 +49,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     final String CWWKS1548E_LOGOUT_TOKEN_EVENTS_CLAIM_MISSING_EXPECTED_MEMBER = "CWWKS1548E";
     final String CWWKS1549E_LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM = "CWWKS1549E";
     final String CWWKS1550E_LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON = "CWWKS1550E";
+    final String CWWKS1551E_LOGOUT_TOKEN_DUP_JTI = "CWWKS1551E";
 
     final String CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR = "CWWKS1751E";
     final String CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR = "CWWKS1754E";
@@ -60,7 +62,6 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     final String ISSUER = "https://localhost/oidc/provider/OP";
     final String TOKEN_ENDPOINT = ISSUER + "/token";
     final String SUBJECT = "testuser";
-    final String JTI_VALID_NO_SID = "valid-noSid";
     final String SID = "jwtsid";
     final String EVENTS_MEMBER_KEY = "http://schemas.openid.net/event/backchannel-logout";
 
@@ -78,6 +79,12 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     public void before() {
         System.out.println("Entering test: " + testName.getMethodName());
         validator = new LogoutTokenValidator(clientConfig);
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getId();
+                will(returnValue(CONFIG_ID));
+            }
+        });
     }
 
     @After
@@ -101,8 +108,6 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
                 {
                     one(clientConfig).getKeyManagementKeyAlias();
                     will(returnValue(null));
-                    one(clientConfig).getId();
-                    will(returnValue(CONFIG_ID));
                 }
             });
             validator.validateToken(logoutTokenString);
@@ -120,8 +125,6 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
                 {
                     one(clientConfig).getKeyManagementKeyAlias();
                     will(returnValue(null));
-                    one(clientConfig).getId();
-                    will(returnValue(CONFIG_ID));
                 }
             });
             validator.validateToken(logoutTokenString);
@@ -139,8 +142,6 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
                 {
                     one(clientConfig).getKeyManagementKeyAlias();
                     will(returnValue(null));
-                    one(clientConfig).getId();
-                    will(returnValue(CONFIG_ID));
                 }
             });
             validator.validateToken(logoutTokenString);
@@ -158,8 +159,6 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
                 {
                     allowing(clientConfig).getKeyManagementKeyAlias();
                     will(returnValue(null));
-                    one(clientConfig).getId();
-                    will(returnValue(CONFIG_ID));
                 }
             });
             validator.validateToken(logoutTokenString);
@@ -177,8 +176,6 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
                 {
                     allowing(clientConfig).getKeyManagementKeyAlias();
                     will(returnValue("someAlias"));
-                    one(clientConfig).getId();
-                    will(returnValue(CONFIG_ID));
                 }
             });
             validator.validateToken(logoutTokenString);
@@ -506,6 +503,69 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         }
     }
 
+    @Test
+    public void test_verifyTokenWithSameJtiNotRecentlyReceived_malformedJti() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty(Claims.ID, true);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        // A non-string jti claim should essentially be ignored
+        validator.verifyTokenWithSameJtiNotRecentlyReceived(claims);
+        validator.verifyTokenWithSameJtiNotRecentlyReceived(claims);
+    }
+
+    @Test
+    public void test_verifyTokenWithSameJtiNotRecentlyReceived_missingJti() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.remove(Claims.ID);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        // A JWT missing the jti claim should essentially be ignored
+        validator.verifyTokenWithSameJtiNotRecentlyReceived(claims);
+        validator.verifyTokenWithSameJtiNotRecentlyReceived(claims);
+    }
+
+    @Test
+    public void test_verifyTokenWithSameJtiNotRecentlyReceived_differentJti() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        jsonClaims.addProperty(Claims.ID, testName.getMethodName() + "2");
+        JwtClaims claims2 = JwtClaims.parse(jsonClaims.toString());
+
+        long clockSkew = 10;
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getClockSkew();
+                will(returnValue(clockSkew * 1000));
+            }
+        });
+        // Two different jtis should be allowed
+        validator.verifyTokenWithSameJtiNotRecentlyReceived(claims);
+        validator.verifyTokenWithSameJtiNotRecentlyReceived(claims2);
+    }
+
+    @Test
+    public void test_verifyTokenWithSameJtiNotRecentlyReceived_reusedJti() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        long clockSkew = 10;
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getClockSkew();
+                will(returnValue(clockSkew * 1000));
+            }
+        });
+        // A reused jti should not be allowed
+        validator.verifyTokenWithSameJtiNotRecentlyReceived(claims);
+        try {
+            validator.verifyTokenWithSameJtiNotRecentlyReceived(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1551E_LOGOUT_TOKEN_DUP_JTI);
+        }
+    }
+
     private JsonObject getJwsHeader(String alg) {
         JsonObject header = new JsonObject();
         header.addProperty("typ", "JWT");
@@ -522,7 +582,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         claims.addProperty(Claims.ISSUER, ISSUER);
         claims.addProperty(Claims.AUDIENCE, CLIENT_ID);
         claims.addProperty(Claims.ISSUED_AT, System.currentTimeMillis() / 1000);
-        claims.addProperty(Claims.ID, JTI_VALID_NO_SID);
+        claims.addProperty(Claims.ID, testName.getMethodName());
         claims.add("events", getValidEventsEntry());
         claims.addProperty(Claims.SUBJECT, SUBJECT);
         return claims;
@@ -564,6 +624,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
                 will(returnValue(CLIENT_ID));
                 allowing(clientConfig).getClockSkewInSeconds();
                 will(returnValue(clockSkew));
+                allowing(clientConfig).getClockSkew();
+                will(returnValue(clockSkew * 1000));
                 allowing(clientConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
             }

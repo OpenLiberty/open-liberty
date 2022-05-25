@@ -45,10 +45,11 @@ Import-Package: \
     *
 
 Private-Package: \
+    com.ibm.ws.security.openidconnect.backchannellogout.internal.*, \
     com.ibm.ws.security.openidconnect.common.internal.*, \
     com.ibm.ws.security.openidconnect.clients.common.resources.*
 
--dsannotations=com.ibm.ws.security.openidconnect.backchannellogout.LogoutTokenValidator
+-dsannotations=com.ibm.ws.security.openidconnect.backchannellogout.internal.LogoutTokenValidator
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
