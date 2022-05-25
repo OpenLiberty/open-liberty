@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class DynamicAuthFilterTest extends CommonTest {
 
     private static final Class<?> c = DynamicAuthFilterTest.class;
+    private static final boolean checkforAuthFilterMsg = false;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -63,12 +64,12 @@ public class DynamicAuthFilterTest extends CommonTest {
         // we now update the auth filter to add a bad URL pattern and do an
         // unsucessful a servlet call
         testHelper.reconfigureServer("serverAuthFilterRemoteAddressWithMalformedIp.xml", name.getMethodName(),
-                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonSuccessfulLtpaServletCall(ssoCookie);
         testHelper.checkForMessages(true, MALFORMED_IPRANGE_SPECIFIED_CWWKS4354E);
 
         testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), null,
-                                     AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonSuccessfulLtpaServletCall(ssoCookie);
 
         List<String> checkMsgs = new ArrayList<String>();
@@ -90,10 +91,14 @@ public class DynamicAuthFilterTest extends CommonTest {
     @Test
     public void testAuthFilterURLPatternValidThenInvalid() throws Exception {
         testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS,
-                                     AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
+
         commonSuccessfulLtpaServletCall(ssoCookie);
+
+        List<String> startMsgs = new ArrayList<String>();
+        startMsgs.add(AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
         testHelper.reconfigureServer("serverAuthFilterBadURLPattern.xml", name.getMethodName(),
-                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
+                                     startMsgs, AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonUnsuccessfulLtpaServletCall(ssoCookie);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -111,10 +116,12 @@ public class DynamicAuthFilterTest extends CommonTest {
     @Test
     public void testAuthFilterURLPatternInvalidThenValid() throws Exception {
         testHelper.reconfigureServer("serverAuthFilterBadURLPattern.xml", name.getMethodName(),
-                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonUnsuccessfulLtpaServletCall(ssoCookie);
-        testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS,
-                                     AuthFilterConstants.DONT_RESTART_SERVER);
+        List<String> startMsgs = new ArrayList<String>();
+        startMsgs.add(AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
+        testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), startMsgs,
+                                     AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonSuccessfulLtpaServletCall(ssoCookie);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -133,14 +140,14 @@ public class DynamicAuthFilterTest extends CommonTest {
     public void testAuthFilterRequestUrlPatternValidThenInvalid() throws Exception {
 
         testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS,
-                                     AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonSuccessfulLtpaServletCall(ssoCookie);
 
         List<String> startMsgs = new ArrayList<String>();
         startMsgs.add(AUTHENTICATION_FILTER_MODIFIED_CWWKS4359I);
 
         testHelper.reconfigureServer("serverRequestURLBadUrlPattern.xml", name.getMethodName(), startMsgs,
-                                     AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonUnsuccessfulLtpaServletCall(ssoCookie);
     }
 
@@ -157,13 +164,13 @@ public class DynamicAuthFilterTest extends CommonTest {
     @Test
     public void testAuthFilterRequestURLPatternInvalidThenValid() throws Exception {
         testHelper.reconfigureServer("serverRequestURLBadUrlPattern.xml", name.getMethodName(),
-                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonUnsuccessfulLtpaServletCall(ssoCookie);
 
         // reconfigure the server to add the original configuration and do
         // sucessful LTPA cookie call.
         List<String> startMsgs = new ArrayList<String>();
-        testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), startMsgs, false);
+        testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), startMsgs, AuthFilterConstants.DONT_RESTART_SERVER, false);
         commonSuccessfulLtpaServletCall(ssoCookie);
     }
 
@@ -180,13 +187,11 @@ public class DynamicAuthFilterTest extends CommonTest {
     @Test
     public void testAuthFilterRequestUrlMatchContainsToNotContain() throws Exception {
         testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS,
-                                     AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonSuccessfulLtpaServletCall(ssoCookie);
 
-        List<String> startMsgs = new ArrayList<String>();
-        startMsgs.add(AUTHENTICATION_FILTER_MODIFIED_CWWKS4359I);
-        testHelper.reconfigureServer("serverRequestURLBadUrlPattern.xml", name.getMethodName(), startMsgs,
-                                     AuthFilterConstants.DONT_RESTART_SERVER);
+        testHelper.reconfigureServer("serverRequestURLBadUrlPattern.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS,
+                                     AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonUnsuccessfulLtpaServletCall(ssoCookie);
     }
 
@@ -204,11 +209,11 @@ public class DynamicAuthFilterTest extends CommonTest {
     @Test
     public void testAuthFilterRequestUrlMatchNotContainsToContain() throws Exception {
         testHelper.reconfigureServer("serverRequestURLBadUrlPattern.xml", name.getMethodName(),
-                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonUnsuccessfulLtpaServletCall(ssoCookie);
 
         testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS,
-                                     AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonSuccessfulLtpaServletCall(ssoCookie);
     }
 
@@ -226,13 +231,13 @@ public class DynamicAuthFilterTest extends CommonTest {
     @Test
     public void testAuthFilterWebAppContainsToNotContain() throws Exception {
         testHelper.reconfigureServer("serverAuthFilterWebAppContains.xml", name.getMethodName(),
-                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonSuccessfulLtpaServletCall(ssoCookie);
 
         // we now update the auth filter to use webApp and matchtype Notcontain
         // and do an unsucessful LTPA call
         testHelper.reconfigureServer("serverAuthFilterWebAppNotContain.xml", name.getMethodName(),
-                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonUnsuccessfulLtpaServletCall(ssoCookie);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_MODIFIED_CWWKS4359I);
     }
@@ -253,13 +258,13 @@ public class DynamicAuthFilterTest extends CommonTest {
         // we now update the auth filter to use webApp and matchtype Notcontain
         // and do an unsucessful LTPA call
         testHelper.reconfigureServer("serverAuthFilterWebAppNotContain.xml", name.getMethodName(),
-                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonUnsuccessfulLtpaServletCall(ssoCookie);
 
         // we now update the auth filter to use webApp and matchtype contain and
         // do an sucessful LTPA call
         testHelper.reconfigureServer("serverAuthFilterWebAppContains.xml", name.getMethodName(),
-                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_MODIFIED_CWWKS4359I);
         commonSuccessfulLtpaServletCall(ssoCookie);
     }
@@ -281,11 +286,11 @@ public class DynamicAuthFilterTest extends CommonTest {
         // we now update the auth filter to use webApp and matchtype Notcontain
         // and do an unsucessful LTPA call
         testHelper.reconfigureServer("serverAuthFilterWebAppNotContain.xml", name.getMethodName(), null,
-                                     AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonUnsuccessfulLtpaServletCall(ssoCookie);
 
         testHelper.reconfigureServer("serverAuthFilterWebAppContains.xml", name.getMethodName(), null,
-                                     AuthFilterConstants.DONT_RESTART_SERVER);
+                                     AuthFilterConstants.DONT_RESTART_SERVER, checkforAuthFilterMsg);
         commonSuccessfulLtpaServletCall(ssoCookie);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_MODIFIED_CWWKS4359I);
     }
