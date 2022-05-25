@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
     private static final String PERSISTENT_EXECUTOR_PKG_PREFIX = "com.ibm.ws.concurrent.persistent.";
 
     private static enum SpecialEntitySet {
-        BATCH, PERSISTENT_EXECUTOR
+        BATCH, PERSISTENT_EXECUTOR, NONE
     };
 
     private SpecialEntitySet recognizeSpecialEntityPackage(String className) {
@@ -72,7 +72,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
         } else if (className.startsWith(PERSISTENT_EXECUTOR_PKG_PREFIX)) {
             return SpecialEntitySet.PERSISTENT_EXECUTOR;
         } else {
-            return null;
+            return SpecialEntitySet.NONE;
         }
     }
 
@@ -280,7 +280,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
         // table prefix, schema, and keyGenerationStrategy to all entities
 
         InMemoryMappingFile ormFile = null;
-        SpecialEntitySet entitySet = recognizeSpecialEntityPackage(entityClassNames[0]);
+        SpecialEntitySet entitySet = entityClassNames.length == 0 ? SpecialEntitySet.NONE : recognizeSpecialEntityPackage(entityClassNames[0]);
         if (entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR)) {
             String ormFileContents = createOrmFileContentsForPersistentExecutor();
             ormFile = new InMemoryMappingFile(ormFileContents.getBytes("UTF-8"));
@@ -288,7 +288,9 @@ public class DatabaseStoreImpl implements DatabaseStore {
             String ormFileContents = createOrmFileContentsForBatch(entityClassNames);
             ormFile = new InMemoryMappingFile(ormFileContents.getBytes("UTF-8"));
         } else {
-            ormFile = createOrmFile(schema, tablePrefix, entityClassNames);
+            // hidden internal non-ship property for experimenting with Jakarta Data
+            String[] entityClassEntries = (String[]) properties.get("io.openliberty.persistence.internal.entityClassInfo");
+            ormFile = createOrmFile(schema, tablePrefix, entityClassNames, entityClassEntries);
         }
 
         PersistenceServiceUnitConfig config = new PersistenceServiceUnitConfig();
@@ -627,17 +629,18 @@ public class DatabaseStoreImpl implements DatabaseStore {
      */
     protected InMemoryMappingFile createOrmFile(String schemaName,
                                                 String tablePrefix,
-                                                String[] entityClassNames)
+                                                String[] entityClassNames,
+                                                String[] entityClassEntries)
                     throws UnsupportedEncodingException {
-        return (entityClassNames == null || entityClassNames.length == 0)
+        return ((entityClassNames == null || entityClassNames.length == 0) && (entityClassEntries == null && entityClassEntries.length == 0))
                         ? null
-                        : new InMemoryMappingFile(createOrm(schemaName, tablePrefix, entityClassNames).getBytes("UTF-8"));
+                        : new InMemoryMappingFile(createOrm(schemaName, tablePrefix, entityClassNames, entityClassEntries).getBytes("UTF-8"));
     }
 
     /**
      * @return a generic ORM xml file, in string form, using the given schema, tablePrefix, and entity classes.
      */
-    protected String createOrm(String schemaName, String tablePrefix, String[] entityClassNames) {
+    protected String createOrm(String schemaName, String tablePrefix, String[] entityClassNames, String[] entityClassEntries) {
         StringBuilder builder = new StringBuilder();
 
         // Add header information
@@ -656,13 +659,19 @@ public class DatabaseStoreImpl implements DatabaseStore {
         // Add the entities and apply tablePrefix
         tablePrefix = (tablePrefix == null) ? "" : tablePrefix.trim();
 
-        for (String entityClassName : entityClassNames) {
-            String simpleName = parseSimpleName(entityClassName);
+        if (entityClassNames != null)
+            for (String entityClassName : entityClassNames) {
+                String simpleName = parseSimpleName(entityClassName);
 
-            builder.append(" <entity class=" + enquote(entityClassName) + ">" + EOLN)
-                            .append("  <table name=" + enquote(tablePrefix + simpleName) + "/>" + EOLN)
-                            .append(" </entity>" + EOLN);
-        }
+                builder.append(" <entity class=" + enquote(entityClassName) + ">" + EOLN)
+                                .append("  <table name=" + enquote(tablePrefix + simpleName) + "/>" + EOLN)
+                                .append(" </entity>" + EOLN);
+            }
+
+        if (entityClassEntries != null)
+            for (String entityClassEntry : entityClassEntries) {
+                builder.append(entityClassEntry);
+            }
 
         builder.append("</entity-mappings>" + EOLN);
         return builder.toString();

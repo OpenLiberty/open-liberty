@@ -53,7 +53,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.simplicity.config.HttpSession;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.openidconnect.clients.common.AuthorizationCodeHandler;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;

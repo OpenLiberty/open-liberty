@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -36,8 +36,7 @@ Import-Package: \
     *
 
 Private-Package: \
-        com.ibm.ws.security.openidconnect.common.internal.*, \
-        com.ibm.ws.config.xml.internal.nester
+        com.ibm.ws.security.openidconnect.common.internal.*
 
 Service-Component: 
 
@@ -50,7 +49,7 @@ Service-Component:
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.security;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
-	com.ibm.ws.common.encoder;version=latest, \
+	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest,\

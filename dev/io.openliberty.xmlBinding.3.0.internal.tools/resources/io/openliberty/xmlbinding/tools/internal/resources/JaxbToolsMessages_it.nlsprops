@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,11 +15,13 @@
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW
 #COMPONENTNAMEFOR CWWKW WebSphere XML Binding Tools Code
-#RANGE 0700 - 0799
+#RANGE 1400 - 1499
+#Message range shared with com.ibm.ws.jaxb.tools and com.ibm.ws.jaxb.tools.2.3
+
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-error.parameter.target.missed=CWWKW0700E: Non \u00e8 stata specificato il parametro di destinazione.
+error.parameter.target.missed=CWWKW1402E: Il parametro di destinazione richiesto non \u00e8 stato specificato. Il valore valido \u00e8 3,0.
 error.parameter.target.missed.explanation=Se viene specificato il parametro di destinazione, le applicazioni esistenti possono essere rigenerate senza modificare il loro comportamento quando si aggiorna il livello di specifica di bind XML supportato da Liberty Profile.
-error.parameter.target.missed.useraction=Specificare il livello di specifica di bind XML a cui il codice generato deve essere conforme. Il valore valido \u00e8 3.0
+error.parameter.target.missed.useraction=Specificare il livello di specifica di bind XML a cui il codice generato deve essere conforme. Il valore valido \u00e8 3,0.

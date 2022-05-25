@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -164,7 +164,7 @@ public class EncapsulatedData {
             return "";
         }
 
-        final byte[] encodedDataBytes = com.ibm.ws.common.internal.encoder.Base64Coder.base64Encode(data);
+        final byte[] encodedDataBytes = com.ibm.ws.common.encoder.Base64Coder.base64Encode(data);
         final String encodedData = (encodedDataBytes == null) ? "" : new String(encodedDataBytes);
         final String[] lines = encodedData.split("(?<=\\G.{120})");
 
@@ -184,7 +184,7 @@ public class EncapsulatedData {
         dataBase64 = dataBase64.replaceAll("\\n", "");
 
         byte[] encodedDataBytes = dataBase64.getBytes();
-        data = com.ibm.ws.common.internal.encoder.Base64Coder.base64Decode(encodedDataBytes);
+        data = com.ibm.ws.common.encoder.Base64Coder.base64Decode(encodedDataBytes);
 
 //        Base64.Decoder decoder = Base64.getDecoder();
 //        data = decoder.decode(dataBase64);

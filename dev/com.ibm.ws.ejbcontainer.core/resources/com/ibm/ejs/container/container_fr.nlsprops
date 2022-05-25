@@ -1551,6 +1551,14 @@ UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Impossible de lier l''interfa
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=La liaison de bean enterprise distante ne peut pas \u00eatre cr\u00e9\u00e9e car le serveur de noms CORBA n'est pas disponible.
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=Consultez le fichier journal pour conna\u00eetre les exceptions li\u00e9es \u00e0 l'initialisation de l'ORB ou du serveur de noms CORBA.
 
+CNTR0342E_INCORRECT_ASYNC_ANNO=CNTR0342E : le bean {0} du module {1} de l''application {2} comporte une ou plusieurs m\u00e9thodes avec l''annotation jakarta.enterprise.concurrent.Asynchronous, qui ne doit pas \u00eatre utilis\u00e9e sur les beans enterprise. L''annotation jakarta.ejb.Asynchronous fournit des m\u00e9thodes asynchrones pour les beans enterprise.
+CNTR0342E_INCORRECT_ASYNC_ANNO.explanation=La sp\u00e9cification Jakarta Concurrency ne permet pas l'utilisation de l'annotation jakarta.enterprise.concurrent.Asynchronous sur Jakarta Enterprise Beans.
+CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=Supprimez l'annotation jakarta.enterprise.concurrent.Asynchronous de la m\u00e9thode ou de la classe. Utilisez l'annotation jakarta.ejb.Asynchronous pour identifier les m\u00e9thodes de bean enterprise asynchrones.
+
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W : l''interface m\u00e9tier {0} contient une annotation jakarta.enterprise.concurrent.Asynchronous. Les annotations asynchrones ne sont pas valides sur une interface, et le conteneur Jakarta Enterprise Beans les ignore.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=L'annotation jakarta.enterprise.concurrent.Asynchronous ne doit pas \u00eatre utilis\u00e9e avec Jakarta Enterprise Beans. Le conteneur Jakarta Enterprise Beans ignore ces annotations sur les interfaces. A moins que les m\u00e9thodes ne soient d\u00e9clar\u00e9es asynchrones dans le descripteur de d\u00e9ploiement ejb-jar.xml ou que l'annotation jakarta.ejb.Asynchronous soit sp\u00e9cifi\u00e9e dans la classe de bean ou une m\u00e9thode de classe de bean, les m\u00e9thodes de bean sont ex\u00e9cut\u00e9es de mani\u00e8re synchrone.
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Supprimez toute annotation jakarta.enterprise.concurrent.Asynchronous de l'interface m\u00e9tier sp\u00e9cifi\u00e9e et v\u00e9rifiez que l'annotation jakarta.ejb.Asynchronous est correctement sp\u00e9cifi\u00e9e dans la classe de bean.
+
 #-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
@@ -2223,4 +2231,3 @@ CNTR9424E_NO_URL_JNDINAME_SPECIFIED.useraction=Ajoutez une propri\u00e9t\u00e9 n
 CNTR9425E_NO_URL_SPEC_SPECIFIED=CNTR9425E: Les propri\u00e9t\u00e9s du conteneur d''EJB incorporable pour la ressource d''URL {0} ne contiennent pas de propri\u00e9t\u00e9 specification.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.explanation=Les propri\u00e9t\u00e9s que le conteneur d'EJB incorporable utilise contiennent une ressource d'URL pour laquelle aucune sp\u00e9cification n'est indiqu\u00e9e.
 CNTR9425E_NO_URL_SPEC_SPECIFIED.useraction=Ajoutez une propri\u00e9t\u00e9 specification pour cette ressource d'URL dans le fichier de propri\u00e9t\u00e9s.
-

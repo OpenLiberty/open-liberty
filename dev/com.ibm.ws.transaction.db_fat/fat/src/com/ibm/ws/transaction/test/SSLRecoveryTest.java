@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
 package com.ibm.ws.transaction.test;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Statement;
 
@@ -106,16 +108,19 @@ public class SSLRecoveryTest extends FATServletClient {
 
     protected void recoveryTest(String id) throws Exception {
         final String method = "recoveryTest";
+
         StringBuilder sb = null;
+
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(serverLibertySSL, APP_NAME + "/SSLRecoveryServlet", "setupRec" + id);
-        } catch (Throwable e) {
+            fail("setupRec" + id + " returned: " + sb);
+        } catch (IOException e) {
+            // This is what we expect. The setup servlet crashed its server
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
         serverLibertySSL.waitForStringInLog(XAResourceImpl.DUMP_STATE);
-        serverLibertySSL.stopServer();
+        serverLibertySSL.resetStarted();
 
         setUp();
         serverLibertySSL.startServer();
@@ -123,12 +128,8 @@ public class SSLRecoveryTest extends FATServletClient {
         // Server appears to have started ok
         assertNotNull(serverLibertySSL.getServerName() + " did not recover", serverLibertySSL.waitForStringInTrace("Performed recovery for " + serverLibertySSL.getServerName()));
         Log.info(this.getClass(), method, "calling checkRec" + id);
-        try {
-            sb = runTestWithResponse(serverLibertySSL, APP_NAME + "/SSLRecoveryServlet", "checkRec" + id);
-        } catch (Exception e) {
-            Log.error(this.getClass(), "recoveryTest", e);
-            throw e;
-        }
+
+        sb = runTestWithResponse(serverLibertySSL, APP_NAME + "/SSLRecoveryServlet", "checkRec" + id);
         Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
     }
 }

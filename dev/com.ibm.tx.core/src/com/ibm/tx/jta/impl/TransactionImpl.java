@@ -251,9 +251,10 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
     private static TraceComponent tc = Tr.register(com.ibm.tx.jta.impl.TransactionImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
-    // TODO - reinstate this
-    // private static final TraceComponent tcSummary = Tr.register("TRANSUMMARY", TranConstants.SUMMARY_TRACE_GROUP, null);
-    private static final TraceComponent tcSummary = tc;
+    private class TransactionSummary {
+    }
+
+    private static final TraceComponent tcSummary = Tr.register(TransactionSummary.class, TranConstants.SUMMARY_TRACE_GROUP, TranConstants.NLS_FILE);
 
     /**
      * Recovery Constructor
@@ -1806,7 +1807,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     protected void setRBO() {
         if (!_rollbackOnly) {
             if (tcSummary.isDebugEnabled())
-                Tr.debug(tcSummary, "Transaction setRollbackOnly.", new Object[] { this, _xid, Util.stackToDebugString(new Throwable()) });
+                Tr.debug(tcSummary, "Transaction setRollbackOnly.", this, _xid, new Throwable("Transaction setRollbackOnly stack trace"));
             _rollbackOnly = true;
         }
     }
@@ -3324,6 +3325,6 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
     protected void traceCreate() {
         if (tcSummary.isDebugEnabled())
-            Tr.debug(tcSummary, "Transaction created.", new Object[] { this, _xid, Util.stackToDebugString(new Throwable()) });
+            Tr.debug(tcSummary, "Transaction created.", this, _xid, new Throwable("Transaction creation stack trace"));
     }
 }

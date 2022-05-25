@@ -19,7 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.common.TraceConstants;
 
 public class HashUtils {

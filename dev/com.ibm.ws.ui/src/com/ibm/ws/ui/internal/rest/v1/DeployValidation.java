@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import java.security.PrivilegedAction;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.ui.internal.rest.CommonJSONRESTHandler;
 import com.ibm.ws.ui.internal.rest.exceptions.RESTException;
@@ -32,7 +32,7 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
 
 /**
  * <p>Defines the deploy validation API for the version 1 of the adminUI REST API.</p>
- * 
+ *
  * <p>Maps to host:port/ibm/api/adminUI/v1/deployValidation</p>
  */
 public class DeployValidation extends CommonJSONRESTHandler implements V1Constants {
@@ -40,7 +40,7 @@ public class DeployValidation extends CommonJSONRESTHandler implements V1Constan
 
     /**
      * Default constructor.
-     * 
+     *
      * @param toolboxService
      */
     public DeployValidation() {
@@ -49,7 +49,7 @@ public class DeployValidation extends CommonJSONRESTHandler implements V1Constan
 
     /**
      * Gets the user's authenticated ID.
-     * 
+     *
      * @param request The RESTRequest from handleRequest
      * @return The authenticated user's ID.
      */
@@ -70,8 +70,7 @@ public class DeployValidation extends CommonJSONRESTHandler implements V1Constan
 
             URL url = AccessController.doPrivileged(new PrivilegedAction<URL>() {
                 @Override
-                public URL run()
-                {
+                public URL run() {
                     String fullURI = request.getCompleteURL();
                     URL url = null;
                     try {

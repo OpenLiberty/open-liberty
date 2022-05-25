@@ -91,19 +91,6 @@ pluginManagement {
                   +';index=${build}/oss_ibm.maven')
   props.setProperty('fetch.oss.ibm.repository', fetchRepoIBM)
 
-  // Bnd configuration for where to download IBM Java binaries from.
-  String fetchRepoIBMJava = !isUsingArtifactory ?
-          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
-                  +';name = DummyRepo') :
-
-          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
-                  +';local=~/.ibmjava/repository'
-                  +';name = IBMInternalJava'
-                  +';releaseUrl=' + repoURL
-                  +';snapshotUrl=' + repoURL
-                  +';index=${build}/ibm_java.maven')
-  props.setProperty('fetch.ibm.java.repository', fetchRepoIBMJava)
-
   def uploadRepoURL = ('https://' + props.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty')
 
   // Bnd configuration for where to upload release artifacts to.

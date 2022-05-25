@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2021 IBM Corporation and others.
+# Copyright (c) 2002, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -102,11 +102,9 @@ start.httpChain.error=CWWKT0020E: Se ha producido un problema al iniciar el punt
 start.httpChain.error.explanation=El punto final HTTP no se ha podido iniciar debido a un problema inesperado. 
 start.httpChain.error.useraction=Examine los registros de mensajes y de excepci\u00f3n para buscar errores relacionados.
 
-httpChain.error.shutdown=CWWKT0021I: El servidor se detiene debido a un posible error de configuraci\u00f3n. \
-No se puede iniciar el punto final {0}; esto podr\u00eda suceder si el puerto configurado ya est\u00e1 en uso.
+httpChain.error.shutdown=CWWKT0021I: El servidor se detiene debido a un posible error de configuraci\u00f3n. No se puede iniciar el punto final {0}; esto podr\u00eda suceder si el puerto configurado ya est\u00e1 en uso.
 httpChain.error.shutdown.explanation=El punto final HTTP se ha configurado con onError=FAIL, que provoca que el servidor se detenga si hay un problema al iniciar el punto final. 
-httpChain.error.shutdown.useraction=Examine los registros de mensajes y de excepci\u00f3n para buscar errores relacionados. \
-Para evitar que el servidor se detenga debido a un problema al iniciar el punto final, aseg\u00farese de que onError est\u00e1 establecido en WARN o IGNORE.
+httpChain.error.shutdown.useraction=Examine los registros de mensajes y de excepci\u00f3n para buscar errores relacionados. Para evitar que el servidor se detenga debido a un problema al iniciar el punto final, aseg\u00farese de que onError est\u00e1 establecido en WARN o IGNORE.
 
 unresolveableHost=CWWKT0022E: No se ha podido resolver el host configurado {0} para el punto final HTTP {1}. Se ha inhabilitado el punto final.
 unresolveableHost.explanation=Un punto final HTTP necesita un valor de host que se pueda resolver como una interfaz de red activa.
@@ -121,8 +119,7 @@ defaultHostDisabled.explanation=Se necesita el host virtual predeterminado para 
 defaultHostDisabled.useraction=No se requiere ninguna acci\u00f3n.
 
 noHostAliases=CWWKT0025W: El host virtual {0} no tiene ning\u00fan alias de host configurado; no recibir\u00e1 solicitudes de entrada.
-noHostAliases.explanation=Todos los hosts virtuales no predeterminados deben definir al menos un alias de host (host:puerto) para identificar las solicitudes de entrada que se deben direccionar hacia dicho host virtual. \
-El host virtual especificado no tiene ning\u00fan alias de host definido, lo que impedir\u00e1 que se direccionen solicitudes hacia \u00e9l.
+noHostAliases.explanation=Todos los hosts virtuales no predeterminados deben definir al menos un alias de host (host:puerto) para identificar las solicitudes de entrada que se deben direccionar hacia dicho host virtual. El host virtual especificado no tiene ning\u00fan alias de host definido, lo que impedir\u00e1 que se direccionen solicitudes hacia \u00e9l.
 noHostAliases.useraction=Actualice el elemento virtualHost en el archivo server.xml para definir al menos un atributo hostAlias.
 
 invalidAlias=CWWKT0026W: Un alias de host configurado para el host virtual {0} no es v\u00e1lido y se ignorar\u00e1. {1}
@@ -203,3 +200,11 @@ headers.duplicateHeaderName.useraction=Aseg\u00farese de que las cabeceras defin
 headers.knownDuplicateHeader=CWWKT0044W: Se ha encontrado la cabecera [{0}], que est\u00e1 marcada como un nombre de cabecera duplicado, en la configuraci\u00f3n {1}. La cabecera [{0}] se ignora. Cualquier cabecera definida por la configuraci\u00f3n {1} debe contener nombres de cabecera exclusivos.
 headers.knownDuplicateHeader.explanation=El nombre de cabecera especificado ya se ha encontrado en las configuraciones de remove, add, set o setIfMissing.
 headers.knownDuplicateHeader.useraction=Aseg\u00farese de que los nombres de cabecera definidos en esta configuraci\u00f3n sean exclusivos en las configuraciones de remove, add, set o setIfMissing.              
+
+log.rollover.start.time.format.warning=CWWKT0045W: La propiedad de tiempo de inicio del reinicio del registro se ha formateado incorrectamente. Como resultado, el valor se establece en un valor predeterminado de '00:00', que representa la medianoche.
+log.rollover.start.time.format.warning.explanation=La propiedad de hora de inicio del reinicio debe tener el formato HH:MM, con 00:00 que representa la medianoche.
+log.rollover.start.time.format.warning.useraction=Aseg\u00farese de que el valor de la propiedad de hora de inicio del reinicio se haya formateado correctamente en la anotaci\u00f3n HH:MM de 24 horas, donde 00:00 representa la medianoche.
+
+log.rollover.interval.too.short.warning=CWWKT0046W: La duraci\u00f3n del intervalo de reinicio del registro no puede ser menor que 1 minuto. Si se especifica un valor menor que 1 minuto, el intervalo del reinicio del registro se establece en un valor predeterminado de 1 d\u00eda.
+log.rollover.interval.too.short.warning.explanation=La duraci\u00f3n del intervalo de reinicio del registro no puede ser menor que 1 minuto.
+log.rollover.interval.too.short.warning.useraction=Especifique un intervalo de renovaci\u00f3n del registro que sea igual o mayor que 1 minuto.

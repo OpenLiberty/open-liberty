@@ -133,7 +133,6 @@ Include-Resource: \
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\
-	com.ibm.ws.common.encoder,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
@@ -193,6 +192,5 @@ Include-Resource: \
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.security.jwt;version=latest, \
 	com.ibm.ws.runtime.update;version=latest, \
-	com.ibm.ws.threading;verison=latest
-
-
+	com.ibm.ws.threading;verison=latest, \
+	com.ibm.ws.config;version=latest

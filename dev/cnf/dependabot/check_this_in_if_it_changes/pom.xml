@@ -162,6 +162,16 @@
       <version>2.2.3</version>
     </dependency>
     <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast-client</artifactId>
+      <version>3.12.12</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+      <version>3.12.12</version>
+    </dependency>
+    <dependency>
       <groupId>com.ibm.async</groupId>
       <artifactId>asyncutil</artifactId>
       <version>0.1.0</version>
@@ -1623,8 +1633,18 @@
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-el-api</artifactId>
+      <version>10.1.0-M12</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
       <version>10.0.18</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-jasper-el</artifactId>
+      <version>10.1.0-M12</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>
@@ -2440,6 +2460,16 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search-engine</artifactId>
       <version>5.11.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-client-hotrod</artifactId>
+      <version>12.1.7.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-commons</artifactId>
+      <version>12.1.7.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jacoco</groupId>

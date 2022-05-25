@@ -13,10 +13,11 @@ package com.ibm.ws.security.jwt.internal;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -31,7 +32,7 @@ public class ClaimsImpl implements Claims, Serializable {
 	// private final String issuer = null;
 	private static final TraceComponent tc = Tr.register(ClaimsImpl.class, TraceConstants.TRACE_GROUP,
 			TraceConstants.MESSAGE_BUNDLE);
-	private final Map<String, Object> claimsMap = new ConcurrentHashMap<String, Object>();
+	private final Map<String, Object> claimsMap = Collections.synchronizedMap(new HashMap<>());
 
 	public ClaimsImpl() {
 	}

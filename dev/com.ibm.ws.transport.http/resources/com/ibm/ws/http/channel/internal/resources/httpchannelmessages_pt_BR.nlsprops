@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2021 IBM Corporation and others.
+# Copyright (c) 2002, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -102,11 +102,9 @@ start.httpChain.error=CWWKT0020E: Ocorreu um problema ao iniciar o terminal {0}:
 start.httpChain.error.explanation=O terminal HTTP n\u00e3o p\u00f4de ser iniciado devido a um problema inesperado. 
 start.httpChain.error.useraction=Examine os logs de mensagens e de exce\u00e7\u00f5es para obter os erros relacionados. 
 
-httpChain.error.shutdown=CWWKT0021I: O servidor est\u00e1 parando por causa de um poss\u00edvel erro de configura\u00e7\u00e3o. \
-O terminal {0} n\u00e3o pode ser iniciado; isso poder\u00e1 ocorrer se a porta configurada j\u00e1 estiver em uso.
+httpChain.error.shutdown=CWWKT0021I: O servidor est\u00e1 parando por causa de um poss\u00edvel erro de configura\u00e7\u00e3o. O terminal {0} n\u00e3o pode ser iniciado; isso poder\u00e1 ocorrer se a porta configurada j\u00e1 estiver em uso.
 httpChain.error.shutdown.explanation=O terminal HTTP foi configurado com onError=FAIL, que faz o servidor parar se houver um problema para iniciar o terminal. 
-httpChain.error.shutdown.useraction=Examine os logs de mensagens e de exce\u00e7\u00f5es para obter os erros relacionados. \
-Para evitar que o servidor pare devido a um problema na inicializa\u00e7\u00e3o do terminal, certifique-se de que onError esteja configurado para WARN ou IGNORE.
+httpChain.error.shutdown.useraction=Examine os logs de mensagens e de exce\u00e7\u00f5es para obter os erros relacionados. Para evitar que o servidor pare devido a um problema na inicializa\u00e7\u00e3o do terminal, certifique-se de que onError esteja configurado para WARN ou IGNORE.
 
 unresolveableHost=CWWKT0022E: O host configurado {0} para o terminal HTTP {1} n\u00e3o p\u00f4de ser resolvido. O terminal foi desativado.
 unresolveableHost.explanation=Um terminal HTTP requer um valor de host que possa ser resolvido para uma interface de rede ativa.
@@ -121,8 +119,7 @@ defaultHostDisabled.explanation=O host virtual padr\u00e3o \u00e9 requerido pelo
 defaultHostDisabled.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 noHostAliases=CWWKT0025W: O host virtual {0} n\u00e3o tem alias de host configurados; ele n\u00e3o receber\u00e1 solicita\u00e7\u00f5es de entrada.
-noHostAliases.explanation=Todos os hosts virtuais n\u00e3o padr\u00e3o dever\u00e3o definir pelo menos um alias de host (host:port) para identificar solicita\u00e7\u00f5es de entrada que devem ser roteadas para o host virtual. \
-O host virtual especificado n\u00e3o tem nenhum alias de host definido, o que evitar\u00e1 que todas as solicita\u00e7\u00f5es sejam roteadas para ele.
+noHostAliases.explanation=Todos os hosts virtuais n\u00e3o padr\u00e3o dever\u00e3o definir pelo menos um alias de host (host:port) para identificar solicita\u00e7\u00f5es de entrada que devem ser roteadas para o host virtual. O host virtual especificado n\u00e3o tem nenhum alias de host definido, o que evitar\u00e1 que todas as solicita\u00e7\u00f5es sejam roteadas para ele.
 noHostAliases.useraction=Atualize o elemento virtualHost no arquivo server.xml para definir pelo menos um atributo hostAlias.
 
 invalidAlias=CWWKT0026W: Um alias de host configurado para o host virtual {0} \u00e9 inv\u00e1lido e ser\u00e1 ignorado. {1}
@@ -203,3 +200,11 @@ headers.duplicateHeaderName.useraction=Certifique-se de que cabe\u00e7alhos que 
 headers.knownDuplicateHeader=CWWKT0044W: O cabe\u00e7alho [{0}], que \u00e9 marcado como um nome de cabe\u00e7alho duplicado, foi encontrado na configura\u00e7\u00e3o {1}. O cabe\u00e7alho [{0}] foi ignorado. Qualquer cabe\u00e7alho que seja definido pela configura\u00e7\u00e3o {1} deve conter nomes de cabe\u00e7alho exclusivos.
 headers.knownDuplicateHeader.explanation=O nome de cabe\u00e7alho especificado j\u00e1 foi encontrado pelas configura\u00e7\u00f5es de remo\u00e7\u00e3o, inclus\u00e3o, defini\u00e7\u00e3o, ou setIfMissing.
 headers.knownDuplicateHeader.useraction=Certifique-se de que nomes de cabe\u00e7alho que s\u00e3o definidos nesta configura\u00e7\u00e3o sejam exclusivos em todas as configura\u00e7\u00f5es de remo\u00e7\u00e3o, inclus\u00e3o, defini\u00e7\u00e3o, ou setIfMissing.              
+
+log.rollover.start.time.format.warning=CWWKT0045W: A propriedade de hor\u00e1rio de in\u00edcio de rolagem de log est\u00e1 formatada incorretamente. Como resultado, o valor \u00e9 configurado para um padr\u00e3o de '00:00', que representa meia-noite.
+log.rollover.start.time.format.warning.explanation=A propriedade de hor\u00e1rio de in\u00edcio de rolagem deve ser formatada HH:MM, com 00:00 representando a meia-noite.
+log.rollover.start.time.format.warning.useraction=Certifique-se de que o valor da propriedade de hor\u00e1rio de in\u00edcio de rolagem esteja devidamente formatado em nota\u00e7\u00e3o HH:MM 24 horas, em que 00:00 representa meia-noite.
+
+log.rollover.interval.too.short.warning=CWWKT0046W: O intervalo de rolagem de log n\u00e3o pode ter menos de 1 minutos de dura\u00e7\u00e3o. Se um valor menor que 1 minuto for especificado, o intervalo de rolagem de log ser\u00e1 configurado para um padr\u00e3o de 1 dia.
+log.rollover.interval.too.short.warning.explanation=O intervalo de rolagem de log n\u00e3o pode ter menos de 1 minutos de dura\u00e7\u00e3o.
+log.rollover.interval.too.short.warning.useraction=Especifique um intervalo de rolagem de log que seja igual ou superior a 1 minuto.

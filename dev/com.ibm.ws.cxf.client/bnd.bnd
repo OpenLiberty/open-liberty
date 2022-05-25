@@ -17,6 +17,8 @@ Bundle-Description: Async Client Wrapper for CXF version ${bVersion}
 
 WS-TraceGroup: JAXRS
 
+publish.wlp.jar.disabled: true
+
 Export-Package: \
   com.ibm.ws.cxf.client, \
   com.ibm.ws.cxf.client.component

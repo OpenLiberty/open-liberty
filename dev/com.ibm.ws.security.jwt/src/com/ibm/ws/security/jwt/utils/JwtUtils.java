@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +35,6 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
@@ -211,30 +211,10 @@ public class JwtUtils {
 
 	// assuming payload not the whole token string
 	public static Map claimsFromJsonObject(String jsonFormattedString) throws JoseException {
-		Map claimsMap = new ConcurrentHashMap<String, Object>();
+		Map<String, Object> claimsMap = Collections.synchronizedMap(new HashMap<>());
 
-		// JSONObject jobj = JSONObject.parse(jsonFormattedString);
 		Map<String, Object> jobj = org.jose4j.json.JsonUtil.parseJson(jsonFormattedString);
-		Set<Entry<String, Object>> entries = jobj.entrySet();
-		Iterator<Entry<String, Object>> it = entries.iterator();
-
-		while (it.hasNext()) {
-			Entry<String, Object> entry = it.next();
-
-			String key = entry.getKey();
-			Object value = entry.getValue();
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "Key : " + key + ", Value: " + value);
-			}
-			if (!isNullEmpty(key) && value != null) {
-				claimsMap.put(key, value);
-			}
-
-			// JsonElement jsonElem = entry.getValue();
-		}
-
-		// claims.putAll(jobj.entrySet());
-
+		claimsMap.putAll(jobj);
 		return claimsMap;
 	}
 

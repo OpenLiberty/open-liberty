@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,7 @@ import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
-import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.config.xml.nester.Nester;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.wim.FactoryManager;

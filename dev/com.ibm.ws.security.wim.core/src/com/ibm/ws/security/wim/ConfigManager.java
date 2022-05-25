@@ -34,7 +34,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
-import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.config.xml.nester.Nester;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
@@ -335,6 +335,8 @@ public class ConfigManager implements RuntimeUpdateListener {
                 Tr.debug(tc,
                          "failed response login delay is enabled with the following min/max (ms): " + failResponseDelayMin + " and " + failResponseDelayMax);
             }
+        } else {
+            Tr.warning(tc, WIMMessageKey.FAILED_LOGIN_DELAY_DISABLED, CONFIG_PROP_FAIL_RESPONSE_DELAY_MIN, CONFIG_PROP_FAIL_RESPONSE_DELAY_MAX);
         }
         updatedConfig.put(CONFIG_PROP_FAIL_RESPONSE_DELAY_MAX, failResponseDelayMax);
         updatedConfig.put(CONFIG_PROP_FAIL_RESPONSE_DELAY_MIN, failResponseDelayMin);

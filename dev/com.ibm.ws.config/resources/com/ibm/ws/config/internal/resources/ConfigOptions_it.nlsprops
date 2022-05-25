@@ -29,7 +29,7 @@ use.options=Opzioni:
 option-key.ignorePids=--ignorePidsFile
 option-desc.ignorePids=Un nome file contenente un elenco di pid da ignorare.
 option-key.encoding=--encoding
-option-desc.encoding=La codifica dei caratteri da utilizzare per l'output.
+option-desc.encoding=La codifica dei caratteri da utilizzare per l'output.     \nLa codifica predefinita \u00e8 "UTF-8".
 option-key.locale=--locale
 option-desc.locale=La lingua da utilizzare quando si crea il file di output. Questa stringa \u00e8 costituita dal codice lingua di due lettere minuscole ISO-639, facoltativamente seguito da un carattere di sottolineatura e il codice Paese di due lettere maiuscole ISO-3166 .
 

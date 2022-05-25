@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2021 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,10 +19,9 @@ WS-TraceGroup: \
   Token
 
 Import-Package: \
-  com.ibm.ws.common.internal.encoder, \
-  !*.internal.*, \
-  !com.ibm.ws.kernel.boot.cmdline, \
-  *
+	!*.internal.*,\
+	!com.ibm.ws.kernel.boot.cmdline,\
+	*
 
 Export-Package: com.ibm.ws.security.token.ltpa
 
@@ -88,7 +87,7 @@ instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
-	com.ibm.ws.common.encoder;version=latest, \
+	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.crypto.ltpakeyutil;version=latest, \
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
@@ -103,5 +102,4 @@ instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.
 	cglib:cglib-nodep;version=3.3.0, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.kernel.boot;version=latest, \
-	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.crypto.passwordutil;version=latest

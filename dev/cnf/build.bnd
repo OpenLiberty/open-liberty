@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -13,8 +13,7 @@
   ${workspace}/gradle.properties, \
   ${workspace}/cnf/resources/bnd/anttaskdefs.bnd, \
   ${workspace}/cnf/resources/bnd/repos.bnd, \
-  ${workspace}/cnf/resources/bnd/test.bnd, \
-  ${workspace}/cnf/resources/bnd/bootclasspath.bnd
+  ${workspace}/cnf/resources/bnd/test.bnd
 
 # Output to different directories based on whether Gradle or Eclipse and Bndtools is driving the build.
 bin: ${if;${driver;gradle};build/classes/java/main;bin}
@@ -83,3 +82,236 @@ build.bnd.plugins: \
 -plugin.transformer.verifier: aQute.bnd.service.verifier.VerifierPlugin;\
  name=Transformer;\
  command:="-transformer"
+
+ # For the transformed bundles that changed from com.ibm to io.openliberty, add the project name to the bundle name
+ # in the buildpath automatically so that when someone specifies io.openliberty, bnd is able to find
+ # the location of the project that goes with that bundle.  For all transformed bundle names need to add source=none for
+ # things to work in eclipse.
+-buildpath+: \
+  {com.ibm.jbatch.container.jakarta};source=none, \
+  {com.ibm.rls.jdbc.jakarta};source=none, \
+  {com.ibm.tx.jta.jakarta};source=none, \
+  {com.ibm.tx.util.jakarta};source=none, \
+  {com.ibm.websphere.javaee.jcache.1.1.jakarta};source=none, \
+  {com.ibm.ws.app.manager.wab.jakarta};source=none, \
+  {com.ibm.ws.app.manager.war.jakarta};source=none, \
+  {com.ibm.ws.beanvalidation.jakarta};source=none, \
+  {com.ibm.ws.beanvalidation.v20.cdi.jakarta};source=none, \
+  {com.ibm.ws.beanvalidation.v20.jakarta};source=none, \
+  {com.ibm.ws.cdi.2.0.ejb.jakarta};source=none, \
+  {com.ibm.ws.cdi.2.0.jsf.jakarta};source=none, \
+  {com.ibm.ws.cdi.2.0.web.jakarta};source=none, \
+  {com.ibm.ws.cdi.2.0.weld.jakarta};source=none, \
+  {com.ibm.ws.cdi.ejb.common.jakarta};source=none, \
+  {com.ibm.ws.cdi.interfaces.jakarta};source=none, \
+  {com.ibm.ws.cdi.internal.jakarta};source=none, \
+  {com.ibm.ws.cdi.jndi.jakarta};source=none, \
+  {com.ibm.ws.cdi.mp.context.jakarta};source=none, \
+  {com.ibm.ws.cdi.transaction.jakarta};source=none, \
+  {com.ibm.ws.cdi.web.jakarta};source=none, \
+  {com.ibm.ws.cdi.weld.jakarta};source=none, \
+  {com.ibm.ws.clientcontainer.jakarta};source=none, \
+  {com.ibm.ws.com.graphql.java.jakarta};source=none, \
+  {com.ibm.ws.concurrent.jakarta};source=none, \
+  {com.ibm.ws.concurrent.persistent.jakarta};source=none, \
+  {com.ibm.ws.dynacache.web.jakarta};source=none, \
+  {com.ibm.ws.dynacache.web.servlet31.jakarta};source=none, \
+  {com.ibm.ws.ejbcontainer.async.jakarta};source=none, \
+  {com.ibm.ws.ejbcontainer.jakarta};source=none, \
+  {com.ibm.ws.ejbcontainer.jpa.jakarta};source=none, \
+  {com.ibm.ws.ejbcontainer.mdb.jakarta};source=none, \
+  {com.ibm.ws.ejbcontainer.remote.client.jakarta};source=none, \
+  {com.ibm.ws.ejbcontainer.remote.client.server.jakarta};source=none, \
+  {com.ibm.ws.ejbcontainer.remote.jakarta};source=none, \
+  {com.ibm.ws.ejbcontainer.remote.portable.jakarta};source=none, \
+  {com.ibm.ws.ejbcontainer.timer.jakarta};source=none, \
+  {com.ibm.ws.ejbcontainer.timer.persistent.jakarta};source=none, \
+  {com.ibm.ws.injection.jakarta};source=none, \
+  {com.ibm.ws.io.smallrye.graphql.jakarta};source=none, \
+  {com.ibm.ws.jaxrs.2.x.monitor.jakarta};source=none, \
+  {com.ibm.ws.jaxrs.defaultexceptionmapper.jakarta};source=none, \
+  {com.ibm.ws.jaxws.2.3.clientcontainer.jakarta};source=none, \
+  {com.ibm.ws.jaxws.2.3.common.jakarta};source=none, \
+  {com.ibm.ws.jaxws.2.3.ejb.jakarta};source=none, \
+  {com.ibm.ws.jaxws.2.3.web.jakarta};source=none, \
+  {com.ibm.ws.jaxws.cdi.jakarta};source=none, \
+  {com.ibm.ws.jaxws.webcontainer.jakarta};source=none, \
+  {com.ibm.ws.jbatch.cdi.jakarta};source=none, \
+  {com.ibm.ws.jbatch.jms.jakarta};source=none, \
+  {com.ibm.ws.jbatch.joblog.jakarta};source=none, \
+  {com.ibm.ws.jbatch.rest.jakarta};source=none, \
+  {com.ibm.ws.jbatch.security.jakarta};source=none, \
+  {com.ibm.ws.jca.1.7.jakarta};source=none, \
+  {com.ibm.ws.jca.cm.jakarta};source=none, \
+  {com.ibm.ws.jca.feature.jakarta};source=none, \
+  {com.ibm.ws.jca.jakarta};source=none, \
+  {com.ibm.ws.jca.resourcedefinition.jms.2.0.jakarta};source=none, \
+  {com.ibm.ws.jca.utils.jakarta};source=none, \
+  {com.ibm.ws.jdbc.4.1.jakarta};source=none, \
+  {com.ibm.ws.jdbc.4.2.jakarta};source=none, \
+  {com.ibm.ws.jdbc.4.3.jakarta};source=none, \
+  {com.ibm.ws.jdbc.jakarta};source=none, \
+  {com.ibm.ws.jmx.connector.server.rest.jakarta};source=none, \
+  {com.ibm.ws.jpa.container.beanvalidation.2.0.jakarta};source=none, \
+  {com.ibm.ws.jpa.container.eclipselink.jakarta};source=none, \
+  {com.ibm.ws.jpa.container.jakarta};source=none, \
+  {com.ibm.ws.jpa.container.thirdparty.jakarta};source=none, \
+  {com.ibm.ws.jpa.container.v21.cdi.jakarta};source=none, \
+  {com.ibm.ws.jsf.beanvalidation.jakarta};source=none, \
+  {com.ibm.ws.jsfContainer.jakarta};source=none, \
+  {com.ibm.ws.jsf.shared.jakarta};source=none, \
+  {com.ibm.ws.jsp.2.3.jakarta};source=none, \
+  {com.ibm.ws.jsp.jakarta};source=none, \
+  {com.ibm.ws.messaging.jms.2.0.cdi.jakarta};source=none, \
+  {com.ibm.ws.messaging.jms.2.0.jakarta};source=none, \
+  {com.ibm.ws.messaging.jms.common.jakarta};source=none, \
+  {com.ibm.ws.messaging.jmsspec.common.jakarta};source=none, \
+  {com.ibm.ws.messaging.msgstore.jakarta};source=none, \
+  {com.ibm.ws.microprofile.faulttolerance.2.0.cdi.jakarta};source=none, \
+  {com.ibm.ws.microprofile.faulttolerance.2.1.cdi.jakarta};source=none, \
+  {com.ibm.ws.microprofile.faulttolerance.cdi.jakarta};source=none, \
+  {com.ibm.ws.microprofile.graphql.authorization.jakarta};source=none, \
+  {com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1.jakarta};source=none, \
+  {com.ibm.ws.org.apache.commons.fileupload.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.core.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.rt.security.saml.3.4.1.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.rt.ws.mex.3.4.1.jakarta};source=none, \
+  {com.ibm.ws.org.apache.cxf.rt.ws.security.3.4.1.jakarta};source=none, \
+  {com.ibm.ws.org.apache.santuario.xmlsec.2.2.0.jakarta};source=none, \
+  {com.ibm.ws.org.apache.wss4j.bindings.2.3.0.jakarta};source=none, \
+  {com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0.jakarta};source=none, \
+  {com.ibm.ws.org.apache.wss4j.ws.security.dom.2.3.0.jakarta};source=none, \
+  {com.ibm.ws.org.apache.wss4j.ws.security.stax.2.3.0.jakarta};source=none, \
+  {com.ibm.ws.org.apache.wss4j.ws.security.web.2.3.0.jakarta};source=none, \
+  {com.ibm.ws.org.ehcache.ehcache.107.3.8.1.jakarta};source=none, \
+  {com.ibm.ws.org.opensaml.opensaml.core.3.4.5.jakarta};source=none, \
+  {com.ibm.ws.org.opensaml.opensaml.messaging.api.3.4.5.jakarta};source=none, \
+  {com.ibm.ws.org.opensaml.opensaml.messaging.impl.3.4.5.jakarta};source=none, \
+  {com.ibm.ws.org.opensaml.opensaml.storage.api.3.4.5.jakarta};source=none, \
+  {com.ibm.ws.persistence.jakarta};source=none, \
+  {com.ibm.ws.request.probe.audit.servlet.jakarta};source=none, \
+  {com.ibm.ws.request.probe.servlet.jakarta};source=none, \
+  {com.ibm.ws.rest.handler.jakarta};source=none, \
+  {com.ibm.ws.rest.handler.validator.jca.jakarta};source=none, \
+  {com.ibm.ws.security.audit.source.jakarta};source=none, \
+  {com.ibm.ws.security.authorization.jacc.sample.proxyprovider.jakarta};source=none, \
+  {com.ibm.ws.security.authorization.jacc.testprovider.jakarta};source=none, \
+  {com.ibm.ws.security.authorization.util.jakarta};source=none, \
+  {com.ibm.ws.security.jaspic.test.jakarta};source=none, \
+  {com.ibm.ws.security.jca.jakarta};source=none, \
+  {com.ibm.ws.security.saml.websso.2.0.jakarta};source=none, \
+  {com.ibm.ws.session.cache.jakarta};source=none, \
+  {com.ibm.ws.session.db.jakarta};source=none, \
+  {com.ibm.ws.session.jakarta};source=none, \
+  {com.ibm.ws.session.store.jakarta};source=none, \
+  {com.ibm.ws.transaction.context.jakarta};source=none, \
+  {com.ibm.ws.transaction.jakarta};source=none, \
+  {com.ibm.ws.transaction.test.util.jakarta};source=none, \
+  {com.ibm.ws.transport.iiop.transaction.jakarta};source=none, \
+  {com.ibm.ws.tx.embeddable.jakarta};source=none, \
+  {com.ibm.ws.tx.jta.extensions.jakarta};source=none, \
+  {com.ibm.ws.ui.jakarta};source=none, \
+  {com.ibm.ws.webcontainer.cors.jakarta};source=none, \
+  {com.ibm.ws.webcontainer.jakarta};source=none, \
+  {com.ibm.ws.webcontainer.monitor.jakarta};source=none, \
+  {com.ibm.ws.webcontainer.servlet.3.1.jakarta};source=none, \
+  {com.ibm.ws.webcontainer.servlet.4.0.factories.jakarta};source=none, \
+  {com.ibm.ws.webcontainer.servlet.4.0.jakarta};source=none, \
+  {com.ibm.ws.webserver.plugin.runtime.jakarta};source=none, \
+  {com.ibm.ws.webservices.javaee.common.jakarta};source=none, \
+  {com.ibm.ws.wsat.common.3.2.jakarta};source=none, \
+  {com.ibm.ws.wsat.cxf.utils.3.2.jakarta};source=none, \
+  {com.ibm.ws.wsat.webclient.3.2.jakarta};source=none, \
+  {com.ibm.ws.wsat.webservice.3.2.jakarta};source=none, \
+  {com.ibm.ws.wsoc.1.1.jakarta};source=none, \
+  {com.ibm.ws.wsoc.cdi.weld.jakarta};source=none, \
+  {com.ibm.ws.wsoc.jakarta};source=none, \
+  {com.ibm.ws.wssecurity.3.4.1.jakarta};source=none, \
+  {io.openliberty.cdi.spi};project=com.ibm.websphere.appserver.spi.cdi;source=none, \
+  {io.openliberty.concurrent.internal.basictrigger.jakarta};source=none, \
+  {io.openliberty.connectors.security.internal.inbound};project=com.ibm.ws.jca.inbound.security;source=none, \
+  {io.openliberty.dynacache.internal};project=com.ibm.ws.dynacache;source=none, \
+  {io.openliberty.ejbcontainer};project=com.ibm.websphere.appserver.api.ejbcontainer;source=none, \
+  {io.openliberty.ejbcontainer.security.internal};project=com.ibm.ws.ejbcontainer.security;source=none, \
+  {io.openliberty.el.internal.cdi.jakarta};source=none, \
+  {io.openliberty.faces.internal.jakarta};source=none, \
+  {io.openliberty.federatedRepository.spi};project=com.ibm.websphere.appserver.spi.federatedRepository;source=none, \
+  {io.openliberty.globalhandler.spi};project=com.ibm.websphere.appserver.spi.globalhandler;source=none, \
+  {io.openliberty.grpc.1.0.internal.client.jakarta};source=none, \
+  {io.openliberty.grpc.1.0.internal.common.jakarta};source=none, \
+  {io.openliberty.grpc.1.0.internal.jakarta};source=none, \
+  {io.openliberty.grpc.client.1.0.jakarta.thirdparty};source=none, \
+  {io.openliberty.io.grpc.1.0.jakarta};source=none, \
+  {io.openliberty.io.smallrye.common.jakarta};source=none, \
+  {io.openliberty.io.smallrye.config.jakarta};source=none, \
+  {io.openliberty.jacc};project=com.ibm.websphere.appserver.api.jacc;source=none, \
+  {io.openliberty.jaspic.spi};project=com.ibm.websphere.appserver.spi.jaspic;source=none, \
+  {io.openliberty.jwt};project=com.ibm.websphere.appserver.api.jwt;source=none, \
+  {io.openliberty.microprofile.faulttolerance.3.0.internal.cdi.jakarta};source=none, \
+  {io.openliberty.microprofile.health.3.1.internal.jakarta};source=none, \
+  {io.openliberty.microprofile.metrics.internal.3.0.jakarta};source=none, \
+  {io.openliberty.microprofile.metrics.internal.3.0.monitor.jakarta};source=none, \
+  {io.openliberty.microprofile.metrics.internal.cdi.3.0.jakarta};source=none, \
+  {io.openliberty.microprofile.openapi.2.0.internal.jakarta};source=none, \
+  {io.openliberty.microprofile.opentracing.2.0.internal.jakarta};source=none, \
+  {io.openliberty.oauth};project=com.ibm.websphere.appserver.api.oauth;source=none, \
+  {io.openliberty.opentracing.2.0.internal.cdi.jakarta};source=none, \
+  {io.openliberty.opentracing.2.0.internal.jakarta};source=none, \
+  {io.openliberty.org.jboss.resteasy.cdi};source=none, \
+  {io.openliberty.org.jboss.resteasy.common.jakarta};source=none, \
+  {io.openliberty.org.jboss.resteasy.jaxb.provider};source=none, \
+  {io.openliberty.org.jboss.resteasy.mprestclient};source=none, \
+  {io.openliberty.org.jboss.resteasy.server.jakarta};source=none, \
+  {io.openliberty.org.jboss.resteasy.validator.provider};source=none, \
+  {io.openliberty.rest.handler.config.openapi.common.jakarta};source=none, \
+  {io.openliberty.rest.handler.validator.openapi.2.0.jakarta};source=none, \
+  {io.openliberty.security.acme.internal};project=com.ibm.ws.security.acme;source=none, \
+  {io.openliberty.security.authentication.internal.builtin};project=com.ibm.ws.security.authentication.builtin;source=none, \
+  {io.openliberty.security.authentication.internal.filter};project=com.ibm.ws.security.authentication.filter;source=none, \
+  {io.openliberty.security.authentication.internal.tai};project=com.ibm.ws.security.authentication.tai;source=none, \
+  {io.openliberty.security.auth.internal.data};project=com.ibm.ws.security.auth.data;source=none, \
+  {io.openliberty.security.authorization.internal.jacc.ejb};project=com.ibm.ws.security.authorization.jacc.ejb;source=none, \
+  {io.openliberty.security.authorization.internal.jacc};project=com.ibm.ws.security.authorization.jacc;source=none, \
+  {io.openliberty.security.authorization.internal.jacc.web};project=com.ibm.ws.security.authorization.jacc.web;source=none, \
+  {io.openliberty.securityClient};project=com.ibm.websphere.appserver.api.securityClient;source=none, \
+  {io.openliberty.security.common.internal};project=com.ibm.ws.security.common;source=none, \
+  {io.openliberty.security.jaas.internal.common};project=com.ibm.ws.security.jaas.common;source=none, \
+  {io.openliberty.security.jakartasec.2.0.internal.cdi};project=com.ibm.ws.security.javaeesec.cdi;source=none, \
+  {io.openliberty.security.jakartasec.2.0.internal};project=com.ibm.ws.security.javaeesec;source=none, \
+  {io.openliberty.security.jaspic.2.0.internal};project=com.ibm.ws.security.jaspic;source=none, \
+  {io.openliberty.security.jwt.internal};project=com.ibm.ws.security.jwt;source=none, \
+  {io.openliberty.security.jwtsso.internal};project=com.ibm.ws.security.jwtsso;source=none, \
+  {io.openliberty.security.mp.jwt.cdi.internal};project=com.ibm.ws.security.mp.jwt.cdi;source=none, \
+  {io.openliberty.security.mp.jwt.internal};project=com.ibm.ws.security.mp.jwt;source=none, \
+  {io.openliberty.security.oauth.internal.2.0};project=com.ibm.ws.security.oauth;source=none, \
+  {io.openliberty.security.openidconnect.internal.client};project=com.ibm.ws.security.openidconnect.client;source=none, \
+  {io.openliberty.security.openidconnect.internal.clients.common};project=com.ibm.ws.security.openidconnect.clients.common;source=none, \
+  {io.openliberty.security.openidconnect.internal.server};project=com.ibm.ws.security.openidconnect.server;source=none, \
+  {io.openliberty.security};project=com.ibm.websphere.appserver.api.security;source=none, \
+  {io.openliberty.security.saml.internal.wab.2.0};project=com.ibm.ws.security.saml.wab;source=none, \
+  {io.openliberty.security.social.internal};project=com.ibm.ws.security.social;source=none, \
+  {io.openliberty.security.spnego.internal};project=com.ibm.ws.security.spnego;source=none, \
+  {io.openliberty.security.sso.internal};project=com.ibm.ws.security.sso;source=none, \
+  {io.openliberty.security.wim.internal.base};project=com.ibm.websphere.security.wim.base;source=none, \
+  {io.openliberty.servlet};project=com.ibm.websphere.appserver.api.servlet;source=none, \
+  {io.openliberty.servlet.spi};project=com.ibm.websphere.appserver.spi.servlet;source=none, \
+  {io.openliberty.transaction.internal.cdi20.jakarta};source=none, \
+  {io.openliberty.transaction};project=com.ibm.websphere.appserver.api.transaction;source=none, \
+  {io.openliberty.webCache};project=com.ibm.websphere.appserver.api.webCache;source=none, \
+  {io.openliberty.webcontainer.security.app};project=com.ibm.websphere.appserver.api.webcontainer.security.app;source=none, \
+  {io.openliberty.webcontainer.security.internal};project=com.ibm.ws.webcontainer.security;source=none, \
+  {io.openliberty.webservices.handler};project=com.ibm.ws.webservices.handler;source=none, \
+  {io.openliberty.wsat.spi};project=com.ibm.websphere.appserver.spi.wsat;source=none, \
+  {io.openliberty.wsoc};project=com.ibm.websphere.appserver.api.wsoc;source=none

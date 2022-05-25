@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;

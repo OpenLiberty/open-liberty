@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,8 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 import com.ibm.ws.webcontainer.security.test.servlets.SSLBasicAuthClient;
@@ -96,7 +98,12 @@ public class StaticAnnotationsTest {
         JACCFatUtils.installJaccUserFeature(server);
         JACCFatUtils.transformApps(server, "loginmethod.ear");
 
-        server.addInstalledAppForValidation("loginmethod");
+        if (Machine.getLocalMachine().getOperatingSystem() != OperatingSystem.WINDOWS) {
+            /*
+             * We'll do a manual wait later if we're on a Windows test machine
+             */
+            server.addInstalledAppForValidation("loginmethod");
+        }
         server.startServer(true);
         assertNotNull("FeatureManager did not report update was complete",
                       server.waitForStringInLog("CWWKF0008I"));
@@ -104,6 +111,16 @@ public class StaticAnnotationsTest {
                       server.waitForStringInLog("CWWKS0008I"));
         assertNotNull("The application did not report is was started",
                       server.waitForStringInLog("CWWKZ0001I"));
+
+        if (Machine.getLocalMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
+            /*
+             * Wait time based on test failure sample: CWWKZ0001I: Application loginmethod started in 290.026 seconds.
+             */
+            Log.info(thisClass, "setup", "Waiting for loginmethod to start: CWWKZ0001I: Application loginmethod started");
+            assertNotNull("The applicaiton loginmethod did not report as started, if this is a Windows run, may need more time to complete",
+                          server.waitForStringInLog("CWWKZ0001I: Application loginmethod started", 300000));
+
+        }
 
         if (server.getValidateApps()) { // If this build is Java 7 or above
             verifyServerStartedWithJaccFeature(server);

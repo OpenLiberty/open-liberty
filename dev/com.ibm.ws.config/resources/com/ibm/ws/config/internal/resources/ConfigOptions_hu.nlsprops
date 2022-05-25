@@ -29,7 +29,7 @@ use.options=Param\u00e9terek:
 option-key.ignorePids=--ignorePidsFile
 option-desc.ignorePids=A figyelmen k\u00edv\u00fcl marad\u00f3 folyamatazonos\u00edt\u00f3k list\u00e1j\u00e1t tartalmaz\u00f3 f\u00e1jln\u00e9v.
 option-key.encoding=--encoding
-option-desc.encoding=A kimenethez haszn\u00e1land\u00f3 karakterk\u00f3dol\u00e1s.
+option-desc.encoding=A kimenethez haszn\u00e1land\u00f3 karakterk\u00f3dol\u00e1s.     \nAz alap\u00e9rtelmezett k\u00f3dol\u00e1s: "UTF-8".
 option-key.locale=--locale
 option-desc.locale=A kimeneti f\u00e1jl l\u00e9trehoz\u00e1sakor haszn\u00e1land\u00f3 nyelv. Ez a karaktersorozat a k\u00e9tbet\u0171s ISO-639 kisbet\u0171s nyelvk\u00f3db\u00f3l \u00e1ll, amelyet ig\u00e9ny szerint egy al\u00e1h\u00faz\u00e1s, valamint a k\u00e9tkarakteres ISO-3166 nagybet\u0171s orsz\u00e1gk\u00f3d k\u00f6vethet.
 

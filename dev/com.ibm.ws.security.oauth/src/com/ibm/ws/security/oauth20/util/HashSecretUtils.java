@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 
 /**
  * Utility class to generate hash code for the client secret stored in the database or custom store

@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS1600 - CWWKS1649
+# Message prefix block: CWWKS1600 - CWWKS1649, CWWKS1950 - CWWKS1999
 OIDC_SERVER_CONFIG_PROCESSED=CWWKS1600I: Konfiguracja dostawcy OpenID Connect {0} zosta\u0142a pomy\u015blnie przetworzona.
 OIDC_SERVER_CONFIG_PROCESSED.explanation=Konfiguracja dostawcy OpenID Connect zosta\u0142a pomy\u015blnie przetworzona.
 OIDC_SERVER_CONFIG_PROCESSED.useraction=Brak
@@ -192,9 +192,9 @@ LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN=CWWKS1643E: Dostawca OpenID Conn
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.explanation=Znacznik identyfikatora mo\u017ce by\u0107 zniekszta\u0142cony lub \u017c\u0105danie w obr\u0119bie znacznika mo\u017ce mie\u0107 warto\u015b\u0107, kt\u00f3ra jest nieoczekiwanym typem danych. Znacznik mo\u017ce te\u017c zawiera\u0107 brakuj\u0105ce \u017c\u0105dania wymagane lub wystawca znacznika nie jest oczekiwanym wystawc\u0105.
 LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN.useraction=Upewnij si\u0119, \u017ce znacznik identyfikatora zosta\u0142 poprawnie sformatowany. Aby dowiedzie\u0107 si\u0119 wi\u0119cej, zapoznaj si\u0119 z b\u0142\u0119dem uwzgl\u0119dnionym w komunikacie.
 
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT=CWWKS1644E: Dostawca OpenID Connect nie mo\u017ce okre\u015bli\u0107 zestawu klient\u00f3w OpenID Connect do wylogowania z powodu wyst\u0105pienia nast\u0119puj\u0105cego b\u0142\u0119du: {0}
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.explanation=Dostawcy nie uda\u0142o si\u0119 pobra\u0107 zestawu zarejestrowanych klient\u00f3w lub \u017c\u0105dania ze znacznika identyfikatora mog\u0105 by\u0107 zniekszta\u0142cone.
-LOGOUT_TOKEN_ERROR_GETTING_CLIENTS_TO_LOG_OUT.useraction=Aby dowiedzie\u0107 si\u0119 wi\u0119cej, zapoznaj si\u0119 z b\u0142\u0119dem uwzgl\u0119dnionym w komunikacie.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS=CWWKS1644E: Dostawca OpenID Connect {0} napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas pobierania klienta {1} w celu zbudowania token\u00f3w wylogowania z kana\u0142u zaplecza: {2}
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.explanation=Klient OAuth nie istnieje lub wyst\u0105pi\u0142 inny b\u0142\u0105d.
+ERROR_RETRIEVING_CLIENT_TO_BUILD_LOGOUT_TOKENS.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d umieszczony w komunikacie.
 
 # NOTE: THE CWWKS1645W MESSAGE IS NOT BEING USED IN THE PRODUCT AS OF 19.0.0.8
 IDT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1645W: Wersja \u015brodowiska Java u\u017cywana przez to \u015brodowisko wykonawcze [{0}] nie jest obs\u0142ugiwana przez t\u0119 funkcj\u0119 SPI mediatora znacznika ID. Obs\u0142ugiwane jest \u015brodowisko Java w wersji 1.7 lub nowsze.
@@ -209,4 +209,32 @@ ID_TOKEN_MISSING_REQUIRED_CLAIMS=CWWKS1647E: Znacznik identyfikatora jest niepop
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.explanation=Specyfikacja OpenID Connect wymaga, aby \u017c\u0105dania wyszczeg\u00f3lnione w komunikacie o b\u0142\u0119dzie znajdowa\u0142y si\u0119 w znaczniku identyfikatora.
 ID_TOKEN_MISSING_REQUIRED_CLAIMS.useraction=Upewnij si\u0119, \u017ce znacznik identyfikatora zawiera wszystkie wymagane \u017c\u0105dania.
 
-# NOTE: Stop at CWWKS1649
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL=CWWKS1648E: \u017b\u0105danie wylogowania kana\u0142u zaplecza wys\u0142ane przez dostawc\u0119 OpenID Connect {0} do {1} z u\u017cyciem tokenu wylogowania z roszczeniami {2} si\u0119 nie powiod\u0142o. Kod statusu odpowiedzi to {3}, tre\u015b\u0107 odpowiedzi to [{4}].
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.explanation=Klient OpenID Connect nie zwr\u00f3ci\u0142 kodu statusu powodzenia dla \u017c\u0105dania wylogowania kana\u0142u zaplecza. Je\u015bli kod statusu ma warto\u015b\u0107 400, \u017c\u0105danie wylogowania nie by\u0142o poprawne. Je\u015bli kod statusu ma warto\u015b\u0107 501, wylogowanie si\u0119 nie powiod\u0142o w kliencie OpenID Connect. Je\u015bli kod statusu ma warto\u015b\u0107 504, lokalne wylogowanie w kliencie OpenID Connect si\u0119 powiod\u0142o, ale niekt\u00f3re kolejne pr\u00f3by wylogowania si\u0119 nie powiod\u0142y.
+BACKCHANNEL_LOGOUT_RESPONSE_NOT_SUCCESSFUL.useraction=Wy\u015blij kolejne \u017c\u0105danie wylogowania, aby ponowi\u0107 pr\u00f3b\u0119 wylogowania si\u0119 z kana\u0142u zaplecza. Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d umieszczony w komunikacie.
+
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION=CWWKS1649E: \u017b\u0105danie wylogowania kana\u0142u zaplecza wys\u0142ane przez dostawc\u0119 OpenID Connect {0} do {1} z u\u017cyciem tokenu wylogowania z roszczeniami {2} napotka\u0142o b\u0142\u0105d: {3}
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.explanation=\u017b\u0105danie wylogowania kana\u0142u zaplecza przekroczy\u0142o limit czasu, zg\u0142osi\u0142o wyj\u0105tek, zosta\u0142o anulowane lub zosta\u0142o przerwane.
+BACKCHANNEL_LOGOUT_REQUEST_EXCEPTION.useraction=Upewnij si\u0119, \u017ce identyfikator URI wylogowania si\u0119 z kana\u0142u zaplecza jest aktywny. Zaktualizuj atrybut konfiguracji backchannelLogoutRequestTimeout dostawcy OpenID Connect, je\u015bli \u017c\u0105danie wylogowania si\u0119 z kana\u0142u zaplecza wymaga wi\u0119cej czasu. Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d umieszczony w komunikacie.
+
+# STOP at CWWKS1649
+
+#
+# NOTE: Start of new NLS prefix block: CWWKS1950 - CWWKS1999
+#
+
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED=CWWKS1950E: Dostawca OpenID Connect {0} napotka\u0142 b\u0142\u0105d podczas wysy\u0142ania \u017c\u0105da\u0144 wylogowania kana\u0142u zaplecza: {1}
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.explanation=\u017b\u0105dania wys\u0142ane do identyfikator\u00f3w URI wylogowania kana\u0142u zaplecza zosta\u0142y przerwane lub wyst\u0105pi\u0142 inny b\u0142\u0105d podczas planowania \u017c\u0105da\u0144 do uruchomienia.
+BACKCHANNEL_LOGOUT_REQUESTS_INVOKE_ALL_FAILED.useraction=Wy\u015blij kolejne \u017c\u0105danie wylogowania, aby ponowi\u0107 pr\u00f3b\u0119 wylogowania si\u0119 z kana\u0142u zaplecza. Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d umieszczony w komunikacie.
+
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST=CWWKS1951E: Dostawca OpenID Connect {0} napotka\u0142 b\u0142\u0105d podczas budowania lub wysy\u0142ania \u017c\u0105dania wylogowania kana\u0142u zaplecza do {1}: {2}
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.explanation=W po\u0142\u0105czeniu HTTP wyst\u0105pi\u0142 b\u0142\u0105d lub po\u0142\u0105czenie si\u0119 nie powiod\u0142o.
+ERROR_BUILDING_OR_SENDING_BACKCHANNEL_LOGOUT_REQUEST.useraction=Wy\u015blij kolejne \u017c\u0105danie wylogowania, aby ponowi\u0107 pr\u00f3b\u0119 wylogowania si\u0119 z kana\u0142u zaplecza. Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d umieszczony w komunikacie.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN=CWWKS1952E: Nie mo\u017cna utworzy\u0107 tokenu wylogowania z kana\u0142u zaplecza opartego na tokenie identyfikatora zapisanym w pami\u0119ci podr\u0119cznej dla klienta {0} z powodu nast\u0119puj\u0105cego b\u0142\u0119du: {1}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas budowania \u0142a\u0144cucha tokenu wylogowania. Alternatywnie wystawca tokenu identyfikatora zapisanego w pami\u0119ci podr\u0119cznej mo\u017ce nie by\u0107 zgodny z tym dostawc\u0105 OpenID Connect, albo w tokenie identyfikatora w pami\u0119ci podr\u0119cznej mo\u017ce brakowa\u0107 niekt\u00f3rych wymaganych roszcze\u0144.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d umieszczony w komunikacie.
+
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Nie mo\u017cna utworzy\u0107 tokenu wylogowania z kana\u0142u zaplecza opartego na tokenie identyfikatora zapisanym w pami\u0119ci podr\u0119cznej z roszczeniami [{0}] dla klienta {1} z powodu wyst\u0105pienia nast\u0119puj\u0105cego b\u0142\u0119du: {2}
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas budowania \u0142a\u0144cucha tokenu wylogowania. Alternatywnie wystawca tokenu identyfikatora zapisanego w pami\u0119ci podr\u0119cznej mo\u017ce nie by\u0107 zgodny z tym dostawc\u0105 OpenID Connect, albo w tokenie identyfikatora w pami\u0119ci podr\u0119cznej mo\u017ce brakowa\u0107 niekt\u00f3rych wymaganych roszcze\u0144.
+ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d umieszczony w komunikacie.

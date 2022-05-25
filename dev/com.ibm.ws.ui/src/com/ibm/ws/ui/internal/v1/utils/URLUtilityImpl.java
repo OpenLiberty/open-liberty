@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,52 +40,6 @@ public class URLUtilityImpl implements URLUtility {
     // This Pattern is used to find the title field in a URL.
     private final static Pattern titlePattern = Pattern.compile("<title>(.*?)</title>");
     private final static Pattern descPattern = Pattern.compile("<meta name=\"[Dd]escription\".*?content=\"(.*?)\"");
-
-    /**
-     * Returns the HTTP status code for a GET on the provided URL.
-     * <p>
-     * If the URL could not be reached, return a 404.
-     * 
-     * @param url The URL to GET
-     * @return The HTTP status code for a GET
-     * @throws RESTException if there was a problem accessing the URL
-     */
-    @FFDCIgnore(IOException.class)
-    private int httpGETStatus(final URL url) throws RESTException {
-        HttpURLConnection conn = null;
-        try {
-            conn = (HttpURLConnection) url.openConnection();
-            // disable https check for now
-            if (conn instanceof HttpsURLConnection)
-            {
-                return HttpURLConnection.HTTP_OK;
-            }
-            return conn.getResponseCode();
-        } catch (IOException e) {
-            if (tc.isEventEnabled()) {
-                Tr.event(tc,
-                         "IOException caught while trying to resolve URL "
-                                         + url.toString()
-                                         + " -- some possible expected cases are: UnknownHostException (the URL host is not resolvable), ConnectException (the connection timed out or was otherwise rejected), SocketException or SSLHandshakeException (the request was over the HTTPS protocol which we don't support)",
-                         e);
-            }
-            // If we hit an IO error, all we know is we couldn't reach it so 404
-            return HTTPConstants.HTTP_NOT_FOUND;
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<String, Object> getStatus(final URL url) throws RESTException {
-        Map<String, Object> payload = new HashMap<String, Object>();
-        payload.put("url", url.toString());
-        payload.put("status", httpGETStatus(url));
-        return payload;
-    }
 
     /**
      * Attempts to close the Closeable object. If an error occurs, ignore it.

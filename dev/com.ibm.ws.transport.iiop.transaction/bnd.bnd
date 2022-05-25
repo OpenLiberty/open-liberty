@@ -18,7 +18,7 @@ bVersion=1.0
 WS-TraceGroup: IIOP
 
 
-Private-Package:   com.ibm.ws.config.xml.internal.nester, \
+Private-Package: \
   com.ibm.ws.transport.iiop.transaction.*
   
 Import-Package: *

@@ -37,6 +37,16 @@ public interface OidcSessionCache {
     public boolean invalidateSession(String sub, String sid);
 
     /**
+     * Invalidate a session in the cache.
+     * The invalidated session still has to be removed by invoking removeSession.
+     * 
+     * @param sub The sub claim.
+     * @param oidcSessionId The id of the oidc session.
+     * @return Whether or not the session was invalidated.
+     */
+    public boolean invalidateSessionBySessionId(String sub, String oidcSessionId);
+
+    /**
      * Invalidate all the sessions belonging to a sub.
      * The invalidated sessions still have to be removed by invoking removeSession on each session.
      *

@@ -34,7 +34,7 @@ import org.junit.rules.ExternalResource;
 
 import com.ibm.websphere.security.auth.callback.WSCallbackHandlerImpl;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
 import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.ApacheDSandKDC;
 import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.utils.LdapKerberosUtils;

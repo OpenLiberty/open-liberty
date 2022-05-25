@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.jbatch.test.BatchAppUtils;
 import com.ibm.ws.jbatch.test.BatchRestUtils;
 import com.ibm.ws.jbatch.test.FatUtils;

@@ -243,9 +243,11 @@ public class InMemoryAuthCache implements AuthCache, FFDCSelfIntrospectable {
      * Purge all entries from the Cache. Semantically, this should
      * behave the same way the the expiration of all entries from
      * the cache.
+     *
+     * @param force Whether to force clearing of the cache.
      */
     @Override
-    public synchronized void clearAllEntries() {
+    public synchronized void clearAllEntries(boolean force) {
         tertiaryTable.putAll(primaryTable);
         tertiaryTable.putAll(secondaryTable);
 

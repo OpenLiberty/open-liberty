@@ -26,3 +26,6 @@ publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
 	jakarta.transaction:jakarta.transaction-api;version=2.0.0
+
+# If building with gradle include the javax.transaction.xa to the generated jar to maintain previous behavior.
+-buildpath.extra: ${if;${driver;gradle};javax.transaction:javax.transaction-api\\;version=1.2}

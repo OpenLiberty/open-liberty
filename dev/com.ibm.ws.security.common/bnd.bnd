@@ -37,7 +37,6 @@ Import-Package: \
     *
  
 Private-Package: \
-    com.ibm.ws.common.internal.encoder.*, \
     com.ibm.ws.security.common.internal.*
 
 -dsannotations: com.ibm.ws.security.common.token.propagation.TokenPropagationHelper
@@ -58,7 +57,6 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \
     com.ibm.websphere.security;version=latest, \
     com.ibm.ws.security;version=latest, \
-    com.ibm.ws.common.encoder;version=latest, \
     com.ibm.ws.crypto.passwordutil;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.webcontainer;version=latest, \

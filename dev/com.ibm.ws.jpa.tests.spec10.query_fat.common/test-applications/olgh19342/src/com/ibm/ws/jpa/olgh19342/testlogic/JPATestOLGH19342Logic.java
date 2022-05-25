@@ -93,8 +93,10 @@ public class JPATestOLGH19342Logic extends AbstractTestLogic {
                             query.setParameter("id", "Key30");
                             query.getSingleResult();
                         } catch (Exception e) {
-                            error.incrementAndGet();
-                            System.out.println(e.getMessage());
+                            // print the stack for the first exception
+                            if (error.incrementAndGet() == 1) {
+                                e.printStackTrace();
+                            }
                         } finally {
                             if (em != null) {
                                 if (jpaResource.getTj().isTransactionActive()) {

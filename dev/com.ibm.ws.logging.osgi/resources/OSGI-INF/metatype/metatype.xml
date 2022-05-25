@@ -86,7 +86,7 @@
         
         <AD name="%stackJoin" description="%stackJoin.desc"
             ibm:variable="com.ibm.ws.logging.stackJoin"
-            id="stackJoin" required="false" type="Boolean" default="false" ibm:beta="true"/>
+            id="stackJoin" required="false" type="Boolean" default="false" />
             
         <AD name="%console.level" description="%console.level.desc" 
             ibm:variable="com.ibm.ws.logging.console.log.level"

@@ -116,8 +116,9 @@ Include-Resource: \
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  org/eclipse/persistence/expressions=${bin}/org/eclipse/persistence/expressions,\
   org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper,\
-  org/eclipse/persistence/descriptors=${bin}/org/eclipse/persistence/descriptors
+  org/eclipse/persistence/platform/database=${bin}/org/eclipse/persistence/platform/database
 
 publish.wlp.jar.suffix: dev/api/third-party
 
@@ -126,7 +127,9 @@ publish.wlp.jar.suffix: dev/api/third-party
 instrument.classesExcludes: \
   org/eclipse/persistence/exceptions/i18n/*.class, \
   org/eclipse/persistence/internal/localization/i18n/*.class, \
-  org/eclipse/persistence/internal/helper/*.class
+  org/eclipse/persistence/expressions/*.class, \
+  org/eclipse/persistence/internal/helper/*.class, \
+  org/eclipse/persistence/platform/database/*.class
 
 -buildpath: \
     com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion};strategy=exact,\

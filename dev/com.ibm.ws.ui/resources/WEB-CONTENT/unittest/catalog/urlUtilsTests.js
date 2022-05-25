@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,49 +35,6 @@
                assert.isTrue(utils.isValidUrl('www.dearabby.com'));
                assert.isTrue(utils.isValidUrl('google.com'));
                assert.isTrue(utils.isValidUrl('123greetings.com'));
-           });
-
-           tdd.test("isValidUrl - negative cases", function() {
-               // Though the following URLs are considered valid by 
-               // RFC 1738, for the UI's purposes, these should not be 
-               // considered valid
-               assert.isFalse(utils.isValidUrl('file:///c:/wendy/notvalid/hello.json'));
-               assert.isFalse(utils.isValidUrl('mailto:wendydarlingtx@yahoo.com'));
-
-               // This is just a bad URL
-               assert.isFalse(utils.isValidUrl('//yahoo.com'));
-           });
-
-           tdd.test("isUrlAccessible - reachable", function() {
-               var dfd = this.async(1000);
-
-               utils.isUrlAccessible('http://ibm.com').then(dfd.callback(function(isValid) {
-                     assert.isTrue(isValid, "The URL was not considered to be valid (non 200 response in the API response)");
-               }), function(err) {
-                   dfd.reject(err);
-               });
-
-               server.respondWith("GET", "/ibm/api/adminCenter/v1/utils/url/getStatus?url=http://ibm.com",
-                       [200, { "Content-Type": "application/json" },'{"status":200,"url":"http://ibm.com"}']);
-               server.respond();
-
-               return dfd;
-           });
-
-           tdd.test("isUrlAccessible - unreachable", function() {
-               var dfd = this.async(1000);
-
-               utils.isUrlAccessible('http://doesntExist.com').then(dfd.callback(function(isValid) {
-                     assert.isFalse(isValid, "The URL was considered to be valid (200 response in the API response)");
-               }), function(err) {
-                   dfd.reject(err);
-               });
-
-               server.respondWith("GET", "/ibm/api/adminCenter/v1/utils/url/getStatus?url=http://doesntExist.com",
-                       [200, { "Content-Type": "application/json" },'{"status":404,"url":"http://doesntExist.com"}']);
-               server.respond();
-
-               return dfd;
            });
            
            tdd.test("analyzeURL - returns Deferred", function() {

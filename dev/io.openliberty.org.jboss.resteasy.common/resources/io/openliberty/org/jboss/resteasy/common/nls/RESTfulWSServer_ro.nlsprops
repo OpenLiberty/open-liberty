@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -38,6 +38,8 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+#RANGE 1300 - 1399 
+#Message range shared with io.openliberty.org.jboss.resteasy.server
 #
 #   Strings in this file which contain replacement variables are processed by the MessageFormat
 #   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
@@ -52,18 +54,6 @@
 #
 #-------------------------------------------------------------------------------
 
-MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: Mai multe servleturi REST sunt definite pentru modulul web, {0}. Doar niciunul sau un servlet REST este permis per modul web.
-MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=Doar un servlet REST este permis s\u0103 fie definit per modul web. Un servlet REST este orice servlet care folose\u015fte unul din urm\u0103toarele nume de clase: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteamsy.plugins.server.servlet.HttpServletDispatcher sau org.jboss.resteamsy.plugins.server.servlet.HttpServlet30Dispatcher. Acest mesaj indic\u0103 faptul c\u0103 mai mult de un servlet este specificat fie \u00een web.xml, fie configurat dinamic. 
-MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Examina\u0163i web.xml pentru aceste servleturi \u015fi \u00eenl\u0103tura\u0163i toate servleturile, sau toate \u00een afar\u0103 de unul.
-
-MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Mai multe map\u0103ri de servlet REST sunt definite pentru modulul web, {0}. Un servlet REST poate fi asociat doar cu o singur\u0103 mapare e cale.
-MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=Un servlet REST este permis s\u0103 fie configurat doar cu o mapare de cale sau cu niciuna. Un servlet REST este orice servlet care folose\u015fte unul din urm\u0103toarele nume de clase: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteamsy.plugins.server.servlet.HttpServletDispatcher sau org.jboss.resteamsy.plugins.server.servlet.HttpServlet30Dispatcher. Acest mesaj indic\u0103 faptul c\u0103 mai mult de o mapare este asociat\u0103 cu un servlet REST \u00een web.xml. 
-MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Examina\u0163i web.xml pentru map\u0103rile de servlet care sunt asociate cu servletul REST \u015fi \u00eenl\u0103tura\u0163i-le pe toate sau toate mai pu\u0163in una.
-
-INVALID_LONG_PROPERTY_CWWKW1302W=CWWKW1302W: Proprietatea de client {0} trebuie s\u0103 fie un \u00eentreg lung, dar a fost configurat\u0103 incorect cu {1}. Aceast\u0103 setare va fi ignorat\u0103.
-INVALID_LONG_PROPERTY_CWWKW1302W.explanation=Propriet\u0103\u0163ile de client, cum ar fi set\u0103rile de timeout, trebuie s\u0103 fie configurate ca un \u00eentreg lung pozitiv sau un \u015fir care poate fi convertit la un \u00eentreg lung. Acest mesaj indic\u0103 faptul c\u0103 o proprietate de client a fost configurat\u0103 cu o valoare invalid\u0103. Aceast\u0103 proprietate va fi ignorat\u0103.
-INVALID_LONG_PROPERTY_CWWKW1302W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi configura\u0163ia serverului pentru a determina unde a fost setat\u0103 incorect aceast\u0103 proprietate \u015fi apoi fie \u00eenl\u0103tura\u0163i proprietatea, fie o modifica\u0163i la o valoare valid\u0103, de tip \u00eentreg lung.
-
 INVALID_INT_PROPERTY_CWWKW1303W=CWWKW1303W: Proprietatea de client {0} trebuie s\u0103 fie un \u00eentreg, dar a fost configurat\u0103 incorect, cu {1}. Aceast\u0103 setare va fi ignorat\u0103.
 INVALID_INT_PROPERTY_CWWKW1303W.explanation=Propriet\u0103\u0163ile de client, cum ar fi set\u0103rile portului proxy, trebuie s\u0103 fie configurate ca un \u00eentreg pozitiv sau un \u015fir care poate fi convertit la un \u00eentreg. Acest mesaj indic\u0103 faptul c\u0103 o proprietate de client a fost configurat\u0103 cu o valoare invalid\u0103. Aceast\u0103 proprietate va fi ignorat\u0103.
 INVALID_INT_PROPERTY_CWWKW1303W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi configura\u0163ia serverului pentru a determina unde a fost setat\u0103 incorect aceast\u0103 proprietate \u015fi apoi fie \u00eenl\u0103tura\u0163i proprietatea, fie o modifica\u0163i la o valoare valid\u0103, de tip \u00eentreg.
@@ -76,8 +66,30 @@ INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: Serverul ignor\u0103 furnizorul {0}, deo
 INVALID_PROVIDER_CWWKW1305W.explanation=Clasa de furnizor specificat\u0103 probabil c\u0103 nu con\u0163ine un constructor public valid sau nu implementeaz\u0103 o interfa\u0163\u0103 de furnizor REST Jakarta. Cerin\u0163ele pentru implementarea unui furnizor valid sunt prezentate \u00een sec\u0163iunea a 4-a din specifica\u0163ia Jakarta RESTful Web Services.
 INVALID_PROVIDER_CWWKW1305W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi asigura\u0163i-v\u0103 c\u0103 furnizorul specificat implementeaz\u0103 corect interfa\u0163a de furnizor \u015fi con\u0163ine un constructor public valid, conform cerin\u0163elor specifica\u0163iei.
 
+INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: Proprietatea de client {0} trebuie s\u0103 fie un \u00eentreg lung, dar a fost configurat\u0103 incorect cu {1}. Aceast\u0103 setare este ignorat\u0103.
+INVALID_LONG_PROPERTY_CWWKW1306W.explanation=Propriet\u0103\u0163ile de client, cum ar fi set\u0103rile de timeout, trebuie s\u0103 fie configurate ca un \u00eentreg lung pozitiv sau un \u015fir care poate fi convertit la un \u00eentreg lung. Acest mesaj indic\u0103 faptul c\u0103 o proprietate de client a fost configurat\u0103 cu o valoare invalid\u0103. Ca urmare, aceast\u0103 proprietate este ignorat\u0103.
+INVALID_LONG_PROPERTY_CWWKW1306W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi configura\u0163ia serverului pentru a determina unde a fost setat\u0103 incorect aceast\u0103 proprietate \u015fi apoi fie \u00eenl\u0103tura\u0163i proprietatea, fie o modifica\u0163i la o valoare valid\u0103, de tip \u00eentreg lung.
 
-# Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+# Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
+
+warn.invalid.authorization.token.type=CWWKW0061W: Tipul de jeton de autorizare {0} specificat \u00een configura\u0163ia de server este invalid \u015fi va fi ignorat.
+warn.invalid.authorization.token.type.explanation=Tipul de jeton de autorizare specificat \u00een configura\u0163ia de server este invalid.
+warn.invalid.authorization.token.type.useraction=Specifica\u0163i un tip de jeton de autorizare valid.
+
+# Same messages as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a utiliza API-ul SAML PropagationHelper. Excep\u0163ia a fost: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=A ap\u0103rut o excep\u0163ie la invocarea API-ului PropagationHelper pentru a extrage jetonul SAML din subiect.
+failed_to_extract_saml_token_from_subject.useraction=Asigura\u0163i-v\u0103 c\u0103 server.xml are caracteristica samlWeb-2.0 specificat\u0103. De asemenea, verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare despre excep\u0163ie. 
+
+failed_run_as_subject=CWWKW0706E: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine RunAsSubject. Excep\u0163ia a fost: [{0}].
+failed_run_as_subject.explanation=A survenit o excep\u0163ie la ob\u0163inerea RunAsSubject.
+failed_run_as_subject.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul este configurat \u015fi porne\u015fte corespunz\u0103tor.
+
 warn_missing_mpjwt_token=CWWKW0707W: Atributul [{0}] din configura\u0163ia [{1}] este setat la [{2}], JWT-ul (JSON Web Token) MicroProfile nu este disponibil. Cererea nu con\u0163ine un antet de autorizare cu jetonul.
 warn_missing_mpjwt_token.explanation=Runtime-ul a e\u015fuat s\u0103 g\u0103seasc\u0103 JWT-ul MicroProfile \u00een subiectul runAs. Aceast\u0103 eroare de obicei indic\u0103 o problem\u0103 cu autentificarea. Asigura\u0163i-v\u0103 c\u0103 nu au ap\u0103rut erori \u00een timp ce caracteristica MicroProfile JWT autentic\u0103 un utilizator.
 warn_missing_mpjwt_token.useraction=Verifica\u0163i ac\u0163iunea utilizatorului pentru orice erori anterioare pe care le-a jurnalizat serverul.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: Serviciul de propagare MicroProfile JWT nu este disponibil. Runtime-ul nu poate accesa jetonul pentru a-l include \u00een antetul de autorizare.
+warn_mpjwt_prop_service_notavail.explanation=Serviciul de propagare MicroProfile JWT necesit\u0103 caracteristica mpJwt-1.0. 
+warn_mpjwt_prop_service_notavail.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul ruleaz\u0103 cu caracteristica cerut\u0103.
