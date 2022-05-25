@@ -23,7 +23,7 @@ WS-TraceGroup: JCDI
 -buildpath: \
 	io.openliberty.org.jboss.weld5;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
-	io.openliberty.jakarta.expressionLanguage.4.0;version=latest,\
+	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest
