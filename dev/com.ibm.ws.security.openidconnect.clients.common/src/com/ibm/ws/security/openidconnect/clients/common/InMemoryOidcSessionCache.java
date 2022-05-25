@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -72,6 +72,24 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
         httpSessionsStore.removeSession(sid);
 
         return invalidatedSessions.add(sessionToInvalidate);
+    }
+
+    @Override
+    public boolean invalidateSessionBySessionId(String sub, String oidcSessionId) {
+        if (sub == null || sub.isEmpty()) {
+            return false;
+        }
+
+        OidcSessionsStore httpSessionsStore = subToOidcSessionsMap.get(sub);
+        if (httpSessionsStore == null) {
+            return false;
+        }
+
+        if (!httpSessionsStore.removeSessionBySessionId(oidcSessionId)) {
+            return false;
+        }
+
+        return invalidatedSessions.add(oidcSessionId);
     }
 
     @Override
@@ -145,6 +163,22 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
             if (sid != null && !sid.isEmpty()) {
                 List<String> removedSession = sidToSessionsMap.remove(sid);
                 return removedSession != null;
+            }
+            return false;
+        }
+
+        public boolean removeSessionBySessionId(String oidcSessionId) {
+            for (String key : sidToSessionsMap.keySet()) {
+                List<String> oidcSessionIds = sidToSessionsMap.get(key);
+                for (int i = 0; i < oidcSessionIds.size(); i++) {
+                    if (oidcSessionIds.get(i).equals(oidcSessionId)) {
+                        oidcSessionIds.remove(i);
+                        if (oidcSessionIds.size() == 0) {
+                            sidToSessionsMap.remove(key);
+                        }
+                        return true;
+                    }
+                }
             }
             return false;
         }
