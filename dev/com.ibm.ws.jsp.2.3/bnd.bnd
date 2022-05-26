@@ -54,7 +54,7 @@ Import-Package: \
    javax.servlet.jsp.jstl*;version=1.2, \
    javax.servlet.jsp.resources;version=2.3, \
    javax.servlet.jsp.tagext;version=2.3, \
-   com.ibm.websphere.servlet.*;version="0", \
+   com.ibm.websphere.servlet.*;version=!, \
    com.ibm.wsspi.webcontainer.osgi.*;version=1.0, \
    com.ibm.wsspi.webcontainer, \
    com.ibm.wsspi.webcontainer.*, \
