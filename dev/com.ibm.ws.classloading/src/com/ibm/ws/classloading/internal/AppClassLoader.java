@@ -394,15 +394,15 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     }
 
     private Class<?> definePackageAndClass(final String name, String resourceName, final ByteResourceInformation byteResourceInformation, byte[] bytes) throws ClassFormatError {
-        URL resourceURL = byteResourceInformation.getResourceUrl();
         // Now define a package for this class if it has one
         int lastDotIndex = name.lastIndexOf('.');
         String packageName = DEFAULT_PACKAGE;
         if (lastDotIndex != -1) {
             packageName = name.substring(0, lastDotIndex);
-            definePackage(byteResourceInformation, resourceURL, packageName);
+            definePackage(byteResourceInformation, packageName);
         }
 
+        URL resourceURL = byteResourceInformation.getResourceUrl();
         ProtectionDomain pd = getClassSpecificProtectionDomain(resourceName, resourceURL);
 
         final ProtectionDomain fpd = pd;
@@ -512,8 +512,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      * @param byteResourceInformation The information about the class file
      * @param packageName The name of the package to create
      */
-    @FFDCIgnore(value = { IllegalArgumentException.class })
-    private void definePackage(ByteResourceInformation byteResourceInformation, URL resourceURL, String packageName) {
+    private void definePackage(ByteResourceInformation byteResourceInformation, String packageName) {
 
         // Using packagesDefined instead of getPackage since getPackage has a lot of path length
         // and in the race condition we avoid all the Manifest length.
@@ -521,20 +520,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             synchronized (getClassLoadingLock(packageName)) {
                 // have to check again
                 if (!packagesDefined.contains(packageName)) {
-                    // If the package is in a JAR then we can load the JAR manifest to see what package definitions it's got
-                    Manifest manifest = byteResourceInformation.getManifest();
-
-                    try {
-                        // The URLClassLoader.definePackage() will NPE with a null manifest so use the other definePackage if we don't have a manifest
-                        if (manifest == null) {
-                            definePackage(packageName, null, null, null, null, null, null, null);
-                        } else {
-                            definePackage(packageName, manifest, resourceURL);
-                        }
-                    } catch (IllegalArgumentException e) {
-                        // Ignore, this happens if the package is already defined but it is hard to guard against this in a thread safe way. See:
-                        // http://bugs.sun.com/view_bug.do?bug_id=4841786
-                    }
+                    byteResourceInformation.definePackage(packageName, this);
                     packagesDefined.add(packageName);
                 }
             }
