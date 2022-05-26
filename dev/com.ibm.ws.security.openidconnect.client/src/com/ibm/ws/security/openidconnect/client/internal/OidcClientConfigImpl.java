@@ -1784,6 +1784,12 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     /** {@inheritDoc} */
     @Override
+    public boolean isInboundPropagationEnabled() {
+        return !inboundPropagation.equalsIgnoreCase(ClientConstants.PROPAGATION_NONE);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isOidcclientRequestParameterSupported() {
         return oidcclientRequestParameterSupported;
     }

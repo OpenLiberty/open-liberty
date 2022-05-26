@@ -608,7 +608,19 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
      * @param reqProviderHint
      * @return
      */
-    protected String getProviderConfig(Iterator<OidcClientConfig> oidcClientConfigs,
+    protected String getProviderConfig(Iterator<OidcClientConfig> oidcClientConfigs, String reqProviderHint, HttpServletRequest req) {
+        String provider = null;
+
+        if (!ProductInfo.getBetaEdition()) {
+            provider = getProviderConfigCurrent(oidcClientConfigs, reqProviderHint, req);
+        } else {
+            provider = getProviderConfigBeta(reqProviderHint, req);
+        }
+
+        return provider;
+    }
+
+    protected String getProviderConfigCurrent(Iterator<OidcClientConfig> oidcClientConfigs,
             String reqProviderHint,
             HttpServletRequest req) {
         while (oidcClientConfigs.hasNext()) {
@@ -636,26 +648,146 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         return null;
     }
 
-    /**
-     * @param oidcClientConfig
-     * @param provider
-     * @return
-     */
-    String authFilter(OidcClientConfig oidcClientConfig, HttpServletRequest req,
-            String provider) {
-        // handle filter if any
+    protected String getProviderConfigBeta(String reqProviderHint, HttpServletRequest req) {
+        String provider = null;
+
+        if (reqProviderHint != null) {
+            provider = selectByRequestProviderHint(req, reqProviderHint);
+        } else {
+            provider = selectByAuthFilter(req);
+
+            if (provider == null) {
+                provider = selectByIssuer(req);
+            }
+
+            if (provider == null) {
+                provider = selectNonFiltered(req);
+            }
+        }
+
+        return provider;
+    }
+
+    private String selectByRequestProviderHint(HttpServletRequest req, String reqProviderHint) {
+        Iterator<OidcClientConfig> oidcClientConfigs = oidcClientConfigRef.getServices();
+
+        while (oidcClientConfigs.hasNext()) {
+            OidcClientConfig oidcClientConfig = oidcClientConfigs.next();
+
+            if (oidcClientConfig.isValidConfig()) {
+                String provider = oidcClientConfig.getId();
+
+                // This is undocumented scenario. It allows servlet filter to select an RP instance for SSO
+                if (reqProviderHint.equalsIgnoreCase(provider) && authFilter(oidcClientConfig, req, provider) != null) {
+                    return provider;
+                }
+                String issuerIdentifier = oidcClientConfig.getIssuerIdentifier();
+                if (reqProviderHint.equals(issuerIdentifier) && authFilter(oidcClientConfig, req, provider) != null) {
+                    return provider;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    String authFilter(OidcClientConfig oidcClientConfig, HttpServletRequest req, String provider) {
         String authFilterId = oidcClientConfig.getAuthFilterId();
+
         if (authFilterId != null && authFilterId.length() > 0) {
             AuthenticationFilter authFilter = authFilterServiceRef.getService(authFilterId);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "authFilter id:" + authFilterId + " authFilter:" + authFilter);
             }
-            if (authFilter != null) {
-                if (!authFilter.isAccepted(req))
-                    return null;
+            if (authFilter != null && !authFilter.isAccepted(req)) {
+                return null;
             }
         }
+
         return provider;
+    }
+
+    private String selectByAuthFilter(HttpServletRequest req) {
+        Iterator<OidcClientConfig> oidcClientConfigs = oidcClientConfigRef.getServices();
+
+        while (oidcClientConfigs.hasNext()) {
+            OidcClientConfig oidcClientConfig = oidcClientConfigs.next();
+
+            if (oidcClientConfig.isValidConfig()) {
+                String provider = oidcClientConfig.getId();
+                if (isConfigUsableByAuthFilter(oidcClientConfig, req)) {
+                    return provider;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private String selectByIssuer(HttpServletRequest req) {
+        Iterator<OidcClientConfig> oidcClientConfigs = oidcClientConfigRef.getServices();
+        // There is no accessTokenAuthenticator unless authenticator objects are initialized during authenticate.
+        // Use a lighter instance of AccessTokenAuthenticator until it is initialized.
+        AccessTokenAuthenticator tempAccessTokenAuthenticator = accessTokenAuthenticator != null ? accessTokenAuthenticator : new AccessTokenAuthenticator();
+
+        while (oidcClientConfigs.hasNext()) {
+            OidcClientConfig oidcClientConfig = oidcClientConfigs.next();
+
+            if (oidcClientConfig.isValidConfig()) {
+                String provider = oidcClientConfig.getId();
+                if (tempAccessTokenAuthenticator.canUseIssuerAsSelectorForInboundPropagation(req, oidcClientConfig)) {
+                    return provider;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /*
+     * Select config without an authFilerRef or with an authFilterRef with no corresponding authFilter.
+     */
+    private String selectNonFiltered(HttpServletRequest req) {
+        Iterator<OidcClientConfig> oidcClientConfigs = oidcClientConfigRef.getServices();
+
+        while (oidcClientConfigs.hasNext()) {
+            OidcClientConfig oidcClientConfig = oidcClientConfigs.next();
+
+            if (oidcClientConfig.isValidConfig()) {
+                String provider = oidcClientConfig.getId();
+
+                String authFilterId = oidcClientConfig.getAuthFilterId();
+
+                if (authFilterId != null && authFilterId.length() > 0) {
+                    AuthenticationFilter authFilter = authFilterServiceRef.getService(authFilterId);
+                    if (authFilter == null) {
+                        return provider;
+                    }
+                } else {
+                    return provider;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private boolean isConfigUsableByAuthFilter(OidcClientConfig oidcClientConfig, HttpServletRequest req) {
+        boolean result = false;
+        String authFilterId = oidcClientConfig.getAuthFilterId();
+
+        if (authFilterId != null && authFilterId.length() > 0) {
+            AuthenticationFilter authFilter = authFilterServiceRef.getService(authFilterId);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "authFilter id:" + authFilterId + " authFilter:" + authFilter);
+            }
+
+            if (authFilter != null && authFilter.isAccepted(req)) {
+                result = true;
+            }
+        }
+
+        return result;
     }
 
     /** {@inheritDoc} */

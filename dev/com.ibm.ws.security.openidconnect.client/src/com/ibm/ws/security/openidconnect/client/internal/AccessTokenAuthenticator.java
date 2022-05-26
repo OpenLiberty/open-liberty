@@ -227,10 +227,6 @@ public class AccessTokenAuthenticator {
         return OidcClientAuthenticator.fixSubject(oidcResult);
     }
 
-    /**
-     * @param req
-     * @return
-     */
     private String getAccessTokenFromReqAsAttribute(HttpServletRequest req) {
         String token = null;
         if (req.getAttribute(OidcClient.OIDC_ACCESS_TOKEN) != null) {
@@ -675,8 +671,7 @@ public class AccessTokenAuthenticator {
      * @param issuer
      * @return
      */
-    boolean notContains(String issuers, String issuer) { // issuer and issuers
-                                                         // are not null
+    boolean notContains(String issuers, String issuer) { // issuer and issuers are not null
         if (issuers.equals(issuer)) {
             return false;
         }
@@ -1013,6 +1008,59 @@ public class AccessTokenAuthenticator {
     @Trivial
     private static boolean isBearerToken(String hdrValue) {
         return hdrValue != null && hdrValue.startsWith(BEARER_SCHEME);
+    }
+
+    public boolean canUseIssuerAsSelectorForInboundPropagation(HttpServletRequest req, OidcClientConfig clientConfig) {
+        boolean result = false;
+
+        // If inbound propagation is not enabled or "disableIssChecking" is set, return false
+        if (!clientConfig.isInboundPropagationEnabled() || clientConfig.disableIssChecking()) {
+            return false;
+        }
+
+        String issuer = getIssuer(req, clientConfig);
+        if (issuer != null) {
+            String issuers = null;
+            if (issuer.isEmpty()
+                    || ((issuers = getIssuerIdentifier(clientConfig)) == null)
+                    || notContains(issuers, issuer)) {
+            } else {
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+    @FFDCIgnore({ IOException.class })
+    @Trivial
+    private String getIssuer(HttpServletRequest req, OidcClientConfig clientConfig) {
+        String issuer = null;
+        String accessToken = getAccessToken(req, clientConfig);
+
+        if (accessToken != null && isTokenJWT(accessToken)) {
+            try {
+                JSONObject payload = JSONObject.parse(JsonTokenUtil.fromBase64ToJsonString(accessToken.split("\\.")[1]));
+                issuer = (String) payload.get("iss");
+            } catch (IOException e) {
+            }
+        }
+
+        return issuer;
+    }
+
+    private String getAccessToken(HttpServletRequest req, OidcClientConfig clientConfig) {
+        String accessToken = null;
+
+        if (clientConfig.getAccessTokenInLtpaCookie()) {
+            accessToken = getAccessTokenFromReqAsAttribute(req);
+        }
+
+        if (accessToken == null) {
+            accessToken = getBearerAccessTokenToken(req, clientConfig);
+        }
+
+        return accessToken;
     }
 
     // do not show the error in messages.log yet. Since this will fall down to
