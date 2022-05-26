@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,20 @@
 
 package com.ibm.ws.jpa.tests.jpaconfig;
 
-import componenttest.rules.repeater.RepeatTestAction;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
-/**
- *
- */
-public class RepeatWithJPA22Hibernate implements RepeatTestAction {
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+
+public class RepeatWithJPA22Hibernate extends EE8FeatureReplacementAction {
     public static final String ID = "JPA22_HIBERNATE";
 
-    @Override
-    public boolean isEnabled() {
-        return true;
+    /**
+     * Restrict Hibernate tests to run on FULL mode
+     */
+    public RepeatWithJPA22Hibernate() {
+        // Used in componenttest.rules.repeater.RepeatTestAction.isEnabled() to determine if the test should run
+        withTestMode(TestMode.FULL);
     }
 
     @Override
@@ -32,6 +35,7 @@ public class RepeatWithJPA22Hibernate implements RepeatTestAction {
     @Override
     public void setup() throws Exception {
         FATSuite.repeatPhase = "hibernate22-cfg.xml";
+        FATSuite.provider = JPAPersistenceProvider.DEFAULT;
     }
 
     @Override
