@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -10,14 +10,14 @@
 #*******************************************************************************
 
 -connection-settings: \
-  ${if;${artifactory.download.token};server;-dummy}; \
-    id       = https://${artifactory.download.server}; \
-    username = ${artifactory.download.user}; \
-    password = ${artifactory.download.token}, \
-  ${if;${artifactory.upload.token};server;-dummy}; \
-    id       = https://${artifactory.upload.server}; \
-    username = ${artifactory.upload.user}; \
-    password = ${artifactory.upload.token}, \
+  ${if;${isempty;${def;artifactory.download.token}};-dummy;server}; \
+    id       = https://${def;artifactory.download.server}; \
+    username = ${def;artifactory.download.user}; \
+    password = ${def;artifactory.download.token}, \
+  ${if;${isempty;${def;artifactory.upload.token}};-dummy;server}; \
+    id       = https://${def;artifactory.upload.server}; \
+    username = ${def;artifactory.upload.user}; \
+    password = ${def;artifactory.upload.token}, \
   -bnd
 
 -plugin.1.Local: \
