@@ -37,6 +37,6 @@ public class FATSuite extends AbstractFATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .with(new RepeatWithJPA30())
-                    .with(new RepeatWithJPA30Hibernate());
+                    .andWith(new RepeatWithJPA30Hibernate());
 
 }
