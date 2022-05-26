@@ -9,7 +9,7 @@ singleton=true
   com.ibm.websphere.appserver.eeCompatible-8.0; ibm.tolerates:="6.0,7.0"
 #  com.ibm.websphere.appserver.javax.cdi-1.0; ibm.tolerates:="1.2,2.0"
 -bundles=\
-  com.ibm.websphere.javaee.jcache.1.1
+  com.ibm.websphere.javaee.jcache.1.1.core
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

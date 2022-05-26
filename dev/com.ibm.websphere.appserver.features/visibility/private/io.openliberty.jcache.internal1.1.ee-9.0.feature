@@ -8,7 +8,7 @@ singleton=true
   com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0"
 #  io.openliberty.jakarta.cdi-3.0; ibm.tolerates:="4.0"
 -bundles=\
-  com.ibm.websphere.javaee.jcache.1.1.jakarta
+  com.ibm.websphere.javaee.jcache.1.1.core.jakarta
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
