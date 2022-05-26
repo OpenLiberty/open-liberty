@@ -11,19 +11,21 @@
 
 package com.ibm.ws.jpa.tests.spec10.entity;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.RepeatTestAction;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
-/**
- *
- */
-public class RepeatWithJPA31 extends JakartaEE10Action implements RepeatTestAction {
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
+
+public class RepeatWithJPA31 extends JakartaEE10Action {
     public static final String ID = "JPA31";
 
-//     @Override
-//     public boolean isEnabled() {
-//         return true;
-//     }
+    /**
+     * Allow the default repeat action to run on LITE mode
+     */
+    public RepeatWithJPA31() {
+        // Used in componenttest.rules.repeater.RepeatTestAction.isEnabled() to determine if the test should run
+        withTestMode(TestMode.LITE);
+    }
 
     @Override
     public String toString() {
@@ -34,5 +36,6 @@ public class RepeatWithJPA31 extends JakartaEE10Action implements RepeatTestActi
     public void setup() throws Exception {
         super.setup();
         FATSuite.repeatPhase = "jpa31-cfg.xml";
+        FATSuite.provider = JPAPersistenceProvider.DEFAULT;
     }
 }
