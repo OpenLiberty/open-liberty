@@ -170,14 +170,14 @@ define(['intern!tdd', 'intern/chai!assert', 'dojo/hash', 'js/toolbox/toolHash'],
            });
            
            /** These case should never happen, but check just in case! */
-           tdd.test('ToolHash.hasChanged() - sanity checks', function() {
+           tdd.test('ToolHash.hasChanged() - checks', function() {
              assert.isFalse(toolHash.hasChanged('', ''));
              assert.isFalse(toolHash.hasChanged('tool1', 'tool1'));
              assert.isFalse(toolHash.hasChanged('tool1/a', 'tool1/a'));
            });
            
-           /** A few sanity checks to quickly check the getName function */
-           tdd.test('ToolHash.getName() - sanity checks', function() {
+           /** A few tests to quickly check the getName function */
+           tdd.test('ToolHash.getName() - checks', function() {
              assert.equal(toolHash.getName(), '');
              assert.equal(toolHash.getName(''), '');
              assert.equal(toolHash.getName('name-version'), 'name');

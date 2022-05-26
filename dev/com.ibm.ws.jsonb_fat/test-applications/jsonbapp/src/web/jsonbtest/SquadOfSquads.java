@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Application class that can be marshalled/unmarshalled to/from JSON.
  */
-public class Tribe {
+public class SquadOfSquads {
     public String name;
     public List<Squad> squads = new ArrayList<Squad>();
 

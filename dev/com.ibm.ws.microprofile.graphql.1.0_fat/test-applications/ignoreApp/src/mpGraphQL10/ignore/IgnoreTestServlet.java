@@ -87,13 +87,13 @@ public class IgnoreTestServlet extends FATServlet {
         String snippet = schema.substring(index, schema.indexOf("}", index + 1));
         
         // check output types for @Ignore fields
-        assertTrue(snippet.contains("length")); // sanity check expected field is there
+        assertTrue(snippet.contains("length")); // test expected field is there
         assertFalse(snippet.contains("dimensions"));
         assertFalse(snippet.contains("weight"));
         assertTrue(snippet.contains("quantity")); // only ignored on input types
         
         // check output types for @JsonbTransient fields
-        assertTrue(snippet.contains("length2")); // sanity check expected field is there
+        assertTrue(snippet.contains("length2")); // test expected field is there
         assertFalse(snippet.contains("dimensions2"));
         assertFalse(snippet.contains("weight2"));
         assertTrue(snippet.contains("quantity2")); // only ignored on input types
@@ -102,13 +102,13 @@ public class IgnoreTestServlet extends FATServlet {
         index = schema.indexOf("input WidgetInput ");
         snippet = schema.substring(index, schema.indexOf("}", index + 1));
         // check input types for @Ignore fields
-        assertTrue(snippet.contains("length")); // sanity check expected field is there
+        assertTrue(snippet.contains("length")); // test expected field is there
         assertFalse(snippet.contains("dimensions"));
         assertFalse(snippet.contains("quantity"));
         assertTrue(snippet.contains("weight")); // only ignored on output types
 
         // check input types for @JsonbTransient fields
-        assertTrue(snippet.contains("length2")); // sanity check expected field is there
+        assertTrue(snippet.contains("length2")); // test expected field is there
         assertFalse(snippet.contains("dimensions2"));
         assertFalse(snippet.contains("quantity2"));
         assertTrue(snippet.contains("weight2")); // only ignored on output types

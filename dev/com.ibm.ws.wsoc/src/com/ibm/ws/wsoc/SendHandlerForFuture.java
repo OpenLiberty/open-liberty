@@ -34,7 +34,7 @@ public class SendHandlerForFuture implements SendHandler {
     public void onResult(SendResult result) {
 
         if (future == null) {
-            // sanity check, should never get here, if so trace and return
+            // should never get here, if so trace and return
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "returning because we have no futurenot in right state to cancel");
             }

@@ -179,7 +179,7 @@ public abstract class AbstractRemoteSupport
       {
         // NOTE: since this destination is PtoP it should NOT be
         // possible to end up recovering an aistream used for durable.
-        // Still, bugs happen, so here's a sanity check
+        // Still, bugs happen, so here's a validation
         if (aiTempItemStream.getDurablePseudoDestID() != null)
         {
           if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 

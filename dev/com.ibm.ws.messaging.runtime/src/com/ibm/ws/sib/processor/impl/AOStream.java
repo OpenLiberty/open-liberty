@@ -2163,7 +2163,7 @@ public final class AOStream extends ControllableStream implements BatchedTimeout
         {
           changeUnknownToCompleted(0, tick);
           firstUnknownTick = tick + 1; // as tick >= 0, firstUnknownTick > 0
-          // for sanity, make sure that the highestGeneratedTick makes sense
+          // make sure that the highestGeneratedTick makes sense
           if (tick < initHighestValueTick)
           {
             // log serious error

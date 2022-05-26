@@ -65,7 +65,7 @@ public class MPCompatibleTest {
     }
 
     /**
-     * Just microProfile-4.0 ... Should always pass, a sanity check
+     * Just microProfile-4.0 ... Should always pass, a test
      *
      * @throws Exception
      */

@@ -196,18 +196,18 @@ public class JSPCache implements com.ibm.ws.cache.intf.JSPCache {
 	public com.ibm.websphere.cache.CacheEntry getEntry(EntryInfo entryInfo) {
 
 		com.ibm.websphere.cache.CacheEntry ce = cache.getEntry(entryInfo);
-		sanityCheck(entryInfo, ce);
+		validationCheck(entryInfo, ce);
 		return ce;
 	}
 
 	public com.ibm.websphere.cache.CacheEntry getEntry(EntryInfo ei, boolean ignoreCounting) {
 		
 	   com.ibm.websphere.cache.CacheEntry ce = cache.getEntry(ei, true, ignoreCounting);
-	   sanityCheck(ei, ce); 	
+	   validationCheck(ei, ce); 	
        return ce;      		
 	}
 
-	private void sanityCheck(EntryInfo entryInfo, com.ibm.websphere.cache.CacheEntry ce) {
+	private void validationCheck(EntryInfo entryInfo, com.ibm.websphere.cache.CacheEntry ce) {
 		if(ce != null){
 		    if(ce.getId() == null){
 		        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())

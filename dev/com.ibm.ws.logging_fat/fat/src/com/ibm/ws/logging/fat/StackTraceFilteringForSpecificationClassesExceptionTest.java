@@ -65,7 +65,7 @@ public class StackTraceFilteringForSpecificationClassesExceptionTest extends Abs
         // if the message doesn't include the id 'SRVE.*E' or misspells it, as our current messages do
         int errorCount = server.findStringsInFileInLibertyServerRoot("ERROR.*SRVE.*E", CONSOLE_LOG).size();
         int causedByCount = server.findStringsInFileInLibertyServerRoot("Caused by", CONSOLE_LOG).size();
-        // Sanity check - we got an [ERROR], right?
+        // Test - we got an [ERROR], right?
         assertConsoleLogContains("The console log should have [ERROR] prefix in it", "ERROR");
 
         assertConsoleLogCountEquals("The console stack should only have one [internal classes] in it per stack trace.",

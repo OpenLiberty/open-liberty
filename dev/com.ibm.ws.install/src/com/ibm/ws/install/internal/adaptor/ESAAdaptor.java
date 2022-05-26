@@ -740,7 +740,7 @@ public class ESAAdaptor extends ArchiveAdaptor {
                     location = location.substring(0, index);
                 }
 
-                // Do a sanity test that we have the right JAR, can't do this with bundles as they are always
+                // Do a test that we have the right JAR, can't do this with bundles as they are always
                 // in root hence why wrapped with the checkPathInZip boolean
                 if (checkPathInZip) {
                     String entryName = ze.getName();
