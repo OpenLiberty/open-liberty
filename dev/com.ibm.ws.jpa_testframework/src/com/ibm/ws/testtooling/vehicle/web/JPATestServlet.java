@@ -225,6 +225,7 @@ public abstract class JPATestServlet extends FATServlet {
         final URL dmURL = new URL("http://localhost:" + portNumber + "/DatabaseManagement/DMS?command=GETINFO");
         final HttpURLConnection conn = (HttpURLConnection) dmURL.openConnection();
         conn.setRequestMethod("GET");
+        System.out.println("JPATestServlet sending request for database information...");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
             String buffer;
             while ((buffer = reader.readLine()) != null) {
@@ -358,6 +359,58 @@ public abstract class JPATestServlet extends FATServlet {
         String prodVersion = getDbProductVersion();
         if (prodVersion != null && prodVersion.toLowerCase().startsWith("ari")) {
             return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isDerby() throws Exception {
+        try {
+            String prodName = getDbProductName();
+            if (prodName != null && prodName.toLowerCase().contains("derby")) {
+                return true;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean isSQLServer() throws Exception {
+        try {
+            String prodName = getDbProductName();
+            if (prodName != null && prodName.toLowerCase().contains("microsoft sql server")) {
+                return true;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean isPostgres() throws Exception {
+        try {
+            String prodName = getDbProductName();
+            if (prodName != null && prodName.toLowerCase().contains("postgresql")) {
+                return true;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean isOracle() throws Exception {
+        try {
+            String prodName = getDbProductName();
+            if (prodName != null && prodName.toLowerCase().contains("oracle")) {
+                return true;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
 
         return false;
