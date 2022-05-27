@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.sip.stack.transport.chfw;
 
+import java.net.*;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -471,7 +472,23 @@ public class GenericEndpointImpl {
 			topicHost = "ALL";
 		}
 		else{
-			topicHost = topicHost.replace(".", "_");
+			try {
+			InetAddress ipAddress = InetAddress.getByName(topicHost);
+			if (ipAddress instanceof Inet6Address) {
+			    // Remove colon from ipv6 address before constructing topicString
+			    topicHost = topicHost.replace(":", "_");
+
+			} else if (ipAddress instanceof Inet4Address) {
+			    // Remove dots from ipv4 address before constructing topicString
+			    topicHost = topicHost.replace(".", "_");
+			}
+			} catch (UnknownHostException e) {
+				
+			}
+		
+
+
+			//topicHost = topicHost.replace(".", "_");
 		}
 		topicString = GenericServiceConstants.TOPIC_PFX
 				+ topicHost + "/" + id + "/" + cid;
