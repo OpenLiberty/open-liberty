@@ -29,7 +29,7 @@ Private-Package: \
 	io.openliberty.jakarta.persistence.3.0;version=latest,\
 	com.ibm.wsspi.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.tx.core;version=latest,\
+	com.ibm.tx.jta;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
