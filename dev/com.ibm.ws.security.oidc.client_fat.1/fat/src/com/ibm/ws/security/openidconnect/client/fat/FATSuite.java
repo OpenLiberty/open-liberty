@@ -22,6 +22,7 @@ import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientConsentTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientCookieVerificationTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryBasicTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryErrorTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryJVMPropsTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryJWTBasicTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
@@ -37,6 +38,7 @@ import componenttest.rules.repeater.RepeatTests;
         OidcClientConsentTests.class,
         OidcClientDiscoveryBasicTests.class,
         OidcClientDiscoveryErrorTests.class,
+        OidcClientDiscoveryJVMPropsTests.class,
         OidcClientDiscoveryJWTBasicTests.class,
         OidcClientCookieVerificationTests.class,
         // OidcCertificationRPBasicProfileTests.class,
