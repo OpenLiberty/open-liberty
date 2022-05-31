@@ -13,15 +13,20 @@ package test.jakarta.data.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static test.jakarta.data.web.Assertions.assertArrayEquals;
+import static test.jakarta.data.web.Assertions.assertIterableEquals;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.annotation.Resource;
 import jakarta.inject.Inject;
@@ -157,21 +162,24 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Use a Repository<T, K> interface that is a copy of Jakarta NoSQL's.
+     * Use the provided methods of a Repository<T, K> interface that is a copy of Jakarta NoSQL's.
      */
     @Test
-    public void testRepository() {
-        ZoneId CENTRAL = ZoneId.of("America/Chicago");
+    public void testRepositoryBuiltInMethods() {
+        ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
-        assertEquals(0, reservations.count()); // assumes no other tests insert to this table
+        // remove data that other tests previously inserted to the same table
+        reservations.deleteByHostNot("never-ever-used@example.org");
+
+        assertEquals(0, reservations.count());
 
         Reservation r1 = new Reservation();
         r1.host = "testRepository-host1@example.org";
         r1.invitees = Set.of("testRepository-1a@example.org", "testRepository-1b@example.org");
         r1.location = "050-2 G105";
         r1.meetingID = 10020001;
-        r1.start = ZonedDateTime.of(2022, 5, 23, 9, 0, 0, 0, CENTRAL);
-        r1.stop = ZonedDateTime.of(2022, 5, 23, 10, 0, 0, 0, CENTRAL);
+        r1.start = OffsetDateTime.of(2022, 5, 23, 9, 0, 0, 0, CDT);
+        r1.stop = OffsetDateTime.of(2022, 5, 23, 10, 0, 0, 0, CDT);
 
         assertEquals(false, reservations.existsById(r1.meetingID));
 
@@ -192,24 +200,24 @@ public class DataTestServlet extends FATServlet {
         r2.invitees = Set.of("testRepository-2a@example.org", "testRepository-2b@example.org");
         r2.location = "050-2 B120";
         r2.meetingID = 10020002;
-        r2.start = ZonedDateTime.of(2022, 5, 23, 9, 0, 0, 0, CENTRAL);
-        r2.stop = ZonedDateTime.of(2022, 5, 23, 10, 0, 0, 0, CENTRAL);
+        r2.start = OffsetDateTime.of(2022, 5, 23, 9, 0, 0, 0, CDT);
+        r2.stop = OffsetDateTime.of(2022, 5, 23, 10, 0, 0, 0, CDT);
 
         Reservation r3 = new Reservation();
         r3.host = "testRepository-host2@example.org";
         r3.invitees = Set.of("testRepository-3a@example.org");
         r3.location = "030-2 A312";
         r3.meetingID = 10020003;
-        r3.start = ZonedDateTime.of(2022, 5, 24, 8, 30, 0, 0, CENTRAL);
-        r3.stop = ZonedDateTime.of(2022, 5, 24, 10, 00, 0, 0, CENTRAL);
+        r3.start = OffsetDateTime.of(2022, 5, 24, 8, 30, 0, 0, CDT);
+        r3.stop = OffsetDateTime.of(2022, 5, 24, 10, 00, 0, 0, CDT);
 
         Reservation r4 = new Reservation();
         r4.host = "testRepository-host1@example.org";
         r4.invitees = Collections.emptySet();
         r4.location = "050-2 G105";
         r4.meetingID = 10020004;
-        r4.start = ZonedDateTime.of(2022, 5, 24, 9, 0, 0, 0, CENTRAL);
-        r4.stop = ZonedDateTime.of(2022, 5, 24, 10, 0, 0, 0, CENTRAL);
+        r4.start = OffsetDateTime.of(2022, 5, 24, 9, 0, 0, 0, CDT);
+        r4.stop = OffsetDateTime.of(2022, 5, 24, 10, 0, 0, 0, CDT);
 
         r1.invitees = Set.of("testRepository-1a@example.org", "testRepository-1b@example.org", "testRepository-1c@example.org");
 
@@ -282,6 +290,168 @@ public class DataTestServlet extends FATServlet {
         assertEquals(r3.meetingID, r3found.meetingID);
         assertEquals(r3.start, r3found.start);
         assertEquals(r3.stop, r3found.stop);
+    }
+
+    /**
+     * Use custom repository interface methods modeled after Jakarta NoSQL's Repository class.
+     */
+    @Test
+    public void testRepositoryCustomMethods() {
+        ZoneOffset CDT = ZoneOffset.ofHours(-5);
+
+        // remove data that other tests previously inserted to the same table
+        reservations.deleteByHostNotIn(Set.of("never-ever-used@example.org"));
+
+        assertEquals(0, reservations.count());
+
+        // set up some data for the test to use
+        Reservation r1 = new Reservation();
+        r1.host = "testRepositoryCustom-host1@example.org";
+        r1.invitees = Set.of("testRepositoryCustom-1a@example.org", "testRepositoryCustom-1b@example.org", "testRepositoryCustom-1c@example.org");
+        r1.location = "050-2 H115";
+        r1.meetingID = 10030001;
+        r1.start = OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT);
+        r1.stop = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+
+        Reservation r2 = new Reservation();
+        r2.host = "testRepositoryCustom-host2@example.org";
+        r2.invitees = Set.of("testRepositoryCustom-2a@example.org", "testRepositoryCustom-2b@example.org");
+        r2.location = "050-2 A101";
+        r2.meetingID = 10030002;
+        r2.start = OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT);
+        r2.stop = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+
+        Reservation r3 = new Reservation();
+        r3.host = "testRepositoryCustom-host3@example.org";
+        r3.invitees = Set.of("testRepositoryCustom-3a@example.org", "testRepositoryCustom-3b@example.org");
+        r3.location = "050-3 H103";
+        r3.meetingID = 10030003;
+        r3.start = OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT);
+        r3.stop = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+
+        Reservation r4 = new Reservation();
+        r4.host = "testRepositoryCustom-host4@example.org";
+        r4.invitees = Set.of("testRepositoryCustom-4a@example.org", "testRepositoryCustom-4b@example.org");
+        r4.location = "050-2 H115";
+        r4.meetingID = 10030004;
+        r4.start = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+        r4.stop = OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT);
+
+        Reservation r5 = new Reservation();
+        r5.host = "testRepositoryCustom-host2@example.org";
+        r5.invitees = Set.of("testRepositoryCustom-5a@example.org", "testRepositoryCustom-5b@example.org");
+        r5.location = "050-2 B125";
+        r5.meetingID = 10030005;
+        r5.start = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+        r5.stop = OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT);
+
+        Reservation r6 = new Reservation();
+        r6.host = "testRepositoryCustom-host3@example.org";
+        r6.invitees = Set.of("testRepositoryCustom-3c@example.org");
+        r6.location = "050-2 G105";
+        r6.meetingID = 10030006;
+        r6.start = OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT);
+        r6.stop = OffsetDateTime.of(2022, 5, 25, 12, 0, 0, 0, CDT);
+
+        Reservation r7 = new Reservation();
+        r7.host = "testRepositoryCustom-host2@example.org";
+        r7.invitees = Set.of("testRepositoryCustom-2a@example.org", "testRepositoryCustom-2b@example.org");
+        r7.location = "050-2 B120";
+        r7.meetingID = 10030007;
+        r7.start = OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT);
+        r7.stop = OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT);
+
+        Reservation r8 = new Reservation();
+        r8.host = "testRepositoryCustom-host4@example.org";
+        r8.invitees = Set.of("testRepositoryCustom-8a@example.org");
+        r8.location = "30-2 E314";
+        r8.meetingID = 10030008;
+        r8.start = OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT);
+        r8.stop = OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT);
+
+        Reservation r9 = new Reservation();
+        r9.host = "testRepositoryCustom-host3@example.org";
+        r9.invitees = Collections.emptySet();
+        r9.location = "050-2 B125";
+        r9.meetingID = 10030009;
+        r9.start = OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT);
+        r9.stop = OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT);
+
+        reservations.save(List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9));
+
+        List<Reservation> reservationList = new ArrayList<Reservation>();
+        reservations.findByHost("testRepositoryCustom-host2@example.org").forEach(reservationList::add);
+        assertIterableEquals(List.of(10030002L, 10030005L, 10030007L),
+                             reservationList
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
+                             reservations.findByLocationLike("-2 B1")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted() // TODO rely on SortBy instead of this
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(10030001L, 10030002L, 10030004L, 10030006L, 10030008L),
+                             reservations.findByMeetingIDOrLocationLikeAndStartAndStopOrHost(10030006,
+                                                                                             "050-2",
+                                                                                             OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT),
+                                                                                             OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT),
+                                                                                             "testRepositoryCustom-host4@example.org")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(10030004L, 10030005L),
+                             reservations.findByStartBetweenAndLocationIn(OffsetDateTime.of(2022, 5, 25, 9, 30, 0, 0, CDT),
+                                                                          OffsetDateTime.of(2022, 5, 25, 11, 30, 0, 0, CDT),
+                                                                          List.of("050-2 H115", "050-2 B120", "050-2 B125"))
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        Reservation[] array = reservations.findByStartLessThanOrStartGreaterThan(OffsetDateTime.of(2022, 5, 25, 9, 30, 0, 0, CDT),
+                                                                                 OffsetDateTime.of(2022, 5, 25, 13, 30, 0, 0, CDT));
+        Arrays.sort(array, Comparator.<Reservation, Long> comparing(o -> o.meetingID).reversed()); // TODO rely on SortBy instead of this
+        assertArrayEquals(new Reservation[] { r9, r3, r2, r1 }, array,
+                          Comparator.<Reservation, Long> comparing(o -> o.meetingID)
+                                          .thenComparing(Comparator.<Reservation, String> comparing(o -> o.host))
+                                          .thenComparing(Comparator.<Reservation, String> comparing(o -> o.invitees.toString()))
+                                          .thenComparing(Comparator.<Reservation, String> comparing(o -> o.location))
+                                          .thenComparing(Comparator.<Reservation, OffsetDateTime> comparing(o -> o.start))
+                                          .thenComparing(Comparator.<Reservation, OffsetDateTime> comparing(o -> o.stop)));
+
+        assertIterableEquals(List.of(10030001L, 10030002L, 10030003L, 10030009L),
+                             reservations.findByStartNotBetween(OffsetDateTime.of(2022, 5, 25, 9, 30, 0, 0, CDT),
+                                                                OffsetDateTime.of(2022, 5, 25, 13, 30, 0, 0, CDT))
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(10030007L, 10030008L, 10030009L),
+                             reservations.findByStopGreaterThanEqual(OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT))
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertEquals(false, reservations.deleteByHostIn(List.of("testRepositoryCustom-host5@example.org")));
+
+        assertEquals(true, reservations.deleteByHostIn(List.of("testRepositoryCustom-host1@example.org",
+                                                               "testRepositoryCustom-host3@example.org")));
+
+        assertIterableEquals(List.of(10030002L, 10030004L, 10030005L, 10030008L),
+                             reservations.findByStopLessThanEqual(OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT))
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
     }
 
     /**

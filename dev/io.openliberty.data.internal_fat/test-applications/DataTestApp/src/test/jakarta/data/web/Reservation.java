@@ -10,7 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Set;
 
 /**
@@ -25,7 +25,7 @@ public class Reservation {
 
     public long meetingID; // TODO autogenerate?
 
-    public ZonedDateTime start;
+    public OffsetDateTime start;
 
-    public ZonedDateTime stop;
+    public OffsetDateTime stop;
 }

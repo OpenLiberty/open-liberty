@@ -10,14 +10,19 @@
  *******************************************************************************/
 package io.openliberty.data.internal;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Vector;
 
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.persistence.EntityManager;
@@ -36,10 +41,50 @@ import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
 
 public class QueryHandler<T> implements InvocationHandler {
+    private static enum Condition {
+        BETWEEN(null, 7),
+        EQUALS("=", 0),
+        GREATER_THAN(">", 11),
+        GREATER_THAN_EQUAL(">=", 16),
+        IN(" IN ", 2),
+        LESS_THAN("<", 8),
+        LESS_THAN_EQUAL("<=", 13),
+        LIKE(null, 4),
+        NOT_EQUALS("<>", 3);
+
+        final int length;
+        final String operator;
+
+        Condition(String operator, int length) {
+            this.operator = operator;
+            this.length = length;
+        }
+
+        Condition negate() {
+            switch (this) {
+                case EQUALS:
+                    return NOT_EQUALS;
+                case GREATER_THAN:
+                    return LESS_THAN_EQUAL;
+                case GREATER_THAN_EQUAL:
+                    return LESS_THAN;
+                case LESS_THAN:
+                    return GREATER_THAN_EQUAL;
+                case LESS_THAN_EQUAL:
+                    return GREATER_THAN;
+                case NOT_EQUALS:
+                    return EQUALS;
+                default:
+                    return null;
+            }
+        }
+    }
+
     private static enum QueryType {
         DELETE, MERGE, SELECT, UPDATE
-    };
+    }
 
+    private final Map<String, String> attributeNames = new HashMap<>();
     private final Class<T> beanClass;
     private final Data data;
     private final Entity entity;
@@ -53,7 +98,8 @@ public class QueryHandler<T> implements InvocationHandler {
         beanClass = (Class<T>) bean.getBeanClass();
         data = beanClass.getAnnotation(Data.class);
         this.entity = entity;
-        entityName = entity.value().getSimpleName();
+        Class<?> entityClass = entity.value();
+        entityName = entityClass.getSimpleName();
 
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         persistence = bc.getService(bc.getServiceReference(DataPersistence.class));
@@ -64,9 +110,33 @@ public class QueryHandler<T> implements InvocationHandler {
             throw new RuntimeException("Persistence layer unavailable for " + data);
         punit = persistenceInfo.getKey();
         entityClassesAvailable = persistenceInfo.getValue();
+
+        // TODO replace this ugly code that maps from Java field or setter attribute name to database column name.
+        EntityManager em = punit.createEntityManager();
+        try {
+            Class<?> Session = em.getClass().getClassLoader().loadClass("org.eclipse.persistence.sessions.Session");
+            Object session = em.unwrap(Session);
+            Object classDescriptor = session.getClass().getMethod("getDescriptor", Class.class).invoke(session, entityClass);
+            Vector<?> databaseMappings = (Vector<?>) classDescriptor.getClass().getMethod("getMappings").invoke(classDescriptor);
+            for (Object mapping : databaseMappings) {
+                String attributeName = (String) mapping.getClass().getMethod("getAttributeName").invoke(mapping);
+                Object databaseField = mapping.getClass().getMethod("getField").invoke(mapping);
+                String columnName = (String) databaseField.getClass().getMethod("getName").invoke(databaseField);
+                System.out.println("Attribute: " + attributeName + "; Column: " + columnName);
+                attributeNames.put(attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1), attributeName);
+            }
+            System.out.println(attributeNames);
+        } catch (RuntimeException x) {
+            throw x;
+        } catch (Exception x) {
+            throw new RuntimeException(x);
+        } finally {
+            em.close();
+        }
+
     }
 
-    private String getRepositoryQuery(String methodName, Object[] args, Class<?>[] paramTypes) {
+    private String getBuiltInRepositoryQuery(String methodName, Object[] args, Class<?>[] paramTypes) {
         if (args == null) {
             if ("count".equals(methodName))
                 return "SELECT COUNT(o) FROM " + entityName + " o";
@@ -88,6 +158,110 @@ public class QueryHandler<T> implements InvocationHandler {
             }
         }
         throw new UnsupportedOperationException("Repository method " + methodName + " with parameters " + Arrays.toString(paramTypes));
+    }
+
+    private String generateRepositoryQuery(String methodName) {
+        int start = methodName.startsWith("findBy") ? 6 //
+                        : methodName.startsWith("deleteBy") ? 8 //
+                                        : -1;
+        if (start > 0) {
+            StringBuilder q = new StringBuilder(200)
+                            .append(start == 6 ? "SELECT o FROM " : "DELETE FROM ")
+                            .append(entityName)
+                            .append(" o WHERE ");
+
+            int orderBy = methodName.lastIndexOf("OrderBy");
+            String s = orderBy > 0 ? methodName.substring(start, orderBy) : methodName.substring(start);
+            for (int paramCount = 0, and = 0, or = 0, iNext, i = 0; i >= 0; i = iNext) {
+                and = and == -1 || and > i ? and : s.indexOf("And", i);
+                or = or == -1 || or > i ? or : s.indexOf("Or", i);
+                iNext = Math.min(and, or);
+                if (iNext < 0)
+                    iNext = Math.max(and, or);
+                String condition = iNext < 0 ? s.substring(i) : s.substring(i, iNext);
+                paramCount = generateRepositoryQueryCondition(condition, q, paramCount);
+                if (iNext > 0) {
+                    q.append(iNext == and ? " AND " : " OR ");
+                    iNext += (iNext == and ? 3 : 2);
+                }
+            }
+
+            System.out.println("Generated query for Repository method " + methodName);
+            System.out.println("  " + q);
+            return q.toString();
+        }
+        return null;
+    }
+
+    /**
+     * Generates JPQL for a findBy or deleteBy condition such as MyColumn[Not?]Like
+     */
+    private int generateRepositoryQueryCondition(String expression, StringBuilder q, int paramCount) {
+        int length = expression.length();
+
+        Condition condition = Condition.EQUALS;
+        switch (expression.charAt(length - 1)) {
+            case 'n': // GreaterThan | LessThan | In | Between
+                if (length > Condition.IN.length) {
+                    char ch = expression.charAt(length - 2);
+                    if (ch == 'a') { // GreaterThan | LessThan
+                        if (expression.endsWith("GreaterThan"))
+                            condition = Condition.GREATER_THAN;
+                        else if (expression.endsWith("LessThan"))
+                            condition = Condition.LESS_THAN;
+                    } else if (ch == 'I') { // In
+                        condition = Condition.IN;
+                    } else if (expression.endsWith("Between")) {
+                        condition = Condition.BETWEEN;
+                    }
+                }
+                break;
+            case 'l': // GreaterThanEqual | LessThanEqual
+                if (length > Condition.LESS_THAN_EQUAL.length && expression.charAt(length - 4) == 'q')
+                    if (expression.endsWith("GreaterThanEqual"))
+                        condition = Condition.GREATER_THAN_EQUAL;
+                    else if (expression.endsWith("LessThanEqual"))
+                        condition = Condition.LESS_THAN_EQUAL;
+                break;
+            case 'e': // Like
+                if (expression.endsWith("Like"))
+                    condition = Condition.LIKE;
+                break;
+        }
+
+        boolean negated = length > condition.length + 3 //
+                          && expression.charAt(length - condition.length - 3) == 'N'
+                          && expression.charAt(length - condition.length - 2) == 'o'
+                          && expression.charAt(length - condition.length - 1) == 't';
+
+        String attribute = expression.substring(0, length - condition.length - (negated ? 3 : 0));
+
+        if (negated) {
+            Condition negatedCondition = condition.negate();
+            if (negatedCondition != null) {
+                condition = negatedCondition;
+                negated = false;
+            }
+        }
+
+        String name = attributeNames.get(attribute);
+        q.append("o.").append(name == null ? attribute : name);
+
+        if (negated)
+            q.append(" NOT");
+
+        switch (condition) {
+            case LIKE:
+                q.append(" LIKE CONCAT('%', ?").append(++paramCount).append(", '%')");
+                break;
+            case BETWEEN:
+                q.append(" BETWEEN ?").append(++paramCount).append(" AND ?").append(++paramCount);
+                break;
+            default:
+                q.append(condition.operator).append('?').append(++paramCount);
+        }
+
+        return paramCount;
     }
 
     @Override
@@ -116,7 +290,10 @@ public class QueryHandler<T> implements InvocationHandler {
 
         // Repository built-in methods
         if (jpql == null && Repository.class.equals(method.getDeclaringClass()))
-            jpql = getRepositoryQuery(methodName, args, method.getParameterTypes());
+            jpql = getBuiltInRepositoryQuery(methodName, args, method.getParameterTypes());
+
+        if (jpql == null)
+            jpql = generateRepositoryQuery(methodName);
 
         // TODO Actual implementation is lacking so we are cheating by
         // temporarily sending in the JPQL directly:
@@ -192,9 +369,25 @@ public class QueryHandler<T> implements InvocationHandler {
                         returnValue = results.isEmpty() ? null : results.iterator().next();
                     else if (returnType.isInstance(results))
                         returnValue = results;
-                    else if (Optional.class.equals(returnType))
+                    else if (returnArrayType != null) {
+                        Object r = Array.newInstance(returnArrayType, results.size());
+                        int i = 0;
+                        for (Object o : results)
+                            Array.set(r, i++, o);
+                        returnValue = r;
+                    } else if (Optional.class.equals(returnType))
                         returnValue = results.isEmpty() ? Optional.empty() : Optional.of(results.iterator().next());
-                    else // TODO convert return type
+                    else if (List.class.isAssignableFrom(returnType))
+                        try {
+                            @SuppressWarnings("unchecked")
+                            Constructor<? extends List<Object>> c = (Constructor<? extends List<Object>>) returnType.getConstructor();
+                            List<Object> list = c.newInstance();
+                            list.addAll(results);
+                            returnValue = list;
+                        } catch (NoSuchMethodException x) {
+                            throw new UnsupportedOperationException(returnType + " lacks public zero parameter constructor.");
+                        }
+                    else // TODO convert other return types, such as arrays
                         throw new UnsupportedOperationException(methodName + " with return type " + returnType);
                     break;
                 case UPDATE:
