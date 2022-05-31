@@ -21,4 +21,5 @@ Private-Package: \
  test.checkpoint.config.bundle
 
 -dsannotations: \
- test.checkpoint.config.bundle.TestCheckpointHook
+ test.checkpoint.config.bundle.TestCheckpointHook, \
+ test.checkpoint.config.bundle.TestStaticHookRegister

@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -593,11 +594,10 @@ public class FrameworkManager {
             fwk.init();
             if (LaunchArguments.isBetaEdition()) {
 
-                String phaseProp = config.get(CheckpointPhase.CHECKPOINT_PROPERTY);
-                if (phaseProp != null) {
+                final CheckpointPhase phase = CheckpointPhase.getPhase();
+                if (phase != null) {
                     // register the checkpoint phase as early as possible
                     final BundleContext fwkContext = fwk.getBundleContext();
-                    final CheckpointPhase phase = CheckpointPhase.getPhase(phaseProp);
                     final Dictionary<String, Object> phaseRegProps = new Hashtable<>();
                     phaseRegProps.put(CHECKPOINT_RESTORED_PROPERTY, Boolean.FALSE);
                     phaseRegProps.put(CHECKPOINT_PROPERTY, phase);
@@ -609,9 +609,9 @@ public class FrameworkManager {
                         @Override
                         public void prepare() {
                             try {
-                                restoredField = CheckpointPhase.class.getDeclaredField("RESTORED");
+                                restoredField = CheckpointPhase.class.getDeclaredField("restored");
                                 restoredField.setAccessible(true);
-                            } catch (NoSuchFieldException e) {
+                            } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
                             logProvider.stop();
@@ -620,7 +620,7 @@ public class FrameworkManager {
                         @Override
                         public void restore() {
                             try {
-                                restoredField.set(null, Boolean.TRUE);
+                                restoredField.set(phase, Boolean.TRUE);
                             } catch (IllegalArgumentException | IllegalAccessException e) {
                                 throw new RuntimeException(e);
                             }
@@ -641,6 +641,9 @@ public class FrameworkManager {
                             phaseReg.setProperties(phaseRegProps);
                         }
                     }, restoredHookProps);
+
+                    // register the hooks from the CheckpointPhase that may be statically added
+                    registerCheckpointPhaseStaticHooks(phase, fwkContext);
                 } else {
                     // not a checkpoint launch; register the running condition now
                     registerRunningCondition(fwk);
@@ -659,6 +662,26 @@ public class FrameworkManager {
             if (!handleEquinoxRuntimeException(ex))
                 throw ex;
             return null;
+        }
+    }
+
+    private void registerCheckpointPhaseStaticHooks(CheckpointPhase phase, BundleContext fwkContext) {
+        fwkContext.registerService(CheckpointHook.class, createCheckpointPhaseHook(phase, true),
+                                   FrameworkUtil.asDictionary(Collections.singletonMap(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE)));
+        fwkContext.registerService(CheckpointHook.class, createCheckpointPhaseHook(phase, false), null);
+    }
+
+    /**
+     * @param b
+     * @return
+     */
+    private CheckpointHook createCheckpointPhaseHook(CheckpointPhase phase, boolean multiThreaded) {
+        try {
+            Method createCheckpointHook = CheckpointPhase.class.getDeclaredMethod("createCheckpointHook", boolean.class);
+            createCheckpointHook.setAccessible(true);
+            return (CheckpointHook) createCheckpointHook.invoke(phase, multiThreaded);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
