@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,14 @@ public class LogFieldConstants {
     public static final String IBM_THREADID = "ibm_threadId";
     public static final String THREADID = "threadId";
 
+    //excpetion related fields
+    public static final String IBM_EXCEPTIONNAME = "ibm_exceptionName";
+    public static final String EXCEPTIONNAME = "exceptionName";
+    public static final String IBM_STACKTRACE = "ibm_stackTrace";
+    public static final String STACKTRACE = "stackTrace";
+    public static final String STACKTRACE_LOCALIZED = "stackTrace_localized";
+    public static final String IBM_STACKTRACE_LOCALIZED = "ibm_stackTrace_localized";
+
     //liberty_message and liberty_trace
     public static final String IBM_MESSAGEID = "ibm_messageId";
     public static final String MESSAGEID = "messageId";
@@ -45,8 +53,8 @@ public class LogFieldConstants {
     public static final String ORG = "org";
     public static final String PRODUCT = "product";
     public static final String COMPONENT = "component";
-    public static final String THROWABLE = "throwable";
-    public static final String THROWABLE_LOCALIZED = "throwable_localized";
+//    public static final String THROWABLE = "throwable";
+//    public static final String THROWABLE_LOCALIZED = "throwable_localized";
     public static final String FORMATTEDMSG = "formattedMsg";
     public static final String EXTENSIONS_KVPL = "extensions";
     public static final String OBJECT_ID = "objectId";
@@ -100,12 +108,8 @@ public class LogFieldConstants {
 
     //liberty_ffdc
     //fields that contain 'XXXXXXX' are not expected to be used
-    public static final String IBM_EXCEPTIONNAME = "ibm_exceptionName";
-    public static final String EXCEPTIONNAME = "exceptionName";
     public static final String IBM_PROBEID = "ibm_probeID";
     public static final String PROBEID = "probeID";
-    public static final String IBM_STACKTRACE = "ibm_stackTrace";
-    public static final String STACKTRACE = "stackTrace";
     public static final String IBM_OBJECTDETAILS = "ibm_objectDetails";
     public static final String OBJECTDETAILS = "objectDetails";
 
