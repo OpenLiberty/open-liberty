@@ -69,7 +69,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
     // begin 220676: add iVar for wrapper to know when translation occured.
     private static final String JSP_TRANSLATION_TIME_STAMP = "jsp_translation_ts";
     private static final String JSP_TRANSLATION_CHECKED_THIS_REQUEST = "jsp_translation_checked";
-    
+
     protected Long lastTranslationTime = null;
 
     // end 220676: add iVar for wrapper to know when translation occured and
@@ -90,20 +90,18 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
     protected boolean classloaderCreated = false;
     protected long lastCheck = 0;
     protected boolean debugClassFile = true; // defect 272935
-    
+
     protected Boolean recompiledJspOnRestart = null;//used with recompileJspOnRestart param
 
     public static boolean dispatcherRethrowSERROR = WCCustomProperties.DISPATCHER_RETHROW_SERROR;       //PM22919
 
     private boolean warningStatusSet = false;
-    
-    private String loadedPagesVersion = null;
 
-    public AbstractJSPExtensionServletWrapper(IServletContext parent, 
-                                      JspOptions options, 
-                                      JspConfigurationManager configManager, 
+    public AbstractJSPExtensionServletWrapper(IServletContext parent,
+                                      JspOptions options,
+                                      JspConfigurationManager configManager,
                                       TagLibraryCache tlc,
-                                      JspTranslationContext context, 
+                                      JspTranslationContext context,
                                       CodeSource codeSource) throws Exception {// PK01617
         super(parent);
         this.options = options;
@@ -114,7 +112,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         this.dependentsList = new ArrayList();
     }
 
-    public void initialize(IServletConfig config, String loadedPagesVersion) throws Exception {
+    public void initialize(IServletConfig config) throws Exception {
         if (config.getFileName() == null || config.getFileName().equals("")) {
             throw new UnavailableException(JspCoreException.getMsg("jsp.error.failed.to.find.resource", new Object[] { config.getFileName() }));
         }
@@ -123,9 +121,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         //} else {
             inputSource = tcontext.getJspInputSourceFactory().createJspInputSource(config.getFileName());
         //}
-            
-        this.loadedPagesVersion = loadedPagesVersion;
-        
+
         super.initialize(config);
     }
 
@@ -162,7 +158,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                         checkForTranslation((HttpServletRequest) req);
                     }
                 }
-                
+
                 //need to remove this attribute so that we call checkForTranslation on included jsps
                 reqState.removeAttribute(AbstractJSPExtensionServletWrapper.JSP_TRANSLATION_CHECKED_THIS_REQUEST);
 
@@ -195,23 +191,23 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                 jser.setStackTrace(rootCause.getStackTrace());
                 jser.setErrorCode(code);
                 jser.setTargetServletName(super.getServletName());  // Defect 315405
-                
+
                 //PM22919
                 boolean isIncluded = req.getAttribute("javax.servlet.include.servlet_path") != null;            //PM22919
                 boolean isForwarded = req.getAttribute("javax.servlet.forward.servlet_path") != null;           //PM22919
 
-                if (dispatcherRethrowSERROR && (isIncluded || isForwarded))                     //PM22919   
+                if (dispatcherRethrowSERROR && (isIncluded || isForwarded))                     //PM22919
                     throw jser;                                                                 //PM22919
                 //end PM22919
-                
+
                 context.sendError(hreq, (HttpServletResponse) res, jser);
                 return;
             }
             super.handleRequest(req, res);
-            
+
             synchronized(this){
                 loadClassInformation();
-                classloaderCreated = false;  
+                classloaderCreated = false;
             }
         }
     }
@@ -238,14 +234,14 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                 // begin 228118: JSP container should recompile if debug enabled
                 // and jsp was not compiled in debug.
                 //if (options.isDebugEnabled()) {
-                debugClassFile = jspClassInformation.isDebugClassFile(); // defect 272935 
+                debugClassFile = jspClassInformation.isDebugClassFile(); // defect 272935
                 //}
                 // end 228118: JSP container should recompile if debug enabled
-                // and jsp was not compiled in debug.  
+                // and jsp was not compiled in debug.
         }
     }
 
-  
+
     protected void checkForTranslation(HttpServletRequest req) throws JspCoreException {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -253,14 +249,14 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         } finally {
             ThreadIdentityManager.reset(token);
         }
-        
+
         //create reqState and set attribute to say that we've already translated this request
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);
         reqState.setAttribute(AbstractJSPExtensionServletWrapper.JSP_TRANSLATION_CHECKED_THIS_REQUEST, Boolean.TRUE);
     }
 
     protected void _checkForTranslation(HttpServletRequest req) throws JspCoreException {
-        final boolean isAnyTraceEnabled=com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled(); 
+        final boolean isAnyTraceEnabled=com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
         if (isAnyTraceEnabled&&logger.isLoggable(Level.FINER)) {
             logger.entering(CLASS_NAME, "_checkForTranslation", "enter checkForTranslation sync block for " + inputSource.getRelativeURL());
         }
@@ -295,7 +291,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                                         logger.logp(Level.FINEST, CLASS_NAME, "_checkForTranslation", (rc?"Created":"Unable to create") +" directory for generated source file ["+jspResources.getGeneratedSourceFile().getParentFile() +"]");
                                     }
                                 }
-                                //  defect 272935 end                                
+                                //  defect 272935 end
                             }
                             // end 228118: JSP container should recompile if
                             // debug enabled and jsp was not compiled in debug.
@@ -312,7 +308,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                         /*
                          * No longer needed as config is created for each new
                          * translation, PK01617
-                         * 
+                         *
                          * if (translationRequired && servletConfig != null) {
                          * //defect 200435 config =
                          * config.getConfigManager().getConfigurationForUrl(servletConfig.getFileName()); }
@@ -321,11 +317,11 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                         // enabled and jsp was not compiled in debug.
                         if (translationRequired == false && options.isDebugEnabled()) {
                             translationRequired = (this.debugClassFile == false);
-                            
+
                             // defect 182990 begin
                             // in WDT, we need to re-translate the JSP on each server startup so the debugger can be invoked on a JSP file
                             if (!translationRequired && getTarget() == null){
-                                translationRequired = true;                                
+                                translationRequired = true;
                             }
                             //defect 182990 end
                             // defect 272935 begin
@@ -343,11 +339,11 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                         //PK57724 01/29/2008  Reloading of dependencies does not work on first request after a webapp start.  - Jay Sartoris
                         //PK57724 start
                         boolean needToReset = false;
-                        //getTarget() will be null on a first request when the server starts or is updated 
+                        //getTarget() will be null on a first request when the server starts or is updated
                         //(e.g. the JSP feature version might have changed, need to check if we need to re-translate.
                         if (!translationRequired && getTarget() == null) {
                             //need to get the current JSP feature version (2.2 or 2.3)
-                            //then compare it to what the previously compiled JSP was.  
+                            //then compare it to what the previously compiled JSP was.
                             //if they don't match, re-compile.
 
                             JspClassInformation tmpJCI = null;
@@ -380,7 +376,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
 
                             if (tmpJCI != null) {
                                 //get the current JSP version the server is running for this request
-                                String currentJspVersion = this.loadedPagesVersion;
+                                String currentJspVersion = com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory.loadedSpecLevel;
                                 //if this does not match the version from the previously compiled version of the JSP then we need to re-translate and re-compile the JSP
                                 if (!currentJspVersion.equals(tmpJCI.getVersionInformation())) {
                                     translationRequired = true;
@@ -391,7 +387,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                                 }
                             }
 
-                            //if we still do not need to re-translate based on the JSP version, then build a list of any dependencies this JSP has. 
+                            //if we still do not need to re-translate based on the JSP version, then build a list of any dependencies this JSP has.
                             //we will check to see if any dependents are outdated by the isDependentOutdate() call outside of this block.
                             if (!translationRequired && options.isTrackDependencies()) {
                                 if (tmpJCI != null) {
@@ -409,18 +405,18 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                             //clear out the temporary JspClassInformation since we are done with it
                             tmpJCI = null;
                         }
-                        
+
                         //if the JSP version check did not determine a re-translation was needed, now check if any dependents are outdated.
                         if (!translationRequired) {
                             translationRequired = isDependentOutdated();
                         }
-                        
+
                         //PK57724 start
                         if (needToReset) {
                             setTargetClassLoader(null);
                             classloaderCreated = false;
                         } //PK57724 end
-                        
+
                         if (translationRequired == false && jspResources.isExternallyTranslated()) {
                             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                                 logger.logp(Level.FINE, CLASS_NAME, "checkForTranslation", inputSource.getRelativeURL() + " has been externally translated");
@@ -436,7 +432,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                         translationRequired = true;
                         recompiledJspOnRestart=true;
                     }
-                    
+
                     //added for JDK 7 support - make sure we can load the existing class
                     if (!translationRequired) {
                         if (getTargetClassLoader() == null) {
@@ -449,7 +445,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                                 translationRequired=true;
                                 if (logger.isLoggable(Level.FINE)) {
                                     logger.logp(Level.FINE,CLASS_NAME,"_checkForTranslation", "UnsupportedClassVersionError - recompile jsp");
-                                }       
+                                }
                             }
                         }
                     }
@@ -460,8 +456,8 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                         }
                       //PK76810 - Starts
                         boolean compiled = translateJsp();
-                        if (options.isZOS()){			
-                        	if (!compiled && jspResources.isOutdated()){              
+                        if (options.isZOS()){
+                        	if (!compiled && jspResources.isOutdated()){
                       		  int reCompile = 5;
                       		  Properties webContainerProperties = WebContainer.getWebContainerProperties();
                       		  if (webContainerProperties != null){
@@ -478,7 +474,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                       		  if (logger.isLoggable(Level.FINE)) {
                       			  logger.logp(Level.FINE,CLASS_NAME,"checkForTranslation", "Compile fails and isOutDated, retrying up to " + reCompile +" times");
                       		  }
-                      	  
+
                       		  for (int i = 0; i < reCompile;i++){
                       			  compiled = translateJsp();
                       			  if (compiled || !(jspResources.isOutdated())){
@@ -531,7 +527,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                     if (logger.isLoggable(Level.FINE)) {
                         //classloader should have already been created for a class that would have caused this error
                         logger.logp(Level.FINE,CLASS_NAME,"_checkForTranslation", "UnsupportedClassVersionError");
-                    }       
+                    }
                 }
             }
         }
@@ -544,8 +540,8 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         // 247773: Move app syncToOsThread to checkForTranslation
         JspCompilerResult compilerResult = JspTranslatorUtil.translateJspAndCompile(jspResources, tcontext, configManager.getConfigurationForUrl(inputSource
                 .getRelativeURL()), options, tlc, false, Collections.EMPTY_LIST);
-        
-      //PK76810 - Starts  
+
+      //PK76810 - Starts
         if (compilerResult == null && options.isZOS()){
         	int fileLockRetrying = 240;
         	Properties webContainerProperties = WebContainer.getWebContainerProperties();
@@ -560,15 +556,15 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         			fileLockRetrying = 240;
         		}
         	}
-        	
+
         	if (logger.isLoggable(Level.FINE)) {
-                logger.logp(Level.FINE,CLASS_NAME,"translateJsp", "FileLock failed in translateJspAndCompile...retrying up to " + 
-                							fileLockRetrying + " seconds");  												
+                logger.logp(Level.FINE,CLASS_NAME,"translateJsp", "FileLock failed in translateJspAndCompile...retrying up to " +
+                							fileLockRetrying + " seconds");
             }
         	boolean fileLock = false;
         	FileLocker zosFileLocker = (FileLocker) new JspClassFactory().getInstanceOf("FileLocker");
         	if (zosFileLocker == null){
-        		JspCoreException exception = new JspCoreException("jsp.error.file.locker.failed"); 
+        		JspCoreException exception = new JspCoreException("jsp.error.file.locker.failed");
                 throw exception;
         	}
 
@@ -578,14 +574,14 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         			fileLock = zosFileLocker.obtainFileLock(fileLockString);
         			if (fileLock){
         				zosFileLocker.releaseFileLock(fileLockString);
-        				if (logger.isLoggable(Level.FINE))																		
-                            logger.logp(Level.FINE,CLASS_NAME,"translateJsp", "FileLock retrying succeeded, releaseFileLock");  
+        				if (logger.isLoggable(Level.FINE))
+                            logger.logp(Level.FINE,CLASS_NAME,"translateJsp", "FileLock retrying succeeded, releaseFileLock");
         				return false;
         			}
         			Thread.sleep(1000);
         		}
         		catch (InterruptedException e){
-        			JspCoreException exception = new JspCoreException("jsp.error.file.lock.retrying.failed"); 
+        			JspCoreException exception = new JspCoreException("jsp.error.file.lock.retrying.failed");
                     throw exception;
         		}
         	}
@@ -595,8 +591,8 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         	JspCoreException e= new JspCoreException("jsp.error.compile.failed");
             throw e;
         }
-        //PK76810 - Ends 
-        
+        //PK76810 - Ends
+
         if (compilerResult.getCompilerReturnValue() != 0) {
             JspCoreException e = new JspCoreException("jsp.error.compile.failed", new Object[] { inputSource.getRelativeURL(),
                     separatorString + compilerResult.getCompilerMessage() }); // Defect
@@ -638,7 +634,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                 }
             }
             */
-            
+
             String sourceDir = jspResources.getGeneratedSourceFile().getParentFile().toString() + File.separator + "*";
             permissionCollection.add(new FilePermission(sourceDir, "read"));
 
@@ -657,7 +653,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                     if (e!=null) {
                         urlList.addAll(e.adapt(Container.class).getURLs());
                     }
-                    
+
                 } else {
                     //TODO: container work
                     urlList.add(new File(tcontext.getRealPath("/WEB-INF/classes")
@@ -669,16 +665,16 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                 urlList.add(new File(tcontext.getRealPath("/WEB-INF/classes")).toURL());
             }
             urls = urlList.toArray(new URL[urlList.size()]);
-            JSPExtensionClassLoader jspLoader = new JSPExtensionClassLoader(urls, 
-                                                                            tcontext.getJspClassloaderContext(), 
-                                                                            jspResources.getClassName(), 
-                                                                            codeSource, 
+            JSPExtensionClassLoader jspLoader = new JSPExtensionClassLoader(urls,
+                                                                            tcontext.getJspClassloaderContext(),
+                                                                            jspResources.getClassName(),
+                                                                            codeSource,
                                                                             permissionCollection);
             if (servletConfig != null && jspResources.getPackageName().equals(Constants.JSP_FIXED_PACKAGE_NAME)) {
                 try {
                     jspLoader.loadClass(jspResources.getPackageName() + "." + jspResources.getClassName(), true);
                 } catch (UnsupportedClassVersionError e) {
-                    throw e;  
+                    throw e;
                 } catch (Throwable e1) {
                     //PI09596 start
                     logger.logp(Level.WARNING, CLASS_NAME, "createClassLoader", "jsp.load.class.exception", new Object[] {jspResources.getPackageName() + "." + jspResources.getClassName(), e1} );
@@ -747,8 +743,8 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         }
         return outdated;
     }
-    
-    //Defect 268176.1 
+
+    //Defect 268176.1
     public boolean isAvailable() {
         boolean available = false;
         String relativeURL = inputSource.getRelativeURL();
@@ -756,7 +752,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         if (container!=null) {
             if (options.isDisableJspRuntimeCompilation() == false) {
                 Entry entry = container.getEntry(relativeURL);
-                
+
                 if(entry != null){
                     available=true;
                 }
@@ -784,22 +780,22 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         }
         return available;
     }
-    
+
     public JspResources getJspResources() {
         return jspResources;
     }
-    
+
     protected abstract void preinvokeCheckForTranslation(HttpServletRequest req) throws JspCoreException;
     protected abstract PermissionCollection createPermissionCollection() throws MalformedURLException;
-    
+
     public void load() throws Exception {
     	 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)) {
              logger.logp(Level.FINER, CLASS_NAME, "load", "no op");
          }
-         
+
         // do nothing, jsps don't have an init method and they do their own classloading.
     }
-    
+
     @Override
     // Do not sync for performance reasons.  It is ok to print this warning more than once, just trying to limit it for the most part.
     public boolean hitWarningStatus() {

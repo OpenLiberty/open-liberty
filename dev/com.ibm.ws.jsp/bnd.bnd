@@ -106,6 +106,7 @@ Import-Package: \
    org.eclipse.jdt.internal.compiler.impl;usage="JSP", \
    org.eclipse.jdt.internal.compiler.problem;usage="JSP", \
    sun.io;resolution:=optional, \
+   com.ibm.ws.jsp.speclevel, \
    *
 
 Include-Resource: \

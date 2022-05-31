@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,26 +24,26 @@ import com.ibm.ws.jsp.translator.visitor.validator.ValidateResult;
 import com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory;
 
 public class GeneratorUtilsExtImpl implements GeneratorUtilsExt {
-	
+
 	public GeneratorUtilsExtImpl() {}
 
 	@Override
 	public void generateELFunctionCode(JavaCodeWriter writer,
 			ValidateResult validatorResult) throws JspCoreException {
-		
+
         writer.println("private static org.apache.jasper.runtime.ProtectedFunctionMapper _jspx_fnmap = null;");
-        
-        if (validatorResult.getValidateFunctionMapper().getFnMap().size() > 0) { //LIDB4147-9        
-            
+
+        if (validatorResult.getValidateFunctionMapper().getFnMap().size() > 0) { //LIDB4147-9
+
             writer.println();
             writer.println("static {");
             writer.println("_jspx_fnmap = org.apache.jasper.runtime.ProtectedFunctionMapper.getInstance();");
 
-            for (Iterator itr = validatorResult.getValidateFunctionMapper().getFnMap().keySet().iterator(); itr.hasNext();) {  //LIDB4147-9 
+            for (Iterator itr = validatorResult.getValidateFunctionMapper().getFnMap().keySet().iterator(); itr.hasNext();) {  //LIDB4147-9
                 String fnQName = (String) itr.next();
                 String fnPrefix = fnQName.substring(0, fnQName.indexOf(':'));
                 String fnName = fnQName.substring(fnQName.indexOf(':')+1);
-                           
+
                 writer.print("_jspx_fnmap.mapFunction(");
                 writer.print(GeneratorUtils.quote(fnPrefix));
                 writer.print(", ");
@@ -73,17 +73,17 @@ public class GeneratorUtilsExtImpl implements GeneratorUtilsExt {
                     writer.print("null");
                 }
                 writer.print(");");
-                writer.println();     
+                writer.println();
             }
             writer.println("}");
             writer.println();
         }
 
 	}
-	
+
 	@Override
     public String getClassFileVersion() {
-        return JSPExtensionFactory.getLoadedPagesSpecLevel();
+        return JSPExtensionFactory.loadedSpecLevel;
     }
 
     //PI59436 start
@@ -95,7 +95,7 @@ public class GeneratorUtilsExtImpl implements GeneratorUtilsExt {
             String fnmapvar,
             boolean XmlEscape,
             String pageContextVar) {  //PK65013
-                
+
             /*
              * Determine which context object to use.
              */

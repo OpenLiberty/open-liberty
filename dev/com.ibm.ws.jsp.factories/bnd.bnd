@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2021 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -20,12 +20,6 @@ com.ibm.ws.jsp22.webcontainerext.ws.PrepareJspHelper22Factory, \
 com.ibm.ws.jsp22.translator.visitor.validator.ElValidatorExtFactoryImpl, \
 com.ibm.ws.jsp22.translator.visitor.generator.GeneratorUtilsExtFactoryImpl
 
-Service-Component: \
-   com.ibm.ws.jsp.v22.dd; \
-      implementation:=com.ibm.ws.javaee.version.PagesVersion; \
-      provide:=com.ibm.ws.javaee.version.PagesVersion; \
-      properties:="version:String=2.2"
-
 Import-Package: \
 !com.ibm.ws.jsp22.translator.visitor.generator, \
 !com.ibm.ws.jsp22.translator.visitor.validator, \
@@ -42,7 +36,9 @@ org.apache.jasper.compiler;version=2.2, \
 org.apache.jasper.runtime;version=2.2, \
  *
 
-Export-Package: com.ibm.ws.jsp22.webcontainerext;version=2.2, \
+Export-Package: \
+   com.ibm.ws.jsp.speclevel, \
+   com.ibm.ws.jsp22.webcontainerext;version=2.2, \
    com.ibm.ws.jsp22.webcontainerext.ws;version=2.2, \
    com.ibm.ws.jsp22.translator.visitor.validator;version="2.2", \
    com.ibm.ws.jsp22.translator.visitor.generator;version="2.2"

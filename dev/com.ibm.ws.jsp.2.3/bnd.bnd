@@ -23,13 +23,8 @@ com.ibm.ws.jsp23.webcontainerext.ws.PrepareJspHelper23Factory, \
 com.ibm.ws.jsp23.translator.visitor.validator.ElValidatorExtFactoryImpl, \
 com.ibm.ws.jsp23.translator.visitor.generator.GeneratorUtilsExtFactoryImpl
 
-Service-Component: \
-   com.ibm.ws.jsp.v23.dd; \
-      implementation:=com.ibm.ws.javaee.version.PagesVersion; \
-      provide:=com.ibm.ws.javaee.version.PagesVersion; \
-      properties:="version:String=2.3"
-
 Export-Package: \
+   com.ibm.ws.jsp.speclevel, \
 	com.ibm.ws.jsp23.webcontainerext;version="2.3", \
 	com.ibm.ws.jsp23.webcontainerext.ws;version="2.3", \
 	com.ibm.ws.jsp23.translator.visitor.validator;version="2.3", \
