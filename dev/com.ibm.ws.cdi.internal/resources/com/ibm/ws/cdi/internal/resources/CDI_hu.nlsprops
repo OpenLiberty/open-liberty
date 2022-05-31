@@ -89,9 +89,9 @@ bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: A(z) {0} oszt\u00e1ly nem val\
 bce.does.not.implement.bce.CWOWB1014E.explanation=Az alkalmaz\u00e1s tartalmaz egy META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension f\u00e1jlt, amely tartalmazza az oszt\u00e1lyt, de az oszt\u00e1ly nem val\u00f3s\u00edtja meg a jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension fel\u00fcletet.
 bce.does.not.implement.bce.CWOWB1014E.useraction=M\u00f3dos\u00edtsa az oszt\u00e1lyt \u00fagy, hogy megval\u00f3s\u00edtsa a jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension fel\u00fcletet.
 
-cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: A cdi12 konfigur\u00e1ci\u00f3s elemet a cdi konfigur\u00e1ci\u00f3s elem hat\u00e1lytalan\u00edtja.
-cdi12.element.type.superceded.CWOWB1015W.explanation=A cdi konfigur\u00e1ci\u00f3s elem fel\u00fcl\u00edrja a cdi12 konfigur\u00e1ci\u00f3s elemet, \u00e9s a kor\u00e1bbi be\u00e1ll\u00edt\u00e1sok mellett \u00fajakat is tartalmaz.
-cdi12.element.type.superceded.CWOWB1015W.useraction=M\u00f3dos\u00edtsa a server.xml konfigur\u00e1ci\u00f3t, hogy a cdi konfigur\u00e1ci\u00f3s elemet haszn\u00e1lja a cdi12 konfigur\u00e1ci\u00f3s elem helyett.
+cdi12.element.type.superceded.CWOWB1015I=CWOWB1015I: A cdi12 konfigur\u00e1ci\u00f3s elemet a cdi konfigur\u00e1ci\u00f3s elem hat\u00e1lytalan\u00edtja.
+cdi12.element.type.superceded.CWOWB1015I.explanation=A cdi konfigur\u00e1ci\u00f3s elem fel\u00fcl\u00edrja a cdi12 konfigur\u00e1ci\u00f3s elemet, \u00e9s a kor\u00e1bbi be\u00e1ll\u00edt\u00e1sok mellett \u00fajakat is tartalmaz.
+cdi12.element.type.superceded.CWOWB1015I.useraction=M\u00f3dos\u00edtsa a server.xml konfigur\u00e1ci\u00f3t, hogy a cdi konfigur\u00e1ci\u00f3s elemet haszn\u00e1lja a cdi12 konfigur\u00e1ci\u00f3s elem helyett.
 
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: A cdi konfigur\u00e1ci\u00f3s elem emptyBeansXMLExplicitBeanArchive attrib\u00fatuma csak a CDI 4.0 vagy \u00fajabb v\u00e1ltozat\u00e1n t\u00e1mogatott. Ez az attrib\u00fatum figyelmen k\u00edv\u00fcl marad.
 cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=Az emptyBeansXMLExplicitBeanArchive attrib\u00fatum 4.0 v\u00e1ltozatn\u00e1l kor\u00e1bbi CDI eset\u00e9n hat\u00e1s n\u00e9lk\u00fcl marad.
