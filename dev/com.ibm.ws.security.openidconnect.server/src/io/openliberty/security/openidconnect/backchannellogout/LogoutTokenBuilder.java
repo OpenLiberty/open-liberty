@@ -39,6 +39,8 @@ import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JwsSigner;
+import com.ibm.ws.security.oauth20.util.CacheUtil;
+import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.server.plugins.IDTokenImpl;
@@ -125,8 +127,66 @@ public class LogoutTokenBuilder {
     }
 
     Map<OidcBaseClient, Set<String>> buildLogoutTokensForUser(String user) {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = getClientsToLogOut(user);
-        return buildLogoutTokensForClients(clientsToLogOut);
+        Collection<OAuth20Token> allCachedUserTokens = getAllCachedUserTokens(user);
+        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = getClientsToLogOut(allCachedUserTokens);
+        Map<OidcBaseClient, Set<String>> logoutTokens = buildLogoutTokensForClients(clientsToLogOut);
+        removeUserTokensFromCache(allCachedUserTokens, clientsToLogOut);
+        return logoutTokens;
+    }
+
+    Collection<OAuth20Token> getAllCachedUserTokens(String user) {
+        return tokenCache.getAllUserTokens(user);
+    }
+
+    void removeUserTokensFromCache(Collection<OAuth20Token> allCachedUserTokens, Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut) {
+        removeUserIdTokensFromCache(clientsToLogOut);
+        removeUserAccessTokensFromCache(allCachedUserTokens, clientsToLogOut);
+    }
+
+    void removeUserIdTokensFromCache(Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut) {
+        for (Entry<OidcBaseClient, List<IDTokenImpl>> clientEntry : clientsToLogOut.entrySet()) {
+            for (IDTokenImpl cachedIdToken : clientEntry.getValue()) {
+                tokenCache.remove(cachedIdToken.getId());
+                removeRefreshTokenAssociatedWithOAuthTokenFromCache(cachedIdToken);
+            }
+        }
+    }
+
+    void removeUserAccessTokensFromCache(Collection<OAuth20Token> allCachedUserTokens, Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens) {
+        if (clientsToCachedIdTokens.isEmpty()) {
+            return;
+        }
+        Set<String> clientIdsBeingLoggedOut = new HashSet<>();
+        for (OidcBaseClient client : clientsToCachedIdTokens.keySet()) {
+            clientIdsBeingLoggedOut.add(client.getClientId());
+        }
+        for (OAuth20Token token : allCachedUserTokens) {
+            if (OAuth20Constants.ACCESS_TOKEN.equals(token.getType())) {
+                String clientIdForAccessToken = token.getClientId();
+                if (clientIdsBeingLoggedOut.contains(clientIdForAccessToken)) {
+                    // Only remove access tokens for this user for the clients that are being logged out
+                    removeAccessTokenAndAssociatedRefreshTokenFromCache(token);
+                }
+            }
+        }
+    }
+
+    void removeAccessTokenAndAssociatedRefreshTokenFromCache(OAuth20Token accessToken) {
+        String tokenString = accessToken.getTokenString();
+        String tokenLookupStr = tokenString;
+        if (OidcOAuth20Util.isJwtToken(tokenString)) {
+            tokenLookupStr = com.ibm.ws.security.oauth20.util.HashUtils.digest(tokenString);
+        }
+        tokenCache.remove(tokenLookupStr);
+        removeRefreshTokenAssociatedWithOAuthTokenFromCache(accessToken);
+    }
+
+    void removeRefreshTokenAssociatedWithOAuthTokenFromCache(OAuth20Token cachedToken) {
+        CacheUtil cu = new CacheUtil(tokenCache);
+        OAuth20Token refreshToken = cu.getRefreshToken(cachedToken);
+        if (refreshToken != null) {
+            tokenCache.remove(refreshToken.getTokenString());
+        }
     }
 
     /**
@@ -134,16 +194,11 @@ public class LogoutTokenBuilder {
      * OP's token cache that were issued to that client and user. The ID token claims can be used to build the claims for the
      * respective logout token(s).
      */
-    Map<OidcBaseClient, List<IDTokenImpl>> getClientsToLogOut(String user) {
-        Collection<OAuth20Token> allCachedUserTokens = getAllCachedUserTokens(user);
+    Map<OidcBaseClient, List<IDTokenImpl>> getClientsToLogOut(Collection<OAuth20Token> allCachedUserTokens) {
         if (allCachedUserTokens == null || allCachedUserTokens.isEmpty()) {
             return new HashMap<>();
         }
         return getClientToCachedIdTokensMap(allCachedUserTokens);
-    }
-
-    Collection<OAuth20Token> getAllCachedUserTokens(String user) {
-        return tokenCache.getAllUserTokens(user);
     }
 
     /**
@@ -219,7 +274,6 @@ public class LogoutTokenBuilder {
             try {
                 String logoutToken = createLogoutTokenForClientFromCachedIdToken(client, cachedIdToken);
                 logoutTokens.add(logoutToken);
-                removeIdTokenFromCache(cachedIdToken);
             } catch (LogoutTokenBuilderException e) {
                 if (e.getCause() instanceof IdTokenDifferentIssuerException) {
                     if (tc.isDebugEnabled()) {
@@ -294,10 +348,6 @@ public class LogoutTokenBuilder {
         requestUri = requestUri.substring(0, requestUri.lastIndexOf("/"));
         issuerIdentifier += requestUri;
         return issuerIdentifier;
-    }
-
-    void removeIdTokenFromCache(IDTokenImpl cachedIdToken) {
-        tokenCache.remove(cachedIdToken.getId());
     }
 
 }
