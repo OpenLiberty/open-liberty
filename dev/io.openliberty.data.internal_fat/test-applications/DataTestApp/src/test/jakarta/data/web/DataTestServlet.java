@@ -340,7 +340,7 @@ public class DataTestServlet extends FATServlet {
         Reservation r5 = new Reservation();
         r5.host = "testRepositoryCustom-host2@example.org";
         r5.invitees = Set.of("testRepositoryCustom-5a@example.org", "testRepositoryCustom-5b@example.org");
-        r5.location = "050-2 B125";
+        r5.location = "050-2 B120";
         r5.meetingID = 10030005;
         r5.start = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
         r5.stop = OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT);
@@ -364,7 +364,7 @@ public class DataTestServlet extends FATServlet {
         Reservation r8 = new Reservation();
         r8.host = "testRepositoryCustom-host4@example.org";
         r8.invitees = Set.of("testRepositoryCustom-8a@example.org");
-        r8.location = "30-2 E314";
+        r8.location = "030-2 E314";
         r8.meetingID = 10030008;
         r8.start = OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT);
         r8.stop = OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT);
@@ -389,10 +389,9 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
-                             reservations.findByLocationLike("-2 B1")
+                             reservations.findByLocationLikeOrderByMeetingID("-2 B1")
                                              .stream()
                                              .map(r -> r.meetingID)
-                                             .sorted() // TODO rely on SortBy instead of this
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030001L, 10030002L, 10030004L, 10030006L, 10030008L),
@@ -415,9 +414,8 @@ public class DataTestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        Reservation[] array = reservations.findByStartLessThanOrStartGreaterThan(OffsetDateTime.of(2022, 5, 25, 9, 30, 0, 0, CDT),
-                                                                                 OffsetDateTime.of(2022, 5, 25, 13, 30, 0, 0, CDT));
-        Arrays.sort(array, Comparator.<Reservation, Long> comparing(o -> o.meetingID).reversed()); // TODO rely on SortBy instead of this
+        Reservation[] array = reservations.findByStartLessThanOrStartGreaterThanOrderByMeetingIDDesc(OffsetDateTime.of(2022, 5, 25, 9, 30, 0, 0, CDT),
+                                                                                                     OffsetDateTime.of(2022, 5, 25, 13, 30, 0, 0, CDT));
         assertArrayEquals(new Reservation[] { r9, r3, r2, r1 }, array,
                           Comparator.<Reservation, Long> comparing(o -> o.meetingID)
                                           .thenComparing(Comparator.<Reservation, String> comparing(o -> o.host))
@@ -439,6 +437,18 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(10030003L, 10030001L, 10030004L, 10030006L, 10030009L, 10030005L, 10030007L, 10030002L, 10030008L),
+                             reservations.findByStopGreaterThanOrderByLocationDescOrderByHostOrderByStopAsc(OffsetDateTime.of(2022, 5, 25, 8, 0, 0, 0, CDT))
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(10030001L, 10030005L, 10030007L, 10030002L, 10030003L, 10030006L, 10030009L, 10030004L, 10030008L),
+                             reservations.findByStopLessThanOrderByHostAscOrderByLocationDescOrderByStart(OffsetDateTime.of(2022, 5, 26, 0, 0, 0, 0, CDT))
+                                             .stream()
+                                             .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         assertEquals(false, reservations.deleteByHostIn(List.of("testRepositoryCustom-host5@example.org")));

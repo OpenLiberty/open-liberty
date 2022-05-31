@@ -28,4 +28,9 @@ public class Reservation {
     public OffsetDateTime start;
 
     public OffsetDateTime stop;
+
+    @Override
+    public String toString() {
+        return "Reservation[" + meetingID + "]@" + Integer.toHexString(hashCode());
+    }
 }

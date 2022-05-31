@@ -75,6 +75,10 @@ public class DataPersistence {
 
         DatabaseStore dbstore = bc.getService(refs.iterator().next());
         String tablePrefix = dbstore.getTablePrefix();
+        // TODO persistence service needs to be fixed to allow the tablePrefix to be retrieved
+        // prior to invoking createPersistenceServiceUnit.  For now, just blank it out:
+        if (tablePrefix == null)
+            tablePrefix = "";
 
         HashSet<Class<?>> entityClasses = new HashSet<>(entities.size());
 

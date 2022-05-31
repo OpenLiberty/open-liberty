@@ -15,7 +15,9 @@ import java.util.AbstractCollection;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 import java.util.Vector;
 
 import io.openliberty.data.Data;
@@ -36,7 +38,7 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     Iterable<Reservation> findByHost(String host);
 
-    Collection<Reservation> findByLocationLike(String locationSubstring);
+    Collection<Reservation> findByLocationLikeOrderByMeetingID(String locationSubstring);
 
     List<Reservation> findByMeetingIDOrLocationLikeAndStartAndStopOrHost(long meetingID,
                                                                          String location,
@@ -46,11 +48,15 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     ArrayList<Reservation> findByStartBetweenAndLocationIn(OffsetDateTime minStart, OffsetDateTime maxStart, List<String> locations);
 
-    Reservation[] findByStartLessThanOrStartGreaterThan(OffsetDateTime startBefore, OffsetDateTime startAfter);
+    Reservation[] findByStartLessThanOrStartGreaterThanOrderByMeetingIDDesc(OffsetDateTime startBefore, OffsetDateTime startAfter);
 
     Vector<Reservation> findByStartNotBetween(OffsetDateTime startBefore, OffsetDateTime startAfter);
 
-    AbstractList<Reservation> findByStopGreaterThanEqual(OffsetDateTime minEndTime);
+    LinkedList<Reservation> findByStopGreaterThanEqual(OffsetDateTime minEndTime);
+
+    Stack<Reservation> findByStopGreaterThanOrderByLocationDescOrderByHostOrderByStopAsc(OffsetDateTime endAfter);
 
     AbstractCollection<Reservation> findByStopLessThanEqual(OffsetDateTime maxEndTime);
+
+    AbstractList<Reservation> findByStopLessThanOrderByHostAscOrderByLocationDescOrderByStart(OffsetDateTime endBefore);
 }

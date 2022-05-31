@@ -170,7 +170,7 @@ public class QueryHandler<T> implements InvocationHandler {
                             .append(entityName)
                             .append(" o WHERE ");
 
-            int orderBy = methodName.lastIndexOf("OrderBy");
+            int orderBy = methodName.indexOf("OrderBy");
             String s = orderBy > 0 ? methodName.substring(start, orderBy) : methodName.substring(start);
             for (int paramCount = 0, and = 0, or = 0, iNext, i = 0; i >= 0; i = iNext) {
                 and = and == -1 || and > i ? and : s.indexOf("And", i);
@@ -184,6 +184,32 @@ public class QueryHandler<T> implements InvocationHandler {
                     q.append(iNext == and ? " AND " : " OR ");
                     iNext += (iNext == and ? 3 : 2);
                 }
+            }
+
+            if (orderBy > 0) {
+                q.append(" ORDER BY ");
+                do {
+                    int i = orderBy + 7;
+                    orderBy = methodName.indexOf("OrderBy", i);
+                    int stopAt = orderBy == -1 ? methodName.length() : orderBy;
+                    boolean desc = false;
+                    if (methodName.charAt(stopAt - 1) == 'c' && methodName.charAt(stopAt - 2) == 's')
+                        if (methodName.charAt(stopAt - 3) == 'A') {
+                            stopAt -= 3;
+                        } else if (methodName.charAt(stopAt - 3) == 'e' && methodName.charAt(stopAt - 4) == 'D') {
+                            stopAt -= 4;
+                            desc = true;
+                        }
+
+                    String attribute = methodName.substring(i, stopAt);
+                    String name = attributeNames.get(attribute);
+                    q.append("o.").append(name == null ? attribute : name);
+
+                    if (desc)
+                        q.append(" DESC");
+                    if (orderBy > 0)
+                        q.append(", ");
+                } while (orderBy > 0);
             }
 
             System.out.println("Generated query for Repository method " + methodName);
