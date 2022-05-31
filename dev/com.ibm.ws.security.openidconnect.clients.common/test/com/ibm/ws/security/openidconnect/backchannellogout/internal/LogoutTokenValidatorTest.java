@@ -585,7 +585,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     }
 
     @Test
-    public void test_verifyTokenWithSameJtiNotRecentlyReceived_malformedIss() throws Exception {
+    public void test_verifyIssClaimMatchesRecentSession_malformedIss() throws Exception {
         JsonObject jsonClaims = getMinimumClaimsNoSid();
         jsonClaims.addProperty(Claims.ISSUER, false);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
@@ -599,7 +599,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     }
 
     @Test
-    public void test_verifyTokenWithSameJtiNotRecentlyReceived_issNotFound() throws Exception {
+    public void test_verifyIssClaimMatchesRecentSession_issNotFound() throws Exception {
         JsonObject jsonClaims = getMinimumClaimsNoSid();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
@@ -620,7 +620,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     }
 
     @Test
-    public void test_verifyTokenWithSameJtiNotRecentlyReceived_issFound() throws Exception {
+    public void test_verifyIssClaimMatchesRecentSession_issFound() throws Exception {
         JsonObject jsonClaims = getMinimumClaimsNoSid();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
