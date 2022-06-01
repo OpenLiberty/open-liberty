@@ -2,7 +2,7 @@
 symbolicName=io.openliberty.messaging.internal-3.1
 singleton=true
 IBM-App-ForceRestart: uninstall
-IBM-API-Package: jakarta.jms; version="3.1"; type="spec"
+IBM-API-Package: jakarta.jms; version="3.0"; type="spec"
 -features=io.openliberty.jakartaeePlatform-10.0, \
   io.openliberty.connectors-2.1.internal, \
   io.openliberty.jakarta.messaging-3.1, \
