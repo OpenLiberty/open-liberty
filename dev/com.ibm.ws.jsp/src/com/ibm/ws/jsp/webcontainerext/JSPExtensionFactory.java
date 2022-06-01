@@ -13,7 +13,6 @@ package com.ibm.ws.jsp.webcontainerext;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +53,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.javaee.dd.webext.Attribute;
 import com.ibm.ws.javaee.dd.webext.WebExt;
-import com.ibm.ws.javaee.version.PagesVersion;
+
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JSPStrBufferFactory;
 import com.ibm.ws.jsp.JSPStrBufferImpl;
@@ -108,10 +107,6 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     @Reference
     private ClassLoadingService classLoadingService;
     private BundleContext bundleContext;
-
-    public static String loadedSpecLevel = loadServletVersion();
-
-    private static String DEFAULT_VERSION = "2.2";
 
     /**
      * Active JSPExtensionFactory instance. May be null between deactivate and activate
@@ -601,39 +596,5 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
 
     public String resolveString(String x) {
         return locationService.resolveString(x);
-    }
-
-    private static synchronized String loadServletVersion(){
-        String methodName = "loadServletVersion";
-
-        try (InputStream input = JSPExtensionFactory.class.getClassLoader().getResourceAsStream("com/ibm/ws/jsp/speclevel/jspSpecLevel.properties")) {
-
-            // null check fixes errors in wc unit tests
-            if(input != null){
-                Properties prop = new Properties();
-                prop.load(input);
-                return prop.getProperty("version");
-            } else {
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                    logger.logp(Level.FINE, CLASS_NAME, methodName, "InputStream was null for jspSpecLevel.properties" );
-                }
-            }
-
-        } catch (Exception ex) {
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                logger.logp(Level.FINE, CLASS_NAME, methodName, "Exception occured: " + ex.getCause() );
-            }
-        }
-
-        logger.logp(Level.WARNING, CLASS_NAME, "getLoadedPagesSpecLevel", "jsp.feature.not.loaded.correctly");
-
-        return DEFAULT_VERSION;
-    }
-
-    public static boolean isPages30Loaded(){
-        if( JSPExtensionFactory.loadedSpecLevel.equals("3.0")) {
-            return true;
-        }
-        return false;
     }
 }

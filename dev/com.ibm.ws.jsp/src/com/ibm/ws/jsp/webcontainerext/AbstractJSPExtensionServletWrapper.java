@@ -376,7 +376,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
 
                             if (tmpJCI != null) {
                                 //get the current JSP version the server is running for this request
-                                String currentJspVersion = com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory.loadedSpecLevel;
+                                String currentJspVersion = com.ibm.ws.jsp.PagesVersionHandler.loadedSpecLevel;
                                 //if this does not match the version from the previously compiled version of the JSP then we need to re-translate and re-compile the JSP
                                 if (!currentJspVersion.equals(tmpJCI.getVersionInformation())) {
                                     translationRequired = true;

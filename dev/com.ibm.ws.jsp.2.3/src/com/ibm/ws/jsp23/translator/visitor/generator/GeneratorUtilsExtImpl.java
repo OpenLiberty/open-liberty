@@ -21,7 +21,7 @@ import com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils;
 import com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtilsExt;
 import com.ibm.ws.jsp.translator.visitor.generator.JavaCodeWriter;
 import com.ibm.ws.jsp.translator.visitor.validator.ValidateResult;
-import com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory;
+import com.ibm.ws.jsp.PagesVersionHandler;
 
 public class GeneratorUtilsExtImpl implements GeneratorUtilsExt {
 
@@ -92,7 +92,7 @@ public class GeneratorUtilsExtImpl implements GeneratorUtilsExt {
 
     @Override
     public String getClassFileVersion() {
-        return JSPExtensionFactory.loadedSpecLevel;
+        return PagesVersionHandler.loadedSpecLevel;
     }
 
     //PI59436 start
