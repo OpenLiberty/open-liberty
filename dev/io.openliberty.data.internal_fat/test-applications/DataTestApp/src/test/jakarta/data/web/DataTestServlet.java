@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 import static test.jakarta.data.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.web.Assertions.assertIterableEquals;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -288,8 +289,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(r3.invitees, r3found.invitees);
         assertEquals(r3.location, r3found.location);
         assertEquals(r3.meetingID, r3found.meetingID);
-        assertEquals(r3.start, r3found.start);
-        assertEquals(r3.stop, r3found.stop);
+        assertEquals(r3.start.toInstant(), r3found.start.toInstant());
+        assertEquals(r3.stop.toInstant(), r3found.stop.toInstant());
     }
 
     /**
@@ -421,8 +422,8 @@ public class DataTestServlet extends FATServlet {
                                           .thenComparing(Comparator.<Reservation, String> comparing(o -> o.host))
                                           .thenComparing(Comparator.<Reservation, String> comparing(o -> o.invitees.toString()))
                                           .thenComparing(Comparator.<Reservation, String> comparing(o -> o.location))
-                                          .thenComparing(Comparator.<Reservation, OffsetDateTime> comparing(o -> o.start))
-                                          .thenComparing(Comparator.<Reservation, OffsetDateTime> comparing(o -> o.stop)));
+                                          .thenComparing(Comparator.<Reservation, Instant> comparing(o -> o.start.toInstant()))
+                                          .thenComparing(Comparator.<Reservation, Instant> comparing(o -> o.stop.toInstant())));
 
         assertIterableEquals(List.of(10030001L, 10030002L, 10030003L, 10030009L),
                              reservations.findByStartNotBetween(OffsetDateTime.of(2022, 5, 25, 9, 30, 0, 0, CDT),
