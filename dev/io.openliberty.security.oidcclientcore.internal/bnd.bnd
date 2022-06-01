@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,10 +16,9 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-Bundle-Name: OpenID Connect Client Core
+Bundle-Name: Security OIDC Client Core Internal
 Bundle-SymbolicName: io.openliberty.security.oidcclientcore.internal
-Bundle-Copyright: 2022
-Bundle-License: Eclipse Public License; url=https://www.eclipse.org/legal/epl-v10.html
+Bundle-Description: TODO
 
 -dsannotations: \
   io.openliberty.servlet.internal.async.factory.AsyncContextFactory60Impl, \
@@ -45,6 +44,10 @@ Service-Component: \
   	provide:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
   	properties:="httpVersionSetting:String=2.0_Optional_On"
 
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
 Export-Package: \
     com.ibm.ws.webcontainer.speclevel, \
     io.openliberty.servlet.internal.*factory*;provide:=true
