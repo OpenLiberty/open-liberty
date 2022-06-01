@@ -298,15 +298,11 @@ LOGOUT_TOKEN_DUP_JTI=CWWKS1551E: Another logout token with the same [{0}] "jti" 
 LOGOUT_TOKEN_DUP_JTI.explanation=The "jti" claim uniquely identifies a logout token. Another logout token with this "jti" was used, so the token cannot be used again.
 LOGOUT_TOKEN_DUP_JTI.useraction=Ensure the logout token contains a unique "jti" value and that logout tokens are not used multiple times.
 
-# 0=OpenID Connect client config ID, 1=Claim value, 2=Claim name ("iss", "sub")
-NO_RECENT_SESSIONS_WITH_CLAIM=CWWKS1552E: The [{0}] OpenID Connect client cannot find any recent sessions for the [{1}] {2} claim.
-NO_RECENT_SESSIONS_WITH_CLAIM.explanation=The OpenID Connect client does not have any recent sessions with an OpenID Connect provider that matches the claim that is specified in the message. The claim that is specified in the message must have a value in the logout token that matches the same claim of an ID token that was received recently.
-NO_RECENT_SESSIONS_WITH_CLAIM.useraction=Ensure that claim that is specified in the message matches an ID token that was recently obtained from an OpenID Connect provider.
-
-# Do not translate "sid" or "sub"
-LOGOUT_TOKEN_ISS_DOES_NOT_MATCH_SAME_SID=CWWKS1553E: The [{0}] issuer of the logout token with the [{1}] "sid" claim and [{2}] "sub" claim does not match the [{3}] issuer that is associated with that session in the cache.
-LOGOUT_TOKEN_ISS_DOES_NOT_MATCH_SAME_SID.explanation=The issuer of the logout token does not match the issuer that is associated with the same session in the OpenID Connect client cache. The logout token must be issued by the same provider that is associated with the session.
-LOGOUT_TOKEN_ISS_DOES_NOT_MATCH_SAME_SID.useraction=Ensure that the logout token is issued by the same provider that is associated with the session.
+# Do not translate "iss", "sub", or "sid"
+# 0=OpenID Connect client config ID, 1="iss" claim value, 2="sub" claim value, 3="sid" claim value
+NO_RECENT_SESSIONS_WITH_CLAIMS=CWWKS1552E: The [{0}] OpenID Connect client cannot find any recent sessions that match the [{1}] "iss" claim, the [{2}] "sub" claim, and the [{3}] "sid" claim.
+NO_RECENT_SESSIONS_WITH_CLAIMS.explanation=The OpenID Connect client does not have any recent sessions with an OpenID Connect provider that matches all of the claims that are specified in the message. The claims that are specified in the message must have values in the logout token that match the same claims of an ID token that was received recently.
+NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Ensure that claims that are specified in the message match an ID token that was recently obtained from an OpenID Connect provider.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 
