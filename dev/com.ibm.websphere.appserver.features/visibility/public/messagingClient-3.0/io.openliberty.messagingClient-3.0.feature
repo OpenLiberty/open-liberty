@@ -2,7 +2,7 @@
 symbolicName=io.openliberty.messagingClient-3.0
 visibility=public
 singleton=true
-IBM-API-Package: jakarta.jms; type="spec", \
+IBM-API-Package: jakarta.jms; version="3.0"; type="spec", \
  com.ibm.websphere.sib.api.jms; type="internal"
 IBM-ShortName: messagingClient-3.0
 WLP-AlsoKnownAs: wasJmsClient-3.0
