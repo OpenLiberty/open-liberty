@@ -231,7 +231,7 @@ public abstract class AnnoCachingTest extends LoggingTest {
 
         getServer().startIfNotStarted(false,   // Don't preScrub 
                                       (startType == ServerStartType.DO_SCRUB),
-                                      false);  // Don't validate apps have started
+                                      true);  // Validate apps have started -- otherwise apps that start after 30 seconds will not be available for tests
 
         LOG.info("startServer: RETURN");
     }
