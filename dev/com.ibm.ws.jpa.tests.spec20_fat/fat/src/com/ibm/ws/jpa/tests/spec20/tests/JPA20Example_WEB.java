@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.tests.spec20.olgh;
+package com.ibm.ws.jpa.tests.spec20.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,9 +27,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.olgh10515.ejb.TestOLGH10515_EJB_SFEx_Servlet;
-import com.ibm.ws.jpa.olgh10515.ejb.TestOLGH10515_EJB_SF_Servlet;
-import com.ibm.ws.jpa.olgh10515.ejb.TestOLGH10515_EJB_SL_Servlet;
+import com.ibm.ws.jpa.example.web.TestExampleServlet;
 import com.ibm.ws.jpa.tests.spec20.FATSuite;
 import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
 
@@ -46,11 +44,11 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class TestOLGH10515_EJB extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "olgh10515Ejb";
-    private final static String RESOURCE_ROOT = "test-applications/olgh10515/";
-    private final static String appFolder = "ejb";
-    private final static String appName = "olgh10515Ejb";
+public class JPA20Example_WEB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "exampleWeb";
+    private final static String RESOURCE_ROOT = "test-applications/example/";
+    private final static String appFolder = "web";
+    private final static String appName = "exampleWeb";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
@@ -60,16 +58,14 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
     private static long timestart = 0;
 
     static {
-        dropSet.add("OLGH10515_DROP_${dbvendor}.ddl");
-        createSet.add("OLGH10515_CREATE_${dbvendor}.ddl");
-        populateSet.add("OLGH10515_POPULATE_${dbvendor}.ddl");
+        dropSet.add("JPA20_EXAMPLE_DROP_${dbvendor}.ddl");
+        createSet.add("JPA20_EXAMPLE_CREATE_${dbvendor}.ddl");
+        populateSet.add("JPA20_EXAMPLE_POPULATE_${dbvendor}.ddl");
     }
 
     @Server("JPA20Server")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH10515_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH10515_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestOLGH10515_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH10515_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestOLGH10515_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH10515_EJB_SFEx_Servlet")
+                    @TestServlet(servlet = TestExampleServlet.class, path = CONTEXT_ROOT + "/" + "TestExampleServlet")
     })
     public static LibertyServer server;
 
@@ -78,8 +74,18 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(TestOLGH10515_EJB.class);
+        bannerStart(JPA20Example_WEB.class);
         timestart = System.currentTimeMillis();
+
+        int appStartTimeout = server.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server.setConfigUpdateTimeout(120 * 1000);
+        }
 
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
@@ -93,6 +99,8 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
+        System.out.println("TestExample_Web Setting up database tables...");
+
         ddlSet.clear();
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
@@ -105,30 +113,25 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
         }
         executeDDL(server, ddlSet, false);
 
-        ddlSet.clear();
-        for (String ddlName : populateSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
-        }
-        executeDDL(server, ddlSet, false);
+//        ddlSet.clear();
+//        for (String ddlName : populateSet) {
+//            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+//        }
+//        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh10515.ejblocal");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh10515.model");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh10515.testlogic");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
-
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.olgh10515.ejb");
+        webApp.addPackages(true, "com.ibm.ws.jpa.example.model");
+        webApp.addPackages(true, "com.ibm.ws.jpa.example.testlogic");
+        webApp.addPackages(true, "com.ibm.ws.jpa.example.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
-        app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
         ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
@@ -148,6 +151,11 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
+//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+//        ClassloaderElement loader = new ClassloaderElement();
+//        loader.setApiTypeVisibility("+third-party");
+////        loader.getCommonLibraryRefs().add("HibernateLib");
+//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -189,7 +197,7 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(TestOLGH10515_EJB.class, timestart);
+            bannerEnd(JPA20Example_WEB.class, timestart);
         }
     }
 }

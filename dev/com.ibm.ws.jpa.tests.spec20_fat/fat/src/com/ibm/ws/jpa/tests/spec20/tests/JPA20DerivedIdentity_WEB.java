@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.tests.spec20;
+package com.ibm.ws.jpa.tests.spec20.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,9 +27,9 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.query.ejb.TestQuery_EJB_SFEx_Servlet;
-import com.ibm.ws.jpa.query.ejb.TestQuery_EJB_SF_Servlet;
-import com.ibm.ws.jpa.query.ejb.TestQuery_EJB_SL_Servlet;
+import com.ibm.ws.jpa.fvt.derivedidentity.tests.web.DerivedIdentityWebTestServlet;
+import com.ibm.ws.jpa.tests.spec20.FATSuite;
+import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -44,11 +44,11 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class JPA20Query_EJB extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "queryEjb";
-    private final static String RESOURCE_ROOT = "test-applications/query/";
-    private final static String appFolder = "ejb";
-    private final static String appName = "queryEjb";
+public class JPA20DerivedIdentity_WEB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "DerivedIdentityWeb";
+    private final static String RESOURCE_ROOT = "test-applications/derivedIdentity/";
+    private final static String appFolder = "apps/DerivedIdentityWeb.ear";
+    private final static String appName = "DerivedIdentityWeb";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
@@ -57,15 +57,13 @@ public class JPA20Query_EJB extends JPAFATServletClient {
     private static long timestart = 0;
 
     static {
-        dropSet.add("JPA20_QUERY_DROP_${dbvendor}.ddl");
-        createSet.add("JPA20_QUERY_CREATE_${dbvendor}.ddl");
+        dropSet.add("JPA20_DERIVEDIDENTITY_DROP_${dbvendor}.ddl");
+        createSet.add("JPA20_DERIVEDIDENTITY_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPA20Server")
+    @Server("JPA20DerivedIdentityWebServer")
     @TestServlets({
-                    @TestServlet(servlet = TestQuery_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestQuery_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestQuery_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestQuery_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestQuery_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestQuery_EJB_SFEx_Servlet")
+                    @TestServlet(servlet = DerivedIdentityWebTestServlet.class, path = CONTEXT_ROOT + "/" + "DerivedIdentityWebTestServlet")
     })
     public static LibertyServer server;
 
@@ -74,7 +72,7 @@ public class JPA20Query_EJB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(JPA20Query_EJB.class);
+        bannerStart(JPA20DerivedIdentity_WEB.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -99,7 +97,7 @@ public class JPA20Query_EJB extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
-        System.out.println("TestQuery_EJB Setting up database tables...");
+        System.out.println("Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
@@ -123,20 +121,15 @@ public class JPA20Query_EJB extends JPAFATServletClient {
     }
 
     private static void setupTestApplication() throws Exception {
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.query.ejblocal");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.query.model");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.query.testlogic");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
-
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.query.ejb");
+        webApp.addPackages(true, "com.ibm.ws.jpa.commonentities.datamodel");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.derivedidentity.testlogic");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.derivedidentity.tests.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
-        app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
         ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
@@ -156,11 +149,6 @@ public class JPA20Query_EJB extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
-//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-//        ClassloaderElement loader = new ClassloaderElement();
-//        loader.setApiTypeVisibility("+third-party");
-////        loader.getCommonLibraryRefs().add("HibernateLib");
-//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -202,7 +190,7 @@ public class JPA20Query_EJB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(JPA20Query_EJB.class, timestart);
+            bannerEnd(JPA20DerivedIdentity_WEB.class, timestart);
         }
     }
 }

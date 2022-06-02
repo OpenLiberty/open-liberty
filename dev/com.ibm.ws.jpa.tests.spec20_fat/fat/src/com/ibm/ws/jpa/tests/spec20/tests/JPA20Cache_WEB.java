@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.tests.spec20;
+package com.ibm.ws.jpa.tests.spec20.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +27,11 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.fvt.criteriaquery.web.TestCriteriaQueryServlet;
+import com.ibm.ws.jpa.cache.web.CacheTestServlet;
+import com.ibm.ws.jpa.cache.web.FindCacheTestServlet;
+import com.ibm.ws.jpa.cache.web.RefreshCacheTestServlet;
+import com.ibm.ws.jpa.tests.spec20.FATSuite;
+import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -42,28 +46,29 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class JPA20CriteriaQuery_WEB extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "criteriaqueryWeb";
-    private final static String RESOURCE_ROOT = "test-applications/criteriaquery/";
+public class JPA20Cache_WEB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "cacheWeb";
+    private final static String RESOURCE_ROOT = "test-applications/cache/";
     private final static String appFolder = "web";
-    private final static String appName = "criteriaqueryWeb";
+    private final static String appName = "cacheWeb";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
-    private final static Set<String> populateSet = new HashSet<String>();
 
     private static long timestart = 0;
 
     static {
-        dropSet.add("JPA_CRITERIAQUERY_DROP_${dbvendor}.ddl");
-        createSet.add("JPA_CRITERIAQUERY_CREATE_${dbvendor}.ddl");
-        populateSet.add("JPA_CRITERIAQUERY_POPULATE_${dbvendor}.ddl");
+        dropSet.add("JPA_CACHE_DROP_${dbvendor}.ddl");
+        createSet.add("JPA_CACHE_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPA20CriteriaQueryWebServer")
+    @Server("JPA20CacheServer")
     @TestServlets({
-                    @TestServlet(servlet = TestCriteriaQueryServlet.class, path = CONTEXT_ROOT + "/" + "TestCriteriaQueryServlet")
+                    @TestServlet(servlet = CacheTestServlet.class, path = CONTEXT_ROOT + "/" + "CacheTestServlet"),
+                    @TestServlet(servlet = FindCacheTestServlet.class, path = CONTEXT_ROOT + "/" + "FindCacheTestServlet"),
+                    @TestServlet(servlet = RefreshCacheTestServlet.class, path = CONTEXT_ROOT + "/" + "RefreshCacheTestServlet"),
+
     })
     public static LibertyServer server;
 
@@ -72,7 +77,7 @@ public class JPA20CriteriaQuery_WEB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(JPA20CriteriaQuery_WEB.class);
+        bannerStart(JPA20Cache_WEB.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -109,20 +114,13 @@ public class JPA20CriteriaQuery_WEB extends JPAFATServletClient {
         }
         executeDDL(server, ddlSet, false);
 
-        ddlSet.clear();
-        for (String ddlName : populateSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
-        }
-        executeDDL(server, ddlSet, false);
-
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.criteriaquery.model");
-        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.criteriaquery.testlogic");
-        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.criteriaquery.web");
+        webApp.addPackages(true, "com.ibm.ws.jpa.cache.model");
+        webApp.addPackages(true, "com.ibm.ws.jpa.cache.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
@@ -162,19 +160,9 @@ public class JPA20CriteriaQuery_WEB extends JPAFATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            // Clean up database
-            try {
-                final Set<String> ddlSet = new HashSet<String>();
-                for (String ddlName : dropSet) {
-                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
-                }
-                executeDDL(server, ddlSet, true);
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-
             server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+                              "WTRN0074E: Exception caught from before_completion synchronization operation", // RuntimeException test, expected
+                              "DSRA0080E", "DSRA0010E" // Can happen with Oracle + OpenJPA
             );
         } finally {
             try {
@@ -188,7 +176,7 @@ public class JPA20CriteriaQuery_WEB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(JPA20CriteriaQuery_WEB.class, timestart);
+            bannerEnd(JPA20Cache_WEB.class, timestart);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.tests.spec20.olgh;
+package com.ibm.ws.jpa.tests.spec20.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +27,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.olgh9339.web.TestOLGH9339Servlet;
+import com.ibm.ws.jpa.fvt.util.tests.web.UtilWebTestServlet;
 import com.ibm.ws.jpa.tests.spec20.FATSuite;
 import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
 
@@ -44,28 +44,26 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class TestOLGH9339_WEB extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "olgh9339Web";
-    private final static String RESOURCE_ROOT = "test-applications/olgh9339/";
-    private final static String appFolder = "web";
-    private final static String appName = "olgh9339Web";
+public class JPA20Util_WEB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "UtilWeb";
+    private final static String RESOURCE_ROOT = "test-applications/util/";
+    private final static String appFolder = "UtilWeb.ear";
+    private final static String appName = "UtilWeb";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
-    private final static Set<String> populateSet = new HashSet<String>();
 
     private static long timestart = 0;
 
     static {
-        dropSet.add("OLGH9339_DROP_${dbvendor}.ddl");
-        createSet.add("OLGH9339_CREATE_${dbvendor}.ddl");
-        populateSet.add("OLGH9339_POPULATE_${dbvendor}.ddl");
+        dropSet.add("JPA20_UTIL_DROP_${dbvendor}.ddl");
+        createSet.add("JPA20_UTIL_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPA20Server")
+    @Server("JPA20UtilWebServer")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH9339Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH9339Servlet")
+                    @TestServlet(servlet = UtilWebTestServlet.class, path = CONTEXT_ROOT + "/" + "UtilWebTestServlet")
     })
     public static LibertyServer server;
 
@@ -74,8 +72,18 @@ public class TestOLGH9339_WEB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(TestOLGH9339_WEB.class);
+        bannerStart(JPA20Util_WEB.class);
         timestart = System.currentTimeMillis();
+
+        int appStartTimeout = server.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server.setConfigUpdateTimeout(120 * 1000);
+        }
 
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
@@ -89,6 +97,8 @@ public class TestOLGH9339_WEB extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
+        System.out.println("Setting up database tables...");
+
         ddlSet.clear();
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
@@ -101,20 +111,20 @@ public class TestOLGH9339_WEB extends JPAFATServletClient {
         }
         executeDDL(server, ddlSet, false);
 
-        ddlSet.clear();
-        for (String ddlName : populateSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
-        }
-        executeDDL(server, ddlSet, false);
+//        ddlSet.clear();
+//        for (String ddlName : populateSet) {
+//            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+//        }
+//        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.olgh9339.model");
-        webApp.addPackages(true, "com.ibm.ws.jpa.olgh9339.testlogic");
-        webApp.addPackages(true, "com.ibm.ws.jpa.olgh9339.web");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.util.entities");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.util.testlogic");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.util.tests.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
@@ -180,7 +190,7 @@ public class TestOLGH9339_WEB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(TestOLGH9339_WEB.class, timestart);
+            bannerEnd(JPA20Util_WEB.class, timestart);
         }
     }
 }

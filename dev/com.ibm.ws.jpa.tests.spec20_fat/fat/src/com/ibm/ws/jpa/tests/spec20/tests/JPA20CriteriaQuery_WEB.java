@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.tests.spec20;
+package com.ibm.ws.jpa.tests.spec20.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +27,9 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.query.web.TestQueryServlet;
+import com.ibm.ws.jpa.fvt.criteriaquery.web.TestCriteriaQueryServlet;
+import com.ibm.ws.jpa.tests.spec20.FATSuite;
+import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -42,26 +44,28 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class JPA20Query_WEB extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "queryWeb";
-    private final static String RESOURCE_ROOT = "test-applications/query/";
+public class JPA20CriteriaQuery_WEB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "criteriaqueryWeb";
+    private final static String RESOURCE_ROOT = "test-applications/criteriaquery/";
     private final static String appFolder = "web";
-    private final static String appName = "queryWeb";
+    private final static String appName = "criteriaqueryWeb";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
+    private final static Set<String> populateSet = new HashSet<String>();
 
     private static long timestart = 0;
 
     static {
-        dropSet.add("JPA20_QUERY_DROP_${dbvendor}.ddl");
-        createSet.add("JPA20_QUERY_CREATE_${dbvendor}.ddl");
+        dropSet.add("JPA_CRITERIAQUERY_DROP_${dbvendor}.ddl");
+        createSet.add("JPA_CRITERIAQUERY_CREATE_${dbvendor}.ddl");
+        populateSet.add("JPA_CRITERIAQUERY_POPULATE_${dbvendor}.ddl");
     }
 
-    @Server("JPA20Server")
+    @Server("JPA20CriteriaQueryWebServer")
     @TestServlets({
-                    @TestServlet(servlet = TestQueryServlet.class, path = CONTEXT_ROOT + "/" + "TestQueryServlet")
+                    @TestServlet(servlet = TestCriteriaQueryServlet.class, path = CONTEXT_ROOT + "/" + "TestCriteriaQueryServlet")
     })
     public static LibertyServer server;
 
@@ -70,7 +74,7 @@ public class JPA20Query_WEB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(JPA20Query_WEB.class);
+        bannerStart(JPA20CriteriaQuery_WEB.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -95,8 +99,6 @@ public class JPA20Query_WEB extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
-        System.out.println("TestQuery_Web Setting up database tables...");
-
         ddlSet.clear();
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
@@ -109,20 +111,20 @@ public class JPA20Query_WEB extends JPAFATServletClient {
         }
         executeDDL(server, ddlSet, false);
 
-//        ddlSet.clear();
-//        for (String ddlName : populateSet) {
-//            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
-//        }
-//        executeDDL(server, ddlSet, false);
+        ddlSet.clear();
+        for (String ddlName : populateSet) {
+            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+        }
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.query.model");
-        webApp.addPackages(true, "com.ibm.ws.jpa.query.testlogic");
-        webApp.addPackages(true, "com.ibm.ws.jpa.query.web");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.criteriaquery.model");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.criteriaquery.testlogic");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.criteriaquery.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
@@ -147,11 +149,6 @@ public class JPA20Query_WEB extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
-//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-//        ClassloaderElement loader = new ClassloaderElement();
-//        loader.setApiTypeVisibility("+third-party");
-////        loader.getCommonLibraryRefs().add("HibernateLib");
-//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -193,7 +190,7 @@ public class JPA20Query_WEB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(JPA20Query_WEB.class, timestart);
+            bannerEnd(JPA20CriteriaQuery_WEB.class, timestart);
         }
     }
 }
