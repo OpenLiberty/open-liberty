@@ -11,6 +11,7 @@
 package test.jakarta.data.web;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Param;
 import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
 
@@ -20,6 +21,8 @@ import io.openliberty.data.Repository;
 @Data(Order.class)
 public interface OrderRepo extends Repository<Order, Long> {
 
-    @Query("UPDATE Order o SET o.total = o.total * ?2 + ?3 WHERE o.id = ?1") // TODO add @Param
-    boolean addTaxAndShipping(long orderId, float taxRate, float shippingCost);
+    @Query("UPDATE Order o SET o.total = o.total * :rate + :shipping WHERE o.id = :id")
+    boolean addTaxAndShipping(@Param("id") long orderId,
+                              @Param("rate") float taxRate,
+                              @Param("shipping") float shippingCost);
 }

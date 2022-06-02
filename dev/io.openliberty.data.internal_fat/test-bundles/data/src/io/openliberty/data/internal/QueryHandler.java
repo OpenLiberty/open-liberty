@@ -14,6 +14,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Param;
 import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
 
@@ -383,9 +385,16 @@ public class QueryHandler<T> implements InvocationHandler {
                         resultType = returnArrayType;
 
                     TypedQuery<?> query = em.createQuery(jpql, resultType);
-                    if (args != null)
-                        for (int i = 0; i < args.length; i++)
-                            query.setParameter(i + 1, args[i]);
+                    if (args != null) {
+                        Parameter[] params = method.getParameters();
+                        for (int i = 0; i < args.length; i++) {
+                            Param param = params[i].getAnnotation(Param.class);
+                            if (param == null)
+                                query.setParameter(i + 1, args[i]);
+                            else // named parameter
+                                query.setParameter(param.value(), args[i]);
+                        }
+                    }
 
                     List<?> results = query.getResultList();
 
@@ -417,9 +426,16 @@ public class QueryHandler<T> implements InvocationHandler {
                 case UPDATE:
                 case DELETE:
                     jakarta.persistence.Query update = em.createQuery(jpql);
-                    if (args != null)
-                        for (int i = 0; i < args.length; i++)
-                            update.setParameter(i + 1, args[i]);
+                    if (args != null) {
+                        Parameter[] params = method.getParameters();
+                        for (int i = 0; i < args.length; i++) {
+                            Param param = params[i].getAnnotation(Param.class);
+                            if (param == null)
+                                update.setParameter(i + 1, args[i]);
+                            else // named parameter
+                                update.setParameter(param.value(), args[i]);
+                        }
+                    }
 
                     int updateCount = update.executeUpdate();
 
