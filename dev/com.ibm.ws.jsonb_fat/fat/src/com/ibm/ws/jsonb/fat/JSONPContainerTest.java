@@ -16,14 +16,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import web.jsonptest.JSONPTestServlet;
 
@@ -36,30 +36,30 @@ import web.jsonptest.JSONPTestServlet;
 public class JSONPContainerTest extends FATServletClient {
 
     private static final String appName = "jsonpapp";
-    private static final String javaeeServer = "com.ibm.ws.jsonp.container.fat";
-    private static final String jakartaee9Server = "com.ibm.ws.jsonp.container.ee9.fat";
 
+    @Server("com.ibm.ws.jsonp.container.fat")
     @TestServlet(servlet = JSONPTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        if (JakartaEE9Action.isActive()) {
-            server = LibertyServerFactory.getLibertyServer(jakartaee9Server);
-        } else {
-            server = LibertyServerFactory.getLibertyServer(javaeeServer);
-        }
+        Log.info(JSONPContainerTest.class, "setUp", "=====> Start JSONPContainerTest");
+
+        FATSuite.configureImpls(server);
         ShrinkHelper.defaultApp(server, appName, "web.jsonptest");
+
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+
+        Log.info(JSONPContainerTest.class, "tearDown", "<===== Stop JSONPContainerTest");
     }
 
     @Test
-    public void testJsonpProviderAvailableJohnzon() throws Exception {
-        runTest(server, appName + "/JSONPTestServlet", "testJsonpProviderAvailable&JsonpProvider=" + FATSuite.PROVIDER_JOHNZON_JSONP);
+    public void testJsonpProviderAvailable() throws Exception {
+        runTest(server, appName + "/JSONPTestServlet", getTestMethodSimpleName() + "&JsonpProvider=" + FATSuite.getJsonpProviderClassName());
     }
 }

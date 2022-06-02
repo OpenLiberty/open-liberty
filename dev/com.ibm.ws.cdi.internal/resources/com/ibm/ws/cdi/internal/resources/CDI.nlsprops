@@ -89,9 +89,9 @@ bce.does.not.implement.bce.CWOWB1014E=CWOWB1014E: The {0} class does not impleme
 bce.does.not.implement.bce.CWOWB1014E.explanation=The application includes a META-INF/services/jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension file that includes the class, but the class does not implement jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension
 bce.does.not.implement.bce.CWOWB1014E.useraction=Change the class so that it implements jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension.
 
-cdi12.element.type.superceded.CWOWB1015W=CWOWB1015W: The cdi12 configuration element is superseded by the cdi configuration element.
-cdi12.element.type.superceded.CWOWB1015W.explanation=The cdi configuration element replaces the cdi12 configuration element and contains all the same options, plus new options.
-cdi12.element.type.superceded.CWOWB1015W.useraction=Change your server.xml configuration to use the cdi configuration element instead of the cdi12 configuration element.
+cdi12.element.type.superceded.CWOWB1015I=CWOWB1015I: The cdi12 configuration element is superseded by the cdi configuration element.
+cdi12.element.type.superceded.CWOWB1015I.explanation=The cdi configuration element replaces the cdi12 configuration element and contains all the same options, plus new options.
+cdi12.element.type.superceded.CWOWB1015I.useraction=Change your server.xml configuration to use the cdi configuration element instead of the cdi12 configuration element.
 
 #CWOWB1016W is not used - https://github.com/OpenLiberty/open-liberty/pull/21107
 

@@ -196,7 +196,7 @@ define([
               observable1._notifyObservers('onMultiChange', ['multi2', 'multi1']);
               observable2._notifyObservers('onStateChange', ['STARTED', 'STOPPED']);
   
-              // Sanity check to ensure that the Observers were not affected by the previous _notifyObservers calls
+              // Test to ensure that the Observers were not affected by the previous _notifyObservers calls
               assert.equal(observer1a.newState,        null,  'Observer 1a should not have detected a changed value for "newState"');
               assert.equal(observer1a.oldState,        null,  'Observer 1a should not have detected a changed value for "oldState"');
               assert.equal(observer1a.unobservedMulti, null,  'Observer 1b should not have detected a changed value for "unobservedMulti"');

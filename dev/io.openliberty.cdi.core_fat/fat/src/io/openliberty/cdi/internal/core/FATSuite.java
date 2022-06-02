@@ -33,6 +33,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.cdi.internal.core.events.CDIEventTest;
@@ -58,7 +59,16 @@ public class FATSuite {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat("cdiCoreServer", EE10, EE7, EE8, EE9);
+    public static RepeatTests r;
+
+    static {
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            r = EERepeatActions.repeat("cdiCoreServer", EE10, EE7, EE8, EE9);
+        } else {
+            // EE10 requires Java 11, so if we're not using that, select EE9 in lite mode instead
+            r = EERepeatActions.repeat("cdiCoreServer", EE9, EE7, EE8);
+        }
+    }
 
     @BeforeClass
     public static void setup() throws Exception {

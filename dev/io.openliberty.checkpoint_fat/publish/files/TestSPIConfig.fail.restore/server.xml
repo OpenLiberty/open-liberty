@@ -9,7 +9,7 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
+    <applicationManager startTimeout="90s"/>
     <featureManager>
         <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>

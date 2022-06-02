@@ -122,7 +122,7 @@ public class HttpUtils {
      * @return The insecure HTTPS client.
      * @throws Exception If the client couldn't be created for some unforeseen reason.
      */
-    private static CloseableHttpClient getInsecureHttpsClient(String user, String password) throws Exception {
+    public static CloseableHttpClient getInsecureHttpsClient(String user, String password) throws Exception {
         /*
          * Setup the basic authentication credentials.
          */
@@ -195,7 +195,7 @@ public class HttpUtils {
 
     /**
      * Get the server certificates that are in use by the remote endpoint.
-     * 
+     *
      * @param endpoint The endpoint to get the certificates from.
      * @return The certificate chain from the endpoint.
      * @throws Exception if there was an unforeseen error getting the certificates.

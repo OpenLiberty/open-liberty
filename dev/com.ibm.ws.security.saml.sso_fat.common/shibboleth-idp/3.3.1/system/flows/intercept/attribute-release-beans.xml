@@ -82,7 +82,7 @@
         class="net.shibboleth.idp.consent.storage.impl.ConsentSerializer"
         p:symbolics-ref="shibboleth.consent.AttributeSymbolics" />
 
-    <!-- Default comparator which orders attributes according to the whitelist. -->
+    <!-- Default comparator which orders attributes according to the allow list. -->
     <bean id="DefaultAttributeIDComparator"
         class="net.shibboleth.idp.consent.logic.impl.PreferExplicitOrderComparator"
         c:order="#{getObject('shibboleth.consent.attribute-release.AttributeDisplayOrder')}" />

@@ -293,7 +293,7 @@ public class JSPtoPRealization extends AbstractProtoRealization implements PtoPR
 
         cursor.finished();
 
-        // Sanity - There should never be more than one mediation itemstream
+        // Validate - There should never be more than one mediation itemstream
         if (localisationCount > 1)
         {
             SIErrorException e =
@@ -397,7 +397,7 @@ public class JSPtoPRealization extends AbstractProtoRealization implements PtoPR
         // also check if there is an AOContainerItemStream for Remote Get
         int aoCount = _remoteSupport.reconstituteLocalQueuePoint(startMode);
 
-        // Sanity - There should never be more than one local msgs itemstream
+        // Validate - There should never be more than one local msgs itemstream
         // or more than one aoContainerItemStream
         if ((localisationCount > 1) || (aoCount > 1))
         {

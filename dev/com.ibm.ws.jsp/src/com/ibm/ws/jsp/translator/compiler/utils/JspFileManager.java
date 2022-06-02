@@ -492,7 +492,7 @@ public class JspFileManager extends ForwardingJavaFileManager<JavaFileManager> {
                 childFiles = directory.listFiles();
             }
 
-            if(childFiles != null) // If we are here, childFiles shouldn't be null. Sanity check.
+            if(childFiles != null) // If we are here, childFiles shouldn't be null. Validation.
                 for (final File childFile : childFiles) {
                     boolean isFile = false;
                     if (System.getSecurityManager() != null) {

@@ -1784,7 +1784,7 @@ public class GuaranteedTargetStream extends ControllableStream implements Target
         getControlAdapter().getHealthState().deregister(HealthStateListener.GAP_DETECTED_STATE);
 
         // We shouldn't be flushed if we have pending unacked data.  But
-        // just as a sanity check, throw an exception here if we have
+        // just as a validation, throw an exception here if we have
         // something undelivered.
         if (oststream
                         .containsState(

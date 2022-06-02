@@ -47,6 +47,8 @@ import org.objectweb.asm.commons.SimpleRemapper;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Bundle;
 
+import io.openliberty.asm.ASMHelper;
+
 public class StackJoinerManager {
     
     private static final TraceComponent tc = Tr.register(StackJoinerManager.class);
@@ -168,7 +170,6 @@ public class StackJoinerManager {
     
     
     public synchronized void resolveStackJoinFeature(Map<String, Object> serverConfigMap) {
-        //StackJoinerManager stackJoinerActivator = StackJoinerManager.getInstance();
         boolean isStackJoinEnabled = false;
         
         /*
@@ -198,23 +199,10 @@ public class StackJoinerManager {
          */
         isStackJoinEnabled = StackJoinerConfigurations.stackJoinerEnabled();
 
-        /*
-         * Check server.xml values NEED to explicitly check true or false. DO NOT set
-         * isStackJoinEnabled to false as a default with an "else".
-         * DON"T CHANGE TO THIS:
-         * 
-         * else { isStackJoinEnabled = false; }
-         * 
-         * That would erroneously assume that the new stackJoin value is "false" even if no
-         * value in server.xml has been set, therefore changing configuration against an
-         * end-users desire. This applies to the situation where bootstrap.props or an
-         * env var is set to true but no stackJoin server.xml value has been set.
-         */
         if (serverConfigMap != null) {
-            if (((Boolean) serverConfigMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME)) == true) {
-                isStackJoinEnabled = true;
-            } else if (((Boolean) serverConfigMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME)) == false){
-                isStackJoinEnabled = false;
+            Object o = serverConfigMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME);
+            if (o != null) {
+                isStackJoinEnabled = (Boolean) o;
             }
         }
         
@@ -341,7 +329,7 @@ public class StackJoinerManager {
     String getClassInternalName(URL classUrl) throws IOException {
         InputStream inputStream = classUrl.openStream();
         ClassReader reader = new ClassReader(inputStream);
-        reader.accept(new ClassVisitor(Opcodes.ASM7) {}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        reader.accept(new ClassVisitor(ASMHelper.getCurrentASM()) {}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
         inputStream.close();
         return reader.getClassName();
     }

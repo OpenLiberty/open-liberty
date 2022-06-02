@@ -25,6 +25,10 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 
 public abstract class WSATTest {
 
+	public static String WSAT_NOT_INSTALLED = "WS-AT Feature is not installed";
+	public static String FINISH_TWOWAY_MESSAGE = "Finish Twoway message";
+	public static String WSAT_DETECTED = "Detected WS-AT policy, however there is no active transaction in current thread";
+
 	@Rule public TestName testName = new TestName();
 
 	public final static int REQUEST_TIMEOUT = 60;
@@ -38,6 +42,14 @@ public abstract class WSATTest {
 
     	return HttpUtils.getHttpConnection(uri.toURL(), expectedResponseCode, connectionTimeout, HTTPRequestMethod.GET);
     }
+
+	protected HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int connectionTimeout, String testName) throws IOException, ProtocolException, URISyntaxException {
+
+		// Add testName parameter to query string so it appears in trace
+		final URI uri = appendUri(url.toURI(), testNameParameter + "=" + testName);
+
+		return HttpUtils.getHttpConnection(uri.toURL(), expectedResponseCode, connectionTimeout, HTTPRequestMethod.GET);
+	}
 
     private static URI appendUri(URI oldUri, String appendQuery) throws URISyntaxException {
         String newQuery = oldUri.getQuery();

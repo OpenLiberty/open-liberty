@@ -394,6 +394,15 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             outputPath = newAppPath;
         }
 
+        //Ensure previous transformed apps are cleared out
+        if (outputPath.toFile().exists()) {
+            if (outputPath.toFile().delete()) {
+                Log.info(c, m, "Removed existing transformed application: " + outputPath.toString());
+            } else {
+                Log.warning(c, "Tried to remove existing transformed application, but failed: " + outputPath.toString());
+            }
+        }
+
         try {
             // Invoke the jakarta transformer
             String[] args = new String[15 + transformationRulesAppend.size() * 2];

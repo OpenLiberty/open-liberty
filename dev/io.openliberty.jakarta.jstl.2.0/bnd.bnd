@@ -9,10 +9,10 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.jakarta.jstl.2.0; singleton:=true
-Bundle-Description: Jakarta Standard Tag Library, version 2.0
+-sub: *.bnd
+
+bVersion=1.0
 
 Export-Package: \
 	jakarta.servlet.jsp.jstl.core,\

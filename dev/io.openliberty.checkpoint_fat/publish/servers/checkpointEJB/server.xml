@@ -9,7 +9,7 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
+    <applicationManager startTimeout="90s"/>
     <featureManager>
         <feature>cdi-2.0</feature>
         <feature>ejb-3.2</feature>

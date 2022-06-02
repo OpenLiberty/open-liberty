@@ -267,7 +267,7 @@ public class RefreshCacheTestServlet extends JPATestServlet {
 
     /**
      * Verify that without any properties specified, that a call to em.refresh() will, by default, not update
-     * the contents of the data cache. [Basic persistence provider sanity testing]
+     * the contents of the data cache. [Basic persistence provider testing]
      */
     public void testRefreshC001_OpenJPA() throws Exception {
         try {
@@ -897,7 +897,7 @@ public class RefreshCacheTestServlet extends JPATestServlet {
 
     /*
      * Verify that that a call to em.refresh() with StoreCacheMode=REFRESH will update
-     * the contents of the data cache. [Basic persistence provider sanity testing]
+     * the contents of the data cache. [Basic persistence provider testing]
      */
 
     public void testRefreshC004_OpenJPA() throws Exception {

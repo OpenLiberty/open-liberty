@@ -700,11 +700,8 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     /**
      * Test that a logout token can not be used multiple times - try to reuse the same token (same jti value) and show that
      * the backchannelLogout request fails.
-     *
-     * @throws Exception
-     *
      */
-    // TODO - jti is not currently checked by the runtime @Test
+    @Test
     public void LogoutTokenValidationTests_replay_required_jti() throws Exception {
 
         String client = defaultClient;
@@ -720,7 +717,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
 
         // reuse the same token (same jti) and expect it to fail
         List<validationData> replayExpectations = setInvalidBCLRequestExpectations();
-        //TODO look for the correct message        replayExpectations = validationTools.addMessageExpectation(clientServer, replayExpectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the token contained a dis-allowed nonce claim.", MessageConstants.CWWKS1549E_BACK_CHANNEL_LOGOUT_NONCE_CLAIM);
+        replayExpectations = validationTools.addMessageExpectation(clientServer, replayExpectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the token contained a jti claim that has already been used.", MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR + ".*" + MessageConstants.CWWKS1551E_LOGOUT_TOKEN_DUP_JTI);
 
         invokeBcl(logutOutEndpoint, parms, replayExpectations);
 

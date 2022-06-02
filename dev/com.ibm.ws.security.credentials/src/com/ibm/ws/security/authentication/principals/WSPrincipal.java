@@ -56,13 +56,13 @@ public class WSPrincipal implements Principal, Serializable {
      * identity.
      *
      * @param securityName A String representing the user's name. Must not be <code>null</code> or empty.
-     * @param accessId A String representing the user's accessId.
+     * @param accessId     A String representing the user's accessId.
      * @see com.ibm.ws.security.AccessIdUtil#createAccessId(String, String, String)
      */
     public WSPrincipal(String securityName, String accessId, String authMethod) {
         if (securityName == null || securityName.isEmpty() ||
             authMethod == null || authMethod.isEmpty()) {
-            throw new IllegalArgumentException("Sanity check, null / empty values are invalid here");
+            throw new IllegalArgumentException("Check, null / empty values are invalid here");
         }
         this.securityName = securityName;
         this.accessId = accessId;

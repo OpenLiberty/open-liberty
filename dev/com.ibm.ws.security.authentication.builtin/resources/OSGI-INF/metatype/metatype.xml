@@ -64,6 +64,12 @@
         <AD id="cacheService.cardinality.minimum" type="String"  default="${count(cacheRef)}" 
             ibm:final="true" name="internal" description="internal use only"/>
 
+        <!--
+	    Should probably be renamed if ever made public. Only controls behavior when JCache is being used,
+	    and may possibly clear cache too-aggressively (i.e. at startup).
+	 -->
+        <AD id="autoClearCache" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false" />
     </OCD>
 
     <Designate pid="com.ibm.ws.security.authentication.cache">

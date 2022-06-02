@@ -1799,7 +1799,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             LogDirLocation = (String) config.get("logDirLocation"); //142740
             serverIOTimeoutRetry = (Integer) config.get("serverIOTimeoutRetry");
             loadBalanceWeight = (Integer) config.get("loadBalanceWeight");
-            //config.get("serverRole") in a server should not return null; sanity check since we are using equals.
+            //config.get("serverRole") in a server should not return null; verify since we are using equals.
             roleKind = (config.get("serverRole") != null && ((String) config.get("serverRole")).equals("BACKUP")) ? Role.SECONDARY : Role.PRIMARY;
             // PI76699 if the following ESI values are set in server.xml they will override default values.
             if (config.get("ESIEnable") != null) {

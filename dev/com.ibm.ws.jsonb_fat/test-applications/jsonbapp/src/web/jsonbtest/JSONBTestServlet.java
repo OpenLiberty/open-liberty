@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,8 @@ import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbException;
 import javax.json.bind.spi.JsonbProvider;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
@@ -51,7 +53,9 @@ public class JSONBTestServlet extends FATServlet {
     // Verify renaming via @JsonbProperty, ordering via @JsonbPropertyOrder, custom constructor via @JsonbCreator.
     // Test application classes nested 1, 2, and 3 levels deep, including in arrays.
     // Also unmarshall as generic map and verify contents.
-    public static void testApplicationClasses(String jsonbProvider) throws Exception {
+    public static void testApplicationClasses(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String jsonbProvider = request.getParameter("JsonbProvider");
+
         JsonbBuilder builder = JsonbBuilder.newBuilder(jsonbProvider);
         Jsonb jsonb = builder.build();
         String json;
@@ -106,18 +110,18 @@ public class JSONBTestServlet extends FATServlet {
 
         Squad wendigo = new Squad("Wendigo", (byte) 10, H230, 21.2f);
 
-        Tribe appPlatform = new Tribe();
+        SquadOfSquads appPlatform = new SquadOfSquads();
         appPlatform.name = "App Platform Server";
         appPlatform.squads.add(wendigo);
         appPlatform.squads.add(zombieApocalypse);
 
         json = jsonb.toJson(appPlatform);
-        System.out.println("JSON for Tribe object: " + json);
-        Tribe tribe = jsonb.fromJson(json, Tribe.class);
-        assertEquals(appPlatform.toString(), tribe.toString());
+        System.out.println("JSON for SquadOfSquads object: " + json);
+        SquadOfSquads squadOfSquads = jsonb.fromJson(json, SquadOfSquads.class);
+        assertEquals(appPlatform.toString(), squadOfSquads.toString());
 
         LinkedHashMap<?, ?> appPlatformMap = jsonb.fromJson(json, LinkedHashMap.class);
-        System.out.println("Tribe object unmarshalled as LinkedHashMap: ");
+        System.out.println("SquadOfSquads object unmarshalled as LinkedHashMap: ");
         assertEquals("App Platform Server", appPlatformMap.get("name"));
         List<?> squadList = (List<?>) appPlatformMap.get("squads");
         assertEquals(2, squadList.size());
@@ -212,7 +216,9 @@ public class JSONBTestServlet extends FATServlet {
     // Unmarshall JSON into Java object where one of the fields is an interface
     // and JsonbAdapter disambiguates which subclass should be used.
     // Use JsonbProvider to specify a provider to obtain the JsonbBuilder.
-    public static void testJsonbAdapter(String jsonbProvider) throws Exception {
+    public static void testJsonbAdapter(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String jsonbProvider = request.getParameter("JsonbProvider");
+
         ReservableRoom A101 = new ReservableRoom();
         A101.setBuilding("50");
         A101.setFloor((short) 2);
@@ -284,7 +290,9 @@ public class JSONBTestServlet extends FATServlet {
 
     // Verify that the specified JsonbProvider is available,
     // and that its package matches the package name of the expected provider.
-    public static void testJsonbProviderAvailable(String jsonbProvider) throws Exception {
+    public static void testJsonbProviderAvailable(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String jsonbProvider = request.getParameter("JsonbProvider");
+
         String expectedPackage = jsonbProvider.substring(0, jsonbProvider.lastIndexOf('.'));
 
         JsonbProvider provider = JsonbProvider.provider(jsonbProvider);
@@ -294,7 +302,9 @@ public class JSONBTestServlet extends FATServlet {
     }
 
     // Verify that the specified JsonbProvider is not available.
-    public static void testJsonbProviderNotAvailable(String jsonbProvider) throws Exception {
+    public static void testJsonbProviderNotAvailable(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String jsonbProvider = request.getParameter("JsonbProvider");
+
         try {
             JsonbProvider provider = JsonbProvider.provider(jsonbProvider);
             fail("Provider class " + jsonbProvider + " should not be available as " + provider);
@@ -305,7 +315,9 @@ public class JSONBTestServlet extends FATServlet {
     }
 
     // Load a JSON-B provider via thread context classloader and then use it to marshal/unmarshall JSON to/from Java objects.
-    public static void testThreadContextClassLoader(String jsonbProvider) throws Exception {
+    public static void testThreadContextClassLoader(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String jsonbProvider = request.getParameter("JsonbProvider");
+
         @SuppressWarnings("unchecked")
         Class<JsonbProvider> providerClass = (Class<JsonbProvider>) Thread.currentThread().getContextClassLoader().loadClass(jsonbProvider);
 

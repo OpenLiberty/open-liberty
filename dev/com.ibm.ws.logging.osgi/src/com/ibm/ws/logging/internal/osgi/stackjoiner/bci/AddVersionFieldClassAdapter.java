@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+
+import io.openliberty.asm.ASMHelper;
 
 /**
  * Simple adapter that adds a field to hold a version string. This is used
@@ -49,7 +51,7 @@ public class AddVersionFieldClassAdapter extends ClassVisitor {
      * @param versionFieldValue the value to associate with the version field
      */
     public AddVersionFieldClassAdapter(ClassVisitor delegate, String versionFieldName, String versionFieldValue) {
-        super(Opcodes.ASM8, delegate);
+        super(ASMHelper.getCurrentASM(), delegate);
         this.versionFieldName = versionFieldName;
         this.versionFieldValue = versionFieldValue;
     }

@@ -49,6 +49,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionHelper;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.clients.common.TraceConstants;
 import com.ibm.ws.security.openidconnect.common.Constants;
@@ -205,7 +206,7 @@ public class Jose4jUtil {
         String sid = jwtClaims.getClaimValue("sid", String.class);
         String timestamp = OidcUtil.getTimeStamp();
 
-        String wasOidcSessionId = String.join(":", configId, sub, sid != null ? sid : "", timestamp);
+        String wasOidcSessionId = OidcSessionHelper.createSessionId(configId, sub, sid != null ? sid : "", timestamp);
 
         OidcSessionCache oidcSessionCache = oidcClientConfig.getOidcSessionCache();
         oidcSessionCache.insertSession(sub, sid, wasOidcSessionId);

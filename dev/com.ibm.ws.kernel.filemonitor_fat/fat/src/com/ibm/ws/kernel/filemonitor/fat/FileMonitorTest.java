@@ -215,13 +215,13 @@ public class FileMonitorTest extends AbstractNotificationTest {
     }
 
     /**
-     * An easy test, as a sanity baseline.
+     * An easy test, as a validation baseline.
      */
     @Test
     public void testNoNotificationsHappenWhenNothingChanges() throws Exception {
         // Do nothing :)
         int count = recursiveMonitor.scrapeLogsForChanges();
-        // Sanity check - we didn't see anything, right?
+        // Test - we didn't see anything, right?
         assertEquals("We didn't change any files so we shouldn't have had any monitoring activity.", 0, count);
         assertNothingCreated(recursiveMonitor);
         assertNothingDeleted(recursiveMonitor);

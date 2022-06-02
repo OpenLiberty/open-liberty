@@ -58,7 +58,7 @@ public class JCAEnterpriseAppTestServlet extends FATServlet {
     private static String MBEAN_TYPE = "com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean";
 
     /**
-     * Sanity check test to make sure the servlet is available
+     * Test to make sure the servlet is available
      */
     public void checkSetupTest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         response.getWriter().println("Check setup test is working.");
