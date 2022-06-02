@@ -551,10 +551,12 @@ public class WSKeyStore extends Properties {
                     setProperty(Constants.SSLPROP_TOKEN_ENABLED, Constants.TRUE);
 
                     // set appropriate provider for jvm vendor
-                    if (contextProvider.equals(Constants.IBMJSSE2_NAME))
-                        setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, IBMPKCS11Impl_PROVIDER_NAME);
-                    else
-                        setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, SUNPKCS11_PROVIDER_NAME);
+                    if (keyStoreProvider == null) {
+                        if (contextProvider.equals(Constants.IBMJSSE2_NAME))
+                            setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, IBMPKCS11Impl_PROVIDER_NAME);
+                        else
+                            setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, SUNPKCS11_PROVIDER_NAME);
+                    }
                 }
             }
 
