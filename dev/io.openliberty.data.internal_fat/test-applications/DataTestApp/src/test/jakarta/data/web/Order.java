@@ -8,22 +8,25 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data;
+package test.jakarta.data.web;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.time.OffsetDateTime;
 
-import jakarta.enterprise.inject.Stereotype;
+import io.openliberty.data.Entity;
+import io.openliberty.data.Generated;
 
 /**
- * Copied from jakarta.nosql.mapping.Entity to investigate how well the
- * JNoSQL repository-related annotations work for relational database access.
+ *
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Stereotype
-public @interface Entity {
-    String value() default "";
+@Entity("ORDERS") // overrides the default name Order, which happens to be a keyword in the database
+public class Order {
+
+    @Generated(Generated.Type.SEQUENCE)
+    public Long id;
+
+    public String purchasedBy;
+
+    public OffsetDateTime purchasedOn;
+
+    public float total;
 }

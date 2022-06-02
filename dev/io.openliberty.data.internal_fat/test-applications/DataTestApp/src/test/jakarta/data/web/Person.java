@@ -10,14 +10,21 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import io.openliberty.data.Column;
+import io.openliberty.data.Entity;
+import io.openliberty.data.Id;
+
 /**
  *
  */
+@Entity
 public class Person {
 
     public String firstName;
 
+    @Column("SURNAME")
     public String lastName;
 
+    @Id("SSNUM")
     public long ssn;
 }

@@ -15,13 +15,14 @@ import jakarta.enterprise.inject.spi.Producer;
 import jakarta.enterprise.inject.spi.ProducerFactory;
 
 import io.openliberty.data.Data;
-import io.openliberty.data.Entity;
 
 public class BeanProducerFactory<R> implements ProducerFactory<R> {
-    private final Entity entity;
+    final Class<?> entityClass;
+    final String keyAttribute;
 
-    BeanProducerFactory(Entity entity) {
-        this.entity = entity;
+    BeanProducerFactory(Class<?> entityClass, String keyAttribute) {
+        this.entityClass = entityClass;
+        this.keyAttribute = keyAttribute;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class BeanProducerFactory<R> implements ProducerFactory<R> {
             System.out.println("createProducer null because " + bean + " has no @Data");
             return null;
         } else {
-            return new BeanProducer<T>(bean, entity);
+            return new BeanProducer<T>(bean, entityClass, keyAttribute);
         }
     }
 }

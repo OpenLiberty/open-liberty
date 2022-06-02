@@ -8,22 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data;
+package test.jakarta.data.web;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import jakarta.enterprise.inject.Stereotype;
+import io.openliberty.data.Data;
+import io.openliberty.data.Query;
+import io.openliberty.data.Repository;
 
 /**
- * Copied from jakarta.nosql.mapping.Entity to investigate how well the
- * JNoSQL repository-related annotations work for relational database access.
+ * Experiments with auto-generated keys.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Stereotype
-public @interface Entity {
-    String value() default "";
+@Data(Order.class)
+public interface OrderRepo extends Repository<Order, Long> {
+
+    @Query("UPDATE Order o SET o.total = o.total * ?2 + ?3 WHERE o.id = ?1") // TODO add @Param
+    boolean addTaxAndShipping(long orderId, float taxRate, float shippingCost);
 }

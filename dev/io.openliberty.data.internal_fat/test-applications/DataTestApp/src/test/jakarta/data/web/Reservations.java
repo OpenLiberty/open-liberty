@@ -21,14 +21,12 @@ import java.util.Stack;
 import java.util.Vector;
 
 import io.openliberty.data.Data;
-import io.openliberty.data.Entity;
 import io.openliberty.data.Repository;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
  */
-@Data
-@Entity(Reservation.class)
+@Data(Reservation.class)
 public interface Reservations extends Repository<Reservation, Long> {
     boolean deleteByHostIn(List<String> hosts);
 

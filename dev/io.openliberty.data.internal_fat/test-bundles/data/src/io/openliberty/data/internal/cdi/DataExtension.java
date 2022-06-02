@@ -16,7 +16,6 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -35,7 +34,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
 import io.openliberty.data.Data;
-import io.openliberty.data.Entity;
+import io.openliberty.data.Id;
 import io.openliberty.data.internal.DataPersistence;
 
 public class DataExtension implements Extension {
@@ -53,23 +52,23 @@ public class DataExtension implements Extension {
     public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
         System.out.println("afterTypeDiscovery");
 
-        Map<Entry<String, ClassLoader>, ArrayList<Entity>> entitiesMap = new HashMap<>();
+        Map<Entry<String, ClassLoader>, Map<Class<?>, String>> entitiesMap = new HashMap<>();
 
         for (AnnotatedType<?> beanType : beanTypes) {
             Class<?> beanInterface = beanType.getJavaClass();
             ClassLoader loader = beanInterface.getClassLoader();
 
             Data data = beanType.getAnnotation(Data.class);
-            String dataStore = data.value();
+            String dataStore = data.provider();
 
             Entry<String, ClassLoader> key = new SimpleImmutableEntry<>(dataStore, loader);
-            ArrayList<Entity> entities = entitiesMap.get(key);
+            Map<Class<?>, String> entities = entitiesMap.get(key);
             if (entities == null)
-                entitiesMap.put(key, entities = new ArrayList<>());
+                entitiesMap.put(key, entities = new HashMap<>());
 
-            Entity entity = beanType.getAnnotation(Entity.class);
-            if (entity == null) {
-                Class<?> entityClass = null;
+            Class<?> entityClass = data.value();
+            if (void.class.equals(entityClass)) {
+                entityClass = null;
                 // infer from single-parameter methods that accept an entity class
                 for (Method method : beanInterface.getMethods())
                     if (method.getParameterCount() == 1) {
@@ -89,31 +88,27 @@ public class DataExtension implements Extension {
                             }
                         }
                     }
-                // TODO if still not found, look through @Select annotations that indicate an entity result class type?
+                // TODO if still not found, look through @Query/@Select annotations that indicate an entity result class type?
                 if (entityClass == null)
-                    throw new IllegalArgumentException(beanInterface + " needs to specify @Entity to identify the entity class.");
-
-                entity = Entity.Literal.of(entityClass, getID(entityClass));
-            } else if (Entity.AUTO_DETECT_ID.equals(entity.id())) {
-                Class<?> entityClass = entity.value();
-                entity = Entity.Literal.of(entityClass, getID(entityClass));
+                    throw new IllegalArgumentException(beanInterface + " @Data annotation needs to specify the entity class.");
             }
-            entities.add(entity);
+            String keyAttribute = getID(entityClass);
+            entities.put(entityClass, keyAttribute);
 
             BeanAttributes<?> attrs = beanMgr.createBeanAttributes(beanType);
-            Bean<?> bean = beanMgr.createBean(attrs, beanInterface, new BeanProducerFactory<>(entity));
+            Bean<?> bean = beanMgr.createBean(attrs, beanInterface, new BeanProducerFactory<>(entityClass, keyAttribute));
             beans.add(bean);
         }
 
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         DataPersistence persistence = bc.getService(bc.getServiceReference(DataPersistence.class));
 
-        for (Entry<Entry<String, ClassLoader>, ArrayList<Entity>> entry : entitiesMap.entrySet())
+        for (Entry<Entry<String, ClassLoader>, Map<Class<?>, String>> entry : entitiesMap.entrySet())
             try {
                 String dataStore = entry.getKey().getKey();
                 ClassLoader loader = entry.getKey().getValue();
-                List<Entity> classes = entry.getValue();
-                persistence.defineEntities(dataStore, loader, classes);
+                Map<Class<?>, String> entityInfo = entry.getValue();
+                persistence.defineEntities(dataStore, loader, entityInfo);
             } catch (Exception x) {
                 x.printStackTrace();
                 System.err.println("ERROR: Unable to define entities for " + entry.getKey().getKey() + ": " + entry.getValue());
@@ -134,32 +129,21 @@ public class DataExtension implements Extension {
         String id = null;
         String upperID = null;
         for (Field field : c.getFields()) {
+            if (field.getAnnotation(Id.class) != null)
+                return field.getName();
+
             String name = field.getName().toUpperCase();
             if ("ID".equals(name))
-                return field.getName();
-            else if (name.endsWith("ID"))
+                id = field.getName();
+            else if ((id == null || id.length() != 2) && name.endsWith("ID"))
                 if (upperID == null || name.compareTo(upperID) < 0) {
                     upperID = name;
                     id = field.getName();
                 }
         }
-        for (Method method : c.getMethods()) {
-            if (method.getParameterCount() == 0) {
-                String name = method.getName();
-                if (name.startsWith("get")) {
-                    name = name.substring(3).toUpperCase();
-                    if ("ID".equals(name))
-                        return method.getName().substring(3);
-                    else if (name.endsWith("ID"))
-                        if (upperID == null || name.compareTo(upperID) < 0) {
-                            upperID = name;
-                            id = method.getName().substring(3);
-                        }
-                }
-            }
-        }
+
         if (id == null)
-            throw new IllegalArgumentException(c + " lacks public unique identifier field/method of the form *ID");
+            throw new IllegalArgumentException(c + " lacks public field with @Id or of the form *ID");
         return id;
     }
 }

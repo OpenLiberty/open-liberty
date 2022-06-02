@@ -36,7 +36,6 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
-import io.openliberty.data.Entity;
 import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
 
@@ -87,25 +86,26 @@ public class QueryHandler<T> implements InvocationHandler {
     private final Map<String, String> attributeNames = new HashMap<>();
     private final Class<T> beanClass;
     private final Data data;
-    private final Entity entity;
+    private final Class<?> entityClass;
     private final Set<Class<?>> entityClassesAvailable; // TODO is this information needed?
     private final String entityName;
+    private final String keyAttribute;
     private final DataPersistence persistence;
     private final PersistenceServiceUnit punit;
 
     @SuppressWarnings("unchecked")
-    public QueryHandler(Bean<T> bean, Entity entity) {
+    public QueryHandler(Bean<T> bean, Class<?> entityClass, String keyAttribute) {
         beanClass = (Class<T>) bean.getBeanClass();
         data = beanClass.getAnnotation(Data.class);
-        this.entity = entity;
-        Class<?> entityClass = entity.value();
-        entityName = entityClass.getSimpleName();
+        this.entityClass = entityClass;
+        this.entityName = entityClass.getSimpleName();
+        this.keyAttribute = keyAttribute;
 
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         persistence = bc.getService(bc.getServiceReference(DataPersistence.class));
 
         Entry<PersistenceServiceUnit, Set<Class<?>>> persistenceInfo = //
-                        persistence.getPersistenceInfo(data.value(), beanClass.getClassLoader());
+                        persistence.getPersistenceInfo(data.provider(), beanClass.getClassLoader());
         if (persistenceInfo == null)
             throw new RuntimeException("Persistence layer unavailable for " + data);
         punit = persistenceInfo.getKey();
@@ -145,16 +145,16 @@ public class QueryHandler<T> implements InvocationHandler {
                 return null; // default handling covers this
             if (Iterable.class.equals(paramTypes[0])) {
                 if ("findById".equals(methodName))
-                    return "SELECT o FROM " + entityName + " o WHERE o." + entity.id() + " IN ?1";
+                    return "SELECT o FROM " + entityName + " o WHERE o." + keyAttribute + " IN ?1";
                 else if ("deleteById".equals(methodName))
-                    return "DELETE FROM " + entityName + " o WHERE o." + entity.id() + " IN ?1";
+                    return "DELETE FROM " + entityName + " o WHERE o." + keyAttribute + " IN ?1";
             } else {
                 if ("findById".equals(methodName))
-                    return "SELECT o FROM " + entityName + " o WHERE o." + entity.id() + "=?1";
+                    return "SELECT o FROM " + entityName + " o WHERE o." + keyAttribute + "=?1";
                 else if ("existsById".equals(methodName))
-                    return "SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM " + entityName + " o WHERE o." + entity.id() + "=?1";
+                    return "SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM " + entityName + " o WHERE o." + keyAttribute + "=?1";
                 else if ("deleteById".equals(methodName))
-                    return "DELETE FROM " + entityName + " o WHERE o." + entity.id() + "=?1";
+                    return "DELETE FROM " + entityName + " o WHERE o." + keyAttribute + "=?1";
             }
         }
         throw new UnsupportedOperationException("Repository method " + methodName + " with parameters " + Arrays.toString(paramTypes));
@@ -357,15 +357,13 @@ public class QueryHandler<T> implements InvocationHandler {
                 case MERGE:
                     if (entityClassesAvailable.contains(args[0].getClass()) ||
                         entityClassesAvailable.contains(method.getParameterTypes()[0])) {
-                        em.merge(args[0]);
+                        returnValue = em.merge(args[0]);
                         em.flush();
-                        returnValue = returnType.isInstance(args[0]) ? args[0] : null;
+                        returnValue = returnType.isInstance(returnValue) ? returnValue : null;
                     } else if (Iterable.class.isAssignableFrom(method.getParameterTypes()[0])) {
                         ArrayList<Object> results = new ArrayList<>();
-                        for (Object e : ((Iterable<?>) args[0])) {
-                            em.merge(e);
-                            results.add(e);
-                        }
+                        for (Object e : ((Iterable<?>) args[0]))
+                            results.add(em.merge(e));
                         em.flush();
                         returnValue = returnType.isInstance(results) ? results : null;
                     } else {
@@ -378,7 +376,7 @@ public class QueryHandler<T> implements InvocationHandler {
                     if (returnArrayType == null)
                         if (Iterable.class.isAssignableFrom(returnType) ||
                             Optional.class.equals(returnType))
-                            resultType = entity.value();
+                            resultType = entityClass;
                         else
                             resultType = returnType;
                     else

@@ -10,20 +10,17 @@
  *******************************************************************************/
 package io.openliberty.data;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to experiment with.
+ * Copied from jakarta.nosql.mapping.Query to investigate how well the
+ * JNoSQL repository-related annotations work for relational database access.
  */
-@Documented
-@Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Query {
-    String value(); // JPQL
+    String value(); // allow usage of JPQL here for relational, in addition to JNoSQL text query for NoSQL.
 }
