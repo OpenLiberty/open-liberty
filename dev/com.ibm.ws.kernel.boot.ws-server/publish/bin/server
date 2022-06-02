@@ -1008,7 +1008,7 @@ javaCmd()
     "${JAVA_CMD}" "$@" >> "${JAVA_CMD_LOG}" 2>&1 &
   elif [ $ACTION = "run" ] || [ $ACTION = "debug" ]; then
     exec "${JAVA_CMD}" "$@"
-  elif [ $ACTION = "checkpoint" ]; then
+  elif [ $ACTION = "checkpoint" ] && [ -f "${SERVER_CONFIG_DIR}/server.xml" ]; then
     # Tail is used to print the content of the log file to the console
     # output. This is done so we can restore in the foreground (run)
     # and in the background (start)
