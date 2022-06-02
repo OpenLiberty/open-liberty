@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.spec10.embeddable;
+package com.ibm.ws.jpa.spec10.embeddable.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +28,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.embeddable.nested.web.TestEmbeddableNestedServlet;
+import com.ibm.ws.jpa.spec10.embeddable.FATSuite;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.spec10.embeddable;
+package com.ibm.ws.jpa.spec10.embeddable.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +29,10 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.embeddable.basic.web.TestEmbeddableBasicServlet;
+import com.ibm.ws.jpa.embeddable.basic.ejb.TestEmbeddableBasic_EJB_SFEx_Servlet;
+import com.ibm.ws.jpa.embeddable.basic.ejb.TestEmbeddableBasic_EJB_SF_Servlet;
+import com.ibm.ws.jpa.embeddable.basic.ejb.TestEmbeddableBasic_EJB_SL_Servlet;
+import com.ibm.ws.jpa.spec10.embeddable.FATSuite;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -44,12 +47,12 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class JPA10EmbeddableBasic_WEB extends JPAFATServletClient {
+public class JPA10EmbeddableBasic_EJB extends JPAFATServletClient {
 
-    private final static String CONTEXT_ROOT = "embeddableBasicWeb";
+    private final static String CONTEXT_ROOT = "embeddableBasicEjb";
     private final static String RESOURCE_ROOT = "test-applications/embeddable/basic/";
-    private final static String appFolder = "web";
-    private final static String appName = "embeddableBasicWeb";
+    private final static String appFolder = "ejb";
+    private final static String appName = "embeddableBasicEjb";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
@@ -64,7 +67,9 @@ public class JPA10EmbeddableBasic_WEB extends JPAFATServletClient {
 
     @Server("JPA10Server")
     @TestServlets({
-                    @TestServlet(servlet = TestEmbeddableBasicServlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableBasicServlet")
+                    @TestServlet(servlet = TestEmbeddableBasic_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableBasic_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestEmbeddableBasic_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableBasic_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestEmbeddableBasic_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableBasic_EJB_SFEx_Servlet")
     })
     public static LibertyServer server;
 
@@ -73,7 +78,7 @@ public class JPA10EmbeddableBasic_WEB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(JPA10EmbeddableBasic_WEB.class);
+        bannerStart(JPA10EmbeddableBasic_EJB.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -98,7 +103,7 @@ public class JPA10EmbeddableBasic_WEB extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
-        System.out.println(JPA10EmbeddableBasic_WEB.class.getName() + " Setting up database tables...");
+        System.out.println(JPA10EmbeddableBasic_EJB.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
@@ -116,15 +121,20 @@ public class JPA10EmbeddableBasic_WEB extends JPAFATServletClient {
     }
 
     private static void setupTestApplication() throws Exception {
+        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.basic.ejblocal");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.basic.model");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.basic.testlogic");
+        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
+
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.embeddable.basic.model");
-        webApp.addPackages(true, "com.ibm.ws.jpa.embeddable.basic.testlogic");
-        webApp.addPackages(true, "com.ibm.ws.jpa.embeddable.basic.web");
+        webApp.addPackages(true, "com.ibm.ws.jpa.embeddable.basic.ejb");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
+        app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
         ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
@@ -191,7 +201,7 @@ public class JPA10EmbeddableBasic_WEB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(JPA10EmbeddableBasic_WEB.class, timestart);
+            bannerEnd(JPA10EmbeddableBasic_EJB.class, timestart);
         }
     }
 }
