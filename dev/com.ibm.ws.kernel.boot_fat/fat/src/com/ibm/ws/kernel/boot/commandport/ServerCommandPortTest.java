@@ -20,11 +20,13 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
@@ -35,6 +37,7 @@ import componenttest.topology.utils.HttpUtils;
  * This test bucket validates the functionality of the server command port, the port that is used by the server script
  * to communicate with a running server, if required.
  */
+@RunWith(FATRunner.class)
 public class ServerCommandPortTest {
     private static final Class<?> c = ServerCommandPortTest.class;
 
