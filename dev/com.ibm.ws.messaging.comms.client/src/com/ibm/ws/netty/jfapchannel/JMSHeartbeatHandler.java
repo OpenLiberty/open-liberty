@@ -34,6 +34,14 @@ import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.handler.timeout.IdleState;
 
+/**
+ * Timeout handler class for managing heartbeat connections for each Netty JMS client.
+ * On each readTimeout, the error method of the read listener inside the OutboundConnection
+ * is called with a SocketTimeoutException. This is done to closely mimic what is currently
+ * done by Channel Framework
+ * 
+ * @see com.ibm.ws.sib.jfapchannel.impl.OutboundConnection
+ */
 public class JMSHeartbeatHandler extends IdleStateHandler{
 	
 
@@ -89,7 +97,7 @@ public class JMSHeartbeatHandler extends IdleStateHandler{
 	    			SibTr.warning(tc, "userEventTriggered: Event triggered was not a read timeout. This shouldn't happen. Event will be ignored.", evt);
 			}else {
 			
-				Attribute<OutboundConnection> attr = ctx.channel().attr(JMSClientInboundHandler.CONNECTION_KEY);
+				Attribute<OutboundConnection> attr = ctx.channel().attr(NettyJMSClientHandler.CONNECTION_KEY);
 				OutboundConnection connection = attr.get();
 		
 		        if (connection != null) {

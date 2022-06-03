@@ -64,12 +64,10 @@ public class RichClientTransportFactory implements NetworkTransportFactory
      * 
      * @param channelFramework
      */
-//    public RichClientTransportFactory(ChannelFramework channelFramework) // TODO Verify if bundle needed to pass as instance. Doesn't seem to be used. Could just pass if it's Netty or not.
     public RichClientTransportFactory()
     {
         if (tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>");
-//        this.nettyFramework = CommsClientServiceFacade.getNettyBundle();
         if (tc.isEntryEnabled())
             SibTr.exit(tc, "<init>");
     }
@@ -87,43 +85,44 @@ public class RichClientTransportFactory implements NetworkTransportFactory
 
         try
         {
-        	// TODO: If NOT Netty, do channelfw
-            // Get the virtual connection factory from the channel framework using the chain name
+        	// Get the virtual connection factory from the channel framework using the chain name
         	if(CommsOutboundChain.getChainDetails(chainName) != null) {
         		if(CommsOutboundChain.getChainDetails(chainName).useNetty()) {
-            		// If Netty, create new Netty channel factory
-            		// TODO: Getting error difference cause channelfw fails for testSSLFeatureUpdate
-            		// in com.ibm.ws.messaging.open_comms_fat because SSL chain failed to init properly due to no SSL Options
-            		// Check what to do here appropriately
-            		if(CommsOutboundChain.getChainDetails(chainName) != null && CommsOutboundChain.getChainDetails(chainName).isSSL() && CommsOutboundChain.getChainDetails(chainName).getSslOptions() == null)
-            			throw new InvalidChainNameException("Chain configuration not found in framework, " + chainName);
-                	connFactory = new NettyNetworkConnectionFactory(chainName);
-            	}else {
-            		VirtualConnectionFactory vcFactory = CommsClientServiceFacade.getChannelFramework().getOutboundVCFactory(chainName);
-                    connFactory = new CFWNetworkConnectionFactory(vcFactory);
-            	}
+        			// If Netty, create new Netty channel factory
+        			// TODO: Consult with team. Getting error difference cause channelfw fails for testSSLFeatureUpdate
+        			// in com.ibm.ws.messaging.open_comms_fat because SSL chain failed to init properly due to no SSL Options
+        			// Check what to do here appropriately
+        			CommsOutboundChain chain = CommsOutboundChain.getChainDetails(chainName);
+        			boolean usingSSL = chain.isSSL();
+        			if(usingSSL && chain.getSslOptions() == null)
+        				throw new InvalidChainNameException("Chain configuration not found in framework, " + chainName);
+        			connFactory = new NettyNetworkConnectionFactory(chainName, chain.getTcpOptions(), usingSSL?chain.getSslOptions():null, usingSSL?chain.getTlsProvider():null);
+        		}else {
+        			VirtualConnectionFactory vcFactory = CommsClientServiceFacade.getChannelFramework().getOutboundVCFactory(chainName);
+        			connFactory = new CFWNetworkConnectionFactory(vcFactory);
+        		}
         	}
-        	
+
 
         } catch (com.ibm.wsspi.channelfw.exception.ChannelException e) {
 
-            FFDCFilter.processException(e, CLASS_NAME + ".getOutboundNetworkConnectionFactoryByName",
-                                        JFapChannelConstants.RICHCLIENTTRANSPORTFACT_GETCONNFACBYNAME_01,
-                                        new Object[] { this, chainName });
+        	FFDCFilter.processException(e, CLASS_NAME + ".getOutboundNetworkConnectionFactoryByName",
+        			JFapChannelConstants.RICHCLIENTTRANSPORTFACT_GETCONNFACBYNAME_01,
+        			new Object[] { this, chainName });
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(tc, "Failure to obtain OVC for Outbound chain" + chainName, e);
+        	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        		SibTr.debug(tc, "Failure to obtain OVC for Outbound chain" + chainName, e);
 
-            throw new FrameworkException(e);
+        	throw new FrameworkException(e);
         } catch (com.ibm.wsspi.channelfw.exception.ChainException e) {
 
-            FFDCFilter.processException(e, CLASS_NAME + ".getOutboundNetworkConnectionFactoryByName",
-                                        JFapChannelConstants.RICHCLIENTTRANSPORTFACT_GETCONNFACBYNAME_01,
-                                        new Object[] { this, chainName });
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(tc, "Failure to obtain OVC for Outbound chain" + chainName, e);
+        	FFDCFilter.processException(e, CLASS_NAME + ".getOutboundNetworkConnectionFactoryByName",
+        			JFapChannelConstants.RICHCLIENTTRANSPORTFACT_GETCONNFACBYNAME_01,
+        			new Object[] { this, chainName });
+        	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        		SibTr.debug(tc, "Failure to obtain OVC for Outbound chain" + chainName, e);
 
-            throw new FrameworkException(e);
+        	throw new FrameworkException(e);
         }
 
         if (tc.isEntryEnabled())
@@ -143,25 +142,25 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         NetworkConnectionFactory connFactory = null;
         if (endPoint instanceof CFEndPoint)
         {
-            // Get the virtual connection factory from the EP and wrap it in our implementation of
-            // the NetworkConnectionFactory interface
+        	// Get the virtual connection factory from the EP and wrap it in our implementation of
+        	// the NetworkConnectionFactory interface
         	// TODO Check this out from a Netty endpoint perspective. Used for other types of connects. See CreateNewVirtualConnectionFactory in ConnectionDataGroup
         	// If NOT Netty do the same as we've done
         	//TODO: Check this if its okay for chain name
         	String chainName = ((CFEndPoint) endPoint).getName();
         	if(
-	    			CommsOutboundChain.getChainDetails(chainName) != null &&
-	    			!CommsOutboundChain.getChainDetails(chainName).useNetty()
-    			) {
-        		
-        		
+        			CommsOutboundChain.getChainDetails(chainName) != null &&
+        			!CommsOutboundChain.getChainDetails(chainName).useNetty()
+        			) {
+
+
         		VirtualConnectionFactory vcFactory = ((CFEndPoint) endPoint).getOutboundVCFactory();
-                connFactory = new CFWNetworkConnectionFactory(vcFactory);
+        		connFactory = new CFWNetworkConnectionFactory(vcFactory);
         	}
         	else {
-            // If Netty return null until we figure this out
+        		// If Netty return null until we figure this out
         		if (tc.isDebugEnabled())
-                    SibTr.debug(this, tc, "getOutboundNetworkConnectionFactoryFromEndPoint", endPoint);
+        			SibTr.debug(this, tc, "getOutboundNetworkConnectionFactoryFromEndPoint", endPoint);
         		return null;
         	}
         }

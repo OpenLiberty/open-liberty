@@ -24,6 +24,15 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
+import io.netty.channel.Channel;
+
+/**
+ * An implementation of com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext. It
+ * basically wraps the NettyNetworkConnection code making use of the underlying Channel object.
+ * 
+ * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext
+ * 
+ */
 public class NettyNetworkConnectionContext implements NetworkConnectionContext{
 
 	/** Trace */
@@ -59,7 +68,7 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
 			
 			@Override
 			public boolean isInbound() {
-				return false;
+				return conn.isInbound();
 			}
 			
 			@Override
@@ -83,7 +92,7 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
 			}
 		};
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "<init>");
+            SibTr.exit(tc, "<init>", new Object[] { this.conn , this.metaData});
     }
 
     /**
@@ -111,19 +120,18 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
         {
             exception = new Exception(throwable);
         }
-        
-        if(conn.getVirtualConnection() != null && (conn.getVirtualConnection().isActive() || conn.getVirtualConnection().isOpen())) {
+        Channel chan = conn.getVirtualConnection();
+        if(chan != null) {
         	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "close", "Found Netty Channel to close");
-        	conn.getVirtualConnection().close();
+                SibTr.debug(this, tc, "close: Found Netty Channel to close: ", new Object[] {chan, chan.isActive(), chan.isOpen()});
+        	chan.close();
         }else {
         	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "close", "Found NULL or non active Netty Channel to close");
+                SibTr.debug(this, tc, "close", "Found NULL Netty Channel to close");
         }
-        	
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "close");
+            SibTr.exit(this, tc, "close", new Object[] { networkConnection, throwable });
     }
 
     /**

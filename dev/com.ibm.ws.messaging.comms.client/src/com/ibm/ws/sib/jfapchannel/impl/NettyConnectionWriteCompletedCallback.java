@@ -341,9 +341,8 @@ public class NettyConnectionWriteCompletedCallback implements IOWriteCompletedCa
 	       if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled() && (t != null)) SibTr.exception(this, tc, t);                     // F176003
 	       if (connection.isLoggingIOEvents()) connection.getConnectionEventRecorder().logDebug("error method invoked on write context " + System.identityHashCode(wrc) + " with exception " + t);
 	       try {
-	    	   // TODO: Originally went through and released the buffers but not sure we need to do that with Netty so verify
 	    	   
-	          // Deal with the error by invalidating the connection.  That'll teach 'em. TODO: That sure teached me...
+	          // Deal with the error by invalidating the connection.  That'll teach 'em.
 	          final String message = "IOException received - " + t == null ? "" : t.getMessage();
 	          connection.invalidate(false, t, message);  // F176003, F224570
 	       } catch (Error error) {

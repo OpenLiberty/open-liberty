@@ -112,7 +112,7 @@ public class CommsOutboundChain {
             Tr.exit(this, tc, "setTcpOptions");
     }
 
-    private Map<String, Object> getTcpOptions() {
+    public Map<String, Object> getTcpOptions() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "getTcpOptions");
         }
@@ -324,15 +324,6 @@ public class CommsOutboundChain {
             }
         }
 
-        StringBuilder mapAsString = new StringBuilder("{");
-        for (String key : chainList.keySet()) {
-            mapAsString.append(key + "=" + chainList.get(key) + ", ");
-        }
-        if(mapAsString.length()>2)
-        	mapAsString.delete(mapAsString.length()-2, mapAsString.length());
-        mapAsString.append("}");
-        SibTr.debug(this, tc, "CommsOutboundChain: chainlist " + mapAsString.toString(), _chainName);
-               
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "createJFAPChain");
     }
@@ -350,15 +341,6 @@ public class CommsOutboundChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             SibTr.debug(this, tc, "CommsOutboundChain: Destroying " + (_isSSLChain ? "Secure" : "Non-Secure") + " chain ", _chainName);
         
-        StringBuilder mapAsString = new StringBuilder("{");
-        for (String key : chainList.keySet()) {
-            mapAsString.append(key + "=" + chainList.get(key) + ", ");
-        }
-        if(mapAsString.length()>2)
-        	mapAsString.delete(mapAsString.length()-2, mapAsString.length());
-        mapAsString.append("}");
-        SibTr.debug(this, tc, "CommsOutboundChain: chainlist " + mapAsString.toString(), _chainName);
-
         // The chain may have failed to activate if, for example, sslOptions and sslSupport were not defined.
         if ( _isChainDeactivated ) {
             FFDCFilter.processException(new IllegalStateException("_isChainActivated=" + _isChainActivated + " _isChainDeactivated=" + _isChainDeactivated),
@@ -477,7 +459,6 @@ public class CommsOutboundChain {
 	 * @return true if Netty should be used for this endpoint
 	 */
 	public boolean useNetty() {
-		// TODO: Return metatype until we can figure out beta fencing
 	    return _useNettyTransport;
 	}
     

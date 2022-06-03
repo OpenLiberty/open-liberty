@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -294,7 +294,6 @@ public abstract class Connection implements ConnectionInterface
       this.vc = vc;                                         // F174772
       
       this.usingNetty = usingNetty; // Netty implementation
-      // TODO This could be made prettier. Check how best to do this
       if(isUsingNetty()) {
       	  writeCompletedCallback = new NettyConnectionWriteCompletedCallback(priorityQueue, tcpWriteCtx, this);
       	  try {
@@ -331,17 +330,14 @@ public abstract class Connection implements ConnectionInterface
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>");
    }
    
-   // TODO: Verify if this is the best way. Could use this to get the read callback to call from the Netty handler
    public IOReadCompletedCallback getReadCompletedCallback () {
 	   return this.readCompletedCallback;
    }
    
-   // TODO: Verify if this is the best way. Could use this to get the read callback to call from the Netty handler
    public NetworkConnection getNetworkConnection () {
 	   return this.vc;
    }
    
-   // TODO: Verify if this is the best way. Could use this to get the read callback to call from the Netty handler
    public IOReadRequestContext getReadRequestContext () {
 	   return this.tcpReadCtx;
    }
@@ -381,7 +377,7 @@ public abstract class Connection implements ConnectionInterface
       {
          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "first conversation for connection");
 
-         if(!this.isInbound() && isUsingNetty()) {
+         if(isUsingNetty()) {
         	 readCompletedCallback = new NettyConnectionReadCompletedCallback(this, 
         			 														  onClientSide, 
         			 														  acceptListener, 
@@ -426,8 +422,7 @@ public abstract class Connection implements ConnectionInterface
          // If we already have data in the buffer associated with our read context, then
          // pass it to the appropriate completed callback - otherwise perform a read
          // operation.
-         // TODO: Check what to do here for Netty if necessary
-         if(this.isInbound() || !isUsingNetty()) {
+         if(!isUsingNetty()) {
         	 if(tcpReadCtx.getBuffer().remaining() < tcpReadCtx.getBuffer().capacity())
              {
                 readCompletedCallback.complete(vc, tcpReadCtx);
@@ -455,12 +450,10 @@ public abstract class Connection implements ConnectionInterface
                 // end 251021
 
                 if (logIOEvents) getConnectionEventRecorder().logDebug("invoking readCtx.read() on context "+System.identityHashCode(tcpReadCtx)+" with a timeout of "+timeout);
-                //TODO check what to do here
                 NetworkConnection conn = tcpReadCtx.read(1,
                                                          readCompletedCallback,
                                                          false,
                                                          timeout);
-                // TODO: Check what to do here for Netty
                 if (conn != null)
                 {
                    readCompletedCallback.complete(conn, tcpReadCtx);
@@ -660,7 +653,7 @@ public abstract class Connection implements ConnectionInterface
 
          // Proddle the write callback to get it to leap into action and start
          // sending data from the priority queue.
-         if(!this.isInbound() && isUsingNetty())
+         if(isUsingNetty())
           	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
          else
          	((ConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
@@ -739,7 +732,7 @@ public abstract class Connection implements ConnectionInterface
 
          // Proddle the write callback to get it to leap into action and start
          // sending data from the priority queue.
-         if(!this.isInbound() && isUsingNetty())
+         if(isUsingNetty())
            	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
           else
           	((ConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
@@ -980,8 +973,7 @@ public abstract class Connection implements ConnectionInterface
          try
          {
             priorityQueue.waitForCloseToComplete();
-            // TODO This could be made prettier. Check how best to do this
-            if(!this.isInbound() && isUsingNetty()) {
+            if(isUsingNetty()) {
             	((NettyConnectionReadCompletedCallback)readCompletedCallback).physicalCloseNotification();
             	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).physicalCloseNotification();
             }
@@ -1063,7 +1055,7 @@ public abstract class Connection implements ConnectionInterface
      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setHeartbeatInterval","seconds="+seconds);
      if (seconds < 0) throw new SIErrorException(nls.getFormattedMessage("CONNECTION_INTERNAL_SICJ0043", null, "CONNECTION_INTERNAL_SICJ0043"));
      heartbeatInterval = seconds;
-     if(!this.isInbound() && isUsingNetty()) {
+     if(isUsingNetty()) {
    	  try {
 			((NettyNetworkConnection) vc).setHearbeatInterval(seconds);
 		} catch (NettyException e) {
@@ -1395,8 +1387,7 @@ public abstract class Connection implements ConnectionInterface
             processHeartbeat();
             break;
          case(JFapChannelConstants.SEGMENT_HEARTBEAT_RESPONSE):
-        	// TODO This could be made prettier. Check how best to do this
-            if(!this.isInbound() && isUsingNetty())
+            if(isUsingNetty())
              	((NettyConnectionReadCompletedCallback)readCompletedCallback).heartbeatReceived();
             else
             	((ConnectionReadCompletedCallback)readCompletedCallback).heartbeatReceived();
@@ -1455,8 +1446,7 @@ public abstract class Connection implements ConnectionInterface
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "processPhysicalClose");
 
-      // TODO This could be made prettier. Check how best to do this
-      if(!this.isInbound() && isUsingNetty())
+      if(isUsingNetty())
        	((NettyConnectionReadCompletedCallback)readCompletedCallback).stopReceiving();
       else
       	((ConnectionReadCompletedCallback)readCompletedCallback).stopReceiving();

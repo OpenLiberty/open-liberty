@@ -20,6 +20,13 @@ import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.IOWriteRequestContext;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
+/**
+ * An implementation of com.ibm.ws.sib.jfapchannel.framework.IOConnectionContext. It
+ * basically wraps the NettyNetworkConnection code maing use of the underlying Channel object.
+ *
+ * @see com.ibm.ws.sib.jfapchannel.framework.IOConnectionContext
+ *
+ */
 public class NettyIOConnectionContext implements IOConnectionContext{
 	
 	

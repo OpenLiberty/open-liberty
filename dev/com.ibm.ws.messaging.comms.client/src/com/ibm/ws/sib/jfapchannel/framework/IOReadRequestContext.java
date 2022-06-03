@@ -28,26 +28,36 @@ public interface IOReadRequestContext
     * method must only be invoked when no read request is in progress.
     * @param buffer the buffer to use for subsequent read requests.
     */
-   void setBuffer(WsByteBuffer buffer);
+   default void setBuffer(WsByteBuffer buffer) {
+	   // Default implementation is to do nothing
+   };
    
    /**
     * Specifies a set of buffers into which data will be read.  This method must
     * only be invoked when no read request is in progress.
     * @param buffers a set of buffers to use for subsequent read requests.
     */
-   void setBuffers(WsByteBuffer[] buffers);
+   default void setBuffers(WsByteBuffer[] buffers) {
+	   // Default implementation is to do nothing
+   };
    
    /** 
     * @return the buffer (or first buffer from the set of buffers) associated
     * with this read request.  This is semantically equivalent to invoking
     * getBuffers()[0].
     */
-   WsByteBuffer getBuffer();
+   default WsByteBuffer getBuffer() {
+	   // Default implementation is to return null
+	   return null;
+   };
    
    /**
     * @return the set of buffers associated with this read request.
     */
-   WsByteBuffer[] getBuffers();
+   default WsByteBuffer[] getBuffers() {
+	   // Default implementation is to return null
+	   return null;
+   };
 
    /**
     * Request to read data from the network.

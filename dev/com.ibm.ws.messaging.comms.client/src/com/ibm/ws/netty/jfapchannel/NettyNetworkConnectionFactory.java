@@ -10,11 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.netty.jfapchannel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory;
+import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -24,7 +28,21 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.ConfigConstants;
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
+/**
+ * An implementation of com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory. Based
+ * on the CFWNetworkConnectionFactory class. Basically wraps the Bootstrap code in the Netty
+ * framework mimicking the Channel Framework implementation as close as possible.
+ * 
+ * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory
+ * 
+ */
 public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 	
 	/** Trace */
@@ -41,42 +59,56 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
     }
 
     /** The bootstrap this object wraps */
-    Bootstrap bootstrap = new Bootstrap();
+    private BootstrapExtended bootstrap;
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
     private String chainName;
+	private NettyFramework nettyBundle;
+	private Map<String, Object> sslOptions;
+	private NettyTlsProvider tlsProvider;
     
     protected static String HEARTBEAT_HANDLER_KEY = "heartBeatHandler";
     protected static String SSL_HANDLER_KEY = "sslHandler";
     protected static String DECODER_HANDLER_KEY = "decoder";
     protected static String ENCODER_HANDLER_KEY = "encoder";
     protected static String JMS_CLIENT_HANDLER_KEY = "jmsClientHandler";
+    
+    //TODO: Temporary internal to choose weather to use the Netty bundle or not to workaround errors on quiesce
+  	public static final boolean USE_BUNDLE = false;
 
     /**
      * Constructor.
      * 
      * @param chainName
      */
-    public NettyNetworkConnectionFactory(String chainName)
+    public NettyNetworkConnectionFactory(String chainName, Map<String, Object> tcpOptions, Map<String, Object> sslOptions, NettyTlsProvider tlsProvider)
     {
         if (tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>", chainName);
         this.chainName = chainName;
-        bootstrap.group(workerGroup).channel(NioSocketChannel.class);
-        bootstrap.attr(JMSClientInboundHandler.CHAIN_ATTR_KEY, chainName);
-        
-        // TODO Check how to link TCP options with bootstrap
-
-        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, JFapChannelConstants.CONNECT_TIMEOUT_DEFAULT * 1000);
-        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-            @Override
-            public void initChannel(SocketChannel ch) throws Exception {
-                final ChannelPipeline pipeline = ch.pipeline();
-                pipeline.addLast(DECODER_HANDLER_KEY, new NettyToWsBufferDecoder());
-                pipeline.addLast(ENCODER_HANDLER_KEY, new WsBufferToNettyEncoder());
-                pipeline.addLast(HEARTBEAT_HANDLER_KEY, new JMSHeartbeatHandler(0));
-                pipeline.addLast(JMS_CLIENT_HANDLER_KEY, new JMSClientInboundHandler());
-            }
-        });
+        this.sslOptions = sslOptions;
+        nettyBundle = CommsClientServiceFacade.getNettyBundle();
+        this.tlsProvider = tlsProvider;
+        Map<String, Object> options = new HashMap<String, Object>(tcpOptions);
+        options.put(ConfigConstants.ExternalName, chainName);
+        try {
+        	if(USE_BUNDLE) {
+        		bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
+        		bootstrap.attr(NettyJMSClientHandler.CHAIN_ATTR_KEY, chainName);
+        	}else {
+        		BootstrapExtended bundleBootstrap = nettyBundle.createTCPBootstrapOutbound(options);
+        		bootstrap = new BootstrapExtended();
+        		bootstrap.attr(NettyJMSClientHandler.CHAIN_ATTR_KEY, chainName);
+        		bootstrap.group(workerGroup);
+        		bootstrap.channel(NioSocketChannel.class);
+                bootstrap.applyConfiguration(bundleBootstrap.getConfiguration());
+                bootstrap.setBaseInitializer(bundleBootstrap.getBaseInitializer());
+        	}
+			// TODO: Check this for timeouts
+//	        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, JFapChannelConstants.CONNECT_TIMEOUT_DEFAULT * 1000);
+	        
+		} catch (NettyException e) {
+			SibTr.error(tc, "<init>: Failure initializing Netty Bootstrap", e);
+		}
         if (tc.isEntryEnabled())
             SibTr.exit(tc, "<init>");
     }
@@ -89,8 +121,8 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
     {
         if (tc.isEntryEnabled())
             SibTr.entry(this, tc, "createConnection", endpoint);
-        
-        throw new FrameworkException("Not implemented yet for Netty. Not sure if its used only on tWAS.");
+        // TODO: Verify if this is used
+        throw new FrameworkException("Not implemented yet for Netty. Currently only used on tWAS not Liberty.");
 
     }
 
@@ -105,7 +137,7 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 
         NetworkConnection conn = null;
         
-        conn = new NettyNetworkConnection(bootstrap, chainName);
+        conn = new NettyNetworkConnection(bootstrap, chainName, nettyBundle, sslOptions, tlsProvider, false);
         
         if (tc.isEntryEnabled())
             SibTr.exit(this, tc, "createConnection", conn);
@@ -116,7 +148,7 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
     
     @Override
     public void destroy() throws FrameworkException{
-    	// TODO: See how to destroy here 
+    	// TODO: See how to destroy here
         this.bootstrap = null;
     }
 

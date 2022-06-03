@@ -25,7 +25,6 @@ import com.ibm.ws.sib.comms.ClientConnectionFactory;
 import com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface;
 import com.ibm.ws.sib.comms.client.ClientConnectionFactoryImpl;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
-import com.ibm.ws.sib.jfapchannel.richclient.impl.JFapChannelFactory;
 import com.ibm.ws.sib.mfp.JsDestinationAddressFactory;
 import com.ibm.ws.sib.mfp.trm.TrmMessageFactory;
 import com.ibm.ws.sib.utils.ras.SibTr;
@@ -65,10 +64,8 @@ public class CommsClientServiceFacade implements CommsClientServiceFacadeInterfa
     public void activate(Map<String, Object> properties, ComponentContext context) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "activate");
-        // TODO: Check this activating or deactivating with metatype optional bundles
     	_nettyRef.activate(context);
     	chfwRef.activate(context);
-//    	getChannelFramework().registerFactory("JFapChannelOutbound", JFapChannelFactory.class);
         _commonServiceFacadeRef.activate(context);
         alarmManagerRef.activate(context);
         exeServiceRef.activate(context);
