@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.tests.spec20.olgh;
+package com.ibm.ws.jpa.spec10.embeddable.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,11 +27,8 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.olgh10515.ejb.TestOLGH10515_EJB_SFEx_Servlet;
-import com.ibm.ws.jpa.olgh10515.ejb.TestOLGH10515_EJB_SF_Servlet;
-import com.ibm.ws.jpa.olgh10515.ejb.TestOLGH10515_EJB_SL_Servlet;
-import com.ibm.ws.jpa.tests.spec20.FATSuite;
-import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
+import com.ibm.ws.jpa.embeddable.nested.web.TestEmbeddableNestedServlet;
+import com.ibm.ws.jpa.spec10.embeddable.FATSuite;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -46,30 +43,26 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class TestOLGH10515_EJB extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "olgh10515Ejb";
-    private final static String RESOURCE_ROOT = "test-applications/olgh10515/";
-    private final static String appFolder = "ejb";
-    private final static String appName = "olgh10515Ejb";
+public class JPA10EmbeddableNested_WEB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "embeddableNestedWeb";
+    private final static String RESOURCE_ROOT = "test-applications/embeddable/nested/";
+    private final static String appFolder = "web";
+    private final static String appName = "embeddableNestedWeb";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
-    private final static Set<String> populateSet = new HashSet<String>();
 
     private static long timestart = 0;
 
     static {
-        dropSet.add("OLGH10515_DROP_${dbvendor}.ddl");
-        createSet.add("OLGH10515_CREATE_${dbvendor}.ddl");
-        populateSet.add("OLGH10515_POPULATE_${dbvendor}.ddl");
+        dropSet.add("JPA10_EMBEDDABLE_NESTED_DROP_${dbvendor}.ddl");
+        createSet.add("JPA10_EMBEDDABLE_NESTED_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPA20Server")
+    @Server("JPA10Server")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH10515_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH10515_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestOLGH10515_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH10515_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestOLGH10515_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH10515_EJB_SFEx_Servlet")
+                    @TestServlet(servlet = TestEmbeddableNestedServlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableNestedServlet")
     })
     public static LibertyServer server;
 
@@ -78,8 +71,18 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(TestOLGH10515_EJB.class);
+        bannerStart(JPA10EmbeddableNested_WEB.class);
         timestart = System.currentTimeMillis();
+
+        int appStartTimeout = server.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server.setConfigUpdateTimeout(120 * 1000);
+        }
 
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
@@ -93,6 +96,8 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
+        System.out.println(JPA10EmbeddableNested_WEB.class.getName() + " Setting up database tables...");
+
         ddlSet.clear();
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
@@ -105,30 +110,19 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
         }
         executeDDL(server, ddlSet, false);
 
-        ddlSet.clear();
-        for (String ddlName : populateSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
-        }
-        executeDDL(server, ddlSet, false);
-
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh10515.ejblocal");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh10515.model");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh10515.testlogic");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
-
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.olgh10515.ejb");
+        webApp.addPackages(true, "com.ibm.ws.jpa.embeddable.nested.model");
+        webApp.addPackages(true, "com.ibm.ws.jpa.embeddable.nested.testlogic");
+        webApp.addPackages(true, "com.ibm.ws.jpa.embeddable.nested.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
-        app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
         ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
@@ -148,6 +142,11 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
+//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+//        ClassloaderElement loader = new ClassloaderElement();
+//        loader.setApiTypeVisibility("+third-party");
+////        loader.getCommonLibraryRefs().add("HibernateLib");
+//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -175,7 +174,8 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
             }
 
             server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+                              "WTRN0074E: Exception caught from before_completion synchronization operation", // RuntimeException test, expected
+                              "CWWJP0055E" // TODO: OpenJPA throws a MetaDataException while parsing the XML nested embeddables
             );
         } finally {
             try {
@@ -189,7 +189,7 @@ public class TestOLGH10515_EJB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(TestOLGH10515_EJB.class, timestart);
+            bannerEnd(JPA10EmbeddableNested_WEB.class, timestart);
         }
     }
 }

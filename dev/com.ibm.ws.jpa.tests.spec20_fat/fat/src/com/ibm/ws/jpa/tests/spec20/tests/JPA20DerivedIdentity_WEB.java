@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.tests.spec20;
+package com.ibm.ws.jpa.tests.spec20.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,9 +27,9 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.fvt.derivedidentity.tests.ejb.DerivedIdentityEJBSFEXTestServlet;
-import com.ibm.ws.jpa.fvt.derivedidentity.tests.ejb.DerivedIdentityEJBSFTestServlet;
-import com.ibm.ws.jpa.fvt.derivedidentity.tests.ejb.DerivedIdentityEJBSLTestServlet;
+import com.ibm.ws.jpa.fvt.derivedidentity.tests.web.DerivedIdentityWebTestServlet;
+import com.ibm.ws.jpa.tests.spec20.FATSuite;
+import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -44,11 +44,11 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class JPA20DerivedIdentity_EJB extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "DerivedIdentityEJB";
+public class JPA20DerivedIdentity_WEB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "DerivedIdentityWeb";
     private final static String RESOURCE_ROOT = "test-applications/derivedIdentity/";
-    private final static String appFolder = "apps/DerivedIdentityEJB.ear";
-    private final static String appName = "DerivedIdentityEJB";
+    private final static String appFolder = "apps/DerivedIdentityWeb.ear";
+    private final static String appName = "DerivedIdentityWeb";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
@@ -61,11 +61,9 @@ public class JPA20DerivedIdentity_EJB extends JPAFATServletClient {
         createSet.add("JPA20_DERIVEDIDENTITY_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPA20DerivedIdentityEJBServer")
+    @Server("JPA20DerivedIdentityWebServer")
     @TestServlets({
-                    @TestServlet(servlet = DerivedIdentityEJBSLTestServlet.class, path = CONTEXT_ROOT + "/" + "DerivedIdentityEJBSLTestServlet"),
-                    @TestServlet(servlet = DerivedIdentityEJBSFTestServlet.class, path = CONTEXT_ROOT + "/" + "DerivedIdentityEJBSFTestServlet"),
-                    @TestServlet(servlet = DerivedIdentityEJBSFEXTestServlet.class, path = CONTEXT_ROOT + "/" + "DerivedIdentityEJBSFEXTestServlet")
+                    @TestServlet(servlet = DerivedIdentityWebTestServlet.class, path = CONTEXT_ROOT + "/" + "DerivedIdentityWebTestServlet")
     })
     public static LibertyServer server;
 
@@ -74,7 +72,7 @@ public class JPA20DerivedIdentity_EJB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(JPA20DerivedIdentity_EJB.class);
+        bannerStart(JPA20DerivedIdentity_WEB.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -123,20 +121,15 @@ public class JPA20DerivedIdentity_EJB extends JPAFATServletClient {
     }
 
     private static void setupTestApplication() throws Exception {
-        final JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.commonentities.datamodel");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.derivedidentity.ejblocal");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.derivedidentity.testlogic");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
-
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.derivedidentity.tests.ejb");
+        webApp.addPackages(true, "com.ibm.ws.jpa.commonentities.datamodel");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.derivedidentity.testlogic");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.derivedidentity.tests.web");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
-        app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
         ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
@@ -197,7 +190,7 @@ public class JPA20DerivedIdentity_EJB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(JPA20DerivedIdentity_EJB.class, timestart);
+            bannerEnd(JPA20DerivedIdentity_WEB.class, timestart);
         }
     }
 }

@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.ibm.ws.jpa.spec10.embeddable;
+package com.ibm.ws.jpa.spec10.embeddable.tests;
 
 import java.util.regex.Pattern;
 

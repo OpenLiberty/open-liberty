@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.spec10.embeddable;
+package com.ibm.ws.jpa.tests.spec20.tests.olgh;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,9 +27,11 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.embeddable.nested.ejb.TestEmbeddableNested_EJB_SFEx_Servlet;
-import com.ibm.ws.jpa.embeddable.nested.ejb.TestEmbeddableNested_EJB_SF_Servlet;
-import com.ibm.ws.jpa.embeddable.nested.ejb.TestEmbeddableNested_EJB_SL_Servlet;
+import com.ibm.ws.jpa.olgh16686.ejb.TestOLGH16686_EJB_SFEx_Servlet;
+import com.ibm.ws.jpa.olgh16686.ejb.TestOLGH16686_EJB_SF_Servlet;
+import com.ibm.ws.jpa.olgh16686.ejb.TestOLGH16686_EJB_SL_Servlet;
+import com.ibm.ws.jpa.tests.spec20.FATSuite;
+import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -44,11 +46,11 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class JPA10EmbeddableNested_EJB extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "embeddableNestedEjb";
-    private final static String RESOURCE_ROOT = "test-applications/embeddable/nested/";
+public class TestOLGH16686_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh16686Ejb";
+    private final static String RESOURCE_ROOT = "test-applications/olgh16686/";
     private final static String appFolder = "ejb";
-    private final static String appName = "embeddableNestedEjb";
+    private final static String appName = "olgh16686Ejb";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
@@ -57,15 +59,15 @@ public class JPA10EmbeddableNested_EJB extends JPAFATServletClient {
     private static long timestart = 0;
 
     static {
-        dropSet.add("JPA10_EMBEDDABLE_NESTED_DROP_${dbvendor}.ddl");
-        createSet.add("JPA10_EMBEDDABLE_NESTED_CREATE_${dbvendor}.ddl");
+        dropSet.add("OLGH16686_DROP_${dbvendor}.ddl");
+        createSet.add("OLGH16686_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPA10Server")
+    @Server("JPA20Server")
     @TestServlets({
-                    @TestServlet(servlet = TestEmbeddableNested_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableNested_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestEmbeddableNested_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableNested_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestEmbeddableNested_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableNested_EJB_SFEx_Servlet")
+                    @TestServlet(servlet = TestOLGH16686_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH16686_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestOLGH16686_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH16686_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestOLGH16686_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH16686_EJB_SFEx_Servlet")
     })
     public static LibertyServer server;
 
@@ -74,18 +76,8 @@ public class JPA10EmbeddableNested_EJB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(JPA10EmbeddableNested_EJB.class);
+        bannerStart(TestOLGH16686_EJB.class);
         timestart = System.currentTimeMillis();
-
-        int appStartTimeout = server.getAppStartTimeout();
-        if (appStartTimeout < (120 * 1000)) {
-            server.setAppStartTimeout(120 * 1000);
-        }
-
-        int configUpdateTimeout = server.getConfigUpdateTimeout();
-        if (configUpdateTimeout < (120 * 1000)) {
-            server.setConfigUpdateTimeout(120 * 1000);
-        }
 
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
@@ -98,8 +90,6 @@ public class JPA10EmbeddableNested_EJB extends JPAFATServletClient {
         setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 
         final Set<String> ddlSet = new HashSet<String>();
-
-        System.out.println(JPA10EmbeddableNested_EJB.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
@@ -118,13 +108,13 @@ public class JPA10EmbeddableNested_EJB extends JPAFATServletClient {
 
     private static void setupTestApplication() throws Exception {
         JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.nested.ejblocal");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.nested.model");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.nested.testlogic");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh16686.ejblocal");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh16686.model");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.olgh16686.testlogic");
         ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.embeddable.nested.ejb");
+        webApp.addPackages(true, "com.ibm.ws.jpa.olgh16686.ejb");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
@@ -150,11 +140,6 @@ public class JPA10EmbeddableNested_EJB extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
-//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-//        ClassloaderElement loader = new ClassloaderElement();
-//        loader.setApiTypeVisibility("+third-party");
-////        loader.getCommonLibraryRefs().add("HibernateLib");
-//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -182,8 +167,7 @@ public class JPA10EmbeddableNested_EJB extends JPAFATServletClient {
             }
 
             server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                              "WTRN0074E: Exception caught from before_completion synchronization operation", // RuntimeException test, expected
-                              "CWWJP0055E" // TODO: OpenJPA throws a MetaDataException while parsing the XML nested embeddables
+                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
             try {
@@ -197,7 +181,7 @@ public class JPA10EmbeddableNested_EJB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(JPA10EmbeddableNested_EJB.class, timestart);
+            bannerEnd(TestOLGH16686_EJB.class, timestart);
         }
     }
 }

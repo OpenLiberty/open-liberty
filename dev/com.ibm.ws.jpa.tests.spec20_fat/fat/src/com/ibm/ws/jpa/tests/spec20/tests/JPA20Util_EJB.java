@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.spec10.embeddable;
+package com.ibm.ws.jpa.tests.spec20.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,9 +27,10 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.embeddable.relationship.ejb.TestEmbeddableRelationship_EJB_SFEx_Servlet;
-import com.ibm.ws.jpa.embeddable.relationship.ejb.TestEmbeddableRelationship_EJB_SF_Servlet;
-import com.ibm.ws.jpa.embeddable.relationship.ejb.TestEmbeddableRelationship_EJB_SL_Servlet;
+import com.ibm.ws.jpa.fvt.util.tests.ejb.UtilEJBSFTestServlet;
+import com.ibm.ws.jpa.fvt.util.tests.ejb.UtilEJBSLTestServlet;
+import com.ibm.ws.jpa.tests.spec20.FATSuite;
+import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -44,11 +45,11 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class JPA10EmbeddableRelationship_EJB extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "embeddableRelationshipEjb";
-    private final static String RESOURCE_ROOT = "test-applications/embeddable/relationship/";
-    private final static String appFolder = "ejb";
-    private final static String appName = "embeddableRelationshipEjb";
+public class JPA20Util_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "UtilEJB";
+    private final static String RESOURCE_ROOT = "test-applications/util/";
+    private final static String appFolder = "UtilEJB.ear";
+    private final static String appName = "UtilEJB";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
@@ -57,15 +58,15 @@ public class JPA10EmbeddableRelationship_EJB extends JPAFATServletClient {
     private static long timestart = 0;
 
     static {
-        dropSet.add("JPA10_EMBEDDABLE_RELATIONSHIP_DROP_${dbvendor}.ddl");
-        createSet.add("JPA10_EMBEDDABLE_RELATIONSHIP_CREATE_${dbvendor}.ddl");
+        dropSet.add("JPA20_UTIL_DROP_${dbvendor}.ddl");
+        createSet.add("JPA20_UTIL_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPA10Server")
+    @Server("JPA20UtilEJBServer")
     @TestServlets({
-                    @TestServlet(servlet = TestEmbeddableRelationship_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableRelationship_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestEmbeddableRelationship_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableRelationship_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestEmbeddableRelationship_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableRelationship_EJB_SFEx_Servlet")
+                    @TestServlet(servlet = UtilEJBSLTestServlet.class, path = CONTEXT_ROOT + "/" + "UtilEJBSLTestServlet"),
+                    @TestServlet(servlet = UtilEJBSFTestServlet.class, path = CONTEXT_ROOT + "/" + "UtilEJBSFTestServlet"),
+
     })
     public static LibertyServer server;
 
@@ -74,7 +75,7 @@ public class JPA10EmbeddableRelationship_EJB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(JPA10EmbeddableRelationship_EJB.class);
+        bannerStart(JPA20Util_EJB.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -99,7 +100,7 @@ public class JPA10EmbeddableRelationship_EJB extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
-        System.out.println(JPA10EmbeddableRelationship_EJB.class.getName() + " Setting up database tables...");
+        System.out.println("Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
@@ -113,18 +114,24 @@ public class JPA10EmbeddableRelationship_EJB extends JPAFATServletClient {
         }
         executeDDL(server, ddlSet, false);
 
+//        ddlSet.clear();
+//        for (String ddlName : populateSet) {
+//            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+//        }
+//        executeDDL(server, ddlSet, false);
+
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
         JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.relationship.ejblocal");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.relationship.model");
-        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.relationship.testlogic");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.util.ejblocal");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.util.entities");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.util.testlogic");
         ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.embeddable.relationship.ejb");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.util.tests.ejb");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
@@ -150,11 +157,6 @@ public class JPA10EmbeddableRelationship_EJB extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
-//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-//        ClassloaderElement loader = new ClassloaderElement();
-//        loader.setApiTypeVisibility("+third-party");
-////        loader.getCommonLibraryRefs().add("HibernateLib");
-//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -182,8 +184,7 @@ public class JPA10EmbeddableRelationship_EJB extends JPAFATServletClient {
             }
 
             server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                              "WTRN0074E: Exception caught from before_completion synchronization operation", // RuntimeException test, expected
-                              "CWWJP0055E" // TODO: OpenJPA throws a MetaDataException while parsing the XML nested embeddables
+                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
             try {
@@ -197,7 +198,7 @@ public class JPA10EmbeddableRelationship_EJB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(JPA10EmbeddableRelationship_EJB.class, timestart);
+            bannerEnd(JPA20Util_EJB.class, timestart);
         }
     }
 }

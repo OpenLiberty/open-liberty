@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.tests.spec20.olgh;
+package com.ibm.ws.jpa.spec10.embeddable.tests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,9 +27,10 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.olgh9018.web.TestOLGH9018Servlet;
-import com.ibm.ws.jpa.tests.spec20.FATSuite;
-import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
+import com.ibm.ws.jpa.embeddable.relationship.ejb.TestEmbeddableRelationship_EJB_SFEx_Servlet;
+import com.ibm.ws.jpa.embeddable.relationship.ejb.TestEmbeddableRelationship_EJB_SF_Servlet;
+import com.ibm.ws.jpa.embeddable.relationship.ejb.TestEmbeddableRelationship_EJB_SL_Servlet;
+import com.ibm.ws.jpa.spec10.embeddable.FATSuite;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -44,11 +45,11 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class TestOLGH9018_WEB extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "olgh9018Web";
-    private final static String RESOURCE_ROOT = "test-applications/olgh9018/";
-    private final static String appFolder = "web";
-    private final static String appName = "olgh9018Web";
+public class JPA10EmbeddableRelationship_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "embeddableRelationshipEjb";
+    private final static String RESOURCE_ROOT = "test-applications/embeddable/relationship/";
+    private final static String appFolder = "ejb";
+    private final static String appName = "embeddableRelationshipEjb";
     private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
@@ -57,13 +58,15 @@ public class TestOLGH9018_WEB extends JPAFATServletClient {
     private static long timestart = 0;
 
     static {
-        dropSet.add("OLGH9018_DROP_${dbvendor}.ddl");
-        createSet.add("OLGH9018_CREATE_${dbvendor}.ddl");
+        dropSet.add("JPA10_EMBEDDABLE_RELATIONSHIP_DROP_${dbvendor}.ddl");
+        createSet.add("JPA10_EMBEDDABLE_RELATIONSHIP_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPA20Server")
+    @Server("JPA10Server")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH9018Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH9018Servlet")
+                    @TestServlet(servlet = TestEmbeddableRelationship_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableRelationship_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestEmbeddableRelationship_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableRelationship_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestEmbeddableRelationship_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestEmbeddableRelationship_EJB_SFEx_Servlet")
     })
     public static LibertyServer server;
 
@@ -72,8 +75,18 @@ public class TestOLGH9018_WEB extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(TestOLGH9018_WEB.class);
+        bannerStart(JPA10EmbeddableRelationship_EJB.class);
         timestart = System.currentTimeMillis();
+
+        int appStartTimeout = server.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server.setConfigUpdateTimeout(120 * 1000);
+        }
 
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
@@ -86,6 +99,8 @@ public class TestOLGH9018_WEB extends JPAFATServletClient {
         setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 
         final Set<String> ddlSet = new HashSet<String>();
+
+        System.out.println(JPA10EmbeddableRelationship_EJB.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
@@ -103,15 +118,20 @@ public class TestOLGH9018_WEB extends JPAFATServletClient {
     }
 
     private static void setupTestApplication() throws Exception {
+        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.relationship.ejblocal");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.relationship.model");
+        ejbApp.addPackages(true, "com.ibm.ws.jpa.embeddable.relationship.testlogic");
+        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
+
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.olgh9018.model");
-        webApp.addPackages(true, "com.ibm.ws.jpa.olgh9018.testlogic");
-        webApp.addPackages(true, "com.ibm.ws.jpa.olgh9018.web");
+        webApp.addPackages(true, "com.ibm.ws.jpa.embeddable.relationship.ejb");
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
+        app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
         ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
@@ -131,6 +151,11 @@ public class TestOLGH9018_WEB extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
+//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+//        ClassloaderElement loader = new ClassloaderElement();
+//        loader.setApiTypeVisibility("+third-party");
+////        loader.getCommonLibraryRefs().add("HibernateLib");
+//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -158,7 +183,8 @@ public class TestOLGH9018_WEB extends JPAFATServletClient {
             }
 
             server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+                              "WTRN0074E: Exception caught from before_completion synchronization operation", // RuntimeException test, expected
+                              "CWWJP0055E" // TODO: OpenJPA throws a MetaDataException while parsing the XML nested embeddables
             );
         } finally {
             try {
@@ -172,7 +198,7 @@ public class TestOLGH9018_WEB extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(TestOLGH9018_WEB.class, timestart);
+            bannerEnd(JPA10EmbeddableRelationship_EJB.class, timestart);
         }
     }
 }

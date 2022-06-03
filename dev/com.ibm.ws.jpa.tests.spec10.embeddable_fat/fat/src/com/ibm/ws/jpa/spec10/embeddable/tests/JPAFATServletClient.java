@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa.spec10.embeddable;
+package com.ibm.ws.jpa.spec10.embeddable.tests;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
