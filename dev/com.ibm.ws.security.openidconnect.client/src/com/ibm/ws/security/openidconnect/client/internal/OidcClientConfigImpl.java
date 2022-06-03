@@ -84,6 +84,8 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
+import io.openliberty.security.oidcclientcore.internal.discovery.DiscoveryHandler;
+
 /**
  * Process the OpenID Connect client entry in the server.xml file
  */
@@ -916,6 +918,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         String jsonString = null;
 
         boolean valid = false;
+
+        DiscoveryHandler discoveryHandler = new DiscoveryHandler();
 
         if (!isValidDiscoveryUrl(discoveryUrl)) {
             Tr.error(tc, "OIDC_CLIENT_DISCOVERY_SSL_ERROR", getId(), discoveryUrl);

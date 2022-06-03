@@ -19,3 +19,14 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Bundle-Name: Security OIDC Client Core Internal
 Bundle-SymbolicName: io.openliberty.security.oidcclientcore.internal
 Bundle-Description: TODO
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.json4j,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.ws.junit.extensions,\
+	com.ibm.ws.logging,\
+	com.ibm.ws.logging.core
+Export-Package: \
+	io.openliberty.security.oidcclientcore.internal.discovery,\
+	io.openliberty.security.oidcclientcore.internal.client
