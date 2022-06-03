@@ -51,6 +51,7 @@ public class ServerClasspathTest {
                                                         "com.ibm.sharedclasses.spi", // Open JDK 9
                                                         "openj9",
                                                         "com.ibm.gpu" // Semeru 11.0.15
+                                                        , "io.openliberty.checkpoint.spi" // added checkpoint stuff
     };
 
     @BeforeClass
