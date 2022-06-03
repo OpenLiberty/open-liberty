@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,6 +40,7 @@ import io.openliberty.data.Data;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
+import io.openliberty.data.Select;
 
 public class QueryHandler<T> implements InvocationHandler {
     private static enum Condition {
@@ -85,7 +86,7 @@ public class QueryHandler<T> implements InvocationHandler {
         DELETE, MERGE, SELECT, UPDATE
     }
 
-    private final Map<String, String> attributeNames = new HashMap<>();
+    private final Map<String, String> attributeNames = new LinkedHashMap<>();
     private final Class<T> beanClass;
     private final Data data;
     private final Class<?> entityClass;
@@ -162,15 +163,54 @@ public class QueryHandler<T> implements InvocationHandler {
         throw new UnsupportedOperationException("Repository method " + methodName + " with parameters " + Arrays.toString(paramTypes));
     }
 
-    private String generateRepositoryQuery(String methodName) {
+    private String generateRepositoryQuery(Method method) {
+        String methodName = method.getName();
         int start = methodName.startsWith("findBy") ? 6 //
                         : methodName.startsWith("deleteBy") ? 8 //
                                         : -1;
         if (start > 0) {
-            StringBuilder q = new StringBuilder(200)
-                            .append(start == 6 ? "SELECT o FROM " : "DELETE FROM ")
-                            .append(entityName)
-                            .append(" o WHERE ");
+            StringBuilder q = new StringBuilder(200);
+            if (start == 6) { // findBy
+                Select select = method.getAnnotation(Select.class);
+                Class<?> type = select == null ? null : select.type();
+                String[] cols = select == null ? null : select.value();
+                if (type == null || Select.AutoDetect.class.equals(type)) {
+                    Class<?> returnType = method.getReturnType();
+                    if (!Iterable.class.isAssignableFrom(returnType)) {
+                        Class<?> arrayType = returnType.getComponentType();
+                        returnType = arrayType == null ? returnType : arrayType;
+                        if (!returnType.isPrimitive()
+                            && !returnType.isAssignableFrom(entityClass)
+                            && !returnType.getName().startsWith("java"))
+                            type = returnType;
+                    }
+                }
+                if (type == null || Select.AutoDetect.class.equals(type))
+                    if (cols == null || cols.length == 0) {
+                        q.append("SELECT o FROM ");
+                    } else {
+                        q.append("SELECT");
+                        for (int i = 0; i < cols.length; i++)
+                            q.append(i == 0 ? " o." : ", o.").append(cols[i]);
+                        q.append(" FROM ");
+                    }
+                else {
+                    q.append("SELECT NEW ").append(type.getName());
+                    boolean first = true;
+                    if (cols == null || cols.length == 0)
+                        for (String name : attributeNames.values()) {
+                            q.append(first ? "(o." : ", o.").append(name);
+                            first = false;
+                        }
+                    else
+                        for (int i = 0; i < cols.length; i++)
+                            q.append(i == 0 ? "(o." : ", o.").append(cols[i]);
+                    q.append(") FROM ");
+                }
+            } else {
+                q.append("DELETE FROM ");
+            }
+            q.append(entityName).append(" o WHERE ");
 
             int orderBy = methodName.indexOf("OrderBy");
             String s = orderBy > 0 ? methodName.substring(start, orderBy) : methodName.substring(start);
@@ -321,7 +361,7 @@ public class QueryHandler<T> implements InvocationHandler {
             jpql = getBuiltInRepositoryQuery(methodName, args, method.getParameterTypes());
 
         if (jpql == null)
-            jpql = generateRepositoryQuery(methodName);
+            jpql = generateRepositoryQuery(method);
 
         // TODO Actual implementation is lacking so we are cheating by
         // temporarily sending in the JPQL directly:

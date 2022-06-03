@@ -22,6 +22,7 @@ import java.util.Vector;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Repository;
+import io.openliberty.data.Select;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
@@ -57,4 +58,9 @@ public interface Reservations extends Repository<Reservation, Long> {
     AbstractCollection<Reservation> findByStopLessThanEqual(OffsetDateTime maxEndTime);
 
     AbstractList<Reservation> findByStopLessThanOrderByHostAscOrderByLocationDescOrderByStart(OffsetDateTime endBefore);
+
+    // Use a record as the return type
+    @Select({ "start", "stop" })
+    ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
+
 }
