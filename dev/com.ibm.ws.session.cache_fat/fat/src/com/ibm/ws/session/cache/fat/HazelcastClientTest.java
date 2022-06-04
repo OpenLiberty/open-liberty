@@ -33,7 +33,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
 public class HazelcastClientTest extends FATServletClient {
 
     @Server("sessionCacheServerA")

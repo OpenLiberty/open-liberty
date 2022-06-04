@@ -24,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
@@ -45,7 +46,8 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is (e.g. EE8 features)
-                    .andWith(new JakartaEE9Action()); // run all tests again with EE9 features+packages
+                    .andWith(new JakartaEE9Action()) // run all tests again with EE9 features+packages
+                    .andWith(FeatureReplacementAction.EE10_FEATURES());
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
