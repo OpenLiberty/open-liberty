@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
@@ -85,6 +86,8 @@ public class JSF22MiscellaneousTests {
         ShrinkHelper.exportDropinAppToServer(jsf22MiscellaneousServer, xmlnsWar);
 
         ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "FunctionMapper.war", "com.ibm.ws.jsf23.fat.functionmapper");
+
+        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "ViewScopeLeak.war", "com.ibm.ws.jsf22.fat.viewscopedleak");
 
         jsf22MiscellaneousServer.startServer(JSF22MiscellaneousTests.class.getSimpleName() + ".log");
     }
@@ -514,6 +517,51 @@ public class JSF22MiscellaneousTests {
                 assertFalse("A ClassNotFoundException was thrown", page.asText().contains("java.lang.ClassNotFoundException"));
                 assertTrue("Unexpected output", page.asText().contains("18437"));
             }
+        }
+    }
+
+    /*
+     * https://github.com/OpenLiberty/open-liberty/issues/20950
+     * https://issues.apache.org/jira/browse/MYFACES-4433
+     * 
+     *  Verifies there is no leak when ViewScope Beans are used.
+     *  There was previously a memory leak with the ViewScopeBeanHolder's storageMap. See issues above.
+     */
+    @Test
+    public void testMyFaces4433() throws Exception {
+        try (WebClient webClient = new WebClient()) {
+
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, "ViewScopeLeak", "index.xhtml");
+
+            String size1 = "1";
+            String size2 = "2";
+
+            // Goes to index.xhtml to create a new view. Goes to new page (invalidate) to end the view.
+            // invalidate.xhtml will list size of WELD_S#0 via SessionSizeHelper. Then it loops again. 
+            // The size should be the same for both runs.
+            // WELD_S#0 is the attribute where the ViewScope related storage is saved via CDI. 
+            for(int i = 0; i < 2; i++){
+                Log.info(c, name.getMethodName(), "MYFACES-4433: Making a request to " + url);
+                HtmlPage page = (HtmlPage) webClient.getPage(url);
+    
+                Log.info(c, name.getMethodName(), "Clicking invalidate.....");
+                HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("form1:invalidate");
+                page = submitButton.click();
+    
+                assertTrue("MYFACES-4433: the app output was null!", page != null);
+    
+                String sessionSize = page.getElementById("form2:sessionSize").getTextContent();
+                if(i == 0){
+                    size1 = sessionSize;
+                } else {
+                    size2 = sessionSize;
+                }
+                
+                Log.info(c, name.getMethodName(), "Session Size -> " + sessionSize);
+            }
+
+            assertTrue("WELD_S# attribute size differed! Leak Detected!", size1.equals(size2));
+            
         }
     }
 }
