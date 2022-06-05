@@ -11,26 +11,33 @@
 package test.jakarta.data.web;
 
 import java.time.OffsetDateTime;
-import java.util.Set;
 
 /**
- *
+ * Simulates a Java record, but usable on Java 11.
  */
-public class Reservation {
-    public String host;
+public class ReservedTimeSlot {
+    public ReservedTimeSlot(OffsetDateTime start,
+                            OffsetDateTime stop) {
 
-    public Set<String> invitees;
+// TODO The remainder of the class would be unnecessary if it were actually a record
+        this.start = start;
+        this.stop = stop;
+    }
 
-    public String location;
+    private final OffsetDateTime start;
 
-    public long meetingID;
+    private final OffsetDateTime stop;
 
-    public OffsetDateTime start;
+    public OffsetDateTime start() {
+        return start;
+    }
 
-    public OffsetDateTime stop;
+    public OffsetDateTime stop() {
+        return stop;
+    }
 
     @Override
     public String toString() {
-        return "Reservation[" + meetingID + "]@" + Integer.toHexString(hashCode());
+        return "ReservedTimeSlot[start=" + start + ", stop=" + stop + "]";
     }
 }

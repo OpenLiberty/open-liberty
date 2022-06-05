@@ -15,15 +15,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.enterprise.inject.Stereotype;
-
 /**
- * Copied from jakarta.nosql.mapping.Entity to investigate how well the
- * JNoSQL repository-related annotations work for relational database access.
+ * Designates an entity field as an automatically generated key.
+ * This capability is offered by many relational databases.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Stereotype
-public @interface Entity {
-    String value() default "";
+@Target(ElementType.FIELD)
+public @interface Generated {
+    public static enum Type {
+        AUTO,
+        IDENTITY,
+        SEQUENCE,
+        TABLE,
+    }
+
+    /**
+     * The strategy for generating primary keys.
+     */
+    Generated.Type value() default Generated.Type.AUTO;
 }

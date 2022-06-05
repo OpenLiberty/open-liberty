@@ -21,14 +21,13 @@ import java.util.Stack;
 import java.util.Vector;
 
 import io.openliberty.data.Data;
-import io.openliberty.data.Entity;
 import io.openliberty.data.Repository;
+import io.openliberty.data.Select;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
  */
-@Data
-@Entity(Reservation.class)
+@Data(Reservation.class)
 public interface Reservations extends Repository<Reservation, Long> {
     boolean deleteByHostIn(List<String> hosts);
 
@@ -59,4 +58,9 @@ public interface Reservations extends Repository<Reservation, Long> {
     AbstractCollection<Reservation> findByStopLessThanEqual(OffsetDateTime maxEndTime);
 
     AbstractList<Reservation> findByStopLessThanOrderByHostAscOrderByLocationDescOrderByStart(OffsetDateTime endBefore);
+
+    // Use a record as the return type
+    @Select({ "start", "stop" })
+    ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
+
 }

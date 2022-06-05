@@ -44,6 +44,9 @@ import componenttest.app.FATServlet;
 public class DataTestServlet extends FATServlet {
 
     @Inject
+    OrderRepo orders;
+
+    @Inject
     PersonRepo people;
 
     @Inject
@@ -160,6 +163,36 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p2expected.lastName, p2.lastName);
         assertEquals(p2expected.firstName, p2.firstName);
         assertEquals(p2expected.ssn, p2.ssn);
+    }
+
+    /**
+     * Avoid specifying a primary key value and let it be generated.
+     */
+    @Test
+    public void testGeneratedKey() {
+        ZoneOffset MDT = ZoneOffset.ofHours(-6);
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testGeneratedKey-Customer1";
+        o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
+        o1.total = 25.99f;
+        o1 = orders.save(o1);
+
+        Order o2 = new Order();
+        o2.purchasedBy = "testGeneratedKey-Customer2";
+        o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
+        o2.total = 148.98f;
+        o2 = orders.save(o2);
+
+        assertNotNull(o1.id);
+        assertNotNull(o2.id);
+        assertEquals(false, o1.id.equals(o2.id));
+
+        assertEquals(true, orders.addTaxAndShipping(o2.id, 1.08f, 7.99f));
+
+        o2 = orders.findById(o2.id).get();
+
+        assertEquals(168.89f, o2.total, 0.01f);
     }
 
     /**
@@ -463,6 +496,64 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .sorted()
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Experiment with making a repository method return a record-like type.
+     */
+    @Test
+    public void testSelectAsRecord() {
+        ZoneOffset CDT = ZoneOffset.ofHours(-5);
+
+        // remove data that other tests previously inserted to the same table
+        reservations.deleteByHostNotIn(Set.of("never-ever-used@example.org"));
+
+        assertEquals(0, reservations.count());
+
+        // set up some data for the test to use
+        Reservation r1 = new Reservation();
+        r1.host = "testSelectAsRecord-host1@example.org";
+        r1.invitees = Set.of("testSelectAsRecord-1a@example.org", "testSelectAsRecord-1b@example.org");
+        r1.location = "30-2 C206";
+        r1.meetingID = 10040001;
+        r1.start = OffsetDateTime.of(2022, 6, 3, 13, 30, 0, 0, CDT);
+        r1.stop = OffsetDateTime.of(2022, 6, 3, 15, 0, 0, 0, CDT);
+
+        Reservation r2 = new Reservation();
+        r2.host = "testSelectAsRecord-host2@example.org";
+        r2.invitees = Set.of("testSelectAsRecord-2a@example.org", "testSelectAsRecord-2b@example.org");
+        r2.location = "30-2 C206";
+        r2.meetingID = 10040002;
+        r2.start = OffsetDateTime.of(2022, 6, 3, 9, 0, 0, 0, CDT);
+        r2.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
+
+        Reservation r3 = new Reservation();
+        r3.host = "testSelectAsRecord-host3@example.org";
+        r3.invitees = Set.of("testSelectAsRecord-3a@example.org");
+        r3.location = "30-2 C206";
+        r3.meetingID = 10040003;
+        r3.start = OffsetDateTime.of(2022, 6, 3, 15, 0, 0, 0, CDT);
+        r3.stop = OffsetDateTime.of(2022, 6, 3, 16, 0, 0, 0, CDT);
+
+        Reservation r4 = new Reservation();
+        r4.host = "testSelectAsRecord-host3@example.org";
+        r4.invitees = Set.of("testSelectAsRecord-3a@example.org", "testSelectAsRecord-3b@example.org");
+        r4.location = "30-2 C220";
+        r4.meetingID = 10040004;
+        r4.start = OffsetDateTime.of(2022, 6, 3, 9, 0, 0, 0, CDT);
+        r4.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
+
+        reservations.save(Set.of(r1, r2, r3, r4));
+
+        ReservedTimeSlot[] reserved = reservations.findByLocationAndStartBetweenOrderByStart("30-2 C206",
+                                                                                             OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
+                                                                                             OffsetDateTime.of(2022, 6, 3, 23, 59, 59, 0, CDT));
+        assertArrayEquals(new ReservedTimeSlot[] { new ReservedTimeSlot(r2.start, r2.stop),
+                                                   new ReservedTimeSlot(r1.start, r1.stop),
+                                                   new ReservedTimeSlot(r3.start, r3.stop) },
+                          reserved,
+                          Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.start().toInstant())
+                                          .thenComparing(Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.stop().toInstant())));
     }
 
     /**

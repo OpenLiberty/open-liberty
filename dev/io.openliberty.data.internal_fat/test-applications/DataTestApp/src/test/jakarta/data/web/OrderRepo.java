@@ -10,27 +10,19 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import java.time.OffsetDateTime;
-import java.util.Set;
+import io.openliberty.data.Data;
+import io.openliberty.data.Param;
+import io.openliberty.data.Query;
+import io.openliberty.data.Repository;
 
 /**
- *
+ * Experiments with auto-generated keys.
  */
-public class Reservation {
-    public String host;
+@Data(Order.class)
+public interface OrderRepo extends Repository<Order, Long> {
 
-    public Set<String> invitees;
-
-    public String location;
-
-    public long meetingID;
-
-    public OffsetDateTime start;
-
-    public OffsetDateTime stop;
-
-    @Override
-    public String toString() {
-        return "Reservation[" + meetingID + "]@" + Integer.toHexString(hashCode());
-    }
+    @Query("UPDATE Order o SET o.total = o.total * :rate + :shipping WHERE o.id = :id")
+    boolean addTaxAndShipping(@Param("id") long orderId,
+                              @Param("rate") float taxRate,
+                              @Param("shipping") float shippingCost);
 }
