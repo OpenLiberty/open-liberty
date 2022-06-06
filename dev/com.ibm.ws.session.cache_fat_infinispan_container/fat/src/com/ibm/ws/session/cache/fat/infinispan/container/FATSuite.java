@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
@@ -65,6 +66,12 @@ public class FATSuite {
                                                 "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
                                                 "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
                                                 "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"))
+                    .andWith(new JakartaEE10Action()
+                                    .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
                                                 "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
 
     @BeforeClass
@@ -75,7 +82,7 @@ public class FATSuite {
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan");
 
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan-jakarta");
             RemoteFile jakartaResourceDir = LibertyFileManager.createRemoteFile(machine, installRoot + "/usr/shared/resources/infinispan-jakarta");
             jakartaResourceDir.mkdirs();
