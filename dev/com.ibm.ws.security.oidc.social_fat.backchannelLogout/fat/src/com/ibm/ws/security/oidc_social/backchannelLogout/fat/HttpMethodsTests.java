@@ -142,8 +142,12 @@ public class HttpMethodsTests extends BackChannelLogoutCommonTests {
         genericInvokeEndpoint(_testName, webClient, null, logutOutEndpoint,
                 Constants.OPTIONSMETHOD, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, parms, null, expectations200, testSettings);
 
+        // Should get a 400 because there isn't a recent login session associated with the information in the logout token
+        List<validationData> expectations400 = vData.addResponseStatusExpectation(null, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.BAD_REQUEST_STATUS);
+        validationTools.addMessageExpectation(clientServer, expectations400, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not find message in RP log saying a recent session associated with the logout token could be found.", MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR + ".*" + MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS);
+
         genericInvokeEndpoint(_testName, webClient, null, logutOutEndpoint,
-                Constants.POSTMETHOD, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, parms, null, expectations200, testSettings);
+                Constants.POSTMETHOD, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, parms, null, expectations400, testSettings);
     }
 
     @Test
