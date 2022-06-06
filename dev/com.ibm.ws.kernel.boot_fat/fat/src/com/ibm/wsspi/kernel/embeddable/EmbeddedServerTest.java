@@ -32,15 +32,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
+import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import junit.framework.AssertionFailedError;
 
+@RunWith(FATRunner.class)
 public class EmbeddedServerTest {
 
     static final Class<?> c = EmbeddedServerTest.class;
@@ -154,8 +157,8 @@ public class EmbeddedServerTest {
         // and build script copy does not pick them up.
         outputAutoFVTDirectory.mkdirs();
         Log.info(c, METHOD_NAME, "Copying directory from " +
-                        ls.getUserDir() + "/../NonDefaultUser" + " to " +
-                        outputAutoFVTDirectory.getAbsolutePath());
+                                 ls.getUserDir() + "/../NonDefaultUser" + " to " +
+                                 outputAutoFVTDirectory.getAbsolutePath());
 
         File srcDir = new File(ls.getUserDir() + "/../NonDefaultUser");
         copyDirectory(srcDir, outputAutoFVTDirectory.getAbsoluteFile());
@@ -178,10 +181,12 @@ public class EmbeddedServerTest {
     }
 
     @Test
-    public void testForceStoppingAStartedServer() throws Throwable {}
+    public void testForceStoppingAStartedServer() throws Throwable {
+    }
 
     @Test
-    public void testBadArgument() throws Throwable {}
+    public void testBadArgument() throws Throwable {
+    }
 
     @Test
     public void testLaunchException() throws Throwable {

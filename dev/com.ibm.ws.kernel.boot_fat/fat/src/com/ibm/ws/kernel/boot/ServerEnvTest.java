@@ -23,16 +23,19 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * This test bucket tests the server startup process.
  */
+@RunWith(FATRunner.class)
 public class ServerEnvTest {
     private static final Class<?> c = ServerEnvTest.class;
 
@@ -192,7 +195,7 @@ public class ServerEnvTest {
      * Create the server.env file in the specified directory
      *
      * @param fileContents
-     * @param dir directory for server.env
+     * @param dir          directory for server.env
      * @throws IOException
      */
     private String createServerEnvFile(String fileContents, File dir) throws IOException {
