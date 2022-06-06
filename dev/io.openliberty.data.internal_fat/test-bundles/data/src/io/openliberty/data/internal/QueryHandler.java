@@ -37,10 +37,13 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Delete;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
 import io.openliberty.data.Select;
+import io.openliberty.data.Update;
+import io.openliberty.data.Where;
 
 public class QueryHandler<T> implements InvocationHandler {
     private static enum Condition {
@@ -171,46 +174,11 @@ public class QueryHandler<T> implements InvocationHandler {
         if (start > 0) {
             StringBuilder q = new StringBuilder(200);
             if (start == 6) { // findBy
-                Select select = method.getAnnotation(Select.class);
-                Class<?> type = select == null ? null : select.type();
-                String[] cols = select == null ? null : select.value();
-                if (type == null || Select.AutoDetect.class.equals(type)) {
-                    Class<?> returnType = method.getReturnType();
-                    if (!Iterable.class.isAssignableFrom(returnType)) {
-                        Class<?> arrayType = returnType.getComponentType();
-                        returnType = arrayType == null ? returnType : arrayType;
-                        if (!returnType.isPrimitive()
-                            && !returnType.isAssignableFrom(entityClass)
-                            && !returnType.getName().startsWith("java"))
-                            type = returnType;
-                    }
-                }
-                if (type == null || Select.AutoDetect.class.equals(type))
-                    if (cols == null || cols.length == 0) {
-                        q.append("SELECT o FROM ");
-                    } else {
-                        q.append("SELECT");
-                        for (int i = 0; i < cols.length; i++)
-                            q.append(i == 0 ? " o." : ", o.").append(cols[i]);
-                        q.append(" FROM ");
-                    }
-                else {
-                    q.append("SELECT NEW ").append(type.getName());
-                    boolean first = true;
-                    if (cols == null || cols.length == 0)
-                        for (String name : attributeNames.values()) {
-                            q.append(first ? "(o." : ", o.").append(name);
-                            first = false;
-                        }
-                    else
-                        for (int i = 0; i < cols.length; i++)
-                            q.append(i == 0 ? "(o." : ", o.").append(cols[i]);
-                    q.append(") FROM ");
-                }
+                generateSelect(q, method);
             } else {
-                q.append("DELETE FROM ");
+                q.append("DELETE FROM ").append(entityName).append(" o");
             }
-            q.append(entityName).append(" o WHERE ");
+            q.append(" WHERE ");
 
             int orderBy = methodName.indexOf("OrderBy");
             String s = orderBy > 0 ? methodName.substring(start, orderBy) : methodName.substring(start);
@@ -332,6 +300,46 @@ public class QueryHandler<T> implements InvocationHandler {
         return paramCount;
     }
 
+    private void generateSelect(StringBuilder q, Method method) {
+        Select select = method.getAnnotation(Select.class);
+        Class<?> type = select == null ? null : select.type();
+        String[] cols = select == null ? null : select.value();
+        if (type == null || Select.AutoDetect.class.equals(type)) {
+            Class<?> returnType = method.getReturnType();
+            if (!Iterable.class.isAssignableFrom(returnType)) {
+                Class<?> arrayType = returnType.getComponentType();
+                returnType = arrayType == null ? returnType : arrayType;
+                if (!returnType.isPrimitive()
+                    && !returnType.isAssignableFrom(entityClass)
+                    && !returnType.getName().startsWith("java"))
+                    type = returnType;
+            }
+        }
+        if (type == null || Select.AutoDetect.class.equals(type))
+            if (cols == null || cols.length == 0) {
+                q.append("SELECT o FROM ");
+            } else {
+                q.append("SELECT");
+                for (int i = 0; i < cols.length; i++)
+                    q.append(i == 0 ? " o." : ", o.").append(cols[i]);
+                q.append(" FROM ");
+            }
+        else {
+            q.append("SELECT NEW ").append(type.getName());
+            boolean first = true;
+            if (cols == null || cols.length == 0)
+                for (String name : attributeNames.values()) {
+                    q.append(first ? "(o." : ", o.").append(name);
+                    first = false;
+                }
+            else
+                for (int i = 0; i < cols.length; i++)
+                    q.append(i == 0 ? "(o." : ", o.").append(cols[i]);
+            q.append(") FROM ");
+        }
+        q.append(entityName).append(" o");
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
@@ -353,6 +361,7 @@ public class QueryHandler<T> implements InvocationHandler {
         QueryType queryType;
         boolean requiresTransaction;
 
+        // @Query annotation
         Query dataQuery = method.getAnnotation(Query.class);
         String jpql = dataQuery == null ? null : dataQuery.value();
 
@@ -360,6 +369,35 @@ public class QueryHandler<T> implements InvocationHandler {
         if (jpql == null && Repository.class.equals(method.getDeclaringClass()))
             jpql = getBuiltInRepositoryQuery(methodName, args, method.getParameterTypes());
 
+        // @Delete/@Update/@Where annotations
+        if (jpql == null) {
+            Update update = method.getAnnotation(Update.class);
+            Where where = method.getAnnotation(Where.class);
+            if (update == null) {
+                if (method.getAnnotation(Delete.class) == null) {
+                    if (where != null) {
+                        StringBuilder q = new StringBuilder(200);
+                        generateSelect(q, method);
+                        q.append(" WHERE ").append(where.value());
+                        jpql = q.toString();
+                    }
+                } else {
+                    StringBuilder q = new StringBuilder(200);
+                    q.append("DELETE FROM ").append(entityName).append(" o");
+                    if (where != null)
+                        q.append(" WHERE ").append(where.value());
+                    jpql = q.toString();
+                }
+            } else {
+                StringBuilder q = new StringBuilder(200);
+                q.append("UPDATE ").append(entityName).append(" o SET ").append(update.value());
+                if (where != null)
+                    q.append(" WHERE ").append(where.value());
+                jpql = q.toString();
+            }
+        }
+
+        // Repository method name pattern queries
         if (jpql == null)
             jpql = generateRepositoryQuery(method);
 

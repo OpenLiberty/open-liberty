@@ -55,6 +55,9 @@ public class DataTestServlet extends FATServlet {
     @Inject
     Reservations reservations;
 
+    @Inject
+    Shipments shipments;
+
     @Resource
     private UserTransaction tran;
 
@@ -193,6 +196,76 @@ public class DataTestServlet extends FATServlet {
         o2 = orders.findById(o2.id).get();
 
         assertEquals(168.89f, o2.total, 0.01f);
+    }
+
+    /**
+     * Invoke methods that are annotated with the Select, Where, Update, and Delete annotations.
+     */
+    @Test
+    public void testPartialQueryAnnotations() {
+        Shipment s1 = new Shipment();
+        s1.destination = "200 1st Ave SW, Rochester, MN 55902";
+        s1.location = "44.027354, -92.468482";
+        s1.id = 1;
+        s1.orderedAt = OffsetDateTime.now().minusMinutes(45);
+        s1.status = "IN_TRANSIT";
+        shipments.save(s1);
+
+        Shipment s2 = new Shipment();
+        s2.destination = "201 4th St SE, Rochester, MN 55904";
+        s2.location = "2800 37th St NW, Rochester, MN 55901";
+        s2.id = 2;
+        s2.orderedAt = OffsetDateTime.now().minusMinutes(20);
+        s2.status = "READY_FOR_PICKUP";
+        shipments.save(s2);
+
+        Shipment s3 = new Shipment();
+        s3.destination = "151 4th St SE, Rochester, MN 55904";
+        s3.location = "44.057840, -92.496301";
+        s3.id = 3;
+        s3.orderedAt = OffsetDateTime.now().minusMinutes(13);
+        s3.status = "IN_TRANSIT";
+        shipments.save(s3);
+
+        Shipment s4 = new Shipment();
+        s4.destination = "151 4th St SE, Rochester, MN 55904";
+        s4.location = "2800 37th St NW, Rochester, MN 55901 ";
+        s4.id = 4;
+        s4.orderedAt = OffsetDateTime.now().minusMinutes(4);
+        s4.status = "READY_FOR_PICKUP";
+        shipments.save(s4);
+
+        Shipment s5 = new Shipment();
+        s5.destination = "201 4th St SE, Rochester, MN 55904";
+        s5.location = " 2800 37th St NW, Rochester, MN 55901";
+        s5.id = 5;
+        s5.orderedAt = OffsetDateTime.now().minusSeconds(50);
+        s5.status = "PREPARING";
+        shipments.save(s5);
+
+        assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040"));
+        assertEquals("IN_TRANSIT", shipments.getStatus(2));
+
+        Shipment s = shipments.find(3);
+        String previousLocation = s.location;
+
+        assertEquals(true, shipments.updateLocation(3, previousLocation, "44.029468, -92.483191"));
+        assertEquals(false, shipments.updateLocation(3, previousLocation, "44.029406, -92.489553"));
+
+        s = shipments.find(3);
+        assertEquals("44.029468, -92.483191", s.location);
+
+        assertEquals(true, shipments.cancel(4));
+        assertEquals(true, shipments.cancel(5));
+        assertEquals(false, shipments.cancel(10));
+
+        shipments.trim();
+        s = shipments.find(4);
+        assertEquals("2800 37th St NW, Rochester, MN 55901", s.location);
+
+        assertEquals(2, shipments.removeCanceled());
+
+        assertEquals(3, shipments.removeEverything());
     }
 
     /**
