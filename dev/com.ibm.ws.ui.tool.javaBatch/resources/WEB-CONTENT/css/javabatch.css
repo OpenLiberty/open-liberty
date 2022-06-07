@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,23 +34,23 @@
 /*  Fonts                                                                                      */
 /***********************************************************************************************/
 @font-face {
-    font-family: 'HelvNeueRoman';
-    src: url('../fonts/helvetica-neue-roman.woff');
+    font-family: 'IBM Plex Sans Regular';
+    src: url('../fonts/IBMPlexSans-Regular.woff');
 }
 
 @font-face {
-    font-family: 'HelvNeueMedium';
-    src: url('../fonts/helvetica-neue-medium.woff');
+    font-family: 'IBM Plex Sans Medium';
+    src: url('../fonts/IBMPlexSans-Medium.woff');
 }
 
 @font-face {
-    font-family: 'HelvNeueBold';
-    src: url('../fonts/helvetica-neue-bold.woff');
+    font-family: 'IBM Plex Sans Bold';
+    src: url('../fonts/IBMPlexSans-Bold.woff');
     font-weight: bold;
 }
 
 * {
-    font-family: 'HelvNeueRoman', Helvetica, Arial, sans-serif;
+    font-family: 'IBM Plex Sans Regular', Helvetica, Arial, sans-serif;
 }
 
 /***********************************************************************************************/
@@ -76,7 +76,7 @@
 /*  OneUI overrides                                                                      */
 /***********************************************************************************************/
 .oneui {
-    font-family: 'HelvNeueRoman', Helvetica, Arial, sans-serif;
+    font-family: 'IBM Plex Sans Regular', Helvetica, Arial, sans-serif;
 }
 
 .dijitHidden {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2013 IBM Corporation and others.
+    Copyright (c) 2013, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@
       <url-pattern>/dojo/*</url-pattern>
       <url-pattern>/login/*</url-pattern>
       <url-pattern>/login.jsp</url-pattern>
-      <url-pattern>/fonts/helvetica-neue-roman.woff</url-pattern>
+      <url-pattern>/fonts/IBMPlexSans-Regular.woff</url-pattern>
       <http-method>GET</http-method>
     </web-resource-collection>
     <user-data-constraint id="UserDataConstraint_AdminCenter">
