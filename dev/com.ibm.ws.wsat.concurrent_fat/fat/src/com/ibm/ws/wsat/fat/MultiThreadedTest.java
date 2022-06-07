@@ -82,7 +82,7 @@ public class MultiThreadedTest extends WSATTest {
 		BufferedReader br;
 		try {
 			OperatingSystem os = server.getMachine().getOperatingSystem();
-			int count = os == OperatingSystem.ZOS ? 50 : 10;
+			int count = os == OperatingSystem.ZOS ? 10 : 50;
 			Log.info(getClass(), method, "Thread count set to " + count + " because operating system is " + os);
 
 			final int originalCount = count;
