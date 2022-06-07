@@ -45,7 +45,6 @@ import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.JtiNonceCache;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
-import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
@@ -152,6 +151,9 @@ public class Jose4jUtil {
                     props.put(Constants.ID_TOKEN_OBJECT, idToken);
                 }
                 oidcResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, null, null, props, null);
+                if (isRunningBetaMode()) {
+                    createWASOidcSession(oidcClientRequest, jwtClaims, clientConfig);
+                }
                 return oidcResult;
             }
 
@@ -188,7 +190,7 @@ public class Jose4jUtil {
             oidcResult = attributeToSubject.doMapping(customProperties, subject);
             //oidcResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, username, subject, customProperties, null);
             if (oidcResult.getStatus() == AuthResult.SUCCESS && isRunningBetaMode()) {
-                createWASOidcSession(oidcClientRequest, jwtClaims);
+                createWASOidcSession(oidcClientRequest, jwtClaims, clientConfig);
             }
         } catch (Exception e) {
             Tr.error(tc, "OIDC_CLIENT_IDTOKEN_VERIFY_ERR", new Object[] { e.getLocalizedMessage(), clientId });
@@ -198,10 +200,8 @@ public class Jose4jUtil {
         return oidcResult;
     }
 
-    private void createWASOidcSession(OidcClientRequest oidcClientRequest, @Sensitive JwtClaims jwtClaims) throws MalformedClaimException {
-        OidcClientConfig oidcClientConfig = oidcClientRequest.getOidcClientConfig();
-
-        String configId = oidcClientConfig.getId();
+    private void createWASOidcSession(OidcClientRequest oidcClientRequest, @Sensitive JwtClaims jwtClaims, ConvergedClientConfig clientConfig) throws MalformedClaimException {
+        String configId = clientConfig.getId();
         String iss = jwtClaims.getIssuer();
         String sub = jwtClaims.getSubject();
         String sid = jwtClaims.getClaimValue("sid", String.class);
@@ -209,7 +209,7 @@ public class Jose4jUtil {
 
         OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
 
-        OidcSessionCache oidcSessionCache = oidcClientConfig.getOidcSessionCache();
+        OidcSessionCache oidcSessionCache = clientConfig.getOidcSessionCache();
         oidcSessionCache.insertSession(sessionInfo);
 
         String wasOidcSessionId = sessionInfo.getSessionId();
