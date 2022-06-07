@@ -34,30 +34,6 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                PureAnnA01Test.class,
-                PureAnnA02Test.class, //LITE
-                PureAnnA03Test.class,
-                PureAnnA04Test.class,
-                PureAnnA05Test.class, //LITE
-                PureAnnA06Test.class,
-                PureAnnA07InheritanceTest.class, //Changed to run in FULL mode
-                PureAnnServletToEJBRunAsTest.class, //Changed to run in FULL
-                PureAnnA08JAASLoginFromEJBTest.class,
-                PureAnnA08JAASLoginFromEJBJACCAuditTest.class, //added for ejb jacc audit
-                EJBJarX01Test.class,
-                EJBJarX02Test.class, //LITE
-                EJBJarX03Test.class,
-                EJBJarX03JACCAuditTest.class, // added for jacc audit
-                EJBJarMixM01Test.class,
-                EJBJarMixM02Test.class, //Added one test to run in Lite mode
-                EJBJarMixM03Test.class, //Changed to run in FULL mode
-                EJBJarMixM04Test.class,
-                EJBJarMixM05Test.class, //Lite
-                EJBJarMixMC06Test.class, //Changed to run in FULL
-                EJBJarMixM07ExtTest.class, //LITE
-                EJBJarMixM08ExtTest.class, //CHanged to run in FULL
-                EJBJarMixM09ExtTest.class,
-                EJBJarMixM10ExtTest.class,
                 EJBJarMixMC06InWarEarTest.class,
                 EJBJarMixM01InWarEarTest.class, //Changed to run in Full
                 EJBJarX02InWarTest.class, //Added one test to run in Lite mode//Changed to run in FULL

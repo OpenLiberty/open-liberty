@@ -683,12 +683,12 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    public static final String CLASS_NAME = "Preprocessor";
+    
     @Override
-    protected byte[] transform(InputStream classfileStream) throws IOException {
-
+    protected byte[] transform(String className, InputStream classfileStream) throws IOException {
+    	String methodName = "transform";
+    	
         // Read in the class bytes and chain to the serialization version adpater.
         // If we fail to calculate the serialVersionUID before mucking around with
         // the class we'll very likely introduce issues with serializable classes
