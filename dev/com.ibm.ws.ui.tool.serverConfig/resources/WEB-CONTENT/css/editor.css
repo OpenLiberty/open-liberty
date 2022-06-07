@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,8 @@ html {
 }
 
 @font-face {
-	font-family: 'HelvNeueRoman';
-	src: url('../fonts/helvetica-neue-roman.woff');
+    font-family: "IBM Plex Sans Regular";
+    src: url("../fonts/IBMPlexSans-Regular.woff");
 }
 
 body,
@@ -27,7 +27,7 @@ body,
 	We want to avoid overriding the font-family used by the code editor.
 	We want to only override the classes in bootstrap that define Helvetica as a font-family
 	*/
-  	font-family: 'HelvNeueRoman', Helvetica, Arial, sans-serif;
+  	font-family: 'IBM Plex Sans Regular', Helvetica, Arial, sans-serif;
 }
 
 /* VISIBILITY */

@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.lang.instrument.ClassDefinition;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -165,12 +164,6 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
     private interface UniversalContainer {
 
         /**
-         * Constant that is used to indicate that there is no Manifest.
-         * This constant is used to indicate that getManifest() should return null.
-         */
-        static final Manifest NULL_MANIFEST = new Manifest();
-
-        /**
          * A resource located within a UniversalContainer
          */
         interface UniversalResource {
@@ -223,11 +216,9 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         Collection<URL> getContainerURLs();
 
         /**
-         * Attempts to load the manifest for the current resource URL and returns it.
-         *
-         * @return The manifest or <code>null</code> if an error occurred loading it (or it didn't exist)
+         * Defines a package using the provided <code>LibertyLoader</code>
          */
-        public Manifest getManifest();
+        void definePackage(String packageName, LibertyLoader loader, URL sealBase);
     }
 
     /**
@@ -426,15 +417,194 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         }
     }
 
+    private static abstract class AbstractUniversalContainer<E> implements UniversalContainer {
+        /**
+         * Constant that is used to indicate that there is no main attributes used for definePackage.
+         * This constant is used to indicate that getManifestMainAttributes() should return null.
+         */
+        private static final Map<Name, String> NULL_MAIN_ATTRIBUTES = Collections.emptyMap();
+
+        private static final Map<Name,Name> packageAttributes;
+
+        static {
+            Map<Name,Name> packageAttrs = new HashMap<>();
+            packageAttrs.put(Name.SPECIFICATION_TITLE, Name.SPECIFICATION_TITLE);
+            packageAttrs.put(Name.SPECIFICATION_VERSION, Name.SPECIFICATION_VERSION);
+            packageAttrs.put(Name.SPECIFICATION_VENDOR, Name.SPECIFICATION_VENDOR);
+            packageAttrs.put(Name.IMPLEMENTATION_TITLE, Name.IMPLEMENTATION_TITLE);
+            packageAttrs.put(Name.IMPLEMENTATION_VERSION, Name.IMPLEMENTATION_VERSION);
+            packageAttrs.put(Name.IMPLEMENTATION_VENDOR, Name.IMPLEMENTATION_VENDOR);
+            packageAttrs.put(Name.SEALED, Name.SEALED);
+            packageAttributes = Collections.unmodifiableMap(packageAttrs);
+        }
+
+        private volatile Map<Name, String> manifestMainAttributes = null;
+        private volatile Map<String, Map<Name, String>> manifestEntryAttributes = null;
+
+        @Override
+        @FFDCIgnore(value = { IllegalArgumentException.class })
+        public final void definePackage(String packageName, LibertyLoader loader, URL sealBase) {
+            Map<Name, String> mainAttributes = getManifestMainAttributes();
+            try {
+                if (mainAttributes == NULL_MAIN_ATTRIBUTES && manifestEntryAttributes == null) {
+                    loader.definePackage(packageName, null, null, null, null, null, null, null);
+                } else {
+                    //define package impl, that uses package sealing information as defined on wikipedia
+                    //to set vars passed up to ClassLoader.definePackage.
+                    String specTitle = null;
+                    String specVersion = null;
+                    String specVendor = null;
+                    String implTitle = null;
+                    String implVersion = null;
+                    String implVendor = null;
+                    String sealedString = null;
+
+                    if (manifestEntryAttributes != null) {
+                        String unixName = packageName.replaceAll("\\.", "/") + "/"; //replace all dots with slash and add trailing slash
+                        Map<Name, String> entryAttributes = manifestEntryAttributes.get(unixName);
+                        if (entryAttributes != null) {
+                            specTitle = entryAttributes.get(Name.SPECIFICATION_TITLE);
+                            specVersion = entryAttributes.get(Name.SPECIFICATION_VERSION);
+                            specVendor = entryAttributes.get(Name.SPECIFICATION_VENDOR);
+                            implTitle = entryAttributes.get(Name.IMPLEMENTATION_TITLE);
+                            implVersion = entryAttributes.get(Name.IMPLEMENTATION_VERSION);
+                            implVendor = entryAttributes.get(Name.IMPLEMENTATION_VENDOR);
+                            sealedString = entryAttributes.get(Name.SEALED);
+                        }
+                    }
+
+                    if (mainAttributes != NULL_MAIN_ATTRIBUTES) {
+                        if (specTitle == null) {
+                            specTitle = mainAttributes.get(Name.SPECIFICATION_TITLE);
+                        }
+                        if (specVersion == null) {
+                            specVersion = mainAttributes.get(Name.SPECIFICATION_VERSION);
+                        }
+                        if (specVendor == null) {
+                            specVendor = mainAttributes.get(Name.SPECIFICATION_VENDOR);
+                        }
+                        if (implTitle == null) {
+                            implTitle = mainAttributes.get(Name.IMPLEMENTATION_TITLE);
+                        }
+                        if (implVersion == null) {
+                            implVersion = mainAttributes.get(Name.IMPLEMENTATION_VERSION);
+                        }
+                        if (implVendor == null) {
+                            implVendor = mainAttributes.get(Name.IMPLEMENTATION_VENDOR);
+                        }
+                        if (sealedString == null) {
+                            sealedString = mainAttributes.get(Name.SEALED);
+                        }
+                    }
+
+                    if (sealedString == null || !sealedString.equalsIgnoreCase("true")) {
+                        sealBase = null;
+                    }
+
+                    loader.definePackage(packageName, specTitle, specVersion, specVendor, implTitle, implVersion, implVendor, sealBase);
+                }
+            } catch (IllegalArgumentException e) {
+                // Ignore, this happens if the package is already defined but it is hard to guard against this in a thread safe way. See:
+                // http://bugs.sun.com/view_bug.do?bug_id=4841786
+            }
+        }
+
+        @FFDCIgnore(value = { IOException.class })
+        private Map<Name, String> getManifestMainAttributes() {
+            // See if we've already loaded the manifest
+            if (this.manifestMainAttributes == null) {
+                synchronized (this) {
+                    if (this.manifestMainAttributes == null) {
+                        E e = getEntry("META-INF/MANIFEST.MF");
+                        if (e != null) {
+                            InputStream manifestStream = null;
+                            try {
+                                manifestStream = getInputStream(e);
+                                if (manifestStream != null) {
+                                    Manifest manifest = new Manifest(manifestStream);
+
+                                    Map<String, Attributes> manifestEntries = manifest.getEntries();
+                                    if (!manifestEntries.isEmpty()) {
+                                        this.manifestEntryAttributes = filterEntryAttributes(manifestEntries);
+                                    }
+                                    
+                                    Attributes mainAttributes = manifest.getMainAttributes();
+                                    if (!mainAttributes.isEmpty()) {
+                                        this.manifestMainAttributes = filterAttributes(mainAttributes);
+                                    }
+                                }
+                            } catch (IOException e2) {
+                                // Ignore, we'll just define a package with no package information
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "IOException thrown opening resource {0}", getResourceURL(e));
+                                }
+                            } finally {
+                                Util.tryToClose(manifestStream);
+                            }
+                        }
+                        // if it is still null, then set it to the static variable to 
+                        // indicate there are no main attributes.
+                        if (this.manifestMainAttributes == null) {
+                            this.manifestMainAttributes = NULL_MAIN_ATTRIBUTES;
+                        }
+                    }
+                }
+            }
+            return this.manifestMainAttributes;
+        }
+
+        private static Map<String, Map<Name, String>> filterEntryAttributes(Map<String, Attributes> manifestEntries) throws IOException {
+            Map<String, Map<Name, String>> entries = null;
+            for (Map.Entry<String, Attributes> entry : manifestEntries.entrySet()) {
+                String key = entry.getKey();
+                if (key != null && key.endsWith("/")) {
+                    Attributes attributes = entry.getValue();
+                    if (!attributes.isEmpty()) {
+                        Map<Name, String> newAttributes = filterAttributes(attributes);
+                        if (newAttributes != null) {
+                            if (entries == null) {
+                                entries = new HashMap<>(7);
+                            }
+                            entries.put(key, newAttributes);
+                        }
+                    }
+                }
+            }
+            return entries;
+        }
+
+        private static Map<Name, String> filterAttributes(Attributes attributes) {
+            Map<Name, String> newAttributes = null;
+            for (Map.Entry<Object, Object> entry : attributes.entrySet()) {
+                Object key = entry.getKey();
+                if (key instanceof Name) {
+                    Name validName = packageAttributes.get(key);
+                    // Use the constant instead of the one created from reading in the Manifest file.
+                    if (validName != null) {
+                        if (newAttributes == null) {
+                            newAttributes = new HashMap<>(7);
+                        }
+                        newAttributes.put(validName, (String) entry.getValue());
+                    }
+                }
+            }
+            return newAttributes;
+        }
+
+        abstract E getEntry(String path);
+
+        abstract InputStream getInputStream(E entry) throws IOException;
+
+        abstract URL getResourceURL(E entry);
+    }
+    
     /**
      * Implementation of a UniversalContainer, backed by an adaptable Container.
      */
-    private static class ContainerUniversalContainer implements UniversalContainer {
+    private static class ContainerUniversalContainer extends AbstractUniversalContainer<Entry> {
         private final Container container;
         private final boolean isRoot;
         private String debugString;
-
-        private volatile Manifest manifest;
 
         public ContainerUniversalContainer(Container container) {
             this.container = container;
@@ -514,48 +684,6 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         }
 
         @Override
-        @FFDCIgnore(value = { IOException.class })
-        public Manifest getManifest() {
-            // See if we've already loaded the manifest
-            if (manifest == null) {
-                synchronized (this) {
-                    if (manifest == null) {
-                        Entry e = this.container.getEntry("META-INF/MANIFEST.MF");
-                        if (e != null) {
-                            InputStream manifestStream = null;
-                            try {
-                                manifestStream = e.adapt(InputStream.class);
-                                if (manifestStream != null) {
-                                    Manifest manifestLoading = new Manifest(manifestStream);
-                                    manifest = manifestLoading;
-                                }
-                            } catch (UnableToAdaptException e1) {
-                                // Ignore, we'll just define a package with no package information
-                                if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "UnableToAdaptException thrown opening resource {0}", e.getResource());
-                                }
-                            } catch (IOException e2) {
-                                // Ignore, we'll just define a package with no package information
-                                if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "IOException thrown opening resource {0}", e.getResource());
-                                }
-                            } finally {
-                                Util.tryToClose(manifestStream);
-                            }
-                        }
-                        // if it is still null, then set it to the static variable to 
-                        // indicate a null Manifest should be returned.
-                        if (manifest == null) {
-                            manifest = NULL_MANIFEST;
-                        }
-                    }
-                }
-            }
-
-            return manifest == NULL_MANIFEST ? null : manifest;
-        }
-
-        @Override
         public String toString() {
             if (debugString == null) {
                 String physicalPath = this.container.getPhysicalPath();
@@ -565,6 +693,29 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
                 debugString = physicalPath;
             }
             return debugString;
+        }
+
+        @Override
+        Entry getEntry(String path) {
+            return this.container.getEntry(path);
+        }
+
+        @Override
+        InputStream getInputStream(Entry e) throws IOException {
+            try {
+                return e.adapt(InputStream.class);
+            } catch (UnableToAdaptException e1) {
+                // Ignore, we'll just define a package with no package information
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "UnableToAdaptException thrown opening resource {0}", e.getResource());
+                }
+                return null;
+            }
+        }
+
+        @Override
+        URL getResourceURL(Entry e) {
+            return e.getResource();
         }
     }
 
@@ -645,11 +796,9 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
     /**
      * Implementation of a UniversalContainer, backed by an ArtifactContainer.
      */
-    private static class ArtifactContainerUniversalContainer implements UniversalContainer {
+    private static class ArtifactContainerUniversalContainer extends AbstractUniversalContainer<ArtifactEntry> {
         final ArtifactContainer container;
         final boolean isRoot;
-
-        private volatile Manifest manifest;
 
         public ArtifactContainerUniversalContainer(ArtifactContainer container) {
             this.container = container;
@@ -734,40 +883,18 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         }
 
         @Override
-        @FFDCIgnore(value = { IOException.class })
-        public Manifest getManifest() {
-            // See if we've already loaded the manifest
-            if (manifest == null) {
-                synchronized (this) {
-                    if (manifest == null) {
-                        ArtifactEntry e = this.container.getEntry("META-INF/MANIFEST.MF");
-                        if (e != null) {
-                            InputStream manifestStream = null;
-                            try {
-                                manifestStream = e.getInputStream();
-                                if (manifestStream != null) {
-                                    Manifest manifestLoading = new Manifest(manifestStream);
-                                    manifest = manifestLoading;
-                                }
-                            } catch (IOException e2) {
-                                // Ignore, we'll just define a package with no package information
-                                if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "IOException thrown opening resource {0}", e.getResource());
-                                }
-                            } finally {
-                                Util.tryToClose(manifestStream);
-                            }
-                        }
-                        // if it is still null, then set it to the static variable to 
-                        // indicate a null Manifest should be returned.
-                        if (manifest == null) {
-                            manifest = NULL_MANIFEST;
-                        }
-                    }
-                }
-            }
+        ArtifactEntry getEntry(String path) {
+            return this.container.getEntry(path);
+        }
 
-            return manifest == NULL_MANIFEST ? null : manifest;
+        @Override
+        InputStream getInputStream(ArtifactEntry e) throws IOException {
+            return e.getInputStream();
+        }
+
+        @Override
+        URL getResourceURL(ArtifactEntry e) {
+            return e.getResource();
         }
     }
 
@@ -1347,13 +1474,8 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
             return this.bytes;
         }
 
-        /**
-         * Attempts to load the manifest for the current resource URL and returns it.
-         *
-         * @return The manifest or <code>null</code> if an error occurred loading it (or it didn't exist)
-         */
-        public Manifest getManifest() {
-            return resourceContainer.getManifest();
+        void definePackage(String packageName, LibertyLoader loader) {
+            resourceContainer.definePackage(packageName, loader, resourceEntry);
         }
 
         /**
@@ -1485,51 +1607,6 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         } finally {
             ThreadIdentityManager.reset(token);
         }
-    }
-
-    //define package impl, that uses package sealing information as defined on wikipedia
-    //to set vars passed up to ClassLoader.definePackage.
-    public Package definePackage(String name, Manifest manifest, URL sealBase) throws IllegalArgumentException {
-        Attributes mA = manifest.getMainAttributes();
-        String specTitle = mA.getValue(Name.SPECIFICATION_TITLE);
-        String specVersion = mA.getValue(Name.SPECIFICATION_VERSION);
-        String specVendor = mA.getValue(Name.SPECIFICATION_VENDOR);
-        String implTitle = mA.getValue(Name.IMPLEMENTATION_TITLE);
-        String implVersion = mA.getValue(Name.IMPLEMENTATION_VERSION);
-        String implVendor = mA.getValue(Name.IMPLEMENTATION_VENDOR);
-        String sealedString = mA.getValue(Name.SEALED);
-        Boolean sealed = (sealedString == null ? Boolean.FALSE : sealedString.equalsIgnoreCase("true"));
-
-        //now overwrite global attributes with the specific attributes
-        String unixName = name.replaceAll("\\.", "/") + "/"; //replace all dots with slash and add trailing slash
-        mA = manifest.getAttributes(unixName);
-        if (mA != null) {
-            String s = mA.getValue(Name.SPECIFICATION_TITLE);
-            if (s != null)
-                specTitle = s;
-            s = mA.getValue(Name.SPECIFICATION_VERSION);
-            if (s != null)
-                specVersion = s;
-            s = mA.getValue(Name.SPECIFICATION_VENDOR);
-            if (s != null)
-                specVendor = s;
-            s = mA.getValue(Name.IMPLEMENTATION_TITLE);
-            if (s != null)
-                implTitle = s;
-            s = mA.getValue(Name.IMPLEMENTATION_VERSION);
-            if (s != null)
-                implVersion = s;
-            s = mA.getValue(Name.IMPLEMENTATION_VENDOR);
-            if (s != null)
-                implVendor = s;
-            s = mA.getValue(Name.SEALED);
-            if (s != null)
-                sealed = s.equalsIgnoreCase("true");
-        }
-
-        if (!sealed)
-            sealBase = null;
-        return definePackage(name, specTitle, specVersion, specVendor, implTitle, implVersion, implVendor, sealBase);
     }
 
     /**

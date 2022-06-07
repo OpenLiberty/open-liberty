@@ -57,7 +57,7 @@ import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
 import com.ibm.websphere.ssl.SSLConfigurationNotAvailableException;
 import com.ibm.websphere.ssl.SSLException;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
@@ -65,6 +65,9 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.token.JWSHeader;
+import com.ibm.ws.security.openidconnect.token.JWT;
+import com.ibm.ws.security.openidconnect.token.JWTPayload;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.webcontainer.security.AuthResult;
@@ -125,7 +128,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     private static final String TEXT_PLAIN = "text/plain";
     private static final String CONFIG_ID = "configId";
 
-    private final AccessTokenAuthenticator tokenAuth = new AccessTokenAuthenticator();
+    private final AccessTokenAuthenticator accessTokenAuthenticator = new AccessTokenAuthenticator();
     private final AccessTokenAuthenticator sslTokenAuth = new FakeAccessTokenAuthenticator(sslSupport);
     private final ReferrerURLCookieHandler referrerURLCookieHandler = new ReferrerURLCookieHandler(webAppSecConfig);
     private final Map<String, Object> respMap = new HashMap<String, Object>();
@@ -415,7 +418,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withAccessTokenInRequestParameter(null);
         withInboundPropagationSupported();
 
-        ProviderAuthenticationResult oidcResult = tokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
+        ProviderAuthenticationResult oidcResult = accessTokenAuthenticator.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
         assertFailureWithUnauthorized(oidcResult);
     }
@@ -430,7 +433,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withAccessTokenInRequestParameter(ACCESS_TOKEN);
         withInboundPropagationRequired();
 
-        ProviderAuthenticationResult oidcResult = tokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
+        ProviderAuthenticationResult oidcResult = accessTokenAuthenticator.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
 
         assert401WithUnauthorized(oidcResult);
     }
@@ -479,7 +482,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
         withInboundPropagationSupported();
 
-        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        Boolean isValid = accessTokenAuthenticator.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
     }
 
@@ -491,7 +494,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withExpClaimRequired(true);
         withInboundPropagationRequired();
 
-        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        Boolean isValid = accessTokenAuthenticator.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
     }
 
@@ -505,7 +508,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withIssuerChecking(GOOD_ISSUER);
         withExpClaimRequired(false);
 
-        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        Boolean isValid = accessTokenAuthenticator.validateJsonResponse(jobj, clientConfig);
         assertTrue("Response should have been considered valid, but was not.", isValid);
     }
 
@@ -522,7 +525,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
         withInboundPropagationSupported();
 
-        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        Boolean isValid = accessTokenAuthenticator.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
     }
 
@@ -536,7 +539,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withIatClaimRequired(true);
         withInboundPropagationRequired();
 
-        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        Boolean isValid = accessTokenAuthenticator.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
     }
 
@@ -550,7 +553,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withIssuerChecking(GOOD_ISSUER);
         withIatClaimRequired(false);
 
-        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        Boolean isValid = accessTokenAuthenticator.validateJsonResponse(jobj, clientConfig);
         assertTrue("Response should have been considered valid, but was not.", isValid);
     }
 
@@ -564,7 +567,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         final String JSONSTRING = getJSONObjectString(true, currentDate, currentDate, BAD_ISSUER);
         JSONObject jobj = JSONObject.parse(JSONSTRING);
 
-        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        Boolean isValid = accessTokenAuthenticator.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
     }
 
@@ -577,7 +580,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         final String JSONSTRING = getJSONObjectString(true, currentDate, currentDate, GOOD_ISSUER, currentDate);
         JSONObject jobj = JSONObject.parse(JSONSTRING);
 
-        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        Boolean isValid = accessTokenAuthenticator.validateJsonResponse(jobj, clientConfig);
         assertTrue("Expected to receive a true value but was received: " + isValid, isValid);
     }
 
@@ -595,7 +598,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         final String JSONSTRING = getJSONObjectString(true, currentDate, currentDate, GOOD_ISSUER, notBeforeTime);
         JSONObject jobj = JSONObject.parse(JSONSTRING);
 
-        Boolean isValid = tokenAuth.validateJsonResponse(jobj, clientConfig);
+        Boolean isValid = accessTokenAuthenticator.validateJsonResponse(jobj, clientConfig);
         assertFalse("Expected to receive a false value but was received: " + isValid, isValid);
     }
 
@@ -604,11 +607,11 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         Long currentDate = getCurrentDate();
         Integer intCurrentDate = Integer.valueOf(currentDate.toString());
 
-        Long result1 = tokenAuth.getLong(intCurrentDate);
+        Long result1 = accessTokenAuthenticator.getLong(intCurrentDate);
         assertEquals("Expected to receive: " + currentDate + " but received: " + result1 + ".", currentDate, result1);
 
         String[] dates = { currentDate.toString(), Calendar.getInstance().toString() };
-        Long result2 = tokenAuth.getLong(dates);
+        Long result2 = accessTokenAuthenticator.getLong(dates);
         assertEquals("Expected to receive: " + currentDate + " but received: " + result2 + ".", currentDate, result2);
     }
 
@@ -625,7 +628,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withRsFailMsg(failMsg);
 
         respMap.put(ClientConstants.RESPONSEMAP_CODE, httpResponse);
-        JSONObject jsonObject = tokenAuth.handleResponseMap(respMap, clientConfig, clientRequest);
+        JSONObject jsonObject = accessTokenAuthenticator.handleResponseMap(respMap, clientConfig, clientRequest);
         assertNull("Expected to receive a null value but was received: " + jsonObject, jsonObject);
     }
 
@@ -640,14 +643,14 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withNewRsFailMsg(failMsg);
 
         respMap.put(ClientConstants.RESPONSEMAP_CODE, httpResponse);
-        JSONObject jsonObject = tokenAuth.handleResponseMap(respMap, clientConfig, clientRequest);
+        JSONObject jsonObject = accessTokenAuthenticator.handleResponseMap(respMap, clientConfig, clientRequest);
         assertNull("Expected to receive a null value but was received: " + jsonObject, jsonObject);
     }
 
     @Test
     public void test_extractSuccessfulResponse_responseMissingEntity() throws Exception {
         withEntity(null);
-        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        JSONObject result = accessTokenAuthenticator.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNull("Result should have been null but was " + result + ".", result);
     }
 
@@ -657,7 +660,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withInboundPropagationRequired();
         withRsFailMsg("doesn't matter");
 
-        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        JSONObject result = accessTokenAuthenticator.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNull("Result should have been null but was " + result + ".", result);
     }
 
@@ -678,14 +681,14 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(null));
             }
         });
-        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        JSONObject result = accessTokenAuthenticator.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNull("Result should have been null but was " + result + ".", result);
     }
 
     @Test
     public void test_extractSuccessfulResponse_notJson() throws Exception {
         withEntity(createBasicHttpEntity(new String("This is not JSON"), TEXT_PLAIN));
-        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        JSONObject result = accessTokenAuthenticator.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNull("Result should have been null but was " + result + ".", result);
     }
 
@@ -693,7 +696,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     public void test_extractSuccessfulResponse_emptyJson() throws Exception {
         JSONObject responseJson = new JSONObject();
         withEntity(createBasicHttpEntity(new String(responseJson.toString()), APPLICATION_JSON));
-        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        JSONObject result = accessTokenAuthenticator.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNotNull("Result should not have been null but was.", result);
         assertTrue("Result should have been empty, but was " + result + ".", result.isEmpty());
     }
@@ -704,7 +707,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         responseJson.put("key1", "value1");
         responseJson.put("key2", "value2");
         withEntity(createBasicHttpEntity(new String(responseJson.toString()), APPLICATION_JSON));
-        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        JSONObject result = accessTokenAuthenticator.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
         assertNotNull("Result should not have been null but was.", result);
         assertEquals("Result did not match the expected value.", responseJson, result);
     }
@@ -718,7 +721,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withConfigId();
 
         try {
-            JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+            JSONObject result = accessTokenAuthenticator.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
             fail("Should have thrown an exception, but got [" + result + "].");
         } catch (Exception e) {
             verifyException(e, "CWWKS1539E");
@@ -729,7 +732,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     public void test_extractClaimsFromJwtResponse_responseStringEmpty() throws Exception {
         String rawResponse = "";
 
-        JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+        JSONObject result = accessTokenAuthenticator.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
         assertNull("Result should have been null but was " + result + ".", result);
     }
 
@@ -739,7 +742,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withConfigId();
 
         try {
-            JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+            JSONObject result = accessTokenAuthenticator.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
             fail("Should have thrown an exception, but got [" + result + "].");
         } catch (Exception e) {
             verifyException(e, "CWWKS1539E");
@@ -752,7 +755,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withConfigId();
 
         try {
-            JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+            JSONObject result = accessTokenAuthenticator.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
             fail("Should have thrown an exception, but got [" + result + "].");
         } catch (Exception e) {
             verifyException(e, "CWWKS1533E" + ".+" + Pattern.quote("org.jose4j.json.internal.json_simple.parser.ParseException"));
@@ -775,11 +778,87 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
             }
         });
         try {
-            JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+            JSONObject result = accessTokenAuthenticator.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
             fail("Should have thrown an exception, but got [" + result + "].");
         } catch (Exception e) {
             verifyException(e, "CWWKS1533E" + ".+" + "CWWKS6056E");
         }
+    }
+
+    @Test
+    public void testCanUseIssuerAsSelectorForInboundPropagation_inboundPropagationDisabled() throws Exception {
+        withInboundPropagationEnabled(false);
+        boolean result = accessTokenAuthenticator.canUseIssuerAsSelectorForInboundPropagation(req, clientConfig);
+        assertFalse("Cannot use issuer as selector when inbound propagation is not enabled.", result);
+    }
+
+    @Test
+    public void testCanUseIssuerAsSelectorForInboundPropagation_inboundPropagationEnabled_issuerCheckingDisabled() throws Exception {
+        withInboundPropagationEnabled(true);
+        withoutIssuerChecking();
+
+        boolean result = accessTokenAuthenticator.canUseIssuerAsSelectorForInboundPropagation(req, clientConfig);
+
+        assertFalse("Cannot use issuer as selector when inbound propagation is enabled with issuer checking is disabled.", result);
+    }
+
+    @Test
+    public void testCanUseIssuerAsSelectorForInboundPropagation_inboundPropagationEnabled_issuerCheckingEnabled_noAccessToken() throws Exception {
+        withInboundPropagationEnabled(true);
+        withIssuerChecking(GOOD_ISSUER);
+        withoutAccessTokenInLtpaCookie();
+        withHeaderName(null);
+        withAuthorizationHeader(null);
+        withMethod("GET");
+
+        boolean result = accessTokenAuthenticator.canUseIssuerAsSelectorForInboundPropagation(req, clientConfig);
+
+        assertFalse("Cannot use issuer as selector when inbound propagation is enabled and there is no access token.", result);
+    }
+
+    @Test
+    public void testCanUseIssuerAsSelectorForInboundPropagation_inboundPropagationEnabled_issuerCheckingEnabled_opaqueAccessToken() throws Exception {
+        withIssuerAsSelectorExpectations(ACCESS_TOKEN);
+
+        boolean result = accessTokenAuthenticator.canUseIssuerAsSelectorForInboundPropagation(req, clientConfig);
+
+        assertFalse("Cannot use issuer as selector when inbound propagation is enabled and there is an opaque access token.", result);
+    }
+
+    @Test
+    public void testCanUseIssuerAsSelectorForInboundPropagation_inboundPropagationEnabled_issuerCheckingEnabled_jwtAccessToken_noIssuer() throws Exception {
+        withIssuerAsSelectorExpectations(createSerializedJwtWithIssuer(null));
+
+        boolean result = accessTokenAuthenticator.canUseIssuerAsSelectorForInboundPropagation(req, clientConfig);
+
+        assertFalse("Cannot use issuer as selector when inbound propagation is enabled and there is a JWT access token without issuer.", result);
+    }
+
+    @Test
+    public void testCanUseIssuerAsSelectorForInboundPropagation_inboundPropagationEnabled_issuerCheckingEnabled_jwtAccessToken_emptyIssuer() throws Exception {
+        withIssuerAsSelectorExpectations(createSerializedJwtWithIssuer(""));
+
+        boolean result = accessTokenAuthenticator.canUseIssuerAsSelectorForInboundPropagation(req, clientConfig);
+
+        assertFalse("Cannot use issuer as selector when inbound propagation is enabled and there is a JWT access token with an empty issuer.", result);
+    }
+
+    @Test
+    public void testCanUseIssuerAsSelectorForInboundPropagation_inboundPropagationEnabled_issuerCheckingEnabled_jwtAccessToken_mismatchedIssuer() throws Exception {
+        withIssuerAsSelectorExpectations(createSerializedJwtWithIssuer(BAD_ISSUER));
+
+        boolean result = accessTokenAuthenticator.canUseIssuerAsSelectorForInboundPropagation(req, clientConfig);
+
+        assertFalse("Cannot use issuer as selector when inbound propagation is enabled and there is a JWT access token with a mismatched issuer.", result);
+    }
+
+    @Test
+    public void testCanUseIssuerAsSelectorForInboundPropagation_inboundPropagationEnabled_issuerCheckingEnabled_jwtAccessToken_matchingIssuer() throws Exception {
+        withIssuerAsSelectorExpectations(createSerializedJwtWithIssuer(GOOD_ISSUER));
+
+        boolean result = accessTokenAuthenticator.canUseIssuerAsSelectorForInboundPropagation(req, clientConfig);
+
+        assertTrue("Can use issuer as selector when inbound propagation is enabled and there is a JWT access token with a matching issuer.", result);
     }
 
     /**
@@ -818,6 +897,26 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     private String getJSONObjectString(Boolean active, Long expDate, Long issueAtDate, String issuer, Long notBeforeTime) {
         return "{\"user\":\"user1\" , \"active\":" + active + " , \"exp\":" + expDate + " , \"iat\":" + issueAtDate + " , \"iss\":\"" + issuer + "\" , \"nbf\":" + notBeforeTime
                 + "}";
+    }
+
+    private String createSerializedJwtWithIssuer(String issuer) throws Exception {
+        String serializedJwt = null;
+
+        JWSHeader header = new JWSHeader();
+        header.setAlgorithm("HS256");
+        header.setKeyId("keyid");
+
+        JWTPayload payload = new JWTPayload();
+        if (issuer != null) {
+            payload.setIssuer(issuer);
+        }
+
+        byte[] keyBytes = "secretsecretsecretsecretsecretsecret".getBytes("UTF-8");
+        JWT jwt = new JWT(header, payload, keyBytes);
+        System.out.println(jwt.getJWTString());
+        serializedJwt = jwt.getSignedJWTString();
+
+        return serializedJwt;
     }
 
     private Long getCurrentDate() {
@@ -873,6 +972,11 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         withAuthorizationHeader(BEARER);
     }
 
+    private void withBearerAuthorizationHeader(final String value) {
+        withHeaderName(null);
+        withAuthorizationHeader("Bearer " + value);
+    }
+
     private void withHeaderName(final String headerName) {
         mockery.checking(new Expectations() {
             {
@@ -888,12 +992,20 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     private void withAccessTokenInRequestParameter(final String accessToken) {
         withHeader(ClientConstants.REQ_CONTENT_TYPE_NAME, ClientConstants.REQ_CONTENT_TYPE_APP_FORM_URLENCODED);
+        withMethod(ClientConstants.REQ_METHOD_POST);
+        mockery.checking(new Expectations() {
+            {
+                one(req).getParameter(ACCESS_TOKEN);
+                will(returnValue(accessToken));
+            }
+        });
+    }
+
+    private void withMethod(final String value) {
         mockery.checking(new Expectations() {
             {
                 one(req).getMethod();
-                will(returnValue(ClientConstants.REQ_METHOD_POST));
-                one(req).getParameter(ACCESS_TOKEN);
-                will(returnValue(accessToken));
+                will(returnValue(value));
             }
         });
     }
@@ -1014,6 +1126,15 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
         });
     }
 
+    private void withInboundPropagationEnabled(final boolean value) {
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).isInboundPropagationEnabled();
+                will(returnValue(value));
+            }
+        });
+    }
+
     private void withNewRsFailMsg(final String msg) {
         mockery.checking(new Expectations() {
             {
@@ -1083,7 +1204,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     private void withIssuerChecking(final String issuerIdentifier) {
         mockery.checking(new Expectations() {
             {
-                one(clientConfig).getIssuerIdentifier();
+                allowing(clientConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
                 one(clientConfig).disableIssChecking();
                 will(returnValue(false));
@@ -1124,6 +1245,13 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(CONFIG_ID));
             }
         });
+    }
+
+    private void withIssuerAsSelectorExpectations(String bearerAuthorizationHeader) {
+        withInboundPropagationEnabled(true);
+        withIssuerChecking(GOOD_ISSUER);
+        withoutAccessTokenInLtpaCookie();
+        withBearerAuthorizationHeader(bearerAuthorizationHeader);
     }
 
     private void assertSuccessWithOK(ProviderAuthenticationResult oidcResult) {

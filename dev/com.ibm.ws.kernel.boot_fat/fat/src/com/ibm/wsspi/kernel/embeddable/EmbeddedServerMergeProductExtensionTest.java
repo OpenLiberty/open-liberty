@@ -16,9 +16,11 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -28,6 +30,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * 2) WLP_PRODUCT_EXT_DIR environment variable
  * 3) etc/extensions install directory.
  */
+@RunWith(FATRunner.class)
 public class EmbeddedServerMergeProductExtensionTest {
 
     private static final Class<?> c = EmbeddedServerMergeProductExtensionTest.class;

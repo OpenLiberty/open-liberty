@@ -22,7 +22,8 @@ def infinispanVersion = '12.1.7.Final'
 def appBuildDir = "${buildDir}/test-application"
 
 configurations {
-  infinispan
+  infinispan_jcache_remote
+  infinispan_client_hotrod
 }
 
 dependencies {
@@ -40,15 +41,50 @@ dependencies {
                'rhino:js:1.6R5',
                'net.sourceforge.htmlunit:htmlunit:2.59.0'
 
-  infinispan "org.infinispan:infinispan-jcache-remote:${infinispanVersion}"
+  infinispan_jcache_remote "org.infinispan:infinispan-jcache-remote:${infinispanVersion}"
+  infinispan_client_hotrod "org.infinispan:infinispan-client-hotrod:${infinispanVersion}"
 }
 
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 task addInfinispanToSharedDir(type: Copy) {
-  from configurations.infinispan
+  from configurations.infinispan_jcache_remote
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** providerinapp.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProviderInApp_WAR(type: War, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "providerinapp.war"
+  
+  from('test-applications/providerinapp/resources') {
+    include '**/*'
+  }
+  
+  webInf {
+  	from ('build/classes/java/main') {
+    	include 'web/providerinapp/*.class' 
+    	into 'classes'
+    }
+  }
+
+  webInf {
+    from configurations.infinispan_client_hotrod {
+      into 'lib'
+    }
+  }
+  
+  manifest {
+    attributes("Class-Path": configurations.infinispan_client_hotrod.collect { it.getName() }.join(' '))
+  }
 }
 
 /******************************************************************
@@ -58,6 +94,12 @@ task addInfinispanToSharedDir(type: Copy) {
  **
  ******************************************************************
  ******************************************************************/
+assemble {
+
+  dependsOn ProviderInApp_WAR
+    
+}
+
 addRequiredLibraries {
   dependsOn addInfinispanToSharedDir
 }
@@ -81,6 +123,8 @@ autoFVT.doLast {
     'io.openliberty.jcache.internal.fat.jwt.auth.cache.1',
     'io.openliberty.jcache.internal.fat.jwt.auth.cache.2',
     'io.openliberty.jcache.internal.fat.spnego.auth.cache.1',
+    'io.openliberty.jcache.internal.fat.auth.cache.restart.1',
+    'io.openliberty.jcache.internal.fat.dynamicupdate.1',
   ]
   servers.each { server ->
     copy { 
@@ -97,7 +141,8 @@ autoFVT.doLast {
     'io.openliberty.jcache.internal.fat.jwt.cookie.cache.1',
     'io.openliberty.jcache.internal.fat.jwt.cookie.cache.2',
     'io.openliberty.jcache.internal.fat.ltpa.cookie.cache.1',
-    'io.openliberty.jcache.internal.fat.ltpa.cookie.cache.2'
+    'io.openliberty.jcache.internal.fat.ltpa.cookie.cache.2',
+    'io.openliberty.jcache.internal.fat.ltpa.cookie.cache.restart.1'
   ]
   servers.each { server ->    copy { 
       from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/formlogin.zip')
@@ -161,6 +206,19 @@ autoFVT.doLast {
     }
   }
   
+  /*
+   * Copy the providerinapp.war into test servers.
+   */
+  servers = [
+    'io.openliberty.jcache.internal.fat.provider.in.app.1'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(buildDir, 'test-application/providerinapp.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+
   /*
    * htmlunit-2.44.0 is packaged automatically, we need to remove it so we can use
    # htmlunit-2.59.0 as it contains a fix for "SameSite" cookies.

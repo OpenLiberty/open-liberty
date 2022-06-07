@@ -104,8 +104,7 @@ public class SSLChannelOptions extends ChannelConfiguration {
     }
 
     /**
-     * Register this as a service in the service registry. Sanity is preserved
-     * in this one single method. SSL configurations (repertoires) are required
+     * Register this as a service in the service registry. SSL configurations (repertoires) are required
      * for the ssl connection to have a chance of working. This method needs to
      * ensure that the registration is only created (or updated) if that
      * referenced repertoire exists.

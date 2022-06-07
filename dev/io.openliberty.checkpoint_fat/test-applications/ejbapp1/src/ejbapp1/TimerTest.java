@@ -35,8 +35,10 @@ public class TimerTest {
         }
         long deltaTime = currentTime - lastTime;
         long deltaMillis = TimeUnit.NANOSECONDS.toMillis(deltaTime);
+        System.out.println("TIMER - Ran again: " + deltaMillis);
         // here we assume if delta is less than 800 millis then something is wrong
         if (deltaMillis < 800) {
+            System.out.println("TIMER RUN TOO FAST: " + deltaMillis);
             failed.set(true);
         }
         if (numRun.addAndGet(1) == 5) {

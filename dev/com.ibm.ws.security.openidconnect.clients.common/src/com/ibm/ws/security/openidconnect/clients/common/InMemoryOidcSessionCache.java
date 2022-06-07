@@ -6,11 +6,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +26,7 @@ import java.util.Set;
  */
 public class InMemoryOidcSessionCache implements OidcSessionCache {
 
-    private static Set<String> invalidatedSessions;
+    private static Set<OidcSessionInfo> invalidatedSessions;
     private static Map<String, OidcSessionsStore> subToOidcSessionsMap;
 
     public InMemoryOidcSessionCache() {
@@ -36,11 +35,9 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
     }
 
     @Override
-    public boolean insertSession(String sub, String sid, String oidcSessionId) {
+    public boolean insertSession(OidcSessionInfo oidcSessionInfo) {
+        String sub = oidcSessionInfo.getSub();
         if (sub == null || sub.isEmpty()) {
-            return false;
-        }
-        if (oidcSessionId == null || oidcSessionId.isEmpty()) {
             return false;
         }
 
@@ -49,8 +46,14 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
             subToOidcSessionsMap.put(sub, httpSessionsStore);
         }
 
+        String sid = oidcSessionInfo.getSid();
         OidcSessionsStore httpSessionsStore = subToOidcSessionsMap.get(sub);
-        return httpSessionsStore.insertSession(sid, oidcSessionId);
+        return httpSessionsStore.insertSession(sid, oidcSessionInfo);
+    }
+
+    @Override
+    public Map<String, OidcSessionsStore> getSubMap() {
+        return subToOidcSessionsMap;
     }
 
     @Override
@@ -64,7 +67,7 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
             return false;
         }
 
-        String sessionToInvalidate = httpSessionsStore.getSession(sid);
+        OidcSessionInfo sessionToInvalidate = httpSessionsStore.getSession(sid);
         if (sessionToInvalidate == null) {
             return false;
         }
@@ -72,6 +75,25 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
         httpSessionsStore.removeSession(sid);
 
         return invalidatedSessions.add(sessionToInvalidate);
+    }
+
+    @Override
+    public boolean invalidateSessionBySessionId(String sub, String oidcSessionId) {
+        if (sub == null || sub.isEmpty()) {
+            return false;
+        }
+
+        OidcSessionsStore httpSessionsStore = subToOidcSessionsMap.get(sub);
+        if (httpSessionsStore == null) {
+            return false;
+        }
+
+        OidcSessionInfo sessionAssociatedWithSessionId = httpSessionsStore.removeSessionBySessionId(oidcSessionId);
+        if (sessionAssociatedWithSessionId == null) {
+            return false;
+        }
+
+        return invalidatedSessions.add(sessionAssociatedWithSessionId);
     }
 
     @Override
@@ -85,7 +107,7 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
             return false;
         }
 
-        List<String> sessionsToInvalidate = httpSessionsStore.getSessions();
+        List<OidcSessionInfo> sessionsToInvalidate = httpSessionsStore.getSessions();
         if (sessionsToInvalidate.size() == 0) {
             return false;
         }
@@ -96,66 +118,13 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
     }
 
     @Override
-    public boolean removeInvalidatedSession(String oidcSessionId) {
-        return invalidatedSessions.remove(oidcSessionId);
+    public boolean removeInvalidatedSession(OidcSessionInfo sessionInfo) {
+        return invalidatedSessions.remove(sessionInfo);
     }
 
     @Override
-    public boolean isSessionInvalidated(String oidcSessionId) {
-        return invalidatedSessions.contains(oidcSessionId);
+    public boolean isSessionInvalidated(OidcSessionInfo sessionInfo) {
+        return invalidatedSessions.contains(sessionInfo);
     }
 
-    private class OidcSessionsStore {
-        private final Map<String, List<String>> sidToSessionsMap;
-
-        public OidcSessionsStore() {
-            sidToSessionsMap = new HashMap<>();
-        }
-
-        public boolean insertSession(String sid, String oidcSessionId) {
-            if (!sidToSessionsMap.containsKey(sid)) {
-                sidToSessionsMap.put(sid, new ArrayList<>());
-            }
-            List<String> sessions = sidToSessionsMap.get(sid);
-            if (sid != null && !sid.isEmpty() && sessions.size() > 0) {
-                return false;
-            }
-            return sessions.add(oidcSessionId);
-        }
-
-        public String getSession(String sid) {
-            if (sid == null || sid.isEmpty()) {
-                return null;
-            }
-            if (!sidToSessionsMap.containsKey(sid)) {
-                return null;
-            }
-            return sidToSessionsMap.get(sid).get(0);
-        }
-
-        public List<String> getSessions() {
-            List<String> sessions = new ArrayList<>();
-            for (String key : sidToSessionsMap.keySet()) {
-                sessions.addAll(sidToSessionsMap.get(key));
-            }
-            return sessions;
-        }
-
-        public boolean removeSession(String sid) {
-            if (sid != null && !sid.isEmpty()) {
-                List<String> removedSession = sidToSessionsMap.remove(sid);
-                return removedSession != null;
-            }
-            return false;
-        }
-
-        public boolean removeSessions() {
-            if (sidToSessionsMap.keySet().size() == 0) {
-                return false;
-            }
-            sidToSessionsMap.clear();
-            return true;
-        }
-
-    }
 }

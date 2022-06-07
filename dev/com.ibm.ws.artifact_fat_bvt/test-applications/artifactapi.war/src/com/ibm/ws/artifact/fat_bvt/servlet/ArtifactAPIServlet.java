@@ -1247,7 +1247,7 @@ public class ArtifactAPIServlet extends HttpServlet {
 
         rootInterpretedContainer.setStructureHelper( new AddStructureHelper() );
 
-        // Sanity-check: Ensure we can define a root container using the structure helper,
+        // Validation-check: Ensure we can define a root container using the structure helper,
         // shouldn't be able to retrieve entries under that root container from outside it.
 
         if ( rootInterpretedContainer.getEntry("b/ba/baa/baa1.txt") != null ) {

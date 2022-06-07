@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Interface for cache used to keep track of oidc sessions based on the sub, sid, and the oidc session id.
  */
@@ -17,14 +20,15 @@ public interface OidcSessionCache {
 
     /**
      * Insert a new session into the cache.
-     * The sid may be null or empty if it is not available.
      *
-     * @param sub The sub claim.
-     * @param sid The sid claim.
-     * @param oidcSessionId The id of the oidc session.
      * @return Whether or not the session was inserted.
      */
-    public boolean insertSession(String sub, String sid, String oidcSessionId);
+    public boolean insertSession(OidcSessionInfo oidcSessionInfo);
+
+    /**
+     * Returns the map of all sessions included in the cache.
+     */
+    public Map<String, OidcSessionsStore> getSubMap();
 
     /**
      * Invalidate a session in the cache.
@@ -35,6 +39,16 @@ public interface OidcSessionCache {
      * @return Whether or not the session was invalidated.
      */
     public boolean invalidateSession(String sub, String sid);
+
+    /**
+     * Invalidate a session in the cache.
+     * The invalidated session still has to be removed by invoking removeSession.
+     * 
+     * @param sub The sub claim.
+     * @param oidcSessionId The id of the oidc session.
+     * @return Whether or not the session was invalidated.
+     */
+    public boolean invalidateSessionBySessionId(String sub, String oidcSessionId);
 
     /**
      * Invalidate all the sessions belonging to a sub.
@@ -51,7 +65,7 @@ public interface OidcSessionCache {
      * @param oidcSessionId The id of the oidc session.
      * @return Whether or not the session was removed.
      */
-    public boolean removeInvalidatedSession(String oidcSessionId);
+    public boolean removeInvalidatedSession(OidcSessionInfo sessionInfo);
 
     /**
      * Check if the oidc session has been invalidated.
@@ -59,6 +73,6 @@ public interface OidcSessionCache {
      * @param oidcSessionId The id of the oidc session.
      * @return Whether or not the oidc session has been invalidated.
      */
-    public boolean isSessionInvalidated(String oidcSessionId);
+    public boolean isSessionInvalidated(OidcSessionInfo sessionInfo);
 
 }

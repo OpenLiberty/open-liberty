@@ -794,7 +794,7 @@ public class BaseDestinationHandler
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "deleteMsgsWithNoReferences");
 
-        if (null != _pubSubRealization) //doing a sanity check with checking for not null
+        if (null != _pubSubRealization) //checking for not null
             _pubSubRealization.deleteMsgsWithNoReferences();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -1181,7 +1181,7 @@ public class BaseDestinationHandler
         }
         else
         {
-            // sanity check
+            // check
             // log error
             SIErrorException e =
                             new SIErrorException(
@@ -3784,7 +3784,7 @@ public class BaseDestinationHandler
             SibTr.entry(tc, "announceMPStopping");
 
         if (isPubSub()) {
-            if (null != _pubSubRealization) { //doing a sanity check with checking for not null
+            if (null != _pubSubRealization) { //checking for not null
                 //signal to _pubSubRealization to gracefully exit from deleteMsgsWithNoReferences()
                 _pubSubRealization.stopDeletingMsgsWihoutReferencesTask(true);
             }

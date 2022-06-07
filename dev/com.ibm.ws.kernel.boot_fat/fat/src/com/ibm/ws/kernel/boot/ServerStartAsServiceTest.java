@@ -26,15 +26,18 @@ import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * This test bucket tests the server startup process.
  */
+@RunWith(FATRunner.class)
 public class ServerStartAsServiceTest {
     private static final Class<?> c = ServerStartAsServiceTest.class;
 

@@ -82,3 +82,63 @@ build.bnd.plugins: \
 -plugin.transformer.verifier: aQute.bnd.service.verifier.VerifierPlugin;\
  name=Transformer;\
  command:="-transformer"
+
+ # For the transformed bundles that changed from com.ibm to io.openliberty, add the project name to the bundle name
+ # in the buildpath automatically so that when someone specifies io.openliberty, bnd is able to find
+ # the location of the project that goes with that bundle.  For all transformed bundle names need to add source=none for
+ # things to work in eclipse.  *.jakarta;source=none needs to be the last one.
+-buildpath+: \
+  io.openliberty.cdi.spi;project=com.ibm.websphere.appserver.spi.cdi;source=none, \
+  io.openliberty.connectors.security.internal.inbound;project=com.ibm.ws.jca.inbound.security;source=none, \
+  io.openliberty.dynacache.internal;project=com.ibm.ws.dynacache;source=none, \
+  io.openliberty.ejbcontainer;project=com.ibm.websphere.appserver.api.ejbcontainer;source=none, \
+  io.openliberty.ejbcontainer.security.internal;project=com.ibm.ws.ejbcontainer.security;source=none, \
+  io.openliberty.federatedRepository.spi;project=com.ibm.websphere.appserver.spi.federatedRepository;source=none, \
+  io.openliberty.globalhandler.spi;project=com.ibm.websphere.appserver.spi.globalhandler;source=none, \
+  io.openliberty.grpc.client.1.0.jakarta.thirdparty;source=none, \
+  io.openliberty.jacc;project=com.ibm.websphere.appserver.api.jacc;source=none, \
+  io.openliberty.jaspic.spi;project=com.ibm.websphere.appserver.spi.jaspic;source=none, \
+  io.openliberty.jwt;project=com.ibm.websphere.appserver.api.jwt;source=none, \
+  io.openliberty.oauth;project=com.ibm.websphere.appserver.api.oauth;source=none, \
+  io.openliberty.org.jboss.resteasy.cdi;source=none, \
+  io.openliberty.org.jboss.resteasy.jaxb.provider;source=none, \
+  io.openliberty.org.jboss.resteasy.mprestclient;source=none, \
+  io.openliberty.org.jboss.resteasy.validator.provider;source=none, \
+  io.openliberty.security.acme.internal;project=com.ibm.ws.security.acme;source=none, \
+  io.openliberty.security.authentication.internal.builtin;project=com.ibm.ws.security.authentication.builtin;source=none, \
+  io.openliberty.security.authentication.internal.filter;project=com.ibm.ws.security.authentication.filter;source=none, \
+  io.openliberty.security.authentication.internal.tai;project=com.ibm.ws.security.authentication.tai;source=none, \
+  io.openliberty.security.auth.internal.data;project=com.ibm.ws.security.auth.data;source=none, \
+  io.openliberty.security.authorization.internal.jacc.ejb;project=com.ibm.ws.security.authorization.jacc.ejb;source=none, \
+  io.openliberty.security.authorization.internal.jacc;project=com.ibm.ws.security.authorization.jacc;source=none, \
+  io.openliberty.security.authorization.internal.jacc.web;project=com.ibm.ws.security.authorization.jacc.web;source=none, \
+  io.openliberty.securityClient;project=com.ibm.websphere.appserver.api.securityClient;source=none, \
+  io.openliberty.security.common.internal;project=com.ibm.ws.security.common;source=none, \
+  io.openliberty.security.jaas.internal.common;project=com.ibm.ws.security.jaas.common;source=none, \
+  io.openliberty.security.jakartasec.2.0.internal.cdi;project=com.ibm.ws.security.javaeesec.cdi;source=none, \
+  io.openliberty.security.jakartasec.2.0.internal;project=com.ibm.ws.security.javaeesec;source=none, \
+  io.openliberty.security.jaspic.2.0.internal;project=com.ibm.ws.security.jaspic;source=none, \
+  io.openliberty.security.jwt.internal;project=com.ibm.ws.security.jwt;source=none, \
+  io.openliberty.security.jwtsso.internal;project=com.ibm.ws.security.jwtsso;source=none, \
+  io.openliberty.security.mp.jwt.cdi.internal;project=com.ibm.ws.security.mp.jwt.cdi;source=none, \
+  io.openliberty.security.mp.jwt.internal;project=com.ibm.ws.security.mp.jwt;source=none, \
+  io.openliberty.security.oauth.internal.2.0;project=com.ibm.ws.security.oauth;source=none, \
+  io.openliberty.security.openidconnect.internal.client;project=com.ibm.ws.security.openidconnect.client;source=none, \
+  io.openliberty.security.openidconnect.internal.clients.common;project=com.ibm.ws.security.openidconnect.clients.common;source=none, \
+  io.openliberty.security.openidconnect.internal.server;project=com.ibm.ws.security.openidconnect.server;source=none, \
+  io.openliberty.security;project=com.ibm.websphere.appserver.api.security;source=none, \
+  io.openliberty.security.saml.internal.wab.2.0;project=com.ibm.ws.security.saml.wab;source=none, \
+  io.openliberty.security.social.internal;project=com.ibm.ws.security.social;source=none, \
+  io.openliberty.security.spnego.internal;project=com.ibm.ws.security.spnego;source=none, \
+  io.openliberty.security.sso.internal;project=com.ibm.ws.security.sso;source=none, \
+  io.openliberty.security.wim.internal.base;project=com.ibm.websphere.security.wim.base;source=none, \
+  io.openliberty.servlet;project=com.ibm.websphere.appserver.api.servlet;source=none, \
+  io.openliberty.servlet.spi;project=com.ibm.websphere.appserver.spi.servlet;source=none, \
+  io.openliberty.transaction;project=com.ibm.websphere.appserver.api.transaction;source=none, \
+  io.openliberty.webCache;project=com.ibm.websphere.appserver.api.webCache;source=none, \
+  io.openliberty.webcontainer.security.app;project=com.ibm.websphere.appserver.api.webcontainer.security.app;source=none, \
+  io.openliberty.webcontainer.security.internal;project=com.ibm.ws.webcontainer.security;source=none, \
+  io.openliberty.webservices.handler;project=com.ibm.ws.webservices.handler;source=none, \
+  io.openliberty.wsat.spi;project=com.ibm.websphere.appserver.spi.wsat;source=none, \
+  io.openliberty.wsoc;project=com.ibm.websphere.appserver.api.wsoc;source=none, \
+  *.jakarta;source=none

@@ -71,7 +71,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.oauth20.store.OAuthStore;
-import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.config.xml.nester.Nester;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.oauth20.TraceConstants;

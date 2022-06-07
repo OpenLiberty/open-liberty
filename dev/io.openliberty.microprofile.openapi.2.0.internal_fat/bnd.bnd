@@ -26,5 +26,5 @@ tested.features=mpOpenAPI-2.0,restfulwsclient-3.0, transportsecurity-1.0, mpconf
     com.ibm.websphere.javaee.servlet.4.0;version=latest, \
     io.openliberty.org.eclipse.microprofile.openapi.2.0;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
-    com.ibm.ws.common.encoder;version=latest, \
+    com.ibm.ws.kernel.service;version=latest, \
     io.openliberty.com.fasterxml.jackson;version=latest

@@ -233,7 +233,8 @@ public class DataModelSerializerTest {
     }
 
     public static class StringGetter {
-        public StringGetter() {}
+        public StringGetter() {
+        }
 
         //ignore the warning.. eclipse is trying to tell me this is bad ;p
         //but that's the whole point of this test =)
@@ -302,7 +303,8 @@ public class DataModelSerializerTest {
 
     // Do not make this class implement VersionableContent.
     public static class JustAnotherBean {
-        public JustAnotherBean() {}
+        public JustAnotherBean() {
+        }
 
         String field;
 
@@ -455,7 +457,7 @@ public class DataModelSerializerTest {
     @Test
     public void testDeserializeNulls() throws Exception {
 
-        // simple string list sanity check
+        // simple string list check
         DeserialisationHelperClass dhc = DataModelSerializer.deserializeObject(new ByteArrayInputStream("{ \"stringList\": [\"somestring1\", \"somestring2\"] }".getBytes()),
                                                                                DeserialisationHelperClass.class);
         List<String> list = new ArrayList<String>();

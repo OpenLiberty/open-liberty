@@ -425,12 +425,16 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 final List<?> resultList = query.getResultList();
                 Assert.assertNotNull(resultList);
                 System.out.println("resultList size = " + resultList.size());
-//                Assert.assertEquals("Expecting 1 entries in the result list", 1, resultList.size());
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
-                    String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = ?) AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = ?)) )";
+                    String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = ?) AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = ?)))";
+
+                    //TODO: Alter test until EclipseLink 2.7, 3.0, & 3.1 are updated to include the fix
+                    if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+                        expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = ?) AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = ?)) )";
+                    }
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
 
@@ -453,7 +457,12 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
-                    String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = 'Test') AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = 33)) )";
+                    String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = 'Test') AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = 33)))";
+
+                    //TODO: Alter test until EclipseLink 2.7, 3.0, & 3.1 are updated to include the fix
+                    if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+                        expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = 'Test') AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = 33)) )";
+                    }
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
 

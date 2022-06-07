@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,6 +35,9 @@ import javax.management.ObjectName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * API for getting cpu info about the system
@@ -67,16 +69,19 @@ public class CpuInfo {
     private long lastProcessCPUTime = 0;
     private double lastProcessCpuUsage = -1;
     private long lastSystemTimeMillis = -1;
-    private IntervalTask activeTask;
-    private ScheduledFuture<?> future;
+    private final IntervalTask activeTask;
 
     private static final long INTERVAL = 10; // in minutes
     private static Collection<AvailableProcessorsListener> listeners = Collections.synchronizedCollection(new HashSet<AvailableProcessorsListener>());
 
     private CpuInfo() {
         activeTask = new IntervalTask();
-        future = executor.scheduleAtFixedRate(activeTask, INTERVAL, INTERVAL, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(activeTask, INTERVAL, INTERVAL, TimeUnit.MINUTES);
         cpuCount = new CPUCount();
+        CheckpointPhase phase = CheckpointPhase.getPhase();
+        if (phase != null) {
+            phase.addMultiThreadedHook(activeTask);
+        }
         int runtimeAvailableProcessors = Runtime.getRuntime().availableProcessors();
         int fileSystemAvailableProcessors = getAvailableProcessorsFromFilesystem();
 
@@ -386,7 +391,12 @@ public class CpuInfo {
     /**
      * Timer task that queries available process cpus.
      */
-    class IntervalTask implements Runnable {
+    class IntervalTask implements Runnable, CheckpointHook {
+
+        @Override
+        public void restore() {
+            run();
+        }
 
         @Override
         public void run() {
@@ -436,15 +446,5 @@ public class CpuInfo {
         public int get() {
             return AVAILABLE_PROCESSORS.get();
         }
-    }
-
-    public void reset() {
-        future.cancel(false);
-        activeTask = new IntervalTask();
-        future = executor.scheduleAtFixedRate(activeTask, 0, INTERVAL, TimeUnit.MINUTES);
-    }
-
-    public static void resetTimer() {
-        INSTANCE.reset();
     }
 }

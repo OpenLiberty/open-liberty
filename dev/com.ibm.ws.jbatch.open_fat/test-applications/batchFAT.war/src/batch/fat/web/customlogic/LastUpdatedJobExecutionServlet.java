@@ -100,7 +100,7 @@ public class LastUpdatedJobExecutionServlet extends HttpServlet {
             // Check that last updated time equals end time
             // 
             // Perhaps there could be a reason one day to relax/remove this check, I don't think the
-            // spec or contract demands they are the same.  For now it's  sanity check that the code 
+            // spec or contract demands they are the same.  For now it's test that the code 
             // is functioning as expected.
             assertEquals("Last updated time doesn't match end time", jex.getEndTime().getTime(), jex.getLastUpdatedTime().getTime());
             // Test includes sleep so super-fast execution shouldn't be a concern.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,8 @@ import com.ibm.ws.logging.data.LogTraceData;
  * events into json strings
  */
 public class CollectorJsonUtils {
+
+    static boolean betaSysProp = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     public static final int MAX_USER_AGENT_LENGTH = 2048;
     private static final int LOGSTASH_KEY = CollectorConstants.KEYS_LOGSTASH;
@@ -140,9 +142,12 @@ public class CollectorJsonUtils {
         }
 
         StringBuilder formattedValue = new StringBuilder(CollectorJsonHelpers.formatMessage(message, maxFieldLength));
-        String throwable = logData.getThrowable();
-        if (throwable != null) {
-            formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(throwable);
+
+        if (betaSysProp == false) {
+            String oldThrowable = logData.getThrowable();
+            if (oldThrowable != null) {
+                formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(oldThrowable);
+            }
         }
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
@@ -158,6 +163,16 @@ public class CollectorJsonUtils {
                    .addField(LogTraceData.getClassNameKey(LOGSTASH_KEY, isMessageEvent), logData.getClassName(), false, true)
                    .addField(LogTraceData.getSequenceKey(LOGSTASH_KEY, isMessageEvent), logData.getSequence(), false, true);
         //@formatter:on
+
+        //append Throwable informatoin (i.e. exception name and stacktrace)
+        if (betaSysProp == true) {
+            String exceptionName = logData.getExceptionName();
+            String throwable = logData.getThrowable();
+            if (exceptionName != null && throwable != null) {
+                jsonBuilder.addField(LogTraceData.getExceptionNameKey(LOGSTASH_KEY, isMessageEvent), exceptionName, false, true);
+                jsonBuilder.addField(LogTraceData.getStackTraceKey(LOGSTASH_KEY, isMessageEvent), throwable, false, true);
+            }
+        }
 
         ArrayList<KeyValuePair> extensions = null;
         KeyValuePairList kvpl = null;

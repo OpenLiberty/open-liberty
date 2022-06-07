@@ -38,7 +38,7 @@ Subsystem-Name: Jakarta Server Pages 3.1
   io.openliberty.jakarta.pages-3.1, \
   io.openliberty.expressionLanguage-5.0
 -bundles=com.ibm.ws.org.eclipse.jdt.core, \
- io.openliberty.jakarta.jstl.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0", \
+ io.openliberty.jakarta.jstl.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0", \
  com.ibm.ws.jsp.2.3.jakarta, \
  com.ibm.ws.jsp.jakarta, \
  io.openliberty.jstl.facade; start-phase:=CONTAINER_EARLY, \

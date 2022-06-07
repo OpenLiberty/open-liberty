@@ -55,7 +55,7 @@ Include-Resource: \
     org.hamcrest:hamcrest-all;version=1.3,\
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
     org.jmock:jmock;strategy=exact;version=2.5.1,\
-    com.ibm.tx.core;version=latest,\
+    com.ibm.tx.jta;version=latest,\
     com.ibm.ws.app.manager.lifecycle;version=latest,\
     com.ibm.ws.resource;version=latest,\
     com.ibm.ws.jbatch.rest;version=latest,\

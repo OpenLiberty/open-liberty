@@ -38,7 +38,7 @@ public abstract class AbstractTxSyncTestLogic extends AbstractTestLogic {
     /*
      * Note that the methods below that determines the synchronization type of a JPA resource is strictly a
      * declarative model from the test suite standpoint, and does not actually pull Synchronization configuration
-     * from an injected PersistenceContext. It is intended to be a sanity tester for test development.
+     * from an injected PersistenceContext. It is intended to be a tester for test development.
      *
      */
     protected final boolean isUnsynchronized(TestExecutionResources testExecResources, String resourceName) {

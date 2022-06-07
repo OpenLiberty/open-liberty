@@ -15,15 +15,18 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * This test bucket tests the server clean up function during the startup process.
  */
+@RunWith(FATRunner.class)
 public class ServerCleanTest {
     private static final Class<?> c = ServerCleanTest.class;
 

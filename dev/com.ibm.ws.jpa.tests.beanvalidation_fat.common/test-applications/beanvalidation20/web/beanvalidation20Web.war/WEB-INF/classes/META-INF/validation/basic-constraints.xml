@@ -11,7 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 -->
-<!-- This file name is included in jakarta-xml-master.properties for jakarta transformation -->
+<!-- This file name is included in jakarta-text.properties for jakarta transformation -->
 <constraint-mappings
     xmlns="http://jboss.org/xml/ns/javax/validation/mapping"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

@@ -30,5 +30,4 @@ tested.features=mpOpenAPI-1.0,mpOpenAPI-1.1,mpOpenAPI-2.0,mpOpenAPI-3.0,jsonb-1.
     com.ibm.websphere.javaee.servlet.3.1;version=latest, \
     com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest, \
     com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest, \
-    com.ibm.ws.common.encoder;version=latest, \
     io.openliberty.com.fasterxml.jackson;version=latest

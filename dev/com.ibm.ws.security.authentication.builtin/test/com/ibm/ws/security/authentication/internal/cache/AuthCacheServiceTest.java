@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,16 +35,16 @@ import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.security.cred.WSCredential;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.cache.CacheEvictionListener;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
 import com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider;
 import com.ibm.ws.security.authentication.internal.cache.keyproviders.SSOTokenBytesCacheKeyProvider;
 import com.ibm.ws.security.credentials.CredentialsService;
 import com.ibm.wsspi.security.token.SingleSignonToken;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -142,6 +142,7 @@ public class AuthCacheServiceTest {
         newProperties.put("maxSize", 25000);
         newProperties.put("timeout", 600L);
         newProperties.put("allowBasicAuthLookup", true);
+        newProperties.put("autoClearCache", false);
         return newProperties;
     }
 
@@ -298,6 +299,7 @@ public class AuthCacheServiceTest {
         newProperties.put("maxSize", 10000);
         newProperties.put("timeout", 300L);
         newProperties.put("allowBasicAuthLookup", false);
+        newProperties.put("autoClearCache", false);
         return newProperties;
     }
 

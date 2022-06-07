@@ -54,7 +54,6 @@ fat.project: true
 	com.ibm.ws.runtime.update;version=latest, \
 	com.ibm.ws.kernel.feature.core;version=latest, \
 	com.ibm.ws.kernel.feature;version=latest, \
-	com.ibm.ws.common.encoder;version=latest, \
 	com.ibm.websphere.rest.handler;version=latest, \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\

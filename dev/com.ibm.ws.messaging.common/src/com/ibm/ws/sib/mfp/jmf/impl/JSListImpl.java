@@ -121,7 +121,7 @@ public abstract class JSListImpl extends JSMessageData implements JMFList {
     this.element = element;
     this.indirect = indirect;
     length = ArrayUtil.readInt(contents, offset);      // 1st int value in buffer
-    JSListCoder.sanityCheck(length, contents, offset);
+    JSListCoder.evaluateMessageLength(length, contents, offset);
     length -= 4; // original length includes cache size
     if (cacheSize > length) {
       // This is a conservative check but will catch flagrant corruption

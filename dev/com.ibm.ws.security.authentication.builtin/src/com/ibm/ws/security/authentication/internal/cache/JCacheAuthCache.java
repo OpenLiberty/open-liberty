@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.cache.CacheObject;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
@@ -34,9 +35,14 @@ public class JCacheAuthCache implements AuthCache {
     private static final TraceComponent tc = Tr.register(JCacheAuthCache.class);
 
     /**
-     * The {@link CacheService} being used, if one is provided.
+     * The {@link CacheService} being used.
      */
     private CacheService cacheService = null;
+
+    /**
+     * The {@link AuthCacheService} being used.
+     */
+    private final AuthCacheService authCacheService;
 
     private AuthCache inMemoryCache = null;
 
@@ -56,28 +62,42 @@ public class JCacheAuthCache implements AuthCache {
     /**
      * Instantiate a new {@link JCacheAuthCache} instance.
      *
-     * @param cacheService  The {@link CacheService} to use to connect to the backing JCache implementation.
-     * @param inMemoryCache An in-memory cache to store objects that cannot be stored in the JCache.
+     * @param cacheService     The {@link CacheService} to use to connect to the backing JCache implementation.
+     * @param inMemoryCache    An in-memory cache to store objects that cannot be stored in the JCache.
+     * @param authCacheService The {@link AuthCacheService} that manages this {@link JCacheAuthCache} instance.
      */
-    public JCacheAuthCache(CacheService cacheService, AuthCache inMemoryCache) {
+    public JCacheAuthCache(CacheService cacheService, AuthCache inMemoryCache, AuthCacheService authCacheService) {
         /*
          * Eviction, map sizing, etc are all handled by the JCache implementation.
          */
         this.cacheService = cacheService;
         this.inMemoryCache = inMemoryCache;
+        this.authCacheService = authCacheService;
     }
 
     @Override
-    public void clearAllEntries() {
+    public void clearAllEntries(boolean force) {
+
+        /*
+         * If not forcing and auto-clear is not enabled, don't clear the cache.
+         */
+        if (!force && !authCacheService.getAutoClearCache()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "The authentication cache was not cleared. Force clear? " + force +
+                             ", Auto-clear enabled? " + authCacheService.getAutoClearCache());
+            }
+            return;
+        }
+
         /*
          * Clear the in-memory cache.
          */
-        inMemoryCache.clearAllEntries();
+        inMemoryCache.clearAllEntries(force);
 
         /*
          * Don't clear the JCache if we are stopping or we have not finished starting.
          */
-        if (!FrameworkState.isStopping() && AuthCacheServiceImpl.isServerStarted()) {
+        if (!FrameworkState.isStopping() && authCacheService.isServerStarted()) {
             Cache<Object, Object> jCache = getJCache();
             if (jCache != null) {
                 jCache.removeAll(); // Notifies listeners, clear() does not.

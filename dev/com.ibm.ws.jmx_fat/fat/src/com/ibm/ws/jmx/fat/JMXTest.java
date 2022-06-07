@@ -139,7 +139,7 @@ public class JMXTest {
         final String mbeanClassName = info.getClassName();
         assertTrue("com.ibm.ws.jmx.internal.ReadOnlyConfigurationAdmin".equals(mbeanClassName));
 
-        // Sanity check with a few other OSGi JMX MBeans.
+        // Test with a few other OSGi JMX MBeans.
         // Ensures the delayed registration is working correctly.
         //this ObjectName is also ObjectNameConstants.OSGI_FRAMEWORK_MBEAN_NAME
         info = getMBeanInfo(server, new ObjectName("osgi.core:type=framework,version=1.7,*"));

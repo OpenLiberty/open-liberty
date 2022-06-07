@@ -45,7 +45,7 @@ public class Queue {
 	} // Queue
 
 	/**
-	 * Perform sanity check on given <code>QueueElement</code> to make sure it
+	 * Evaluate given <code>QueueElement</code> to make sure it
 	 * is not currently a member of a <code>Queue</code>.
 	 */
 

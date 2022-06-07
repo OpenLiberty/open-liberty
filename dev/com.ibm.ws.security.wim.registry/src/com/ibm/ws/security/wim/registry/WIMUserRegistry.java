@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.registry.CertificateMapFailedException;
@@ -151,7 +152,6 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
             return null;
         }
 
-        String methodName = "checkPassword";
         String returnValue = null;
         try {
             returnValue = loginBridge.checkPassword(inputUser, inputPassword);
@@ -174,34 +174,44 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
                 throw new RegistryException(excp.getMessage(), excp);
         } finally {
             if (returnValue == null) {
-                try {
-                    /*
-                     * Pad return time on a failed user, if enabled.
-                     */
-                    int failResponseDelayMax = this.mappingUtils.getCoreConfiguration().getFailResponseDelayMax();
-                    int failResponseDelayMin = this.mappingUtils.getCoreConfiguration().getFailResponseDelayMin();
+                failedLoginDelay();
+            }
+        }
 
-                    if (failResponseDelayMax > 0) {
-                        int random = failResponseRandom.nextInt(failResponseDelayMax + 1 - failResponseDelayMin) + failResponseDelayMin;
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc,
-                                     methodName + " " + "failed response login delay is " + random + " ms. The minimum and maximum delay for failed logons are "
-                                         + failResponseDelayMin
-                                         + " ms and " + failResponseDelayMax + " ms.");
-                        }
-                        Thread.sleep(random);
-                    }
-                } catch (InterruptedException ie) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc,
-                                 methodName + " " + "failed response login delay sleep was interrupted.");
-                    }
-                } catch (Exception e) {
-                    if (tc.isEventEnabled()) {
-                        Tr.event(tc,
-                                 methodName + " " + "failed response login delay processing hit an exception. Ignore so we return the failed login.", e);
-                    }
+    }
+
+    /**
+     * Add a variable sleep time on failed logins to avoid detecting whether a user exists (no user vs bad password).
+     */
+    @Trivial
+    private void failedLoginDelay() {
+        String methodName = "failedLoginDelay";
+        try {
+            /*
+             * Pad return time on a failed user, if enabled.
+             */
+            int failResponseDelayMax = this.mappingUtils.getCoreConfiguration().getFailResponseDelayMax();
+            int failResponseDelayMin = this.mappingUtils.getCoreConfiguration().getFailResponseDelayMin();
+
+            if (failResponseDelayMax > 0) {
+                int random = failResponseRandom.nextInt(failResponseDelayMax + 1 - failResponseDelayMin) + failResponseDelayMin;
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc,
+                             methodName + " " + "failed response login delay is " + random + " ms. The minimum and maximum delay for failed logons are "
+                                 + failResponseDelayMin
+                                 + " ms and " + failResponseDelayMax + " ms.");
                 }
+                Thread.sleep(random);
+            }
+        } catch (InterruptedException ie) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc,
+                         methodName + " " + "failed response login delay sleep was interrupted.");
+            }
+        } catch (Exception e) {
+            if (tc.isEventEnabled()) {
+                Tr.event(tc,
+                         methodName + " " + "failed response login delay processing hit an exception. Ignore so we return the failed login.", e);
             }
         }
 

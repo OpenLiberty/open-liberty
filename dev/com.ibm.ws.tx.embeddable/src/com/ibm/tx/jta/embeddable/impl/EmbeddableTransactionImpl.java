@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -120,6 +120,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         _xid = new XidImpl(pk);
 
         if (traceOn) {
+            traceCreate();
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "EmbeddableTransactionImpl", this);
         }

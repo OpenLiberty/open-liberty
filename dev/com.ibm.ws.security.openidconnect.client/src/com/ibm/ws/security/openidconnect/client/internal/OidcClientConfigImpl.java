@@ -1128,55 +1128,35 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         return message;
     }
 
-    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification) {
+    // issue# 19832
+    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
 
         HttpClient client = null;
-        boolean addBasicAuthHeader = false;
 
-        //        if (jwkClientId != null && jwkClientSecret != null) {
-        //            addBasicAuthHeader = true;
-        //        }
-
-        BasicCredentialsProvider credentialsProvider = null;
-        if (addBasicAuthHeader) {
-            credentialsProvider = createCredentialsProvider();
-        }
-
-        client = createHttpClient(url.startsWith("https:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider);
-        return client;
-
-    }
-
-    private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider) {
-
-        HttpClient client = null;
-        if (isSecure) {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                if (addBasicAuthHeader) {
-                    client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-                } else {
-                    client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
-                }
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
-            }
-        } else {
-            if (addBasicAuthHeader) {
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
+        ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+        ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+        try {
+            SSLConnectionSocketFactory connectionFactory = null;
+            if (!isHostnameVerification) {
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
             } else {
-                client = HttpClientBuilder.create().build();
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
             }
+            client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
+        } finally {
+            ThreadContextHelper.setClassLoader(origCL);
         }
+
         return client;
+
     }
+
+    // issue# 19832
+    private HttpClientBuilder createBuilder(boolean useSystemProperties) {
+        return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
+        
+    }
+
 
     private BasicCredentialsProvider createCredentialsProvider() {
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -1784,6 +1764,12 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public String getResponseType() {
         return responseType;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isInboundPropagationEnabled() {
+        return !inboundPropagation.equalsIgnoreCase(ClientConstants.PROPAGATION_NONE);
     }
 
     /** {@inheritDoc} */

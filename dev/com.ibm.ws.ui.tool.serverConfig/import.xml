@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2020 IBM Corporation and others.
+    Copyright (c) 2020, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@
         <antcall target="get-jquery-lib" />
         <antcall target="get-bootstrap-lib" />
         <antcall target="get-orion-lib" />
-        <copy-one-font-file font-file="helvetica-neue/helvetica-neue-roman.woff" font-target-dir="lib/fonts" />
+        <copy-one-font-file font-file="IBMPlexSans/IBMPlexSans-Regular.woff" font-target-dir="lib/fonts" />
         <antcall target="404_copy_to_tools"></antcall>
 
         <copy todir="${basedir}/build/jsShared/utils">

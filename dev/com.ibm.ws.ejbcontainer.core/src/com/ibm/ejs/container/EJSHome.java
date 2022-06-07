@@ -2671,7 +2671,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "remove", handle);
+            Tr.entry(tc, "remove(handle): " + Util.identity(handle));
 
         EJBObject ejb = handle.getEJBObject();
         ejb.remove();
@@ -2696,7 +2696,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "remove(pk) : " + primaryKey);
+            Tr.entry(tc, "remove(pk): " + Util.identity(primaryKey));
 
         homeEnabled();
 
@@ -3117,7 +3117,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
             // p116577 - end of change.
 
             if (isTraceOn && tc.isEntryEnabled())
-                Tr.exit(tc, "getHomeHandle", ehh);
+                Tr.exit(tc, "getHomeHandle: " + ehh);
             return ehh;
         } finally {
             if (cmdAccessor != null)

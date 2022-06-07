@@ -13,7 +13,8 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/subjectcast/src
+	test-applications/subjectcast/src,\
+	test-applications/providerinapp/src
 
 fat.project: true
 tested.features: appsecurity-4.0, expressionlanguage-4.0, servlet-5.0, cdi-3.0, pages-3.0, jsonp-2.0, \
@@ -42,5 +43,8 @@ generate.replacement: true
 	com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1;version=latest,\
 	com.ibm.ws.security.spnego.fat.common;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
-	com.ibm.ws.security.oauth.oidc_fat.common;version=latest
+	com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.hazelcast:hazelcast;version=3.12.12,\
+	com.hazelcast:hazelcast-client;version=3.12.12
     

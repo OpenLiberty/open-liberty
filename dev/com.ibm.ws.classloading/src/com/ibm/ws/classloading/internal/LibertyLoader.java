@@ -59,5 +59,11 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
         return super.findResources(resName);
     }
 
+    @Override
+    protected final Package definePackage(String packageName, String specTitle, String specVersion, String specVendor, String implTitle, String implVersion, String implVendor,
+                                    URL sealBase) throws IllegalArgumentException {
+        return super.definePackage(packageName, specTitle, specVersion, specVendor, implTitle, implVersion, implVendor, sealBase);
+    }
+
     public abstract Bundle getBundle();
 }

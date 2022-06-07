@@ -305,7 +305,7 @@ public class FindCacheTestServlet extends FATServlet {
 
     /**
      * Verify that caching is disabled with the persistence.xml setting 'shared-cache-mode' is set to 'NONE'.
-     * [Basic persistence provider sanity testing] - needed to provide a base line for the property tests
+     * [Basic persistence provider testing] - needed to provide a base line for the property tests
      * without having to rely on other FATs for proof.
      */
     @Test
@@ -366,7 +366,7 @@ public class FindCacheTestServlet extends FATServlet {
     /**
      * Verify that caching is enabled and that all entities are cached with the persistence.xml setting
      * 'shared-cache-mode' set to 'ALL|ENABLE_SELECTIVE|DISABLE_SELECTIVE'.
-     * [Basic persistence provider sanity testing] - needed to provide a base line for the property tests
+     * [Basic persistence provider testing] - needed to provide a base line for the property tests
      * without having to rely on other FATs for proof.
      */
     private void testScenarioC002(EntityManager emanager) throws Exception {

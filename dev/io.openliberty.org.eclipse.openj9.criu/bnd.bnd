@@ -12,6 +12,8 @@
 
 bVersion: 1.0
 
+publish.wlp.jar.disabled: true
+
 Bundle-Name: Open J9 CRIU stubs
 Bundle-Description: Open J9 CRIU stubs, version ${bVersion}
 Bundle-SymbolicName: io.openliberty.org.eclipse.openj9.criu 

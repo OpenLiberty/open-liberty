@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.logging.json.fat;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -118,6 +119,53 @@ public abstract class JSONEventsTest {
         checkExtensions(line);
     }
 
+    @Test
+    public void checkException() throws Exception {
+        TestUtils.runApp(getServer(), "exception");
+
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "module",
+                                                                                         "ibm_threadId", "message", "ibm_stackTrace", "ibm_exceptionName"));
+
+        ArrayList<String> messageKeysMandatoryList2 = new ArrayList<String>(messageKeysMandatoryList);
+        ArrayList<String> messageKeysMandatoryList3 = new ArrayList<String>(messageKeysMandatoryList);
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        /**
+         * The exception servlet emits three exceptions.
+         * Given that the current setup of this FAT is using regex to parse the messages
+         * and that the JSON fields can be ordered in a varied order, we'll use each message to test an individual field.
+         * First assert will just check that the message is there.
+         * Second will check that the ibm_exceptionName is present.
+         * Third will check that the ibm_stackTrace field is present.
+         *
+         */
+
+        String line = getServer().waitForStringInLog("\\{.*\"message\":\"exception message\".*\\}", getLogFile());
+
+        //Just checking for first message
+        assertNotNull("Cannot find \"message\":\"exception message\" from " + getLogFile().getName(), line);
+
+        checkJsonMessage(line, messageKeysMandatoryList, messageKeysOptionalList);
+
+        //Checking for second  message with ibm_exceptionName field
+        line = getServer().waitForStringInLog("\\{.*\"message\":\"second exception message\".*\\}", getLogFile());
+
+        assertNotNull("Cannot find \"message\":\"second exception message\" from " + getLogFile().getName(), line);
+        assertTrue(line.contains("\"ibm_exceptionName\":\"java.lang.IllegalArgumentException\""));
+
+        checkJsonMessage(line, messageKeysMandatoryList2, messageKeysOptionalList);
+
+        //Checking for third message with ibm_stackTrace field
+        line = getServer().waitForStringInLog("\\{.*\"message\":\"third exception message\".*\\}", getLogFile());
+
+        assertNotNull("Cannot find \"message\":\"third exception message\" from " + getLogFile().getName(), line);
+        assertTrue(line.contains("\"ibm_stackTrace\":\"java.lang.IllegalArgumentException: bad"));
+
+        checkJsonMessage(line, messageKeysMandatoryList3, messageKeysOptionalList);
+    }
+
     public void checkExtensions(String line) throws Exception {
         final String method = "checkExtensions";
 
@@ -189,7 +237,6 @@ public abstract class JSONEventsTest {
         JsonReader reader = Json.createReader(new StringReader(line));
         JsonObject jsonObj = reader.readObject();
         reader.close();
-
         String value = null;
         ArrayList<String> invalidFields = new ArrayList<String>();
 
@@ -199,7 +246,6 @@ public abstract class JSONEventsTest {
                 value = "" + jsonObj.get(key);
                 Log.finer(c, method, "key=" + key + ", value=" + value);
             } else if (optionalKeyList.contains(key)) {
-                optionalKeyList.remove(key);
                 value = "" + jsonObj.get(key);
                 Log.finer(c, method, "key=" + key + ", value=" + value);
             } else if (key.startsWith(EXT_PREFIX)) {
@@ -211,11 +257,11 @@ public abstract class JSONEventsTest {
         }
         if (mandatoryKeyList.size() > 0) {
             Log.info(c, method, "Mandatory keys missing: " + mandatoryKeyList.toString());
-            Assert.fail("Mandatory FFDC keys missing: " + mandatoryKeyList.toString() + ". Actual JSON was: " + line);
+            Assert.fail("Mandatory keys missing: " + mandatoryKeyList.toString() + ". Actual JSON was: " + line);
         }
         if (invalidFields.size() > 0) {
             Log.info(c, method, "Invalid keys found: " + invalidFields.toString());
-            Assert.fail("Invalid FFDC keys found: " + invalidFields.toString() + ". Actual JSON was: " + line);
+            Assert.fail("Invalid keys found: " + invalidFields.toString() + ". Actual JSON was: " + line);
         }
     }
 }

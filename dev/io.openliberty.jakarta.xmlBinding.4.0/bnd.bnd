@@ -11,6 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Bundle-SymbolicName: io.openliberty.jakarta.xmlBinding.4.0; singleton:=true
 
 Export-Package: jakarta.xml.bind.*;version="4.0"
@@ -27,8 +32,6 @@ DynamicImport-Package: \
 
 Include-Resource:\
   @${repo;jakarta.xml.bind:jakarta.xml.bind-api;4.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
-
-Multi-Release: true
 
 instrument.disabled: true
 

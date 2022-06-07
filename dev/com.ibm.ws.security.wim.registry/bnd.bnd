@@ -50,7 +50,7 @@ instrument.classesExcludes: com/ibm/ws/security/wim/registry/util/resources/*.cl
 	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.runtime.update;version=latest, \
-	com.ibm.ws.threading;verison=latest
+	com.ibm.ws.threading;version=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
@@ -62,4 +62,5 @@ instrument.classesExcludes: com/ibm/ws/security/wim/registry/util/resources/*.cl
 	com.ibm.websphere.org.osgi.service.cm;version=latest, \
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security;version=latest,\
-	com.ibm.ws.security.wim.adapter.file;version=latest
+	com.ibm.ws.security.wim.adapter.file;version=latest,\
+	com.ibm.ws.config;version=latest

@@ -47,9 +47,9 @@ public class CDI12ContainerConfig {
             Tr.debug(tc, "Activating " + this);
         }
         //TOOD the ProductInfo.getBetaEdition() check should be removed before GA
-        if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled() && ProductInfo.getBetaEdition()) {
-            //CWOWB1015W: The cdi12 configuration element is superseded by the cdi configuration element.
-            Tr.warning(tc, "cdi12.element.type.superceded.CWOWB1015W");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled() && ProductInfo.getBetaEdition()) {
+            //CWOWB1015I: The cdi12 configuration element is superseded by the cdi configuration element.
+            Tr.info(tc, "cdi12.element.type.superceded.CWOWB1015I");
         }
         this.updateConfiguration(properties);
     }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot;
 
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,6 +86,7 @@ public class LaunchArguments {
 
         String action = null;
         String processNameArg = null;
+        String checkpointPhase = null;
 
         // Remember the help action in case multiple are specified
         String helpAction = null;
@@ -183,16 +185,9 @@ public class LaunchArguments {
                         initProps.put(BootstrapConstants.INITPROP_OSGI_CLEAN, BootstrapConstants.OSGI_CLEAN_VALUE);
                         System.clearProperty(BootstrapConstants.INITPROP_OSGI_CLEAN);
                     } else if (argToLower.startsWith("--internal-checkpoint-at=")) {
+
                         if (isBetaEdition()) {
-                            String phase = argToLower.substring("--internal-checkpoint-at=".length());
-                            if (CheckpointPhase.getPhase(phase) == null) {
-                                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhaseName"), phase));
-                                System.out.println();
-                                returnValue = ReturnCode.BAD_ARGUMENT;
-                            } else {
-                                initProps.put(CheckpointPhase.CHECKPOINT_PROPERTY, phase);
-                                System.clearProperty(CheckpointPhase.CHECKPOINT_PROPERTY);
-                            }
+                            checkpointPhase = argToLower.substring("--internal-checkpoint-at=".length());
                         } else {
                             // we cannot efficiently do beta guard from the server script so we hard code this check here
                             // for the checkpoint action
@@ -268,9 +263,29 @@ public class LaunchArguments {
             }
         }
 
+        returnCode = setCheckpointPhase(checkpointPhase, returnValue);
         processName = processNameArg;
-        returnCode = returnValue;
         actionOption = action;
+    }
+
+    /**
+     * @param checkpointPhase
+     */
+    private ReturnCode setCheckpointPhase(String checkpointPhase, ReturnCode returnValue) {
+        try {
+            Method setPhase = CheckpointPhase.class.getDeclaredMethod("setPhase", String.class);
+            setPhase.setAccessible(true);
+            setPhase.invoke(setPhase, checkpointPhase);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        if (checkpointPhase != null && CheckpointPhase.getPhase() == null) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhaseName"), checkpointPhase));
+            System.out.println();
+            return ReturnCode.BAD_ARGUMENT;
+        }
+        return returnValue;
     }
 
     /*

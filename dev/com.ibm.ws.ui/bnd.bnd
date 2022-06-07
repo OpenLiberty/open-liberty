@@ -35,7 +35,6 @@ Private-Package: \
 # Need a special import to properly construct import for commons.io
 Import-Package: \
   com.ibm.websphere.jsonsupport.*, \
-  com.ibm.ws.common.internal.encoder, \
   !*.internal.*, \
   *
 
@@ -72,7 +71,7 @@ Include-Resource: \
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.boot;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.org.apache.aries.util;version=latest,\

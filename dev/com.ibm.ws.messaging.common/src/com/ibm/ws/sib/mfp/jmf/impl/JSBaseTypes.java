@@ -124,7 +124,7 @@ public final class JSBaseTypes {
       int len = ArrayUtil.readInt(frame, offset);
       if (len == -1)
         return null;
-      JSListCoder.sanityCheck(len, frame, offset);
+      JSListCoder.evaluateMessageLength(len, frame, offset);
       offset += 4;
       String ans = Utf8Codec.decode(frame, offset, len);
       return ans;
@@ -192,7 +192,7 @@ public final class JSBaseTypes {
       int len = ArrayUtil.readInt(frame, offset);
       if (len == -1)
         return null;
-      JSListCoder.sanityCheck(len, frame, offset);
+      JSListCoder.evaluateMessageLength(len, frame, offset);
       byte[] bval = new byte[len];
       System.arraycopy(frame, offset + 4, bval, 0, len);
       return bval;
@@ -320,7 +320,7 @@ public final class JSBaseTypes {
 
     public Object decode(byte[] frame, int offset, int indirect, JMFMessageData msg) throws JMFMessageCorruptionException {
       int len = ArrayUtil.readInt(frame, offset);
-      JSListCoder.sanityCheck(len, frame, offset);
+      JSListCoder.evaluateMessageLength(len, frame, offset);
       int scale = ArrayUtil.readInt(frame, offset + 4);
       len -= 4;  // original length included the scale
       byte[] unscaled = new byte[len];
@@ -440,7 +440,7 @@ public final class JSBaseTypes {
 
     public Object decode(byte[] frame, int offset, int indirect, JMFMessageData msg) throws JMFMessageCorruptionException {
       int len = ArrayUtil.readInt(frame, offset);
-      JSListCoder.sanityCheck(len, frame, offset);
+      JSListCoder.evaluateMessageLength(len, frame, offset);
       byte[] byteForm = new byte[len];
       System.arraycopy(frame, offset + 4, byteForm, 0, len);
       return new BigInteger(byteForm);
