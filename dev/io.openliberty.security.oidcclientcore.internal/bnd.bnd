@@ -20,37 +20,6 @@ Bundle-Name: Security OIDC Client Core Internal
 Bundle-SymbolicName: io.openliberty.security.oidcclientcore.internal
 Bundle-Description: TODO
 
--buildpath: \
-	com.ibm.websphere.appserver.spi.logging;version=latest,\
-	com.ibm.websphere.appserver.api.json;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.ws.org.apache.httpcomponents;version=latest,\
-	com.ibm.ws.webcontainer.security;version=latest,\
-	com.ibm.ws.common.encoder;version=latest,\
-	com.ibm.ws.app.manager.wab;version=latest,\
-	com.ibm.ws.kernel.boot.core;version=latest,\
-	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.logging.core;version=latest,\
-	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
-	com.ibm.ws.ssl;version=latest,\
-	com.ibm.ws.security.common.jsonwebkey;version=latest,\
-	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
-	com.ibm.ws.security.token;version=latest,\
-	com.ibm.ws.webcontainer;version=latest,\
-	com.ibm.ws.security.authentication;version=latest,\
-	com.ibm.ws.security.jwt;version=latest,\
-	com.ibm.websphere.org.osgi.core;version=latest,\
-	com.ibm.websphere.org.osgi.service.cm;version=latest,\
-	com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.security;version=latest,\
-	com.ibm.ws.security.authentication.filter;version=latest,\
-	com.ibm.ws.security.common;version=latest,\
-	com.ibm.ws.transport.http;version=latest,\
-	com.ibm.ws.org.jose4j;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.crypto.passwordutil;version=latest
 Export-Package: \
 	io.openliberty.security.oidcclientcore.internal.discovery,\
 	io.openliberty.security.oidcclientcore.internal.client

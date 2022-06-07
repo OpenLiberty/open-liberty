@@ -919,7 +919,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
         boolean valid = false;
 
-        DiscoveryHandler discoveryHandler = new DiscoveryHandler();
 
         if (!isValidDiscoveryUrl(discoveryUrl)) {
             Tr.error(tc, "OIDC_CLIENT_DISCOVERY_SSL_ERROR", getId(), discoveryUrl);
@@ -928,6 +927,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         try {
             setNextDiscoveryTime(); //
             SSLSocketFactory sslSocketFactory = getSSLSocketFactory(discoveryUrl, sslConfigurationName, sslSupportRef.getService());
+            DiscoveryHandler discoveryHandler = new DiscoveryHandler(sslSocketFactory);
             HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled);
             jsonString = getHTTPRequestAsString(client, discoveryUrl);
             if (jsonString != null) {
