@@ -6,5 +6,7 @@ com.ibm.ws.javaee.8.0_fat
 com.ibm.ws.javaee.ddmodel_fat
 com.ibm.ws.javamail.1.6_fat
 com.ibm.ws.jaxb_fat
+io.openliberty.data.internal_fat
 io.openliberty.jakartaee9.internal_fat
 io.openliberty.jakartaee10.internal_fat
+io.openliberty.org.apache.jasper.expressionLanguage.5.0_fat
