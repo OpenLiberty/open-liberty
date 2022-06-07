@@ -86,6 +86,7 @@ instrument.disabled: true
   io.netty:netty-handler-proxy;version=${nettyVersion},\
   io.netty:netty-resolver;version=${nettyVersion},\
   io.netty:netty-transport;version=${nettyVersion},\
+  io.grpc:grpc-netty-shaded;version=${grpcVersion},\
   io.grpc:grpc-netty;version=${grpcVersion},\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
   io.openliberty.io.grpc.1.0;version=latest,\
