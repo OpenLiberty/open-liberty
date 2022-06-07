@@ -117,6 +117,6 @@
 		</application-bnd>
 	    </application>
 
-	<include location="../fatTestPorts.xml"/>
+	<include location="../fatTestPorts.xml"/><logging traceSpecification="*=info:com.ibm.ws.ras.instrument.internal.main*=all:JCDI=all:com.ibm.ws.webbeans*=all:org.apache.webbeans*=all:org.jboss.weld*=all:com.ibm.ws.cdi*=all" />
 
 </server>
