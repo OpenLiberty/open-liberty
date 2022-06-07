@@ -10,6 +10,16 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Map;
+import java.util.Properties;
+
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -31,7 +41,7 @@ import componenttest.topology.impl.LibertyServer;
                 OSGiConsoleTest.class,
                 RemoteEJBTest.class,
                 TestSPIConfig.class,
-                TestMPConfigServlet.class,
+                TestMPConfig.class,
                 SSLTest.class
 })
 public class FATSuite {
@@ -52,6 +62,20 @@ public class FATSuite {
         } catch (IllegalArgumentException e) {
             Log.info(type, testName.getMethodName(), "No configuration enum: " + testName.getMethodName());
             return Enum.valueOf(type, "unknown");
+        }
+    }
+
+    static public void configureBootStrapProperties(LibertyServer server, Map<String, String> properties) throws Exception, IOException, FileNotFoundException {
+        Properties bootStrapProperties = new Properties();
+        File bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
+        if (bootStrapPropertiesFile.isFile()) {
+            try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
+                bootStrapProperties.load(in);
+            }
+        }
+        bootStrapProperties.putAll(properties);
+        try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
+            bootStrapProperties.store(out, "");
         }
     }
 }

@@ -36,7 +36,7 @@ import mpapp1.MPConfigServlet;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
-public class TestMPConfigServlet extends FATServletClient {
+public class TestMPConfig extends FATServletClient {
 
     public static final String APP_NAME = "mpapp1";
 
@@ -62,7 +62,7 @@ public class TestMPConfigServlet extends FATServletClient {
                                                server.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                                  configureBeforeRestore(testMethod);
                              });
-        server.startServer();
+        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
     }
 
     private void configureBeforeCheckpoint(TestMethod testMethod) {
