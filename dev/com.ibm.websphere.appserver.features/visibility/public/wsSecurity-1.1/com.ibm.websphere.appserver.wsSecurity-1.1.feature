@@ -4,24 +4,7 @@ WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-API-Package:\
   org.apache.ws.security;  type="third-party", \
-  org.apache.ws.security.action;  type="third-party", \
-  org.apache.ws.security.cache;  type="third-party", \
   org.apache.ws.security.components.crypto;  type="third-party", \
-  org.apache.ws.security.conversation;  type="third-party", \
-  org.apache.ws.security.conversation.dkalgo; type="third-party", \
-  org.apache.ws.security.handler;  type="third-party", \
-  org.apache.ws.security.message;  type="third-party", \
-  org.apache.ws.security.message.token;  type="third-party", \
-  org.apache.ws.security.processor;  type="third-party", \
-  org.apache.ws.security.saml;  type="third-party", \
-  org.apache.ws.security.saml.ext;  type="third-party", \
-  org.apache.ws.security.saml.ext.bean;  type="third-party", \
-  org.apache.ws.security.saml.ext.builder;  type="third-party", \
-  org.apache.ws.security.spnego;  type="third-party", \
-  org.apache.ws.security.str;  type="third-party", \
-  org.apache.ws.security.transform;  type="third-party", \
-  org.apache.ws.security.util;  type="third-party", \
-  org.apache.ws.security.validate;  type="third-party", \
   org.apache.wss4j.common.ext; type="third-party", \
   org.apache.wss4j.common.crypto; type=third-party, \
   com.ibm.ws.wssecurity.callback;  version="1.0"; type="internal"
