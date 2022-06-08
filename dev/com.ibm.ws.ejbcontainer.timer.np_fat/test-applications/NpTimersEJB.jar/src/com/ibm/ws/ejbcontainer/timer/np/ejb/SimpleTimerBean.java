@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@ public class SimpleTimerBean implements SimpleTimerLocal {
             svLogger.entering(CLASSNAME, "createTimer", info);
         }
 
-        Timer t = TimerHelper.createTimer(ivTS, 30 * 1000l, null, info, false, null);
+        Timer t = TimerHelper.createTimer(ivTS, 30 * 1000l, null, info, false, 30 * 1000l);
 
         if (svLogger.isLoggable(Level.FINER)) {
             svLogger.exiting(CLASSNAME, "createTimer", t);

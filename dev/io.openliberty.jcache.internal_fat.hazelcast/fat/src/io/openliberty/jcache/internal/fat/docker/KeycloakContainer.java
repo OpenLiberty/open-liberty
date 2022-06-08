@@ -236,7 +236,7 @@ public class KeycloakContainer extends GenericContainer<KeycloakContainer> {
         /*
          * Create the request.
          */
-        HttpGet request = new HttpGet(getRootHttpEndpoint() + "/realms/" + realm + "/protocol/saml/descriptor");
+        HttpGet request = new HttpGet(getRootHttpsEndpoint() + "/realms/" + realm + "/protocol/saml/descriptor");
 
         /*
          * Create an HTTP client and execute the request.
