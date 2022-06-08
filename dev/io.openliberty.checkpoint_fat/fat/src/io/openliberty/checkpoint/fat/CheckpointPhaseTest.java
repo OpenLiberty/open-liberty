@@ -11,6 +11,7 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodName;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Set;
@@ -59,10 +60,13 @@ public class CheckpointPhaseTest {
 
     @Test
     public void testAtApplicationsMultRestore() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, (s) -> {
+            assertNotNull("App code should have run.", server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
+        }));
         server.startServer();
         server.checkpointRestore();
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+        assertEquals("Unexpected app code ran.", null, server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
 
         server.stopServer(false, "");
         server.checkpointRestore();
@@ -71,6 +75,16 @@ public class CheckpointPhaseTest {
         server.stopServer(false, "");
         server.checkpointRestore();
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+    }
+
+    @Test
+    public void testAtDeployment() throws Exception {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.DEPLOYMENT, true, (s) -> {
+            assertEquals("Unexpected app code ran.", null, s.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
+        }));
+        server.startServer();
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+        assertNotNull("App code should have run.", server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
     }
 
     @Test
