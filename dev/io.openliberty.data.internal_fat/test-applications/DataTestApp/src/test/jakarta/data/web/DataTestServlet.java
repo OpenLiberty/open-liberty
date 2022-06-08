@@ -558,6 +558,43 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
+        assertIterableEquals(List.of(10030001L, 10030002L, 10030003L, 10030007L, 10030008L),
+                             reservations.findByStopOrStart(OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT),
+                                                            OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT))
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("030-2 E314", "050-2 B125", "050-2 G105"),
+                             reservations.findByStopOrStartOrStart(OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT),
+                                                                   OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
+                                                                   OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT))
+                                             .parallel()
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(10030004L, 10030005L, 10030006L, 10030009L),
+                             reservations.findByStopOrStartOrStartOrStart(OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
+                                                                          OffsetDateTime.of(2022, 5, 25, 7, 30, 0, 0, CDT),
+                                                                          OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
+                                                                          OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT))
+                                             .parallel()
+                                             .sorted()
+                                             .boxed()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT).toInstant(),
+                                     OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT).toInstant(),
+                                     OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT).toInstant(),
+                                     OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT).toInstant(),
+                                     OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT).toInstant()),
+                             reservations.findByStopOrStopOrStop(OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT),
+                                                                 OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT),
+                                                                 OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT))
+                                             .map(r -> r.start().toInstant())
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
         assertEquals(false, reservations.deleteByHostIn(List.of("testRepositoryCustom-host5@example.org")));
 
         assertEquals(true, reservations.deleteByHostIn(List.of("testRepositoryCustom-host1@example.org",

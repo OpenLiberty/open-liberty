@@ -24,6 +24,12 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.persistence.EntityManager;
@@ -452,17 +458,8 @@ public class QueryHandler<T> implements InvocationHandler {
                     break;
                 case SELECT:
                     Class<?> returnArrayType = returnType.getComponentType();
-                    Class<?> resultType;
-                    if (returnArrayType == null)
-                        if (Iterable.class.isAssignableFrom(returnType) ||
-                            Optional.class.equals(returnType))
-                            resultType = entityClass;
-                        else
-                            resultType = returnType;
-                    else
-                        resultType = returnArrayType;
 
-                    TypedQuery<?> query = em.createQuery(jpql, resultType);
+                    TypedQuery<?> query = em.createQuery(jpql, entityClass);//resultType);
                     if (args != null) {
                         Parameter[] params = method.getParameters();
                         for (int i = 0; i < args.length; i++) {
@@ -476,7 +473,7 @@ public class QueryHandler<T> implements InvocationHandler {
 
                     List<?> results = query.getResultList();
 
-                    if (resultType.equals(returnType))
+                    if (entityClass.equals(returnType))
                         returnValue = results.isEmpty() ? null : results.iterator().next();
                     else if (returnType.isInstance(results))
                         returnValue = results;
@@ -498,8 +495,34 @@ public class QueryHandler<T> implements InvocationHandler {
                         } catch (NoSuchMethodException x) {
                             throw new UnsupportedOperationException(returnType + " lacks public zero parameter constructor.");
                         }
-                    else // TODO convert other return types, such as arrays
-                        throw new UnsupportedOperationException(methodName + " with return type " + returnType);
+                    else if (Stream.class.isAssignableFrom(returnType)) {
+                        Stream.Builder<Object> builder = Stream.builder();
+                        for (Object result : results)
+                            builder.accept(result);
+                        returnValue = builder.build();
+                    } else if (IntStream.class.isAssignableFrom(returnType)) {
+                        IntStream.Builder builder = IntStream.builder();
+                        for (Object result : results)
+                            builder.accept((Integer) result);
+                        returnValue = builder.build();
+                    } else if (LongStream.class.isAssignableFrom(returnType)) {
+                        LongStream.Builder builder = LongStream.builder();
+                        for (Object result : results)
+                            builder.accept((Long) result);
+                        returnValue = builder.build();
+                    } else if (DoubleStream.class.isAssignableFrom(returnType)) {
+                        DoubleStream.Builder builder = DoubleStream.builder();
+                        for (Object result : results)
+                            builder.accept((Double) result);
+                        returnValue = builder.build();
+                    } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+                        // TODO The completion stage result type is not available at run time.
+                        // Is a single result or list/array/other type wanted?
+                        // And should this be backed with a particular executor?
+                        returnValue = CompletableFuture.completedFuture(results.isEmpty() ? null : results.iterator().next());
+                    } else { // TODO convert other return types?
+                        returnValue = results.isEmpty() ? null : results.iterator().next();
+                    }
                     break;
                 case UPDATE:
                 case DELETE:
@@ -556,6 +579,8 @@ public class QueryHandler<T> implements InvocationHandler {
             return i != 0;
         else if (void.class.equals(returnType) || Void.class.equals(returnType))
             return null;
+        else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
+            return CompletableFuture.completedFuture(i);
         else
             throw new UnsupportedOperationException("Return update count as " + returnType);
     }
