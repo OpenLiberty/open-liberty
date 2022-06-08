@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.openapi20.internal.cache;
+package io.openliberty.microprofile.openapi31.internal.services.impl.test;
 
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -21,10 +21,11 @@ import java.util.HashSet;
 
 import org.junit.Test;
 
-import io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer.ConfigField;
+import io.openliberty.microprofile.openapi20.internal.services.ConfigField;
+import io.openliberty.microprofile.openapi31.internal.services.impl.ConfigFieldProvider31Impl;
 import io.smallrye.openapi.api.OpenApiConfig;
 
-public class ConfigSerializerTest {
+public class ConfigFieldProvider31ImplTest {
 
     /**
      * Methods in OpenApiConfig which should not have a corresponding entry in the ConfigField enum
@@ -38,13 +39,13 @@ public class ConfigSerializerTest {
     /**
      * Test that the ConfigSerializer covers all methods of OpenApiConfig
      * <p>
-     * This should only fail if the version of smallrye-open-api is updated and ConfigSerializer is not updated to match.
+     * This should only fail if the version of smallrye-open-api is updated and the ConfigFieldProvider is not updated to match.
      */
     @Test
     public void testCoverage() {
         HashSet<String> configFieldNames = new HashSet<>();
-        for (ConfigField field : ConfigSerializer.ConfigField.values()) {
-            configFieldNames.add(field.name);
+        for (ConfigField field : new ConfigFieldProvider31Impl().getConfigFields()) {
+            configFieldNames.add(field.getMethod());
         }
 
         HashSet<String> missingFields = new HashSet<>();

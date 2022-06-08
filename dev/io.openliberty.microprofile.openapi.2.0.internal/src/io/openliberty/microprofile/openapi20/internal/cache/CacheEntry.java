@@ -77,6 +77,7 @@ public class CacheEntry {
 
     private String appName;
     private final Path cacheDir;
+    private final ConfigSerializer configSerializer;
     private OpenAPI model;
     private OpenApiConfig config;
     private Properties configProperties;
@@ -91,8 +92,8 @@ public class CacheEntry {
      * @param baseDir the cache directory
      * @return the new CacheEntry
      */
-    public static CacheEntry createNew(String applicationName, Path baseDir) {
-        return new CacheEntry(applicationName, baseDir);
+    public static CacheEntry createNew(String applicationName, Path baseDir, ConfigSerializer configSerializer) {
+        return new CacheEntry(applicationName, baseDir, configSerializer);
     }
 
     /**
@@ -106,7 +107,7 @@ public class CacheEntry {
      * @return the loaded cache entry, or {@code null} if a valid cache entry does not exist for this application name
      */
     public static CacheEntry read(String applicationName, Path baseDir) {
-        CacheEntry cacheEntry = new CacheEntry(applicationName, baseDir);
+        CacheEntry cacheEntry = new CacheEntry(applicationName, baseDir, null);
         if (!Files.isDirectory(cacheEntry.cacheDir)) {
             return null;
         }
@@ -123,7 +124,7 @@ public class CacheEntry {
         return cacheEntry;
     }
 
-    private CacheEntry(String applicationName, Path baseDir) {
+    private CacheEntry(String applicationName, Path baseDir, ConfigSerializer configSerializer) {
         try {
             this.appName = URLEncoder.encode(applicationName, StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException e) {
@@ -131,6 +132,7 @@ public class CacheEntry {
             throw new RuntimeException("Unable to use UTF-8 encoding", e);
         }
         this.cacheDir = baseDir.resolve(CACHE_DIR).resolve(this.appName);
+        this.configSerializer = configSerializer;
     }
 
     /**
@@ -235,7 +237,7 @@ public class CacheEntry {
         if (configProperties != null) {
             return configProperties;
         } else if (config != null) {
-            return ConfigSerializer.serializeConfig(config, model);
+            return configSerializer.serializeConfig(config, model);
         } else {
             return null;
         }
