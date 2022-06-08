@@ -39,7 +39,7 @@ import componenttest.topology.impl.LibertyServer;
                 CheckpointPhaseTest.class,
                 LogsVerificationTest.class,
                 OSGiConsoleTest.class,
-                RemoteEJBTest.class,
+                LocalEJBTest.class,
                 CheckpointSPITest.class,
                 MPConfigTest.class,
                 SSLTest.class

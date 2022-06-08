@@ -37,34 +37,34 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 import ejbapp1.EJBEvent;
-import ejbapp1.RemoteEJBServlet;
-import ejbapp1.RemoteInterface;
+import ejbapp1.LocalEJBServlet;
+import ejbapp1.LocalInterface;
 import ejbapp1.TestObserver;
 import ejbapp1.TimerTest;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
-public class RemoteEJBTest extends FATServletClient {
+public class LocalEJBTest extends FATServletClient {
 
     public static final String SERVER_NAME = "checkpointEJB";
     public static final String REMOTE_EJB_APP_NAME = "ejbapp1";
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = ejbapp1.RemoteEJBServlet.class, contextRoot = REMOTE_EJB_APP_NAME)
+                    @TestServlet(servlet = ejbapp1.LocalEJBServlet.class, contextRoot = REMOTE_EJB_APP_NAME)
     })
     public static LibertyServer server;
 
     @Before
     public void setUp() throws Exception {
         WebArchive ejbMisc = ShrinkWrap.create(WebArchive.class, REMOTE_EJB_APP_NAME + ".war")
-                        .addClass(RemoteEJBServlet.class)
+                        .addClass(LocalEJBServlet.class)
                         .addClass(TestObserver.class)
-                        .addClass(RemoteInterface.class)
+                        .addClass(LocalInterface.class)
                         .addClass(EJBEvent.class)
                         .addClass(TimerTest.class)
-                        .addPackages(true, RemoteEJBServlet.class.getPackage())
+                        .addPackages(true, LocalEJBServlet.class.getPackage())
                         .add(new FileAsset(new File("test-applications/" + REMOTE_EJB_APP_NAME + "/resources/META-INF/permissions.xml")),
                              "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/" + REMOTE_EJB_APP_NAME + "/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
@@ -88,7 +88,7 @@ public class RemoteEJBTest extends FATServletClient {
                                      }
                                  }
                              });
-        server.startServer();
+        server.startServer(getTestMethodSimpleName() + ".log");
     }
 
     @Test
