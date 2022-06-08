@@ -31,6 +31,7 @@ import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.exporter.jaeger.JaegerGrpcSpanExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
@@ -79,13 +80,9 @@ public class OpenTelemetryProducer {
 
     @ApplicationScoped
     private SpanExporter getSpanExporter(Map<String, String> oTelConfigs) {
-        /*if(oTelConfigs.get("otel.traces.exporter").equals("jaeger")){
-            return JaegerGrpcSpanExporter.builder()
-                            .setEndpoint(oTelConfigs.get("otel.exporter.jaeger.endpoint"))
-                            .setTimeout(Long.parseLong(oTelConfigs.get("otel.exporter.jaeger.timeout")), TimeUnit.SECONDS)
+        return JaegerGrpcSpanExporter.builder()
+                            .setEndpoint("http://localhost:14250")
                             .build();
-        }*/
-        return null;
     }
 
     private Supplier<Map<String,String>> getTelemetryProperties(){
