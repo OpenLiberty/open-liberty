@@ -237,9 +237,9 @@
       <version>21.1.0.0</version>
     </dependency>
     <dependency>
-      <groupId>com.sebastian-daschner</groupId>
-      <artifactId>jaxrs-analyzer</artifactId>
-      <version>0.9</version>
+      <groupId>com.squareup.okio</groupId>
+      <artifactId>okio</artifactId>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.sun.activation</groupId>
@@ -435,6 +435,11 @@
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
       <version>1.43.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-okhttp</artifactId>
+      <version>1.47.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>

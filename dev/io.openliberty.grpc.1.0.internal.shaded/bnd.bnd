@@ -12,11 +12,9 @@
 
 -sub: *.bnd
 
-bVersion=1.0
 grpcVersion=1.43.2
-nettyVersion=4.1.77.Final
 
-
+bVersion=1.0
 
 Import-Package: \
   !com.aayushatharva.brotli4j*,\
@@ -39,29 +37,22 @@ Import-Package: \
   !org.jboss.*,\
   !reactor.blockhound.*,\
   !sun.*,\
-  javax.annotation;version=!,\
+  !com.squareup.okhttp,\
   *
 
 Export-Package: \
-  io.grpc.netty;version=${grpcVersion}, \
-  io.netty.*;version=${nettyVersion},\
-  io.openliberty.grpc.internal.client.*,\
-  io.openliberty.grpc.client.monitor
-
--dsannotations: \
-  io.openliberty.grpc.internal.client.config.GrpcClientConfigImpl,\
-  io.openliberty.grpc.internal.client.GrpcClientComponent
-
-# include the service providers and metatype
-Include-Resource: \
-  OSGI-INF=resources/OSGI-INF, \
-  OSGI-INF/metatype/metatype.xml=resources/OSGI-INF/metatype/metatype.xml
+  io.grpc.netty.*;version=${grpcVersion},\
+  io.grpc.okhttp.*;version=1.47.0,\
+  okio;version=3.1.0
 
 instrument.disabled: true
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \
+  io.grpc:grpc-netty-shaded;version=${grpcVersion},\
+  io.grpc:grpc-okhttp;version=1.47.0,\
+  com.squareup.okio:okio;version=3.1.0,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.security;version=latest,\
   com.ibm.ws.container.service;version=latest,\
@@ -76,30 +67,4 @@ instrument.disabled: true
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.kernel.feature;version=latest,\
-  io.netty:netty-buffer;version=${nettyVersion},\
-  io.netty:netty-codec;version=${nettyVersion},\
-  io.netty:netty-codec-http;version=${nettyVersion},\
-  io.netty:netty-codec-http2;version=${nettyVersion},\
-  io.netty:netty-codec-socks;version=${nettyVersion},\
-  io.netty:netty-common;version=${nettyVersion},\
-  io.netty:netty-handler;version=${nettyVersion},\
-  io.netty:netty-handler-proxy;version=${nettyVersion},\
-  io.netty:netty-resolver;version=${nettyVersion},\
-  io.netty:netty-transport;version=${nettyVersion},\
-  io.grpc:grpc-netty;version=${grpcVersion},\
-  io.openliberty.grpc.1.0.internal.common;version=latest,\
-  io.openliberty.io.grpc.1.0;version=latest,\
   org.osgi.service.component.annotations;version=latest
-
--testpath: \
-  org.hamcrest:hamcrest-all;version=1.3, \
-  org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
-  org.jmock:jmock;strategy=exact;version=2.5.1, \
-  ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-  com.ibm.ws.junit.extensions;version=latest, \
-  cglib:cglib-nodep;version=3.3.0, \
-  org.jmock:jmock-legacy;version=2.5.0, \
-  com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-  com.ibm.ws.logging;version=latest, \
-  com.ibm.ws.kernel.boot;version=latest,\
-  com.ibm.websphere.org.osgi.core;version=latest
