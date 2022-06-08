@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodName;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -18,7 +19,9 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
@@ -34,10 +37,11 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
 public class LogsVerificationTest {
-
+    @Rule
+    public TestName testName = new TestName();
     public static final String APP_NAME = "app2";
 
-    @Server("FATServer")
+    @Server("checkpointFATServer")
     public static LibertyServer server;
 
     @BeforeClass
@@ -49,7 +53,7 @@ public class LogsVerificationTest {
     @Test
     public void testMessagesAndTraceLogsCreatedNewOnCheckpointRestore() throws Exception {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer();
+        server.startServer(getTestMethodName(testName) + ".log");
 
         server.checkpointRestore();
 
@@ -89,7 +93,7 @@ public class LogsVerificationTest {
         FATSuite.configureBootStrapProperties(server, properties);
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer();
+        server.startServer(getTestMethodName(testName) + ".log");
 
         server.checkpointRestore();
 
@@ -125,7 +129,7 @@ public class LogsVerificationTest {
     @Test
     public void testRestoreWorksAfterMessagesLogIsDeleted() throws Exception {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer();
+        server.startServer(getTestMethodName(testName) + ".log");
         assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
 
         RemoteFile messagesLog = server.getDefaultLogFile();
@@ -142,7 +146,7 @@ public class LogsVerificationTest {
     @Test
     public void testVariableSourceDirUpdateDuringRestore() throws Exception {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer();
+        server.startServer(getTestMethodName(testName) + ".log");
 
         server.copyFileToLibertyServerRoot("varfiles/server.env");
 

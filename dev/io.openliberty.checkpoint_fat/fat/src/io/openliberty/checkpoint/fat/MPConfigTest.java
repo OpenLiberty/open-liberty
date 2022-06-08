@@ -36,7 +36,7 @@ import mpapp1.MPConfigServlet;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
-public class TestMPConfig extends FATServletClient {
+public class MPConfigTest extends FATServletClient {
 
     public static final String APP_NAME = "mpapp1";
 

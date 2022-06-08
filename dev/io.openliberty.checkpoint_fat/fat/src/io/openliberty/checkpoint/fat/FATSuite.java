@@ -35,13 +35,13 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                TestWithFATServlet.class,
-                TestWithFATServlet2.class,
+                BasicServletTest.class,
+                CheckpointPhaseTest.class,
                 LogsVerificationTest.class,
                 OSGiConsoleTest.class,
                 RemoteEJBTest.class,
-                TestSPIConfig.class,
-                TestMPConfig.class,
+                CheckpointSPITest.class,
+                MPConfigTest.class,
                 SSLTest.class
 })
 public class FATSuite {
@@ -51,12 +51,17 @@ public class FATSuite {
         appFile.copyToDest(server.getFileFromLibertyServerRoot("dropins"));
     }
 
-    static public <T extends Enum<T>> T getTestMethod(Class<T> type, TestName testName) {
+    static String getTestMethodName(TestName testName) {
         String testMethodSimpleName = testName.getMethodName();
         int dot = testMethodSimpleName.indexOf('.');
         if (dot != -1) {
             testMethodSimpleName = testMethodSimpleName.substring(dot + 1);
         }
+        return testMethodSimpleName;
+    }
+
+    static public <T extends Enum<T>> T getTestMethod(Class<T> type, TestName testName) {
+        String testMethodSimpleName = getTestMethodName(testName);
         try {
             return Enum.valueOf(type, testMethodSimpleName);
         } catch (IllegalArgumentException e) {

@@ -10,13 +10,17 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodName;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Set;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -32,11 +36,12 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
-public class TestWithFATServlet2 {
-
+public class CheckpointPhaseTest {
+    @Rule
+    public TestName testName = new TestName();
     public static final String APP_NAME = "app2";
 
-    @Server("FATServer")
+    @Server("checkpointFATServer")
     public static LibertyServer server;
 
     @BeforeClass
@@ -77,7 +82,7 @@ public class TestWithFATServlet2 {
 
         server.stopServer(false, "");
         server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, false /* clean start */,
-                                      LibertyServer.DEFAULT_VALIDATE_APPS, false /* expectStartFailure */ );;
+                                      LibertyServer.DEFAULT_VALIDATE_APPS, false /* expectStartFailure */ );
         server.checkpointRestore();
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
     }
@@ -95,6 +100,11 @@ public class TestWithFATServlet2 {
 
         assertNotNull("'CWWKF0048E:",
                       server.waitForStringInLogUsingMark("CWWKF0048E: .* the checkpoint-1.0 feature is not configured in the server.xml file", 0));
+    }
+
+    @Before
+    public void setConsoleLogName() {
+        server.setConsoleLogName(getTestMethodName(testName));
     }
 
     @After

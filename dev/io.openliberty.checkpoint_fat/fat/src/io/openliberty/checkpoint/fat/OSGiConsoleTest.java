@@ -36,7 +36,7 @@ public class OSGiConsoleTest {
 
     public static final String APP_NAME = "app2";
 
-    @Server("FATServer")
+    @Server("checkpointFATServer")
     public static LibertyServer server;
 
     @Rule
