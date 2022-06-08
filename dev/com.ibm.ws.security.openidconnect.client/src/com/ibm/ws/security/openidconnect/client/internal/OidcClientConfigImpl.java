@@ -919,7 +919,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
         boolean valid = false;
 
-
         if (!isValidDiscoveryUrl(discoveryUrl)) {
             Tr.error(tc, "OIDC_CLIENT_DISCOVERY_SSL_ERROR", getId(), discoveryUrl);
             return false;
@@ -928,7 +927,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             setNextDiscoveryTime(); //
             SSLSocketFactory sslSocketFactory = getSSLSocketFactory(discoveryUrl, sslConfigurationName, sslSupportRef.getService());
             DiscoveryHandler discoveryHandler = new DiscoveryHandler(sslSocketFactory);
-            HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled);
+            HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             jsonString = getHTTPRequestAsString(client, discoveryUrl);
             if (jsonString != null) {
                 parseJsonResponse(jsonString);
@@ -1154,9 +1153,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     // issue# 19832
     private HttpClientBuilder createBuilder(boolean useSystemProperties) {
         return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
-        
-    }
 
+    }
 
     private BasicCredentialsProvider createCredentialsProvider() {
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
