@@ -23,12 +23,10 @@ public class DiscoveryHandler {
 
     private final SSLSocketFactory sslSocketFactory;
     public HttpUtils httpUtils;
-    private JSONObject discoveryjson;
 
     public DiscoveryHandler(SSLSocketFactory sslSocketFactory) {
         this.sslSocketFactory = sslSocketFactory;
         this.httpUtils = new HttpUtils();
-        this.discoveryjson = null;
     }
 
     public JSONObject fetchDiscoveryData(String discoveryUrl, boolean hostNameVerificationEnabled) throws Exception {
@@ -37,22 +35,11 @@ public class DiscoveryHandler {
             throw new Exception(errorMsg);
         }
         String jsonString = httpUtils.getHttpRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, null, null);
-        parseJsonResponse(jsonString);
-        return discoveryjson;
+        return JSONObject.parse(jsonString);
     }
 
     private boolean isValidDiscoveryUrl(String discoveryUrl) {
         return discoveryUrl != null && discoveryUrl.startsWith("https");
-    }
-
-    protected void parseJsonResponse(String jsonString) {
-        try {
-            this.discoveryjson = JSONObject.parse(jsonString);
-        } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
-            }
-        }
     }
 
 }
