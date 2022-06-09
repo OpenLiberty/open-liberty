@@ -81,14 +81,14 @@ Import-Package: \
    javax.servlet.jsp.jstl*;version=1.2, \
    javax.servlet.jsp.tagext;version=2.2, \
    !javax.swing*, \
-   com.ibm.websphere.servlet.*;version="0", \
+   com.ibm.websphere.servlet.*;version=!, \
    com.ibm.wsspi.webcontainer.osgi.*;version=1.0, \
-   com.ibm.wsspi.webcontainer;version="0", \
-   com.ibm.wsspi.webcontainer.*;version="0", \
-   com.ibm.ws.webcontainer.extension;version="0", \
-   com.ibm.ws.webcontainer.util;version="0", \
-   com.ibm.ws.webcontainer.servlet;version="0",\
-   com.ibm.ws.webcontainer;version="0", \
+   com.ibm.wsspi.webcontainer;version=!, \
+   com.ibm.wsspi.webcontainer.*;version=!, \
+   com.ibm.ws.webcontainer.extension;version=!, \
+   com.ibm.ws.webcontainer.util;version=!, \
+   com.ibm.ws.webcontainer.servlet;version=!,\
+   com.ibm.ws.webcontainer;version=!, \
    com.ibm.jtc.adapter;resolution:=optional, \
    com.sun.tools.javac;resolution:=optional, \
    org.apache.webbeans.el;resolution:=optional, \
