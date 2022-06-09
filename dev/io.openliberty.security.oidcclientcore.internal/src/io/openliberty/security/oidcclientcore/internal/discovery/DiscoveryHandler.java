@@ -12,6 +12,7 @@ package io.openliberty.security.oidcclientcore.internal.discovery;
 
 import javax.net.ssl.SSLSocketFactory;
 
+import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.http.HttpUtils;
@@ -20,34 +21,38 @@ public class DiscoveryHandler {
 
     public static final TraceComponent tc = Tr.register(DiscoveryHandler.class);
 
-    SSLSocketFactory sslSocketFactory;
+    private final SSLSocketFactory sslSocketFactory;
+    public HttpUtils httpUtils;
+    private JSONObject discoveryjson;
 
     public DiscoveryHandler(SSLSocketFactory sslSocketFactory) {
         this.sslSocketFactory = sslSocketFactory;
+        this.httpUtils = new HttpUtils();
+        this.discoveryjson = null;
     }
 
-    public void fetchDiscoveryData(String discoveryUrl, boolean hostNameVerificationEnabled) {
+    public JSONObject fetchDiscoveryData(String discoveryUrl, boolean hostNameVerificationEnabled) throws Exception {
         if (!isValidDiscoveryUrl(discoveryUrl)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid discovery URL.");
-                return;
-            }
+            String errorMsg = Tr.formatMessage(tc, "DISCOVERY_URL_NOT_VALID", discoveryUrl);
+            throw new Exception(errorMsg);
         }
-        String jsonString = null;
-        if (hostNameVerificationEnabled) {
-            HttpUtils httpUtils = new HttpUtils();
-            try {
-                jsonString = httpUtils.getHttpRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, null, null);
-            } catch (Exception e) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Failed to perform the HTTP Request successfully : ", e.getCause());
-                }
-            }
-        }
+        String jsonString = httpUtils.getHttpRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, null, null);
+        parseJsonResponse(jsonString);
+        return discoveryjson;
     }
 
     private boolean isValidDiscoveryUrl(String discoveryUrl) {
         return discoveryUrl != null && discoveryUrl.startsWith("https");
+    }
+
+    protected void parseJsonResponse(String jsonString) {
+        try {
+            this.discoveryjson = JSONObject.parse(jsonString);
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
+            }
+        }
     }
 
 }
