@@ -49,8 +49,8 @@ public interface CDIContainerEventManager {
      * Not sure if this is the correct place for this method but don't really want to create yet another separate service.
      *
      * This extension point allows us to perform additional operations when a DeploymentException is caught. In most cases
-     * it is expected that the implementation will do something and then rethrow that same exception. The DeploymentException
-     * should not be swallowed.
+     * it is expected that the implementation will do something and then just return that same exception... but it could be
+     * a modified instance of the exception
      */
-    public void processDeploymentException(WebSphereCDIDeployment deployment, DeploymentException e) throws DeploymentException;
+    public DeploymentException processDeploymentException(WebSphereCDIDeployment deployment, DeploymentException e);
 }

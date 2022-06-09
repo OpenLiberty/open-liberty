@@ -35,7 +35,7 @@ import io.openliberty.cdi40.internal.fat.config.beansxml.UnannotatedBean;
 
 @RunWith(FATRunner.class)
 public class BeansXMLTest extends FATServletClient {
-    public static final String SERVER_NAME = "CDI40Server";
+    public static final String SERVER_NAME = "CDI40BeansXMLServer";
 
     public static final String EMPTY_BEANS_APP_NAME = "EmptyBeans";
     public static final String BEANS10_APP_NAME = "Beans10";

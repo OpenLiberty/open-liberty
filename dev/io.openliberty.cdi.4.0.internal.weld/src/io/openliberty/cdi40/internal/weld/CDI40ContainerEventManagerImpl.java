@@ -102,14 +102,14 @@ public class CDI40ContainerEventManagerImpl implements CDIContainerEventManager 
 
     /** {@inheritDoc} */
     @Override
-    public void processDeploymentException(WebSphereCDIDeployment webSphereCDIDeployment, DeploymentException e) throws DeploymentException {
+    public DeploymentException processDeploymentException(WebSphereCDIDeployment webSphereCDIDeployment, DeploymentException e) {
         //this extension point allows us to output an additional warning message when a DeploymentException is caught
-        if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+        if (tc.isWarningEnabled()) {
             Collection<URL> unversionedBeansXmlURLs = webSphereCDIDeployment.getUnversionedBeansXmlURLs();
             if (unversionedBeansXmlURLs != null && !unversionedBeansXmlURLs.isEmpty()) {
                 Tr.warning(tc, "unversioned.beansXML.warning.CWOWB1018W", unversionedBeansXmlURLs);
             }
         }
-        throw e;
+        return e;
     }
 }

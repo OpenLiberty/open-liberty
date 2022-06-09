@@ -19,7 +19,6 @@ import io.openliberty.cdi40.internal.fat.bce.BuildCompatibleExtensionsErrorTest;
 import io.openliberty.cdi40.internal.fat.bce.BuildCompatibleExtensionsTest;
 import io.openliberty.cdi40.internal.fat.config.BeansXMLTest;
 import io.openliberty.cdi40.internal.fat.config.LegacyConfigTest;
-import io.openliberty.cdi40.internal.fat.config.LegacyConfigTestError;
 import io.openliberty.cdi40.internal.fat.startupEvents.StartupEventsTest;
 
 @MinimumJavaLevel(javaLevel = 11)
@@ -28,7 +27,6 @@ import io.openliberty.cdi40.internal.fat.startupEvents.StartupEventsTest;
                 BuildCompatibleExtensionsTest.class,
                 BuildCompatibleExtensionsErrorTest.class,
                 LegacyConfigTest.class,
-                LegacyConfigTestError.class,
                 BeansXMLTest.class,
                 StartupEventsTest.class
 })

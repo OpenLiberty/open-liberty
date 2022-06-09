@@ -186,12 +186,14 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
             }
 
         } catch (DeploymentException e) {
+            DeploymentException e1 = e;
             if (webSphereCDIDeployment != null) {
                 CDIContainerEventManager eventManager = this.cdiRuntime.getCDIContainerEventManager();
                 if (eventManager != null) {
-                    eventManager.processDeploymentException(webSphereCDIDeployment, e);
+                    e1 = eventManager.processDeploymentException(webSphereCDIDeployment, e);
                 }
             }
+            throw e1;
         } finally {
             currentDeployment.remove();
         }

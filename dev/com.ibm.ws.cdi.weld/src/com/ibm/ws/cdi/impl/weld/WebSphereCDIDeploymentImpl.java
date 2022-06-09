@@ -726,18 +726,22 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         Collection<URL> unversionedBeansXmlURLs = new ArrayList<URL>();
         for (WebSphereBeanDeploymentArchive bda : getWebSphereBeanDeploymentArchives()) {
             BeansXml beansXml = bda.getBeansXml();
-            if (beansXml != null) { //check that there is a beans.xml file
-                URL parsedURL = beansXml.getUrl();
-                //if the URL is null then that means it was an empty beans.xml file
-                //note that this may be an undocumented "feature" of the Weld SPI
-                if (parsedURL != null) {
-                    //if the beans.xml was not an empty file then check if the version was set or not
-                    boolean unversionedBeansXml = beansXml.getVersion() == null;
-                    if (unversionedBeansXml) {
-                        URL unversionedBeansXmlURL = bda.getBeansXmlResourceURL();
-                        unversionedBeansXmlURLs.add(unversionedBeansXmlURL);
-                    }
-                }
+            if (beansXml == null) { //check that there is a beans.xml file
+                continue;
+            }
+            
+            URL parsedURL = beansXml.getUrl();
+            //if the URL is null then that means it was an empty beans.xml file
+            //note that this may be an undocumented "feature" of the Weld SPI
+            if (parsedURL == null) {
+                continue;
+            }
+            
+            //if the beans.xml was not an empty file then check if the version was set or not
+            boolean unversionedBeansXml = beansXml.getVersion() == null;
+            if (unversionedBeansXml) {
+                URL unversionedBeansXmlURL = bda.getBeansXmlResourceURL();
+                unversionedBeansXmlURLs.add(unversionedBeansXmlURL);
             }
         }
         return unversionedBeansXmlURLs;
