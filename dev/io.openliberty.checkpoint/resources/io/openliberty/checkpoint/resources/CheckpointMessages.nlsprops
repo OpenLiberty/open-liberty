@@ -45,14 +45,14 @@ CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E=CWWKC0456E: A checkpoint cannot
 CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.explanation=The server checkpoint action can only be used with features that support checkpoint.  
 CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.useraction=Only enable features that support checkpoint to use a server checkpoint action. Check the documentation for details on the features that support checkpoint.
 
-CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E=CWWKC0457E: A error occurred preparing to take a checkpoint with the following message: {0}
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E=CWWKC0457E: An error occurred preparing to take a checkpoint with the following message: {0}
 CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.explanation=An exception occurred while preparing to take a checkpoint.  
 CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.useraction=Inspect the server logs directory for additional log files to determine why the server checkpoint failed.
 
-RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E=CWWKC0458E: A error occurred restoring the server process with the following message: {0}
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E=CWWKC0458E: An error occurred restoring the server process with the following message: {0}
 RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.explanation=An exception occurred while restoring the server process.  
 RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Inspect the server logs directory for additional log files to determine why the server failed to restore.
 
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: A checkpoint cannot be taken because the Java version used does not support checkpoint.
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=The server checkpoint action can only be used with a Java version that supports checkpoint.  
-CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Use a Java version that supports checkpoint. Check the documentation for details on required Java version that supports checkpoint.
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Use a Java version that supports checkpoint. Check the documentation for details on the required Java version that supports checkpoint.
