@@ -66,11 +66,12 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 	private Map<String, Object> sslOptions;
 	private NettyTlsProvider tlsProvider;
     
-    protected static String HEARTBEAT_HANDLER_KEY = "heartBeatHandler";
-    protected static String SSL_HANDLER_KEY = "sslHandler";
-    protected static String DECODER_HANDLER_KEY = "decoder";
-    protected static String ENCODER_HANDLER_KEY = "encoder";
-    protected static String JMS_CLIENT_HANDLER_KEY = "jmsClientHandler";
+    public static final String HEARTBEAT_HANDLER_KEY = "heartBeatHandler";
+    public static final String SSL_HANDLER_KEY = "sslHandler";
+    public static final String DECODER_HANDLER_KEY = "decoder";
+    public static final String ENCODER_HANDLER_KEY = "encoder";
+    public static final String JMS_CLIENT_HANDLER_KEY = "jmsClientHandler";
+    public static final String JMS_SERVER_HANDLER_KEY = "jmsServerHandler";
     
     //TODO: Temporary internal to choose weather to use the Netty bundle or not to workaround errors on quiesce
   	public static final boolean USE_BUNDLE = false;

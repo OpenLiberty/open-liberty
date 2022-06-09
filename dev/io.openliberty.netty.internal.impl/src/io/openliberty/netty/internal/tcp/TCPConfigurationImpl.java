@@ -140,6 +140,17 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
     public void applyConfiguration(ServerBootstrap bootstrap) {
         bootstrap.option(ChannelOption.SO_REUSEADDR, getSoReuseAddress());
     }
+    
+    /**
+     * Apply this config to a {@link io.netty.bootstrap.Bootstrap} Note that most
+     * props are implemented via handlers, see {@link TCPChannelInitializerImpl}
+     * 
+     * @param bootstrap
+     */
+    @Override
+    public void applyConfiguration(Bootstrap bootstrap) {
+        bootstrap.option(ChannelOption.SO_REUSEADDR, getSoReuseAddress());
+    }
 
     public AddressAndHostNameAccessLists getAccessLists() {
         return accessLists;
@@ -1283,10 +1294,6 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
         return this.waitToAccept;
     }
 
-    @Override
-    public void applyConfiguration(Bootstrap bootstrap) {
-        throw new UnsupportedOperationException("invalid for TCP config");
-    }
 
     /**
      * A method that can be used to pull out an access list

@@ -21,6 +21,7 @@ Subsystem-Name: Message Server 1.0
  io.openliberty.io.netty.ssl, \
  io.openliberty.netty.internal, \
  io.openliberty.netty.internal.impl, \
+ io.openliberty.endpoint, \
  com.ibm.websphere.security
 -jars=com.ibm.websphere.appserver.api.messaging; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.messaging_1.0-javadoc.zip

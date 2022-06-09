@@ -37,7 +37,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * JFAP inbound chain class definition
  * As of now only two instances are possible: InboundBasic and InboundSecure
  */
-public class CommsInboundChain implements ChainEventListener {
+public class CommsInboundChain implements InboundChain, ChainEventListener {
     private static final TraceComponent tc = Tr.register(CommsInboundChain.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
 
     private boolean _isSecureChain = false;
