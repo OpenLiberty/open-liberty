@@ -198,19 +198,48 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
                     superStatement.evaluate();
 
-                    // If we got to here without error, do a final check that
-                    // any FFDCs were expected
-                    Map<String, FFDCInfo> ffdcAfterTest = retrieveFFDCCounts();
-                    Map<String, FFDCInfo> unexpectedFFDCs = filterOutPreexistingFFDCs(ffdcBeforeTest, ffdcAfterTest);
+                    int retryCount = 3;
 
+                    Map<String, FFDCInfo> unexpectedFFDCs = null;
                     ArrayList<String> errors = new ArrayList<String>();
 
                     List<String> expectedFFDCs = getExpectedFFDCAnnotationFromTest(method);
-                    // check for expectedFFDCs
-                    for (String ffdcException : expectedFFDCs) {
-                        FFDCInfo info = unexpectedFFDCs.remove(ffdcException);
-                        if (info == null) {
-                            errors.add("An FFDC reporting " + ffdcException + " was expected but none was found.");
+                    /*
+                     * Encountering an occasional timing issue where the expectedFFDC isn't found in time and either fails
+                     * the test expecting the FFDC or it bleeds over into another test. Attempting to mitigate with a short
+                     * retry if we don't find the expectedFFDC defined by the test.
+                     */
+                    for (int i = 1; i <= retryCount; i++) {
+                        Log.info(c, "evaluate", "In loop to check look for expectedFFDC, round: " + i);
+                        // If we got to here without error, do a final check that
+                        // any FFDCs were expected
+                        errors.clear();
+                        Map<String, FFDCInfo> ffdcAfterTest = retrieveFFDCCounts();
+                        unexpectedFFDCs = filterOutPreexistingFFDCs(ffdcBeforeTest, ffdcAfterTest);
+
+                        // check for expectedFFDCs
+                        for (String ffdcException : expectedFFDCs) {
+                            FFDCInfo info = unexpectedFFDCs.remove(ffdcException);
+                            if (info == null) {
+                                errors.add("An FFDC reporting " + ffdcException + " was expected but none was found.");
+                            }
+                        }
+
+                        /*
+                         * If the expectedFFDCs list is populated (expectedFFDCs defined by the test), but the FFDCs weren't found by
+                         * retrieveFFDCCounts(), then the errors list will be populated with a message that the FFDC wasn't found. Due to
+                         * possible OS flush timing, the FFDC could be delayed in being written. If the expectedFFDC list is not empty (should
+                         * have found FFDCs) and the errors list is not empty (FFDCs are missing), then we'll sleep a bit and recheck for FFDCs.
+                         *
+                         * This sleep is arbitrary, if we continue to have problems, a longer sleep could be tried. Or a new solution and remove
+                         * this retry.
+                         */
+                        if (!expectedFFDCs.isEmpty() && !errors.isEmpty()) {
+                            Log.info(c, "evaluate",
+                                     "Try " + i + " did not find the expectedFFDCs but sometimes there's a timing/flush issue. Sleep and retry. Longer sleep can be added if we're still not picking up the FFDC in time.");
+                            Thread.sleep(100);
+                        } else {
+                            break;
                         }
                     }
 
