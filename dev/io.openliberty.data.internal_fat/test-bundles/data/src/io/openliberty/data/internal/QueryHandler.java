@@ -24,6 +24,12 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.persistence.EntityManager;
@@ -37,10 +43,13 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Delete;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
 import io.openliberty.data.Select;
+import io.openliberty.data.Update;
+import io.openliberty.data.Where;
 
 public class QueryHandler<T> implements InvocationHandler {
     private static enum Condition {
@@ -171,46 +180,11 @@ public class QueryHandler<T> implements InvocationHandler {
         if (start > 0) {
             StringBuilder q = new StringBuilder(200);
             if (start == 6) { // findBy
-                Select select = method.getAnnotation(Select.class);
-                Class<?> type = select == null ? null : select.type();
-                String[] cols = select == null ? null : select.value();
-                if (type == null || Select.AutoDetect.class.equals(type)) {
-                    Class<?> returnType = method.getReturnType();
-                    if (!Iterable.class.isAssignableFrom(returnType)) {
-                        Class<?> arrayType = returnType.getComponentType();
-                        returnType = arrayType == null ? returnType : arrayType;
-                        if (!returnType.isPrimitive()
-                            && !returnType.isAssignableFrom(entityClass)
-                            && !returnType.getName().startsWith("java"))
-                            type = returnType;
-                    }
-                }
-                if (type == null || Select.AutoDetect.class.equals(type))
-                    if (cols == null || cols.length == 0) {
-                        q.append("SELECT o FROM ");
-                    } else {
-                        q.append("SELECT");
-                        for (int i = 0; i < cols.length; i++)
-                            q.append(i == 0 ? " o." : ", o.").append(cols[i]);
-                        q.append(" FROM ");
-                    }
-                else {
-                    q.append("SELECT NEW ").append(type.getName());
-                    boolean first = true;
-                    if (cols == null || cols.length == 0)
-                        for (String name : attributeNames.values()) {
-                            q.append(first ? "(o." : ", o.").append(name);
-                            first = false;
-                        }
-                    else
-                        for (int i = 0; i < cols.length; i++)
-                            q.append(i == 0 ? "(o." : ", o.").append(cols[i]);
-                    q.append(") FROM ");
-                }
+                generateSelect(q, method);
             } else {
-                q.append("DELETE FROM ");
+                q.append("DELETE FROM ").append(entityName).append(" o");
             }
-            q.append(entityName).append(" o WHERE ");
+            q.append(" WHERE ");
 
             int orderBy = methodName.indexOf("OrderBy");
             String s = orderBy > 0 ? methodName.substring(start, orderBy) : methodName.substring(start);
@@ -332,6 +306,46 @@ public class QueryHandler<T> implements InvocationHandler {
         return paramCount;
     }
 
+    private void generateSelect(StringBuilder q, Method method) {
+        Select select = method.getAnnotation(Select.class);
+        Class<?> type = select == null ? null : select.type();
+        String[] cols = select == null ? null : select.value();
+        if (type == null || Select.AutoDetect.class.equals(type)) {
+            Class<?> returnType = method.getReturnType();
+            if (!Iterable.class.isAssignableFrom(returnType)) {
+                Class<?> arrayType = returnType.getComponentType();
+                returnType = arrayType == null ? returnType : arrayType;
+                if (!returnType.isPrimitive()
+                    && !returnType.isAssignableFrom(entityClass)
+                    && !returnType.getName().startsWith("java"))
+                    type = returnType;
+            }
+        }
+        if (type == null || Select.AutoDetect.class.equals(type))
+            if (cols == null || cols.length == 0) {
+                q.append("SELECT o FROM ");
+            } else {
+                q.append("SELECT");
+                for (int i = 0; i < cols.length; i++)
+                    q.append(i == 0 ? " o." : ", o.").append(cols[i]);
+                q.append(" FROM ");
+            }
+        else {
+            q.append("SELECT NEW ").append(type.getName());
+            boolean first = true;
+            if (cols == null || cols.length == 0)
+                for (String name : attributeNames.values()) {
+                    q.append(first ? "(o." : ", o.").append(name);
+                    first = false;
+                }
+            else
+                for (int i = 0; i < cols.length; i++)
+                    q.append(i == 0 ? "(o." : ", o.").append(cols[i]);
+            q.append(") FROM ");
+        }
+        q.append(entityName).append(" o");
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
@@ -353,6 +367,7 @@ public class QueryHandler<T> implements InvocationHandler {
         QueryType queryType;
         boolean requiresTransaction;
 
+        // @Query annotation
         Query dataQuery = method.getAnnotation(Query.class);
         String jpql = dataQuery == null ? null : dataQuery.value();
 
@@ -360,6 +375,35 @@ public class QueryHandler<T> implements InvocationHandler {
         if (jpql == null && Repository.class.equals(method.getDeclaringClass()))
             jpql = getBuiltInRepositoryQuery(methodName, args, method.getParameterTypes());
 
+        // @Delete/@Update/@Where annotations
+        if (jpql == null) {
+            Update update = method.getAnnotation(Update.class);
+            Where where = method.getAnnotation(Where.class);
+            if (update == null) {
+                if (method.getAnnotation(Delete.class) == null) {
+                    if (where != null) {
+                        StringBuilder q = new StringBuilder(200);
+                        generateSelect(q, method);
+                        q.append(" WHERE ").append(where.value());
+                        jpql = q.toString();
+                    }
+                } else {
+                    StringBuilder q = new StringBuilder(200);
+                    q.append("DELETE FROM ").append(entityName).append(" o");
+                    if (where != null)
+                        q.append(" WHERE ").append(where.value());
+                    jpql = q.toString();
+                }
+            } else {
+                StringBuilder q = new StringBuilder(200);
+                q.append("UPDATE ").append(entityName).append(" o SET ").append(update.value());
+                if (where != null)
+                    q.append(" WHERE ").append(where.value());
+                jpql = q.toString();
+            }
+        }
+
+        // Repository method name pattern queries
         if (jpql == null)
             jpql = generateRepositoryQuery(method);
 
@@ -414,17 +458,8 @@ public class QueryHandler<T> implements InvocationHandler {
                     break;
                 case SELECT:
                     Class<?> returnArrayType = returnType.getComponentType();
-                    Class<?> resultType;
-                    if (returnArrayType == null)
-                        if (Iterable.class.isAssignableFrom(returnType) ||
-                            Optional.class.equals(returnType))
-                            resultType = entityClass;
-                        else
-                            resultType = returnType;
-                    else
-                        resultType = returnArrayType;
 
-                    TypedQuery<?> query = em.createQuery(jpql, resultType);
+                    TypedQuery<?> query = em.createQuery(jpql, entityClass);//resultType);
                     if (args != null) {
                         Parameter[] params = method.getParameters();
                         for (int i = 0; i < args.length; i++) {
@@ -438,7 +473,7 @@ public class QueryHandler<T> implements InvocationHandler {
 
                     List<?> results = query.getResultList();
 
-                    if (resultType.equals(returnType))
+                    if (entityClass.equals(returnType))
                         returnValue = results.isEmpty() ? null : results.iterator().next();
                     else if (returnType.isInstance(results))
                         returnValue = results;
@@ -460,8 +495,34 @@ public class QueryHandler<T> implements InvocationHandler {
                         } catch (NoSuchMethodException x) {
                             throw new UnsupportedOperationException(returnType + " lacks public zero parameter constructor.");
                         }
-                    else // TODO convert other return types, such as arrays
-                        throw new UnsupportedOperationException(methodName + " with return type " + returnType);
+                    else if (Stream.class.isAssignableFrom(returnType)) {
+                        Stream.Builder<Object> builder = Stream.builder();
+                        for (Object result : results)
+                            builder.accept(result);
+                        returnValue = builder.build();
+                    } else if (IntStream.class.isAssignableFrom(returnType)) {
+                        IntStream.Builder builder = IntStream.builder();
+                        for (Object result : results)
+                            builder.accept((Integer) result);
+                        returnValue = builder.build();
+                    } else if (LongStream.class.isAssignableFrom(returnType)) {
+                        LongStream.Builder builder = LongStream.builder();
+                        for (Object result : results)
+                            builder.accept((Long) result);
+                        returnValue = builder.build();
+                    } else if (DoubleStream.class.isAssignableFrom(returnType)) {
+                        DoubleStream.Builder builder = DoubleStream.builder();
+                        for (Object result : results)
+                            builder.accept((Double) result);
+                        returnValue = builder.build();
+                    } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+                        // TODO The completion stage result type is not available at run time.
+                        // Is a single result or list/array/other type wanted?
+                        // And should this be backed with a particular executor?
+                        returnValue = CompletableFuture.completedFuture(results.isEmpty() ? null : results.iterator().next());
+                    } else { // TODO convert other return types?
+                        returnValue = results.isEmpty() ? null : results.iterator().next();
+                    }
                     break;
                 case UPDATE:
                 case DELETE:
@@ -518,6 +579,8 @@ public class QueryHandler<T> implements InvocationHandler {
             return i != 0;
         else if (void.class.equals(returnType) || Void.class.equals(returnType))
             return null;
+        else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
+            return CompletableFuture.completedFuture(i);
         else
             throw new UnsupportedOperationException("Return update count as " + returnType);
     }
