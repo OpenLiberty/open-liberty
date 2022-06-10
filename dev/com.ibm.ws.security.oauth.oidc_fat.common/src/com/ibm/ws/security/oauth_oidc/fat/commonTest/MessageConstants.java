@@ -133,6 +133,8 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1781E_TOKEN_ISSUER_NOT_TRUSTED = "CWWKS1781E";
     public static final String CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED = "CWWKS1783W";
 
+    public static final String CWWKS1951E_FAILURE_SENDING_BCL_REQUEST = "CWWKS1951E";
+
     public static final String CWWKS4358I_AUTH_FILTER_PROCESSED = "CWWKS4358I";
 
     public static final String CWWKS1722E_UNABLE_TO_AUTHENTICATE_BADCLAIM = "CWWKS1722E";

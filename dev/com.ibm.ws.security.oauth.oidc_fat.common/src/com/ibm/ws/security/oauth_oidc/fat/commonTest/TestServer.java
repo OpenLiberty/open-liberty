@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,12 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
         setOriginalServerXmlName(serverXML);
         setServerTypeBasedOnTestType(testType);
         addHostNameAndAddrToBootstrap();
+        try {
+            serverInitCreateServerXml(serverXML);
+        } catch (Exception e) {
+            Log.error(thisClass, "initializeServer", e, "Failure tryingt to write default server.xml: ");
+            // continue on - we only need the file at this point in time for a few corner cases (like oidc/saml configs)
+        }
     }
 
     void setServerTypeBasedOnTestType(String testType) {
@@ -292,7 +298,9 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
         } catch (Exception e) {
             Log.error(thisClass, "failed getting port - will use the default", e);
         }
-        return server.getHttpDefaultPort();
+        Integer defaultPort = server.getHttpDefaultPort();
+        Log.info(thisClass, "getHttpDefaultPort", "Default port is: " + defaultPort);
+        return defaultPort;
     }
 
     @Override
@@ -311,7 +319,10 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
         } catch (Exception e) {
             Log.error(thisClass, "failed getting port - will use the default", e);
         }
-        return server.getHttpDefaultSecurePort();
+        Integer defaultPort = server.getHttpDefaultSecurePort();
+        Log.info(thisClass, "getHttpDefaultPort", "Default port is: " + defaultPort);
+        return defaultPort;
+
     }
 
     public List<String> getDefaultStartMessages(String testType) {

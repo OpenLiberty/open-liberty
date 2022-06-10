@@ -8,6 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+apply from: '../com.ibm.ws.security.saml.sso_fat.common/SAMLCommon.gradle'
+
+/* copySamlFat_sp_server will populate files needed by the op to interact with the SAML IDP */
+addRequiredLibraries.dependsOn copyApache, copyShibbolethIdpConfig, copyShibbolethServer, copySamlFat_sp_server
 
 repositories {
   if (isUsingArtifactory) {
@@ -139,6 +143,7 @@ autoFVT.doLast {
    */
   def servers = [
     'com.ibm.ws.security.backchannelLogout_fat.op',
+    'com.ibm.ws.security.backchannelLogout_fat.op.saml',
     'com.ibm.ws.security.backchannelLogout_fat.rp',
     'com.ibm.ws.security.backchannelLogout_fat.rp.2',
     'com.ibm.ws.security.backchannelLogout_fat.social',
@@ -180,7 +185,8 @@ autoFVT.doLast {
   }
   
   servers = [
-    'com.ibm.ws.security.backchannelLogout_fat.op'
+    'com.ibm.ws.security.backchannelLogout_fat.op',
+    'com.ibm.ws.security.backchannelLogout_fat.op.saml'
   ]
   servers.each { server ->
     copy {
@@ -193,8 +199,53 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
       rename 'oauthclient.zip', 'oauthclient.war'
     }
+    copy {
+      from new File(appBuildDir, 'simpleLogoutTestApp.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+      rename 'simpleLogoutTestApp.zip', 'simpleLogoutTestApp.war'
+    }
 
   }
+
+
+  servers = [
+    'com.ibm.ws.security.backchannelLogout_fat.op.saml'
+  ]
+  servers.each { server ->
+     copy { 
+     from project(':com.ibm.ws.security.saml.sso_fat.common').file('securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+     include 'samlKey.jks'
+    }
+     copy {
+      from new File(projectDir, 'publish/files/serversettings/localhost')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports/localhost')
+      include '*.xml.orig'
+    }  
+ 
+  /* The oidc saml configs use their own certs, so, we need our own copy of the metadata using those certs */
+  /*
+    copy {
+      from new File(projectDir, 'publish/files/serversettings/localhost')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports/localhost')
+      include '*.xml.orig'
+    }  
+
+*/
+  }
+  /* The oidc saml configs use their own certs, so, we need our own copy of the metadata using those certs */
+  /*
+    copy {
+      from new File(projectDir, 'publish/files/serversettings/shibboleth')
+      into new File(autoFvtDir, 'shibboleth-idp/3.3.1/metadata/')
+      include '*.xml.orig'
+    }  
+    copy {
+      from new File(projectDir, 'publish/files/serversettings/shibboleth')
+      into new File(autoFvtDir, 'shibboleth-idp/4.1.0/metadata/')
+      include '*.xml.orig'
+    }  
+*/
   
   /*
    * Copy formlogin application to designated test servers.

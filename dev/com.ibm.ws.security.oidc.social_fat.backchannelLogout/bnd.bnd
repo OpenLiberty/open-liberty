@@ -39,6 +39,7 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.ws.security.fat.common.jwt;version=latest,\
 	com.ibm.ws.security.fat.common.social;version=latest,\
+	com.ibm.ws.security.saml.sso_fat.common;version=latest, \
 	com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
 	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
@@ -48,7 +49,7 @@ publish.wlp.jar.disabled: true
 	org.glassfish:javax.json;version='1.0',\
 	com.ibm.json4j;version=latest,\
 	org.bitbucket.b_c.jose4j,\
-	com.ibm.ws.security.fat.common.social;version=latest,\
 	com.ibm.ws.security.jwt;version=latest,\
-	com.ibm.ws.webcontainer.security
+	com.ibm.ws.webcontainer.security,\
+    com.ibm.ws.org.apache.directory.server;version=latest	
 

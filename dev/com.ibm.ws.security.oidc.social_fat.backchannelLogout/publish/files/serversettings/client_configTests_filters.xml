@@ -172,4 +172,16 @@
 			urlPattern="/simple/checkDupBcl_client2" />
 	</authFilter>
 
+	<authFilter id="bcl_httpConfClient_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_confClient" />
+	</authFilter>
+
+	<authFilter id="bcl_httpPublicClient_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_publicClient" />
+	</authFilter>
+
 </server>

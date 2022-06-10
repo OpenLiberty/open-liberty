@@ -313,8 +313,9 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                 shibbolethHelpers.setShibbolethPropertiesForTestMachine(aTestServer);
             }
 
+            Log.info(thisClass, thisMethod, "pickAnIDP: " + pickAnIDP);
             // if we need an IDP and we've already started one
-            if (pickAnIDP && testIDPServer != null) {
+            if (pickAnIDP && (testIDPServer != null)) {
                 setSelectedTfimServer(aTestServer, testIDPServer);
                 //                aTestServer.addMiscBootstrapParms(mapFromArrays({"",""}, {"",""}));
                 Map<String, String> parmMap = new HashMap<String, String>();
@@ -926,6 +927,18 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             //
             if (validationTools.isInList(testActions, Constants.LOGOUT)) {
                 thePage = helpers.processLogout(testcase, webClient, logoutIdToken, settings, expectations);
+            }
+
+            if (validationTools.isInList(testActions, Constants.PERFORM_IDP_LOGOUT)) {
+                thePage = helpers.performIDPLogout(testcase, webClient, thePage, settings, expectations);
+            }
+
+            if (validationTools.isInList(testActions, Constants.PROCESS_LOGOUT_CONTINUE)) {
+                thePage = helpers.processLogoutContinue(testcase, webClient, (HtmlPage) thePage, settings, expectations);
+            }
+
+            if (validationTools.isInList(testActions, Constants.PROCESS_LOGOUT_PROPAGATE_YES)) {
+                thePage = helpers.processLogoutPropagateYes(testcase, webClient, (HtmlPage) thePage, settings, expectations);
             }
 
             return thePage;

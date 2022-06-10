@@ -23,6 +23,7 @@
 	<include location="${server.config.dir}/imports/oauthRoles_1.xml" />
 
 	<include location="${server.config.dir}/imports/oidcProvider_configTests.xml" />
+	<include location="${server.config.dir}/imports/saml_authorize.xml"/>
 
 	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
 	

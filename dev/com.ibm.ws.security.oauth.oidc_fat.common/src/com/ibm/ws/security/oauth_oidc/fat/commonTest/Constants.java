@@ -41,6 +41,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     /* Test types */
     public static final String OIDC = "OIDC";
     public static final String OAUTH = "OAuth";
+    public static final String SAML = "SAML";
 
     public static final String OAUTH_OP = "OAuth_OP";
     public static final String OIDC_OP = "OpenIDConnect_OP";
@@ -140,6 +141,11 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String BUILD_POST_SP_INITIATED_REQUEST = "buildPostSPInitiatedRequest";
     public static final String INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT = "invokeBackChannelLogoutEndpoint";
 
+    public static final String PERFORM_IDP_LOGOUT = "performIDPLogout";
+    public static final String PROCESS_LOGOUT_CONTINUE = "processLogoutContinue";
+    public static final String PROCESS_LOGOUT_PROPAGATE_YES = "processLogoutPropagateYes";
+    public static final String PROCESS_LOGOUT_REDIRECT = "processLogoutRedirect";
+
     // All OP actions/tasks should be included in this list!
     public static final String[] OP_TEST_ACTIONS = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER, SUBMIT_TO_AUTH_SERVER_FOR_TOKEN, INVOKE_AUTH_SERVER, PERFORM_LOGIN,
             PERFORM_ISAM_LOGIN, INVOKE_PROTECTED_RESOURCE, INVOKE_ENDPOINT, INVOKE_INTROSPECTION_ENDPOINT, INVOKE_REVOCATION_ENDPOINT,
@@ -209,6 +215,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
             INVOKE_PROTECTED_RESOURCE, INVOKE_RS_PROTECTED_RESOURCE };
     public static final String[] INVOKE_RS_PROTECTED_RESOURCE_ONLY_ACTIONS = { INVOKE_RS_PROTECTED_RESOURCE };
     public static final String[] INVOKE_RS_PROTECTED_RESOURCE_LOGIN_ACTIONS = { INVOKE_RS_PROTECTED_RESOURCE, PERFORM_LOGIN };
+    //    public static final String[] IDP_INITIATED_LOGOUT = { PERFORM_IDP_LOGOUT, PROCESS_LOGOUT_CONTINUE, PROCESS_LOGOUT_PROPAGATE_YES };
+    public static final String[] IDP_INITIATED_LOGOUT = { PERFORM_IDP_LOGOUT, PROCESS_LOGOUT_PROPAGATE_YES };
 
     /* ******************** steps in the RP test process ***************** */
     public static final String SPECIFY_PROVIDER = "specifyProvider";

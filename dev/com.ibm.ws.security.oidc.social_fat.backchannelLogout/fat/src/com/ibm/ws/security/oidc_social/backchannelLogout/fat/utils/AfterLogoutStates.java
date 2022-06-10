@@ -33,7 +33,12 @@ public class AfterLogoutStates {
 
     boolean clientJSessionIdExists = true;
     boolean clientJSessionIdMatchesPrevious = true;
-    // TODO may need SAML cookie values too
+
+    boolean spCookieExists = true;
+    boolean spCookieMatchesPrevious = true;
+
+    boolean idpCookieExists = true;
+    boolean idpCookieMatchesPrevious = true;
 
     // Session access
     boolean appSessionAccess = true;
@@ -55,6 +60,14 @@ public class AfterLogoutStates {
         isUsingJwtToken = true;
     }
 
+    /**
+     * Init an AfaterLogoutStates object for a successful BCL
+     *
+     * @param flowType
+     * @param logoutMethod
+     * @param sessionEndpoint
+     * @param tokenType
+     */
     public AfterLogoutStates(String flowType, String logoutMethod, String sessionEndpoint, String tokenType) {
 
         if (flowType == null || flowType.equals(Constants.RP_FLOW)) {
@@ -84,6 +97,56 @@ public class AfterLogoutStates {
         } else {
             isUsingJwtToken = false;
         }
+
+        setAccessToken();
+        setRefreshToken();
+        setOPCookies(flowType, logoutMethod, sessionEndpoint, tokenType);
+        setClientCookies(flowType, logoutMethod, sessionEndpoint, tokenType);
+        setReuseWebClient(flowType, logoutMethod, sessionEndpoint, tokenType);
+        setIDPCookies(flowType, logoutMethod, sessionEndpoint, tokenType);
+    }
+
+    /**
+     * Access_tokens will be invalidated when:
+     * end_session is used (this means all ways it can be invoked (from test request, from client app, from SAML)
+     * req.logout is used (this means all ways that it can be invoked (from test request to the OP, or from client app)
+     * 
+     */
+    public void setAccessToken() {
+
+        accessTokenValid = false;
+    }
+
+    public void setRefreshToken() {
+
+        refreshTokenValid = false;
+    }
+
+    public void setOPCookies(String flowType, String logoutMethod, String sessionEndpoint, String tokenType) {
+
+        opCookieExists = false;
+        opCookieMatchesPrevious = false;
+    }
+
+    public void setClientCookies(String flowType, String logoutMethod, String sessionEndpoint, String tokenType) {
+
+        clientCookieExists = false;
+        clientCookieMatchesPrevious = false;
+
+    }
+
+    public void setReuseWebClient(String flowType, String logoutMethod, String sessionEndpoint, String tokenType) {
+
+        appSessionAccess = false;
+    }
+
+    public void setIDPCookies(String flowType, String logoutMethod, String sessionEndpoint, String tokenType) {
+
+        spCookieExists = false;
+        spCookieMatchesPrevious = false;
+
+        idpCookieExists = false;
+        idpCookieMatchesPrevious = false;
 
     }
 
