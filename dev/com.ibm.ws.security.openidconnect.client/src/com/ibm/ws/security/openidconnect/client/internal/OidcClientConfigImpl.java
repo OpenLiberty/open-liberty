@@ -84,6 +84,8 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
+import io.openliberty.security.oidcclientcore.internal.discovery.DiscoveryHandler;
+
 /**
  * Process the OpenID Connect client entry in the server.xml file
  */
@@ -924,7 +926,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         try {
             setNextDiscoveryTime(); //
             SSLSocketFactory sslSocketFactory = getSSLSocketFactory(discoveryUrl, sslConfigurationName, sslSupportRef.getService());
-            // issue# 19832
+            DiscoveryHandler discoveryHandler = new DiscoveryHandler(sslSocketFactory);
             HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             jsonString = getHTTPRequestAsString(client, discoveryUrl);
             if (jsonString != null) {
@@ -1151,9 +1153,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     // issue# 19832
     private HttpClientBuilder createBuilder(boolean useSystemProperties) {
         return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
-        
-    }
 
+    }
 
     private BasicCredentialsProvider createCredentialsProvider() {
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
