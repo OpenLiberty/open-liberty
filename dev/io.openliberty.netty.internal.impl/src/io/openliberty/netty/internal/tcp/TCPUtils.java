@@ -253,4 +253,24 @@ public class TCPUtils {
             Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));
         }
     }
+
+    /**
+     * Log a TCP channel started message. Inbound channels will log a INFO message,
+     * and outbound channels will log DEBUG
+     * 
+     * @param channel
+     */
+    public static void logChannelStarted(Channel channel) {
+        String channelName = channel.attr(ConfigConstants.NameKey).get();
+        String host = channel.attr(ConfigConstants.HostKey).get();
+        Integer port = channel.attr(ConfigConstants.PortKey).get();
+        if (channel.attr(ConfigConstants.IsInboundKey).get()) {
+            Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
+                    new Object[] { channelName, host, String.valueOf(port) });
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
+                        new Object[] { channelName, host, String.valueOf(port) });
+        }
+    }
+
 }

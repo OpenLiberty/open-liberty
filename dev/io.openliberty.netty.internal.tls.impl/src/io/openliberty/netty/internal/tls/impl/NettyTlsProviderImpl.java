@@ -48,6 +48,8 @@ import io.netty.handler.ssl.SslContext;
 public class NettyTlsProviderImpl implements NettyTlsProvider {
 
     private static final TraceComponent tc = Tr.register(NettyTlsProviderImpl.class);
+
+    static final String ALIAS_KEY = "alias";
     
     /**
      * DS deactivate
@@ -102,7 +104,9 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
 
         SSLContext jdkContext;
         try {
-            jdkContext = getSSLContext(port, createProps(sslOptions), false, port, port, port, null);
+        	Properties props = createProps(sslOptions);
+            String alias = (String)props.getProperty(ALIAS_KEY);
+            jdkContext = getSSLContext(alias, props, false, host, port, port, null);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "getOutboundSSLContext SSLContext:", jdkContext);
             }
@@ -137,7 +141,8 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
 
         SSLContext jdkContext;
         try {
-            jdkContext = getSSLContext(port, createProps(sslOptions), false, host, port, port, false);
+        	// TODO: Check alias being sent here
+            jdkContext = getSSLContext(port, createProps(sslOptions), true, host, port, port, false);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -151,7 +156,7 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
             return nettyContext;
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getOutboundSSLContext exception caught creating JdkSslContext: " + e);
+                Tr.debug(tc, "getInboundSSLContext exception caught creating JdkSslContext: " + e);
             }
             return null;
         }
