@@ -32,15 +32,15 @@ Import-Package: \
   jakarta.validation.metadata;version="[3.0.0,4.0.0)", \
   jakarta.validation.spi;version="[3.0.0,4.0.0)", \
   jakarta.validation.valueextraction;version="[3.0.0,4.0.0)", \
-  javax.script;version="0", \
-  javax.xml.namespace;version="0", \
-  javax.xml.stream;version="0", \
-  javax.xml.stream.events;version="0", \
-  javax.xml.transform;version="0", \
-  javax.xml.transform.stream;version="0", \
-  javax.xml.validation;version="0", \
+  javax.script;version=!, \
+  javax.xml.namespace;version=!, \
+  javax.xml.stream;version=!, \
+  javax.xml.stream.events;version=!, \
+  javax.xml.transform;version=!, \
+  javax.xml.transform.stream;version=!, \
+  javax.xml.validation;version=!, \
   jakarta.el;version="[4.0.0,6.0.0)";resolution:=optional, \
-  org.xml.sax;version="0", \
+  org.xml.sax;version=!, \
   org.jboss.logging;version="[3.1.0,4.0.0)", \
   com.fasterxml.classmate;version="[1.3,2.0.0)", \
   com.fasterxml.classmate.members;version="[1.3,2.0.0)", \

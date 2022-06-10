@@ -27,6 +27,12 @@ import jakarta.enterprise.util.Nonbinding;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Data {
+    /**
+     * Entity class. By default, detect automatically.
+     */
     @Nonbinding
-    String value() default "DefaultDataStore";
+    Class<?> value() default void.class;
+
+    @Nonbinding
+    String provider() default "DefaultDataStore";
 }

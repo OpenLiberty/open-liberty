@@ -12,6 +12,21 @@
 
   <dependencies>
     <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.annotation</artifactId>
+      <version>6.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.transform</artifactId>
+      <version>6.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd</artifactId>
+      <version>6.3.0</version>
+    </dependency>
+    <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib-nodep</artifactId>
       <version>3.3.0</version>
@@ -735,6 +750,11 @@
       <groupId>jakarta.jms</groupId>
       <artifactId>jakarta.jms-api</artifactId>
       <version>3.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.jms</groupId>
+      <artifactId>jakarta.jms-api</artifactId>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.json.bind</groupId>

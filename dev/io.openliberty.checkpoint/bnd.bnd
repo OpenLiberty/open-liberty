@@ -41,7 +41,5 @@ WS-TraceGroup: checkpoint
 
 -dsannotations: \
     io.openliberty.checkpoint.internal.CheckpointImpl, \
-    io.openliberty.checkpoint.internal.CheckpointApplications, \
-    io.openliberty.checkpoint.internal.CheckpointFeatures, \
     io.openliberty.checkpoint.internal.CheckpointOSGiConsole
 

@@ -44,6 +44,9 @@ import componenttest.app.FATServlet;
 public class DataTestServlet extends FATServlet {
 
     @Inject
+    OrderRepo orders;
+
+    @Inject
     PersonRepo people;
 
     @Inject
@@ -51,6 +54,9 @@ public class DataTestServlet extends FATServlet {
 
     @Inject
     Reservations reservations;
+
+    @Inject
+    Shipments shipments;
 
     @Resource
     private UserTransaction tran;
@@ -160,6 +166,106 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p2expected.lastName, p2.lastName);
         assertEquals(p2expected.firstName, p2.firstName);
         assertEquals(p2expected.ssn, p2.ssn);
+    }
+
+    /**
+     * Avoid specifying a primary key value and let it be generated.
+     */
+    @Test
+    public void testGeneratedKey() {
+        ZoneOffset MDT = ZoneOffset.ofHours(-6);
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testGeneratedKey-Customer1";
+        o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
+        o1.total = 25.99f;
+        o1 = orders.save(o1);
+
+        Order o2 = new Order();
+        o2.purchasedBy = "testGeneratedKey-Customer2";
+        o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
+        o2.total = 148.98f;
+        o2 = orders.save(o2);
+
+        assertNotNull(o1.id);
+        assertNotNull(o2.id);
+        assertEquals(false, o1.id.equals(o2.id));
+
+        assertEquals(true, orders.addTaxAndShipping(o2.id, 1.08f, 7.99f));
+
+        o2 = orders.findById(o2.id).get();
+
+        assertEquals(168.89f, o2.total, 0.01f);
+    }
+
+    /**
+     * Invoke methods that are annotated with the Select, Where, Update, and Delete annotations.
+     */
+    @Test
+    public void testPartialQueryAnnotations() {
+        Shipment s1 = new Shipment();
+        s1.destination = "200 1st Ave SW, Rochester, MN 55902";
+        s1.location = "44.027354, -92.468482";
+        s1.id = 1;
+        s1.orderedAt = OffsetDateTime.now().minusMinutes(45);
+        s1.status = "IN_TRANSIT";
+        shipments.save(s1);
+
+        Shipment s2 = new Shipment();
+        s2.destination = "201 4th St SE, Rochester, MN 55904";
+        s2.location = "2800 37th St NW, Rochester, MN 55901";
+        s2.id = 2;
+        s2.orderedAt = OffsetDateTime.now().minusMinutes(20);
+        s2.status = "READY_FOR_PICKUP";
+        shipments.save(s2);
+
+        Shipment s3 = new Shipment();
+        s3.destination = "151 4th St SE, Rochester, MN 55904";
+        s3.location = "44.057840, -92.496301";
+        s3.id = 3;
+        s3.orderedAt = OffsetDateTime.now().minusMinutes(13);
+        s3.status = "IN_TRANSIT";
+        shipments.save(s3);
+
+        Shipment s4 = new Shipment();
+        s4.destination = "151 4th St SE, Rochester, MN 55904";
+        s4.location = "2800 37th St NW, Rochester, MN 55901 ";
+        s4.id = 4;
+        s4.orderedAt = OffsetDateTime.now().minusMinutes(4);
+        s4.status = "READY_FOR_PICKUP";
+        shipments.save(s4);
+
+        Shipment s5 = new Shipment();
+        s5.destination = "201 4th St SE, Rochester, MN 55904";
+        s5.location = " 2800 37th St NW, Rochester, MN 55901";
+        s5.id = 5;
+        s5.orderedAt = OffsetDateTime.now().minusSeconds(50);
+        s5.status = "PREPARING";
+        shipments.save(s5);
+
+        assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040"));
+        assertEquals("IN_TRANSIT", shipments.getStatus(2));
+
+        Shipment s = shipments.find(3);
+        String previousLocation = s.location;
+
+        assertEquals(true, shipments.updateLocation(3, previousLocation, "44.029468, -92.483191"));
+        assertEquals(false, shipments.updateLocation(3, previousLocation, "44.029406, -92.489553"));
+
+        s = shipments.find(3);
+        assertEquals("44.029468, -92.483191", s.location);
+
+        assertEquals(true, shipments.cancel(4));
+        assertEquals(true, shipments.cancel(5));
+        assertEquals(false, shipments.cancel(10));
+
+        shipments.trim();
+        s = shipments.find(4);
+        assertEquals("2800 37th St NW, Rochester, MN 55901", s.location);
+
+        assertEquals(2, shipments.removeCanceled());
+
+        assertEquals(3, shipments.removeEverything());
     }
 
     /**
@@ -452,6 +558,43 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
+        assertIterableEquals(List.of(10030001L, 10030002L, 10030003L, 10030007L, 10030008L),
+                             reservations.findByStopOrStart(OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT),
+                                                            OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT))
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("030-2 E314", "050-2 B125", "050-2 G105"),
+                             reservations.findByStopOrStartOrStart(OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT),
+                                                                   OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
+                                                                   OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT))
+                                             .parallel()
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(10030004L, 10030005L, 10030006L, 10030009L),
+                             reservations.findByStopOrStartOrStartOrStart(OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
+                                                                          OffsetDateTime.of(2022, 5, 25, 7, 30, 0, 0, CDT),
+                                                                          OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
+                                                                          OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT))
+                                             .parallel()
+                                             .sorted()
+                                             .boxed()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT).toInstant(),
+                                     OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT).toInstant(),
+                                     OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT).toInstant(),
+                                     OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT).toInstant(),
+                                     OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT).toInstant()),
+                             reservations.findByStopOrStopOrStop(OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT),
+                                                                 OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT),
+                                                                 OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT))
+                                             .map(r -> r.start().toInstant())
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
         assertEquals(false, reservations.deleteByHostIn(List.of("testRepositoryCustom-host5@example.org")));
 
         assertEquals(true, reservations.deleteByHostIn(List.of("testRepositoryCustom-host1@example.org",
@@ -463,6 +606,64 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .sorted()
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Experiment with making a repository method return a record-like type.
+     */
+    @Test
+    public void testSelectAsRecord() {
+        ZoneOffset CDT = ZoneOffset.ofHours(-5);
+
+        // remove data that other tests previously inserted to the same table
+        reservations.deleteByHostNotIn(Set.of("never-ever-used@example.org"));
+
+        assertEquals(0, reservations.count());
+
+        // set up some data for the test to use
+        Reservation r1 = new Reservation();
+        r1.host = "testSelectAsRecord-host1@example.org";
+        r1.invitees = Set.of("testSelectAsRecord-1a@example.org", "testSelectAsRecord-1b@example.org");
+        r1.location = "30-2 C206";
+        r1.meetingID = 10040001;
+        r1.start = OffsetDateTime.of(2022, 6, 3, 13, 30, 0, 0, CDT);
+        r1.stop = OffsetDateTime.of(2022, 6, 3, 15, 0, 0, 0, CDT);
+
+        Reservation r2 = new Reservation();
+        r2.host = "testSelectAsRecord-host2@example.org";
+        r2.invitees = Set.of("testSelectAsRecord-2a@example.org", "testSelectAsRecord-2b@example.org");
+        r2.location = "30-2 C206";
+        r2.meetingID = 10040002;
+        r2.start = OffsetDateTime.of(2022, 6, 3, 9, 0, 0, 0, CDT);
+        r2.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
+
+        Reservation r3 = new Reservation();
+        r3.host = "testSelectAsRecord-host3@example.org";
+        r3.invitees = Set.of("testSelectAsRecord-3a@example.org");
+        r3.location = "30-2 C206";
+        r3.meetingID = 10040003;
+        r3.start = OffsetDateTime.of(2022, 6, 3, 15, 0, 0, 0, CDT);
+        r3.stop = OffsetDateTime.of(2022, 6, 3, 16, 0, 0, 0, CDT);
+
+        Reservation r4 = new Reservation();
+        r4.host = "testSelectAsRecord-host3@example.org";
+        r4.invitees = Set.of("testSelectAsRecord-3a@example.org", "testSelectAsRecord-3b@example.org");
+        r4.location = "30-2 C220";
+        r4.meetingID = 10040004;
+        r4.start = OffsetDateTime.of(2022, 6, 3, 9, 0, 0, 0, CDT);
+        r4.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
+
+        reservations.save(Set.of(r1, r2, r3, r4));
+
+        ReservedTimeSlot[] reserved = reservations.findByLocationAndStartBetweenOrderByStart("30-2 C206",
+                                                                                             OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
+                                                                                             OffsetDateTime.of(2022, 6, 3, 23, 59, 59, 0, CDT));
+        assertArrayEquals(new ReservedTimeSlot[] { new ReservedTimeSlot(r2.start, r2.stop),
+                                                   new ReservedTimeSlot(r1.start, r1.stop),
+                                                   new ReservedTimeSlot(r3.start, r3.stop) },
+                          reserved,
+                          Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.start().toInstant())
+                                          .thenComparing(Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.stop().toInstant())));
     }
 
     /**

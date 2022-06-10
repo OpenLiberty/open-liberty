@@ -30,7 +30,7 @@ import javax.transaction.xa.XAResource;
 /**
  * A declarative services component can be completely POJO based
  * (no awareness/use of OSGi services).
- * 
+ *
  * OSGi methods (activate/deactivate) should be protected.
  */
 public class BVTResourceAdapter implements ResourceAdapter {
@@ -83,9 +83,11 @@ public class BVTResourceAdapter implements ResourceAdapter {
         this.databaseName = databaseName;
     }
 
-    public void setPassword(String password) {} // ignore, this should also get set on the managed connection factory
+    public void setPassword(String password) {
+    } // ignore, this should also get set on the managed connection factory
 
-    public void setUserName(String userName) {} // ignore, this should also get set on the managed connection factory
+    public void setUserName(String userName) {
+    } // ignore, this should also get set on the managed connection factory
 
     /**
      * Limits the number of successful xa.commit/rollback operations.
@@ -129,6 +131,14 @@ public class BVTResourceAdapter implements ResourceAdapter {
                 dataSource.getConnection().close();
             } catch (SQLException x) {
                 // expected
+            }
+
+            //It is possible that Derby put an interrupt on this thread.
+            //This could prevent OSGi services from deactivating.
+            //The interrupted() check will both check and clear the interrupted status.
+            //Output a message for future debugging if necessary.
+            if (Thread.currentThread().interrupted()) {
+                System.out.println("Thread: " + Thread.currentThread().getId() + " was interrupted. Cleared interruption during ResourceAdapater stop() method.");
             }
         } catch (RuntimeException x) {
             throw x;

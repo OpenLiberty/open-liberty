@@ -27,14 +27,13 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.pseudo.internal.PseudoContextFactory;
-import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
 
-public class Activator implements BundleActivator, CheckpointHook {
+public class Activator implements BundleActivator {
     private static final TraceComponent tc = Tr.register(Activator.class);
 
     /** Reference to active BundleContext (will be null between stop and start) */
@@ -89,12 +88,6 @@ public class Activator implements BundleActivator, CheckpointHook {
             // need to write a message about that to the log either
             shutdownFramework();
         }
-    }
-
-    // Hook to reset timer
-    @Override
-    public void restore() {
-        CpuInfo.resetTimer();
     }
 
     @Override

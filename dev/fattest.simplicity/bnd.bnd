@@ -24,6 +24,7 @@ Export-Package: \
         com.ibm.websphere.simplicity.config.dsprops;version=2.0,\
         com.ibm.websphere.simplicity.config.dsprops.testrules;version=2.0,\
         com.ibm.websphere.simplicity.config.wim;version=2.0,\
+        com.ibm.websphere.simplicity.config.cache;version=2.0,\
         com.ibm.websphere.simplicity.log;version=2.0,\
         com.ibm.websphere.soe_reporting;version=2.0,\
         com.ibm.ws.fat.util;version=2.0,\

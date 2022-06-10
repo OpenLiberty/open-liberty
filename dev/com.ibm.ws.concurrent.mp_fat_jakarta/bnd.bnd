@@ -23,7 +23,7 @@ fat.project: true
 tested.features: mpConfig-2.0
 
 -buildpath: \
-	com.ibm.tx.core;version=latest,\
+	com.ibm.tx.jta;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	io.openliberty.jakarta.cdi.3.0;version=latest,\
 	io.openliberty.jakarta.concurrency.3.0;version=latest,\

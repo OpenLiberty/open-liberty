@@ -80,6 +80,12 @@ public class JCacheOauth20AuthenticationCacheTest extends BaseTestCase {
         keycloak = new KeycloakContainer();
         keycloak.start();
 
+        /*
+         * Get the TLS certificate for the Keycloak server and copy to the Liberty servers.
+         * The IDP requires HTTPS for some operations, so we need to trust the Keycloak server.
+         */
+        keycloak.createTrustFromKeycloak("trustPassword", server1, server2);
+
         if (JakartaEE9Action.isActive()) {
             JakartaEE9Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/helloworld.war"));
             JakartaEE9Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/helloworld.war"));

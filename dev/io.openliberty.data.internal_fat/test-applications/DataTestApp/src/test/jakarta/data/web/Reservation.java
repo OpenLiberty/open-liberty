@@ -23,7 +23,7 @@ public class Reservation {
 
     public String location;
 
-    public long meetingID; // TODO autogenerate?
+    public long meetingID;
 
     public OffsetDateTime start;
 

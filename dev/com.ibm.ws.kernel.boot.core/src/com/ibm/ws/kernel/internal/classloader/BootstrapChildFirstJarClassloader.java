@@ -30,6 +30,8 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
     static final String KERNEL_BOOT_CLASS_PREFIX = "com.ibm.ws.kernel.boot.";
     static final String KERNEL_BOOT_RESOURCE_PREFIX = "com/ibm/ws/kernel/boot/";
     static final int KERNEL_BOOT_PREFIX_LENGTH = KERNEL_BOOT_CLASS_PREFIX.length();
+    static final String CHECKPOINT_CLASS_PREFIX = "io.openliberty.checkpoint.";
+    static final int CHECKPOINT_CLASS_LENGTH = CHECKPOINT_CLASS_PREFIX.length();
 
     static <E> Enumeration<E> compoundEnumerations(Enumeration<E> e1, Enumeration<E> e2) {
         if (e2 == null || !e2.hasMoreElements())
@@ -53,14 +55,14 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
      * Delegates to constructor of superclass (JarFileClassLoader)
      *
      * @param urls
-     *            the URLs from which to load classes and resources
+     *                   the URLs from which to load classes and resources
      * @param parent
-     *            the parent class loader for delegation
+     *                   the parent class loader for delegation
      *
      * @throws java.lang.SecurityException
-     *             if a security manager exists and its
-     *             checkCreateClassLoader method doesn't allow creation of a
-     *             class loader.
+     *                                         if a security manager exists and its
+     *                                         checkCreateClassLoader method doesn't allow creation of a
+     *                                         class loader.
      */
     public BootstrapChildFirstJarClassloader(URL[] urls, ClassLoader parent) {
         super(urls, false, parent);
@@ -75,7 +77,8 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
         if (name == null || name.length() == 0)
             return null;
 
-        if (name.regionMatches(0, KERNEL_BOOT_CLASS_PREFIX, 0, KERNEL_BOOT_PREFIX_LENGTH)) {
+        if (name.regionMatches(0, KERNEL_BOOT_CLASS_PREFIX, 0, KERNEL_BOOT_PREFIX_LENGTH) ||
+            name.regionMatches(0, CHECKPOINT_CLASS_PREFIX, 0, CHECKPOINT_CLASS_LENGTH)) {
             return super.loadClass(name, resolve);
         }
 
@@ -130,7 +133,7 @@ public final class BootstrapChildFirstJarClassloader extends JarFileClassLoader 
     public Enumeration<URL> findResources(String resourceName) throws IOException {
         return Collections.<URL> enumeration(Collections.<URL> emptyList());
     }
-    
+
     @Override
     protected void addURL(URL url) {
         super.addURL(url);

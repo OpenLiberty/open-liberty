@@ -32,22 +32,22 @@
 @import url("../../../../com.ibm.ws.ui.shared/resources/WEB-CONTENT/cssShared/dialog.css");
 
 @font-face {
-    font-family: 'HelvNeueRoman';
-    src: url('../fonts/helvetica-neue-roman.woff');
+    font-family: "IBM Plex Sans Regular";
+    src: url("../fonts/IBMPlexSans-Regular.woff");
 }
 
 * {
-    font-family: 'HelvNeueRoman', Helvetica, Arial, sans-serif;
+    font-family: 'IBM Plex Sans Regular', Helvetica, Arial, sans-serif;
     font-weight: normal;
 }
 
 .oneui {
-    font-family: 'HelvNeueRoman', Helvetica, Arial, sans-serif;
+    font-family: 'IBM Plex Sans Regular', Helvetica, Arial, sans-serif;
     font-weight: normal;
 }
 
 .mobile .mblTextBox {
-    font-family: 'HelvNeueRoman', Helvetica, Arial, sans-serif;
+    font-family: 'IBM Plex Sans Regular', Helvetica, Arial, sans-serif;
     font-weight: normal;
 }
 

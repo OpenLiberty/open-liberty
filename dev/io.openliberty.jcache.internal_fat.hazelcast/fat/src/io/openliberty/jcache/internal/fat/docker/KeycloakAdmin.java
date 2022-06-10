@@ -271,7 +271,7 @@ public class KeycloakAdmin {
      * @return The REST endpoint.
      */
     private String getAdminRESTEndpoint() {
-        return keycloak.getRootHttpEndpoint() + "/admin/realms";
+        return keycloak.getRootHttpsEndpoint() + "/admin/realms";
     }
 
     /**
@@ -281,7 +281,7 @@ public class KeycloakAdmin {
      * @return The REST endpoint for retrieving a bearer token.
      */
     private String getBearerTokenEndpoint(String realm) {
-        return keycloak.getRootHttpEndpoint() + "/realms/" + realm + "/protocol/openid-connect/token";
+        return keycloak.getRootHttpsEndpoint() + "/realms/" + realm + "/protocol/openid-connect/token";
     }
 
     /**
@@ -552,7 +552,7 @@ public class KeycloakAdmin {
      * @return The string representing the endpoint.
      */
     public String getOAuth20AuthorizationEndpoint(String realm) {
-        return keycloak.getRootHttpEndpoint() + "/realms/" + realm + "/protocol/openid-connect/auth";
+        return keycloak.getRootHttpsEndpoint() + "/realms/" + realm + "/protocol/openid-connect/auth";
     }
 
     /**
@@ -562,7 +562,7 @@ public class KeycloakAdmin {
      * @return The string representing the endpoint.
      */
     public String getOAuth20TokenEndpoint(String realm) {
-        return keycloak.getRootHttpEndpoint() + "/realms/" + realm + "/protocol/openid-connect/token";
+        return keycloak.getRootHttpsEndpoint() + "/realms/" + realm + "/protocol/openid-connect/token";
     }
 
     /**
@@ -572,7 +572,7 @@ public class KeycloakAdmin {
      * @return The string representing the endpoint.
      */
     public String getOAuth20UserApiEndpoint(String realm) {
-        return keycloak.getRootHttpEndpoint() + "/realms/" + realm + "/protocol/openid-connect/userinfo";
+        return keycloak.getRootHttpsEndpoint() + "/realms/" + realm + "/protocol/openid-connect/userinfo";
     }
 
     /**

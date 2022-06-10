@@ -20,16 +20,19 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * Tests what can and cannot be loaded by the server's JVM classpath.
  */
+@RunWith(FATRunner.class)
 public class ServerClasspathTest {
 
     private static final String SERVER_NAME = "com.ibm.ws.kernel.boot.classpath.fat";
@@ -48,6 +51,7 @@ public class ServerClasspathTest {
                                                         "com.ibm.sharedclasses.spi", // Open JDK 9
                                                         "openj9",
                                                         "com.ibm.gpu" // Semeru 11.0.15
+                                                        , "io.openliberty.checkpoint.spi" // added checkpoint stuff
     };
 
     @BeforeClass

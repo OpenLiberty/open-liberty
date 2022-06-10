@@ -10,12 +10,11 @@
  *******************************************************************************/
 package io.openliberty.data.internal;
 
+import java.lang.reflect.Field;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -36,7 +35,10 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
+import io.openliberty.data.Column;
 import io.openliberty.data.Entity;
+import io.openliberty.data.Generated;
+import io.openliberty.data.Id;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = DataPersistence.class)
@@ -66,7 +68,7 @@ public class DataPersistence {
      * @param classList entity classes
      * @throws Exception
      */
-    public void defineEntities(String dbStoreId, ClassLoader loader, List<Entity> entities) throws Exception {
+    public void defineEntities(String dbStoreId, ClassLoader loader, Map<Class<?>, String> entityInfo) throws Exception {
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
                                                                                    FilterUtils.createPropertyFilter("id", dbStoreId));
@@ -80,34 +82,56 @@ public class DataPersistence {
         if (tablePrefix == null)
             tablePrefix = "";
 
-        HashSet<Class<?>> entityClasses = new HashSet<>(entities.size());
-
         // Classes explicitly annotated with JPA @Entity:
-        ArrayList<String> entityClassNames = new ArrayList<>(entities.size());
+        ArrayList<String> entityClassNames = new ArrayList<>(entityInfo.size());
 
         // XML to make all other classes into JPA entities:
-        ArrayList<String> entityClassInfo = new ArrayList<>(entities.size());
+        ArrayList<String> entityClassInfo = new ArrayList<>(entityInfo.size());
 
-        for (Entity entity : entities) {
-            Class<?> c = entity.value();
-            if (!entityClasses.add(c))
-                throw new UnsupportedOperationException("Multiple repositories for " + c); // TODO doesn't need to be an error
+        for (Entry<Class<?>, String> entry : entityInfo.entrySet()) {
+            Class<?> c = entry.getKey();
+            String keyAttribute = entry.getValue();
 
             if (c.getAnnotation(jakarta.persistence.Entity.class) == null) {
-                String primaryKey = entity.id();
+                Entity entity = c.getAnnotation(Entity.class);
+
+                String tableName = tablePrefix + (entity == null || entity.value() == null ? c.getSimpleName() : entity.value());
                 StringBuilder xml = new StringBuilder(500)
                                 .append(" <entity class=\"" + c.getName() + "\">")
                                 .append(EOLN)
-                                .append("  <table name=\"" + tablePrefix + c.getSimpleName() + "\"/>")
+                                .append("  <table name=\"" + tableName + "\"/>")
                                 .append(EOLN)
                                 .append("  <attributes>")
-                                .append(EOLN)
-                                .append("   <id name=\"" + primaryKey + "\">")
-                                .append(EOLN)
-                                .append("    <column name=\"" + primaryKey + "\" nullable=\"false\"/>")
-                                .append(EOLN)
-                                .append("   </id>")
-                                .append(EOLN)
+                                .append(EOLN);
+
+                for (Field field : c.getFields()) {
+                    Id id = field.getAnnotation(Id.class);
+                    Column column = field.getAnnotation(Column.class);
+                    Generated generated = field.getAnnotation(Generated.class);
+
+                    String attributeName = field.getName();
+                    String columnType = id == null && !keyAttribute.equals(attributeName) ? "basic" : "id";
+                    String columnName = column == null || column.value().length() == 0 ? //
+                                    id == null || id.value().length() == 0 ? null : id.value() : //
+                                    column.value();
+
+                    xml
+                                    .append("   <" + columnType + " name=\"" + attributeName + "\">")
+                                    .append(EOLN);
+                    if (columnName != null)
+                        xml
+                                        .append("    <column name=\"" + columnName + "\"/>")
+                                        .append(EOLN);
+                    if (generated != null)
+                        xml
+                                        .append("    <generated-value strategy=\"" + generated.value().name() + "\"/>")
+                                        .append(EOLN);
+                    xml
+                                    .append("   </" + columnType + ">")
+                                    .append(EOLN);
+                }
+
+                xml
                                 .append("  </attributes>")
                                 .append(EOLN)
                                 .append(" </entity>")
@@ -126,7 +150,7 @@ public class DataPersistence {
                                                                             properties,
                                                                             entityClassNames.toArray(new String[entityClassNames.size()]));
         units.put(new SimpleImmutableEntry<>(dbStoreId, loader),
-                  new SimpleImmutableEntry<PersistenceServiceUnit, Set<Class<?>>>(punit, entityClasses));
+                  new SimpleImmutableEntry<PersistenceServiceUnit, Set<Class<?>>>(punit, entityInfo.keySet()));
     }
 
     Entry<PersistenceServiceUnit, Set<Class<?>>> getPersistenceInfo(String dbStoreId, ClassLoader loader) {

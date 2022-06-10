@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -136,8 +136,6 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
     protected JspClassloaderContext jspClassloaderContext = null;
     protected JspCompilerFactory jspCompilerFactory = null;
     protected IServletContextExtended webapp = null;
-    
-    protected final String loadedPagesVersion;
 
     // defect 238792: begin list of JSP mapped servlets.
     protected HashMap jspFileMappings = new HashMap();
@@ -146,12 +144,12 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
     public AbstractJSPExtensionProcessor(IServletContext webapp, 
                                          JspXmlExtConfig webAppConfig, 
                                          GlobalTagLibraryCache globalTagLibraryCache,
-                                         JspClassloaderContext jspClassloaderContext, String loadedPagesVersion) throws Exception {
+                                         JspClassloaderContext jspClassloaderContext) throws Exception {
         super(webapp);
         final boolean isAnyTraceEnabled = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
         this.webapp = (IServletContextExtended) webapp;
         this.jspOptions = webAppConfig.getJspOptions();
-        this.loadedPagesVersion = loadedPagesVersion;
+
         //497716.2
         //always adding the lifecycle listener so we can cleanup the AnnotationHandler
         //doing logic for using ThreadTagPool within listener
@@ -334,7 +332,7 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
                                                                                       tlc,
                                                                                       context,
                                                                                       codeSource);
-        jspServletWrapper.initialize(config, this.loadedPagesVersion);
+        jspServletWrapper.initialize(config);
         if (isAnyTraceEnabled && logger.isLoggable(Level.FINER))
             logger.exiting(CLASS_NAME, "createServletWrapper"); //d651265
         return jspServletWrapper;

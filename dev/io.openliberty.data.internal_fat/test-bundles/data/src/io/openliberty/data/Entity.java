@@ -10,49 +10,20 @@
  *******************************************************************************/
 package io.openliberty.data;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.inject.Stereotype;
 
 /**
- * Indicates the entity class for a repository.
+ * Copied from jakarta.nosql.mapping.Entity to investigate how well the
+ * JNoSQL repository-related annotations work for relational database access.
  */
-@Documented
-@Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Stereotype
 public @interface Entity {
-    public final static String AUTO_DETECT_ID = "";
-
-    String id() default AUTO_DETECT_ID;
-
-    /**
-     * Entity class.
-     */
-    Class<?> value();
-
-    public abstract class Literal extends AnnotationLiteral<Entity> implements Entity {
-        private static final long serialVersionUID = 1L;
-
-        public static Literal of(Class<?> entityClass, String id) {
-            return new Literal() {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public String id() {
-                    return id;
-                }
-
-                @Override
-                public Class<?> value() {
-                    return entityClass;
-                }
-            };
-        }
-    }
+    String value() default "";
 }

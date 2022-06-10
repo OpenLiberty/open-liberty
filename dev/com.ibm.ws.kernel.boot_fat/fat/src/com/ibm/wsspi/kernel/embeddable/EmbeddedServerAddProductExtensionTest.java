@@ -31,15 +31,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
+import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import junit.framework.AssertionFailedError;
 
+@RunWith(FATRunner.class)
 public class EmbeddedServerAddProductExtensionTest {
 
     static final Class<?> c = EmbeddedServerAddProductExtensionTest.class;
@@ -146,7 +149,8 @@ public class EmbeddedServerAddProductExtensionTest {
     }
 
     @Test
-    public void testAddProductExtension() throws Throwable {}
+    public void testAddProductExtension() throws Throwable {
+    }
 
     private static void embeddedServerTestHelper(final String REMOTE_METHOD_NAME) throws Throwable {
         final String METHOD_NAME = "embeddedServerTestHelper";

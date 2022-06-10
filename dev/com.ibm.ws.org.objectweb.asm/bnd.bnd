@@ -20,8 +20,8 @@ instrument.disabled: true
 asmVersion=9.3
 
 -buildpath: \
-	org.objectweb.asm;version=${asmVersion},\
-	org.objectweb.asm.tree.analysis;version=${asmVersion},\
-	org.objectweb.asm.commons;version=${asmVersion},\
-	org.objectweb.asm.tree;version=${asmVersion},\
-	org.objectweb.asm.util;version=${asmVersion}
+	org.ow2.asm:asm;version=${asmVersion},\
+	org.ow2.asm:asm-analysis;version=${asmVersion},\
+	org.ow2.asm:asm-commons;version=${asmVersion},\
+	org.ow2.asm:asm-tree;version=${asmVersion},\
+	org.ow2.asm:asm-util;version=${asmVersion}

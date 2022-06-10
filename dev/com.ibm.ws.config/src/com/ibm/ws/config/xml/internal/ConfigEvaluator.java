@@ -605,10 +605,15 @@ class ConfigEvaluator {
         if (rawValue == null) {
             return;
         }
-        if (!!!(rawValue instanceof List)) {
-            //TODO error
+
+        // rawValue is guaranteed to be a List at this point
+        List<?> values = (List<?>) rawValue;
+        if (values.size() > 0 && !!!(values.get(0) instanceof ConfigElement)) {
+            // The only way we get to this is if a flat attribute has been specified as something like '<flat>value</flat>'.
+            Tr.error(tc, "error.attribute.validation.exception", config.getNodeDisplayName(), attributeName, rawValue, "The value is a String attribute but should be an element");
             return;
         }
+
         @SuppressWarnings("unchecked")
         List<ConfigElement> rawList = (List<ConfigElement>) rawValue;
         int cardinality = context.getAttributeDefinition(attributeName).getCardinality();
