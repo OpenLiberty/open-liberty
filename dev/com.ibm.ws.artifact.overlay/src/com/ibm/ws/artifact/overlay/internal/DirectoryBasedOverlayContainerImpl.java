@@ -42,7 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
  * Eg, init'ing an overlay from a dir full of data will result in that data being overlaid,
  * and if entries are added they will addto/alter the dir contents.
  */
-@SuppressWarnings( { "deprecation", "rawtypes" } )
+@SuppressWarnings({ "deprecation", "rawtypes" })
 public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
 
     /** ArtifactContainer being wrapped */
@@ -87,7 +87,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         //to the root level only.
         //Requirements are met by a root-only overlay.. so restricting it here.
         if (!base.isRoot()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Base container [ " + base + " ] is not a root container");
         }
 
         this.base = base;
@@ -117,7 +117,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
          * Build iterator for path, using overlay ArtifactContainer for data.
          *
          * @param overlay The OverlayContainer to use to supply entries.
-         * @param path The path within OverlayContainer being iterated.
+         * @param path    The path within OverlayContainer being iterated.
          */
         public EnhancedEntryIterator(DirectoryBasedOverlayContainerImpl overlay, String path, ArtifactContainer c) {
             this.overlay = overlay;
@@ -413,8 +413,8 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         /**
          * Build an OverlayEntry for a given ArtifactEntry, within a given OverlayFS, as a given path/name
          *
-         * @param co The overlay ArtifactContainer this ArtifactEntry is part of.
-         * @param e The ArtifactEntry being wrappered for return.
+         * @param co   The overlay ArtifactContainer this ArtifactEntry is part of.
+         * @param e    The ArtifactEntry being wrappered for return.
          * @param name The name to return for this ArtifactEntry
          * @param path The path to return for this ArtifactEntry
          */
@@ -425,7 +425,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
             this.path = path;
             this.fileContainer = f;
             if (e == null) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Null delegate entry [ " + name + " ] [ " + path + " ] in [ " + root + " ]");
             }
         }
 
@@ -618,11 +618,21 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         }
 
         boolean createOk = true;
+
+        boolean okOverlay = false;
         if (!FileUtils.fileExists(newOverlayDir)) {
-            createOk &= FileUtils.fileMkDirs(newOverlayDir);
+            okOverlay = FileUtils.fileMkDirs(newOverlayDir);
+            createOk &= okOverlay;
+        } else {
+            okOverlay = true;
         }
+
+        boolean okCache = false;
         if (!FileUtils.fileExists(newCacheDir)) {
-            createOk &= FileUtils.fileMkDirs(newCacheDir);
+            okCache = FileUtils.fileMkDirs(newCacheDir);
+            createOk &= okCache;
+        } else {
+            okCache = true;
         }
 
         if (createOk) {
@@ -633,7 +643,9 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
             //we couldn't build our directories..
             //need to exit here, to prevent users believing this
             //nested overlay was just 'missing';
-            throw new IllegalStateException();
+            String msg1 = okOverlay ? "" : "Failed to create overlay directory [ " + newOverlayDir.getAbsolutePath() + " ]. ";
+            String msg2 = okCache ? "" : "Failed to create cache directory [ " + newCacheDir.getAbsolutePath() + " ]";
+            throw new IllegalStateException(msg1 + msg2);
         }
 
         return result;
@@ -662,12 +674,12 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
 
         @Override
         public ArtifactContainer getEnclosingContainer() {
-            throw new IllegalStateException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public String getPath() {
-            throw new IllegalStateException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -748,22 +760,22 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
 
         @Override
         public Iterator<ArtifactEntry> iterator() {
-            throw new IllegalStateException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public ArtifactContainer getEnclosingContainer() {
-            throw new IllegalStateException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public ArtifactEntry getEntryInEnclosingContainer() {
-            throw new IllegalStateException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public String getPath() {
-            throw new IllegalStateException();
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -926,7 +938,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         this.isPassThroughMode = false;
         //notifier is created when the dir overlay path is set via setOverlayDirectory
         if (this.overlayNotifier == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Null notifier");
         }
         //use getEntry to see if we know about the path currently.
         if (this.getEntry(path) != null) {
@@ -952,7 +964,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
 
         //notifier is created when the dir overlay path is set via setOverlayDirectory
         if (this.overlayNotifier == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Null notifier");
         }
         maskSet.remove(path);
         this.isPassThroughMode = maskSet.isEmpty();
@@ -991,8 +1003,8 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
      * the entries recursively.<br>
      * Entries that convert to ArtifactContainers that claim to be isRoot true, are not processed recursively.
      *
-     * @param e The ArtifactEntry to add
-     * @param path The path to add the ArtifactEntry at
+     * @param e         The ArtifactEntry to add
+     * @param path      The path to add the ArtifactEntry at
      * @param addAsRoot If the ArtifactEntry converts to a ArtifactContainer, should the isRoot be overridden? null = no, non-null=override value
      * @return true if the ArtifactEntry added successfully
      * @throws IOException if error occurred during reading of the streams.
@@ -1072,7 +1084,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     public boolean addToOverlay(ArtifactEntry e) {
         //don't allow the add if we're not set with a dir yet!
         if (fileOverlayContainer == null)
-            throw new IllegalStateException();
+            throw new IllegalStateException("Null overlay container");
 
         this.isPassThroughMode = false;
 
@@ -1087,7 +1099,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     public boolean addToOverlay(ArtifactEntry e, String path, boolean addAsRoot) {
         //don't allow the add if we're not set with a dir yet!
         if (fileOverlayContainer == null)
-            throw new IllegalStateException();
+            throw new IllegalStateException("Null overlay container");
 
         this.isPassThroughMode = false;
 
@@ -1129,7 +1141,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     public synchronized boolean removeFromOverlay(String path) {
         //don't allow the remove if we're not set with a dir yet!
         if (fileOverlayContainer == null)
-            throw new IllegalStateException();
+            throw new IllegalStateException("Null overlay container");
 
         //if path exists under this.overlayDirectory, then delete it, and any content beneath it.
         File f = new File(overlayDirectory, path);
@@ -1182,18 +1194,31 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     @Override
     public synchronized void setOverlayDirectory(File cacheDirForOverlayContent, File f) {
         //check overlay dir exists & is a dir
-        if (!FileUtils.fileExists(f) || !Utils.fileIsDirectory(f)) {
-            throw new IllegalArgumentException();
+        if (!FileUtils.fileExists(f)) {
+            throw new IllegalArgumentException("Overlay [ " + f.getAbsolutePath() + " ] does not exist");
         }
+        if (!Utils.fileIsDirectory(f)) {
+            throw new IllegalArgumentException("Overlay [ " + f.getAbsolutePath() + " ] is not a directory");
+        }
+        //check overlay dir is empty
+        if (FileUtils.listFiles(f).length != 0) {
+            throw new IllegalArgumentException("Overlay [ " + f.getAbsolutePath() + " ] is not empty");
+        }
+
         //check cache dir exists & is a dir
-        if (!FileUtils.fileExists(cacheDirForOverlayContent) || !Utils.fileIsDirectory(cacheDirForOverlayContent)) {
-            throw new IllegalArgumentException();
+        if (!FileUtils.fileExists(cacheDirForOverlayContent)) {
+            throw new IllegalArgumentException("Overlay cache [ " + cacheDirForOverlayContent.getAbsolutePath() + " ] does not exist");
         }
-        //check overlay dir is either empty, or has ".overlay" present in it.
+        if (!Utils.fileIsDirectory(cacheDirForOverlayContent)) {
+            throw new IllegalArgumentException("Overlay cache [ " + cacheDirForOverlayContent.getAbsolutePath() + " ] is not a directory");
+        }
+
+        //check overlay dir has ".overlay" present in it.
         File overlay = new File(f, ".overlay");
-        if (!(FileUtils.listFiles(f).length == 0 || (FileUtils.fileExists(overlay) && FileUtils.fileIsDirectory(overlay)))) {
-            throw new IllegalArgumentException();
+        if (FileUtils.fileExists(overlay) && FileUtils.fileIsDirectory(overlay)) {
+            throw new IllegalArgumentException("Overlay [ " + overlay.getAbsolutePath() + " ] exists as a directory");
         }
+
         //we have to make the content dir for the overlay data.
         if (!FileUtils.fileExists(overlay)) {
             FileUtils.fileMkDirs(overlay);
@@ -1206,7 +1231,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         //could be null if the file impl bundle is awol.. nasty.
         //this should never happen, so throw exception if it does.
         if (this.fileOverlayContainer == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Failed to obtain overlay container for overlay [ " + overlay.getAbsolutePath() + " ]");
         }
 
         //initialise the overlay notifier.
@@ -1272,7 +1297,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     @Override
     public ArtifactNotifier getArtifactNotifier() {
         if (this.overlayNotifier == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Null overlay notifier");
         }
         return this.overlayNotifier;
     }
@@ -1291,7 +1316,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         // answer the path to the entry.
 
         ArtifactEntry entryRootEntry = entry.getRoot().getEntryInEnclosingContainer();
-        if ( entryRootEntry == null ) {
+        if (entryRootEntry == null) {
             return entryPath;
         }
 
@@ -1299,9 +1324,9 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         // paths.
 
         StringBuilder builder = new StringBuilder(entry.getPath());
-        while ( entryRootEntry != null ) {
-            builder.insert(0,  '/');
-            builder.insert(0,  entryRootEntry.getPath());
+        while (entryRootEntry != null) {
+            builder.insert(0, '/');
+            builder.insert(0, entryRootEntry.getPath());
 
             entryRootEntry = entryRootEntry.getRoot().getEntryInEnclosingContainer();
         }
@@ -1321,24 +1346,24 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
 
         ArtifactEntry useEnclosingEntry = getEntryInEnclosingContainer();
         String enclosingIntrospect = "Directory Overlay Container [ %s ] [ %s ]";
-        if(useEnclosingEntry == null) {
-            outputWriter.println(String.format(enclosingIntrospect, "ROOT" , this.toString() ));
+        if (useEnclosingEntry == null) {
+            outputWriter.println(String.format(enclosingIntrospect, "ROOT", this.toString()));
         } else {
-            outputWriter.println(String.format(enclosingIntrospect, getFullPath(useEnclosingEntry) , this.toString()));
+            outputWriter.println(String.format(enclosingIntrospect, getFullPath(useEnclosingEntry), this.toString()));
         }
 
-        if( cacheStore.isCacheEmpty() ) {
+        if (cacheStore.isCacheEmpty()) {
             outputWriter.println("  ** EMPTY **");
         } else {
             Map<String, Map<Class, Object>> snapshot = getCacheSnapshot();
-            for( Map.Entry<String, Map<Class, Object>> pathEntry: snapshot.entrySet() ) {
+            for (Map.Entry<String, Map<Class, Object>> pathEntry : snapshot.entrySet()) {
                 outputWriter.println(String.format("  [ %s ]", pathEntry.getKey()));
                 Map<Class, Object> entriesForPath = pathEntry.getValue();
-                if( entriesForPath.isEmpty() ) {
+                if (entriesForPath.isEmpty()) {
                     outputWriter.println("      ** EMPTY **");
                 } else {
                     String subEntryFormat = "      [ %s ] [ %s ]";
-                    for( Map.Entry<Class, Object> subEntry: entriesForPath.entrySet() ) {
+                    for (Map.Entry<Class, Object> subEntry : entriesForPath.entrySet()) {
                         outputWriter.println(String.format(subEntryFormat, subEntry.getKey(), subEntry.getValue() == null ? "** NULL **" : subEntry.getValue()));
                     }
                 }

@@ -32,6 +32,7 @@ import com.ibm.ws.artifact.ArtifactListenerSelector;
 import com.ibm.ws.artifact.loose.internal.LooseArchive.EntryInfo;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
 import com.ibm.wsspi.artifact.DefaultArtifactNotification;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
@@ -101,8 +102,9 @@ public class LooseArtifactNotifier implements ArtifactNotifier, com.ibm.ws.kerne
     }
 
     private void verifyTargets(ArtifactNotification targets) throws IllegalArgumentException {
-        if (targets.getContainer().getRoot() != root) {
-            throw new IllegalArgumentException();
+        ArtifactContainer targetRoot = targets.getContainer().getRoot();
+        if (targetRoot != root) {
+            throw new IllegalArgumentException("Target root [ " + targetRoot + " ] does not match notification root [ " + root + " ]");
         }
     }
 

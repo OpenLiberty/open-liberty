@@ -36,7 +36,7 @@ public class FileEntry implements com.ibm.wsspi.artifact.ArtifactEntry {
 
     /**
      * Builds an Entry for a given File.
-     * 
+     *
      * @param e {@link ArtifactContainer} that wraps this {@link Entry}.
      * @param f {@link File} representing this {@link ArtifactEntry} on disk.
      * @param r {@link FileContainer} representing the root of the heirarchy this Entry is part of.
@@ -46,7 +46,7 @@ public class FileEntry implements com.ibm.wsspi.artifact.ArtifactEntry {
         file = f;
         enclosingContainer = e;
         if (enclosingContainer == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Null enclosing container");
         }
         containerFactoryHolder = c;
         root = r;
@@ -59,7 +59,7 @@ public class FileEntry implements com.ibm.wsspi.artifact.ArtifactEntry {
 
     @Override
     public String getPath() {
-        //determine this Entries path by using path for the enclosing container & adding our name            
+        //determine this Entries path by using path for the enclosing container & adding our name
         String path = enclosingContainer.getPath();
         if (!path.equals("/")) {
             path += "/" + file.getName();
@@ -91,7 +91,7 @@ public class FileEntry implements com.ibm.wsspi.artifact.ArtifactEntry {
                 newCacheDir = root.getCacheDir();
             } else {
                 //use of substring 1 is ok here, because thisentry MUST be within a container, and the smallest path
-                //as container can have is "/", which is dealt with above, therefore, in this branch the relativeLocation MUST 
+                //as container can have is "/", which is dealt with above, therefore, in this branch the relativeLocation MUST
                 //be longer than "/"
                 newCacheDir = new File(root.getCacheDir(), relativeLocation.substring(1));
             }
@@ -146,13 +146,12 @@ public class FileEntry implements com.ibm.wsspi.artifact.ArtifactEntry {
     public URL getResource() {
         try {
             URL url = (URL) AccessController.doPrivileged(
-                            new PrivilegedExceptionAction() {
-                                @Override
-                                public URL run() throws MalformedURLException {
-                                    return file.toURI().toURL();
-                                }
-                            }
-                            );
+                                                          new PrivilegedExceptionAction() {
+                                                              @Override
+                                                              public URL run() throws MalformedURLException {
+                                                                  return file.toURI().toURL();
+                                                              }
+                                                          });
             return url;
         } catch (PrivilegedActionException e) {
             return null;
