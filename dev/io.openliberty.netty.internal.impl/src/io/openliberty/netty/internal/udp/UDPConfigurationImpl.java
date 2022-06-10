@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.FixedRecvByteBufAllocator;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.exception.NettyException;
@@ -88,7 +89,10 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "setting receive buffer to size " + getReceiveBufferSize());
             }
+            //SO_RCVBUF - size of buffer that holds the datagrams the client hasn't read yet
             bootstrap.option(ChannelOption.SO_RCVBUF, getReceiveBufferSize());
+            //set common RCVBUF_ALLOCATOR strategy 
+            bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(getReceiveBufferSize()));
         }
         if ((getSendBufferSize() >= UDPConfigConstants.SEND_BUFFER_SIZE_MIN)
                 && (getSendBufferSize() <= UDPConfigConstants.SEND_BUFFER_SIZE_MAX)) {

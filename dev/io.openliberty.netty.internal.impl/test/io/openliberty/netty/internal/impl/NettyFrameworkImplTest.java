@@ -47,7 +47,7 @@ import test.common.SharedOutputManager;
 public class NettyFrameworkImplTest {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance()
-            .trace("io.netty*=all:io.openliberty.netty*=all");
+            .trace(NettyConstants.NETTY_TRACE_STRING);
     private List<Channel> testChannels = null;
     NettyFrameworkImpl framework = null;
     Map<String, Object> options;

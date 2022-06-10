@@ -10,7 +10,9 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.udp;
 
+import java.net.Inet6Address;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -25,10 +27,11 @@ import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
+import io.openliberty.netty.internal.impl.NettyConstants;
 
 public class UDPUtils {
 
-    private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, UDPMessageConstants.NETTY_TRACE_NAME,
+    private static final TraceComponent tc = Tr.register(UDPUtils.class, UDPMessageConstants.NETTY_TRACE_NAME,
             UDPMessageConstants.UDP_BUNDLE);
 
     /**
@@ -68,6 +71,11 @@ public class UDPUtils {
     private static ChannelFuture bind(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
             int inetPort, final int retryCount, final int retryDelay, ChannelFutureListener bindListener) {
         ChannelFuture bindFuture = bootstrap.bind(inetHost, inetPort);
+        if (inetHost.equals("*")) {
+            inetHost = NettyConstants.INADDR_ANY;
+        }
+        final String newHost = inetHost;
+
         if (bindListener != null) {
             bindFuture.addListener(bindListener);
         }
@@ -85,18 +93,34 @@ public class UDPUtils {
 
                 // set common channel attrs
                 channel.attr(ConfigConstants.NameKey).set(config.getExternalName());
-                channel.attr(ConfigConstants.HostKey).set(inetHost);
+                channel.attr(ConfigConstants.HostKey).set(newHost);
                 channel.attr(ConfigConstants.PortKey).set(inetPort);
                 channel.attr(ConfigConstants.IsInboundKey).set(config.isInboundChannel());
+                
+                // set up a helpful log message
+                String hostLogString = newHost == NettyConstants.INADDR_ANY ? "*" : newHost;
+                SocketAddress addr = channel.localAddress();
+                InetSocketAddress inetAddr = (InetSocketAddress)addr;
+                String IPvType = "IPv4";
+                if (inetAddr.getAddress() instanceof Inet6Address) {
+                    IPvType = "IPv6";
+                }
+                if (newHost == NettyConstants.INADDR_ANY) {
+                    hostLogString = "*  (" + IPvType + ")";
+                } else {
+                    hostLogString = config.getHostname() + "  (" + IPvType + ": "
+                               + inetAddr.getAddress().getHostAddress() + ")";
+                }
+
 
                 if (config.isInboundChannel()) {
                     // UDP CWWKO0400I listening message
                     Tr.info(tc, UDPMessageConstants.UDP_CHANNEL_STARTED,
-                            new Object[] { config.getExternalName(), inetHost, String.valueOf(inetPort) });
+                            new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, UDPMessageConstants.UDP_CHANNEL_STARTED,
-                                new Object[] { config.getExternalName(), inetHost, String.valueOf(inetPort) });
+                                new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
                     }
                 }
             } else {
@@ -118,15 +142,15 @@ public class UDPUtils {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                     }
-                    bind(framework, bootstrap, inetHost, inetPort, retryCount - 1, retryDelay, bindListener);
+                    bind(framework, bootstrap, newHost, inetPort, retryCount - 1, retryDelay, bindListener);
                 } else {
                     if (config.isInboundChannel()) {
                         Tr.error(tc, UDPMessageConstants.BIND_FAILURE,
-                                new Object[] { channelName, inetHost, String.valueOf(inetPort) });
+                                new Object[] { channelName, newHost, String.valueOf(inetPort) });
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, UDPMessageConstants.BIND_FAILURE,
-                                    new Object[] { channelName, inetHost, String.valueOf(inetPort) });
+                                    new Object[] { channelName, newHost, String.valueOf(inetPort) });
                         }
                     }
                 }
@@ -185,16 +209,17 @@ public class UDPUtils {
                     InetSocketAddress address = null;
                     String newHost = inetHost;
                     if (newHost.equals("*")) {
-                        newHost = "0.0.0.0";
+                        newHost = NettyConstants.INADDR_ANY;
                     }
+                    String hostLogString = newHost == NettyConstants.INADDR_ANY ? "*" : newHost;
                     address = new InetSocketAddress(newHost, inetPort);
                     if (address.isUnresolved()) {
                         final String channelName = ((UDPConfigurationImpl) bootstrap.getConfiguration())
                                 .getExternalName();
                         Tr.error(tc, UDPMessageConstants.DNS_LOOKUP_FAILURE,
-                                new Object[] { channelName, newHost, String.valueOf(inetPort) });
+                                new Object[] { channelName, hostLogString, String.valueOf(inetPort) });
                         throw new NettyException(
-                                "local address unresolved for " + channelName + " - " + newHost + ":" + inetPort);
+                                "local address unresolved for " + channelName + " - " + hostLogString + ":" + inetPort);
                     }
 
                     return bind(framework, bootstrap, newHost, inetPort, bindRetryCount, bindRetryInterval,

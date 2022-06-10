@@ -36,6 +36,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
@@ -57,6 +58,7 @@ import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
+import com.ibm.websphere.channelfw.EndPointMgr;
 
 /**
  * Liberty NettyFramework implementation bundle
@@ -84,25 +86,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     private CHFWBundle chfw;
     private volatile boolean isActive = false;
 
-    /**
-     * DS method for setting the required channel framework service. For now this
-     * reference is needed for access to EndPointMgr. That code will be split out.
-     *
-     * @param bundle
-     */
-    @Reference(name = "chfwBundle")
-    protected void setChfwBundle(CHFWBundle bundle) {
-        chfw = bundle;
-    }
-
-    /**
-     * This is a required static reference, this won't be called until the component
-     * has been deactivated
-     *
-     * @param bundle CHFWBundle instance to unset
-     */
-    protected void unsetChfwBundle(CHFWBundle bundle) {
-    }
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> config) {
@@ -406,5 +389,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                 Tr.debug(tc, "unexpected channel type: " + channel);
             }
         }
+    }
+
+    @Override
+    public EndPointMgr getEndpointManager() {
+        return EndPointMgrImpl.getRef();
     }
 }

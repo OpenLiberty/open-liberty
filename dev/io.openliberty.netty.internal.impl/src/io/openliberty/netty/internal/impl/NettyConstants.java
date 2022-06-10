@@ -18,5 +18,9 @@ public interface NettyConstants {
     String BASE_BUNDLE = "io.openliberty.netty.internal.impl.resources.NettyFrameworkMessages";
     /** RAS trace group name */
     String NETTY_TRACE_NAME = "Netty";
+    /** default trace string */
+    String NETTY_TRACE_STRING = "io.netty*=all:io.openliberty.netty*=all"; 
+    /** INADDR_ANY host  */
+    String INADDR_ANY = "0.0.0.0";
 
 }

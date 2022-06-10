@@ -156,7 +156,7 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
         bootstrap.option(ChannelOption.SO_REUSEADDR, getSoReuseAddress());
     }
 
-    public AccessLists getAccessLists() {
+    public AddressAndHostNameAccessLists getAccessLists() {
         return accessLists;
     }
 
@@ -1326,5 +1326,53 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
     protected boolean getWaitToAccept() {
         return this.waitToAccept;
     }
+    /**
+     * A method that can be used to pull out an access list
+     * from a TCPChannelConfiguration
+     *
+     * @return an object that can provide the access lists
+     */
+    public AccessListKeysFacade accessListKeys() {
+        return new AccessListKeysProvider(this);
+    }
 
+    /**
+     * This class is used to protect consumers of the access list keys from having
+     * visibility of this class, it collects together the methods required by the
+     * common access lists code without that code having to know about this consuming
+     * type.
+     */
+    private class AccessListKeysProvider implements AccessListKeysFacade {
+
+        TCPConfigurationImpl delegate;
+
+        AccessListKeysProvider(TCPConfigurationImpl config) {
+            delegate = config;
+        }
+
+        @Override
+        public String[] getAddressExcludeList() {
+            return delegate.getAddressExcludeList();
+        }
+
+        @Override
+        public String[] getHostNameExcludeList() {
+            return delegate.getHostNameExcludeList();
+        }
+
+        @Override
+        public String[] getAddressIncludeList() {
+            return delegate.getAddressIncludeList();
+        }
+
+        @Override
+        public String[] getHostNameIncludeList() {
+            return delegate.getHostNameIncludeList();
+        }
+
+        @Override
+        public boolean getCaseInsensitiveHostnames() {
+            return delegate.getCaseInsensitiveHostnames();
+        }
+    }
 }

@@ -15,6 +15,8 @@ package io.openliberty.netty.internal;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.websphere.channelfw.EndPointMgr;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -147,5 +149,12 @@ public interface NettyFramework {
      * clean up the resources used framework
      */
     void destroy();
+
+    /**
+     * helper method for getting access to the EndPointMgr
+     *
+     * @return EndPointMgr
+     */
+    public EndPointMgr getEndpointManager();
 
 }
