@@ -6,13 +6,11 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oidcclientcore.internal.client;
 
 /**
- *
+ * @version 1.0.0
  */
-public class Client {
-
-}
+@org.osgi.annotation.versioning.Version("1.0.0")
+package io.openliberty.security.oidcclientcore.discovery;

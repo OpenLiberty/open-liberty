@@ -15,6 +15,9 @@ Bundle-Name: Security OIDC Client Core Internal
 Bundle-SymbolicName: io.openliberty.security.oidcclientcore.internal
 Bundle-Description: TODO
 
+-buildpath: \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
 Export-Package: \
-	io.openliberty.security.oidcclientcore.internal.discovery,\
-	io.openliberty.security.oidcclientcore.internal.client
+	io.openliberty.security.oidcclientcore.discovery,\
+	io.openliberty.security.oidcclientcore.client
