@@ -19,6 +19,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Repository;
@@ -58,6 +60,18 @@ public interface Reservations extends Repository<Reservation, Long> {
     AbstractCollection<Reservation> findByStopLessThanEqual(OffsetDateTime maxEndTime);
 
     AbstractList<Reservation> findByStopLessThanOrderByHostAscOrderByLocationDescOrderByStart(OffsetDateTime endBefore);
+
+    Stream<Reservation> findByStopOrStart(OffsetDateTime stop, OffsetDateTime start);
+
+    @Select("location")
+    Stream<String> findByStopOrStartOrStart(OffsetDateTime stop, OffsetDateTime start1, OffsetDateTime start2);
+
+    @Select("meetingID")
+    LongStream findByStopOrStartOrStartOrStart(OffsetDateTime stop, OffsetDateTime start1, OffsetDateTime start2, OffsetDateTime start3);
+
+    // Use a stream of record as the return type
+    @Select(type = ReservedTimeSlot.class, value = { "start", "stop" })
+    Stream<ReservedTimeSlot> findByStopOrStopOrStop(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
 
     // Use a record as the return type
     @Select({ "start", "stop" })

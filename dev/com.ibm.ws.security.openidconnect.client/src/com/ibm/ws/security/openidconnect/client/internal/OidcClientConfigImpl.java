@@ -84,7 +84,7 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
-import io.openliberty.security.oidcclientcore.internal.discovery.DiscoveryHandler;
+import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 
 /**
  * Process the OpenID Connect client entry in the server.xml file

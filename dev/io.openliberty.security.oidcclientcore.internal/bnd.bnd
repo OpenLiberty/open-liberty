@@ -11,11 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 11
-javac.target: 11
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
-
 Bundle-Name: Security OIDC Client Core Internal
 Bundle-SymbolicName: io.openliberty.security.oidcclientcore.internal
 Bundle-Description: TODO
@@ -24,10 +19,11 @@ Import-Package: \
     org.apache.http.*;resolution:=optional
 
 Export-Package: \
-	io.openliberty.security.oidcclientcore.internal.discovery,\
-	io.openliberty.security.oidcclientcore.internal.client
+	io.openliberty.security.oidcclientcore.discovery,\
+	io.openliberty.security.oidcclientcore.client
 	
 -buildpath: \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.common;version=latest,\
 	com.ibm.ws.org.apache.httpcomponents;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

@@ -8,11 +8,5 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oidcclientcore.internal.client;
-
-/**
- *
- */
-public class Client {
-
-}
+@org.osgi.annotation.versioning.Version("1.0")
+package com.ibm.ws.jsp.speclevel;

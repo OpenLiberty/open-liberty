@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oidcclientcore.internal.discovery;
+package io.openliberty.security.oidcclientcore.discovery;
 
 import javax.net.ssl.SSLSocketFactory;
 
