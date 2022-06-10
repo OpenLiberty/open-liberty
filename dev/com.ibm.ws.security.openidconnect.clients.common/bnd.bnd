@@ -82,7 +82,6 @@ Private-Package: \
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
-	io.openliberty.security.oidcclientcore.internal;version=latest,\
 	com.ibm.ws.config;version=latest
 
 -testpath: \
