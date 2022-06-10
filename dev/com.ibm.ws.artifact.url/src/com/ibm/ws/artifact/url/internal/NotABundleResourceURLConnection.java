@@ -48,7 +48,7 @@ public class NotABundleResourceURLConnection extends URLConnection {
         URL manifestKeyURL = owningBundle.getEntry(MANIFESTPATH);
         if (manifestKeyURL == null) {
             //'bundle' did not have a manifest.
-            throw new IllegalArgumentException(owningBundle.getSymbolicName());
+            throw new IllegalArgumentException("No manifest found in bundle [ " + owningBundle.getSymbolicName() + " ]");
         }
         String manifestKey = manifestKeyURL.toExternalForm();
         return manifestKey;
@@ -65,7 +65,7 @@ public class NotABundleResourceURLConnection extends URLConnection {
                         return new URL(PROTOCOL, urlToConvert.getHost(), urlToConvert.getPort(), urlToConvert.getFile());
                     } catch (MalformedURLException mue) {
                         //means the protocol handler has not been registered yet.
-                        //will not happen unless a developer breaks the bnd, eg by having one 
+                        //will not happen unless a developer breaks the bnd, eg by having one
                         //protocol name there, and another in this class, or by using the wrong
                         //service property when publishing.
                         throw new IllegalStateException(mue);
@@ -84,7 +84,7 @@ public class NotABundleResourceURLConnection extends URLConnection {
             return newURL;
         } catch (IllegalStateException ise) {
             //means the bundle is uninstalled.
-            //users should not be trying to use urls for uninstalled bundles.    
+            //users should not be trying to use urls for uninstalled bundles.
             //(it's pretty hard to get here, as the bundle throws ise itself on getEntry if uninstalled)
             throw ise;
         }
@@ -92,7 +92,7 @@ public class NotABundleResourceURLConnection extends URLConnection {
 
     public static void forgetBundle(Bundle owningBundle) {
         //This isn't the most optimised approach (which would use 2nd map to track the reverse lookups)
-        //but only gets driven at app stop.. 
+        //but only gets driven at app stop..
         String manifestKey = getManifestKeyForBundle(owningBundle);
         synchronized (delegates) {
             List<String> toRemove = new ArrayList<String>();
@@ -113,7 +113,8 @@ public class NotABundleResourceURLConnection extends URLConnection {
 
     /** {@inheritDoc} */
     @Override
-    public void connect() throws IOException { /* NO OP */}
+    public void connect() throws IOException {
+        /* NO OP */}
 
     /** {@inheritDoc} */
     @Override
@@ -126,13 +127,13 @@ public class NotABundleResourceURLConnection extends URLConnection {
                     return d.delegateURL.openStream();
                 }
                 //means somehow we got a null in our map for the given key,
-                //unexpected, and means the code is broken somehow. 
-                throw new IOException(new IllegalStateException("" + getURL()));
+                //unexpected, and means the code is broken somehow.
+                throw new IOException("Null delegate found for URL [ " + getURL() + " ]");
             }
         }
-        //we don't have a url to map to for this invocation. 
+        //we don't have a url to map to for this invocation.
         //can happen if the url is accessed after the source providing
         //bundle is uninstalled.
-        throw new FileNotFoundException("" + getURL());
+        throw new FileNotFoundException("No delegate found for URL [ " + getURL() + " ]");
     }
 }

@@ -32,19 +32,19 @@ public class DefaultArtifactNotification implements ArtifactNotification {
      * <li> !/META-INF <em>(the /META-INF directory and its immediate children)</em>
      * <li> !/ <em>(the container itself, and entries directly on its root.)</em>
      * </ul>
-     * 
-     * @param root the container to check the paths against. Must not be null.
+     *
+     * @param root  the container to check the paths against. Must not be null.
      * @param paths the collection of paths to check. Must not be null.
      * @throws IllegalArgumentException if either argument is null.
      */
     public DefaultArtifactNotification(ArtifactContainer root, Collection<String> paths) {
         super();
         if (root == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Null root");
         }
         this.root = root;
         if (paths == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Null paths");
         }
         this.paths = paths;
     }
