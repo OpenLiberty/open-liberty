@@ -146,6 +146,7 @@ jakarta.inject:jakarta.inject-api:2.0.1
 jakarta.interceptor:jakarta.interceptor-api:2.0.0
 jakarta.interceptor:jakarta.interceptor-api:2.1.0
 jakarta.jms:jakarta.jms-api:3.0.0
+jakarta.jms:jakarta.jms-api:3.1.0
 jakarta.json.bind:jakarta.json.bind-api:2.0.0
 jakarta.json:jakarta.json-api:2.0.0
 jakarta.json:jakarta.json-api:2.1.0
