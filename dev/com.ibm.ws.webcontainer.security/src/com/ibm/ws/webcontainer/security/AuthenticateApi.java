@@ -188,8 +188,8 @@ public class AuthenticateApi {
      */
     public void logout(HttpServletRequest req, HttpServletResponse res, WebAppSecurityConfig config) throws ServletException {
         // logout when the unprotectedResourceService(s) do
-        createSubjectAndPushItOnThreadAsNeeded(req, res);
         logoutUnprotectedResourceServiceRef(req, res);
+        createSubjectAndPushItOnThreadAsNeeded(req, res);
 
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subjectManager.getCallerSubject());
         JaspiService jaspiService = getJaspiService();
