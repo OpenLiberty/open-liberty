@@ -43,7 +43,8 @@ import componenttest.topology.impl.LibertyServer;
                 CheckpointSPITest.class,
                 MPConfigTest.class,
                 SSLTest.class,
-                MPOpenTracingJaegerTraceTest.class
+                MPOpenTracingJaegerTraceTest.class,
+                MPFaultToleranceTimeoutTest.class
 })
 public class FATSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {
