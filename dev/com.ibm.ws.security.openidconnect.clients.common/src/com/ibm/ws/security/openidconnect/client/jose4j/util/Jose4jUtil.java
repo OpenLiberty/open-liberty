@@ -281,7 +281,7 @@ public class Jose4jUtil {
 
             Jose4jValidator validator = new Jose4jValidator(key,
                     clientConfig.getClockSkewInSeconds(),
-                    new OIDCClientAuthenticatorUtil().getIssuerIdentifier(clientConfig),
+                    OIDCClientAuthenticatorUtil.getIssuerIdentifier(clientConfig),
                     clientConfig.getClientId(),
                     clientConfig.getSignatureAlgorithm(),
                     oidcClientRequest);

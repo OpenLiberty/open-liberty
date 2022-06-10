@@ -86,7 +86,7 @@ public class AuthorizationCodeHandler {
             oidcResult = new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
             return oidcResult;
         }
-        String redirect_url = authenticatorUtil.setRedirectUrlIfNotDefined(req, clientConfig);
+        String redirect_url = OIDCClientAuthenticatorUtil.setRedirectUrlIfNotDefined(req, clientConfig);
         if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, redirect_url)) {
             Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", redirect_url);
             oidcResult = new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);

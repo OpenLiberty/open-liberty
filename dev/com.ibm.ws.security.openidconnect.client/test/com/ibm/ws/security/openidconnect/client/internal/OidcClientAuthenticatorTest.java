@@ -973,7 +973,7 @@ public class OidcClientAuthenticatorTest {
                     will(returnValue(fullUrl));
                 }
             });
-            assertNotNull("Get an Result which is not right", OidcCAUtil.setRedirectUrlIfNotDefined(req, convClientConfig));
+            assertNotNull("Get an Result which is not right", OIDCClientAuthenticatorUtil.setRedirectUrlIfNotDefined(req, convClientConfig));
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1018,7 +1018,7 @@ public class OidcClientAuthenticatorTest {
                 }
             });
             commonAuthn.oidcClientUtil = oidcClientUtil;
-            String returnedUrl = OidcCAUtil.setRedirectUrlIfNotDefined(req, convClientConfig);
+            String returnedUrl = OIDCClientAuthenticatorUtil.setRedirectUrlIfNotDefined(req, convClientConfig);
             assertNotNull("Get an Result which is not right", returnedUrl);
 
         } catch (Throwable t) {

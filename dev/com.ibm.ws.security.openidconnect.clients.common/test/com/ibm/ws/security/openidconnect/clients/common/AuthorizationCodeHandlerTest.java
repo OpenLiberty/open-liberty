@@ -63,6 +63,7 @@ public class AuthorizationCodeHandlerTest {
 
     private static final String TEST_ORIGINAL_STATE = "orignalStateThatIsAtLeastAsLongAsRequired";
     private static final String TEST_URL = "http://harmonic.austin.ibm.com:8010/formlogin/SimpleServlet";
+    private static final String TEST_URL_HTTPS = "https://harmonic.austin.ibm.com:8020/formlogin/SimpleServlet";
     private static final String CLIENTID = "clientid";
     private static final String CLIENT01 = "client01";
     private static final String AUTHZ_CODE = "authorizaCodeAAA";
@@ -208,6 +209,7 @@ public class AuthorizationCodeHandlerTest {
     @Test
     public void testHandleAuthorizationCode_RedirectURLNotHttps() {
         final String originalState = TEST_ORIGINAL_STATE;
+        final String redirectUri = "http://1.2.3.4/oidcclient/redirect";
         mock.checking(new Expectations() {
             {
                 one(convClientConfig).getClientId();
@@ -215,13 +217,15 @@ public class AuthorizationCodeHandlerTest {
                 one(oidcClientAuthUtil).verifyResponseState(req, res, originalState, convClientConfig);
                 will(returnValue(null));
                 one(convClientConfig).getTokenEndpointUrl();
-                will(returnValue(TEST_URL));
-                one(convClientConfig).isHttpsRequired();
-                will(returnValue(false));
-                one(oidcClientAuthUtil).setRedirectUrlIfNotDefined(req, convClientConfig);
-                will(returnValue(TEST_URL));
-                one(convClientConfig).isHttpsRequired();
+                will(returnValue(TEST_URL_HTTPS));
+                allowing(convClientConfig).isHttpsRequired();
                 will(returnValue(true));
+                one(convClientConfig).isSocial();
+                will(returnValue(false));
+                one(convClientConfig).getRedirectUrlFromServerToClient();
+                will(returnValue(redirectUri));
+                one(convClientConfig).getRedirectUrlWithJunctionPath(redirectUri);
+                will(returnValue(redirectUri));
             }
         });
 
@@ -234,6 +238,7 @@ public class AuthorizationCodeHandlerTest {
     @Test
     public void testHandleAuthorizationCode_CatchSSLException() throws javax.net.ssl.SSLException {
         final String originalState = TEST_ORIGINAL_STATE;
+        final String redirectUri = "http://1.2.3.4/oidcclient/redirect";
         final String sslConfigName = "mySslConfig";
         mock.checking(new Expectations() {
             {
@@ -243,12 +248,14 @@ public class AuthorizationCodeHandlerTest {
                 will(returnValue(null));
                 allowing(convClientConfig).getTokenEndpointUrl();
                 will(returnValue(TEST_URL));
-                one(convClientConfig).isHttpsRequired();
+                allowing(convClientConfig).isHttpsRequired();
                 will(returnValue(false));
-                one(oidcClientAuthUtil).setRedirectUrlIfNotDefined(req, convClientConfig);
-                will(returnValue(TEST_URL));
-                one(convClientConfig).isHttpsRequired();
+                one(convClientConfig).isSocial();
                 will(returnValue(false));
+                one(convClientConfig).getRedirectUrlFromServerToClient();
+                will(returnValue(redirectUri));
+                one(convClientConfig).getRedirectUrlWithJunctionPath(redirectUri);
+                will(returnValue(redirectUri));
                 one(convClientConfig).getSSLConfigurationName();
                 will(returnValue(sslConfigName));
                 one(sslSupport).getSSLSocketFactory(sslConfigName);

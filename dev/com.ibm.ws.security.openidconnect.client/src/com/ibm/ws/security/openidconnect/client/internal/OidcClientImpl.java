@@ -1099,7 +1099,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     }
 
     /**
-     * @param res
+     * @param response
      * @param result
      */
     void handleOauthChallenge(HttpServletResponse rsp, ProviderAuthenticationResult oidcResult) {
