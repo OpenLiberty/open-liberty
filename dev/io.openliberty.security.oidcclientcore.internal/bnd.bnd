@@ -19,7 +19,3 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Bundle-Name: Security OIDC Client Core Internal
 Bundle-SymbolicName: io.openliberty.security.oidcclientcore.internal
 Bundle-Description: TODO
-
-Export-Package: \
-	io.openliberty.security.oidcclientcore.internal.discovery,\
-	io.openliberty.security.oidcclientcore.internal.client
