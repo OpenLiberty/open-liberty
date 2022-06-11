@@ -99,8 +99,9 @@ Export-Package: \
   org.apache.cxf.ws.addressing.v200408;version=${exportVer},\
   org.apache.cxf.ws.addressing.wsdl;version=${exportVer},\
   org.apache.cxf.wsdl.http;version=${exportVer},\
-  com.ibm.ws.cxf.client, \
-  com.ibm.ws.cxf.client.component
+  com.ibm.ws.cxf.client;version=2.0, \
+  com.ibm.ws.cxf.client.component;version=2.0
+
 
 Private-Package: \
   com.ibm.ws.cxf.core

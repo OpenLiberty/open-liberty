@@ -25,7 +25,7 @@ Import-Package: \
   org.apache.cxf.ws.policy.*;resolution:=optional, \
   org.apache.cxf.wsdl;resolution:=optional, \
   !org.osgi.service.blueprint.*,\
-  com.ibm.ws.cxf.client.*,\
+  com.ibm.ws.cxf.client.*;version="[2.0,2.1)",\
   *
 
 Service-Component: \

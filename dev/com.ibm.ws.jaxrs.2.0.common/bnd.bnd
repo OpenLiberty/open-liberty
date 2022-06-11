@@ -43,8 +43,8 @@ Export-Package: \
 	org.apache.cxf.feature,\
 	org.apache.cxf.jaxrs.client;version=3.1.18,\
     com.ibm.ws.cxf.exceptions;version=3.1.18,\
-    com.ibm.ws.cxf.client, \
-    com.ibm.ws.cxf.client.component
+    com.ibm.ws.cxf.client;version=1.0, \
+    com.ibm.ws.cxf.client.component;version=1.0
 
 Import-Package: \
  !com.wordnik.swagger.jaxrs.config, \

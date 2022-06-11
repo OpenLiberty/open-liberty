@@ -31,7 +31,7 @@ Import-Package: \
   com.ibm.wsspi.threadcontext, \
   org.osgi.framework, \
   org.osgi.service.component, \
-  com.ibm.ws.cxf.client
+  com.ibm.ws.cxf.client;version="[2.0,2.1)"
      
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\
