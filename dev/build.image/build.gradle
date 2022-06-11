@@ -76,6 +76,15 @@ task copyLicenseToBuildImage (type:Copy) {
            tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
 }
 
+task copyBetaLicenseToBuildImage (type:Copy) {
+    dependsOn jar
+    from project.file('publish')
+    into project.file('wlp')
+    include 'BETA_NOTICES'
+    filter(ReplaceTokens,
+           tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: libertyBeta])
+}
+
 task copySwidTagToBuildImage (type:Copy) {
     dependsOn jar
     from project.file('publish')
@@ -89,6 +98,7 @@ assemble {
     dependsOn copyPropertiesToBuildImage
     dependsOn addServiceFingerprint
     dependsOn copyReadmeToBuildImage
+    dependsOn copyBetaLicenseToBuildImage
     dependsOn copyLicenseToBuildImage
     dependsOn copySwidTagToBuildImage
 }
@@ -114,6 +124,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
     // list of base symbolic names (the feature name without the hyphen and version number).
     String packageServerConflict
     File outputTo
+    Boolean isBeta
 
     @TaskAction
     void buildPackage() {
@@ -162,13 +173,29 @@ class PackageLibertyWithFeatures extends DefaultTask {
                 into outputTo
             }
 
-            //Now add the LICENSE files
+            //Now add the LICENSE file
             project.copy {
                 from project.file('wlp')
                 include 'LICENSE'
-                include 'NOTICES'
                 into "$outputTo/wlp"
             }
+
+            if(isBeta) {
+                //Now add the BETA_NOTICES file
+                project.copy {
+                    from project.file('wlp')
+                    include 'BETA_NOTICES'
+                    into "$outputTo/wlp"
+                }
+            } else {
+                //Now add the NOTICES file
+                project.copy {
+                    from project.file('wlp')
+                    include 'NOTICES'
+                    into "$outputTo/wlp"
+                }
+            }
+
         } catch (all) {
             println "-- EXCEPTION PACKAGING SERVER --"
             println all
@@ -354,12 +381,14 @@ if (isAutomatedBuild && !isIFIXBuild) {
     task packageOpenLibertyBeta(type: PackageLibertyWithFeatures) {
         enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
+        dependsOn copyBetaLicenseToBuildImage
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&gaAndBetaPublicFeatures
         completeFeatureList = true
         outputTo packageDir
+        isBeta = true
         doLast {
-            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+            ["$packageDir/wlp/BETA_NOTICES","$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
                 replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
             }
         }
