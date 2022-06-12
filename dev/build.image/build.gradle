@@ -89,21 +89,21 @@ task copySwidTagToBuildImage (type:Copy) {
     dependsOn jar
     from project.file('publish')
     into project.file('wlp/lib/versions/tags')
-    include 'ibm.com_Open_Liberty-22.*.swidtag'
+    include 'ibm.com_Open_Liberty-*.swidtag'
     filter(ReplaceTokens,
-           tokens: [VERSION: bnd.libertyRelease ])
+           tokens: [ VERSION: bnd.libertyRelease ])
 }
 
 task copySwidFixpackTagToBuildImage (type:Copy) {
     dependsOn jar
     from project.file('publish')
     into project.file('wlp/lib/versions/tags')
-    include 'ibm.com_Open_Liberty-release.swidtag'
+    include 'ibm.com_Open_Liberty_release.swidtag'
     rename { filename ->
-        filename.replace("release", bnd.libertyRelease)
+        filename.replace("_release", "-" + bnd.libertyRelease)
     }
     filter(ReplaceTokens,
-           tokens: [PRODUCT_VERSION: bnd.libertyRelease, PRODUCT_EDITION: bnd.productEdition])
+           tokens: [PRODUCT_VERSION: bnd.libertyRelease])
 }
 
 assemble { 
