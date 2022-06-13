@@ -40,7 +40,7 @@ import componenttest.topology.utils.HttpUtils;
  * This test class ensures that stack traces are written as single events
  */
 @RunWith(FATRunner.class)
-public class StackTraceJoinerTest {
+public class StackJoinerTest {
 
     @Server("com.ibm.ws.logging.stackjoiner.eventSizeThreshold")
     public static LibertyServer eventSizeThresholdServer;

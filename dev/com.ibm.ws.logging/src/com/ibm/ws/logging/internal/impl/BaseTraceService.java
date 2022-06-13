@@ -281,7 +281,7 @@ public class BaseTraceService implements TrService {
     };
 
     protected final static int BYTE_ARRAY_OUTPUT_BUFFER_THRESHOLD = ThreadLocalByteArrayOutputStream.getByteArrayOutputThreshold();
-    public static boolean isStackJoinEnabled = false;
+    public static boolean isStackTraceSingleEntryEnabled = false;
 
     /**
      * Called from Tr.getDelegate when BaseTraceService delegate is created
@@ -426,7 +426,7 @@ public class BaseTraceService implements TrService {
         /**
          * Retrieve the format setting for our stack traces
          */
-        isStackJoinEnabled = trConfig.isStackJoin();
+        isStackTraceSingleEntryEnabled = trConfig.isStackTraceSingleEntry();
 
         //Retrieve the source lists of both message and console
         List<String> messageSourceList = new ArrayList<String>(trConfig.getMessageSource());

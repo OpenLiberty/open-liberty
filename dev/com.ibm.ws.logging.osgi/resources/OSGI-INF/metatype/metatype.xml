@@ -84,9 +84,9 @@
             ibm:variable="com.ibm.ws.logging.isoDateFormat"
             id="isoDateFormat" required="false" type="Boolean" default="false" />
         
-        <AD name="%stackJoin" description="%stackJoin.desc"
-            ibm:variable="com.ibm.ws.logging.stackJoin"
-            id="stackJoin" required="false" type="Boolean" default="false" ibm:beta="true"/>
+        <AD name="%stackTraceSingleEntry" description="%stackTraceSingleEntry.desc"
+            ibm:variable="com.ibm.ws.logging.stackTraceSingleEntry"
+            id="stackTraceSingleEntry" required="false" type="Boolean" default="false" ibm:beta="true"/>
             
         <AD name="%console.level" description="%console.level.desc" 
             ibm:variable="com.ibm.ws.logging.console.log.level"
