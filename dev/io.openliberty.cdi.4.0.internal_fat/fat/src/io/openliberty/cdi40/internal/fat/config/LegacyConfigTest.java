@@ -90,7 +90,7 @@ public class LegacyConfigTest extends FATServletClient {
     @Test
     public void testUnversionedBeansXmlWarning() throws Exception {
         //check for a warning message about a non-empty unversioned beans.xml file
-        List<String> warningMessages = server.findStringsInLogs("CWOWB1018W: .*[wsjar:file:.*" + LEGACY_BEANS10_APP_NAME + ".war!/WEB-INF/beans.xml]");
+        List<String> warningMessages = server.findStringsInLogs("CWOWB1018W: .*wsjar:file:.*" + LEGACY_BEANS10_APP_NAME + ".war!/WEB-INF/beans.xml");
         assertTrue("Message CWOWB1018W not found", warningMessages.size() > 0);
         assertEquals("Message CWOWB1018W was found more than once", 1, warningMessages.size());
 

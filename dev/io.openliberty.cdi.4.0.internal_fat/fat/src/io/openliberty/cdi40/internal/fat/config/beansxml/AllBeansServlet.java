@@ -33,5 +33,8 @@ public class AllBeansServlet extends FATServlet {
     public void testAllBeansInjected() {
         assertNotNull(requestScopedBean);
         assertEquals("RequestScopedBean", requestScopedBean.test());
+
+        assertNotNull(unannotatedBean);
+        assertEquals("UnannotatedBean", unannotatedBean.test());
     }
 }
