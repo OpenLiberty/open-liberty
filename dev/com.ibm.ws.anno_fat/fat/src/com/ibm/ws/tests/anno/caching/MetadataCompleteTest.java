@@ -36,6 +36,7 @@ public class MetadataCompleteTest extends AnnoCachingTest {
 
         setEarName(EAR_NAME);
         addToAppsDir( createApp() );
+        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("TestServlet40");
         installServerXml("jandexDefaultsAutoExpandTrue_server.xml");  
 
         LOG.info("setUp: RETURN");
