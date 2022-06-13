@@ -88,6 +88,7 @@ public class CacheConfigUtil {
      */
     public URI preConfigureCacheManager(URI configuredUri, CachingProvider cachingProvider, Properties properties) throws IOException {
 
+        URI uriToReturn = null;
         switch (cachingProvider.getClass().getName()) {
 
             case INFINISPAN_EMBEDDED_PROVIDER:
@@ -96,7 +97,8 @@ public class CacheConfigUtil {
                  * names used by HTTP Session Persistence, or create a new config file if absent
                  * altogether.
                  */
-                return generateOrUpdateInfinispanConfig(configuredUri);
+                uriToReturn = generateOrUpdateInfinispanConfig(configuredUri);
+                break;
 
             case INFINISPAN_REMOTE_PROVIDER:
 
@@ -122,12 +124,18 @@ public class CacheConfigUtil {
                     properties.put("infinispan.client.hotrod.cache.[com.ibm.ws.session.*].template_name",
                                    "org.infinispan.REPL_SYNC");
                 }
-                return configuredUri;
+                uriToReturn = configuredUri;
+                break;
 
             default:
-                return configuredUri;
-
+                uriToReturn = configuredUri;
+                break;
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "The following properties will be configured for Infinispan: " + properties);
+        }
+        return uriToReturn;
     }
 
     /**

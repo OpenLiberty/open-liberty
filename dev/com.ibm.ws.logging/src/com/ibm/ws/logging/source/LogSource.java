@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -182,13 +182,18 @@ public class LogSource implements Source {
         Throwable thrown = logRecord.getThrown();
         if (thrown != null) {
             String stackTrace = DataFormatHelper.throwableToString(thrown);
-            logData.setThrowable(stackTrace);
+            logData.setStackTrace(stackTrace);
 
             String s = thrown.getLocalizedMessage();
             if (s == null) {
                 s = thrown.toString();
             }
-            logData.setThrowableLocalized(s);
+            logData.setStackTraceLocalized(s);
+
+            String exceptionName = thrown.getClass().getName();
+            if (exceptionName != null) {
+                logData.setExceptionName(exceptionName);
+            }
         }
 
         logData.setMessage(messageVal);

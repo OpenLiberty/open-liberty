@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.Machine;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -54,6 +55,7 @@ public class FATSuite {
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         TestPluginHelper.setTestPlugin(new HazelcastTestPlugin());
 
         /*

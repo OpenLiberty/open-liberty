@@ -63,7 +63,7 @@ public class WSTestPrincipal implements Principal, Serializable {
     public WSTestPrincipal(String securityName, String accessId, String authMethod) {
         if (securityName == null || securityName.isEmpty() ||
             authMethod == null || authMethod.isEmpty()) {
-            throw new IllegalArgumentException("Sanity check, null / empty values are invalid here");
+            throw new IllegalArgumentException("Check, null / empty values are invalid here");
         }
         this.securityName = securityName;
         this.accessId = accessId;

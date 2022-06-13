@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -174,7 +175,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 
         // replace the server.xml and install from server.xml now
         copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/autoFeatureServerXml/server.xml");
-        String[] param2s = { "installServerFeatures", "serverX"};
+        String[] param2s = { "installServerFeatures", "serverX", "--verbose"};
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
 
@@ -378,19 +379,21 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "test.featuresBOM",
 				"com.ibm.ws.userFeature:features-bom:19.0.0.8");
-		writeToProps(minifiedRoot + "/etc/server.env", "WLP_USER_DIR", minifiedRoot + "/myUserDir");
+
+		Properties envProps = new Properties();
+		envProps.put("WLP_USER_DIR", minifiedRoot + "/myUserDir");
 
 		String[] filesList = { "myUserDir/extension/lib/features/testesa1.mf", "myUserDir/extension/bin/testesa1.bat" };
 
 		String[] param1s = { "installServerFeatures", "serverX", "--verbose" };
-		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s, envProps);
 		String output = po.getStdout();
 
 		assertFilesExist(filesList);
 		assertTrue("Should contain testesa1", output.contains("testesa1"));
 
 		// run isf command again
-		po = runFeatureUtility(METHOD_NAME, param1s);
+		po = runFeatureUtility(METHOD_NAME, param1s, envProps);
 		output = po.getStdout();
 		assertTrue("Should contain \"No features were installed\"", output.contains("No features were installed"));
 

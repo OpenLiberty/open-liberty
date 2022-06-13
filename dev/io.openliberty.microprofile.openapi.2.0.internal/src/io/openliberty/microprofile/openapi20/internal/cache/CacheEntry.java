@@ -197,7 +197,7 @@ public class CacheEntry {
         }
         Objects.requireNonNull(current, "cache entry for current state must be given");
 
-        // sanity check the app name
+        // verify the app name
         if (!Objects.equals(appName, current.appName)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Cache out of date because app name is not the same?!", appName, current.appName);

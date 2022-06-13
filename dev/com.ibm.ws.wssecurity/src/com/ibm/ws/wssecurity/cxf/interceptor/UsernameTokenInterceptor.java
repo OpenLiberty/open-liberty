@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.message.MessageUtils;
+import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.security.SecurityConstants;
@@ -53,6 +54,11 @@ public class UsernameTokenInterceptor extends org.apache.cxf.ws.security.wss4j.U
                                                            WSSecurityConstants.TR_GROUP,
                                                            WSSecurityConstants.TR_RESOURCE_BUNDLE);
 
+    public UsernameTokenInterceptor() {
+        super();
+        addBefore(WSSecurityLibertyCallerInterceptor.class.getName());
+    }
+    
     @Override
     protected WSUsernameTokenPrincipal getPrincipal(@Sensitive Element tokenElement, @Sensitive final SoapMessage message)
                     throws WSSecurityException {

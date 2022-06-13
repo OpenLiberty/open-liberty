@@ -44,7 +44,7 @@
     <!-- Attribute Release configuration -->
 
     <!--
-    Attribute release whitelist, blacklist, and match expressions to determine 
+    Attribute release attribute IDs restrictions (allowing/blocking lists), and match expressions to determine 
     whether consent should be obtained for an attribute based on the attribute ID.
     -->
     

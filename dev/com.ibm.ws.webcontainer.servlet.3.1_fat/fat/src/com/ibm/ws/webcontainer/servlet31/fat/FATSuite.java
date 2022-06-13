@@ -41,6 +41,7 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerTest;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 
 /**
  * Servlet 3.1 Tests with repeat for Servlet 4.0
@@ -79,10 +80,21 @@ public class FATSuite {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES());
+    public static RepeatTests repeat;
+
+    static {
+        // EE10 require Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
+        // If we are running on Java 8 have EE9 be the lite mode test to run.
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE10_FEATURES());
+        } else {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE9_FEATURES());
+        }
+    }
 
 }

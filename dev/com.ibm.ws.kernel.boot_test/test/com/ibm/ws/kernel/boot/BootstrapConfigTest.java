@@ -724,7 +724,7 @@ public class BootstrapConfigTest {
             // Invoke configure with property indicating that the server should be created
             bc.verifyProcess(VerifyServer.CREATE, null);
 
-            //Sanity check that a server was created
+            //Test that a server was created
             assertTrue("new server should have been created", newServerDir.exists() && newServerDir.isDirectory());
             assertEquals("intended server should be created", newServerDir.getCanonicalFile(), bc.configDir.getCanonicalFile());
 
@@ -777,7 +777,7 @@ public class BootstrapConfigTest {
             // Invoke configure with property indicating that the server should be created
             bc.verifyProcess(VerifyServer.CREATE, null);
 
-            //Sanity check that a server was created
+            //Test that a server was created
             assertTrue("new server should have been created", newServerDir.exists() && newServerDir.isDirectory());
             assertEquals("intended server should be created", newServerDir.getCanonicalFile(), bc.configDir.getCanonicalFile());
 
@@ -907,7 +907,7 @@ public class BootstrapConfigTest {
             }
         }
 
-        // sanity check the calculated directories
+        // Test the calculated directories
         assertEquals(bc.outputDir, bc.workarea.getParentFile());
     }
 

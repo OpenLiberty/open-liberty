@@ -2417,7 +2417,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      * @param {Object} src the source map
      * @param {boolean} overwrite if set to true the destination is overwritten if the keys exist in both maps
      **/
-    mixMaps:function (dest, src, overwrite, blockFilter, whitelistFilter) {
+    mixMaps:function (dest, src, overwrite, blockFilter, allowlistFilter) {
         if (!dest || !src) {
             throw this.makeException(new Error(), null, null, this._nameSpace, "mixMaps", this.getMessage("ERR_PARAM_MIXMAPS", null, "_Lang.mixMaps"));
         }
@@ -2427,7 +2427,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
             if (blockFilter && blockFilter[key]) {
                 continue;
             }
-            if (whitelistFilter && !whitelistFilter[key]) {
+            if (allowlistFilter && !allowlistFilter[key]) {
                 continue;
             }
             if (!overwrite) {

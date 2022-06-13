@@ -65,7 +65,7 @@ public interface JMFMessageData {
    * elements of the <b>JMFList</b> are accessed.
    * @exception JMFMessageCorruptionException if the message was found to be corrupted.
    * The formatting service does not guarantee that all forms of message corruption will
-   * be detected but it makes an effort to sanity-check messages received from remote
+   * be detected but it makes an effort to validate messages received from remote
    * systems.  True message integrity protection is the responsibility of a security
    * layer.
    * @exception JMFModelNotImplementedException if the field is a JMFDynamicType field

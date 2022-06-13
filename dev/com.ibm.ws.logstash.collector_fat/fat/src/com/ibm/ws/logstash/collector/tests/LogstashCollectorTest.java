@@ -100,6 +100,19 @@ public abstract class LogstashCollectorTest {
         runApp(url);
     }
 
+    protected void createMessageEventWithException(String id) {
+        String url = getAppUrl() + "/ExceptionURL";
+        if (id != null) {
+            try {
+                url = url + "?id=" + URLEncoder.encode(id, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                Log.error(c, "createMessageEventWithException", e);
+                e.printStackTrace();
+            }
+        }
+        runApp(url);
+    }
+
     protected void createAccessLogEvent() {
         createAccessLogEvent(null);
     }

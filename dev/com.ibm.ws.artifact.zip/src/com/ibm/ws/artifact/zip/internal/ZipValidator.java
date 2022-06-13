@@ -11,7 +11,7 @@
  *
  * The purpose of this class is to test if a Java archive is valid without actually reading the entire JAR.
  * This is especially useful in cases where the archive has a script attached at the front of the file.
- * Of course, this is more of a sanity check than a rigorous validation, which would require reading the whole file.
+ * Of course, this is more of a check than a rigorous validation, which would require reading the whole file.
  * 
  *     [ script ]                   <---- start of file  (optional)
  *     [ local file header 1 ]      <---- actual start of archive

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -441,7 +441,7 @@ public class BaseTraceFormatter extends Formatter {
                     message = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.LEVELVALUE)) {
                     levelValue = kvp.getIntValue();
-                } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE_LOCALIZED)) {
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_STACKTRACE_LOCALIZED)) {
                     throwable = kvp.getStringValue();
                 }
             }
@@ -528,7 +528,7 @@ public class BaseTraceFormatter extends Formatter {
                     loggerName = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_CLASSNAME)) {
                     srcClassName = kvp.getStringValue();
-                } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE)) {
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_STACKTRACE)) {
                     throwable = kvp.getStringValue();
                 }
 
@@ -586,7 +586,7 @@ public class BaseTraceFormatter extends Formatter {
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_CLASSNAME)) {
                     extendedClassName = kvp.getStringValue();
                     srcClassName = fixedClassString(extendedClassName, basicNameLength);
-                } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE)) {
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_STACKTRACE)) {
                     throwable = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_METHODNAME)) {
                     methodName = kvp.getStringValue();
@@ -804,7 +804,7 @@ public class BaseTraceFormatter extends Formatter {
                     threadName = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.LEVELVALUE)) {
                     levelVal = kvp.getIntValue();
-                } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE)) {
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_STACKTRACE)) {
                     stackTrace = kvp.getStringValue();
                 }
 

@@ -267,7 +267,7 @@ public class RemotePubSubSupport extends AbstractRemoteSupport
     {
       // NOTE: since this destination is PubSub it should NOT be
       // possible to end up recovering an aostream used for PtoP.
-      // Still, bugs happen, so here's a sanity check
+      // Still, bugs happen, so here's a validation
       if (aoTempItemStream.getDurablePseudoDestID() == null)
       {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -458,7 +458,7 @@ public class RemotePubSubSupport extends AbstractRemoteSupport
     {
       // NOTE: since this destination is PubSub it should NOT be
       // possible to end up recovering an aistream used for PtoP.
-      // Still, bugs happen, so here's a sanity check
+      // Still, bugs happen, so here's a validation
       if ((aiTempItemStream.getDurablePseudoDestID() == null))
       {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

@@ -286,7 +286,7 @@ public final class JSVariant extends JSField implements JMFVariantType {
   public Object decode(byte[] frame, int offset, int indirect, JMFMessageData msg)
       throws JMFMessageCorruptionException {
     int length = ArrayUtil.readInt(frame, offset);
-    JSListCoder.sanityCheck(length, frame, offset);
+    JSListCoder.evaluateMessageLength(length, frame, offset);
     return new JSMessageImpl(boxed, frame, offset + 4, length, false);
   }
 

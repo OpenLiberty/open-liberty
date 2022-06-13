@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 
+import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.ws.app.manager.internal.AppManagerConstants;
 
 @Component(service = ApplicationManager.class,
@@ -42,6 +43,24 @@ public class ApplicationManager {
 
     private File extractedLog;
     private final ConcurrentMap<String, ExtractedLogData> extractsDataLog = new ConcurrentHashMap<>();
+
+    /* Name to use as an extension key for the application name */
+    private final static String APPNAME_KEY = "appName";
+
+    /* LogRecordContext callback to retrieve application name */
+    private final static LogRecordContext.Extension APPNAME_CALLBACK = new LogRecordContext.Extension() {
+        @Override
+        public String getValue() {
+            com.ibm.ws.runtime.metadata.ComponentMetaData metaData = com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            if (metaData != null) {
+                com.ibm.websphere.csi.J2EEName name = metaData.getJ2EEName();
+                if (name != null) {
+                    return name.getApplication();
+                }
+            }
+            return null;
+        }
+    };
 
     protected void activate(ComponentContext compcontext, Map<String, Object> properties) {
         modified(compcontext, properties);
@@ -65,6 +84,9 @@ public class ApplicationManager {
                 extractedLog.delete();
             }
         }
+
+        // Register the appName as a LogRecordContext Extension
+        LogRecordContext.registerExtension(APPNAME_KEY, APPNAME_CALLBACK);
     }
 
     /**
@@ -91,13 +113,16 @@ public class ApplicationManager {
         } else if (extractedLog.exists()) {
             extractedLog.delete(); // attempt to delete since we aren't running expanded apps.
         }
+
+        // De-register the appName as a LogRecordContext Extension
+        LogRecordContext.unregisterExtension(APPNAME_KEY);
     }
 
     /**
      * DS method to modify the configuration of this component
      *
      * @param compcontext the context of this component
-     * @param properties the updated configuration properties
+     * @param properties  the updated configuration properties
      */
     @Modified
     protected void modified(ComponentContext compcontext, Map<String, Object> properties) {

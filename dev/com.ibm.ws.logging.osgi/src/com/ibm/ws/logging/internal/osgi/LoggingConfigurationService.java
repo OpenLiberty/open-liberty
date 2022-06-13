@@ -139,8 +139,9 @@ public class LoggingConfigurationService implements ManagedService {
             configureLoggerAdmin();
 
         }
-        
-        STACK_JOINER_MGR.resolveStackJoinFeature(newMap);
+        if (ProductInfo.getBetaEdition()) {
+            STACK_JOINER_MGR.resolveStackJoinFeature(newMap);
+        }
     }
 
     private void configureLoggerAdmin() {

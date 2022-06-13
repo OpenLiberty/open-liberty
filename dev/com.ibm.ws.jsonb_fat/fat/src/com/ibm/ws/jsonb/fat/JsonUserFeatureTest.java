@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,23 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
-import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON;
-import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON_JSONP;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_YASSON;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -39,9 +34,6 @@ import componenttest.topology.utils.FATServletClient;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@SkipForRepeat(EE9_FEATURES)
-//Skipping the test class for jakartaee testing since it is beyond the scope of what is needed
-//TODO for jakartaee testing: Transform the johnzon jars in AUTO_FVT/publish/shared/resources folder, solve the classloader problems with yasson and jonhzon provider impls
 public class JsonUserFeatureTest extends FATServletClient {
 
     @Server("com.ibm.ws.jsonp.container.userfeature.fat")
@@ -49,12 +41,17 @@ public class JsonUserFeatureTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        Log.info(JsonUserFeatureTest.class, "setUp", "=====> Start JsonUserFeatureTest");
+
+        FATSuite.configureImpls(server);
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("CWWKE0700W: .*ServiceThatRequiresJson"); // Sometimes DS reports this warning when it attempts to get the ref, but ultimately the svc component activates successfully
+
+        Log.info(JsonUserFeatureTest.class, "tearDown", "<===== Stop JsonUserFeatureTest");
     }
 
     // Test a user feature with a service component that injects JsonProvider (from the bell)
@@ -64,7 +61,7 @@ public class JsonUserFeatureTest extends FATServletClient {
         String found;
         server.resetLogMarks();
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST3: JsonProvider obtained from declarative services"));
-        assertTrue(found, found.contains(PROVIDER_JOHNZON_JSONP));
+        assertTrue(found, found.contains(FATSuite.getJsonpProviderClassName()));
 
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST4"));
         assertTrue(found, found.contains("\"weight\""));
@@ -73,30 +70,19 @@ public class JsonUserFeatureTest extends FATServletClient {
 
     @Test
     public void testJsonbFromUserFeature() throws Exception {
-        // Add the jsonb user feature, which will make 'ServiceThatRequiresJsonb' activate
-        server.setMarkToEndOfLog();
-        ServerConfiguration config = server.getServerConfiguration();
-        config.getFeatureManager().getFeatures().add("usr:testFeatureUsingJsonb-1.0");
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.emptySet());
-
         // Scrape messages.log to verify that 'ServiceThatRequiresJsonb' has activated
         // using Johnzon for jsonp and Yasson for jsonb
         String found;
+        server.resetLogMarks();
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST1: JsonbProvider obtained from declarative services"));
-        assertTrue(found, found.contains(PROVIDER_JOHNZON)); // TODO: once https://github.com/eclipse-ee4j/jsonp/issues/78 is resolved, switch back to Yasson
+        assertTrue(found, found.contains(PROVIDER_YASSON));
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST1.1: JsonProvider obtained from declarative services"));
-        assertTrue(found, found.contains(PROVIDER_JOHNZON_JSONP));
+        assertTrue(found, found.contains(FATSuite.getJsonpProviderClassName()));
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST2"));
         assertTrue(found, found.contains("success"));
         assertTrue(found, found.contains("\"Rochester\""));
         assertTrue(found, found.contains("\"Minnesota\""));
         assertTrue(found, found.contains("55901"));
         assertTrue(found, found.contains("410"));
-
-        // Clean up the test by removing the jsonb-1.0 feature
-        config.getFeatureManager().getFeatures().remove("usr:testFeatureUsingJsonb-1.0");
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.emptySet());
     }
 }

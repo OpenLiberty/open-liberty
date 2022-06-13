@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -547,7 +547,7 @@ public class SelectionPageGenerator {
         // body
         css.append("body {");
         css.append("background-color: #152935;");
-        css.append("font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;");
+        css.append("font-family: 'IBM Plex Sans Regular', Helvetica, Arial, sans-serif;");
         css.append("}\n");
         // .container
         css.append("." + HTML_CLASS_CONTAINER + " {");

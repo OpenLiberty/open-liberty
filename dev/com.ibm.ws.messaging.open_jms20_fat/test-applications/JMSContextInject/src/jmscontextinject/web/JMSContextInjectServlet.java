@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,16 +10,26 @@
  *******************************************************************************/
 package jmscontextinject.web;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+
+import componenttest.annotation.SkipForRepeat;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.jms.IllegalStateRuntimeException;
+import javax.jms.JMSException;
 import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
@@ -41,6 +51,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import jmscontextinject.ejb.SampleSecureStatelessBean;
+import jmscontextinject.ejb.JMSDefinitionBean;
 
 @SuppressWarnings("serial")
 public class JMSContextInjectServlet extends HttpServlet {
@@ -49,6 +60,19 @@ public class JMSContextInjectServlet extends HttpServlet {
     public static QueueConnectionFactory jmsQCFTCP;
     public static Queue jmsQueue;
 
+    /** @return the methodName of the caller. */
+    private final static String methodName() { return new Exception().getStackTrace()[1].getMethodName(); }
+    
+    private final class TestException extends Exception {
+        TestException(String message) {
+            super(timeStamp() +" "+message);
+        }
+    }
+    
+    // The current time, formatted with millisecond resolution.
+    private static final SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z");
+    private static final String timeStamp() { return timeStampFormat.format(new Date());}
+    
     @Override
     public void init() throws ServletException {
         super.init();
@@ -132,6 +156,9 @@ public class JMSContextInjectServlet extends HttpServlet {
 
     @EJB
     SampleSecureStatelessBean statelessBean;
+    
+    @EJB
+    JMSDefinitionBean jmsDefinitionBean;
 
     //
 
@@ -695,4 +722,25 @@ public class JMSContextInjectServlet extends HttpServlet {
             throw new Exception("Sent message text [ " + msgOutText + " ] was received as [ " + msgInText + " ]");
         }
     }
+    
+    @TransactionAttribute(value = TransactionAttributeType.REQUIRED)
+    public void testJMSDefinitionAnnotations(HttpServletRequest request, HttpServletResponse response) 
+        throws JMSException, TestException {
+       
+        if ( jmsDefinitionBean == null ) {
+            throw new TestException("Failed injection of JMSBDefinition EJB");
+        }
+        
+        String sentMessageText = methodName()+" at " + timeStamp();
+        jmsDefinitionBean.sendMessage( sentMessageText );
+
+        JMSConsumer jmsConsumer = jmsContextQueue.createConsumer(jmsQueue);
+        TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(500);
+        if (receivedMessage == null)
+            throw new TestException("No message received, sentMessageText:" + sentMessageText);
+        if (!receivedMessage.getText().equals(sentMessageText))
+            throw new TestException("Wrong message received, receivedMessage:" + receivedMessage + " sentMessageText:" + sentMessageText);
+
+    }
+    
 }

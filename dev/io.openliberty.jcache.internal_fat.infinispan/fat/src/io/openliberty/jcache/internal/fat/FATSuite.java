@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.Machine;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -43,7 +44,10 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
                 JCacheOauth20AuthenticationCacheTest.class,
                 JCacheOidcClientAuthenticationCacheTest.class,
                 JCacheOidcLoginAuthenticationCacheTest.class,
-                JCacheProviderInAppTest.class
+                JCacheProviderInAppTest.class,
+                JCacheLtpaLoggedOutCookieCacheServerRestartTest.class,
+                JCacheDynamicUpdateTest.class,
+                JCacheAuthenticationCacheServerRestartTest.class
 })
 public class FATSuite {
 
@@ -59,6 +63,7 @@ public class FATSuite {
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         TestPluginHelper.setTestPlugin(new InfinispanTestPlugin());
 
         /*

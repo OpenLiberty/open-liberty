@@ -452,10 +452,9 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             }
 
             keyManagerFactory = getKeyManagerFactoryInstance(keyMgr, ctxtProvider);
-            String kspass = wsks.getPassword();
-            if (!kspass.isEmpty()) {
+            SerializableProtectedString keypass = wsks.getKeyPassword();
+            if (keypass != null && !keypass.isEmpty()) {
                 try {
-                    SerializableProtectedString keypass = wsks.getKeyPassword();
                     String decodedPass = WSKeyStore.decodePassword(new String(keypass.getChars()));
                     synchronized (_lockObj) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -475,7 +474,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
                 }
 
                 // Initialize the SSL context with the key and trust manager factories.
-                WSX509KeyManager wsKeyManager = new WSX509KeyManager(keyStore, kspass.toCharArray(), keyManagerFactory, sslConfig, null);
+                WSX509KeyManager wsKeyManager = new WSX509KeyManager(keyStore, null, keyManagerFactory, sslConfig, null);
 
                 if (serverAliasName != null && serverAliasName.length() > 0)
                     wsKeyManager.setServerAlias(serverAliasName);

@@ -44,12 +44,15 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.containers.SimpleLogConsumer;
+
 /**
  * See the following link for details on the infinispan/server image.
  *
  * https://github.com/infinispan/infinispan-images.
  */
 public class InfinispanContainer extends GenericContainer<InfinispanContainer> {
+    private Class<?> CLASS = InfinispanContainer.class;
 
     /*
      * The version should match that used in the build.gradle file.
@@ -79,7 +82,7 @@ public class InfinispanContainer extends GenericContainer<InfinispanContainer> {
         withEnv("PASS", ADMIN_PASS);
         withStartupTimeout(Duration.ofMillis(20000));
         waitingFor(new LogMessageWaitStrategy().withRegEx(".*Infinispan Server.*started in.*\\s"));
-        withLogConsumer(o -> System.out.print("[INFINISPAN] " + o.getUtf8String()));
+        withLogConsumer(new SimpleLogConsumer(CLASS, "INFINISPAN"));
         withExposedPorts(INFINISPAN_PORT);
     }
 

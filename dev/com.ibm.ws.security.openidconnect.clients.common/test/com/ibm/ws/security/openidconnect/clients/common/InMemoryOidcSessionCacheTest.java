@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -17,10 +17,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- */
 public class InMemoryOidcSessionCacheTest {
+
+    private final String issuer = "https://localhost";
+    private final String configId = "myOidcClientConfig";
+
+    OidcSessionInfo sessionEmptySid1 = new OidcSessionInfo(configId, issuer, "testsub", "", "1234");
+    OidcSessionInfo sessionEmptySid2 = new OidcSessionInfo(configId, issuer, "testsub", "", "2345");
+    OidcSessionInfo sessionNonEmptySid = new OidcSessionInfo(configId, issuer, "testsub", "testsid", "3456");
+    OidcSessionInfo sessionDiffSub = new OidcSessionInfo(configId, issuer, "testsub2", "testsid2", "4567");
 
     private InMemoryOidcSessionCache cache;
 
@@ -33,9 +38,9 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert() {
         String sub = "testsub";
         String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
 
-        boolean inserted = cache.insertSession(sub, sid, oidcSessionId);
+        boolean inserted = cache.insertSession(sessionInfo);
 
         assertTrue("Session should have been inserted.", inserted);
     }
@@ -44,9 +49,9 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_sidIsNull() {
         String sub = "testsub";
         String sid = null;
-        String oidcSessionId = "testoidcsessionid";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
 
-        boolean inserted = cache.insertSession(sub, sid, oidcSessionId);
+        boolean inserted = cache.insertSession(sessionInfo);
 
         assertTrue("Session with no sid have been inserted.", inserted);
     }
@@ -55,9 +60,9 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_sidIsEmpty() {
         String sub = "testsub";
         String sid = "";
-        String oidcSessionId = "testoidcsessionid";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
 
-        boolean inserted = cache.insertSession(sub, sid, oidcSessionId);
+        boolean inserted = cache.insertSession(sessionInfo);
 
         assertTrue("Session with empty sid should have been inserted.", inserted);
     }
@@ -66,9 +71,9 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_subIsNull() {
         String sub = null;
         String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
 
-        boolean inserted = cache.insertSession(sub, sid, oidcSessionId);
+        boolean inserted = cache.insertSession(sessionInfo);
 
         assertFalse("Session with no sub should not have been inserted.", inserted);
     }
@@ -77,9 +82,9 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_subIsEmpty() {
         String sub = "";
         String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
 
-        boolean inserted = cache.insertSession(sub, sid, oidcSessionId);
+        boolean inserted = cache.insertSession(sessionInfo);
 
         assertFalse("Session with empty sub should not have been inserted.", inserted);
     }
@@ -88,11 +93,11 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_duplicateSid() {
         String sub = "testsub";
         String sid = "testsid";
-        String oidcSessionId1 = "testoidcsessionid1";
-        String oidcSessionId2 = "testoidcsessionid2";
+        OidcSessionInfo sessionInfo1 = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo2 = new OidcSessionInfo(configId, issuer, sub, sid, "2345");
 
-        boolean inserted1 = cache.insertSession(sub, sid, oidcSessionId1);
-        boolean inserted2 = cache.insertSession(sub, sid, oidcSessionId2);
+        boolean inserted1 = cache.insertSession(sessionInfo1);
+        boolean inserted2 = cache.insertSession(sessionInfo2);
 
         assertTrue("First session should have been inserted normally.", inserted1);
         assertFalse("Second session with duplicate sid should not have been.", inserted2);
@@ -102,11 +107,11 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_duplicateNullSid() {
         String sub = "testsub";
         String sid = null;
-        String oidcSessionId1 = "testoidcsessionid1";
-        String oidcSessionId2 = "testoidcsessionid2";
+        OidcSessionInfo sessionInfo1 = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo2 = new OidcSessionInfo(configId, issuer, sub, sid, "2345");
 
-        boolean inserted1 = cache.insertSession(sub, sid, oidcSessionId1);
-        boolean inserted2 = cache.insertSession(sub, sid, oidcSessionId2);
+        boolean inserted1 = cache.insertSession(sessionInfo1);
+        boolean inserted2 = cache.insertSession(sessionInfo2);
 
         assertTrue("First session should have inserted normally.", inserted1);
         assertTrue("Second session with duplicate null sid should also have been inserted.", inserted2);
@@ -116,36 +121,14 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_duplicateEmptySid() {
         String sub = "testsub";
         String sid = "";
-        String oidcSessionId1 = "testoidcsessionid1";
-        String oidcSessionId2 = "testoidcsessionid2";
+        OidcSessionInfo sessionInfo1 = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo2 = new OidcSessionInfo(configId, issuer, sub, sid, "2345");
 
-        boolean inserted1 = cache.insertSession(sub, sid, oidcSessionId1);
-        boolean inserted2 = cache.insertSession(sub, sid, oidcSessionId2);
+        boolean inserted1 = cache.insertSession(sessionInfo1);
+        boolean inserted2 = cache.insertSession(sessionInfo2);
 
         assertTrue("First session should have inserted normally.", inserted1);
         assertTrue("Second session with duplicate empty sid should also been inserted.", inserted2);
-    }
-
-    @Test
-    public void test_insert_oidcSessionIdIsNull() {
-        String sub = "testsub";
-        String sid = "testsid";
-        String oidcSessionId = null;
-
-        boolean inserted = cache.insertSession(sub, sid, oidcSessionId);
-
-        assertFalse("Session with no oidc session id should not have been inserted.", inserted);
-    }
-
-    @Test
-    public void test_insert_oidcSessionIdIsEmpty() {
-        String sub = "testsub";
-        String sid = "testsid";
-        String oidcSessionId = "";
-
-        boolean inserted = cache.insertSession(sub, sid, oidcSessionId);
-
-        assertFalse("Session with empty oidc session id should not have been inserted.", inserted);
     }
 
     @Test
@@ -243,7 +226,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_invalidateSessionBySessionId() {
         populateCache();
 
-        boolean invalidated = cache.invalidateSessionBySessionId("testsub", "testoidcsessionid1");
+        boolean invalidated = cache.invalidateSessionBySessionId("testsub", sessionEmptySid1.getSessionId());
 
         assertTrue("Session should have been invalidated.", invalidated);
         verifyInvalidatedSessions(true, false, false, false);
@@ -253,7 +236,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_invalidateSessionBySessionId_sub2() {
         populateCache();
 
-        boolean invalidated = cache.invalidateSessionBySessionId("testsub2", "testoidcsessionid4");
+        boolean invalidated = cache.invalidateSessionBySessionId("testsub2", sessionDiffSub.getSessionId());
 
         assertTrue("Session should have been invalidated.", invalidated);
         verifyInvalidatedSessions(false, false, false, true);
@@ -262,9 +245,9 @@ public class InMemoryOidcSessionCacheTest {
     @Test
     public void test_invalidateSessionBySessionId_alreadyInvalidated() {
         populateCache();
-        cache.invalidateSessionBySessionId("testsub", "testoidcsessionid1");
+        cache.invalidateSessionBySessionId("testsub", sessionEmptySid1.getSessionId());
 
-        boolean invalidated = cache.invalidateSessionBySessionId("testsub", "testoidcsessionid1");
+        boolean invalidated = cache.invalidateSessionBySessionId("testsub", sessionEmptySid1.getSessionId());
 
         assertFalse("Should return false if the session has already been invalidated.", invalidated);
         verifyInvalidatedSessions(true, false, false, false);
@@ -384,11 +367,12 @@ public class InMemoryOidcSessionCacheTest {
     public void test_removeInvalidatedSession() {
         String sub = "testsub";
         String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
-        cache.insertSession(sub, sid, oidcSessionId);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+
+        cache.insertSession(sessionInfo);
         cache.invalidateSession(sub, sid);
 
-        boolean removed = cache.removeInvalidatedSession(oidcSessionId);
+        boolean removed = cache.removeInvalidatedSession(sessionInfo);
 
         assertTrue("Invalidated session should have been removed.", removed);
     }
@@ -397,8 +381,9 @@ public class InMemoryOidcSessionCacheTest {
     public void test_removeInvalidatedSession_sessionIsNull() {
         String sub = "testsub";
         String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
-        cache.insertSession(sub, sid, oidcSessionId);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+
+        cache.insertSession(sessionInfo);
         cache.invalidateSession(sub, sid);
 
         boolean removed = cache.removeInvalidatedSession(null);
@@ -407,27 +392,16 @@ public class InMemoryOidcSessionCacheTest {
     }
 
     @Test
-    public void test_removeInvalidatedSession_sessionIsEmpty() {
-        String sub = "testsub";
-        String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
-        cache.insertSession(sub, sid, oidcSessionId);
-        cache.invalidateSession(sub, sid);
-
-        boolean removed = cache.removeInvalidatedSession("");
-
-        assertFalse("Should not be able to remove a session with an empty oidc session id.", removed);
-    }
-
-    @Test
     public void test_removeInvalidatedSession_sessionDoesNotExist() {
         String sub = "testsub";
         String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
-        cache.insertSession(sub, sid, oidcSessionId);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+
+        cache.insertSession(sessionInfo);
         cache.invalidateSession(sub, sid);
 
-        boolean removed = cache.removeInvalidatedSession("doesnotexist");
+        OidcSessionInfo doesnotexist = new OidcSessionInfo(configId, issuer, sub, sid, "9876");
+        boolean removed = cache.removeInvalidatedSession(doesnotexist);
 
         assertFalse("Should not be able to remove a session whose oidc session id does not exist.", removed);
     }
@@ -436,11 +410,12 @@ public class InMemoryOidcSessionCacheTest {
     public void test_isSessionInvalidated() {
         String sub = "testsub";
         String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
-        cache.insertSession(sub, sid, oidcSessionId);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+
+        cache.insertSession(sessionInfo);
         cache.invalidateSession(sub, sid);
 
-        boolean isInvalidated = cache.isSessionInvalidated(oidcSessionId);
+        boolean isInvalidated = cache.isSessionInvalidated(sessionInfo);
 
         assertTrue("Should have returned that the session is invalidated.", isInvalidated);
     }
@@ -449,8 +424,9 @@ public class InMemoryOidcSessionCacheTest {
     public void test_isSessionInvalidated_sessionIsNull() {
         String sub = "testsub";
         String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
-        cache.insertSession(sub, sid, oidcSessionId);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+
+        cache.insertSession(sessionInfo);
         cache.invalidateSession(sub, sid);
 
         boolean isInvalidated = cache.isSessionInvalidated(null);
@@ -459,42 +435,30 @@ public class InMemoryOidcSessionCacheTest {
     }
 
     @Test
-    public void test_isSessionInvalidated_sessionIsEmpty() {
-        String sub = "testsub";
-        String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
-        cache.insertSession(sub, sid, oidcSessionId);
-        cache.invalidateSession(sub, sid);
-
-        boolean isInvalidated = cache.isSessionInvalidated("");
-
-        assertFalse("Should not be able to check if a session is invalidated if the oidc session id is empty.", isInvalidated);
-    }
-
-    @Test
     public void test_isSessionInvalidated_sessionHasNotBeenInvalidated() {
         String sub = "testsub";
         String sid = "testsid";
-        String oidcSessionId = "testoidcsessionid";
-        cache.insertSession(sub, sid, oidcSessionId);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
 
-        boolean isInvalidated = cache.isSessionInvalidated(oidcSessionId);
+        cache.insertSession(sessionInfo);
+
+        boolean isInvalidated = cache.isSessionInvalidated(sessionInfo);
 
         assertFalse("Should have returned that the session is not invalid.", isInvalidated);
     }
 
     private void populateCache() {
-        cache.insertSession("testsub", "", "testoidcsessionid1");
-        cache.insertSession("testsub", "", "testoidcsessionid2");
-        cache.insertSession("testsub", "testsid", "testoidcsessionid3");
-        cache.insertSession("testsub2", "testsid2", "testoidcsessionid4");
+        cache.insertSession(sessionEmptySid1);
+        cache.insertSession(sessionEmptySid2);
+        cache.insertSession(sessionNonEmptySid);
+        cache.insertSession(sessionDiffSub);
     }
 
-    private void verifyInvalidatedSessions(boolean invalidated1, boolean invalidated2, boolean invalidated3, boolean invalidated4) {
-        assertEquals(getAssertEqualsMessage("testoidcsessionid1", invalidated1), invalidated1, cache.isSessionInvalidated("testoidcsessionid1"));
-        assertEquals(getAssertEqualsMessage("testoidcsessionid2", invalidated2), invalidated2, cache.isSessionInvalidated("testoidcsessionid2"));
-        assertEquals(getAssertEqualsMessage("testoidcsessionid3", invalidated3), invalidated3, cache.isSessionInvalidated("testoidcsessionid3"));
-        assertEquals(getAssertEqualsMessage("testoidcsessionid4", invalidated4), invalidated4, cache.isSessionInvalidated("testoidcsessionid4"));
+    private void verifyInvalidatedSessions(boolean invalidatedEmptySid1, boolean invalidatedEmptySid2, boolean invalidatedNonEmptySid, boolean invalidatedDiffSub) {
+        assertEquals(getAssertEqualsMessage(sessionEmptySid1.getSessionId(), invalidatedEmptySid1), invalidatedEmptySid1, cache.isSessionInvalidated(sessionEmptySid1));
+        assertEquals(getAssertEqualsMessage(sessionEmptySid2.getSessionId(), invalidatedEmptySid2), invalidatedEmptySid2, cache.isSessionInvalidated(sessionEmptySid2));
+        assertEquals(getAssertEqualsMessage(sessionNonEmptySid.getSessionId(), invalidatedNonEmptySid), invalidatedNonEmptySid, cache.isSessionInvalidated(sessionNonEmptySid));
+        assertEquals(getAssertEqualsMessage(sessionDiffSub.getSessionId(), invalidatedDiffSub), invalidatedDiffSub, cache.isSessionInvalidated(sessionDiffSub));
     }
 
     private String getAssertEqualsMessage(String oidcSessionId, boolean invalidated) {

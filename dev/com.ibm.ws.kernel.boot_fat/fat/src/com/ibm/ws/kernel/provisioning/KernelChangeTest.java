@@ -18,13 +18,16 @@ import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
  */
+@RunWith(FATRunner.class)
 public class KernelChangeTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.bootstrap.fat");
 
@@ -68,7 +71,7 @@ public class KernelChangeTest {
         server.renameLibertyServerRootFile("bootstrap.properties", "bootstrap.properties.hpel");
         server.renameLibertyServerRootFile("bootstrap.properties.orig", "bootstrap.properties");
 
-        // Start the server WITHOUT HPEL again 
+        // Start the server WITHOUT HPEL again
         server.startServer("part3.console.log", false, false);
 
         // Make sure no error messages in console.log

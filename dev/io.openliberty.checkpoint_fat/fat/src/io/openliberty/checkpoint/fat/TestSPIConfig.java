@@ -40,6 +40,11 @@ public class TestSPIConfig {
     @Rule
     public TestName testName = new TestName();
 
+    public final static String STATIC_SINGLE_PREPARE = "STATIC SINGLE PREPARE - ";
+    public final static String STATIC_SINGLE_RESTORE = "STATIC SINGLE RESTORE - ";
+    public final static String STATIC_MULTI_PREPARE = "STATIC MULTI PREPARE - ";
+    public final static String STATIC_MULTI_RESTORE = "STATIC MULTI RESTORE - ";
+
     private static final String USER_FEATURE_PATH = "usr/extension/lib/features/";
     private static final String USER_BUNDLE_PATH = "usr/extension/lib/";
     private static final String USER_FEATURE_USERTEST_MF = "features/test.checkpoint.config-1.0.mf";
@@ -92,7 +97,7 @@ public class TestSPIConfig {
 
     @Test
     public void testRunningConditionLaunch() throws Exception {
-        server.startServer();
+        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
         findLogMessage("Activate should have non-null running condition", "TESTING - activate running condition: ", "io.openliberty.process.running null", 500);
     }
 
@@ -111,6 +116,13 @@ public class TestSPIConfig {
         ProgramOutput output = server.checkpointRestore();
         int retureCode = output.getReturnCode();
         assertEquals("Wrong return code for failed checkpoint.", 77, retureCode);
+    }
+
+    @Test
+    public void testStaticHook() throws Exception {
+        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+        findLogMessage("Static single prepare method", STATIC_SINGLE_RESTORE, "SUCCESS", 500);
+        findLogMessage("Static single prepare method", STATIC_MULTI_RESTORE, "SUCCESS", 500);
     }
 
     @Before
@@ -175,7 +187,6 @@ public class TestSPIConfig {
      */
     private void runBeforeRestore(TestMethod testMethod) {
         try {
-            server.saveServerConfiguration();
             Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
             switch (testMethod) {
                 case testAddImmutableEnvKey:
@@ -184,6 +195,10 @@ public class TestSPIConfig {
                 case testRestoreWithEnvSet:
                     // environment value overrides defaultValue in restore
                     server.copyFileToLibertyServerRoot("envConfigChange/server.env");
+                    break;
+                case testStaticHook:
+                    findLogMessage("Static single prepare method", STATIC_SINGLE_PREPARE, "SUCCESS", 500);
+                    findLogMessage("Static single prepare method", STATIC_MULTI_PREPARE, "SUCCESS", 500);
                     break;
                 default:
                     Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
@@ -210,6 +225,7 @@ public class TestSPIConfig {
         testRunningConditionLaunch,
         testFailedCheckpoint,
         testFailedRestore,
+        testStaticHook,
         unknown
     }
 

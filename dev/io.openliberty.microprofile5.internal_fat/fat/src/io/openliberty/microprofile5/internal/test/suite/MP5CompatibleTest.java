@@ -65,7 +65,7 @@ public class MP5CompatibleTest {
     }
 
     /**
-     * Just microProfile-5.0 ... Should always pass, a sanity check
+     * Just microProfile-5.0 ... Should always pass, a test
      *
      * @throws Exception
      */

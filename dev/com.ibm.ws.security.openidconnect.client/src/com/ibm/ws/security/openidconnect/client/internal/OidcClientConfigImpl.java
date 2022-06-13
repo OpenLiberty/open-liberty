@@ -84,6 +84,8 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
+import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
+
 /**
  * Process the OpenID Connect client entry in the server.xml file
  */
@@ -924,7 +926,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         try {
             setNextDiscoveryTime(); //
             SSLSocketFactory sslSocketFactory = getSSLSocketFactory(discoveryUrl, sslConfigurationName, sslSupportRef.getService());
-            HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled);
+            DiscoveryHandler discoveryHandler = new DiscoveryHandler(sslSocketFactory);
+            HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             jsonString = getHTTPRequestAsString(client, discoveryUrl);
             if (jsonString != null) {
                 parseJsonResponse(jsonString);
@@ -1124,54 +1127,33 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         return message;
     }
 
-    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification) {
+    // issue# 19832
+    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
 
         HttpClient client = null;
-        boolean addBasicAuthHeader = false;
 
-        //        if (jwkClientId != null && jwkClientSecret != null) {
-        //            addBasicAuthHeader = true;
-        //        }
-
-        BasicCredentialsProvider credentialsProvider = null;
-        if (addBasicAuthHeader) {
-            credentialsProvider = createCredentialsProvider();
+        ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+        ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+        try {
+            SSLConnectionSocketFactory connectionFactory = null;
+            if (!isHostnameVerification) {
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+            } else {
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            }
+            client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
+        } finally {
+            ThreadContextHelper.setClassLoader(origCL);
         }
 
-        client = createHttpClient(url.startsWith("https:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider);
         return client;
 
     }
 
-    private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider) {
+    // issue# 19832
+    private HttpClientBuilder createBuilder(boolean useSystemProperties) {
+        return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
 
-        HttpClient client = null;
-        if (isSecure) {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                if (addBasicAuthHeader) {
-                    client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-                } else {
-                    client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
-                }
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
-            }
-        } else {
-            if (addBasicAuthHeader) {
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
-            } else {
-                client = HttpClientBuilder.create().build();
-            }
-        }
-        return client;
     }
 
     private BasicCredentialsProvider createCredentialsProvider() {

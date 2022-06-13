@@ -49,7 +49,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
-import com.ibm.ws.security.openidconnect.clients.common.OidcSessionHelper;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.clients.common.TraceConstants;
 import com.ibm.ws.security.openidconnect.common.Constants;
@@ -202,15 +202,17 @@ public class Jose4jUtil {
         OidcClientConfig oidcClientConfig = oidcClientRequest.getOidcClientConfig();
 
         String configId = oidcClientConfig.getId();
+        String iss = jwtClaims.getIssuer();
         String sub = jwtClaims.getSubject();
         String sid = jwtClaims.getClaimValue("sid", String.class);
         String timestamp = OidcUtil.getTimeStamp();
 
-        String wasOidcSessionId = OidcSessionHelper.createSessionId(configId, sub, sid != null ? sid : "", timestamp);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
 
         OidcSessionCache oidcSessionCache = oidcClientConfig.getOidcSessionCache();
-        oidcSessionCache.insertSession(sub, sid, wasOidcSessionId);
+        oidcSessionCache.insertSession(sessionInfo);
 
+        String wasOidcSessionId = sessionInfo.getSessionId();
         Cookie cookie = OidcClientUtil.createCookie(ClientConstants.WAS_OIDC_SESSION, wasOidcSessionId, oidcClientRequest.getRequest());
         cookie.setSecure(true);
 

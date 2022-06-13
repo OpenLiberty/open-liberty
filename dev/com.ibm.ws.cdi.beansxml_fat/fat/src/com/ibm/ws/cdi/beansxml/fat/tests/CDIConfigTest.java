@@ -75,12 +75,12 @@ public class CDIConfigTest {
         server.updateServerConfiguration(config);
         try {
             server.startServer();
-            List<String> warningMessages = server.findStringsInLogs("CWOWB1015W: The cdi12 configuration element is superseded by the cdi configuration element.");
-            assertTrue("Message CWOWB1015W not found", warningMessages.size() > 0);
-            assertEquals("Message CWOWB1015W was found more than once", 1, warningMessages.size());
+            List<String> infoMessages = server.findStringsInLogs("CWOWB1015I: The cdi12 configuration element is superseded by the cdi configuration element.");
+            assertTrue("Message CWOWB1015I not found", infoMessages.size() > 0);
+            assertEquals("Message CWOWB1015I was found more than once", 1, infoMessages.size());
         } finally {
             if (server.isStarted()) {
-                server.stopServer("CWOWB1009W", "CWOWB1015W");
+                server.stopServer("CWOWB1009W");
             }
         }
     }
@@ -105,7 +105,7 @@ public class CDIConfigTest {
             server.startServer();
         } finally {
             if (server.isStarted()) {
-                server.stopServer("CWOWB1015W");
+                server.stopServer();
             }
         }
     }
@@ -131,7 +131,7 @@ public class CDIConfigTest {
             assertEquals("Message CWOWB1017W was found more than once", 1, warningMessages.size());
         } finally {
             if (server.isStarted()) {
-                server.stopServer("CWOWB1009W", "CWOWB1015W", "CWOWB1017W");
+                server.stopServer("CWOWB1009W", "CWOWB1017W");
             }
         }
     }
@@ -156,7 +156,7 @@ public class CDIConfigTest {
             assertTrue("Message CWOWB1017W was found when it should not have been", warningMessages.size() == 0);
         } finally {
             if (server.isStarted()) {
-                server.stopServer("CWOWB1009W", "CWOWB1015W");
+                server.stopServer("CWOWB1009W");
             }
         }
     }
