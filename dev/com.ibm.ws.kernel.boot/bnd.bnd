@@ -88,9 +88,9 @@ Private-Package: \
     OSGI-OPT/websphere/bin/tools/ws-server.jar=${repo;com.ibm.ws.kernel.boot.ws-server}, \
     {OSGI-OPT/websphere/autopd-collection-environment-v2.xml=resources/OSGI-OPT/websphere/autopd-collection-environment-v2.xml}, \
     @${repo;com.ibm.websphere.org.osgi.core}!/org/osgi/framework/Version*, \
-    @${repo;com.ibm.ws.kernel.boot.core}!/!com/ibm/ws/kernel/boot/resources/, \
-    @${repo;com.ibm.ws.kernel.boot.nested}!/!com/ibm/ws/kernel/boot/resources/, \
-    @${repo;com.ibm.ws.kernel.boot.cmdline}!/!com/ibm/ws/kernel/boot/resources/, \
+    @${repo;com.ibm.ws.kernel.boot.core}, \
+    @${repo;com.ibm.ws.kernel.boot.nested}, \
+    @${repo;com.ibm.ws.kernel.boot.cmdline}, \
     @${repo;com.ibm.ws.kernel.boot.common}, \
     @${repo;com.ibm.ws.kernel.boot.logging}
 
