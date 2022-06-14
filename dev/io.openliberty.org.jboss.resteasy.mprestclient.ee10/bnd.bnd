@@ -1,0 +1,85 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.mprestclient.ee10
+
+Multi-Release: true
+
+microprofile-resteasy-version=1.0.0.Final
+resteasy-version=5.0.3.Final
+
+src: src
+
+app-resources= \
+  META-INF/services/jakarta.enterprise.inject.spi.Extension | \
+  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver | \
+  META-INF/services/org.jboss.resteasy.microprofile.client.header.HeaderFillerFactory
+
+-cdiannotations:
+
+-dsannotations: \
+  io.openliberty.microprofile.rest.client30.internal.RestClientCdiExtensionMetadata, \
+  io.openliberty.microprofile.rest.client30.internal.OsgiServices
+
+Service-Component: \
+  io.openliberty.restfulWS.mprestclient.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+
+Export-Package: \
+  org.jboss.resteasy.microprofile.client;version=1.0;thread-context=true,\
+  org.jboss.resteasy.microprofile.client.ot;version=1.0;thread-context=true,\
+  org.jboss.resteasy.microprofile.client.header;version=1.0;thread-context=true
+
+Import-Package: \
+  javax.annotation,\
+  javax.inject,\
+  javax.ws.rs.core,\
+  org.eclipse.microprofile.rest.client.*;version='!',\
+  *
+
+DynamicImport-Package: \
+  com.ibm.ws.microprofile.faulttolerance.cdi
+
+Private-Package: \
+  io.openliberty.microprofile.rest.client30.internal
+
+instrument.ffdc: false
+instrument.disabled: false
+
+Include-Resource:\
+  @${repo;org.jboss.resteasy.microprofile:microprofile-rest-client-base;${microprofile-resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy.microprofile:microprofile-rest-client;${microprofile-resteasy-version};EXACT}, \
+  org/jboss/resteasy=${bin}/org/jboss/resteasy, \
+  META-INF=resources/META-INF
+
+-buildpath: \
+  org.jboss.resteasy.microprofile:microprofile-rest-client-base;strategy=exact;version='${microprofile-resteasy-version}',\
+  org.jboss.resteasy.microprofile:microprofile-rest-client;strategy=exact;version='${microprofile-resteasy-version}',\
+  org.jboss.resteasy:resteasy-cdi;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-client;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-client-api;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-core;strategy=exact;version='${resteasy-version}',\
+  org.jboss.resteasy:resteasy-core-spi;strategy=exact;version='${resteasy-version}',\
+  com.ibm.ws.cdi.interfaces;version=latest,\
+  io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
+  io.openliberty.org.eclipse.microprofile.rest.client.2.0;version=latest,\
+  com.ibm.ws.logging.core,\
+  com.ibm.ws.org.jboss.logging,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.websphere.javaee.cdi.2.0,\
+  com.ibm.websphere.javaee.interceptor.1.2,\
+  com.ibm.websphere.javaee.jaxrs.2.1,\
+  com.ibm.websphere.javaee.concurrent.1.0
