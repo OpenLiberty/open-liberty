@@ -42,7 +42,8 @@ import componenttest.topology.impl.LibertyServer;
                 LocalEJBTest.class,
                 CheckpointSPITest.class,
                 MPConfigTest.class,
-                SSLTest.class
+                SSLTest.class,
+                MPOpenTracingJaegerTraceTest.class
 })
 public class FATSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {
