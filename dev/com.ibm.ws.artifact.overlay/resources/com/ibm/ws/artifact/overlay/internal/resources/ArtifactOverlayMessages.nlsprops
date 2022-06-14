@@ -23,31 +23,31 @@
 #   (single quote must be coded as one single quote '). 
 
 # # A file path.
-overlay.does.not.exist=CWWKM0301E: The overlay folder {0} does not exist.
-overlay.does.not.exist.explanation=The liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.does.not.exist=CWWKM0301E: The {0} overlay folder does not exist.
+overlay.does.not.exist.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
 overlay.does.not.exist.useraction=Restart the server with the '--clean' option.
 
 # # A file path.
-overlay.not.directory=CWWKM0302E: The overlay folder {0} is not a directory.
-overlay.not.directory.explanation=The liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.not.directory=CWWKM0302E: The {0} overlay folder is not a directory.
+overlay.not.directory.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
 overlay.not.directory.useraction=Restart the server with the '--clean' option.
 
 # # A file path.
-overlay.not.empty=CWWKM0303E: The overlay folder {0} is not empty.
-overlay.not.empty.explanation=The liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.not.empty=CWWKM0303E: The {0} overlay folder is not empty.
+overlay.not.empty.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
 overlay.not.empty.useraction=Restart the server with the '--clean' option.
 
 # # A file path.
-overlay.cache.does.not.exist=CWWKM0304E: The overlay cache folder {0} does not exist.
-overlay.cache.does.not.exist.explanation=The liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.cache.does.not.exist=CWWKM0304E: The {0} overlay cache folder does not exist.
+overlay.cache.does.not.exist.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
 overlay.cache.does.not.exist.useraction=Restart the server with the '--clean' option.
 
 # # A file path.
-overlay.cache.not.directory=CWWKM0305E: The overlay cache folder {0} is not a directory.
-overlay.cache.not.directory.explanation=The liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.cache.not.directory=CWWKM0305E: The {0} overlay cache folder is not a directory.
+overlay.cache.not.directory.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
 overlay.cache.not.directory.useraction=Restart the server with the '--clean' option.
 
 # # A file path.
-overlay.exists.as.directory=CWWKM0306E: The overlay file {0} exists and is a directory.
-overlay.exists.as.directory.explanation=The liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.exists.as.directory=CWWKM0306E: The {0} overlay file exists and is a directory.
+overlay.exists.as.directory.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
 overlay.exists.as.directory.useraction=Restart the server with the '--clean' option.
