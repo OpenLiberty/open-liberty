@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.FFDCSummaryPolicy;
@@ -100,7 +100,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** Format to use for messages.log */
     protected volatile String messageFormat = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
 
-    protected volatile boolean stackJoin = false;
+    protected volatile boolean stackTraceSingleEntry = false;
 
     /** Mapping to use for json.fields */
     protected volatile String jsonFields = "";
@@ -187,10 +187,11 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         rolloverStartTime = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_ROLLOVER_START_TIME), rolloverStartTime);
 
-        rolloverInterval = LoggingConfigUtils.getLongDurationValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_ROLLOVER_INTERVAL), rolloverInterval, TimeUnit.MINUTES);
+        rolloverInterval = LoggingConfigUtils.getLongDurationValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_ROLLOVER_INTERVAL), rolloverInterval,
+                                                                   TimeUnit.MINUTES);
 
-        stackJoin = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_STACK_JOIN),
-                                                       stackJoin);
+        stackTraceSingleEntry = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_STACK_TRACE_SINGLE_ENTRY),
+                                                                   stackTraceSingleEntry);
 
         doCommonInit(config, true);
 
@@ -280,7 +281,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         rolloverStartTime = InitConfgAttribute.ROLLOVER_START_TIME.getStringValueAndSaveInit(c, rolloverStartTime, isInit);
         rolloverInterval = InitConfgAttribute.ROLLOVER_INTERVAL.getLongDurationValueAndSaveInit(c, rolloverInterval, isInit, TimeUnit.MINUTES);
 
-        stackJoin = InitConfgAttribute.STACK_JOIN_CONFIGURATION.getBooleanValueAndSaveInit(c, stackJoin, isInit);
+        stackTraceSingleEntry = InitConfgAttribute.STACK_JOIN_CONFIGURATION.getBooleanValueAndSaveInit(c, stackTraceSingleEntry, isInit);
     }
 
     /**
@@ -447,8 +448,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         return messageFormat;
     }
 
-    public boolean isStackJoin() {
-        return stackJoin;
+    public boolean isStackTraceSingleEntry() {
+        return stackTraceSingleEntry;
     }
 
     public String getjsonFields() {
@@ -514,7 +515,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         sb.append(",traceFileName=").append(traceFileName);
         sb.append(",suppressSensitiveTrace=").append(suppressSensitiveTrace);
         sb.append(",newLogsOnStart=").append(newLogsOnStart);
-        sb.append(",stackJoin=").append(stackJoin);
+        sb.append(",stackTraceSingleEntry=").append(stackTraceSingleEntry);
         sb.append("]");
 
         return sb.toString();
@@ -540,7 +541,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         CONSOLE_SOURCE("consoleSource", "com.ibm.ws.logging.console.source"),
         CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format"),
         JSON_FIELD_MAPPINGS("jsonFieldMappings", "com.ibm.ws.logging.json.field.mappings"),
-        STACK_JOIN_CONFIGURATION("stackJoin", "com.ibm.ws.logging.stackJoin"),
+        STACK_JOIN_CONFIGURATION("stackTraceSingleEntry", "com.ibm.ws.logging.stackTraceSingleEntry"),
 
         JSON_ENABLE_CUSTOM_ACCESS_LOG_FIELDS("jsonAccessLogFields", "com.ibm.ws.logging.json.access.log.fields"),
         APPS_WRITE_JSON("appsWriteJson", "com.ibm.ws.logging.apps.write.json"),

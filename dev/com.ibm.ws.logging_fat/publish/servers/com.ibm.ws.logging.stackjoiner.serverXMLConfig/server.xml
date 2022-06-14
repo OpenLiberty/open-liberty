@@ -12,7 +12,7 @@
 
     <include location="../fatTestPorts.xml"/>
 
-    <logging stackJoin="true" />
+    <logging stackTraceSingleEntry="true" />
 
     <featureManager>
        <feature>jsp-2.3</feature>
