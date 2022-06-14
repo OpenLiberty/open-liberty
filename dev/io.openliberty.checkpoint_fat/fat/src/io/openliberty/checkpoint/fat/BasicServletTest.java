@@ -10,11 +10,14 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodName;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -30,11 +33,13 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
-public class TestWithFATServlet extends FATServletClient {
+public class BasicServletTest extends FATServletClient {
+    @Rule
+    public TestName testName = new TestName();
 
     public static final String APP_NAME = "app1";
 
-    @Server("FATServer")
+    @Server("checkpointFATServer")
     @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
@@ -53,7 +58,7 @@ public class TestWithFATServlet extends FATServletClient {
                                  assertNotNull("'CWWKZ0001I: Application app1 started' message not found in log.",
                                                server.waitForStringInLogUsingMark("CWWKZ0001I: Application app1 started", 0));
                              });
-        server.startServer();
+        server.startServer(getTestMethodName(testName) + ".log");
     }
 
     @After

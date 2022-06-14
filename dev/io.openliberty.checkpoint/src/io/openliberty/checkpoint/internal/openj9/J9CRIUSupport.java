@@ -28,7 +28,7 @@ public class J9CRIUSupport {
             // return a fully functional implementation. Yay!
             return new ExecuteCRIU_OpenJ9(checkpointImpl);
         } catch (ClassNotFoundException e) {
-            return createCRIUNotSupported(Type.UNSUPPORTED_IN_JVM, "There is no CRIU support in this JVM.", null);
+            return createCRIUNotSupported(Type.UNSUPPORTED_IN_JVM, checkpointImpl.getMessage("CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E"), e);
         }
     }
 

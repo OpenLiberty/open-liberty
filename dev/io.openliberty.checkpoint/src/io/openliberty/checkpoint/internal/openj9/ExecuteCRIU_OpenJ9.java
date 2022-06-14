@@ -48,6 +48,7 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
             try {
                 criuSupport.setUnprivileged(true);
             } catch (NoSuchMethodError e) {
+                // TODO this is a temporary message that will never happen on a released version of Open J9.  Not adding message to nlsprops
                 throw new CheckpointFailedException(Type.UNKNOWN_CHECKPOINT, "JVM does not support CRIU unprivileged mode", e);
             }
         }

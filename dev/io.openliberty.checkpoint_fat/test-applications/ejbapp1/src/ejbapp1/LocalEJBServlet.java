@@ -26,11 +26,11 @@ import javax.servlet.http.HttpServletResponse;
 import componenttest.app.FATServlet;
 
 @WebServlet("/")
-public class RemoteEJBServlet extends FATServlet {
+public class LocalEJBServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     @EJB
-    RemoteInterface test;
+    LocalInterface test;
 
     @Inject
     Event<EJBEvent> anEvent;

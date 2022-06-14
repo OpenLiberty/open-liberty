@@ -19,9 +19,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +37,8 @@ import java.util.function.Supplier;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -80,9 +85,98 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
            // use immediate component to avoid lazy instantiation and deactivate
            immediate = true)
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
+    private static final Set<String> SUPPORTED_FEATURES;
+    static {
+        String[] supported = {
+                               // the checkpont feature must be supported
+                               "checkpoint-1.0",
+                               // some utility features that are helpful
+                               "osgiConsole-1.0",
+                               // webProfile-8.0 + microProfile-4.1
+                               "appSecurity-2.0",
+                               "appSecurity-3.0",
+                               "beanValidation-2.0",
+                               "cdi-2.0",
+                               "distributedMap-1.0",
+                               "ejbLite-3.2",
+                               "el-3.0",
+                               "jaspic-1.1",
+                               "jaxrs-2.1",
+                               "jaxrsClient-2.1",
+                               "jdbc-4.2",
+                               "jndi-1.0",
+                               "jpa-2.2",
+                               "jpaContainer-2.2",
+                               "jsf-2.3",
+                               "json-1.0",
+                               "jsonb-1.0",
+                               "jsonp-1.1",
+                               "jsp-2.3",
+                               "jwt-1.0",
+                               "managedBeans-1.0",
+                               "microProfile-4.1",
+                               "monitor-1.0",
+                               "mpConfig-2.0",
+                               "mpFaultTolerance-3.0",
+                               "mpHealth-3.1",
+                               "mpJwt-1.2",
+                               "mpMetrics-3.0",
+                               "mpOpenAPI-2.0",
+                               "mpOpenTracing-2.0",
+                               "mpRestClient-2.0",
+                               "opentracing-2.0",
+                               "servlet-4.0",
+                               "ssl-1.0",
+                               "webProfile-8.0",
+                               "websocket-1.1",
+                               // webProfile-9.1 + microProfile-5.0
+                               "appAuthentication-2.0",
+                               "appSecurity-4.0",
+                               "beanValidation-3.0",
+                               "cdi-3.0",
+                               "concurrent-2.0",
+                               "distributedMap-1.0",
+                               "enterpriseBeansLite-4.0",
+                               "expressionLanguage-4.0",
+                               "faces-3.0",
+                               "jdbc-4.2",
+                               "jndi-1.0",
+                               "json-1.0",
+                               "jsonb-2.0",
+                               "jsonp-2.0",
+                               "jwt-1.0",
+                               "managedBeans-2.0",
+                               "microProfile-5.0",
+                               "monitor-1.0",
+                               "mpConfig-3.0",
+                               "mpFaultTolerance-4.0",
+                               "mpHealth-4.0",
+                               "mpJwt-2.0",
+                               "mpMetrics-4.0",
+                               "mpOpenAPI-3.0",
+                               "mpOpenTracing-3.0",
+                               "mpRestClient-3.0",
+                               "pages-3.0",
+                               "persistence-3.0",
+                               "persistenceContainer-3.0",
+                               "restfulWS-3.0",
+                               "restfulWSClient-3.0",
+                               "servlet-5.0",
+                               "ssl-1.0",
+                               "transportSecurity-1.0",
+                               "webProfile-9.1",
+                               "websocket-2.0",
+                               "xmlBinding-3.0"
+        };
+        Set<String> result = new HashSet<>();
+        result.addAll(Arrays.asList(supported));
+        SUPPORTED_FEATURES = Collections.unmodifiableSet(result);
+    }
 
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
     private static final String CHECKPOINT_CRIU_UNPRIVILEGED = "io.openliberty.checkpoint.criu.unprivileged";
+    private static final String CHECKPOINT_ALLOWED_FEATURES = "io.openliberty.checkpoint.allowed.features";
+    private static final String CHECKPOINT_ALLOWED_FEATURES_ALL = "ALL_FEATURES";
     static final String HOOKS_REF_NAME_SINGLE_THREAD = "hooksSingleThread";
     static final String HOOKS_REF_NAME_MULTI_THREAD = "hooksMultiThread";
     private static final String DIR_CHECKPOINT = "checkpoint/";
@@ -93,6 +187,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private static final String CHECKPOINT_LOG_FILE = "checkpoint.log";
 
     private static final TraceComponent tc = Tr.register(CheckpointImpl.class);
+
+    private final Set<String> allowedFeatures;
     private final ComponentContext cc;
     private final CheckpointPhase checkpointAt;
     private final WsLocationAdmin locAdmin;
@@ -114,6 +210,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     // only for unit tests
     CheckpointImpl(ComponentContext cc, ExecuteCRIU criu, WsLocationAdmin locAdmin, CheckpointPhase phase) {
         this.cc = cc;
+
+        allowedFeatures = getAllowedFeatures(cc);
         if (Boolean.valueOf(cc.getBundleContext().getProperty(CHECKPOINT_STUB_CRIU))) {
             /*
              * This is useful for development if you want to debug through a checkpoint/restore
@@ -143,6 +241,19 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             this.transformerReg = null;
             INSTANCE = null;
         }
+    }
+
+    /**
+     * @param cc2
+     * @return
+     */
+    private static Set<String> getAllowedFeatures(ComponentContext cc) {
+        String allowedProp = cc.getBundleContext().getProperty(CHECKPOINT_ALLOWED_FEATURES);
+        if (allowedProp == null) {
+            return Collections.emptySet();
+        }
+        String[] allowedFeatures = allowedProp.split(",");
+        return Collections.unmodifiableSet(new HashSet<>(Arrays.asList(allowedFeatures)));
     }
 
     @Deactivate
@@ -236,6 +347,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             }
         }
 
+        checkSupportedFeatures();
+
         List<CheckpointHook> multiThreadPrepareHooks = getHooks(cc.locateServices(HOOKS_REF_NAME_MULTI_THREAD));
         List<CheckpointHook> singleThreadPrepareHooks = getHooks(cc.locateServices(HOOKS_REF_NAME_SINGLE_THREAD));
 
@@ -271,7 +384,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             if (e instanceof CheckpointFailedException) {
                 throw (CheckpointFailedException) e;
             }
-            throw new CheckpointFailedException(getUnknownType(), "Failed to do checkpoint.", e);
+            throw new CheckpointFailedException(getUnknownType(), Tr.formatMessage(tc, "UKNOWN_FAILURE_CWWKC0455E", e.getMessage()), e);
         }
 
         restore(multiThreadRestoreHooks);
@@ -283,9 +396,41 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         createRestoreMarker();
     }
 
+    /**
+     *
+     */
+    private void checkSupportedFeatures() {
+        if (allowedFeatures.contains(CHECKPOINT_ALLOWED_FEATURES_ALL)) {
+            // shortcut if all features area allowed
+            return;
+        }
+        try {
+            ServiceReference<?>[] features = cc.getBundleContext().getServiceReferences("com.ibm.wsspi.kernel.feature.LibertyFeature", null);
+            if (features != null) {
+                List<Object> unsupported = new ArrayList<>(0);
+                for (ServiceReference<?> feature : features) {
+                    Object featureName = feature.getProperty("ibm.featureName");
+                    if (!SUPPORTED_FEATURES.contains(featureName) && !allowedFeatures.contains(featureName)) {
+                        unsupported.add(featureName);
+                    }
+                }
+                if (!unsupported.isEmpty()) {
+                    throw new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, Tr.formatMessage(tc, "CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E", unsupported), null);
+                }
+            }
+
+        } catch (InvalidSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Type getUnknownType() {
         // check for the env properties file.  If it exists then assume this is a restore failure
         return getEnvProperties().exists() ? Type.UNKNOWN_RESTORE : Type.UNKNOWN_CHECKPOINT;
+    }
+
+    public String getMessage(String msgKey, Object... args) {
+        return Tr.formatMessage(tc, msgKey, args);
     }
 
     private void registerRunningCondition() {
@@ -383,7 +528,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     private static CheckpointFailedException failedPrepare(Exception cause) {
-        return new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, "Failed to prepare for a checkpoint.", cause);
+        return new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, Tr.formatMessage(tc, "CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E", cause.getMessage()), cause);
     }
 
     private void restore(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
@@ -396,7 +541,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     private static CheckpointFailedException failedRestore(Exception cause) {
-        return new CheckpointFailedException(Type.LIBERTY_RESTORE_FAILED, "Failed to restore from checkpoint.", cause);
+        return new CheckpointFailedException(Type.LIBERTY_RESTORE_FAILED, Tr.formatMessage(tc, "RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E", cause.getMessage()), cause);
     }
 
     boolean checkpointCalledAlready() {

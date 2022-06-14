@@ -8,19 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.checkpoint.internal.criu;
+package app2;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
-import io.openliberty.checkpoint.internal.CheckpointImpl;
+@WebListener
+public class EarlyStartupAppCode implements ServletContextListener {
 
-public class DeployCheckpoint {
-    public static void checkpoint() {
-        PrivilegedAction<Void> deployCheckpoint = (PrivilegedAction<Void>) () -> {
-            CheckpointImpl.deployCheckpoint();
-            return null;
-        };
-        AccessController.doPrivileged(deployCheckpoint);
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        System.out.println("TESTING - contextInitialized");
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        // do nothing
     }
 }

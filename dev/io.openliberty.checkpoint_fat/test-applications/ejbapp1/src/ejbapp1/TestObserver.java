@@ -17,7 +17,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.event.Observes;
 
 @Stateful
-public class TestObserver implements RemoteInterface {
+public class TestObserver implements LocalInterface {
 
     static AtomicBoolean observed = new AtomicBoolean(false);
 

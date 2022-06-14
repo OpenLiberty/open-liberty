@@ -36,7 +36,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
-public class TestSPIConfig {
+public class CheckpointSPITest {
     @Rule
     public TestName testName = new TestName();
 

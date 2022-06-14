@@ -11,10 +11,11 @@
 
 package ejbapp1;
 
+import javax.ejb.Local;
 import javax.ejb.Remote;
 
-@Remote
-public interface RemoteInterface {
+@Local
+public interface LocalInterface {
 
     public boolean observed();
 
