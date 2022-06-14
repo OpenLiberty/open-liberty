@@ -1,0 +1,236 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="myAuthFilter01">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient01"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPclient01"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider01/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider01/token"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter01"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter02">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient02"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPclient02"
+		scope="openid profile"
+		clientId="client02"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider02/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider02/token"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter02"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter03">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient03"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPclient03"
+		scope="openid profile"
+		clientId="client03"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider03/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider03/token"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter03"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter04">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient04"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPclient04"
+		scope="openid profile"
+		clientId="client04"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider04/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider04/token"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter04"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter05">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient05"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPclient05"
+		scope="openid profile"
+		clientId="client05"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider05/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider05/token"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter05"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter06">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient06"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPclient06"
+		scope="openid profile"
+		clientId="client06"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider06/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider06/token"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter06"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter07">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient07"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPclient07"
+		scope="openid profile"
+		clientId="client07"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider07/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider07/token"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter07"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter08">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient08"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPclient08"
+		scope="openid profile"
+		clientId="client08"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider08/token"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter08"
+		issuerIdentifier="uniqueIssuer08"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter09">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient09"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPclient09"
+		scope="openid profile"
+		clientId="client09"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider09/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider09/token"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter09"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter20">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/rest/helloworld_useClient20"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPclient20"
+		scope="openid profile"
+		clientId="client20"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider20/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/Provider20/token"
+		signatureAlgorithm="HS256"
+		authFilterRef="myAuthFilter20"
+	>
+	</openidConnectClient>
+
+<!-- Do not need RPclient21 since we're using a hard-coded JWE in the test -->
+
+</server>

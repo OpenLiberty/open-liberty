@@ -1013,7 +1013,7 @@ public class CommonValidationTools {
                 } else {
                     for (String line : responseLines) {
                         if (line != null && line.contains(searchKey)) {
-                            String part1 = line.substring(line.indexOf(searchKey) + searchKey.length() + 1, line.length() - 1);
+                            String part1 = line.substring(line.indexOf(searchKey) + searchKey.length() + 1, line.length());
                             String[] splitLine = part1.split(",");
                             if (splitLine != null) {
                                 if (splitLine[0] != null) {

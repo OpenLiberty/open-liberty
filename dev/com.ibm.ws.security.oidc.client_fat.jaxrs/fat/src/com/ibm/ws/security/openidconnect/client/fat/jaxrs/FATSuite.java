@@ -24,6 +24,7 @@ import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OIDCTokenMappingRe
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientAPITests;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientBasicTests;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientDiscoveryBasicTests;
+import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientIssuerClaimAsFilterTests;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientReAuthnTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
@@ -38,7 +39,8 @@ import componenttest.rules.repeater.RepeatTests;
         OIDCTokenMappingResolverGenericTest.class,
         OidcJaxRSClientReAuthnTests.class,
         OidcJaxRSClientDiscoveryBasicTests.class,
-//                OidcJaxRSClientRequestFilterTests.class
+        //        OidcJaxRSClientRequestFilterTests.class,
+        OidcJaxRSClientIssuerClaimAsFilterTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
