@@ -86,7 +86,7 @@
             
         <AD name="%stackTraceSingleEntry" description="%stackTraceSingleEntry.desc"
             ibm:variable="com.ibm.ws.logging.stackTraceSingleEntry"
-            id="stackTraceSingleEntry" required="false" type="Boolean" default="false" ibm:beta="true"/>
+            id="stackTraceSingleEntry" required="false" type="Boolean" default="false"/>
             
         <AD name="%console.level" description="%console.level.desc" 
             ibm:variable="com.ibm.ws.logging.console.log.level"
