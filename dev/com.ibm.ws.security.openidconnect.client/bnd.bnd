@@ -47,6 +47,7 @@ Private-Package: \
 Import-Package: \
     com.ibm.ws.security.openidconnect.common.internal.*, \
     org.jose4j.*;version="[0.6,1)", \
+    io.openliberty.security.oidcclientcore.discovery, \
     *
 
 Service-Component: \
@@ -144,5 +145,3 @@ Include-Resource: \
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.threading;version=latest,\
 	com.ibm.ws.injection.core;version=latest
-
-instrument.classesExcludes: com/ibm/ws/security/openidconnect/client/internal/resources/OidcClientMessages*.class
