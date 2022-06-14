@@ -12,6 +12,8 @@ package io.openliberty.restfulWS30.appSecurity;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.security.Principal;
+import java.util.function.Supplier;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -95,12 +97,23 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
             throw new ForbiddenException("Method is not available : Unauthorized");
         }
         setUnauthenticatedSubjectIfNeeded();
+
         if (securityContext != null && RoleMethodAuthUtil.parseMethodSecurity(method,
-                                                       securityContext.getUserPrincipal(),
+                                                       new Supplier<Principal>() {
+                                                           @Override
+                                                           public Principal get() {
+                                                               return securityContext.getUserPrincipal();
+                                                           }
+                                                       },
                                                        s -> securityContext.isUserInRole(s))) {
             return;
         } else if (RoleMethodAuthUtil.parseMethodSecurity(method,
-                                                       req.getUserPrincipal(),
+                                                       new Supplier<Principal>() {
+                                                         @Override
+                                                         public Principal get() {
+                                                           return req.getUserPrincipal();
+                                                         }
+                                                       },
                                                        s -> req.isUserInRole(s))) {
             return;
         }

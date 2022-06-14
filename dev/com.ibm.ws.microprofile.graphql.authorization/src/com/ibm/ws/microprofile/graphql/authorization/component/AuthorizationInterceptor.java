@@ -11,6 +11,8 @@
 package com.ibm.ws.microprofile.graphql.authorization.component;
 
 import java.lang.reflect.Method;
+import java.security.Principal;
+import java.util.function.Supplier;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.Dependent;
@@ -53,12 +55,24 @@ public class AuthorizationInterceptor {
     @FFDCIgnore({UnauthenticatedException.class})
     private boolean isAuthorized(Method m) {
         try {
-            return RoleMethodAuthUtil.parseMethodSecurity(m, 
-                    AUTH_FILTER.getUserPrincipal(), AUTH_FILTER::isUserInRole);
+            return RoleMethodAuthUtil.parseMethodSecurity(m,
+                    new Supplier<Principal>() {
+                        @Override
+                        public Principal get() {
+                            return AUTH_FILTER.getUserPrincipal();
+                        }
+                    }, 
+                    AUTH_FILTER::isUserInRole);
         } catch (UnauthenticatedException ex) {
             try {
                 return AUTH_FILTER.authenticate() && RoleMethodAuthUtil.parseMethodSecurity(m, 
-                        AUTH_FILTER.getUserPrincipal(), AUTH_FILTER::isUserInRole);
+                        new Supplier<Principal>() {
+                            @Override
+                            public Principal get() {
+                                return AUTH_FILTER.getUserPrincipal();
+                            }
+                        }, 
+                        AUTH_FILTER::isUserInRole);
             } catch (Throwable t) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Failed to authenticate or failed auth check", t);

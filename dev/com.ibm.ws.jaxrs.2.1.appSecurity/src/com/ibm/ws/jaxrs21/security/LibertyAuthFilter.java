@@ -12,6 +12,9 @@ package com.ibm.ws.jaxrs21.security;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.security.Principal;
+import java.util.function.Supplier;
+
 import javax.annotation.Priority;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -92,7 +95,12 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
         if (jaxrsSecurityContext != null && jaxrsSecurityContext instanceof SecurityContext) {
             Method method = getTargetMethod(message);
             if (RoleMethodAuthUtil.parseMethodSecurity(method,
-                                                       jaxrsSecurityContext.getUserPrincipal(),
+                                                       new Supplier<Principal>() {
+                                                           @Override
+                                                           public Principal get() {
+                                                               return jaxrsSecurityContext.getUserPrincipal();
+                                                           }
+                                                       },
                                                        s -> jaxrsSecurityContext.isUserInRole(s))) {
                 return;
             }
@@ -102,7 +110,12 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
                 new AccessDeniedException("Method is not available : Unauthorized"));
             setUnauthenticatedSubjectIfNeeded();
             if (RoleMethodAuthUtil.parseMethodSecurity(method,
-                                                       req.getUserPrincipal(),
+                                                       new Supplier<Principal>() {
+                                                           @Override
+                                                           public Principal get() {
+                                                               return req.getUserPrincipal();
+                                                           }
+                                                       },
                                                        s -> req.isUserInRole(s))) {
                 return;
             }
