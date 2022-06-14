@@ -1,0 +1,106 @@
+<server>
+    <featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>localConnector-1.0</feature>
+      <feature>jmsMdb-3.2</feature>
+      <feature>jms-2.0</feature>
+      <feature>concurrent-1.0</feature>
+      <feature>jca-1.7</feature>
+      <feature>jdbc-4.1</feature>
+      <feature>j2eeManagement-1.1</feature>
+      <feature>monitor-1.0</feature>
+    </featureManager>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+    
+    <logging traceSpecification="WAS.j2c=all:com.ibm.ws.connectionpool.monitor.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+
+	<jdbcDriver id="FATJDBCDriver" libraryRef="DerbyLib"/>
+    
+    <dataSource id="ds1" jndiName="jdbc/ds1" jdbcDriverRef="FATJDBCDriver">
+    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <!-- Note that this datasource should only by used by the testBasicGetWaitTime test -->
+    <dataSource id="waitTimeDS" jndiName="jdbc/waitTimeDS" jdbcDriverRef="FATJDBCDriver">
+        <connectionManager maxPoolSize="2"/>
+    	<properties.derby.embedded databaseName="memory:waitTimeDS" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <dataSource id="sharedDS" jndiName="jdbc/sharedDS" jdbcDriverRef="FATJDBCDriver">		
+     	<properties.derby.embedded databaseName="memory:sharedDS" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />		
+     </dataSource>		
+     	
+    <!-- Note that this datasource should only by used by the testExceptionInCreate test -->	
+     <dataSource id="exceptionInCreateDS" jndiName="jdbc/exceptionInCreateDS" jdbcDriverRef="FATJDBCDriver">		
+         <connectionManager maxPoolSize="2" connectionTimeout="0s"/>		
+     	<properties.derby.embedded databaseName="memory:exceptionInCreateDS" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />		
+     </dataSource>
+     
+     <!-- Note that this datasource should only by used by the testMultiThread test -->		
+     <dataSource id="multiThreadDS" jndiName="jdbc/multiThreadDS" jdbcDriverRef="FATJDBCDriver">
+ 		<properties.derby.embedded databaseName="memory:multiThreadDS" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />		      	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+      </dataSource>
+    
+    <connectionFactory jndiName="eis/mak">
+      <connectionManager maxPoolSize="5" connectionTimeout="0"/>
+      <!-- Specify adapterName and propertyW to workaround precedence issues in full profile. -->
+      <properties.FAT1 />
+    </connectionFactory>
+
+    <jmsConnectionFactory id="cf1" jndiName="jms/cf1">
+      <connectionManager maxPoolSize="2" connectionTimeout="0"/>
+      <properties.FAT1 tableName="cf1tbl" userName="CF1USER"/>
+    </jmsConnectionFactory>
+    <jmsConnectionFactory id="cf6" jndiName="jms/cf6">
+      <connectionManager maxPoolSize="6" connectionTimeout="0"/>
+      <properties.FAT1 tableName="cf6tbl" userName="CF6USER"/>
+    </jmsConnectionFactory>
+    
+    <connectionManager id="externalConnectionManager" maxPoolSize="20"/>
+
+    <jmsQueue id="queue1" jndiName="jms/queue1">
+      <properties.FAT1 queueName="queue1"/>
+    </jmsQueue>
+    
+    <authData id="activation1auth" password="{xor}HhwLCW4PCBs=" user="ACTV1USER"/>
+
+    <jmsActivationSpec id="fvtapp/fvtweb/FVTMessageDrivenBean" authDataRef="activation1auth">
+      <properties.FAT1 destinationRef="queue1"/>
+    </jmsActivationSpec>
+
+    <jmsTopic id="topic1">
+      <properties.FAT1 topicName="topic1"/>
+    </jmsTopic>
+    
+    <jmsTopic id="topic2" jndiName="jms/topic2">
+      <properties.FAT1 topicName="topic2"/>
+    </jmsTopic>
+    
+    <jmsActivationSpec id="FVTMessageDrivenBeanBindingOverride">
+      <properties.FAT1 destinationRef="topic1" destinationType="javax.jms.Topic"/>
+    </jmsActivationSpec>
+    <resourceAdapter name="ra/rafat1" id="FAT1" location="${server.config.dir}/connectors/JCAFAT1.rar">
+      <classloader commonLibraryRef="DerbyLib"/>
+      <properties.FAT1 databaseName="jcafvtdb" createDatabase="true" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/>
+    </resourceAdapter>
+    
+    <!-- This is used by the fake RAR -->
+    <library id="DerbyLib">
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+    
+    <application type="ear" id="fvtapp" name="fvtapp" location="fvtapp.ear">
+    </application>
+
+	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.sql.SQLPermission" name="callAbort"/>
+	<javaPermission className="javax.management.MBeanPermission" name="com.ibm.ws.*" actions="getMBeanInfo"/>
+	<javaPermission className="javax.management.MBeanServerPermission" name="newMBeanServer,createMBeanServer"/>
+	<!-- This permission must also be manually granted in the java.policy file -->
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.jdbc.odbc"/>
+</server>

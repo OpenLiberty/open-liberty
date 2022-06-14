@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd"
+        version="1.1">
+ 	<message-driven name="FVTMessageDrivenBeanBinding">
+ 		<jca-adapter activation-spec-binding-name="FVTMessageDrivenBeanBindingOverride" 
+                     activation-spec-auth-alias="activation1auth"
+                     destination-binding-name="topic2">
+        </jca-adapter>
+    </message-driven>
+</ejb-jar-bnd>
