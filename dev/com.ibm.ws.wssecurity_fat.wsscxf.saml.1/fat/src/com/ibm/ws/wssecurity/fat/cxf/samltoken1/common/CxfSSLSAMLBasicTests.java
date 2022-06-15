@@ -81,7 +81,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      */
  
     @Mode(TestMode.LITE)
-    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
+    //@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
     @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testSAMLCxfSvcClient_TransportEnabled() throws Exception {
@@ -142,13 +142,16 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, "user1", "user1pwd", "SamlTokenTransportSecure",
                 "SamlTokenTransportSecurePort", "", "False", null, null);
 
+        String CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED = "HttpsToken could not be asserted: Not an HTTPs connection"; // slightly different error with new runtime
+        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
+        /*
         //issue 18363
     	if ("EE7".equals(getFeatureVersion())) {
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
     	} else if ("EE8".equals(getFeatureVersion())) {
     		String CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED = "HttpsToken could not be asserted: Not an HTTPs connection"; // @AV999 slightly different error with new runtime
             genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
-    	} //End of 18363
+    	} //End of 18363*/
     }
   
     /**
@@ -165,7 +168,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      */
  
     @Mode(TestMode.LITE)
-    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
+    //@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
     @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClient() throws Exception {

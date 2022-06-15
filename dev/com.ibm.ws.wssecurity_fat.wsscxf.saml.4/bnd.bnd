@@ -50,7 +50,6 @@ tested.features:\
   com.ibm.ws.security.saml.sso_fat.common;version=latest, \
   com.ibm.websphere.javaee.servlet.3.0;version=latest,\
   httpunit:httpunit;version=1.5.4,\
-  com.ibm.ws.org.apache.ws.security.wss4j.1.6.7;version=latest,\
   com.ibm.ws.org.apache.cxf.ws.security.2.6.2;version=latest,\
   com.ibm.websphere.security;version=latest,\
   com.ibm.ws.wssecurity;version=latest,\
@@ -61,6 +60,7 @@ tested.features:\
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
+  com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0;version=latest,\
   com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
   com.ibm.websphere.appserver.spi.logging;version=latest,\
   com.ibm.websphere.javaee.jaxb.2.2;version=latest,\

@@ -48,6 +48,7 @@
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 		ws-security.signature.username="soapprovider"
+                ws-security.return.security.error="true"
 	>
 		<signatureProperties
 			signatureAlgorithm="sha256"

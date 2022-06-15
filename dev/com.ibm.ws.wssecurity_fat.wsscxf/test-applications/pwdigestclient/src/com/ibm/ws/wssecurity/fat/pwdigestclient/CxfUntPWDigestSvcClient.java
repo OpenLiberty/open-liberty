@@ -77,7 +77,7 @@ public class CxfUntPWDigestSvcClient extends HttpServlet {
         String clientWsdlFile = request.getParameter("clientWsdl");
         String theWsdl = request.getParameter("theWsdl");
 
-        String pwdCBHVersion = request.getParameter("pwdCallBackhandlerVersion");
+        String pwdCBHVersion = "EE7";//request.getParameter("pwdCallBackhandlerVersion");
 
         // set default WSDL parms
         wsdlLocation = "http://localhost:" + httpPortNum

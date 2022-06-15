@@ -103,6 +103,7 @@
 	<wsSecurityProvider
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+                ws-security.return.security.error="true"
 	>
 		<!-- signatureProperties **Do not need Signature properties in Symmetric 
 			org.apache.ws.security.crypto.merlin.keystore.type="jks" org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server" 
