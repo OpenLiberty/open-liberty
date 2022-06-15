@@ -10,6 +10,6 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/transform.props
 
-Bundle-Name: Security OIDC Client Core Internal
+Bundle-Name: Security OIDC Client Core Internal Jakarta
 Bundle-SymbolicName: io.openliberty.security.oidcclientcore.internal.jakarta
 Bundle-Description: Security OIDC Client Core Internal, version=${bVersion}; Jakarta Enabled
