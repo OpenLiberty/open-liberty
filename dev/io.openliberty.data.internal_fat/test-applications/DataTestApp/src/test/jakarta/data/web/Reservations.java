@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.concurrent.Flow.Publisher;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -79,6 +80,8 @@ public interface Reservations extends Repository<Reservation, Long> {
     // @Result(ReservedTimeSlot.class)
     // @Select({ "start", "stop" })
     // Stream<ReservedTimeSlot> findByStopOrStopOrStart(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
+
+    Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostSubstring);
 
     Page<Reservation> findByHostLikeOrderByMeetingIDDesc(String hostSubstring, Pagination pagination);
 

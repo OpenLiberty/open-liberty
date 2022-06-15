@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow.Publisher;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -104,7 +105,7 @@ public class QueryHandler<T> implements InvocationHandler {
     private final Set<Class<?>> entityClassesAvailable; // TODO is this information needed?
     private final String entityName;
     private final String keyAttribute;
-    private final DataPersistence persistence;
+    final DataPersistence persistence;
     final PersistenceServiceUnit punit;
 
     @SuppressWarnings("unchecked")
@@ -421,6 +422,8 @@ public class QueryHandler<T> implements InvocationHandler {
                 if (Page.class.equals(returnType)) {
                     Pagination pagination = (Pagination) args[args.length - 1];
                     return new PageImpl<T>(jpql, pagination, this, method, args);
+                } else if (Publisher.class.equals(returnType)) {
+                    return new PublisherImpl<T>(jpql, this, method, args);
                 }
                 queryType = QueryType.SELECT;
                 requiresTransaction = false;

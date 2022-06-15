@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -48,6 +49,9 @@ public class DataPersistence {
     private static final ConcurrentHashMap<//
                     Entry<String, ClassLoader>, //
                     Entry<PersistenceServiceUnit, Set<Class<?>>>> units = new ConcurrentHashMap<>();
+
+    @Reference(target = "(component.name=com.ibm.ws.threading)")
+    protected ExecutorService executor;
 
     @Reference
     protected LocalTransactionCurrent localTranCurrent;
