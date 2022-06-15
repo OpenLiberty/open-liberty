@@ -41,7 +41,7 @@ import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
 public class SimpleClientServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private static int timeout = 40; // seconds
+	private static final float DEFAULT_TIMEOUT = 40; // seconds
 	
 	private static final int NO_SLEEP = 0;
 	private static final int LONG_SLEEP = 1;
@@ -90,7 +90,7 @@ public class SimpleClientServlet extends HttpServlet {
 			}
 			String perf = request.getParameter("perf");
 			if (perf != null && !perf.isEmpty()) {
-				timeout /= Float.parseFloat(perf);
+				int timeout = Math.round(DEFAULT_TIMEOUT / Float.parseFloat(perf));
 				ut.setTransactionTimeout(timeout);
 				System.out.println("Timeout adjusted to " + timeout);
 

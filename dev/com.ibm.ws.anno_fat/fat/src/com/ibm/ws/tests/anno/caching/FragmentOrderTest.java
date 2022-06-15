@@ -104,6 +104,8 @@ public class FragmentOrderTest extends AnnoCachingTest {
         deleteExpandedApplication();
         addToAppsDir( createApp() );
 
+        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("TestServlet40");
+        
         installServerXml("jandexDefaultsAutoExpandTrue_server.xml");  // Default: Do NOT use Jandex.
 
         long lStartTime = System.nanoTime();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,7 +95,11 @@ public class SecurityTestRepeatAction implements RepeatTestAction {
     @Override
     public String getID() {
 
-        return nameExtension;
+        if (nameExtension == null || nameExtension.equals("")) {
+            return "NO_MODIFICATION_ACTION";
+        } else {
+            return nameExtension;
+        }
 
     }
 

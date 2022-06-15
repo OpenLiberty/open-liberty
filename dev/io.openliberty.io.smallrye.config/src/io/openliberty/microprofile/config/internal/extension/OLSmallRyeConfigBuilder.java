@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,12 @@
  *******************************************************************************/
 package io.openliberty.microprofile.config.internal.extension;
 
+import static java.security.AccessController.doPrivileged;
+
+import java.security.PrivilegedAction;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
@@ -21,6 +26,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.openliberty.microprofile.config.internal.serverxml.AppPropertyConfigSource;
 import io.openliberty.microprofile.config.internal.serverxml.ServerXMLDefaultVariableConfigSource;
 import io.openliberty.microprofile.config.internal.serverxml.ServerXMLVariableConfigSource;
+import io.smallrye.config.EnvConfigSource;
 import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.config.SmallRyeConfigBuilder;
 
@@ -31,7 +37,20 @@ public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
     @Override
     protected List<ConfigSource> getDefaultSources() {
 
+        // TODO ideally we should not have to call super here and instead just do what super does directly
+        // This would avoid having to replace the EnvConfigSource with the right one.
         List<ConfigSource> defaultSources = super.getDefaultSources();
+
+        // Replace the EnvConfigSource that super created with an instance that does not copy the env Map.
+        // For Liberty we do not want to copy the env Map into the config source.  This allows
+        // for the config source to be updated properly when restoring a checkpoint process with an
+        // updated environment.
+        for (ListIterator<ConfigSource> iSources = defaultSources.listIterator(); iSources.hasNext();) {
+            ConfigSource source = iSources.next();
+            if (source instanceof EnvConfigSource) {
+                iSources.set(new EnvConfigSource(doPrivileged((PrivilegedAction<Map<String, String>>) System::getenv), source.getOrdinal()));
+            }
+        }
 
         defaultSources.add(new AppPropertyConfigSource());
         defaultSources.add(new ServerXMLVariableConfigSource());

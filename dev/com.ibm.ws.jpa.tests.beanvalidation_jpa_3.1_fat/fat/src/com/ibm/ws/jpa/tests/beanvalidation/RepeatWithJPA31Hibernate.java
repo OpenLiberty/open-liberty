@@ -13,19 +13,19 @@ package com.ibm.ws.jpa.tests.beanvalidation;
 
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.RepeatTestAction;
 
-/**
- *
- */
-public class RepeatWithJPA31Hibernate extends JakartaEE10Action implements RepeatTestAction {
+public class RepeatWithJPA31Hibernate extends JakartaEE10Action {
     public static final String ID = "JPA31_HIBERNATE";
 
-//    @Override
-//    public boolean isEnabled() {
-//        return true;
-//    }
+    /**
+     * Restrict Hibernate tests to run on FULL mode
+     */
+    public RepeatWithJPA31Hibernate() {
+        // Used in componenttest.rules.repeater.RepeatTestAction.isEnabled() to determine if the test should run
+        withTestMode(TestMode.FULL);
+    }
 
     @Override
     public String toString() {

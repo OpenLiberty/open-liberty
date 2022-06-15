@@ -20,6 +20,7 @@
     <application location="jsonbtestapp.war" />
 
     <javaPermission className="java.util.PropertyPermission" actions="read" name="jsonb.creator-parameters-required"/>
+    <javaPermission className="java.util.PropertyPermission" name="yasson.time-in-millis-as-a-string" actions="read"/>
     
     <variable name="onError" value="FAIL"/>
 </server>
