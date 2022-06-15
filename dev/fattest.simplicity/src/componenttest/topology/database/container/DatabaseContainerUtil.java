@@ -24,6 +24,7 @@ import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DataSourceProperties;
 import com.ibm.websphere.simplicity.config.DatabaseStore;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.config.dsprops.Properties;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -132,6 +133,12 @@ public final class DatabaseContainerUtil {
                 if (ds.getFatModify() != null && ds.getFatModify().equals("true"))
                     datasources.put(ds.getId(), ds);
 
+        //Get datasources that are nested within the transaction stanza
+        Transaction tran = cloneConfig.getTransaction();
+        for (DataSource ds : tran.getDataSources())
+            if (ds.getFatModify() != null && ds.getFatModify().equals("true"))
+                datasources.put(ds.getId(), ds);
+
         return datasources;
     }
 
@@ -144,7 +151,7 @@ public final class DatabaseContainerUtil {
 
         //Get general authDatas
         for (AuthData ad : cloneConfig.getAuthDataElements())
-            if (ad.getFatModify() != null && ad.getFatModify().equals("true"))
+            if (ad.getFatModify() != null) // && ad.getFatModify().equals("true"))
                 authDatas.put(ad.getId(), ad);
 
         //Get authDatas that are nested under datasources
@@ -153,7 +160,7 @@ public final class DatabaseContainerUtil {
             ads.addAll(ds.getContainerAuthDatas());
             ads.addAll(ds.getRecoveryAuthDatas());
             for (AuthData ad : ads)
-                if (ad.getFatModify() != null && ad.getFatModify().equals("true"))
+                if (ad.getFatModify() != null) // && ad.getFatModify().equals("true"))
                     authDatas.put(ad.getId(), ad);
         }
 
@@ -212,16 +219,20 @@ public final class DatabaseContainerUtil {
             switch (authLoc) {
                 case inAuthDataRef:
                     assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                    Log.info(c, "setupDataSourceProperties", "replace inAuthDataRef");
                     entry.getValue().replaceDatasourceProperties(noAuthProps);
                     break;
                 case inEmbeddedAuthData:
                     assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                    Log.info(c, "setupDataSourceProperties", "replace inEmbeddedAuthData");
                     entry.getValue().replaceDatasourceProperties(noAuthProps);
                     break;
                 case inProperties:
+                    Log.info(c, "setupDataSourceProperties", "replace inProperties");
                     entry.getValue().replaceDatasourceProperties(props);
                     break;
                 case none:
+                    Log.info(c, "setupDataSourceProperties", "replace none");
                     Log.warning(c,
                                 "The datasource (" + entry.getKey()
                                    + ") did not have username/password set in properties element, ContainerAuthData element, or ContainerAuthDataRef attribute. "
@@ -230,6 +241,7 @@ public final class DatabaseContainerUtil {
                     break;
                 default:
                     //Replace default properties
+                    Log.info(c, "setupDataSourceProperties", "replace default");
                     entry.getValue().replaceDatasourceProperties(props);
                     break;
 
@@ -239,8 +251,11 @@ public final class DatabaseContainerUtil {
         for (Map.Entry<String, AuthData> entry : authDatas.entrySet()) {
             Log.info(c, "setupDataSourceProperties", "FOUND: AuthData to be enlisted in database rotation.  ID: " + entry.getKey());
             //Replace derby auth data
-            entry.getValue().setUser(cont.getUsername());
-            entry.getValue().setPassword(cont.getPassword());
+            if (entry.getValue().getFatModify().equals("true")) {
+                Log.info(c, "setupDataSourceProperties", "fat.modify is true, reset user/password");
+                entry.getValue().setUser(cont.getUsername());
+                entry.getValue().setPassword(cont.getPassword());
+            }
         }
 
         //Update config
@@ -315,8 +330,11 @@ public final class DatabaseContainerUtil {
         for (Map.Entry<String, AuthData> entry : authDatas.entrySet()) {
             Log.info(c, "setupDataSourceProperties", "FOUND: AuthData to be enlisted in database rotation.  ID: " + entry.getKey());
             //Replace derby auth data
-            entry.getValue().setUser(cont.getUsername());
-            entry.getValue().setPassword(cont.getPassword());
+            if (entry.getValue().getFatModify().equals("true")) {
+                Log.info(c, "setupDataSourceProperties", "fat.modify is true, reset user/password");
+                entry.getValue().setUser(cont.getUsername());
+                entry.getValue().setPassword(cont.getPassword());
+            }
         }
 
         //Update config
