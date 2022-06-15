@@ -59,7 +59,7 @@ MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=Only zero or one REST servlet is a
 MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Review the web.xml file for these servlets and remove all or all but one servlet.
 
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Multiple REST servlet mappings are defined for the {0} web module. A REST servlet can be associated only with a single path mapping.
-MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=A REST servlet is only allowed to be configured with zero or one path mapping. A REST servlet is any servlet that uses one of the following class names: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher, or org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. This message indicates that more than one mapping is associated with a REST servlet in the web.xml.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=A REST servlet is only allowed to be configured with zero or one path mapping. A REST servlet is any servlet that uses one of the following class names: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher, or org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. This message indicates that more than one mapping is associated with a REST servlet in the web.xml file.
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Review the web.xml file for the servlet-mappings that are associated with the REST servlet and remove all or all but one path mapping.
 
 UNMAPPED_APPLICATION_CWWKW1302W=CWWKW1302W: Web module {0} contains {1} JAX-RS application class that is not mapped. The server ignores this application class.
