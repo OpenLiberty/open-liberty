@@ -38,6 +38,8 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.data.Page;
+import io.openliberty.data.Pagination;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -594,6 +596,42 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.start().toInstant())
                                              .sorted()
                                              .collect(Collectors.toList()));
+
+        // Paging where the final page includes less than the maximum page size,
+        Page<Reservation> page1 = reservations.findByHostLikeOrderByMeetingIDDesc("testRepositoryCustom-host", Pagination.page(1).size(4));
+        assertIterableEquals(List.of(10030009L, 10030008L, 10030007L, 10030006L),
+                             page1
+                                             .getContent()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+        Page<Reservation> page2 = page1.next();
+        assertIterableEquals(List.of(10030005L, 10030004L, 10030003L, 10030002L),
+                             page2
+                                             .get()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+        Page<Reservation> page3 = page2.next();
+        assertIterableEquals(List.of(10030001L),
+                             page3
+                                             .getContent()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+        assertEquals(null, page3.next());
+
+        // Paging that comes out even:
+        page2 = reservations.findByHostLikeOrderByMeetingIDDesc("testRepositoryCustom-host", Pagination.page(2).size(3));
+        assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
+                             page2
+                                             .getContent()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+        page3 = page2.next();
+        assertIterableEquals(List.of(10030003L, 10030002L, 10030001L),
+                             page3
+                                             .getContent()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+        assertEquals(null, page3.next());
 
         assertEquals(false, reservations.deleteByHostIn(List.of("testRepositoryCustom-host5@example.org")));
 

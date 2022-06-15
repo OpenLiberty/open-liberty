@@ -44,6 +44,8 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
+import io.openliberty.data.Page;
+import io.openliberty.data.Pagination;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
@@ -98,12 +100,12 @@ public class QueryHandler<T> implements InvocationHandler {
     private final Map<String, String> attributeNames = new LinkedHashMap<>();
     private final Class<T> beanClass;
     private final Data data;
-    private final Class<?> entityClass;
+    final Class<?> entityClass;
     private final Set<Class<?>> entityClassesAvailable; // TODO is this information needed?
     private final String entityName;
     private final String keyAttribute;
     private final DataPersistence persistence;
-    private final PersistenceServiceUnit punit;
+    final PersistenceServiceUnit punit;
 
     @SuppressWarnings("unchecked")
     public QueryHandler(Bean<T> bean, Class<?> entityClass, String keyAttribute) {
@@ -316,6 +318,7 @@ public class QueryHandler<T> implements InvocationHandler {
                 Class<?> arrayType = returnType.getComponentType();
                 returnType = arrayType == null ? returnType : arrayType;
                 if (!returnType.isPrimitive()
+                    && !returnType.isInterface()
                     && !returnType.isAssignableFrom(entityClass)
                     && !returnType.getName().startsWith("java"))
                     type = returnType;
@@ -415,6 +418,10 @@ public class QueryHandler<T> implements InvocationHandler {
         } else {
             String q = jpql.toUpperCase();
             if (q.startsWith("SELECT")) {
+                if (Page.class.equals(returnType)) {
+                    Pagination pagination = (Pagination) args[args.length - 1];
+                    return new PageImpl<T>(jpql, pagination, this, method, args);
+                }
                 queryType = QueryType.SELECT;
                 requiresTransaction = false;
             } else if (q.startsWith("UPDATE")) {
@@ -459,7 +466,7 @@ public class QueryHandler<T> implements InvocationHandler {
                 case SELECT:
                     Class<?> returnArrayType = returnType.getComponentType();
 
-                    TypedQuery<?> query = em.createQuery(jpql, entityClass);//resultType);
+                    TypedQuery<?> query = em.createQuery(jpql, entityClass);
                     if (args != null) {
                         Parameter[] params = method.getParameters();
                         for (int i = 0; i < args.length; i++) {
