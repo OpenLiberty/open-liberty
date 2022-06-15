@@ -63,5 +63,5 @@ MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=A REST servlet is only all
 MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Review the web.xml file for the servlet-mappings that are associated with the REST servlet and remove all or all but one path mapping.
 
 UNMAPPED_APPLICATION_CWWKW1302W=CWWKW1302W: Web module {0} contains {1} JAX-RS application class that is not mapped. The server ignores this application class.
-UNMAPPED_APPLICATION_CWWKW1302W.explanation=The specified application class is not referenced in the web module's web.xml file. Nor is the class annotated with @ApplicationPath, so the server cannot determine its HTTP path and will ignore the class.
+UNMAPPED_APPLICATION_CWWKW1302W.explanation=The specified application class is not referenced in the web.xml file of the web module, nor is the class annotated with @ApplicationPath. The server cannot determine its HTTP path and ignores the class.
 UNMAPPED_APPLICATION_CWWKW1302W.useraction=Add an @ApplicationPath annotation that specifies the application's path or specify the path in the web.xml. Alternatively remove the application class if it is unused.
