@@ -72,6 +72,11 @@ MISSING_REGISTRY_DEFINITION=CWIMK0011E: Impossibile completare l'operazione regi
 MISSING_REGISTRY_DEFINITION.explanation=Non \u00e8 stato definito un registro utente o non \u00e8 stato possibile inizializzarlo a causa di errori di configurazione. Un registro utente valido include un registro LDAP o altri registri o repository supportati.
 MISSING_REGISTRY_DEFINITION.useraction=Se \u00e8 stato definito un registro utente nel file di configurazione, cercare nei log gli errori di configurazione durante l'avvio del server. Aggiungere o correggere la definizione del registro utente nel file server.xml.
 
+FAILED_LOGIN_DELAY_DISABLED=CWIMK0012W: Il ritardo dell''accesso non riuscito per i repository federati \u00e8 disabilitato. Questa disabilitazione espone il server ad attacchi di enumerazione degli utenti. Per abilitare il ritardo per i login non riusciti, rimuovere gli attributi del repository federato {0} e {1} in modo che vengano utilizzati i valori minimi e massimi predefiniti di 0 e 5000 millisecondi. In alternativa, impostare l''attributo del repository federato {1} su un valore maggiore di zero. 
+FAILED_LOGIN_DELAY_DISABLED.explanation=Quando il ritardo dell'accesso non riuscito \u00e8 disabilitato, il server \u00e8 vulnerabile a un attacco in stile enumerazione degli utenti.
+FAILED_LOGIN_DELAY_DISABLED.useraction=Abilitare il ritardo dell'accesso non riuscito rimuovendo gli attributi per utilizzare il ritardo minimo e massimo di riempimento di zero e 5000 millisecondi oppure impostare gli attributi con una configurazione personalizzata. 
+
+
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: Impossibile completare l'operazione registro utenti. Non \u00e8 stato trovato l'identificativo dell'entit\u00e0. Specificare l'identificativo corretto come parametro di input. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=Non \u00e8 stato specificato l'identificativo dell'entit\u00e0. Il sistema non \u00e8 in grado di trovare l'entit\u00e0. Impossibile proseguire l'operazione registro utenti senza trovare questa entit\u00e0. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Assicurarsi che l'entit\u00e0 nell'oggetto di input contenga una propriet\u00e0 dell'identificativo.

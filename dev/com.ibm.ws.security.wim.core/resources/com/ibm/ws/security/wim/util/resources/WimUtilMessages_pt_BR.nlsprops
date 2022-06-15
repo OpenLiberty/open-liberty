@@ -72,6 +72,11 @@ MISSING_REGISTRY_DEFINITION=CWIMK0011E: N\u00e3o foi poss\u00edvel concluir a op
 MISSING_REGISTRY_DEFINITION.explanation=N\u00e3o foi poss\u00edvel definir ou inicializar um registro de usu\u00e1rio devido a um erro de configura\u00e7\u00e3o. Um registro de usu\u00e1rio v\u00e1lido inclui um registro LDAP ou outros reposit\u00f3rios ou registros suportados.
 MISSING_REGISTRY_DEFINITION.useraction=Se um registro de usu\u00e1rio foi definido no arquivo de configura\u00e7\u00e3o, revise os logs em busca de erros de configura\u00e7\u00e3o durante a inicializa\u00e7\u00e3o do servidor. Inclua ou corrija a defini\u00e7\u00e3o de registro de usu\u00e1rio no arquivo server.xml.
 
+FAILED_LOGIN_DELAY_DISABLED=CWIMK0012W: O atraso de login com falha para os reposit\u00f3rios federados est\u00e1 desativado. Essa desativa\u00e7\u00e3o exp\u00f5e o servidor a ataques de enumera\u00e7\u00e3o de usu\u00e1rios. Para ativar o atraso para logins com falha, remova os atributos do reposit\u00f3rio federado {0} e {1} para que os valores m\u00ednimo e m\u00e1ximo padr\u00e3o de 0 e 5000 milissegundos sejam usados. Como alternativa, configure o atributo de reposit\u00f3rio federado {1} para um valor maior que zero. 
+FAILED_LOGIN_DELAY_DISABLED.explanation=Quando o atraso de login com falha estiver desativado, o servidor ficar\u00e1 vulner\u00e1vel a um ataque de estilo enumera\u00e7\u00e3o de usu\u00e1rio.
+FAILED_LOGIN_DELAY_DISABLED.useraction=Ative o atraso de login com falha, removendo os atributos para usar os atrasos de preenchimento m\u00ednimo e m\u00e1ximo padr\u00e3o de zero e 5000 milissegundos ou configure os atributos para uma configura\u00e7\u00e3o customizada. 
+
+
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O identificador da entidade n\u00e3o foi localizado. Especifique o identificador correto como o par\u00e2metro de entrada. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=O identificador da entidade n\u00e3o foi especificado. O sistema n\u00e3o pode localizar a entidade. A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o pode continuar sem localizar essa entidade. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Assegure que a entidade no objeto de entrada contenha uma propriedade de identificador.

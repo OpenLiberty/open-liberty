@@ -77,12 +77,12 @@ OAUTH_REQUEST_ACCESS_DENIED.useraction=U\u017eivatel mus\u00ed povolit poskytova
 
 #
 #used by clients project
-OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE=CWWKS1712E: Klient pro p\u0159ipojen\u00ed OpenID Connect [{0}] neobdr\u017eel token ID od poskytovatele p\u0159ipojen\u00ed OpenID Connect [{1}].
+OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE=CWWKS1712E: Klient pro p\u0159ipojen\u00ed OpenID [{0}] neobdr\u017eel token ID od poskytovatele p\u0159ipojen\u00ed OpenID [{1}].
 OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE.explanation=Klientu pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e9 stran\u011b nebo RP) se nezda\u0159ilo z\u00edskat token ID od poskytovatele p\u0159ipojen\u00ed OpenID (OP). Mo\u017en\u00e1 nebyl OP v dob\u011b po\u017eadavku dostupn\u00fd, po\u017eadavek nebyl sm\u011brov\u00e1n na platn\u00fd koncov\u00fd bod, nebo do\u0161lo k neshod\u011b konfigurac\u00ed OP a RP. 
 OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE.useraction=Zkontrolujte konfiguraci serveru a ujist\u011bte se, \u017ee nakonfigurovan\u00e1 adresa URL koncov\u00e9ho bodu tokenu je platnou adresou URL a \u017ee ukazuje na koncov\u00fd bod tokenu aktivn\u00edho poskytovatele p\u0159ipojen\u00ed OpenID. Projd\u011bte si tak\u00e9 akce pro chyby zobrazen\u00e9 p\u0159ed touto zpr\u00e1vou.
 
 # used by clients
-OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE=CWWKS1713E: Po\u017eadavek klienta pro p\u0159ipojen\u00ed OpenID Connect [{0}] vy\u017eaduje rozsah obor\u016f [openid], ale sada rozsah\u016f obor\u016f [{1}] uveden\u00e1 v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID Connect nem\u00e1 uveden\u00fd obor rozsah\u016f.
+OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE=CWWKS1713E: Po\u017eadavek klienta pro p\u0159ipojen\u00ed OpenID [{0}] vy\u017eaduje rozsah obor\u016f [openid], ale sada rozsah\u016f obor\u016f [{1}] uveden\u00e1 v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID nem\u00e1 uveden\u00fd obor rozsah\u016f.
 OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE.explanation=Po\u017eadavek klienta pro p\u0159ipojen\u00ed OpenID vy\u017eaduje, aby byl nastaven rozsah obor\u016f [openid], a pokud v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID tento obor rozsah\u016f chyb\u00ed, po\u017eadavek se nezda\u0159\u00ed.
 OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE.useraction=Ujist\u011bte se, \u017ee m\u00e1te po\u017eadovan\u00fd obor rozsah\u016f [openid] uveden v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID.
 
@@ -105,12 +105,12 @@ PROPAGATION_TOKEN_MISSING_USERID.useraction=Prove\u010fte jednu z n\u00e1sleduj\
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Serveru prost\u0159edk\u016f se nezda\u0159il po\u017eadavek na ov\u011b\u0159en\u00ed, nebo\u0165 metoda ov\u011b\u0159en\u00ed [{0}] nen\u00ed vhodn\u00e1 pro adresu URL koncov\u00e9ho bodu ov\u011b\u0159en\u00ed platnosti [{1}].
+PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, nebo\u0165 metoda ov\u011b\u0159en\u00ed [{0}] nen\u00ed vhodn\u00e1 pro adresu URL koncov\u00e9ho bodu ov\u011b\u0159en\u00ed platnosti [{1}].
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Atribut validationEndpointUrl ur\u010den\u00fd v konfiguraci klienta OpenID Connect nen\u00ed vhodn\u00fdm koncov\u00fdm bodem pro ur\u010denou metodu validationMethod.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aktualizuje konfiguraci klienta OpenID Connect zm\u011bnou metody validationMethod nebo validationEndpointUrl.
  
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee datov\u00fd typ n\u00e1roku [{0}] v p\u0159\u00edstupov\u00e9m prvku p\u0159idru\u017een\u00fd k atributu konfigurace [{1}] nen\u00ed platn\u00fd. 
+PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee datov\u00fd typ n\u00e1roku [{0}] v p\u0159\u00edstupov\u00e9m tokenu p\u0159idru\u017een\u00fd k atributu konfigurace [{1}] nen\u00ed platn\u00fd. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd token m\u00e1 neplatn\u00fd datov\u00fd typ n\u00e1roku a b\u011bhov\u00fd modul nem\u016f\u017ee pokra\u010dovat ve zpracov\u00e1n\u00ed ov\u011b\u0159en\u00ed.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Ov\u011b\u0159te, \u017ee konfigurace klienta pro p\u0159ipojen\u00ed OpenID uv\u00e1d\u00ed pro atribut spr\u00e1vn\u00fd n\u00e1zev n\u00e1roku.
 
@@ -293,9 +293,10 @@ LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: Hodnota \u010dlena "{0}" v
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=Odpov\u00eddaj\u00edc\u00ed hodnota \u010dlena mus\u00ed b\u00fdt objektem JSON. O\u010dek\u00e1van\u00e1 hodnota je "{}", pr\u00e1zdn\u00fd objekt JSON.
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Ujist\u011bte se, \u017ee n\u00e1rok "events" v tokenu odhl\u00e1\u0161en\u00ed je spr\u00e1vn\u011b naform\u00e1tov\u00e1n.
 
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: V tokenu odhl\u00e1\u0161en\u00ed chyb\u00ed n\u00e1rok "sid", ale klient OpenID Connect {0} jej vy\u017eaduje.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Klient OpenID Connect vy\u017eaduje, aby token odhl\u00e1\u0161en\u00ed obsahoval ID relace pro identifikaci relace klienta OpenID Connect u poskytovatele OpenID Connect.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Nastavte atribut backchannelLogoutSessionRequired pro konfiguraci klienta OpenID Connect na hodnotu false nebo zajist\u011bte, aby token odhl\u00e1\u0161en\u00ed obsahoval n\u00e1rok "sid".
+# Do not translate jti
+LOGOUT_TOKEN_DUP_JTI=CWWKS1551E: Jin\u00fd token odhl\u00e1\u0161en\u00ed se stejn\u00fdm n\u00e1rokem [{0}] "jti" byl ji\u017e klientem pro p\u0159ipojen\u00ed OpenID [{1}] p\u0159ijat.
+LOGOUT_TOKEN_DUP_JTI.explanation=N\u00e1rok "jti" jednozna\u010dn\u011b identifikuje token odhl\u00e1\u0161en\u00ed. Jin\u00fd token odhl\u00e1\u0161en\u00ed s t\u00edmto "jti" byl pou\u017eit, tak\u017ee token nelze znovu pou\u017e\u00edt.
+LOGOUT_TOKEN_DUP_JTI.useraction=Ujist\u011bte se, \u017ee token odhl\u00e1\u0161en\u00ed obsahuje jedine\u010dnou hodnotu "jti" a \u017ee tokeny odhl\u00e1\u0161en\u00ed se nepou\u017e\u00edvaj\u00ed v\u00edcekr\u00e1t.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

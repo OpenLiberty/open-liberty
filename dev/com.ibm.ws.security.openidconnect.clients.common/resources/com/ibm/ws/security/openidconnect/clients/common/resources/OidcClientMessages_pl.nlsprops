@@ -37,7 +37,7 @@ OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Klient OpenID Connect (strona zal
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: najpierw upewnij si\u0119, \u017ce dostawca OpenID Connect obs\u0142uguje protok\u00f3\u0142 SSL. Je\u015bli dostawca OpenID Connect nie obs\u0142uguje protoko\u0142u SSL, u\u017cyj sk\u0142adnika klienta OpenID Connect i ustaw w\u0142a\u015bciwo\u015b\u0107 enforceHTTPS na warto\u015b\u0107 false w konfiguracji sk\u0142adnika klienta OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Bie\u017c\u0105cy stan [{0}] dla klienta OpenID Connect [{2}] i parametr stanu [{1}] w odpowiedzi dostawcy OpenID Connect s\u0105 niezgodne.  Ten warunek jest niedozwolony.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Bie\u017c\u0105cy stan [{0}] dla klienta OpenID Connect [{2}] i parametr stanu [{1}] w odpowiedzi dostawcy OpenID Connect s\u0105 niezgodne.  Taka sytuacja nie jest dozwolona.
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Klient OpenID Connect (strona zale\u017cna) wys\u0142a\u0142 \u017c\u0105danie do dostawcy OpenID Connect, kt\u00f3ry odes\u0142a\u0142 odpowied\u017a z parametrem stanu niezgodnym ze stanem strony zale\u017cnej w momencie wys\u0142ania. Dostawca OpenID musi do\u0142\u0105czy\u0107 do odpowiedzi taki sam stan, jaki zosta\u0142 wys\u0142any.  Stan jest u\u017cywany w ten spos\u00f3b do ochrony przed atakami typu CSRF (Cross-Site Request Forgery). 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Upewnij si\u0119, \u017ce adres URL u\u017cywanego dostawcy OpenID jest poprawny. Sprawd\u017a dzienniki dostawcy OpenID, aby upewni\u0107 si\u0119, \u017ce otrzyma\u0142 \u017c\u0105danie.
 
@@ -94,7 +94,7 @@ OIDC_CLIENT_REQUEST_NONCE_FAILED.useraction=Upewnij si\u0119, \u017ce dostawca O
 # 1715, 16, 17, 18, 19, 20, 21 are used in client bundle, do not use here.
 
 # used by clients proj
-PROPAGATION_TOKEN_MISSING_USERID=CWWKS1722E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera roszczenia [{0}] okre\u015blonego przez atrybut [{1}].
+PROPAGATION_TOKEN_MISSING_USERID=CWWKS1722E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera \u017c\u0105dania [{0}] okre\u015blonego przez atrybut [{1}].
 PROPAGATION_TOKEN_MISSING_USERID.explanation=Podany znacznik dost\u0119pu nie zawiera okre\u015blonego \u017c\u0105dania i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
 PROPAGATION_TOKEN_MISSING_USERID.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci. 1) Sprawd\u017a, czy w konfiguracji klienta OpenID Connect okre\u015blono poprawn\u0105 nazw\u0119 \u017c\u0105dania. 2) Sprawd\u017a czy dostawca OpenID Connect emituje znacznik dost\u0119pu z okre\u015blonym \u017c\u0105daniem.
 
@@ -110,12 +110,12 @@ PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Element validationEndpointUrl 
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Zaktualizuj konfiguracj\u0119 klienta OpenID Connect, zmieniaj\u0105c element validationMethod lub validationEndpointUrl.
  
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E:  Przetwarzanie \u017c\u0105dania uwierzytelnienia przez serwer zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c typ danych roszczenia [{0}] w znaczniku dost\u0119pu powi\u0105zanym z atrybutem konfiguracji [{1}] nie jest poprawny. 
+PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Przetwarzanie \u017c\u0105dania uwierzytelnienia przez serwer zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c typ danych \u017c\u0105dania [{0}] w znaczniku dost\u0119pu powi\u0105zanym z atrybutem konfiguracji [{1}] nie jest poprawny. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Podany znacznik dost\u0119pu ma niepoprawny typ danych \u017c\u0105dania i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Sprawd\u017a, czy konfiguracja klienta OpenID Connect okre\u015bla poprawn\u0105 nazw\u0119 \u017c\u0105dania dla atrybutu.
 
 #unused
-PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera roszczenia [{0}] okre\u015blonego przez atrybut [{1}].
+PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera \u017c\u0105dania [{0}] okre\u015blonego przez atrybut [{1}].
 PROPAGATION_TOKEN_MISSING_REALM.explanation=Udost\u0119pniony znacznik dost\u0119pu nie zawiera okre\u015blonego \u017c\u0105dania na potrzeby identyfikacji dziedziny i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
 PROPAGATION_TOKEN_MISSING_REALM.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci. 1) Sprawd\u017a, czy w konfiguracji klienta OpenID Connect okre\u015blono atrybut realmName. 2) Sprawd\u017a, czy dostawca OpenID Connect emituje znacznik dost\u0119pu z okre\u015blonym \u017c\u0105daniem. 3) Sprawd\u017a, czy dostawca OpenID Connect mo\u017ce emitowa\u0107 znacznik dost\u0119pu z \u017c\u0105daniem iss. 
 
@@ -293,9 +293,10 @@ LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: Warto\u015b\u0107 elementu
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=Odpowiednia warto\u015b\u0107 elementu musi by\u0107 obiektem JSON. Oczekiwana warto\u015b\u0107 to \u201e{}\u201d, pusty obiekt JSON.
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie \u201eevents\u201d w znaczniku wylogowania jest poprawnie sformatowane.
 
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: W znaczniku wylogowania brakuje \u017c\u0105dania \u201esid\u201d, ale klient OpenID Connect {0} go wymaga.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Klient OpenID Connect wymaga, aby znacznik wylogowania zawiera\u0142 identyfikator sesji w celu zidentyfikowania sesji klienta OpenID Connect z dostawc\u0105 OpenID Connect.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Ustaw atrybut konfiguracyjny backchannelLogoutSessionRequired klienta OpenID Connect na warto\u015b\u0107 false lub upewnij si\u0119, \u017ce znacznik wylogowania zawiera \u017c\u0105danie \u201esid\u201d.
+# Do not translate jti
+LOGOUT_TOKEN_DUP_JTI=CWWKS1551E: Inny token wylogowania z tym samym roszczeniem "jti" [{0}] zosta\u0142 ju\u017c odebrany przez klienta OpenID Connect [{1}].
+LOGOUT_TOKEN_DUP_JTI.explanation=Roszczenie "jti" jednoznacznie identyfikuje token wylogowania. U\u017cyty zosta\u0142 inny token wylogowania z tym elementem "jti", wi\u0119c nie mo\u017cna ponownie u\u017cy\u0107 tokenu.
+LOGOUT_TOKEN_DUP_JTI.useraction=Upewnij si\u0119, \u017ce token wylogowania zawiera unikaln\u0105 warto\u015b\u0107 "jti", a tokeny wylogowania nie s\u0105 u\u017cywane wielokrotnie.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 
