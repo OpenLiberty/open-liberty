@@ -1229,6 +1229,7 @@ public class LibertyServer implements LogMonitorClient {
                     socket.close();
                 } catch (IOException ioe) {
                     // not a lot to do
+                    Log.error(c, "checkPortsOpen", ioe, "Failed to close socket. Port " + httpDefaultPort + " will still be bound.");
                 }
             }
         }
