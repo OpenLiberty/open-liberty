@@ -64,4 +64,4 @@ MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Review the web.xml file for
 
 UNMAPPED_APPLICATION_CWWKW1302W=CWWKW1302W: Web module {0} contains {1} JAX-RS application class that is not mapped. The server ignores this application class.
 UNMAPPED_APPLICATION_CWWKW1302W.explanation=The specified application class is not referenced in the web.xml file of the web module, nor is the class annotated with @ApplicationPath. The server cannot determine its HTTP path and ignores the class.
-UNMAPPED_APPLICATION_CWWKW1302W.useraction=Add an @ApplicationPath annotation that specifies the application's path or specify the path in the web.xml. Alternatively remove the application class if it is unused.
+UNMAPPED_APPLICATION_CWWKW1302W.useraction=Add an @ApplicationPath annotation that specifies the application path or specify the path in the web.xml file. Alternatively, remove the application class if it is unused.
