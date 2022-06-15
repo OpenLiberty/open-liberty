@@ -9,22 +9,23 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
 
-Bundle-Name: Security OIDC Client Core Internal
-Bundle-SymbolicName: io.openliberty.security.oidcclientcore.internal
-Bundle-Description: TODO
-
 Import-Package: \
-    org.apache.http.*;resolution:=optional
+    org.apache.http.*;resolution:=optional, \
+    *
 
 Export-Package: \
-	io.openliberty.security.oidcclientcore.discovery,\
+	io.openliberty.security.oidcclientcore.discovery, \
 	io.openliberty.security.oidcclientcore.client
-	
+
 -buildpath: \
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.security.common;version=latest,\
-	com.ibm.ws.org.apache.httpcomponents;version=latest,\
-	com.ibm.websphere.appserver.spi.logging;version=latest,\
-	com.ibm.websphere.appserver.api.json;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.security.common;version=latest, \
+	com.ibm.ws.org.apache.httpcomponents;version=latest, \
+	com.ibm.websphere.appserver.spi.logging;version=latest, \
+	com.ibm.websphere.appserver.api.json;version=latest, \
+	com.ibm.ws.logging.core;version=latest
