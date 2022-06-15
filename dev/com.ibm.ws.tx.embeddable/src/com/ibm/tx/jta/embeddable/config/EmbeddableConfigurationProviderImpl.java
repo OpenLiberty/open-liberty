@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.tx.jta.util.alarm.AlarmManagerImpl;
 import com.ibm.tx.util.alarm.AlarmManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 public class EmbeddableConfigurationProviderImpl implements ConfigurationProvider {
@@ -329,6 +330,11 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
      */
     @Override
     public ResourceFactory getResourceFactory() {
+        return null;
+    }
+
+    @Override
+    public ResourceConfig getResourceConfig() {
         return null;
     }
 

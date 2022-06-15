@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import javax.sql.DataSource;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
@@ -39,6 +41,8 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
+import com.ibm.wsspi.resource.ResourceConfig;
+import com.ibm.wsspi.resource.ResourceConfigFactory;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 public class JTMConfigurationProvider extends DefaultConfigurationProvider implements ConfigurationProvider {
@@ -80,6 +84,9 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private boolean _setNonRetriableSqlcodes = false;
     List<Integer> retriableSqlCodeList;
     List<Integer> nonRetriableSqlCodeList;
+    private String _authAlias;
+    private ResourceConfigFactory _resourceConfigFactory;
+    private ResourceConfig _resourceConfig;
 
     public JTMConfigurationProvider() {
     }
@@ -136,7 +143,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
             //  If we already have a dataSourceFactory then we can startup (and drive recovery) now.
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef);
+                Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef + " look for containerAuth property");
+
+            if (serviceRef != null) {
+                configureAuthenticationType(serviceRef);
+            }
+
             if (serviceRef != null) {
                 // The DataSource is available, which means that we are able to drive recovery
                 // processing. This is driven through the reference to the TransactionManagerService,
@@ -449,6 +461,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    public ResourceConfig getResourceConfig() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "resourceConfig is " + _resourceConfig);
+        return _resourceConfig;
+    }
+
+    @Override
     public RuntimeMetaDataProvider getRuntimeMetaDataProvider() {
         return _runtimeMetaDataProvider;
     }
@@ -503,7 +522,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                 // has been provided, we can initiate recovery
                 ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef);
+                    Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef + " look for containerAuth property");
+
+                if (serviceRef != null) {
+                    configureAuthenticationType(serviceRef);
+                }
+
                 if (_cc != null && serviceRef != null) {
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
                 }
@@ -843,5 +867,47 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public boolean isDataSourceFactorySet() {
         return _dataSourceFactorySet;
+    }
+
+    /*
+     * Called by DS to inject ResourceConfigFactory reference from the com.ibm.ws.jdbc component
+     */
+    protected void setResourceConfigFactory(ResourceConfigFactory svc) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "ResourceConfigFactory service is " + svc);
+        _resourceConfigFactory = svc;
+    }
+
+    /*
+     * Called by DS to dereference ResourceConfigFactory
+     */
+    protected void unsetResourceConfigFactory(ServiceReference<ResourceFactory> ref) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "unsetResourceConfigFactory, ref " + ref);
+        // a no-op
+    }
+
+    private void configureAuthenticationType(ServiceReference<ResourceFactory> serviceRef) {
+
+        Object containerAuthDataRefObj = serviceRef.getProperty("containerAuthDataRef");
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "containerAuthDataRef is " + containerAuthDataRefObj);
+        if (containerAuthDataRefObj != null) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "ContainerAuthData IS configured, resourceConfigFactory is " + _resourceConfigFactory);
+
+            if (_resourceConfigFactory != null) {
+                _resourceConfig = _resourceConfigFactory.createResourceConfig(DataSource.class.getName());
+
+                // Set the data source to use container authentication
+                _resourceConfig.setResAuthType(ResourceConfig.AUTH_CONTAINER);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The datasource has been configured to use container authentication");
+            }
+        } else {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "ContainerAuthData NOT configured");
+        }
     }
 }

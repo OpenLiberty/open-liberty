@@ -22,6 +22,7 @@ Service-Component: com.ibm.ws.transaction; \
       implementation:=com.ibm.ws.transaction.services.JTMConfigurationProvider; \
       locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
       dataSourceFactory=com.ibm.wsspi.resource.ResourceFactory; \
+      resourceConfigFactory=com.ibm.wsspi.resource.ResourceConfigFactory; \
       transactionSettingsProvider=com.ibm.tx.jta.embeddable.TransactionSettingsProvider ;\
       optional:='dataSourceFactory,transactionSettingsProvider';\
       dynamic:='dataSourceFactory,transactionSettingsProvider';\
