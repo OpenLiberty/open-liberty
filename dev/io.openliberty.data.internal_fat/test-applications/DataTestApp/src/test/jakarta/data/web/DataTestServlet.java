@@ -70,6 +70,9 @@ public class DataTestServlet extends FATServlet {
     @Inject
     ShippingAddresses shippingAddresses;
 
+    @Inject
+    Tariffs tariffs;
+
     @Resource
     private UserTransaction tran;
 
@@ -264,6 +267,81 @@ public class DataTestServlet extends FATServlet {
         o2 = orders.findById(o2.id).get();
 
         assertEquals(168.89f, o2.total, 0.01f);
+    }
+
+    /**
+     * Add, find, and remove entities with a mapped superclass.
+     */
+    @Test
+    public void testMappedSuperclass() {
+        tariffs.deleteByLeviedBy("USA");
+
+        Tariff t1 = new Tariff();
+        t1.leviedAgainst = "China";
+        t1.leviedBy = "USA";
+        t1.leviedOn = "Solar Panels";
+        t1.rate = 0.15f;
+        tariffs.save(t1);
+
+        Tariff t2 = new Tariff();
+        t2.leviedAgainst = "Germany";
+        t2.leviedBy = "USA";
+        t2.leviedOn = "Steel";
+        t2.rate = 0.25f;
+        tariffs.save(t2);
+
+        Tariff t3 = new Tariff();
+        t3.leviedAgainst = "India";
+        t3.leviedBy = "USA";
+        t3.leviedOn = "Aluminum";
+        t3.rate = 0.1f;
+        tariffs.save(t3);
+
+        Tariff t4 = new Tariff();
+        t4.leviedAgainst = "Japan";
+        t4.leviedBy = "USA";
+        t4.leviedOn = "Cars";
+        t4.rate = 0.025f;
+        tariffs.save(t4);
+
+        Tariff t5 = new Tariff();
+        t5.leviedAgainst = "Canada";
+        t5.leviedBy = "USA";
+        t5.leviedOn = "Lumber";
+        t5.rate = 0.1799f;
+        tariffs.save(t5);
+
+        Tariff t6 = new Tariff();
+        t6.leviedAgainst = "Bangladesh";
+        t6.leviedBy = "USA";
+        t6.leviedOn = "Textiles";
+        t6.rate = 0.158f;
+        tariffs.save(t6);
+
+        Tariff t7 = new Tariff();
+        t7.leviedAgainst = "Mexico";
+        t7.leviedBy = "USA";
+        t7.leviedOn = "Trucks";
+        t7.rate = 0.25f;
+        tariffs.save(t7);
+
+        Tariff t8 = new Tariff();
+        t8.leviedAgainst = "Canada";
+        t8.leviedBy = "USA";
+        t8.leviedOn = "Copper";
+        t8.rate = 0.0194f;
+        tariffs.save(t8);
+
+        assertIterableEquals(List.of("Copper", "Lumber"),
+                             tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
+
+        Tariff t = tariffs.findByLeviedByAndLeviedAgainstAndLeviedOn("USA", "Bangladesh", "Textiles");
+        assertEquals(t6.rate, t.rate, 0.0001f);
+
+        assertIterableEquals(List.of("China", "Germany", "India", "Japan", "Canada", "Bangladesh", "Mexico", "Canada"),
+                             tariffs.findByLeviedByOrderByKey("USA").stream().map(o -> o.leviedAgainst).collect(Collectors.toList()));
+
+        assertEquals(8, tariffs.deleteByLeviedBy("USA"));
     }
 
     /**

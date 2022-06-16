@@ -42,6 +42,7 @@ import io.openliberty.data.Embeddable;
 import io.openliberty.data.Entity;
 import io.openliberty.data.Generated;
 import io.openliberty.data.Id;
+import io.openliberty.data.MappedSuperclass;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = DataPersistence.class)
@@ -111,7 +112,13 @@ public class DataPersistence {
                                 .append("  <attributes>")
                                 .append(EOLN);
 
-                for (Field field : c.getFields()) {
+                List<Field> fields = new ArrayList<Field>();
+                for (Class<?> superc = c; superc != null; superc = superc.getSuperclass())
+                    if (superc == c || superc.getAnnotation(MappedSuperclass.class) != null)
+                        for (Field f : superc.getFields())
+                            fields.add(f);
+
+                for (Field field : fields) {
                     Id id = field.getAnnotation(Id.class);
                     Column column = field.getAnnotation(Column.class);
                     Generated generated = field.getAnnotation(Generated.class);
