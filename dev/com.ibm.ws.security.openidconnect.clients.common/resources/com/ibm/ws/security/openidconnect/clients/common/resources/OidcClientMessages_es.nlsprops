@@ -293,9 +293,10 @@ LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: El valor del miembro "{0}"
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=El valor de miembro correspondiente debe ser un objeto JSON. El valor esperado es "{}", un objeto JSON vac\u00edo.
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Aseg\u00farese de que la reclamaci\u00f3n "events" en la se\u00f1al de cierre de sesi\u00f3n tenga el formato correcto.
 
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: A la se\u00f1al de cierre de sesi\u00f3n le falta la reclamaci\u00f3n "sid", pero el cliente de {0} OpenID Connect la necesita.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=El cliente de OpenID Connect requiere que la se\u00f1al de cierre de sesi\u00f3n contenga un ID de sesi\u00f3n para identificar la sesi\u00f3n del cliente de OpenID Connect con el proveedor de OpenID Connect.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Establezca el atributo de configuraci\u00f3n del cliente de OpenID Connect backchannelLogoutSessionRequired en false, o aseg\u00farese de que la se\u00f1al de cierre de sesi\u00f3n contiene una reclamaci\u00f3n "sid".
+# Do not translate jti
+LOGOUT_TOKEN_DUP_JTI=CWWKS1551E: El cliente de [{1}] OpenID Connect ya ha recibido otra se\u00f1al de cierre de sesi\u00f3n con la misma reclamaci\u00f3n [{0}] "jti".
+LOGOUT_TOKEN_DUP_JTI.explanation=La reclamaci\u00f3n "jti" identifica de forma exclusiva una se\u00f1al de cierre de sesi\u00f3n. Se ha utilizado otra se\u00f1al de cierre de sesi\u00f3n con este "jti", por lo que no se puede volver a utilizar la se\u00f1al.
+LOGOUT_TOKEN_DUP_JTI.useraction=Aseg\u00farese de que la se\u00f1al de cierre de sesi\u00f3n contenga un valor "jti" exclusivo y que las se\u00f1ales de cierre de sesi\u00f3n no se utilicen varias veces.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

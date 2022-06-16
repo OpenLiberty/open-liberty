@@ -293,9 +293,10 @@ LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: O valor do membro "{0}" na
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=O valor do membro correspondente deve ser um objeto JSON. O valor esperado \u00e9 "{}", um objeto JSON vazio.
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Certifique-se de que a solicita\u00e7\u00e3o "events" no token de logout esteja formatada corretamente.
 
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: A solicita\u00e7\u00e3o "sid" est\u00e1 ausente do token de logout, mas ela \u00e9 exigida pelo cliente {0} da conex\u00e3o OpenID.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=O cliente da conex\u00e3o OpenID requer que o token de logout contenha um ID de sess\u00e3o, para permitir a identifica\u00e7\u00e3o da sess\u00e3o do cliente de conex\u00e3o OpenID com o provedor de conex\u00e3o OpenID.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Configure como false o atributo de configura\u00e7\u00e3o do cliente de conex\u00e3o OpenID backchannelLogoutSessionRequired ou assegure-se de que o token de logout contenha uma solicita\u00e7\u00e3o "sid".
+# Do not translate jti
+LOGOUT_TOKEN_DUP_JTI=CWWKS1551E: Outro token de logout com a mesma solicita\u00e7\u00e3o "jti" de [{0}] j\u00e1 foi recebido pelo cliente [{1}] OpenID Connect.
+LOGOUT_TOKEN_DUP_JTI.explanation=A solicita\u00e7\u00e3o "jti" identifica com exclusividade um token de logout. Outro token de logout com este "jti" foi usado, portanto, o token n\u00e3o pode ser usado novamente.
+LOGOUT_TOKEN_DUP_JTI.useraction=Assegure-se de que o token de logout contenha um valor de "jti" exclusivo e que os tokens de logout n\u00e3o sejam usados v\u00e1rias vezes.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

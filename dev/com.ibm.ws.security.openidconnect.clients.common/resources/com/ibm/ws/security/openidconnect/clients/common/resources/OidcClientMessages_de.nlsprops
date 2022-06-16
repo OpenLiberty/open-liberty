@@ -69,7 +69,7 @@ OIDC_CLIENT_INVALID_HTTP_RESPONSE.useraction=Sehen Sie sich die Aktionen zu dem 
 
 
 #used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Die OpenID Connect-Anforderung wurde vom Benutzer abgelehnt, oder es ist ein anderer Fehler aufgetreten, der zu Ablehnung der Anforderung gef\u00fchrt hat.
+OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Die OpenID Connect-Anforderung wurde vom Benutzer abgelehnt oder es ist ein anderer Fehler aufgetreten, der zu Ablehnung der Anforderung gef\u00fchrt hat.
 OAUTH_REQUEST_ACCESS_DENIED.explanation=Der Benutzer hat die OpenID Connect-Anforderung durch Abbrechen der Anforderung im Formular f\u00fcr die Geltungsbereichsgenehmigung abgelehnt oder es ist ein anderer Fehler aufgetreten, der den Zugriff auf die OpenID Connect-Anforderung verhindert.
 OAUTH_REQUEST_ACCESS_DENIED.useraction=Der Benutzer muss dem OpenID Connect-Provider erlauben, die Geltungsbereiche gemeinsam zu nutzen, die der Client erfordert, damit die OpenID Connect-Anforderung erfolgreich verarbeitet werden kann. Wenn der Benutzer die Anforderung genehmigt hat, \u00fcberpr\u00fcfen Sie die Protokolle im OP nach weiteren Fehlern.
 
@@ -87,7 +87,7 @@ OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE.explanation=Der OpenID Connect-Client e
 OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE.useraction=Stellen Sie sicher, dass der erforderliche Geltungsbereich [openid] in der OpenID Connect-Clientkonfiguration angegeben ist.
 
 # used by clients project
-OIDC_CLIENT_REQUEST_NONCE_FAILED=CWWKS1714E: Im OpenID Connect-Client [{0}] ist die Nonce aktiviert, aber die Verfizierung der Nonce ist fehlgeschlagen. Die Nonce [{1}] im Token stimmt nicht mit der Nonce \u00fcberein, die in der Anforderung an den OpenID Connect-Provider angegeben wurde.
+OIDC_CLIENT_REQUEST_NONCE_FAILED=CWWKS1714E: Im OpenID Connect-Client [{0}] ist die Nonce aktiviert, aber die Verifizierung der Nonce ist fehlgeschlagen. Die Nonce [{1}] im Token stimmt nicht mit der Nonce \u00fcberein, die in der Anforderung an den OpenID Connect-Provider angegeben wurde.
 OIDC_CLIENT_REQUEST_NONCE_FAILED.explanation=OpenID Connect-Clientanforderungen setzen eine ordnungsgem\u00e4\u00dfe Behandlung der Nonce im Anforderungsablauf voraus, um Attacken durch Nachrichtenaufzeichnung und -wiederholung zu mindern. Die im Token enthaltene Nonce stimmt nicht mit der Nonce \u00fcberein, die dieser Anforderung zugeordnet ist, daher ist die Anforderung nicht g\u00fcltig.
 OIDC_CLIENT_REQUEST_NONCE_FAILED.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider Token mit der Nonce generiert, die in der urspr\u00fcnglichen OpenID Connect-Clientanforderung angegebene wurde.
 
@@ -169,7 +169,7 @@ OIDC_CLIENT_NO_VERIFYING_KEY.useraction=F\u00fchren Sie eine der folgenden Aktio
 
 #0: the issuer, 1:jti
 #used by clients
-JWT_DUP_JTI_ERR=CWWKS1743E: Die Tokenvalidierung ist fehlgeschlagen. Es wurde bereits ein anderes JWT-Token (JSON Web Token) mit denselben ''iss'':[{0}]- und ''jti'':[{1}]-Claims empfangen.
+JWT_DUP_JTI_ERR=CWWKS1743E: Die Tokenvalidierung ist fehlgeschlagen. Es wurde bereits ein anderes JWT-Token (JSON Web Token) mit denselben ''iss'':[{0}]- und ''jti'':[{1}]-Anspr\u00fcchen empfangen.
 JWT_DUP_JTI_ERR.explanation=Ein JWT mit "iss"- und "jti"-Anspr\u00fcchen kann nur ein einziges Mal verwendet werden. Der jti-Anspruch stellt eine eindeutige ID f\u00fcr ein Token dar und kann daher in einem anderen Token mit demselben Aussteller nicht identisch sein.
 JWT_DUP_JTI_ERR.useraction=Stellen Sie sicher, dass jeder JWT-Token, das von demselben Aussteller ausgestellt wird, einen eindeutigen jti-Wert hat.
 
@@ -293,9 +293,10 @@ LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: Der Wert f\u00fcr das Elem
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=Der entsprechende Elementwert muss ein JSON-Objekt sein. Der erwartete Wert ist \u201e{}\u201c, ein leeres JSON-Objekt.
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Stellen Sie sicher, dass die Anforderung \u201eevents\u201c im Abmeldetoken ordnungsgem\u00e4\u00df formatiert ist.
 
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: Im Abmeldetoken fehlt die Anforderung \u201esid\u201c, aber der OpenID Connect-Client {0} erfordert sie.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Der OpenID-Connect-Client erfordert, dass das Abmeldetoken eine Sitzungs-ID zur Identifizierung der OpenID Connect-Clientsitzung mit dem OpenID Connect-Provider enth\u00e4lt.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Setzen Sie das Konfigurationsattribut \u201ebackchannelLogoutSessionRequired\u201c des OpenID Connect-Clients auf \u201efalse\u201c oder stellen Sie sicher, dass das Abmeldetoken eine \u201esid\u201c-Anforderung enth\u00e4lt.
+# Do not translate jti
+LOGOUT_TOKEN_DUP_JTI=CWWKS1551E: Ein weiteres Abmeldetoken mit demselben [{0}]-Anspruch "jti" wurde bereits vom [{1}] OpenID Connect-Client empfangen.
+LOGOUT_TOKEN_DUP_JTI.explanation=Der Anspruch "jti" identifiziert ein Abmeldetoken eindeutig. Es wurde ein weiteres Abmeldetoken mit diesem "jti" verwendet, sodass das Token nicht erneut verwendet werden kann.
+LOGOUT_TOKEN_DUP_JTI.useraction=Stellen Sie sicher, dass das Abmeldetoken einen eindeutigen "jti"-Wert enth\u00e4lt und dass Abmeldetoken nicht mehrfach verwendet werden.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

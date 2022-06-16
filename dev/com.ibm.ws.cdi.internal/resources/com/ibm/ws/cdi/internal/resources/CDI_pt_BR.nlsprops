@@ -93,9 +93,7 @@ cdi12.element.type.superceded.CWOWB1015I=CWOWB1015I: O elemento de configura\u00
 cdi12.element.type.superceded.CWOWB1015I.explanation=O elemento de configura\u00e7\u00e3o cdi substitui o elemento de configura\u00e7\u00e3o cdi12 e cont\u00e9m todas as mesmas op\u00e7\u00f5es, al\u00e9m de novas op\u00e7\u00f5es.
 cdi12.element.type.superceded.CWOWB1015I.useraction=Mude sua configura\u00e7\u00e3o do server.xml para usar o elemento de configura\u00e7\u00e3o cdi em vez do elemento de configura\u00e7\u00e3o cdi12.
 
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W=CWOWB1016W: O atributo emptyBeansXMLExplicitBeanArchive do elemento de configura\u00e7\u00e3o do cdi \u00e9 suportado apenas no CDI 4.0 ou mais recentes. Esse atributo ser\u00e1 ignorado.
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.explanation=O atributo emptyBeansXMLExplicitBeanArchive n\u00e3o tem efeito quando utilizado em uma vers\u00e3o de CDI inferior \u00e0 4.0.
-cdiEmptyBeansXMLExplicitBeanArchive.ignored.CWOWB1016W.useraction=Atualize sua configura\u00e7\u00e3o server.xml para remover o atributo ou usar o CDI vers\u00e3o 4.0 ou mais recente.
+#CWOWB1016W is not used - https://github.com/OpenLiberty/open-liberty/pull/21107
 
 enableImplicitBeanArchives.conflict.CWOWB1017W=CWOWB1017W: O atributo enableImplicitBeanArchives foi configurado em ambos os elementos de configura\u00e7\u00e3o cdi12 e cdi. O valor a partir do elemento cdi \u00e9 usado e o valor no elemento cdi12 \u00e9 ignorado.
 enableImplicitBeanArchives.conflict.CWOWB1017W.explanation=Embora voc\u00ea defina o atributo enableImplicitBeanArchives nos elementos de configura\u00e7\u00e3o do elemento de configura\u00e7\u00e3o  cdi12 e cdi, voc\u00ea n\u00e3o deve definir esse atributo com valores diferentes na mesma configura\u00e7\u00e3o do servidor.
