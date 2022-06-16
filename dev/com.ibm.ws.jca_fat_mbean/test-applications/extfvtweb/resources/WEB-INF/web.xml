@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>JCAFVTWeb</display-name>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="ResourceAdapterModuleMBeanServlet">
+    <servlet-name>Extended MBean Servlet</servlet-name>
+    <display-name>Extended MBean Test</display-name>
+    <servlet-class>web.ExtendedMBeanServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->
+  <servlet-mapping id="ServletMapping_ExtendedMBeanServlet">
+    <servlet-name>Extended MBean Servlet</servlet-name>
+    <url-pattern>/ExtendedMBeanServlet</url-pattern>
+  </servlet-mapping>
+
+</web-app>
