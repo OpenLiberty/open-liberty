@@ -111,7 +111,10 @@ public class UninstallDirector extends AbstractDirector {
             fireProgressEvent(InstallProgressEvent.CHECK, 10, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
             Set<File> baseDirs = new HashSet<>();
             for (UninstallAsset uninstallAsset : uninstallAssets) {
-                baseDirs.addAll(getAssetBaseDirectories(uninstallAsset, engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
+                ProvisioningFeatureDefinition provisioningFeatureDefinition = uninstallAsset.getProvisioningFeatureDefinition();
+                if (provisioningFeatureDefinition != null) {
+                    baseDirs.addAll(getAssetBaseDirectories(uninstallAsset, engine.getBaseDir(provisioningFeatureDefinition)));
+                }
             }
 
             Set<Path> lockedPaths = new HashSet<Path>();
