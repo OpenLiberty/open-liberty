@@ -35,8 +35,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
@@ -45,6 +43,8 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -147,6 +147,10 @@ public class LTPAConfigurationImplTest {
     }
 
     class LTPAConfigurationImplTestDouble extends LTPAConfigurationImpl {
+
+        public LTPAConfigurationImplTestDouble() {
+            super(null);
+        }
 
         public boolean wasUnsetFileMonitorRegistrationCalled = false;
         public boolean wasSetFileMonitorRegistrationCalled = false;

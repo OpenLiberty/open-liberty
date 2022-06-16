@@ -23,6 +23,14 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -38,6 +46,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * DS service class representing an LTPA token configuration.
  * <p>
@@ -48,6 +58,9 @@ import com.ibm.wsspi.security.ltpa.TokenFactory;
  *
  * @see LTPAKeyCreateTask
  */
+
+@Component(name = "com.ibm.ws.security.token.ltpa.LTPAConfiguration", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true,
+           property = { "service.vendor=IBM", "tokenType=Ltpa2" })
 public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedActionable {
 
     private static final TraceComponent tc = Tr.register(LTPAConfigurationImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
@@ -78,7 +91,28 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private final WriteLock writeLock = reentrantReadWriteLock.writeLock();
     private final ReadLock readLock = reentrantReadWriteLock.readLock();
     private String authFilterRef;
+    private boolean isCheckpoint;
 
+    @Activate
+    public LTPAConfigurationImpl(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
+        isCheckpoint = checkpointPhase != null;
+    }
+
+    @Reference(service = CheckpointPhase.class, //
+               target = "(" + CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY + "=true)", //
+               cardinality = ReferenceCardinality.OPTIONAL, //
+               policy = ReferencePolicy.DYNAMIC, //
+               unbind = "ignoreCheckpointRestored")
+    protected final void checkpointRestored(ServiceReference<?> checkpoint) {
+    	isCheckpoint = false;
+        setupRuntimeLTPAInfrastructure();
+    }
+
+    protected final void ignoreCheckpointRestored(ServiceReference<?> checkpoint) {
+        // we really don't care about this, but needed to avoid compile errors
+    }
+
+    @Reference(name = "executorService", cardinality = ReferenceCardinality.MANDATORY, bind = "setExecutorService", unbind = "unsetExecutorService")
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
         executorService.setReference(ref);
     }
@@ -87,6 +121,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         executorService.unsetReference(ref);
     }
 
+    @Reference(name = "locationService", cardinality = ReferenceCardinality.MANDATORY, bind = "setLocationService", unbind = "unsetLocationService")
     protected void setLocationService(ServiceReference<WsLocationAdmin> reference) {
         locationService.setReference(reference);
     }
@@ -95,6 +130,11 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         locationService.unsetReference(reference);
     }
 
+    @Reference(name = "ltpaKeysChangeNotifier",
+               cardinality = ReferenceCardinality.MANDATORY,
+               policy = ReferencePolicy.DYNAMIC,
+               bind = "setLtpaKeysChangeNotifier",
+               unbind = "unsetLtpaKeysChangeNotifier")
     protected void setLtpaKeysChangeNotifier(ServiceReference<LTPAKeysChangeNotifier> ref) {
         ltpaKeysChangeNotifierService.setReference(ref);
     }
@@ -103,6 +143,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         ltpaKeysChangeNotifierService.unsetReference(ref);
     }
 
+    @Activate
     protected void activate(ComponentContext context, Map<String, Object> props) {
         cc = context;
         locationService.activate(context);
@@ -110,7 +151,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         ltpaKeysChangeNotifierService.activate(context);
 
         loadConfig(props);
-        setupRuntimeLTPAInfrastructure();
+        if (!isCheckpoint) {
+            setupRuntimeLTPAInfrastructure();
+        }
     }
 
     private void loadConfig(Map<String, Object> props) {
@@ -200,6 +243,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * then do not remove the file monitor registration and do not reload the LTPA keys.
      * </pre>
      */
+    @Modified
     protected void modified(Map<String, Object> props) {
         String oldKeyImportFile = keyImportFile;
         Long oldKeyTokenExpiration = keyTokenExpiration;
@@ -229,6 +273,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         return oldMonitorInterval != monitorInterval;
     }
 
+    @Deactivate
     protected void deactivate(ComponentContext context) {
         cc = null;
         if (registration != null) {

@@ -28,11 +28,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -68,7 +68,8 @@ public class LTPAKeyCreateTaskTest {
         }
 
         @Override
-        void createRequiredCollaborators() throws Exception {}
+        void createRequiredCollaborators() throws Exception {
+        }
     }
 
     @Before
@@ -121,7 +122,7 @@ public class LTPAKeyCreateTaskTest {
         });
         setupLocationServiceExpecatations();
 
-        LTPAConfigurationImpl config = setupActivatedLTPAConfiguration(new LTPAConfigurationImpl() {
+        LTPAConfigurationImpl config = setupActivatedLTPAConfiguration(new LTPAConfigurationImpl(null) {
             @Override
             public void configReady() {
                 throw new IllegalStateException();
@@ -157,7 +158,7 @@ public class LTPAKeyCreateTaskTest {
         });
         setupLocationServiceExpecatations();
 
-        LTPAConfigurationImpl config = setupActivatedLTPAConfiguration(new LTPAConfigurationImpl());
+        LTPAConfigurationImpl config = setupActivatedLTPAConfiguration(new LTPAConfigurationImpl(null));
 
         LTPAKeyCreateTask creator = new LTPAKeyCreateTask(null, config);
 
@@ -205,6 +206,11 @@ public class LTPAKeyCreateTaskTest {
     }
 
     private class LTPAConfigurationImplDouble extends LTPAConfigurationImpl {
+
+        public LTPAConfigurationImplDouble() {
+            super(null);
+        }
+
         public boolean wasConfigReadyCalled = false;
 
         @Override

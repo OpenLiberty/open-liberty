@@ -28,6 +28,10 @@ Export-Package: com.ibm.ws.security.token.ltpa
 Private-Package: \
   com.ibm.ws.security.token.ltpa.internal.*
 
+-ds-felix-extensions=true
+-dsannotations: \
+  com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl
+
 # Update the metatype.xml for your component in the resources/OSGI-INF/metatype folder
 Include-Resource: \
     OSGI-INF/metatype=resources/OSGI-INF/metatype, \
@@ -37,18 +41,6 @@ Include-Resource: \
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Service-Component: \
-  com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
-    implementation:=com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl; \
-    activate:=activate; \
-    deactivate:=deactivate; \
-    modified:=modified; \
-    configuration-policy:=require; \
-    immediate:=true; \
-    locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
-    executorService=java.util.concurrent.ExecutorService; \
-    ltpaKeysChangeNotifier=com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
-    dynamic:='ltpaKeysChangeNotifier'; \
-    properties:='service.vendor=IBM,tokenType=Ltpa2', \
   com.ibm.ws.security.token.ltpa.LTPATokenService; \
     implementation:=com.ibm.ws.security.token.ltpa.internal.LTPATokenService; \
     provide:='com.ibm.ws.security.token.TokenService'; \
@@ -87,10 +79,12 @@ instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.crypto.ltpakeyutil;version=latest, \
 	com.ibm.ws.logging;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
