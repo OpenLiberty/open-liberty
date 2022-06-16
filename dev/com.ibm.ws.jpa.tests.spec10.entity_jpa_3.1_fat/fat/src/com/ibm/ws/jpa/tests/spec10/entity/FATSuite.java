@@ -26,6 +26,9 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 Entity_EJB.class,
                 Entity_Web.class,
+                // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/21207 is delivered
+//                TestOLGH21204_EJB.class,
+//                TestOLGH21204_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite extends AbstractFATSuite {

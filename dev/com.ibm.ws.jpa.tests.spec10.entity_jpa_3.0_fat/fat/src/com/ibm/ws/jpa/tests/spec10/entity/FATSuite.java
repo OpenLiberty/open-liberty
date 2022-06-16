@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,9 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 Entity_EJB.class,
                 Entity_Web.class,
+                // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/21206 is delivered
+//                TestOLGH21204_EJB.class,
+//                TestOLGH21204_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite extends AbstractFATSuite {
