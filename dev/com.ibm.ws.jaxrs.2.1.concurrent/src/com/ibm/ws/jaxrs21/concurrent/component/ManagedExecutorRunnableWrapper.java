@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs2x.concurrent.component;
+package com.ibm.ws.jaxrs21.concurrent.component;
 
 import java.util.concurrent.Executor;
 
@@ -17,10 +17,10 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.context.service.serializable.ContextualRunnable;
-import com.ibm.ws.cxf.client.AsyncClientRunnableWrapper;
+import com.ibm.ws.cxf.jaxrs21.client.AsyncClientRunnableWrapper;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
-@Component(name = "com.ibm.ws.jaxrs2x.concurrent.component.ManagedExecutorRunnableWrapper",
+@Component(name = "com.ibm.ws.jaxrs21.concurrent.component.ManagedExecutorRunnableWrapper",
            service = AsyncClientRunnableWrapper.class,
            immediate = true,
            property = { "service.vendor=IBM" })

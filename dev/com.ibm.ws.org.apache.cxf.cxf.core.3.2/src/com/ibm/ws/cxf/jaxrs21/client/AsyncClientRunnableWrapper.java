@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cxf.client;
+package com.ibm.ws.cxf.jaxrs21.client;
 
 import org.apache.cxf.message.Message;
 

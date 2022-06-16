@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 /**
- * @version 1.0
+ * @version "3.2.4"
  */
-@org.osgi.annotation.versioning.Version("1.0")
-package com.ibm.ws.cxf.client;
+@org.osgi.annotation.versioning.Version("3.2.4")
+package com.ibm.ws.cxf.jaxrs21.client.component;

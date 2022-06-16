@@ -21,23 +21,35 @@ WS-TraceGroup: JAXRS
 # Technically we should never have allowed javax.validation packages at the 1.0 version
 # but to maintain backwards compatibility we will allow it 
 Import-Package: \
-  org.apache.cxf.*;version="[3.2,4)", \
-  com.ibm.websphere.ras.*, \
-  com.ibm.ws.context.service.serializable.*, \
-  com.ibm.ws.jaxrs20.client, \
-  com.ibm.ws.ffdc, \
-  com.ibm.ws.concurrent, \
-  com.ibm.wsspi.kernel.service.utils, \
-  com.ibm.wsspi.threadcontext, \
-  org.osgi.framework, \
-  org.osgi.service.component, \
-  com.ibm.ws.cxf.client
+	org.apache.cxf.*;version='[3.2,4)',\
+	com.ibm.websphere.ras.*,\
+	com.ibm.ws.context.service.serializable.*,\
+	com.ibm.ws.jaxrs20.client,\
+	com.ibm.ws.ffdc,\
+	com.ibm.ws.concurrent,\
+	com.ibm.wsspi.kernel.service.utils,\
+	com.ibm.wsspi.threadcontext,\
+	org.osgi.framework,\
+	org.osgi.service.component,\
+	com.ibm.ws.cxf.jaxrs21.client;version='[3.2,4)'
      
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\
-  com.ibm.ws.jaxrs2x.concurrent.*
+  com.ibm.ws.jaxrs21.concurrent.*
   
--dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*
+-dsannotations: com.ibm.ws.jaxrs21.concurrent.component.*
 
 -buildpath: \
-  com.ibm.ws.jaxrs.2.0.concurrent
+    com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
+    com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.jaxrs.2.0.client;version=latest,\
+	com.ibm.ws.jaxrs.2.0.common;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.concurrent;version=latest,\
+	com.ibm.ws.context;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest
