@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,18 +13,17 @@ package com.ibm.ws.jpa.tests.jpaconfig;
 
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE7FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTestAction;
 
-public class RepeatWithJPA21 extends EE7FeatureReplacementAction {
+/**
+ *
+ */
+public class RepeatWithJPA21 implements RepeatTestAction {
     public static final String ID = "JPA21";
 
-    /**
-     * Allow the default repeat action to run on LITE mode
-     */
-    public RepeatWithJPA21() {
-        // Used in componenttest.rules.repeater.RepeatTestAction.isEnabled() to determine if the test should run
-        withTestMode(TestMode.LITE);
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override

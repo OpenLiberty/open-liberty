@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,20 +11,18 @@
 
 package com.ibm.ws.jpa.tests.spec10.entity;
 
-import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
-
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTestAction;
 
-public class RepeatWithJPA30 extends JakartaEE9Action {
+/**
+ *
+ */
+public class RepeatWithJPA30 extends JakartaEE9Action implements RepeatTestAction {
     public static final String ID = "JPA30";
 
-    /**
-     * Allow the default repeat action to run on LITE mode
-     */
-    public RepeatWithJPA30() {
-        // Used in componenttest.rules.repeater.RepeatTestAction.isEnabled() to determine if the test should run
-        withTestMode(TestMode.LITE);
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
@@ -36,7 +34,6 @@ public class RepeatWithJPA30 extends JakartaEE9Action {
     public void setup() throws Exception {
         super.setup();
         FATSuite.repeatPhase = "jpa30-cfg.xml";
-        FATSuite.provider = JPAPersistenceProvider.DEFAULT;
     }
 
 //    // Overriding this method will disable Jakarta EE9 transformer

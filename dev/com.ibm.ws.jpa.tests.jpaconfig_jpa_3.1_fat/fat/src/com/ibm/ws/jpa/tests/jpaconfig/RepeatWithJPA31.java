@@ -13,19 +13,19 @@ package com.ibm.ws.jpa.tests.jpaconfig;
 
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.RepeatTestAction;
 
-public class RepeatWithJPA31 extends JakartaEE10Action {
+/**
+ *
+ */
+public class RepeatWithJPA31 extends JakartaEE10Action implements RepeatTestAction {
     public static final String ID = "JPA31";
 
-    /**
-     * Allow the default repeat action to run on LITE mode
-     */
-    public RepeatWithJPA31() {
-        // Used in componenttest.rules.repeater.RepeatTestAction.isEnabled() to determine if the test should run
-        withTestMode(TestMode.LITE);
-    }
+//     @Override
+//     public boolean isEnabled() {
+//         return true;
+//     }
 
     @Override
     public String toString() {
@@ -38,4 +38,10 @@ public class RepeatWithJPA31 extends JakartaEE10Action {
         FATSuite.repeatPhase = "jpa31-cfg.xml";
         FATSuite.provider = JPAPersistenceProvider.DEFAULT;
     }
+
+//  // Overriding this method will disable Jakarta EE9 transformer
+//  @Override
+//  public String getID() {
+//      return ID;
+//  }
 }
