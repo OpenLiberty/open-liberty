@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
- 
+
 <server>
 	<featureManager>
 		<feature>ssl-1.0</feature>
@@ -83,8 +83,9 @@
 		id="default"
 		ws-security.password="security"
 		ws-security.username="user1"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 	>
+	<!-- 2/2021 EE8 Callbackhandler -->	
 		<signatureProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
@@ -99,8 +100,11 @@
 
 	<wsSecurityProvider
 		id="default"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		ws-security.return.security.error="true"
 	>
+	<!-- 3/2021 added ws-security.return.security.error -->
+	<!-- 2/2021 EE8 Callbackhandler -->
 	
 		<callerToken name="UsernameToken" />
 		<signatureProperties
@@ -117,6 +121,6 @@
 	<!-- This is in use by CxfCallerUNTTests -->
 	
 	<include location="imports/java2Permissions.xml" />
-	
+
 </server>
 
