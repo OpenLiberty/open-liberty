@@ -27,7 +27,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 ConsoleFormatTest.class,
                 JsonConfigBootstrapTest.class,
                 ContainerEnvVarTest.class,
-                AppNameExtensionTest.class
+                AppNameExtensionTest.class,
+                ExtensionsMessagesLogTest.class
 })
 public class FATSuite {
 

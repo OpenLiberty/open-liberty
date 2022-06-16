@@ -48,6 +48,13 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   
+  <servlet id="ExceptionExtServlet">
+    <servlet-name>ExceptionExtServlet</servlet-name>
+    <display-name>ExceptionExtServlet</display-name>
+    <servlet-class>com.ibm.logs.ExceptionExtServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
   <!-- SERVLET MAPPINGS -->        
   <servlet-mapping id="ServletMapping_Default">
     <servlet-name>Logstash Servlet</servlet-name>
@@ -77,6 +84,11 @@
   <servlet-mapping id="ExceptionServlet">
     <servlet-name>ExceptionServlet</servlet-name>
     <url-pattern>/ExceptionURL</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="ExceptionExtServlet">
+    <servlet-name>ExceptionExtServlet</servlet-name>
+    <url-pattern>/ExceptionExtURL</url-pattern>
   </servlet-mapping>
 
 </web-app>

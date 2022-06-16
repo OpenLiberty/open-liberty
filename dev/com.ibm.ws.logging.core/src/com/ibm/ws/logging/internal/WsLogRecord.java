@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.logging.LogRecordExt;
@@ -525,6 +526,10 @@ public class WsLogRecord extends LogRecord implements java.io.Serializable, LogR
         else {
             retMe.setLocalizable(REQUIRES_NO_LOCALIZATION);
         }
+        
+        // Get Extensions when messages are logged with Tr.
+        LogRecordContext.getExtensions(retMe.getExtensions());  
+        
         return retMe;
     }
 
