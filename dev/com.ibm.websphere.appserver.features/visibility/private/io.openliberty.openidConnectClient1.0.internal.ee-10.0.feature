@@ -7,6 +7,7 @@ visibility = private
   io.openliberty.jakarta.cdi-4.0; apiJar=false
 -bundles=\
   io.openliberty.security.openidconnect.internal.client, \
-  io.openliberty.security.openidconnect.internal.clients.common
+  io.openliberty.security.openidconnect.internal.clients.common, \
+  io.openliberty.security.oidcclientcore.internal.jakarta
 kind=noship
 edition=full
