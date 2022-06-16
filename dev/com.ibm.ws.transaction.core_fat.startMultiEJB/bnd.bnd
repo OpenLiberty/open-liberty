@@ -57,4 +57,4 @@ tested.features:\
   com.ibm.ws.tx.embeddable;version=latest,\
   com.ibm.ws.transaction.fat.util;version=latest,\
   com.ibm.ws.transaction.test.util;version=latest,\
-  com.ibm.ws.transaction.core_fat.1;version=latest
+  com.ibm.ws.transaction.core_fat.base;version=latest

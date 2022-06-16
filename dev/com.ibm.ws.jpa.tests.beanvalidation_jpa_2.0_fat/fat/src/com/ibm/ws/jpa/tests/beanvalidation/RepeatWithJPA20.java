@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,9 @@ import java.io.File;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
 import componenttest.common.apiservices.Bootstrap;
-import componenttest.rules.repeater.RepeatTestAction;
+import componenttest.rules.repeater.EE6FeatureReplacementAction;
 
-/**
- *
- */
-public class RepeatWithJPA20 implements RepeatTestAction {
+public class RepeatWithJPA20 extends EE6FeatureReplacementAction {
     public static final String ID = "JPA20";
 
     @Override
@@ -30,7 +27,7 @@ public class RepeatWithJPA20 implements RepeatTestAction {
             Bootstrap b = Bootstrap.getInstance();
             String installRoot = b.getValue("libertyInstallPath");
             File jpa20Feature = new File(installRoot + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
-            return jpa20Feature.exists();
+            return jpa20Feature.exists() && super.isEnabled();
         } catch (Exception e) {
             return false;
         }

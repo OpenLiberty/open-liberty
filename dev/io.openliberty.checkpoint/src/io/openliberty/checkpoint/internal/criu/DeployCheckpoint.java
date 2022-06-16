@@ -10,10 +10,17 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.internal.criu;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import io.openliberty.checkpoint.internal.CheckpointImpl;
 
 public class DeployCheckpoint {
     public static void checkpoint() {
-        CheckpointImpl.deployCheckpoint();
+        PrivilegedAction<Void> deployCheckpoint = (PrivilegedAction<Void>) () -> {
+            CheckpointImpl.deployCheckpoint();
+            return null;
+        };
+        AccessController.doPrivileged(deployCheckpoint);
     }
 }

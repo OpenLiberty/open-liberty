@@ -20,6 +20,8 @@ Export-Package: com.ibm.ws.kernel.boot.cmdline;-split-package:=merge-last
 
 instrument.disabled: true
 
+globalize: false
+
 publish.wlp.jar.disabled: true
 
 -buildpath: \

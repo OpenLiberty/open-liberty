@@ -372,12 +372,7 @@ public class JsonBTestServlet extends FATServlet {
 
         @JsonbTypeInfo(key = "@loctype", value = {
                                                    @JsonbSubtype(alias = "city", type = TestPolymorphism.City.class),
-                                                   @JsonbSubtype(alias = "state", type = TestPolymorphism.State.class),
-                                                   // TODO It seems awkward that Location must include itself as a
-                                                   // subtype of itself, but if we don't do it, Yasson omits
-                                                   // "@type": "location" from the JSON, and then it won't
-                                                   // deserialize as a TestPolymorphism.class.
-                                                   @JsonbSubtype(alias = "general", type = TestPolymorphism.Location.class)
+                                                   @JsonbSubtype(alias = "state", type = TestPolymorphism.State.class)
         })
         public static class Location implements TestPolymorphism {
             public String name;

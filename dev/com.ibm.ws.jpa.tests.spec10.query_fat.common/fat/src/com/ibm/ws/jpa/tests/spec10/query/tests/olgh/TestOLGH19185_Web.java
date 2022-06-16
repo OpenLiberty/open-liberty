@@ -49,7 +49,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+@Mode(TestMode.LITE)
 public class TestOLGH19185_Web extends JPAFATServletClient {
 
     @Rule

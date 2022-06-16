@@ -10,14 +10,8 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -42,7 +36,7 @@ public class OSGiConsoleTest {
 
     public static final String APP_NAME = "app2";
 
-    @Server("FATServer")
+    @Server("checkpointFATServer")
     public static LibertyServer server;
 
     @Rule
@@ -52,16 +46,6 @@ public class OSGiConsoleTest {
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "app2");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
-    }
-
-    private void configureBootStrapProperties(Map<String, String> properties) throws Exception, IOException, FileNotFoundException {
-        Properties bootStrapProperties = new Properties();
-        File bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
-        bootStrapProperties.put("bootstrap.include", "../testports.properties");
-        bootStrapProperties.putAll(properties);
-        try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
-            bootStrapProperties.store(out, "");
-        }
     }
 
     @Test
@@ -74,7 +58,7 @@ public class OSGiConsoleTest {
         config.getFeatureManager().getFeatures().add("osgiConsole-1.0");
         server.updateServerConfiguration(config);
 
-        configureBootStrapProperties(properties);
+        FATSuite.configureBootStrapProperties(server, properties);
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer();
