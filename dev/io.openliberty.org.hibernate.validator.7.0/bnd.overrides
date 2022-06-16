@@ -58,7 +58,8 @@ Import-Package: \
 # optionally uses JPA if it is there for a customized
 # TraversableRevolver implementation.
 DynamicImport-Package: \
- jakarta.persistence
+ jakarta.persistence, \
+ javafx.*
  
 Include-Resource: \
   @${repo;org.hibernate.validator:hibernate-validator;7.0.4.Final;EXACT}!/META-INF/*.xsd, \
