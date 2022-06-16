@@ -22,49 +22,49 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>com.ibm.ws.transaction.core_fat.1-com.ibm.ws.transaction.fat.eventListener</name>
+			<name>com.ibm.ws.transaction.core_fat.base-com.ibm.ws.transaction.fat.eventListener</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.1/test-bundles/com.ibm.ws.transaction.fat.eventListener/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.base/test-bundles/com.ibm.ws.transaction.fat.eventListener/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.transaction.core_fat.1-com.ibm.ws.transaction.fat.remoteTester</name>
+			<name>com.ibm.ws.transaction.core_fat.base-com.ibm.ws.transaction.fat.remoteTester</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.1/test-bundles/com.ibm.ws.transaction.fat.remoteTester/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.base/test-bundles/com.ibm.ws.transaction.fat.remoteTester/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.transaction.core_fat.1-commitPriority</name>
+			<name>com.ibm.ws.transaction.core_fat.base-commitPriority</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.1/test-applications/commitPriority/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.base/test-applications/commitPriority/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.transaction.core_fat.1-eventlistener</name>
+			<name>com.ibm.ws.transaction.core_fat.base-eventlistener</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.1/test-applications/eventlistener/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.base/test-applications/eventlistener/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.transaction.core_fat.1-transaction</name>
+			<name>com.ibm.ws.transaction.core_fat.base-transaction</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.1/test-applications/transaction/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.base/test-applications/transaction/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.transaction.core_fat.1-transactional</name>
+			<name>com.ibm.ws.transaction.core_fat.base-transactional</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.1/test-applications/transactional/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.base/test-applications/transactional/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.transaction.core_fat.1-transactionalEJB</name>
+			<name>com.ibm.ws.transaction.core_fat.base-transactionalEJB</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.1/test-applications/transactionalEJB/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.base/test-applications/transactionalEJB/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.transaction.core_fat.1-transactionscoped</name>
+			<name>com.ibm.ws.transaction.core_fat.base-transactionscoped</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.1/test-applications/transactionscoped/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.base/test-applications/transactionscoped/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.transaction.core_fat.1-utdecorator</name>
+			<name>com.ibm.ws.transaction.core_fat.base-utdecorator</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.1/test-bundles/utdecorator/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.core_fat.base/test-bundles/utdecorator/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
