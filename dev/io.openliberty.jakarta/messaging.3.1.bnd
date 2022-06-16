@@ -20,9 +20,9 @@ Bundle-SymbolicName: io.openliberty.jakarta.messaging.3.1; singleton:=true
 Bundle-Description: Jakarta Messaging 3.1 Specification
 Bundle-Name: Jakarta Messaging API
 
-Export-Package: jakarta.jms;version="3.1.0"
+Specification-Version: 3.1
 
-publish.wlp.jar.suffix: dev/api/spec
+Export-Package: jakarta.jms;version="3.1.0"
 
 -includeresource: \
    @${repo;jakarta.jms:jakarta.jms-api;[3.1.0,3.2.0)}!/!(META-INF/maven/*|module-info.class)
