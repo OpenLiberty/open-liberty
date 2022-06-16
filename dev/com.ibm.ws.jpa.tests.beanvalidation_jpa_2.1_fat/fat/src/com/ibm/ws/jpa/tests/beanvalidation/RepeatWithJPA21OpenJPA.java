@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,18 +13,17 @@ package com.ibm.ws.jpa.tests.beanvalidation;
 
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE7FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTestAction;
 
-public class RepeatWithJPA21OpenJPA extends EE7FeatureReplacementAction {
+/**
+ *
+ */
+public class RepeatWithJPA21OpenJPA implements RepeatTestAction {
     public static final String ID = "JPA21_OPENJPA";
 
-    /**
-     * Restrict OpenJPA tests to run on FULL mode
-     */
-    public RepeatWithJPA21OpenJPA() {
-        // Used in componenttest.rules.repeater.RepeatTestAction.isEnabled() to determine if the test should run
-        withTestMode(TestMode.FULL);
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
