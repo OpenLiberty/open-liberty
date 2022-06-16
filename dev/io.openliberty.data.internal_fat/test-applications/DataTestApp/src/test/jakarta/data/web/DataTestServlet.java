@@ -27,6 +27,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Flow.Publisher;
+import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.Flow.Subscription;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import jakarta.annotation.Resource;
@@ -38,10 +43,13 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.data.Page;
+import io.openliberty.data.Pagination;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
+    private final long TIMEOUT_MINUTES = 2;
 
     @Inject
     OrderRepo orders;
@@ -401,9 +409,11 @@ public class DataTestServlet extends FATServlet {
 
     /**
      * Use custom repository interface methods modeled after Jakarta NoSQL's Repository class.
+     *
+     * @throws InterruptedException
      */
     @Test
-    public void testRepositoryCustomMethods() {
+    public void testRepositoryCustomMethods() throws InterruptedException {
         ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
         // remove data that other tests previously inserted to the same table
@@ -594,6 +604,124 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.start().toInstant())
                                              .sorted()
                                              .collect(Collectors.toList()));
+
+        Publisher<Reservation> publisher = reservations.findByHostLikeOrderByMeetingID("testRepositoryCustom-host");
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
+        publisher.subscribe(new Subscriber<Reservation>() {
+            final int REQUEST_SIZE = 3;
+            int count = 0;
+            Subscription subscription;
+
+            @Override
+            public void onSubscribe(Subscription s) {
+                subscription = s;
+                subscription.request(REQUEST_SIZE);
+            }
+
+            @Override
+            public void onNext(Reservation item) {
+                results.add(item);
+                if (++count % REQUEST_SIZE == 0)
+                    subscription.request(REQUEST_SIZE);
+            }
+
+            @Override
+            public void onError(Throwable x) {
+                results.add(x);
+            }
+
+            @Override
+            public void onComplete() {
+                results.add("DONE");
+            }
+        });
+
+        Object result;
+        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        if (result instanceof Throwable)
+            throw new AssertionError("onError notification received", (Throwable) result);
+        assertEquals(10030001L, ((Reservation) result).meetingID);
+
+        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        if (result instanceof Throwable)
+            throw new AssertionError("onError notification received", (Throwable) result);
+        assertEquals(10030002L, ((Reservation) result).meetingID);
+
+        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        if (result instanceof Throwable)
+            throw new AssertionError("onError notification received", (Throwable) result);
+        assertEquals(10030003L, ((Reservation) result).meetingID);
+
+        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        if (result instanceof Throwable)
+            throw new AssertionError("onError notification received", (Throwable) result);
+        assertEquals(10030004L, ((Reservation) result).meetingID);
+
+        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        if (result instanceof Throwable)
+            throw new AssertionError("onError notification received", (Throwable) result);
+        assertEquals(10030005L, ((Reservation) result).meetingID);
+
+        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        if (result instanceof Throwable)
+            throw new AssertionError("onError notification received", (Throwable) result);
+        assertEquals(10030006L, ((Reservation) result).meetingID);
+
+        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        if (result instanceof Throwable)
+            throw new AssertionError("onError notification received", (Throwable) result);
+        assertEquals(10030007L, ((Reservation) result).meetingID);
+
+        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        if (result instanceof Throwable)
+            throw new AssertionError("onError notification received", (Throwable) result);
+        assertEquals(10030008L, ((Reservation) result).meetingID);
+
+        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        if (result instanceof Throwable)
+            throw new AssertionError("onError notification received", (Throwable) result);
+        assertEquals(10030009L, ((Reservation) result).meetingID);
+
+        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        if (result instanceof Throwable)
+            throw new AssertionError("onError notification received", (Throwable) result);
+        assertEquals("DONE", result);
+
+        // Paging where the final page includes less than the maximum page size,
+        Page<Reservation> page1 = reservations.findByHostLikeOrderByMeetingIDDesc("testRepositoryCustom-host", Pagination.page(1).size(4));
+        assertIterableEquals(List.of(10030009L, 10030008L, 10030007L, 10030006L),
+                             page1
+                                             .getContent()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+        Page<Reservation> page2 = page1.next();
+        assertIterableEquals(List.of(10030005L, 10030004L, 10030003L, 10030002L),
+                             page2
+                                             .get()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+        Page<Reservation> page3 = page2.next();
+        assertIterableEquals(List.of(10030001L),
+                             page3
+                                             .getContent()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+        assertEquals(null, page3.next());
+
+        // Paging that comes out even:
+        page2 = reservations.findByHostLikeOrderByMeetingIDDesc("testRepositoryCustom-host", Pagination.page(2).size(3));
+        assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
+                             page2
+                                             .getContent()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+        page3 = page2.next();
+        assertIterableEquals(List.of(10030003L, 10030002L, 10030001L),
+                             page3
+                                             .getContent()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+        assertEquals(null, page3.next());
 
         assertEquals(false, reservations.deleteByHostIn(List.of("testRepositoryCustom-host5@example.org")));
 

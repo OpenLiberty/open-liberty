@@ -19,10 +19,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.concurrent.Flow.Publisher;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Page;
+import io.openliberty.data.Pagination;
 import io.openliberty.data.Repository;
 import io.openliberty.data.Select;
 
@@ -73,8 +76,16 @@ public interface Reservations extends Repository<Reservation, Long> {
     @Select(type = ReservedTimeSlot.class, value = { "start", "stop" })
     Stream<ReservedTimeSlot> findByStopOrStopOrStop(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
 
+    // Possibly better way of doing the above?
+    // @Result(ReservedTimeSlot.class)
+    // @Select({ "start", "stop" })
+    // Stream<ReservedTimeSlot> findByStopOrStopOrStart(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
+
+    Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostSubstring);
+
+    Page<Reservation> findByHostLikeOrderByMeetingIDDesc(String hostSubstring, Pagination pagination);
+
     // Use a record as the return type
     @Select({ "start", "stop" })
     ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
-
 }
