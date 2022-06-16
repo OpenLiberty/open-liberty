@@ -17,7 +17,6 @@ Bundle-Description: IBM JAX-RS-2.0 Concurrency support; version=${bVersion}
 
 WS-TraceGroup: JAXRS
 
-
 # Technically we should never have allowed javax.validation packages at the 1.0 version
 # but to maintain backwards compatibility we will allow it 
 Import-Package: \
@@ -31,13 +30,13 @@ Import-Package: \
   com.ibm.wsspi.threadcontext, \
   org.osgi.framework, \
   org.osgi.service.component, \
-  com.ibm.ws.cxf.client;version="[1.0,1.1)"
-     
+  com.ibm.ws.cxf.jaxrs20.client.*;version="[3.0,3.2)"
+  
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\
-  com.ibm.ws.jaxrs2x.concurrent.*
+  com.ibm.ws.jaxrs20.concurrent.*
   
--dsannotations: com.ibm.ws.jaxrs2x.concurrent.component.*
+-dsannotations: com.ibm.ws.jaxrs20.concurrent.component.*
  
 -buildpath: \
 	org.apache.cxf.cxf-core;strategy=exact;version=3.1.18,\
@@ -52,5 +51,4 @@ Private-Package:\
 	com.ibm.ws.concurrent;version=latest,\
 	com.ibm.ws.context;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.logging.core;version=latest,\
-	com.ibm.ws.cxf.client;version=latest
+	com.ibm.ws.logging.core;version=latest

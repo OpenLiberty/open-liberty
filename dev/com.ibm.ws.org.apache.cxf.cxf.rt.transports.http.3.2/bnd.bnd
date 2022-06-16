@@ -23,7 +23,6 @@
   javax.activation:activation;version=1.1,\
   org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=3.4.3,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-  com.ibm.ws.cxf.client,\
   com.ibm.ws.logging.core,\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
