@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.BeanDeploymentModule;
@@ -58,6 +59,7 @@ import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
@@ -129,10 +131,12 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         this.cdiRuntime = cdiRuntime;
     }
 
+    @FFDCIgnore(DeploymentException.class)
     public WebSphereCDIDeployment startInitialization(Application application) throws CDIException {
+        WebSphereCDIDeployment webSphereCDIDeployment = null;
         try {
             //first create the deployment object which has the full structure of BDAs inside
-            WebSphereCDIDeployment webSphereCDIDeployment = createWebSphereCDIDeployment(application);
+            webSphereCDIDeployment = createWebSphereCDIDeployment(application);
             currentDeployment.set(webSphereCDIDeployment);
 
             //scan for beans
@@ -172,20 +176,28 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 webSphereCDIDeployment.validateJEEComponentClasses();
                 weldBootstrap.deployBeans();
                 weldBootstrap.validateBeans();
-                return webSphereCDIDeployment;
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "startInitialization", "CDI is not enabled, shutting down CDI");
                 }
                 webSphereCDIDeployment.shutdown();
                 unsetDeployment(application);
-                return null;
+                webSphereCDIDeployment = null;
             }
 
+        } catch (DeploymentException e) {
+            DeploymentException e1 = e;
+            if (webSphereCDIDeployment != null) {
+                CDIContainerEventManager eventManager = this.cdiRuntime.getCDIContainerEventManager();
+                if (eventManager != null) {
+                    e1 = eventManager.processDeploymentException(webSphereCDIDeployment, e);
+                }
+            }
+            throw e1;
         } finally {
             currentDeployment.remove();
         }
-
+        return webSphereCDIDeployment;
     }
 
     public void endInitialization(WebSphereCDIDeployment webSphereCDIDeployment) throws CDIException {

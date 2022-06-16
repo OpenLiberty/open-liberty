@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.impl.weld;
 
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.probe.ProbeExtension;
@@ -716,6 +718,33 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     @Override
     public CDI<Object> getCDI() {
         return this.cdi;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Collection<URL> getUnversionedBeansXmlURLs() {
+        Collection<URL> unversionedBeansXmlURLs = new ArrayList<URL>();
+        for (WebSphereBeanDeploymentArchive bda : getWebSphereBeanDeploymentArchives()) {
+            BeansXml beansXml = bda.getBeansXml();
+            if (beansXml == null) { //check that there is a beans.xml file
+                continue;
+            }
+            
+            URL parsedURL = beansXml.getUrl();
+            //if the URL is null then that means it was an empty beans.xml file
+            //note that this may be an undocumented "feature" of the Weld SPI
+            if (parsedURL == null) {
+                continue;
+            }
+            
+            //if the beans.xml was not an empty file then check if the version was set or not
+            boolean unversionedBeansXml = beansXml.getVersion() == null;
+            if (unversionedBeansXml) {
+                URL unversionedBeansXmlURL = bda.getBeansXmlResourceURL();
+                unversionedBeansXmlURLs.add(unversionedBeansXmlURL);
+            }
+        }
+        return unversionedBeansXmlURLs;
     }
 
 }
