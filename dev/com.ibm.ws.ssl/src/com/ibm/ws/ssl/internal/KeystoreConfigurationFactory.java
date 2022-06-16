@@ -22,6 +22,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -44,6 +45,9 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * This accepts configuration from the service registry, creates the KeystoreConfig
  * for that configuration (or retrieves one it already created), verifies that the
@@ -56,10 +60,10 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * of a DS service: throwing the exception does not deactivate the component,
  * it just fails the update.
  */
-@Component(service = ManagedServiceFactory.class,
+@Component(service = { ManagedServiceFactory.class, CheckpointHook.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM", "service.pid=com.ibm.ws.ssl.keystore" })
-public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable, KeyringBasedActionable {
+public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable, KeyringBasedActionable, CheckpointHook {
     /** Trace service */
     private static final TraceComponent tc = Tr.register(KeystoreConfigurationFactory.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
@@ -72,6 +76,37 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
 
     private BundleContext bContext = null;
     private volatile ComponentContext cc = null;
+    private boolean isCheckpoint;
+    private String pid;
+    private Dictionary properties;
+
+    @Activate
+    public KeystoreConfigurationFactory(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
+        isCheckpoint = (checkpointPhase != null);
+    }
+
+    @Reference(service = CheckpointPhase.class, //
+               target = "(" + CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY + "=true)", //
+               cardinality = ReferenceCardinality.OPTIONAL, //
+               policy = ReferencePolicy.DYNAMIC, //
+               unbind = "ignoreCheckpointRestored")
+    protected final void checkpointRestored(ServiceReference<?> checkpoint) {
+        isCheckpoint = false;
+        try {
+            updated(pid, properties);
+        } catch (Throwable t) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc,
+                         "checkpointRestored(): Exception thrown while trying to update KeystoreConfigurationFactory.  Exception = "
+                             + t.toString());
+            }
+            FFDCFilter.processException(t, getClass().getName(), "checkpointRestored", this, new Object[] { pid, properties });
+        }
+    }
+
+    protected final void ignoreCheckpointRestored(ServiceReference<?> checkpoint) {
+        // we really don't care about this, but needed to avoid compile errors
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -79,6 +114,14 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     public void updated(String pid, Dictionary properties) throws ConfigurationException {
         // If we are stopping ignore the update
         if (FrameworkState.isStopping()) {
+            return;
+        }
+
+        if (isCheckpoint) {
+            // save off pid and properties for restore
+            this.pid = pid;
+            this.properties = properties;
+            // if we are in checkpoint mode, skip the update so it can happen after restore
             return;
         }
 
@@ -179,7 +222,8 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
      * Remove the reference to the location manager:
      * required service, do nothing.
      */
-    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {}
+    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {
+    }
 
     /**
      * The specified files have been modified and we need to clear the SSLContext caches and

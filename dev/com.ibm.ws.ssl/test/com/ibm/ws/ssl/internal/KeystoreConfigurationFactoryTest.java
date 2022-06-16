@@ -77,7 +77,7 @@ public class KeystoreConfigurationFactoryTest {
 
             }
         });
-        ksConfigFactory = new KeystoreConfigurationFactory();
+        ksConfigFactory = new KeystoreConfigurationFactory(null);
         ksConfigFactory.setLocMgr(locSvcRef);
         ksConfigFactory.activate(cc);
     }
