@@ -15,6 +15,7 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -37,6 +38,7 @@ import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Column;
+import io.openliberty.data.Embeddable;
 import io.openliberty.data.Entity;
 import io.openliberty.data.Generated;
 import io.openliberty.data.Id;
@@ -92,13 +94,14 @@ public class DataPersistence {
         // XML to make all other classes into JPA entities:
         ArrayList<String> entityClassInfo = new ArrayList<>(entityInfo.size());
 
+        List<Class<?>> embeddableTypes = new ArrayList<>();
+
         for (Entry<Class<?>, String> entry : entityInfo.entrySet()) {
             Class<?> c = entry.getKey();
             String keyAttribute = entry.getValue();
 
             if (c.getAnnotation(jakarta.persistence.Entity.class) == null) {
                 Entity entity = c.getAnnotation(Entity.class);
-
                 String tableName = tablePrefix + (entity == null || entity.value() == null ? c.getSimpleName() : entity.value());
                 StringBuilder xml = new StringBuilder(500)
                                 .append(" <entity class=\"" + c.getName() + "\">")
@@ -112,12 +115,20 @@ public class DataPersistence {
                     Id id = field.getAnnotation(Id.class);
                     Column column = field.getAnnotation(Column.class);
                     Generated generated = field.getAnnotation(Generated.class);
+                    Embeddable embeddable = field.getType().getAnnotation(Embeddable.class);
 
                     String attributeName = field.getName();
-                    String columnType = id == null && !keyAttribute.equals(attributeName) ? "basic" : "id";
                     String columnName = column == null || column.value().length() == 0 ? //
                                     id == null || id.value().length() == 0 ? null : id.value() : //
                                     column.value();
+
+                    String columnType;
+                    if (embeddable == null) {
+                        columnType = id == null && !keyAttribute.equals(attributeName) ? "basic" : "id";
+                    } else {
+                        columnType = "embedded";
+                        embeddableTypes.add(field.getType());
+                    }
 
                     xml
                                     .append("   <" + columnType + " name=\"" + attributeName + "\">")
@@ -145,6 +156,15 @@ public class DataPersistence {
             } else {
                 entityClassNames.add(c.getName());
             }
+        }
+
+        for (Class<?> type : embeddableTypes) {
+            StringBuilder xml = new StringBuilder(100)
+                            .append(" <embeddable class=\"")
+                            .append(type.getName())
+                            .append("\"/>")
+                            .append(EOLN);
+            entityClassInfo.add(xml.toString());
         }
 
         Map<String, ?> properties = Collections.singletonMap("io.openliberty.persistence.internal.entityClassInfo",
