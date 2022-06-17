@@ -34,6 +34,7 @@ import javax.management.ObjectName;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
@@ -92,8 +93,13 @@ public class CpuInfo {
         }
 
         int nsFactor = 1;
-        // adjust for J9 cpuUsage units change from hundred-nanoseconds to nanoseconds in Java8sr5
-        if (JavaInfo.vendor() == JavaInfo.Vendor.IBM) {
+        // Adjust for J9 cpuUsage units change from hundred-nanoseconds to nanoseconds in IBM Java8sr5
+        //
+        // Cannot use JavaInfo.vendor() == JavaInfo.Vendor.IBM because that returns true on Semeru 8 as well
+        // and the format of the string is 1.8.0_xxx-bxx so it will comes out as 8.0.0 so we will
+        // erroneously think it is less than Java 8 SR5.  So using this isSystemClassAvailable check for
+        // a class that is available on IBM Java 8, but not Semeru 8.
+        if (JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) {
             int majorVersion = JavaInfo.majorVersion();
             int minorVersion = JavaInfo.minorVersion();
             int serviceRelease = JavaInfo.serviceRelease();
@@ -442,9 +448,15 @@ public class CpuInfo {
         }
     }
 
+    @Trivial
     public class CPUCount {
         public int get() {
             return AVAILABLE_PROCESSORS.get();
+        }
+
+        @Override
+        public String toString() {
+            return Integer.toString(AVAILABLE_PROCESSORS.get());
         }
     }
 }
