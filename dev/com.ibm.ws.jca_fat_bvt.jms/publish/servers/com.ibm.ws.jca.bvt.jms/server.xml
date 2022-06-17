@@ -1,0 +1,80 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+  	<feature>componenttest-1.0</feature>
+    <feature>concurrent-1.0</feature>
+    <feature>jdbc-4.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>localConnector-1.0</feature>
+    <feature>jmsMdb-3.2</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>osgiconsole-1.0</feature>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+	<jdbcDriver id="Derby" libraryRef="DerbyLib"/>
+    <library id="DerbyLib">
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+
+  <variable name="onError" value="FAIL"/>
+
+  <messagingEngine>
+    <queue id="LOW_INVENTORY_QUEUE"/>
+  </messagingEngine>
+
+  <jmsQueueConnectionFactory jndiName="jms/qcf">
+    <properties.wasJms/>
+  </jmsQueueConnectionFactory>
+
+  <jmsQueue id="LowInventoryQueue" jndiName="jms/LowInventoryQueue">
+    <properties.wasJms queueName="LOW_INVENTORY_QUEUE"/>
+  </jmsQueue>
+
+  <jmsActivationSpec id="jcastore/InventoryTrackerMDB">
+    <properties.wasJms destinationRef="LowInventoryQueue"/>
+  </jmsActivationSpec>
+
+  <dataSource jndiName="jdbc/derby">
+    <jdbcDriver libraryRef="DerbyLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:JCASTOREDB"/>
+  </dataSource>
+
+  <managedExecutorService jndiName="concurrent/execSvc1">
+    <contextService>
+      <jeeMetadataContext/>
+    </contextService>
+  </managedExecutorService>
+  
+  <logging traceSpecification="WAS.j2c=all:Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+  <javaPermission codebase="${shared.resource.dir}/lib/Derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="derby.properties" actions="read"/>
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="${server.config.dir}/JCASTOREDB" actions="read,write"/>
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="createClassLoader"/>
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
+  <javaPermission className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
+  <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+  <javaPermission className="javax.management.MBeanTrustPermission" name="register"/>
+  
+  <application type="war" id="jcastore" location="jcastore.war">
+      <classloader privateLibraryRef="DerbyLib"/>
+  </application>
+</server>
