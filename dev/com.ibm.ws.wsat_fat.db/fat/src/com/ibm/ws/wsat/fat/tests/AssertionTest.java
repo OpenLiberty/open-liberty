@@ -150,8 +150,6 @@ public class AssertionTest extends WSATTest {
 	// but with CXF 3.x, that logic does not happen any longer, so the FFDCs do not come out.
 	// See AbstractHTTPDestination.initConfig to see the difference in behavior.
 	@Test
-	@ExpectedFFDC(value = { "javax.servlet.ServletException", "java.lang.RuntimeException" },
-	              repeatAction = {EmptyAction.ID, EE8FeatureReplacementAction.ID})
 	public void testAssertionIgnorable() {
 		String method = "testAssertionIgnorable";
 		// Expect an exception because Atomic Transaction policy assertion

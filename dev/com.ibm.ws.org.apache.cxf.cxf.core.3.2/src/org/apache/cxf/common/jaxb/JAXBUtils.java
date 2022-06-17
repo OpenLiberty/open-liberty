@@ -33,6 +33,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.lang.NoClassDefFoundError;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -626,10 +627,20 @@ public final class JAXBUtils {
 
     public static Object setNamespaceMapper(Bus bus, final Map<String, String> nspref,
                                             Marshaller marshaller) throws PropertyException {
+        LOG.info("****@TTJJ className of mapper is: " + marshaller.getClass() + " nspref stands for " + nspref);
         ClassLoaderService classLoaderService = bus.getExtension(ClassLoaderService.class);
+//        if(marshaller.getClass().getName().startsWith("com.ibm")) {
+//            try {
+//                Object mapper = classLoaderService.createNamespaceWrapperInstance(marshaller.getClass(), nspref);  
+//            } catch (NoClassDefFound) {
+//                if(NoClassDefFoundError e) {
+//                    // do nothing since XLXP has messed with the way this property gets read. 
+//                }
+//            }
+//        }
         Object mapper = classLoaderService.createNamespaceWrapperInstance(marshaller.getClass(), nspref);
         if (mapper != null) {
-            if (marshaller.getClass().getName().contains(".internal.")) {
+            if ((marshaller.getClass().getName().contains("com.sun") && marshaller.getClass().getName().contains(".internal."))) {
                 marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
                                        mapper);
             } else if (marshaller.getClass().getName().contains("com.sun")) {
@@ -641,6 +652,8 @@ public final class JAXBUtils {
             //Liberty change begin
             } else if (marshaller.getClass().getName().startsWith("org.glassfish.")) {
                 marshaller.setProperty("org.glassfish.jaxb.namespacePrefixMapper", mapper);
+            } else if (marshaller.getClass().getName().startsWith("com.ibm")) {
+                marshaller.setProperty("com.ibm.jtc.jax.xml.bind.namespacePrefixMapper", mapper);
             }
            //Liberty change end
         }

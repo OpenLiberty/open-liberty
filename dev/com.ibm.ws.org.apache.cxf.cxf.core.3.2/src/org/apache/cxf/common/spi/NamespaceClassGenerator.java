@@ -48,13 +48,15 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
 
         if (mcls.getName().contains("eclipse")) {
             return createEclipseNamespaceMapper(mcls, map);
-        } else if (mcls.getName().contains(".internal")) {
+        } else if (mcls.getName().contains("com.sun") && mcls.getName().contains(".internal")) {
             postFix = "Internal";
         } else if (mcls.getName().contains("com.sun")) {
             postFix = "RI";
         //Liberty change begin
         } else if (mcls.getName().startsWith("org.glassfish")) {
             postFix = "Glassfish";
+        } else if (mcls.getName().startsWith("com.ibm")) {
+            postFix = "IBM";
         }
         //Liberty change end
 
@@ -65,7 +67,23 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         if (cls == null) {
             try {
                 byte[] bts = createNamespaceWrapperInternal(postFix);
-                className = "org.apache.cxf.jaxb.NamespaceMapper" + postFix;
+                className = "org.apache.cxf.jaxb.NamespaceMapper" + postFix; 
+                
+                if(postFix.equals("IBM")) {
+                    try {
+                        return loadClass(className, NamespaceClassCreator.class, bts);
+                    } catch(NoClassDefFoundError e) {
+                        postFix = "RI";
+                        className = "org.apache.cxf.jaxb.NamespaceMapper";
+                        className += postFix;
+                        cls = findClass(className, NamespaceClassCreator.class);
+                        
+                        bts = createNamespaceWrapperInternal(postFix);
+                        return loadClass(className, NamespaceClassCreator.class, bts);
+                        
+                    }
+                }
+                
                 return loadClass(className, NamespaceClassCreator.class, bts);
             } catch (RuntimeException ex) {
                 // continue
@@ -300,11 +318,17 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
     private byte[] createNamespaceWrapperInternal(String postFix) {
 
         //Liberty change begin
-        String superName = "Glassfish".equals(postFix) ? 
+        String superName;
+
+        if(postFix.equals("IBM")) {
+            superName = "com/ibm/jtc/jax/xml/bind/namespacePrefixMapper";
+        } else {
+            superName = "Glassfish".equals(postFix) ? 
                         "org/glassfish/jaxb/runtime/marshaller/NamespacePrefixMapper" : 
                         ("com/sun/xml/"
                         + ("RI".equals(postFix) ? "" : "internal/")
                         + "bind/marshaller/NamespacePrefixMapper");
+        }
         //Liberty change end
         String postFixedName = "org/apache/cxf/jaxb/NamespaceMapper" + postFix;
         ASMHelper.ClassWriter cw = helper.createClassWriter();
