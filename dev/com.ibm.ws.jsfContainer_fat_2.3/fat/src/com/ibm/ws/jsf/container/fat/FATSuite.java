@@ -75,9 +75,9 @@ public class FATSuite {
         }
     }
 
-    public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.9.jar";
-    public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.9.jar";
-    public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.9.jar";
+    public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.10.jar";
+    public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.10.jar";
+    public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.10.jar";
     public static final String MYFACES_IMP_40 = "publish/files/myfaces40//myfaces-impl-4.0.0-RC4.jar";
     // For ErrorPathsTest#testBadImplVersion_MyFaces Test (apps need the correct api since the tests checks for a bad implementation)
     public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.2.jar";
