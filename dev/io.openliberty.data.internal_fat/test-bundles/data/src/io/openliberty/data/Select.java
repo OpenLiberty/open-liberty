@@ -32,7 +32,7 @@ public @interface Select {
      * Specifies a return type for query results.
      * Instances of this type are constructed with the entity attributes
      * selected in the order that is specified by {@link #value}.
-     * The default value is the marker class for automatic detection based on the method return type.
+     * The default value is the marker class for automatic detection based on the method return type and entity type.
      */
     Class<?> type() default AutoDetect.class;
 

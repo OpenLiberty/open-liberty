@@ -136,9 +136,24 @@ public class QueryHandler<T> implements InvocationHandler {
             for (Object mapping : databaseMappings) {
                 String attributeName = (String) mapping.getClass().getMethod("getAttributeName").invoke(mapping);
                 Object databaseField = mapping.getClass().getMethod("getField").invoke(mapping);
-                String columnName = (String) databaseField.getClass().getMethod("getName").invoke(databaseField);
-                System.out.println("Attribute: " + attributeName + "; Column: " + columnName);
-                attributeNames.put(attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1), attributeName);
+                if (databaseField == null) {
+                    // TODO this will likely only cover one level of embedded attributes, but this isn't a real implementaiton
+                    List<?> databaseFields = (List<?>) mapping.getClass().getMethod("getFields").invoke(mapping);
+                    for (Object embeddedDatabaseField : databaseFields) {
+                        Object referenceClassDescriptor = mapping.getClass().getMethod("getReferenceDescriptor").invoke(mapping);
+                        Vector<?> referenceDatabaseMappings = (Vector<?>) referenceClassDescriptor.getClass().getMethod("getMappings").invoke(referenceClassDescriptor);
+                        for (Object embeddedMapping : referenceDatabaseMappings) {
+                            String embeddableAttributeName = (String) embeddedMapping.getClass().getMethod("getAttributeName").invoke(embeddedMapping);
+                            String fullAttributeName = attributeName + '.' + embeddableAttributeName;
+                            System.out.println("Attribute: " + fullAttributeName + "; Column: " + embeddableAttributeName);
+                            attributeNames.put(embeddableAttributeName.toUpperCase(), fullAttributeName);
+                        }
+                    }
+                } else {
+                    String columnName = (String) databaseField.getClass().getMethod("getName").invoke(databaseField);
+                    System.out.println("Attribute: " + attributeName + "; Column: " + columnName);
+                    attributeNames.put(attributeName.toUpperCase(), attributeName);
+                }
             }
             System.out.println(attributeNames);
         } catch (RuntimeException x) {
@@ -221,7 +236,7 @@ public class QueryHandler<T> implements InvocationHandler {
                         }
 
                     String attribute = methodName.substring(i, stopAt);
-                    String name = attributeNames.get(attribute);
+                    String name = attributeNames.get(attribute.toUpperCase());
                     q.append("o.").append(name == null ? attribute : name);
 
                     if (desc)
@@ -289,7 +304,7 @@ public class QueryHandler<T> implements InvocationHandler {
             }
         }
 
-        String name = attributeNames.get(attribute);
+        String name = attributeNames.get(attribute.toUpperCase());
         q.append("o.").append(name == null ? attribute : name);
 
         if (negated)
@@ -343,8 +358,10 @@ public class QueryHandler<T> implements InvocationHandler {
                     first = false;
                 }
             else
-                for (int i = 0; i < cols.length; i++)
-                    q.append(i == 0 ? "(o." : ", o.").append(cols[i]);
+                for (int i = 0; i < cols.length; i++) {
+                    String name = attributeNames.get(cols[i].toUpperCase());
+                    q.append(i == 0 ? "(o." : ", o.").append(name == null ? cols[i] : name);
+                }
             q.append(") FROM ");
         }
         q.append(entityName).append(" o");

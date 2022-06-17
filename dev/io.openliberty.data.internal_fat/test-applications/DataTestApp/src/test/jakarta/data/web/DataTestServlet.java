@@ -33,6 +33,7 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
 import jakarta.inject.Inject;
@@ -65,6 +66,9 @@ public class DataTestServlet extends FATServlet {
 
     @Inject
     Shipments shipments;
+
+    @Inject
+    ShippingAddresses shippingAddresses;
 
     @Resource
     private UserTransaction tran;
@@ -103,6 +107,62 @@ public class DataTestServlet extends FATServlet {
         // expect that 2 remain
         assertNotNull(products.findItem("TDM-SE"));
         assertNotNull(products.findItem("TDM-EE"));
+    }
+
+    /**
+     * Add, search, and remove entities with Embeddable fields.
+     */
+    @Test
+    public void testEmbeddable() {
+        shippingAddresses.removeAll();
+
+        ShippingAddress a1 = new ShippingAddress();
+        a1.id = 1001L;
+        a1.city = "Rochester";
+        a1.state = "Minnesota";
+        a1.streetAddress = new StreetAddress(2800, "37th St NW");
+        a1.zipCode = 55901;
+        shippingAddresses.save(a1);
+
+        ShippingAddress a2 = new ShippingAddress();
+        a2.id = 1002L;
+        a2.city = "Rochester";
+        a2.state = "Minnesota";
+        a2.streetAddress = new StreetAddress(201, "4th St SE");
+        a2.zipCode = 55904;
+        shippingAddresses.save(a2);
+
+        ShippingAddress a3 = new ShippingAddress();
+        a3.id = 1003L;
+        a3.city = "Rochester";
+        a3.state = "Minnesota";
+        a3.streetAddress = new StreetAddress(200, "1st Ave SW");
+        a3.zipCode = 55902;
+        shippingAddresses.save(a3);
+
+        ShippingAddress a4 = new ShippingAddress();
+        a4.id = 1004L;
+        a4.city = "Rochester";
+        a4.state = "Minnesota";
+        a4.streetAddress = new StreetAddress(151, "4th St SE");
+        a4.zipCode = 55904;
+        shippingAddresses.save(a4);
+
+        assertArrayEquals(new ShippingAddress[] { a4, a2 },
+                          shippingAddresses.findByStreetNameOrderByHouseNumber("4th St SE"),
+                          Comparator.<ShippingAddress, Long> comparing(o -> o.id)
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.streetAddress.streetName))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
+
+        assertIterableEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
+                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(150, 250))
+                                             .map(a -> a.houseNumber + " " + a.streetName)
+                                             .collect(Collectors.toList()));
+
+        assertEquals(4, shippingAddresses.removeAll());
     }
 
     /**
