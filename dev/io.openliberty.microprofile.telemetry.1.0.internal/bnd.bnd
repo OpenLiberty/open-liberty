@@ -16,7 +16,6 @@ app-resources= \
 
 bVersion=1.0
 
-
 WS-TraceGroup: telemetry
 
 -cdiannotations:
@@ -33,20 +32,17 @@ Include-Resource: \
 Import-Package: \
   !com.google.errorprone.annotations.concurrent,\
   !io.opentelemetry.exporter.prometheus,\
-  !io.opentelemetry.exporter.zipkin,\
-  !io.opentelemetry.exporter.otlp.http.logs,\
-  !io.opentelemetry.exporter.otlp.logs,\
-  !io.opentelemetry.exporter.otlp.http.metrics,\
-  !io.opentelemetry.exporter.otlp.metrics,\
-  !io.opentelemetry.exporter.logging,\
   !okhttp3,\
   !okio,\
+  !zipkin2,\
+  !zipkin2.*,\
   !sun.misc,\
+  !kotlin,\
 	*
 
 Export-Package: \
-  io.opentelemetry.*,\
-  io.openliberty.microprofile.telemetry.internal.*;version=1.0;thread-context=true
+  io.openliberty.microprofile.telemetry.internal.*;version=1.0;thread-context=true,\
+  io.opentelemetry.*;version=1.0
 
 Private-Package: \
   io.openliberty.microprofile.telemetry.internal.cdi

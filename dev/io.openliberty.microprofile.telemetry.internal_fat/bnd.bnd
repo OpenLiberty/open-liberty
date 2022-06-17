@@ -17,7 +17,7 @@ src: \
 	
 fat.project: true
 
-tested.features: microProfile-5.0
+tested.features: mpTelemetry-1.0
 
 -buildpath: \
 	io.openliberty.jakarta.servlet.5.0;version=latest,\

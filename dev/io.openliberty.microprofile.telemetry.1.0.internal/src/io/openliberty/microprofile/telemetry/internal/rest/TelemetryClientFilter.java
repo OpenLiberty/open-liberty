@@ -56,7 +56,6 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
         InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(
                 openTelemetry,
                 "Client filter",
-                "1.0",
                 HttpSpanNameExtractor.create(clientAttributesExtractor));
 
         this.instrumenter = builder

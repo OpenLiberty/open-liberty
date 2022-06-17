@@ -16,6 +16,7 @@ IBM-API-Package: \
 -features=\
   com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
+  io.openliberty.jakarta.annotation-2.0, \
   io.openliberty.restfulWS-3.0, \
   io.openliberty.mpConfig-3.0, \
   io.openliberty.cdi-3.0, \

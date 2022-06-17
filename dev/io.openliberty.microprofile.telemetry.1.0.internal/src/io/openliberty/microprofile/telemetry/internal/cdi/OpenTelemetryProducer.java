@@ -53,47 +53,51 @@ public class OpenTelemetryProducer {
     @Produces
     public OpenTelemetry getOpenTelemetry() {
 
-        Map<String, String> oTelConfigs = new HashMap<>();
-        for (String propertyName : config.getPropertyNames()) {
-            if (propertyName.startsWith("start") || propertyName.startsWith("start")) {
-                config.getOptionalValue(propertyName, String.class).ifPresent(
-                        value -> oTelConfigs.put(propertyName, value));
-            }
-        }
+        SpanExporter exporter = getSpanExporter(getTelemetryProperties());
 
-        SpanExporter exporter = getSpanExporter(oTelConfigs);
         Resource serviceNameResource =
-            Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, "open-liberty-jaeger"));
+            Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, "open-liberty"));
+        
         SdkTracerProvider tracerProvider =
             SdkTracerProvider.builder()
                 .addSpanProcessor(SimpleSpanProcessor.create(exporter))
                 .setResource(Resource.getDefault().merge(serviceNameResource))
                 .build();
+
         OpenTelemetrySdk openTelemetry =
             OpenTelemetrySdk.builder().setTracerProvider(tracerProvider).build();
 
-        // it's always a good idea to shut down the SDK cleanly at JVM exit.
         Runtime.getRuntime().addShutdownHook(new Thread(tracerProvider::close));
 
         return openTelemetry;
     }
 
     @ApplicationScoped
-    private SpanExporter getSpanExporter(Map<String, String> oTelConfigs) {
+    private SpanExporter getSpanExporter(Map<String,String> oTelConfigs) {
+        /*if(oTelConfigs.get("otel.traces.exporter").equals("jaeger")){
+            return JaegerGrpcSpanExporter.builder()
+                        .setEndpoint("http://localhost:14250")
+                        .build();
+        }
+        else if(oTelConfigs.get("otel.traces.exporter").equals("zipkin")){
+           return ZipkinSpanExporter.builder()
+                        .setEndpoint("http://localhost:9411/api/v2/spans")
+                        .build();
+        }*/
         return JaegerGrpcSpanExporter.builder()
                             .setEndpoint("http://localhost:14250")
                             .build();
     }
 
-    private Supplier<Map<String,String>> getTelemetryProperties(){
-        Map<String,String> telemetryProperties = new HashMap<>();
+    private HashMap<String,String> getTelemetryProperties(){
+        HashMap<String,String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
             if (propertyName.startsWith("otel.") || propertyName.startsWith("OTEL_")) {
                 config.getOptionalValue(propertyName, String.class).ifPresent(
                         value -> telemetryProperties.put(propertyName, value));
             }
         }
-        return () -> telemetryProperties;
+        return telemetryProperties;
     }
 
     @Produces

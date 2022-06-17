@@ -29,7 +29,7 @@ import io.opentelemetry.instrumentation.api.annotation.support.ParameterAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
 import io.opentelemetry.instrumentation.api.instrumenter.SpanNameExtractor;
-import io.opentelemetry.instrumentation.api.instrumenter.SpanNames;
+import io.opentelemetry.instrumentation.api.util.SpanNames;
 
 import io.opentelemetry.extension.annotations.WithSpan;
 
@@ -46,7 +46,7 @@ public class WithSpanInterceptor {
     private final Instrumenter<MethodRequest, Void> instrumenter;
 
     public WithSpanInterceptor(final OpenTelemetry openTelemetry) {
-        InstrumenterBuilder<MethodRequest, Void> builder = Instrumenter.builder(openTelemetry, instrumentationName, instrumentationVersion, new MethodRequestSpanNameExtractor());
+        InstrumenterBuilder<MethodRequest, Void> builder = Instrumenter.builder(openTelemetry, instrumentationName, new MethodRequestSpanNameExtractor());
         MethodSpanAttributesExtractor<MethodRequest, Void> attributesExtractor = MethodSpanAttributesExtractor.newInstance(
             MethodRequest::getMethod,
             new WithSpanParameterAttributeNamesExtractor(),

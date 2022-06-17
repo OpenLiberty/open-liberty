@@ -38,12 +38,13 @@ Import-Package: \
   !reactor.blockhound.*,\
   !sun.*,\
   !com.squareup.okhttp,\
+  okio,\
   *
 
 Export-Package: \
   io.grpc.netty.*;version=${grpcVersion},\
   io.grpc.okhttp.*;version=1.47.0,\
-  okio;version=3.1.0
+  okio;version="1.0.0"
 
 instrument.disabled: true
 
@@ -52,7 +53,7 @@ instrument.disabled: true
 -buildpath: \
   io.grpc:grpc-netty-shaded;version=${grpcVersion},\
   io.grpc:grpc-okhttp;version=1.47.0,\
-  com.squareup.okio:okio;version=3.1.0,\
+  com.squareup.okio:okio;version=3.1.0, \
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.security;version=latest,\
   com.ibm.ws.container.service;version=latest,\
