@@ -45,7 +45,7 @@ public class LibertyCXFNegativePropertiesTest {
     public static LibertyServer server;
 
     private final static Class<?> c = LibertyCXFNegativePropertiesTest.class;
-    private static final int CONN_TIMEOUT = 10;
+    private static final int CONN_TIMEOUT = 300;
 
     // *** Stop and Start server between tests ***
     @BeforeClass
