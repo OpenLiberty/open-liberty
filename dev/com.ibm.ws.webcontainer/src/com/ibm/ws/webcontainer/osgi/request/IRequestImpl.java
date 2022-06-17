@@ -45,6 +45,8 @@ import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.http.HttpInboundConnection; 
 
+import io.openliberty.http.ext.HttpRequestExt;
+
 
 /**
  * Implementation of a webcontainer request wrapping an HTTP dispatcher provided
@@ -105,7 +107,7 @@ public class IRequestImpl implements IRequestExtended
   {
       // TODO webcontainer checks dispatcher.isSecurityenabledForapplication
       // and uses some private attributes in that case
-      String type = this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSAT.getName());
+      String type = getTrustedHeader(HttpHeaderKeys.HDR_$WSAT);
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
           Tr.debug(tc, "type=" + type);
@@ -115,7 +117,7 @@ public class IRequestImpl implements IRequestExtended
   public String getCipherSuite()
   {
       if (this.conn.useTrustedHeaders()) {
-          String csHdr = this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSCS.getName());
+          String csHdr = getHeader(HttpHeaderKeys.HDR_$WSCS);
           if (csHdr != null) {
               //321485
               if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -125,7 +127,7 @@ public class IRequestImpl implements IRequestExtended
           }
           //F001872 - start
           // Client connected to web server but did not provide certificate
-          if ((this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSRA.getName())) != null){
+          if ((getHeader(HttpHeaderKeys.HDR_$WSRA)) != null){
               return null;
           }
       }
@@ -160,7 +162,7 @@ public class IRequestImpl implements IRequestExtended
 
       boolean direct = true;
 
-      if(this.request.getHeader(HttpHeaderKeys.HDR_$WSRA.getName()) != null)
+      if(((HttpRequestExt)this.request).getHeader(HttpHeaderKeys.HDR_$WSRA) != null)
          direct = false ;
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -183,7 +185,7 @@ public class IRequestImpl implements IRequestExtended
   public String getContentType()
   {
       if (this.contentType == null) {
-          this.contentType = this.request.getHeader("Content-Type");
+          this.contentType = ((HttpRequestExt)this.request).getHeader(HttpHeaderKeys.HDR_CONTENT_TYPE);
       }
 
       return this.contentType;
@@ -250,7 +252,7 @@ public class IRequestImpl implements IRequestExtended
     //End PI15886
   }
 
-  // Preventing us generating an FFDC for a parse excption because that relates to bad data passed to us from the HTTP client and not a serivce issue.
+  // Preventing us generating an FFDC for a parse exception because that relates to bad data passed to us from the HTTP client and not a service issue.
   @FFDCIgnore(ParseException.class)
   public long getDateHeader(String name)
   {
@@ -275,6 +277,19 @@ public class IRequestImpl implements IRequestExtended
   public String getHeader(String headerName)
   {
     return this.request.getHeader(headerName);
+  }
+
+  private String getHeader(HttpHeaderKeys key)
+  {
+    return ((HttpRequestExt)this.request).getHeader(key);
+  }
+
+  private String getTrustedHeader(HttpHeaderKeys key)
+  {
+      if (this.conn.useTrustedHeaders() && this.request != null) {
+          return ((HttpRequestExt)this.request).getHeader(key);
+      }
+      return null;
   }
 
   @SuppressWarnings("unchecked")
@@ -409,7 +424,7 @@ public class IRequestImpl implements IRequestExtended
       try {
           X509Certificate[] chain = null;
           if (this.conn.useTrustedHeaders()) {
-              String clientCertificate = this.request.getHeader(HttpHeaderKeys.HDR_$WSCC.getName());
+              String clientCertificate = ((HttpRequestExt)this.request).getHeader(HttpHeaderKeys.HDR_$WSCC);
               if (clientCertificate != null) {
                   CertificateFactory cf = CertificateFactory.getInstance("X.509");
                   ByteArrayInputStream inStream = new ByteArrayInputStream(armor(clientCertificate).getBytes());
@@ -419,7 +434,7 @@ public class IRequestImpl implements IRequestExtended
               }
               //F001872 - start
               // Client connected to web server but did not provide certificate
-              if ((request.getHeader(HttpHeaderKeys.HDR_$WSRA.getName())) != null){
+              if ((((HttpRequestExt)request).getHeader(HttpHeaderKeys.HDR_$WSRA)) != null){
                       return null;
               }
               //F001872 - end
@@ -494,7 +509,7 @@ public class IRequestImpl implements IRequestExtended
 
   public String getProtocol()
   {
-      String protocol = this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSPR.getName());
+      String protocol = getTrustedHeader(HttpHeaderKeys.HDR_$WSPR);
       if ( protocol != null ) {
           try {
               // Check to make sure it's a valid protocol
@@ -549,7 +564,7 @@ public class IRequestImpl implements IRequestExtended
 
   public String getRemoteUser()
   {
-    String user = this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSRU.getName());
+    String user = getTrustedHeader(HttpHeaderKeys.HDR_$WSRU);
     return user;
   }
 
@@ -589,7 +604,7 @@ public class IRequestImpl implements IRequestExtended
   {
     byte[] rc = null;
 
-    String sslHdr = this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSSI.getName());
+    String sslHdr = getTrustedHeader(HttpHeaderKeys.HDR_$WSSI);
     if(sslHdr!=null){
         rc = sslHdr.getBytes();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -654,7 +669,7 @@ public class IRequestImpl implements IRequestExtended
               }
 
               // Private WAS header set by WAS Plugin (and other proxies if configured) to contain original scheme
-              String WSSC_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSSC.getName());
+              String WSSC_header =  getHeader(HttpHeaderKeys.HDR_$WSSC);
               if (WSSC_header != null) {
                   if (validateProto(WSSC_header)) {
                       //321485(tWAS)
@@ -669,7 +684,7 @@ public class IRequestImpl implements IRequestExtended
               }
 
               // Private WAS header set by WAS Plugin (and other proxies if configured) to state that secure protocal was used
-              String WSIS_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSIS.getName());
+              String WSIS_header =  getHeader(HttpHeaderKeys.HDR_$WSIS);
               if (WSIS_header != null ){
                   if (WSIS_header.equalsIgnoreCase("true")) {
                       //321485(tWAS)
@@ -688,7 +703,7 @@ public class IRequestImpl implements IRequestExtended
               }
 
               // De-facto standard header used to indicate original scheme
-              String FORWARDED_PROTO_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
+              String FORWARDED_PROTO_header =  getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
               if (FORWARDED_PROTO_header != null && !useForwarded){
                   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                       Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto  --> scheme --> "+FORWARDED_PROTO_header);
@@ -777,7 +792,7 @@ public class IRequestImpl implements IRequestExtended
                 isHttpsIndicatorSecure = true;
 
                 // Check the host header so we can set the port to 443
-                String host = getHeader("Host");
+                String host = getHeader(HttpHeaderKeys.HDR_HOST);
                 if (host != null)
                 {
                     int idx = host.indexOf(':');
@@ -861,14 +876,14 @@ public class IRequestImpl implements IRequestExtended
                   return isSSL;
               }
               //end  PK12164
-              String WSIS_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSIS.getName());
+              String WSIS_header =  getHeader(HttpHeaderKeys.HDR_$WSIS);
               if (WSIS_header != null) {
                   isSSL = WSIS_header.equalsIgnoreCase("true");
                   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) //306998.4(tWAS)
                       Tr.debug(tc, " isTrusted --> true ssl --> " + isSSL);
                   return isSSL;
               }
-              String FORWARDED_PROTO_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
+              String FORWARDED_PROTO_header =  getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
               if (FORWARDED_PROTO_header != null && !useForwarded) {
                   // router may set this header for all protocols so check specifically for regular ssl (https) and websocket ssl (wss)
                   if ((FORWARDED_PROTO_header.equalsIgnoreCase("https"))||(FORWARDED_PROTO_header.equalsIgnoreCase("wss"))) {
