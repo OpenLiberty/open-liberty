@@ -67,7 +67,8 @@ DynamicImport-Package: \
  javax.xml.bind.annotation.adapters, \
  javax.xml.bind.attachment, \
  javax.xml.bind.helpers, \
- javax.xml.bind.util
+ javax.xml.bind.util, \
+ javafx.*
  
 Include-Resource: \
   @${repo;org.hibernate.validator:hibernate-validator;6.1.7.Final;EXACT}!/META-INF/*.xsd, \
