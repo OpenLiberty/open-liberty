@@ -13,7 +13,6 @@ package com.ibm.ws.jaxws.fat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -131,7 +130,7 @@ public class LibertyCXFNegativePropertiesTest {
                  "Calling Application with URL=" + url.toString());
         HttpUtils.trustAllCertificates();
         HttpUtils.trustAllHostnames();
-        HttpURLConnection con = HttpUtils.getHttpConnection(url, ExpectedConnection, CONN_TIMEOUT);
+        HttpsURLConnection con = (HttpsURLConnection) HttpUtils.getHttpConnection(url, ExpectedConnection, CONN_TIMEOUT);
         con.disconnect();
     }
 }
