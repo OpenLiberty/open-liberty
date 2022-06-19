@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.wsat.fat.util.WSATTest;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
@@ -150,8 +151,8 @@ public class AssertionTest extends WSATTest {
 	// but with CXF 3.x, that logic does not happen any longer, so the FFDCs do not come out.
 	// See AbstractHTTPDestination.initConfig to see the difference in behavior.
 	@Test
-	@ExpectedFFDC(value = { "javax.servlet.ServletException", "java.lang.RuntimeException" },
-	              repeatAction = {EmptyAction.ID, EE8FeatureReplacementAction.ID})
+	@AllowedFFDC(value = { "javax.servlet.ServletException", "java.lang.RuntimeException" },
+	repeatAction = {EmptyAction.ID, EE8FeatureReplacementAction.ID})
 	public void testAssertionIgnorable() {
 		String method = "testAssertionIgnorable";
 		// Expect an exception because Atomic Transaction policy assertion
