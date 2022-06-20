@@ -14,8 +14,8 @@
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
 #
 #CMVCPATHNAME io.openliberty.jakarta.jsonb.compatibility/resources/io/openliberty/jakarta/jsonb/compatibility/resources/JsonbMessages.nlsprops
-#COMPONENTPREFIX JSON
-#COMPONENTNAMEFOR JSON Binding and Processing
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR JSON Binding
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
 #
@@ -27,9 +27,10 @@
 #   (single quote must be coded as one single quote '). 
 # -------------------------------------------------------------------------------------------------
 
-# JSONB Messages 0001-4999
-# JSONP Messages 5000-9999
+# Reserved Range CWWKJ0350-CWWKJ0499
 
-JSON0001.feature.compatibility=JSON0001I: jsonb and jsonbContainer features are both enabled. The jsonbContainer feature supersedes the jsonb feature.
-JSON0001.feature.compatibility.explanation=The jsonbContainer feature allows users to provide their own implementation of the json binding API.  Whereas, the jsonb feature will provide a default implementation.
-JSON0001.feature.compatibility.useraction=The jsonb feature will not provide a json binding implementation, ensure that you have configured a BELL in your server configuration that implements the json binding API.
+CWWKJ0350.feature.compatibility=CWWKJ0350I: The jsonb and jsonbContainer features are both enabled. The jsonbContainer feature supersedes the jsonb feature.
+CWWKJ0350.feature.compatibility.explanation=Use the jsonbContainer feature if you want to provide a third-party implementation of the Jakarta JSON Binding API. The jsonb feature provides only a default implementation.
+CWWKJ0350.feature.compatibility.useraction=Ensure that you configure a BELL that provides an implementation of the Jakarta JSON Binding API in your server configuration.
+
+# CWWKJ0351 used in io.openliberty.jakarta.jsonp.compatibility

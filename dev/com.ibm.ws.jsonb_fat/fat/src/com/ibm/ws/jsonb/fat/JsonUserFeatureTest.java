@@ -48,8 +48,8 @@ public class JsonUserFeatureTest extends FATServletClient {
         server.startServer();
 
         if (JakartaEE10Action.isActive()) { //TODO possibly back port these info messages to EE9 and EE8
-            assertTrue(!server.findStringsInLogsAndTrace("JSON0001I").isEmpty());
-            assertTrue(!server.findStringsInLogsAndTrace("JSON5000I").isEmpty());
+            assertTrue(!server.findStringsInLogsAndTrace("CWWKJ0350I").isEmpty());
+            assertTrue(!server.findStringsInLogsAndTrace("CWWKJ0351I").isEmpty());
         }
     }
 

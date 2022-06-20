@@ -49,7 +49,7 @@ public class JSONBInAppTest extends FATServletClient {
         server.startServer();
 
         if (JakartaEE10Action.isActive()) { //TODO possibly back port this info message to EE9 and EE8
-            assertTrue(!server.findStringsInLogsAndTrace("JSON5000I").isEmpty());
+            assertTrue(!server.findStringsInLogsAndTrace("CWWKJ0351I").isEmpty());
         }
     }
 

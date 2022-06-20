@@ -29,7 +29,7 @@ public class JsonbFeatureCompatibility implements BundleActivator {
     @Override
     public void start(BundleContext bundleContext) throws Exception {
         if (TraceComponent.isAnyTracingEnabled()) {
-            Tr.info(tc, "JSON0001.feature.compatibility");
+            Tr.info(tc, "CWWKJ0350.feature.compatibility");
         }
     }
 
