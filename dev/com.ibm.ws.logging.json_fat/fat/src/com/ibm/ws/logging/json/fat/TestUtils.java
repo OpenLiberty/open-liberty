@@ -45,6 +45,8 @@ public class TestUtils {
             url = url + "/ExtURL";
         } else if (type.equals("exception")) {
             url = url + "/ExceptionURL";
+        } else if (type.equals("ExceptionExtURL")) {
+            url = url + "/ExceptionExtURL";
         }
         Log.info(c, "runApp", "---> Running the application with url : " + url);
 

@@ -48,7 +48,7 @@ public abstract class JSONEventsTest {
     public void checkMessage() throws Exception {
         ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
                                                                                          "ibm_sequence", "loglevel", "ibm_messageId", "module",
-                                                                                         "ibm_threadId", "message"));
+                                                                                         "ibm_threadId", "message", "ext_thread"));
 
         ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
 
@@ -96,7 +96,7 @@ public abstract class JSONEventsTest {
     public void checkTrace() throws Exception {
         ArrayList<String> traceKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
                                                                                        "ibm_sequence", "loglevel", "module", "ibm_methodName", "ibm_className",
-                                                                                       "ibm_threadId", "message"));
+                                                                                       "ibm_threadId", "message", "ext_appName", "ext_thread"));
 
         ArrayList<String> traceKeysOptionalList = new ArrayList<String>();
 
@@ -125,7 +125,8 @@ public abstract class JSONEventsTest {
 
         ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
                                                                                          "ibm_sequence", "loglevel", "module",
-                                                                                         "ibm_threadId", "message", "ibm_stackTrace", "ibm_exceptionName"));
+                                                                                         "ibm_threadId", "message", "ibm_stackTrace", "ibm_exceptionName", "ext_appName",
+                                                                                         "ext_thread"));
 
         ArrayList<String> messageKeysMandatoryList2 = new ArrayList<String>(messageKeysMandatoryList);
         ArrayList<String> messageKeysMandatoryList3 = new ArrayList<String>(messageKeysMandatoryList);
@@ -166,6 +167,39 @@ public abstract class JSONEventsTest {
         checkJsonMessage(line, messageKeysMandatoryList3, messageKeysOptionalList);
     }
 
+    @Test
+    @ExpectedFFDC("java.io.IOException")
+    public void checkExceptionExtensions() throws Exception {
+        //Set the mark for end of log, so the test finds the correct and latest messageID lines, as there might be multiple occurrences of the same message ID from previous test cases.
+        getServer().setMarkToEndOfLog(getLogFile());
+
+        // Test checks if exceptions are thrown, the appropriate LogRecordContext Extensions are logged as well.
+        TestUtils.runApp(getServer(), "ExceptionExtURL");
+
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "module",
+                                                                                         "ibm_threadId", "message", "ibm_messageId", "ext_appName", "ext_thread",
+                                                                                         "ext_testExtensionException"));
+
+        ArrayList<String> messageKeysMandatoryList2 = new ArrayList<String>(messageKeysMandatoryList);
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        String line = getServer().waitForStringInLogUsingMark("\\{.*\"ibm_messageId\":\"SRVE0777E\".*\\}", getLogFile());
+
+        // Check if exception thrown message is logged
+        assertNotNull("Cannot find exception message \"ibm_messageId\":\"SRVE0777E\" from " + getLogFile().getName(), line);
+
+        // Check if the exception thrown message event contains all the required JSON fields, including the LogRecordExtensions
+        checkJsonMessage(line, messageKeysMandatoryList, messageKeysOptionalList);
+
+        // Check if FFDC incident created message is logged
+        assertNotNull("Cannot find FFDC incident created message \"ibm_messageId\":\"FFDC1015I\" from " + getLogFile().getName(), line);
+
+        // Check if the FFDC incident created message event contains all the required JSON fields, including the LogRecordExtensions
+        checkJsonMessage(line, messageKeysMandatoryList2, messageKeysOptionalList);
+    }
+
     public void checkExtensions(String line) throws Exception {
         final String method = "checkExtensions";
 
@@ -176,7 +210,7 @@ public abstract class JSONEventsTest {
         ArrayList<String> extensionKeysMandatoryList = new ArrayList<String>(Arrays.asList("ext_correctBooleanExtension_bool", "ext_correctBooleanExtension2_bool",
                                                                                            "ext_correctIntExtension_int", "ext_correctIntExtension2_int",
                                                                                            "ext_correctStringExtension", "ext_correctFloatExtension_float",
-                                                                                           "ext_correctFloatExtension2_float"));
+                                                                                           "ext_correctFloatExtension2_float", "ext_thread", "ext_appName"));
         ArrayList<String> invalidFields = new ArrayList<String>();
 
         String value = "";
@@ -208,6 +242,10 @@ public abstract class JSONEventsTest {
                     }
                 } else if (key.equals("ext_correctFloatExtension2_float")) {
                     if ((Float.parseFloat(jsonObj.get(key).toString())) != -100.123f) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_appName")) {
+                    if (!jsonObj.getString(key).toString().equals("LogstashApp")) {
                         invalidFields.add(key);
                     }
                 }
