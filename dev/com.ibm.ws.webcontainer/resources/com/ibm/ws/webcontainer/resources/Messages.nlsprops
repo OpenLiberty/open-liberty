@@ -1074,7 +1074,7 @@ Unsupported.op.from.servlet.context.listener.explanation=Certain operations cann
 Unsupported.op.from.servlet.context.listener.useraction=Add the listener via an annotation or via the web.xml to enable the execution of this method.
 
 Error.adding.ServletContextListener=SRVE8012E: Error adding ServletContextListener
-Error.adding.ServletContextListener.explanation=A ServletContextListener cannot be added from another ServletContextListener
+Error.adding.ServletContextListener.explanation=A ServletContextListener cannot be added from another ServletContextListener.
 Error.adding.ServletContextListener.useraction=Either add the ServletContextListener to the web.xml or web-fragment.xml, annotate it with the @WebListener annotation, or programmatically add it from ServletContainerInitializer#onStartup
 
 Invalid.Listener=SRVE8013E: Not a valid listener to add programmatically
