@@ -33,7 +33,7 @@ public class RecoveryCheckServlet extends HttpServlet {
 				+ "================");
 		String BASE_URL = request.getParameter("baseurl");
 		if (BASE_URL == null || BASE_URL.equals("")){
-			BASE_URL = "http://localhost:9992";
+			BASE_URL = "http://localhost:"+Integer.parseInt(System.getProperty("HTTP_secondary"));
 		}
 		String output = "get resource states successfully";
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,11 +54,11 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 						+ "================");
 				String BASE_URL = request.getParameter("baseurl");
 				if (BASE_URL == null || BASE_URL.equals("")){
-					BASE_URL = "http://localhost:8010";
+					BASE_URL = "http://localhost:"+Integer.parseInt(System.getProperty("HTTP_default"));
 				}
 				String BASE_URL2 = request.getParameter("baseurl2");
 				if (BASE_URL2 == null || BASE_URL2.equals("")){
-					BASE_URL2 = "http://localhost:9992";
+					BASE_URL2 = "http://localhost:"+Integer.parseInt(System.getProperty("HTTP_secondary"));
 				}
 				output = "";
 				URL wsdlLocation = new URL(BASE_URL
