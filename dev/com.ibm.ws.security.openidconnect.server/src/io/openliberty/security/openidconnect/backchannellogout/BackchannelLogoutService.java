@@ -11,6 +11,8 @@
 package io.openliberty.security.openidconnect.backchannellogout;
 
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +40,8 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
 
     private static final ConcurrentServiceReferenceSet<OidcServerConfig> oidcServerConfigRef = new ConcurrentServiceReferenceSet<OidcServerConfig>("oidcServerConfigService");
 
+    private static final Pattern ACCESS_ID_PATTERN = Pattern.compile("^[^:]+" + ":" + ".*" + "/" + "([^/]+)$");
+
     @Reference(name = "oidcServerConfigService", service = OidcServerConfig.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
     protected void setOidcClientConfigService(ServiceReference<OidcServerConfig> reference) {
         oidcServerConfigRef.addReference(reference);
@@ -57,13 +61,11 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
 
     @Override
     public boolean isAuthenticationRequired(HttpServletRequest request) {
-        // TODO
         return false;
     }
 
     @Override
     public boolean postLogout(HttpServletRequest request, HttpServletResponse response) {
-        // TODO
         return true;
     }
 
@@ -75,6 +77,7 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
             }
             return false;
         }
+        userName = normalizeUserName(userName);
         String requestUri = request.getRequestURI();
         OidcServerConfig oidcServerConfig = getMatchingConfig(requestUri);
         if (oidcServerConfig == null) {
@@ -87,6 +90,14 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
 
         sendBackchannelLogoutRequests(request, oidcServerConfig, userName, idTokenString);
         return true;
+    }
+
+    String normalizeUserName(String userName) {
+        Matcher userNameMatcher = ACCESS_ID_PATTERN.matcher(userName);
+        if (userNameMatcher.matches()) {
+            userName = userNameMatcher.group(1);
+        }
+        return userName;
     }
 
     private OidcServerConfig getMatchingConfig(String requestUri) {
