@@ -225,7 +225,7 @@ usertransaction.rollback.exception.explanation=Problem encountered rolling back 
 usertransaction.rollback.exception.useraction=Examine the server logs in order to determine the root cause of the problem. If there are no related messages or they do not help to resolve the problem, contact IBM Support.
 
 # --------------------------------
-web.container.copyright=SRVE0161I: IBM WebSphere Application Server - Web Container.  Copyright IBM Corp. 1998-2012
+web.container.copyright=SRVE0161I: IBM WebSphere Application Server - Web Container. Copyright IBM Corp. 1998-2012
 web.container.copyright.explanation=Application server identifier.
 web.container.copyright.useraction=none.
 
@@ -531,7 +531,7 @@ reaper.destroying.servlet.[{0}].useraction=none.
 
 # -----------------------------------------------
 reaper.thread.error=SRVE0247E: Error during reaper thread execution.
-reaper.thread.error.explanation=Exception occurred in the reaper thread processing. This is a system error.  
+reaper.thread.error.explanation=Exception occurred in the reaper thread processing. This is a system error.
 reaper.thread.error.useraction=Reaper processing is just a form of garbage collection.
 
 # -----------------------------------------------
@@ -1011,10 +1011,10 @@ need.to.add.a.new.virtual.host.alias.useraction=Follow the instructions in the I
 # --------------------------------
 Servlet.has.become.temporarily.unavailable.for.service\:.{0}=SRVE0095I: Servlet has become temporarily unavailable for service: {0}
 Servlet.has.become.temporarily.unavailable.for.service\:.{0}.explanation=Specified servlet is temporarily unavailable.
-Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=Wait and retry operation.  Servlet might have been removed from service by server administrator.
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=Wait and retry operation. Servlet might have been removed from service by server administrator.
 
-Session.Feature.Set.Not.Started=SRVE0096E: A session cannot be accessed.  The session manager feature set has not been started.
-Session.Feature.Set.Not.Started.explanation=A session cannot be accessed.  The session manager feature set has not been started.
+Session.Feature.Set.Not.Started=SRVE0096E: A session cannot be accessed. The session manager feature set has not been started.
+Session.Feature.Set.Not.Started.explanation=A session cannot be accessed. The session manager feature set has not been started.
 Session.Feature.Set.Not.Started.useraction=Make sure that the server configuration depends upon the session feature set.
 # --------------------------------
 invalid.query.string=SRVE0318W: Invalid character in query string.
@@ -1218,7 +1218,7 @@ ARD.not.enabled.these.chains.not.supported.useraction=If Asynchronous Request Di
 # Notes for translation:
 # none
 
-ARD.not.enabled.request.on.chains.not.supported=SRVE0324W: Asynchronous Request Dispatcher is not enabled. Therefore, the HttpQueueInboundDefault and HttpQueueInboundDefaultSecure chains might not  handle your requests properly .
+ARD.not.enabled.request.on.chains.not.supported=SRVE0324W: Asynchronous Request Dispatcher is not enabled. Therefore, the HttpQueueInboundDefault and HttpQueueInboundDefaultSecure chains might not handle your requests properly.
 ARD.not.enabled.request.on.chains.not.supported.explanation=Your requests are on the HttpQueueInboundDefault or HttpQueueInboundDefaultSecure chain, but the Asynchronous Request Dispatcher is not enabled at the server level. Therefore,the HttpQueueInboundDefault and HttpQueueInboundDefaultSecure chains might not handle these requests properly.
 ARD.not.enabled.request.on.chains.not.supported.useraction=Either enable the Asynchronous Request Dispatcher at the server level, or enable either the WCInboundDefault or the WCInboundDefaultSecure chain, and make sure it is running.
 # --------------------------------
@@ -1267,8 +1267,8 @@ ioexception.searching.jar.for.resource=SRVE8043E: An IOException occurred search
 ioexception.searching.jar.for.resource.explanation=IOExceptions can occur when looking at jar files if the file is changed or closed during traversal.
 ioexception.searching.jar.for.resource.useraction=Verify the jar file is valid and is not being updated during traversal.
 
-programmatic.sessions.already.been.initialized=SRVE8044E: The context has already been initialized.  No updates are allowed to the session configuration.
-programmatic.sessions.already.been.initialized.explanation=The context has already been initialized.  No updates are allowed to the session configuration.
+programmatic.sessions.already.been.initialized=SRVE8044E: The context has already been initialized. No updates are allowed to the session configuration.
+programmatic.sessions.already.been.initialized.explanation=The context has already been initialized. No updates are allowed to the session configuration.
 programmatic.sessions.already.been.initialized.useraction=You can only modify the session configuration before the application is initialized.
 
 programmatic.sessions.disabled=SRVE8045E: Programmatic session configuration has been disabled on this server.
@@ -1467,7 +1467,7 @@ servlet.classname.is.null=SRVE8093W: The servlet class name is null for the serv
 servlet.classname.is.null.explanation=The servlet class name is null so the request cannot be handled.
 servlet.classname.is.null.useraction=Verify a valid servlet class was provided for the servlet.
 
-Cannot.set.header.Response.already.committed=SRVE8094W: WARNING: Cannot set header. Response already committed.  Stack trace of errant attempt to set header: {0}
+Cannot.set.header.Response.already.committed=SRVE8094W: WARNING: Cannot set header. Response already committed. Stack trace of errant attempt to set header: {0}
 Cannot.set.header.Response.already.committed.explanation=Once a response is committed, you cannot set more response headers.
 Cannot.set.header.Response.already.committed.useraction=Verify whether this call is necessary. If the header really needs to be sent, it should be set before committing the response.
 
@@ -1539,13 +1539,13 @@ programmatic.session.cookie.restricted.match=SRVE8111E: The application, {0}, is
 programmatic.session.cookie.restricted.match.explanation=The administrator has disabled changing the cookie configuration for the cookie matching the domain, name, and path
 programmatic.session.cookie.restricted.match.useraction=Either modify the application to use a different cookie name, domain, or path or modify the restricted programmatic session cookie values 
 
-programmatic.session.cookie.retrieve.cell.xml.failure=SRVE8112W: There was a problem retrieving the restricted cookie patterns.  No restrictions have been placed on the programmatic session configuration.
+programmatic.session.cookie.retrieve.cell.xml.failure=SRVE8112W: There was a problem retrieving the restricted cookie patterns. No restrictions have been placed on the programmatic session configuration.
 programmatic.session.cookie.retrieve.cell.xml.failure.explanation=There was a problem retrieving the restricted cookie patterns from the configuration.
 programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Verify that the cell.xml exists and is readable.
 
-AsyncContext.lock.already.held=SRVE8113W: Unable to obtain a lock.  Error processing has already been invoked by another thread.
+AsyncContext.lock.already.held=SRVE8113W: Unable to obtain a lock. Error processing has already been invoked by another thread.
 AsyncContext.lock.already.held.explanation=Error processing has already been invoked by another thread.
-AsyncContext.lock.already.held.useraction=Make sure the application can handle an exception here.  If it is necessary that this method return even if the call doesn't succeed, consider setting custom property throwexceptionwhenunabletocompleteordispatch to false.
+AsyncContext.lock.already.held.useraction=Make sure the application can handle an exception here. If it is necessary that this method return even if the call doesn't succeed, consider setting custom property throwexceptionwhenunabletocompleteordispatch to false.
 
 Cannot.set.session.cookie.Response.already.committed=SRVE8114W: WARNING: Cannot set session cookie. Response already committed.
 Cannot.set.session.cookie.Response.already.committed.explanation=After a response is committed, you cannot set the session cookie.
@@ -1555,9 +1555,9 @@ Cannot.set.status.Response.already.committed=SRVE8115W: WARNING: Cannot set stat
 Cannot.set.status.Response.already.committed.explanation=After a response is committed, you cannot set the response status code.
 Cannot.set.status.Response.already.committed.useraction=Verify whether this call is necessary. If you need to set the response status code, set it before you commit the response.
 
-servlet.with.same.name.already.exists=SRVE8500W: A servlet named {0} cannot be dynamically added because a servlet configuration with the same name already exists.  
+servlet.with.same.name.already.exists=SRVE8500W: A servlet named {0} cannot be dynamically added because a servlet configuration with the same name already exists.
 servlet.with.same.name.already.exists.explanation=A servlet with the same name already exists for this application.
-servlet.with.same.name.already.exists.useraction=No action necessary.  Check for conflicts in the deployment descriptor, annotations, and source code that could dynamically add this servlet configuration. 
+servlet.with.same.name.already.exists.useraction=No action necessary. Check for conflicts in the deployment descriptor, annotations, and source code that could dynamically add this servlet configuration. 
 
 servlet.feature.not.loaded.correctly=SRVE8501E: The servlet container did not load with an acceptable version.
 servlet.feature.not.loaded.correctly.explanation=The servlet container is loaded with a version that corresponds to the Java EE specification of that servlet feature. The container was loaded with no version defined.
@@ -1580,14 +1580,14 @@ uncaught.exception.during.AsyncListener.onComplete=SRVE8504W: The following unca
 uncaught.exception.during.AsyncListener.onComplete.explanation=The AsyncListener that is referenced in the error message threw an Exception. The Exception is an application error.
 uncaught.exception.during.AsyncListener.onComplete.useraction=Verify the AsyncListener source code and the server logs for the root cause of the application error.
 
-# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# Since servlet 4.0. Use the registered and reserved prefix CWWWC from now on.
 # 0001 - 0199 for Base
 # 0200 - 0299 for Servlet 3.0
 # 0300 - 0399 for Servlet 3.1
 # 0400 - 0499 for Servlet 4
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
-#name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
+#name.is.null.explanation=This is an application error. The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
 #name.is.null.useraction=Update the attribute name, or initial parameter name, with a non-null value.
 
 # Notes for translation
