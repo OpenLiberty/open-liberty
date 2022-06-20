@@ -1093,7 +1093,7 @@ error.validate.annotation.extension.class=SRVE8016E: The {0} annotation cannot b
 error.validate.annotation.extension.class.explanation=Some annotations can only be applied to classes which extend the correct type.
 error.validate.annotation.extension.class.useraction=Modify the class to extend the correct super class
 
-error.validate.webServlet.urlPatterns.and.value=SRVE8017E: The class, {0}, cannot specify both urlPatterns and value in the annotation
+error.validate.webServlet.urlPatterns.and.value=SRVE8017E: The class, {0}, cannot specify both urlPatterns and value in the annotation.
 error.validate.webServlet.urlPatterns.and.value.explanation=The class cannot specify both urlPatterns and value in the annotation
 error.validate.webServlet.urlPatterns.and.value.useraction=Modify the class to only include one of the urlPatterns or value attribute
 
