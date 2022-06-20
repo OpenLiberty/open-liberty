@@ -478,7 +478,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
     @Test
     public void test_removeUserAccessTokensFromCache_noCachedTokens() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
         clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
         clientsToCachedIdTokens.put(client2, Arrays.asList(idToken2));
 
@@ -488,7 +488,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     @Test
     public void test_removeUserAccessTokensFromCache_noCachedAccessTokens() throws Exception {
         Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(idToken1, idToken2);
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
         clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
         clientsToCachedIdTokens.put(client2, Arrays.asList(idToken2));
 
@@ -498,7 +498,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     @Test
     public void test_removeUserAccessTokensFromCache_noAccessTokensAssociatedWithClientsLoggingOut() throws Exception {
         Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, accessToken2);
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
         clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
         clientsToCachedIdTokens.put(client2, Arrays.asList(idToken2));
 
@@ -519,7 +519,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         OAuth20TokenImpl accessToken2 = mockery.mock(OAuth20TokenImpl.class, "accesstoken2-impl");
         Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, accessToken2);
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
         clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
         clientsToCachedIdTokens.put(client2, Arrays.asList(idToken2));
 
@@ -669,7 +669,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     @Test
     public void test_getClientsToLogOut_noCachedUserTokens() throws Exception {
         // No tokens cached for user
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(new ArrayList<>());
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientsToLogOut(new ArrayList<>());
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
@@ -679,7 +679,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         List<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, accessToken2);
         setClientLookupExpectations();
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
@@ -694,7 +694,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
@@ -709,11 +709,11 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1);
 
         // Should find the ID token that matched
-        List<IDTokenImpl> cachedIdTokensForClient = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient, idToken1);
     }
 
@@ -733,14 +733,14 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1, client3);
 
         // Should find the ID tokens that matched
-        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1);
 
-        List<IDTokenImpl> cachedIdTokensForClient3 = clientsToCachedIdTokens.get(client3);
+        List<OAuth20Token> cachedIdTokensForClient3 = clientsToCachedIdTokens.get(client3);
         verifyCachedIdTokensForClient(cachedIdTokensForClient3, idToken3);
     }
 
@@ -751,7 +751,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
         setClientLookupExpectations();
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
@@ -767,7 +767,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
@@ -794,29 +794,29 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1);
 
         // Should find the ID tokens that matched
-        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1, tmpIdToken1, tmpIdToken2);
     }
 
     @Test
     public void test_addCachedIdTokenToMap_noEntries() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
 
         builder.addCachedIdTokenToMap(clientsToCachedIdTokens, client1, idToken1);
 
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1);
 
-        List<IDTokenImpl> cachedIdTokensForClient = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient, idToken1);
     }
 
     @Test
     public void test_addCachedIdTokenToMap_entriesForOtherClients() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
         clientsToCachedIdTokens.put(client2, new ArrayList<>());
         clientsToCachedIdTokens.put(client3, new ArrayList<>());
 
@@ -824,14 +824,14 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1, client2, client3);
 
-        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1);
     }
 
     @Test
     public void test_addCachedIdTokenToMap_oneExistingEntryForClient() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
-        List<IDTokenImpl> existingCachedTokens = new ArrayList<>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
+        List<OAuth20Token> existingCachedTokens = new ArrayList<>();
         existingCachedTokens.add(idToken1);
         clientsToCachedIdTokens.put(client1, existingCachedTokens);
         clientsToCachedIdTokens.put(client2, new ArrayList<>());
@@ -840,13 +840,13 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1, client2);
 
-        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1, idToken2);
     }
 
     @Test
     public void test_buildLogoutTokensForClients_noClientsToLogOut() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToLogOut = new HashMap<>();
 
         Map<OidcBaseClient, Set<String>> clientsToLogoutTokens = builder.buildLogoutTokensForClients(clientsToLogOut);
 
@@ -855,7 +855,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
     @Test
     public void test_buildLogoutTokensForClients_oneClient_noIdTokens() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToLogOut = new HashMap<>();
         clientsToLogOut.put(client1, new ArrayList<>());
 
         mockery.checking(new Expectations() {
@@ -871,7 +871,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
     @Test
     public void test_buildLogoutTokensForClients_oneClient_oneIdToken() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToLogOut = new HashMap<>();
         clientsToLogOut.put(client1, Arrays.asList(idToken1));
 
         mockery.checking(new Expectations() {
@@ -895,7 +895,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         IDTokenImpl tmpIdToken1 = mockery.mock(IDTokenImpl.class, "tmpIdToken1");
         IDTokenImpl tmpIdToken3 = mockery.mock(IDTokenImpl.class, "tmpIdToken3");
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToLogOut = new HashMap<>();
         clientsToLogOut.put(client1, Arrays.asList(idToken1, tmpIdToken1));
         clientsToLogOut.put(client2, Arrays.asList(idToken2));
         clientsToLogOut.put(client3, Arrays.asList(idToken3, tmpIdToken3));
@@ -948,7 +948,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         });
         setJwtCreationExpectations(client1, client1Secret);
 
-        List<IDTokenImpl> cachedIdTokens = Arrays.asList(idToken1);
+        List<OAuth20Token> cachedIdTokens = Arrays.asList(idToken1);
 
         Set<String> logoutTokens = builder.buildLogoutTokensForClient(client1, cachedIdTokens);
 
@@ -982,7 +982,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         setJwtCreationExpectations(client1, client1Secret);
         setJwtCreationExpectations(client1, client1Secret);
 
-        List<IDTokenImpl> cachedIdTokens = Arrays.asList(idToken1, tmpIdToken1, tmpIdToken2);
+        List<OAuth20Token> cachedIdTokens = Arrays.asList(idToken1, tmpIdToken1, tmpIdToken2);
 
         Set<String> logoutTokens = builder.buildLogoutTokensForClient(client1, cachedIdTokens);
 
@@ -1220,7 +1220,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         assertEquals("Issuer value did not match expected value.", expectedIssuer, result);
     }
 
-    private void verifyCachedIdTokensMapContainsExpectedClients(Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens, OidcBaseClient... expectedClientEntries) {
+    private void verifyCachedIdTokensMapContainsExpectedClients(Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens, OidcBaseClient... expectedClientEntries) {
         assertNotNull("Map of clients to cached ID tokens should not have been null but was.", clientsToCachedIdTokens);
         if (expectedClientEntries == null || expectedClientEntries.length == 0) {
             assertTrue("Map of clients to cached ID tokens should have been empty but wasn't. Map was: " + clientsToCachedIdTokens, clientsToCachedIdTokens.isEmpty());
@@ -1232,13 +1232,13 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         }
     }
 
-    private void verifyCachedIdTokensForClient(List<IDTokenImpl> cachedIdTokensForClient, IDTokenImpl... expectedIdTokens) throws Exception {
+    private void verifyCachedIdTokensForClient(List<OAuth20Token> cachedIdTokensForClient, OAuth20Token... expectedIdTokens) throws Exception {
         if (expectedIdTokens == null || expectedIdTokens.length == 0) {
             assertTrue("List of cached ID tokens should have been empty but wasn't. Map was: " + cachedIdTokensForClient, cachedIdTokensForClient.isEmpty());
             return;
         }
         assertEquals("List of cached ID tokens was not the expected size: " + cachedIdTokensForClient, expectedIdTokens.length, cachedIdTokensForClient.size());
-        for (IDTokenImpl expectedIdToken : expectedIdTokens) {
+        for (OAuth20Token expectedIdToken : expectedIdTokens) {
             assertTrue("List of cached ID tokens did not contain entry for [" + expectedIdToken + "]: " + cachedIdTokensForClient,
                        cachedIdTokensForClient.contains(expectedIdToken));
         }
