@@ -271,6 +271,7 @@ public class DataTestServlet extends FATServlet {
 
     /**
      * Add, find, and remove entities with a mapped superclass.
+     * Also tests automatically paginated iterator and list.
      */
     @Test
     public void testMappedSuperclass() {
@@ -335,11 +336,59 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of("Copper", "Lumber"),
                              tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
 
-        Tariff t = tariffs.findByLeviedByAndLeviedAgainstAndLeviedOn("USA", "Bangladesh", "Textiles");
+        // Iterator with paging:
+        Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M");
+
+        Tariff t;
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t8.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t6.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t5.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t4.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t3.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t2.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t1.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(false, it.hasNext());
+        assertEquals(false, it.hasNext());
+
+        // Paginated iterator with no results:
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("A");
+        assertEquals(false, it.hasNext());
+
+        t = tariffs.findByLeviedByAndLeviedAgainstAndLeviedOn("USA", "Bangladesh", "Textiles");
         assertEquals(t6.rate, t.rate, 0.0001f);
 
+        // Paginated list:
         assertIterableEquals(List.of("China", "Germany", "India", "Japan", "Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA").stream().map(o -> o.leviedAgainst).collect(Collectors.toList()));
+                             tariffs.findByLeviedByOrderByKey("USA")
+                                             .stream()
+                                             .map(o -> o.leviedAgainst)
+                                             .collect(Collectors.toList()));
+
+        // Random access to paginated list:
+        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA");
+        assertEquals(t4.leviedAgainst, list.get(3).leviedAgainst);
+        assertEquals(t7.leviedAgainst, list.get(6).leviedAgainst);
+        assertEquals(t2.leviedAgainst, list.get(1).leviedAgainst);
+        assertEquals(t8.leviedAgainst, list.get(7).leviedAgainst);
 
         assertEquals(8, tariffs.deleteByLeviedBy("USA"));
     }

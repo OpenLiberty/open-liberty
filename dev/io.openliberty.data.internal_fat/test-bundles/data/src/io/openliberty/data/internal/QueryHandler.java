@@ -15,8 +15,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,7 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
 import io.openliberty.data.Page;
+import io.openliberty.data.Paginated;
 import io.openliberty.data.Pagination;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
@@ -436,9 +439,22 @@ public class QueryHandler<T> implements InvocationHandler {
         } else {
             String q = jpql.toUpperCase();
             if (q.startsWith("SELECT")) {
-                if (Page.class.equals(returnType)) {
-                    Pagination pagination = (Pagination) args[args.length - 1];
+                // The Pagination parameter is from JNoSQL.
+                // The @Paginated annotation is not - I just wanted to experiment with how it could work
+                // if defined annotatively, which turns out to be possible, but not as flexible.
+                Paginated paginated = method.getAnnotation(Paginated.class);
+                Pagination pagination;
+                if (paginated == null)
+                    pagination = args != null && args[args.length - 1] instanceof Pagination ? (Pagination) args[args.length - 1] : null;
+                else
+                    pagination = Pagination.page(1).size(paginated.value());
+                if (Page.class.equals(returnType))
                     return new PageImpl<T>(jpql, pagination, this, method, args);
+                if (pagination != null) {
+                    if (Iterator.class.equals(returnType))
+                        return new PaginatedIterator<T>(jpql, pagination, this, method, args);
+                    else if (returnType.isAssignableFrom(AbstractList.class))
+                        return new PaginatedList<T>(jpql, pagination, this, method, args);
                 } else if (Publisher.class.equals(returnType)) {
                     return new PublisherImpl<T>(jpql, this, method, args);
                 }

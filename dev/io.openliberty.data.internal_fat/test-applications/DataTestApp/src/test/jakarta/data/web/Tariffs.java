@@ -10,10 +10,12 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Paginated;
 
 /**
  *
@@ -25,8 +27,12 @@ public interface Tariffs {
 
     Stream<Tariff> findByLeviedAgainst(String country);
 
+    @Paginated(3)
+    Iterator<Tariff> findByLeviedAgainstLessThanOrderByKeyDesc(String countryNameBefore);
+
     Tariff findByLeviedByAndLeviedAgainstAndLeviedOn(String taxingCountry, String taxedCountry, String item);
 
+    @Paginated(2)
     List<Tariff> findByLeviedByOrderByKey(String country);
 
     Tariff save(Tariff t);
