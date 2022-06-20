@@ -894,11 +894,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
         List<endpointSettings> parms = createParmFromBuilder(builder);
 
         List<validationData> expectations = setInvalidBCLRequestExpectations(null);
-        // TODO - The second, more specific error message needs to be used once the session cache functionality is added to social.
-        // Right now the CWWKS1552E message is emitted as expected, but it's complaining about not finding the iss claim in the cache.
-        // That's because the session cache functionality isn't up and running in social, so nothing's getting put in the cache at all.
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a recent session for the subject couldn't be found.", MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS);
-        //        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a recent session for the subject couldn't be found.", MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIM + ".*" + badSub + ".*" + "sub");
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a recent session for the subject couldn't be found.", MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS + ".*" + badSub + ".*" + "sub");
 
         invokeBcl(logutOutEndpoint, parms, expectations);
 
@@ -921,11 +917,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
         List<endpointSettings> parms = createParmFromBuilder(builder);
 
         List<validationData> expectations = setInvalidBCLRequestExpectations(null);
-        // TODO - The second, more specific error message needs to be used once the session cache functionality is added to social.
-        // Right now the CWWKS1552E message is emitted as expected, but it's complaining about not finding the iss claim in the cache.
-        // That's because the session cache functionality isn't up and running in social, so nothing's getting put in the cache at all.
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a recent session for the subject couldn't be found.", MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS);
-        //        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a recent session for the sid couldn't be found.", MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIM + ".*" + badSid + ".*" + "sid");
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a recent session for the sid couldn't be found.", MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS + ".*" + badSid + ".*" + "sid");
 
         invokeBcl(logutOutEndpoint, parms, expectations);
     }
