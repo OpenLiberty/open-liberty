@@ -9,5 +9,5 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-    <messaging-singleton type="com.ibm.ws.sib.common.service" />
+    <messaging-singleton id="com.ibm.ws.sib.common.service" />
 </server>
