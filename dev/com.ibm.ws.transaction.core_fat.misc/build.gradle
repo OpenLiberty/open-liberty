@@ -26,7 +26,6 @@ task addDerbyToSharedDir(type: Copy) {
 }
 
 task copyCommonFiles {
-  dependsOn ':com.ibm.ws.transaction.core_fat.base:autoFVT'
   doLast {
     /*
      * Copy test application resources.

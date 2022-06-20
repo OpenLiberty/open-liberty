@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,7 @@ class LogFileHandle {
      * the buffer is reflected in the data stored persistently on disk the buffer
      * must be forced.
      */
-    private ByteBuffer _fileBuffer = null;
+    private ByteBuffer _fileBuffer;
 
     /**
      * Indicates whether or not the <code>_fileBuffer</code> is actually a mapped
@@ -70,12 +70,12 @@ class LogFileHandle {
      * To be 100% sure that a change to the buffer is reflected in the data stored
      * persistently on disk the buffer must be forced.
      */
-    private boolean _isMapped = false;
+    private boolean _isMapped;
 
     /**
      * List of Records that still need to be forced to disk.
      */
-    private final List _pendingWriteList = new ArrayList();
+    private final List<LogRecord> _pendingWriteList = new ArrayList<LogRecord>();
 
     /**
      * Tally of log records created but not written
@@ -91,7 +91,7 @@ class LogFileHandle {
         @Override
         public int compare(LogRecord obj1, LogRecord obj2) {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "compare", new Object[] { obj1, obj2, this });
+                Tr.entry(tc, "compare", obj1, obj2, this);
 
             final int comparison = obj1.absolutePosition() - obj2.absolutePosition();
 
@@ -102,10 +102,8 @@ class LogFileHandle {
 
         @Override
         public boolean equals(Object obj) {
-            if (tc.isEntryEnabled()) {
-                Tr.entry(tc, "equals", new Object[] { obj, this });
-                Tr.exit(tc, "equals", Boolean.FALSE);
-            }
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "equals", obj, this);
             return false;
         }
     };
@@ -188,17 +186,17 @@ class LogFileHandle {
      * Package access constructor to create a new instance of the LogFilefile handle
      * to manage the given recovery log file
      *
-     * @param logDirectory The directory in which the file managed by this instance of LogFileHandle resides.
-     * @param fileName The name of file managed by this instance of LogFileHandle.
-     * @param serverName The name of the current application server
-     * @param serviceName The name of the service that owns the file managed by this instance of LogFileHandle.
+     * @param logDirectory   The directory in which the file managed by this instance of LogFileHandle resides.
+     * @param fileName       The name of file managed by this instance of LogFileHandle.
+     * @param serverName     The name of the current application server
+     * @param serviceName    The name of the service that owns the file managed by this instance of LogFileHandle.
      * @param serviceVersion The version number of the client service.
-     * @param logName The name of the log that owns the file managed by this instance of LogFileHandle.
-     * @param fileSize The filesize (in kilobytes) of the file managed by this instance of LogFileHandle.
+     * @param logName        The name of the log that owns the file managed by this instance of LogFileHandle.
+     * @param fileSize       The filesize (in kilobytes) of the file managed by this instance of LogFileHandle.
      */
     protected LogFileHandle(String logDirectory, String fileName, String serverName, String serviceName, int serviceVersion, String logName, int fileSize, FailureScope fs) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "LogFileHandle", new Object[] { logDirectory, fileName, serverName, serviceName, serviceVersion, logName, fileSize, fs });
+            Tr.entry(tc, "LogFileHandle", logDirectory, fileName, serverName, serviceName, serviceVersion, logName, fileSize, fs);
 
         _logDirectory = logDirectory;
         _fileName = fileName;
@@ -231,7 +229,7 @@ class LogFileHandle {
      */
     protected ReadableLogRecord getReadableLogRecord(long expectedSequenceNumber) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getReadableLogRecord", new java.lang.Object[] { this, expectedSequenceNumber });
+            Tr.entry(tc, "getReadableLogRecord", this, expectedSequenceNumber);
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Creating readable log record to read from file " + _fileName);
@@ -250,9 +248,9 @@ class LogFileHandle {
     /**
      * Open the file on the disk. The name of the file was supplied to the constructor.
      *
-     * @exception InternalLogException An unexpected error has occured.
+     * @exception InternalLogException   An unexpected error has occured.
      * @exception LogAllocationException The new log file on disk could not be created
-     *                correctly.
+     *                                       correctly.
      */
     protected void fileOpen() throws InternalLogException, LogAllocationException, LogIncompatibleException {
         if (tc.isEntryEnabled())
@@ -274,97 +272,97 @@ class LogFileHandle {
                 }
 
                 // Open/Create the file.
-                _fileBuffer = (MappedByteBuffer) AccessController.doPrivileged(
-                                                                               new java.security.PrivilegedExceptionAction() {
-                                                                                   @Override
-                                                                                   public java.lang.Object run() throws Exception {
-                                                                                       if (tc.isEntryEnabled())
-                                                                                           Tr.entry(tc, "run", this);
+                _fileBuffer = AccessController.doPrivileged(
+                                                            new java.security.PrivilegedExceptionAction<MappedByteBuffer>() {
+                                                                @Override
+                                                                public MappedByteBuffer run() throws Exception {
+                                                                    if (tc.isEntryEnabled())
+                                                                        Tr.entry(tc, "run", this);
 
 //              _file = new RandomAccessFile(pFile, "rw");
-                                                                                       _file = RLSAccessFile.getRLSAccessFile(pFile); // @255605C
-                                                                                       _fileChannel = _file.getChannel();
+                                                                    _file = RLSAccessFile.getRLSAccessFile(pFile); // @255605C
+                                                                    _fileChannel = _file.getChannel();
 
-                                                                                       // NB - this limits us to a maximum file size
-                                                                                       // of 2GB. This is the max value of an int and
-                                                                                       // is also the maximum amount of data that
-                                                                                       // can be held in a MappedByteBuffer.
-                                                                                       final int fileLength = (int) _file.length();
+                                                                    // NB - this limits us to a maximum file size
+                                                                    // of 2GB. This is the max value of an int and
+                                                                    // is also the maximum amount of data that
+                                                                    // can be held in a MappedByteBuffer.
+                                                                    final int fileLength = (int) _file.length();
 
-                                                                                       final int fileSizeBytes = _fileSize * 1024;
+                                                                    final int fileSizeBytes = _fileSize * 1024;
 
-                                                                                       // In the event that the log file already exists and it's bigger
-                                                                                       // than the required file size ensure that we map the entire
-                                                                                       // contents of the file.
-                                                                                       final int sizeToMap = fileLength > fileSizeBytes ? fileLength : fileSizeBytes;
+                                                                    // In the event that the log file already exists and it's bigger
+                                                                    // than the required file size ensure that we map the entire
+                                                                    // contents of the file.
+                                                                    final int sizeToMap = fileLength > fileSizeBytes ? fileLength : fileSizeBytes;
 
-                                                                                       // Feature 731093 default for noMemoryMappedFIles flag is operating system dependent
-                                                                                       String osName = System.getProperty("os.name");
-                                                                                       if (osName != null)
-                                                                                           osName = osName.toLowerCase();
-                                                                                       if (tc.isDebugEnabled())
-                                                                                           Tr.debug(tc, "Working on operating system " + osName);
-                                                                                       // If not specified - default is false
-                                                                                       boolean noMemoryMappedFiles = Boolean.getBoolean("com.ibm.ws.recoverylog.spi.NoMemoryMappedFiles");
-                                                                                       // If Windows and HA enabled, or z/OS (feature 731093) then we want the default to be non-memory mapped
-                                                                                       if (osName != null
-                                                                                           && ((Configuration.HAEnabled() && osName.startsWith("windows"))
-                                                                                               || osName.startsWith("z/os") || osName.startsWith("os/390"))) {
-                                                                                           final String propertyValue = System.getProperty("com.ibm.ws.recoverylog.spi.NoMemoryMappedFiles");
-                                                                                           if (propertyValue == null || !(propertyValue.equalsIgnoreCase("false")))
-                                                                                               noMemoryMappedFiles = true;
-                                                                                       }
-                                                                                       if (tc.isDebugEnabled())
-                                                                                           Tr.debug(tc, "NoMemoryMappedFiles flag is " + noMemoryMappedFiles);
+                                                                    // Feature 731093 default for noMemoryMappedFIles flag is operating system dependent
+                                                                    String osName = System.getProperty("os.name");
+                                                                    if (osName != null)
+                                                                        osName = osName.toLowerCase();
+                                                                    if (tc.isDebugEnabled())
+                                                                        Tr.debug(tc, "Working on operating system " + osName);
+                                                                    // If not specified - default is false
+                                                                    boolean noMemoryMappedFiles = Boolean.getBoolean("com.ibm.ws.recoverylog.spi.NoMemoryMappedFiles");
+                                                                    // If Windows and HA enabled, or z/OS (feature 731093) then we want the default to be non-memory mapped
+                                                                    if (osName != null
+                                                                        && ((Configuration.HAEnabled() && osName.startsWith("windows"))
+                                                                            || osName.startsWith("z/os") || osName.startsWith("os/390"))) {
+                                                                        final String propertyValue = System.getProperty("com.ibm.ws.recoverylog.spi.NoMemoryMappedFiles");
+                                                                        if (propertyValue == null || !(propertyValue.equalsIgnoreCase("false")))
+                                                                            noMemoryMappedFiles = true;
+                                                                    }
+                                                                    if (tc.isDebugEnabled())
+                                                                        Tr.debug(tc, "NoMemoryMappedFiles flag is " + noMemoryMappedFiles);
 
-                                                                                       Object fileBuffer = null;
+                                                                    MappedByteBuffer fileBuffer = null;
 
-                                                                                       if (!noMemoryMappedFiles) {
-                                                                                           try {
-                                                                                               fileBuffer = _fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, sizeToMap);
-                                                                                               _isMapped = true;
-                                                                                           } catch (Throwable t) {
-                                                                                               if (tc.isEventEnabled())
-                                                                                                   Tr.event(tc, "Mapping of recovery log file failed. Using non-mapped file.", t);
-                                                                                               if (tc.isEventEnabled())
-                                                                                                   Tr.event(tc, "Resetting file Channel position to '0' from :",
-                                                                                                            _fileChannel.position());
-                                                                                               _fileChannel.position(0); //An Exception in the map method can leave an incorrect position (PM14310)
-                                                                                           }
-                                                                                       } else {
-                                                                                           if (tc.isEventEnabled())
-                                                                                               Tr.event(tc, "Recovery log has been instructed not to use a mapped-file model.");
-                                                                                       }
+                                                                    if (!noMemoryMappedFiles) {
+                                                                        try {
+                                                                            fileBuffer = _fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, sizeToMap);
+                                                                            _isMapped = true;
+                                                                        } catch (Throwable t) {
+                                                                            if (tc.isEventEnabled())
+                                                                                Tr.event(tc, "Mapping of recovery log file failed. Using non-mapped file.", t);
+                                                                            if (tc.isEventEnabled())
+                                                                                Tr.event(tc, "Resetting file Channel position to '0' from :",
+                                                                                         _fileChannel.position());
+                                                                            _fileChannel.position(0); //An Exception in the map method can leave an incorrect position (PM14310)
+                                                                        }
+                                                                    } else {
+                                                                        if (tc.isEventEnabled())
+                                                                            Tr.event(tc, "Recovery log has been instructed not to use a mapped-file model.");
+                                                                    }
 
-                                                                                       if (fileBuffer == null) {
-                                                                                           // Either we were instructed not to use a mapped buffer or the
-                                                                                           // attempt to use one failed. Allocate a direct byte buffer
-                                                                                           // and read the FileChannel into the buffer.  write()s to the
-                                                                                           // direct byte buffer will not be reflected by the FileChannel
-                                                                                           // until a force() is made on the LogFileHandle.
+                                                                    if (fileBuffer == null) {
+                                                                        // Either we were instructed not to use a mapped buffer or the
+                                                                        // attempt to use one failed. Allocate a direct byte buffer
+                                                                        // and read the FileChannel into the buffer.  write()s to the
+                                                                        // direct byte buffer will not be reflected by the FileChannel
+                                                                        // until a force() is made on the LogFileHandle.
 
-                                                                                           final ByteBuffer directByteBuffer = ByteBuffer.allocateDirect(sizeToMap);
+                                                                        final MappedByteBuffer directByteBuffer = (MappedByteBuffer) ByteBuffer.allocateDirect(sizeToMap);
 
-                                                                                           if (fileColdStarting) {
-                                                                                               _fileChannel.write(directByteBuffer, 0);
-                                                                                               _fileChannel.force(true);
-                                                                                           }
+                                                                        if (fileColdStarting) {
+                                                                            _fileChannel.write(directByteBuffer, 0);
+                                                                            _fileChannel.force(true);
+                                                                        }
 
-                                                                                           _fileChannel.read(directByteBuffer);
-                                                                                           directByteBuffer.rewind();
-                                                                                           _isMapped = false;
+                                                                        _fileChannel.read(directByteBuffer);
+                                                                        directByteBuffer.rewind();
+                                                                        _isMapped = false;
 
-                                                                                           if (tc.isDebugEnabled())
-                                                                                               Tr.debug(tc, "A direct byte buffer has been allocated successfully.");
+                                                                        if (tc.isDebugEnabled())
+                                                                            Tr.debug(tc, "A direct byte buffer has been allocated successfully.");
 
-                                                                                           fileBuffer = directByteBuffer;
-                                                                                       }
+                                                                        fileBuffer = directByteBuffer;
+                                                                    }
 
-                                                                                       if (tc.isEntryEnabled())
-                                                                                           Tr.exit(tc, "run", fileBuffer);
-                                                                                       return fileBuffer;
-                                                                                   }
-                                                                               });
+                                                                    if (tc.isEntryEnabled())
+                                                                        Tr.exit(tc, "run", fileBuffer);
+                                                                    return fileBuffer;
+                                                                }
+                                                            });
             } catch (java.security.PrivilegedActionException exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "338", this);
                 throw new LogAllocationException(exc);
@@ -385,9 +383,11 @@ class LogFileHandle {
             _fileBuffer = null;
             if (_file != null)
                 fileClose(); // @255605A
+
+            final InternalLogException ile = new InternalLogException(exc);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "fileOpen", "InternalLogException");
-            throw new InternalLogException(exc);
+                Tr.exit(tc, "fileOpen", ile);
+            throw ile;
         }
 
         if (fileColdStarting) {
@@ -415,9 +415,11 @@ class LogFileHandle {
                 _file = null;
                 _fileChannel = null;
                 _fileBuffer = null;
+
+                final InternalLogException ile = new InternalLogException(exc);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "fileOpen", "InternalLogException");
-                throw new InternalLogException(exc);
+                    Tr.exit(tc, "fileOpen", ile);
+                throw ile;
             }
         } else {
             if (tc.isDebugEnabled())
@@ -451,9 +453,10 @@ class LogFileHandle {
             _fileChannel = null;
             _logFileHeader = null;
 
+            final InternalLogException ile = new InternalLogException();
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "fileOpen", "InternalLogException");
-            throw new InternalLogException();
+                Tr.exit(tc, "fileOpen", ile);
+            throw ile;
         }
 
         // If the header incompatible (created by an unsupported version of the RLS) then throw an exception.
@@ -477,9 +480,10 @@ class LogFileHandle {
             _fileChannel = null;
             _logFileHeader = null;
 
+            final LogIncompatibleException lie = new LogIncompatibleException();
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "fileOpen", "LogIncompatibleException");
-            throw new LogIncompatibleException();
+                Tr.exit(tc, "fileOpen", lie);
+            throw lie;
         }
 
         if (!serviceCompatible()) {
@@ -502,9 +506,10 @@ class LogFileHandle {
             _fileChannel = null;
             _logFileHeader = null;
 
+            final LogIncompatibleException lie = new LogIncompatibleException();
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "fileOpen", "LogIncompatibleException");
-            throw new LogIncompatibleException();
+                Tr.exit(tc, "fileOpen", lie);
+            throw lie;
         }
 
         if (tc.isEntryEnabled())
@@ -530,7 +535,7 @@ class LogFileHandle {
         fileAlreadyExists = (file.exists() && (file.length() > 0));
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "fileExists", new Boolean(fileAlreadyExists));
+            Tr.exit(tc, "fileExists", fileAlreadyExists);
         return fileAlreadyExists;
     }
 
@@ -563,9 +568,10 @@ class LogFileHandle {
                 _file.close();
             } catch (Throwable e) {
                 FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileClose", "541", this);
+                final InternalLogException ile = new InternalLogException(e);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "fileClose", "InternalLogException");
-                throw new InternalLogException(e);
+                    Tr.exit(tc, "fileClose", ile);
+                throw ile;
             }
 
             _fileBuffer = null;
@@ -593,11 +599,13 @@ class LogFileHandle {
      * and that the record written using the returned WritableLogRecord is of the given
      * length.
      *
-     * @param recordLength The length of the record to be created
+     * @param recordLength   The length of the record to be created
      * @param sequenceNumber The newly created record's sequence number
      * @return WriteableLogRecord A new writeable log record of the specified size
      */
     public WriteableLogRecord getWriteableLogRecord(int recordLength, long sequenceNumber) throws InternalLogException {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getWriteableLogRecord", recordLength, sequenceNumber, this);
 
         if (!_headerFlushedFollowingRestart) {
             // ensure header is updated now we start to write records for the first time
@@ -605,9 +613,6 @@ class LogFileHandle {
             writeFileHeader(true);
             _headerFlushedFollowingRestart = true;
         }
-
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getWriteableLogRecord", new Object[] { new Integer(recordLength), new Long(sequenceNumber), this });
 
         // Create a slice of the file buffer and reset its limit to the size of the WriteableLogRecord.
         // The view buffer's content is a shared subsequence of the file buffer.
@@ -632,14 +637,14 @@ class LogFileHandle {
      * LogFileHandle instance.
      *
      * @param maintainPosition Flag to indicate if file pointer before the header write
-     *            needs to be restored after the header write (ie retain
-     *            the file pointer position)
+     *                             needs to be restored after the header write (ie retain
+     *                             the file pointer position)
      *
      * @exception InternalLogException An unexpected error has occured.
      */
     private void writeFileHeader(boolean maintainPosition) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "writeFileHeader", new java.lang.Object[] { this, maintainPosition });
+            Tr.entry(tc, "writeFileHeader", this, maintainPosition);
 
         // Build the buffer that forms the major part of the file header and
         // then convert this into a byte array.
@@ -672,19 +677,20 @@ class LogFileHandle {
      * The status field is stored in '_logFileHeader'.
      *
      * @param maintainPosition Flag to indicate if file pointer before the header write
-     *            needs to be restored after the header write (ie retain
-     *            the file pointer position)
+     *                             needs to be restored after the header write (ie retain
+     *                             the file pointer position)
      *
      * @exception InternalLogException An unexpected error has occured.
      */
     private void writeFileStatus(boolean maintainPosition) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "writeFileStatus", new java.lang.Object[] { this, maintainPosition });
+            Tr.entry(tc, "writeFileStatus", this, maintainPosition);
 
         if (_logFileHeader.status() == LogFileHeader.STATUS_INVALID) {
+            final InternalLogException ile = new InternalLogException(null);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "writeFileStatus", "InternalLogException");
-            throw new InternalLogException(null);
+                Tr.exit(tc, "writeFileStatus", ile);
+            throw ile;
         }
 
         try {
@@ -710,9 +716,10 @@ class LogFileHandle {
             }
         } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.writeFileStatus", "797", this);
+            final WriteOperationFailedException wofe = new WriteOperationFailedException(exc);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "writeFileStatus", "WriteOperationFailedException");
-            throw new WriteOperationFailedException(exc);
+                Tr.exit(tc, "writeFileStatus", wofe);
+            throw wofe;
         }
 
         if (tc.isEntryEnabled())
@@ -811,10 +818,8 @@ class LogFileHandle {
      *         instance.
      */
     protected LogFileHeader logFileHeader() {
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, "logFileHeader", this);
-            Tr.exit(tc, "logFileHeader", _logFileHeader);
-        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "logFileHeader", this, _logFileHeader);
         return _logFileHeader;
     }
 
@@ -872,7 +877,7 @@ class LogFileHandle {
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "freeBytes", new Integer(freeBytes));
+            Tr.exit(tc, "freeBytes", freeBytes);
 
         return freeBytes;
     }
@@ -891,7 +896,7 @@ class LogFileHandle {
      */
     public void setServiceData(byte[] serviceData) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setServiceData", new java.lang.Object[] { RLSUtils.toHexString(serviceData, RLSUtils.MAX_DISPLAY_BYTES), this });
+            Tr.entry(tc, "setServiceData", RLSUtils.toHexString(serviceData, RLSUtils.MAX_DISPLAY_BYTES), this);
 
         _logFileHeader.setServiceData(serviceData);
 
@@ -924,13 +929,13 @@ class LogFileHandle {
      * log file is updated to KEYPOINTING and written to disk.
      *
      * @param nextRecordSequenceNumber The sequence number to be used for the first
-     *            record in the file.
+     *                                     record in the file.
      *
      * @exception InternalLogException An unexpected error has occured.
      */
     void keypointStarting(long nextRecordSequenceNumber) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "keypointStarting", new Object[] { new Long(nextRecordSequenceNumber), this });
+            Tr.entry(tc, "keypointStarting", nextRecordSequenceNumber, this);
 
         // Set the header to indicate a keypoint operation. This also marks the header
         // as valid.
@@ -1054,7 +1059,7 @@ class LogFileHandle {
      */
     public void fileExtend(int newFileSize) throws LogAllocationException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "fileExtend", new Object[] { new Integer(newFileSize), this });
+            Tr.entry(tc, "fileExtend", newFileSize, this);
 
         final int fileLength = _fileBuffer.capacity();
 
@@ -1201,7 +1206,7 @@ class LogFileHandle {
             Tr.entry(tc, "writePendingToFile");
 
         synchronized (_pendingWriteList) {
-            LogRecord[] records = (LogRecord[]) _pendingWriteList.toArray(new LogRecord[0]);
+            LogRecord[] records = _pendingWriteList.toArray(new LogRecord[0]);
 
             // Don't use vectored IO unless we're told to.
             if (!Boolean.getBoolean("com.ibm.ws.recoverylog.spi.UseVectoredIO")) {
@@ -1287,7 +1292,7 @@ class LogFileHandle {
      */
     public void delete() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "delete", new Object[] { _file, this });
+            Tr.entry(tc, "delete", _file, this);
 
         if (_file != null && _file instanceof RLSAccessFile) {
             RLSAccessFile rlsaFile = (RLSAccessFile) _file;

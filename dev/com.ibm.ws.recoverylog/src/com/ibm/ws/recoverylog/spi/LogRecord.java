@@ -11,6 +11,7 @@
 
 package com.ibm.ws.recoverylog.spi;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import com.ibm.tx.TranConstants;
@@ -59,10 +60,10 @@ import com.ibm.websphere.ras.TraceComponent;
  * "Magic Number" ("RCRD") byte[] 4
  * Record Sequence Number long 8
  * Recovery Length int 4
- * 
+ *
  * < other record data, the structure of >
  * < which is not defined by this class >
- * 
+ *
  * Record Sequence Number Repeat long 8
  * </p>
  *
@@ -93,7 +94,7 @@ public abstract class LogRecord {
     /**
      * The mapped buffer into which the log record will be written.
      */
-    protected ByteBuffer _buffer = null;
+    protected ByteBuffer _buffer;
 
     /**
      * The absolute position of the ByteBuffer view in the entire ByteBuffer from which this
@@ -130,11 +131,11 @@ public abstract class LogRecord {
      *                   that this log records byte cursor is isolated from other
      *                   log records.
      */
-    protected LogRecord(ByteBuffer buffer, int absolutePosition) {
+    protected LogRecord(Buffer buffer, int absolutePosition) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "LogRecord", buffer, absolutePosition);
 
-        _buffer = buffer;
+        _buffer = (ByteBuffer) buffer;
         _absolutePosition = absolutePosition;
 
         if (tc.isEntryEnabled())

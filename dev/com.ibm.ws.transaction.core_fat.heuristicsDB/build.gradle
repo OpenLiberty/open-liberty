@@ -14,6 +14,7 @@ dependencies {
   requiredLibs project(":com.ibm.ws.transaction.fat.util"),
                project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.transaction.core_fat.base"),
+               project(":com.ibm.ws.transaction.core_fat.baseDB"),
                project(':io.openliberty.org.apache.commons.logging')
 }
 
@@ -40,7 +41,7 @@ task copyCommonFiles {
      * Copy common publish files.
      */
     copy {
-      from project(':com.ibm.ws.transaction.core_fat.base').file('publish/servers/com.ibm.ws.transaction.dblog')
+      from project(':com.ibm.ws.transaction.core_fat.baseDB').file('publish/servers/com.ibm.ws.transaction.dblog')
       into new File('publish/servers/com.ibm.ws.transaction.dblog')
     }
   }
