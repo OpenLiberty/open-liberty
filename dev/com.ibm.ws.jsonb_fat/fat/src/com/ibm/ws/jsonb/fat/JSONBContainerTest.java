@@ -55,6 +55,10 @@ public class JSONBContainerTest extends FATServletClient {
         FATSuite.cdiApp(server);
 
         server.startServer();
+
+        if (JakartaEE10Action.isActive()) { //TODO possibly back port this info message to EE9 and EE8
+            assertTrue(!server.findStringsInLogsAndTrace("JSON0001I").isEmpty());
+        }
     }
 
     @AfterClass

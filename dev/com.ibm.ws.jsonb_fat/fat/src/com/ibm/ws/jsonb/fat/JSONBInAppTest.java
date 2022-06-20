@@ -11,6 +11,7 @@
 package com.ibm.ws.jsonb.fat;
 
 import static com.ibm.ws.jsonb.fat.FATSuite.JSONB_APP;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,6 +23,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.jsonbtest.JSONBTestServlet;
@@ -45,6 +47,10 @@ public class JSONBInAppTest extends FATServletClient {
         FATSuite.jsonbApp(server);
 
         server.startServer();
+
+        if (JakartaEE10Action.isActive()) { //TODO possibly back port this info message to EE9 and EE8
+            assertTrue(!server.findStringsInLogsAndTrace("JSON5000I").isEmpty());
+        }
     }
 
     @AfterClass
