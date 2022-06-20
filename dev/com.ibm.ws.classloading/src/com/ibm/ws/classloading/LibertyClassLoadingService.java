@@ -38,6 +38,8 @@ public interface LibertyClassLoadingService<CL extends ClassLoader & LibertyClas
     @Override
     CL getSharedLibraryClassLoader(Library lib);
 
+    CL getSharedLibrarySpiClassLoader(Library lib, String ownerId);
+
     @Override
     CL createThreadContextClassLoader(ClassLoader applicationClassLoader);
 }

@@ -7,8 +7,8 @@
 
     <include location="../fatTestPorts.xml"/>
 
- 	<library id="testImplClassNotConstructible" name="testImplClassNotConstructible" 
-	         description="testImplClassNotConstructible">
+    <library id="testImplClassNotConstructible" name="testImplClassNotConstructible" 
+            description="testImplClassNotConstructible">
         <fileset dir="${server.output.dir}/sharedLib" includes="testImplClassNotConstructible.jar" />
     </library>
 
@@ -71,7 +71,7 @@
     </library>
 
     <bell libraryRef="testNoEntry"/>
-    
+
     <library id="testReadingServicesFile" name="testReadingServicesFile" 
              description="testReadingServicesFile">
         <fileset dir="${server.output.dir}/sharedLib" includes="testReadingServicesFile.jar" />
