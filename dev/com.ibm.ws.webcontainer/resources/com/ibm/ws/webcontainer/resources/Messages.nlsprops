@@ -1089,7 +1089,7 @@ exception.occurred.while.adding.listener=SRVE8015E: An exception occurred while 
 exception.occurred.while.adding.listener.explanation=An exception occurred while trying to add a listener
 exception.occurred.while.adding.listener.useraction=Verify the listener is a valid type and available to the application
 
-error.validate.annotation.extension.class=SRVE8016E: The {0} annotation cannot be applied to the class, {1}, because it extends the wrong super class
+error.validate.annotation.extension.class=SRVE8016E: The {0} annotation cannot be applied to the class, {1}, because it extends the wrong super class.
 error.validate.annotation.extension.class.explanation=Some annotations can only be applied to classes which extend the correct type.
 error.validate.annotation.extension.class.useraction=Modify the class to extend the correct super class
 
