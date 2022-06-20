@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,8 @@ public class Bell extends ConfigElement {
 
     private Set<String> service;
 
+    private String enableSpiVisibility;
+
     @XmlAttribute(required = true)
     public String getLibraryRef() {
         return libraryRef;
@@ -43,6 +45,15 @@ public class Bell extends ConfigElement {
         this.service = service;
     }
 
+    @XmlAttribute
+    public String getEnableSpiVisibility() {
+        return enableSpiVisibility;
+    }
+
+    public void setEnableSpiVisibility(String spiVisibility) {
+        this.enableSpiVisibility = spiVisibility;
+    }
+
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(getClass().getSimpleName()).append('{');
@@ -51,6 +62,10 @@ public class Bell extends ConfigElement {
             buf.append("id=").append(getId()).append(' ');
         if (getLibraryRef() != null)
             buf.append("libraryRef=").append(getLibraryRef()).append(' ');
+        if (getService() != null)
+            buf.append("service=").append(getService()).append(' ');
+        if (getEnableSpiVisibility() != null)
+            buf.append("enableSpiVisibility=").append(getEnableSpiVisibility()).append(' ');
         buf.append('}');
         return buf.toString();
     }

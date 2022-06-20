@@ -11,6 +11,7 @@
 package com.ibm.ws.classloading.internal;
 
 import static com.ibm.ws.classloading.internal.ClassLoadingConstants.SHARED_LIBRARY_DOMAIN;
+import static com.ibm.ws.classloading.internal.ClassLoadingConstants.SPI_SHARED_LIBRARY_DOMAIN;
 import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIPLE;
 import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
 import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
@@ -70,6 +71,7 @@ import com.ibm.ws.classloading.LibertyClassLoadingService;
 import com.ibm.ws.classloading.MetaInfServicesProvider;
 import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.ws.classloading.internal.ClassLoaderFactory.PostCreateAction;
+import com.ibm.ws.classloading.internal.GatewayConfigurationImpl;
 import com.ibm.ws.classloading.internal.providers.WeakLibraryListener;
 import com.ibm.ws.classloading.internal.util.CanonicalStore;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
@@ -426,6 +428,85 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     @Override
     public UnifiedClassLoader unify(ClassLoader parent, ClassLoader... followOns) {
         return new UnifiedClassLoader(parent, followOns);
+    }
+
+    @Override
+    /**
+     * Create or retrieve the shared class loader for a shared library that requires SPI visibility.
+     * The resulting library SPI classloader instance is unique from that obtained using
+     * {@link getSharedLibraryClassloader()}.  Both instances see the same binaries and API, and
+     * both are managed similarly regarding library updates; only the SPI loader can see SPI packages.
+     * The library SPI loader must not be a delegate of an application or resource classloader.
+     *
+     * @param lib the shared library to create an SPI class loader for
+     * @param ownerId a non-empty string used to create a purposeful class loader identity.
+     *  e.g. "BELL"
+     * @return the unique class loader for the provided library that requires SPI visibility.
+     */
+    public AppClassLoader getSharedLibrarySpiClassLoader(Library lib, final String ownerId) {
+
+        if (!!!betaFenceCheck()) {
+            return null; // no-op
+        }
+        if (ownerId == null || "".equals(ownerId)) {
+            throw new IllegalArgumentException("Argument ownerId cannot be null or empty");
+        }
+
+        final boolean spiVisibility = true;
+        final String spiLibId = lib.id() + ":" + ownerId;
+
+        ClassLoaderIdentity clId = createIdentity(SPI_SHARED_LIBRARY_DOMAIN, spiLibId);
+
+        AppClassLoader loader = aclStore.retrieve(clId);
+        if (loader != null)
+            return loader;
+        EnumSet<ApiType> apiTypeVisibility = lib.getApiTypeVisibility();
+
+        ClassLoaderConfiguration clsCfg = createClassLoaderConfiguration()
+                        .setId(clId)
+                        .setSharedLibraries(lib.id()); // Configure lib binaries
+
+
+        Collection<Fileset> filesets = lib.getFilesets();
+        if (filesets != null && filesets.isEmpty() == false) {
+            for (Fileset fileset : filesets) {
+                setProtectionDomain(fileset.getFileset(), clsCfg);
+            }
+        } else {
+            Collection<File> files = lib.getFiles();
+            if (files != null && files.isEmpty() == false) {
+                setProtectionDomain(files, clsCfg);
+            }
+        }
+
+        GatewayConfiguration gwConfig = createGatewayConfiguration().setApplicationName(SPI_SHARED_LIBRARY_DOMAIN + ": " + spiLibId)
+                        .setDynamicImportPackage("*")
+                        .setApiTypeVisibility(apiTypeVisibility);
+        ((GatewayConfigurationImpl) gwConfig).setSpiVisibility(spiVisibility);
+
+        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
+                        .configure(gwConfig)
+                        .configure(clsCfg)
+                        .onCreate(listenForLibraryChanges(lib.id())) // Listen for updates to lib
+                        .getCanonical();
+
+        this.rememberBundle(result.getBundle());
+        return result;
+    }
+
+    private static boolean issuedBetaMessage = false;
+
+    private boolean betaFenceCheck() {
+        boolean isBeta = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
+        if (!issuedBetaMessage) {
+            if (!isBeta) {
+                // no-op
+            } else {
+                Tr.info(tc, "BETA: BELL SPI visibility has been invoked by class " + this.getClass().getName() + " for the first time.");
+            }
+            issuedBetaMessage = true;
+        }
+        return isBeta;
     }
 
     @Override
