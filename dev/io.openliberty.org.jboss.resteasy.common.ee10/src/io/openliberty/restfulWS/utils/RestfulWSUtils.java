@@ -43,7 +43,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import io.openliberty.restfulWS.introspector.RESTfulEndpointLoggingIntrospector;
 
 /**
- * A collection of restfulWS-3.0 utility methods.
+ * A collection of restfulWS-3.1 utility methods.
  */
 public class RestfulWSUtils {
 
@@ -54,7 +54,6 @@ public class RestfulWSUtils {
      * and print them to messages.log if trace is enabled
      */
     @SuppressWarnings("rawtypes")
-    @FFDCIgnore(NoClassDefFoundError.class)
     public static void logEndpoints(ServletConfig servletConfig) {
 
         RESTfulEndpointLoggingIntrospector introspector = getRESTfulEndpointLoggingIntrospector();
@@ -181,18 +180,19 @@ public class RestfulWSUtils {
         }
     }
 
+    @FFDCIgnore(NoClassDefFoundError.class)
     private static RESTfulEndpointLoggingIntrospector getRESTfulEndpointLoggingIntrospector() {
         return AccessController.doPrivileged(new PrivilegedAction<RESTfulEndpointLoggingIntrospector>(){
 
             @Override
             public RESTfulEndpointLoggingIntrospector run() {
                 try {
-                Bundle b = FrameworkUtil.getBundle(ResourceMethodRegistry.class);
-                if(b != null) {
-                    BundleContext bc = b.getBundleContext();
-                    ServiceReference<RESTfulEndpointLoggingIntrospector> sr = bc.getServiceReference(RESTfulEndpointLoggingIntrospector.class);
-                    return (RESTfulEndpointLoggingIntrospector)bc.getService(sr);
-                }
+                    Bundle b = FrameworkUtil.getBundle(ResourceMethodRegistry.class);
+                    if(b != null) {
+                        BundleContext bc = b.getBundleContext();
+                        ServiceReference<RESTfulEndpointLoggingIntrospector> sr = bc.getServiceReference(RESTfulEndpointLoggingIntrospector.class);
+                        return (RESTfulEndpointLoggingIntrospector)bc.getService(sr);
+                    }
                 } catch (NoClassDefFoundError ncdfe) {
                     // ignore - return null
                 }
@@ -200,6 +200,7 @@ public class RestfulWSUtils {
             }});
     }
 
+    @FFDCIgnore(ClassNotFoundException.class)
     private static Class<?> loadClass(String clazz, StringBuffer sb) {
         return AccessController.doPrivileged(new PrivilegedAction<Class<?>>() {
             public Class<?> run() {

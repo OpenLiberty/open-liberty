@@ -13,6 +13,9 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.cdi.ee10
 
+javac.source: 11
+javac.target: 11
+
 resteasy-version=6.0.0.Final
 
 src: src, resources

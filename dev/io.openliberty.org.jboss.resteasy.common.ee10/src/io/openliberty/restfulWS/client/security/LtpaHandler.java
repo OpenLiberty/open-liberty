@@ -43,7 +43,7 @@ public class LtpaHandler {
                 crc.getHeaders().putSingle("Cookie", ssoCookie.getName() + "=" + ssoCookie.getValue());
             } else { // no user credential available
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Cannot find a ltpa authentication token off of the thread, you may need enable feature appSecurity-2.0 or ssl-1.0");
+                    Tr.debug(tc, "Cannot find a ltpa authentication token off of the thread, you may need enable feature appSecurity-4.0 or transportSecurity-1.0");
                 }
                 //Because this is a client configuration property, we won't throws exception if it doesn't work, please analyze trace for detail
                 //throw new ProcessingException("Cannot find a ltpa authentication token off of the thread");
