@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -28,7 +26,6 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -39,7 +36,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * Tests Servlet Filter/Listener Injection
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class CDIServletFilterListenerTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(CDIServletFilterListenerTest.class.getName());

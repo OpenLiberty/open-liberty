@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
@@ -34,7 +33,6 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -44,7 +42,6 @@ import componenttest.topology.impl.LibertyServer;
  * Tests to execute on the wcServer that use HttpUnit.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSPServerHttpUnit {
     private static final Logger LOG = Logger.getLogger(JSPServerHttpUnit.class.getName());
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();

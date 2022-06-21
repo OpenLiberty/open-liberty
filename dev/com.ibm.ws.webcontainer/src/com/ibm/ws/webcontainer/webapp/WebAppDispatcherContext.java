@@ -26,7 +26,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpUtils;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.servlet.error.ServletErrorReport;
@@ -774,7 +773,8 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
                 // not relative to webapp context root, but relative to the presently
                 // invoked URL
 
-                String requestString = HttpUtils.getRequestURL((HttpServletRequest) request).toString();
+                //Servlet 6.0 Update to remove HttpUtils
+                String requestString = ((HttpServletRequest) request).getRequestURL().toString();
                 String pathInfo = request.getPathInfo();
                 // start PI22830
                 if(!webAppRootURI.equals("/") && request.getRequestURI().equals(webAppRootURI)){

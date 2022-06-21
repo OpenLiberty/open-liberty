@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -141,8 +141,10 @@ public class SessionContextRegistry {
 
     /*
      * invalidateAll support added for LIDB3477.20 -- added for portal requirement
+     * 
+     * Updated for Servlet 6.0: changed signature to accept AbstractSessionData instead of SessionData
      */
-    public void invalidateAll(String sessionId, String appName, SessionData sd, boolean goRemote, boolean fromRemote) {
+    public void invalidateAll(String sessionId, String appName, AbstractSessionData sd, boolean goRemote, boolean fromRemote) {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
             StringBuffer sb = new StringBuffer("for app ").append(appName).append(" id ").append(sessionId).append(" goRemote ").append(goRemote).append(" fromRemote ").append(fromRemote);
             LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[INVALIDATE_ALL], sb.toString());
@@ -154,7 +156,7 @@ public class SessionContextRegistry {
             sessionId = sessionId.substring(1); // remove flag
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
                 LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[INVALIDATE_ALL], "setting backendUpdate to false and removed flag - sessionId: "
-                                                                                                               + sessionId);
+                                + sessionId);
             }
         }
         // we invalidate on this server before broadcast so that in a cluster with
@@ -164,7 +166,7 @@ public class SessionContextRegistry {
 
         if ((sd != null) && (sd.getISession() != null) && (!((MemorySession) sd.getISession()).isInvalInProgress())) { // sd will be null if fromRemote is true
             sd.invalidate(); // take care of this session first -- the session that
-                             // was used to call invalidateAll
+            // was used to call invalidateAll
         }
         Enumeration vEnum = SessionContextRegistry.getScrSessionContexts();
         while (vEnum.hasMoreElements()) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import com.ibm.sip.util.log.LogMgr;
 import com.ibm.websphere.servlet.session.IBMApplicationSession;
 import com.ibm.websphere.servlet.session.IBMSession;
 import com.ibm.ws.session.HttpSessionFacade;
+import com.ibm.ws.session.AbstractHttpSessionFacade;
 import com.ibm.ws.session.IBMApplicationSessionImpl;
 import com.ibm.ws.session.SessionContext;
 import com.ibm.ws.session.SessionManager;
@@ -52,21 +53,22 @@ public class ConvergedHttpSessionImpl extends HttpSessionImpl implements Converg
     public ConvergedHttpSessionImpl(ISession session, SessionContext sessCtx, ServletContext servCtx) {
     	super(session, sessCtx, servCtx);
     	 if (c_logger.isTraceEntryExitEnabled()) {
-      		c_logger.traceEntry(this, "returnFacade", "returnFacade");
+      		c_logger.traceEntry(this, "ConvergedHttpSessionImpl", " Constructor");
   		}
         WASXSipApplicationSessionFactory.getInstance().createSipApplicationSession();
         if (c_logger.isTraceEntryExitEnabled()) {
-    		c_logger.traceExit(this, "ConvergedHttpSessionIml", "New Converged created");
+    		c_logger.traceExit(this, "ConvergedHttpSessionIml", " New Converged created");
 		}
     }
     
-    protected HttpSessionFacade returnFacade() {
-    	 if (c_logger.isTraceDebugEnabled()) {
-     		c_logger.traceDebug(this, "returnFacade", "returnFacade");
- 		}
-        return new WsHttpSessionFacade(this);
+    @Override
+    protected AbstractHttpSessionFacade returnFacade() {
+    	if (c_logger.isTraceDebugEnabled()) {
+    		c_logger.traceDebug(this, "returnFacade", " WsHttpSessionFacade");
+    	}
+    	return new WsHttpSessionFacade(this);
     }
-    
+
   	public void setSIPCookieInfo(HttpServletRequest _request) {
   		 if (c_logger.isTraceEntryExitEnabled()) {
       		c_logger.traceEntry(this, "setSIPCookieInfo", "setSIPCookieInfo");
