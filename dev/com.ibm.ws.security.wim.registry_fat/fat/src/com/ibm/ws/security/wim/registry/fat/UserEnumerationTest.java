@@ -333,7 +333,7 @@ public class UserEnumerationTest {
                                   numTimesUserSeemsInvalid);
                 }
             } else {
-                if (numTimesUserSeemsValid == 0 && i < retry) {
+                if ((validityCheckRounds != numTimesUserSeemsInvalid) && i < retry) {
                     Log.info(c, methodName, "Expected all invalid results, try again.");
                 } else {
                     assertEquals("Should have all invalid user results, valid was " + numTimesUserSeemsValid + " and invalid was " + numTimesUserSeemsInvalid + ".",
