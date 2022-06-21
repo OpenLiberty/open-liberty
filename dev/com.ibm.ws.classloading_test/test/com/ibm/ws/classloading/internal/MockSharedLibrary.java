@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,13 @@ import java.io.File;
 import java.util.Collection;
 import java.util.EnumSet;
 
+import com.ibm.ws.library.spi.SpiLibrary;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.library.Library;
 
-class MockSharedLibrary implements Library {
+class MockSharedLibrary implements Library, SpiLibrary {
 
     private final String id;
     private final ClassLoader loader;
@@ -44,6 +45,11 @@ class MockSharedLibrary implements Library {
 
     @Override
     public ClassLoader getClassLoader() {
+        return loader;
+    }
+
+    @Override
+    public ClassLoader getSpiClassLoader(String ownerId) {
         return loader;
     }
 
