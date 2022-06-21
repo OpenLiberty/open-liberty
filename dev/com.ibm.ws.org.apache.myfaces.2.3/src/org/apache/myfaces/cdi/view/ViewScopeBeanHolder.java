@@ -18,6 +18,7 @@
  */
 package org.apache.myfaces.cdi.view;
 
+import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Random;
@@ -48,8 +49,7 @@ public class ViewScopeBeanHolder implements Serializable
      * value: the {@link ViewScopeContextualStorage} which holds all the
      * {@link javax.enterprise.inject.spi.Bean}s.
      */
-    private Map<String, ViewScopeContextualStorage> storageMap = 
-        new ConcurrentHashMap<String, ViewScopeContextualStorage>();
+    private Map<String, ViewScopeContextualStorage> storageMap;
     
     private static final Random RANDOM_GENERATOR = new Random();
     
@@ -58,7 +58,7 @@ public class ViewScopeBeanHolder implements Serializable
     public static final String VIEW_SCOPE_PREFIX_KEY = VIEW_SCOPE_PREFIX+".KEY";
     
     @Inject
-    ApplicationContextBean applicationContextBean;
+    JsfApplicationArtifactHolder applicationContextBean;
     
     public ViewScopeBeanHolder()
     {
@@ -67,6 +67,7 @@ public class ViewScopeBeanHolder implements Serializable
     @PostConstruct
     public void init()
     {
+        storageMap = new ConcurrentHashMap<String, ViewScopeContextualStorage>();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.getExternalContext().getSessionMap().put(VIEW_SCOPE_PREFIX_KEY,
             1);
@@ -75,8 +76,10 @@ public class ViewScopeBeanHolder implements Serializable
     /**
      * This method will return the ViewScopeContextualStorage or create a new one
      * if no one is yet assigned to the current windowId.
-     * @param beanManager we need the CDI {@link BeanManager} for serialisation.
-     * @param windowId the windowId for the current browser tab or window.
+     * 
+     * @param beanManager
+     * @param viewScopeId
+     * @return 
      */
     public ViewScopeContextualStorage getContextualStorage(
         BeanManager beanManager, String viewScopeId)

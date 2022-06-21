@@ -18,19 +18,20 @@
  */
 package org.apache.myfaces.cdi.view;
 
+import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
@@ -46,10 +47,9 @@ public class ViewScopeBeanHolder implements Serializable
     /**
      * key: the windowId for the browser tab or window
      * value: the {@link ViewScopeContextualStorage} which holds all the
-     * {@link javax.enterprise.inject.spi.Bean}s.
+     * {@link jakarta.enterprise.inject.spi.Bean}s.
      */
-    private Map<String, ViewScopeContextualStorage> storageMap = 
-        new ConcurrentHashMap<String, ViewScopeContextualStorage>();
+    private Map<String, ViewScopeContextualStorage> storageMap;
     
     private static final Random RANDOM_GENERATOR = new Random();
     
@@ -58,7 +58,7 @@ public class ViewScopeBeanHolder implements Serializable
     public static final String VIEW_SCOPE_PREFIX_KEY = VIEW_SCOPE_PREFIX+".KEY";
     
     @Inject
-    ApplicationContextBean applicationContextBean;
+    JsfApplicationArtifactHolder applicationContextBean;
     
     public ViewScopeBeanHolder()
     {
@@ -67,6 +67,7 @@ public class ViewScopeBeanHolder implements Serializable
     @PostConstruct
     public void init()
     {
+        storageMap = new ConcurrentHashMap<String, ViewScopeContextualStorage>();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.getExternalContext().getSessionMap().put(VIEW_SCOPE_PREFIX_KEY,
             1);
@@ -75,8 +76,10 @@ public class ViewScopeBeanHolder implements Serializable
     /**
      * This method will return the ViewScopeContextualStorage or create a new one
      * if no one is yet assigned to the current windowId.
-     * @param beanManager we need the CDI {@link BeanManager} for serialisation.
-     * @param windowId the windowId for the current browser tab or window.
+     * 
+     * @param beanManager
+     * @param viewScopeId
+     * @return 
      */
     public ViewScopeContextualStorage getContextualStorage(
         BeanManager beanManager, String viewScopeId)
@@ -108,7 +111,7 @@ public class ViewScopeBeanHolder implements Serializable
      * a new empty one.
      * This method can be used to properly destroy the WindowBeanHolder beans
      * without having to sync heavily. Any
-     * {@link javax.enterprise.inject.spi.Bean#destroy(Object, javax.enterprise.context.spi.CreationalContext)}
+     * {@link jakarta.enterprise.inject.spi.Bean#destroy(Object, jakarta.enterprise.context.spi.CreationalContext)}
      * should be performed on the returned old storage map.
      * @return the old storageMap.
      */
@@ -240,5 +243,4 @@ public class ViewScopeBeanHolder implements Serializable
     {
         storageMap.remove(viewScopeId);
     }
-
 }
