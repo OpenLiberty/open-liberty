@@ -1,17 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
+ * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.threading;
+
+import com.ibm.wsspi.threading.WorkContext;
+
 /**
- * @version 1.2
+ *
  */
-@org.osgi.annotation.versioning.Version("1.2")
-package com.ibm.wsspi.threading;
+public interface RunnableWithContext extends Runnable {
+    public WorkContext getWorkContext();
+}

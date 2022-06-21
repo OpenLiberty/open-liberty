@@ -72,7 +72,8 @@ instrument.classesExcludes: com/ibm/ws/transport/iiop/resources/*.class
 	com.ibm.ws.org.apache.yoko.rmi.impl.1.5;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.ws.kernel.boot.core;version=latest, \
+	com.ibm.ws.threading;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

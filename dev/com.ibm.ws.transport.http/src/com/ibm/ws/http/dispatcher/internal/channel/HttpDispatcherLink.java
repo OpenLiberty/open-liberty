@@ -40,6 +40,7 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
+import com.ibm.ws.threading.RunnableWithContext;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -61,6 +62,7 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
+import com.ibm.wsspi.threading.WorkContext;
 
 /**
  * Connection link object that the HTTP dispatcher provides to CHFW
@@ -447,9 +449,31 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * HttpDispatcherLinkWrapHandlerAndExecuteTransformDescriptor.java
      * needs to be updated.
      */
-    private void wrapHandlerAndExecute(Runnable handler) {
+    private void wrapHandlerAndExecute(final Runnable handler) {
         // wrap handler and execute
         TaskWrapper taskWrapper = new TaskWrapper(handler, this);
+        RunnableWithContext handlerWC = null;
+        if (HttpDispatcher.getInterceptorValue()) {
+            final HttpWorkContext wc = new HttpWorkContext();
+            wc.put(WorkContext.INBOUND_PORT, Integer.toString(this.request.getVirtualPort()));
+            wc.put(WorkContext.URI, this.request.getURI());
+            wc.put(WorkContext.METHOD_NAME, this.request.getMethod());
+            wc.put(WorkContext.INBOUND_HOSTNAME, this.request.getVirtualHost());
+
+            handlerWC = new RunnableWithContext() {
+
+                @Override
+                public void run() {
+                    handler.run();
+                }
+
+                @Override
+                public WorkContext getWorkContext() {
+                    return wc;
+                }
+
+            };
+        }
 
         WorkClassifier workClassifier = HttpDispatcher.getWorkClassifier();
         if (workClassifier != null) {
@@ -464,10 +488,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 taskWrapper.setClassifiedExecutor(classifyExecutor);
                 classifyExecutor.execute(taskWrapper);
             } else {
+                if (HttpDispatcher.getInterceptorValue() || handlerWC != null) {
+                    ExecutorService defaultExecutor = HttpDispatcher.getExecutorService();
+                    defaultExecutor.execute(handlerWC);
+                } else {
+                    taskWrapper.run();
+                }
+            }
+
+        } else {
+            if (HttpDispatcher.getInterceptorValue() || handlerWC != null) {
+                ExecutorService defaultExecutor = HttpDispatcher.getExecutorService();
+                defaultExecutor.execute(handlerWC);
+            } else {
                 taskWrapper.run();
             }
-        } else {
-            taskWrapper.run();
         }
     }
 
@@ -708,7 +743,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     // interjection of proxy headers, there has to be some way of showing what
                     // ended up being requested.
                     // Scrub the host header before returning it in the error response
-                    msg = encodeDataString(getRequestedHost()).getBytes();
+                    msg = getRequestedHost().getBytes();
                     body.write(msg);
                     body.write(port);
                     body.write(Integer.toString(getRequestedPort()).getBytes());

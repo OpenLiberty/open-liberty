@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import javax.resource.spi.UnavailableException;
 import javax.resource.spi.work.ExecutionContext;
@@ -30,6 +29,7 @@ import javax.resource.spi.work.WorkRejectedException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.threading.CallableWithContext;
 
 /**
  * Implementation of J2C WorkManager for WebSphere Application Server
@@ -167,16 +167,17 @@ public final class WorkManagerImpl implements WorkManager {
 
             WorkProxy workProxy = new WorkProxy(work, startTimeout, execContext, workListener, bootstrapContext, runningWork, true);
 
-            FutureTask<Void> futureTask = new FutureTask<Void>(workProxy);
-            bootstrapContext.execSvc.executeGlobal(futureTask);
-            if (futures.add(futureTask) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
+            Future f = bootstrapContext.execSvc.submit((CallableWithContext<Void>) workProxy);
+
+            if (futures.add(f) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
                 purgeFutures();
+
 
             // It is this call that guarantees that startWork will not return until
             // the work is started or times out.
             Long startupDuration = workProxy.waitForStart();
             if (startupDuration == null) { // didn't start in time
-                futureTask.cancel(true);
+                f.cancel(true);
                 WorkRejectedException wrex = new WorkRejectedException(Utils.getMessage("J2CA8600.work.start.timeout", work, bootstrapContext.resourceAdapterID,
                                                                                         startTimeout), WorkException.START_TIMED_OUT);
                 if (workListener != null)
@@ -184,9 +185,9 @@ public final class WorkManagerImpl implements WorkManager {
                 throw wrex;
             }
 
-            if (futureTask.isDone())
+            if (f.isDone())
                 try {
-                    futureTask.get(); // If the work has already failed, cause the failure to be raised here
+                    f.get(); // If the work has already failed, cause the failure to be raised here
                 } catch (ExecutionException x) {
                     throw x.getCause();
                 }
@@ -247,10 +248,9 @@ public final class WorkManagerImpl implements WorkManager {
 
             WorkProxy workProxy = new WorkProxy(work, startTimeout, execContext, workListener, bootstrapContext, runningWork, true);
 
-            FutureTask<Void> futureTask = new FutureTask<Void>(workProxy);
-            bootstrapContext.execSvc.executeGlobal(futureTask);
+            Future f = bootstrapContext.execSvc.submit((CallableWithContext<Void>) workProxy);
 
-            if (futures.add(futureTask) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
+            if (futures.add(f) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
                 purgeFutures();
         } catch (WorkException ex) {
             throw ex;
