@@ -30,15 +30,7 @@ public class DiscoveryHandler {
     }
 
     public String fetchDiscoveryData(String discoveryUrl, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws Exception {
-        if (!isValidDiscoveryUrl(discoveryUrl)) {
-            String errorMsg = Tr.formatMessage(tc, "DISCOVERY_URL_NOT_VALID", discoveryUrl);
-            throw new Exception(errorMsg);
-        }
-        return httpUtils.getHttpRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemProperties);
-    }
-
-    private boolean isValidDiscoveryUrl(String discoveryUrl) {
-        return discoveryUrl != null && discoveryUrl.startsWith("https");
+        return httpUtils.getHttpJsonRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemProperties);
     }
 
 }

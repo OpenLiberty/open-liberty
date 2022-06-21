@@ -16,7 +16,3 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2400 - CWWKS2499
-
-DISCOVERY_URL_NOT_VALID=CWWKS2400E: The given Discovery URL {0} is invalid.
-DISCOVERY_URL_NOT_VALID.explanation=Discovery URLs need to start with https.
-DISCOVERY_URL_NOT_VALID.useraction=Ensure that the given Discovery URL starts with https before fetching discovery data.

@@ -65,6 +65,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
+import com.ibm.ws.security.common.http.HttpResponseNot200Exception;
+import com.ibm.ws.security.common.http.HttpResponseNullOrEmptyException;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
@@ -915,7 +917,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         return true;
     }
 
-    @FFDCIgnore({ SSLException.class })
+    @FFDCIgnore({ SSLException.class, HttpResponseNullOrEmptyException.class, HttpResponseNot200Exception.class })
     public boolean handleDiscoveryEndpoint(String discoveryUrl) {
 
         String jsonString = null;
@@ -929,13 +931,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         try {
             setNextDiscoveryTime();
             SSLSocketFactory sslSocketFactory = getSSLSocketFactory(discoveryUrl, sslConfigurationName, sslSupportRef.getService());
-            // change if statement to isRunningBetaMode()
-            if (true) {
+            if (isRunningBetaMode()) {
                 DiscoveryHandler discoveryHandler = new DiscoveryHandler(sslSocketFactory);
                 jsonString = discoveryHandler.fetchDiscoveryData(discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             } else {
-                HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
-                jsonString = getHTTPRequestAsString(client, discoveryUrl);
+                jsonString = fetchDiscoveryData(discoveryUrl, sslSocketFactory);
             }
             if (jsonString != null) {
                 parseJsonResponse(jsonString);
@@ -943,11 +943,18 @@ public class OidcClientConfigImpl implements OidcClientConfig {
                     valid = discoverEndpointUrls(this.discoveryjson);
                 }
             }
+        } catch (HttpResponseNullOrEmptyException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
+            }
+        } catch (HttpResponseNot200Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
+            }
         } catch (SSLException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
             }
-
         } catch (Exception e) {
             // could be ignored
             if (tc.isDebugEnabled()) {
@@ -959,6 +966,24 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.error(tc, "OIDC_CLIENT_DISCOVERY_SSL_ERROR", getId(), discoveryUrl);
         }
         return valid;
+    }
+
+    @Deprecated
+    @FFDCIgnore({ IOException.class, HttpResponseNullOrEmptyException.class, HttpResponseNot200Exception.class })
+    String fetchDiscoveryData(String discoveryUrl, SSLSocketFactory sslSocketFactory) throws Exception {
+        try {
+            HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
+            return getHTTPRequestAsString(client, discoveryUrl);
+        } catch (IOException ioex) {
+            logErrorMessage(discoveryUrl, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
+            throw ioex;
+        } catch (HttpResponseNullOrEmptyException e) {
+            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getErrMsg());
+            throw e;
+        } catch (HttpResponseNot200Exception e) {
+            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getErrMsg());
+            throw e;
+        }
     }
 
     boolean isRunningBetaMode() {
@@ -1103,9 +1128,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             ThreadContextHelper.setClassLoader(getClass().getClassLoader());
             try {
                 result = httpClient.execute(request);
-            } catch (IOException ioex) {
-                logErrorMessage(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
-                throw ioex;
             } finally {
                 ThreadContextHelper.setClassLoader(origCL);
             }
@@ -1117,7 +1139,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
                     Tr.debug(tc, "Response: ", json);
                 }
                 if (json == null || json.isEmpty()) { // NO json response returned
-                    throw new Exception(logErrorMessage(url, iStatusCode, json));
+                    throw new HttpResponseNullOrEmptyException(url, iStatusCode, json);
                 }
             } else {
                 String errMsg = statusLine.getReasonPhrase();
@@ -1126,7 +1148,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "status:" + iStatusCode + " errorMsg:" + errMsg);
                 }
-                throw new Exception(logErrorMessage(url, iStatusCode, errMsg));
+                throw new HttpResponseNot200Exception(url, iStatusCode, errMsg);
             }
         } catch (Exception e) {
             throw e;

@@ -394,7 +394,7 @@ public class HttpUtilsTest extends CommonTestClass {
         }
     }
 
-    /******************************************* createHTTPClient *******************************************/
+    /******************************************* createHttpClient *******************************************/
 
     /**
      * Tests:
@@ -402,20 +402,16 @@ public class HttpUtilsTest extends CommonTestClass {
      * - URL: null
      * - Verify hostname: false
      * Expects:
-     * - IllegalArgumentException should be thrown because of the null SSL socket factory
+     * - Client should not be null
      */
     @Test
-    public void test_createHTTPClient_nullSslSocketFactory() {
+    public void test_createHttpClient_nullSslSocketFactory() {
         try {
             SSLSocketFactory sslSocketFactory = null;
             String url = null;
 
-            try {
-                utils.createHTTPClient(sslSocketFactory, url, false);
-                fail("Should have thrown an IllegalArgumentException but did not.");
-            } catch (IllegalArgumentException e) {
-                // Expected to be thrown because of the invalid URL
-            }
+            HttpClient client = utils.createHttpClient(sslSocketFactory, url, false);
+            assertNotNull("HttpClient object should not have been null but was.", client);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
 
@@ -432,11 +428,11 @@ public class HttpUtilsTest extends CommonTestClass {
      * - Client should not be null
      */
     @Test
-    public void test_createHTTPClient_nullUrl_doNotVerifyHostname() {
+    public void test_createHttpClient_nullUrl_doNotVerifyHostname() {
         try {
             String url = null;
 
-            HttpClient client = utils.createHTTPClient(sslSocketFactory, url, false);
+            HttpClient client = utils.createHttpClient(sslSocketFactory, url, false);
             assertNotNull("HttpClient object should not have been null but was.", client);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -454,11 +450,11 @@ public class HttpUtilsTest extends CommonTestClass {
      * - Client should not be null
      */
     @Test
-    public void test_createHTTPClient_emptyUrl_doNotVerifyHostname() {
+    public void test_createHttpClient_emptyUrl_doNotVerifyHostname() {
         try {
             String url = "";
 
-            HttpClient client = utils.createHTTPClient(sslSocketFactory, url, false);
+            HttpClient client = utils.createHttpClient(sslSocketFactory, url, false);
             assertNotNull("HttpClient object should not have been null but was.", client);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -476,11 +472,11 @@ public class HttpUtilsTest extends CommonTestClass {
      * - Client should not be null
      */
     @Test
-    public void test_createHTTPClient_invalidUrl_verifyHostname() {
+    public void test_createHttpClient_invalidUrl_verifyHostname() {
         try {
             String url = "some invalid URL";
 
-            HttpClient client = utils.createHTTPClient(sslSocketFactory, url, false);
+            HttpClient client = utils.createHttpClient(sslSocketFactory, url, false);
             assertNotNull("HttpClient object should not have been null but was.", client);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -498,224 +494,11 @@ public class HttpUtilsTest extends CommonTestClass {
      * - Client should not be null
      */
     @Test
-    public void test_createHTTPClient_validUrl_verifyHostname() {
+    public void test_createHttpClient_validUrl_verifyHostname() {
         try {
             String url = "http://localhost";
 
-            HttpClient client = utils.createHTTPClient(sslSocketFactory, url, false);
-            assertNotNull("HttpClient object should not have been null but was.", client);
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
-     * - URL: Valid HTTP URL
-     * - Username: null
-     * - Password: null
-     * Expects:
-     * - IllegalArgumentException should be thrown because of the null username
-     */
-    @Test
-    public void test_createHTTPClient_withCredentials_nullUsername_nullPassword() {
-        try {
-            String url = "http://localhost";
-            String username = null;
-            String password = null;
-
-            try {
-                utils.createHTTPClient(sslSocketFactory, url, false, username, password);
-                fail("Should have thrown an IllegalArgumentException but did not.");
-            } catch (IllegalArgumentException e) {
-                // Expected to be thrown because of the invalid URL
-            }
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
-     * - URL: Valid HTTP URL
-     * - Verify hostname: false
-     * - Username: null
-     * - Password: Empty
-     * Expects:
-     * - IllegalArgumentException should be thrown because of the null username
-     */
-    @Test
-    public void test_createHTTPClient_withCredentials_nullUsername_emptyPassword() {
-        try {
-            String url = "http://localhost";
-            String username = null;
-            String password = "";
-
-            try {
-                utils.createHTTPClient(sslSocketFactory, url, false, username, password);
-                fail("Should have thrown an IllegalArgumentException but did not.");
-            } catch (IllegalArgumentException e) {
-                // Expected to be thrown because of the invalid URL
-            }
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
-     * - URL: Valid HTTP URL
-     * - Verify hostname: false
-     * - Username: Empty
-     * - Password: null
-     * Expects:
-     * - Client should not be null
-     */
-    @Test
-    public void test_createHTTPClient_withCredentials_emptyUsername_nullPassword() {
-        try {
-            String url = "http://localhost";
-            String username = "";
-            String password = null;
-
-            HttpClient client = utils.createHTTPClient(sslSocketFactory, url, false, username, password);
-            assertNotNull("HttpClient object should not have been null but was.", client);
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
-     * - SSL socket factory: null
-     * - URL: Valid HTTP URL
-     * Expects:
-     * - Client should not be null - a valid HTTP URL means the SSL socket factory shouldn't be used
-     */
-    @Test
-    public void test_createHTTPClient_withCredentials_nullSslSocketFactory_validHttpUrl() {
-        try {
-            SSLSocketFactory sslSocketFactory = null;
-            String url = "http://localhost";
-            String username = "";
-            String password = "";
-
-            HttpClient client = utils.createHTTPClient(sslSocketFactory, url, false, username, password);
-            assertNotNull("HttpClient object should not have been null but was.", client);
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
-     * - SSL socket factory: null
-     * - URL: Invalid
-     * Expects:
-     * - A URL that doesn't start with "http:" will attempt to use the SSL socket factory
-     * - IllegalArgumentException should be thrown because of the null SSL socket factory
-     */
-    @Test
-    public void test_createHTTPClient_withCredentials_nullSslSocketFactory_invalidUrl() {
-        try {
-            SSLSocketFactory sslSocketFactory = null;
-            String url = "some invalid URL";
-            String username = "my username";
-            String password = "pass\n\r word";
-
-            try {
-                utils.createHTTPClient(sslSocketFactory, url, false, username, password);
-                fail("Should have thrown an IllegalArgumentException but did not.");
-            } catch (IllegalArgumentException e) {
-                // Expected to be thrown because of the invalid URL
-            }
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
-     * - SSL socket factory: null
-     * - URL: HTTP URL with mixed casing of the HTTP scheme
-     * Expects:
-     * - Client should not be null - a valid HTTP URL means the SSL socket factory shouldn't be used
-     */
-    @Test
-    public void test_createHTTPClient_withCredentials_nullSslSocketFactory_httpUrlMixedCase() {
-        try {
-            SSLSocketFactory sslSocketFactory = null;
-            String url = "hTtP://localhost";
-            String username = "username";
-            String password = "password";
-
-            HttpClient client = utils.createHTTPClient(sslSocketFactory, url, false, username, password);
-            assertNotNull("HttpClient object should not have been null but was.", client);
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
-     * - URL: Non-HTTP URL
-     * - Verify host name: true
-     * Expects:
-     * - Client should not be null
-     */
-    @Test
-    public void test_createHTTPClient_withCredentials_verifyHostName() {
-        try {
-            String url = "https://localhost";
-            String username = "username";
-            String password = "password";
-
-            HttpClient client = utils.createHTTPClient(sslSocketFactory, url, true, username, password);
-            assertNotNull("HttpClient object should not have been null but was.", client);
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
-     * - URL: Non-HTTP URL
-     * - Verify host name: false
-     * Expects:
-     * - Client should not be null
-     */
-    @Test
-    public void test_createHTTPClient_withCredentials_doNotVerifyHostName() {
-        try {
-            String url = "ftp://example";
-            String username = "username";
-            String password = "password";
-
-            HttpClient client = utils.createHTTPClient(sslSocketFactory, url, false, username, password);
+            HttpClient client = utils.createHttpClient(sslSocketFactory, url, false);
             assertNotNull("HttpClient object should not have been null but was.", client);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);

@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,6 @@ import javax.net.ssl.SSLSocketFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -38,13 +37,12 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class HttpUtils {
@@ -82,26 +80,16 @@ public class HttpUtils {
         }
     }
 
-    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, String baUser, @Sensitive String baPassword) {
-
-        HttpClient client = null;
-        boolean addBasicAuthHeader = false;
-
-        if (baUser != null && baPassword != null) {
-            addBasicAuthHeader = true;
-        }
-
-        BasicCredentialsProvider credentialsProvider = null;
-        if (addBasicAuthHeader) {
-            credentialsProvider = createCredentialsProvider(baUser, baPassword);
-        }
-
-        client = createHttpClient(url.startsWith("https:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider);
-        return client;
-
+    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification) {
+        return createHttpClient(sslSocketFactory, url, isHostnameVerification, false);
     }
 
-    private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider) {
+    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
+        boolean isSecure = (url != null && url.startsWith("https:"));
+        return createHttpClient(sslSocketFactory, isSecure, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
+    }
+    
+    private HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, boolean isSecure, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
         HttpClient client = null;
         if (isSecure) {
             ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
@@ -113,181 +101,77 @@ public class HttpUtils {
                 } else {
                     connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
                 }
-                if (addBasicAuthHeader) {
-                    client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-                } else {
-                    client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+                HttpClientBuilder clientBuilder = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory);
+                if (credentialsProvider != null) {
+                    clientBuilder.setDefaultCredentialsProvider(credentialsProvider);
                 }
+                client = clientBuilder.build();
             } finally {
                 ThreadContextHelper.setClassLoader(origCL);
             }
         } else {
-            if (addBasicAuthHeader) {
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
-            } else {
-                client = HttpClientBuilder.create().build();
+            HttpClientBuilder clientBuilder = createBuilder(useSystemPropertiesForHttpClientConnections);
+            if (credentialsProvider != null) {
+                clientBuilder.setDefaultCredentialsProvider(credentialsProvider);
             }
+            client = clientBuilder.build();
         }
         return client;
     }
     
-    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
+    HttpClientBuilder createBuilder(boolean useSystemProperties) {
+        return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+    }
 
-        HttpClient client = null;
+    public String getHttpJsonRequest(SSLSocketFactory sslSocketFactory, String url, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws Exception {
+        HttpClient client = createHttpClient(sslSocketFactory, url, hostNameVerificationEnabled, useSystemProperties);
+        if (client != null) {
+            return getHttpJsonRequestAsString(client, url);
+        }
+        return null;
+    }
 
+    String getHttpJsonRequestAsString(HttpClient httpClient, String url) throws Exception {
+        List<NameValuePair> headers = new ArrayList<>();
+        headers.add(new BasicNameValuePair("Content-Type", "application/json"));
+
+        return getHttpRequestAsString(httpClient, url, headers);
+    }
+
+    String getHttpRequestAsString(HttpClient httpClient, String url, List<NameValuePair> headers) throws Exception {
+        HttpGet request = createHttpGetMethod(url, headers);
+        HttpResponse result = null;
+        
         ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
         ThreadContextHelper.setClassLoader(getClass().getClassLoader());
         try {
-            SSLConnectionSocketFactory connectionFactory = null;
-            if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-            } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-            }
-            client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
+            result = httpClient.execute(request);
         } finally {
             ThreadContextHelper.setClassLoader(origCL);
         }
-
-        return client;
-
-    }
-    
-    private HttpClientBuilder createBuilder(boolean useSystemProperties) {
-        return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
+        return extractResponseAsString(result, url);
     }
 
-    private BasicCredentialsProvider createCredentialsProvider(String baUser, @Sensitive String baPassword) {
-        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(baUser, baPassword));
-        return credentialsProvider;
-    }
-
-    @FFDCIgnore({ Exception.class })
-    protected String getHTTPRequestAsString(HttpClient httpClient, String url) throws Exception {
-
-        String json = null;
-        try {
-            HttpGet request = new HttpGet(url);
-            request.addHeader("content-type", "application/json");
-            HttpResponse result = null;
-            
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                result = httpClient.execute(request);
-            } catch (IOException ioex) {
-                String errMsg = "IOException: " + ioex.getMessage() + " " + ioex.getCause();
-                String message = TraceNLS.getFormattedMessage(getClass(),
-                        "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", "OIDC_CLIENT_DISCOVERY_ERROR",
-                        new Object[] { url, errMsg }, "Error processing discovery request");
-                ;
-                Tr.error(tc, message, new Object[0]);
-                throw ioex;
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
+    String extractResponseAsString(HttpResponse result, String url) throws IOException, HttpResponseNullOrEmptyException, HttpResponseNot200Exception {
+        StatusLine statusLine = result.getStatusLine();
+        int iStatusCode = statusLine.getStatusCode();
+        if (iStatusCode == 200) {
+            String response = EntityUtils.toString(result.getEntity(), "UTF-8");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Response: ", response);
             }
-            StatusLine statusLine = result.getStatusLine();
-            int iStatusCode = statusLine.getStatusCode();
-            if (iStatusCode == 200) {
-                json = EntityUtils.toString(result.getEntity(), "UTF-8");
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Response: ", json);
-                }
-                if (json == null || json.isEmpty()) { // NO json response returned
-                    throw new Exception(logErrorMessage(url, iStatusCode, "empty or null json response"));
-                }
-            } else {
-                String errMsg = statusLine.getReasonPhrase();
-                // error in getting the discovery response
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "status:" + iStatusCode + " errorMsg:" + errMsg);
-                }
-                throw new Exception(logErrorMessage(url, iStatusCode, errMsg));
+            if (response == null || response.isEmpty()) {
+                throw new HttpResponseNullOrEmptyException(url, iStatusCode, "empty or null response");
             }
-        } catch (Exception e) {
-            throw e;
-        }
-
-        return json;
-    }
-
-    private String logErrorMessage(String url, int iStatusCode, String errMsg) {
-
-        String defaultMessage = "Error processing discovery request";
-
-        String message = TraceNLS.getFormattedMessage(getClass(),
-                "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", "OIDC_CLIENT_DISC_RESPONSE_ERROR",
-                new Object[] { url, Integer.valueOf(iStatusCode), errMsg }, defaultMessage);
-        ;
-        Tr.error(tc, message, new Object[0]);
-        return message;
-    }
-
-    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification) {
-        HttpClient client = null;
-        if (url != null && url.startsWith("http:")) {
-            client = HttpClientBuilder.create().build();
+            return response;
         } else {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
+            String errMsg = statusLine.getReasonPhrase();
+            // error in getting the response
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "status:" + iStatusCode + " errorMsg:" + errMsg);
             }
+            throw new HttpResponseNot200Exception(url, iStatusCode, errMsg);
         }
-        return client;
-    }
-
-    public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, String baUser, @Sensitive String baPassword) {
-        HttpClient client = null;
-
-        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(baUser, baPassword));
-
-        if (url != null && url.toLowerCase().startsWith("http:")) {
-            client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
-        } else {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
-            }
-        }
-        return client;
-    }
-
-    public String getHttpRequest(SSLSocketFactory sslSocketFactory, String discoveryUrl, boolean hostNameVerificationEnabled, String basicAuthIdentifier, String basicAuthSecret) throws Exception {
-
-        HttpClient client = createHttpClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, basicAuthIdentifier, basicAuthSecret);
-        if (client != null) {
-            return getHTTPRequestAsString(client, discoveryUrl);
-        }
-        return null;
-    }
-    
-    public String getHttpRequest(SSLSocketFactory sslSocketFactory, String discoveryUrl, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws Exception {
-
-        HttpClient client = createHttpClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemProperties);
-        if (client != null) {
-            return getHTTPRequestAsString(client, discoveryUrl);
-        }
-        return null;
     }
 
     public String invokeUrl(RequestMethod requestMethod, String url, SSLSocketFactory sslSocketFactory) throws Exception {

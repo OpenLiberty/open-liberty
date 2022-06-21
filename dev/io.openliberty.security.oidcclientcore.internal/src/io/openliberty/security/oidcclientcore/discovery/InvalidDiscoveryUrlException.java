@@ -6,14 +6,16 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-/**
- * @version 1.0.0
- */
-@org.osgi.annotation.versioning.Version("1.0.0")
-@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
 package io.openliberty.security.oidcclientcore.discovery;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+public class InvalidDiscoveryUrlException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    public InvalidDiscoveryUrlException(String msg) {
+        super(msg);
+    }
+
+}

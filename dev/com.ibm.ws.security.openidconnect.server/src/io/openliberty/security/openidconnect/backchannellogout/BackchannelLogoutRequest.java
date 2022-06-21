@@ -95,7 +95,7 @@ public class BackchannelLogoutRequest implements Callable<BackchannelLogoutReque
             sslSocketFactory = sslSupportService.getSSLSocketFactory();
         }
         // TODO - host name verification?
-        return httpUtils.createHTTPClient(sslSocketFactory, url, false);
+        return httpUtils.createHttpClient(sslSocketFactory, url, false);
     }
 
     HttpPost createHttpPost() {
