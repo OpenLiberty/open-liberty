@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,8 +36,8 @@ public class JmsMetaDataImpl implements ConnectionMetaData
     private static TraceComponent tc = SibTr.register(JmsMetaDataImpl.class, ApiJmsConstants.MSG_GROUP_INT, ApiJmsConstants.MSG_BUNDLE_INT);
 
     // ***************************** STATE VARIABLES ****************************
-    private static final int jmsMajorVersion = (isJakartaMessaging30()) ? 3 : 2;
-    private static final int jmsMinorVersion = 0;
+    private static int jmsMajorVersion = -1;
+    private static int jmsMinorVersion = -1;
 
     // Initialize this information (which will be dynamically read from the
     // jar manifest) to null values.
@@ -90,6 +90,10 @@ public class JmsMetaDataImpl implements ConnectionMetaData
      */
     @Override
     public int getJMSMajorVersion() throws JMSException {
+    	if (jmsMajorVersion == -1) {
+            // Initialize the data if it has not already been done.
+            retrieveSpecManifestData();
+    	}
         return jmsMajorVersion;
     }
 
@@ -98,6 +102,10 @@ public class JmsMetaDataImpl implements ConnectionMetaData
      */
     @Override
     public int getJMSMinorVersion() throws JMSException {
+    	if (jmsMinorVersion == -1) {
+            // Initialize the data if it has not already been done.
+            retrieveSpecManifestData();
+    	}
         return jmsMinorVersion;
     }
 
@@ -108,7 +116,7 @@ public class JmsMetaDataImpl implements ConnectionMetaData
     public String getJMSProviderName() throws JMSException {
         if (JmsMetaDataImpl.provName == null) {
             // Initialize the data if it has not already been done.
-            JmsMetaDataImpl.retrieveManifestData();
+            JmsMetaDataImpl.retrieveProviderManifestData();
         }
         return JmsMetaDataImpl.provName;
     }
@@ -122,7 +130,7 @@ public class JmsMetaDataImpl implements ConnectionMetaData
             SibTr.entry(this, tc, "getProviderVersion");
         if (JmsMetaDataImpl.provVersion == null) {
             // Initialize the data if it has not already been done.
-            JmsMetaDataImpl.retrieveManifestData();
+            JmsMetaDataImpl.retrieveProviderManifestData();
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getProviderVersion", JmsMetaDataImpl.provVersion);
@@ -138,7 +146,7 @@ public class JmsMetaDataImpl implements ConnectionMetaData
             SibTr.entry(this, tc, "getProviderMajorVersion");
         if (JmsMetaDataImpl.provMajorVersion == -1) {
             // Initialize the data if it has not already been done.
-            JmsMetaDataImpl.retrieveManifestData();
+            JmsMetaDataImpl.retrieveProviderManifestData();
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getProviderMajorVersion", JmsMetaDataImpl.provMajorVersion);
@@ -154,7 +162,7 @@ public class JmsMetaDataImpl implements ConnectionMetaData
             SibTr.entry(this, tc, "getProviderMinorVersion");
         if (JmsMetaDataImpl.provMinorVersion == -1) {
             // Initialize the data if it has not already been done.
-            JmsMetaDataImpl.retrieveManifestData();
+            JmsMetaDataImpl.retrieveProviderManifestData();
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "getProviderMinorVersion", JmsMetaDataImpl.provMinorVersion);
@@ -174,22 +182,58 @@ public class JmsMetaDataImpl implements ConnectionMetaData
 
     // ******************* IMPLEMENTATION METHODS ***********************
 
-    // This method exists to support the jms20 SIB RA, transformed for jakarta 
-    // messaging 3.0, for use within jakarta ee9 server and client processes.
-    /**
-     * Determine whether the user configured jakarta messaging features.
-     * @return true whenever the jakarta.jms API is accessible to the SIB runtime
-     *  and applications.
-     */
-    private static boolean isJakartaMessaging30() {
-        Class<?> clazz = null;
+    private static void retrieveSpecManifestData() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "retrieveSpecManifestData");
+
         try {
-            clazz = Class.forName("jakarta.jms.JMSContext");
-        } catch (Throwable t) {
-            // Expect ClassNotFoundException
+            Package jmsPackage = ConnectionMetaData.class.getPackage();
+            if (jmsPackage == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    SibTr.debug(tc, "The package was null - unable to retrieve information");
+            } else {
+                String version = jmsPackage.getSpecificationVersion();
+                if (version == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        SibTr.debug(tc, "Specification version from manifest was null");
+                } else {
+                	int index = version.indexOf('.');
+                	try {
+                    	if (index == -1) {
+                    		jmsMajorVersion = Integer.parseInt(version);
+                    		jmsMajorVersion = 0;
+                    	} else {
+                    		jmsMajorVersion = Integer.parseInt(version.substring(0, index));
+                    		String minorVersion = version.substring(index + 1);
+                    		int minorIndex = minorVersion.indexOf('.');
+                    		jmsMinorVersion = Integer.parseInt(minorIndex == -1 ? minorVersion : minorVersion.substring(0, minorIndex)); 
+                    	}
+                	} catch (RuntimeException e2) {
+                        // No FFDC code needed
+                        // This exception should never happen if the parsing worked properly
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            SibTr.debug(tc, "Unable to convert major or minor version number from spec version " + version + " to int", e2);
+                	}
+                }
+            }
+    	} catch (RuntimeException e) {
+            // No FFDC code needed
+            FFDCFilter.processException(e, "com.ibm.ws.sib.api.jms.impl.JmsMetaDataImpl", "retrieveSpecManifestData#1");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                SibTr.debug(tc, "Error retrieving spec manifest information", e);
+    	}
+
+        // if any failure fall back to some defaults
+        if (jmsMajorVersion == -1) {
+        	jmsMajorVersion = ConnectionMetaData.class.getName().startsWith("jakarta") ? 3 : 2;
         }
-        return clazz != null;
-    };
+
+        if (jmsMinorVersion == -1) {
+        	jmsMinorVersion = 0;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "retrieveSpecManifestData");
+    }
 
     /**
      * This method retrieves the information stored in the jar manifest and uses
@@ -198,9 +242,9 @@ public class JmsMetaDataImpl implements ConnectionMetaData
      * If the build level is not available in the manifest, the BuildInfo class
      * is used to get the value instead.
      */
-    private static void retrieveManifestData() {
+    private static void retrieveProviderManifestData() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "retrieveManifestData");
+            SibTr.entry(tc, "retrieveProviderManifestData");
 
         try {
             // Set up the defaults that will be overriden if possible.
@@ -283,13 +327,13 @@ public class JmsMetaDataImpl implements ConnectionMetaData
 
         } catch (RuntimeException e) {
             // No FFDC code needed
-            FFDCFilter.processException(e, "com.ibm.ws.sib.api.jms.impl.JmsMetaDataImpl", "retrieveManifestData#1");
+            FFDCFilter.processException(e, "com.ibm.ws.sib.api.jms.impl.JmsMetaDataImpl", "retrieveProviderManifestData#1");
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(tc, "Error retrieving manifest information", e);
+                SibTr.debug(tc, "Error retrieving provider manifest information", e);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "retrieveManifestData");
+            SibTr.exit(tc, "retrieveProviderManifestData");
     }
 
     /**
