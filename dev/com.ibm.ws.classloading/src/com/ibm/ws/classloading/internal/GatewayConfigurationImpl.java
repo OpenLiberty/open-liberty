@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,23 +16,17 @@ import java.util.List;
 
 import org.osgi.framework.Version;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
 
 @Trivial
 class GatewayConfigurationImpl implements GatewayConfiguration {
-    private static final TraceComponent tc = Tr.register(GatewayConfigurationImpl.class);
-
     private Iterable<String> bundleRequirements;
     private Iterable<String> packageImports;
     private Iterable<String> dynamicPackageImports;
     private boolean delegateToSystem = true;
     private volatile EnumSet<ApiType> apiTypeVisibility;
-    private volatile boolean spiVisibility;
-    
     private String appName;
     private Version appVersion;
 
@@ -144,22 +138,4 @@ class GatewayConfigurationImpl implements GatewayConfiguration {
         this.apiTypeVisibility = set;
         return this;
     }
-
-    final boolean isBeta = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
-
-    public boolean getSpiVisibility() {
-        if (!isBeta) {
-           return false; // no-op
-        }
-        return spiVisibility;
-    }
-
-    public GatewayConfiguration setSpiVisibility(boolean spiVisibility) {
-        if (!isBeta) {
-            return this; // no-op
-        }
-        this.spiVisibility = spiVisibility;
-        return this;
-    }
-
 }

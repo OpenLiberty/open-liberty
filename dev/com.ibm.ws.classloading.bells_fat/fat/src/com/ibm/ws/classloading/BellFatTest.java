@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,21 +10,24 @@
  *******************************************************************************/
 package com.ibm.ws.classloading;
 
-import static com.ibm.ws.classloading.TestUtils.buildAndExportBellLibrary;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collections;
 
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.topology.impl.LibertyServer;
@@ -44,8 +47,8 @@ public class BellFatTest {
     public static void setup() throws Throwable {
         buildAndExportBellLibrary(server, "testNoEntry.jar", "NoEntry");
         buildAndExportBellLibrary(server, "testOneValidEntry.jar", "OneValidEntry");
-        buildAndExportBellLibrary(server, "testMultipleValidServices.jar", "MultipleValidServices1", "MultipleValidServices2");
-        buildAndExportBellLibrary(server, "testMultipleImplsOfSingleService.jar", "MultipleImplsOfSingleService1", "MultipleImplsOfSingleService2");
+        buildAndExportBellLibrary(server, "testMultipleValidServices.jar", "MultipleValidServices");
+        buildAndExportBellLibrary(server, "testMultipleImplsOfSingleService.jar", "MultipleImplsOfSingleService");
         buildAndExportBellLibrary(server, "testInterfaceClassNotFound.jar", "InterfaceClassNotFound");
         buildAndExportBellLibrary(server, "testImplClassThrowsException.jar", "ImplClassThrowsException");
         buildAndExportBellLibrary(server, "testImplClassNotFound.jar", "ImplClassNotFound");
@@ -54,6 +57,27 @@ public class BellFatTest {
 
         server.installUserBundle(USER_BUNDLE_NAME);
         server.installUserFeature(USER_FEATURE_NAME);
+    }
+
+    /**
+     * Build a Bell library and export it to the "sharedLib" directory of the target server.
+     *
+     * @param String targetServer The server that will contain the exported archive.
+     * @param String archiveName The name of the Bell archive, including the file extension (e.g. ".jar").
+     * @param String[] classNames  The short names of classes to package.
+     */
+    static void buildAndExportBellLibrary(LibertyServer targetServer, String archiveName, String... classNames) throws Throwable {
+        JavaArchive bellArchive = ShrinkHelper.buildJavaArchive(
+                archiveName,
+                new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
+                    @Override public boolean include(ArchivePath ap) {
+                        for (String cn : classNames)
+                            if (ap.get().endsWith(cn + ".class")) return true;
+                        return false;
+                    }
+                },
+                "com.ibm.ws.test");
+        ShrinkHelper.exportToServer(targetServer, "sharedLib", bellArchive);
     }
 
     @AfterClass
@@ -102,7 +126,6 @@ public class BellFatTest {
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testNoEntry() throws Exception {
-
         assertNotNull("Should warn that no services were found to export from the 'testNoEntry' library.", server.waitForStringInLog(".*CWWKL0055W: .*testNoEntry"));
     }
 
@@ -112,7 +135,6 @@ public class BellFatTest {
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testOneValidEntry() throws Exception {
-
         final String logEntry = server.waitForStringInLog(".*CWWKL0050I: .*testOneValidEntry");
         assertNotNull("Should load a service from META-INF services in the 'testOneValidEntry' library.", logEntry);
 
@@ -127,7 +149,6 @@ public class BellFatTest {
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testMultipleValidServices() throws Exception {
-
         final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testAllValidServices.*MultipleValidServices1");
         final String logEntry2 = server.waitForStringInLog(".*CWWKL0050I: .*testAllValidServices.*MultipleValidServices2");
 
@@ -135,26 +156,24 @@ public class BellFatTest {
         assertNotNull("Should load another service when more than one are present.", logEntry2);
     }
 
+
     /**
      * Test multiple valid services — but scoped to register only one.
      */
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testScopeValidServices() throws Exception {
-
         final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testScopeValidServices.*MultipleValidServices2");
         final String logEntry2 = server.waitForStringInLog(".*CWWKL0050I: .*testScopeValidServices.*MultipleValidServices1", 1000);
         assertNotNull("Should load the scoped service when more than one are present.", logEntry1);
         assertNull("Should not load another service.", logEntry2);
     }
-
     /**
      * Test multiple implementations of a single service.
      */
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testMultipleImplsOfSingleService() throws Exception {
-
         final int numOfLogEntries = server.waitForMultipleStringsInLog(2, ".*CWWKL0050I: .*testMultipleImplsOfSingleService");
         assertEquals("Should load both implementations of the service.",
                      2,
@@ -167,7 +186,6 @@ public class BellFatTest {
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testInterfaceClassNotFound() throws Exception {
-
         final String logEntry = server.waitForStringInLog(".*CWWKL0052W: .*testInterfaceClassNotFound");
         assertNotNull("Should warn that the 'TestInterface3' interface does not exist.", logEntry);
 
@@ -183,7 +201,6 @@ public class BellFatTest {
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testImplClassNotFound() throws Exception {
-
         final String logEntry = server.waitForStringInLog(".*CWWKL0051W: .*testImplClassNotFound");
         assertNotNull("Should warn that 'NotARealClass' cannot be found.", logEntry);
 
@@ -198,7 +215,6 @@ public class BellFatTest {
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testImplClassNotConstructible() throws Exception {
-
         final String logEntry = server.waitForStringInLog(".*CWWKL0053W: .*testImplClassNotConstructible");
         assertNotNull("Should warn that 'ImplClassNotConstructible' cannot be constructed/", logEntry);
 
@@ -213,7 +229,6 @@ public class BellFatTest {
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testImplClassThrowsException() throws Exception {
-
         final String logEntry = server.waitForStringInLog(".*CWWKL0057W: .*testImplClassThrowsException");
         assertNotNull("Should warn that an exception occurs when creating 'ImplClassThrowsException'.", logEntry);
 
@@ -229,7 +244,6 @@ public class BellFatTest {
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testReadingMessyServicesFile() throws Exception {
-
         final int numberOfServicesCreated = server.waitForMultipleStringsInLog(2, ".*CWWKL0050I: .*testReadingServicesFile");
         assertEquals("Should load both 'MyService' and 'MySecondService'.",
                      2,
@@ -242,7 +256,6 @@ public class BellFatTest {
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testCommentedOutService() throws Exception {
-
         assertThat("Should not try to do anything with 'NotARealService' since it is commented out.",
                    server.findStringsInLogs(".*com.ibm.ws.test.NotARealService"),
                    equalTo(Collections.EMPTY_LIST));
@@ -254,7 +267,6 @@ public class BellFatTest {
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
     public void testReadingServicesFileWithComment() throws Exception {
-
         assertThat("The 'testReadingServicesFile' library should not produce any warnings.",
                    server.findStringsInLogs(".*W: .*testReadingServicesFile"),
                    equalTo(Collections.EMPTY_LIST));

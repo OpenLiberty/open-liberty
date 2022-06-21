@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.classloading.bells.internal;
-
-import static com.ibm.ws.classloading.internal.ClassLoadingConstants.GLOBAL_SHARED_LIBRARY_ID;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,7 +53,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.classloading.MetaInfServicesProvider;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.library.spi.SpiLibrary;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -102,8 +99,6 @@ public class Bell implements LibraryChangeListener {
     private ComponentContext componentContext;
     private Map<String, Object> config;
 
-    private static final String ENABLE_SPI_VISIBILITY_ATT = "enableSpiVisibility";
-
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         componentContext = cc;
@@ -118,7 +113,7 @@ public class Bell implements LibraryChangeListener {
     }
 
     /**
-     * Unregister all OSGi services associated with this bell
+     * Unregisters all OSGi services associated with this bell
      */
     void unregister() {
         trackerLock.lock();
@@ -142,9 +137,8 @@ public class Bell implements LibraryChangeListener {
      */
     void update() {
         final BundleContext context = componentContext.getBundleContext();
-        final String libraryRef = library.id();
-
-        // Determine the service filter to use for discovering the Library service this bell is for
+        // determine the service filter to use for discovering the Library service this bell is for
+        String libraryRef = library.id();
         // it is unclear if only looking at the id would work here.
         // other examples in classloading use both id and service.pid to look up so doing the same here.
         String libraryStatusFilter = String.format("(&(objectClass=%s)(|(id=%s)(service.pid=%s)))", Library.class.getName(), libraryRef, libraryRef);
@@ -155,11 +149,7 @@ public class Bell implements LibraryChangeListener {
             // should not happen, but blow up if it does
             throw new RuntimeException(e);
         }
-
-        final boolean spiVisibility = !!!betaFenceCheck() ? false : getSpiVisibility((Boolean) config.get(ENABLE_SPI_VISIBILITY_ATT), libraryRef);
-
         final Set<String> serviceNames = getServiceNames((String[]) config.get(SERVICE_ATT));
-
         // create a tracker that will register the services once the library becomes available
         ServiceTracker<Library, List<ServiceRegistration<?>>> newTracker = null;
         newTracker = new ServiceTracker<Library, List<ServiceRegistration<?>>>(context, filter, new ServiceTrackerCustomizer<Library, List<ServiceRegistration<?>>>() {
@@ -168,7 +158,7 @@ public class Bell implements LibraryChangeListener {
                 Library library = context.getService(libraryRef);
                 // Got the library now register the services.
                 // The list of registrations is returned so we don't have to store them ourselves.
-                return registerLibraryServices(library, serviceNames, spiVisibility);
+                return registerLibraryServices(library, serviceNames);
             }
 
             @Override
@@ -179,7 +169,7 @@ public class Bell implements LibraryChangeListener {
             @Override
             @FFDCIgnore(IllegalStateException.class)
             public void removedService(ServiceReference<Library> libraryRef, List<ServiceRegistration<?>> metaInfServices) {
-                // The library is going away; need to unregister the services
+                // THe library is going away; need to unregister the services
                 for (ServiceRegistration<?> registration : metaInfServices) {
                     try {
                         registration.unregister();
@@ -205,36 +195,6 @@ public class Bell implements LibraryChangeListener {
         }
     }
 
-    boolean getSpiVisibility(Boolean enableSpiVisibilityAttr, String libraryId) {
-        final boolean enableSpiVisibility = (enableSpiVisibilityAttr == null) ? false : enableSpiVisibilityAttr.booleanValue();
-        if (enableSpiVisibility) {
-            if (GLOBAL_SHARED_LIBRARY_ID.equals(libraryId)) {
-                // The liberty "global" library is intended for use by Jakarta EE applications, not OSGi services
-                // TODO: should we establish this restriction for all BELL configurations?
-                Tr.warning(tc, "bell.spi.visibility.disabled.libref.global");
-            } else {
-                Tr.info(tc, "bell.spi.visibility.enabled", libraryId);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean issuedBetaMessage = false;
-
-    private boolean betaFenceCheck() {
-        boolean isBeta = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
-        if (!issuedBetaMessage) {
-            if (!isBeta) {
-                // Don't throw an exception for beta internals
-            } else {
-                Tr.info(tc, "BETA: BELL SPI visibility has been invoked by class " + this.getClass().getName() + " for the first time.");
-            }
-            issuedBetaMessage = true;
-        }
-        return isBeta;
-    }
-
     private static Set<String> getServiceNames(String[] configuredServices) {
         if (configuredServices == null || configuredServices.length == 0) {
             return Collections.emptySet();
@@ -250,8 +210,8 @@ public class Bell implements LibraryChangeListener {
      * - exported.from=LibraryId
      * 4) Store the service registrations in a collection, indexed by library (by library instance not library id, since library ID can be null when we remove it)
      */
-    private List<ServiceRegistration<?>> registerLibraryServices(final Library library, Set<String> serviceNames, boolean spiVisibility) {
-        final BundleContext context = getGatewayBundleContext(library, spiVisibility);
+    private List<ServiceRegistration<?>> registerLibraryServices(final Library library, Set<String> serviceNames) {
+        final BundleContext context = getGatewayBundleContext(library);
         if (context == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "registerLibraryServices: can't find bundle ", library.id());
@@ -283,16 +243,16 @@ public class Bell implements LibraryChangeListener {
             }
             libServices = Collections.emptyList();
         } else {
-            libServices = registerServices(serviceInfos, library, context, spiVisibility);
+            libServices = registerServices(serviceInfos, library, context);
         }
         return libServices;
     }
 
-    private BundleContext getGatewayBundleContext(Library library, boolean spiVisibility) {
+    private BundleContext getGatewayBundleContext(Library library) {
         // TODO reflection is used here because there is no external way outside of classloading
         // bundle to get a hold of the gateway bundle.
         // Perhaps if LibertyLoader implemented BundleReference, but that may cause issues with Aries jndi code
-        ClassLoader loader = Bell.getClassLoader(library, spiVisibility);
+        ClassLoader loader = library.getClassLoader();
         Class<?> loaderClass = loader.getClass();
         while (!!!"LibertyLoader".equals(loaderClass.getSimpleName()) && loaderClass.getSuperclass() != null) {
             loaderClass = loaderClass.getSuperclass();
@@ -318,13 +278,6 @@ public class Bell implements LibraryChangeListener {
         }
     }
 
-    static ClassLoader getClassLoader(Library library, boolean spiVisibility) {
-        if (spiVisibility) {
-            return ((SpiLibrary) library).getSpiClassLoader("BELL");
-        }
-        return library.getClassLoader();
-    }
-
     private static BufferedReader createReader(final ArtifactEntry providerConfigFile) throws IOException {
         final InputStream is = providerConfigFile.getInputStream();
         final InputStreamReader input = new InputStreamReader(is, Charset.forName("UTF8"));
@@ -335,7 +288,7 @@ public class Bell implements LibraryChangeListener {
                                                                    Set<String> serviceNames, Set<String> servicesNotFound) {
         final List<ServiceInfo> serviceInfos = new LinkedList<ServiceInfo>();
         if (serviceNames.isEmpty()) {
-            // just exposing all meta-inf services
+            // just exposing all mete-inf services
             for (ArtifactEntry providerConfigFile : servicesFolder) {
                 getServiceInfos(providerConfigFile, providerConfigFile.getName(), servicesNotFound, library, serviceInfos);
             }
@@ -398,8 +351,7 @@ public class Bell implements LibraryChangeListener {
         }
     }
 
-    private static List<ServiceRegistration<?>> registerServices(final List<ServiceInfo> serviceInfos, final Library library,
-                                                                 final BundleContext context, final boolean spiVisibility) {
+    private static List<ServiceRegistration<?>> registerServices(final List<ServiceInfo> serviceInfos, final Library library, final BundleContext context) {
         final List<ServiceRegistration<?>> registeredServices = new LinkedList<ServiceRegistration<?>>();
         // For each SerivceInfo register the service.
         // Note that no validation is done here to ensure the implementation class can be loaded
@@ -419,7 +371,7 @@ public class Bell implements LibraryChangeListener {
             properties.put("implementation.class", serviceInfo.implClass);
             properties.put("exported.from", library.id());
 
-            final ServiceRegistration<?> reg = context.registerService(interfaceName, createServiceFactory(serviceInfo, library, fileUrl, spiVisibility), properties);
+            final ServiceRegistration<?> reg = context.registerService(interfaceName, createServiceFactory(serviceInfo, library, fileUrl), properties);
             if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
                 Tr.info(tc, "bell.service.name", library.id(), fileUrl, serviceInfo.implClass);
             }
@@ -458,7 +410,7 @@ public class Bell implements LibraryChangeListener {
     }
 
     @SuppressWarnings("rawtypes")
-    private static PrototypeServiceFactory<?> createServiceFactory(final ServiceInfo serviceInfo, final Library library, final URL fileUrl, final boolean spiVisibility) {
+    private static PrototypeServiceFactory<?> createServiceFactory(final ServiceInfo serviceInfo, final Library library, final URL fileUrl) {
         // A prototype factory is used in case the consumer wants to get multiple instances of the service object.
         // A typical user of the service will simply use the R5 ways to get the service which will fall back to
         // behaving like a normal ServiceFactory.
@@ -472,7 +424,7 @@ public class Bell implements LibraryChangeListener {
                     return null;
                 }
                 // Note the following methods will produce messages if something goes wrong
-                Class<?> serviceType = findClass(serviceInfo.implClass, library, fileUrl, spiVisibility);
+                Class<?> serviceType = findClass(serviceInfo.implClass, library, fileUrl);
                 if (serviceType != null) {
                     return createService(serviceType, library.id(), fileUrl);
                 }
@@ -493,8 +445,8 @@ public class Bell implements LibraryChangeListener {
      *
      * @return the service instance if successful, else {@code null}.
      */
-    private static Class<?> findClass(final String implClass, final Library library, final URL fileUrl, final boolean spiVisibility) {
-        final ClassLoader containerClassLoader = Bell.getClassLoader(library, spiVisibility);
+    private static Class<?> findClass(final String implClass, final Library library, final URL fileUrl) {
+        final ClassLoader containerClassLoader = library.getClassLoader();
         final String libID = library.id();
         Class<?> service = null;
         try {
