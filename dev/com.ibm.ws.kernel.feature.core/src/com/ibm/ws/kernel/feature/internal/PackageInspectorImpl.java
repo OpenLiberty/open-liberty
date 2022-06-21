@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -142,11 +142,9 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
         API_ThirdParty(true, "third-party"),
         API_Stable(true, "stable"),
 
-        SPI(false, "spi");
-        // SPI types not currently supported
-        //SPI_Spec(false, "spec"),
-        //SPI_ThirdParty(false, "third-party"),
-        //SPI_IBM(false, "ibm-spi");
+        SPI(false, "spi"),
+        SPI_Spec(false, "spec"),
+        SPI_ThirdParty(false, "third-party");
 
         private final boolean isApi;
         private final String attributeName;
@@ -255,7 +253,6 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
         /**
          * @return true if this package is exported as any kind of SPI
          */
-        @Override
         public boolean isSpi() {
             for (PkgType type : types)
                 if (!type.isApi) // if it isn't API, it's SPI
@@ -463,8 +460,7 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
         return index.packageIterator(new Filter<PackageInspectorImpl.PackageInfo>() {
             @Override
             public boolean includeValue(String packageName, PackageInfo value) {
-                return (value.isApi() && value.exportedByProduct(productName)) ||
-                       (value.isSpi() && value.exportedByProduct(productName));
+                return value.isApi() && value.exportedByProduct(productName);
             }
         });
     }
