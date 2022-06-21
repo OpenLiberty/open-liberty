@@ -62,6 +62,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
@@ -304,6 +305,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     private boolean useSystemPropertiesForHttpClientConnections = false;
     private boolean tokenReuse = false;
+
+    private static boolean issuedBetaMessage = false;
 
     private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
 
@@ -924,18 +927,22 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             return false;
         }
         try {
-            setNextDiscoveryTime(); //
+            setNextDiscoveryTime();
             SSLSocketFactory sslSocketFactory = getSSLSocketFactory(discoveryUrl, sslConfigurationName, sslSupportRef.getService());
-            DiscoveryHandler discoveryHandler = new DiscoveryHandler(sslSocketFactory);
-            HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
-            jsonString = getHTTPRequestAsString(client, discoveryUrl);
+            // change if statement to isRunningBetaMode()
+            if (true) {
+                DiscoveryHandler discoveryHandler = new DiscoveryHandler(sslSocketFactory);
+                jsonString = discoveryHandler.fetchDiscoveryData(discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
+            } else {
+                HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
+                jsonString = getHTTPRequestAsString(client, discoveryUrl);
+            }
             if (jsonString != null) {
                 parseJsonResponse(jsonString);
                 if (this.discoveryjson != null) {
                     valid = discoverEndpointUrls(this.discoveryjson);
                 }
             }
-
         } catch (SSLException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
@@ -952,6 +959,19 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.error(tc, "OIDC_CLIENT_DISCOVERY_SSL_ERROR", getId(), discoveryUrl);
         }
         return valid;
+    }
+
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
     }
 
     /**

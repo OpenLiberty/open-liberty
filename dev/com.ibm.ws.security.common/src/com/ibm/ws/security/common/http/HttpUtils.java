@@ -130,6 +130,32 @@ public class HttpUtils {
         }
         return client;
     }
+    
+    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
+
+        HttpClient client = null;
+
+        ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+        ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+        try {
+            SSLConnectionSocketFactory connectionFactory = null;
+            if (!isHostnameVerification) {
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+            } else {
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+            }
+            client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
+        } finally {
+            ThreadContextHelper.setClassLoader(origCL);
+        }
+
+        return client;
+
+    }
+    
+    private HttpClientBuilder createBuilder(boolean useSystemProperties) {
+        return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
+    }
 
     private BasicCredentialsProvider createCredentialsProvider(String baUser, @Sensitive String baPassword) {
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -249,6 +275,15 @@ public class HttpUtils {
     public String getHttpRequest(SSLSocketFactory sslSocketFactory, String discoveryUrl, boolean hostNameVerificationEnabled, String basicAuthIdentifier, String basicAuthSecret) throws Exception {
 
         HttpClient client = createHttpClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, basicAuthIdentifier, basicAuthSecret);
+        if (client != null) {
+            return getHTTPRequestAsString(client, discoveryUrl);
+        }
+        return null;
+    }
+    
+    public String getHttpRequest(SSLSocketFactory sslSocketFactory, String discoveryUrl, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws Exception {
+
+        HttpClient client = createHttpClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemProperties);
         if (client != null) {
             return getHTTPRequestAsString(client, discoveryUrl);
         }
