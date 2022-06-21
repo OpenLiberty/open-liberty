@@ -73,7 +73,9 @@ public class JMSServerHandler extends SimpleChannelInboundHandler<WsByteBuffer>{
 		AcceptListener acceptListener = ServerConnectionManagerImpl.getAcceptListenerFactory().manufactureAcceptListener();
 
 		// begin F196678.10
-		//TODO: Determine hearbeat
+		// Heartbeat passing in Null since hasn't been implemented to be configurable per endpoint properties
+		int heartbeatInterval = determineHeartbeatInterval(null);
+		int heartbeatTimeout = determineHeartbeatTimeout(null);
 		// end F196678.10
 
 		NettyNetworkConnection conn = new NettyNetworkConnection(ctx.channel(), ctx.channel().attr(CHAIN_ATTR_KEY).get(), true);
@@ -83,8 +85,8 @@ public class JMSServerHandler extends SimpleChannelInboundHandler<WsByteBuffer>{
             connection = new InboundConnection(new NettyNetworkConnectionContext(conn),
                                             conn,
                                             acceptListener,
-                                            300,
-                                            7,
+                                            heartbeatInterval,
+                                            heartbeatTimeout,
                                             true);
         } catch (FrameworkException fe) {
             //At this point the underlying TCP/IP connection has gone away.
