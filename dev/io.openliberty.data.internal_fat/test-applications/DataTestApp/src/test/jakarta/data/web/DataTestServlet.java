@@ -441,6 +441,18 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040"));
         assertEquals("IN_TRANSIT", shipments.getStatus(2));
 
+        // @OrderBy "destination"
+        assertIterableEquals(List.of("151 4th St SE, Rochester, MN 55904",
+                                     "200 1st Ave SW, Rochester, MN 55902",
+                                     "201 4th St SE, Rochester, MN 55904"),
+                             shipments.find("IN_TRANSIT")
+                                             .map(o -> o.destination)
+                                             .collect(Collectors.toList()));
+
+        // @OrderBy "status", then "orderedAt" descending
+        assertIterableEquals(List.of(3L, 2L, 1L, 5L, 4L),
+                             Stream.of(shipments.getAll()).map(o -> o.id).collect(Collectors.toList()));
+
         Shipment s = shipments.find(3);
         String previousLocation = s.location;
 

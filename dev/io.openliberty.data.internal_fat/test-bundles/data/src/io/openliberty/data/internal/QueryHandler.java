@@ -47,6 +47,7 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
+import io.openliberty.data.OrderBy;
 import io.openliberty.data.Page;
 import io.openliberty.data.Paginated;
 import io.openliberty.data.Pagination;
@@ -392,23 +393,33 @@ public class QueryHandler<T> implements InvocationHandler {
         boolean requiresTransaction;
 
         // @Query annotation
-        Query dataQuery = method.getAnnotation(Query.class);
-        String jpql = dataQuery == null ? null : dataQuery.value();
+        Query fullQuery = method.getAnnotation(Query.class);
+        String jpql = fullQuery == null ? null : fullQuery.value();
 
         // Repository built-in methods
         if (jpql == null && Repository.class.equals(method.getDeclaringClass()))
             jpql = getBuiltInRepositoryQuery(methodName, args, method.getParameterTypes());
 
-        // @Delete/@Update/@Where annotations
+        // @Delete/@Update/@Where/@OrderBy annotations
         if (jpql == null) {
             Update update = method.getAnnotation(Update.class);
             Where where = method.getAnnotation(Where.class);
             if (update == null) {
                 if (method.getAnnotation(Delete.class) == null) {
-                    if (where != null) {
+                    OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
+                    if (where != null || orderBy.length > 0) {
                         StringBuilder q = new StringBuilder(200);
                         generateSelect(q, method);
-                        q.append(" WHERE ").append(where.value());
+                        if (where != null)
+                            q.append(" WHERE ").append(where.value());
+                        if (orderBy.length > 0) {
+                            q.append(" ORDER BY ");
+                            for (int i = 0; i < orderBy.length; i++) {
+                                q.append(i > 0 ? ", o." : "o.").append(orderBy[i].value());
+                                if (orderBy[i].descending())
+                                    q.append(" DESC");
+                            }
+                        }
                         jpql = q.toString();
                     }
                 } else {
