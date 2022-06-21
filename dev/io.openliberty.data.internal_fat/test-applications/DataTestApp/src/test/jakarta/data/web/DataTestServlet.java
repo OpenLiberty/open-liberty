@@ -730,6 +730,12 @@ public class DataTestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
+        assertIterableEquals(List.of(10030009L, 10030007L, 10030008L, 10030006L),
+                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT))
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+
         Reservation[] array = reservations.findByStartLessThanOrStartGreaterThanOrderByMeetingIDDesc(OffsetDateTime.of(2022, 5, 25, 9, 30, 0, 0, CDT),
                                                                                                      OffsetDateTime.of(2022, 5, 25, 13, 30, 0, 0, CDT));
         assertArrayEquals(new Reservation[] { r9, r3, r2, r1 }, array,

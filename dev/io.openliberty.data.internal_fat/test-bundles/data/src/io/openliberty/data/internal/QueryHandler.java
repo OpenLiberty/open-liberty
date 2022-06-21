@@ -47,6 +47,7 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
+import io.openliberty.data.Limit;
 import io.openliberty.data.OrderBy;
 import io.openliberty.data.Page;
 import io.openliberty.data.Paginated;
@@ -524,6 +525,10 @@ public class QueryHandler<T> implements InvocationHandler {
                                 query.setParameter(param.value(), args[i]);
                         }
                     }
+
+                    Limit limit = method.getAnnotation(Limit.class);
+                    if (limit != null)
+                        query.setMaxResults(limit.value());
 
                     List<?> results = query.getResultList();
 
