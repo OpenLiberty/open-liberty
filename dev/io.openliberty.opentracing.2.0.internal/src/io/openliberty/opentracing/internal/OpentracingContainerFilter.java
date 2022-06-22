@@ -74,6 +74,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     @Override
     public void filter(ContainerRequestContext incomingRequestContext) throws IOException {
         String methodName = "filter(incoming)";
+
         helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
 
         Tracer tracer = OpentracingTracerManager.getTracer();
@@ -88,6 +89,19 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             }
         }
 
+        // get buildSpanName. If it is null from the helper, we can skip the rest of the processing.
+        String buildSpanName = null;
+        if (helper != null) {
+            buildSpanName = helper.getBuildSpanName(incomingRequestContext, resourceInfo);
+            if (buildSpanName == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + " skipping not traced method");
+                }
+                incomingRequestContext.setProperty(SERVER_SPAN_SKIPPED_ID, true);
+                return;
+            }
+        }
+
         URI incomingUri = incomingRequestContext.getUriInfo().getRequestUri();
         String incomingPath = incomingRequestContext.getUriInfo().getPath();
         if (!incomingPath.startsWith("/")) {
@@ -99,6 +113,10 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             Tr.debug(tc, methodName + " incomingURL", incomingURL);
         }
 
+        if (buildSpanName == null) {
+            buildSpanName = incomingURL;
+        }
+
         SpanContext priorOutgoingContext = tracer.extract(Format.Builtin.HTTP_HEADERS,
                                                           new MultivaluedMapToTextMap(incomingRequestContext.getHeaders()));
 
@@ -107,19 +125,6 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         }
 
         boolean process = OpentracingService.process(incomingUri, incomingPath, SpanFilterType.INCOMING);
-
-        String buildSpanName;
-        if (helper != null) {
-            buildSpanName = helper.getBuildSpanName(incomingRequestContext, resourceInfo);
-            if (buildSpanName == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, methodName + " skipping not traced method");
-                }
-                process = false;
-            }
-        } else {
-            buildSpanName = incomingURL;
-        }
 
         if (process) {
             Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
