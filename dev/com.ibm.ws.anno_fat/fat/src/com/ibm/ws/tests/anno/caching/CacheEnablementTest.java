@@ -130,6 +130,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
     public static void setUp() throws Exception {
         setSharedServer();
         addAppToServerAppsDir();
+        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("TestServlet40");
     }
 
     @AfterClass

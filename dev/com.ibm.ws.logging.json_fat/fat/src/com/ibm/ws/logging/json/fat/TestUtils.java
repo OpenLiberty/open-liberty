@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,10 @@ public class TestUtils {
             url = url + "/LogURL";
         } else if (type.equals("extension")) {
             url = url + "/ExtURL";
+        } else if (type.equals("exception")) {
+            url = url + "/ExceptionURL";
+        } else if (type.equals("ExceptionExtURL")) {
+            url = url + "/ExceptionExtURL";
         }
         Log.info(c, "runApp", "---> Running the application with url : " + url);
 

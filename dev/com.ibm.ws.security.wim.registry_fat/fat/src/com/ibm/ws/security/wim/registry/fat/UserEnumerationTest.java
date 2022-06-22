@@ -169,7 +169,7 @@ public class UserEnumerationTest {
         ServerConfiguration clone = startConfiguration.clone();
 
         FederatedRepository federatedRepository = clone.getFederatedRepository();
-        federatedRepository.setFailedLoginDelayMax("7s");
+        federatedRepository.setFailedLoginDelayMax("4s");
         federatedRepository.setFailedLoginDelayMin("2ms");
 
         LDAPFatUtils.updateConfigDynamically(libertyServer, clone);
@@ -178,7 +178,7 @@ public class UserEnumerationTest {
          * This message appears in trace only and depends on what you provide in the setFailedLoginDelayMax/Min above.
          */
         assertFalse("Should have logged custom config",
-                    libertyServer.findStringsInLogsAndTrace("2 and 7000").isEmpty());
+                    libertyServer.findStringsInLogsAndTrace("2 and 4000").isEmpty());
 
         runLoginTestCommon(true);
     }
@@ -253,84 +253,97 @@ public class UserEnumerationTest {
         final int allowedRatioMin = 50;
 
         final int validityCheckRounds = 10;
+        final int retry = 2;
 
-        /*
-         * Since I switched to the CustomRepo instead of LDAP, we were sometimes
-         * sampling ourselves to extra average. Try 1 to 1 comparison.
-         *
-         * With an unknown user and without UserEnum padding, we should return very quickly compared to the known user.
-         *
-         * With an unknown user and with UserEnum padding, we should return both quickly and similar or longer than the known user.
-         */
-
-        for (int j = 0; j < validityCheckRounds; j++) {
-            /*
-             * Record the average timing for an unknown user, results in a search in the Custom Repo
-             */
-            long timeStart = System.currentTimeMillis();
-            servlet.checkPassword("unknownUser", "notapassword");
-            long timeEnd = System.currentTimeMillis();
-            long timePerUnknownUsers = timeEnd - timeStart;
-            Log.info(c, methodName, "average timePerUnknownUsers: " + timePerUnknownUsers);
+        for (int i = 0; i < retry; i++) {
 
             /*
-             * Record the average timing for a known user with a bad password, results in a search, sleep, password check in the Custom
-             * Repo (to simulate 2 calls to Ldap, search + checkpassword).
-             */
-            timeStart = System.currentTimeMillis();
-            servlet.checkPassword("adminUser", "notapassword");
-            timeEnd = System.currentTimeMillis();
-            long timePerKnownUser = (timeEnd - timeStart);
-            Log.info(c, methodName, "average timePerKnownUser: " + timePerKnownUser);
-
-            /*
-             * Calculate if the percentage of the known user versus unknown user
+             * Since I switched to the CustomRepo instead of LDAP, we were sometimes
+             * sampling ourselves to extra average. Try 1 to 1 comparison.
              *
-             * For an unknown user, without padding, we expect it will take much less time than a known user takes.
-             * For example, we expect an unknown user to take <50% of the time it takes a known user without padding.
+             * With an unknown user and without UserEnum padding, we should return very quickly compared to the known user.
+             *
+             * With an unknown user and with UserEnum padding, we should return both quickly and similar or longer than the known user.
              */
-            long ratioOfUsers = 100 * timePerUnknownUsers / timePerKnownUser;
 
-            /*
-             * Mark whether we estimate the user is valid or invalid, compared to the known user timing
-             *
-             * If padding is not enabled, we should always detect the unknown user is invalid as it should
-             * take significantly less than the known user.
-             *
-             * If padding is enabled, we should get variable return times on the unknown user compared to the known user,
-             * making the unknown user appear both valid and invalid.
-             */
-            if (ratioOfUsers < allowedRatioMin) {
+            for (int j = 0; j < validityCheckRounds; j++) {
                 /*
-                 * Timing for the unknownUser is significantly less than the known user, guess it is invalid (user
-                 * not found)
+                 * Record the average timing for an unknown user, results in a search in the Custom Repo
                  */
-                numTimesUserSeemsInvalid++;
-                Log.info(c, methodName, "Ratio: " + ratioOfUsers + ". Marked as invalid.");
-            } else {
+                long timeStart = System.currentTimeMillis();
+                servlet.checkPassword("unknownUser", "notapassword");
+                long timeEnd = System.currentTimeMillis();
+                long timePerUnknownUsers = timeEnd - timeStart;
+                Log.info(c, methodName, "average timePerUnknownUsers: " + timePerUnknownUsers);
+
                 /*
-                 * Timing for unknownUser is about the same or longer than the known user, guess it is valid (user
-                 * is found and we did a check password)
+                 * Record the average timing for a known user with a bad password, results in a search, sleep, password check in the Custom
+                 * Repo (to simulate 2 calls to Ldap, search + checkpassword).
                  */
-                numTimesUserSeemsValid++;
-                Log.info(c, methodName, "Ratio: " + ratioOfUsers + ". Marked as valid.");
+                timeStart = System.currentTimeMillis();
+                servlet.checkPassword("adminUser", "notapassword");
+                timeEnd = System.currentTimeMillis();
+                long timePerKnownUser = (timeEnd - timeStart);
+                Log.info(c, methodName, "average timePerKnownUser: " + timePerKnownUser);
+
+                /*
+                 * Calculate if the percentage of the known user versus unknown user
+                 *
+                 * For an unknown user, without padding, we expect it will take much less time than a known user takes.
+                 * For example, we expect an unknown user to take <50% of the time it takes a known user without padding.
+                 */
+                long ratioOfUsers = 100 * timePerUnknownUsers / timePerKnownUser;
+
+                /*
+                 * Mark whether we estimate the user is valid or invalid, compared to the known user timing
+                 *
+                 * If padding is not enabled, we should always detect the unknown user is invalid as it should
+                 * take significantly less than the known user.
+                 *
+                 * If padding is enabled, we should get variable return times on the unknown user compared to the known user,
+                 * making the unknown user appear both valid and invalid.
+                 */
+                if (ratioOfUsers < allowedRatioMin) {
+                    /*
+                     * Timing for the unknownUser is significantly less than the known user, guess it is invalid (user
+                     * not found)
+                     */
+                    numTimesUserSeemsInvalid++;
+                    Log.info(c, methodName, "Ratio: " + ratioOfUsers + ". Marked as invalid.");
+                } else {
+                    /*
+                     * Timing for unknownUser is about the same or longer than the known user, guess it is valid (user
+                     * is found and we did a check password)
+                     */
+                    numTimesUserSeemsValid++;
+                    Log.info(c, methodName, "Ratio: " + ratioOfUsers + ". Marked as valid.");
+                }
             }
-        }
 
-        Log.info(c, methodName, "valid was " + numTimesUserSeemsValid + ", invalid was " + numTimesUserSeemsInvalid);
+            Log.info(c, methodName, "valid was " + numTimesUserSeemsValid + ", invalid was " + numTimesUserSeemsInvalid);
 
-        if (paddingEnabled) {
-            assertNotSame("Should have a mix of valid and invalid results, valid was " + numTimesUserSeemsValid + " and invalid was " + numTimesUserSeemsInvalid + ".", 0,
-                          numTimesUserSeemsValid);
+            if (paddingEnabled) {
+                if ((numTimesUserSeemsValid == 0 || numTimesUserSeemsInvalid == 0) && i < retry) {
+                    Log.info(c, methodName, "Valid and invalid results not mixed as expected, try again.");
+                } else {
+                    assertNotSame("Should have a mix of valid and invalid results, valid was " + numTimesUserSeemsValid + " and invalid was " + numTimesUserSeemsInvalid + ".", 0,
+                                  numTimesUserSeemsValid);
 
-            assertNotSame("Should have a mix of valid and invalid results, valid was " + numTimesUserSeemsValid + " and invalid was " + numTimesUserSeemsInvalid + ".", 0,
-                          numTimesUserSeemsInvalid);
-        } else {
-            assertEquals("Should have all invalid user results, valid was " + numTimesUserSeemsValid + " and invalid was " + numTimesUserSeemsInvalid + ".", validityCheckRounds,
-                         numTimesUserSeemsInvalid);
+                    assertNotSame("Should have a mix of valid and invalid results, valid was " + numTimesUserSeemsValid + " and invalid was " + numTimesUserSeemsInvalid + ".", 0,
+                                  numTimesUserSeemsInvalid);
+                }
+            } else {
+                if ((validityCheckRounds != numTimesUserSeemsInvalid) && i < retry) {
+                    Log.info(c, methodName, "Expected all invalid results, try again.");
+                } else {
+                    assertEquals("Should have all invalid user results, valid was " + numTimesUserSeemsValid + " and invalid was " + numTimesUserSeemsInvalid + ".",
+                                 validityCheckRounds,
+                                 numTimesUserSeemsInvalid);
 
-            assertEquals("Should not have valid user results, valid was " + numTimesUserSeemsValid + " and invalid was " + numTimesUserSeemsInvalid + ".", 0,
-                         numTimesUserSeemsValid);
+                    assertEquals("Should not have valid user results, valid was " + numTimesUserSeemsValid + " and invalid was " + numTimesUserSeemsInvalid + ".", 0,
+                                 numTimesUserSeemsValid);
+                }
+            }
 
         }
     }

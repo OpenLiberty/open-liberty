@@ -18,7 +18,7 @@ import com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor;
 
 public class SessionGetAttributeTransformDescriptor implements RequestProbeTransformDescriptor {
 
-    private static final String classToInstrument = "com/ibm/ws/session/http/HttpSessionImpl";
+    private static final String classToInstrument = "com/ibm/ws/session/http/AbstractHttpSession";
     private static final String methodToInstrument = "getAttribute";
     private static final String descOfMethod = "(Ljava/lang/String;)Ljava/lang/Object;";
     private static final String requestProbeType = "websphere.session.getAttribute";

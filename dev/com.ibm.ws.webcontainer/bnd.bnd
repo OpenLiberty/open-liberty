@@ -80,6 +80,7 @@ Export-Package: !*.internal.*, \
     com.ibm.ws.webcontainer.internalRuntimeExport.*, \
     com.ibm.ws.webcontainer.async*;provide:=true, \
     com.ibm.ws.webcontainer.core*;provide=true, \
+    com.ibm.ws.webcontainer.facade, \
 	com.ibm.ws.webcontainer.osgi*;provide:=true, \
 	com.ibm.ws.webcontainer.resources;provide:=true, \
 	com.ibm.ws.webcontainer.srt*;provide:=true, \

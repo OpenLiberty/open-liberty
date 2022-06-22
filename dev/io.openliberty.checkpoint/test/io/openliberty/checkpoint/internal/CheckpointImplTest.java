@@ -26,7 +26,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -35,6 +39,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.condition.Condition;
@@ -61,11 +66,17 @@ public class CheckpointImplTest {
         final List<CheckpointHook> multiThreadedHooks;
         final AtomicReference<ClassFileTransformer> transformer = new AtomicReference<>();
         final AtomicReference<Condition> runningCondition = new AtomicReference<>();
+        final Set<String> enabledFeatures;
 
         public Hooks(List<CheckpointHook> singleThreadedHooks, List<CheckpointHook> multiThreadedHooks) {
+            this(singleThreadedHooks, multiThreadedHooks, Collections.emptySet());
+        }
+
+        public Hooks(List<CheckpointHook> singleThreadedHooks, List<CheckpointHook> multiThreadedHooks, Set<String> enabledFeatures) {
             super();
             this.singleThreadedHooks = singleThreadedHooks;
             this.multiThreadedHooks = multiThreadedHooks;
+            this.enabledFeatures = enabledFeatures;
         }
 
         @Override
@@ -98,6 +109,23 @@ public class CheckpointImplTest {
                                 throw new UnsupportedOperationException(m1.getName());
                             });
                         }
+                    }
+                    if ("getServiceReferences".equals(m.getName())) {
+                        if (enabledFeatures.isEmpty()) {
+                            return null;
+                        }
+                        ServiceReference<?>[] featureServices = new ServiceReference<?>[enabledFeatures.size()];
+                        int i = 0;
+                        for (String featureName : enabledFeatures) {
+                            featureServices[i] = (ServiceReference<?>) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { ServiceReference.class }, (p1, m1, a1) -> {
+                                if ("getProperty".equals(m1.getName())) {
+                                    return featureName;
+                                }
+                                throw new UnsupportedOperationException(m1.getName());
+                            });
+                            i = i + 1;
+                        }
+                        return featureServices;
                     }
                     throw new UnsupportedOperationException(m.getName());
                 });
@@ -425,6 +453,22 @@ public class CheckpointImplTest {
         assertTrue("Expected to have reset checkpoint", !checkpoint.checkpointCalledAlready());
         checkpoint.check();
         assertTrue("Expected to have called checkpoint", checkpoint.checkpointCalledAlready());
+    }
+
+    @Test
+    public void testUnsupportedFeature() {
+        TestCRIU criu = new TestCRIU();
+        WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
+        Hooks hooks = new Hooks(emptyList(), emptyList(), new HashSet<>(Arrays.asList("notSupported1", "notSupported2")));
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.FEATURES);
+        try {
+            checkpoint.checkpoint();
+        } catch (CheckpointFailedException e) {
+            assertEquals("Unexpected type", Type.LIBERTY_PREPARE_FAILED, e.getType());
+            String msg = e.getMessage();
+            assertTrue(msg + " notSupported1", msg.contains("notSupported1"));
+            assertTrue(msg + " notSupported2", msg.contains("notSupported2"));
+        }
     }
 
     private CompletionListener<Boolean> getCompletionListener() {

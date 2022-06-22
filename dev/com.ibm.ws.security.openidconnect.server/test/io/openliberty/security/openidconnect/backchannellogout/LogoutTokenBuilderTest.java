@@ -46,7 +46,10 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
+import com.ibm.ws.security.oauth20.plugins.OAuth20TokenImpl;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
+import com.ibm.ws.security.oauth20.util.HashUtils;
+import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.server.plugins.IDTokenImpl;
 import com.ibm.ws.security.test.common.CommonTestClass;
@@ -129,8 +132,12 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(client3Id));
                 allowing(accessToken1).getType();
                 will(returnValue(OAuth20Constants.ACCESS_TOKEN));
+                allowing(accessToken1).getTokenString();
+                will(returnValue("accessToken1String"));
                 allowing(accessToken2).getType();
                 will(returnValue(OAuth20Constants.ACCESS_TOKEN));
+                allowing(accessToken2).getTokenString();
+                will(returnValue("accessToken2String"));
                 allowing(idToken1).getType();
                 will(returnValue(OAuth20Constants.ID_TOKEN));
                 allowing(idToken1).getClientId();
@@ -196,6 +203,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         setTokenCacheExpectations(subject, idToken1);
         setClientLookupExpectations(client1);
 
+        final String idTokenAccessTokenKey = "id token access token key";
         mockery.checking(new Expectations() {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
@@ -203,6 +211,10 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 one(client1).getBackchannelLogoutUri();
                 will(returnValue("https://localhost/my/logout/uri/client1"));
                 one(tokenCache).remove(idToken1Id);
+                one(idToken1).getAccessTokenKey();
+                will(returnValue(idTokenAccessTokenKey));
+                one(tokenCache).get(idTokenAccessTokenKey);
+                will(returnValue(null));
             }
         });
         setJwtCreationExpectations(client1, client1Secret);
@@ -225,6 +237,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         String cachedIdTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
 
         setCustomIdTokenExpectations(idToken, client1Id, cachedIdTokenString);
+        final String idTokenAccessTokenKey = "id token access token key";
         mockery.checking(new Expectations() {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
@@ -236,8 +249,20 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 one(client3).getBackchannelLogoutUri();
                 will(returnValue("https://localhost/my/logout/uri/client3"));
                 one(tokenCache).remove(idToken1Id);
+                one(idToken1).getAccessTokenKey();
+                will(returnValue(idTokenAccessTokenKey));
+                one(tokenCache).get(idTokenAccessTokenKey);
+                will(returnValue(null));
                 one(tokenCache).remove(customIdTokenId);
+                one(idToken).getAccessTokenKey();
+                will(returnValue(idTokenAccessTokenKey));
+                one(tokenCache).get(idTokenAccessTokenKey);
+                will(returnValue(null));
                 one(tokenCache).remove(idToken3Id);
+                one(idToken3).getAccessTokenKey();
+                will(returnValue(idTokenAccessTokenKey));
+                one(tokenCache).get(idTokenAccessTokenKey);
+                will(returnValue(null));
             }
         });
         // Should create three logout tokens
@@ -449,28 +474,218 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         }
     }
 
+    // TODO - removeUserIdTokensFromCache
+
+    @Test
+    public void test_removeUserAccessTokensFromCache_noCachedTokens() throws Exception {
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
+        clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
+        clientsToCachedIdTokens.put(client2, Arrays.asList(idToken2));
+
+        builder.removeUserAccessTokensFromCache(new ArrayList<>(), clientsToCachedIdTokens);
+    }
+
+    @Test
+    public void test_removeUserAccessTokensFromCache_noCachedAccessTokens() throws Exception {
+        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(idToken1, idToken2);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
+        clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
+        clientsToCachedIdTokens.put(client2, Arrays.asList(idToken2));
+
+        builder.removeUserAccessTokensFromCache(allCachedUserTokens, clientsToCachedIdTokens);
+    }
+
+    @Test
+    public void test_removeUserAccessTokensFromCache_noAccessTokensAssociatedWithClientsLoggingOut() throws Exception {
+        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, accessToken2);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
+        clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
+        clientsToCachedIdTokens.put(client2, Arrays.asList(idToken2));
+
+        mockery.checking(new Expectations() {
+            {
+                one(accessToken1).getClientId();
+                will(returnValue(client3Id));
+                one(accessToken2).getClientId();
+                will(returnValue(client3Id));
+            }
+        });
+        builder.removeUserAccessTokensFromCache(allCachedUserTokens, clientsToCachedIdTokens);
+    }
+
+    @Test
+    public void test_removeUserAccessTokensFromCache_singleAccessToken() throws Exception {
+        OAuth20TokenImpl accessToken1 = mockery.mock(OAuth20TokenImpl.class, "accesstoken1-impl");
+        OAuth20TokenImpl accessToken2 = mockery.mock(OAuth20TokenImpl.class, "accesstoken2-impl");
+        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, accessToken2);
+
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
+        clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
+        clientsToCachedIdTokens.put(client2, Arrays.asList(idToken2));
+
+        String accessTokenString = "someaccesstokenstring1";
+        String refreshTokenString = "myrefreshtoken1";
+        OAuth20Token refreshToken = getRefreshTokenExpectations(accessToken1, OIDCConstants.TOKENTYPE_ACCESS_TOKEN);
+
+        mockery.checking(new Expectations() {
+            {
+                one(accessToken1).getClientId();
+                will(returnValue(client1Id));
+                one(accessToken1).getTokenString();
+                will(returnValue(accessTokenString));
+                one(tokenCache).remove(accessTokenString);
+                one(refreshToken).getTokenString();
+                will(returnValue(refreshTokenString));
+                one(tokenCache).remove(refreshTokenString);
+                // Second access token is associated with some other client not being logged out
+                one(accessToken2).getType();
+                will(returnValue(OAuth20Constants.ACCESS_TOKEN));
+                one(accessToken2).getClientId();
+                will(returnValue(client3Id));
+            }
+        });
+        builder.removeUserAccessTokensFromCache(allCachedUserTokens, clientsToCachedIdTokens);
+    }
+
+    @Test
+    public void test_removeAccessTokenAndAssociatedRefreshTokenFromCache_opaqueToken() throws Exception {
+        OAuth20TokenImpl accessToken = mockery.mock(OAuth20TokenImpl.class);
+
+        String accessTokenString = "someaccesstokenstring";
+        String refreshTokenString = "myrefreshtoken";
+        OAuth20Token refreshToken = getRefreshTokenExpectations(accessToken, OIDCConstants.TOKENTYPE_ACCESS_TOKEN);
+        mockery.checking(new Expectations() {
+            {
+                one(accessToken).getTokenString();
+                will(returnValue(accessTokenString));
+                one(tokenCache).remove(accessTokenString);
+                one(refreshToken).getTokenString();
+                will(returnValue(refreshTokenString));
+                one(tokenCache).remove(refreshTokenString);
+            }
+        });
+        builder.removeAccessTokenAndAssociatedRefreshTokenFromCache(accessToken);
+    }
+
+    @Test
+    public void test_removeAccessTokenAndAssociatedRefreshTokenFromCache_jwtToken() throws Exception {
+        OAuth20TokenImpl accessToken = mockery.mock(OAuth20TokenImpl.class);
+
+        String accessTokenString = "xxx.yyy.zzz";
+        String accessTokenLookupString = HashUtils.digest(accessTokenString);
+        String refreshTokenString = "myrefreshtoken";
+        OAuth20Token refreshToken = getRefreshTokenExpectations(accessToken, OIDCConstants.TOKENTYPE_ACCESS_TOKEN);
+        mockery.checking(new Expectations() {
+            {
+                one(accessToken).getTokenString();
+                will(returnValue(accessTokenString));
+                one(tokenCache).remove(accessTokenLookupString);
+                one(refreshToken).getTokenString();
+                will(returnValue(refreshTokenString));
+                one(tokenCache).remove(refreshTokenString);
+            }
+        });
+        builder.removeAccessTokenAndAssociatedRefreshTokenFromCache(accessToken);
+    }
+
+    @Test
+    public void test_removeRefreshTokenAssociatedWithOAuthTokenFromCache_accessToken_noMatchingRefreshToken() throws Exception {
+        OAuth20TokenImpl accessToken = mockery.mock(OAuth20TokenImpl.class);
+        mockery.checking(new Expectations() {
+            {
+                one(accessToken).getType();
+                will(returnValue(OAuth20Constants.ACCESS_TOKEN));
+                one(accessToken).getRefreshTokenKey();
+                will(returnValue(null));
+            }
+        });
+        builder.removeRefreshTokenAssociatedWithOAuthTokenFromCache(accessToken);
+    }
+
+    @Test
+    public void test_removeRefreshTokenAssociatedWithOAuthTokenFromCache_accessToken_withMatchingRefreshToken() throws Exception {
+        String refreshTokenString = "refreshtokenstring";
+        OAuth20TokenImpl accessToken = mockery.mock(OAuth20TokenImpl.class);
+        OAuth20Token refreshToken = getRefreshTokenExpectations(accessToken, OIDCConstants.TOKENTYPE_ACCESS_TOKEN);
+        mockery.checking(new Expectations() {
+            {
+                one(refreshToken).getTokenString();
+                will(returnValue(refreshTokenString));
+                one(tokenCache).remove(refreshTokenString);
+            }
+        });
+        builder.removeRefreshTokenAssociatedWithOAuthTokenFromCache(accessToken);
+    }
+
+    @Test
+    public void test_removeRefreshTokenAssociatedWithOAuthTokenFromCache_idToken_noAssociatedAccessToken() throws Exception {
+        String accessTokenKey = "accesstokenkey";
+        OAuth20TokenImpl idToken = mockery.mock(OAuth20TokenImpl.class);
+        mockery.checking(new Expectations() {
+            {
+                allowing(idToken).getType();
+                will(returnValue(OAuth20Constants.ID_TOKEN));
+                one(idToken).getAccessTokenKey();
+                will(returnValue(accessTokenKey));
+                one(tokenCache).get(accessTokenKey);
+                will(returnValue(null));
+            }
+        });
+        builder.removeRefreshTokenAssociatedWithOAuthTokenFromCache(idToken);
+    }
+
+    @Test
+    public void test_removeRefreshTokenAssociatedWithOAuthTokenFromCache_idToken_noMatchingRefreshToken() throws Exception {
+        String accessTokenKey = "accesstokenkey";
+        OAuth20TokenImpl idToken = mockery.mock(OAuth20TokenImpl.class);
+        mockery.checking(new Expectations() {
+            {
+                allowing(idToken).getType();
+                will(returnValue(OAuth20Constants.ID_TOKEN));
+                one(idToken).getAccessTokenKey();
+                will(returnValue(accessTokenKey));
+                one(tokenCache).get(accessTokenKey);
+                will(returnValue(null));
+            }
+        });
+        builder.removeRefreshTokenAssociatedWithOAuthTokenFromCache(idToken);
+    }
+
+    @Test
+    public void test_removeRefreshTokenAssociatedWithOAuthTokenFromCache_idToken_withMatchingRefreshToken() throws Exception {
+        OAuth20TokenImpl idToken = mockery.mock(OAuth20TokenImpl.class, "idToken-impl");
+        String refreshTokenString = "refreshtokenstring";
+        OAuth20Token refreshToken = getRefreshTokenExpectations(idToken, OIDCConstants.TOKENTYPE_ID_TOKEN);
+        mockery.checking(new Expectations() {
+            {
+                one(refreshToken).getTokenString();
+                will(returnValue(refreshTokenString));
+                one(tokenCache).remove(refreshTokenString);
+            }
+        });
+        builder.removeRefreshTokenAssociatedWithOAuthTokenFromCache(idToken);
+    }
+
     @Test
     public void test_getClientsToLogOut_noCachedUserTokens() throws Exception {
         // No tokens cached for user
-        setTokenCacheExpectations(subject);
-
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(subject);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientsToLogOut(new ArrayList<>());
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
     @Test
     public void test_getClientsToLogOut_noCachedIdTokens() throws Exception {
         // No ID tokens cached for user
-        setTokenCacheExpectations(subject, accessToken1, accessToken2);
+        List<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, accessToken2);
         setClientLookupExpectations();
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(subject);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
     @Test
     public void test_getClientsToLogOut_oneCachedIdToken_associatedClientMissingLogoutUri() throws Exception {
-        setTokenCacheExpectations(subject, idToken1);
+        List<OAuth20Token> allCachedUserTokens = Arrays.asList(idToken1);
         setClientLookupExpectations(client1);
         mockery.checking(new Expectations() {
             {
@@ -479,13 +694,13 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(subject);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
     @Test
     public void test_getClientsToLogOut_oneCachedIdToken_associatedClientHasLogoutUri() throws Exception {
-        setTokenCacheExpectations(subject, idToken1);
+        List<OAuth20Token> allCachedUserTokens = Arrays.asList(idToken1);
         setClientLookupExpectations(client1);
         mockery.checking(new Expectations() {
             {
@@ -494,17 +709,17 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(subject);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1);
 
         // Should find the ID token that matched
-        List<IDTokenImpl> cachedIdTokensForClient = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient, idToken1);
     }
 
     @Test
     public void test_getClientsToLogOut_multipleCachedIdTokens_subsetHasLogoutUri() throws Exception {
-        setTokenCacheExpectations(subject, idToken1, accessToken1, idToken2, accessToken2, idToken3);
+        List<OAuth20Token> allCachedUserTokens = Arrays.asList(idToken1, accessToken1, idToken2, accessToken2, idToken3);
         setClientLookupExpectations(client1, client2, client3);
         mockery.checking(new Expectations() {
             {
@@ -518,14 +733,14 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientsToLogOut(subject);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientsToLogOut(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1, client3);
 
         // Should find the ID tokens that matched
-        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1);
 
-        List<IDTokenImpl> cachedIdTokensForClient3 = clientsToCachedIdTokens.get(client3);
+        List<OAuth20Token> cachedIdTokensForClient3 = clientsToCachedIdTokens.get(client3);
         verifyCachedIdTokensForClient(cachedIdTokensForClient3, idToken3);
     }
 
@@ -536,7 +751,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
         setClientLookupExpectations();
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
@@ -552,7 +767,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens);
     }
 
@@ -579,29 +794,29 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             }
         });
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = builder.getClientToCachedIdTokensMap(allCachedUserTokens);
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1);
 
         // Should find the ID tokens that matched
-        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1, tmpIdToken1, tmpIdToken2);
     }
 
     @Test
     public void test_addCachedIdTokenToMap_noEntries() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
 
         builder.addCachedIdTokenToMap(clientsToCachedIdTokens, client1, idToken1);
 
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1);
 
-        List<IDTokenImpl> cachedIdTokensForClient = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient, idToken1);
     }
 
     @Test
     public void test_addCachedIdTokenToMap_entriesForOtherClients() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
         clientsToCachedIdTokens.put(client2, new ArrayList<>());
         clientsToCachedIdTokens.put(client3, new ArrayList<>());
 
@@ -609,14 +824,14 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1, client2, client3);
 
-        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1);
     }
 
     @Test
     public void test_addCachedIdTokenToMap_oneExistingEntryForClient() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<IDTokenImpl>>();
-        List<IDTokenImpl> existingCachedTokens = new ArrayList<>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
+        List<OAuth20Token> existingCachedTokens = new ArrayList<>();
         existingCachedTokens.add(idToken1);
         clientsToCachedIdTokens.put(client1, existingCachedTokens);
         clientsToCachedIdTokens.put(client2, new ArrayList<>());
@@ -625,13 +840,13 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
         verifyCachedIdTokensMapContainsExpectedClients(clientsToCachedIdTokens, client1, client2);
 
-        List<IDTokenImpl> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
+        List<OAuth20Token> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1, idToken2);
     }
 
     @Test
     public void test_buildLogoutTokensForClients_noClientsToLogOut() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToLogOut = new HashMap<>();
 
         Map<OidcBaseClient, Set<String>> clientsToLogoutTokens = builder.buildLogoutTokensForClients(clientsToLogOut);
 
@@ -640,7 +855,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
     @Test
     public void test_buildLogoutTokensForClients_oneClient_noIdTokens() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToLogOut = new HashMap<>();
         clientsToLogOut.put(client1, new ArrayList<>());
 
         mockery.checking(new Expectations() {
@@ -656,14 +871,13 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
     @Test
     public void test_buildLogoutTokensForClients_oneClient_oneIdToken() throws Exception {
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToLogOut = new HashMap<>();
         clientsToLogOut.put(client1, Arrays.asList(idToken1));
 
         mockery.checking(new Expectations() {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
-                one(tokenCache).remove(idToken1Id);
             }
         });
         setJwtCreationExpectations(client1, client1Secret);
@@ -681,7 +895,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         IDTokenImpl tmpIdToken1 = mockery.mock(IDTokenImpl.class, "tmpIdToken1");
         IDTokenImpl tmpIdToken3 = mockery.mock(IDTokenImpl.class, "tmpIdToken3");
 
-        Map<OidcBaseClient, List<IDTokenImpl>> clientsToLogOut = new HashMap<>();
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToLogOut = new HashMap<>();
         clientsToLogOut.put(client1, Arrays.asList(idToken1, tmpIdToken1));
         clientsToLogOut.put(client2, Arrays.asList(idToken2));
         clientsToLogOut.put(client3, Arrays.asList(idToken3, tmpIdToken3));
@@ -702,11 +916,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
-                one(tokenCache).remove(idToken1Id);
-                one(tokenCache).remove(customIdTokenId);
-                one(tokenCache).remove(idToken2Id);
-                one(tokenCache).remove(idToken3Id);
-                one(tokenCache).remove(customIdTokenId);
             }
         });
         setJwtCreationExpectations(client1, client1Secret);
@@ -735,12 +944,11 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
-                one(tokenCache).remove(idToken1Id);
             }
         });
         setJwtCreationExpectations(client1, client1Secret);
 
-        List<IDTokenImpl> cachedIdTokens = Arrays.asList(idToken1);
+        List<OAuth20Token> cachedIdTokens = Arrays.asList(idToken1);
 
         Set<String> logoutTokens = builder.buildLogoutTokensForClient(client1, cachedIdTokens);
 
@@ -768,15 +976,13 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             {
                 allowing(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
-                one(tokenCache).remove(idToken1Id);
-                one(tokenCache).remove(customIdTokenId);
             }
         });
         // Should create two logout tokens
         setJwtCreationExpectations(client1, client1Secret);
         setJwtCreationExpectations(client1, client1Secret);
 
-        List<IDTokenImpl> cachedIdTokens = Arrays.asList(idToken1, tmpIdToken1, tmpIdToken2);
+        List<OAuth20Token> cachedIdTokens = Arrays.asList(idToken1, tmpIdToken1, tmpIdToken2);
 
         Set<String> logoutTokens = builder.buildLogoutTokensForClient(client1, cachedIdTokens);
 
@@ -1014,7 +1220,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         assertEquals("Issuer value did not match expected value.", expectedIssuer, result);
     }
 
-    private void verifyCachedIdTokensMapContainsExpectedClients(Map<OidcBaseClient, List<IDTokenImpl>> clientsToCachedIdTokens, OidcBaseClient... expectedClientEntries) {
+    private void verifyCachedIdTokensMapContainsExpectedClients(Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens, OidcBaseClient... expectedClientEntries) {
         assertNotNull("Map of clients to cached ID tokens should not have been null but was.", clientsToCachedIdTokens);
         if (expectedClientEntries == null || expectedClientEntries.length == 0) {
             assertTrue("Map of clients to cached ID tokens should have been empty but wasn't. Map was: " + clientsToCachedIdTokens, clientsToCachedIdTokens.isEmpty());
@@ -1026,13 +1232,13 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         }
     }
 
-    private void verifyCachedIdTokensForClient(List<IDTokenImpl> cachedIdTokensForClient, IDTokenImpl... expectedIdTokens) throws Exception {
+    private void verifyCachedIdTokensForClient(List<OAuth20Token> cachedIdTokensForClient, OAuth20Token... expectedIdTokens) throws Exception {
         if (expectedIdTokens == null || expectedIdTokens.length == 0) {
             assertTrue("List of cached ID tokens should have been empty but wasn't. Map was: " + cachedIdTokensForClient, cachedIdTokensForClient.isEmpty());
             return;
         }
         assertEquals("List of cached ID tokens was not the expected size: " + cachedIdTokensForClient, expectedIdTokens.length, cachedIdTokensForClient.size());
-        for (IDTokenImpl expectedIdToken : expectedIdTokens) {
+        for (OAuth20Token expectedIdToken : expectedIdTokens) {
             assertTrue("List of cached ID tokens did not contain entry for [" + expectedIdToken + "]: " + cachedIdTokensForClient,
                        cachedIdTokensForClient.contains(expectedIdToken));
         }
@@ -1223,6 +1429,48 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             claims.put(Claims.AUDIENCE, audiences);
         }
         return claims;
+    }
+
+    private OAuth20Token getRefreshTokenExpectations(OAuth20TokenImpl accessOrIdToken, String accessOrIdTokenType) {
+        OAuth20TokenImpl accessToken;
+        OAuth20Token refreshToken = mockery.mock(OAuth20Token.class, "refreshToken-getRefreshTokenExpectations");
+
+        String refreshTokenKey = "refreshtokenkey";
+
+        if (OIDCConstants.TOKENTYPE_ID_TOKEN.equals(accessOrIdTokenType)) {
+            accessToken = getAccessTokenFromIdTokenExpectations(accessOrIdToken);
+        } else {
+            accessToken = accessOrIdToken;
+        }
+        mockery.checking(new Expectations() {
+            {
+                allowing(accessToken).getType();
+                will(returnValue(OIDCConstants.TOKENTYPE_ACCESS_TOKEN));
+                one(accessToken).getRefreshTokenKey();
+                will(returnValue(refreshTokenKey));
+                one(tokenCache).get(refreshTokenKey);
+                will(returnValue(refreshToken));
+            }
+        });
+        return refreshToken;
+    }
+
+    private OAuth20TokenImpl getAccessTokenFromIdTokenExpectations(OAuth20TokenImpl idToken) {
+        OAuth20TokenImpl accessToken = mockery.mock(OAuth20TokenImpl.class, "accessToken-impl");
+
+        String accessTokenKey = "accesstokenkey";
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(idToken).getType();
+                will(returnValue(OIDCConstants.TOKENTYPE_ID_TOKEN));
+                one(idToken).getAccessTokenKey();
+                will(returnValue(accessTokenKey));
+                one(tokenCache).get(accessTokenKey);
+                will(returnValue(accessToken));
+            }
+        });
+        return accessToken;
     }
 
 }

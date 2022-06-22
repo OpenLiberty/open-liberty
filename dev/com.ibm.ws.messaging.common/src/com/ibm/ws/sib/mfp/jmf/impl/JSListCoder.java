@@ -168,7 +168,7 @@ public final class JSListCoder implements JSCoder {
   }
 
   /**
-   * A method to sanity check a 32 bit length value read from the message prior to allocating
+   * A method to evaluate a 32 bit length value read from the message prior to allocating
    * storage based on the value.  The length is not allowed to be negative or to exceed
    * the length of the remaining portion of the message's frame, assuming that the length
    * field is immediately followed by the data whose length it is.
@@ -178,9 +178,9 @@ public final class JSListCoder implements JSCoder {
    * @param offset the offset in the frame at which the length value was read.  This is
    * assumed to be four bytes long and immediately followed by the data whose length is
    * supposedly given by the length parameter.
-   * @exception MessageCorruptionException if the sanity check fails
+   * @exception MessageCorruptionException if the evaluation fails
    */
-  public static void sanityCheck(int length, byte[] frame, int offset) throws JMFMessageCorruptionException {
+  public static void evaluateMessageLength(int length, byte[] frame, int offset) throws JMFMessageCorruptionException {
     if (length < 0 || offset + 4 + length > frame.length) {
       JMFMessageCorruptionException jmce =  new JMFMessageCorruptionException(
           "Bad length: " + HexUtil.toString(new int[] { length }) + " at offset " + offset);

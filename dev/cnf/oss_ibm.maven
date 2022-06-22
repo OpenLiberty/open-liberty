@@ -1,6 +1,3 @@
-biz.aQute.bnd:biz.aQute.bnd.annotation:6.3.0-RC2
-biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0-RC2
-biz.aQute.bnd:biz.aQute.bnd:6.3.0-RC2
 com.googlecode.jsontoken:jsontoken:1.1.0-ibm-s20140416-2113
 com.ibm.ws.com.icegreen:greenmail:2.0.0.fd826131f671b0d3230b0d0e1638d8c4
 com.ibm.ws.commons-collections:commons-collections:3.2.1
@@ -78,7 +75,6 @@ io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core:4.0.0.70bac7
 io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:4.0.0.70bac7a
 io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:4.0.0.70bac7a
 io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa:4.0.0.70bac7a
-io.openliberty.org.eclipse:yasson:3.0.0-RC1
 net.sf.jtidy:jtidy:9.3.8
 org.apache.aries.blueprint:org.apache.aries.blueprint:1.3.0-ibm-s20170710-0926
 org.apache.cxf:cxf-rt-ws-mex:2.6.2-ibm-s20180529-1900

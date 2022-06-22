@@ -13,3 +13,5 @@ Bundle-Name: WAS JSP 2.3
 Bundle-SymbolicName: com.ibm.ws.jsp.2.3
 Bundle-Description: WAS JSP 2.3, version ${bVersion}
 
+-includeresource: \
+   com/ibm/ws/jsp/speclevel=resources/23

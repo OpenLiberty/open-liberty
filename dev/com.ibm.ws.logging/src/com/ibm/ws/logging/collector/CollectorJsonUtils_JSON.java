@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ import com.ibm.ws.logging.data.LogTraceData;
  *
  */
 public class CollectorJsonUtils_JSON {
+
+    static boolean betaSysProp = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     public static final int MAX_USER_AGENT_LENGTH = 2048;
     private final static int JSON_KEY = CollectorConstants.KEYS_JSON;
@@ -149,9 +151,12 @@ public class CollectorJsonUtils_JSON {
         }
 
         StringBuilder formattedValue = new StringBuilder(CollectorJsonHelpers.formatMessage(message, maxFieldLength));
-        String throwable = logData.getThrowable();
-        if (throwable != null) {
-            formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(throwable);
+
+        if (betaSysProp == false) {
+            String oldThrowable = logData.getThrowable();
+            if (oldThrowable != null) {
+                formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(oldThrowable);
+            }
         }
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
@@ -167,6 +172,15 @@ public class CollectorJsonUtils_JSON {
                    .addField(LogTraceData.getClassNameKey(JSON_KEY, isMessageEvent), logData.getClassName(), false, true)
                    .addField(LogTraceData.getSequenceKey(JSON_KEY, isMessageEvent), logData.getSequence(), false, true);
         //@formatter:on
+
+        if (betaSysProp == true) {
+            String exceptionName = logData.getExceptionName();
+            String throwable = logData.getThrowable();
+            if (exceptionName != null && throwable != null) {
+                jsonBuilder.addField(LogTraceData.getExceptionNameKey(JSON_KEY, isMessageEvent), exceptionName, false, true);
+                jsonBuilder.addField(LogTraceData.getStackTraceKey(JSON_KEY, isMessageEvent), throwable, false, true);
+            }
+        }
 
         ArrayList<KeyValuePair> extensions = null;
         KeyValuePairList kvpl = null;

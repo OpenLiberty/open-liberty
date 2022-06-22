@@ -59,7 +59,8 @@ src: \
     test-applications/PH01566.war/src,\
     test-applications/JSF22LocalizationTester.war/src,\
     test-applications/JSF22ThirdPartyApi.war/src,\
-    test-applications/FunctionMapper.war/src
+    test-applications/FunctionMapper.war/src, \
+    test-applications/ViewScopeLeak.war/src
 
 fat.project: true
 

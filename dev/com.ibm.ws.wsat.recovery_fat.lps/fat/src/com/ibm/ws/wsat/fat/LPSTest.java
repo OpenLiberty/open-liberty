@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ public class LPSTest {
 		server1 = LibertyServerFactory.getLibertyServer("WSATRecovery1");
 		BASE_URL = "http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort();
 		server2 = LibertyServerFactory.getLibertyServer("WSATRecovery2");
-		server2.setHttpDefaultPort(9992);
+		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
 		ShrinkHelper.defaultDropinApp(server1, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");

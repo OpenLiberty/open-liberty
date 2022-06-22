@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.wsat.fat.tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,8 +65,11 @@ public class MultiRecoveryTest {
 	}
 
 	public static void beforeTests(LibertyServer server, LibertyServer server2) throws Exception {
+//		System.getProperties().entrySet().stream().forEach(e -> Log.info(MultiRecoveryTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
+		
 		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
-		server2.setHttpDefaultPort(9992);
+		
+		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
 		ShrinkHelper.defaultDropinApp(server, recoveryClient, "com.ibm.ws.wsat.fat.client.recovery.*");
@@ -84,10 +88,10 @@ public class MultiRecoveryTest {
 
         try {
             // We expect this to fail since it is gonna crash the server
-        	result = callSetupServlet(id);
-        } catch (Throwable e) {
+        	callSetupServlet(id);
+        } catch (IOException e) {
+            // This is fine. The setup servlet crashed its server
         }
-        Log.info(this.getClass(), method, "callSetupServlet(" + id + ") returned: " + result);
 
         final String str = "Performed recovery for ";
         final String failMsg = " did not perform recovery";
@@ -120,7 +124,7 @@ public class MultiRecoveryTest {
         Log.info(getClass(), method, "callCheckServlet(" + id + ") returned: " + result);
     }
 
-	protected String callSetupServlet(String testNumber) throws IOException{
+	protected void callSetupServlet(String testNumber) throws IOException{
 		final String method = "callSetupServlet";
 		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
 		String servletName = "MultiRecoverySetupServlet";
@@ -145,7 +149,6 @@ public class MultiRecoveryTest {
 		Log.info(getClass(), method, "Recovery test " + testNumber + " Result : " + result);
 		assertTrue("Cannot get expected reply from server",
 				!result.contains("failed"));
-		return "";
 	}
 
 	protected String callCheckServlet(String testNumber) throws IOException {

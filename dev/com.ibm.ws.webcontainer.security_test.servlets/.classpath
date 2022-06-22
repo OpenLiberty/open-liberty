@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="build/fat-application-classes/basicauth" path="test-applications/basicauth/src"/>
+	<classpathentry kind="src" path="test-applications/basicauth/src"/>
 	<classpathentry kind="src" path="test-applications/formloginPageSessionFalse/src"/>
 	<classpathentry kind="src" path="test-applications/clientcert/src"/>
 	<classpathentry kind="src" path="test-applications/delegation/src"/>
 	<classpathentry kind="src" path="test-applications/dynamicAnnotationConflict/src"/>
 	<classpathentry kind="src" path="test-applications/dynamicAnnotationPure/src"/>
-	<classpathentry kind="src" output="build/fat-application-classes/formlogin" path="test-applications/formlogin/src"/>
-	<classpathentry kind="src" output="build/fat-application-classes/inheritance" path="test-applications/inheritance/src"/>
+	<classpathentry kind="src" path="test-applications/formlogin/src"/>
+	<classpathentry kind="src" path="test-applications/inheritance/src"/>
 	<classpathentry kind="src" path="test-applications/loginConfigInvalid/src"/>
 	<classpathentry kind="src" path="test-applications/loginConfigNone/src"/>
 	<classpathentry kind="src" path="test-applications/loginConfigNoRealmName/src"/>

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.internal.interfaces;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -307,4 +308,10 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
      */
     Set<String> getBuildCompatibleExtensionClassNames();
 
+    /**
+     * The the resource URL of the beans.xml file within the archive, if one exists.
+     * 
+     * @return a URL which points to the beans.xml resource, or null if none exists
+     */
+    URL getBeansXmlResourceURL();
 }

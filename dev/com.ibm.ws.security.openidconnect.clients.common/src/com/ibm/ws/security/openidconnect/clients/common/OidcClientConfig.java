@@ -28,6 +28,7 @@ public interface OidcClientConfig extends ConvergedClientConfig {
 
     int getInitialStateCacheCapacity();
 
+    @Override
     String getTrustStoreRef();
 
     public String getAuthFilterId();
@@ -59,9 +60,8 @@ public interface OidcClientConfig extends ConvergedClientConfig {
                                      // change the getGrantType to
                                      // "authorization_code"
 
-    /**
-     * @return
-     */
+    public boolean isInboundPropagationEnabled();
+
     public boolean isOidcclientRequestParameterSupported();
 
     /**

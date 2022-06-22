@@ -10,11 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.internal.interfaces;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
@@ -174,5 +174,12 @@ public interface WebSphereCDIDeployment extends CDI11Deployment {
      * @return the CDI instance for the current container
      */
     public CDI<Object> getCDI();
+
+    /**
+     * Get the Resource URLs of any non-empty unversioned beans.xml files (CDI 1.0) in this deployment
+     *
+     * @return a collection of resource URLs for any non-empty unversioned beans.xml files
+     */
+    public Collection<URL> getUnversionedBeansXmlURLs();
 
 }

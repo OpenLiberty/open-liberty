@@ -76,6 +76,7 @@ Import-Package: \
     com.ibm.ws.container.service.metadata, \
     com.ibm.ws.webcontainer.osgi.webapp, \
     com.ibm.wsspi.injectionengine, \
+    io.openliberty.webcontainer60.session.impl, \
     *
 
 -buildpath: \
@@ -94,6 +95,7 @@ Import-Package: \
     com.ibm.ws.session.jakarta;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.webcontainer.servlet.4.0.jakarta;version=latest,\
-    io.openliberty.jakarta.servlet.5.0;version=latest,\
     com.ibm.ws.resource;version=latest, \
-	com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.ws.kernel.boot.core;version=latest,\
+    io.openliberty.jakarta.servlet.6.0;version=latest,\
+    io.openliberty.webcontainer.servlet.6.0.internal;version=latest

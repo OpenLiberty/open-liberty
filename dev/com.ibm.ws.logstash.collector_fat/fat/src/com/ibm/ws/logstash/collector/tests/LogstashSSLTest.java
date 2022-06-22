@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,9 +65,9 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
         Log.info(c, "setUp", "os.name = " + os);
         Log.info(c, "setUp", "runTest = " + runTest);
-        
+
         Assume.assumeTrue(runTest); // runTest must be true to run test
-        
+
         clearContainerOutput();
         String host = logstashContainer.getContainerIpAddress();
         String port = String.valueOf(logstashContainer.getMappedPort(5043));
@@ -85,7 +85,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         if (!checkGcSpecialCase()) {
             found_liberty_gc_at_startup = waitForStringInContainerOutput(LIBERTY_GC) != null;
         }
-        
+
         assertNotNull("The application is not ready", server.waitForStringInLogUsingMark("CWWKT0016I", 10000));
         assertNotNull("Cannot find TRAS0218I from Logstash output", waitForStringInContainerOutput("TRAS0218I"));
         clearContainerOutput();
@@ -166,6 +166,36 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
         assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
         assertNotNull("Did not find " + LIBERTY_MESSAGE, waitForStringInContainerOutput(LIBERTY_MESSAGE));
+    }
+
+    @Test
+    public void testLogstashForMessageWithExceptionEvent() throws Exception {
+        testName = "testLogstashForMessageWithExceptionEvent";
+        setConfig("server_logs_msg.xml");
+        clearContainerOutput();
+
+        createMessageEventWithException(testName);
+
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
+
+        /**
+         * The exception servlet emits three exceptions.
+         * Given that the current setup of this FAT is using regex to parse the messages
+         * and that the JSON fields can be ordered in a varied order, we'll use each message to test an individual field.
+         * First assert will just check that the message is there.
+         * Second will check that the exceptionName is present.
+         * Third will check that the stacktrace field is present.
+         *
+         */
+        assertNotNull("exception message not found", waitForStringInContainerOutput("\"message\":\"exception message\""));
+
+        String line = waitForStringInContainerOutput("\"message\":\"second exception message\"");
+        assertNotNull("second exception message not found", line);
+        assertTrue(line.contains("\"exceptionName\":\"java.lang.IllegalArgumentException\""));
+
+        line = waitForStringInContainerOutput("\"message\":\"third exception message\"");
+        assertNotNull("third exception message not found", line);
+        assertTrue(line.contains("\"stackTrace\":\"java.lang.IllegalArgumentException: bad"));
     }
 
     @Test

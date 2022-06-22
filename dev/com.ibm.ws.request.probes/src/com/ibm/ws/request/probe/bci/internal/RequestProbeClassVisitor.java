@@ -12,14 +12,11 @@ package com.ibm.ws.request.probe.bci.internal;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.AnalyzerAdapter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor;
-
-import com.ibm.wsspi.request.probe.bci.RequestProbeHelper;
 
 import io.openliberty.asm.ASMHelper;
 

@@ -790,7 +790,7 @@ public final class JSMessageImpl extends JSMessageData implements JMFMessage {
   // Encodes the message data - variant settings and field contents - into the
   // given byte array at the given offset.
   // This method wraps the 2 parameter toByteArray() method which does the real
-  // work. In the case where the messge is already assembled it performs a sanity
+  // work. In the case where the messge is already assembled it performs a validation
   // check on the length before calling the worker method.
   // Locking: Holding the lock for the duration of the function is vital.
   public int toByteArray(byte[] buffer, int offset, int length) throws JMFUninitializedAccessException, JMFSchemaViolationException, JMFModelNotImplementedException, JMFMessageCorruptionException {
@@ -800,7 +800,7 @@ public final class JSMessageImpl extends JSMessageData implements JMFMessage {
 
     synchronized (getMessageLockArtefact()) {
 
-      // Sanity check the length passed in
+      // Evaluate the length passed in
       if ((contents != null)  && (length < this.length)) {
         // Caller must not have called getEncodedLength or there is
         // an error in it: should not occur

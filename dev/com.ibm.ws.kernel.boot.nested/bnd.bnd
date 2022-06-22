@@ -25,6 +25,8 @@ instrument.ffdc: true
 instrument.taskInjection: true
 instrument.classesIncludes: com/ibm/ws/kernel/launch/internal/*.class
 
+globalize: false
+
 publish.wlp.jar.disabled: true
 
 -buildpath: \

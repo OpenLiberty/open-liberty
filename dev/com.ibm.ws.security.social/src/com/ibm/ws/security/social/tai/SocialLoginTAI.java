@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,12 +31,18 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WebTrustAssociationException;
 import com.ibm.websphere.security.WebTrustAssociationFailedException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
+import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutHelper;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
+import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionUtils;
 import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginWebappConfig;
@@ -50,9 +58,11 @@ import com.ibm.ws.security.social.web.SelectionPageGenerator;
 import com.ibm.ws.security.social.web.utils.ObscuredConfigIdManager;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
 import com.ibm.ws.webcontainer.security.AuthResult;
+import com.ibm.ws.webcontainer.security.CookieHelper;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.UnprotectedResourceService;
 import com.ibm.ws.webcontainer.security.WebProviderAuthenticatorHelper;
+import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -89,6 +99,8 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
     TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
     SocialWebUtils webUtils = new SocialWebUtils();
     static ObscuredConfigIdManager configIdManager = new ObscuredConfigIdManager();
+
+    private static boolean issuedBetaMessage = false;
 
     protected void setSslSupport(ServiceReference<SSLSupport> ref) {
         sslSupportRef.setReference(ref);
@@ -441,10 +453,26 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
             SocialLoginConfig socialLoginConfig = null;
             while (services.hasNext()) {
                 socialLoginConfig = services.next();
+                if (socialLoginConfig instanceof OidcLoginConfigImpl && isRunningBetaMode()) {
+                    OidcSessionUtils.removeOidcSession(request, response, (OidcLoginConfigImpl) socialLoginConfig);
+                }
                 // TODO remove all the cookies of the subject
             }
         }
         return bSetSubject;
+    }
+    
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
     }
 
     TAIResult handleOAuthLoginRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {

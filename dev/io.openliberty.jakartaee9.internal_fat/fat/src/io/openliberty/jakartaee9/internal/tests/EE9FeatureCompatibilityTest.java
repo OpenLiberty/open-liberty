@@ -43,6 +43,7 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 
 import componenttest.annotation.Server;
+import componenttest.common.apiservices.Bootstrap;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -91,19 +92,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
     @Server("jakartaee9.fat")
     public static LibertyServer server;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        File featureDir = new File(server.getInstallRoot() + "/lib/features/");
-        // If there was a problem building projects before this test runs, "lib/features" won't exist
-        if (featureDir != null && featureDir.exists()) {
-            for (File feature : featureDir.listFiles()) {
-                if (feature.getName().startsWith("io.openliberty.") ||
-                    feature.getName().startsWith("com.ibm.")) {
-                    parseShortName(feature);
-                }
-            }
-        }
-
+    static {
         nonEE9JavaEEFeatures.addAll(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         nonEE9JavaEEFeatures.addAll(EE8FeatureReplacementAction.EE8_FEATURE_SET);
 
@@ -158,6 +147,52 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         incompatibleValueAddFeatures.add("sipServlet-1.1"); // purposely not supporting EE 9
         incompatibleValueAddFeatures.add("springBoot-1.5"); // springBoot 3.0 will support EE 9
         incompatibleValueAddFeatures.add("springBoot-2.0");
+    }
+
+    static Set<String> getAllCompatibileFeatures() {
+        Set<String> compatFeatures = new HashSet<>();
+        try {
+            File featureDir = new File(Bootstrap.getInstance().getValue("libertyInstallPath") + "/lib/features/");
+            // If there was a problem building projects before this test runs, "lib/features" won't exist
+            if (featureDir != null && featureDir.exists()) {
+                for (File feature : featureDir.listFiles()) {
+                    if (feature.getName().startsWith("io.openliberty.") ||
+                        feature.getName().startsWith("com.ibm.")) {
+                        String shortName = EE9FeatureCompatibilityTest.parseShortName(feature);
+                        if (shortName != null) {
+                            compatFeatures.add(shortName);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        compatFeatures.removeAll(EE9FeatureCompatibilityTest.nonEE9JavaEEFeatures);
+        compatFeatures.removeAll(EE9FeatureCompatibilityTest.nonEE9MicroProfileFeatures);
+        compatFeatures.removeAll(EE9FeatureCompatibilityTest.incompatibleValueAddFeatures);
+
+        // when concurrent-3.0 moves to EE10 only you can remove this line since it won't be in the Set any longer.
+        compatFeatures.remove("concurrent-3.0");
+
+        return compatFeatures;
+    }
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        File featureDir = new File(server.getInstallRoot() + "/lib/features/");
+        // If there was a problem building projects before this test runs, "lib/features" won't exist
+        if (featureDir != null && featureDir.exists()) {
+            for (File feature : featureDir.listFiles()) {
+                if (feature.getName().startsWith("io.openliberty.") ||
+                    feature.getName().startsWith("com.ibm.")) {
+                    String shortName = parseShortName(feature);
+                    if (shortName != null) {
+                        features.add(shortName);
+                    }
+                }
+            }
+        }
 
         // The features set should contain all of the incompatible features.  If it doesn't
         // something was removed or there is a typo.
@@ -182,10 +217,10 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         repository.init();
     }
 
-    private static void parseShortName(File feature) throws IOException {
+    static String parseShortName(File feature) throws IOException {
         // Only scan *.mf files
         if (feature.isDirectory() || !feature.getName().endsWith(".mf"))
-            return;
+            return null;
 
         Scanner scanner = new Scanner(feature);
         try {
@@ -196,23 +231,24 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
                     shortName = line.substring("IBM-ShortName:".length()).trim();
                 } else if (line.contains("IBM-Test-Feature:") && line.contains("true")) {
                     Log.info(c, "parseShortName", "Skipping test feature: " + feature.getName());
-                    return;
+                    return null;
                 } else if (line.startsWith("Subsystem-SymbolicName:") && !line.contains("visibility:=public")) {
                     Log.info(c, "parseShortName", "Skipping non-public feature: " + feature.getName());
-                    return;
+                    return null;
                 } else if (line.startsWith("IBM-ProductID") && !line.contains("io.openliberty")) {
                     Log.info(c, "parseShortName", "Skipping non Open Liberty feature: " + feature.getName());
-                    return;
+                    return null;
                 }
             }
             // some test feature files do not have a short name and do not have IBM-Test-Feature set.
             // We do not want those ones.
             if (shortName != null) {
-                features.add(shortName);
+                return shortName;
             }
         } finally {
             scanner.close();
         }
+        return null;
     }
 
     @Test
@@ -315,7 +351,8 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    // For now don't run this test until it can be refactored
+    //@Test
     @Mode(TestMode.FULL)
     public void testJakarta91ConvenienceFeature() throws Exception {
         Set<String> featureSet = new HashSet<>(features);

@@ -1,0 +1,349 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<openidConnectProvider
+		id="Provider01"
+		scope="myScopeSample"
+		oauthProviderRef="OAuth01"
+		jwkEnabled="false"
+		signatureAlgorithm="HS256" />
+
+
+	<oauthProvider
+		id="OAuth01"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		tokenFormat="jwt"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient01,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient01"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="Provider02"
+		scope="myScopeSample"
+		oauthProviderRef="OAuth02"
+		jwkEnabled="false"
+		signatureAlgorithm="HS256" />
+
+
+	<oauthProvider
+		id="OAuth02"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		tokenFormat="jwt"
+	>
+
+		<autoAuthorizeClient>client02</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client02"
+				secret="{xor}LDo8LTor"
+				displayname="client02"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient02,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient02"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="Provider03"
+		scope="myScopeSample"
+		oauthProviderRef="OAuth03"
+		jwkEnabled="false"
+		signatureAlgorithm="HS256" />
+
+
+	<oauthProvider
+		id="OAuth03"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		tokenFormat="jwt"
+	>
+
+		<autoAuthorizeClient>client03</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client03"
+				secret="{xor}LDo8LTor"
+				displayname="client03"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient03,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient03"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+	
+	<openidConnectProvider
+		id="Provider04"
+		scope="myScopeSample"
+		oauthProviderRef="OAuth04"
+		jwkEnabled="false"
+		signatureAlgorithm="HS256" />
+
+
+	<oauthProvider
+		id="OAuth04"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		tokenFormat="jwt"
+	>
+
+		<autoAuthorizeClient>client04</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client04"
+				secret="{xor}LDo8LTor"
+				displayname="client04"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient04,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient04"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="Provider05"
+		scope="myScopeSample"
+		oauthProviderRef="OAuth05"
+		jwkEnabled="false"
+		signatureAlgorithm="HS256" />
+
+
+	<oauthProvider
+		id="OAuth05"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		tokenFormat="jwt"
+	>
+
+		<autoAuthorizeClient>client05</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client05"
+				secret="{xor}LDo8LTor"
+				displayname="client05"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient05,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient05_authFilter,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient05_issuerAsFilter"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="Provider06"
+		scope="myScopeSample"
+		oauthProviderRef="OAuth06"
+		jwkEnabled="false"
+		signatureAlgorithm="HS256" />
+
+
+	<oauthProvider
+		id="OAuth06"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		tokenFormat="jwt"
+	>
+
+		<autoAuthorizeClient>client06</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client06"
+				secret="{xor}LDo8LTor"
+				displayname="client06"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient06"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="Provider07"
+		scope="myScopeSample"
+		oauthProviderRef="OAuth07"
+		jwkEnabled="false"
+		signatureAlgorithm="HS256" />
+
+
+	<oauthProvider
+		id="OAuth07"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		tokenFormat="jwt"
+	>
+
+		<autoAuthorizeClient>client07</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client07"
+				secret="{xor}LDo8LTor"
+				displayname="client07"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient07,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient07"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="Provider08"
+		scope="myScopeSample"
+		oauthProviderRef="OAuth08"
+		jwkEnabled="false"
+		issuerIdentifier="uniqueIssuer08"
+		signatureAlgorithm="HS256" />
+
+	<oauthProvider
+		id="OAuth08"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		tokenFormat="jwt"
+	>
+
+		<autoAuthorizeClient>client08</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client08"
+				secret="{xor}LDo8LTor"
+				displayname="client08"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient08,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient08a,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient08b,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient08c,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient08d,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient08e,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient08f"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="Provider09"
+		scope="myScopeSample"
+		oauthProviderRef="OAuth09"
+		jwkEnabled="false"
+		signatureAlgorithm="HS256" />
+
+	<oauthProvider
+		id="OAuth09"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		tokenFormat="jwt"
+	>
+
+		<autoAuthorizeClient>client09</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client09"
+				secret="{xor}LDo8LTor"
+				displayname="client09"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient09,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient09"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="Provider20"
+		scope="myScopeSample"
+		oauthProviderRef="OAuth20"
+		jwkEnabled="false"
+		signatureAlgorithm="HS256" />
+
+
+	<oauthProvider
+		id="OAuth20"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		tokenFormat="opaque"
+	>
+
+		<autoAuthorizeClient>client20</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client20"
+				secret="{xor}LDo8LTor"
+				displayname="client20"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient20,
+							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient20"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+	
+<!-- Do not need Provider21 since we're using a hard-coded JWE in the test -->
+	
+</server>

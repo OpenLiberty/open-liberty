@@ -13,6 +13,7 @@ package com.ibm.ws.security.authorization.util;
 import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +33,7 @@ public class RoleMethodAuthUtil {
         }
     }
 
-    public static boolean parseMethodSecurity(Method method, Principal principal, Predicate<String> isUserInRoleFunction) throws UnauthenticatedException {
+    public static boolean parseMethodSecurity(Method method, Supplier<Principal> principal, Predicate<String> isUserInRoleFunction) throws UnauthenticatedException {
 
         boolean denyAll = getDenyAll(method);
         if (denyAll) {
@@ -55,7 +56,7 @@ public class RoleMethodAuthUtil {
                         return true;
                     }
                 }
-                checkAuthentication(principal); // throws UnauthenticatedException if not authenticated
+                checkAuthentication(principal.get()); // throws UnauthenticatedException if not authenticated
                 return false; // authenticated, but not authorized
             } else {
                 boolean permitAll = getPermitAll(method);
@@ -73,7 +74,7 @@ public class RoleMethodAuthUtil {
     }
 
     // parse security JSR250 annotations at the class level
-    private static boolean parseClassSecurity(Class<?> cls, Principal principal, Predicate<String> isUserInRoleFunction) throws UnauthenticatedException {
+    private static boolean parseClassSecurity(Class<?> cls, Supplier<Principal> principal, Predicate<String> isUserInRoleFunction) throws UnauthenticatedException {
 
         // try DenyAll
         DenyAll denyAll = cls.getAnnotation(DenyAll.class);
@@ -96,7 +97,7 @@ public class RoleMethodAuthUtil {
                         return true;
                     }
                 }
-                checkAuthentication(principal); // throws UnauthenticatedException if not authenticated
+                checkAuthentication(principal.get()); // throws UnauthenticatedException if not authenticated
                 return false; // authenticated, but not authorized
             } else {
                 // if no annotations on method or class (or if class has @PermitAll), return true;

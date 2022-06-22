@@ -13,12 +13,20 @@ package com.ibm.ws.security.openidconnect.clients.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
+import org.jmock.Expectations;
 import org.junit.Test;
+
+import com.ibm.ws.security.test.common.CommonTestClass;
 
 /**
  *
  */
-public class OidcSessionInfoTest {
+public class OidcSessionInfoTest extends CommonTestClass {
+
+    protected final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
 
     @Test
     public void test_createSessionId() {
@@ -121,8 +129,9 @@ public class OidcSessionInfoTest {
     @Test
     public void test_getSessionInfo() {
         String sessionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=";
+        setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(sessionId);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
 
         assertEquals("testConfigId", sessionInfo.getConfigId());
         assertEquals("https://localhost", sessionInfo.getIss());
@@ -134,8 +143,9 @@ public class OidcSessionInfoTest {
     @Test
     public void test_getSessinoInfo_sidWasEmptyOrNull() {
         String sessionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==::MTIzNDU=";
+        setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(sessionId);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
 
         assertEquals("testConfigId", sessionInfo.getConfigId());
         assertEquals("https://localhost", sessionInfo.getIss());
@@ -147,8 +157,9 @@ public class OidcSessionInfoTest {
     @Test
     public void test_getSessionInfo_sessionIdIsNull() {
         String sessionId = null;
+        setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(sessionId);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
 
         assertNull("Expected the sessionInfo to be null, since the sessionId was invalid.", sessionInfo);
     }
@@ -156,8 +167,9 @@ public class OidcSessionInfoTest {
     @Test
     public void test_getSessionInfo_sessionIdIsEmpty() {
         String sessionId = "";
+        setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(sessionId);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
 
         assertNull("Expected the sessionInfo to be null, since the sessionId was invalid.", sessionInfo);
     }
@@ -165,8 +177,9 @@ public class OidcSessionInfoTest {
     @Test
     public void test_getSessionInfo_decodedSessionIdDoesNotHaveFourParts() {
         String sessionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==";
+        setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(sessionId);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
 
         assertNull("Expected the sessionInfo to be null, since the sessionId was invalid.", sessionInfo);
     }
@@ -174,9 +187,23 @@ public class OidcSessionInfoTest {
     @Test
     public void test_getSessionInfo_sessionIdIsInvalid() {
         String sessionId = "invalidSessionId";
+        setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(sessionId);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
 
         assertNull("Expected the sessionInfo to be null, since the sessionId was invalid.", sessionInfo);
+    }
+
+    private void setupRequestExpectations(String sessionId) {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getCookies();
+                will(returnValue(new Cookie[] { createSessionCookie(sessionId) }));
+            }
+        });
+    }
+
+    private Cookie createSessionCookie(String cookieValue) {
+        return new Cookie(ClientConstants.WAS_OIDC_SESSION, cookieValue);
     }
 }

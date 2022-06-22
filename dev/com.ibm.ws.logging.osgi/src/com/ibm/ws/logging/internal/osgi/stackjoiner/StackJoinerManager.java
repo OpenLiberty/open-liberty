@@ -29,11 +29,15 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import com.ibm.ws.logging.internal.impl.LoggingConstants;
 import com.ibm.ws.logging.internal.osgi.Activator;
 import com.ibm.ws.logging.internal.osgi.stackjoiner.bci.AddVersionFieldClassAdapter;
 import com.ibm.ws.logging.internal.osgi.stackjoiner.bci.ThrowableClassFileTransformer;
 import com.ibm.ws.logging.internal.osgi.stackjoiner.boot.templates.ThrowableProxy;
 import com.ibm.ws.logging.utils.StackJoinerConfigurations;
+
+import io.openliberty.asm.ASMHelper;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -41,12 +45,25 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.SimpleRemapper;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Bundle;
 
+/**
+ * Stack Joiner functionality references the configuration which
+ * enables the merger or joining of the multiple log records created
+ * from a printStackTrace() call that results in each line of the stack
+ * trace being processed as a new and unique log record.
+ *
+ * The configuration key follows the template "stackTraceSingleEntry" for
+ * server.xml, env var and bootstrap properties. However, the functionality
+ * is referred to as stack joiner.
+ *
+ * There-in also exists additional configuration (only env var) for the buffer size
+ * of which how large a stack trace would be merge/joined. See the {@link LoggingConstants} fields
+ * for more information .
+ */
 public class StackJoinerManager {
     
     private static final TraceComponent tc = Tr.register(StackJoinerManager.class);
@@ -71,7 +88,7 @@ public class StackJoinerManager {
     
     final String BASE_TRACE_SERVICE_METHOD_NAME = "prePrintStackTrace";
     
-    private final String STACK_JOIN_SERVER_XML_CONFIG_NAME = "stackJoin";
+    private final String STACK_JOIN_SERVER_XML_CONFIG_NAME = "stackTraceSingleEntry";
     
     private static Instrumentation instrumentation = null;
     private static BundleContext bundleContext = null;
@@ -168,11 +185,11 @@ public class StackJoinerManager {
     
     
     public synchronized void resolveStackJoinFeature(Map<String, Object> serverConfigMap) {
-        boolean isStackJoinEnabled = false;
+        boolean isStackJoinerEnabled = false;
         
         /*
-         * Check the last stackJoin configuration value from LogProviderImpl. Retrieved
-         * by calling StackJoinerConfiguration which accesses the stackJoin config value
+         * Check the last stackJoin configuration (i.e. "stackTraceSingleEntry" )value from LogProviderImpl.
+         *  Retrieved by calling StackJoinerConfiguration which accesses the configuration value
          * last set in BaseTraceService.
          * 
          * FYI: The updated(Dictionary) call in LoggingConfigurationService
@@ -185,26 +202,26 @@ public class StackJoinerManager {
          * If this is the first time this is called then it will be checking for the env
          * var or bootstrap properties value (if it has been set).
          * 
-         * FYI: env var: WLP_LOGGING_STACK_JOIN bootstrap prop:
-         * com.ibm.ws.logging.stack.join
+         * FYI: env var: WLP_LOGGING_STACK_TRACE_SINGLE_ENTRY bootstrap prop:
+         * com.ibm.ws.logging.stackTraceSingleEntry
          * 
-         * Any subsequent calls as noted above will retrieve the existing stackJoin
+         * Any subsequent calls as noted above will retrieve the existing configuration
          * value that had been "last set".
          * 
-         * The logic after this is to read the "new" (or non-modifed) stackJoin value from
+         * The logic after this is to read the "new" (or non-modifed) configuration value from
          * a server.xml update.
          * 
          */
-        isStackJoinEnabled = StackJoinerConfigurations.stackJoinerEnabled();
+        isStackJoinerEnabled = StackJoinerConfigurations.stackJoinerEnabled();
 
         if (serverConfigMap != null) {
             Object o = serverConfigMap.get(STACK_JOIN_SERVER_XML_CONFIG_NAME);
             if (o != null) {
-                isStackJoinEnabled = (Boolean) o;
+                isStackJoinerEnabled = (Boolean) o;
             }
         }
         
-        if (isStackJoinEnabled) {
+        if (isStackJoinerEnabled) {
             activate();
         } else {
             deactivate();
@@ -327,7 +344,7 @@ public class StackJoinerManager {
     String getClassInternalName(URL classUrl) throws IOException {
         InputStream inputStream = classUrl.openStream();
         ClassReader reader = new ClassReader(inputStream);
-        reader.accept(new ClassVisitor(Opcodes.ASM7) {}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        reader.accept(new ClassVisitor(ASMHelper.getCurrentASM()) {}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
         inputStream.close();
         return reader.getClassName();
     }

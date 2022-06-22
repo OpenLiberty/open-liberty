@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,5 +27,11 @@ public interface RepeatTestAction {
      * Used to identify the RepeatTestAction and used in conjunction with @SkipForRepat
      */
     public String getID();
+
+    /**
+      * Invoked by the FAT framework to perform cleanup steps before ending test repetition.
+      * If clean up is needed to undo the setup changes after running the action then override this method.
+      */
+    default public void cleanup() throws Exception {}
 
 }

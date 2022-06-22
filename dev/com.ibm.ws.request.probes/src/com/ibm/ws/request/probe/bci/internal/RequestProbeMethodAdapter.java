@@ -22,6 +22,8 @@ import org.objectweb.asm.commons.AnalyzerAdapter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.asm.ASMHelper;
+
 public class RequestProbeMethodAdapter extends AdviceAdapter {
     private static final TraceComponent tc = Tr.register(RequestProbeMethodAdapter.class,"requestProbe", "com.ibm.ws.request.probe.internal.resources.LoggingMessages");
 
@@ -36,7 +38,7 @@ public class RequestProbeMethodAdapter extends AdviceAdapter {
 
     protected RequestProbeMethodAdapter(MethodVisitor visitor, MethodInfo mInfo, String timedOpsType, String classname, 
     			String td, AnalyzerAdapter aa) {
-        super(ASM8, visitor, mInfo.getAccessFlags(), mInfo.getMethodName(), mInfo.getDescriptor());
+        super(ASMHelper.getCurrentASM(), visitor, mInfo.getAccessFlags(), mInfo.getMethodName(), mInfo.getDescriptor());
         this.visitor = visitor;
         this.methodInfo = mInfo;
         this._classname = classname;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.logging.LogRecord;
 
 import com.ibm.websphere.logging.hpel.LogRecordContext;
+import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.RoutedMessage;
@@ -156,6 +157,23 @@ public class TraceSource implements Source {
         }
 
         traceData.setSourceName(sourceName);
+
+        Throwable thrown = logRecord.getThrown();
+        if (thrown != null) {
+            String stackTrace = DataFormatHelper.throwableToString(thrown);
+            traceData.setStackTrace(stackTrace);
+
+            String s = thrown.getLocalizedMessage();
+            if (s == null) {
+                s = thrown.toString();
+            }
+            traceData.setStackTraceLocalized(s);
+
+            String exceptionName = thrown.getClass().getName();
+            if (exceptionName != null) {
+                traceData.setExceptionName(exceptionName);
+            }
+        }
 
         return traceData;
     }

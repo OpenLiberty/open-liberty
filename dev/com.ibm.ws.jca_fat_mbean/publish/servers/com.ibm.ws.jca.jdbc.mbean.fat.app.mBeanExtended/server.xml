@@ -1,0 +1,26 @@
+<server>
+	<featureManager>
+		<feature>servlet-3.1</feature>
+		<!--	
+			The following is the minimum combination of features which result in trying to create an MBean without enough data.	
+			This set can also be met in the auto-feature <feature>javaee-7.0</feature>
+		-->
+    	<feature>jca-1.7</feature>
+	    <feature>j2eeManagement-1.1</feature>	    
+		<feature>wasJmsClient-2.0</feature>
+    </featureManager>
+
+    <logging traceSpecification="WAS.j2c=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+    
+    <application type="ear" id="extfvtapp" name="extfvtapp" location="extfvtapp.ear"/>
+
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+	<javaPermission className="javax.management.MBeanPermission" name="com.ibm.ws.*" actions="getMBeanInfo"/>
+	<javaPermission className="javax.management.MBeanServerPermission" name="newMBeanServer,createMBeanServer"/>
+	<javaPermission className="org.osgi.framework.ServicePermission" name="com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline" actions="register"/>
+	<!-- This permission must also be manually granted in the java.policy file -->
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.jdbc.odbc"/>
+	
+    <include optional="true" location="../fatTestPorts.xml"/>
+    <variable name="onError" value="FAIL"/>
+</server>

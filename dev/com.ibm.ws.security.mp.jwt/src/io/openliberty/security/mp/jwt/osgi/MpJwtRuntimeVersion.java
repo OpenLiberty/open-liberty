@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ public interface MpJwtRuntimeVersion {
     public static final Version VERSION_1_0 = new Version(1, 0, 0);
     public static final Version VERSION_1_1 = new Version(1, 1, 0);
     public static final Version VERSION_1_2 = new Version(1, 2, 0);
+    public static final Version VERSION_2_1 = new Version(2, 1, 0);
 
     public Version getVersion();
 

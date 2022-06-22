@@ -100,7 +100,7 @@ public class RemotePtoPSupport extends AbstractRemoteSupport
       {
         // NOTE: since this destination is PtoP it should NOT be
         // possible to end up recovering an aostream used for durable.
-        // Still, bugs happen, so here's a sanity check
+        // Still, bugs happen, so here's a validation
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && (aoTempItemStream.getDurablePseudoDestID() != null))
         {
           if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 

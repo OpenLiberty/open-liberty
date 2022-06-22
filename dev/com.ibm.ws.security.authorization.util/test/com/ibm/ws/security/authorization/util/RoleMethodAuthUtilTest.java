@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.security.Principal;
+import java.util.function.Supplier;
 
 import org.junit.Test;
 
@@ -46,7 +47,7 @@ public class RoleMethodAuthUtilTest {
     public void unauthenticated_PermitAllOnClass_noAnnotationOnMethod() throws Exception {
         // @PermitAll on class / no annotations on method
         assertTrue(RoleMethodAuthUtil.parseMethodSecurity(method(PERMITALL_ON_CLASS, "unannotated"),
-                                                          null,
+                                                          principal(null),
                                                           s -> {
                                                               return true;
                                                           }));
@@ -61,7 +62,7 @@ public class RoleMethodAuthUtilTest {
     public void nullPrincipal_RolesAllowedOnClass_noAnnotationOnMethod() throws Exception {
         // @PermitAll on class / no annotations on method
         RoleMethodAuthUtil.parseMethodSecurity(method(ROLESALLOWED_ON_CLASS, "unannotated"),
-                                               null,
+                                               principal(null),
                                                s -> {
                                                    return false; // change to false because "unannotated" is protected by "role3" and "role4"
                                                });
@@ -273,7 +274,17 @@ public class RoleMethodAuthUtilTest {
         return clazz.getMethod(methodName);
     }
 
-    private Principal principal(String name) {
-        return new PrincipalImpl(name);
+    private Supplier<Principal> principal(String name) {
+
+        return new Supplier<Principal>() {
+            @Override
+            public Principal get() {
+                if (name == null) {
+                  return null;
+                } else {
+                  return new PrincipalImpl(name);
+                }
+            }
+        };
     }
 }

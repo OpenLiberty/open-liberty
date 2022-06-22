@@ -110,7 +110,7 @@ PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Il validationEndpointUrl speci
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aggiornare la configurazione del client OpenID Connect modificando il validationMethod o il validationEndpointUrl.
  
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Il server delle risorse ha fallito la richiesta di autenticazione poich\u00e9 il tipo di dati della richiesta [{0}] nel token di accesso associato all''attributoo di configurazione [{1}] non \u00e8 valido. 
+PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Il server delle risorse ha fallito la richiesta di autenticazione poich\u00e9 il tipo di dati della richiesta [{0}] nel token di accesso associato all''attributo di configurazione [{1}] non \u00e8 valido. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Il token di accesso fornito ha un tipo di dati della richiesta non valido e il runtime non pu\u00f2 continuare con il processo di autenticazione.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Verificare che la configurazione del client OpenID Connect specifichi il nome richiesta corretto per l'attributo.
 
@@ -293,9 +293,10 @@ LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON=CWWKS1550E: Il valore per il membro "{
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.explanation=Il valore del membro corrispondente deve essere un oggetto JSON. Il valore previsto \u00e8 "{}", un oggetto JSON vuoto.
 LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON.useraction=Assicurarsi che il formato dell'attestazione "events" nel token di disconnessione sia definito correttamente.
 
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING=CWWKS1551E: Al token di disconnessione manca l''attestazione "sid" ma il client {0} OpenID Connect lo richiede.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.explanation=Il client OpenID Connect richiede che il token di disconnessione contenga un ID sessione (SID) per identificare la sessione client OpenID Connect presso il provider OpenID Connect.
-LOGOUT_TOKEN_SID_REQUIRED_BUT_MISSING.useraction=Impostare l'attributo di configurazione del client OpenID Connect backchannelLogoutSessionRequired su false oppure assicurarsi che il token di disconnessione contenga un'attestazione "sid".
+# Do not translate jti
+LOGOUT_TOKEN_DUP_JTI=CWWKS1551E: Un altro token di logout con la stessa richiesta [{0}] "jti" \u00e8 gi\u00e0 stato ricevuto dal client [{1}] OpenID Connect.
+LOGOUT_TOKEN_DUP_JTI.explanation=La richiesta "jti" identifica in modo univoco un token di logout. Un altro token di logout con questo "jti" \u00e8 stato utilizzato, quindi il token non pu\u00f2 essere utilizzato di nuovo.
+LOGOUT_TOKEN_DUP_JTI.useraction=Assicurarsi che il token di logout contenga un valore "jti" univoco e che i token di logout non vengano utilizzati pi\u00f9 volte.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

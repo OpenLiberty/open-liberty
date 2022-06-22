@@ -1,5 +1,5 @@
 /*******************************************************************************
-v * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -285,26 +285,17 @@ public class JMSContextServlet extends HttpServlet {
         }
     }
 
-    private boolean verifyMetadata(ConnectionMetaData metadata) throws JMSException {
-        String targetJmsVersion = (isJakartaMessaging30()) ? "3.0" : "2.0";
-        int targetJmsMajorVersion = (isJakartaMessaging30()) ? 3 : 2;
+    private boolean verifyMetadata(ConnectionMetaData metadata, String major, String minor) throws JMSException {
+        String targetJmsVersion = major + '.' + minor;
+        int targetJmsMajorVersion = Integer.parseInt(major);
+        int targetJmsMinorVersion = Integer.parseInt(minor);
         return (metadata.getJMSVersion().equals(targetJmsVersion) &&
                 (metadata.getJMSMajorVersion() == targetJmsMajorVersion) &&
-                (metadata.getJMSMinorVersion() == 0) &&
+                (metadata.getJMSMinorVersion() == targetJmsMinorVersion) &&
                 metadata.getJMSProviderName().equals("IBM") &&
                 metadata.getProviderVersion().equals("1.0") &&
                 (metadata.getProviderMajorVersion() == 1) &&
                 (metadata.getProviderMinorVersion() == 0));
-    }
-
-    private static boolean isJakartaMessaging30() {
-        Class clazz = null;
-        try {
-            clazz = Class.forName("jakarta.jms.JMSContext");
-        } catch (Throwable t) {
-            // Expect CNFE, but could be linkage error.
-        }
-        return clazz != null;
     }
 
     public void testGetMetadata_B_SecOff(
@@ -313,7 +304,7 @@ public class JMSContextServlet extends HttpServlet {
         JMSContext jmsContext = jmsQCFBindings.createContext();
 
         boolean testFailed = false;
-        if (!verifyMetadata(jmsContext.getMetaData())) {
+        if (!verifyMetadata(jmsContext.getMetaData(), request.getParameter("major"), request.getParameter("minor"))) {
             testFailed = true;
         }
 
@@ -330,7 +321,7 @@ public class JMSContextServlet extends HttpServlet {
         JMSContext jmsContext = jmsQCFTCP.createContext();
 
         boolean testFailed = false;
-        if (!verifyMetadata(jmsContext.getMetaData())) {
+        if (!verifyMetadata(jmsContext.getMetaData(), request.getParameter("major"), request.getParameter("minor"))) {
             testFailed = true;
         }
 

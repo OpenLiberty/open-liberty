@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Set;
@@ -30,7 +28,6 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -41,7 +38,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * Verify that injection is performed into several listener types.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class CDIListenersTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(CDIListenersTest.class.getName());

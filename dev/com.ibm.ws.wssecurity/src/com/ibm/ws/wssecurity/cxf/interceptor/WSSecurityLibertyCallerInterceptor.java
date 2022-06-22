@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,6 +60,7 @@ import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
+import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.sso.common.SsoService;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -277,9 +278,12 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
                 }
 
                 WSSubject.setRunAsSubject(authenticatedSubject);
+                SubjectManager subjectManager = new SubjectManager();
+                subjectManager.setCallerSubject(authenticatedSubject);
 
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Authentication successful, runAsSubject after = ", WSSubject.getRunAsSubject());
+                    Tr.debug(tc, "Authentication successful, caller subject = ", WSSubject.getCallerSubject());
                 }
 
             }
@@ -465,9 +469,12 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
                 }
 
                 WSSubject.setRunAsSubject(new_subject);
+                SubjectManager subjectManager = new SubjectManager();
+                subjectManager.setCallerSubject(new_subject);
 
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Authentication successful, runAsSubject after = ", WSSubject.getRunAsSubject());
+                    Tr.debug(tc, "Authentication successful, caller subject = ", WSSubject.getCallerSubject());
                 }
 
             } catch (AuthenticationException e) {
@@ -697,9 +704,12 @@ public class WSSecurityLibertyCallerInterceptor extends AbstractSoapInterceptor 
                 }
 
                 WSSubject.setRunAsSubject(authenticatedSubject);
+                SubjectManager subjectManager = new SubjectManager();
+                subjectManager.setCallerSubject(authenticatedSubject);
 
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Authentication successful, runAsSubject after = ", WSSubject.getRunAsSubject());
+                    Tr.debug(tc, "Authentication successful, caller subject = ", WSSubject.getCallerSubject());
                 }
             } catch (AuthenticationException e) {
                 //authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());

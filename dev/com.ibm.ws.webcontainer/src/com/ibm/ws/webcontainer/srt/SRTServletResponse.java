@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -91,7 +92,8 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     public static final int DEFAULT_BUFFER_SIZE = 4 * 1024;
     public static final Locale _defaultLocale = Locale.getDefault();
     public static final String _defaultEncoding = "ISO-8859-1";
-
+    private static final ConcurrentHashMap<Locale,String> localeStrings = new ConcurrentHashMap<>();
+    
     protected IResponse _response = null;
     // 104771 - begin
     protected boolean writerClosed = false;
@@ -936,7 +938,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     }
 
     /**
-     * Commits the response by sending response codes and headers.  A response may only be commited once.
+     * Commits the response by sending response codes and headers.  A response may only be committed once.
      */
     synchronized protected void commit() {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
@@ -1002,8 +1004,13 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     }
 
     private void addLocaleHeader() {
-        // 115097 - convert any underscores to dashes in the locale
-        _response.setContentLanguage(_locale.toString().replace('_', '-'));
+        String locale = localeStrings.get(_locale);
+        if( locale == null) {
+            // 115097 - convert any underscores to dashes in the locale
+            locale = _locale.toString().replace('_', '-');
+            localeStrings.put(_locale,locale);
+        }
+        _response.setContentLanguage(locale);
     }
     
     /**

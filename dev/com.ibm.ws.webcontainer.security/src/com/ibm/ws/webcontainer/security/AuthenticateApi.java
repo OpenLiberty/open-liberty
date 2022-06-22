@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.web.PasswordExpiredException;
 import com.ibm.websphere.security.web.UserRevokedException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityException;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.security.SecurityService;
@@ -39,6 +40,7 @@ import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
+import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
 import com.ibm.ws.security.context.SubjectManager;
@@ -239,12 +241,30 @@ public class AuthenticateApi {
             if (!bInitUserName) {
                 bInitUserName = true;
                 userName = getSessionUserName(req, res);
+                if (userName == null) {
+                    userName = getUserNameFromCallerSubject();
+                }
             }
             UnprotectedResourceService service = unprotectedResourceServiceRef.getService(serviceId);
             boolean bLogout = service.logout(req, res, userName);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "logout return " + bLogout + " on service " + service);
         }
+    }
+
+    String getUserNameFromCallerSubject() {
+        if (!ProductInfo.getBetaEdition()) {
+            return null;
+        }
+        Subject subject = subjectManager.getCallerSubject();
+        if (subject != null && !subjectHelper.isUnauthenticated(subject)) {
+            Set<WSPrincipal> wsPrincipals = subject.getPrincipals(WSPrincipal.class);
+            if (!wsPrincipals.isEmpty()) {
+                WSPrincipal principal = wsPrincipals.iterator().next();
+                return principal.getName();
+            }
+        }
+        return null;
     }
 
     void postLogout(HttpServletRequest req, HttpServletResponse res) {

@@ -57,7 +57,7 @@ import componenttest.custom.junit.runner.FATRunner;
 @RunWith(FATRunner.class)
 public class FileNotificationMBeanTest extends AbstractNotificationTest {
 
-    /** Used for sanity checks of changes in the timed scan case */
+    /** Used for evaluating changes in the timed scan case */
     private static final MonitorReader recursiveMonitor = new MonitorReader("-RECURSIVETESTMONITOROUTPUT-", "recursive folder monitor");
     private static final MonitorReader manualMonitor = new MonitorReader("-MANUALMONITOROUTPUT-", "externally triggered folder monitor");
 
@@ -174,7 +174,7 @@ public class FileNotificationMBeanTest extends AbstractNotificationTest {
         assertNothingDeleted(manualMonitor);
         assertNothingModified(manualMonitor);
 
-        // Sanity check - the recursive monitor should have noticed
+        // Test - the recursive monitor should have noticed
         HashSet<File> created = new HashSet<File>();
         created.add(f);
         recursiveMonitor.scrapeLogsForExpectedChanges(created, null, null);
@@ -269,7 +269,7 @@ public class FileNotificationMBeanTest extends AbstractNotificationTest {
         File f = new File(monitoredFolder, "testFileInFolderCreationIsNotifiedAfterRequest");
         createFile(f);
 
-        // Sanity check - the recursive monitor should have noticed
+        // Test - the recursive monitor should have noticed
         recursiveMonitor.scrapeLogsForChanges();
         assertCreated(recursiveMonitor, f);
 
@@ -358,7 +358,7 @@ public class FileNotificationMBeanTest extends AbstractNotificationTest {
         File f = new File(folder, "childFile");
         createFile(f);
 
-        // Sanity check - the recursive monitor should have noticed
+        // Test - the recursive monitor should have noticed
         recursiveMonitor.scrapeLogsForChanges();
         assertCreated(recursiveMonitor, f, folder);
 
@@ -387,7 +387,7 @@ public class FileNotificationMBeanTest extends AbstractNotificationTest {
         File f = new File(folder, "childFile");
         createFile(f);
 
-        // Sanity check - the recursive monitor should have noticed
+        // Test - the recursive monitor should have noticed
         recursiveMonitor.scrapeLogsForChanges();
         assertCreated(recursiveMonitor, f, folder);
 
@@ -465,7 +465,7 @@ public class FileNotificationMBeanTest extends AbstractNotificationTest {
         File f = new File(folder, "childFile");
         createFile(f);
 
-        // Sanity check - the recursive monitor should have noticed
+        // Test - the recursive monitor should have noticed
         recursiveMonitor.scrapeLogsForChanges();
         assertCreated(recursiveMonitor, f, folder);
 
@@ -725,7 +725,7 @@ public class FileNotificationMBeanTest extends AbstractNotificationTest {
             createFolder(folder);
             File f = new File(folder, "childFile1");
             createFile(f);
-            // Sanity check - the recursive monitor should have noticed
+            // Test - the recursive monitor should have noticed
             recursiveMonitor.scrapeLogsForChanges();
             assertCreated(recursiveMonitor, f, folder);
             Collection<String> fileSet = new HashSet<String>();

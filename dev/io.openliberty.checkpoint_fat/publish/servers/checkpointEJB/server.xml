@@ -9,10 +9,10 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
+    <applicationManager startTimeout="90s"/>
     <featureManager>
         <feature>cdi-2.0</feature>
-        <feature>ejb-3.2</feature>
+        <feature>ejbLite-3.2</feature>
         <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>
         <feature>checkpoint-1.0</feature>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ public class MpConfigProxyServiceImpl extends com.ibm.ws.security.mp.jwt.v11.con
 
     static private String MP_VERSION = "1.2";
 
-    private static final Set<String> acceptableMpConfigPropNames12;
+    protected static final Set<String> acceptableMpConfigPropNames12;
 
     static {
         Set<String> mpConfigPropNames = new HashSet<>();

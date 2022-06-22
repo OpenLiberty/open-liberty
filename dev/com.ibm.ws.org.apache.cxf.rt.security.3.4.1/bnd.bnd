@@ -10,6 +10,8 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+-sub: *.bnd
+
 -includeresource: \
     @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF, \
     @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \

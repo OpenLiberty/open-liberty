@@ -72,6 +72,11 @@ MISSING_REGISTRY_DEFINITION=CWIMK0011E: La operaci\u00f3n del registro de usuari
 MISSING_REGISTRY_DEFINITION.explanation=No se ha definido un registro de usuarios o no ha podido inicializarse debido a un error de configuraci\u00f3n. Un registro de usuarios v\u00e1lido incluye un registro LDAP u otros registros o repositorios soportados.
 MISSING_REGISTRY_DEFINITION.useraction=Si se ha definido un registro de usuarios en el archivo de configuraci\u00f3n, revise si hay errores de configuraci\u00f3n durante el arranque del servidor en los registros. A\u00f1ada y corrija la definici\u00f3n de registro de usuarios en el archivo server.xml.
 
+FAILED_LOGIN_DELAY_DISABLED=CWIMK0012W: El retardo de inicio de sesi\u00f3n an\u00f3malo para los repositorios federados est\u00e1 inhabilitado. Esta inhabilitaci\u00f3n expone el servidor a ataques de enumeraci\u00f3n de usuarios. Para habilitar el retardo para inicios de sesi\u00f3n fallidos, elimine los atributos de repositorio federado de {0} y {1} para que se utilicen los valores m\u00ednimo y m\u00e1ximo predeterminados de 0 y 5000 milisegundos. De forma alternativa, establezca el atributo de repositorio federado de {1} en un valor mayor que cero. 
+FAILED_LOGIN_DELAY_DISABLED.explanation=Cuando el retardo de inicio de sesi\u00f3n an\u00f3malo est\u00e1 inhabilitado, el servidor es vulnerable a un ataque de estilo de enumeraci\u00f3n de usuario.
+FAILED_LOGIN_DELAY_DISABLED.useraction=Habilite el retardo de inicio de sesi\u00f3n an\u00f3malo eliminando los atributos para utilizar el retardo de relleno m\u00ednimo y m\u00e1ximo predeterminado de cero y 5000 milisegundos o establezca los atributos en una configuraci\u00f3n personalizada. 
+
+
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: La operaci\u00f3n del registro de usuarios no ha podido completarse. No se ha encontrado el identificador de la entidad. Especifique el identificador correcto como par\u00e1metro de entrada. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=No se ha especificado el identificador de la entidad. El sistema no puede encontrar la entidad. La operaci\u00f3n de registro de usuarios no puede continuar sin encontrar esta entidad. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Aseg\u00farese de que la entidad del objeto de entrada contiene una propiedad de identificador.

@@ -27,6 +27,9 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import com.ibm.ws.wsat.fat.util.WSATTest;
+import com.ibm.ws.transaction.fat.util.FATUtils;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -56,31 +59,31 @@ public class MultiThreadedTest extends WSATTest {
 		ShrinkHelper.defaultDropinApp(server, "threadedClient", "com.ibm.ws.wsat.threadedclient.*");
 		ShrinkHelper.defaultDropinApp(server2, "threadedServer", "com.ibm.ws.wsat.threadedserver.*");
 
-		server.setServerStartTimeout(600000);
-		server.startServer(true);
-
-		server2.setServerStartTimeout(600000);
-		server2.startServer(true);
+		server.setServerStartTimeout(START_TIMEOUT);
+		server2.setServerStartTimeout(START_TIMEOUT);
+		
+		FATUtils.startServers(server, server2);
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		server.stopServer("WTRN0046E", "WTRN0048W", "WTRN0049W");
-		server2.stopServer();
+		FATUtils.stopServers(new String[] {"WTRN0046E", "WTRN0048W", "WTRN0049W"}, server, server2);
 
 		ShrinkHelper.cleanAllExportedArchives();
 	}
 	
 	@Test
-	@AllowedFFDC(value = {"javax.transaction.InvalidTransactionException", "javax.transaction.RollbackException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "com.ibm.ws.wsat.service.WSATException", "java.lang.IllegalStateException", "com.ibm.ws.wsat.service.WSATFaultException"})
+	@AllowedFFDC(value = {"javax.transaction.InvalidTransactionException", "javax.transaction.RollbackException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "com.ibm.ws.wsat.service.WSATException", "java.lang.IllegalStateException", "com.ibm.ws.wsat.service.WSATFaultException", "org.osgi.framework.BundleException"})
 	public void testWSATMT001FVT() {
+		String method = "testWSATMT001FVT";
 		String result;
 		String urlStr;
 		HttpURLConnection con;
 		BufferedReader br;
-		try {OperatingSystem os = server.getMachine().getOperatingSystem();
-			int count = os == OperatingSystem.ZOS ? 50 : 100;
-			Log.info(this.getClass(), "testWSATMT001FVT", "Thread count set to " + count + " because operating system is " + os);
+		try {
+			OperatingSystem os = server.getMachine().getOperatingSystem();
+			int count = os == OperatingSystem.ZOS ? 10 : 50;
+			Log.info(getClass(), method, "Thread count set to " + count + " because operating system is " + os);
 
 			final int originalCount = count;
 			do {
@@ -90,14 +93,14 @@ public class MultiThreadedTest extends WSATTest {
 				}
 				urlStr = BASE_URL + "/threadedClient/ThreadedClientServlet"
 						+ "?baseurl=" + BASE_URL2 + "&count=" + count;
-				Log.info(this.getClass(), "testWSATMT001FVT", "URL: " + urlStr);
+				Log.info(getClass(), method, "URL: " + urlStr);
 				con = getHttpConnection(new URL(urlStr), 
 						HttpURLConnection.HTTP_OK, 1200); // 20 minutes
 				br = HttpUtils.getConnectionStream(con);
 				result = br.readLine();
 				assertNotNull(result);
 
-				Log.info(this.getClass(), "testWSATMT001FVT", "Result : " + result);
+				Log.info(getClass(), method, "Result: " + result);
 
 				assertTrue("Cannot get expected reply from server",
 						result.contains("completedCount = "+originalCount));
@@ -118,7 +121,7 @@ public class MultiThreadedTest extends WSATTest {
             br = HttpUtils.getConnectionStream(con);
             String participantCommits = br.readLine();
 			
-            Log.info(this.getClass(), "testWSATMT001FVT", "Client commits: " + clientCommits + ", Participant commits: " + participantCommits);
+            Log.info(getClass(), method, "Client commits: " + clientCommits + ", Participant commits: " + participantCommits);
             assertTrue("Coordinator commit count differs from participant", Integer.parseInt(clientCommits) == Integer.parseInt(participantCommits));
 		} catch (Exception e) {
 			fail("Exception happens: " + e.toString());

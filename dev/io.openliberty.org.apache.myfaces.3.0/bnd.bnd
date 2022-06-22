@@ -133,6 +133,7 @@ Import-Package: \
   io.openliberty.jakarta.expressionLanguage.4.0;version=latest,\
   io.openliberty.jakarta.servlet.5.0;version=latest, \
   io.openliberty.jakarta.cdi.3.0;version=latest,\
+  io.openliberty.jakarta.annotation.2.0;version=latest,\
   com.ibm.ws.logging.core,\
   com.ibm.websphere.appserver.spi.kernel.service,\
   com.ibm.websphere.org.osgi.core;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,13 +15,14 @@ import javax.servlet.sip.SipApplicationSession;
 
 import com.ibm.ws.session.HttpSessionFacade;
 import com.ibm.ws.session.SessionData;
+import com.ibm.ws.session.AbstractSessionData;
 import com.ibm.wsspi.sip.converge.ConvergedHttpSessionImpl;
 
 public class WsHttpSessionFacade extends HttpSessionFacade implements ConvergedHttpSession {
 
     private static final long serialVersionUID = 3108339284895967670L;
 
-    public WsHttpSessionFacade(SessionData data) {
+    public WsHttpSessionFacade(AbstractSessionData data) {
         super(data);
     }
 

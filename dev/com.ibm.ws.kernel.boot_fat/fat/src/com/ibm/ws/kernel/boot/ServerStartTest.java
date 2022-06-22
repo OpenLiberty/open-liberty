@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,17 +27,20 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * This test bucket tests the server startup process.
  */
+@RunWith(FATRunner.class)
 public class ServerStartTest {
     private static final Class<?> c = ServerStartTest.class;
 
@@ -762,8 +765,14 @@ public class ServerStartTest {
         if (isWindows) {
             assertTrue("The server should NOT have started due to a bad SERVER_WORKING_DIR = not a path", !server.isStarted());
         } else {
+            String pid = findServerPid();
+            if (pid == null) {
+                Log.info(c, METHOD_NAME, "Unable to execute the jcmd.exe application installed for the current jdk.  Skipping this test!");
+                assumeTrue(false);
+            }
+
             // Use jcmd to generate a heap dump
-            String[] execParameters = new String[] { "jcmd", findServerPid(), "GC.heap_dump", METHOD_NAME + ".hprof" };
+            String[] execParameters = new String[] { "jcmd", pid, "GC.heap_dump", METHOD_NAME + ".hprof" };
             Process process = Runtime.getRuntime().exec(execParameters);
 
             try (Reader reader = new InputStreamReader(process.getInputStream());

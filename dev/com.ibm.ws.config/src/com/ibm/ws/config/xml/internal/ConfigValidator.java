@@ -366,7 +366,7 @@ class ConfigValidator {
         @Override
         public boolean add(ConfigElement element) {
             if (!hasConflict && !isEmpty()) {
-                Object lastValue = getLastValue();
+                Object lastValue = variableRegistry.resolveRawString((String) getLastValue());
                 Object currentValue = variableRegistry.resolveRawString((String) element.getAttribute(attribute));
 
                 if (lastValue == null) {

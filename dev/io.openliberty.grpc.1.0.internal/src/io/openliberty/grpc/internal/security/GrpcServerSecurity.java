@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,11 @@ package io.openliberty.grpc.internal.security;
 
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -91,7 +93,14 @@ public class GrpcServerSecurity {
             }
             return;
         }
-        if (RoleMethodAuthUtil.parseMethodSecurity(method, req.getUserPrincipal(), s -> req.isUserInRole(s))) {
+        if (RoleMethodAuthUtil.parseMethodSecurity(method,
+                new Supplier<Principal>() {
+                    @Override
+                    public Principal get() {
+                        return req.getUserPrincipal();
+                    }
+                },
+                s -> req.isUserInRole(s))) {
             return;
         }
         throw new UnauthorizedException("Unauthorized");

@@ -337,7 +337,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (lastDash >= 0) {
             // remove the version part of the symbolic name
             version = feature.substring(lastDash + 1);
-            // sanity check for the version syntax
+            // Validate the version syntax
             try {
                 Version.parseVersion(version);
                 baseName = feature.substring(0, lastDash);
@@ -360,7 +360,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (selectionContext.isBlocked(baseFeatureName)) {
             return;
         }
-        // sanity check to make sure this feature is selected; this is really just to check bugs in the resolver
+        // Validation to make sure this feature is selected; this is really just to check bugs in the resolver
         if (selectedFeature.isSingleton() && !!!selectionContext.allowMultipleVersions(baseFeatureName)) {
             Chain existingSelection = selectionContext.getSelected(baseFeatureName);
             String selectedFeatureName = existingSelection == null ? null : existingSelection.getCandidates().get(0);

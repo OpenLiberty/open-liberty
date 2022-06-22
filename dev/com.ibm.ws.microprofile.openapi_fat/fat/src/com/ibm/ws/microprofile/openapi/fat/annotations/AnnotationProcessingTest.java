@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,15 @@
 package com.ibm.ws.microprofile.openapi.fat.annotations;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -29,6 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.openapi.fat.annotations.NonPublicFieldVisibilityApplication.NonPublicFieldVisibilityDataObject;
 import com.ibm.ws.microprofile.openapi.fat.annotations.PrivateFieldVisibilityApplication.PrivateFieldVisibilityDataObject;
+import com.ibm.ws.microprofile.openapi.fat.annotations.RequiredCustomNameApplication.RequiredCustomNameDataObject;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 
@@ -105,6 +110,35 @@ public class AnnotationProcessingTest {
                 NonPublicFieldVisibilityDataObject.class.getSimpleName());
         } finally {
             server.removeAndStopDropinsApplications("testNonPublicFieldVisibility.war");
+        }
+    }
+
+    @Test
+    public void testRequiredCustomNameField() throws Exception {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "testRequiredCustomNameField.war")
+            .addClass(RequiredCustomNameApplication.class);
+
+        try {
+            ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+
+            ObjectNode openApi = (ObjectNode) OpenAPITestUtil
+                .readYamlTree(new OpenAPIConnection(server, OpenAPIConnection.OPEN_API_DOCS).download());
+
+            JsonNode schema = openApi.path("components").path("schemas")
+                .path(RequiredCustomNameDataObject.class.getSimpleName());
+            assertFalse("schema missing", schema.isMissingNode());
+
+            Set<String> propertyNames = toSet(schema.path("properties").fieldNames());
+            assertThat(propertyNames, Matchers.containsInAnyOrder("test_a", "testB"));
+
+            Set<String> requiredNames = toSet(schema.path("required").elements())
+                .stream()
+                .map(JsonNode::textValue)
+                .collect(Collectors.toSet());
+            assertThat(requiredNames, Matchers.containsInAnyOrder("test_a", "testB"));
+
+        } finally {
+            server.removeAndStopDropinsApplications("testRequiredCustomNameField.war");
         }
     }
 

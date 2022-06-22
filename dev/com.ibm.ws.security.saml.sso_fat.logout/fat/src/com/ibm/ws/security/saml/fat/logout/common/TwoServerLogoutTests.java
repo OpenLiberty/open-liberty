@@ -143,7 +143,7 @@ public class TwoServerLogoutTests extends SAMLLogoutCommonTest {
         genericSAML(_testName, webClient, updatedTestSettings1, logoutFlow, expectationsLogout);
 
         /****************************************/
-        /* Sanity check that we can log back in */
+        /* Check that we can log back in */
         /****************************************/
         // if the logout stayed local, we won't need to log into the idp again as we have the idp session cookie, but, if
         // the logout went through the IDP, we'll need to log in to the IDP

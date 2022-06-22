@@ -19,7 +19,7 @@ When available, add links to required feature documents. Use "N/A" to mark parti
   - Link the RFE with this issue
 - UFO: Link to [Upcoming Feature Overview](https://ibm.box.com/v/UFO-Template) document
   - Set the Box link to be publicly accessible, with a long expiration (10 years)
-    - Click "Share" > select "People with link" > click "Link Settings" > under "Link Experation" select "Disable Shared Link on" > set an experation date ~10 years into the future
+    - Click "Share" > select "People with link" > click "Link Settings" > under "Link Expiration" select "Disable Shared Link on" > set an expiration date ~10 years into the future
     - If you lack permissions, contact [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect)
 - FTS: Link to Feature Test Summary GH Issue
 - Beta Blog: Link to Beta Blog Post GH Issue

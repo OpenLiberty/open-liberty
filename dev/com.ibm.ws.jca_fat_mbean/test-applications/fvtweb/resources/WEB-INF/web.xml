@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>JCAFVTWeb</display-name>
+
+  <!-- SERVLET DEFINITIONS -->
+  
+  <!-- Section 1: JCA SERVLETS-->
+  <servlet id="ResourceAdapterModuleMBeanServlet">
+    <servlet-name>ResourceAdapterModule MBean Servlet</servlet-name>
+    <display-name>ResourceAdapterModule MBean Test</display-name>
+    <servlet-class>web.ResourceAdapterModuleMBeanServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="ResourceAdapterMBeanServlet">
+    <servlet-name>ResourceAdapter MBean Servlet</servlet-name>
+    <display-name>ResourceAdapter MBean Test</display-name>
+    <servlet-class>web.ResourceAdapterMBeanServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="JCAResourceMBeanServlet">
+    <servlet-name>JCA Resource MBean Servlet</servlet-name>
+    <display-name>JCA Resource MBean Test</display-name>
+    <servlet-class>web.JCAResourceMBeanServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="JCAManagedConnectionFactoryMBeanServlet">
+    <servlet-name>JCA ManagedConnectionFactory MBean Servlet</servlet-name>
+    <display-name>JCA ManagedConnectionFactory MBean Test</display-name>
+    <servlet-class>web.JCAManagedConnectionFactoryMBeanServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="JCAConnectionFactoryMBeanServlet">
+    <servlet-name>JCA ConnectionFactory MBean Servlet</servlet-name>
+    <display-name>JCA ConnectionFactory MBean Test</display-name>
+    <servlet-class>web.JCAConnectionFactoryMBeanServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>  
+  
+  <!-- Section 2: JDBC SERVLETS-->
+  <servlet id="JDBCDataSourceMBeanServlet">
+    <servlet-name>JDBC DataSource MBean Servlet</servlet-name>
+    <display-name>JDBC DataSource MBean Test</display-name>
+    <servlet-class>web.JDBCDataSourceMBeanServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="JDBCDriverMBeanServlet">
+    <servlet-name>JDBC Driver MBean Servlet</servlet-name>
+    <display-name>JDBC Driver MBean Test</display-name>
+    <servlet-class>web.JDBCDriverMBeanServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="JDBCResourceMBeanServlet">
+    <servlet-name>JDBC Resource MBean Servlet</servlet-name>
+    <display-name>JDBC Resource MBean Test</display-name>
+    <servlet-class>web.JDBCResourceMBeanServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="ConnectionPoolStatsServlet">
+    <servlet-name>Connection Pool Stats Servlet</servlet-name>
+    <display-name>Connection Pool Stats Test Servlet</display-name>
+    <servlet-class>web.ConnectionPoolStatsServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->
+     
+  <!-- Section 1: JCA Mappings  -->
+  <servlet-mapping id="ServletMapping_ResourceAdapterModuleMBeanServlet">
+    <servlet-name>ResourceAdapterModule MBean Servlet</servlet-name>
+    <url-pattern>/ResourceAdapterModuleMBeanServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_ResourceAdapterMBeanServlet">
+    <servlet-name>ResourceAdapter MBean Servlet</servlet-name>
+    <url-pattern>/ResourceAdapterMBeanServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_JCAResourceMBeanServlet">
+    <servlet-name>JCA Resource MBean Servlet</servlet-name>
+    <url-pattern>/JCAResourceMBeanServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_JCAManagedConnectionFactoryMBeanServlet">
+    <servlet-name>JCA ManagedConnectionFactory MBean Servlet</servlet-name>
+    <url-pattern>/JCAManagedConnectionFactoryMBeanServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_JCAConnectionFactoryMBeanServlet">
+    <servlet-name>JCA ConnectionFactory MBean Servlet</servlet-name>
+    <url-pattern>/JCAConnectionFactoryMBeanServlet</url-pattern>
+  </servlet-mapping>
+  
+  
+  <!-- Section 2: JDBC Mappings  -->
+  <servlet-mapping id="ServletMapping_JDBCDataSourceMBeanServlet">
+    <servlet-name>JDBC DataSource MBean Servlet</servlet-name>
+    <url-pattern>/JDBCDataSourceMBeanServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_JDBCDriverMBeanServlet">
+    <servlet-name>JDBC Driver MBean Servlet</servlet-name>
+    <url-pattern>/JDBCDriverMBeanServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_JDBCResourceMBeanServlet">
+    <servlet-name>JDBC Resource MBean Servlet</servlet-name>
+    <url-pattern>/JDBCResourceMBeanServlet</url-pattern>
+  </servlet-mapping>
+    <servlet-mapping id="ServletMapping_ConnectionPoolStatsServlet">
+    <servlet-name>Connection Pool Stats Servlet</servlet-name>
+    <url-pattern>/ConnectionPoolStatsServlet</url-pattern>
+  </servlet-mapping>
+
+  <!-- RESOURCE REFERENCES -->
+  <resource-ref>
+    <res-ref-name>jms/cf1</res-ref-name>
+    <res-type>javax.jms.ConnectionFactory</res-type>
+    <lookup-name>jms/cf1</lookup-name>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jms/cf1-unshareable</res-ref-name>
+    <res-type>javax.jms.ConnectionFactory</res-type>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+    <lookup-name>jms/cf1</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>ims/cf1</res-ref-name>
+    <res-type>javax.resource.cci.ConnectionFactory</res-type>
+    <lookup-name>ims/cf1</lookup-name>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jms/cf6</res-ref-name>
+    <res-type>javax.jms.ConnectionFactory</res-type>
+    <lookup-name>jms/cf6</lookup-name>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>cf/beanTest-cf1</res-ref-name>
+    <res-type>javax.jms.ConnectionFactory</res-type>
+    <lookup-name>cf/beanTest-cf1</lookup-name>
+  </resource-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>jms/destination1</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Destination</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>jms/destination2</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Destination</resource-env-ref-type>
+  </resource-env-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>jms/queue1</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>jms/topic2</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+
+</web-app>

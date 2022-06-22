@@ -17,8 +17,8 @@ import java.util.Set;
  * runtime launcher. This service is registered in the OSGi service
  * registry. The code creating the service resides outside of the framework: it
  * is not a dynamic service, so direct access (rather than via a tracker) should
- * behave consistently. Calling code should still perform some defensive sanity
- * checking (like ensuring the returned service is not null, etc.).
+ * behave consistently. Calling code should still perform some defensive validation
+ * (like ensuring the returned service is not null, etc.).
  */
 public interface LibertyProcess {
     /**

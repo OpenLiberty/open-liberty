@@ -108,6 +108,15 @@ Service-Component:\
     deactivate:='deactivate'; \
     immediate:=true; \
     properties:="service.vendor=IBM,id=SocialLoginWtihATTAI,TAIName=SocialLoginWtihATTAI,invokeBeforeSSO:Boolean=true,addLTPACookieToResponse:Boolean=false", \
+  com.ibm.ws.security.socialmediasessioninvalidator.tai; \
+    implementation:=com.ibm.ws.security.social.tai.SocialLoginSessionInvalidatorTAI; \
+    provide:='com.ibm.wsspi.security.tai.TrustAssociationInterceptor'; \
+    configuration-policy:=ignore; \
+    modified:='modified'; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    properties:="service.vendor=IBM,id=SocialLoginSessionInvalidatorTAI,TAIName=SocialLoginSessionInvalidatorTAI,invokeBeforeSSO:Boolean=true,addLTPACookieToResponse:Boolean=false", \
   com.ibm.ws.security.social.web.EndpointServices; \
     implementation:=com.ibm.ws.security.social.web.EndpointServices; \
     provide:=com.ibm.ws.security.social.web.EndpointServices; \
@@ -132,6 +141,7 @@ Include-Resource: \
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.app.manager.wab;version=latest,\
 	com.ibm.ws.crypto.passwordutil;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\

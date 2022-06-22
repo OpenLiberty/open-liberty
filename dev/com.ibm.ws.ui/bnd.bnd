@@ -79,4 +79,4 @@ Include-Resource: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
-	commons-fileupload:commons-fileupload;version=1.3.3
+	com.ibm.ws.org.apache.commons.fileupload;version=latest

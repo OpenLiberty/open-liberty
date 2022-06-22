@@ -12,12 +12,10 @@ package io.openliberty.cdi40.internal.fat.config.beansxml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -29,14 +27,14 @@ public class AllBeansServlet extends FATServlet {
     private RequestScopedBean requestScopedBean;
 
     @Inject
-    private Instance<UnannotatedBean> unannotatedBean;
+    private UnannotatedBean unannotatedBean;
 
     @Test
     public void testAllBeansInjected() {
         assertNotNull(requestScopedBean);
         assertEquals("RequestScopedBean", requestScopedBean.test());
 
-        assertTrue(unannotatedBean.isResolvable());
-        assertEquals("UnannotatedBean", unannotatedBean.get().test());
+        assertNotNull(unannotatedBean);
+        assertEquals("UnannotatedBean", unannotatedBean.test());
     }
 }

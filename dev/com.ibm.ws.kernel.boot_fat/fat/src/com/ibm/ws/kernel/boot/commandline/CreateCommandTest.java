@@ -18,15 +18,18 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ProgramOutput;
 
 import componenttest.common.apiservices.Bootstrap;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
 
+@RunWith(FATRunner.class)
 public class CreateCommandTest {
 
     private final static String serverName = "com.ibm.ws.kernel.boot.commandline.CreateCommandTest";

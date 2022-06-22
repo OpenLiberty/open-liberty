@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package web;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,9 +27,16 @@ public class DerbyShutdownTask implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         int count = counter.incrementAndGet();
+        System.out.println("Attempt to call DerbyShutdownTask #" + count);
         if (count == 1) {
             DataSource schedDBShutdown = (DataSource) new InitialContext().lookup("jdbc/schedDBShutdown");
-            schedDBShutdown.getConnection().close(); // Expected to raise SQLException
+            try (Connection con = schedDBShutdown.getConnection()) {
+            	//DO NOTHING - just creating connection to shutdown database
+            } catch (SQLException e) {
+            	System.out.println("DerbyShutdownTask caught and rethrew exception " + e.getMessage());
+            	e.printStackTrace(System.out);
+            	throw e;
+            }
         }
         return count;
     }

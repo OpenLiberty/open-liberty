@@ -129,10 +129,10 @@ public abstract class AbstractAsyncChannel implements Channel {
      * OS memory.
      *
      * @param theBuffer
-     *            the direct byte buffer.
+     *                      the direct byte buffer.
      * @return the OS address as a <code>long</code>.
      * @throws IllegalArgumentException
-     *             if the buffer is not direct.
+     *                                      if the buffer is not direct.
      */
     static long getBufAddress(ByteBuffer theBuffer) {
         /*
@@ -313,12 +313,12 @@ public abstract class AbstractAsyncChannel implements Channel {
     /**
      * Performs a read or write operation.
      *
-     * @param buffers -
-     *            a Direct ByteBuffer array for the operation
+     * @param buffers  -
+     *                     a Direct ByteBuffer array for the operation
      * @param position -
-     *            a position in a file for the operation.
-     * @param isRead -
-     *            true for a read operation, false for a write operation
+     *                     a position in a file for the operation.
+     * @param isRead   -
+     *                     true for a read operation, false for a write operation
      * @return a future representing the IO operation underway
      */
     IAsyncFuture multiIO(ByteBuffer[] buffers, long position, boolean isRead, boolean forceQueue, long bytesRequested, boolean useJITBuffer, VirtualConnection vci,
@@ -328,7 +328,7 @@ public abstract class AbstractAsyncChannel implements Channel {
             Tr.entry(tc, "multiIO(.," + position + "," + isRead + "," + forceQueue + "," + bytesRequested + "," + useJITBuffer + ",.," + asyncIO);
         }
 
-        // Sanity check on the arguments
+        // Evaluate the arguments
         if (buffers == null) {
             throw new IllegalArgumentException();
         }

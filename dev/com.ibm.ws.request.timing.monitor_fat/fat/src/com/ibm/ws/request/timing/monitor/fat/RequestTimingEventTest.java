@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.request.timing.app.RequestTimingServlet;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
@@ -157,7 +156,6 @@ public class RequestTimingEventTest {
      *
      * @throws Exception
      */
-    @ExpectedFFDC("java.lang.ClassCastException")
     @Mode(TestMode.LITE)
     @Test
     public void testTotalServletRequestsWithEventTiming() throws Exception {
@@ -223,7 +221,6 @@ public class RequestTimingEventTest {
      *
      * @throws Exception
      */
-    @ExpectedFFDC("java.lang.ClassCastException")
     @Mode(TestMode.LITE)
     @Test
     public void testSlowServletRequestWithEventTiming() throws Exception {
@@ -311,7 +308,6 @@ public class RequestTimingEventTest {
      *
      * @throws Exception
      */
-    @ExpectedFFDC("java.lang.ClassCastException")
     @Mode(TestMode.LITE)
     @Test
     public void testHungServletRequestWithEventTiming() throws Exception {
@@ -408,7 +404,7 @@ public class RequestTimingEventTest {
      * allow a test to finish
      *
      * @param countToWaitFor
-     *            Value looked for in CountDownLatch
+     *                           Value looked for in CountDownLatch
      * @throws Exception
      */
     private void waitInServletForCountDownLatch(int countToWaitFor) throws Exception {
@@ -478,9 +474,9 @@ public class RequestTimingEventTest {
      * test
      *
      * @param th
-     *            -- array of threads
+     *                    -- array of threads
      * @param numReqs
-     *            -- number of requests is the number of threads needed
+     *                    -- number of requests is the number of threads needed
      */
     private void createRequestThreads(Thread[] th, int numReqs, String method) {
         // Send N servlet requests to server, last request used to terminate

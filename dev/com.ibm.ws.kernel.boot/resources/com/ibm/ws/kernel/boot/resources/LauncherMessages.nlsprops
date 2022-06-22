@@ -100,7 +100,9 @@ error.secPermission=CWWKE0016E: The bootstrap JAR file requires the AllPermissio
 error.secPermission.explanation=The Java 2 Security permissions are insufficient for the bootstrap JAR file to launch the runtime environment and the OSGi framework.
 error.secPermission.useraction=Ensure that the bootstrap JAR file has been granted AllPermission privileges in the Java 2 Security policy file.
 
-# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+error.badBitmode=CWWKE0017E: The process detected a 31-bit JVM that is not supported. The runtime environment requires 64-bit Java 8 version or higher.
+error.badBitmode.explanation=The JAVA_HOME system variable is set to point to a version of Java that is 31-bit.
+error.badBitmode.useraction=Adjust the JAVA_HOME system variable to point to a 64-bit Java 8 version or higher.
 
 error.unknownException=CWWKE0018E: An exception occurred while launching the runtime environment: {0}
 error.unknownException.explanation=The exception prevented the launch of the server.

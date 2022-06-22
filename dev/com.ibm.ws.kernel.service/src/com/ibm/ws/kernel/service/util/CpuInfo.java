@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +34,11 @@ import javax.management.ObjectName;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * API for getting cpu info about the system
@@ -67,16 +70,19 @@ public class CpuInfo {
     private long lastProcessCPUTime = 0;
     private double lastProcessCpuUsage = -1;
     private long lastSystemTimeMillis = -1;
-    private IntervalTask activeTask;
-    private ScheduledFuture<?> future;
+    private final IntervalTask activeTask;
 
     private static final long INTERVAL = 10; // in minutes
     private static Collection<AvailableProcessorsListener> listeners = Collections.synchronizedCollection(new HashSet<AvailableProcessorsListener>());
 
     private CpuInfo() {
         activeTask = new IntervalTask();
-        future = executor.scheduleAtFixedRate(activeTask, INTERVAL, INTERVAL, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(activeTask, INTERVAL, INTERVAL, TimeUnit.MINUTES);
         cpuCount = new CPUCount();
+        CheckpointPhase phase = CheckpointPhase.getPhase();
+        if (phase != null) {
+            phase.addMultiThreadedHook(activeTask);
+        }
         int runtimeAvailableProcessors = Runtime.getRuntime().availableProcessors();
         int fileSystemAvailableProcessors = getAvailableProcessorsFromFilesystem();
 
@@ -87,8 +93,13 @@ public class CpuInfo {
         }
 
         int nsFactor = 1;
-        // adjust for J9 cpuUsage units change from hundred-nanoseconds to nanoseconds in Java8sr5
-        if (JavaInfo.vendor() == JavaInfo.Vendor.IBM) {
+        // Adjust for J9 cpuUsage units change from hundred-nanoseconds to nanoseconds in IBM Java8sr5
+        //
+        // Cannot use JavaInfo.vendor() == JavaInfo.Vendor.IBM because that returns true on Semeru 8 as well
+        // and the format of the string is 1.8.0_xxx-bxx so it will comes out as 8.0.0 so we will
+        // erroneously think it is less than Java 8 SR5.  So using this isSystemClassAvailable check for
+        // a class that is available on IBM Java 8, but not Semeru 8.
+        if (JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) {
             int majorVersion = JavaInfo.majorVersion();
             int minorVersion = JavaInfo.minorVersion();
             int serviceRelease = JavaInfo.serviceRelease();
@@ -386,7 +397,12 @@ public class CpuInfo {
     /**
      * Timer task that queries available process cpus.
      */
-    class IntervalTask implements Runnable {
+    class IntervalTask implements Runnable, CheckpointHook {
+
+        @Override
+        public void restore() {
+            run();
+        }
 
         @Override
         public void run() {
@@ -432,19 +448,15 @@ public class CpuInfo {
         }
     }
 
+    @Trivial
     public class CPUCount {
         public int get() {
             return AVAILABLE_PROCESSORS.get();
         }
-    }
 
-    public void reset() {
-        future.cancel(false);
-        activeTask = new IntervalTask();
-        future = executor.scheduleAtFixedRate(activeTask, 0, INTERVAL, TimeUnit.MINUTES);
-    }
-
-    public static void resetTimer() {
-        INSTANCE.reset();
+        @Override
+        public String toString() {
+            return Integer.toString(AVAILABLE_PROCESSORS.get());
+        }
     }
 }

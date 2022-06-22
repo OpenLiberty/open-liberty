@@ -31,6 +31,8 @@ javax.xml.bind;version=!,\
 javax.xml.bind.annotation;version=!,\
 javax.xml.bind.annotation.adapters;version=!,\
 javax.xml.bind.attachment;version=!,\
+org.apache.cxf;version="[3.2,4)", \
+org.apache.cxf.*;version="[3.2,4)", \
 *
 
 Export-Package: \

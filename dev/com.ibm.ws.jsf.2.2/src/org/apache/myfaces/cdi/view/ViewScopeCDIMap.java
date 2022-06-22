@@ -197,6 +197,7 @@ public class ViewScopeCDIMap implements Map<String, Object>
                         ViewScopeContextImpl.destroyAllActive(st);
                         storage = null;
                         destroyed = true;
+                        bean.removeStorage(_viewScopeId);
                     }
                 }
             }

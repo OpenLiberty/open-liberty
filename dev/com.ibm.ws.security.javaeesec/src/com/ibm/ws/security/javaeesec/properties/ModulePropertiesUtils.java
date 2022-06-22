@@ -91,77 +91,82 @@ public class ModulePropertiesUtils {
         MetaData metadata = getMetaData();
         Class hamClass = null;
         HttpAuthenticationMechanism ham = null;
-        if (ModuleToHam.containsKey(metadata)) {
-            // lookup ApplicationScoped cache first.
-            ham = ModuleToHam.get(metadata).getHam();
-        } else if (ModuleToHamLookup.containsKey(metadata)) {
-            // lookup non ApplicationScoped cache. if hits, it's already looked up for BeanManager and HAM impl class.
-            ham = ModuleToHamLookup.get(metadata).getHam();
+
+        // lookup ApplicationScoped cache first.
+        HamObject hamObject = ModuleToHam.get(metadata);
+        if (hamObject != null) {
+            ham = hamObject.getHam();
         } else {
-            // find HAM from BeanManagers
-            boolean isCacheable = true;
-            BeanManager beanManager = null;
-            CDI cdi = getCDI();
-            if (cdi != null) {
-                beanManager = cdi.getBeanManager();
-                if (beanManager != null) {
-                    Instance<ModulePropertiesProvider> mppi = cdi.select(ModulePropertiesProvider.class);
-                    if (mppi != null && !mppi.isUnsatisfied() && !mppi.isAmbiguous()) {
-                        List<Class> implClassList = mppi.get().getAuthMechClassList();
-                        if (implClassList != null) {
-                            if (implClassList.size() == 1) {
-                                hamClass = implClassList.get(0);
-                                Bean<HttpAuthenticationMechanism> bean = getBean(beanManager, hamClass);
-                                if (bean != null) {
-                                    ham = (HttpAuthenticationMechanism) beanManager.getReference(bean, hamClass, beanManager.createCreationalContext(bean));
-                                    isCacheable = isCacheable(bean);
-                                    if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, "HAM from the current CDI : " + ham);
-                                    }
-                                } else {
-                                    BeanManager moduleBeanManager = CDIHelper.getBeanManager();
-                                    if (!beanManager.equals(moduleBeanManager)) {
-                                        // try module level.
-                                        beanManager = moduleBeanManager;
-                                        bean = getBean(beanManager, hamClass);
-                                        if (bean != null) {
-                                            ham = (HttpAuthenticationMechanism) beanManager.getReference(bean, hamClass, beanManager.createCreationalContext(bean));
-                                            isCacheable = isCacheable(bean);
-                                            if (tc.isDebugEnabled()) {
-                                                Tr.debug(tc, "HAM from the module BeanManager : " + ham);
+            // lookup non ApplicationScoped cache. if hits, it's already looked up for BeanManager and HAM impl class.
+            HamLookupObject hamLookupObject = ModuleToHamLookup.get(metadata);
+            if (hamLookupObject != null) {
+                ham = hamLookupObject.getHam();
+            } else {
+                // find HAM from BeanManagers
+                boolean isCacheable = true;
+                BeanManager beanManager = null;
+                CDI cdi = getCDI();
+                if (cdi != null) {
+                    beanManager = cdi.getBeanManager();
+                    if (beanManager != null) {
+                        Instance<ModulePropertiesProvider> mppi = cdi.select(ModulePropertiesProvider.class);
+                        if (mppi != null && !mppi.isUnsatisfied() && !mppi.isAmbiguous()) {
+                            List<Class> implClassList = mppi.get().getAuthMechClassList();
+                            if (implClassList != null) {
+                                if (implClassList.size() == 1) {
+                                    hamClass = implClassList.get(0);
+                                    Bean<HttpAuthenticationMechanism> bean = getBean(beanManager, hamClass);
+                                    if (bean != null) {
+                                        ham = (HttpAuthenticationMechanism) beanManager.getReference(bean, hamClass, beanManager.createCreationalContext(bean));
+                                        isCacheable = isCacheable(bean);
+                                        if (tc.isDebugEnabled()) {
+                                           Tr.debug(tc, "HAM from the current CDI : " + ham);
+                                        }
+                                    } else {
+                                        BeanManager moduleBeanManager = CDIHelper.getBeanManager();
+                                        if (!beanManager.equals(moduleBeanManager)) {
+                                            // try module level.
+                                            beanManager = moduleBeanManager;
+                                            bean = getBean(beanManager, hamClass);
+                                            if (bean != null) {
+                                                ham = (HttpAuthenticationMechanism) beanManager.getReference(bean, hamClass, beanManager.createCreationalContext(bean));
+                                                isCacheable = isCacheable(bean);
+                                                if (tc.isDebugEnabled()) {
+                                                    Tr.debug(tc, "HAM from the module BeanManager : " + ham);
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                if (ham == null) {
-                                    Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
-                                }
-                            } else if (implClassList.size() == 0) {
-                                if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "No HAM implementation class. Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
+                                    if (ham == null) {
+                                        Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
+                                    }
+                                } else if (implClassList.size() == 0) {
+                                    if (tc.isDebugEnabled()) {
+                                        Tr.debug(tc, "No HAM implementation class. Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
+                                    }
+                                } else {
+                                    if (tc.isDebugEnabled()) {
+                                        Tr.debug(tc, "Number of HAM implementation class is more than one : " + implClassList.size() + ", Module Name : " + getJ2EEModuleName()
+                                                    + ", Application Name : " + getJ2EEApplicationName());
+                                    }
                                 }
                             } else {
                                 if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "Number of HAM implementation class is more than one : " + implClassList.size() + ", Module Name : " + getJ2EEModuleName()
-                                                 + ", Application Name : " + getJ2EEApplicationName());
+                                    Tr.debug(tc, "No HAM implementation class defined. Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
                                 }
                             }
-                        } else {
-                            if (tc.isDebugEnabled()) {
-                                Tr.debug(tc, "No HAM implementation class defined. Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
-                            }
+                        } else if (logError) {
+                            throw new RuntimeException("ModulePropertiesProvider object cannot be identified.");
                         }
-                    } else if (logError) {
-                        throw new RuntimeException("ModulePropertiesProvider object cannot be identified.");
                     }
                 }
-            }
-            if (!isCacheable) {
-                // when isCacheable is false, beanManager and hamClass always exist.
-                ModuleToHamLookup.put(metadata, new HamLookupObject(beanManager, hamClass));
-            } else {
-                // in order to avoid filling up the same error message, cache the data even though there is an error
-                ModuleToHam.put(metadata, new HamObject(ham));
+                if (!isCacheable) {
+                    // when isCacheable is false, beanManager and hamClass always exist.
+                    ModuleToHamLookup.put(metadata, new HamLookupObject(beanManager, hamClass));
+                } else {
+                    // in order to avoid filling up the same error message, cache the data even though there is an error
+                    ModuleToHam.put(metadata, new HamObject(ham));
+                }
             }
         }
         return ham;

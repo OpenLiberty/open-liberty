@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,12 @@ package web.jsonbtest;
 import static web.jsonbtest.JSONBTestServlet.PROVIDER_JOHNZON;
 import static web.jsonbtest.JSONBTestServlet.PROVIDER_YASSON;
 
+import java.util.HashMap;
+
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
@@ -24,27 +29,63 @@ import componenttest.app.FATServlet;
 public class YassonTestServlet extends FATServlet {
 
     @Test
-    public void testApplicationClasses() throws Exception {
-        JSONBTestServlet.testApplicationClasses(PROVIDER_YASSON);
+    public void testApplicationClasses(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        CustomHttpRequest newRequest = new CustomHttpRequest(request);
+        newRequest.addParameter("JsonbProvider", PROVIDER_YASSON);
+        JSONBTestServlet.testApplicationClasses(newRequest, response);
     }
 
     @Test
-    public void testJsonbAdapter() throws Exception {
-        JSONBTestServlet.testJsonbAdapter(PROVIDER_YASSON);
+    public void testJsonbAdapter(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        CustomHttpRequest newRequest = new CustomHttpRequest(request);
+        newRequest.addParameter("JsonbProvider", PROVIDER_YASSON);
+        JSONBTestServlet.testJsonbAdapter(newRequest, response);
     }
 
     @Test
-    public void testJsonbProviderAvailable() throws Exception {
-        JSONBTestServlet.testJsonbProviderAvailable(PROVIDER_YASSON);
+    public void testJsonbProviderAvailable(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        CustomHttpRequest newRequest = new CustomHttpRequest(request);
+        newRequest.addParameter("JsonbProvider", PROVIDER_YASSON);
+        JSONBTestServlet.testJsonbProviderAvailable(newRequest, response);
     }
 
     @Test
-    public void testJsonbProviderNotAvailable() throws Exception {
-        JSONBTestServlet.testJsonbProviderNotAvailable(PROVIDER_JOHNZON);
+    public void testJsonbProviderNotAvailable(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        CustomHttpRequest newRequest = new CustomHttpRequest(request);
+        newRequest.addParameter("JsonbProvider", PROVIDER_JOHNZON);
+        JSONBTestServlet.testJsonbProviderNotAvailable(newRequest, response);
     }
 
     @Test
-    public void testThreadContextClassLoader() throws Exception {
-        JSONBTestServlet.testThreadContextClassLoader(PROVIDER_YASSON);
+    public void testThreadContextClassLoader(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        CustomHttpRequest newRequest = new CustomHttpRequest(request);
+        newRequest.addParameter("JsonbProvider", PROVIDER_YASSON);
+        JSONBTestServlet.testThreadContextClassLoader(newRequest, response);
+    }
+
+    public class CustomHttpRequest extends HttpServletRequestWrapper {
+
+        private HashMap<String, String> params = new HashMap<>();
+
+        public CustomHttpRequest(HttpServletRequest request) {
+            super(request);
+        }
+
+        @Override
+        public String getParameter(String name) {
+            // if we added one, return that one
+            if (params.get(name) != null) {
+                return params.get(name);
+            }
+
+            // otherwise return what's in the original request
+            HttpServletRequest req = (HttpServletRequest) super.getRequest();
+            return req.getParameter(name);
+        }
+
+        public void addParameter(String name, String value) {
+            params.put(name, value);
+        }
+
     }
 }
