@@ -33,4 +33,4 @@
 
 CWWKJ0351.feature.compatibility=CWWKJ0351I: The jsonp and jsonpContainer features are both enabled. The jsonpContainer feature supersedes the jsonp feature.
 CWWKJ0351.feature.compatibility.explanation=Use the jsonpContainer feature if you want to provide a third-party implementation of the Jakarta JSON Processing API. The jsonp feature provides only a default implementation.
-CWWKJ0351.feature.compatibility.useraction=Ensure that you configure a BELL that provides an implementation of the Jakarta JSON Processing API in your server configuration.
+CWWKJ0351.feature.compatibility.useraction=Ensure that you configure a BELL configuration element that provides an implementation of the Jakarta JSON Processing API in your server configuration.
