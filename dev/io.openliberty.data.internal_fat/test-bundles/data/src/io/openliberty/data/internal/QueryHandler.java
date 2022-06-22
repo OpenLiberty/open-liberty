@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,6 +56,9 @@ import io.openliberty.data.Param;
 import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
 import io.openliberty.data.Select;
+import io.openliberty.data.Sort;
+import io.openliberty.data.SortType;
+import io.openliberty.data.Sorts;
 import io.openliberty.data.Update;
 import io.openliberty.data.Where;
 
@@ -373,7 +377,10 @@ public class QueryHandler<T> implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        // TODO a real implementation would pre-compute and cache most of what this method does instead of repeating it every time
         String methodName = method.getName();
+        Class<?>[] paramTypes = method.getParameterTypes();
+        int paramCount = paramTypes.length;
 
         if (args == null) {
             if ("hashCode".equals(methodName))
@@ -392,6 +399,7 @@ public class QueryHandler<T> implements InvocationHandler {
         QueryType queryType;
         boolean requiresTransaction;
         Pagination pagination = null;
+        Sorts sorts = null;
 
         // @Query annotation
         Query fullQuery = method.getAnnotation(Query.class);
@@ -399,7 +407,7 @@ public class QueryHandler<T> implements InvocationHandler {
 
         // Repository built-in methods
         if (jpql == null && Repository.class.equals(method.getDeclaringClass()))
-            jpql = getBuiltInRepositoryQuery(methodName, args, method.getParameterTypes());
+            jpql = getBuiltInRepositoryQuery(methodName, args, paramTypes);
 
         // @Delete/@Update/@Where/@OrderBy annotations
         if (jpql == null) {
@@ -407,20 +415,10 @@ public class QueryHandler<T> implements InvocationHandler {
             Where where = method.getAnnotation(Where.class);
             if (update == null) {
                 if (method.getAnnotation(Delete.class) == null) {
-                    OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
-                    if (where != null || orderBy.length > 0) {
+                    if (where != null) {
                         StringBuilder q = new StringBuilder(200);
                         generateSelect(q, method);
-                        if (where != null)
-                            q.append(" WHERE ").append(where.value());
-                        if (orderBy.length > 0) {
-                            q.append(" ORDER BY ");
-                            for (int i = 0; i < orderBy.length; i++) {
-                                q.append(i > 0 ? ", o." : "o.").append(orderBy[i].value());
-                                if (orderBy[i].descending())
-                                    q.append(" DESC");
-                            }
-                        }
+                        q.append(" WHERE ").append(where.value());
                         jpql = q.toString();
                     }
                 } else {
@@ -443,6 +441,63 @@ public class QueryHandler<T> implements InvocationHandler {
         if (jpql == null)
             jpql = generateRepositoryQuery(method);
 
+        // Jakarta NoSQL allows the last 2 parameter positions to be used for Pagination and Sorts
+        for (paramCount = paramTypes.length; paramCount > 0 && paramCount > paramTypes.length - 2;) {
+            Class<?> type = paramTypes[paramCount - 1];
+            if (Pagination.class.equals(type))
+                pagination = (Pagination) args[--paramCount];
+            else if (Sort.class.equals(type))
+                sorts = Sorts.sorts().add((Sort) args[--paramCount]);
+            else if (Sorts.class.equals(type))
+                sorts = (Sorts) args[--paramCount];
+            else
+                break;
+        }
+
+        // The Sorts parameter is from JNoSQL
+        // The @OrderBy annotation is not. It's an experiment with defining the same information annotatively.
+        OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
+        if (orderBy.length > 0) {
+            StringBuilder q = jpql == null ? new StringBuilder(200) : new StringBuilder(jpql);
+            if (jpql == null)
+                generateSelect(q, method);
+            for (int i = 0; i < orderBy.length; i++) {
+                q.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
+                if (orderBy[i].descending())
+                    q.append(" DESC");
+            }
+            jpql = q.toString();
+        }
+
+        if (sorts != null) {
+            boolean first = true;
+            StringBuilder q = jpql == null ? new StringBuilder(200) : new StringBuilder(jpql);
+            if (jpql == null)
+                generateSelect(q, method);
+            for (Sort sort : sorts.getSorts()) {
+                q.append(first ? " ORDER BY o." : ", o.").append(sort.getName());
+                if (sort.getType() == SortType.DESC)
+                    q.append(" DESC");
+                first = false;
+            }
+            jpql = q.toString();
+        }
+
+        // The Pagination parameter is from JNoSQL.
+        // The @Paginated annotation is not - I just wanted to experiment with how it could work
+        // if defined annotatively, which turns out to be possible, but not as flexible.
+        if (pagination == null) {
+            Paginated paginated = method.getAnnotation(Paginated.class);
+            if (paginated != null)
+                pagination = Pagination.page(1).size(paginated.value());
+        }
+        if (pagination != null && Iterator.class.equals(returnType))
+            return new PaginatedIterator<T>(jpql, pagination, this, method, paramCount, args);
+        else if (Page.class.equals(returnType))
+            return new PageImpl<T>(jpql, pagination, this, method, paramCount, args);
+        else if (Publisher.class.equals(returnType))
+            return new PublisherImpl<T>(jpql, this, method, paramCount, args);
+
         // TODO Actual implementation is lacking so we are cheating by
         // temporarily sending in the JPQL directly:
         if (jpql == null) {
@@ -451,21 +506,6 @@ public class QueryHandler<T> implements InvocationHandler {
         } else {
             String q = jpql.toUpperCase();
             if (q.startsWith("SELECT")) {
-                // The Pagination parameter is from JNoSQL.
-                // The @Paginated annotation is not - I just wanted to experiment with how it could work
-                // if defined annotatively, which turns out to be possible, but not as flexible.
-                Paginated paginated = method.getAnnotation(Paginated.class);
-                if (paginated == null)
-                    pagination = args != null && args[args.length - 1] instanceof Pagination ? (Pagination) args[args.length - 1] : null;
-                else
-                    pagination = Pagination.page(1).size(paginated.value());
-                if (pagination != null && Iterator.class.equals(returnType))
-                    return new PaginatedIterator<T>(jpql, pagination, this, method, args);
-                else if (Page.class.equals(returnType))
-                    return new PageImpl<T>(jpql, pagination, this, method, args);
-                else if (Publisher.class.equals(returnType))
-                    return new PublisherImpl<T>(jpql, this, method, args);
-
                 queryType = QueryType.SELECT;
                 requiresTransaction = false;
             } else if (q.startsWith("UPDATE")) {
@@ -493,11 +533,11 @@ public class QueryHandler<T> implements InvocationHandler {
             switch (queryType) {
                 case MERGE:
                     if (entityClassesAvailable.contains(args[0].getClass()) ||
-                        entityClassesAvailable.contains(method.getParameterTypes()[0])) {
+                        entityClassesAvailable.contains(paramTypes[0])) {
                         returnValue = em.merge(args[0]);
                         em.flush();
                         returnValue = returnType.isInstance(returnValue) ? returnValue : null;
-                    } else if (Iterable.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                    } else if (Iterable.class.isAssignableFrom(paramTypes[0])) {
                         ArrayList<Object> results = new ArrayList<>();
                         for (Object e : ((Iterable<?>) args[0]))
                             results.add(em.merge(e));
@@ -513,16 +553,13 @@ public class QueryHandler<T> implements InvocationHandler {
                     TypedQuery<?> query = em.createQuery(jpql, entityClass);
                     if (args != null) {
                         Parameter[] params = method.getParameters();
-                        for (int i = 0; i < args.length; i++)
-                            if (i == args.length - 1 && args[i] instanceof Pagination) {
-                                break; // final argument can be a Pagination
-                            } else {
-                                Param param = params[i].getAnnotation(Param.class);
-                                if (param == null)
-                                    query.setParameter(i + 1, args[i]);
-                                else // named parameter
-                                    query.setParameter(param.value(), args[i]);
-                            }
+                        for (int i = 0; i < paramCount; i++) {
+                            Param param = params[i].getAnnotation(Param.class);
+                            if (param == null)
+                                query.setParameter(i + 1, args[i]);
+                            else // named parameter
+                                query.setParameter(param.value(), args[i]);
+                        }
                     }
 
                     if (pagination == null) {
@@ -549,11 +586,11 @@ public class QueryHandler<T> implements InvocationHandler {
                         returnValue = r;
                     } else if (Optional.class.equals(returnType))
                         returnValue = results.isEmpty() ? Optional.empty() : Optional.of(results.iterator().next());
-                    else if (List.class.isAssignableFrom(returnType))
+                    else if (Collection.class.isAssignableFrom(returnType))
                         try {
                             @SuppressWarnings("unchecked")
-                            Constructor<? extends List<Object>> c = (Constructor<? extends List<Object>>) returnType.getConstructor();
-                            List<Object> list = c.newInstance();
+                            Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) returnType.getConstructor();
+                            Collection<Object> list = c.newInstance();
                             list.addAll(results);
                             returnValue = list;
                         } catch (NoSuchMethodException x) {

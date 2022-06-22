@@ -33,10 +33,6 @@ import java.lang.annotation.Target;
  * &#64;OrderBy("firstName")
  * Person[] getEligibleVoters(int zipCode);
  * </pre>
- *
- * Do not combine on a method with {@link Query &#64;Query} or
- * with repository queries that are inferred from the method name,
- * which have their own separate mechanisms for specifying order.
  */
 @Repeatable(OrderBy.List.class)
 @Retention(RetentionPolicy.RUNTIME)
