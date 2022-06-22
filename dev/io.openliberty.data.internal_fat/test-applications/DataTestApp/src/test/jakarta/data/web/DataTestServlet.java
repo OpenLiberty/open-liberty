@@ -376,15 +376,22 @@ public class DataTestServlet extends FATServlet {
         t = tariffs.findByLeviedByAndLeviedAgainstAndLeviedOn("USA", "Bangladesh", "Textiles");
         assertEquals(t6.rate, t.rate, 0.0001f);
 
-        // Paginated list:
-        assertIterableEquals(List.of("China", "Germany", "India", "Japan", "Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA")
+        // List return type for Pagination only represents a single page, not all pages.
+        // page 1:
+        assertIterableEquals(List.of("China", "Germany", "India", "Japan"),
+                             tariffs.findByLeviedByOrderByKey("USA", Pagination.page(1).size(4))
+                                             .stream()
+                                             .map(o -> o.leviedAgainst)
+                                             .collect(Collectors.toList()));
+        // page 2:
+        assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
+                             tariffs.findByLeviedByOrderByKey("USA", Pagination.page(2).size(4))
                                              .stream()
                                              .map(o -> o.leviedAgainst)
                                              .collect(Collectors.toList()));
 
         // Random access to paginated list:
-        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA");
+        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA", Pagination.page(1).size(20));
         assertEquals(t4.leviedAgainst, list.get(3).leviedAgainst);
         assertEquals(t7.leviedAgainst, list.get(6).leviedAgainst);
         assertEquals(t2.leviedAgainst, list.get(1).leviedAgainst);

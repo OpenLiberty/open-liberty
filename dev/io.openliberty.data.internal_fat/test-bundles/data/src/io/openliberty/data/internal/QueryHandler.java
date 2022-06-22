@@ -15,7 +15,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -392,6 +391,7 @@ public class QueryHandler<T> implements InvocationHandler {
         Object returnValue;
         QueryType queryType;
         boolean requiresTransaction;
+        Pagination pagination = null;
 
         // @Query annotation
         Query fullQuery = method.getAnnotation(Query.class);
@@ -455,21 +455,17 @@ public class QueryHandler<T> implements InvocationHandler {
                 // The @Paginated annotation is not - I just wanted to experiment with how it could work
                 // if defined annotatively, which turns out to be possible, but not as flexible.
                 Paginated paginated = method.getAnnotation(Paginated.class);
-                Pagination pagination;
                 if (paginated == null)
                     pagination = args != null && args[args.length - 1] instanceof Pagination ? (Pagination) args[args.length - 1] : null;
                 else
                     pagination = Pagination.page(1).size(paginated.value());
-                if (Page.class.equals(returnType))
+                if (pagination != null && Iterator.class.equals(returnType))
+                    return new PaginatedIterator<T>(jpql, pagination, this, method, args);
+                else if (Page.class.equals(returnType))
                     return new PageImpl<T>(jpql, pagination, this, method, args);
-                if (pagination != null) {
-                    if (Iterator.class.equals(returnType))
-                        return new PaginatedIterator<T>(jpql, pagination, this, method, args);
-                    else if (returnType.isAssignableFrom(AbstractList.class))
-                        return new PaginatedList<T>(jpql, pagination, this, method, args);
-                } else if (Publisher.class.equals(returnType)) {
+                else if (Publisher.class.equals(returnType))
                     return new PublisherImpl<T>(jpql, this, method, args);
-                }
+
                 queryType = QueryType.SELECT;
                 requiresTransaction = false;
             } else if (q.startsWith("UPDATE")) {
@@ -517,18 +513,27 @@ public class QueryHandler<T> implements InvocationHandler {
                     TypedQuery<?> query = em.createQuery(jpql, entityClass);
                     if (args != null) {
                         Parameter[] params = method.getParameters();
-                        for (int i = 0; i < args.length; i++) {
-                            Param param = params[i].getAnnotation(Param.class);
-                            if (param == null)
-                                query.setParameter(i + 1, args[i]);
-                            else // named parameter
-                                query.setParameter(param.value(), args[i]);
-                        }
+                        for (int i = 0; i < args.length; i++)
+                            if (i == args.length - 1 && args[i] instanceof Pagination) {
+                                break; // final argument can be a Pagination
+                            } else {
+                                Param param = params[i].getAnnotation(Param.class);
+                                if (param == null)
+                                    query.setParameter(i + 1, args[i]);
+                                else // named parameter
+                                    query.setParameter(param.value(), args[i]);
+                            }
                     }
 
-                    Limit limit = method.getAnnotation(Limit.class);
-                    if (limit != null)
-                        query.setMaxResults(limit.value());
+                    if (pagination == null) {
+                        Limit limit = method.getAnnotation(Limit.class);
+                        if (limit != null)
+                            query.setMaxResults(limit.value());
+                    } else {
+                        // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
+                        query.setFirstResult((int) pagination.getSkip());
+                        query.setMaxResults((int) pagination.getPageSize());
+                    }
 
                     List<?> results = query.getResultList();
 
