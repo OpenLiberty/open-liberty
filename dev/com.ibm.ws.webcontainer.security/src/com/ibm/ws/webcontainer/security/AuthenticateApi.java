@@ -241,7 +241,7 @@ public class AuthenticateApi {
             if (!bInitUserName) {
                 bInitUserName = true;
                 userName = getSessionUserName(req, res);
-                if (userName == null) {
+                if (userName == null || "anonymous".equals(userName)) {
                     userName = getUserNameFromCallerSubject();
                 }
             }
