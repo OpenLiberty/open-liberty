@@ -70,6 +70,9 @@ public class DataTestServlet extends FATServlet {
     @Inject
     ShippingAddresses shippingAddresses;
 
+    @Inject
+    Tariffs tariffs;
+
     @Resource
     private UserTransaction tran;
 
@@ -267,6 +270,130 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Add, find, and remove entities with a mapped superclass.
+     * Also tests automatically paginated iterator and list.
+     */
+    @Test
+    public void testMappedSuperclass() {
+        tariffs.deleteByLeviedBy("USA");
+
+        Tariff t1 = new Tariff();
+        t1.leviedAgainst = "China";
+        t1.leviedBy = "USA";
+        t1.leviedOn = "Solar Panels";
+        t1.rate = 0.15f;
+        tariffs.save(t1);
+
+        Tariff t2 = new Tariff();
+        t2.leviedAgainst = "Germany";
+        t2.leviedBy = "USA";
+        t2.leviedOn = "Steel";
+        t2.rate = 0.25f;
+        tariffs.save(t2);
+
+        Tariff t3 = new Tariff();
+        t3.leviedAgainst = "India";
+        t3.leviedBy = "USA";
+        t3.leviedOn = "Aluminum";
+        t3.rate = 0.1f;
+        tariffs.save(t3);
+
+        Tariff t4 = new Tariff();
+        t4.leviedAgainst = "Japan";
+        t4.leviedBy = "USA";
+        t4.leviedOn = "Cars";
+        t4.rate = 0.025f;
+        tariffs.save(t4);
+
+        Tariff t5 = new Tariff();
+        t5.leviedAgainst = "Canada";
+        t5.leviedBy = "USA";
+        t5.leviedOn = "Lumber";
+        t5.rate = 0.1799f;
+        tariffs.save(t5);
+
+        Tariff t6 = new Tariff();
+        t6.leviedAgainst = "Bangladesh";
+        t6.leviedBy = "USA";
+        t6.leviedOn = "Textiles";
+        t6.rate = 0.158f;
+        tariffs.save(t6);
+
+        Tariff t7 = new Tariff();
+        t7.leviedAgainst = "Mexico";
+        t7.leviedBy = "USA";
+        t7.leviedOn = "Trucks";
+        t7.rate = 0.25f;
+        tariffs.save(t7);
+
+        Tariff t8 = new Tariff();
+        t8.leviedAgainst = "Canada";
+        t8.leviedBy = "USA";
+        t8.leviedOn = "Copper";
+        t8.rate = 0.0194f;
+        tariffs.save(t8);
+
+        assertIterableEquals(List.of("Copper", "Lumber"),
+                             tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
+
+        // Iterator with paging:
+        Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M");
+
+        Tariff t;
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t8.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t6.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t5.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t4.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t3.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t2.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t1.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(false, it.hasNext());
+        assertEquals(false, it.hasNext());
+
+        // Paginated iterator with no results:
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("A");
+        assertEquals(false, it.hasNext());
+
+        t = tariffs.findByLeviedByAndLeviedAgainstAndLeviedOn("USA", "Bangladesh", "Textiles");
+        assertEquals(t6.rate, t.rate, 0.0001f);
+
+        // Paginated list:
+        assertIterableEquals(List.of("China", "Germany", "India", "Japan", "Canada", "Bangladesh", "Mexico", "Canada"),
+                             tariffs.findByLeviedByOrderByKey("USA")
+                                             .stream()
+                                             .map(o -> o.leviedAgainst)
+                                             .collect(Collectors.toList()));
+
+        // Random access to paginated list:
+        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA");
+        assertEquals(t4.leviedAgainst, list.get(3).leviedAgainst);
+        assertEquals(t7.leviedAgainst, list.get(6).leviedAgainst);
+        assertEquals(t2.leviedAgainst, list.get(1).leviedAgainst);
+        assertEquals(t8.leviedAgainst, list.get(7).leviedAgainst);
+
+        assertEquals(8, tariffs.deleteByLeviedBy("USA"));
+    }
+
+    /**
      * Invoke methods that are annotated with the Select, Where, Update, and Delete annotations.
      */
     @Test
@@ -313,6 +440,18 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040"));
         assertEquals("IN_TRANSIT", shipments.getStatus(2));
+
+        // @OrderBy "destination"
+        assertIterableEquals(List.of("151 4th St SE, Rochester, MN 55904",
+                                     "200 1st Ave SW, Rochester, MN 55902",
+                                     "201 4th St SE, Rochester, MN 55904"),
+                             shipments.find("IN_TRANSIT")
+                                             .map(o -> o.destination)
+                                             .collect(Collectors.toList()));
+
+        // @OrderBy "status", then "orderedAt" descending
+        assertIterableEquals(List.of(3L, 2L, 1L, 5L, 4L),
+                             Stream.of(shipments.getAll()).map(o -> o.id).collect(Collectors.toList()));
 
         Shipment s = shipments.find(3);
         String previousLocation = s.location;
@@ -589,6 +728,12 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(10030009L, 10030007L, 10030008L, 10030006L),
+                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT))
+                                             .stream()
+                                             .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         Reservation[] array = reservations.findByStartLessThanOrStartGreaterThanOrderByMeetingIDDesc(OffsetDateTime.of(2022, 5, 25, 9, 30, 0, 0, CDT),

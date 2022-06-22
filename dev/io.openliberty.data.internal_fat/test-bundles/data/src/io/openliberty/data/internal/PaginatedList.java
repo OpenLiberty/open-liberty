@@ -12,34 +12,48 @@ package io.openliberty.data.internal;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Collection;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
-import io.openliberty.data.Page;
 import io.openliberty.data.Pagination;
 import io.openliberty.data.Param;
 
 /**
  */
-public class PageImpl<T> implements Page<T> {
+public class PaginatedList<T> extends AbstractList<T> {
+    private final Object[] args;
     private final String jpql;
     private final Method method;
-    private final Object[] args;
-    private final Pagination pagination;
+    private Pagination pagination;
     private final QueryHandler<T> queryHandler;
-    private final List<T> results;
+    private final List<T> results = new ArrayList<>();
 
-    PageImpl(String jpql, Pagination pagination, QueryHandler<T> queryHandler, Method method, Object[] args) {
+    PaginatedList(String jpql, Pagination pagination, QueryHandler<T> queryHandler, Method method, Object[] args) {
         this.jpql = jpql;
         this.pagination = pagination == null ? Pagination.page(1).size(100) : pagination;
         this.queryHandler = queryHandler;
         this.method = method;
         this.args = args;
+
+        loadPage();
+    }
+
+    @Override
+    public T get(int index) {
+        while (index >= results.size())
+            if (!loadPage())
+                throw new IndexOutOfBoundsException(index + " with size=" + results.size());
+
+        return results.get(index);
+    }
+
+    private boolean loadPage() {
+        if (pagination == null)
+            return false;
 
         EntityManager em = queryHandler.punit.createEntityManager();
         try {
@@ -62,43 +76,24 @@ public class PageImpl<T> implements Page<T> {
             query.setFirstResult((int) pagination.getSkip());
             query.setMaxResults((int) pagination.getPageSize());
 
-            results = query.getResultList();
+            List<T> page = query.getResultList();
+            if (page.isEmpty()) {
+                pagination = null;
+                return false;
+            } else {
+                pagination = pagination.next();
+                results.addAll(page);
+                return true;
+            }
         } finally {
             em.close();
         }
     }
 
     @Override
-    public Stream<T> get() {
-        return results.stream();
-    }
+    public int size() {
+        while (loadPage());
 
-    @Override
-    public Stream<T> getContent() {
-        return results.stream();
-    }
-
-    @Override
-    public <C extends Collection<T>> C getContent(Supplier<C> collectionFactory) {
-        C collection = collectionFactory.get();
-        collection.addAll(results);
-        return collection;
-    }
-
-    @Override
-    public Pagination getPagination() {
-        return pagination;
-    }
-
-    @Override
-    public Page<T> next() {
-        if (results.isEmpty())
-            return null;
-
-        PageImpl<T> next = new PageImpl<T>(jpql, pagination.next(), queryHandler, method, args);
-
-        if (next.results.isEmpty())
-            return null;
-        return next;
+        return results.size();
     }
 }

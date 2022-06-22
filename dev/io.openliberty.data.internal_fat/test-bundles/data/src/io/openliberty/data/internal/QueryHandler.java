@@ -15,8 +15,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +47,10 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
+import io.openliberty.data.Limit;
+import io.openliberty.data.OrderBy;
 import io.openliberty.data.Page;
+import io.openliberty.data.Paginated;
 import io.openliberty.data.Pagination;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
@@ -389,23 +394,33 @@ public class QueryHandler<T> implements InvocationHandler {
         boolean requiresTransaction;
 
         // @Query annotation
-        Query dataQuery = method.getAnnotation(Query.class);
-        String jpql = dataQuery == null ? null : dataQuery.value();
+        Query fullQuery = method.getAnnotation(Query.class);
+        String jpql = fullQuery == null ? null : fullQuery.value();
 
         // Repository built-in methods
         if (jpql == null && Repository.class.equals(method.getDeclaringClass()))
             jpql = getBuiltInRepositoryQuery(methodName, args, method.getParameterTypes());
 
-        // @Delete/@Update/@Where annotations
+        // @Delete/@Update/@Where/@OrderBy annotations
         if (jpql == null) {
             Update update = method.getAnnotation(Update.class);
             Where where = method.getAnnotation(Where.class);
             if (update == null) {
                 if (method.getAnnotation(Delete.class) == null) {
-                    if (where != null) {
+                    OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
+                    if (where != null || orderBy.length > 0) {
                         StringBuilder q = new StringBuilder(200);
                         generateSelect(q, method);
-                        q.append(" WHERE ").append(where.value());
+                        if (where != null)
+                            q.append(" WHERE ").append(where.value());
+                        if (orderBy.length > 0) {
+                            q.append(" ORDER BY ");
+                            for (int i = 0; i < orderBy.length; i++) {
+                                q.append(i > 0 ? ", o." : "o.").append(orderBy[i].value());
+                                if (orderBy[i].descending())
+                                    q.append(" DESC");
+                            }
+                        }
                         jpql = q.toString();
                     }
                 } else {
@@ -436,9 +451,22 @@ public class QueryHandler<T> implements InvocationHandler {
         } else {
             String q = jpql.toUpperCase();
             if (q.startsWith("SELECT")) {
-                if (Page.class.equals(returnType)) {
-                    Pagination pagination = (Pagination) args[args.length - 1];
+                // The Pagination parameter is from JNoSQL.
+                // The @Paginated annotation is not - I just wanted to experiment with how it could work
+                // if defined annotatively, which turns out to be possible, but not as flexible.
+                Paginated paginated = method.getAnnotation(Paginated.class);
+                Pagination pagination;
+                if (paginated == null)
+                    pagination = args != null && args[args.length - 1] instanceof Pagination ? (Pagination) args[args.length - 1] : null;
+                else
+                    pagination = Pagination.page(1).size(paginated.value());
+                if (Page.class.equals(returnType))
                     return new PageImpl<T>(jpql, pagination, this, method, args);
+                if (pagination != null) {
+                    if (Iterator.class.equals(returnType))
+                        return new PaginatedIterator<T>(jpql, pagination, this, method, args);
+                    else if (returnType.isAssignableFrom(AbstractList.class))
+                        return new PaginatedList<T>(jpql, pagination, this, method, args);
                 } else if (Publisher.class.equals(returnType)) {
                     return new PublisherImpl<T>(jpql, this, method, args);
                 }
@@ -497,6 +525,10 @@ public class QueryHandler<T> implements InvocationHandler {
                                 query.setParameter(param.value(), args[i]);
                         }
                     }
+
+                    Limit limit = method.getAnnotation(Limit.class);
+                    if (limit != null)
+                        query.setMaxResults(limit.value());
 
                     List<?> results = query.getResultList();
 

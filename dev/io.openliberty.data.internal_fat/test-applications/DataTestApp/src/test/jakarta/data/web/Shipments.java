@@ -10,8 +10,11 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.stream.Stream;
+
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
+import io.openliberty.data.OrderBy;
 import io.openliberty.data.Param;
 import io.openliberty.data.Select;
 import io.openliberty.data.Update;
@@ -32,6 +35,14 @@ public interface Shipments {
 
     @Where("o.id=?1")
     Shipment find(long id);
+
+    @Where("o.status=?1")
+    @OrderBy("destination")
+    Stream<Shipment> find(String status);
+
+    @OrderBy("status")
+    @OrderBy(value = "orderedAt", descending = true)
+    Shipment[] getAll();
 
     @Select("status")
     @Where("o.id=?1")

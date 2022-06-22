@@ -19,11 +19,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Flow.Publisher;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Limit;
 import io.openliberty.data.Page;
 import io.openliberty.data.Pagination;
 import io.openliberty.data.Repository;
@@ -51,6 +53,9 @@ public interface Reservations extends Repository<Reservation, Long> {
                                                                          String host);
 
     ArrayList<Reservation> findByStartBetweenAndLocationIn(OffsetDateTime minStart, OffsetDateTime maxStart, List<String> locations);
+
+    @Limit(4)
+    CopyOnWriteArrayList<Reservation> findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime startAfter);
 
     Reservation[] findByStartLessThanOrStartGreaterThanOrderByMeetingIDDesc(OffsetDateTime startBefore, OffsetDateTime startAfter);
 
