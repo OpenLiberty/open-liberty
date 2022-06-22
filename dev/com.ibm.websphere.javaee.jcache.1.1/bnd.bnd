@@ -14,18 +14,4 @@
 
 bVersion=1.0
 
-
-Export-Package: \
-   javax.cache.*;version="1.1";thread-context=true
-
-Import-Package: \
-   javax.enterprise.util;resolution:=optional
-
-Include-Resource: \
-  @${repo; javax.cache:cache-api;1.1.0}
-
 instrument.disabled: true
-
--buildpath: \
-	javax.cache:cache-api;version=1.1.0
-
