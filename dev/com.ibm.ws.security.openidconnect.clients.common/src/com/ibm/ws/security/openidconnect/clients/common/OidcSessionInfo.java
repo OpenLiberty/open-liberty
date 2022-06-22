@@ -12,7 +12,12 @@ package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.util.Objects;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.codec.binary.Base64;
+
+import com.ibm.ws.webcontainer.security.CookieHelper;
 
 public class OidcSessionInfo {
 
@@ -39,16 +44,16 @@ public class OidcSessionInfo {
         this.timestamp = timestamp;
         this.sessionId = createSessionId();
     }
-
     /**
-     * Takes a base64 encoded session id and returns an OidcSessionInfo object
-     * which contains the config id, sub, sid, and timestamp embedded in the session id.
+     * Gets the base64 encoded session id from the request cookies
+     * and returns an OidcSessionInfo object which contains
+     * the config id, sub, sid, and timestamp embedded in the session id.
      *
-     * @param sessionId
-     *            The base64 encoded session id.
+     * @param request The http servlet request.
      * @return An OidcSessionInfo object containing info parsed from the session id.
      */
-    public static OidcSessionInfo getSessionInfo(String sessionId) {
+    public static OidcSessionInfo getSessionInfo(HttpServletRequest request) {
+        String sessionId = getSessionIdFromCookies(request.getCookies());
         if (sessionId == null || sessionId.isEmpty()) {
             return null;
         }
@@ -65,6 +70,10 @@ public class OidcSessionInfo {
         String timestamp = new String(Base64.decodeBase64(parts[4]));
 
         return new OidcSessionInfo(configId, iss, sub, sid, timestamp);
+    }
+
+    private static String getSessionIdFromCookies(Cookie[] cookies) {
+        return CookieHelper.getCookieValue(cookies, ClientConstants.WAS_OIDC_SESSION);
     }
 
     public String getSessionId() {
