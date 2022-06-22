@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,10 +63,10 @@ public final class DatabaseContainerUtil {
      * This will replace the datasource &lt;derby.*.properties... &gt; with the generic properties
      * for the provided JdbcDatabaseContainer. <br>
      *
-     * @see com.ibm.websphere.simplicity.config.ServerConfiguration
+     * @see              com.ibm.websphere.simplicity.config.ServerConfiguration
      *
-     * @param serv - LibertyServer server instance being used for this FAT suite.
-     * @param cont - JdbcDatabaseContainer instance being used for database connectivity.
+     * @param  serv      - LibertyServer server instance being used for this FAT suite.
+     * @param  cont      - JdbcDatabaseContainer instance being used for database connectivity.
      *
      * @throws Exception
      */
@@ -117,7 +117,7 @@ public final class DatabaseContainerUtil {
         DataSourceProperties props = new Properties();
         props.setUser(cont.getUsername());
         props.setPassword(cont.getPassword());
-        props.setServerName(cont.getContainerIpAddress());
+        props.setServerName(cont.getHost());
         props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
         try {
             props.setDatabaseName(cont.getDatabaseName());
@@ -163,7 +163,7 @@ public final class DatabaseContainerUtil {
         DataSourceProperties props = type.getDataSourceProps();
         props.setUser(cont.getUsername());
         props.setPassword(cont.getPassword());
-        props.setServerName(cont.getContainerIpAddress());
+        props.setServerName(cont.getHost());
         props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
         try {
             props.setDatabaseName(cont.getDatabaseName());

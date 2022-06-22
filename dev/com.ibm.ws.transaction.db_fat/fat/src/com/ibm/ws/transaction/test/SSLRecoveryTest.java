@@ -78,7 +78,7 @@ public class SSLRecoveryTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(serverLibertySSL, APP_NAME, "com.ibm.ws.transaction.web");
 
-        String host = testContainer.getContainerIpAddress();
+        String host = testContainer.getHost();
         String port = String.valueOf(testContainer.getMappedPort(5432));
         String jdbcURL = testContainer.getJdbcUrl() + "?user=" + POSTGRES_USER + "&password=" + POSTGRES_PASS;
         Log.info(c, "setUp", "Using PostgreSQL properties: host=" + host + "  port=" + port + ",  URL=" + jdbcURL);

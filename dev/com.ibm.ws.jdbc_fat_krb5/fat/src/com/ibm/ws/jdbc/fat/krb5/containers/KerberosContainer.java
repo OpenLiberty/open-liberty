@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,8 +132,8 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
                       "\n" +
                       "[realms]\n" +
                       "        " + KRB5_REALM.toUpperCase() + " = {\n" +
-                      "                kdc = " + getContainerIpAddress() + ":" + getMappedPort(99) + "\n" +
-                      "                admin_server = " + getContainerIpAddress() + "\n" +
+                      "                kdc = " + getHost() + ":" + getMappedPort(99) + "\n" +
+                      "                admin_server = " + getHost() + "\n" +
                       "        }\n" +
                       "\n" +
                       "[domain_realm]\n" +
@@ -164,8 +164,8 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         if (!krbConf.contains(KRB5_REALM + " = {")) {
             krbConf = krbConf.replace("[realms]", "[realms]\n\t" +
                                                   KRB5_REALM + " = {\n\t\t" +
-                                                  "kdc = " + getContainerIpAddress() + ":" + getMappedPort(99) + "\n\t\t" +
-                                                  "admin_server = " + getContainerIpAddress() + "\n\t}\n");
+                                                  "kdc = " + getHost() + ":" + getMappedPort(99) + "\n\t\t" +
+                                                  "admin_server = " + getHost() + "\n\t}\n");
         }
 
         if (!krbConf.contains("[domain_realm]")) {

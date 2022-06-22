@@ -79,7 +79,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
             sessionCacheConfigFile = "httpSessionCache_2.xml";
         }
 
-        server.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
+        server.addEnvVar("INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
         server.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile,
                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
         server.startServer();

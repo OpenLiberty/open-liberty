@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,8 +65,8 @@ public class CouchDBContainer extends GenericContainer<CouchDBContainer> {
 
     public String getURL(boolean secure) {
         return secure ? //
-                        "https://" + cloudant.getContainerIpAddress() + ':' + cloudant.getMappedPort(PORT_SECURE) : //
-                        "http://" + cloudant.getContainerIpAddress() + ':' + cloudant.getMappedPort(PORT);
+                        "https://" + cloudant.getHost() + ':' + cloudant.getMappedPort(PORT_SECURE) : //
+                        "http://" + cloudant.getHost() + ':' + cloudant.getMappedPort(PORT);
     }
 
     public String createDb(String dbName) throws Exception {

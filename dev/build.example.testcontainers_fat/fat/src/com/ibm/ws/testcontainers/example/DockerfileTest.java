@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,7 +97,7 @@ public class DockerfileTest {
         //Execute a command within container after it has started
         container.execInContainer("echo \"This is executed after container has started\"");
 
-        server.addEnvVar("PS_URL", "jdbc:postgresql://" + container.getContainerIpAddress() //
+        server.addEnvVar("PS_URL", "jdbc:postgresql://" + container.getHost() //
                                    + ":" + container.getMappedPort(POSTGRE_PORT)
                                    + "/" + POSTGRES_DB);
         server.addEnvVar("PS_USER", POSTGRES_USER);

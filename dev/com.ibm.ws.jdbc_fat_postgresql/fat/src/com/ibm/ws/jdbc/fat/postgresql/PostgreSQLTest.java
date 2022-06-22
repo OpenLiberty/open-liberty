@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ public class PostgreSQLTest extends FATServletClient {
 
         ShrinkHelper.defaultApp(server, APP_NAME, "jdbc.fat.postgresql.web");
 
-        String host = postgre.getContainerIpAddress();
+        String host = postgre.getHost();
         String port = String.valueOf(postgre.getMappedPort(5432));
         String jdbcURL = postgre.getJdbcUrl() + "?user=" + POSTGRES_USER + "&password=" + POSTGRES_PASS;
         Log.info(c, "setUp", "Using PostgreSQL properties: host=" + host + "  port=" + port + ",  URL=" + jdbcURL);

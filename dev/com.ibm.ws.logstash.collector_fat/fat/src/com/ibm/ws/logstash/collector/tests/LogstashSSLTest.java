@@ -69,7 +69,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         Assume.assumeTrue(runTest); // runTest must be true to run test
 
         clearContainerOutput();
-        String host = logstashContainer.getContainerIpAddress();
+        String host = logstashContainer.getHost();
         String port = String.valueOf(logstashContainer.getMappedPort(5043));
         Log.info(c, "setUp", "Logstash container: host=" + host + "  port=" + port);
         server.addEnvVar("LOGSTASH_HOST", host);

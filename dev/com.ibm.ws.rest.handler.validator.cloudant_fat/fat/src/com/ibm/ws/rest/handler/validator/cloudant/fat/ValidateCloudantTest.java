@@ -67,7 +67,7 @@ public class ValidateCloudantTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String host = cloudant.getContainerIpAddress();
+        String host = cloudant.getHost();
         String port = String.valueOf(cloudant.getMappedPort(5984));
         Log.info(c, "setUp", "Using Cloudant properties: host=" + host + "  port=" + port);
         CLOUDANT_URL = "http://" + host + ":" + port;
