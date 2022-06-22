@@ -58,7 +58,7 @@
       <contextService>
         <jeeMetadataContext/>
       </contextService>
-      <properties.RAR1 databaseName="jcabvtdb" createDatabase="true" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/>
+      <properties.RAR1 databaseName="memory:jcabvtdb" createDatabase="true" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/>
     </resourceAdapter>
 
     <resourceAdapter location="${server.config.dir}/resourceadapters/JCARAR2.rar">
