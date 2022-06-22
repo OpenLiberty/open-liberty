@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.mp.jwt.v12.config.impl;
+package io.openliberty.security.mp.jwt.v21.config.impl;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,44 +27,42 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.config.MpConstants;
 
-import io.openliberty.security.mp.jwt.v12.config.TraceConstants;
+import io.openliberty.security.mp.jwt.v21.config.TraceConstants;
 
-@Component(service = MpConfigProxyService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "version=1.2", "service.ranking:Integer=12" }, name = "mpConfigProxyService")
-public class MpConfigProxyServiceImpl extends com.ibm.ws.security.mp.jwt.v11.config.impl.MpConfigProxyServiceImpl implements MpConfigProxyService {
-
+@Component(service = MpConfigProxyService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "version=2.1", "service.ranking:Integer=12" }, name = "mpConfigProxyService")
+public class MpConfigProxyServiceImpl extends io.openliberty.security.mp.jwt.v12.config.impl.MpConfigProxyServiceImpl implements MpConfigProxyService {
     public static final TraceComponent tc = Tr.register(MpConfigProxyServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
-    static private String MP_VERSION = "1.2";
+    static private String MP_VERSION = "2.1";
 
-    protected static final Set<String> acceptableMpConfigPropNames12;
+    private static final Set<String> acceptableMpConfigPropNames21;
 
     static {
         Set<String> mpConfigPropNames = new HashSet<>();
-        mpConfigPropNames.addAll(com.ibm.ws.security.mp.jwt.v11.config.impl.MpConfigProxyServiceImpl.acceptableMpConfigPropNames);
-        mpConfigPropNames.add(MpConstants.PUBLIC_KEY_ALG);
-        mpConfigPropNames.add(MpConstants.DECRYPT_KEY_LOCATION);
-        mpConfigPropNames.add(MpConstants.VERIFY_AUDIENCES);
-        mpConfigPropNames.add(MpConstants.TOKEN_HEADER);
-        mpConfigPropNames.add(MpConstants.TOKEN_COOKIE);
-        acceptableMpConfigPropNames12 = Collections.unmodifiableSet(mpConfigPropNames);
+        mpConfigPropNames.addAll(io.openliberty.security.mp.jwt.v12.config.impl.MpConfigProxyServiceImpl.acceptableMpConfigPropNames12);
+
+        mpConfigPropNames.add(MpConstants.TOKEN_AGE);
+        mpConfigPropNames.add(MpConstants.CLOCK_SKEW);
+        mpConfigPropNames.add(MpConstants.DECRYPT_KEY_ALGORITHM);
+        acceptableMpConfigPropNames21 = Collections.unmodifiableSet(mpConfigPropNames);
     }
 
     @Override
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
-        Tr.info(tc, "MPJWT_12_CONFIG_PROXY_PROCESSED");
+        Tr.info(tc, "MPJWT_21_CONFIG_PROXY_PROCESSED");
     }
 
     @Override
     @Modified
     protected void modified(ComponentContext cc, Map<String, Object> props) {
-        Tr.info(tc, "MPJWT_12_CONFIG_PROXY_MODIFIED");
+        Tr.info(tc, "MPJWT_21_CONFIG_PROXY_MODIFIED");
     }
 
     @Override
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        Tr.info(tc, "MPJWT_12_CONFIG_PROXY_DEACTIVATED");
+        Tr.info(tc, "MPJWT_21_CONFIG_PROXY_DEACTIVATED");
     }
 
     @Override
@@ -74,7 +72,7 @@ public class MpConfigProxyServiceImpl extends com.ibm.ws.security.mp.jwt.v11.con
 
     @Override
     public Set<String> getSupportedConfigPropertyNames() {
-        return acceptableMpConfigPropNames12;
+        return acceptableMpConfigPropNames21;
     }
 
 }

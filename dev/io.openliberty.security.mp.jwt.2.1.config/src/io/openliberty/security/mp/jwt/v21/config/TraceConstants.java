@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,10 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.mp.jwt.osgi;
+package io.openliberty.security.mp.jwt.v21.config;
 
-import org.osgi.framework.Version;
+public interface TraceConstants {
 
-public interface MpJwtRuntimeVersion {
-
-    public static final Version VERSION_1_0 = new Version(1, 0, 0);
-    public static final Version VERSION_1_1 = new Version(1, 1, 0);
-    public static final Version VERSION_1_2 = new Version(1, 2, 0);
-    public static final Version VERSION_2_1 = new Version(2, 1, 0);
-
-    public Version getVersion();
-
+    public final static String TRACE_GROUP = "MPJWT";
+    public final static String MESSAGE_BUNDLE = "io.openliberty.security.mp.jwt.v21.config.resources.MpConfigProxyMessages";
 }
