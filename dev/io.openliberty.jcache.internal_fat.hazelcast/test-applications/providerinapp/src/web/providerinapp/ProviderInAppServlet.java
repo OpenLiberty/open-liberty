@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
 
 /**
  * A servlet that will run tests with a JCache provider to ensure there is no regression.
@@ -27,6 +29,8 @@ import com.hazelcast.core.Hazelcast;
 public class ProviderInAppServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+    private static final String KEY = "key1";
+    private static final String VALUE = "value1";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,27 +39,30 @@ public class ProviderInAppServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            Config config = new Config("TestInstance");
-            Hazelcast.getOrCreateHazelcastInstance(config);
-        } catch (Throwable t) {
-            Throwable cause = t;
-            while (cause.getCause() != null) {
-                cause = cause.getCause();
-            }
+        final String methodName = "doPost";
+        System.out.print("ProviderInAppServlet." + methodName + ": starting test...");
 
-            /*
-             * We expect the root cause is a ClassNotFoundException due to the Hazlecast driver finding
-             * the javax.cache classes in the thread context ClassLoader, but not in the app ClassLoader.
-             *
-             * When we fix the class loading issue, we should do a put and get to the cache to ensure we
-             * can communicate with the cache.
-             */
-            if (cause instanceof ClassNotFoundException && "javax.cache.CacheException".equals(cause.getMessage())) {
-                response.setStatus(200);
-            } else {
-                throw t;
-            }
+        /*
+         * Default the test to fail
+         */
+        response.setStatus(500);
+
+        /*
+         * Connect to the Hazelcast cache and insert a value.
+         */
+        Config config = new Config("TestInstance");
+        HazelcastInstance instance = Hazelcast.getOrCreateHazelcastInstance(config);
+        IMap<Object, Object> distributedMap = instance.getMap(methodName);
+        distributedMap.put(KEY, VALUE);
+
+        /*
+         * Verify we can retrieve the value.
+         */
+        if (VALUE.equals(distributedMap.get(KEY))) {
+            System.out.print("ProviderInAppServlet." + methodName + ": value matches");
+            response.setStatus(200);
+        } else {
+            System.out.print("ProviderInAppServlet." + methodName + ": value does not match");
         }
     }
 }

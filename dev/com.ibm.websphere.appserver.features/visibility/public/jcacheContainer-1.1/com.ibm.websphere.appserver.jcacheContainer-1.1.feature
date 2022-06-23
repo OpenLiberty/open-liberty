@@ -15,8 +15,8 @@ IBM-API-Package: \
  javax.cache.processor; type="spec", \
  javax.cache.spi; type="spec"
 -features=\
+ io.openliberty.jcacheContainer1.1.internal.ee-6.0; ibm.tolerates:="9.0",\
+ com.ibm.websphere.appserver.eeCompatible-8.0; ibm.tolerates:="6.0,7.0,9.0,10.0",\
  com.ibm.websphere.appserver.classloading-1.0
--bundles=\
- com.ibm.websphere.javaee.jcache.1.1; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.cache:cache-api:1.1.0"
 kind=noship
 edition=full

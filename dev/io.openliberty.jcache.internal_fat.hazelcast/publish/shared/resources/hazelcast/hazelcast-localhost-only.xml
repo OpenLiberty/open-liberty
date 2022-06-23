@@ -45,7 +45,7 @@
 		 -->
 		<expiry-policy-factory>
 			<timed-expiry-policy-factory
-				expiry-policy-type="CREATED"
+				expiry-policy-type="ACCESSED"
 				duration-amount="${hazelcast.authcache.entry.ttl}"
 				time-unit="SECONDS" />
 		</expiry-policy-factory>
@@ -70,11 +70,13 @@
 			eviction-policy="LRU" />
 	   
 		<!-- 
-		    Set expiry policy so that they never time out.
+		    Set expiry policy to match the LTPA or JWT lifetime.
 		 -->
 		<expiry-policy-factory>
 			<timed-expiry-policy-factory
-				expiry-policy-type="ETERNAL" />
+				expiry-policy-type="CREATED"
+				duration-amount="7200"
+				time-unit="SECONDS" />
 		</expiry-policy-factory>
 
 	</cache>

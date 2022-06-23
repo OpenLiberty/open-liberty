@@ -39,27 +39,31 @@ public class ProviderInAppServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final String methodName = "doPost";
+        System.out.print("ProviderInAppServlet." + methodName + ": starting test...");
+
         /*
-         * Connect to the remote Infinispan server.
+         * Default the test to fail
+         */
+        response.setStatus(500);
+
+        /*
+         * Connect to the remote Infinispan server and insert a value into the cache.
          */
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.uri(System.getProperty("infinispan.client.hotrod.uri")).security().authentication().realm("default").saslMechanism("DIGEST-MD5");
         RemoteCacheManager cacheManager = new RemoteCacheManager(builder.build(), true);
-
-        /*
-         * Get the remote cache.
-         */
         RemoteCache<String, String> cache = cacheManager.administration().createCache("test", DefaultTemplate.DIST_ASYNC);
+        cache.put(KEY, VALUE);
 
         /*
-         * Add a key and retrieve it back out of the cache.
+         * Verify we can retrieve the value.
          */
-        cache.put(KEY, VALUE);
         if (VALUE.equals(cache.get(KEY))) {
+            System.out.print("ProviderInAppServlet: value matches");
             response.setStatus(200);
         } else {
-            System.out.print("ProviderInAppServlet: value not does not match");
-            response.setStatus(500);
+            System.out.print("ProviderInAppServlet: value does not match");
         }
     }
 }
