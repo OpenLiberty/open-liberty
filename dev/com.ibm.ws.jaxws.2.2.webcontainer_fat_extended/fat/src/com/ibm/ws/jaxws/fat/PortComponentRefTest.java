@@ -67,6 +67,9 @@ public class PortComponentRefTest {
         server.waitForStringInLog("CWWKZ0001I.*testPortComponentRefWeb");
         server.waitForStringInLog("CWWKZ0001I.*testPortComponentRefEJBinWeb");
         server.waitForStringInLog("CWWKZ0001I.*testPortComponentRefApplication");
+        server.waitForStringInLog("CWWKT0016I.*/testPortComponentRefWeb/");
+        server.waitForStringInLog("CWWKT0016I.*/testPortComponentRefApplicationEJB/");
+        server.waitForStringInLog("CWWKT0016I.*/testPortComponentRefApplicationWeb/");
     }
 
     @AfterClass
