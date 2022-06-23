@@ -23,7 +23,8 @@ fat.project: true
 
 tested.features:\
     jakartaee-10.0, \
-    webProfile-10.0
+    webProfile-10.0, \
+    all_features
 
 -buildpath: \
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
@@ -35,7 +36,7 @@ tested.features:\
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
 	io.openliberty.jakarta.persistence.3.1;version=latest,\
 	io.openliberty.jakarta.security.2.0;version=latest,\
-	io.openliberty.jakarta.servlet.5.0;version=latest,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.transaction.2.0;version=latest,\
 	io.openliberty.jakarta.validation.3.0;version=latest,\
 	com.ibm.ws.componenttest.2.0;version=latest,\

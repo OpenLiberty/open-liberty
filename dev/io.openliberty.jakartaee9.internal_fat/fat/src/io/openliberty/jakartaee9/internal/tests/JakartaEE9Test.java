@@ -38,7 +38,7 @@ import io.openliberty.jakartaee9.internal.apps.jakartaee9.web.WebProfile9TestSer
 public class JakartaEE9Test extends FATServletClient {
 
     private static Set<String> getCompatFeatures() {
-        Set<String> compatFeatures = EE9FeatureCompatibilityTest.getAllCompatibileFeatures();
+        Set<String> compatFeatures = EE9FeatureCompatibilityTest.getAllCompatibleFeatures();
         // remove features so that they don't cause feature conflicts.
         compatFeatures.remove("jdbc-4.0");
         compatFeatures.remove("jdbc-4.1");
