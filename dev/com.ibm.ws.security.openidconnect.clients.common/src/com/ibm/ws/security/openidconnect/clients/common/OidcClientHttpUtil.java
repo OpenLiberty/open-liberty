@@ -12,7 +12,6 @@ package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,15 +42,18 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.common.web.WebUtils;
+import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class OidcClientHttpUtil {
     private static final TraceComponent tc = Tr.register(OidcClientHttpUtil.class);
     private String clientId;
+    static OidcClientHttpUtil instance = null;
+    private final HttpUtils httpUtils;
 
     protected OidcClientHttpUtil() {
+        httpUtils = new HttpUtils();
 
     }
 
@@ -115,12 +117,7 @@ public class OidcClientHttpUtil {
      * @return
      */
     HttpPost createPostMethod(String url, final List<NameValuePair> commonHeaders) {
-        HttpPost postMethod = new HttpPost(url);
-        for (Iterator<NameValuePair> i = commonHeaders.iterator(); i.hasNext();) {
-            NameValuePair nvp = i.next();
-            postMethod.addHeader(nvp.getName(), nvp.getValue());
-        }
-        return postMethod;
+        return httpUtils.createHttpPostMethod(url, commonHeaders);
     }
 
     /**
@@ -128,12 +125,7 @@ public class OidcClientHttpUtil {
      * @return
      */
     HttpGet createHttpGetMethod(String url, final List<NameValuePair> commonHeaders) {
-        HttpGet getMethod = new HttpGet(url);
-        for (Iterator<NameValuePair> i = commonHeaders.iterator(); i.hasNext();) {
-            NameValuePair nvp = i.next();
-            getMethod.addHeader(nvp.getName(), nvp.getValue());
-        }
-        return getMethod;
+        return httpUtils.createHttpGetMethod(url, commonHeaders);
     }
 
     @FFDCIgnore({ SSLException.class })
@@ -292,59 +284,7 @@ public class OidcClientHttpUtil {
             @Sensitive String baPassword,
             String accessToken,
             final List<NameValuePair> commonHeaders) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "OIDC _SSO RP POST TO URL [" + WebUtils.stripSecretFromUrl(url, "client_secret") + "]");
-            Tr.debug(tc, "postToEndpoint: url: " + url + " headers: "
-                    + commonHeaders + " params: " + "*****" + " baUsername: "
-                    + baUsername + " baPassword: " + (baPassword != null ? "****" : null)
-                    + " accessToken: " + accessToken);
-            StringBuffer sb = new StringBuffer();
-            sb.append("curl -k -v");
-            if (commonHeaders != null) {
-                for (Iterator<NameValuePair> i = commonHeaders.iterator(); i.hasNext();) {
-                    NameValuePair nvp = i.next();
-                    sb.append(" -H \"");
-                    sb.append(nvp.getName());
-                    sb.append(": ");
-                    sb.append(nvp.getValue());
-                    sb.append("\"");
-                }
-            }
-            if (params != null && params.size() > 0) {
-                sb.append(" -d \"");
-                for (Iterator<NameValuePair> i = params.iterator(); i.hasNext();) {
-                    NameValuePair nvp = i.next();
-                    String name = nvp.getName();
-                    sb.append(name);
-                    sb.append("=");
-                    if (name.equals("client_secret")) {
-                        sb.append("*****");
-                    } else {
-                        sb.append(nvp.getValue());
-                    }
-
-                    if (i.hasNext()) {
-                        sb.append("&");
-                    }
-                }
-                sb.append("\"");
-            }
-            if (baUsername != null && baPassword != null) {
-                sb.append(" -u \"");
-                sb.append(baUsername);
-                sb.append(":");
-                sb.append("****");
-                sb.append("\"");
-            }
-            if (accessToken != null) {
-                sb.append(" -H \"Authorization: bearer ");
-                sb.append(accessToken);
-                sb.append("\"");
-            }
-            sb.append(" ");
-            sb.append(url);
-            Tr.debug(tc, "CURL Command: " + sb.toString());
-        }
+        httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
     }
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
@@ -415,8 +355,6 @@ public class OidcClientHttpUtil {
         }
         return client;
     }
-
-    static OidcClientHttpUtil instance = null;;
 
     /**
      * @return
