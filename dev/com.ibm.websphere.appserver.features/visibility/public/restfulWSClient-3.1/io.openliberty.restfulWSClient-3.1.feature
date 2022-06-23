@@ -16,7 +16,7 @@ IBM-API-Package: jakarta.ws.rs; type="spec", \
  org.jboss.resteasy.plugins.providers.sse; type="internal", \
  org.jboss.resteasy.plugins.providers; type="internal", \
  org.jboss.resteasy.spi;type="internal", \
- org.reactivestreams;type="internal" 
+ org.reactivestreams;type="internal"
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 IBM-App-ForceRestart: uninstall, \
  install
