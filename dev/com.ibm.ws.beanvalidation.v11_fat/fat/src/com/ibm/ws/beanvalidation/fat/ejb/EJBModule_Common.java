@@ -18,6 +18,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
 
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -63,7 +64,7 @@ public abstract class EJBModule_Common extends FATServletClient {
 
     protected void run(String war, String servlet) throws Exception {
         String originalTestName = testName.getMethodName();
-        originalTestName = originalTestName.replace("_EE9_FEATURES", "");
+        originalTestName = BasicValidation_Common.removeEETag(originalTestName);
         String servletTest = originalTestName.substring(0, originalTestName.length() - 2);
         run(war, servlet, servletTest);
     }
@@ -73,7 +74,7 @@ public abstract class EJBModule_Common extends FATServletClient {
      * being the war, the servlet and test method in the web application.
      */
     protected void run(String war, String servlet, String testMethod) throws Exception {
-        testMethod = testMethod.replace("_EE9_FEATURES", "");
+        testMethod = BasicValidation_Common.removeEETag(testMethod);
         FATServletClient.runTest(getServer(), war + "/" + servlet, testMethod);
     }
 

@@ -28,7 +28,7 @@ import componenttest.topology.utils.PrivHelper;
  * that everything that worked without CDI works with it as well.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
 public class BeanValidation11CDITest extends BeanValidationCDI_Common {
 
     @Server("com.ibm.ws.beanvalidation.cdi_1.1.fat")

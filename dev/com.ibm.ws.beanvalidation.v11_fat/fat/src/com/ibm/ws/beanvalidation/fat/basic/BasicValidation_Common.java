@@ -64,7 +64,7 @@ public abstract class BasicValidation_Common extends FATServletClient {
 
     protected void run(String war, String servlet) throws Exception {
         String originalTestName = testName.getMethodName();
-        originalTestName = originalTestName.replace("_EE9_FEATURES", "");
+        originalTestName = removeEETag(originalTestName);
         String servletTest = originalTestName.substring(0, originalTestName.length() - 2);
         run(war, servlet, servletTest);
     }
@@ -75,6 +75,14 @@ public abstract class BasicValidation_Common extends FATServletClient {
      */
     protected void run(String war, String servlet, String testMethod) throws Exception {
         FATServletClient.runTest(getServer(), war + "/" + servlet, testMethod);
+    }
+
+    /**
+     * Removes the _EEXX_FEATURES tag appended to test names.
+     * For example: testName_EE9_FEATURES -> testName
+     */
+    public static String removeEETag(String s) {
+        return s.replaceAll("_EE\\d*_FEATURES", "");
     }
 
     /**
