@@ -144,7 +144,7 @@ public class WCCustomProperties {
     public static boolean KEEP_UNREAD_DATA; //PM18453
     public static boolean PARSE_UTF8_POST_DATA; //PM20484
     
-    public static boolean LOCALE_DEPENDENT_DATE_FORMATTER;//PM25931, this has been added if any customer is dependet on current behavior.
+    public static boolean LOCALE_DEPENDENT_DATE_FORMATTER;//PM25931, this has been added if any customer is dependent on current behavior.
     //End 7.0.0.15
     
     //Start 7.0.0.19
@@ -626,7 +626,7 @@ public class WCCustomProperties {
         KEEP_UNREAD_DATA = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.keepunreadpostdataafterresponsesenttoclient", "false")).booleanValue(); //PM18453
         PARSE_UTF8_POST_DATA = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.parseutf8postdata", "false")).booleanValue(); //PM20484
         
-        LOCALE_DEPENDENT_DATE_FORMATTER = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.localedependentdateformatter")).booleanValue(); //PM25931, this has been added if any customer is dependet on current behavior.
+        LOCALE_DEPENDENT_DATE_FORMATTER = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.localedependentdateformatter")).booleanValue(); //PM25931, this has been added if any customer is dependent on current behavior.
         //End 7.0.0.15
         
         //Start 7.0.0.19
