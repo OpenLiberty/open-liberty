@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
@@ -57,7 +58,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             RemoteFile originalResourceDir = LibertyFileManager.getLibertyFile(serverA.getMachine(), serverA.getInstallRoot() + "/usr/shared/resources/infinispan");
             RemoteFile jakartaResourceDir = LibertyFileManager.getLibertyFile(serverA.getMachine(), serverA.getInstallRoot() + "/usr/shared/resources/infinispan-jakarta");
 

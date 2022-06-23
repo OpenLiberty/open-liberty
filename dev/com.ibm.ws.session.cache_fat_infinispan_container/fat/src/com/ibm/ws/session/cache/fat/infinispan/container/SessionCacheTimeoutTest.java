@@ -36,6 +36,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
@@ -63,7 +64,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             RemoteFile originalResourceDir = LibertyFileManager.getLibertyFile(server.getMachine(), server.getInstallRoot() + "/usr/shared/resources/infinispan");
             RemoteFile jakartaResourceDir = LibertyFileManager.getLibertyFile(server.getMachine(), server.getInstallRoot() + "/usr/shared/resources/infinispan-jakarta");
 
