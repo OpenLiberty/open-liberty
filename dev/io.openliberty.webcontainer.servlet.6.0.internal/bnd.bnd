@@ -27,7 +27,11 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
-    io.openliberty.webcontainer60.session.impl*;provide:=true
+    io.openliberty.webcontainer60.session.impl*;provide:=true,\
+    io.openliberty.webcontainer60.osgi.request*;provide:=true,\
+    io.openliberty.webcontainer60.osgi.srt*;provide:=true,\
+    io.openliberty.webcontainer60.srt*;provide:=true,\
+    io.openliberty.websphere.servlet60*;provide:=true
 
 Private-Package: \
     com.ibm.websphere.security, \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -326,6 +326,11 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
 
             this._request = req;
             _srtRequestHelper = getRequestHelper();
+            
+            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME,"initForNextRequest", "this->"+this+" , _srtRequestHelper [" + _srtRequestHelper +"]");
+            }
+            
             SRTServletRequestThreadData.getInstance().init(null);
             _in.init(_request.getInputStream());
             
@@ -2700,7 +2705,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     public void finish()	//280584.3    6021: Cleanup of  defect 280584.2    WAS.webcontainer removed throws clause.
     {
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
-            logger.logp(Level.FINE, CLASS_NAME,"finish", "entry");
+            logger.entering(CLASS_NAME,"finish");
         }
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
@@ -2734,15 +2739,27 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         finally
         {
             cleanupFromFinish();
+            
+            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+                logger.exiting(CLASS_NAME,"finish");
+            }
         }
     }
 
     protected void cleanupFromFinish() {
+        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.entering(CLASS_NAME,"cleanupFromFinish" + " this [" +this+ "] , nulling out _srtRequestHelper [" + _srtRequestHelper + "]");
+        }
+
         this._srtRequestHelper = null;
         this._request.clearHeaders();
         this._request = null; // as SRTServletResponse.finish() does for _response
         this._requestContext.finish();
         SRTServletRequestThreadData.getInstance().init(null);
+        
+        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.exiting(CLASS_NAME,"cleanupFromFinish");
+        }
     }
 
 
@@ -3394,6 +3411,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         private String _method = null;
         private boolean _parametersRead = false;                            //PM03928
         private DispatcherType dispatcherType = DispatcherType.REQUEST;
+        
+        //Add for servlet 6.0
+        private String _requestID = null; 
+        private Object _servletConnection = null;       //instanceof ServletConnection
 
         // ==========================
 
@@ -4286,5 +4307,42 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     protected String getSrtHelperCharEncoding() {
         return _srtRequestHelper._characterEncoding;
     }
+    
+    /*
+     * since Servlet 6.0
+     * support jakarta.servlet.ServletRequest#getRequestId()
+     * support jakarta.servlet.ServletConnection
+     */
+    protected String getSrtRequestId() {
+        return _srtRequestHelper._requestID;
+    }
 
+    protected void setSrtRequestId(String id) {
+        if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
+            checkRequestObjectInUse();
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) { 
+            logger.logp(Level.FINE, CLASS_NAME,"setSrtRequestId", "this ["+this+"] , requestID ["+ id + "]");
+        }
+        _srtRequestHelper._requestID = id;
+    }
+    
+    /**
+     * return an instance of jakarta.servlet.ServletConnection
+     */
+    protected Object getSrtServletConnection() {
+        return _srtRequestHelper._servletConnection;
+    }
+    
+    protected void setSrtServletConnection(Object conn) {
+        if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
+            checkRequestObjectInUse();
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) { 
+            logger.logp(Level.FINE, CLASS_NAME,"setSrtServletConnection", "this ["+this+"] , servlet connection ["+ conn  + "]");
+        }
+        _srtRequestHelper._servletConnection = conn;
+    }
 }

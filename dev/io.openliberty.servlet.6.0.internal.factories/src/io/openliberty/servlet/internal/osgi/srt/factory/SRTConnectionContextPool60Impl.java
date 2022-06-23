@@ -13,7 +13,8 @@ package io.openliberty.servlet.internal.osgi.srt.factory;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContextPool;
-import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
+
+import io.openliberty.webcontainer60.osgi.srt.SRTConnectionContext60;
 
 @Component(property = { "service.vendor=IBM", "service.ranking:Integer=60", "servlet.version=6.0" })
 public class SRTConnectionContextPool60Impl implements SRTConnectionContextPool {
@@ -29,7 +30,7 @@ public class SRTConnectionContextPool60Impl implements SRTConnectionContextPool 
         }
 
         if (context == null) {
-            context = new SRTConnectionContext40();
+            context = new SRTConnectionContext60();
         }
 
         context.nextContext = null;
