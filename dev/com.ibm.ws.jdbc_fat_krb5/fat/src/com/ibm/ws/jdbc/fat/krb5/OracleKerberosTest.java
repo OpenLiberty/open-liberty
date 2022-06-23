@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,7 +75,7 @@ public class OracleKerberosTest extends FATServletClient {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.oracle.web");
 
         server.addEnvVar("ORACLE_DBNAME", oracle.getDatabaseName());
-        server.addEnvVar("ORACLE_HOSTNAME", oracle.getContainerIpAddress());
+        server.addEnvVar("ORACLE_HOSTNAME", oracle.getHost());
         server.addEnvVar("ORACLE_PORT", "" + oracle.getMappedPort(1521));
         server.addEnvVar("ORACLE_USER", oracle.getUsername());
         server.addEnvVar("ORACLE_PASS", oracle.getPassword());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -211,7 +211,7 @@ public class PebbleContainer extends CAContainer {
 			throw new IllegalStateException("Failed to set default mock DNS A and AAAA record IP addresses.", e);
 		}
 
-		Log.info(PebbleContainer.class, "PebbleContainer", "ContainerIpAddress: " + getContainerIpAddress());
+		Log.info(PebbleContainer.class, "PebbleContainer", "ContainerIpAddress: " + getHost());
 		Log.info(PebbleContainer.class, "PebbleContainer", "DockerImageName:    " + getDockerImageName());
 		assertNotNull("getContainerInfo()", getContainerInfo());
 		Log.info(PebbleContainer.class, "PebbleContainer", "ContainerInfo:      " + getContainerInfo());
@@ -232,12 +232,12 @@ public class PebbleContainer extends CAContainer {
 			 * PebbleAcmeProvider and PebbleHttpConnector, which will trust
 			 * Pebble's static self-signed certificate.
 			 */
-			return "acme://pebble/" + this.getContainerIpAddress() + ":" + this.getMappedPort(getAcmeListenPort());
+			return "acme://pebble/" + this.getHost() + ":" + this.getMappedPort(getAcmeListenPort());
 		} else {
 			/*
 			 * This will cause acme4j to use the GenericAcmeProvider.
 			 */
-			return "https://" + this.getContainerIpAddress() + ":" + this.getMappedPort(getAcmeListenPort()) + "/dir";
+			return "https://" + this.getHost() + ":" + this.getMappedPort(getAcmeListenPort()) + "/dir";
 		}
 	}
 
@@ -262,7 +262,7 @@ public class PebbleContainer extends CAContainer {
 
 	@Override
 	protected String getDnsManagementAddress() {
-		return "http://" + challtestsrv.getContainerIpAddress() + ":"
+		return "http://" + challtestsrv.getHost() + ":"
 				+ challtestsrv.getMappedPort(CHALL_MANAGEMENT_PORT);
 	}
 

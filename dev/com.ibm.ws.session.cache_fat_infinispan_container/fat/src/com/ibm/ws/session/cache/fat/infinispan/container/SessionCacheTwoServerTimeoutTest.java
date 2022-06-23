@@ -84,10 +84,10 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
             sessionCacheConfigFile = "httpSessionCache_2.xml";
         }
 
-        serverA.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
+        serverA.addEnvVar("INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
         serverA.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile,
                                             "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
-        serverB.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
+        serverB.addEnvVar("INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
         serverB.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile,
                                             "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ public class DB2Test extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_NAME, "db2.web");
 
         server.addEnvVar("DB2_DBNAME", db2.getDatabaseName());
-        server.addEnvVar("DB2_HOSTNAME", db2.getContainerIpAddress());
+        server.addEnvVar("DB2_HOSTNAME", db2.getHost());
         server.addEnvVar("DB2_PORT", String.valueOf(db2.getMappedPort(50000)));
         server.addEnvVar("DB2_PORT_SECURE", String.valueOf(db2.getMappedPort(50001)));
         server.addEnvVar("DB2_USER", db2.getUsername());

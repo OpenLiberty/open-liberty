@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ public class OracleTest extends FATServletClient {
         server.addEnvVar("PASSWORD", oracle.getPassword());
         server.addEnvVar("DBNAME", oracle.getSid());
         server.addEnvVar("PORT", Integer.toString(oracle.getFirstMappedPort()));
-        server.addEnvVar("HOST", oracle.getContainerIpAddress());
+        server.addEnvVar("HOST", oracle.getHost());
 
         // Create a normal Java EE application and export to server
         ShrinkHelper.defaultApp(server, JEE_APP, "web");
