@@ -37,16 +37,17 @@
     <!-- 
         Configure the CachingProvider and CacheManager.
      -->
-	<cache id="AuthCache" name="AuthCache" cacheManagerRef="CacheManager"/>
-	<cacheManager id="CacheManager">
+	<cache id="AuthCache" name="AuthCache">
+		<cacheManager>
 
-		<properties
-			hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
+			<properties
+				hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
 
-		<cachingProvider
-			libraryRef="HazelcastLib,CustomLoginLib" />
+			<cachingProvider
+				libraryRef="HazelcastLib,CustomLoginLib" />
 
-	</cacheManager>
+		</cacheManager>
+	</cache>
 
 	<!-- 
 		Configure the authentication cache to use the JCache. 
