@@ -881,19 +881,20 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      *
      * @throws Exception
      */
-    // TODO runtime doesn't check at this time @Test
+    @Test
     public void LogoutTokenValidationTests_invalid_sub_omit_sid() throws Exception {
 
         JWTTokenBuilder builder = loginAndReturnIdTokenData(defaultClient);
-        builder.setSubject("someBadValue");
+        String badSub = "someBadValue";
+        builder.setSubject(badSub);
         builder.unsetClaim(Constants.PAYLOAD_SESSION_ID);
 
         String logutOutEndpoint = buildBackchannelLogoutUri(defaultClient);
 
         List<endpointSettings> parms = createParmFromBuilder(builder);
 
-        // TODO - check for the appropriate error message
         List<validationData> expectations = setInvalidBCLRequestExpectations(null);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a recent session for the subject couldn't be found.", MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS + ".*" + badSub + ".*" + "sub");
 
         invokeBcl(logutOutEndpoint, parms, expectations);
 
@@ -904,9 +905,21 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      *
      * @throws Exception
      */
-    // TODO runtime doesn't check at this time @Test
+    @Test
     public void LogoutTokenValidationTests_invalid_sid_omit_sub() throws Exception {
+        JWTTokenBuilder builder = loginAndReturnIdTokenData(defaultClient);
+        String badSid = "someBadValue";
+        builder.setClaim(Constants.PAYLOAD_SESSION_ID, badSid);
+        builder.unsetClaim(Constants.PAYLOAD_SUBJECT);
 
+        String logutOutEndpoint = buildBackchannelLogoutUri(defaultClient);
+
+        List<endpointSettings> parms = createParmFromBuilder(builder);
+
+        List<validationData> expectations = setInvalidBCLRequestExpectations(null);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a recent session for the sid couldn't be found.", MessageConstants.CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS + ".*" + badSid + ".*" + "sid");
+
+        invokeBcl(logutOutEndpoint, parms, expectations);
     }
 
     //    /**

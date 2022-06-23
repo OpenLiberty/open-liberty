@@ -10,9 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.backchannellogout.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -20,6 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.jmock.Expectations;
 import org.jose4j.base64url.Base64;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,6 +37,9 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionsStore;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
@@ -50,6 +59,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     final String CWWKS1549E_LOGOUT_TOKEN_CONTAINS_NONCE_CLAIM = "CWWKS1549E";
     final String CWWKS1550E_LOGOUT_TOKEN_EVENTS_MEMBER_VALUE_NOT_JSON = "CWWKS1550E";
     final String CWWKS1551E_LOGOUT_TOKEN_DUP_JTI = "CWWKS1551E";
+    final String CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS = "CWWKS1552E";
 
     final String CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR = "CWWKS1751E";
     final String CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR = "CWWKS1754E";
@@ -67,6 +77,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     final ConvergedClientConfig clientConfig = mockery.mock(ConvergedClientConfig.class);
     final ConsumerUtils consumerUtils = mockery.mock(ConsumerUtils.class);
+    final OidcSessionCache oidcSessionCache = mockery.mock(OidcSessionCache.class);
 
     LogoutTokenValidator validator;
 
@@ -213,9 +224,11 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_validateToken_jwsUnsigned_minimumClaims() throws Exception {
-        String logoutTokenString = encode(getJwsHeader("none")) + "." + encode(getMinimumClaimsNoSid()) + ".";
+        JsonObject claims = getMinimumClaimsNoSid();
+        String logoutTokenString = encode(getJwsHeader("none")) + "." + encode(claims) + ".";
         try {
             setConfigExpectations("none", null, 300L, ISSUER);
+            setSuccessfulOptionalTokenValidationExpectations(claims.get(Claims.SUBJECT).getAsString());
 
             validator.validateToken(logoutTokenString);
         } catch (BackchannelLogoutException e) {
@@ -257,6 +270,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
         try {
             setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
+            setSuccessfulOptionalTokenValidationExpectations(claims.get(Claims.SUBJECT).getAsString());
 
             validator.validateToken(logoutTokenString);
         } catch (BackchannelLogoutException e) {
@@ -509,9 +523,12 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         jsonClaims.addProperty(Claims.ID, true);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
-        // A non-string jti claim should essentially be ignored
-        validator.verifyTokenWithSameJtiNotRecentlyReceived(claims);
-        validator.verifyTokenWithSameJtiNotRecentlyReceived(claims);
+        try {
+            validator.verifyTokenWithSameJtiNotRecentlyReceived(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (MalformedClaimException e) {
+            // Expected
+        }
     }
 
     @Test
@@ -564,6 +581,316 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         } catch (BackchannelLogoutException e) {
             verifyException(e, CWWKS1551E_LOGOUT_TOKEN_DUP_JTI);
         }
+    }
+
+    @Test
+    public void test_verifySubClaimMatchesRecentSession_subNotFoundInCache() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        Map<String, OidcSessionsStore> subToSessionsMap = createSubMap("some other person", SID);
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcSessionCache).getSubMap();
+                will(returnValue(subToSessionsMap));
+            }
+        });
+        try {
+            validator.verifySubAndSidClaimsMatchRecentSession(claims, oidcSessionCache);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS + ".*" + ISSUER + ".*" + SUBJECT + ".*" + null);
+        }
+    }
+
+    @Test
+    public void test_verifySubAndSidClaimsMatchRecentSession_issuerDoesNotMatch() throws Exception {
+        String tokenIssuer = "http://otherissuer";
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty("sid", SID);
+        jsonClaims.addProperty(Claims.ISSUER, tokenIssuer);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(SUBJECT, SID);
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcSessionCache).getSubMap();
+                will(returnValue(subToSessionsMap));
+            }
+        });
+        try {
+            validator.verifySubAndSidClaimsMatchRecentSession(claims, oidcSessionCache);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS + ".*" + tokenIssuer + ".*" + SUBJECT + ".*" + SID);
+        }
+    }
+
+    @Test
+    public void test_verifySubAndSidClaimsMatchRecentSession_issuerMatches() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty("sid", SID);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(SUBJECT, SID);
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcSessionCache).getSubMap();
+                will(returnValue(subToSessionsMap));
+            }
+        });
+        validator.verifySubAndSidClaimsMatchRecentSession(claims, oidcSessionCache);
+    }
+
+    @Test
+    public void test_findSessionMatchingIssAndSid_sidNotNull() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, SID, "1234");
+        sessionDataForSub.insertSession(oidcSessionInfo.getSid(), oidcSessionInfo);
+
+        OidcSessionInfo session = validator.findSessionMatchingIssAndSid(sessionDataForSub, ISSUER, SID);
+        assertNotNull("Should have found a session, but didn't.", session);
+        assertEquals("Retrieved session did not match the original session.", oidcSessionInfo, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingIssAndSid_sidNull() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234");
+        sessionDataForSub.insertSession(null, oidcSessionInfo);
+
+        OidcSessionInfo session = validator.findSessionMatchingIssAndSid(sessionDataForSub, ISSUER, null);
+        assertNotNull("Should have found a session, but didn't.", session);
+        assertEquals("Retrieved session did not match the original session.", oidcSessionInfo, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingIssAndNonNullSid_noSessions() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+
+        OidcSessionInfo session = validator.findSessionMatchingIssAndNonNullSid(sessionDataForSub, ISSUER, SID);
+        assertNull("Should not have found a session, but found: " + session, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingIssAndNonNullSid_oneSession_sidDoesNotMatch() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        String sid = "some other sid";
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, sid, "1234");
+        sessionDataForSub.insertSession(sid, oidcSessionInfo);
+
+        OidcSessionInfo session = validator.findSessionMatchingIssAndNonNullSid(sessionDataForSub, ISSUER, SID);
+        assertNull("Should not have found a session, but found: " + session, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingIssAndNonNullSid_multipleSessions_sidDoesNotMatch() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234");
+        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345");
+        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid2", "3456");
+        sessionDataForSub.insertSession(null, oidcSessionInfo1);
+        sessionDataForSub.insertSession(oidcSessionInfo2.getSid(), oidcSessionInfo2);
+        sessionDataForSub.insertSession(oidcSessionInfo3.getSid(), oidcSessionInfo3);
+
+        OidcSessionInfo session = validator.findSessionMatchingIssAndNonNullSid(sessionDataForSub, ISSUER, SID);
+        assertNull("Should not have found a session, but found: " + session, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingIssAndNonNullSid_oneSession_issDoesNotMatch() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, "some other issuer", SUBJECT, SID, "1234");
+        sessionDataForSub.insertSession(null, oidcSessionInfo);
+
+        OidcSessionInfo session = validator.findSessionMatchingIssAndNonNullSid(sessionDataForSub, ISSUER, SID);
+        assertNull("Should not have found a session, but found: " + session, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingIssAndNonNullSid_oneSession_issMatches() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, SID, "1234");
+        sessionDataForSub.insertSession(oidcSessionInfo.getSid(), oidcSessionInfo);
+
+        OidcSessionInfo session = validator.findSessionMatchingIssAndNonNullSid(sessionDataForSub, ISSUER, SID);
+        assertNotNull("Should have found a session, but didn't.", session);
+        assertEquals("Retrieved session did not match the original session.", oidcSessionInfo, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingIssAndNonNullSid_multipleSessions_sidMatch_issDoesNotMatch() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234");
+        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345");
+        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, "https://otherissuer", SUBJECT, SID, "3456");
+        sessionDataForSub.insertSession(null, oidcSessionInfo1);
+        sessionDataForSub.insertSession(oidcSessionInfo2.getSid(), oidcSessionInfo2);
+        sessionDataForSub.insertSession(oidcSessionInfo3.getSid(), oidcSessionInfo3);
+
+        OidcSessionInfo session = validator.findSessionMatchingIssAndNonNullSid(sessionDataForSub, ISSUER, SID);
+        assertNull("Should not have found a session, but found: " + session, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingIssAndNonNullSid_multipleSessions_sidMatch_issMatches() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234");
+        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345");
+        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, SID, "3456");
+        sessionDataForSub.insertSession(null, oidcSessionInfo1);
+        sessionDataForSub.insertSession(oidcSessionInfo2.getSid(), oidcSessionInfo2);
+        sessionDataForSub.insertSession(oidcSessionInfo3.getSid(), oidcSessionInfo3);
+
+        OidcSessionInfo session = validator.findSessionMatchingIssAndNonNullSid(sessionDataForSub, ISSUER, SID);
+        assertNotNull("Should have found a session, but didn't.", session);
+        assertEquals("Retrieved session did not match the original session.", oidcSessionInfo3, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingOnlyIss_noSessions() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+
+        OidcSessionInfo session = validator.findSessionMatchingOnlyIss(sessionDataForSub, ISSUER);
+        assertNull("Should not have found a session, but found: " + session, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingOnlyIss_oneSession_issDoesNotMatch() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, "some other issuer", SUBJECT, null, "1234");
+        sessionDataForSub.insertSession(null, oidcSessionInfo);
+
+        OidcSessionInfo session = validator.findSessionMatchingOnlyIss(sessionDataForSub, ISSUER);
+        assertNull("Should not have found a session, but found: " + session, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingOnlyIss_oneSession_issMatches() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234");
+        sessionDataForSub.insertSession(null, oidcSessionInfo);
+
+        OidcSessionInfo session = validator.findSessionMatchingOnlyIss(sessionDataForSub, ISSUER);
+        assertNotNull("Should have found a session, but didn't.", session);
+        assertEquals("Retrieved session did not match the original session.", oidcSessionInfo, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingOnlyIss_multipleSessions_noIssMatches() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, "https://issuer1", SUBJECT, null, "1234");
+        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, "https://issuer1", SUBJECT, "sid1", "2345");
+        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, "https://issuer2", SUBJECT, "sid2", "3456");
+        sessionDataForSub.insertSession(null, oidcSessionInfo1);
+        sessionDataForSub.insertSession(oidcSessionInfo2.getSid(), oidcSessionInfo2);
+        sessionDataForSub.insertSession(oidcSessionInfo3.getSid(), oidcSessionInfo3);
+
+        OidcSessionInfo session = validator.findSessionMatchingOnlyIss(sessionDataForSub, ISSUER);
+        assertNull("Should not have found a session, but found: " + session, session);
+    }
+
+    @Test
+    public void test_findSessionMatchingOnlyIss_multipleSessions_issMatches() throws Exception {
+        OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
+        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, "https://issuer1", SUBJECT, null, "1234");
+        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345");
+        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, "https://issuer2", SUBJECT, "sid2", "3456");
+        sessionDataForSub.insertSession(null, oidcSessionInfo1);
+        sessionDataForSub.insertSession(oidcSessionInfo2.getSid(), oidcSessionInfo2);
+        sessionDataForSub.insertSession(oidcSessionInfo3.getSid(), oidcSessionInfo3);
+
+        OidcSessionInfo session = validator.findSessionMatchingOnlyIss(sessionDataForSub, ISSUER);
+        assertNotNull("Should have found a session, but didn't.", session);
+        assertEquals("Retrieved session did not match the expected session.", oidcSessionInfo2, session);
+    }
+
+    @Test
+    public void test_verifySidClaimMatchesRecentSession_malformedSid() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty("sid", 123);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        try {
+            validator.verifySidClaimMatchesRecentSession(claims, oidcSessionCache);
+            fail("Should have thrown an exception but didn't.");
+        } catch (MalformedClaimException e) {
+            // Expected
+        }
+    }
+
+    @Test
+    public void test_verifySidClaimMatchesRecentSession_sidMissing() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        // Token doesn't have to contain a sid claim
+        validator.verifySidClaimMatchesRecentSession(claims, oidcSessionCache);
+    }
+
+    @Test
+    public void test_verifySidClaimMatchesRecentSession_noCachedSessions() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty("sid", SID);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(null, null);
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcSessionCache).getSubMap();
+                will(returnValue(subToSessionsMap));
+            }
+        });
+        try {
+            validator.verifySidClaimMatchesRecentSession(claims, oidcSessionCache);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS + ".*" + SID);
+        }
+    }
+
+    @Test
+    public void test_verifySidClaimMatchesRecentSession_sidNotFoundInCache() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty("sid", SID);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(SUBJECT, "some other sid");
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcSessionCache).getSubMap();
+                will(returnValue(subToSessionsMap));
+            }
+        });
+        try {
+            validator.verifySidClaimMatchesRecentSession(claims, oidcSessionCache);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS + ".*" + SID);
+        }
+    }
+
+    @Test
+    public void test_verifySidClaimMatchesRecentSession_sidFound() throws Exception {
+        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.addProperty("sid", SID);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+
+        Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(SUBJECT, SID);
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcSessionCache).getSubMap();
+                will(returnValue(subToSessionsMap));
+            }
+        });
+
+        validator.verifySidClaimMatchesRecentSession(claims, oidcSessionCache);
     }
 
     private JsonObject getJwsHeader(String alg) {
@@ -638,6 +965,30 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
                 }
             });
         }
+    }
+
+    private void setSuccessfulOptionalTokenValidationExpectations(String sub) {
+        Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(sub, null);
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getOidcSessionCache();
+                will(returnValue(oidcSessionCache));
+                one(oidcSessionCache).getSubMap();
+                will(returnValue(subToSessionsMap));
+            }
+        });
+    }
+
+    private Map<String, OidcSessionsStore> createSubMap(String sub, String sid) {
+        Map<String, OidcSessionsStore> subToSessionsMap = new HashMap<>();
+        if (sub != null || sid != null) {
+            OidcSessionsStore sessionStore = new OidcSessionsStore();
+            OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, sub, sid, "1234");
+            sessionStore.insertSession(sid, oidcSessionInfo);
+            subToSessionsMap.put(sub, sessionStore);
+        }
+        return subToSessionsMap;
     }
 
 }
