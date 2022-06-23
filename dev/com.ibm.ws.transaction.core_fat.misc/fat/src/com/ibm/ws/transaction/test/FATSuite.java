@@ -21,10 +21,11 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ForcePrepareTest.class,
-                OnePCOptimizationDisabledTest.class,
-                TimeoutTest.class,
-                UOWEventListenerTest.class,
+                DDTimeoutTest.class,
+//                ForcePrepareTest.class,
+//                OnePCOptimizationDisabledTest.class,
+//                TimeoutTest.class,
+//                UOWEventListenerTest.class,
 })
 public class FATSuite {
     @ClassRule

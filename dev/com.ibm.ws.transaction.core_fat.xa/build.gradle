@@ -26,14 +26,6 @@ task addDerbyToSharedDir(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
-task copyFAT {
-    dependsOn ':com.ibm.ws.transaction.core_fat.base:autoFVT'
-    copy {
-      from project(':com.ibm.ws.transaction.core_fat.base').file('fat/src/com/ibm/ws/transaction/test/tests')
-      into new File('fat/src/com/ibm/ws/transaction/test/tests')
-    }
-}
-
 task copyCommonFiles {
   dependsOn ':com.ibm.ws.transaction.core_fat.base:autoFVT'
   doLast {
@@ -44,22 +36,17 @@ task copyCommonFiles {
       from project(':com.ibm.ws.transaction.core_fat.base').file('test-applications')
       into new File('test-applications')
     }
-    copy {
-      from project(':com.ibm.ws.transaction.core_fat.base').file('test-bundles')
-      into new File('test-bundles')
-    }
 
     /*
      * Copy common publish files.
      */
     copy {
-      from project(':com.ibm.ws.transaction.core_fat.base').file('publish')
-      into new File('publish')
+      from project(':com.ibm.ws.transaction.core_fat.base').file('publish/servers/com.ibm.ws.transaction')
+      into new File('publish/servers/com.ibm.ws.transaction')
     }
   }
 }
 
-addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn addDerbyToSharedDir
 addRequiredLibraries.dependsOn addJakartaTransformer
 
@@ -67,22 +54,16 @@ jar {
   dependsOn copyCommonFiles
 }
 
-autoFVT.dependsOn copyCommonFiles
+autoFVT.dependsOn jar
 
 clean.doLast {
   if (file('test-applications').exists()){
     file('test-applications').deleteDir()
-  }
-  if (file('test-bundles').exists()){
-    file('test-bundles').deleteDir()
   }
   if (file('publish').exists()){
     file('publish').deleteDir()
   }
   if (file('build').exists()){
     file('build').deleteDir()
-  }
-  if (file('fat/src/com/ibm/ws/transaction/test/tests').exists()){
-    file('fat/src/com/ibm/ws/transaction/test/tests').deleteDir()
   }
 }

@@ -13,15 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-bundles/com.ibm.ws.transaction.fat.eventListener/src,\
-	test-bundles/com.ibm.ws.transaction.fat.remoteTester/src,\
-	test-bundles/utdecorator/src,\
-	test-applications/commitPriority/src,\
-	test-applications/eventlistener/src,\
-	test-applications/transaction/src,\
-	test-applications/transactional/src,\
-	test-applications/transactionalEJB/src,\
-	test-applications/transactionscoped/src
+	test-applications/transaction/src
 
 -sub: *.bnd
 
@@ -30,6 +22,14 @@ fat.project: true
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, servlet-4.0 is added programmatically at runtime by the RepeatTests rule.
 tested.features:\
+	connectors-2.0,\
+	enterprisebeans-4.0,\
+	mdb-4.0,\
+	enterprisebeansremote-4.0,\
+	enterprisebeanshome-4.0,\
+	xmlbinding-3.0,\
+	enterprisebeanslite-4.0,\
+	enterprisebeanspersistenttimer-4.0,\
 	servlet-4.0,\
 	servlet-5.0,\
 	jdbc-4.2
@@ -52,6 +52,7 @@ tested.features:\
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\
   com.ibm.websphere.javaee.ejb.3.1;version=latest,\
   com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+  com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
   com.ibm.ws.logging,\
   com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

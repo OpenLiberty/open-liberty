@@ -13,15 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-bundles/com.ibm.ws.transaction.fat.eventListener/src,\
-	test-bundles/com.ibm.ws.transaction.fat.remoteTester/src,\
-	test-bundles/utdecorator/src,\
-	test-applications/commitPriority/src,\
-	test-applications/eventlistener/src,\
-	test-applications/transaction/src,\
-	test-applications/transactional/src,\
-	test-applications/transactionalEJB/src,\
-	test-applications/transactionscoped/src
+	test-applications/transaction/src
 
 -sub: *.bnd
 
