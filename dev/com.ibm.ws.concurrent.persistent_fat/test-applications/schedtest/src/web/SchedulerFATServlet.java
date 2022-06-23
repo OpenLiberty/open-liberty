@@ -376,7 +376,6 @@ public class SchedulerFATServlet extends HttpServlet {
         final Phaser blocker = new Phaser(1);
         Future<Boolean> cancelAndBlockFuture = unmanagedExecutor.submit(new Callable<Boolean>() {
             public Boolean call() throws Exception {
-            	tran.setTransactionTimeout(12); //Increase transaction timeout to 12 seconds to accommodate slow test infrastructure. 
                 tran.begin();
                 try {
                     System.out.println("About to cancel " + statusO);
