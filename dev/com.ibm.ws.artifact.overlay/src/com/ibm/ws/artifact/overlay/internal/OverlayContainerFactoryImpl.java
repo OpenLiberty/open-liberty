@@ -10,14 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.artifact.overlay.internal;
 
-import org.osgi.service.component.ComponentContext;
-
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Set;
 
-import com.ibm.wsspi.artifact.ArtifactEntry;
+import org.osgi.service.component.ComponentContext;
+
 import com.ibm.wsspi.artifact.ArtifactContainer;
+import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainerFactory;
@@ -39,7 +39,7 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
             //we now only support the DirBasedOverlay, the in-memory one has been retired.
             //the naming and interfaces have been fixed up so that OverlayContainer now offers
             //the ability of the DirectoryBased one.
-            
+
             DirectoryBasedOverlayContainerImpl tempReference = new DirectoryBasedOverlayContainerImpl(b, this);
 
             register(tempReference);
@@ -51,7 +51,6 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
     }
 
     private ArtifactContainerFactory containerFactory = null;
-    
 
     protected synchronized void activate(ComponentContext ctx) {
         // EMPTY
@@ -74,7 +73,7 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
     @Override
     public synchronized ArtifactContainerFactory getContainerFactory() {
         if (containerFactory == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Null container factory");
         }
         return containerFactory;
     }
@@ -82,11 +81,11 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
     /**
      * Registry to store all the containers created with this.createOverlay()
      */
-    private final DirectoryBasedOverlayContainerRegistry registeredContainers =
-        new DirectoryBasedOverlayContainerRegistry();
+    private final DirectoryBasedOverlayContainerRegistry registeredContainers = new DirectoryBasedOverlayContainerRegistry();
 
     /**
      * method to add a container to the registrt
+     *
      * @param container to add to registry
      */
     private void register(DirectoryBasedOverlayContainerImpl container) {
@@ -95,6 +94,7 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
 
     /**
      * Introspection method to print then number of registered containers, the enclosing and current containers in the registry and the Base / File URLs associated with them
+     *
      * @param outputWriter PrintWriter to print the introspection
      */
     public void introspect(PrintWriter outputWriter) {
@@ -107,41 +107,39 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
 
             Set<DirectoryBasedOverlayContainerImpl> snapshotSet = registeredContainers.getSnapshotSet();
 
-            outputWriter.println(String.format("  Number of Registered Containers: [ %d ]",snapshotSet.size()));
+            outputWriter.println(String.format("  Number of Registered Containers: [ %d ]", snapshotSet.size()));
             outputWriter.println();
 
             outputWriter.println("Containers in Set:");
-            for(DirectoryBasedOverlayContainerImpl containerEntry: snapshotSet){
+            for (DirectoryBasedOverlayContainerImpl containerEntry : snapshotSet) {
 
                 //print the enclosing container and current container////////////////////
                 ArtifactEntry useEnclosingEntry = containerEntry.getEntryInEnclosingContainer();
                 String enclosingEntryIntrospectFormat = "  [ %s ] [ %s ]";
-                if(useEnclosingEntry == null) {
-                    outputWriter.println(String.format(enclosingEntryIntrospectFormat, "ROOT" ,containerEntry.toString()));
+                if (useEnclosingEntry == null) {
+                    outputWriter.println(String.format(enclosingEntryIntrospectFormat, "ROOT", containerEntry.toString()));
+                } else {
+                    outputWriter.println(String.format(enclosingEntryIntrospectFormat, containerEntry.getFullPath(useEnclosingEntry), containerEntry.toString()));
                 }
-                else {
-                    outputWriter.println(String.format(enclosingEntryIntrospectFormat, containerEntry.getFullPath(useEnclosingEntry) ,containerEntry.toString()));
-                }
-                
+
                 //print the base container reference and URLs////////////////////////////
                 ArtifactContainer baseContainer = containerEntry.getContainerBeingOverlaid();
                 outputWriter.println(String.format("      Base [ %s ]", baseContainer.toString()));
-                for(URL baseURL : baseContainer.getURLs()){
-                    outputWriter.println(String.format("        URL [ %s ]",baseURL.toString()));
+                for (URL baseURL : baseContainer.getURLs()) {
+                    outputWriter.println(String.format("        URL [ %s ]", baseURL.toString()));
                 }
 
                 //print the file container reference and URLs////////////////////////////
                 ArtifactContainer fileContainer = containerEntry.getFileOverlay();
                 outputWriter.println(String.format("      File [ %s ]", fileContainer.toString()));
-                for(URL fileURL : fileContainer.getURLs()){
+                for (URL fileURL : fileContainer.getURLs()) {
                     outputWriter.println(String.format("        URL [ %s ]", fileURL.toString()));
                 }
-
 
             }
 
             //introspect each of the containers
-            for(DirectoryBasedOverlayContainerImpl containerEntry : snapshotSet){
+            for (DirectoryBasedOverlayContainerImpl containerEntry : snapshotSet) {
                 containerEntry.introspect(outputWriter);
             }
 

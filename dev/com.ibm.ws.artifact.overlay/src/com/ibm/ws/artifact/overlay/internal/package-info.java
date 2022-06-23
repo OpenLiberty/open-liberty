@@ -12,7 +12,8 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "archive.overlay")
+@TraceOptions(traceGroup = "archive.overlay",
+              messageBundle = "com.ibm.ws.artifact.overlay.internal.resources.ArtifactOverlayMessages")
 package com.ibm.ws.artifact.overlay.internal;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
