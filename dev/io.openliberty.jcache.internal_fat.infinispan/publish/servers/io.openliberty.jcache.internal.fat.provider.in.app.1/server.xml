@@ -34,21 +34,22 @@
 	<include
 		location="${shared.resource.dir}/configs/appProviderInApp.xml" />
 
-        <!-- 
-            Configure the CachingProvider and CacheManager.
-          -->
-	<cache id="AuthCache" name="AuthCache" cacheManagerRef="CacheManager" />
-	<cacheManager id="CacheManager"
-		uri="file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props">
+    <!-- 
+        Configure the CachingProvider and CacheManager.
+     -->
+	<cache id="AuthCache" name="AuthCache">
+		<cacheManager
+		    uri="file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props">
 
-		<properties
-			infinispan.client.hotrod.uri="${infinispan.client.hotrod.uri}" />
+			<properties
+				infinispan.client.hotrod.uri="${infinispan.client.hotrod.uri}" />
 
-		<cachingProvider
-			providerClass="org.infinispan.jcache.remote.JCachingProvider"
-			libraryRef="InfinispanLib,CustomLoginLib" />
+			<cachingProvider
+				providerClass="org.infinispan.jcache.remote.JCachingProvider"
+				libraryRef="InfinispanLib,CustomLoginLib" />
 
-	</cacheManager>
+		</cacheManager>
+	</cache>
 
 	<!-- 
 		Configure the authentication cache to use the JCache. 

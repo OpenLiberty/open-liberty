@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ public class HttpSessionCache extends ConfigElement {
     private String writeInterval;
     private String uri;
     private String useInvalidatedId;
-    private String cacheManagerRef;
 
     // nested element names
     @XmlElement(name = "library")
@@ -45,10 +44,6 @@ public class HttpSessionCache extends ConfigElement {
 
     public ConfigElementList<HttpSessionCacheProperties> getProperties() {
         return properties == null ? (properties = new ConfigElementList<HttpSessionCacheProperties>()) : properties;
-    }
-
-    public String getCacheManagerRef() {
-        return this.cacheManagerRef;
     }
 
     public String getScheduleInvalidationFirstHour() {
@@ -77,11 +72,6 @@ public class HttpSessionCache extends ConfigElement {
 
     public String getWriteInterval() {
         return this.writeInterval;
-    }
-
-    @XmlAttribute
-    public void setCacheManagerRef(String cacheManagerRef) {
-        this.cacheManagerRef = cacheManagerRef;
     }
 
     @XmlAttribute
@@ -131,8 +121,6 @@ public class HttpSessionCache extends ConfigElement {
             buf.append("id=").append(getId()).append(' ');
         if (libraryRef != null)
             buf.append("libraryRef=").append(libraryRef).append(' ');
-        if (cacheManagerRef != null)
-            buf.append("cacheManagerRef=").append(cacheManagerRef).append(' ');
         if (scheduleInvalidationFirstHour != null)
             buf.append("scheduleInvalidationFirstHour=").append(scheduleInvalidationFirstHour).append(' ');
         if (scheduleInvalidationSecondHour != null)

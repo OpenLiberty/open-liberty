@@ -185,15 +185,6 @@ public class InfinispanContainer extends GenericContainer<InfinispanContainer> {
     public void deleteCache(String name) throws Exception {
         final String METHOD_NAME = "deleteCache(String)";
 
-        /*
-         * Session cache appears to double escape the "/" in their cache names, and the cache name
-         * results in "%2F", which when we pass it in here gets escaped again and doesn't match the
-         * literal "%2F" in the cache name. Fix it here.
-         */
-        if (name.startsWith("com.ibm.ws.session")) {
-            name = name.replace("%", "%25");
-        }
-
         HttpDelete request = new HttpDelete(getRESTEndpoint() + "caches/" + name);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
