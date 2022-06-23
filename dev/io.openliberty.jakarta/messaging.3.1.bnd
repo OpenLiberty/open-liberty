@@ -25,4 +25,4 @@ Specification-Version: 3.1
 Export-Package: jakarta.jms;version="3.1.0"
 
 -includeresource: \
-   @${repo;jakarta.jms:jakarta.jms-api;[3.1.0,3.2.0)}!/!(META-INF/maven/*|module-info.class)
+   @${repo;jakarta.jms:jakarta.jms-api;3.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)

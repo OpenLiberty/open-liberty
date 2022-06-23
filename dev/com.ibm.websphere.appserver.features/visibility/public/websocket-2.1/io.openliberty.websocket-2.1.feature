@@ -4,8 +4,8 @@ visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
  uninstall
-IBM-API-Package: jakarta.websocket; version="2.0"; type="spec", \
- jakarta.websocket.server; version="2.0"; type="spec", \
+IBM-API-Package: jakarta.websocket; version="2.1"; type="spec", \
+ jakarta.websocket.server; version="2.1"; type="spec", \
  com.ibm.websphere.wsoc; type="ibm-api"
 IBM-ShortName: websocket-2.1
 Subsystem-Name: Jakarta WebSocket 2.1

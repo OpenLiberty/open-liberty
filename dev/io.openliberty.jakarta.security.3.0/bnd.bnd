@@ -20,6 +20,23 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Bundle-SymbolicName: io.openliberty.jakarta.security.3.0; singleton:=true
 Bundle-Description: Jakarta Security 3.0
 
+Export-Package: \
+    jakarta.security.enterprise;version="3.0.0", \
+    jakarta.security.enterprise.authentication.mechanism.http;version="3.0.0", \
+    jakarta.security.enterprise.authentication.mechanism.http.openid;version="3.0.0", \
+    jakarta.security.enterprise.credential;version="3.0.0", \
+    jakarta.security.enterprise.identitystore;version="3.0.0", \
+    jakarta.security.enterprise.identitystore.openid;version="3.0.0"
+
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+    io.openliberty.jakarta.cdi.4.0;version=latest, \
+    io.openliberty.jakarta.interceptor.2.1;version=latest, \
+    io.openliberty.jakarta.authentication.3.0;version=latest, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    io.openliberty.jakarta.servlet.6.0;version=latest, \
+    io.openliberty.jakarta.jsonp.2.1;version=latest, \
+    jakarta.security.enterprise:jakarta.security.enterprise-api;version=3.0.0;strategy=exact

@@ -8,7 +8,7 @@ visibility=private
   io.openliberty.jakarta.cdi-4.0, \
   io.openliberty.jsonp-2.1
 -bundles=\
-  io.openliberty.jakarta.jsonb.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="io.openliberty.jakarta.json.bind:jakarta.json.bind-api:3.0.0"
+  io.openliberty.jakarta.jsonb.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json.bind:jakarta.json.bind-api:3.0.0"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

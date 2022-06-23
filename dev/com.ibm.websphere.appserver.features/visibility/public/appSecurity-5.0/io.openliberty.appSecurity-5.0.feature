@@ -20,7 +20,8 @@ Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
   com.ibm.websphere.appserver.security-1.0, \
   io.openliberty.securityAPI.jakarta-1.0, \
   io.openliberty.jakarta.security.enterprise-3.0, \
-  io.openliberty.expressionLanguage-5.0
+  io.openliberty.expressionLanguage-5.0, \
+  io.openliberty.jsonp-2.1
 -bundles=\
   io.openliberty.security.jakartasec.2.0.internal, \
   io.openliberty.security.jakartasec.2.0.internal.cdi, \

@@ -27,7 +27,7 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import persistence_fat.consumer.web.ConsumerServlet;
@@ -51,13 +51,13 @@ public class ConsumerTest_JPA31 extends FATServletClient {
         Assert.assertTrue(server.fileExistsInLibertyInstallRoot("lib/com.ibm.ws.persistence.consumer.jar"));
 
         Path someArchive = Paths.get(server.getInstallRoot() + File.separatorChar + "lib" + File.separatorChar + "com.ibm.ws.persistence.consumer.jar");
-        JakartaEE9Action.transformApp(someArchive);
+        JakartaEE10Action.transformApp(someArchive);
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "persistence_fat.consumer.ejb", "persistence_fat.consumer.model",
                                       "persistence_fat.consumer.web");
 
         Path warArchive = Paths.get(server.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + APP_NAME + ".war");
-        JakartaEE9Action.transformApp(warArchive);
+        JakartaEE10Action.transformApp(warArchive);
 
         server.startServer();
     }
