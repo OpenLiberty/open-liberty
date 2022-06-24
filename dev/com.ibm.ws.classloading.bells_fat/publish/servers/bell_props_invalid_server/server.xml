@@ -1,0 +1,23 @@
+<server>
+    <featureManager>
+        <feature>user.feature.meta.inf.services-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>bells-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+
+    <!--  Invalid BELL property declaration -->
+
+    <library id="testInvalidPropertiesLib"
+            name="testInvalidProperties" 
+            description="testInvalidProperties">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testMultipleValidServices.jar" />
+    </library>
+
+    <bell libraryRef="testInvalidPropertiesLib">
+        <properties TIP_P0=TIP_P0_VAL" />
+    </bell>
+
+</server> 

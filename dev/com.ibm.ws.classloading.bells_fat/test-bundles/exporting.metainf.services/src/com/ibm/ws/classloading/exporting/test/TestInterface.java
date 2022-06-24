@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,15 @@ package com.ibm.ws.classloading.exporting.test;
 
 public interface TestInterface {
 
-    String isThere(String name);
+    default String isThere(String name) {
+        return name + " is there";
+    }
 
+    default String hasProperties(String name) {
+        return name + " has properties " + null;
+    }
+
+    default String hasUpdatedProperties(String name) {
+        return name + " has updated properties " + null;
+    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,44 @@
 
 package com.ibm.ws.test;
 
+import java.util.Map;
+
 import com.ibm.ws.classloading.exporting.test.TestInterface;
 
 public class MultipleValidServices1 implements TestInterface {
+
+    Map<String, String> bellProps = null;
+
+    Map<String, String> updatedBellProps = null;
+
+    public MultipleValidServices1() {}
+
+    public MultipleValidServices1(Map<String, String> bProps) {
+        System.out.println("MultipleValidServices1.CTOR.props: " + bProps);
+        bellProps = bProps;
+    }
+
+    Map<String,String> previousBellProps = null;
+
+    public void updateBell(Map<String, String> ubProps) {
+        if (updatedBellProps != null) {
+            previousBellProps = updatedBellProps;
+        }
+        updatedBellProps = ubProps;
+    }
 
     @Override
     public String isThere(String name) {
         return name + " is there";
     }
 
+    @Override
+    public String hasProperties(String name) {
+        return name + " has properties " + bellProps;
+    }
+
+    @Override
+    public String hasUpdatedProperties(String name) {
+        return name + " has updated properties " + updatedBellProps;
+    }
 }

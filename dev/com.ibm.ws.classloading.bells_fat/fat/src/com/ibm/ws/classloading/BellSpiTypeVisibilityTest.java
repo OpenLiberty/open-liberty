@@ -101,20 +101,31 @@ public class BellSpiTypeVisibilityTest {
         BELL_LOAD_CLASSNAME_JVM_OPTION = "-DclassName",
         BELL_LOAD_OPERATION_JVM_OPTION = "-DloadOp";
 
-    enum Load_Op {forName, loadClass;}
+    enum Load_Op {
+        forName,
+        loadClass;
+    }
+
+    static final int
+        TimeOut = 3000;
 
     /**
      * Verify BELL SPI visibility enables for the referenced library and that BELL services can see
      * SPI packages.
      */
     @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+    @AllowedFFDC({
+        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
+    })
     public void testSpiIsVisibleToBell() throws Exception
     {
         doTestSpiIsVisibleToBell(server, Load_Op.loadClass, Boolean.FALSE);
     }
+
     @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+    @AllowedFFDC({
+        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
+    })
     public void testSpiIsVisibleToBell_BETA() throws Exception
     {
         doTestSpiIsVisibleToBell(server, Load_Op.loadClass, Boolean.TRUE); // beta-edition
@@ -133,7 +144,7 @@ public class BellSpiTypeVisibilityTest {
 
             if (runAsBetaEdition) {
                 assertNotNull("The server should report BETA bell spi visibility has been invoked, but did not.",
-                        server.waitForStringInLog(".*BETA: BELL SPI visibility has been invoked by class"));
+                        server.waitForStringInLog(".*BETA: BELL SPI Visibility and BELL Properties "));
 
                 assertNotNull("The server should report bell spi visibility is enabled for library 'testSpiTypeVisible', but did not.",
                         server.waitForStringInLog(".*CWWKL0059I: .*testSpiTypeVisible"));
@@ -146,18 +157,19 @@ public class BellSpiTypeVisibilityTest {
 
                 assertNotNull("The server should instantiate a BELL service impl that implements/extends SPI when spi visibility is enabled, but did not",
                         server.waitForStringInLog(".*" + "TestUser: addingService: impl is there, SPI impl class SpiTypeVisibilityRESTHandlerImpl"));
-            } else {
+            }
+            else {
                 assertNull("The server should not report bell spi visibility has been invoked in beta images, but did.",
-                        server.waitForStringInLog(".*BETA: BELL SPI visibility has been invoked by class"));
+                        server.waitForStringInLog(".*BETA: BELL SPI Visibility and BELL Properties has been invoked by class", TimeOut));
 
                 assertNull("The server should not report bell spi visibility is enabled for library 'testSpiTypeVisible', but did.",
-                        server.waitForStringInLog(".*CWWKL0059I: .*testSpiTypeVisible"));
+                        server.waitForStringInLog(".*CWWKL0059I: .*testSpiTypeVisible", TimeOut));
 
                 assertNotNull("The server should load the META-INF service in the 'testSpiTypeVisible' library referenced by the BELL, but did not.",
                         server.waitForStringInLog(".*CWWKL0050I: .*testSpiTypeVisible.*SpiTypeVisible"));
 
                 assertNull("IBM-SPI packages should not be visible to the BELL service, but are.",
-                        server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader"));
+                        server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader", TimeOut));
             }
         } finally {
             stopServer();
@@ -169,14 +181,18 @@ public class BellSpiTypeVisibilityTest {
      * Verify BELL services cannot see SPI packages when BELL SPI visibility is not enabled (the default.)
      */
     @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION})
+    @AllowedFFDC({
+        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
+    })
     public void testSpiIsNotVisibleToBell() throws Exception
     {
         doTestSpiIsNotVisibleToBell(server, Load_Op.loadClass, Boolean.FALSE);
     }
 
     @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION})
+    @AllowedFFDC({
+        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
+    })
     public void testSpiIsNotVisibleToBell_BETA() throws Exception
     {
         doTestSpiIsNotVisibleToBell(server, Load_Op.loadClass, Boolean.TRUE);
@@ -220,14 +236,18 @@ public class BellSpiTypeVisibilityTest {
      * library class loader when BELL SPI visibility is enabled.
      */
     @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+    @AllowedFFDC({
+        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
+    })
     public void testSpiIsNotVisibleToApp() throws Exception
     {
         doTestSpiIsNotVisibleToApp(server, Load_Op.forName, Boolean.FALSE);
     }
 
     @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+    @AllowedFFDC({
+        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
+    })
     public void testSpiIsNotVisibleToApp_BETA() throws Exception
     {
         doTestSpiIsNotVisibleToApp(server, Load_Op.forName, Boolean.TRUE);
@@ -270,14 +290,18 @@ public class BellSpiTypeVisibilityTest {
      * Verify BELL SPI visibility does not enable for the liberty global shared library.
      */
     @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+    @AllowedFFDC({
+        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
+    })
     public void testSpiVisibilityDisabledForGlobalLib() throws Exception
     {
         doTestSpiVisibilityDisabledForGlobalLib(server, Boolean.FALSE);
     }
 
     @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+    @AllowedFFDC({
+        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
+    })
     public void testSpiVisibilityDisabledForGlobalLib_BETA() throws Exception
     {
         doTestSpiVisibilityDisabledForGlobalLib(server, Boolean.TRUE);

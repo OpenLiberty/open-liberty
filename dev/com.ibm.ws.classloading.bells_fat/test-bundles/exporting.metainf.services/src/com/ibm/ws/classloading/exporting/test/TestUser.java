@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ public class TestUser {
             @Override
             public Object addingService(ServiceReference<Object> ref) {
                 Object service =  context.getService(ref);
+
                 if (service instanceof TestInterface) {
                     String isThere = ((TestInterface) service).isThere("impl");
                     logEventResult("addingService", isThere);
@@ -42,6 +43,19 @@ public class TestUser {
                     String isThere2 = ((TestInterface2) service).isThere2("impl");
                     logEventResult("addingService", isThere2);
                 }
+
+                if (service instanceof TestInterface) {
+                    System.out.println("TestUser addingService: " + ((TestInterface) service).hasProperties(service.getClass().getSimpleName()));
+                } else if (service instanceof TestInterface2) {
+                    System.out.println("TestUser addingService: " + ((TestInterface2) service).hasProperties2(service.getClass().getSimpleName()));
+                }
+
+                if (service instanceof TestInterface) {
+                    System.out.println("TestUser addingService: " + ((TestInterface) service).hasUpdatedProperties(service.getClass().getSimpleName()));
+                } else if (service instanceof TestInterface2) {
+                    System.out.println("TestUser addingService: " + ((TestInterface2) service).hasUpdatedProperties2(service.getClass().getSimpleName()));
+                }
+
                 return service;
             }
 

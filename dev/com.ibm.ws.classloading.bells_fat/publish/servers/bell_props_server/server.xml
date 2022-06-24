@@ -1,0 +1,65 @@
+<server>
+    <featureManager>
+        <feature>user.feature.meta.inf.services-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>bells-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+
+    <library id="testPropertiesLib"
+            name="testProperties" 
+            description="testProperties">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testMultipleValidServices.jar" />
+    </library>
+
+    <!-- Multiple properties elements with a duplicate property key. The value of a
+         duplicate property is logically indeterminate, but will resolve to the last
+         occurrence in the configuration w/o warning. -->
+
+    <bell libraryRef="testPropertiesLib">
+        <properties TP_P0="TP_P0_XXX" TP_P1="TP_P1_VAL" TP_P2="TP_P2_VAL" />
+        <properties TP_P0="TP_P0_VAL" TP_P3="TP_P3_VAL" />
+    </bell>
+
+
+    <library id="testMissingInjectionMethodsLib"
+            name="testMissingInjectionMethodsLib"
+            description="testMissingInjectionMethodsLib">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testImplClassNotConstructible.jar" />
+    </library>
+
+    <bell libraryRef="testMissingInjectionMethodsLib">
+        <properties TMIM_P0="TMIM_P0_VAL" />
+    </bell>
+
+
+    <library id="testEmptyPropertiesLib"
+            name="testEmptyPropertiesLib"
+            description="testEmptyPropertiesLib">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testProperties.jar" />
+    </library>
+
+      <bell libraryRef="testEmptyPropertiesLib">
+        <properties />
+    </bell>
+
+
+    <library id="testPropertiesResolveLibertyVarsLib"
+            name="testPropertiesResolveLibertyVarsLib"
+            description="testPropertiesResolveLibertyVarsLib">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testProperties.jar" />
+    </library>
+
+    <variable name="LV_0" value="LV_0_VAL" />
+    <variable name="LV_1" value="LV_1_VAL" />
+
+    <bell libraryRef="testPropertiesResolveLibertyVarsLib">
+        <properties
+            TPCLV_P0="${LV_0}"
+            TPCLV_P1="TPCLV_P1_${LV_1}"
+            TPCLV_P2="TPCLV_P2_VAL" />
+    </bell>
+
+</server> 

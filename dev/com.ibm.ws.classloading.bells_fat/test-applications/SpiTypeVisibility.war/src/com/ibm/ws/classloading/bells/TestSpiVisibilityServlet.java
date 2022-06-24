@@ -25,7 +25,7 @@ public class TestSpiVisibilityServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        // Attempt to load a class using the application classloader
+        // Attempt to load a class using the application class loader
         String className = req.getParameter("className");
         String loadOp = req.getParameter("loadOp");
         System.out.println("TestSpiVisibilityServlet.doGet: loading class " + className + ", using " + loadOp);
@@ -33,9 +33,11 @@ public class TestSpiVisibilityServlet extends HttpServlet {
         try {
             if (loadOp == null || "loadClass".equals(loadOp)) {
                 clazz = this.getClass().getClassLoader().loadClass(className);
-            } else if ("forName".equals(loadOp)) {
-                clazz = this.getClass().getClassLoader().loadClass(className);
-            } else {
+            }
+            else if ("forName".equals(loadOp)) {
+                clazz = Class.forName(className, true, this.getClass().getClassLoader());
+            }
+            else {
                 throw new IllegalArgumentException("Invalid loadOp: " + loadOp);
             }
         } catch (Throwable t) {
