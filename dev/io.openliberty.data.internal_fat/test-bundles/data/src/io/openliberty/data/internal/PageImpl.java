@@ -29,16 +29,18 @@ import io.openliberty.data.Param;
 public class PageImpl<T> implements Page<T> {
     private final String jpql;
     private final Method method;
+    private final int numParams; // can differ from args.length due to Pagination and Sort/Sorts
     private final Object[] args;
     private final Pagination pagination;
     private final QueryHandler<T> queryHandler;
     private final List<T> results;
 
-    PageImpl(String jpql, Pagination pagination, QueryHandler<T> queryHandler, Method method, Object[] args) {
+    PageImpl(String jpql, Pagination pagination, QueryHandler<T> queryHandler, Method method, int numParams, Object[] args) {
         this.jpql = jpql;
         this.pagination = pagination == null ? Pagination.page(1).size(100) : pagination;
         this.queryHandler = queryHandler;
         this.method = method;
+        this.numParams = numParams;
         this.args = args;
 
         EntityManager em = queryHandler.punit.createEntityManager();
@@ -47,16 +49,13 @@ public class PageImpl<T> implements Page<T> {
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryHandler.entityClass);
             if (args != null) {
                 Parameter[] params = method.getParameters();
-                for (int i = 0; i < args.length; i++)
-                    if (i == args.length - 1 && args[i] instanceof Pagination) {
-                        break; // final argument can be a Pagination
-                    } else {
-                        Param param = params[i].getAnnotation(Param.class);
-                        if (param == null)
-                            query.setParameter(i + 1, args[i]);
-                        else // named parameter
-                            query.setParameter(param.value(), args[i]);
-                    }
+                for (int i = 0; i < numParams; i++) {
+                    Param param = params[i].getAnnotation(Param.class);
+                    if (param == null)
+                        query.setParameter(i + 1, args[i]);
+                    else // named parameter
+                        query.setParameter(param.value(), args[i]);
+                }
             }
             // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
             query.setFirstResult((int) pagination.getSkip());
@@ -95,7 +94,7 @@ public class PageImpl<T> implements Page<T> {
         if (results.isEmpty())
             return null;
 
-        PageImpl<T> next = new PageImpl<T>(jpql, pagination.next(), queryHandler, method, args);
+        PageImpl<T> next = new PageImpl<T>(jpql, pagination.next(), queryHandler, method, numParams, args);
 
         if (next.results.isEmpty())
             return null;

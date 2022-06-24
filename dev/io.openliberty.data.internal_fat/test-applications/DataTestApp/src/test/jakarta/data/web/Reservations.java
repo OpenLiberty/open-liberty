@@ -30,6 +30,8 @@ import io.openliberty.data.Page;
 import io.openliberty.data.Pagination;
 import io.openliberty.data.Repository;
 import io.openliberty.data.Select;
+import io.openliberty.data.Sort;
+import io.openliberty.data.Sorts;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
@@ -65,6 +67,8 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     Stack<Reservation> findByStopGreaterThanOrderByLocationDescOrderByHostOrderByStopAsc(OffsetDateTime endAfter);
 
+    UserDefinedCollection<Reservation> findByStopLessThan(OffsetDateTime maxEndTime, Sorts sorts);
+
     AbstractCollection<Reservation> findByStopLessThanEqual(OffsetDateTime maxEndTime);
 
     AbstractList<Reservation> findByStopLessThanOrderByHostAscOrderByLocationDescOrderByStart(OffsetDateTime endBefore);
@@ -88,7 +92,7 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostSubstring);
 
-    Page<Reservation> findByHostLikeOrderByMeetingIDDesc(String hostSubstring, Pagination pagination);
+    Page<Reservation> findByHostLike(String hostSubstring, Pagination pagination, Sort sort);
 
     // Use a record as the return type
     @Select({ "start", "stop" })

@@ -20,9 +20,10 @@ import java.lang.annotation.Target;
  * The method return type must be either:<p>
  *
  * <ul>
- * <li>{@link Page}, which represents a single page and allows for requesting the next page.
- * <li><code>java.util.Iterator</code>, which keeps only a single page in memory at a time, or
- * <li><code>java.util.List</code>, which keeps in memory every page read thus far.
+ * <li>{@link Page}, which represents a single page and provides the ability
+ * to explicitly request subsequent pages.
+ * <li>{@link java.util.Iterator Iterator}, which automatically advances
+ * to subsequent pages as required by iteration.
  * </ul>
  *
  * For example,<p>
@@ -35,9 +36,8 @@ import java.lang.annotation.Target;
  * Upon invocation of the method, the first page is read from the database.
  * Subsequent pages are read only as needed,
  * either as explicitly requested by {@link Page#next()}
- * or upon an attempt to access an element that has not yet been read
- * or upon requesting the size of the list, which requires all remaining pages
- * to be read to determine the total.<p>
+ * or implicitly upon checking for a next item in the iterator
+ * that reaches past the current page.<p>
  *
  * Expect the possibility of duplicates and missed entries across pages if
  * data is added, removed, or modified after the first page is read.

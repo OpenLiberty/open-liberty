@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Paginated;
+import io.openliberty.data.Pagination;
 
 /**
  *
@@ -32,8 +33,7 @@ public interface Tariffs {
 
     Tariff findByLeviedByAndLeviedAgainstAndLeviedOn(String taxingCountry, String taxedCountry, String item);
 
-    @Paginated(2)
-    List<Tariff> findByLeviedByOrderByKey(String country);
+    List<Tariff> findByLeviedByOrderByKey(String country, Pagination pagination);
 
     Tariff save(Tariff t);
 }

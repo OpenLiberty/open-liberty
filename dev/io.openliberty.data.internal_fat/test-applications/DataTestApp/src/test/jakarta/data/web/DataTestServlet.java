@@ -46,6 +46,8 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import io.openliberty.data.Page;
 import io.openliberty.data.Pagination;
+import io.openliberty.data.Sort;
+import io.openliberty.data.Sorts;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -376,15 +378,22 @@ public class DataTestServlet extends FATServlet {
         t = tariffs.findByLeviedByAndLeviedAgainstAndLeviedOn("USA", "Bangladesh", "Textiles");
         assertEquals(t6.rate, t.rate, 0.0001f);
 
-        // Paginated list:
-        assertIterableEquals(List.of("China", "Germany", "India", "Japan", "Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA")
+        // List return type for Pagination only represents a single page, not all pages.
+        // page 1:
+        assertIterableEquals(List.of("China", "Germany", "India", "Japan"),
+                             tariffs.findByLeviedByOrderByKey("USA", Pagination.page(1).size(4))
+                                             .stream()
+                                             .map(o -> o.leviedAgainst)
+                                             .collect(Collectors.toList()));
+        // page 2:
+        assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
+                             tariffs.findByLeviedByOrderByKey("USA", Pagination.page(2).size(4))
                                              .stream()
                                              .map(o -> o.leviedAgainst)
                                              .collect(Collectors.toList()));
 
         // Random access to paginated list:
-        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA");
+        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA", Pagination.page(1).size(20));
         assertEquals(t4.leviedAgainst, list.get(3).leviedAgainst);
         assertEquals(t7.leviedAgainst, list.get(6).leviedAgainst);
         assertEquals(t2.leviedAgainst, list.get(1).leviedAgainst);
@@ -773,6 +782,17 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
+        // Reverse ordering to the above using Sorts:
+        assertIterableEquals(List.of(10030008L, 10030004L, 10030009L, 10030006L, 10030003L, 10030002L, 10030007L, 10030005L, 10030001L),
+                             reservations.findByStopLessThan(OffsetDateTime.of(2022, 5, 26, 0, 0, 0, 0, CDT),
+                                                             Sorts.sorts()
+                                                                             .add(Sort.desc("host"))
+                                                                             .add(Sort.asc("location"))
+                                                                             .add(Sort.desc("start")))
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+
         assertIterableEquals(List.of(10030001L, 10030002L, 10030003L, 10030007L, 10030008L),
                              reservations.findByStopOrStart(OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT),
                                                             OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT))
@@ -893,7 +913,9 @@ public class DataTestServlet extends FATServlet {
         assertEquals("DONE", result);
 
         // Paging where the final page includes less than the maximum page size,
-        Page<Reservation> page1 = reservations.findByHostLikeOrderByMeetingIDDesc("testRepositoryCustom-host", Pagination.page(1).size(4));
+        Page<Reservation> page1 = reservations.findByHostLike("testRepositoryCustom-host",
+                                                              Pagination.page(1).size(4),
+                                                              Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030009L, 10030008L, 10030007L, 10030006L),
                              page1
                                              .getContent()
@@ -914,7 +936,9 @@ public class DataTestServlet extends FATServlet {
         assertEquals(null, page3.next());
 
         // Paging that comes out even:
-        page2 = reservations.findByHostLikeOrderByMeetingIDDesc("testRepositoryCustom-host", Pagination.page(2).size(3));
+        page2 = reservations.findByHostLike("testRepositoryCustom-host",
+                                            Pagination.page(2).size(3),
+                                            Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
                              page2
                                              .getContent()
