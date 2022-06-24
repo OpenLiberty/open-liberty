@@ -536,15 +536,28 @@ public class QueryHandler<T> implements InvocationHandler {
                         entityClassesAvailable.contains(paramTypes[0])) {
                         returnValue = em.merge(args[0]);
                         em.flush();
-                        returnValue = returnType.isInstance(returnValue) ? returnValue : null;
                     } else if (Iterable.class.isAssignableFrom(paramTypes[0])) {
                         ArrayList<Object> results = new ArrayList<>();
                         for (Object e : ((Iterable<?>) args[0]))
                             results.add(em.merge(e));
                         em.flush();
-                        returnValue = returnType.isInstance(results) ? results : null;
+                        returnValue = results;
+                    } else if (paramTypes[0].isArray()) {
+                        ArrayList<Object> results = new ArrayList<>();
+                        Object a = args[0];
+                        int length = Array.getLength(a);
+                        for (int i = 0; i < length; i++)
+                            results.add(em.merge(Array.get(a, i)));
+                        em.flush();
+                        returnValue = results;
                     } else {
                         throw new UnsupportedOperationException(method.toString());
+                    }
+
+                    if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+                        returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+                    } else {
+                        returnValue = returnType.isInstance(returnValue) ? returnValue : null;
                     }
                     break;
                 case SELECT:
@@ -573,6 +586,8 @@ public class QueryHandler<T> implements InvocationHandler {
                     }
 
                     List<?> results = query.getResultList();
+
+                    // TODO @Select(unary = true) for single?
 
                     if (entityClass.equals(returnType))
                         returnValue = results.isEmpty() ? null : results.iterator().next();
@@ -617,10 +632,7 @@ public class QueryHandler<T> implements InvocationHandler {
                             builder.accept((Double) result);
                         returnValue = builder.build();
                     } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
-                        // TODO The completion stage result type is not available at run time.
-                        // Is a single result or list/array/other type wanted?
-                        // And should this be backed with a particular executor?
-                        returnValue = CompletableFuture.completedFuture(results.isEmpty() ? null : results.iterator().next());
+                        returnValue = CompletableFuture.completedFuture(results);
                     } else { // TODO convert other return types?
                         returnValue = results.isEmpty() ? null : results.iterator().next();
                     }
@@ -681,7 +693,7 @@ public class QueryHandler<T> implements InvocationHandler {
         else if (void.class.equals(returnType) || Void.class.equals(returnType))
             return null;
         else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
-            return CompletableFuture.completedFuture(i);
+            return CompletableFuture.completedFuture(Long.valueOf(i)); // TODO would need something like @Result(Integer.class) to identify the type
         else
             throw new UnsupportedOperationException("Return update count as " + returnType);
     }
