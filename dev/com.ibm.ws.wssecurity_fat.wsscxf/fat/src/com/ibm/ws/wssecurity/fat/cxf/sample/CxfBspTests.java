@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
+
 
 @SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
@@ -114,18 +116,14 @@ public class CxfBspTests {
         WSSampleClientUrl = serviceClientUrl + "/WSSampleSeiClient/ClientServlet";
         Log.info(thisClass, thisMethod, "****portNumber is:" + portNumber + " **portNumberSecure is:" + portNumberSecure);
 
-        String vendorName = System.getProperty("java.vendor");
-        Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
-
-        String javaVersion = System.getProperty("java.version");
-        Log.info(thisClass, thisMethod, "JDK Version is: " + javaVersion);
-
         ibmJDK = true;
-        if ((vendorName.contains("IBM")) & (javaVersion.contains("1.8.0"))) {
-            Log.info(thisClass, thisMethod, "Using an IBM JDK 8");
+        
+        //RTC 290711
+        if (JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) {
+            Log.info(thisClass, thisMethod, "Using an IBM JDK");
         } else {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - certain tests should not run!  WE WILL BE SKIPPING SOME TESTS");
-            System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - certain tests should not run!");
+            Log.info(thisClass, thisMethod, "Using NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
             ibmJDK = false;
         }
 
@@ -136,8 +134,8 @@ public class CxfBspTests {
     public void testEcho11Service() throws Exception {
         String thisMethod = "testEcho11Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
             return;
         }
 
@@ -165,8 +163,8 @@ public class CxfBspTests {
     public void testEcho12Service() throws Exception {
         String thisMethod = "testEcho12Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
             return;
         }
 
@@ -194,8 +192,8 @@ public class CxfBspTests {
     public void testEcho13Service() throws Exception {
         String thisMethod = "testEcho13Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
             return;
         }
 
@@ -223,8 +221,8 @@ public class CxfBspTests {
     public void testEcho14Service() throws Exception {
         String thisMethod = "testEcho14Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK or an Open JDK or an IBM JDK 11 - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
             return;
         }
 
