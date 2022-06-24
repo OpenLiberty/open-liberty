@@ -25,6 +25,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -45,6 +46,11 @@ public class JsonUserFeatureTest extends FATServletClient {
 
         FATSuite.configureImpls(server);
         server.startServer();
+
+        if (JakartaEE10Action.isActive()) { //TODO possibly back port these info messages to EE9 and EE8
+            assertTrue(!server.findStringsInLogsAndTrace("CWWKJ0350I").isEmpty());
+            assertTrue(!server.findStringsInLogsAndTrace("CWWKJ0351I").isEmpty());
+        }
     }
 
     @AfterClass
