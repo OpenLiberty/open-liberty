@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,8 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.classloading.internal.ClassLoadingServiceImpl;
+import com.ibm.ws.library.spi.SpiLibrary;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
 import com.ibm.wsspi.classloading.ApiType;
@@ -46,7 +48,7 @@ import com.ibm.wsspi.library.LibraryChangeListener;
  * This class defines the <library> element implementation in the server.xml allowing users
  * to specify shared libraries used by web applications
  */
-public class SharedLibraryImpl implements Library {
+public class SharedLibraryImpl implements Library, SpiLibrary {
     private static final TraceComponent tc = Tr.register(SharedLibraryImpl.class);
 
     private static final LibraryChangeListener[] EMPTY_LIBRARY_LISTENERS = {};
@@ -175,6 +177,11 @@ public class SharedLibraryImpl implements Library {
     @Override
     public ClassLoader getClassLoader() {
         return classLoadingService.getSharedLibraryClassLoader(this);
+    }
+
+    @Override
+    public ClassLoader getSpiClassLoader(final String ownerId) {
+        return ((ClassLoadingServiceImpl)classLoadingService).getSharedLibrarySpiClassLoader(this, ownerId);
     }
 
     @Override

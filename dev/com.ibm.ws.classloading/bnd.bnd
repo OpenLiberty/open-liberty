@@ -24,7 +24,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Export-Package: \
   com.ibm.ws.classloading;provide:=true, \
   com.ibm.ws.classloading.java2sec;provide:=true, \
-  com.ibm.ws.classloading.serializable,\
+  com.ibm.ws.classloading.serializable, \
+  com.ibm.ws.library.spi;provide:=true, \
   com.ibm.wsspi.classloading;provide:=true, \
   com.ibm.wsspi.library;provide:=true
 
