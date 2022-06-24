@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.AnnotationLiteral;
 
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
@@ -94,7 +95,8 @@ public class HealthCheck31CDIBeanInvokerImpl implements HealthCheck31CDIBeanInvo
     private Set<Object> getHealthCheckStartupBeans(BeanManager beanManager) {
         Set<Object> hcReadinessBeans = new HashSet<Object>();
 
-        hcReadinessBeans = getHealthCheckBeans(beanManager, Startup.Literal.INSTANCE);
+        hcReadinessBeans = getHealthCheckBeans(beanManager, new AnnotationLiteral<Startup>() {
+        });
 
         return hcReadinessBeans;
     }
@@ -102,7 +104,8 @@ public class HealthCheck31CDIBeanInvokerImpl implements HealthCheck31CDIBeanInvo
     private Set<Object> getHealthCheckLivenessBeans(BeanManager beanManager) {
         Set<Object> hcLivenessBeans = new HashSet<Object>();
 
-        hcLivenessBeans = getHealthCheckBeans(beanManager, Liveness.Literal.INSTANCE);
+        hcLivenessBeans = getHealthCheckBeans(beanManager, new AnnotationLiteral<Liveness>() {
+        });
 
         return hcLivenessBeans;
     }
@@ -110,7 +113,8 @@ public class HealthCheck31CDIBeanInvokerImpl implements HealthCheck31CDIBeanInvo
     private Set<Object> getHealthCheckReadinessBeans(BeanManager beanManager) {
         Set<Object> hcReadinessBeans = new HashSet<Object>();
 
-        hcReadinessBeans = getHealthCheckBeans(beanManager, Readiness.Literal.INSTANCE);
+        hcReadinessBeans = getHealthCheckBeans(beanManager, new AnnotationLiteral<Readiness>() {
+        });
 
         return hcReadinessBeans;
     }
@@ -130,9 +134,15 @@ public class HealthCheck31CDIBeanInvokerImpl implements HealthCheck31CDIBeanInvo
         Set<Bean<?>> beans;
         if (beanManager != null) {
             beans = beanManager.getBeans(HealthCheck.class, hcQualifier);
+            Tr.event(tc, "Beans size : " + beans.size());
             for (Bean<?> bean : beans) {
-                Tr.event(tc, "Bean Found: HealthCheck beanClass = " + bean.getBeanClass() + ", class = " + bean.getClass() + ", name = " + bean.getName());
-                healthCheckBeans.add(beanManager.getReference(bean, HealthCheck.class, beanManager.createCreationalContext(bean)));
+                Set<Annotation> beanQualifiers = bean.getQualifiers();
+                Tr.event(tc, "Bean Found: HealthCheck beanClass = " + bean.getBeanClass() + ", class = " + bean.getClass() + ", name = " + bean.getName() + ", qualifers = "
+                             + beanQualifiers);
+                if (beanQualifiers.contains(hcQualifier)) {
+                    Tr.event(tc, "Adding Bean : beanClass = " + bean.getBeanClass() + ", class = " + bean.getClass() + ", qualifers = " + beanQualifiers);
+                    healthCheckBeans.add(beanManager.getReference(bean, HealthCheck.class, beanManager.createCreationalContext(bean)));
+                }
             }
         }
         return healthCheckBeans;
@@ -140,6 +150,9 @@ public class HealthCheck31CDIBeanInvokerImpl implements HealthCheck31CDIBeanInvo
 
     private BeanManager getBeanManager(String appName, String moduleName) {
         String key = appName + "#" + moduleName;
+        beanManagers.entrySet().forEach(bm -> {
+            Tr.event(tc, "BeanManager  : " + bm.getKey() + " " + bm.getValue());
+        });
         BeanManager manager = beanManagers.get(key);
         if (manager == null) {
             if (beanManagers.containsKey(key) || cdiService == null) {
