@@ -103,6 +103,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
     }
 
     @Test
+    @AllowedFFDC({"javax.transaction.RollbackException", "javax.resource.ResourceException", "java.sql.SQLException"})
     public void testBlockAfterCancelByIdFE() throws Exception {
         runTest(server, APP_NAME, "testBlockAfterCancelByIdFE");
     }
