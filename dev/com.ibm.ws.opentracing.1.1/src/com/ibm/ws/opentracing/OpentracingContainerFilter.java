@@ -86,8 +86,9 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         }
 
         URI incomingUri = incomingRequestContext.getUriInfo().getRequestUri();
-        String incomingURL = incomingUri.toURL().toString();
+        String incomingURL = null;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            incomingURL = incomingUri.toURL().toString();
             Tr.debug(tc, methodName + " incomingURL", incomingURL);
         }
 
@@ -115,6 +116,9 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
                 process = false;
             }
         } else {
+            if (incomingURL == null) {
+                incomingURL = incomingUri.toURL().toString();
+            }
             buildSpanName = incomingURL;
         }
 

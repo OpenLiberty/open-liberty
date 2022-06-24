@@ -89,7 +89,6 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             }
         }
 
-        // get buildSpanName. If it is null from the helper, we can skip the rest of the processing.
         String buildSpanName = null;
         if (helper != null) {
             buildSpanName = helper.getBuildSpanName(incomingRequestContext, resourceInfo);
@@ -108,13 +107,10 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             incomingPath = "/" + incomingPath;
         }
 
-        String incomingURL = incomingUri.toURL().toString();
+        String incomingURL = null;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            incomingURL = incomingUri.toURL().toString();
             Tr.debug(tc, methodName + " incomingURL", incomingURL);
-        }
-
-        if (buildSpanName == null) {
-            buildSpanName = incomingURL;
         }
 
         SpanContext priorOutgoingContext = tracer.extract(Format.Builtin.HTTP_HEADERS,
@@ -127,6 +123,13 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         boolean process = OpentracingService.process(incomingUri, incomingPath, SpanFilterType.INCOMING);
 
         if (process) {
+            if (buildSpanName == null) {
+                if (incomingURL == null) {
+                    incomingURL = incomingUri.toURL().toString();
+                }
+                buildSpanName = incomingURL;
+            }
+
             Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), incomingURL);

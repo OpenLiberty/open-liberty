@@ -89,14 +89,27 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             }
         }
 
+        String buildSpanName = null;
+        if (helper != null) {
+            buildSpanName = helper.getBuildSpanName(incomingRequestContext, resourceInfo);
+            if (buildSpanName == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + " skipping not traced method");
+                }
+                incomingRequestContext.setProperty(SERVER_SPAN_SKIPPED_ID, true);
+                return;
+            }
+        }
+
         URI incomingUri = incomingRequestContext.getUriInfo().getRequestUri();
         String incomingPath = incomingRequestContext.getUriInfo().getPath();
         if (!incomingPath.startsWith("/")) {
             incomingPath = "/" + incomingPath;
         }
 
-        String incomingURL = incomingUri.toURL().toString();
+        String incomingURL = null;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            incomingURL = incomingUri.toURL().toString();
             Tr.debug(tc, methodName + " incomingURL", incomingURL);
         }
 
@@ -109,19 +122,13 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
         boolean process = OpentracingService.process(incomingUri, incomingPath, SpanFilterType.INCOMING);
 
-        String buildSpanName;
-        if (helper != null) {
-            buildSpanName = helper.getBuildSpanName(incomingRequestContext, resourceInfo);
-            if (buildSpanName == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, methodName + " skipping not traced method");
-                }
-                process = false;
-            }
-        } else {
-            buildSpanName = incomingURL;
-        }
         if (process) {
+            if (buildSpanName == null) {
+                if (incomingURL == null) {
+                    incomingURL = incomingUri.toURL().toString();
+                }
+                buildSpanName = incomingURL;
+            }
             Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), incomingURL);
