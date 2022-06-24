@@ -166,6 +166,14 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.firstName)
                                              .collect(Collectors.toList()));
 
+        CompletableFuture<Person> future = personnel.findBySsn(p4.ssn);
+
+        Person p = future.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+        assertNotNull(p);
+        assertEquals(p4.ssn, p.ssn);
+        assertEquals(p4.firstName, p.firstName);
+        assertEquals(p4.lastName, p.lastName);
+
         deleted = personnel.removeAll();
         assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }

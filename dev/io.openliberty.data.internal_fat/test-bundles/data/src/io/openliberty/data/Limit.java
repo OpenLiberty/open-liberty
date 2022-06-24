@@ -28,6 +28,20 @@ import java.lang.annotation.Target;
  * City[] findMostPopulousIn(String country);
  * </pre>
  *
+ * This annotation can also be used to indicate a single result for a
+ * {@link java.util.concurrent.CompletionStage CompletionStage} or
+ * {@link java.util.concurrent.CompletableFuture CompletableFuture}.<p>
+ *
+ * For example,<p>
+ *
+ * <pre>
+ * &#64;Asynchronous
+ * &#64;Limit(1)
+ * CompletableFuture&#60;City&#62; findByCityAndStateAndCountry(String cityName,
+ *                                                      String stateName,
+ *                                                      String countryName);
+ * </pre>
+ *
  * Do not combine on a method with {@link Paginated &#64;Paginated} or
  * {@link Pagination}, which limits results per page instead of per query.
  */

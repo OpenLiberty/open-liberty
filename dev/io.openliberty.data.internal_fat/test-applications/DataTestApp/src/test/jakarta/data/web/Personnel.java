@@ -18,6 +18,7 @@ import jakarta.enterprise.concurrent.Asynchronous;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
+import io.openliberty.data.Limit;
 import io.openliberty.data.Update;
 import io.openliberty.data.Where;
 
@@ -36,6 +37,10 @@ public interface Personnel {
 
     @Asynchronous
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
+
+    @Asynchronous
+    @Limit(1) // indicates single result (rather than list) for the completion stage
+    CompletableFuture<Person> findBySsn(long ssn);
 
     @Asynchronous
     @Delete

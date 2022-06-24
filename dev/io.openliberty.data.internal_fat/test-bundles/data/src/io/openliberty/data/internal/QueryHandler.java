@@ -587,10 +587,8 @@ public class QueryHandler<T> implements InvocationHandler {
 
                     List<?> results = query.getResultList();
 
-                    // TODO @Select(unary = true) for single?
-
                     if (entityClass.equals(returnType))
-                        returnValue = results.isEmpty() ? null : results.iterator().next();
+                        returnValue = results.isEmpty() ? null : results.get(0);
                     else if (returnType.isInstance(results))
                         returnValue = results;
                     else if (returnArrayType != null) {
@@ -600,7 +598,7 @@ public class QueryHandler<T> implements InvocationHandler {
                             Array.set(r, i++, o);
                         returnValue = r;
                     } else if (Optional.class.equals(returnType))
-                        returnValue = results.isEmpty() ? Optional.empty() : Optional.of(results.iterator().next());
+                        returnValue = results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
                     else if (Collection.class.isAssignableFrom(returnType))
                         try {
                             @SuppressWarnings("unchecked")
@@ -632,9 +630,13 @@ public class QueryHandler<T> implements InvocationHandler {
                             builder.accept((Double) result);
                         returnValue = builder.build();
                     } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
-                        returnValue = CompletableFuture.completedFuture(results);
+                        Limit limit = method.getAnnotation(Limit.class);
+                        if (limit != null && limit.value() == 1) // single result
+                            returnValue = CompletableFuture.completedFuture(results.isEmpty() ? null : results.get(0));
+                        else // multiple
+                            returnValue = CompletableFuture.completedFuture(results);
                     } else { // TODO convert other return types?
-                        returnValue = results.isEmpty() ? null : results.iterator().next();
+                        returnValue = results.isEmpty() ? null : results.get(0);
                     }
                     break;
                 case UPDATE:
