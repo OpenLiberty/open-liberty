@@ -85,6 +85,9 @@ public class JPAFATServletClient extends FATServletClient {
         ShrinkHelper.addDirectory(webApp, dbManagementResourcePath + "/databasemanagement.war");
         ShrinkHelper.addDirectory(webApp, ddlPath);
 
+        final JavaArchive testApiJar = buildTestAPIJar();
+        webApp.addAsLibrary(testApiJar);
+
         ShrinkHelper.exportToServer(server, "apps", webApp, DeployOptions.OVERWRITE);
 
         Application appRecord = new Application();
