@@ -1,0 +1,18 @@
+<constraint-mappings xmlns="http://jboss.org/xml/ns/javax/validation/mapping"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/mapping validation-mapping-1.0.xsd">
+
+	<default-package>com.ibm.adapter.adminobject.jbv</default-package>
+	<bean class="JBVFATAOEmbeddedImpl" ignore-annotations="false">
+		<field name="aoProperty5">
+		    <valid />
+			<!--
+				@Min(20)
+			-->			
+		    <constraint annotation="javax.validation.constraints.Min">
+			    <message>Minimum possible value is 20</message>
+				<element name="value">20</element>
+			</constraint>
+		</field>
+	</bean>
+</constraint-mappings>

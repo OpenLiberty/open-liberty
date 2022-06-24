@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connector id="Connector_ID" version="1.6" metadata-complete="false" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/connector_1_6.xsd">
+	<description>Test Resource Adapter for JCA 1.6: metadata-complete is false, RA is partially annotated, DD contains MessageListener elements.</description>
+	<display-name>TRA_jca16_ann_AdministeredObjectValidator_SuperClassTwoInterfaces</display-name>
+	<vendor-name>IBM Corporation</vendor-name>
+	<eis-type>Test EIS</eis-type>
+	<resourceadapter-version>1.1</resourceadapter-version>
+        <resourceadapter>
+                <resourceadapter-class>com.ibm.tra.SimpleRAImpl</resourceadapter-class>
+		<config-property>
+			<description>ServerName</description>
+			<config-property-name>ServerName</config-property-name>
+			<config-property-type>
+				java.lang.String
+			</config-property-type>
+			<config-property-value></config-property-value>
+		</config-property>
+		<config-property>
+			<description>UserName</description>
+			<config-property-name>UserName</config-property-name>
+			<config-property-type>
+				java.lang.String
+			</config-property-type>
+			<config-property-value></config-property-value>
+		</config-property>
+		<config-property>
+			<description>Password</description>
+			<config-property-name>Password</config-property-name>
+			<config-property-type>
+				java.lang.String
+			</config-property-type>
+			<config-property-value></config-property-value>
+		</config-property>
+		<config-property>
+			<description>Boolean property that will turn debug output related to Message Passing on and off</description>
+			<config-property-name>DebugMessages</config-property-name>
+			<config-property-type>
+				java.lang.Boolean
+			</config-property-type>
+			<config-property-value>true</config-property-value>
+		</config-property>
+		<config-property>
+			<description>Boolean property that will turn debug output related to ActivationSpec's on and off</description>
+			<config-property-name>
+				DebugActivationSpec
+			</config-property-name>
+			<config-property-type>
+				java.lang.Boolean
+			</config-property-type>
+			<config-property-value>true</config-property-value>
+		</config-property>
+		<config-property>
+			<description>This property allows for redirection of the Debug output from the test resource adapter to another print stream (System.out or System.err), or a file (by specifying a	file name). WARNING: If you select an existing file, the contents of the file will be lost.</description>
+			<config-property-name>OutputName</config-property-name>
+			<config-property-type>
+				java.lang.String
+			</config-property-type>
+			<config-property-value>System.out</config-property-value>
+		</config-property>
+		<config-property>
+			<description>Boolean property that will turn classloader info debug output on and off.</description>
+			<config-property-name>
+				PrintClassLoader
+			</config-property-name>
+			<config-property-type>
+				java.lang.Boolean
+			</config-property-type>
+			<config-property-value>true</config-property-value>
+		</config-property>
+		<config-property>
+			<description>Boolean property that will turn Stack dump on and off for the classloader debug text.</description>
+			<config-property-name>DumpStack</config-property-name>
+			<config-property-type>
+				java.lang.Boolean
+			</config-property-type>
+			<config-property-value>false</config-property-value>
+		</config-property>
+		<outbound-resourceadapter>
+			<connection-definition>
+				<managedconnectionfactory-class>com.ibm.tra.outbound.impl.J2CManagedConnectionFactory</managedconnectionfactory-class>
+				<connectionfactory-interface>
+					javax.resource.cci.ConnectionFactory
+				</connectionfactory-interface>
+				<connectionfactory-impl-class>com.ibm.tra.outbound.impl.J2CConnectionFactory</connectionfactory-impl-class>
+				<connection-interface>
+					javax.resource.cci.Connection
+				</connection-interface>
+				<connection-impl-class>com.ibm.tra.outbound.impl.J2CConnection</connection-impl-class>
+			</connection-definition>
+			<transaction-support>LocalTransaction</transaction-support>
+			<reauthentication-support>true</reauthentication-support>
+		</outbound-resourceadapter>
+		<inbound-resourceadapter>
+			<messageadapter>
+				<messagelistener>
+					<messagelistener-type>com.ibm.tra.inbound.impl.TRAMessageListener1</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.tra.inbound.impl.ActivationSpecImpl</activationspec-class>
+						<required-config-property>
+							<config-property-name>
+								Prop1
+							</config-property-name>
+						</required-config-property>
+						<required-config-property>
+							<config-property-name>
+								destination
+							</config-property-name>
+						</required-config-property>
+						<required-config-property>
+							<config-property-name>destinationType</config-property-name>
+						</required-config-property>
+					</activationspec>
+				</messagelistener>
+				<messagelistener>
+					<messagelistener-type>com.ibm.tra.inbound.impl.TRAMessageListener4</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.tra.inbound.impl.ActivationSpecImpl</activationspec-class>
+						<required-config-property>
+							<config-property-name>
+								Prop1
+							</config-property-name>
+						</required-config-property>
+						<required-config-property>
+							<config-property-name>
+								destination
+							</config-property-name>
+						</required-config-property>
+						<required-config-property>
+							<config-property-name>destinationType</config-property-name>
+						</required-config-property>
+					</activationspec>
+				</messagelistener>
+			</messageadapter>
+		</inbound-resourceadapter>
+		<!-- <adminobject>
+			<adminobject-interface>com.ibm.tra.inbound.base.TRAAdminObject</adminobject-interface>
+			<adminobject-class>com.ibm.tra.inbound.impl.TRAAdminObject2</adminobject-class>
+		    </adminobject> -->
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.net.SocketPermission "*",
+				"resolve"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.util.PropertyPermission "*",
+				"read, write"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.io.FilePermission
+				"${user.home}${file.separator}ibm${file.separator}ctg${file.separator}-",
+				"read,write,delete"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.lang.RuntimePermission
+				"loadLibrary.*"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.lang.RuntimePermission
+				"shutdownHooks"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.lang.RuntimePermission
+				"modifyThread"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.lang.RuntimePermission
+				"modifyThreadGroup"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.lang.RuntimePermission
+				"readFileDescriptor"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.lang.RuntimePermission
+				"writeFileDescriptor"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.security.SecurityPermission
+				"putProviderProperty.IBMJSSE"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission java.security.SecurityPermission
+				"insertProvider.IBMJSSE"; };
+			</security-permission-spec>
+		</security-permission>
+		<security-permission>
+			<security-permission-spec>
+				grant { permission
+				javax.security.auth.PrivateCredentialPermission
+				"javax.resource.spi.security.PasswordCredential * \"*\"
+				","read"; };
+			</security-permission-spec>
+		</security-permission>
+	</resourceadapter>
+</connector>

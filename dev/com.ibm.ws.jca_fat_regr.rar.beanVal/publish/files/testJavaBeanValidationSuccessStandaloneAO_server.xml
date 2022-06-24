@@ -1,0 +1,17 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+    <application type="ear" location="Jbvapp.ear" id="Jbvapp">
+    </application>
+    <resourceAdapter
+        id="adapter_jca16_jbv_AdministeredObjectValidation_Success"
+        location="${server.config.dir}/connectors/adapter_jca16_jbv_AdministeredObjectValidation_Success.rar">
+    </resourceAdapter>
+    <adminObject id="JbvObject1" jndiName="jms/TestAOSuccess">
+        <properties.adapter_jca16_jbv_AdministeredObjectValidation_Success.JBVFATAO />
+    </adminObject>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+	<javaPermission actions="read" className="java.util.PropertyPermission" name="*"/>
+    <variable name="onError" value="FAIL"/>
+</server>

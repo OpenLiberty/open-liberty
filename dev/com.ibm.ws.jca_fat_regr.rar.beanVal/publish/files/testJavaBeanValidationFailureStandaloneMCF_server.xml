@@ -1,0 +1,22 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+    <application type="ear" location="Jbvapp.ear" id="Jbvapp">
+    </application>
+    <resourceAdapter
+        id="adapter_jca16_jbv_ManagedConnectionFactoryValidation_Failure"
+        location="${server.config.dir}/connectors/adapter_jca16_jbv_ManagedConnectionFactoryValidation_Failure.rar">
+        <classloader commonLibraryRef="DerbyLib"/>
+    </resourceAdapter>
+    <connectionFactory id="TestMCFFailure" jndiName="jms/TestMCFFailure">
+        <properties.adapter_jca16_jbv_ManagedConnectionFactoryValidation_Failure mcfProperty4="2" mcfProperty1="KK" mcfProperty2="300"/>
+    </connectionFactory>
+
+    <library id="DerbyLib">
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+    
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <variable name="onError" value="FAIL"/>
+</server>

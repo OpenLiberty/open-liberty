@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+<!--         <feature>servlet-3.0</feature> -->
+		<feature>servlet-3.1</feature>
+<!--         <feature>jca-1.6</feature> -->
+		<feature>jca-1.7</feature>
+        <feature>jndi-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+<!--         <feature>jms-1.1</feature> -->
+		<feature>jms-2.0</feature>
+<!--         <feature>jmsMdb-3.1</feature> -->
+        <feature>jmsMdb-3.2</feature>
+<!--         <feature>ejbLite-3.1</feature> -->
+        <feature>ejbLite-3.2</feature>
+        <feature>jcaInboundSecurity-1.0</feature>
+<!--         <feature>beanvalidation-1.0</feature> -->
+        <feature>beanvalidation-1.1</feature>
+    </featureManager>
+
+    <application type="ear" location="gwcapp.ear" id="gwcapp">
+        <resourceAdapter id="adapter_jca16_gwc_GenericWorkContextTestRAR" autoStart="true"/>
+    </application>
+    
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <library id="derbyLib">
+        <fileset dir="${shared.resource.dir}/derby" includes="*.jar" scanInterval="5s" />
+    </library>
+    
+    <adminObject id="com.ibm.ws.jca.adminObject" jndiName="fvtProvider">
+        <properties.gwcapp.adapter_jca16_gwc_GenericWorkContextTestRAR.FVTMessageProvider/>
+    </adminObject>
+
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="resolve"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="doAs"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="getSubject"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="modifyPrincipals"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="*" principalName="*" actions="read"/>
+    
+    <variable value="FAIL" name="onError"/>
+</server>

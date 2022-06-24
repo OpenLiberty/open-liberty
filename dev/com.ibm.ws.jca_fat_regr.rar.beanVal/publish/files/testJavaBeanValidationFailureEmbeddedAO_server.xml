@@ -1,0 +1,16 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+    <application type="ear" location="sampleapp_jca16_jbv_embeddedao.ear" id="sampleapp_jca16_jbv_embeddedao">
+        <resourceAdapter id="adapter_jca16_jbv_AdministeredObjectValidation_Embedded" autoStart="true">
+            <properties.sampleapp_jca16_jbv_embeddedao.adapter_jca16_jbv_AdministeredObjectValidation_Embedded/>
+        </resourceAdapter>
+    </application>
+    <adminObject id="JbvObject3" jndiName="jms/TestEmbeddedAO1">
+        <properties.sampleapp_jca16_jbv_embeddedao.adapter_jca16_jbv_AdministeredObjectValidation_Embedded.JBVFATAO  aoProperty1="ABS" aoProperty5="10.5"/>
+    </adminObject>
+    
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+	<javaPermission actions="read" className="java.util.PropertyPermission" name="*"/>
+    <variable name="onError" value="FAIL"/>
+</server>

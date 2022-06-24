@@ -1,0 +1,23 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+
+    <application type="ear" location="Jbvapp.ear" id="Jbvapp">
+    </application>
+    <application type="ear" location="sampleapp_jca16_jbv_standaloneasfailure.ear" id="sampleapp_jca16_jbv_standaloneasfailure"/>
+    <resourceAdapter id="adapter_jca16_jbv_ActivationSpecValidation_Failure"
+        location="${server.config.dir}/connectors/adapter_jca16_jbv_ActivationSpecValidation_Failure.rar">
+    </resourceAdapter>
+
+    <adminObject id="TestASAOFailure" jndiName="jms/TestASAOFailure">
+        <properties.adapter_jca16_jbv_ActivationSpecValidation_Failure.FVTMessageProvider property_m="we"/>
+    </adminObject>
+
+    <jmsActivationSpec id="sampleapp_jca16_jbv_standaloneasfailure/jbv_ejb2/SampleMdb">
+        <properties.adapter_jca16_jbv_ActivationSpecValidation_Failure asProperty2="2" asProperty1="8" />
+    </jmsActivationSpec>
+    
+    <include optional="true" location="../fatTestPorts.xml"/>
+    
+	<javaPermission actions="read" className="java.util.PropertyPermission" name="*"/>
+    <variable name="onError" value="FAIL"/>
+</server>
