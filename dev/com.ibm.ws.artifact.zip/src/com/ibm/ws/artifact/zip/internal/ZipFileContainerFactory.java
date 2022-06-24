@@ -66,7 +66,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
     public synchronized BundleContext getBundleContext() {
         if ( bundleContext == null ) {
             // TODO: Why throw this?
-            throw new IllegalStateException("Null bundle context");
+            throw new IllegalStateException();
         }
         return bundleContext;
     }
@@ -110,7 +110,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
     @Override
     public synchronized ArtifactContainerFactory getContainerFactory() {
         if ( rootContainerFactory == null ) {
-            throw new IllegalStateException("Null root container factory");
+            throw new IllegalStateException();
         }
         return rootContainerFactory;
     }
@@ -167,7 +167,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
     @Override
     public ZipCachingService getZipCachingService() {
         if ( zipCachingService == null ) {
-            throw new IllegalStateException("Null zip caching service");
+            throw new IllegalStateException();
         }
         return zipCachingService;
     }

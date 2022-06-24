@@ -65,9 +65,8 @@ public class FileArtifactNotifier implements ArtifactNotifier {
     }
 
     private void verifyTargets(ArtifactNotification target) throws IllegalArgumentException {
-        ArtifactContainer targetRoot = target.getContainer().getRoot();
-        if (targetRoot != root) {
-            throw new IllegalArgumentException("Target root [ " + targetRoot + " ] does not match notification root [ " + root + " ]");
+        if (target.getContainer().getRoot() != root) {
+            throw new IllegalArgumentException();
         }
     }
 
@@ -466,7 +465,7 @@ public class FileArtifactNotifier implements ArtifactNotifier {
                 }
                 result.add(absPath);
             } else
-                throw new IllegalStateException("Nested file [ " + fAbsPath + " ] is not beneath [ " + rootAbsolutePath + " ]");
+                throw new IllegalStateException(fAbsPath + " " + rootAbsolutePath);
         }
         return result;
     }

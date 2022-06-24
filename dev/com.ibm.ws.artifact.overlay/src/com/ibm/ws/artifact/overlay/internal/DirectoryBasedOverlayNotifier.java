@@ -57,9 +57,8 @@ public class DirectoryBasedOverlayNotifier implements ArtifactNotifier, com.ibm.
     }
 
     private void verifyTargets(ArtifactNotification targets) throws IllegalArgumentException {
-        ArtifactContainer targetRoot = targets.getContainer().getRoot();
-        if (targetRoot != root) {
-            throw new IllegalArgumentException("Target root [ " + targetRoot + " ] does not match notification root [ " + root + " ]");
+        if (targets.getContainer().getRoot() != root) {
+            throw new IllegalArgumentException();
         }
     }
 

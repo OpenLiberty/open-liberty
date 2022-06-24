@@ -20,7 +20,6 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Stack;
 
 import org.eclipse.osgi.storage.bundlefile.BundleEntry;
@@ -56,34 +55,34 @@ public class ModuleBundleFile extends BundleFileWrapper {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.osgi.storage.bundlefile.BundleFileWrapper#close()
      */
     @Override
     public void close() throws IOException {
-        //nothing.
+    //nothing.
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.osgi.storage.bundlefile.BundleFileWrapper#open()
      */
     @Override
     public void open() throws IOException {
-        //nothing.
+    //nothing.
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.osgi.baseadaptor.bundlefile.BundleFile#getFile(java.lang.String, boolean)
      */
     @SuppressWarnings("deprecation")
     @Override
     public File getFile(String path, boolean nativeCode) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "getFile " + path);
+            Tr.debug(tc, " asked to getFile for path " + path);
 
         path = preSlashify(path);
         if (path.equals("/")) {
@@ -121,19 +120,19 @@ public class ModuleBundleFile extends BundleFileWrapper {
             }
             // TODO Going to have to extract the content out to a file on disk
 
-            // This would be a case where an entry in a container has no physical path.
+            // This would be a case where an entry in a container has no physical path. 
             // If loose config allowed jars to be mapped as directories, this would occur there.
 
-            // Jars mapped as files are already handled by equinox natively, so the lack of
+            // Jars mapped as files are already handled by equinox natively, so the lack of 
             // physical paths there will not cause issues.
 
-            // The other common source of imaginary physical paths is intermediate directory
-            // creation..
+            // The other common source of imaginary physical paths is intermediate directory 
+            // creation..  
             // (eg, mapping /etc/fred.txt as /etc/fish/goat/horse/fred.txt and asking for physical path of 'goat')
 
-            // Current artifact implementations always have a physical path, but this may not remain true
-            // forever, so this case DOES need to be handled, else we'll have some very entertaining
-            // bugs to handle for future deployment types.
+            // Current artifact implementations always have a physical path, but this may not remain true 
+            // forever, so this case DOES need to be handled, else we'll have some very entertaining 
+            // bugs to handle for future deployment types. 
             return null;
         }
 
@@ -145,7 +144,7 @@ public class ModuleBundleFile extends BundleFileWrapper {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, " entry was a container.. but was it root? " + entryContainer.isRoot());
         if (!entryContainer.isRoot()) {
-            // If the container is not a root then it is
+            // If the container is not a root then it is 
             // a simple directory in an archive; just return null.
             // The framework will handle nested directories in archives
             return null;
@@ -168,47 +167,50 @@ public class ModuleBundleFile extends BundleFileWrapper {
             }
         })) {
             //no chained exception will mean mkdirs failed.
-            throw new IllegalStateException("Failed to create temp dir [ " + tempBase.getAbsolutePath() + " ]");
+            throw new IllegalStateException();
         }
-
-        final File tempKey;
         try {
-            tempKey = AccessController.doPrivileged(new PrivilegedExceptionAction<File>() {
+            File t = null;
+            try {
+                t = AccessController.doPrivileged(new PrivilegedExceptionAction<File>() {
+                    @Override
+                    public File run() throws IOException {
+                        return File.createTempFile(entry.getName(), null, tempBase);
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                Exception e2 = e.getException();
+                if (e2 instanceof IOException)
+                    throw (IOException) e2;
+                if (e2 instanceof RuntimeException)
+                    throw (RuntimeException) e2;
+                throw new UndeclaredThrowableException(e);
+            }
+            final File tempKey = t;
+
+            // Add it to the nestedFiles map so that the ModuleBundleFileFactory impl can
+            // find the container if the framework attempts to create a bundle file from it.
+            nestedFiles.put(tempKey, entryContainer);
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 @Override
-                public File run() throws IOException {
-                    return File.createTempFile(entry.getName(), null, tempBase);
+                public Object run() {
+                    tempKey.deleteOnExit();
+                    return null;
                 }
             });
-        } catch (PrivilegedActionException e) {
-            Exception e2 = e.getException();
-            if (e2 instanceof IOException)
-                throw new RuntimeException("Failed to create temp file for [ " + entry.getName() + " ] under [ " + tempBase.getAbsolutePath() + " ]", e2);
-            else if (e2 instanceof RuntimeException)
-                throw (RuntimeException) e2;
-            else
-                throw new UndeclaredThrowableException(e);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, " returning a tempkey file.. " + tempKey.getAbsolutePath());
+            return tempKey;
+        } catch (IOException e) {
+            //chained exception will mean the temp create failed.
+            throw new IllegalStateException(e);
         }
-
-        // Add it to the nestedFiles map so that the ModuleBundleFileFactory impl can
-        // find the container if the framework attempts to create a bundle file from it.
-        nestedFiles.put(tempKey, entryContainer);
-
-        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                tempKey.deleteOnExit();
-                return null;
-            }
-        });
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, " returning a tempkey file.. " + tempKey.getAbsolutePath());
-        return tempKey;
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.osgi.baseadaptor.bundlefile.BundleFile#getEntry(java.lang.String)
      */
     @Override
@@ -257,7 +259,7 @@ public class ModuleBundleFile extends BundleFileWrapper {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.osgi.storage.bundlefile.BundleFileWrapper#getEntryPaths(java.lang.String, boolean)
      */
     @Override
@@ -270,7 +272,7 @@ public class ModuleBundleFile extends BundleFileWrapper {
         } else {
             Entry entry = container.getEntry(path);
             Container entryContainer = entry == null ? null : getContainer(entry);
-            // Check if the entry is a container;
+            // Check if the entry is a container; 
             // if so only iterate over its entries if the container is not a root
             entries = entryContainer == null || entryContainer.isRoot() ? null : entryContainer.iterator();
             path = postSlashify(path, null);
@@ -280,7 +282,7 @@ public class ModuleBundleFile extends BundleFileWrapper {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.osgi.baseadaptor.bundlefile.BundleFile#getEntryPaths(java.lang.String)
      */
     @Override
@@ -290,7 +292,7 @@ public class ModuleBundleFile extends BundleFileWrapper {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.osgi.baseadaptor.bundlefile.BundleFile#containsDir(java.lang.String)
      */
     @Override
@@ -302,7 +304,7 @@ public class ModuleBundleFile extends BundleFileWrapper {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.osgi.baseadaptor.bundlefile.BundleFile#getBaseFile()
      */
     @Override
@@ -337,7 +339,7 @@ public class ModuleBundleFile extends BundleFileWrapper {
 
         /*
          * (non-Javadoc)
-         *
+         * 
          * @see java.util.Enumeration#hasMoreElements()
          */
         @Override
@@ -353,7 +355,7 @@ public class ModuleBundleFile extends BundleFileWrapper {
 
         /*
          * (non-Javadoc)
-         *
+         * 
          * @see java.util.Enumeration#nextElement()
          */
         @Override
@@ -366,7 +368,7 @@ public class ModuleBundleFile extends BundleFileWrapper {
             }
             //did we just blow the stack?
             if (iEntries.isEmpty()) {
-                throw new NoSuchElementException();
+                throw new IllegalStateException();
             }
 
             Entry next = iEntries.peek().next();
