@@ -13,12 +13,15 @@ package test.jakarta.data.web;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collector;
 
 import jakarta.enterprise.concurrent.Asynchronous;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
 import io.openliberty.data.Limit;
+import io.openliberty.data.Paginated;
+import io.openliberty.data.Select;
 import io.openliberty.data.Update;
 import io.openliberty.data.Where;
 
@@ -41,6 +44,17 @@ public interface Personnel {
     @Asynchronous
     @Limit(1) // indicates single result (rather than list) for the completion stage
     CompletableFuture<Person> findBySsn(long ssn);
+
+    @Asynchronous
+    @Select("firstName")
+    @Where("o.firstName LIKE CONCAT(?1, '%')")
+    @Paginated(3)
+    CompletableFuture<Long> namesThatStartWith(String beginningOfFirstName,
+                                               Collector<String, ?, Long> collector);
+
+    // An alternative to the above would be to make the Collector class a parameter
+    // of the Paginated annotation, although this would rule out easily accessing the
+    // various built-in collectors that are provided by Java's Collectors interface.
 
     @Asynchronous
     @Delete

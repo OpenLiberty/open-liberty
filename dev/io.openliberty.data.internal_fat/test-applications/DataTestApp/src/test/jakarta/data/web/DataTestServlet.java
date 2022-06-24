@@ -36,6 +36,7 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -173,6 +174,38 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p4.ssn, p.ssn);
         assertEquals(p4.firstName, p.firstName);
         assertEquals(p4.lastName, p.lastName);
+
+        // Have a collector reduce the results to a count of names.
+        // The database could have done this instead, but it makes a nice, simple example.
+        CompletableFuture<Long> countOfANames = personnel.namesThatStartWith("A", Collectors.counting());
+
+        assertEquals(Long.valueOf(6), countOfANames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // Have a collector reduce the results to the length of the longest name found.
+        Collector<String, ?, Long> maxLengthFinder = Collectors.collectingAndThen(
+                                                                                  Collectors.maxBy(Comparator.<String, Integer> comparing(n -> n.length())),
+                                                                                  n -> n.isPresent() ? n.get().length() : -1L);
+
+        CompletableFuture<Long> maxLengthOfAnyAName = personnel.namesThatStartWith("A", maxLengthFinder);
+
+        assertEquals(Long.valueOf(9), maxLengthOfAnyAName.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // Have a collector reduce the results to an average name length,
+        final int COUNT = 0, SUM = 1;
+        Collector<String, ?, Long> lengthAverager = Collector.of(() -> new long[2],
+                                                                 (len, name) -> {
+                                                                     len[COUNT]++;
+                                                                     len[SUM] += name.length();
+                                                                 },
+                                                                 (left, right) -> new long[] {
+                                                                                               left[COUNT] + right[COUNT],
+                                                                                               left[SUM] + right[SUM]
+                                                                 },
+                                                                 len -> len[COUNT] == 0 ? 0 : (len[SUM] / len[COUNT]));
+
+        CompletableFuture<Long> avgLengthOfBNames = personnel.namesThatStartWith("B", lengthAverager);
+
+        assertEquals(Long.valueOf(4), avgLengthOfBNames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         deleted = personnel.removeAll();
         assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
