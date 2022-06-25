@@ -13,7 +13,6 @@ package com.ibm.ws.jaxws.fat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -28,6 +27,7 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -39,13 +39,14 @@ import componenttest.topology.utils.HttpUtils;
  * Usage of waitForStringInTraceUsingMark cut the runtime significantly
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
 public class LibertyCXFNegativePropertiesTest {
 
     @Server("LibertyCXFNegativePropertiesTestServer")
     public static LibertyServer server;
 
     private final static Class<?> c = LibertyCXFNegativePropertiesTest.class;
-    private static final int CONN_TIMEOUT = 10;
+    private static final int CONN_TIMEOUT = 300;
 
     // *** Stop and Start server between tests ***
     @BeforeClass
@@ -131,7 +132,7 @@ public class LibertyCXFNegativePropertiesTest {
                  "Calling Application with URL=" + url.toString());
         HttpUtils.trustAllCertificates();
         HttpUtils.trustAllHostnames();
-        HttpURLConnection con = HttpUtils.getHttpConnection(url, ExpectedConnection, CONN_TIMEOUT);
+        HttpsURLConnection con = (HttpsURLConnection) HttpUtils.getHttpConnection(url, ExpectedConnection, CONN_TIMEOUT);
         con.disconnect();
     }
 }

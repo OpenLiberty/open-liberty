@@ -119,6 +119,8 @@ public class ColocatedDynamicPolicyAttachmentsTest {
     public static String helloWithOptionalPolicy = "helloWithOptionalPolicy";
     public static String helloWithYouWant = "helloWithYouWant";
 
+    private static final int CONN_TIMEOUT = 300;
+
     @BeforeClass
     public static void setup() throws Exception {
 
@@ -292,7 +294,7 @@ public class ColocatedDynamicPolicyAttachmentsTest {
      */
     public static String executeApp(String url) throws Exception {
         HttpURLConnection con = HttpUtils.getHttpConnection(new URL(url),
-                                                            HttpURLConnection.HTTP_OK, 60);
+                                                            HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
         BufferedReader br = HttpUtils.getConnectionStream(con);
         String result = br.readLine();
         Log.info(ColocatedDynamicPolicyAttachmentsTest.class, "executeApp", "Execute WS-Addressing Policy Attachment test from " + url);
@@ -304,7 +306,7 @@ public class ColocatedDynamicPolicyAttachmentsTest {
      */
     public static String executeFailureApp(String url) throws Exception {
         HttpURLConnection con = HttpUtils.getHttpConnection(new URL(url),
-                                                            HttpURLConnection.HTTP_INTERNAL_ERROR, 60);
+                                                            HttpURLConnection.HTTP_INTERNAL_ERROR, CONN_TIMEOUT);
         BufferedReader br = HttpUtils.getConnectionStream(con);
         String result = br.readLine();
         Log.info(ColocatedDynamicPolicyAttachmentsTest.class, "executeFailureApp", "Execute Failing WS-Addressing Policy Attachment test from " + url);
