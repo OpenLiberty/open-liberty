@@ -11,6 +11,7 @@
 package com.ibm.ws.springboot.support.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -86,9 +87,8 @@ public class NonZipExtensionFilesInBootInfLibTests20 extends AbstractSpringTests
         }
 
         server.startServer(true);
-
-        server.setMarkToEndOfLog();
-
+        assertNotNull("No 'An exception occurred while starting the application' message",
+                      server.waitForStringInLog("CWWKZ0002E:"));
         stopServer(true, "CWWKZ0002E", "The entry BOOT-INF/lib/test.txt is not a valid zip.");
 
     }
@@ -116,7 +116,7 @@ public class NonZipExtensionFilesInBootInfLibTests20 extends AbstractSpringTests
 
         server.startServer(true);
 
-        server.setMarkToEndOfLog();
+        assertNotNull("No 'web application available' message", server.waitForStringInLog("CWWKT0016I:"));
 
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
