@@ -15,4 +15,4 @@ singleton=true
   com.ibm.ws.org.opensaml.opensaml.storage.api.3.4.5, \
   com.ibm.ws.security.saml.websso.2.0
 kind=ga
-edition=base
+edition=core
