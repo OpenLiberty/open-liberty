@@ -66,7 +66,7 @@ Service-Component: \
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.security;version=latest,\
-	com.ibm.ws.security.saml.sso.2.0;version=latest
+	com.ibm.ws.security.saml.websso.2.0;version=latest
 
 instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/SamlWab20Messages*.class
 
@@ -85,9 +85,6 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
     com.ibm.ws.security.common;version=latest, \
     com.ibm.ws.webcontainer.security;version=latest, \
     com.ibm.ws.security.authentication.filter;version=latest, \
-    com.ibm.ws.org.opensaml.opensaml.2.6.1;version=latest, \
-    com.ibm.ws.org.opensaml.xmltooling.1.4.4;version=latest, \
-    com.ibm.ws.org.opensaml.openws.1.5.6;version=latest, \
     com.ibm.websphere.org.osgi.service.cm;version=latest, \
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.ws.logging;version=latest
