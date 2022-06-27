@@ -39,6 +39,7 @@ instrument.classesExcludes: com/ibm/ws/app/manager/wab/internal/resources/*.clas
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.org.osgi.core,\
