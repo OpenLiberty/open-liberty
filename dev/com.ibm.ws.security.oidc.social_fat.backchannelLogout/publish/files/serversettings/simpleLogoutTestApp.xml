@@ -12,7 +12,7 @@
 
 	<application
 		type="war"
-		id="simplelLogoutTestApp"
+		id="simpleLogoutTestApp"
 		name="simpleLogoutTestApp"
 		location="${server.config.dir}/test-apps/simpleLogoutTestApp.war"
 	>

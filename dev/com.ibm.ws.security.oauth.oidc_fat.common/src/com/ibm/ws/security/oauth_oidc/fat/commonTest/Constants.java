@@ -42,6 +42,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String OIDC = "OIDC";
     public static final String OAUTH = "OAuth";
     public static final String SAML = "SAML";
+    public static final String MONGODB = "MONGODB";
 
     public static final String OAUTH_OP = "OAuth_OP";
     public static final String OIDC_OP = "OpenIDConnect_OP";

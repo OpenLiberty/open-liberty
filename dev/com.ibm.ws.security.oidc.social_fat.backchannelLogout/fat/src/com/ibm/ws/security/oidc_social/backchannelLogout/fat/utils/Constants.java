@@ -42,4 +42,7 @@ public class Constants extends com.ibm.ws.security.oauth_oidc.fat.commonTest.Con
     public static String clientCookieName = "clientCookie";
     public static String client2CookieName = "client2Cookie";
 
+    public static final boolean usesValidBCLEndpoint = true;
+    public static final boolean usesFakeBCLEndpoint = false;
+
 }

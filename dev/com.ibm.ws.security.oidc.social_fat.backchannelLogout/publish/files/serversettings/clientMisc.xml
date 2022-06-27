@@ -10,10 +10,6 @@
  -->
 <server>
 
-	<httpSession 
-		cookieHttpOnly="false" 
-		cookieName="clientJSESSIONID" />
-
 <!-- set default client cookie name - test classes can set a new cookie name if needed -->
  	<variable name="clientCookieName" value="clientCookie"/>  
 

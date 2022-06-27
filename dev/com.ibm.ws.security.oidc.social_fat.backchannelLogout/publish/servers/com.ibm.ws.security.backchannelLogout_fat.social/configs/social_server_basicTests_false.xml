@@ -10,11 +10,11 @@
  -->
 <server>
 
-	<webAppSecurity
-		httpOnlyCookies="false"
-		ssoCookieName="testOPCookie"
-		allowFailOverToBasicAuth="true" />
-			
-	<javaPermission className="java.net.URLPermission" name="https://localhost:-/-" actions="POST:" />
-		
+        <httpSession
+                cookieHttpOnly="false"
+                cookieName="clientJSESSIONID"
+                securityIntegrationEnabled="false" />
+
+        <include location="${server.config.dir}/configs/social_server_basicTests.xml" />
 </server>
+

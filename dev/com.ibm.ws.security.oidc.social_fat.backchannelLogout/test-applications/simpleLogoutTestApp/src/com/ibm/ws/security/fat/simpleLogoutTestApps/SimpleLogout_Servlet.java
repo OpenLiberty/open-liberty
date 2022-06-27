@@ -42,6 +42,7 @@ public class SimpleLogout_Servlet extends HttpServlet {
     private void handleRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String opLogoutUri = req.getParameter("opLogoutUri");
+        String idTokenHint = req.getParameter("id_token_hint");
 
         try {
             System.out.println("Test application class " + servletName + " is logging out");
@@ -54,7 +55,15 @@ public class SimpleLogout_Servlet extends HttpServlet {
             } else {
                 System.out.println("Invoking provider logout or end_session endpoint on the OP: " + opLogoutUri);
 
-                resp.sendRedirect(opLogoutUri);
+                StringBuffer sb = new StringBuffer("");
+                sb.append(opLogoutUri);
+                if (idTokenHint != null) {
+                    System.out.println("Including the id_token_hint: " + idTokenHint);
+                    sb.append("?id_token_hint=" + idTokenHint);
+                }
+                String url = sb.toString();
+                String urlEncodedReq = resp.encodeRedirectURL(url);
+                resp.sendRedirect(urlEncodedReq);
             }
             System.out.println("Test Application class " + servletName + " logged out\n");
 

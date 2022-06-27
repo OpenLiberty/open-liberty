@@ -11,6 +11,11 @@
 
 <server>
 
+    <featureManager>
+          <feature>mongodb-2.0</feature>
+          <feature>usr:customStoreSample-1.0</feature>
+    </featureManager>
+
 	<include location="${server.config.dir}/imports/oidcServerFeatures.xml" />
 
 	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
@@ -22,8 +27,11 @@
 
 	<include location="${server.config.dir}/imports/oauthRoles_1.xml" />
 
-	<include location="${server.config.dir}/imports/oidcProvider_configTests.xml" />
+	<include location="${server.config.dir}/imports/oidcProvider_configTests_notLocalStore.xml" />
 
 	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
+	
+	<!-- include location="${server.config.dir}/imports/simpleLogoutTestApp.xml" / -->
+	<include location="${server.config.dir}/imports/MongoDBServlet.xml" />
 
 </server>

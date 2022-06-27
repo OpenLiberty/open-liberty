@@ -24,7 +24,6 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
@@ -47,7 +46,6 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -76,9 +74,7 @@ import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.HeadMethodWebRequest;
 import com.meterware.httpunit.HttpException;
 import com.meterware.httpunit.HttpUnitOptions;
-import com.meterware.httpunit.MessageBodyWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
-import com.meterware.httpunit.PutMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebForm;
 import com.meterware.httpunit.WebRequest;
@@ -1362,97 +1358,6 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
         validationTools.validateResult(thePage, action, expectations, settings);
         return thePage;
-    }
-
-    /**
-     * Generic steps to invoke and endpoint
-     *
-     * @param testcase
-     * @param wc
-     * @param inResponse
-     * @param url
-     * @param action
-     * @param parms
-     * @param headers
-     * @param expectations
-     * @param requestBody
-     * @param contentType
-     * @return
-     * @throws Exception
-     */
-    public WebResponse invokeEndpointWithBody(String testcase, WebConversation wc, WebResponse inResponse, String url, String method, String action, List<endpointSettings> parms,
-            List<endpointSettings> headers, List<validationData> expectations, InputStream source, String contentType) throws Exception {
-
-        MessageBodyWebRequest request = null;
-        if (method.equals(Constants.POSTMETHOD)) {
-            request = new PostMethodWebRequest(url, source, contentType);
-        } else {
-            if (method.equals(Constants.PUTMETHOD)) {
-                request = new PutMethodWebRequest(url, source, contentType);
-            }
-        }
-        WebResponse response = null;
-        String thisMethod = "invokeEndpointWithBody";
-
-        msgUtils.printMethodName(thisMethod);
-        msgUtils.printOAuthOidcExpectations(expectations, new String[] { action }, null);
-        Log.info(thisClass, thisMethod, "source: " + source);
-        String s = IOUtils.toString(source, StandardCharsets.UTF_8);
-        Log.info(thisClass, thisMethod, "source: " + s);
-
-        try {
-
-            helpers.setMarkToEndOfAllServersLogs();
-
-            Log.info(thisClass, thisMethod, "Endpoint URL: " + url);
-
-            if (parms != null) {
-                for (endpointSettings parm : parms) {
-                    Log.info(thisClass, thisMethod, "Setting request parameter:  key: " + parm.key + " value: " + parm.value);
-                    request.setParameter(parm.key, parm.value);
-                }
-            } else {
-                Log.info(thisClass, thisMethod, "No parameters to set");
-            }
-
-            if (headers != null) {
-                for (endpointSettings header : headers) {
-                    Log.info(thisClass, thisMethod, "Setting header field:  key: " + header.key + " value: " + header.value);
-                    request.setHeaderField(header.key, header.value);
-                }
-            } else {
-                Log.info(thisClass, thisMethod, "No header fields to add");
-            }
-
-            msgUtils.printRequestParts(request, thisMethod, "outgoing " + method + " type request");
-            response = wc.getResponse(request);
-            msgUtils.printResponseParts(response, thisMethod, "Invoke with Parms and Headers: ");
-
-        } catch (HttpException e) {
-
-            Log.info(thisClass, thisMethod, "Exception message: " + e.getMessage());
-            Log.info(thisClass, thisMethod, "Exception Response: " + e.getResponseCode());
-            Log.info(thisClass, thisMethod, "Exception Stack: " + e.getStackTrace().toString());
-            e.printStackTrace();
-            Log.info(thisClass, thisMethod, "Exception Response message" + e.getResponseMessage());
-            Log.info(thisClass, thisMethod, "Exception Cause: " + e.getCause());
-            System.err.println("Exception: " + e);
-
-            validationTools.validateException(expectations, action, e);
-
-        } catch (Exception e) {
-
-            Log.info(thisClass, thisMethod, "Exception message: " + e.getMessage());
-            Log.info(thisClass, thisMethod, "Exception Stack: " + e.getStackTrace());
-            Log.info(thisClass, thisMethod, "Exception Response message" + e.getLocalizedMessage());
-            Log.info(thisClass, thisMethod, "Exception Cause: " + e.getCause());
-
-            validationTools.validateException(expectations, action, e);
-
-        }
-
-        validationTools.validateResult(response, action, expectations, null);
-        return response;
     }
 
     /**

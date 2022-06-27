@@ -184,4 +184,40 @@
 			urlPattern="/simple/bcl_http_publicClient" />
 	</authFilter>
 
+	<authFilter id="idTokenCacheEnabledFalseClient-1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/idTokenCacheEnabledFalseClient-1" />
+	</authFilter>
+
+	<authFilter id="idTokenCacheEnabledFalseClient-2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/idTokenCacheEnabledFalseClient-2" />
+	</authFilter>
+
+	<authFilter id="idTokenCacheEnabledFalseClient-3_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/idTokenCacheEnabledFalseClient-3" />
+	</authFilter>
+
+	<authFilter id="accessTokenCacheEnabledFalseClient-1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/accessTokenCacheEnabledFalseClient-1" />
+	</authFilter>
+
+	<authFilter id="accessTokenCacheEnabledFalseClient-2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/accessTokenCacheEnabledFalseClient-2" />
+	</authFilter>
+
+	<authFilter id="accessTokenCacheEnabledFalseClient-3_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/accessTokenCacheEnabledFalseClient-3" />
+	</authFilter>
+
 </server>

@@ -39,8 +39,11 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.ws.security.fat.common.jwt;version=latest,\
 	com.ibm.ws.security.fat.common.social;version=latest,\
-	com.ibm.ws.security.saml.sso_fat.common;version=latest, \
+	com.ibm.ws.security.saml.sso_fat.common;version=latest,\
 	com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
+	com.ibm.ws.security.oauth_test.custom_store;version=latest,\
+    com.ibm.ws.security.oauth_test.custom_servlets;version=latest,\
+    com.ibm.ws.security.oauth_test.servlets;version=latest,\
 	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
@@ -51,5 +54,6 @@ publish.wlp.jar.disabled: true
 	org.bitbucket.b_c.jose4j,\
 	com.ibm.ws.security.jwt;version=latest,\
 	com.ibm.ws.webcontainer.security,\
-    com.ibm.ws.org.apache.directory.server;version=latest	
+	com.ibm.ws.org.apache.directory.server;version=latest,\
+	com.ibm.ws.org.apache.commons.io
 

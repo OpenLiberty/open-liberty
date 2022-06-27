@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.apps.testmarker.TestMarker;
+import com.ibm.ws.security.fat.common.apps.testmarker.TestStepMarker;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
@@ -57,7 +58,20 @@ public class CommonFatLoggingUtils {
                 SecurityFatHttpUtils.getResponseBody(connection);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.info(thisClass, "logTestCaseInServerLog", "Something went wrong while trying to log a message to the server log: " + e.getMessage());
+        }
+    }
+
+    public void logTestStepInServerLog(LibertyServer server, String testStep, String actionToLog) {
+        try {
+            if (server != null) {
+                String parameters = urlEncodeIt(TestStepMarker.PARAM_TEST_STEP) + "=" + urlEncodeIt(testStep) + "&" + urlEncodeIt(TestStepMarker.PARAM_ACTION) + "=" + urlEncodeIt(actionToLog);
+                HttpURLConnection connection = SecurityFatHttpUtils.getHttpConnectionWithAnyResponseCode(server, "/testmarker/testStepMarker?" + parameters);
+                //                Log.info(thisClass, "logTestCaseInServerLog", connection.toString());
+                SecurityFatHttpUtils.getResponseBody(connection);
+            }
+        } catch (Exception e) {
+            Log.info(thisClass, "logTestCaseInServerLog", "Something went wrong while trying to log a message to the server log: " + e.getMessage());
         }
     }
 

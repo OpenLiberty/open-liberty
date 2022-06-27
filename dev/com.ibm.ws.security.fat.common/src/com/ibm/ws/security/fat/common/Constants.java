@@ -129,6 +129,7 @@ public class Constants {
     public static final String UNAUTHORIZED_EXCEPTION = "401 Unauthorized";
     public static final String HTTP_UNAUTHORIZED_EXCEPTION = "HTTP " + UNAUTHORIZED_EXCEPTION;
     public static final String CONTEXT_ROOT_NOT_FOUND = "<title [^>]+\"CONTEXT_ROOT_NOT_FOUND\".+</title>";
+    public static final String invalidClientMetadata = "invalid_client_metadata";
 
     /********************** Page Values *********************/
     public static final String FORM_LOGIN_HEADING = "Form Login Page";

@@ -27,7 +27,16 @@ repositories {
   }
 }
 
+configurations {
+  derbyJar
+  mongoJavaDriver
+}
+
 dependencies {
+
+   derbyJar        'org.apache.derby:derby:10.11.1.1'
+   mongoJavaDriver 'org.mongodb:mongo-java-driver:2.13.3'
+  
    requiredLibs project(':com.ibm.ws.security.fat.common'),
                 project(':com.ibm.ws.security.fat.common.jwt'),
                 project(':com.ibm.ws.security.fat.common.social'),
@@ -122,6 +131,9 @@ autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common.social:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+assemble.dependsOn ':com.ibm.ws.security.oauth_test.custom_store:assemble'
+assemble.dependsOn ':com.ibm.ws.security.oauth_test.custom_servlets:assemble'
+assemble.dependsOn ':com.ibm.ws.security.oauth_test.servlets:assemble'
 assemble.dependsOn backchannelLogoutTestApp_ZIP
 assemble.dependsOn simpleLogoutTestApp_ZIP
 
@@ -143,6 +155,7 @@ autoFVT.doLast {
    */
   def servers = [
     'com.ibm.ws.security.backchannelLogout_fat.op',
+    'com.ibm.ws.security.backchannelLogout_fat.op.mongo',
     'com.ibm.ws.security.backchannelLogout_fat.op.saml',
     'com.ibm.ws.security.backchannelLogout_fat.rp',
     'com.ibm.ws.security.backchannelLogout_fat.rp.2',
@@ -181,11 +194,12 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server+ '/imports')
       include 'signEncryptSSLSettings.xml'
     }
-    
+     
   }
   
   servers = [
     'com.ibm.ws.security.backchannelLogout_fat.op',
+    'com.ibm.ws.security.backchannelLogout_fat.op.mongo',
     'com.ibm.ws.security.backchannelLogout_fat.op.saml'
   ]
   servers.each { server ->
@@ -199,12 +213,6 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
       rename 'oauthclient.zip', 'oauthclient.war'
     }
-    copy {
-      from new File(appBuildDir, 'simpleLogoutTestApp.zip')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-      rename 'simpleLogoutTestApp.zip', 'simpleLogoutTestApp.war'
-    }
-
   }
 
 
@@ -212,12 +220,12 @@ autoFVT.doLast {
     'com.ibm.ws.security.backchannelLogout_fat.op.saml'
   ]
   servers.each { server ->
-     copy { 
+    copy { 
      from project(':com.ibm.ws.security.saml.sso_fat.common').file('securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
      include 'samlKey.jks'
     }
-     copy {
+    copy {
       from new File(projectDir, 'publish/files/serversettings/localhost')
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports/localhost')
       include '*.xml.orig'
@@ -246,7 +254,35 @@ autoFVT.doLast {
       include '*.xml.orig'
     }  
 */
+ 
+  servers = [
+    'com.ibm.ws.security.backchannelLogout_fat.op.mongo'
+  ]
+  servers.each { server ->
+ 
+    copy {
+      from configurations.derbyJar
+      into new File(autoFvtDir, 'publish/servers/' + server + '/derby')
+      rename 'derby-.*.jar', 'derby.jar'
+    }
+ 
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth_test.servlets').buildDir, 'test-application/oAuth20DerbySetup.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+    copy {
+      from configurations.mongoJavaDriver
+      into new File(autoFvtDir, 'publish/servers/' + server + '/mongoDB')
+      rename 'mongo-java-driver-.*.jar', 'mongo-java-driver.jar'
+    }
+
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth_test.custom_servlets').buildDir, 'test-application/oAuth20MongoSetup.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
   
+}  
   /*
    * Copy formlogin application to designated test servers.
    */
@@ -315,5 +351,36 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'testFiles')
       include '**'
     }
+ 
+  /****************************************************************
+   *
+   * Copy the custom oauth store JAR feature so we can use it both 
+   * as a user feature and as a library in a BELL.
+   *
+   ****************************************************************/
+  copy { 
+    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').buildDir, 'com.ibm.ws.security.oauth_test.custom_store.jar')
+    into new File(autoFvtDir, 'publish/bundles')
+    rename 'com.ibm.ws.security.oauth_test.custom_store.jar', 'security.custom.store_1.0.jar'
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').buildDir, 'com.ibm.ws.security.oauth_test.custom_store.jar')
+    into new File(autoFvtDir, 'publish/shared')
+    rename 'com.ibm.ws.security.oauth_test.custom_store.jar', 'security.custom.store_1.0.jar'
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').projectDir, 'publish/features/customStoreSample-1.0.mf')
+    into new File(autoFvtDir, 'publish/features')
+  }
       
+  /****************************************************************
+   *
+   * Copy the mongo-java-driver to the shared directory.
+   *
+   ****************************************************************/
+  copy {
+    from configurations.mongoJavaDriver
+    into new File(autoFvtDir, 'publish/shared')
+    rename 'mongo-java-driver-.*.jar', 'mongo-java-driver.jar'
+  }      
 }

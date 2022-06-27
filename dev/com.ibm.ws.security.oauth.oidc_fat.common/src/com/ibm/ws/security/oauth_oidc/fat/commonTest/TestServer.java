@@ -150,7 +150,7 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
 
             if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN) || expected.getCheckType().equals(Constants.STRING_DOES_NOT_MATCH)) {
                 msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting NOT to find [" + expectedValue + "] in " + logName + ", but did find it there!", searchResult == null);
-                Log.info(thisClass, thisMethod, "DID NOT message: " + expectedValue);
+                Log.info(thisClass, thisMethod, "DID NOT find message: " + expectedValue);
             } else {
                 msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting to find [" + expectedValue + "] in " + logName + ", but did not find it there!", searchResult != null);
                 Log.info(thisClass, thisMethod, "Found message: " + expectedValue);
