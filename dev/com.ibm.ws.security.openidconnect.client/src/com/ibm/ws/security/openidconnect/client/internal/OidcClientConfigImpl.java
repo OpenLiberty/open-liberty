@@ -1316,7 +1316,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     /** {@inheritDoc} */
     @Override
     public String getRedirectUrlFromServerToClient() {
-        return new OIDCClientAuthenticatorUtil().getRedirectUrlFromServerToClient(getId(), getContextPath(), redirectToRPHostAndPort);
+        return OIDCClientAuthenticatorUtil.getRedirectUrlFromServerToClient(getId(), getContextPath(), redirectToRPHostAndPort);
     }
 
     /** {@inheritDoc} */

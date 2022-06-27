@@ -133,7 +133,7 @@ public class LogoutTokenValidator {
     }
 
     Jose4jValidator getJose4jValidator() {
-        return new Jose4jValidator(null, config.getClockSkewInSeconds(), new OIDCClientAuthenticatorUtil().getIssuerIdentifier(config), config.getClientId(), config.getSignatureAlgorithm(), null);
+        return new Jose4jValidator(null, config.getClockSkewInSeconds(), OIDCClientAuthenticatorUtil.getIssuerIdentifier(config), config.getClientId(), config.getSignatureAlgorithm(), null);
     }
 
     /**

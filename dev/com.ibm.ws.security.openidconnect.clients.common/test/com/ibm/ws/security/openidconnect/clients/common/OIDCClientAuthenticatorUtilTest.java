@@ -11,6 +11,7 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -20,13 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,11 +43,9 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
 
 import com.google.gson.JsonObject;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -73,13 +70,8 @@ import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 import test.common.SharedOutputManager;
-import test.common.junit.rules.MaximumJavaLevelRule;
 
 public class OIDCClientAuthenticatorUtilTest {
-
-    // Cap this unit test to Java 8 because it relies on legacy cglib which is not supported post JDK 8
-    @ClassRule
-    public static TestRule maxJavaLevel = new MaximumJavaLevelRule(8);
 
     protected static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
@@ -113,9 +105,6 @@ public class OIDCClientAuthenticatorUtilTest {
     private static final String SHARED_KEY = "secretsecretsecretsecretsecretsecret";
     private static final String TEST_ACR_VALUES = "urn:mace:incommon:iap:silver urn:mace:incommon:iap:bronze";
     private static final String authMethod = "basic";
-    private static final String METHOD_POST = "POST";
-    private static final String METHOD_GET = "GET";
-    private static final String PARAMETER_OIDC_CLIENT = "oidc_client";
 
     private final OidcClientConfig clientConfig = mock.mock(OidcClientConfig.class, "clientConfig");
     @SuppressWarnings("unchecked")
@@ -123,14 +112,12 @@ public class OIDCClientAuthenticatorUtilTest {
     private final SSLSupport sslSupport = mock.mock(SSLSupport.class, "sslSupport");
     private final JSSEHelper jsseHelper = mock.mock(JSSEHelper.class, "jsseHelper");
     private final IExtendedRequest req = mock.mock(IExtendedRequest.class, "req");
-    private final IExtendedRequest req2 = mock.mock(IExtendedRequest.class, "req2");
     private final HttpSession session = mock.mock(HttpSession.class, "session");
     private final HttpServletResponse res = mock.mock(HttpServletResponse.class, "res");
     private final ReferrerURLCookieHandler referrerURLCookieHandler = mock.mock(ReferrerURLCookieHandler.class, "referrerURLCookieHandler");
     private final Cookie cookie1 = mock.mock(Cookie.class, "cookie1");
     private final Cookie cookie2 = mock.mock(Cookie.class, "cookie2");
     private final OidcClientUtil oidcClientUtil = mock.mock(OidcClientUtil.class, "oidcClientUtil");
-    private final OIDCClientAuthenticatorUtil oidcClientAuthUtil = mock.mock(OIDCClientAuthenticatorUtil.class);
     private final IDToken idToken = mock.mock(IDToken.class, "idToken");
     private final Payload payload = mock.mock(Payload.class, "payload");
     private final SSLContext sslContext = mock.mock(SSLContext.class, "sslContext");
@@ -138,7 +125,6 @@ public class OIDCClientAuthenticatorUtilTest {
     private final WebAppSecurityConfig webAppSecConfig = mock.mock(WebAppSecurityConfig.class);
     private final PrintWriter pw = mock.mock(PrintWriter.class, "pw");
     private final MockOidcClientRequest oidcClientRequest = mock.mock(MockOidcClientRequest.class, "oidcClientRequest");
-    private final OidcClientRequest convClientRequest = mock.mock(OidcClientRequest.class, "convClientRequest");
     private final ConvergedClientConfig convClientConfig = mock.mock(ConvergedClientConfig.class, "convClientConfig");
 
     private final JWSHeader jwsHeader = new JWSHeader();
@@ -262,47 +248,6 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
-    public void testGetReqUrlNull() {
-        try {
-            createReqUrlExpectations(null);
-            String strUrl = oidcCAUtil.getReqURL(req);
-
-            assertEquals("The URL must not contain a query string.", TEST_URL, strUrl);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testGetReqUrlQuery() {
-        try {
-            final String query = "response_type=code";
-            createReqUrlExpectations(query);
-            String strUrl = oidcCAUtil.getReqURL(req);
-            String expect = TEST_URL + "?" + query;
-
-            assertEquals("The URL must contain the query string.", expect, strUrl);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testGetReqUrlQuery_withSpecialCharacters() {
-        try {
-            String value = "code>\"><script>alert(100)</script>";
-            final String query = "response_type=" + value;
-            createReqUrlExpectations(query);
-            String strUrl = oidcCAUtil.getReqURL(req);
-            String expect = TEST_URL + "?response_type=" + value;
-
-            assertEquals("The URL must contain the unencoded query string.", expect, strUrl);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
     public void testGetIssuerIdentifier() {
         try {
             final String issuer = "https://localhost:8011/oidc/endpoint/OidcConfigSample";
@@ -312,7 +257,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(issuer));
                 }
             });
-            String issuerResult = oidcCAUtil.getIssuerIdentifier(convClientConfig);
+            String issuerResult = OIDCClientAuthenticatorUtil.getIssuerIdentifier(convClientConfig);
             assertEquals("Issuer result is not the one expected!", issuer, issuerResult);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -330,7 +275,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(null));
                 }
             });
-            String issuerResult = oidcCAUtil.getIssuerIdentifier(convClientConfig);
+            String issuerResult = OIDCClientAuthenticatorUtil.getIssuerIdentifier(convClientConfig);
             assertNull("Issuer was expected to be null but was [" + issuerResult + "].", issuerResult);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -348,7 +293,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(""));
                 }
             });
-            String issuerResult = oidcCAUtil.getIssuerIdentifier(convClientConfig);
+            String issuerResult = OIDCClientAuthenticatorUtil.getIssuerIdentifier(convClientConfig);
             assertEquals("Issuer was expected to be an empty string but was not.", "", issuerResult);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -367,7 +312,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(endpointValue));
                 }
             });
-            String issuerResult = oidcCAUtil.getIssuerIdentifier(convClientConfig);
+            String issuerResult = OIDCClientAuthenticatorUtil.getIssuerIdentifier(convClientConfig);
             assertEquals("Issuer did not match expected value.", endpointValue, issuerResult);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -386,7 +331,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(endpointValue));
                 }
             });
-            String issuerResult = oidcCAUtil.getIssuerIdentifier(convClientConfig);
+            String issuerResult = OIDCClientAuthenticatorUtil.getIssuerIdentifier(convClientConfig);
             assertEquals("Issuer was expected to be an empty string but was not.", "", issuerResult);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -405,7 +350,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(endpointValue + "/after"));
                 }
             });
-            String issuerResult = oidcCAUtil.getIssuerIdentifier(convClientConfig);
+            String issuerResult = OIDCClientAuthenticatorUtil.getIssuerIdentifier(convClientConfig);
             assertEquals("Issuer did not match expected value.", endpointValue, issuerResult);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -424,7 +369,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(endpointValue + "/after"));
                 }
             });
-            String issuerResult = oidcCAUtil.getIssuerIdentifier(convClientConfig);
+            String issuerResult = OIDCClientAuthenticatorUtil.getIssuerIdentifier(convClientConfig);
             assertEquals("Issuer did not match expected value.", endpointValue, issuerResult);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -443,7 +388,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(endpointValue + "/"));
                 }
             });
-            String issuerResult = oidcCAUtil.getIssuerIdentifier(convClientConfig);
+            String issuerResult = OIDCClientAuthenticatorUtil.getIssuerIdentifier(convClientConfig);
             assertEquals("Issuer did not match expected value.", endpointValue, issuerResult);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -462,7 +407,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(tokenEndpointUrl));
                 }
             });
-            String issuerResult = oidcCAUtil.getIssuerIdentifier(convClientConfig);
+            String issuerResult = OIDCClientAuthenticatorUtil.getIssuerIdentifier(convClientConfig);
             assertEquals("Issuer did not match expected value.", tokenEndpointUrl, issuerResult);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -481,7 +426,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(tokenEndpointUrl));
                 }
             });
-            String issuerResult = oidcCAUtil.getIssuerIdentifier(convClientConfig);
+            String issuerResult = OIDCClientAuthenticatorUtil.getIssuerIdentifier(convClientConfig);
             assertEquals("Issuer did not match expected value.", tokenEndpointUrl, issuerResult);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -720,21 +665,6 @@ public class OIDCClientAuthenticatorUtilTest {
             }
         });
         createHttpsRequirementExpectations(true);
-    }
-
-    private void createReqUrlExpectations(final String queryString) {
-        mock.checking(new Expectations() {
-            {
-                allowing(req).getScheme();
-                will(returnValue("https"));
-                one(req).getServerPort();
-                will(returnValue(8020));
-                one(req).getRequestURL();
-                will(returnValue(new StringBuffer(TEST_URL)));
-                one(req).getQueryString();
-                will(returnValue(queryString));
-            }
-        });
     }
 
     private void createReferrerCookiesExpectations() {
@@ -1122,7 +1052,7 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(redirectUri));
                 }
             });
-            assertEquals("Redirect URL did not match expected value.", redirectUri, oidcCAUtil.setRedirectUrlIfNotDefined(req, convClientConfig));
+            assertEquals("Redirect URL did not match expected value.", redirectUri, OIDCClientAuthenticatorUtil.setRedirectUrlIfNotDefined(req, convClientConfig));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1159,389 +1089,8 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(redirectUri));
                 }
             });
-            String returnedUrl = oidcCAUtil.setRedirectUrlIfNotDefined(req, convClientConfig);
+            String returnedUrl = OIDCClientAuthenticatorUtil.setRedirectUrlIfNotDefined(req, convClientConfig);
             assertEquals("Redirect URL did not match expected value.", redirectUri, returnedUrl);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_forwardLoginParametersNull() {
-        try {
-            String query = "";
-            final List<String> configuredValue = null;
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_forwardLoginParametersEmpty() {
-        try {
-            String query = "The quick brown fox jumps over the lazy dog.";
-            final List<String> configuredValue = new ArrayList<String>();
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_oneParameter_emptyString_requestMissingThatParameter() {
-        try {
-            String query = "scope=myScope";
-            final String paramName = "";
-            final List<String> configuredValue = Arrays.asList(paramName);
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                    one(req).getParameter(paramName);
-                    will(returnValue(null));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_oneParameter_emptyString_matchingParam_emptyString() {
-        try {
-            String query = "some existing query string";
-            final String paramName = "";
-            final List<String> configuredValue = Arrays.asList(paramName);
-            final String paramValue = "";
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                    one(req).getParameter(paramName);
-                    will(returnValue(paramValue));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-
-            String expectedQuery = query + "&=";
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_oneParameter_emptyString_matchingParam_whitespaceOnly() {
-        try {
-            String query = "some existing query string";
-            final String paramName = "";
-            final List<String> configuredValue = Arrays.asList(paramName);
-            final String paramValue = " \t\n \r";
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                    one(req).getParameter(paramName);
-                    will(returnValue(paramValue));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-
-            // Parameter value should have been encoded
-            String expectedQuery = query + "&=+%09%0A+%0D";
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_oneParameter_emptyString_matchingParam_nonEmpty() {
-        try {
-            String query = "some existing query string";
-            final String paramName = "";
-            final List<String> configuredValue = Arrays.asList(paramName);
-            final String paramValue = "some_simple_param_value";
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                    one(req).getParameter(paramName);
-                    will(returnValue(paramValue));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-
-            String expectedQuery = query + "&=" + paramValue;
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_oneParameter_whitespace_requestMissingThatParameter() {
-        try {
-            String query = "some existing query string";
-            final String paramName = " ";
-            final List<String> configuredValue = Arrays.asList(paramName);
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                    one(req).getParameter(paramName);
-                    will(returnValue(null));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_oneParameter_whitespace_matchingParam_whitespaceOnly() {
-        try {
-            String query = "some existing query string";
-            final String paramName = "\n\r\t";
-            final List<String> configuredValue = Arrays.asList(paramName);
-            final String paramValue = "    ";
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                    one(req).getParameter(paramName);
-                    will(returnValue(paramValue));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-
-            // Parameter name and value should have been encoded
-            String expectedQuery = query + "&" + "%0A%0D%09" + "=" + "++++";
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_oneParameter_whitespace_matchingParam_nonEmpty() {
-        try {
-            String query = "some existing query string";
-            final String paramName = "\n \n";
-            final List<String> configuredValue = Arrays.asList(paramName);
-            final String paramValue = "some parameter value";
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                    one(req).getParameter(paramName);
-                    will(returnValue(paramValue));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-
-            // Parameter name and value should have been encoded
-            String expectedQuery = query + "&" + "%0A+%0A" + "=" + "some+parameter+value";
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_oneParameter_nonEmpty_requestMissingThatParameter() {
-        try {
-            String query = "scope=mySCope";
-            final String paramName = "missingParam";
-            final List<String> configuredValue = Arrays.asList(paramName);
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                    one(req).getParameter(paramName);
-                    will(returnValue(null));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_oneParameter_specialChars_matchingParam_specialChars() {
-        try {
-            String query = "scope=myScope&redirect_uri=some value";
-            final String paramName = "`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?";
-            final List<String> configuredValue = Arrays.asList(paramName);
-            final String paramValue = paramName;
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValue));
-                    one(req).getParameter(paramName);
-                    will(returnValue(paramValue));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-
-            String encodedSpecialChars = "%60%7E%21%40%23%24%25%5E%26*%28%29-_%3D%2B%5B%7B%5D%7D%5C%7C%3B%3A%27%22%2C%3C.%3E%2F%3F";
-            // Parameter name and value should have been encoded
-            String expectedQuery = query + "&" + encodedSpecialChars + "=" + encodedSpecialChars;
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_multipleParameters_noneInRequest() {
-        try {
-            String query = "initial query";
-            final List<String> configuredValues = Arrays.asList("", "my param", "Special! \n\t (Param) ", " 1234567890 ");
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValues));
-                }
-            });
-            for (final String configuredVal : configuredValues) {
-                mock.checking(new Expectations() {
-                    {
-                        one(req).getParameter(configuredVal);
-                        will(returnValue(null));
-                    }
-                });
-            }
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_multipleParameters_oneInRequest() {
-        try {
-            String query = "initial query";
-            final String emptyParam = "";
-            final String paramWithSpace = "my param";
-            final String paramWithSpecialChars = "Special! \n\t (Param) ";
-            final String paramWithNumbers = " 1234567890 ";
-            final List<String> configuredValues = Arrays.asList(emptyParam, paramWithSpace, paramWithSpecialChars, paramWithNumbers);
-            final String foundParamValue = "My\nParam\rValue";
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValues));
-                    one(req).getParameter(emptyParam);
-                    will(returnValue(null));
-                    // The request happens to have this parameter
-                    one(req).getParameter(paramWithSpace);
-                    will(returnValue(foundParamValue));
-                    one(req).getParameter(paramWithSpecialChars);
-                    will(returnValue(null));
-                    one(req).getParameter(paramWithNumbers);
-                    will(returnValue(null));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-
-            // Parameter name and value should have been encoded
-            String expectedQuery = query + "&" + "my+param" + "=" + "My%0AParam%0DValue";
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_multipleParameters_multipleInRequest() {
-        try {
-            String query = "initial query";
-            final String emptyParam = "";
-            final String paramWithSpace = "my param";
-            final String paramWithSpecialChars = "Special! \n\t (Param) ";
-            final String paramWithNumbers = " 1234567890 ";
-            final List<String> configuredValues = Arrays.asList(emptyParam, paramWithSpace, paramWithSpecialChars, paramWithNumbers);
-            final String foundParamValue1 = "My\nParam\rValue";
-            final String foundParamValue2 = "a_simple_param_value";
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValues));
-                    one(req).getParameter(emptyParam);
-                    will(returnValue(null));
-                    one(req).getParameter(paramWithSpace);
-                    will(returnValue(foundParamValue1));
-                    one(req).getParameter(paramWithSpecialChars);
-                    will(returnValue(null));
-                    one(req).getParameter(paramWithNumbers);
-                    will(returnValue(foundParamValue2));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-
-            // Parameter names and values should have been encoded
-            String expectedQuery = query + "&" + "my+param" + "=" + "My%0AParam%0DValue" + "&" + "+1234567890+" + "=" + foundParamValue2;
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testAddForwardLoginParamsToQuery_multipleParameters_allInRequest() {
-        try {
-            String query = "initial query";
-            final String paramName1 = "name1";
-            final String paramName2 = "name2";
-            final String paramName3 = "name3";
-            final String paramName4 = "name4";
-            final String paramValue1 = "value1";
-            final String paramValue2 = "value2";
-            final String paramValue3 = "value3";
-            final String paramValue4 = "value4";
-            final List<String> configuredValues = Arrays.asList(paramName1, paramName2, paramName3, paramName4);
-            mock.checking(new Expectations() {
-                {
-                    one(convClientConfig).getForwardLoginParameter();
-                    will(returnValue(configuredValues));
-                    one(req).getParameter(paramName1);
-                    will(returnValue(paramValue1));
-                    one(req).getParameter(paramName2);
-                    will(returnValue(paramValue2));
-                    one(req).getParameter(paramName3);
-                    will(returnValue(paramValue3));
-                    one(req).getParameter(paramName4);
-                    will(returnValue(paramValue4));
-                }
-            });
-            String newQuery = oidcCAUtil.addForwardLoginParamsToQuery(convClientConfig, req, query);
-
-            // Parameter names and values should have been encoded
-            String expectedQuery = query + "&" + paramName1 + "=" + paramValue1 + "&" + paramName2 + "=" + paramValue2 + "&" + paramName3 + "=" + paramValue3 + "&" + paramName4 + "=" + paramValue4;
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1556,10 +1105,6 @@ public class OIDCClientAuthenticatorUtilTest {
                 {
                     one(convClientConfig).getClientId();
                     will(returnValue(CLIENT01));
-                    one(convClientConfig).getClockSkewInSeconds();
-                    will(returnValue(TEST_CLOCK_SKEW_IN_SECONDS));
-                    one(convClientConfig).getAuthenticationTimeLimitInSeconds();
-                    will(returnValue(420L));
                     one(req).getCookies();
                     will(returnValue(cookies));
                     one(convClientConfig).getClientSecret();
@@ -1618,260 +1163,6 @@ public class OIDCClientAuthenticatorUtilTest {
         }
     }
 
-    //@Test
-    public void testHandleRedirectToServer_URLNotHttps() {
-        createHttpsRequirementExpectationsForAuthorizationEndpoint(TEST_AUTHORIZATION_ENDPOINT);
-        mock.checking(new Expectations() {
-            {
-                one(oidcClientAuthUtil).handleRedirectToServer(with(any(HttpServletRequest.class)), with(any(HttpServletResponse.class)), with(any(ConvergedClientConfig.class)));
-                will(returnValue(new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED)));
-                //                one(clientConfig).getAuthenticationTimeLimitInSeconds();
-                //                will(returnValue(420L));
-                //                one(cookie2).setMaxAge(420);
-                //                allowing(req).getScheme();
-                //                will(returnValue("https"));
-                //                one(clientConfig).createSession();
-                //                will(returnValue(false));
-                //                one(clientConfig).getId();
-                //                will(returnValue(CLIENT01));
-                //                one(clientConfig).getClientSecret();
-                //                will(returnValue("client01secret"));
-                //                one(req).getRequestURL();
-                //                will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));
-                //                one(clientConfig).getRedirectUrlFromServerToClient();
-                //                will(returnValue(TEST_URL));
-                //                one(clientConfig).isHttpsRequired();
-                //                will(returnValue(true));
-                //
-                //                exactly(7).of(req).getMethod();
-                //                will(returnValue(METHOD_POST));
-                //                exactly(2).of(req).getParameter(PARAMETER_OIDC_CLIENT);
-                //                will(returnValue("parameter"));
-                //                one(cookie2).setSecure(true);
-                //                one(clientConfig).getRedirectUrlWithJunctionPath(TEST_URL);
-                //                will(returnValue(TEST_URL));
-                //                one(clientConfig).isHttpsRequired();
-                //                will(returnValue(true));
-            }
-        });
-
-        OidcClientUtil.setReferrerURLCookieHandler(referrerURLCookieHandler);
-        ProviderAuthenticationResult oidcResult = oidcCAUtil.handleRedirectToServer(req, res, convClientConfig);
-
-        checkForBadStatusExpectations(oidcResult);
-    }
-
-    // TODO - Needs to be moved to dedicated unit test class for OIDCClientAuthenticatorUtil
-    //@Test
-    public void testHandleRedirectToServer_MissingOpenIDScope() {
-        createHttpsRequirementExpectationsForAuthorizationEndpoint(TEST_AUTHORIZATION_ENDPOINT);
-        mock.checking(new Expectations() {
-            {
-                allowing(req).getScheme();
-                will(returnValue("https"));
-                one(convClientConfig).createSession();
-                will(returnValue(false));
-                one(convClientConfig).getAuthenticationTimeLimitInSeconds();
-                will(returnValue(420L));
-                one(cookie2).setMaxAge(420);
-
-                one(convClientConfig).getId();
-                will(returnValue(CLIENT01));
-                one(convClientConfig).getClientSecret();
-                will(returnValue("client01secret"));
-                one(req).getRequestURL();
-                will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));
-
-                one(convClientConfig).getRedirectUrlFromServerToClient();
-                will(returnValue(TEST_URL));
-                one(convClientConfig).isHttpsRequired();
-                will(returnValue(false));
-                exactly(2).of(convClientConfig).getScope();
-                will(returnValue("bad_scope"));
-                one(convClientConfig).getClientId();
-                will(returnValue(null));
-
-                exactly(2).of(req).getMethod();
-                will(returnValue(METHOD_GET));
-                one(req).getParameter("acr_values");
-                will(returnValue(null));
-
-                one(convClientConfig).getRedirectUrlWithJunctionPath(TEST_URL);
-                will(returnValue(TEST_URL));
-                one(convClientConfig).isHttpsRequired();
-                will(returnValue(true));
-            }
-        });
-
-        OidcClientUtil.setReferrerURLCookieHandler(referrerURLCookieHandler);
-        ProviderAuthenticationResult oidcResult = oidcCAUtil.handleRedirectToServer(req, res, convClientConfig);
-
-        checkForBadStatusExpectations(oidcResult);
-    }
-
-    // TODO - Needs to be moved to dedicated unit test class for OIDCClientAuthenticatorUtil
-    //@Test
-    public void testHandleRedirectToServer_CatchUnsupportedEncodingException() {
-        createHttpsRequirementExpectationsForAuthorizationEndpoint(TEST_AUTHORIZATION_ENDPOINT);
-        mock.checking(new Expectations() {
-            {
-                allowing(req).getScheme();
-                will(returnValue("https"));
-                one(req).getMethod();
-                will(returnValue(METHOD_GET));
-                one(convClientConfig).getGrantType();
-                will(returnValue("code"));
-                one(convClientConfig).createSession();
-                will(returnValue(false));
-                one(convClientConfig).getAuthenticationTimeLimitInSeconds();
-                will(returnValue(420L));
-                one(cookie2).setMaxAge(420);
-
-                one(convClientConfig).getId();
-                will(returnValue(CLIENT01));
-                one(convClientConfig).getClientSecret();
-                will(returnValue("client01secret"));
-                one(req).getRequestURL();
-                will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));
-
-                one(convClientConfig).getRedirectUrlFromServerToClient();
-                will(returnValue(TEST_URL));
-                one(convClientConfig).isHttpsRequired();
-                will(returnValue(false));
-                one(convClientConfig).getScope();
-                will(returnValue(TEST_GRANT_TYPE));
-                one(convClientConfig).getClientId();
-                will(returnValue("client1"));
-
-                exactly(4).of(req).getMethod();
-                will(returnValue(METHOD_POST));
-                one(req).getParameter(PARAMETER_OIDC_CLIENT);
-                will(returnValue(null));
-                one(req).getParameter("acr_values");
-                will(returnValue(null));
-
-                one(convClientConfig).getRedirectUrlWithJunctionPath(TEST_URL);
-                will(returnValue(TEST_URL));
-                one(convClientConfig).isHttpsRequired();
-                will(returnValue(true));
-
-            }
-        });
-
-        OidcClientUtil.setReferrerURLCookieHandler(referrerURLCookieHandler);
-        ProviderAuthenticationResult oidcResult = oidcCAUtil.handleRedirectToServer(req, res, convClientConfig);
-
-        checkForBadStatusExpectations(oidcResult);
-    }
-
-    // TODO - Needs to be moved to dedicated unit test class for OIDCClientAuthenticatorUtil
-    //@Test
-    public void testHandleRedirectToServer_CatchUnsupportedEncodingException2() {
-        final String query = "response_type=code";
-
-        createHttpsRequirementExpectationsForAuthorizationEndpoint(TEST_AUTHORIZATION_ENDPOINT);
-        //createReqUrlExpectations(query);
-        mock.checking(new Expectations() {
-            {
-                allowing(req2).getScheme();
-                will(returnValue("https"));
-                one(req2).getServerPort();
-                will(returnValue(8020));
-                one(convClientConfig).createSession();
-                will(returnValue(false));
-                one(convClientConfig).getAuthenticationTimeLimitInSeconds();
-                will(returnValue(420L));
-                one(cookie2).setMaxAge(-1);
-                allowing(cookie2).setMaxAge(420);
-
-                one(convClientConfig).getId();
-                will(returnValue(CLIENT01));
-                one(convClientConfig).getClientSecret();
-                will(returnValue("client01secret"));
-                one(req2).getRequestURL();
-                will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));
-
-                one(convClientConfig).getRedirectUrlFromServerToClient();
-                will(returnValue(TEST_URL));
-                one(convClientConfig).isHttpsRequired();
-                will(returnValue(false));
-                exactly(2).of(convClientConfig).getScope();
-                will(returnValue(TEST_GRANT_TYPE));
-                one(convClientConfig).getGrantType();
-                will(returnValue(Constants.IMPLICIT));
-                one(convClientConfig).getResponseType();
-                will(returnValue("id_token token"));
-                one(convClientConfig).getClientId();
-                will(returnValue(CLIENTID));
-                one(convClientConfig).isNonceEnabled();
-                will(returnValue(false));
-
-                one(convClientConfig).getId();
-                will(returnValue(CLIENT01));
-                one(convClientConfig).getClientSecret();
-                will(returnValue("clientSecret"));
-
-                one(oidcClientRequest).getRequest();
-                will(returnValue(req));
-                one(req2).getCookies();
-                will(returnValue(cookies));
-
-                one(convClientConfig).getAuthContextClassReference();
-                will(returnValue(null));
-                exactly(2).of(convClientConfig).getPrompt();
-                will(returnValue("prompt"));
-                one(convClientConfig).getResources();
-                will(returnValue(null));
-                one(convClientConfig).getAuthorizationEndpointUrl();
-                will(returnValue(TEST_AUTHORIZATION_ENDPOINT));
-                one(convClientConfig).isClientSideRedirect();
-                will(returnValue(false));
-
-                exactly(2).of(req2).getRequestURL();
-                will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));
-
-                one(oidcClientRequest).getResponse();
-                will(returnValue(res));
-                one(res).addCookie(with(any(Cookie.class)));
-
-                exactly(3).of(req2).getMethod();
-                will(returnValue(METHOD_GET));
-                one(req2).getParameter("acr_values");
-                will(returnValue(null));
-
-                one(convClientConfig).getRedirectUrlWithJunctionPath(TEST_URL);
-                will(returnValue(TEST_URL));
-                one(convClientConfig).isHttpsRequired();
-                will(returnValue(false));
-                one(convClientConfig).isHttpsRequired();
-                will(returnValue(false));
-                allowing(req2).getAttribute("com.ibm.wsspi.security.oidc.client.request");
-                will(returnValue(convClientRequest));
-                allowing(convClientRequest).getRequest();
-                will(returnValue(req2));
-                allowing(convClientRequest).getResponse();
-                will(returnValue(res));
-
-                allowing(req2).getScheme();
-                will(returnValue("https"));
-                one(req2).getServerPort();
-                will(returnValue(8020));
-                one(req2).getRequestURL();
-                will(returnValue(new StringBuffer(TEST_URL)));
-                one(req2).getQueryString();
-                will(returnValue(query));
-            }
-        });
-
-        OidcClientUtil.setReferrerURLCookieHandler(referrerURLCookieHandler);
-        ProviderAuthenticationResult oidcResult = oidcCAUtil.handleRedirectToServer(req2, res, convClientConfig);
-
-        assertEquals("Expected to receive status:" + AuthResult.REDIRECT_TO_PROVIDER + " but received:" + oidcResult.getStatus() + ".", AuthResult.REDIRECT_TO_PROVIDER,
-                oidcResult.getStatus());
-        assertEquals("Expected to receive status code:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
-                HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
-    }
-
     @Test
     public void testVerifyResponseState_NullResponseState() {
         mock.checking(new Expectations() {
@@ -1883,6 +1174,98 @@ public class OIDCClientAuthenticatorUtilTest {
         ProviderAuthenticationResult oidcResult = oidcCAUtil.verifyResponseState(req, res, null, convClientConfig);
 
         checkForBadStatusExpectations(oidcResult);
+    }
+
+    @Test
+    public void testVerifyState_stateStringTooShort() {
+        String responseState = "short";
+
+        boolean result = oidcCAUtil.verifyState(req, res, responseState, convClientConfig);
+        assertFalse("State [" + responseState + "] should not have been considered value.", result);
+    }
+
+    @Test
+    public void testIsStateTimestampWithinClockSkew_responseStateFromPast_withinAllowableTime() {
+        long clockSkewMillSeconds = 0;
+        long allowHandleTimeMillSeconds = 10 * 1000;
+
+        long now = System.currentTimeMillis();
+        long responseStateTime = now - (2 * 1000);
+
+        mock.checking(new Expectations() {
+            {
+                one(convClientConfig).getClockSkewInSeconds();
+                will(returnValue(clockSkewMillSeconds / 1000));
+                one(convClientConfig).getAuthenticationTimeLimitInSeconds();
+                will(returnValue(allowHandleTimeMillSeconds / 1000));
+            }
+        });
+
+        String responseState = "00" + responseStateTime + "stateValue";
+        boolean result = oidcCAUtil.isStateTimestampWithinClockSkew(responseState, convClientConfig);
+        assertTrue("Response state [" + responseStateTime + "] should have been considered within the allowable upper limit [" + allowHandleTimeMillSeconds + "] of current(ish) time [" + System.currentTimeMillis() + "]. Clock skew was [" + clockSkewMillSeconds + "].", result);
+    }
+
+    @Test
+    public void testIsStateTimestampWithinClockSkew_responseStateFromPast_outsideAllowableTime() {
+        long clockSkewMillSeconds = 0;
+        long allowHandleTimeMillSeconds = 2 * 1000;
+
+        long now = System.currentTimeMillis();
+        long responseStateTime = now - (10 * 1000);
+
+        mock.checking(new Expectations() {
+            {
+                one(convClientConfig).getClockSkewInSeconds();
+                will(returnValue(clockSkewMillSeconds / 1000));
+                one(convClientConfig).getAuthenticationTimeLimitInSeconds();
+                will(returnValue(allowHandleTimeMillSeconds / 1000));
+            }
+        });
+
+        String responseState = "00" + responseStateTime + "stateValue";
+        boolean result = oidcCAUtil.isStateTimestampWithinClockSkew(responseState, convClientConfig);
+        assertFalse("Response state [" + responseStateTime + "] should have been considered outside the allowable upper limit [" + allowHandleTimeMillSeconds + "] of current(ish) time [" + System.currentTimeMillis() + "]. Clock skew was [" + clockSkewMillSeconds + "].", result);
+    }
+
+    @Test
+    public void testIsStateTimestampWithinClockSkew_responseStateFromFuture_withinClockSkew() {
+        long clockSkewMillSeconds = 10 * 1000;
+        long allowHandleTimeMillSeconds = 0;
+
+        long now = System.currentTimeMillis();
+        long responseStateTime = now + (2 * 1000);
+
+        mock.checking(new Expectations() {
+            {
+                one(convClientConfig).getClockSkewInSeconds();
+                will(returnValue(clockSkewMillSeconds / 1000));
+            }
+        });
+
+        String responseState = "00" + responseStateTime + "stateValue";
+        boolean result = oidcCAUtil.isStateTimestampWithinClockSkew(responseState, convClientConfig);
+        assertTrue("Response state [" + responseStateTime + "] should have been considered within the clock skew [" + clockSkewMillSeconds + "] of current(ish) time [" + System.currentTimeMillis() + "]. Allowable upper limit was [" + allowHandleTimeMillSeconds + "].", result);
+    }
+
+    @Test
+    public void testIsStateTimestampWithinClockSkew_responseStateFromFuture_outsideClockSkew() {
+        long clockSkewMillSeconds = 2 * 1000;
+        long allowHandleTimeMillSeconds = 0;
+
+        long now = System.currentTimeMillis();
+        long responseStateTime = now + (10 * 1000);
+
+        mock.checking(new Expectations() {
+            {
+                one(convClientConfig).getClockSkewInSeconds();
+                will(returnValue(clockSkewMillSeconds / 1000));
+            }
+        });
+
+        String responseState = "00" + responseStateTime + "stateValue";
+        boolean result = oidcCAUtil.isStateTimestampWithinClockSkew(responseState, convClientConfig);
+        assertFalse("Response state [" + responseStateTime + "] should have been considered outside the clock skew [" + clockSkewMillSeconds + "] of current(ish) time [" + System.currentTimeMillis() + "]. Allowable upper limit was [" + allowHandleTimeMillSeconds + "].", result);
     }
 
     private void checkForBadStatusExpectations(ProviderAuthenticationResult oidcResult) {

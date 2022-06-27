@@ -265,7 +265,7 @@ public class OidcClientAuthenticator {
     }
 
     public String getIssuerIdentifier(OidcClientConfig clientConfig) {
-        return authenticatorUtil.getIssuerIdentifier(clientConfig);
+        return OIDCClientAuthenticatorUtil.getIssuerIdentifier(clientConfig);
     }
 
     String getReqURL(HttpServletRequest req) {
