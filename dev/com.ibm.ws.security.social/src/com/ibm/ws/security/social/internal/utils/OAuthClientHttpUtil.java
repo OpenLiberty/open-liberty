@@ -259,59 +259,15 @@ public class OAuthClientHttpUtil {
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useJvmProps) {
 
-        HttpClient client = null;
-
-        if (url != null && url.startsWith("http:")) {
-            client = getBuilder(useJvmProps).build();
-        } else {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                client = getBuilder(useJvmProps).setSSLSocketFactory(connectionFactory).build();
-            } finally {
-            	ThreadContextHelper.setClassLoader(origCL);
-            }
-        }
-
-        return client;
+        return httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useJvmProps);
     }
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, String baUser, @Sensitive String baPassword, boolean useJvmProps) {
 
-        HttpClient client = null;
-
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(baUser, baPassword));
 
-        if (url != null && url.startsWith("http:")) {
-            client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).build();
-        } else {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-            } finally {
-            	ThreadContextHelper.setClassLoader(origCL);
-            }
-        }
-
-        return client;
-    }
-
-    private HttpClientBuilder getBuilder(boolean useJvmProps) {
-        return useJvmProps ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
+        return httpUtils.createHttpClient(sslSocketFactory, url.startsWith("https"), isHostnameVerification, useJvmProps, credentialsProvider);
     }
 
     public static OAuthClientHttpUtil getInstance() {

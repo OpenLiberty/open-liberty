@@ -40,11 +40,9 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class HttpUtils {
@@ -153,8 +151,9 @@ public class HttpUtils {
         boolean isSecure = (url != null && url.startsWith("https:"));
         return createHttpClient(sslSocketFactory, isSecure, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
     }
-    
-    private HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, boolean isSecure, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
+
+    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, boolean isSecure, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
+
         HttpClient client = null;
         if (isSecure) {
             ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
@@ -188,7 +187,11 @@ public class HttpUtils {
         return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
     }
 
+<<<<<<< HEAD
     public String getHttpJsonRequest(SSLSocketFactory sslSocketFactory, String url, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws SocialLoginWrapperException, IOException {
+=======
+    public String getHttpJsonRequest(SSLSocketFactory sslSocketFactory, String url, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws Exception {
+>>>>>>> 9619901208 (Updated to Adam's thomas-discoveryFix changes for HttpUtils. OAuthClientHttp and OidcClientHttp are refactored to use HttpUtils common code)
         HttpClient client = createHttpClient(sslSocketFactory, url, hostNameVerificationEnabled, useSystemProperties);
         if (client != null) {
             return getHttpJsonRequestAsString(client, url);
@@ -196,15 +199,23 @@ public class HttpUtils {
         return null;
     }
 
+<<<<<<< HEAD
     String getHttpJsonRequestAsString(HttpClient httpClient, String url) throws SocialLoginWrapperException, IOException {
+=======
+    String getHttpJsonRequestAsString(HttpClient httpClient, String url) throws Exception {
+>>>>>>> 9619901208 (Updated to Adam's thomas-discoveryFix changes for HttpUtils. OAuthClientHttp and OidcClientHttp are refactored to use HttpUtils common code)
         List<NameValuePair> headers = new ArrayList<>();
         headers.add(new BasicNameValuePair("Content-Type", "application/json"));
 
         return getHttpRequestAsString(httpClient, url, headers);
     }
 
+<<<<<<< HEAD
     @FFDCIgnore({ AbstractHttpResponseException.class })
     String getHttpRequestAsString(HttpClient httpClient, String url, List<NameValuePair> headers) throws SocialLoginWrapperException, IOException {
+=======
+    String getHttpRequestAsString(HttpClient httpClient, String url, List<NameValuePair> headers) throws Exception {
+>>>>>>> 9619901208 (Updated to Adam's thomas-discoveryFix changes for HttpUtils. OAuthClientHttp and OidcClientHttp are refactored to use HttpUtils common code)
         HttpGet request = createHttpGetMethod(url, headers);
         HttpResponse result = null;
         
@@ -212,6 +223,7 @@ public class HttpUtils {
         ThreadContextHelper.setClassLoader(getClass().getClassLoader());
         try {
             result = httpClient.execute(request);
+<<<<<<< HEAD
         } catch (IOException e) {
             String errMsg = "IOException: " + e.getMessage() + " " + e.getCause();
             String nlsMessage = TraceNLS.getFormattedMessage(getClass(),
@@ -229,6 +241,15 @@ public class HttpUtils {
     }
 
     String extractResponseAsString(HttpResponse result, String url) throws IOException, AbstractHttpResponseException {
+=======
+        } finally {
+            ThreadContextHelper.setClassLoader(origCL);
+        }
+        return extractResponseAsString(result, url);
+    }
+
+    String extractResponseAsString(HttpResponse result, String url) throws IOException, HttpResponseNullOrEmptyException, HttpResponseNot200Exception {
+>>>>>>> 9619901208 (Updated to Adam's thomas-discoveryFix changes for HttpUtils. OAuthClientHttp and OidcClientHttp are refactored to use HttpUtils common code)
         StatusLine statusLine = result.getStatusLine();
         int iStatusCode = statusLine.getStatusCode();
         if (iStatusCode == 200) {
@@ -250,6 +271,7 @@ public class HttpUtils {
         }
     }
 
+<<<<<<< HEAD
     private SocialLoginWrapperException getSocialLoginWrapperException(AbstractHttpResponseException e) {
         String defaultMessage = "Error processing discovery request";
         String nlsMessage = TraceNLS.getFormattedMessage(getClass(),
@@ -258,6 +280,8 @@ public class HttpUtils {
         return new SocialLoginWrapperException(e.getUrl(), Integer.valueOf(e.getStatusCode()), nlsMessage, e);
     }
 
+=======
+>>>>>>> 9619901208 (Updated to Adam's thomas-discoveryFix changes for HttpUtils. OAuthClientHttp and OidcClientHttp are refactored to use HttpUtils common code)
     public String invokeUrl(RequestMethod requestMethod, String url, SSLSocketFactory sslSocketFactory) throws Exception {
         try {
             HttpURLConnection connection = createConnection(requestMethod, url, sslSocketFactory);

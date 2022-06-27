@@ -25,16 +25,10 @@ import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.ras.Tr;
@@ -288,72 +282,15 @@ public class OidcClientHttpUtil {
     }
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
-
-        HttpClient client = null;
-
-        if (url.startsWith("http:")) {
-            client = createBuilder(useSystemPropertiesForHttpClientConnections).build();
-        } else {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
-            }
-        }
-
-        // BasicCredentialsProvider credentialsProvider = new
-        // BasicCredentialsProvider();
-        // credentialsProvider.setCredentials(AuthScope.ANY, new
-        // UsernamePasswordCredentials("username", "mypassword"));
-
-        return client;
-
-    }
-
-    private HttpClientBuilder createBuilder(boolean useSystemProperties) {
-        return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
-        // return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+        return httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
     }
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification,
             String baUser, @Sensitive String baPassword, boolean useSystemPropertiesForHttpClientConnections) {
-
-        HttpClient client = null;
-
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(baUser, baPassword));
 
-        if (url.startsWith("http:")) {
-            client = createBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).build();
-        } else {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                RequestConfig rcfg = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
-                client = createBuilder(useSystemPropertiesForHttpClientConnections)
-                        .setDefaultCredentialsProvider(credentialsProvider)
-                        .setSSLSocketFactory(connectionFactory)
-                        .setDefaultRequestConfig(rcfg)
-                        .build();
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
-            }
-        }
-        return client;
+        return httpUtils.createHttpClient(sslSocketFactory, url.startsWith("httsp:"), isHostnameVerification, useSystemPropertiesForHttpClientConnections, credentialsProvider);
     }
 
     /**
