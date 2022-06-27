@@ -291,13 +291,17 @@ public abstract class BatchFATHelper {
         }
 
         void printOutput() {
+            Log.info(BatchFATHelper.class, "ProcessOutput.printOutput", "SYSOUT:");
             System.out.println("SYSOUT:");
             for (String x : sysout) {
+                Log.info(BatchFATHelper.class, "ProcessOutput.printOutput", " " + x);
                 System.out.println(" " + x);
             }
 
+            Log.info(BatchFATHelper.class, "ProcessOutput.printOutput", "SYSERR:");
             System.out.println("SYSERR:");
             for (String x : syserr) {
+                Log.info(BatchFATHelper.class, "ProcessOutput.printOutput", " " + x);
                 System.out.println(" " + x);
             }
         }

@@ -36,7 +36,17 @@ tested.features: \
  jsonp-2.0,\
  appsecurity-4.0,\
  expressionlanguage-4.0,\
- cdi-3.0
+ cdi-3.0,\
+ expressionlanguage-5.0,\
+ persistence-3.1,\
+ appsecurity-5.0,\
+ persistencecontainer-3.1,\
+ jsonp-2.1,\
+ batch-2.1,\
+ xmlbinding-4.0,\
+ cdi-4.0,\
+ servlet-6.0,\
+ connectors-2.1
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 # or binaries from Artifactory (e.g. commons-logging:commons-logging)

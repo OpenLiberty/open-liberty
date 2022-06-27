@@ -12,20 +12,17 @@ package com.ibm.jbatch.container.persistence.jpa;
 
 import javax.batch.operations.BatchRuntimeException;
 
-import org.eclipse.persistence.descriptors.ClassExtractor;
-import org.eclipse.persistence.sessions.Record;
-import org.eclipse.persistence.sessions.Session;
-
+import com.ibm.jbatch.container.persistence.jpa.extractor.AbstractStepThreadExecutionEntityExtractor;
 import com.ibm.jbatch.container.servicesmanager.ServicesManagerStaticAnchor;
 
 /**
  *
  */
-public class StepThreadExecutionEntityExtractor extends ClassExtractor {
+public class StepThreadExecutionEntityExtractor extends AbstractStepThreadExecutionEntityExtractor {
 
     /** {@inheritDoc} */
     @Override
-    public Class extractClassFromRow(Record record, Session session) {
+    public Class getStepThreadExecutionEntityType() {
 
         //
         // If we understood the lifecycle of ClassExtractor within EclipseLink we

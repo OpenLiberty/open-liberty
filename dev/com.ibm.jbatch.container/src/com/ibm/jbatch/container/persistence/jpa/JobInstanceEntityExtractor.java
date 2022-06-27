@@ -12,21 +12,18 @@ package com.ibm.jbatch.container.persistence.jpa;
 
 import javax.batch.operations.BatchRuntimeException;
 
-import org.eclipse.persistence.descriptors.ClassExtractor;
-import org.eclipse.persistence.sessions.Record;
-import org.eclipse.persistence.sessions.Session;
-
+import com.ibm.jbatch.container.persistence.jpa.extractor.AbstractJobInstanceEntityExtractor;
 import com.ibm.jbatch.container.servicesmanager.ServicesManagerStaticAnchor;
 
 /**
  *
  */
-public class JobInstanceEntityExtractor extends ClassExtractor {
+public class JobInstanceEntityExtractor extends AbstractJobInstanceEntityExtractor {
 
     /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
     @Override
-    public Class extractClassFromRow(Record record, Session session) {
+    public Class getInstanceEntityType() {
 
         //
         // If we understood the lifecycle of ClassExtractor within EclipseLink we
