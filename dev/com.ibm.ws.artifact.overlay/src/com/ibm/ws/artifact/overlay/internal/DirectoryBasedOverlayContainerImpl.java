@@ -1196,43 +1196,72 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     /** {@inheritDoc} */
     @Override
     public synchronized void setOverlayDirectory(File overlayCacheDir, File overlayDir) {
-        if (!FileUtils.fileExists(overlayDir)) {
-            String path = overlayDir.getAbsolutePath();
-            Tr.error(tc, "overlay.does.not.exist", path);
-            throw new IllegalArgumentException("Overlay [ " + path + " ] does not exist");
-        } else if (!Utils.fileIsDirectory(overlayDir)) {
-            String path = overlayDir.getAbsolutePath();
-            Tr.error(tc, "overlay.not.directory", path);
-            throw new IllegalArgumentException("Overlay [ " + path + " ] is not a directory");
-        } else if (FileUtils.listFiles(overlayDir).length != 0) {
-            String path = overlayDir.getAbsolutePath();
-            Tr.error(tc, "overlay.not.empty", path);
-            throw new IllegalArgumentException("Overlay [ " + path + " ] is not empty");
+        // The 'isDirectory' includes an 'exists' test.
+
+        if (!Utils.fileIsDirectory(overlayCacheDir)) {
+            String path = overlayCacheDir.getAbsolutePath();
+            if (!FileUtils.fileExists(overlayCacheDir)) {
+                Tr.error(tc, "overlay.cache.does.not.exist", path);
+                throw new IllegalArgumentException("Overlay cache [ " + path + " ] does not exist");
+            } else {
+                Tr.error(tc, "overlay.cache.not.directory", path);
+                throw new IllegalArgumentException("Overlay cache [ " + path + " ] is not a directory");
+            }
         }
 
-        if (!FileUtils.fileExists(overlayCacheDir)) {
-            String path = overlayCacheDir.getAbsolutePath();
-            Tr.error(tc, "overlay.cache.does.not.exist", path);
-            throw new IllegalArgumentException("Overlay cache [ " + path + " ] does not exist");
-        } else if (!Utils.fileIsDirectory(overlayCacheDir)) {
-            String path = overlayCacheDir.getAbsolutePath();
-            Tr.error(tc, "overlay.cache.not.directory", path);
-            throw new IllegalArgumentException("Overlay cache [ " + path + " ] is not a directory");
+        if (!Utils.fileIsDirectory(overlayDir)) {
+            String path = overlayDir.getAbsolutePath();
+            if (!FileUtils.fileExists(overlayDir)) {
+                Tr.error(tc, "overlay.does.not.exist", path);
+                throw new IllegalArgumentException("Overlay [ " + path + " ] does not exist");
+            } else {
+                Tr.error(tc, "overlay.not.directory", path);
+                throw new IllegalArgumentException("Overlay [ " + path + " ] is not a directory");
+            }
         }
 
         File overlay = new File(overlayDir, ".overlay");
+
+        // The previous check.  This is too convoluted.
+
+        // if (!(FileUtils.listFiles(overlayDir).length == 0 ||
+        //       (FileUtils.fileExists(overlay) && FileUtils.fileIsDirectory(overlay)))) {
+        //     throw new IllegalArgumentException();
+        // }
+
+        // If the overlay exists, a file listing is not needed, since the
+        // overlay directory cannot be empty.
+        //
+        // If the overlay exists, it must be a directory.
+        //
+        // If the overlay does not exist, the overlay directory is required
+        // to be empty.  (Note: We do not do the corresponding test if the
+        // overlay exists, which would be that the overlay be the only
+        // file in the overlay directory.)
+
         if (FileUtils.fileExists(overlay)) {
-            if (FileUtils.fileIsDirectory(overlay)) {
+            if (!FileUtils.fileIsDirectory(overlay)) {
                 String path = overlay.getAbsolutePath();
-                Tr.error(tc, "overlay.exists.as.directory", path);
-                throw new IllegalArgumentException("Overlay file [ " + path + " ] exists as a directory");
+                Tr.error(tc, "overlay.exists.not.directory", path);
+                throw new IllegalArgumentException("Overlay [ " + path + " ] exists but is not a directory");
+            } else {
+                // We don't care if the overlay directory has any other elements!
             }
+
         } else {
-            FileUtils.fileMkDirs(overlay);
+            if (FileUtils.listFiles(overlayDir).length != 0) {
+                // Why do we care if the overlay directory is not empty?
+                String path = overlayDir.getAbsolutePath();
+                Tr.error(tc, "overlay.not.empty", path);
+                throw new IllegalArgumentException("Overlay [ " + path + " ] is not empty");
+            } else {
+                FileUtils.fileMkDir(overlay);
+            }
         }
 
         this.overlayDirectory = overlay;
         this.cacheDirForOverlay = overlayCacheDir;
+
         this.fileOverlayContainer = cfHolder.getContainerFactory().getContainer(overlayCacheDir, overlay);
 
         //could be null if the file impl bundle is awol.. nasty.
