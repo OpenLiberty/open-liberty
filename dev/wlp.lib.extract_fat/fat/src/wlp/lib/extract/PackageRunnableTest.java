@@ -59,6 +59,7 @@ public class PackageRunnableTest {
     private static final File extractDirectory2 = new File("publish" + File.separator + "wlpExtract2");
     private static final File extractAndRunDir = new File("publish" + File.separator + "wlpExtractAndRun");
     private static final File extractDirectory3 = new File("publish" + File.separator + "wlpExtract3");
+    private static final File extractDirectory4 = new File("publish" + File.separator + "wlpExtract4");
     private static File extractLocation = null;
     private static File outputAutoFVTDirectory = null;
     private static final long DUMMY_MANIFEST_FILE_SIZE = 41;
@@ -94,8 +95,7 @@ public class PackageRunnableTest {
     }
 
     @BeforeClass
-    public static void setupClass() throws Exception {
-    }
+    public static void setupClass() throws Exception {}
 
     @AfterClass
     public static void tearDownClass() throws Exception {
@@ -103,6 +103,7 @@ public class PackageRunnableTest {
         deleteDir(extractDirectory1);
         deleteDir(extractDirectory2);
         deleteDir(extractDirectory3);
+        deleteDir(extractDirectory4);
         if (extractLocation != null)
             deleteDir(extractLocation);
     }
@@ -233,7 +234,7 @@ public class PackageRunnableTest {
 
         Log.info(c, method, "stdout for package cmd is: \n" + stdout);
 
-        extractLocation = new File(executeTheJar(extractDirectory3, true, false, true));
+        extractLocation = new File(executeTheJar(extractDirectory4, true, false, true));
 
         // Make sure the server is stopped
         assertNotNull("The server did not show that it had stopped after executing the jar.",
