@@ -127,8 +127,8 @@ public enum CheckpointPhase {
      * @throws IllegalStateException if the phase is in progress.
      * @see CheckpointHook#MULTI_THREADED_HOOK
      */
-    final public void addSingleThreadedHook(CheckpointHook hook) {
-        addHook(hook, false);
+    final public boolean addSingleThreadedHook(CheckpointHook hook) {
+        return addHook(hook, false);
     }
 
     /**
@@ -141,20 +141,20 @@ public enum CheckpointPhase {
      * @throws IllegalStateException if the phase is in progress.
      * @see CheckpointHook#MULTI_THREADED_HOOK
      */
-    final public void addMultiThreadedHook(CheckpointHook hook) {
-        addHook(hook, true);
+    final public boolean addMultiThreadedHook(CheckpointHook hook) {
+        return addHook(hook, true);
     }
 
-    private synchronized void addHook(CheckpointHook hook, boolean multiThreaded) {
+    private synchronized boolean addHook(CheckpointHook hook, boolean multiThreaded) {
         if (this != THE_PHASE) {
             throw new IllegalStateException("Cannot add hooks to a checkpoint phase that is not in progress.");
         }
         if (noMoreAddHooks) {
-            throw new IllegalStateException("Cannot add more hooks once prepare has started for the process.");
+            return false;
         }
 
         if (restored) {
-            return;
+            return false;
         }
         debug(() -> "Hook added: " + hook + " " + multiThreaded);
         if (multiThreaded) {
@@ -162,6 +162,7 @@ public enum CheckpointPhase {
         } else {
             singleThreadedHooks.add(hook);
         }
+        return true;
     }
 
     private synchronized List<CheckpointHook> getAndClearHooks(boolean multiThreaded) {
