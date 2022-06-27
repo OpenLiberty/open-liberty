@@ -19,6 +19,7 @@ src: \
 	test-applications/ejbapp1/src,\
 	test-applications/inventory/src/java,\
 	test-applications/system/src/java,\
+	test-applications/startupcode/src,\
 	test-bundles/test.checkpoint.config.bundle/src,\
 	test-applications/timeoutTest/src
 

@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.base-eventlistener"/>
-	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.base-com.ibm.ws.transaction.fat.eventListener"/>
-	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.base-utdecorator"/>
-	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.base-com.ibm.ws.transaction.fat.remoteTester"/>
-	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.base-transactionalEJB"/>
-	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.base-commitPriority"/>
 	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.base-transaction"/>
-	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.base-transactional"/>
-	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.base-transactionscoped"/>
 	<classpathentry exported="true" kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
