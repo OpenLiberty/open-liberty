@@ -34,9 +34,10 @@ IBM-API-Package: \
   com.ibm.ws.managedobject,\
   io.openliberty.grpc.1.0.internal.common.jakarta,\
   io.openliberty.grpc.1.0.internal.shaded.jakarta, \
+  com.ibm.ws.cdi.interfaces.jakarta, \
   com.ibm.ws.com.google.guava,\
   io.openliberty.microprofile.telemetry.internal.common,\
-  io.openliberty.microprofile.telemetry.1.0.internal.jakarta
+  io.openliberty.microprofile.telemetry.1.0.internal
 kind=noship
 edition=full
 WLP-Activation-Type: parallel 

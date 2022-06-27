@@ -21,6 +21,7 @@ import jakarta.enterprise.inject.spi.Extension;
 import org.osgi.service.component.annotations.Component;
 
 import io.openliberty.microprofile.telemetry.internal.cdi.WithSpanInterceptor;
+import io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryProducer;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;

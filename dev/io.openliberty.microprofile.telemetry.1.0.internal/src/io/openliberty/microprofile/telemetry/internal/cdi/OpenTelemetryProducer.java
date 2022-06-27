@@ -50,6 +50,7 @@ public class OpenTelemetryProducer {
     Config config;
 
     //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
+    @ApplicationScoped
     @Produces
     public OpenTelemetry getOpenTelemetry() {
 
@@ -104,7 +105,7 @@ public class OpenTelemetryProducer {
 
     @Produces
     public Tracer getTracer(OpenTelemetry openTelemetry) {
-        return CDI.current().select(OpenTelemetry.class).get().getTracer(instrumentationName);
+        return openTelemetry.getTracer(instrumentationName);
     }
 
     @Produces

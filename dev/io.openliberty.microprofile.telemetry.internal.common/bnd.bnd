@@ -16,7 +16,6 @@ Bundle-Name: io.openliberty.microprofile.telemetry.internal.common
 Bundle-SymbolicName: io.openliberty.microprofile.telemetry.internal.common
 Bundle-Description: MicroProfile telemetry common Implementation, version ${bVersion}
 
-
 WS-TraceGroup: telemetry
 
 Import-Package: \
