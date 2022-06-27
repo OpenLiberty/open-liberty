@@ -21,6 +21,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * 
  * 
@@ -696,7 +698,7 @@ public class WCCustomProperties {
         //End 8.0.0.4
         
         //Start Liberty
-        DEFER_SERVLET_LOAD = Boolean.valueOf(customProps.getProperty("deferservletload")); //Liberty to override delayed load/init
+        DEFER_SERVLET_LOAD = CheckpointPhase.getPhase() == null && Boolean.valueOf(customProps.getProperty("deferservletload")); //Liberty to override delayed load/init
 
         
         
