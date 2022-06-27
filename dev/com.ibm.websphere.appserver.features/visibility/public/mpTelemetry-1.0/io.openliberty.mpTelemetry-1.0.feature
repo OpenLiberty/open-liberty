@@ -22,6 +22,7 @@ IBM-API-Package: \
   io.openliberty.mpCompatible-5.0,\
   com.ibm.websphere.appserver.injection-2.0, \
   io.openliberty.grpcClient1.0.internal.ee-9.0,\
+  io.openliberty.org.eclipse.microprofile.telemetry-1.0, \
   io.openliberty.grpcClient-1.0,\
   io.openliberty.io.netty,\
   com.ibm.websphere.appserver.channelfw-1.0
@@ -34,6 +35,7 @@ IBM-API-Package: \
   io.openliberty.grpc.1.0.internal.common.jakarta,\
   io.openliberty.grpc.1.0.internal.shaded.jakarta, \
   com.ibm.ws.com.google.guava,\
+  io.openliberty.microprofile.telemetry.internal.common,\
   io.openliberty.microprofile.telemetry.1.0.internal.jakarta
 kind=noship
 edition=full

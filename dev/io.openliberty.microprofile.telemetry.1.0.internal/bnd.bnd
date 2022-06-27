@@ -12,7 +12,6 @@ app-resources= \
   META-INF/services/jakarta.ws.rs.ext.Providers
 
 -include= ~../cnf/resources/bnd/bundle.props
--sub: *.bnd
 
 bVersion=1.0
 
@@ -30,19 +29,10 @@ Include-Resource: \
     META-INF=resources/META-INF
 
 Import-Package: \
-  !com.google.errorprone.annotations.concurrent,\
-  !io.opentelemetry.exporter.prometheus,\
-  !okhttp3,\
-  !okio,\
-  !zipkin2,\
-  !zipkin2.*,\
-  !sun.misc,\
-  !kotlin,\
 	*
 
 Export-Package: \
-  io.openliberty.microprofile.telemetry.internal.*;version=1.0;thread-context=true,\
-  io.opentelemetry.*;version=1.0
+  io.openliberty.microprofile.telemetry.internal.*;version=1.0;thread-context=true
 
 Private-Package: \
   io.openliberty.microprofile.telemetry.internal.cdi
@@ -50,10 +40,12 @@ Private-Package: \
 -buildpath: \
     com.google.guava:failureaccess;version=1.0.1,\
     com.ibm.websphere.appserver.api.servlet;version=latest,\
-    com.ibm.websphere.javaee.annotation.1.3;version=latest,\
-    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-    com.ibm.websphere.javaee.interceptor.1.2;version=latest, \
-    com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
+    io.openliberty.jakarta.servlet.5.0;version=latest,\
+    io.openliberty.jakarta.restfulWS.3.0;version=latest,\
+    io.openliberty.jakarta.annotation.2.0;version=latest,\
+    io.openliberty.jakarta.interceptor.2.0,\
+    io.openliberty.jakarta.cdi.3.0;version=latest,\
+    io.openliberty.microprofile.telemetry.internal.common;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.cdi.interfaces;version=latest, \
     com.ibm.ws.injection;version=latest,\

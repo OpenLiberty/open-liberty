@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
+
+bVersion=1.0
+
+Bundle-Name: io.openliberty.microprofile.telemetry.internal.common
+Bundle-SymbolicName: io.openliberty.microprofile.telemetry.internal.common
+Bundle-Description: MicroProfile telemetry common Implementation, version ${bVersion}
+
+
+WS-TraceGroup: telemetry
+
+Import-Package: \
+  !com.google.errorprone.annotations.concurrent,\
+  !okio,\
+  !zipkin2,\
+  !zipkin2.*,\
+  !kotlin,\
+  !kotlin.*,\
+  okhttp3,\
+  javax.net.ssl,\
+  *
+
+Export-Package: \
+  io.opentelemetry.*;version=1.0
+  
+Private-Package: \
+  io.openliberty.microprofile.telemetry.common
+
+-buildpath: \
+  io.opentelemetry:opentelemetry-exporter-jaeger;version=1.14.0,\
+  io.opentelemetry:opentelemetry-exporter-otlp-common;version=1.14.0

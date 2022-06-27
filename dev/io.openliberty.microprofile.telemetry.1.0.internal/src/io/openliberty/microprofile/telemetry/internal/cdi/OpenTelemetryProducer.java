@@ -14,12 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +53,9 @@ public class OpenTelemetryProducer {
     @Produces
     public OpenTelemetry getOpenTelemetry() {
 
-        SpanExporter exporter = getSpanExporter(getTelemetryProperties());
+        HashMap<String,String> telemetryProperties = getTelemetryProperties();
+
+        SpanExporter exporter = getSpanExporter(telemetryProperties);
 
         Resource serviceNameResource =
             Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, "open-liberty"));
