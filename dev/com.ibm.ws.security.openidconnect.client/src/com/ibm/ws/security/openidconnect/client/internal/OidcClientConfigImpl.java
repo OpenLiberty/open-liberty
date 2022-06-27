@@ -27,18 +27,11 @@ import java.util.Properties;
 
 import javax.net.ssl.SSLSocketFactory;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -65,8 +58,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
-import com.ibm.ws.security.common.http.HttpResponseNot200Exception;
-import com.ibm.ws.security.common.http.HttpResponseNullOrEmptyException;
+import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.common.http.SocialLoginWrapperException;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
@@ -302,6 +295,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private final ConfigUtils oidcConfigUtils = new ConfigUtils(configAdminRef);
     private final DiscoveryConfigUtils discoveryUtils = new DiscoveryConfigUtils();
     private ConsumerUtils consumerUtils = null;
+    private final HttpUtils httpUtils = new HttpUtils();
 
     private SingleTableCache cache = null;
 
@@ -659,24 +653,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         oidcConfigUtils.populateCustomRequestParameterMap(configAdmin, paramMapToPopulate, configuredCustomRequestParams, CFG_KEY_PARAM_NAME, CFG_KEY_PARAM_VALUE);
     }
 
-    private void validateAuthzTokenEndpoints() {
-        if (this.tokenEndpointUrl == null) {
-            logConfigError("CONFIG_REQUIRED_ATTRIBUTE_NULL", CFG_KEY_TOKEN_ENDPOINT_URL);
-        }
-        if (this.authorizationEndpointUrl == null && this.getGrantType() != ClientConstants.IMPLICIT) {
-            logConfigError("CONFIG_REQUIRED_ATTRIBUTE_NULL", CFG_KEY_AUTHORIZATION_ENDPOINT_URL);
-        }
-    }
-
-    /**
-     * @param key
-     * @param attrib
-     */
-    private void logConfigError(String key, String attrib) {
-        Tr.error(tc, key, attrib);
-
-    }
-
     /**
      *
      */
@@ -917,7 +893,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         return true;
     }
 
-    @FFDCIgnore({ SSLException.class, HttpResponseNullOrEmptyException.class, HttpResponseNot200Exception.class })
+    @FFDCIgnore({ SSLException.class, SocialLoginWrapperException.class })
     public boolean handleDiscoveryEndpoint(String discoveryUrl) {
 
         String jsonString = null;
@@ -943,15 +919,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
                     valid = discoverEndpointUrls(this.discoveryjson);
                 }
             }
-        } catch (HttpResponseNullOrEmptyException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
-            }
-        } catch (HttpResponseNot200Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
-            }
         } catch (SSLException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
+            }
+        } catch (SocialLoginWrapperException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
             }
@@ -969,19 +941,15 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     @Deprecated
-    @FFDCIgnore({ IOException.class, HttpResponseNullOrEmptyException.class, HttpResponseNot200Exception.class })
+    @FFDCIgnore({ IOException.class, SocialLoginWrapperException.class })
     String fetchDiscoveryData(String discoveryUrl, SSLSocketFactory sslSocketFactory) throws Exception {
         try {
-            HttpClient client = createHTTPClient(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
-            return getHTTPRequestAsString(client, discoveryUrl);
+            return httpUtils.getHttpJsonRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
         } catch (IOException ioex) {
             logErrorMessage(discoveryUrl, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
             throw ioex;
-        } catch (HttpResponseNullOrEmptyException e) {
-            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getErrMsg());
-            throw e;
-        } catch (HttpResponseNot200Exception e) {
-            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getErrMsg());
+        } catch (SocialLoginWrapperException e) {
+            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getNlsMessage());
             throw e;
         }
     }
@@ -1115,48 +1083,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         }
     }
 
-    @FFDCIgnore({ Exception.class })
-    protected String getHTTPRequestAsString(HttpClient httpClient, String url) throws Exception {
-
-        String json = null;
-        try {
-            HttpGet request = new HttpGet(url);
-            request.addHeader("content-type", "application/json");
-            HttpResponse result = null;
-
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                result = httpClient.execute(request);
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
-            }
-            StatusLine statusLine = result.getStatusLine();
-            int iStatusCode = statusLine.getStatusCode();
-            if (iStatusCode == 200) {
-                json = EntityUtils.toString(result.getEntity(), "UTF-8");
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Response: ", json);
-                }
-                if (json == null || json.isEmpty()) { // NO json response returned
-                    throw new HttpResponseNullOrEmptyException(url, iStatusCode, json);
-                }
-            } else {
-                String errMsg = statusLine.getReasonPhrase();
-                // String errMsg = EntityUtils.toString(result.getEntity(), "UTF-8");
-                // error in getting the discovery response
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "status:" + iStatusCode + " errorMsg:" + errMsg);
-                }
-                throw new HttpResponseNot200Exception(url, iStatusCode, errMsg);
-            }
-        } catch (Exception e) {
-            throw e;
-        }
-
-        return json;
-    }
-
     private String logErrorMessage(String url, int iStatusCode, String errMsg) {
 
         String defaultMessage = "Error processing discovery request";
@@ -1164,7 +1090,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         String message = TraceNLS.getFormattedMessage(getClass(),
                 "com.ibm.ws.security.openidconnect.client.internal.resources.OidcClientMessages", "OIDC_CLIENT_DISC_RESPONSE_ERROR",
                 new Object[] { url, Integer.valueOf(iStatusCode), errMsg }, defaultMessage);
-        ;
         Tr.error(tc, message, new Object[0]);
         return message;
     }
@@ -1196,12 +1121,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private HttpClientBuilder createBuilder(boolean useSystemProperties) {
         return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
 
-    }
-
-    private BasicCredentialsProvider createCredentialsProvider() {
-        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(jwkClientId, jwkClientSecret));
-        return credentialsProvider;
     }
 
     @FFDCIgnore({ javax.net.ssl.SSLException.class })
@@ -1245,66 +1164,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         }
 
     }
-
-    /**
-     * Verify that validationEndpointUrl is non-null, begins with "http", and
-     * contains "/". If inboundPropagation="required" and the URL does not meet
-     * the requirements, this config is considered bad. If
-     * inboundPropagation="supported" and the URL does not meet the
-     * requirements, set inboundPropagation to "none".
-     */
-    private void checkValidationEndpointUrl() {
-        if (validationEndpointUrl == null || // it can not be null
-                (!validationEndpointUrl.startsWith("http")) || // it has to
-                                                               // starts http
-                (validationEndpointUrl.indexOf("/") < 0)) { // no "/"
-
-            // Inbound propagation requires a valid validationEndpointUrl;
-            // either fall back to inboundPropagation="none" or consider this a
-            // bad config
-            if (ClientConstants.PROPAGATION_REQUIRED.equalsIgnoreCase(inboundPropagation)) {
-                goodConfig = false;
-                // BAD_INBOUND_PRPAGATION_REQUIRED=CWWKS1732E: The OpenID
-                // Connect client [{0}] configuration is disabled because the
-                // validationEndpointUrl [{1}] is not properly set and
-                // inboundPropagation is "required".
-                Tr.error(tc, "BAD_INBOUND_PRPAGATION_REQUIRED", getId(), validationEndpointUrl);
-            } else if (ClientConstants.PROPAGATION_SUPPORTED.equalsIgnoreCase(inboundPropagation)) {
-                // Behave as if inboundPropagation="none"
-                inboundPropagation = ClientConstants.PROPAGATION_NONE;
-                // BAD_INBOUND_PRPAGATION_SUPPORTED=CWWKS1733W: The
-                // validationEndpointUrl [{0}] is not properly set, the OpenID
-                // Connect client [{1}] will act as if its inboundPropagation is
-                // "none".
-                Tr.warning(tc, "BAD_INBOUND_PRPAGATION_SUPPORTED", validationEndpointUrl, getId());
-            }
-        }
-    }
-
-    // private String getSSLConfigurationName(String sslRef) {
-    // String sslConfigurationName = null;
-    // if (sslRef != null) {
-    // Configuration config = null;
-    // ConfigurationAdmin configAdmin = configAdminRef.getService();
-    // if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    // Tr.debug(tc, "ConfigurationAdmin: " + configAdmin);
-    // }
-    // if( configAdmin != null ){
-    // try {
-    // config = configAdmin.getConfiguration(sslRef, null);
-    // Dictionary<String, Object> props = config.getProperties();
-    // if (props != null) {
-    // sslConfigurationName = (String) props.get(CFG_KEY_ID);
-    // }
-    // } catch (IOException e) {
-    // if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    // Tr.debug(tc, "Invalid sslRef configuration", e.getMessage());
-    // }
-    // }
-    // }
-    // }
-    // return sslConfigurationName;
-    // }
 
     @Sensitive
     private String processProtectedString(Map<String, Object> props, String cfgKey) {

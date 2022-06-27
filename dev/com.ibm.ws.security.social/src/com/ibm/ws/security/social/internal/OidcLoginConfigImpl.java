@@ -33,6 +33,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.common.http.HttpResponseNot200Exception;
 import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.common.http.SocialLoginWrapperException;
 import com.ibm.ws.security.common.http.HttpResponseNullOrEmptyException;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
@@ -245,7 +246,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         discoveryUtil = discoveryUtil.initialConfig(getId(), discoveryEndpointUrl, discoveryPollingRate).discoveryDocumentResult(null).discoveryDocumentHash(discoveryDocumentHash).discoveredConfig(signatureAlgorithm, tokenEndpointAuthMethod, scope);
     }
 
-    @FFDCIgnore({ Exception.class, HttpResponseNullOrEmptyException.class, HttpResponseNot200Exception.class })
+    @FFDCIgnore({ Exception.class, SocialLoginWrapperException.class })
     public boolean handleDiscoveryEndpoint(String discoveryUrl) {
 
         String jsonString = null;
@@ -268,8 +269,10 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
                 }
             }
 
-        } catch (HttpResponseNullOrEmptyException e) {
-        } catch (HttpResponseNot200Exception e) {
+        } catch (SocialLoginWrapperException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
+            }
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
@@ -282,34 +285,14 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         return valid;
     }
 
-    @FFDCIgnore({ IOException.class, HttpResponseNullOrEmptyException.class, HttpResponseNot200Exception.class })
+    @FFDCIgnore({ SocialLoginWrapperException.class })
     String fetchDiscoveryData(String discoveryUrl, SSLSocketFactory sslSocketFactory) throws Exception {
         try {
             return httputils.getHttpJsonRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
-        } catch (IOException ioex) {
-            String errMsg = "IOException: " + ioex.getMessage() + " " + ioex.getCause();
-            String message = TraceNLS.getFormattedMessage(getClass(),
-                    "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", "OIDC_CLIENT_DISCOVERY_ERROR",
-                    new Object[] { discoveryUrl, errMsg }, "Error processing discovery request");
-            Tr.error(tc, message, new Object[0]);
-            throw ioex;
-        } catch (HttpResponseNullOrEmptyException e) {
-            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getErrMsg());
-            throw e;
-        } catch (HttpResponseNot200Exception e) {
-            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getErrMsg());
+        } catch (SocialLoginWrapperException e) {
+            Tr.error(tc, e.getNlsMessage());
             throw e;
         }
-    }
-
-    private String logErrorMessage(String url, int iStatusCode, String errMsg) {
-        String defaultMessage = "Error processing discovery request";
-
-        String message = TraceNLS.getFormattedMessage(getClass(),
-                "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", "OIDC_CLIENT_DISC_RESPONSE_ERROR",
-                new Object[] { url, Integer.valueOf(iStatusCode), errMsg }, defaultMessage);
-        Tr.error(tc, message, new Object[0]);
-        return message;
     }
 
     /**

@@ -10,12 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.http;
 
-public class HttpResponseNullOrEmptyException extends AbstractHttpResponseException {
+/**
+ * Wrapper class used for wrapping exceptions that emit social login specific NLS messages in the security.common bundle. Wrapping
+ * the exceptions should allow calling classes to emit their own error or warning messages if they choose, rather than emitting
+ * social login NLS messages that may be unrelated or misleading.
+ */
+public class SocialLoginWrapperException extends AbstractHttpResponseException {
 
     private static final long serialVersionUID = 1L;
 
-    public HttpResponseNullOrEmptyException(String url, int statusCode, String errMsg) {
-        super(url, statusCode, errMsg);
+    public SocialLoginWrapperException(String url, int statusCode, String nlsMessage, Exception cause) {
+        super(url, statusCode, nlsMessage, cause);
     }
 
 }

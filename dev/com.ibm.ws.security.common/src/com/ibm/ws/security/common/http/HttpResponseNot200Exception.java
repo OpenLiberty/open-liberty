@@ -10,30 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.http;
 
-public class HttpResponseNot200Exception extends Exception {
+public class HttpResponseNot200Exception extends AbstractHttpResponseException {
 
     private static final long serialVersionUID = 1L;
 
-    private String url;
-    private int statusCode;
-    private String errMsg;
-    
     public HttpResponseNot200Exception(String url, int statusCode, String errMsg) {
-        this.url = url;
-        this.statusCode = statusCode;
-        this.errMsg = errMsg;
+        super(url, statusCode, errMsg);
     }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public int getStatusCode() {
-        return statusCode;
-    }
-
-    public String getErrMsg() {
-        return errMsg;
-    }
-
+    
 }
