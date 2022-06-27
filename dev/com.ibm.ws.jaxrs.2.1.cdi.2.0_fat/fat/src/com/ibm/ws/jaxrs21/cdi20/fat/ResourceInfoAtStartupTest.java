@@ -23,10 +23,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class ResourceInfoAtStartupTest extends FATServletClient {
 
     private static final String ignore_message = "CWWKW1002W";
@@ -45,7 +48,7 @@ public class ResourceInfoAtStartupTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer(ignore_message);
     }
-    
+
     @Test
     public void testLoadOnStartupResource1() throws Exception {
         String line = server.waitForStringInLog("All Clients Finished", 300000 /* 5 minutes */);
