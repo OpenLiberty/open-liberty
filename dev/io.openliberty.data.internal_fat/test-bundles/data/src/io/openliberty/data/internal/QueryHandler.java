@@ -29,6 +29,8 @@ import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow.Publisher;
+import java.util.function.BiConsumer;
+import java.util.stream.Collector;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -398,6 +400,7 @@ public class QueryHandler<T> implements InvocationHandler {
         Object returnValue;
         QueryType queryType;
         boolean requiresTransaction;
+        Collector<Object, Object, Object> collector = null;
         Pagination pagination = null;
         Sorts sorts = null;
 
@@ -441,10 +444,14 @@ public class QueryHandler<T> implements InvocationHandler {
         if (jpql == null)
             jpql = generateRepositoryQuery(method);
 
-        // Jakarta NoSQL allows the last 2 parameter positions to be used for Pagination and Sorts
-        for (paramCount = paramTypes.length; paramCount > 0 && paramCount > paramTypes.length - 2;) {
+        // Jakarta NoSQL allows the last 3 parameter positions to be used for Pagination, Sorts, and Consumer
+        // Collector is added here for experimentation.
+        for (paramCount = paramTypes.length; paramCount > 0 && paramCount > paramTypes.length - 3;) {
             Class<?> type = paramTypes[paramCount - 1];
-            if (Pagination.class.equals(type))
+            if (Collector.class.equals(type))
+                collector = (Collector<Object, Object, Object>) args[--paramCount];
+            // TODO Consumer
+            else if (Pagination.class.equals(type))
                 pagination = (Pagination) args[--paramCount];
             else if (Sort.class.equals(type))
                 sorts = Sorts.sorts().add((Sort) args[--paramCount]);
@@ -491,7 +498,9 @@ public class QueryHandler<T> implements InvocationHandler {
             if (paginated != null)
                 pagination = Pagination.page(1).size(paginated.value());
         }
-        if (pagination != null && Iterator.class.equals(returnType))
+        if (pagination != null && collector != null && (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)))
+            return runAndCollect(jpql, pagination, collector, method, paramCount, args);
+        else if (pagination != null && Iterator.class.equals(returnType))
             return new PaginatedIterator<T>(jpql, pagination, this, method, paramCount, args);
         else if (Page.class.equals(returnType))
             return new PageImpl<T>(jpql, pagination, this, method, paramCount, args);
@@ -536,15 +545,28 @@ public class QueryHandler<T> implements InvocationHandler {
                         entityClassesAvailable.contains(paramTypes[0])) {
                         returnValue = em.merge(args[0]);
                         em.flush();
-                        returnValue = returnType.isInstance(returnValue) ? returnValue : null;
                     } else if (Iterable.class.isAssignableFrom(paramTypes[0])) {
                         ArrayList<Object> results = new ArrayList<>();
                         for (Object e : ((Iterable<?>) args[0]))
                             results.add(em.merge(e));
                         em.flush();
-                        returnValue = returnType.isInstance(results) ? results : null;
+                        returnValue = results;
+                    } else if (paramTypes[0].isArray()) {
+                        ArrayList<Object> results = new ArrayList<>();
+                        Object a = args[0];
+                        int length = Array.getLength(a);
+                        for (int i = 0; i < length; i++)
+                            results.add(em.merge(Array.get(a, i)));
+                        em.flush();
+                        returnValue = results;
                     } else {
                         throw new UnsupportedOperationException(method.toString());
+                    }
+
+                    if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+                        returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+                    } else {
+                        returnValue = returnType.isInstance(returnValue) ? returnValue : null;
                     }
                     break;
                 case SELECT:
@@ -574,19 +596,28 @@ public class QueryHandler<T> implements InvocationHandler {
 
                     List<?> results = query.getResultList();
 
-                    if (entityClass.equals(returnType))
-                        returnValue = results.isEmpty() ? null : results.iterator().next();
-                    else if (returnType.isInstance(results))
+                    if (collector != null) {
+                        // Collector is more useful on the other path, when combined with pagination
+                        Object r = collector.supplier().get();
+                        BiConsumer<Object, Object> accumulator = collector.accumulator();
+                        for (Object item : results)
+                            accumulator.accept(r, item);
+                        returnValue = collector.finisher().apply(r);
+                        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
+                            returnValue = CompletableFuture.completedFuture(returnValue);
+                    } else if (entityClass.equals(returnType)) {
+                        returnValue = results.isEmpty() ? null : results.get(0);
+                    } else if (returnType.isInstance(results)) {
                         returnValue = results;
-                    else if (returnArrayType != null) {
+                    } else if (returnArrayType != null) {
                         Object r = Array.newInstance(returnArrayType, results.size());
                         int i = 0;
                         for (Object o : results)
                             Array.set(r, i++, o);
                         returnValue = r;
-                    } else if (Optional.class.equals(returnType))
-                        returnValue = results.isEmpty() ? Optional.empty() : Optional.of(results.iterator().next());
-                    else if (Collection.class.isAssignableFrom(returnType))
+                    } else if (Optional.class.equals(returnType)) {
+                        returnValue = results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+                    } else if (Collection.class.isAssignableFrom(returnType)) {
                         try {
                             @SuppressWarnings("unchecked")
                             Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) returnType.getConstructor();
@@ -596,7 +627,7 @@ public class QueryHandler<T> implements InvocationHandler {
                         } catch (NoSuchMethodException x) {
                             throw new UnsupportedOperationException(returnType + " lacks public zero parameter constructor.");
                         }
-                    else if (Stream.class.isAssignableFrom(returnType)) {
+                    } else if (Stream.class.isAssignableFrom(returnType)) {
                         Stream.Builder<Object> builder = Stream.builder();
                         for (Object result : results)
                             builder.accept(result);
@@ -617,12 +648,13 @@ public class QueryHandler<T> implements InvocationHandler {
                             builder.accept((Double) result);
                         returnValue = builder.build();
                     } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
-                        // TODO The completion stage result type is not available at run time.
-                        // Is a single result or list/array/other type wanted?
-                        // And should this be backed with a particular executor?
-                        returnValue = CompletableFuture.completedFuture(results.isEmpty() ? null : results.iterator().next());
+                        Limit limit = method.getAnnotation(Limit.class);
+                        if (limit != null && limit.value() == 1) // single result
+                            returnValue = CompletableFuture.completedFuture(results.isEmpty() ? null : results.get(0));
+                        else // multiple
+                            returnValue = CompletableFuture.completedFuture(results);
                     } else { // TODO convert other return types?
-                        returnValue = results.isEmpty() ? null : results.iterator().next();
+                        returnValue = results.isEmpty() ? null : results.get(0);
                     }
                     break;
                 case UPDATE:
@@ -671,6 +703,69 @@ public class QueryHandler<T> implements InvocationHandler {
         return returnValue;
     }
 
+    /**
+     * This is an experiment with allowing a collector to perform reduction
+     * on the contents of each page as the page is read in. This avoids having
+     * all pages loaded at once and gives the application a completion stage
+     * with a final result that can be awaited, or to which dependent stages
+     * can be added to run once the final result is ready.
+     *
+     * @param jpql
+     * @param pagination
+     * @param collector
+     * @param method
+     * @param paramCount
+     * @param args
+     * @return completion stage that is already completed if only being used to
+     *         supply the result to an Asynchronous method. If the database supports
+     *         asynchronous patterns, it could be a not-yet-completedd completion stage
+     *         that is controlled by the database's async support.
+     */
+    private CompletableFuture<Object> runAndCollect(String jpql, Pagination pagination,
+                                                    Collector<Object, Object, Object> collector,
+                                                    Method method, int numParams, Object[] args) {
+
+        Object r = collector.supplier().get();
+        BiConsumer<Object, Object> accumulator = collector.accumulator();
+
+        // TODO it would be possible to process multiple pages in parallel if we wanted to and if the collector supports it
+        EntityManager em = punit.createEntityManager();
+        try {
+            @SuppressWarnings("unchecked")
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityClass);
+            if (args != null) {
+                Parameter[] params = method.getParameters();
+                for (int i = 0; i < numParams; i++) {
+                    Param param = params[i].getAnnotation(Param.class);
+                    if (param == null)
+                        query.setParameter(i + 1, args[i]);
+                    else // named parameter
+                        query.setParameter(param.value(), args[i]);
+                }
+            }
+
+            List<T> page;
+            int maxResults;
+            do {
+                // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
+                query.setFirstResult((int) pagination.getSkip());
+                query.setMaxResults(maxResults = (int) pagination.getPageSize());
+                pagination = pagination.next();
+
+                page = query.getResultList();
+
+                for (Object item : page)
+                    accumulator.accept(r, item);
+
+                System.out.println("Processed page with " + page.size() + " results");
+            } while (pagination != null && page.size() == maxResults);
+        } finally {
+            em.close();
+        }
+
+        return CompletableFuture.completedFuture(collector.finisher().apply(r));
+    }
+
     private static final Object toReturnValue(int i, Class<?> returnType) {
         if (int.class.equals(returnType) || Integer.class.equals(returnType) || Number.class.equals(returnType))
             return i;
@@ -681,7 +776,7 @@ public class QueryHandler<T> implements InvocationHandler {
         else if (void.class.equals(returnType) || Void.class.equals(returnType))
             return null;
         else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
-            return CompletableFuture.completedFuture(i);
+            return CompletableFuture.completedFuture(Long.valueOf(i)); // TODO would need something like @Result(Integer.class) to identify the type
         else
             throw new UnsupportedOperationException("Return update count as " + returnType);
     }

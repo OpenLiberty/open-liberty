@@ -11,16 +11,19 @@
 package io.openliberty.data.internal.cdi;
 
 import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Producer;
 import jakarta.enterprise.inject.spi.ProducerFactory;
 
 import io.openliberty.data.Data;
 
 public class BeanProducerFactory<R> implements ProducerFactory<R> {
+    final BeanManager beanMgr;
     final Class<?> entityClass;
     final String keyAttribute;
 
-    BeanProducerFactory(Class<?> entityClass, String keyAttribute) {
+    BeanProducerFactory(BeanManager beanMgr, Class<?> entityClass, String keyAttribute) {
+        this.beanMgr = beanMgr;
         this.entityClass = entityClass;
         this.keyAttribute = keyAttribute;
     }
@@ -32,7 +35,7 @@ public class BeanProducerFactory<R> implements ProducerFactory<R> {
             System.out.println("createProducer null because " + bean + " has no @Data");
             return null;
         } else {
-            return new BeanProducer<T>(bean, entityClass, keyAttribute);
+            return new BeanProducer<T>(bean, beanMgr, entityClass, keyAttribute);
         }
     }
 }

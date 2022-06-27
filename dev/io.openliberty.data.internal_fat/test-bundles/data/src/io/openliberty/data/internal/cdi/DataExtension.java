@@ -96,7 +96,7 @@ public class DataExtension implements Extension {
             entities.put(entityClass, keyAttribute);
 
             BeanAttributes<?> attrs = beanMgr.createBeanAttributes(beanType);
-            Bean<?> bean = beanMgr.createBean(attrs, beanInterface, new BeanProducerFactory<>(entityClass, keyAttribute));
+            Bean<?> bean = beanMgr.createBean(attrs, beanInterface, new BeanProducerFactory<>(beanMgr, entityClass, keyAttribute));
             beans.add(bean);
         }
 

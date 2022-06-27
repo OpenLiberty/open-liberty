@@ -27,11 +27,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,6 +66,9 @@ public class DataTestServlet extends FATServlet {
     PersonRepo people;
 
     @Inject
+    Personnel personnel;
+
+    @Inject
     ProductRepo products;
 
     @Inject
@@ -77,6 +85,131 @@ public class DataTestServlet extends FATServlet {
 
     @Resource
     private UserTransaction tran;
+
+    @Test
+    public void testAsynchronous() throws ExecutionException, InterruptedException, TimeoutException {
+        // Clear out old data before running test
+        CompletableFuture<Long> deleted = personnel.removeAll();
+        deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+
+        // Data for test to use:
+        Person p1 = new Person();
+        p1.firstName = "Aaron";
+        p1.lastName = "TestAsynchronous";
+        p1.ssn = 1002003001;
+
+        Person p2 = new Person();
+        p2.firstName = "Amy";
+        p2.lastName = "TestAsynchronous";
+        p2.ssn = 1002003002;
+
+        Person p3 = new Person();
+        p3.firstName = "Alice";
+        p3.lastName = "TestAsynchronous";
+        p3.ssn = 1002003003;
+
+        Person p4 = new Person();
+        p4.firstName = "Alexander";
+        p4.lastName = "TestAsynchronous";
+        p4.ssn = 1002003004;
+
+        Person p5 = new Person();
+        p5.firstName = "Andrew";
+        p5.lastName = "TestAsynchronous";
+        p5.ssn = 1002003005;
+
+        Person p6 = new Person();
+        p6.firstName = "Brian";
+        p6.lastName = "TestAsynchronous";
+        p6.ssn = 1002003006;
+
+        Person p7 = new Person();
+        p7.firstName = "Betty";
+        p7.lastName = "TestAsynchronous";
+        p7.ssn = 1002003007;
+
+        Person p8 = new Person();
+        p8.firstName = "Bob";
+        p8.lastName = "TestAsynchronous";
+        p8.ssn = 1002003008;
+
+        Person p9 = new Person();
+        p9.firstName = "Albert";
+        p9.lastName = "TestAsynchronous";
+        p9.ssn = 1002003009;
+
+        Person p10 = new Person();
+        p10.firstName = "Ben";
+        p10.lastName = "TestAsynchronous";
+        p10.ssn = 1002003010;
+
+        CompletableFuture<List<Person>> added = personnel.save(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10);
+
+        assertIterableEquals(List.of("Aaron", "Amy", "Alice", "Alexander", "Andrew", "Brian", "Betty", "Bob", "Albert", "Ben"),
+                             added.get(TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                                             .stream()
+                                             .map(p -> p.firstName)
+                                             .collect(Collectors.toList()));
+
+        CompletionStage<List<Person>> updated = personnel.changeSurnames("TestAsynchronous", "Test-Asynchronous",
+                                                                         List.of(1002003009L, 1002003008L, 1002003005L,
+                                                                                 1002003003L, 1002003002L, 1002003001L))
+                        .thenCompose(updateCount -> {
+                            assertEquals(Long.valueOf(6), updateCount);
+
+                            return personnel.findByLastNameOrderByFirstName("Test-Asynchronous");
+                        });
+
+        assertIterableEquals(List.of("Aaron", "Albert", "Alice", "Amy", "Andrew", "Bob"),
+                             updated.toCompletableFuture()
+                                             .get(TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                                             .stream()
+                                             .map(p -> p.firstName)
+                                             .collect(Collectors.toList()));
+
+        CompletableFuture<Person> future = personnel.findBySsn(p4.ssn);
+
+        Person p = future.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+        assertNotNull(p);
+        assertEquals(p4.ssn, p.ssn);
+        assertEquals(p4.firstName, p.firstName);
+        assertEquals(p4.lastName, p.lastName);
+
+        // Have a collector reduce the results to a count of names.
+        // The database could have done this instead, but it makes a nice, simple example.
+        CompletableFuture<Long> countOfANames = personnel.namesThatStartWith("A", Collectors.counting());
+
+        assertEquals(Long.valueOf(6), countOfANames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // Have a collector reduce the results to the length of the longest name found.
+        Collector<String, ?, Long> maxLengthFinder = Collectors.collectingAndThen(
+                                                                                  Collectors.maxBy(Comparator.<String, Integer> comparing(n -> n.length())),
+                                                                                  n -> n.isPresent() ? n.get().length() : -1L);
+
+        CompletableFuture<Long> maxLengthOfAnyAName = personnel.namesThatStartWith("A", maxLengthFinder);
+
+        assertEquals(Long.valueOf(9), maxLengthOfAnyAName.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // Have a collector reduce the results to an average name length,
+        final int COUNT = 0, SUM = 1;
+        Collector<String, ?, Long> lengthAverager = Collector.of(() -> new long[2],
+                                                                 (len, name) -> {
+                                                                     len[COUNT]++;
+                                                                     len[SUM] += name.length();
+                                                                 },
+                                                                 (left, right) -> new long[] {
+                                                                                               left[COUNT] + right[COUNT],
+                                                                                               left[SUM] + right[SUM]
+                                                                 },
+                                                                 len -> len[COUNT] == 0 ? 0 : (len[SUM] / len[COUNT]));
+
+        CompletableFuture<Long> avgLengthOfBNames = personnel.namesThatStartWith("B", lengthAverager);
+
+        assertEquals(Long.valueOf(4), avgLengthOfBNames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        deleted = personnel.removeAll();
+        assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
 
     /**
      * Delete multiple entries.
