@@ -14,7 +14,7 @@ configurations {
 }
 
 dependencies {
-  yasson 'org.eclipse:yasson:3.0.0-RC2'
+  yasson 'org.eclipse:yasson:3.0.0'
 }
 
 task copyYasson(type: Copy) {
