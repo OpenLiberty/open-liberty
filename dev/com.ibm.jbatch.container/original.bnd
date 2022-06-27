@@ -12,4 +12,3 @@
 Bundle-Name: Java Batch RI core runtime implementation
 Bundle-SymbolicName: com.ibm.jbatch.container
 Bundle-Description: Java Batch RI core runtime implementation
-

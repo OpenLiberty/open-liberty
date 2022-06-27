@@ -43,8 +43,9 @@ Export-Package:\
  com.ibm.jbatch.container.ws.smf,\
  com.ibm.jbatch.jsl.model.*
  
+-privatepackage: com.ibm.jbatch.container.*
 
-Include-Resource: \
+-includeresource: \
   OSGI-INF=resources/OSGI-INF,\
   OSGI-INF/metatype=resources/OSGI-INF/metatype,\
   OSGI-INF/l10n=resources/OSGI-INF/l10n,\
@@ -87,8 +88,7 @@ Import-Package: com.ibm.jbatch.spi,\
 	javax.xml.bind.annotation;version=!,\
 	javax.xml.bind.annotation.adapters;version=!,\
 	*
-Private-Package: com.ibm.jbatch.container.*
-
+		
 instrument.classesExcludes: com/ibm/jbatch/container/internal/resources/*.class
 
 -buildpath: \
@@ -115,12 +115,13 @@ instrument.classesExcludes: com/ibm/jbatch/container/internal/resources/*.class
 	com.ibm.websphere.appserver.spi.threading;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.0;version=latest,\
 	com.ibm.websphere.appserver.api.kernel.service;version=latest,\
-	com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest, \
+	com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.logging.core,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-	com.ibm.ws.serialization;version=latest
+	com.ibm.ws.serialization;version=latest,\
+	com.ibm.jbatch.internal.ee10;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
