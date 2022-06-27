@@ -74,6 +74,9 @@ public class CpuInfo {
     private static final long INTERVAL = 10; // in minutes
     private static Collection<AvailableProcessorsListener> listeners = Collections.synchronizedCollection(new HashSet<AvailableProcessorsListener>());
 
+    // TODO: 'JavaInfo.vendor()' is deprecated.
+    //       See the assignment of 'nsFactor', below.
+    @SuppressWarnings({ "deprecation" })
     private CpuInfo() {
         activeTask = new IntervalTask();
         executor.scheduleAtFixedRate(activeTask, INTERVAL, INTERVAL, TimeUnit.MINUTES);
@@ -90,6 +93,13 @@ public class CpuInfo {
         } else {
             AVAILABLE_PROCESSORS.set(fileSystemAvailableProcessors);
         }
+
+        // TODO: 
+        // According to the deprecation comment on 'JavaInfo.vendor(), a test
+        // of the actual capability should be made instead of relying on the
+        // vendor information.  That is, something about the java environment
+        // should be checked to tell that the java vendor is IBM, instead of
+        // this access to vendor.
 
         int nsFactor = 1;
         // adjust for J9 cpuUsage units change from hundred-nanoseconds to nanoseconds in Java8sr5

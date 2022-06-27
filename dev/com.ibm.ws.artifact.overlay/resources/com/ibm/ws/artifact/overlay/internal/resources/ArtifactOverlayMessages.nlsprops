@@ -48,6 +48,6 @@ overlay.cache.not.directory.explanation=The Liberty file system is not consisten
 overlay.cache.not.directory.useraction=Restart the server with the '--clean' option.
 
 # # A file path.
-overlay.exists.as.directory=CWWKM0306E: The {0} overlay file exists and is a directory.
-overlay.exists.as.directory.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
-overlay.exists.as.directory.useraction=Restart the server with the '--clean' option.
+overlay.exists.not.directory=CWWKM0306E: The {0} overlay file exists but is not a directory.
+overlay.exists.not.directory.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.exists.not.directory.useraction=Restart the server with the '--clean' option.

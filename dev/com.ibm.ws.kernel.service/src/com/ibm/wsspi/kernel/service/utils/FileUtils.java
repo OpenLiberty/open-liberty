@@ -290,6 +290,27 @@ public class FileUtils {
     }
 
     /**
+     * Calls {@link File#mkdir()} on the specified <code>target</code> from
+     * within a {@link PrivilegedAction}.
+     *
+     * @param target The tarket to make a directory for
+     * @return <code>true</code> if this succeeded.
+     */
+    public static boolean fileMkDir(final File target) {
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return target.mkdir();
+                }
+            });
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
+    }
+
+    /**
      * Delete file
      *
      * @parm file or empty directory to delete
