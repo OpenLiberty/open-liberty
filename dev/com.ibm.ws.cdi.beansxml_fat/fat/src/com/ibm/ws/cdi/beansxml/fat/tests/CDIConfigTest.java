@@ -87,17 +87,17 @@ public class CDIConfigTest {
 
     @Test
     /**
-     * If emptyBeansXMLExplicitBeanArchive is set when using a CDI version less than 4.0, the attribute should be just
+     * If emptyBeansXmlCDI3Compatibility is set when using a CDI version less than 4.0, the attribute should be just
      * silently ignored. This test set the attribute, starts the server and shuts down again. It checks there were NO
      * unexpected warnings/errors. This should remain the case even when using CDI 4.0.
      *
      * @throws Exception
      */
-    public void testCdiEmptyBeansXMLExplicitBeanArchiveWarning() throws Exception {
+    public void testEmptyBeansXmlCDI3CompatibilityWarning() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         ConfigElementList<Cdi> cdis = config.getCdi();
         Cdi cdi = new Cdi();
-        cdi.setEmptyBeansXMLExplicitBeanArchive(true);
+        cdi.setEmptyBeansXmlCDI3Compatibility(true);
         cdis.add(cdi);
 
         server.updateServerConfiguration(config);
