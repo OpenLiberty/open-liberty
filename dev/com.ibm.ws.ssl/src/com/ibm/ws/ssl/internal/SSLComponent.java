@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -52,10 +53,15 @@ import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * Component for the SSL configuration bundle.
  */
-@Component(immediate = true,
+@Component(reference = { @Reference(name = "SSLComponentCondition",
+                                    service = Condition.class, //
+                                    target = "(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")") },
+           immediate = true,
            configurationPid = "com.ibm.ws.ssl.default",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = "service.vendor=IBM")

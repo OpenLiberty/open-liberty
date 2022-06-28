@@ -28,6 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -44,6 +45,8 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * This accepts configuration from the service registry, creates the KeystoreConfig
  * for that configuration (or retrieves one it already created), verifies that the
@@ -56,7 +59,10 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * of a DS service: throwing the exception does not deactivate the component,
  * it just fails the update.
  */
-@Component(service = ManagedServiceFactory.class,
+@Component(reference = { @Reference(name = "keystoreConfigurationFactoryCondition",
+                                    service = Condition.class, //
+                                    target = "(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")") },
+           service = ManagedServiceFactory.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM", "service.pid=com.ibm.ws.ssl.keystore" })
 public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable, KeyringBasedActionable {
@@ -179,7 +185,8 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
      * Remove the reference to the location manager:
      * required service, do nothing.
      */
-    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {}
+    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {
+    }
 
     /**
      * The specified files have been modified and we need to clear the SSLContext caches and
