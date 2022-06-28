@@ -30,7 +30,14 @@ import javax.security.auth.callback.CallbackHandler;
 //import org.apache.ws.security.WSSecurityException;
 
 
-
+/**
+ * This interface serves as a way to to mitigate the migration from WSS4J 1.6 to 2.0 as required by
+ * the migration of CXF from 2.6.2 to 3.4. We modify it to be a interface rather than a class in order 
+ * for the 2.0 version, which has a different package name, to implement it. Meaning that users running an application
+ * with a custom callback handler based off 1.6 can continue running their
+ * applications and have the updated code. 
+ */
+// Liberty Change: Interface
 public interface Crypto {
 
     //

@@ -30,6 +30,11 @@ import org.apache.wss4j.common.util.Loader;
 
 /**
  * CryptoFactory.
+ * This class serves as a way to to mitigate the migration from WSS4J 1.6 to 2.0 as required by
+ * the migration of CXF from 2.6.2 to 3.4. We modify it to return the new 2.0 version the Crpto class
+ * which is now an implementation of the 1.6 Crypto class. Meaning that users running an application
+ * with a custom callback handler based off 1.6 can continue running their
+ * applications and have the updated code. 
  */
 public class CryptoFactory /*extends org.apache.wss4j.common.crypto.CryptoFactory*/ {
     private static final org.slf4j.Logger LOG =
@@ -52,6 +57,7 @@ public class CryptoFactory /*extends org.apache.wss4j.common.crypto.CryptoFactor
      * @throws WSSecurityException if there is an error in loading the crypto properties
      */
     public Crypto getInstance() throws WSSecurityException {
+        // Liberty Change returns 2.0 impl
         return org.apache.wss4j.common.crypto.CryptoFactory.getInstance();//getInstance("crypto.properties");
     }
 
@@ -75,6 +81,7 @@ public class CryptoFactory /*extends org.apache.wss4j.common.crypto.CryptoFactor
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE,
                     "empty", new Object[] {"Cannot load Crypto instance as properties object is null"});
         }
+        // Liberty Change returns 2.0 impl
         return org.apache.wss4j.common.crypto.CryptoFactory.getInstance(properties);
     }
 
@@ -123,6 +130,7 @@ public class CryptoFactory /*extends org.apache.wss4j.common.crypto.CryptoFactor
      * @throws WSSecurityException if there is an error in loading the crypto properties
      */
     public static Crypto getInstance(String propFilename) throws WSSecurityException {
+        // Liberty Change returns 2.0 impl
         return org.apache.wss4j.common.crypto.CryptoFactory.getInstance(propFilename, Loader.getClassLoader(CryptoFactory.class));
     }
 
@@ -131,6 +139,7 @@ public class CryptoFactory /*extends org.apache.wss4j.common.crypto.CryptoFactor
         ClassLoader customClassLoader
     ) throws WSSecurityException {
         Properties properties = getProperties(propFilename, customClassLoader);
+        // Liberty Change returns 2.0 impl
         return org.apache.wss4j.common.crypto.CryptoFactory.getInstance(properties, customClassLoader, null);
     }
 

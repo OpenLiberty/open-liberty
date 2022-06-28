@@ -1,13 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.ws.security;
 
 import java.security.Key;
@@ -15,10 +23,14 @@ import java.security.Key;
 import javax.security.auth.callback.Callback;
 
 import org.w3c.dom.Element;
-
 /**
- *
+ * This interface serves as a way to to mitigate the migration from WSS4J 1.6 to 2.0 as required by
+ * the migration of CXF from 2.6.2 to 3.4. We modify it to be a interface rather than a class in order 
+ * for the 2.0 version, which has a different package name, to implement it. Meaning that users running an application
+ * with a custom callback handler based off of the org.apache.ws.security.WSPasswordCallback can continue running their
+ * applications and have the updated code. 
  */
+// Liberty Change: Interface
 public interface WSPasswordCallback extends Callback {
 
     /**
