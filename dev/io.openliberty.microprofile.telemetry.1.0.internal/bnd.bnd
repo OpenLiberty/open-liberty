@@ -15,17 +15,18 @@ app-resources= \
 
 bVersion=1.0
 
+Include-Resource: \
+  META-INF=resources/META-INF
+
 WS-TraceGroup: telemetry
 
 -cdiannotations:
 
 -dsannotations: \
   io.openliberty.microprofile.telemetry.internal.cdi.SPIMetaData,\
-  io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryProducer
-
-
-Include-Resource: \
-  META-INF=resources/META-INF
+  io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryProducer,\
+  io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter,\
+  io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter
 
 Import-Package: \
 	*

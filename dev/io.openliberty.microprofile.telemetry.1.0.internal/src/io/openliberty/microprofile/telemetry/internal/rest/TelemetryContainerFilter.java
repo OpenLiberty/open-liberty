@@ -55,10 +55,13 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     // RESTEasy requires no-arg constructor for CDI injection: https://issues.redhat.com/browse/RESTEASY-1538
     public TelemetryContainerFilter() {
+        System.out.println("FILTER RUNNING");
     }
 
     @Inject
     public TelemetryContainerFilter(final OpenTelemetry openTelemetry) {
+
+        System.out.println("FILTER RUNNING");
         ServerAttributesExtractor serverAttributesExtractor = new ServerAttributesExtractor();
 
         InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
@@ -74,6 +77,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Override
     public void filter(final ContainerRequestContext request) {
+        System.out.println("RequestFilter Inject");
         Context parentContext = Context.current();
         if (instrumenter.shouldStart(parentContext, request)) {
             request.setProperty(resourceString + "class", resourceInfo.getResourceClass());
@@ -89,6 +93,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Override
     public void filter(final ContainerRequestContext request, final ContainerResponseContext response) {
+        System.out.println("RequestFilter Inject");
         Scope scope = (Scope) request.getProperty(configString + "scope");
         if (scope == null) {
             return;
