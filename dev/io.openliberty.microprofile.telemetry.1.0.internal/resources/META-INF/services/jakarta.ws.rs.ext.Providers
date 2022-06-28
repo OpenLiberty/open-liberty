@@ -1,2 +1,2 @@
 io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter
-io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter 
+io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter

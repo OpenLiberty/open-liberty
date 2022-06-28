@@ -46,13 +46,11 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     //No arg constructor
     public TelemetryClientFilter() {
-        System.out.println("FILTER RUNNING");
     }
 
     //Constructor injecting openTelemetry object
     @Inject
     public TelemetryClientFilter(final OpenTelemetry openTelemetry) {
-        System.out.println("FILTER RUNNING");
         ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
 
         InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(
@@ -68,7 +66,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     @Override
     public void filter(final ClientRequestContext request) {
-        System.out.println("RequestFilter Inject");
+        System.out.println("Client RequestFilter Inject");
         Context parentContext = Context.current();
         if (instrumenter.shouldStart(parentContext, request)) {
             Context spanContext = instrumenter.start(parentContext, request);
@@ -81,7 +79,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     @Override
     public void filter(final ClientRequestContext request, final ClientResponseContext response) {
-        System.out.println("RequestFilter Inject");
+        System.out.println("Client RequestFilter Inject");
         Scope scope = (Scope) request.getProperty(configString + "scope");
         if (scope == null) {
             return;

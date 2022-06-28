@@ -8,25 +8,37 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
-app-resources= \
-  META-INF/services/jakarta.ws.rs.ext.Providers
-
 -include= ~../cnf/resources/bnd/bundle.props
-
 bVersion=1.0
 
-Include-Resource: \
-  META-INF=resources/META-INF
+Bundle-Name: io.openliberty.microprofile.telemetry.1.0.internal
+Bundle-SymbolicName: io.openliberty.microprofile.telemetry.1.0.internal
+Bundle-Description: MicroProfile.telemetry, version 1.0
 
-WS-TraceGroup: telemetry
+src: src, resources
 
--cdiannotations:
+#-cdiannotations:
 
 -dsannotations: \
   io.openliberty.microprofile.telemetry.internal.cdi.SPIMetaData,\
   io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryProducer,\
-  io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter,\
-  io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter
+  io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter,\
+  io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter
+
+-dsannotations-inherit: true
+
+app-resources= \
+  META-INF/services/jakarta.ws.rs.ext.Providers
+
+Include-Resource:\
+  META-INF=resources/META-INF
+
+Service-Component: \
+    io.openliberty.microprofile.telemetry.internal.ResourceProvider; \
+        implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+        provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+        configuration-policy:=optional; \
+	properties:="resources=${app-resources}" 
 
 Import-Package: \
 	*
