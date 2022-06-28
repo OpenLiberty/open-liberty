@@ -71,4 +71,13 @@ public interface Personnel {
 
     @Asynchronous
     CompletableFuture<List<Person>> save(Person... p);
+
+    @Update("o.lastName = ?1")
+    @Where("o.ssn = ?2")
+    long setSurname(String newSurname, long ssn);
+
+    @Asynchronous
+    @Update("o.lastName = ?1")
+    @Where("o.ssn = ?2")
+    CompletableFuture<Long> setSurnameAsync(String newSurname, long ssn);
 }
