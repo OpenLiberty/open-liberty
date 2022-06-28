@@ -34,7 +34,6 @@ tested.features:\
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
-#    com.ibm.ws.org.slf4j.api;version=latest,\
 -buildpath: \
     com.ibm.websphere.javaee.jaxrs.1.1;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest,\
