@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,21 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-ant.importBuild 'import.xml'
-
-jar {
-    dependsOn 'compile-js'
-    dependsOn 'compile-dojo'
-    dependsOn 'post-compile'
+dependencies {
+  //if there is a existing project, reference it directly                            
+  // requiredLibs project(':com.ibm.ws.ui')
+  requiredLibs project(path: ':com.ibm.ws.ui', configuration: 'buildForFAT10')
 }
 
-configurations {
-  buildForFAT10 {
-    canBeConsumed = true
-    canBeResolved = false
-  }
-}
-
-artifacts {
-  buildForFAT10(file('build/libs/com.ibm.ws.ui.fat.1.0.jar'))
-}
+addRequiredLibraries.dependsOn addJakartaTransformer
