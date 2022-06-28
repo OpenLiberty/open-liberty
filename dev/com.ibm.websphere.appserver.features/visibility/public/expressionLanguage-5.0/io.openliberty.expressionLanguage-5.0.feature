@@ -17,5 +17,5 @@ Subsystem-Name: Jakarta Expression Language 5.0
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=io.openliberty.org.apache.jasper.expressionLanguage.5.0
 kind=beta
-edition=full
+edition=core
 WLP-Activation-Type: parallel
