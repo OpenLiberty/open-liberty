@@ -27,6 +27,6 @@
   </resolves>
   <property name='com.ibm.ws.superseded.apars' value='2'/>
   <updates> <!-- list of files included in the fix with size, date and MD5 has values -->
-      <file id='lib/foo.txt' size='1785213' date="2022-06-27 18:57" MD5hash='0d7c9b00066e183d0eaec191e492dcaa'/> <!-- This date is a long way away so the file will be older for a few years yet -->
+      <file id='lib/foo.txt' size='1785213' date="2092-06-27 18:57" MD5hash='0d7c9b00066e183d0eaec191e492dcaa'/> <!-- This date is a long way away so the file will be older for a few years yet -->
   </updates>        
 </fix>
