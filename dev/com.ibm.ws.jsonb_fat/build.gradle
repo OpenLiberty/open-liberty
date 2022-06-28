@@ -33,7 +33,7 @@ dependencies {
   
   yasson2 'org.eclipse:yasson:2.0.4'
   //TODO update to offical release
-  yasson3 'org.eclipse:yasson:3.0.0-RC2'
+  yasson3 'org.eclipse:yasson:3.0.0'
 }
 
 task addJohnzon(type: Copy) {
@@ -79,7 +79,7 @@ task addYasson2(type: Copy) {
 
 task addYasson3(type: Copy) {
   from configurations.yasson3
-  into "${buildDir}/autoFVT/publish/shared/resources/yasson/3.0.0-RC2/"
+  into "${buildDir}/autoFVT/publish/shared/resources/yasson/3.0.0/"
   rename "yasson-.*.jar", "yasson.jar"
 }
 

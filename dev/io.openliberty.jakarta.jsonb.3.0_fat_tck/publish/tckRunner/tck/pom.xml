@@ -79,11 +79,10 @@
 			<scope>system</scope>
 		</dependency>
 		<!-- impl - jsonb - yasson - internal bundle -->
-		<!-- TODO revert to org.eclipse when GA version is in GHE -->
 		<dependency>
 			<groupId>io.openliberty.org.eclipse</groupId>
 			<artifactId>yasson</artifactId>
-			<version>3.0.0.RC1</version>
+			<version>3.0.0</version>
 			<scope>system</scope>
 			<systemPath>${io.openliberty.org.eclipse.yasson.3.0}</systemPath>
 		</dependency>
