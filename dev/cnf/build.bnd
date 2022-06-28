@@ -30,11 +30,12 @@ target-dir: ${if;${driver;gradle};build/libs;generated}
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=error
 -fixupmessages.mrjar: Classes found in the wrong directory:*META-INF/versions
 -fixupmessages.transform: "Eclipse: The Bundle Symbolic * starts with the project name * but then does not end with the subbuilder name";is:=ignore, \
-  "Eclipse: The Bundle Symbolic * is a sub-bundle original.bnd but uses the project name";is:=ignore, \
+  "Eclipse: The Bundle Symbolic * is a sub-bundle *.bnd but uses the project name";is:=ignore, \
   "*: POM will not validate on Central due to missing Bundle-Developers header";is:=ignore, \
-  "Eclipse: The Bundle Symbolic Name* io.openliberty* start with the project name com.ibm.websphere.appserver.api*, which must be the project's directory *com.ibm.websphere.appserver.api* name";is:ignore
+  "Eclipse: The Bundle Symbolic *io.openliberty* start with the project name com.ibm.*, which must be the project's directory *com.ibm.* name";is:ignore
 -fixupmessages.nlsprops: "Unused -privatepackage instructions , no such package\\(s\\) on the class path: \\[*.resources*\\]";is:=ignore
--fixupmessages.fatsubbundles: "Eclipse: The Bundle Symbolic Name * start with the project name *_fat, which must be the project's directory *_fat name";is:=ignore
+-fixupmessages.fatsubbundles: "Eclipse: The Bundle Symbolic * start with the project name *_fat*, which must be the project's directory *_fat* name";is:=ignore, \
+  "Eclipse: The Bundle Symbolic *_fat* starts with the project name *_fat* but then continues but lacks the separating '.'";is:ignore
 
 javac.source: 1.8
 javac.target: 1.8

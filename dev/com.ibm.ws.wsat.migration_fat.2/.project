@@ -32,11 +32,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.migration_fat.1/test-applications/LPSServer/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.wsat.migration_fat.1-fatsrc</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.migration_fat.1/fat/src</locationURI>
-		</link>
-		<link>
 			<name>com.ibm.ws.wsat.migration_fat.1-simpleClient</name>
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.migration_fat.1/test-applications/simpleClient/src</locationURI>
