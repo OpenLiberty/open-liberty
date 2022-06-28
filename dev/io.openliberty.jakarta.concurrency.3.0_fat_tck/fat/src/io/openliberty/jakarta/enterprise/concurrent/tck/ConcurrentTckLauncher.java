@@ -18,8 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -153,8 +154,8 @@ public class ConcurrentTckLauncher {
         apiPackage.setName("ee.jakarta.tck.concurrent.api.*");
         specPackage.setName("ee.jakarta.tck.concurrent.spec.*");
 
-        List<String> apiExcludes = new ArrayList<>();
-        List<String> specExcludes = new ArrayList<>();
+        Set<String> apiExcludes = new HashSet<>();
+        Set<String> specExcludes = new HashSet<>();
 
         /**
          * Exclude certain tests when running in lite mode
@@ -176,8 +177,17 @@ public class ConcurrentTckLauncher {
             specExcludes.add("ee.jakarta.tck.concurrent.spec.signature");
         }
 
-        apiPackage.setExclude(apiExcludes);
-        specPackage.setExclude(specExcludes);
+        /**
+         * If JDK is not in the supported list for signature testing, skip it.
+         */
+        int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
+        if (!(javaSpecVersion == 11 || javaSpecVersion == 17)) {
+            Log.info(ConcurrentTckLauncher.class, "createSuiteXML", "Skipping Signature Tests on unsupported JDK");
+            specExcludes.add("ee.jakarta.tck.concurrent.spec.signature");
+        }
+
+        apiPackage.setExclude(new ArrayList<String>(apiExcludes));
+        specPackage.setExclude(new ArrayList<String>(specExcludes));
 
         test.setPackages(Arrays.asList(apiPackage, specPackage));
 
