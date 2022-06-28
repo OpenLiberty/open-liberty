@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,28 @@
  *******************************************************************************/
 package com.ibm.ws.el30.fat.servlets;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import javax.el.ELContext;
+import javax.el.ELManager;
 import javax.el.ELProcessor;
+import javax.el.ExpressionFactory;
+import javax.el.MethodExpression;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
 import com.ibm.ws.el30.fat.beans.EL30InvocationMethodExpressionTestBean;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import junit.framework.Assert;
 
 /**
  * This servlet test the invocation of Method Expressions
@@ -84,9 +95,66 @@ public class EL30InvocationMethodExpressionsServlet extends FATServlet {
     }
 
     /**
+     * The isParmetersProvided method was removed in the Expression Language 5.0 API.
+     *
+     * The isParmetersProvided method was previously deprecated in favor of the correctly spelled
+     * method: isParametersProvided.
+     *
+     * Ensure that the isParmetersProvided method is available in version of the Expression Language before EE10, Expression Language 5.0.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    @SkipForRepeat(EE10_FEATURES)
+    public void testMethodExpression_isParmetersProvided_available() throws Exception {
+        boolean exceptionOccurred = false;
+        ELProcessor elp = new ELProcessor();
+        ELContext context = elp.getELManager().getELContext();
+        ExpressionFactory factory = ELManager.getExpressionFactory();
+        MethodExpression testMethodExpression = factory.createMethodExpression(context, "#{testBean.testMethod}", Void.class, new Class<?>[] { String.class });
+        try {
+            testMethodExpression.isParmetersProvided();
+        } catch (NoSuchMethodError nsme) {
+            exceptionOccurred = true;
+        }
+
+        Assert.assertFalse("The isParmetersProvided() method was not available and should have been.", exceptionOccurred);
+    }
+
+    /**
+     * The isParmetersProvided method was removed in the Expression Language 5.0 API.
+     *
+     * The isParmetersProvided method was previously deprecated in favor of the correctly spelled
+     * method: isParametersProvided.
+     *
+     * Since Jakarta EE10, Expression Language 5.0 is being tested the test will ensure the method isParmetersProvided is not available.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    @SkipForRepeat({ NO_MODIFICATION, EE9_FEATURES })
+    public void testMethodExpression_isParmetersProvided_not_available() throws Exception {
+        boolean exceptionOccurred = false;
+        ELProcessor elp = new ELProcessor();
+        ELContext context = elp.getELManager().getELContext();
+        ExpressionFactory factory = ELManager.getExpressionFactory();
+        MethodExpression testMethodExpression = factory.createMethodExpression(context, "#{testBean.testMethod}", Void.class, new Class<?>[] { String.class });
+        try {
+            testMethodExpression.isParmetersProvided();
+        } catch (NoSuchMethodError e) {
+            exceptionOccurred = true;
+        }
+
+        Assert.assertTrue("The isParmetersProvided() method was available and should not have been.", exceptionOccurred);
+
+    }
+
+    /**
      * Helper method to get value using Value Expressions
      *
-     * @param expression Expression to be evaluated
+     * @param expression   Expression to be evaluated
      * @param expectedType Class type
      * @return the result of the evaluated expression
      */
