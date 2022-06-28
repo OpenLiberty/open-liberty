@@ -24,8 +24,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -143,6 +145,7 @@ public class DataTestServlet extends FATServlet {
         p10.lastName = "TestAsynchronous";
         p10.ssn = 1002003010;
 
+        // Async multiple insert
         CompletableFuture<List<Person>> added = personnel.save(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10);
 
         assertIterableEquals(List.of("Aaron", "Amy", "Alice", "Alexander", "Andrew", "Brian", "Betty", "Bob", "Albert", "Ben"),
@@ -151,6 +154,7 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.firstName)
                                              .collect(Collectors.toList()));
 
+        // Async update
         CompletionStage<List<Person>> updated = personnel.changeSurnames("TestAsynchronous", "Test-Asynchronous",
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
                                                                                  1002003003L, 1002003002L, 1002003001L))
@@ -167,6 +171,32 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.firstName)
                                              .collect(Collectors.toList()));
 
+        // Async find with Consumer
+        LinkedBlockingQueue<String> names = new LinkedBlockingQueue<>();
+        personnel.findByLastNameOrderByFirstNameDesc("TestAsynchronous", name -> names.add(name));
+
+        assertEquals("Brian", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals("Betty", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals("Ben", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals("Alexander", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // Paginated async find with Consumer and CompletableFuture to track completion
+        Queue<Long> ids = new LinkedList<Long>();
+        CompletableFuture<Void> allFound = personnel.findByOrderBySsnDesc(p -> ids.add(p.ssn));
+
+        assertEquals(null, allFound.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(p10.ssn), ids.poll());
+        assertEquals(Long.valueOf(p9.ssn), ids.poll());
+        assertEquals(Long.valueOf(p8.ssn), ids.poll());
+        assertEquals(Long.valueOf(p7.ssn), ids.poll());
+        assertEquals(Long.valueOf(p6.ssn), ids.poll());
+        assertEquals(Long.valueOf(p5.ssn), ids.poll());
+        assertEquals(Long.valueOf(p4.ssn), ids.poll());
+        assertEquals(Long.valueOf(p3.ssn), ids.poll());
+        assertEquals(Long.valueOf(p2.ssn), ids.poll());
+        assertEquals(Long.valueOf(p1.ssn), ids.poll());
+
+        // Async find single item
         CompletableFuture<Person> future = personnel.findBySsn(p4.ssn);
 
         Person p = future.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
@@ -174,6 +204,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p4.ssn, p.ssn);
         assertEquals(p4.firstName, p.firstName);
         assertEquals(p4.lastName, p.lastName);
+
+        // Async find with Collector
 
         // Have a collector reduce the results to a count of names.
         // The database could have done this instead, but it makes a nice, simple example.
