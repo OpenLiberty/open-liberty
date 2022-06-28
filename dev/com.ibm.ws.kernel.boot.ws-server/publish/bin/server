@@ -773,7 +773,6 @@ serverEnvAndJVMOptions()
   if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
     mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
   fi
-
   return $rc
 }
 
@@ -1395,22 +1394,8 @@ criuRestore()
 ##
 
 restoreServer()
-{
+{      
   BACKGROUND_RESTORE=$1
-
-  if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] ; then
-    return 1
-  fi
-
-  # must check for --clean option before restoring
-  for option in "$@"; do
-    if [ -n "${option}" ]; then
-      if [ -z "${option##--clean}" ]; then
-        # never restore if --clean is specified
-        return 1
-      fi
-    fi
-  done
 
   # restore artifacts and environment prior to checkpoint here
     
@@ -1453,9 +1438,35 @@ restoreServer()
     return $rc
   fi
   if [ $rc -ne 0 ]; then
-    issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
+    if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+      issueMessage --message:error.checkpoint.restore.failed.server.halted "${X_LOG_DIR}/checkpoint/restore.log"
+    else
+      issueMessage --message:warning.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
+    fi  
   fi
   return $rc
+}
+
+## checkpointImageExists: return true (0) if checkpoint image exists
+##
+
+checkpointImageExists()
+{
+  if [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] ; then
+    return 1
+  fi
+
+  # check for --clean whic implies checkpoint image should be removed
+  for option in "$@"; do
+    if [ -n "${option}" ]; then
+      if [ -z "${option##--clean}" ]; then
+        # never restore if --clean is specified
+        return 1
+      fi
+    fi
+  done
+  
+  return 0
 }
 
 JAVA_DEBUG=
@@ -1485,17 +1496,18 @@ case "$ACTION" in
     fi
 
     serverWorkingDirectory
-
-    restoreServer false "$@"
-    rc=$?
-    if [ $rc = 0 ]; then
-      exit 0
-    elif [ $rc -ne 1 ]; then
-      if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+    if [ "${ACTION}" != "checkpoint" ] && checkpointImageExists "$@"; then 
+      restoreServer false "$@"
+      rc=$?
+      if [ $rc = 0 ]; then
+        exit 0   
+      elif [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+        # restore failed. Exit script to prevent recovery server launch below 
+        rm -f "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
         exit $rc
       fi
-      # will try to recover with a normal launch below
-    fi
+      # restore failed. will try to recover with a normal launch below
+    fi  
 
     if checkServer true
     then
@@ -1567,16 +1579,17 @@ case "$ACTION" in
       "1" )
         serverWorkingDirectory
 
-        restoreServer true "$@"
-        rc=$?
-        if [ $rc = 0 ]; then
-          exit 0
-        elif [ $rc -ne 1 ]; then
-          if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
-            exit $rc
-          fi
-          # will try to recover with a normal launch below
-        fi
+        if checkpointImageExists "$@"; then
+          restoreServer true "$@"
+          rc=$?
+          if [ $rc = 0  ]; then
+            exit 0
+          elif [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+             #exit script here to avoid automatic recovery from failed restore
+             rm -f "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
+             exit $rc
+          fi    
+        fi  
 
         mkdirs "${X_LOG_DIR}"
         if [ -f "${X_LOG_DIR}/${X_LOG_FILE}" ] && [ ! -w "${X_LOG_DIR}/${X_LOG_FILE}" ]
@@ -1627,7 +1640,6 @@ case "$ACTION" in
       if [ -f "${X_PID_FILE}" ]; then
         PID=`cat "${X_PID_FILE}"`
       fi
-
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --stop "$@"
       rc=$?
 
