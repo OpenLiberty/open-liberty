@@ -22,6 +22,7 @@ import com.ibm.ws.beanvalidation.fat.cdi.BeanValidation20CDITest;
 import com.ibm.ws.beanvalidation.fat.ejb.EJBModule11Test;
 import com.ibm.ws.beanvalidation.fat.ejb.EJBModule20Test;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -38,7 +39,8 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is
-                    .andWith(new JakartaEE9Action()); // run all tests again with EE9 features+packages
+    public static RepeatTests r = RepeatTests.withoutModification() //run all tests as-is
+                    .andWith(new JakartaEE9Action().fullFATOnly()) //run all tests again with EE9 features+packages (full fat only as of EE10)
+                    .andWith(new JakartaEE10Action()); //run all tests again with EE10 features+packages
 
 }
