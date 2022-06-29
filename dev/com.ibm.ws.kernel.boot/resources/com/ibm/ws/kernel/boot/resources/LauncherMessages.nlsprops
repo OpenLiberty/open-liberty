@@ -736,13 +736,14 @@ info.checkpoint.restore.failed=CWWKE0957I: Restoring the checkpoint server proce
 info.checkpoint.restore.failed.explanation=An error occurred restoring a checkpoint server process.  The server launched without using the checkpoint image.
 info.checkpoint.restore.failed.useraction=Check the logs to determine why the checkpoint process was not restored.
 
-warning.unsupported.java.version=CWWKE0961W: Proceeding with server launch. The {0} Java version is less than the {1} minimum supported Java version.
-warning.unsupported.java.version.explanation=The version of Java which is being used to launch a Liberty server is less than the minimum supported Java version.  However, because an enablement Java system variable was set, the server launch is permitted to proceed.
-warning.unsupported.java.version.useraction=No action is necessary.  However, unusual and unpredicatable errors can occur.  The JAVA_HOME system variable should be updated to point at a Java version which is at or above the minimum supported Java version.
+warning.unsupported.java.version=CWWKE0961W: Proceeding with server launch. The Java version {0} is less than the minimum supported Java version {1}.
 
-error.unsupported.java.version=CWWKE0963E: Failing server launch. The {0} Java version is less than the {1} minimum supported Java version.
-error.unsupported.java.version.explanation=The version of Java which is being used to launch a Liberty server is less than the minimum supported java.version.  The server launch was not allowed to proceed.
-error.unsupported.java.version.useraction=The JAVA_HOME system variable must be updated to point at a Java version which is at or above the minimum supported Java Version.
+warning.unsupported.java.version.explanation=The version of Java that is being used to launch a Liberty server is less than the minimum supported Java version. However, because an enablement Java system variable was set, the server launch is permitted to proceed.
+warning.unsupported.java.version.useraction=No action is necessary. Unusual and unpredictable errors can occur. The JAVA_HOME system variable needs to be updated to point at a Java version, which is at or above the minimum supported Java version.
+
+error.unsupported.java.version=CWWKE0963E: Server launch failed. The Java version {0} is less than the minimum supported Java version {1}.
+error.unsupported.java.version.explanation=The server launch was not allowed to proceed. The version of Java being used to launch a Liberty server is less than the minimum supported Java version.
+error.unsupported.java.version.useraction=The JAVA_HOME system variable must be updated to point at a Java version, which is at or above the minimum supported Java version.
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
