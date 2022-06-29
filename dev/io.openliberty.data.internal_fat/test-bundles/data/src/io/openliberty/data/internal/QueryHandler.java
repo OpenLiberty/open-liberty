@@ -30,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow.Publisher;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -212,21 +213,23 @@ public class QueryHandler<T> implements InvocationHandler {
             } else {
                 q.append("DELETE FROM ").append(entityName).append(" o");
             }
-            q.append(" WHERE ");
 
             int orderBy = methodName.indexOf("OrderBy");
-            String s = orderBy > 0 ? methodName.substring(start, orderBy) : methodName.substring(start);
-            for (int paramCount = 0, and = 0, or = 0, iNext, i = 0; i >= 0; i = iNext) {
-                and = and == -1 || and > i ? and : s.indexOf("And", i);
-                or = or == -1 || or > i ? or : s.indexOf("Or", i);
-                iNext = Math.min(and, or);
-                if (iNext < 0)
-                    iNext = Math.max(and, or);
-                String condition = iNext < 0 ? s.substring(i) : s.substring(i, iNext);
-                paramCount = generateRepositoryQueryCondition(condition, q, paramCount);
-                if (iNext > 0) {
-                    q.append(iNext == and ? " AND " : " OR ");
-                    iNext += (iNext == and ? 3 : 2);
+            if (orderBy > start || orderBy == -1 && methodName.length() > start) {
+                q.append(" WHERE ");
+                String s = orderBy > 0 ? methodName.substring(start, orderBy) : methodName.substring(start);
+                for (int paramCount = 0, and = 0, or = 0, iNext, i = 0; i >= 0; i = iNext) {
+                    and = and == -1 || and > i ? and : s.indexOf("And", i);
+                    or = or == -1 || or > i ? or : s.indexOf("Or", i);
+                    iNext = Math.min(and, or);
+                    if (iNext < 0)
+                        iNext = Math.max(and, or);
+                    String condition = iNext < 0 ? s.substring(i) : s.substring(i, iNext);
+                    paramCount = generateRepositoryQueryCondition(condition, q, paramCount);
+                    if (iNext > 0) {
+                        q.append(iNext == and ? " AND " : " OR ");
+                        iNext += (iNext == and ? 3 : 2);
+                    }
                 }
             }
 
@@ -401,6 +404,7 @@ public class QueryHandler<T> implements InvocationHandler {
         QueryType queryType;
         boolean requiresTransaction;
         Collector<Object, Object, Object> collector = null;
+        Consumer<Object> consumer = null;
         Pagination pagination = null;
         Sorts sorts = null;
 
@@ -450,7 +454,8 @@ public class QueryHandler<T> implements InvocationHandler {
             Class<?> type = paramTypes[paramCount - 1];
             if (Collector.class.equals(type))
                 collector = (Collector<Object, Object, Object>) args[--paramCount];
-            // TODO Consumer
+            else if (Consumer.class.equals(type))
+                consumer = (Consumer<Object>) args[--paramCount];
             else if (Pagination.class.equals(type))
                 pagination = (Pagination) args[--paramCount];
             else if (Sort.class.equals(type))
@@ -498,8 +503,14 @@ public class QueryHandler<T> implements InvocationHandler {
             if (paginated != null)
                 pagination = Pagination.page(1).size(paginated.value());
         }
-        if (pagination != null && collector != null && (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)))
-            return runAndCollect(jpql, pagination, collector, method, paramCount, args);
+
+        boolean asyncCompatibleResultForPagination = pagination != null &&
+                                                     (void.class.equals(returnType) || CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType));
+
+        if (asyncCompatibleResultForPagination && collector != null)
+            return runAndCollect(jpql, pagination, collector, method, paramCount, args, returnType);
+        else if (asyncCompatibleResultForPagination && consumer != null)
+            return runWithConsumer(jpql, pagination, consumer, method, paramCount, args, returnType);
         else if (pagination != null && Iterator.class.equals(returnType))
             return new PaginatedIterator<T>(jpql, pagination, this, method, paramCount, args);
         else if (Page.class.equals(returnType))
@@ -605,6 +616,12 @@ public class QueryHandler<T> implements InvocationHandler {
                         returnValue = collector.finisher().apply(r);
                         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
                             returnValue = CompletableFuture.completedFuture(returnValue);
+                    } else if (consumer != null) {
+                        for (Object result : results)
+                            consumer.accept(result);
+                        return CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType) //
+                                        ? CompletableFuture.completedFuture(null) //
+                                        : null;
                     } else if (entityClass.equals(returnType)) {
                         returnValue = results.isEmpty() ? null : results.get(0);
                     } else if (returnType.isInstance(results)) {
@@ -716,14 +733,15 @@ public class QueryHandler<T> implements InvocationHandler {
      * @param method
      * @param paramCount
      * @param args
+     * @param returnType
      * @return completion stage that is already completed if only being used to
      *         supply the result to an Asynchronous method. If the database supports
-     *         asynchronous patterns, it could be a not-yet-completedd completion stage
+     *         asynchronous patterns, it could be a not-yet-completed completion stage
      *         that is controlled by the database's async support.
      */
     private CompletableFuture<Object> runAndCollect(String jpql, Pagination pagination,
                                                     Collector<Object, Object, Object> collector,
-                                                    Method method, int numParams, Object[] args) {
+                                                    Method method, int numParams, Object[] args, Class<?> returnType) {
 
         Object r = collector.supplier().get();
         BiConsumer<Object, Object> accumulator = collector.accumulator();
@@ -763,7 +781,63 @@ public class QueryHandler<T> implements InvocationHandler {
             em.close();
         }
 
-        return CompletableFuture.completedFuture(collector.finisher().apply(r));
+        return void.class.equals(returnType) ? null : CompletableFuture.completedFuture(collector.finisher().apply(r));
+    }
+
+    /**
+     * Copies the Jakarta NoSQL pattern of invoking a Consumer with the value of each result.
+     *
+     * @param jpql
+     * @param pagination
+     * @param consumer
+     * @param method
+     * @param paramCount
+     * @param args
+     * @param returnType
+     * @return completion stage that is already completed if only being used to
+     *         run as an Asynchronous method. If the database supports
+     *         asynchronous patterns, it could be a not-yet-completed completion stage
+     *         that is controlled by the database's async support.
+     */
+    private CompletableFuture<Void> runWithConsumer(String jpql, Pagination pagination, Consumer<Object> consumer,
+                                                    Method method, int numParams, Object[] args, Class<?> returnType) {
+
+        // TODO it would be possible to process multiple pages in parallel if we wanted to and if the consumer supports it
+        EntityManager em = punit.createEntityManager();
+        try {
+            @SuppressWarnings("unchecked")
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityClass);
+            if (args != null) {
+                Parameter[] params = method.getParameters();
+                for (int i = 0; i < numParams; i++) {
+                    Param param = params[i].getAnnotation(Param.class);
+                    if (param == null)
+                        query.setParameter(i + 1, args[i]);
+                    else // named parameter
+                        query.setParameter(param.value(), args[i]);
+                }
+            }
+
+            List<T> page;
+            int maxResults;
+            do {
+                // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
+                query.setFirstResult((int) pagination.getSkip());
+                query.setMaxResults(maxResults = (int) pagination.getPageSize());
+                pagination = pagination.next();
+
+                page = query.getResultList();
+
+                for (Object item : page)
+                    consumer.accept(item);
+
+                System.out.println("Processed page with " + page.size() + " results");
+            } while (pagination != null && page.size() == maxResults);
+        } finally {
+            em.close();
+        }
+
+        return void.class.equals(returnType) ? null : CompletableFuture.completedFuture(null);
     }
 
     private static final Object toReturnValue(int i, Class<?> returnType) {

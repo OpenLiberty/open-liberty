@@ -24,11 +24,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
@@ -43,7 +47,9 @@ import java.util.stream.Stream;
 import jakarta.annotation.Resource;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.Status;
+import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -86,6 +92,9 @@ public class DataTestServlet extends FATServlet {
     @Resource
     private UserTransaction tran;
 
+    /**
+     * Use repository methods that are designated as asynchronous by the Concurrency Asynchronous annotation.
+     */
     @Test
     public void testAsynchronous() throws ExecutionException, InterruptedException, TimeoutException {
         // Clear out old data before running test
@@ -143,6 +152,7 @@ public class DataTestServlet extends FATServlet {
         p10.lastName = "TestAsynchronous";
         p10.ssn = 1002003010;
 
+        // Async multiple insert
         CompletableFuture<List<Person>> added = personnel.save(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10);
 
         assertIterableEquals(List.of("Aaron", "Amy", "Alice", "Alexander", "Andrew", "Brian", "Betty", "Bob", "Albert", "Ben"),
@@ -151,6 +161,7 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.firstName)
                                              .collect(Collectors.toList()));
 
+        // Async update
         CompletionStage<List<Person>> updated = personnel.changeSurnames("TestAsynchronous", "Test-Asynchronous",
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
                                                                                  1002003003L, 1002003002L, 1002003001L))
@@ -167,6 +178,32 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.firstName)
                                              .collect(Collectors.toList()));
 
+        // Async find with Consumer
+        LinkedBlockingQueue<String> names = new LinkedBlockingQueue<>();
+        personnel.findByLastNameOrderByFirstNameDesc("TestAsynchronous", name -> names.add(name));
+
+        assertEquals("Brian", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals("Betty", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals("Ben", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals("Alexander", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // Paginated async find with Consumer and CompletableFuture to track completion
+        Queue<Long> ids = new LinkedList<Long>();
+        CompletableFuture<Void> allFound = personnel.findByOrderBySsnDesc(p -> ids.add(p.ssn));
+
+        assertEquals(null, allFound.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(p10.ssn), ids.poll());
+        assertEquals(Long.valueOf(p9.ssn), ids.poll());
+        assertEquals(Long.valueOf(p8.ssn), ids.poll());
+        assertEquals(Long.valueOf(p7.ssn), ids.poll());
+        assertEquals(Long.valueOf(p6.ssn), ids.poll());
+        assertEquals(Long.valueOf(p5.ssn), ids.poll());
+        assertEquals(Long.valueOf(p4.ssn), ids.poll());
+        assertEquals(Long.valueOf(p3.ssn), ids.poll());
+        assertEquals(Long.valueOf(p2.ssn), ids.poll());
+        assertEquals(Long.valueOf(p1.ssn), ids.poll());
+
+        // Async find single item
         CompletableFuture<Person> future = personnel.findBySsn(p4.ssn);
 
         Person p = future.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
@@ -174,6 +211,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p4.ssn, p.ssn);
         assertEquals(p4.firstName, p.firstName);
         assertEquals(p4.lastName, p.lastName);
+
+        // Async find with Collector
 
         // Have a collector reduce the results to a count of names.
         // The database could have done this instead, but it makes a nice, simple example.
@@ -209,6 +248,87 @@ public class DataTestServlet extends FATServlet {
 
         deleted = personnel.removeAll();
         assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
+     * Verify that repository methods that are designated to run asynchronously
+     * actually do run asynchronously by performing database operations that would
+     * deadlock if not run asynchronously.
+     */
+    @Test
+    public void testAsyncPreventsDeadlock() throws ExecutionException, InterruptedException, NotSupportedException, SystemException, TimeoutException {
+        // Clear out old data before running test
+        CompletableFuture<Long> deleted = personnel.removeAll();
+        deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+
+        // Data for test to use:
+        Person p1 = new Person();
+        p1.firstName = "Christopher";
+        p1.lastName = "TestAsyncPreventsDeadlock";
+        p1.ssn = 1001001001;
+
+        Person p2 = new Person();
+        p2.firstName = "Chad";
+        p2.lastName = "TestAsyncPreventsDeadlock";
+        p2.ssn = 2002002002;
+
+        // Async multiple insert
+        CompletableFuture<List<Person>> added = personnel.save(p1, p2);
+
+        assertEquals(2, added.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).size());
+
+        CompletableFuture<Long> updated2Then1;
+        CompletableFuture<Long> updated2;
+
+        tran.begin();
+        try {
+            // main thread obtains lock on p1
+            assertEquals(1L, personnel.setSurname("Test-AsyncPreventsDeadlock", p1.ssn));
+
+            CountDownLatch locked2 = new CountDownLatch(1);
+
+            // second thread obtains lock on p2 and then attempts lock on p1
+            updated2Then1 = added.thenApplyAsync(a -> {
+                try {
+                    tran.begin();
+                    try {
+                        // lock on p2
+                        long updateCount2 = personnel.setSurname("TestAsync-PreventsDeadlock", p2.ssn);
+
+                        locked2.countDown();
+
+                        // lock on p1
+                        return updateCount2 + personnel.setSurname("TestAsync-PreventsDeadlock", p1.ssn);
+                    } finally {
+                        tran.rollback();
+                    }
+                } catch (Exception x) {
+                    throw new CompletionException(x);
+                }
+            });
+
+            assertEquals(true, locked2.await(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+            // If this runs on a third thread as expected, it will be blocked until the second thread releases the lock.
+            // If it runs inline (unexpected) deadlock will occur.
+            updated2 = personnel.setSurnameAsync("TestAsyncPrevents-Deadlock", p2.ssn);
+
+            try {
+                Long updateCount = updated2.get(1, TimeUnit.SECONDS);
+                fail("Third thread ought to be blocked by second thread. Instead, updated " + updateCount);
+            } catch (TimeoutException x) {
+                // expected
+            }
+        } finally {
+            // release lock on p1
+            tran.rollback();
+        }
+
+        // With the lock on p1 released, the second thread can obtain that lock and complete
+        assertEquals(Long.valueOf(2), updated2Then1.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // With the second thread completing, it releases both locks, allowing the third thread to obtain the lock on 2 and complete
+        assertEquals(Long.valueOf(1), updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**
