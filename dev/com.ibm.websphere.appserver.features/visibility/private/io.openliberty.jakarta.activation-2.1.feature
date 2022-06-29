@@ -11,6 +11,6 @@ IBM-API-Package: \
 -bundles=\
   io.openliberty.jakarta.activation.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.activation:jakarta.activation-api:2.1.0", \
   io.openliberty.org.glassfish.hk2.osgi-resource-locator
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

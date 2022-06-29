@@ -14,6 +14,6 @@ Subsystem-Name: Jakarta RESTful Web Services 3.1
   io.openliberty.jakarta.restfulWS.3.1;location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.ws.rs:jakarta.ws.rs-api:3.1.0"
 -files=\
   dev/api/ibm/javadoc/io.openliberty.jaxrs30_1.0-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
