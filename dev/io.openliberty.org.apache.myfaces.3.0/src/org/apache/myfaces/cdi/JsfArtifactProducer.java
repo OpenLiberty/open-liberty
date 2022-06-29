@@ -171,15 +171,6 @@ public class JsfArtifactProducer
    {
        return FacesContext.getCurrentInstance().getViewRoot();
    }
-
-   @Produces
-   @Named("session")
-   @FacesScoped
-   public Object getSession()
-   {
-       return FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-   }
-   
    
    /*
    The spec actually forces us the use producers for "cc" and "component but it leads to a bad performance.
@@ -226,4 +217,25 @@ public class JsfArtifactProducer
        return FacesContext.getCurrentInstance().getViewRoot().getViewMap();
    }
 
+       /*
+    The spec actually forces us the use producers for "session" and "request" but this conflicts with CDI spec actually,
+    because CDI is responsible for producing HttpServletRequest and HttpSession
+    We will still use ELResolvers for this - see ImplicitObjectResolver#makeResolverForFacesCDI().
+    See  MYFACES-4432 / MYFACES-4394
+    /*
+    @Produces
+    @Named("session")
+    @FacesScoped
+    public Object getSession()
+    {
+        return FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+    }
+    @Produces
+    @Named("request")
+    @FacesScoped 
+    public Object getRequest()
+    {
+       return FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    }
+    */
 }
