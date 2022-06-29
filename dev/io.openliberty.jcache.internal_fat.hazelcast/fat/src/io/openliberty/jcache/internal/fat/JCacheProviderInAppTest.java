@@ -23,8 +23,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.HttpSessionCache;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -71,7 +74,10 @@ public class JCacheProviderInAppTest extends BaseTestCase {
              */
             assertAuthCacheJCacheNotCleared(server1);
         } finally {
-            stopServer(server1, "SRVE0777E");
+            /*
+             * SESN0306E, CWWKE1102W and CWWKE1107W - Occur due to session cache invalidation reaper not shutting down during server shutdown.
+             */
+            stopServer(server1, "SRVE0777E", "SESN0306E", "CWWKE1102W", "CWWKE1107W");
         }
     }
 
@@ -82,8 +88,45 @@ public class JCacheProviderInAppTest extends BaseTestCase {
      */
     @Test
     @CheckForLeakedPasswords(USER1_PASSWORD)
-    public void testProviderInApp() throws Exception {
-        final String METHOD_NAME = "testProviderInApp";
+    @AllowedFFDC({ "com.ibm.websphere.objectgrid.ObjectGridRuntimeException", "com.ibm.websphere.objectgrid.TransactionException" })
+    public void providerInApp_default() throws Exception {
+        final String METHOD_NAME = "providerInApp_default";
+
+        HttpGet getRequest = new HttpGet("http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/providerinapp/ProviderInAppServlet");
+        try (CloseableHttpClient httpClient = HttpUtils.getInsecureHttpsClient(USER1_NAME, USER1_PASSWORD)) {
+
+            /*
+             * Call the ProviderInApp servlet.
+             */
+            Log.info(CLASS, METHOD_NAME, "Calling the ProviderInApp servlet at: " + getRequest.getURI());
+            try (CloseableHttpResponse response = httpClient.execute(getRequest)) {
+                assertEquals("Expected 200 status code.", HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+            }
+        }
+    }
+
+    /**
+     * Test the JCache provider from within an application (which doesn't use our internal JCache services). We also
+     * will be enabling the sessionCache feature to force use of both the gateway and core jcache bundles.
+     *
+     * @throws Exception If the test fails for some unforeseen reason.
+     */
+    @Test
+    @CheckForLeakedPasswords(USER1_PASSWORD)
+    @AllowedFFDC({ "javax.cache.event.CacheEntryListenerException", "com.ibm.websphere.objectgrid.ObjectGridRuntimeException",
+                   "com.ibm.websphere.objectgrid.TransactionException" })
+    public void providerInApp_sessioncache() throws Exception {
+        final String METHOD_NAME = "providerInApp_sessioncache";
+
+        /*
+         * Configure the server to use sessionCache-1.0. This will use both the core and gateway jcache bundles.
+         */
+        ServerConfiguration config = server1.getServerConfiguration().clone();
+        config.getFeatureManager().getFeatures().add("sessionCache-1.0");
+        HttpSessionCache sessionCache = new HttpSessionCache();
+        sessionCache.setCacheManagerRef("CacheManager");
+        config.getHttpSessionCaches().add(sessionCache);
+        super.updateConfigDynamically(server1, config, true);
 
         HttpGet getRequest = new HttpGet("http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/providerinapp/ProviderInAppServlet");
         try (CloseableHttpClient httpClient = HttpUtils.getInsecureHttpsClient(USER1_NAME, USER1_PASSWORD)) {

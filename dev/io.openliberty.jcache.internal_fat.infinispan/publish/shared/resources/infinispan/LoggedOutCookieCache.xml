@@ -20,14 +20,14 @@
 	statistics="true">
 
 	<!-- 
-		Set the maximum cache size.
+		Set the maximum cache size. LTPA is 2000 for in-memory, and JWT is 10000 for in-memory.
 	 -->
 	<memory max-count="10000" when-full="REMOVE" />
 
 	<!-- 
-		Set expiry policy so that they never time out.
+		Set expiry policy to match the maximum lifetime of LTPA and JWT cookies.
 	 -->
-	<expiration max-idle="-1" lifespan="-1" />
+	<expiration max-idle="-1" lifespan="720000" />
 
 	<!-- 
 		Set encoding for keys / values.

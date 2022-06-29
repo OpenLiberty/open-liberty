@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018,2019 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -8,18 +8,17 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
 
-src: \
-	fat/src,\
-	test-applications/sessionCacheApp/src
+Bundle-SymbolicName: com.ibm.websphere.javaee.jcache.1.1.core
 
-fat.project: true
+Export-Package: \
+   javax.cache.*;version="1.1"
 
+Import-Package: \
+   javax.enterprise.util;resolution:=optional
+
+Include-Resource: \
+  @${repo; javax.cache:cache-api;1.1.0}
 
 -buildpath: \
-    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-    com.ibm.websphere.javaee.jcache.1.1.core;version=latest,\
-    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-    com.ibm.ws.session;version=latest
+	javax.cache:cache-api;version=1.1.0
