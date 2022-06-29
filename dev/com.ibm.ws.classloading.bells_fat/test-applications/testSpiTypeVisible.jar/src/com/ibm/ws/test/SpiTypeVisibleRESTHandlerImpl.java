@@ -27,7 +27,7 @@ public class SpiTypeVisibleRESTHandlerImpl implements TestInterface2, RESTHandle
     }
 
     @Override
-    public void handleRequest​(RESTRequest request, RESTResponse response) {
+    public void handleRequest(RESTRequest request, RESTResponse response) {
         System.out.println("SpiTypeVisibilityRESTHandlerImpl.handleRequest: hello");
     }
 
