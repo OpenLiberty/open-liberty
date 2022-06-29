@@ -13,10 +13,12 @@ package test.jsonb.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
@@ -35,6 +37,7 @@ import jakarta.json.bind.annotation.JsonbCreator;
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.json.bind.annotation.JsonbSubtype;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.json.bind.annotation.JsonbTypeAdapter;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeInfo;
@@ -385,6 +388,75 @@ public class JsonBTestServlet extends FATServlet {
 
         public static class State extends Location {
             public String capital;
+        }
+    }
+
+    /**
+     * Test to ensure that when the name of a transient field is used as the
+     * name for another field that JSONB does not attempt to serialize that
+     * field into the incorrect class.
+     *
+     * In this example order is transient, and orderLink is given the property name order.
+     * In previous yasson releases they treated the key "order" as reserved even through
+     * the field was transient.
+     */
+    @Test
+    public void testPropertyAnnotationCollision() {
+        Order myOrder = new Order();
+        myOrder.setName("Kyle");
+
+        Coffee myCoffee = new Coffee();
+        myCoffee.setOrder(myOrder);
+        myCoffee.setOrderLink(URI.create("http://my.coffee.shop/"));
+
+        String myOrderJson = jsonb.toJson(myOrder);
+        String myCoffeeJson = jsonb.toJson(myCoffee);
+
+        assertEquals(myOrderJson, "{\"name\":\"Kyle\"}");
+        assertEquals(myCoffeeJson, "{\"order\":\"http://my.coffee.shop/\"}");
+
+        Order resultOrder = jsonb.fromJson(myOrderJson, Order.class);
+        Coffee resultCoffee = jsonb.fromJson(myCoffeeJson, Coffee.class);
+
+        assertEquals(resultOrder.getName(), myOrder.getName());
+        assertEquals(resultCoffee.getOrderLink(), myCoffee.getOrderLink());
+        assertNull(resultCoffee.getOrder());
+
+    }
+
+    public static class Coffee {
+        @JsonbTransient
+        private Order order;
+
+        @JsonbProperty("order")
+        private URI orderLink;
+
+        public Order getOrder() {
+            return order;
+        }
+
+        public void setOrder(Order order) {
+            this.order = order;
+        }
+
+        public URI getOrderLink() {
+            return orderLink;
+        }
+
+        public void setOrderLink(URI orderLink) {
+            this.orderLink = orderLink;
+        }
+    }
+
+    public static class Order {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }
