@@ -6,14 +6,16 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.security.common.http;
 
-/**
- * @version 1.0.0
- */
-@org.osgi.annotation.versioning.Version("1.0.0")
-@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
-package io.openliberty.security.oidcclientcore.discovery;
+public class HttpResponseNullOrEmptyException extends AbstractHttpResponseException {
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+    private static final long serialVersionUID = 1L;
+
+    public HttpResponseNullOrEmptyException(String url, int statusCode, String errMsg) {
+        super(url, statusCode, errMsg);
+    }
+
+}

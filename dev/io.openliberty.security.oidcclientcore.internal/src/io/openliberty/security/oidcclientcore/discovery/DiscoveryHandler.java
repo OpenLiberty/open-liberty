@@ -12,7 +12,7 @@ package io.openliberty.security.oidcclientcore.discovery;
 
 import javax.net.ssl.SSLSocketFactory;
 
-import com.ibm.json.java.JSONObject;
+//import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.http.HttpUtils;
@@ -29,17 +29,8 @@ public class DiscoveryHandler {
         this.httpUtils = new HttpUtils();
     }
 
-    public JSONObject fetchDiscoveryData(String discoveryUrl, boolean hostNameVerificationEnabled) throws Exception {
-        if (!isValidDiscoveryUrl(discoveryUrl)) {
-            String errorMsg = Tr.formatMessage(tc, "DISCOVERY_URL_NOT_VALID", discoveryUrl);
-            throw new Exception(errorMsg);
-        }
-        String jsonString = httpUtils.getHttpRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, null, null);
-        return JSONObject.parse(jsonString);
-    }
-
-    private boolean isValidDiscoveryUrl(String discoveryUrl) {
-        return discoveryUrl != null && discoveryUrl.startsWith("https");
+    public String fetchDiscoveryData(String discoveryUrl, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws Exception {
+        return httpUtils.getHttpJsonRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemProperties);
     }
 
 }
