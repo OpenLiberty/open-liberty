@@ -141,7 +141,7 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	com.ibm.ws.security.mp.jwt.proxy;version=latest,\
 	com.ibm.websphere.security.authentication;version=latest,\
 	io.openliberty.jcache.internal;version=latest,\
-	com.ibm.websphere.javaee.jcache.1.1;version=latest,\
+	com.ibm.websphere.javaee.jcache.1.1.core;version=latest,\
 	org.eclipse.osgi,\
 	osgi.core
 

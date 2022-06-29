@@ -29,7 +29,7 @@ import componenttest.topology.utils.PrivHelper;
  * container and provider and needs to be common between bval-1.0 and bval-1.1.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
 public class EJBModule11Test extends EJBModule_Common {
 
     @Server("com.ibm.ws.beanvalidation.ejb_1.1.fat")

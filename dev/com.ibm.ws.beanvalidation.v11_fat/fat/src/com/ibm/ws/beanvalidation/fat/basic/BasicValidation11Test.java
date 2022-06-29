@@ -24,7 +24,7 @@ import componenttest.topology.utils.PrivHelper;
  * All Bean Validation tests for the 1.1 feature level.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
 public class BasicValidation11Test extends BasicValidation_Common {
 
     @Server("com.ibm.ws.beanvalidation_1.1.fat")

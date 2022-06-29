@@ -30,15 +30,15 @@ bVersion=1.0
 # corresponding entry in file cnf/oss_depenendcies.maven.
 # Ref: https://bndtools.org/manual/packageexplorer.html
 -testpath: \
-	org.springframework:spring-core;strategy=exact;version=5.3.18, \
-	org.springframework:spring-context;strategy=exact;version=5.3.18, \
-	org.springframework:spring-beans;strategy=exact;version=5.3.18, \
-	org.springframework:spring-web;strategy=exact;version=5.3.18, \
-	org.springframework:spring-webmvc;strategy=exact;version=5.3.18, \
-	org.springframework.boot:spring-boot-autoconfigure;version=2.6.6, \
-	org.springframework.boot:spring-boot;version=2.6.6, \
-	org.springframework.security:spring-security-web;strategy=exact;version=5.6.2, \
-	org.springframework.security:spring-security-config;strategy=exact;version=5.6.2, \
-	org.springframework.security:spring-security-core;strategy=exact;version=5.6.2, \
-	org.springframework.security:spring-security-crypto;strategy=exact;version=5.6.2, \
+	org.springframework:spring-core;strategy=exact;version=5.3.21, \
+	org.springframework:spring-context;strategy=exact;version=5.3.21, \
+	org.springframework:spring-beans;strategy=exact;version=5.3.21, \
+	org.springframework:spring-web;strategy=exact;version=5.3.21, \
+	org.springframework:spring-webmvc;strategy=exact;version=5.3.21, \
+	org.springframework.boot:spring-boot-autoconfigure;version=2.7.1, \
+	org.springframework.boot:spring-boot;version=2.7.1, \
+	org.springframework.security:spring-security-web;strategy=exact;version=5.7.2, \
+	org.springframework.security:spring-security-config;strategy=exact;version=5.7.2, \
+	org.springframework.security:spring-security-core;strategy=exact;version=5.7.2, \
+	org.springframework.security:spring-security-crypto;strategy=exact;version=5.7.2, \
 	com.ibm.websphere.javaee.servlet.4.0

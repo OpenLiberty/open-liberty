@@ -13,6 +13,7 @@ package test.jakarta.data.web;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
 import java.util.stream.Collector;
 
 import jakarta.enterprise.concurrent.Asynchronous;
@@ -42,6 +43,14 @@ public interface Personnel {
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
 
     @Asynchronous
+    @Select("firstName")
+    void findByLastNameOrderByFirstNameDesc(String lastName, Consumer<String> callback);
+
+    @Asynchronous
+    @Paginated(4)
+    CompletableFuture<Void> findByOrderBySsnDesc(Consumer<Person> callback);
+
+    @Asynchronous
     @Limit(1) // indicates single result (rather than list) for the completion stage
     CompletableFuture<Person> findBySsn(long ssn);
 
@@ -62,4 +71,13 @@ public interface Personnel {
 
     @Asynchronous
     CompletableFuture<List<Person>> save(Person... p);
+
+    @Update("o.lastName = ?1")
+    @Where("o.ssn = ?2")
+    long setSurname(String newSurname, long ssn);
+
+    @Asynchronous
+    @Update("o.lastName = ?1")
+    @Where("o.ssn = ?2")
+    CompletableFuture<Long> setSurnameAsync(String newSurname, long ssn);
 }

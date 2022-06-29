@@ -108,6 +108,8 @@ import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+
 /**
  * This installer is an immediate DS component that will create a RecursiveBundleTracker to look for WABs, when one is found it will install it.
  *
@@ -182,9 +184,9 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           service = { EventHandler.class, RuntimeUpdateListener.class, ServerQuiesceListener.class, ServerReadyStatus.class },
-           property = { "service.vendor=IBM", "event.topics=org/osgi/service/web/UNDEPLOYED" })
-public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpdateListener, ServerQuiesceListener, ServerReadyStatus {
+           service = { EventHandler.class, RuntimeUpdateListener.class, ServerQuiesceListener.class, ServerReadyStatus.class, CheckpointHook.class },
+           property = { "service.vendor=IBM", "event.topics=org/osgi/service/web/UNDEPLOYED", CheckpointHook.MULTI_THREADED_HOOK + ":Boolean=true" })
+public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpdateListener, ServerQuiesceListener, ServerReadyStatus, CheckpointHook {
 
     private static final TraceComponent tc = Tr.register(WABInstaller.class);
     private static final String CONFIGURABLE_FILTER = "(&"
@@ -1634,6 +1636,11 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
             }
         });
         systemWABsDeploying.clear();
+    }
+
+    @Override
+    public void prepare() {
+        check();
     }
 
     private void logSlowWab(WAB w) {

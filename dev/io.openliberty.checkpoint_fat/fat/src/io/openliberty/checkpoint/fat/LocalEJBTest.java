@@ -82,7 +82,7 @@ public class LocalEJBTest extends FATServletClient {
                                      try {
                                          // Need to sleep a bit for timer test to cause
                                          // timer time to passed and force it to catchup
-                                         Thread.sleep(5000);
+                                         Thread.sleep(6000);
                                      } catch (InterruptedException e) {
                                          Assert.fail();
                                      }

@@ -45,7 +45,7 @@ Service-Component=com.ibm.ws.session.cache;\
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\
-    com.ibm.websphere.javaee.jcache.1.1;version=latest,\
+    com.ibm.websphere.javaee.jcache.1.1.core;version=latest,\
     com.ibm.websphere.javaee.servlet.3.0;version=latest,\
     com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.websphere.org.osgi.core,\

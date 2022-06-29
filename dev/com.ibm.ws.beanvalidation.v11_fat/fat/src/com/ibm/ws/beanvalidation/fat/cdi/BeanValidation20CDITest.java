@@ -81,7 +81,7 @@ public class BeanValidation20CDITest extends BeanValidationCDI_Common {
      * to implement the interface.
      */
     @Test
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     public void testDynamicStartStopOfCDI() throws Exception {
         ServerConfiguration config = getServer().getServerConfiguration();
 
