@@ -79,6 +79,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     private final AtomicLong defaultTimeout;
     private final AtomicLong concurrentAccessTimeout;
 
+    private final boolean resetHttpSessionAttributeOnBeanAccess; //Backported by IBM (from code in weld repo but never released)
+
     private final ThreadLocal<R> associated;
 
     private final BeanManagerImpl manager;
@@ -100,6 +102,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         this.associated = new ThreadLocal<R>();
         this.manager = Container.instance(contextId).deploymentManager();
         this.beanIdentifierIndex = services.get(BeanIdentifierIndex.class);
+        this.resetHttpSessionAttributeOnBeanAccess = configuration.getBooleanProperty(ConfigurationKey.RESET_HTTP_SESSION_ATTR_ON_BEAN_ACCESS);//Backported by IBM (from code in weld repo but never released)
     }
 
     @Override
@@ -168,7 +171,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, conversationIdGenerator, false);
         }
         Object conversationMap = getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME);
-        if(conversationMap != null && getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null) {
+        if (conversationMap != null && (resetHttpSessionAttributeOnBeanAccess || getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null)) { //Backported by IBM (from code in weld repo but never released)
             setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
         }
     }
@@ -293,17 +296,29 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
+    //Changes to this method were backported by IBM (from code in weld repo but never released)
     private void cleanUpConversationMap() {
         Map<String, ManagedConversation> conversations = getConversationMap();
+        Map<String, ManagedConversation> toClear = new HashMap<>();
+        S session = getSessionFromRequest(getRequest(), false);
+        // while synced, extract a map of conversations that we'll need to clean up, already removing them from map
         synchronized (conversations) {
             Iterator<Entry<String, ManagedConversation>> entryIterator = conversations.entrySet().iterator();
-            S session = getSessionFromRequest(getRequest(), false);
             while (entryIterator.hasNext()) {
                 Entry<String, ManagedConversation> entry = entryIterator.next();
                 if (entry.getValue().isTransient()) {
-                    destroyConversation(session, entry.getKey());
+                    toClear.put(entry.getKey(), entry.getValue());
                     entryIterator.remove();
                 }
+            }
+        }
+        // This block was not part of the fix IBM backported, but was brought along anyway when pulling in the latest version of the file. (The Pull in question was only this one file, and keeping this change is consistant with previously released ifixes that have had good results from customers)
+        // let the lock go, now clean up the conversations, this triggers locking on the session
+        Iterator<Entry<String, ManagedConversation>> toClearIterator = toClear.entrySet().iterator();
+        while (toClearIterator.hasNext()) {
+            Entry<String, ManagedConversation> entry = toClearIterator.next();
+            if (entry.getValue().isTransient()) {
+                destroyConversation(session, entry.getKey());
             }
         }
     }
@@ -456,6 +471,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
+    // Changes to this method were backported by IBM (from code in weld repo but never released)
     private Map<String, ManagedConversation> getConversationMap() {
         checkIsAssociated();
         checkContextInitialized();
@@ -465,6 +481,9 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             conversationMap = getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false);
             if (conversationMap == null) {
                 conversationMap = Collections.synchronizedMap(new HashMap<String, ManagedConversation>());
+                setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap);
+                setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
+            } else if (resetHttpSessionAttributeOnBeanAccess) {
                 setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap);
                 setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
             } else {
