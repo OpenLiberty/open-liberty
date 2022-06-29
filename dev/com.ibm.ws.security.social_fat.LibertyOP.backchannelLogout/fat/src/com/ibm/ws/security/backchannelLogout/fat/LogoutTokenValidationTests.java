@@ -27,7 +27,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
 /**
  * This test class contains tests that validate the proper behavior of the back channel logout endpoint's logout token validation.
  * The tests in this class will test with logout tokens that contain both valid and invalid content.
- * This instance of these tests will validate the behaviour when using the OIDC endpoint
+ * This instance of these tests will validate the behaviour when using the Social endpoint
  **/
 
 @RunWith(FATRunner.class)

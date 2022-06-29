@@ -27,7 +27,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
 /**
  * This is the test class that will run tests to validate the proper behavior when
  * various http methods are used wit the back channel logout enddpoint.
- * This instance of the tests will run with the OIDC back channel logout endpoints
+ * This instance of the tests will run with the Social back channel logout endpoints
  *
  **/
 
@@ -37,7 +37,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
 public class HttpMethodsTests extends com.ibm.ws.security.backchannelLogout.fat.CommonTests.HttpMethodsTests {
 
-    // Repeat tests using the OIDC endpoints
+    // Repeat tests using the Social endpoints
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(SocialConstants.SOCIAL));
 
