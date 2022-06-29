@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import com.ibm.ws.install.InstallConstants.VerifyOption;
 import com.ibm.ws.install.InstallException;
 
 public class ArtifactDownloaderUtils {
@@ -156,11 +157,21 @@ public class ArtifactDownloaderUtils {
         }
     }
 
-    public static void acquireFeatureURLs(List<String> mavenCoords, String repo, Map<String, String> urltoMavenCoord) {
+    public static void acquireFeatureURLs(List<String> mavenCoords, String repo, Map<String, String> urltoMavenCoord, VerifyOption verifyOption, boolean downloadSignaturesOnly) {
         for (String coord : mavenCoords) {
             String url = getUrlLocation(repo, coord);
-            urltoMavenCoord.put(url + ".esa", coord);
-            urltoMavenCoord.put(url + ".pom", coord);
+            if (downloadSignaturesOnly) {
+                urltoMavenCoord.put(url + ".esa.asc", coord);
+                urltoMavenCoord.put(url + ".pom.asc", coord);
+            } else if (verifyOption == null || verifyOption == VerifyOption.skip) {
+                urltoMavenCoord.put(url + ".esa", coord);
+                urltoMavenCoord.put(url + ".pom", coord);
+            } else {
+                urltoMavenCoord.put(url + ".esa", coord);
+                urltoMavenCoord.put(url + ".pom", coord);
+                urltoMavenCoord.put(url + ".esa.asc", coord);
+                urltoMavenCoord.put(url + ".pom.asc", coord);
+            }
         }
     }
 

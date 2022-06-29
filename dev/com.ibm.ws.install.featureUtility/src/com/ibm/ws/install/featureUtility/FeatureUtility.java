@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package com.ibm.ws.install.featureUtility;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileVisitResult;
@@ -32,26 +31,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallConstants;
-import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
-import com.ibm.websphere.crypto.PasswordUtil;
-import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
-import com.ibm.ws.install.internal.InstallUtils;
+import com.ibm.ws.install.InstallConstants.VerifyOption;
 import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.InstallKernel;
 import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
-import com.ibm.ws.install.internal.LicenseUpgradeUtility;
-import com.ibm.ws.install.internal.MavenRepository;
-import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
+import com.ibm.ws.install.internal.LicenseUpgradeUtility;
+import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
-import com.ibm.ws.kernel.feature.internal.cmdline.NLS;
-import com.ibm.ws.repository.exceptions.RepositoryException;
 
 /**
  *
@@ -74,9 +65,36 @@ public class FeatureUtility {
     private static final String WEBSPHERE_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
     private static final String BETA_EDITION = "EARLY_ACCESS";
     private static final String CONNECTION_FAILED_ERROR = "CWWKF1390E";
-    private String to;
-    private boolean isInstallServerFeature = false;
+    private static final VerifyOption DEFAULT_VERIFY = VerifyOption.enforce;
+    private static String to;
 
+    private boolean isInstallServerFeature = false;
+    private VerifyOption verifyOption;
+
+
+    /*
+     * Constructor for unit testing only.
+     */
+    protected FeatureUtility(InstallKernelMap map, File fromDir, List<File> esaFiles, Boolean noCache,
+	    Boolean licenseAccepted, List<String> featuresToInstall, List<String> additionalJsons,
+	    String openLibertyVersion, String openLibertyEdition, Logger logger, ProgressBar progressBar,
+	    Map<String, String> featureToExt, boolean isInstallServerFeature, VerifyOption verifyOption) {
+	super();
+	this.map = map;
+	this.fromDir = fromDir;
+	this.esaFiles = esaFiles;
+	this.noCache = noCache;
+	this.licenseAccepted = licenseAccepted;
+	this.featuresToInstall = featuresToInstall;
+	this.additionalJsons = additionalJsons;
+	this.openLibertyVersion = openLibertyVersion;
+	this.openLibertyEdition = openLibertyEdition;
+	this.logger = logger;
+	this.progressBar = progressBar;
+	this.featureToExt = featureToExt;
+	this.isInstallServerFeature = isInstallServerFeature;
+	this.verifyOption = verifyOption;
+    }
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
@@ -121,19 +139,21 @@ public class FeatureUtility {
         Set<String> envMapKeys = envMap.keySet();
         for (String key: envMapKeys) {
         	if (key.equals("FEATURE_REPO_PASSWORD")) {
-        		fine("FEATURE_REPO_PASSWORD: *********");
+		    fine("FEATURE_REPO_PASSWORD: *********");
         	} else if (key.equals("FEATURE_LOCAL_REPO") && envMap.get("FEATURE_LOCAL_REPO") != null) {
-        		fine(key +": " + envMap.get(key));
-        		File local_repo = new File((String) envMap.get("FEATURE_LOCAL_REPO"));
-        		this.fromDir = local_repo;
-        	}else {
-        		fine(key +": " + (envMap.get(key)));
+		    fine(key + ": " + envMap.get(key));
+		    File local_repo = new File((String) envMap.get("FEATURE_LOCAL_REPO"));
+		    this.fromDir = local_repo;
+        	} else {
+		    fine(key + ": " + (envMap.get(key)));
         	}
         }
 	map.put(InstallConstants.JSON_PROVIDED, false);
         overrideEnvMapWithProperties();
+	this.verifyOption = getVerifyOption(builder.verifyOption,
+		(Map<String, Object>) map.get(InstallConstants.ENVIRONMENT_VARIABLE_MAP));
         
-        fine("additional jsons: " + additionalJsons);
+	fine("additional jsons: " + additionalJsons);
         if (additionalJsons != null && !additionalJsons.isEmpty()) {
         	jsonsRequired.addAll(additionalJsons);
 		map.put(InstallConstants.JSON_PROVIDED, true);
@@ -155,15 +175,55 @@ public class FeatureUtility {
         }
 	map.put(InstallConstants.CLEANUP_NEEDED, noCache);
         
-        List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
-        
+	List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
         updateProgress(progressBar.getMethodIncrement("fetchJsons"));
         fine("Finished finding jsons");
 	progressBar.manuallyUpdate();
-        initializeMap(jsonPaths);
+
+	initializeMap(jsonPaths);
         updateProgress(progressBar.getMethodIncrement("initializeMap"));
         fine("Initialized install kernel map");
+
+	if (verifyOption != VerifyOption.skip) {
+	    downloadPublicKeys();
+	}
+
 	progressBar.manuallyUpdate();
+    }
+
+    /**
+     * @param envMap
+     * @param builder
+     * @throws InstallException
+     */
+    protected VerifyOption getVerifyOption(String builderVerifyOption, Map<String, Object> envMap) throws InstallException {
+	String verifyValue;
+	String envValue = ((String) envMap.get("FEATURE_VERIFY"));
+	
+	if (builderVerifyOption == null && envValue == null) {
+	    verifyValue = DEFAULT_VERIFY.toString();
+	} else if (builderVerifyOption == null) {
+	    verifyValue = envValue.toLowerCase();
+	} else if (envValue == null) {
+	    verifyValue = builderVerifyOption;
+	} else {
+	    // If the verifyOption is set in both command line and (env var or props) than
+	    // the values have to match.
+	    if (!((String) envMap.get("FEATURE_VERIFY")).equalsIgnoreCase(builderVerifyOption)) {
+		throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(
+			"ERROR_VERIFY_OPTION_DOES_NOT_MATCH", envMap.get("FEATURE_VERIFY"),
+			builderVerifyOption), InstallException.SIGNATURE_VERIFICATION_FAILED);
+	    }
+	    verifyValue = builderVerifyOption;
+	}
+
+	try {
+	    return VerifyOption.valueOf(verifyValue);
+	} catch (IllegalArgumentException e) {
+	    throw new InstallException(
+		    Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_VERIFY_OPTION_NOT_VALID", verifyValue),
+		    InstallException.SIGNATURE_VERIFICATION_FAILED);
+	}
     }
     
     public void setFeatureToExt(Map<String, String> featureToExt) {
@@ -196,7 +256,9 @@ public class FeatureUtility {
 
 	map.put(InstallConstants.LICENSE_ACCEPT, licenseAccepted);
 	map.get(InstallConstants.INSTALL_KERNEL_INIT_CODE);
-
+	map.put(InstallConstants.VERIFY_OPTION, verifyOption);
+	Collection<Map<String, String>> keyMap = FeatureUtilityProperties.getKeyMap().values();
+	map.put(InstallConstants.USER_PUBLIC_KEYS, keyMap);
     }
 
 
@@ -252,6 +314,11 @@ public class FeatureUtility {
             overrideMap.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", FeatureUtilityProperties.getMirrorRepositories());
         }
         
+	// override feature verify option
+	if (FeatureUtilityProperties.getFeatureVerifyOption() != null) {
+	    overrideMap.put("FEATURE_VERIFY", FeatureUtilityProperties.getFeatureVerifyOption());
+	}
+
         //get any additional required jsons
         if(FeatureUtilityProperties.bomIdsRequired()) {
         	List<String> boms = FeatureUtilityProperties.getBomIds();
@@ -400,6 +467,23 @@ public class FeatureUtility {
         return features;
     }
 
+    /*
+     * Download public keys to verify features - only when verifyOption is
+     * "enforce", "all", "warn"
+     * 
+     * @throws InstallException
+     */
+
+    public void downloadPublicKeys() throws InstallException {
+	map.get(InstallConstants.DOWNLOAD_PUBKEYS);
+	if (map.get(InstallConstants.ACTION_ERROR_MESSAGE) != null) {
+	    if (map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE) != null) {
+		fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
+	    }
+	    throw new InstallException((String) map.get(InstallConstants.ACTION_ERROR_MESSAGE),
+		    InstallException.SIGNATURE_VERIFICATION_FAILED);
+	}
+    }
 
     /**
      * Resolves and installs the features
@@ -441,6 +525,21 @@ public class FeatureUtility {
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
         Collection<File> artifacts = fromDir != null ? downloadFeaturesFrom(resolvedFeatures, fromDir) : downloadFeatureEsas((List<String>) resolvedFeatures);
+
+	if (verifyOption != null && verifyOption != VerifyOption.skip) {
+	    map.put(InstallConstants.ACTION_VERIFY, artifacts);
+	    map.get(InstallConstants.ACTION_RESULT);
+	    if (map.get(InstallConstants.ACTION_ERROR_MESSAGE) != null) {
+		// error with installation
+		if (map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE) != null) {
+		    fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
+		}
+
+		String exceptionMessage = (String) map.get(InstallConstants.ACTION_ERROR_MESSAGE);
+		throw new InstallException(exceptionMessage, InstallException.SIGNATURE_VERIFICATION_FAILED);
+	    }
+	}
+
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
 	Collection<String> actionReturnResult = new ArrayList<>();
@@ -727,6 +826,7 @@ public class FeatureUtility {
         boolean noCache;
         boolean licenseAccepted;
         String to;
+	String verifyOption;
 
         public FeatureUtilityBuilder setFromDir(String fromDir) {
             this.fromDir = fromDir != null ? new File(fromDir) : null;
@@ -762,6 +862,11 @@ public class FeatureUtility {
             this.to = to;
             return this;
         } 
+
+	public FeatureUtilityBuilder setVerify(String verifyOption) {
+	    this.verifyOption = verifyOption;
+	    return this;
+	}
 
         public FeatureUtility build() throws IOException, InstallException {
             return new FeatureUtility(this);

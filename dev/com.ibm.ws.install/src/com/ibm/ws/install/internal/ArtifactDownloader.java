@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,8 +46,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.ws.install.InstallConstants.VerifyOption;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 
@@ -87,14 +89,15 @@ public class ArtifactDownloader implements AutoCloseable {
         });
     }
 
-    public Set<String> getMissingFeaturesFromRepo(List<String> mavenCoords, MavenRepository repository) throws InstallException {
+    public Set<String> getMissingFeaturesFromRepo(List<String> mavenCoords, MavenRepository repository, VerifyOption verifyOption,
+                                                  boolean downloadSignaturesOnly) throws InstallException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
 
         String repo = FormatUrlSuffix(repository.getRepositoryUrl());
         Map<String, String> URLtoMavenCoordMap = new HashMap<>();
-        ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo, URLtoMavenCoordMap);
+        ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo, URLtoMavenCoordMap, verifyOption, downloadSignaturesOnly);
         List<String> missingFeaturesURLs;
-        Set<String> missingCoords = new HashSet<String>();
+        Set<String> missingCoords = new HashSet<>();
 
         if (!testConnection(repository)) {
             throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
@@ -123,16 +126,43 @@ public class ArtifactDownloader implements AutoCloseable {
         return missingCoords;
     }
 
-    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, MavenRepository repository) throws InstallException {
+    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, MavenRepository repository, VerifyOption verifyOption,
+                                              boolean downloadSignaturesOnly) throws InstallException {
         final List<Future<?>> futures = new ArrayList<>();
-        // we have downloaded mavenCoords.length * 2 (esa and pom) amount of features.
-        double individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (2 * mavenCoords.size());
+        double individualSize = 0;
         info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
         for (String coords : mavenCoords) {
-            Future<?> future1 = submitDownloadRequest(coords, "esa", dLocation, repository);
-            futures.add(future1);
-            Future<?> future2 = submitDownloadRequest(coords, "pom", dLocation, repository);
-            futures.add(future2);
+            Future<?> future;
+
+            if (downloadSignaturesOnly) {
+                // we have to download mavenCoords.length * 2 (esa.asc and pom.asc) amount of artifacts.
+                individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (2 * mavenCoords.size());
+                future = submitDownloadRequest(coords, "esa.asc", dLocation, repository);
+                futures.add(future);
+                future = submitDownloadRequest(coords, "pom.asc", dLocation, repository);
+                futures.add(future);
+            } else if (verifyOption == null || verifyOption == VerifyOption.skip) {
+                //download esa and pom
+                // we have to download mavenCoords.length * 2 (esa.asc and pom.asc) amount of artifacts.
+                individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (2 * mavenCoords.size());
+                future = submitDownloadRequest(coords, "esa", dLocation, repository);
+                futures.add(future);
+                future = submitDownloadRequest(coords, "pom", dLocation, repository);
+                futures.add(future);
+            } else {
+                //download both esa, pom and ascs
+                // we need to download mavenCoords.length * 4 (esa,pom and ascs) amount of artifacts.
+                individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (4 * mavenCoords.size());
+                future = submitDownloadRequest(coords, "esa", dLocation, repository);
+                futures.add(future);
+                future = submitDownloadRequest(coords, "pom", dLocation, repository);
+                futures.add(future);
+                future = submitDownloadRequest(coords, "esa.asc", dLocation, repository);
+                futures.add(future);
+                future = submitDownloadRequest(coords, "pom.asc", dLocation, repository);
+                futures.add(future);
+            }
+
         }
 
         while (!futures.isEmpty()) {
@@ -479,7 +509,7 @@ public class ArtifactDownloader implements AutoCloseable {
      * @return esaFiles
      */
     public List<File> getDownloadedEsas(List<String> featureList) {
-        List<File> esaFiles = new ArrayList<File>();
+        List<File> esaFiles = new ArrayList<>();
         for (String coord : featureList) {
             //return downloaded esa files in the same order as featureList
             File artifactPath = mavenCoordMap.get(coord);
@@ -490,8 +520,12 @@ public class ArtifactDownloader implements AutoCloseable {
         return esaFiles;
     }
 
+    public List<File> getDownloadedAscs() {
+        return downloadedFiles.stream().filter(item -> item.getName().toLowerCase().endsWith(".asc")).collect(Collectors.toList());
+    }
+
     public List<File> getDownloadedPoms() {
-        List<File> pomFiles = new ArrayList<File>();
+        List<File> pomFiles = new ArrayList<>();
         for (File f : downloadedFiles) {
             if (f.getName().endsWith(".pom")) {
                 pomFiles.add(f);

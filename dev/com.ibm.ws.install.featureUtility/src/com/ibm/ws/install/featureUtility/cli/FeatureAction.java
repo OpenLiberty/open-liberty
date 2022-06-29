@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,8 +39,10 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 
 
 public enum FeatureAction implements ActionDefinition {
-	installFeature(new InstallFeatureAction(), "if",-1, "--noCache", "--verbose", "--acceptLicense", "--featuresBom", "--to", "name..."),
-	installServerFeatures(new InstallServerAction(), "isf",-1, "--noCache", "--verbose","--acceptLicense", "--featuresBom", "name..."),
+	installFeature(new InstallFeatureAction(), "if", -1, "--noCache", "--verbose", "--acceptLicense", "--featuresBom",
+			"--to", "--verify", "name..."),
+    installServerFeatures(new InstallServerAction(), "isf", -1, "--noCache", "--verbose", "--acceptLicense",
+	    "--featuresBom", "--verify", "name..."),
     viewSettings(new ViewSettingsAction(),"", 0, "--viewValidationMessages"),
     find(new FindAction(), "", -1, "[searchString]"),
     help(new FeatureHelpAction(),"", 0);

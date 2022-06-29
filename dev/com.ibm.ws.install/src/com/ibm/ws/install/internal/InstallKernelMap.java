@@ -54,6 +54,7 @@ import org.apache.aries.util.manifest.ManifestProcessor;
 
 import com.ibm.ws.install.CancelException;
 import com.ibm.ws.install.InstallConstants;
+import com.ibm.ws.install.InstallConstants.VerifyOption;
 import com.ibm.ws.install.InstallEventListener;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.InstallKernel;
@@ -152,12 +153,15 @@ public class InstallKernelMap implements Map {
     private Map<String, Object> envMap = null;
     private final List<File> upgradeFiles = new ArrayList<File>();
     private final List<MavenRepository> workingRepos = new ArrayList<MavenRepository>();
+    private final List<String> usrFeatures = new ArrayList<>();
+    private List<File> pubKeys = new ArrayList<>();
 
     private enum ActionType {
         install,
         uninstall,
         resolve,
-        find
+        find,
+        verify
     }
 
     private final Map data = new HashMap();
@@ -274,6 +278,8 @@ public class InstallKernelMap implements Map {
                 }
             } else if (actionType.equals(ActionType.find)) {
                 return findFeatures();
+            } else if (actionType.equals(ActionType.verify)) {
+                return verifySignatures();
             }
         } else if (InstallConstants.IS_FEATURE_UTILITY.equals(key)) {
             if (data.get(InstallConstants.IS_FEATURE_UTILITY) == null) {
@@ -309,12 +315,16 @@ public class InstallKernelMap implements Map {
             }
             envMap = getEnvMap();
             return envMap;
+        } else if (InstallConstants.USER_PUBLIC_KEYS.equals(key)) {
+            return data.get(InstallConstants.USER_PUBLIC_KEYS);
         } else if (InstallConstants.CLEANUP_UPGRADE.equals(key)) {
             return cleanupUpgrade();
         } else if (InstallConstants.IS_OPEN_LIBERTY.equals(key)) {
             return isOpenLiberty();
         } else if (GENERATE_JSON.equals(key)) {
             return generateJson();
+        } else if (InstallConstants.DOWNLOAD_PUBKEYS.equals(key)) {
+            return downloadPublicKeys();
         }
         return data.get(key);
     }
@@ -499,6 +509,12 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+        } else if (InstallConstants.VERIFY_OPTION.equals(key)) {
+            if (value instanceof VerifyOption) {
+                data.put(InstallConstants.VERIFY_OPTION, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
         } else if (DOWNLOAD_FILETYPE.equals(key)) {
             if (value instanceof String) {
                 data.put(DOWNLOAD_FILETYPE, value);
@@ -603,6 +619,11 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+        } else if (InstallConstants.ACTION_VERIFY.equals(key)) {
+            if (value instanceof List) {
+                data.put(InstallConstants.ACTION_VERIFY, value);
+                actionType = ActionType.verify;
+            }
         } else if (UNINSTALL_USER_FEATURES.equals(key)) {
             if (value instanceof Boolean) {
                 data.put(UNINSTALL_USER_FEATURES, value);
@@ -670,6 +691,12 @@ public class InstallKernelMap implements Map {
         } else if (InstallConstants.INSTALL_INDIVIDUAL_ESAS.equals(key)) {
             if (value instanceof Boolean) {
                 data.put(InstallConstants.INSTALL_INDIVIDUAL_ESAS, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (InstallConstants.USER_PUBLIC_KEYS.equals(key)) {
+            if (value instanceof Collection) {
+                data.put(InstallConstants.USER_PUBLIC_KEYS, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -933,6 +960,11 @@ public class InstallKernelMap implements Map {
             if (!resolveResult.isEmpty()) {
                 for (List<RepositoryResource> item : resolveResult) {
                     for (RepositoryResource repoResrc : item) {
+                        String ibmInstallTo = "";
+                        if (repoResrc instanceof EsaResourceImpl) {
+                            ibmInstallTo = ((EsaResourceImpl) repoResrc).getIBMInstallTo();
+                        }
+
                         String license = repoResrc.getLicenseId();
                         if (license != null) {
                             // determine whether the runtime is ND
@@ -961,24 +993,34 @@ public class InstallKernelMap implements Map {
                         if (repoResrc.getRepositoryConnection() instanceof DirectoryRepositoryConnection) {
                             featuresResolved.add(repoResrc.getId());
                         } else {
-                            if (repoResrc.getMavenCoordinates() == null) { //if user specified ESA file path
+                            String featurePath = repoResrc.getMavenCoordinates();
+                            if (featurePath == null) { //if user specified ESA file path
                                 if (repoResrc instanceof EsaResourceImpl) {
                                     String name = ((EsaResourceImpl) repoResrc).getShortName() == null ? repoResrc.getName() : ((EsaResourceImpl) repoResrc).getShortName();
                                     for (String k : shortNameMap.keySet()) {
                                         if (shortNameMap.get(k).equals(name)) {
                                             featuresResolved.add(k);
+                                            featurePath = k;
                                         }
                                     }
                                 }
                             } else {
-                                featuresResolved.add(repoResrc.getMavenCoordinates());
+                                featuresResolved.add(featurePath);
+                                featurePath = ArtifactDownloaderUtils.getfilename(repoResrc.getMavenCoordinates()).toLowerCase() + ".esa";
+                            }
+
+                            if (ibmInstallTo == null || ibmInstallTo.equals("usr")) {
+                                usrFeatures.add(featurePath);
                             }
                         }
                     }
                 }
             }
-
-            actionType = ActionType.install;
+            if (data.get(InstallConstants.VERIFY_OPTION) != null && (VerifyOption) data.get(InstallConstants.VERIFY_OPTION) != VerifyOption.skip) {
+                actionType = ActionType.verify;
+            } else {
+                actionType = ActionType.install;
+            }
             featuresResolved = keepFirstInstance(featuresResolved);
             return featuresResolved;
         } catch (ProductInfoParseException e) {
@@ -1128,7 +1170,7 @@ public class InstallKernelMap implements Map {
     }
 
     @SuppressWarnings("unchecked")
-    public List<File> downloadFeatures(List<String> featureList) {
+    public List<File> downloadFeatures(List<String> featureList, List<String> signatureList) {
         data.put(InstallConstants.ACTION_ERROR_MESSAGE, null);
         data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, null);
 
@@ -1137,8 +1179,9 @@ public class InstallKernelMap implements Map {
             Boolean cleanupNeeded = (Boolean) data.get(InstallConstants.CLEANUP_NEEDED);
             String downloadDir;
             List<MavenRepository> repos = getMavenRepo(fromRepo);
-            Set<String> missingFeatures = null;
             List<String> copyFeatureList = new ArrayList<>();
+            List<String> copySignatureList = new ArrayList<>();
+            VerifyOption verifyOption = (VerifyOption) data.get(InstallConstants.VERIFY_OPTION);
 
             if (cleanupNeeded != null && cleanupNeeded) {
                 fine("Using temp location: " + TEMP_DIRECTORY);
@@ -1149,31 +1192,53 @@ public class InstallKernelMap implements Map {
             }
 
             copyFeatureList.addAll(featureList);
+            copySignatureList.addAll(signatureList);
             artifactDownloader.setEnvMap(envMap);
 
             for (MavenRepository repo : repos) {
-                if (!copyFeatureList.isEmpty()) {
-                    try {
-                        missingFeatures = artifactDownloader.getMissingFeaturesFromRepo(copyFeatureList, repo);
+                try {
+                    if (!copyFeatureList.isEmpty()) {
+                        Set<String> missingFeatures = artifactDownloader.getMissingFeaturesFromRepo(copyFeatureList, repo, verifyOption, false);
                         copyFeatureList.removeAll(missingFeatures);
-                        artifactDownloader.synthesizeAndDownloadFeatures(copyFeatureList, downloadDir, repo);
+                        artifactDownloader.synthesizeAndDownloadFeatures(copyFeatureList, downloadDir, repo, verifyOption, false);
                         //Try downloading missing features from next repo
                         copyFeatureList = new ArrayList<>(missingFeatures);
-                    } catch (InstallException e) {
-                        this.put(InstallConstants.ACTION_RESULT, ERROR);
-                        this.put(InstallConstants.ACTION_ERROR_MESSAGE, e.getMessage());
-                        this.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-                        return null;
                     }
+                    if (!copySignatureList.isEmpty()) {
+                        Set<String> missingSignatures = artifactDownloader.getMissingFeaturesFromRepo(copySignatureList, repo, verifyOption, true);
+                        copySignatureList.removeAll(missingSignatures);
+                        artifactDownloader.synthesizeAndDownloadFeatures(copySignatureList, downloadDir, repo, verifyOption, true);
+                        //Try downloading missing signatures from next repo
+                        copySignatureList = new ArrayList<>(missingSignatures);
+                    }
+                } catch (InstallException e) {
+                    this.put(InstallConstants.ACTION_RESULT, ERROR);
+                    this.put(InstallConstants.ACTION_ERROR_MESSAGE, e.getMessage());
+                    this.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+                    return null;
                 }
+
             }
 
-            if (missingFeatures != null && !missingFeatures.isEmpty()) {
+            if (copyFeatureList != null && !copyFeatureList.isEmpty()) {
                 this.put(InstallConstants.ACTION_RESULT, ERROR);
                 this.put(InstallConstants.ACTION_ERROR_MESSAGE,
                          ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", "required", "feature(s)", repos).getMessage());
+
                 return null;
             }
+
+            if (copySignatureList != null && !copySignatureList.isEmpty()) {
+                if (verifyOption == VerifyOption.all) {
+                    this.put(InstallConstants.ACTION_RESULT, ERROR);
+                    this.put(InstallConstants.ACTION_ERROR_MESSAGE,
+                             ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", "required", "feature signatures(s)", repos).getMessage());
+                    return null;
+                }
+            }
+
+            fine("Downloaded the following feature signautres from the remote maven repository:" + artifactDownloader.getDownloadedAscs());
+
             return artifactDownloader.getDownloadedEsas(featureList);
         }
     }
@@ -1199,9 +1264,9 @@ public class InstallKernelMap implements Map {
 
             List<MavenRepository> repos = getMavenRepo(fromRepo);
             InstallException encounteredException = null;
+            artifactDownloader.setEnvMap(envMap);
             for (MavenRepository repo : repos) {
                 try {
-                    artifactDownloader.setEnvMap(envMap);
                     artifactDownloader.synthesizeAndDownload(artifact, filetype, downloadDir, repo, true);
                     return artifactDownloader.getDownloadedFiles();
                 } catch (InstallException e) {
@@ -1556,9 +1621,10 @@ public class InstallKernelMap implements Map {
         Map<String, List> artifactsMap = fetchArtifactsFromLocalRepository(rootDir, resolvedFeatures, ".esa");
         List<File> foundFeatures = artifactsMap.get("foundArtifacts");
         List<String> missingFeatures = artifactsMap.get("missingArtifacts");
-        if (foundFeatures.size() != resolvedFeatures.size() && !missingFeatures.isEmpty()) {
+        List<String> missingSignatures = artifactsMap.get("missingSignatures");
+        if (foundFeatures.size() != resolvedFeatures.size() && !missingFeatures.isEmpty() || !missingSignatures.isEmpty()) {
             List<Integer> missingFeatureIndexes = artifactsMap.get("missingArtifactIndexes");
-            List<File> downloadedFeatures = downloadFeatures(missingFeatures);
+            List<File> downloadedFeatures = downloadFeatures(missingFeatures, missingSignatures);
             if (downloadedFeatures == null) {
                 return null;
             } else {
@@ -1579,8 +1645,10 @@ public class InstallKernelMap implements Map {
      * Returns a hashmap containing artifacts found as well as the order of the artifacts not found.
      * The found artifacts can be accessed using key: foundArtifacts
      * The missing artifacts can be accessed using key: missingArtifacts
-     * The missing artifact indexees can be accessed using key: missingArtifactIndexes
-     * TODO maybe make this return an object
+     * The missing artifact indexes can be accessed using key: missingArtifactIndexes
+     *
+     * If the feature ESA is missing, then the maven coord will be added to missingArtifacts.
+     * If the feature ESA exists, but not the signature, then the maven coord will be added to missingSignatures
      *
      * @param rootDir   the local maven repository
      * @param artifacts a list of artifacts in the form groupId:artifactId:version or esa file
@@ -1588,17 +1656,24 @@ public class InstallKernelMap implements Map {
      * @return a map containing the found and not found artifacts.
      */
     private Map<String, List> fetchArtifactsFromLocalRepository(File rootDir, Collection<String> artifacts, String extension) {
-        List<String> artifactsClone = new ArrayList<>(artifacts);
         List<File> foundArtifacts = new ArrayList<>();
+        List<String> artifactsClone = new ArrayList<>(artifacts);
         List<Integer> missingArtifactIndexes = new ArrayList<>();
+        List<String> missingSignatures = new ArrayList<>();
+        String sigExtension = ".asc";
         int index = 0;
         double increment = (progressBar.getMethodIncrement("fetchArtifacts") / artifacts.size());
+        VerifyOption verify = (VerifyOption) data.get(InstallConstants.VERIFY_OPTION);
 
         for (String artifact : artifacts) {
             fine("Processing artifact: " + artifact);
             Path artifactPath;
+            Path signaturePath = null;
             if (isValidEsa(artifact)) {
                 artifactPath = Paths.get(artifact);
+                if (verify != null && verify != VerifyOption.skip) {
+                    signaturePath = Paths.get(artifactPath.toString() + sigExtension);
+                }
             } else {
                 String[] coord = artifact.split(":");
                 String groupId = coord[0];
@@ -1613,24 +1688,38 @@ public class InstallKernelMap implements Map {
 
                 String artifactFileName = artifactName + "-" + version + extension;
                 artifactPath = Paths.get(groupDir.getAbsolutePath().toString(), artifactName, version, artifactFileName);
+
+                if (verify != null) {
+                    String signatureFileName = artifactFileName + sigExtension;
+                    signaturePath = Paths.get(groupDir.getAbsolutePath().toString(), artifactName, version, signatureFileName);
+                }
             }
 
             if (Files.isRegularFile(artifactPath)) {
+                fine("Found Artifact at path: " + artifactPath.toString());
                 foundArtifacts.add(artifactPath.toFile());
                 artifactsClone.remove(artifact);
+                //if verify is set, check if the signatures are downloaded.
+                if (verify != null && verify != VerifyOption.skip) {
+                    if (Files.isRegularFile(signaturePath)) {
+                        fine("Found signature at path: " + signaturePath.toString());
+                    } else {
+                        missingSignatures.add(artifact);
+                    }
+                }
                 updateProgress(increment);
-                fine("Found Artifact at path: " + artifactPath.toString());
-
             } else {
                 missingArtifactIndexes.add(index);
             }
 
             index += 1;
+
         }
         Map<String, List> artifactsMap = new HashMap<>();
         artifactsMap.put("foundArtifacts", foundArtifacts);
         artifactsMap.put("missingArtifacts", artifactsClone);
         artifactsMap.put("missingArtifactIndexes", missingArtifactIndexes);
+        artifactsMap.put("missingSignatures", missingSignatures);
 
         return artifactsMap;
     }
@@ -1823,6 +1912,8 @@ public class InstallKernelMap implements Map {
         envMapRet.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", repos);
 
         envMapRet.put("FEATURE_LOCAL_REPO", System.getenv("FEATURE_LOCAL_REPO"));
+
+        envMapRet.put("FEATURE_VERIFY", System.getenv("FEATURE_VERIFY"));
 
         //search through the properties file to look for overrides if they exist TODO
         Map<String, String> propsFileMap = getFeatureUtilEnvProps();
@@ -2191,6 +2282,64 @@ public class InstallKernelMap implements Map {
         Map<String, String> shortNameMap = new HashMap<String, String>();
         File result = generateJsonFromESAList(targetJsonDir.toPath(), shortNameMap, esas);
         return result;
+    }
+
+    private List<File> downloadPublicKeys() {
+        VerifySignatureUtility verifyUtility = new VerifySignatureUtility();
+        VerifyOption verify = (VerifyOption) data.get(InstallConstants.VERIFY_OPTION);
+        Collection<Map<String, String>> usrkeys = (Collection<Map<String, String>>) data.get(InstallConstants.USER_PUBLIC_KEYS);
+        try {
+            pubKeys = verifyUtility.downloadPublicKeys(usrkeys, verify, envMap);
+        } catch (InstallException e) {
+            data.put(InstallConstants.ACTION_RESULT, ERROR);
+            data.put(InstallConstants.ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        }
+        return pubKeys;
+    }
+
+    private Integer verifySignatures() {
+        VerifyOption verifyOption = (VerifyOption) data.get(InstallConstants.VERIFY_OPTION);
+        List<File> failedFeatures = new ArrayList<>();
+        try {
+            VerifySignatureUtility verifyUtility = new VerifySignatureUtility();
+            verifyUtility.verifySignatures((List<File>) data.get(InstallConstants.ACTION_VERIFY), pubKeys, failedFeatures);
+            if (failedFeatures.isEmpty()) {
+                info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_FEATURES_VERIFICATION_COMPLETED"));
+                actionType = ActionType.install;
+                return OK;
+            } else {
+                if (verifyOption == VerifyOption.all) {
+                    data.put(InstallConstants.ACTION_RESULT, ERROR);
+                    data.put(InstallConstants.ACTION_ERROR_MESSAGE, Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE", failedFeatures));
+                    return ERROR;
+                } else if (verifyOption == VerifyOption.enforce) {
+                    boolean libertyFeatureFailure = false;
+                    //check if the failed feature is user feature
+                    for (File f : failedFeatures) {
+                        if (!usrFeatures.contains(f.getName().toLowerCase())) {
+                            libertyFeatureFailure = true;
+                        }
+                    }
+                    if (libertyFeatureFailure) {
+                        data.put(InstallConstants.ACTION_RESULT, ERROR);
+                        data.put(InstallConstants.ACTION_ERROR_MESSAGE, Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE", failedFeatures));
+                        return ERROR;
+                    }
+                }
+                logger.warning(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE", failedFeatures));
+                actionType = ActionType.install;
+                return OK;
+
+            }
+        } catch (InstallException e) {
+            data.put(InstallConstants.ACTION_RESULT, ERROR);
+            data.put(InstallConstants.ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        }
+
+        return OK;
+
     }
 
 }
