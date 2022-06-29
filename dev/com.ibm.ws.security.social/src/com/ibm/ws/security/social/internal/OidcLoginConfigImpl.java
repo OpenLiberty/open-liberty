@@ -246,11 +246,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         discoveryUtil = discoveryUtil.initialConfig(getId(), discoveryEndpointUrl, discoveryPollingRate).discoveryDocumentResult(null).discoveryDocumentHash(discoveryDocumentHash).discoveredConfig(signatureAlgorithm, tokenEndpointAuthMethod, scope);
     }
 
-<<<<<<< HEAD
     @FFDCIgnore({ Exception.class, SocialLoginWrapperException.class })
-=======
-    @FFDCIgnore({ Exception.class, HttpResponseNullOrEmptyException.class, HttpResponseNot200Exception.class })
->>>>>>> 9619901208 (Updated to Adam's thomas-discoveryFix changes for HttpUtils. OAuthClientHttp and OidcClientHttp are refactored to use HttpUtils common code)
     public boolean handleDiscoveryEndpoint(String discoveryUrl) {
 
         String jsonString = null;
@@ -273,15 +269,10 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
                 }
             }
 
-<<<<<<< HEAD
         } catch (SocialLoginWrapperException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
             }
-=======
-        } catch (HttpResponseNullOrEmptyException e) {
-        } catch (HttpResponseNot200Exception e) {
->>>>>>> 9619901208 (Updated to Adam's thomas-discoveryFix changes for HttpUtils. OAuthClientHttp and OidcClientHttp are refactored to use HttpUtils common code)
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
@@ -294,48 +285,16 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         return valid;
     }
 
-<<<<<<< HEAD
     @FFDCIgnore({ SocialLoginWrapperException.class })
     String fetchDiscoveryData(String discoveryUrl, SSLSocketFactory sslSocketFactory) throws Exception {
         try {
             return httputils.getHttpJsonRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
         } catch (SocialLoginWrapperException e) {
             Tr.error(tc, e.getNlsMessage());
-=======
-    @FFDCIgnore({ IOException.class, HttpResponseNullOrEmptyException.class, HttpResponseNot200Exception.class })
-    String fetchDiscoveryData(String discoveryUrl, SSLSocketFactory sslSocketFactory) throws Exception {
-        try {
-            return httputils.getHttpJsonRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
-        } catch (IOException ioex) {
-            String errMsg = "IOException: " + ioex.getMessage() + " " + ioex.getCause();
-            String message = TraceNLS.getFormattedMessage(getClass(),
-                    "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", "OIDC_CLIENT_DISCOVERY_ERROR",
-                    new Object[] { discoveryUrl, errMsg }, "Error processing discovery request");
-            Tr.error(tc, message, new Object[0]);
-            throw ioex;
-        } catch (HttpResponseNullOrEmptyException e) {
-            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getErrMsg());
-            throw e;
-        } catch (HttpResponseNot200Exception e) {
-            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getErrMsg());
->>>>>>> 9619901208 (Updated to Adam's thomas-discoveryFix changes for HttpUtils. OAuthClientHttp and OidcClientHttp are refactored to use HttpUtils common code)
             throw e;
         }
     }
 
-<<<<<<< HEAD
-=======
-    private String logErrorMessage(String url, int iStatusCode, String errMsg) {
-        String defaultMessage = "Error processing discovery request";
-
-        String message = TraceNLS.getFormattedMessage(getClass(),
-                "com.ibm.ws.security.common.internal.resources.SSOCommonMessages", "OIDC_CLIENT_DISC_RESPONSE_ERROR",
-                new Object[] { url, Integer.valueOf(iStatusCode), errMsg }, defaultMessage);
-        Tr.error(tc, message, new Object[0]);
-        return message;
-    }
-
->>>>>>> 9619901208 (Updated to Adam's thomas-discoveryFix changes for HttpUtils. OAuthClientHttp and OidcClientHttp are refactored to use HttpUtils common code)
     /**
      * @param json
      */
