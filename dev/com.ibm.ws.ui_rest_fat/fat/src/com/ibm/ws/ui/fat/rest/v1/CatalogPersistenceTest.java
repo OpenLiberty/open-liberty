@@ -30,10 +30,9 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ui.fat.APIConstants;
+import com.ibm.ws.ui.fat.Bookmark;
 import com.ibm.ws.ui.fat.FATSuite;
 import com.ibm.ws.ui.fat.rest.CommonRESTTest;
-import com.ibm.ws.ui.internal.v1.ICatalog;
-import com.ibm.ws.ui.internal.v1.pojo.Bookmark;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -142,9 +141,9 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
 
         assertContains(response, "_metadata");
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, ICatalog.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertFalse("FAIL: Should have gotten back a non-default Catalog",
-                    metadata.getBoolean(ICatalog.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the right message was printed after the catalog was loaded
         assertNotNull("The server did not report that the persisted catalog was loaded",
@@ -170,9 +169,9 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         assertContains(response, "_metadata");
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, ICatalog.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default Catalog",
-                    metadata.getBoolean(ICatalog.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the bad catalog json message and default catlaog message was printed
         // after the catalog was loaded
@@ -203,9 +202,9 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         assertContains(response, "_metadata");
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, ICatalog.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default Catalog",
-                    metadata.getBoolean(ICatalog.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the bad json syntax message and default catlaog message was printed
         // after the catalog was loaded
@@ -236,9 +235,9 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         assertContains(response, "_metadata");
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, ICatalog.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default Catalog",
-                    metadata.getBoolean(ICatalog.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the default catalog created
         assertNotNull("The default catalog should be loaded",

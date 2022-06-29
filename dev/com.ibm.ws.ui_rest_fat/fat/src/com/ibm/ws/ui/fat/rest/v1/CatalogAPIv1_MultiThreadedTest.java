@@ -25,7 +25,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ui.fat.APIConstants;
 import com.ibm.ws.ui.fat.FATSuite;
 import com.ibm.ws.ui.fat.rest.CommonMultiThreadedTest;
-import com.ibm.ws.ui.internal.v1.pojo.Bookmark;
+import com.ibm.ws.ui.fat.Bookmark;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;

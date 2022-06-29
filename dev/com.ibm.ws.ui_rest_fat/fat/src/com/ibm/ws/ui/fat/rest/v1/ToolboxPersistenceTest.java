@@ -30,10 +30,9 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ui.fat.APIConstants;
+import com.ibm.ws.ui.fat.Bookmark;
 import com.ibm.ws.ui.fat.FATSuite;
 import com.ibm.ws.ui.fat.rest.CommonRESTTest;
-import com.ibm.ws.ui.internal.v1.IToolbox;
-import com.ibm.ws.ui.internal.v1.pojo.Bookmark;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -210,9 +209,9 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
         response = get(url, adminUser, adminPassword, 200);
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertFalse("FAIL: Should have gotten back a non-default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the right message was printed after the toolbox was loaded
         assertNotNull("The server did not report that the persisted toolbox for admin was loaded",
@@ -243,9 +242,9 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
         response = get(url, adminUser, adminPassword, 200);
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertFalse("FAIL: Should have gotten back a non-default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the right message was printed after the toolbox was loaded
         assertNotNull("The server did not report that the persisted toolbox for admin was loaded",
@@ -277,9 +276,9 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
         response = get(url, testUser, testPassword, 200);
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertFalse("FAIL: Should have gotten back a non-default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the right message was printed after the toolbox was loaded
         assertNotNull("The server did not report that the persisted toolbox for admin was loaded",
@@ -311,9 +310,9 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
         response = get(url, testUser, testPassword, 200);
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertFalse("FAIL: Should have gotten back a non-default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the right message was printed after the toolbox was loaded
         assertNotNull("The server did not report that the persisted toolbox for admin was loaded",
@@ -344,9 +343,9 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
         response = get(url, adminUser, adminPassword, 200);
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the bad toolbox json message and default toolbox message was printed
         // after the toolbox was loaded
@@ -380,9 +379,9 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
         response = get(url, adminUser, adminPassword, 200);
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the bad json syntax message and default toolbox message was printed
         // after the toolbox was loaded
@@ -416,9 +415,9 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
         response = get(url, adminUser, adminPassword, 200);
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the default toolbox created
         assertNotNull("The default toolbox should be created",
@@ -600,9 +599,9 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
         response = get(url, adminUser, adminPassword, 200);
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertFalse("FAIL: Should have gotten back a non-default toolbox for admin",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the right message was printed after the toolbox was loaded
         assertNotNull("The server did not report that the persisted toolbox for admin was loaded",
@@ -612,9 +611,9 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
         response = get(url, "bob", "bobpwd", 200);
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default toolbox for bob",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Confirm the right message was printed after the toolbox was loaded
         assertNotNull("The server did not report that the persisted toolbox for admin was loaded",

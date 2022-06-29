@@ -16,14 +16,3 @@ jar {
     dependsOn 'compile-dojo'
     dependsOn 'post-compile'
 }
-
-configurations {
-  buildForFAT10 {
-    canBeConsumed = true
-    canBeResolved = false
-  }
-}
-
-artifacts {
-  buildForFAT10(file('build/libs/com.ibm.ws.ui.fat.1.0.jar'))
-}

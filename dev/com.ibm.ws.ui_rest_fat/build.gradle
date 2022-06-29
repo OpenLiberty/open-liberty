@@ -11,8 +11,8 @@
 
 dependencies {
   //if there is a existing project, reference it directly                            
-  // requiredLibs project(':com.ibm.ws.ui')
-  requiredLibs project(path: ':com.ibm.ws.ui', configuration: 'buildForFAT10')
+  requiredLibs project(':com.ibm.ws.ui')
+  // requiredLibs project(path: ':com.ibm.ws.ui', configuration: 'buildForFAT10')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

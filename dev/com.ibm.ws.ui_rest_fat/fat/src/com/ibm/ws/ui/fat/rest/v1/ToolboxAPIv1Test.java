@@ -24,9 +24,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ui.fat.APIConstants;
 import com.ibm.ws.ui.fat.FATSuite;
 import com.ibm.ws.ui.fat.rest.CommonRESTTest;
-import com.ibm.ws.ui.internal.v1.IToolbox;
-import com.ibm.ws.ui.internal.v1.pojo.Bookmark;
-import com.ibm.ws.ui.internal.v1.pojo.ToolEntry;
+import com.ibm.ws.ui.fat.Bookmark;
+import com.ibm.ws.ui.fat.ToolEntry;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -97,10 +96,10 @@ public class ToolboxAPIv1Test extends CommonRESTTest implements APIConstants {
         // Confirm the '_metadata' field is correct
         assertContains(response, "_metadata");
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
-        assertContains(metadata, IToolbox.METADATA_LAST_MODIFIED);
+                    metadata.getBoolean("isDefault"));
+        assertContains(metadata, "lastModified");
 
         // Confirm the 'preferences' field is correct
         assertContains(response, "preferences");
@@ -153,10 +152,10 @@ public class ToolboxAPIv1Test extends CommonRESTTest implements APIConstants {
         // Confirm the '_metadata' field is correct
         assertContains(response, "_metadata");
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
-        assertContains(metadata, IToolbox.METADATA_LAST_MODIFIED);
+                    metadata.getBoolean("isDefault"));
+        assertContains(metadata, "lastModified");
     }
 
     @Test
@@ -169,10 +168,10 @@ public class ToolboxAPIv1Test extends CommonRESTTest implements APIConstants {
         // Confirm the '_metadata' field is correct
         assertContains(response, "_metadata");
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
-        assertContains(metadata, IToolbox.METADATA_LAST_MODIFIED);
+                    metadata.getBoolean("isDefault"));
+        assertContains(metadata, "lastModified");
     }
 
     /**
@@ -320,9 +319,9 @@ public class ToolboxAPIv1Test extends CommonRESTTest implements APIConstants {
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         assertContains(response, "_metadata");
         JsonObject metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertFalse("FAIL: Should have gotten back a non-default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         // Reset the toolbox
         response = delete(url + "?resetToolbox=true", adminUser, adminPassword, 200);
@@ -332,9 +331,9 @@ public class ToolboxAPIv1Test extends CommonRESTTest implements APIConstants {
         Log.info(c, method.getMethodName(), "Got JSON object: " + response);
         assertContains(response, "_metadata");
         metadata = response.getJsonObject("_metadata");
-        assertContains(metadata, IToolbox.METADATA_IS_DEFAULT);
+        assertContains(metadata, "isDefault");
         assertTrue("FAIL: Should have gotten back a default toolbox",
-                    metadata.getBoolean(IToolbox.METADATA_IS_DEFAULT));
+                    metadata.getBoolean("isDefault"));
 
         resetCatalogAndToolbox();
     }
