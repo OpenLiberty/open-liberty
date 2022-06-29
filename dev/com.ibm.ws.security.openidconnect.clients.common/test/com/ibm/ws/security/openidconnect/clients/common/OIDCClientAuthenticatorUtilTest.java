@@ -1059,6 +1059,29 @@ public class OIDCClientAuthenticatorUtilTest {
     }
 
     @Test
+    public void testSetRedirectUrlIfNotDefined_withJunctionPath() {
+        try {
+            final String redirectUri = "https://mine.ibm.com:8020";
+            final String contextPath = "/oidcclient";
+            final String fullUrl = redirectUri + contextPath + "/redirect/" + CLIENT01;
+            mock.checking(new Expectations() {
+                {
+                    one(convClientConfig).isSocial();
+                    will(returnValue(false));
+                    one(convClientConfig).getRedirectUrlFromServerToClient();
+                    will(returnValue(redirectUri));
+                    one(convClientConfig).getRedirectUrlWithJunctionPath(redirectUri);
+                    will(returnValue(fullUrl));
+                }
+            });
+            assertNotNull("Redirect URL did not match expected value.", OIDCClientAuthenticatorUtil.setRedirectUrlIfNotDefined(req, convClientConfig));
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void testSetRedirectUrlIfNotDefined_socialFlow() {
         try {
             final String scheme = "https";
