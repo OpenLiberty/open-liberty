@@ -48,14 +48,14 @@ public abstract class AbstractTransactionContext implements AlterableContext, Tr
 
     private static final TraceComponent tc = Tr.register(AbstractTransactionContext.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
-    private static InitializedQualifier initializedQualifier = initializedQualifier = new InitializedQualifier() {
+    private static InitializedQualifier initializedQualifier = new InitializedQualifier() {
         @Override
         public Class value() {
             return TransactionScoped.class;
         }
     };
 
-    private static DestroyedQualifier destroyedQualifier = destroyedQualifier = new DestroyedQualifier() {
+    private static DestroyedQualifier destroyedQualifier = new DestroyedQualifier() {
         @Override
         public Class value() {
             return TransactionScoped.class;
@@ -212,7 +212,7 @@ public abstract class AbstractTransactionContext implements AlterableContext, Tr
         }
 
         //Fire any observers
-        beanManager.fireEvent("Destroying transaction context", destroyedQualifier);
+        fireEvent(beanManager, "Destroying transaction context", destroyedQualifier);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "destroy");
