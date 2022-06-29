@@ -38,6 +38,9 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * DS service class representing an LTPA token configuration.
  * <p>
@@ -185,7 +188,18 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     private void submitTaskToCreateLTPAKeys() {
-        executorService.getService().execute(createTask);
+        CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
+        // conditionally create hook if checkpoint phase is present
+        CheckpointHook hook = checkpointPhase == null ? null : new CheckpointHook() {
+            @Override
+            public void restore() {
+                executorService.getService().execute(createTask);
+            }
+        };
+        // if no checkpoint phase or we could not add our hook then submit task now
+        if (checkpointPhase == null || !checkpointPhase.addMultiThreadedHook(hook)) {
+            executorService.getService().execute(createTask);
+        }
     }
 
     /**

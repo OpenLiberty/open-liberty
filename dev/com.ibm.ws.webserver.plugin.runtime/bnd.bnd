@@ -46,6 +46,7 @@ instrument.classesExcludes: com/ibm/ws/plugin/runtime/resources/*.class
 	com.ibm.websphere.appserver.spi.containerServices;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.runtime.update;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.ws.threading;version=latest,\
 	com.ibm.ws.session;version=latest,\
