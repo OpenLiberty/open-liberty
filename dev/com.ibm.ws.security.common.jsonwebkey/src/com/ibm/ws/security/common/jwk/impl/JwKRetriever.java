@@ -63,6 +63,7 @@ import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.PemKeyUtil.KeyType;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
+import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
@@ -76,6 +77,7 @@ public class JwKRetriever {
     final static String PEM_END_TOKEN = "--END--";
     final static String JWKS = "keys";
     final static String JSON_START = "{";
+    public HttpUtils httpUtils;
 
     public enum JwkKeyType {
         PUBLIC, PRIVATE
@@ -107,6 +109,7 @@ public class JwKRetriever {
 
     public JwKRetriever(JWKSet jwkSet) {
         this.jwkSet = jwkSet;
+        httpUtils = new HttpUtils();
     }
 
     /**
@@ -838,7 +841,6 @@ public class JwKRetriever {
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
 
-        HttpClient client = null;
         boolean addBasicAuthHeader = false;
 
         if (jwkClientId != null && jwkClientSecret != null) {
@@ -849,44 +851,9 @@ public class JwKRetriever {
         if (addBasicAuthHeader) {
             credentialsProvider = createCredentialsProvider();
         }
-
-        client = createHttpClient(url.startsWith("https:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider, useSystemPropertiesForHttpClientConnections);
-        return client;
-
-    }
-
-    protected HttpClientBuilder getBuilder(boolean useSystemPropertiesForHttpClientConnections) {
-        return useSystemPropertiesForHttpClientConnections ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
-    }
-
-    private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider, boolean useSystemPropertiesForHttpClientConnections) {
-        HttpClient client = null;
-        if (isSecure) {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                if (addBasicAuthHeader) {
-                    client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-                } else {
-                    client = getBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
-                }
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
-            }
-        } else {
-            if (addBasicAuthHeader) {
-                client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).build();
-            } else {
-                client = getBuilder(useSystemPropertiesForHttpClientConnections).build();
-            }
-        }
-        return client;
+        
+        return httpUtils.createHttpClient(sslSocketFactory, url.startsWith("https"), isHostnameVerification, useSystemPropertiesForHttpClientConnections, credentialsProvider);
+        
     }
 
     private BasicCredentialsProvider createCredentialsProvider() {
