@@ -379,9 +379,12 @@ public class JSF23CDIGeneralTests {
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("InitParam: ELImplicitObjectsViaCDI"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Param: Hello World"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ParamValues: Hello World"));
-            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Session isNew: true"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("View viewId: /implicit_objects.xhtml "));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ViewScope isEmpty: true"));
+            // See https://issues.apache.org/jira/projects/MYFACES/issues/MYFACES-4432
+            // Note: The request & session objects are not resolved by CDI, but via ImplicitObjectResolver
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Request contextPath: /ELImplicitObjectsViaCDI"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Session isNew: true"));
         }
     }
 
