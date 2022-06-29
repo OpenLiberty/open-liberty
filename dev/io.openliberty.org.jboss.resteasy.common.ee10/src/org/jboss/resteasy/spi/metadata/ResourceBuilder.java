@@ -860,7 +860,7 @@ public class ResourceBuilder
       ResourceConstructorBuilder builder = buildRootResource(annotatedResourceClass).constructor(constructor);
       if (constructor.getParameterTypes() != null)
       {
-         for (int i = 0; i < constructor.getParameterTypes().length; i++)
+         for (int i = 0; i < constructor.getParameterCount(); i++)
             builder.param(i).fromAnnotations();
       }
       ResourceClass resourceClass = applyProcessors(builder.buildConstructor().buildClass());
@@ -1183,7 +1183,7 @@ public class ResourceBuilder
       {
          if (!method.getName().startsWith("set"))
             continue;
-         if (method.getParameterTypes().length != 1)
+         if (method.getParameterCount() != 1)
             continue;
          long hash = 0;
          try

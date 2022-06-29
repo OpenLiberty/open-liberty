@@ -32,9 +32,7 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
-                                             .andWith(FeatureReplacementAction.EE9_FEATURES()
-                                                                              .removeFeature("test.exceptionmapper-2.0")
-                                                                              .addFeature("test.exceptionmapper-3.0"));
+                                             .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("test.exceptionmapper-2.0").addFeature("test.exceptionmapper-3.0"));
 
     @BeforeClass
     public static void transformTestBundle() {

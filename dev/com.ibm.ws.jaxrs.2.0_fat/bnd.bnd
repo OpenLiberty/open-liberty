@@ -72,6 +72,7 @@ tested.features: \
   restfulWS-3.0,\
   appsecurity-3.0,\
   jsonb-2.0,\
+  jsonb-3.0,\
   appsecurity-4.0,\
   enterpriseBeansLite-4.0,\
   expressionlanguage-4.0,\
