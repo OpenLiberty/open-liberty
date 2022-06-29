@@ -162,6 +162,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 - [ ] **APIs/Externals** Externals have been reviewed or N/A.  ([OpenLiberty/externals-approvers](https://github.com/orgs/OpenLiberty/teams/externals-approvers))
   - Approver adds label `focalApproved:externals` 
 - [ ] **Demo** Demo is scheduled for an upcoming EOI or N/A. ([OpenLiberty/demo-approvers](https://github.com/orgs/OpenLiberty/teams/demo-approvers))
+  - Add comment `@OpenLiberty/demo-approvers Demo scheduled for EOI [Iteration Number]` to this issue.
   - Approver adds label `focalApproved:demo`.
 - [ ] **FAT** All Tests complete and running successfully in SOE or N/A. ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers))
   - Approver adds label `focalApproved:fat`.
