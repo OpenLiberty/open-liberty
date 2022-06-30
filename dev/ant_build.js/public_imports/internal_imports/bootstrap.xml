@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2020 IBM Corporation and others.
+    Copyright (c) 2020, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 <project name="bootstrap" default="get-bootstrap-lib">
     
     <property name="bootstrap.project.destination" location="${basedir}/lib/bootstrap" />
-    <property name="bootstrap.version" value="3.4.1" />	
+    <property name="bootstrap.version" value="5.1.3" />	
 	<property name="bootstrap.home" location="${basedir}/../ant_build.js/lib/bootstrap" />
     <property name="bootstrap.src" location="${bootstrap.home}/bootstrap-${bootstrap.version}" />
 	<property name="bootstrap.src.jar" value="${bootstrap.src}.jar" />
@@ -33,14 +33,8 @@
         <delete dir="${bootstrap.project.destination}" failonerror="false" />
         <mkdir dir="${bootstrap.project.destination}" />
 		<mkdir dir="${bootstrap.project.destination}/js" />
-		<mkdir dir="${bootstrap.project.destination}/fonts" />
 		<mkdir dir="${bootstrap.project.destination}/css" />
-		<copy file="${bootstrap.src}/META-INF/resources/webjars/bootstrap/${bootstrap.version}/js/bootstrap.min.js" tofile="${bootstrap.project.destination}/js/bootstrap.min.js" />
-		<copy file="${bootstrap.src}/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/bootstrap-theme.min.css" tofile="${bootstrap.project.destination}/css/bootstrap-theme.min.css" />
+		<copy file="${bootstrap.src}/META-INF/resources/webjars/bootstrap/${bootstrap.version}/js/bootstrap.bundle.min.js" tofile="${bootstrap.project.destination}/js/bootstrap.bundle.min.js" />
 		<copy file="${bootstrap.src}/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/bootstrap.min.css" tofile="${bootstrap.project.destination}/css/bootstrap.min.css" />
-        <copy todir="${bootstrap.project.destination}/fonts">
-            <fileset dir="${bootstrap.src}/META-INF/resources/webjars/bootstrap/${bootstrap.version}/fonts">
-            </fileset>
-        </copy>
     </target>
 </project>

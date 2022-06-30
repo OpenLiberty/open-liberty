@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -178,7 +178,7 @@ var serverExplorer = (function() {
         }
 
         // Create server entry
-        var spanInsert = "<span class=\"sr-only\">" + stringUtils.formatString(editorMessages.SERVER_TABLE_CELL_FOR_SCREEN_READER, [cluster, server.host, server.wlpUserDir]) + "</span>";
+        var spanInsert = "<span class=\"visually-hidden\">" + stringUtils.formatString(editorMessages.SERVER_TABLE_CELL_FOR_SCREEN_READER, [cluster, server.host, server.wlpUserDir]) + "</span>";
         var serverEntry = $("<tr tabindex=\"0\" class=\"serverExplorerServerEntry\" >" +
                             "    <td><span " + bidiDirMarkupServerName + ">" + (searchFilter.length > 0? markSearchFilter(server.name, searchFilter) : server.name) + "</span>" + spanInsert +"</td>" +
                             "    <td><span " + bidiDirMarkupCluster + ">" + (searchFilter.length > 0? markSearchFilter(cluster, searchFilter) : cluster) + "</span></td>" +
