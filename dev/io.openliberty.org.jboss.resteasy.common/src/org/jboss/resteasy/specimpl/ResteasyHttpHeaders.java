@@ -24,7 +24,45 @@ import java.util.StringTokenizer;
  */
 public class ResteasyHttpHeaders implements HttpHeaders
 {
+    // Liberty change begin
+    private final static List<MediaType> MEDIA_WILDCARD = Collections.singletonList(MediaType.WILDCARD_TYPE);
+    private final static List<Locale> LANGUAGE_WILDCARD = Collections.singletonList(Locale.forLanguageTag("*"));
 
+    private static final Map<String, List<MediaType>> mediaTypeCache;
+    private static final Map<String, List<Locale>> languageCache;
+    static {
+        Map<String, List<MediaType>> mtCache = new HashMap<>();
+        mtCache.put(MediaType.APPLICATION_ATOM_XML_TYPE.toString(), Collections.singletonList(MediaType.APPLICATION_ATOM_XML_TYPE));
+        mtCache.put(MediaType.APPLICATION_FORM_URLENCODED_TYPE.toString(), Collections.singletonList(MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+        mtCache.put(MediaType.APPLICATION_JSON_PATCH_JSON_TYPE.toString(), Collections.singletonList(MediaType.APPLICATION_JSON_PATCH_JSON_TYPE));
+        mtCache.put(MediaType.APPLICATION_JSON_TYPE.toString(), Collections.singletonList(MediaType.APPLICATION_JSON_TYPE)); 
+        mtCache.put(MediaType.APPLICATION_OCTET_STREAM_TYPE.toString(), Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM_TYPE));
+        mtCache.put(MediaType.APPLICATION_SVG_XML_TYPE.toString(), Collections.singletonList(MediaType.APPLICATION_SVG_XML_TYPE));
+        mtCache.put(MediaType.APPLICATION_XHTML_XML_TYPE.toString(), Collections.singletonList(MediaType.APPLICATION_XHTML_XML_TYPE));
+        mtCache.put(MediaType.APPLICATION_XML_TYPE.toString(), Collections.singletonList(MediaType.APPLICATION_XML_TYPE));
+        mtCache.put(MediaType.MULTIPART_FORM_DATA_TYPE.toString(), Collections.singletonList(MediaType.MULTIPART_FORM_DATA_TYPE));
+        mtCache.put(MediaType.SERVER_SENT_EVENTS_TYPE.toString(), Collections.singletonList(MediaType.SERVER_SENT_EVENTS_TYPE));
+        mtCache.put(MediaType.TEXT_HTML_TYPE.toString(), Collections.singletonList(MediaType.TEXT_HTML_TYPE));
+        mtCache.put(MediaType.TEXT_PLAIN_TYPE.toString(), Collections.singletonList(MediaType.TEXT_PLAIN_TYPE));
+        mtCache.put(MediaType.TEXT_XML_TYPE.toString(), Collections.singletonList(MediaType.TEXT_XML_TYPE));
+        mtCache.put(MediaType.WILDCARD_TYPE.toString(), MEDIA_WILDCARD);
+        mediaTypeCache = Collections.unmodifiableMap(mtCache);
+
+        Map<String,List<Locale>> langCache = new HashMap<>();
+        langCache.put(Locale.CHINESE.toString(), Collections.singletonList(Locale.CHINESE));
+        langCache.put(Locale.ENGLISH.toString(), Collections.singletonList(Locale.ENGLISH));
+        langCache.put(Locale.FRENCH.toString(), Collections.singletonList(Locale.FRENCH));
+        langCache.put(Locale.GERMAN.toString(), Collections.singletonList(Locale.GERMAN));
+        langCache.put(Locale.ITALIAN.toString(), Collections.singletonList(Locale.ITALIAN));
+        langCache.put(Locale.JAPANESE.toString(), Collections.singletonList(Locale.JAPANESE));
+        langCache.put(Locale.KOREAN.toString(), Collections.singletonList(Locale.KOREAN));
+        langCache.put(Locale.SIMPLIFIED_CHINESE.toString(), Collections.singletonList(Locale.SIMPLIFIED_CHINESE));
+        langCache.put(Locale.TRADITIONAL_CHINESE.toString(), Collections.singletonList(Locale.TRADITIONAL_CHINESE));
+        langCache.put("", LANGUAGE_WILDCARD);
+        languageCache = Collections.unmodifiableMap(langCache);
+    }
+    // Liberty change end
+    
    private MultivaluedMap<String, String> requestHeaders;
    private MultivaluedMap<String, String> unmodifiableRequestHeaders;
    private Map<String, Cookie> cookies;
@@ -157,8 +195,21 @@ public class ResteasyHttpHeaders implements HttpHeaders
    {
       List<String> vals = requestHeaders.get(ACCEPT);
       if (vals == null || vals.isEmpty()) {
-         return Collections.singletonList(MediaType.WILDCARD_TYPE);
-      } else {
+          return MEDIA_WILDCARD;                                                // Liberty change
+      } 
+      // Liberty change begin
+      if(vals.size() == 1){
+          String type = vals.get(0).trim();
+          if("*/*".equals(type)) {
+              return MEDIA_WILDCARD;
+          } else {
+              List<MediaType> standard = mediaTypeCache.get(type);
+              if(standard != null) {
+                  return standard;
+              }
+          }
+      }
+      // Liberty change end
          List<MediaType> list = new ArrayList<MediaType>();
          for (String v : vals) {
             StringTokenizer tokenizer = new StringTokenizer(v, ",");
@@ -169,17 +220,28 @@ public class ResteasyHttpHeaders implements HttpHeaders
          }
          MediaTypeHelper.sortByWeight(list);
          return Collections.unmodifiableList(list);
-      }
    }
 
    @Override
    public List<Locale> getAcceptableLanguages()
    {
       List<String> vals = requestHeaders.get(ACCEPT_LANGUAGE);
-      if (vals == null || vals.isEmpty()
-                      || (vals.size() == 1 && "".equals(vals.get(0).trim()))) { // liberty change
-         return Collections.singletonList(Locale.forLanguageTag("*"));
+      if (vals == null || vals.isEmpty()) {
+          return LANGUAGE_WILDCARD;                                             // Liberty change
       }
+      // Liberty change begin
+      if(vals.size() == 1){
+          String type = vals.get(0).trim();
+          if("".equals(type)) {
+              return LANGUAGE_WILDCARD;
+          } else {
+              List<Locale> standard = languageCache.get(type);
+              if(standard != null) {
+                  return standard;
+              }
+          }
+      }
+      // Liberty change end
       List<WeightedLanguage> languages = new ArrayList<WeightedLanguage>();
       for (String v : vals) {
          StringTokenizer tokenizer = new StringTokenizer(v, ",");
