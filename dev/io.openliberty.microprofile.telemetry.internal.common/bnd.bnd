@@ -37,4 +37,5 @@ Private-Package: \
 
 -buildpath: \
   io.opentelemetry:opentelemetry-exporter-jaeger;version=1.14.0,\
-  io.opentelemetry:opentelemetry-exporter-otlp-common;version=1.14.0
+  io.opentelemetry:opentelemetry-exporter-otlp-common;version=1.14.0,\
+  io.opentelemetry:opentelemetry-exporter-otlp-trace;version=1.14.0

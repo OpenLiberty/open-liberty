@@ -2,5 +2,6 @@
         <featureManager>
                 <feature>mpConfig-3.0</feature>
                 <feature>mpTelemetry-1.0</feature>
+                <feature>restfulWS-3-0</feature>
         </featureManager>
 </server>

@@ -75,8 +75,6 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Override
     public void filter(final ContainerRequestContext request) {
-        System.out.println("RequestFilter Inject");
-        
         Context parentContext = Context.current();
         if (instrumenter.shouldStart(parentContext, request)) {
             request.setProperty(resourceString + "class", resourceInfo.getResourceClass());
@@ -92,7 +90,6 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Override
     public void filter(final ContainerRequestContext request, final ContainerResponseContext response) {
-        System.out.println("RequestFilter Inject");
         Scope scope = (Scope) request.getProperty(configString + "scope");
         if (scope == null) {
             return;

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.cdi;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -32,6 +33,7 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.exporter.jaeger.JaegerGrpcSpanExporter;
+import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
@@ -77,19 +79,48 @@ public class OpenTelemetryProducer {
 
     @ApplicationScoped
     private SpanExporter getSpanExporter(Map<String,String> oTelConfigs) {
-        /*if(oTelConfigs.get("otel.traces.exporter").equals("jaeger")){
+
+        //default endpoint
+        String endpoint = "http://localhost:14250";
+        String timeout = "10000";
+        if(oTelConfigs.get("otel.traces.exporter").equals("jaeger") || oTelConfigs.get("OTEL_TRACES_EXPORTER").equals("jaeger")){
+            if(oTelConfigs.get("otel.exporter.jaeger.endpoint") != null){
+                endpoint = oTelConfigs.get("otel.exporter.jaeger.endpoint");
+            }
+            else if(oTelConfigs.get("OTEL_EXPORTER_JAEGER_ENDPOINT")!= null){
+                endpoint = oTelConfigs.get("OTEL_EXPORTER_JAEGER_ENDPOINT");
+            }
+            if(oTelConfigs.get("otel.exporter.jaeger.timeout") != null){
+                timeout = oTelConfigs.get("otel.exporter.jaeger.timeout");
+            }
+            else if(oTelConfigs.get("OTEL_EXPORTER_JAEGER_TIMEOUT")!= null){
+                timeout = oTelConfigs.get("OTEL_EXPORTER_JAEGER_TIMEOUT");
+            }
             return JaegerGrpcSpanExporter.builder()
-                        .setEndpoint("http://localhost:14250")
-                        .build();
-        }
-        else if(oTelConfigs.get("otel.traces.exporter").equals("zipkin")){
-           return ZipkinSpanExporter.builder()
-                        .setEndpoint("http://localhost:9411/api/v2/spans")
-                        .build();
-        }*/
-        return JaegerGrpcSpanExporter.builder()
-                            .setEndpoint("http://localhost:14250")
+                            .setEndpoint(endpoint)
+                            .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
                             .build();
+        }
+
+        else{
+            endpoint = "http://localhost:4317";
+            if(oTelConfigs.get("OTEL_EXPORTER_OTLP_ENDPOINT") != null){
+                endpoint = oTelConfigs.get("OTEL_EXPORTER_OTLP_ENDPOINT");
+            }
+            else if(oTelConfigs.get("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT") != null){
+                endpoint = oTelConfigs.get("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT");
+            }
+            if(oTelConfigs.get("otel.exporter.otlp.endpoint") != null){
+                endpoint = oTelConfigs.get("otel.exporter.otlp.endpoint");
+            }
+            else if(oTelConfigs.get("otel.exporter.otlp.traces.endpoint") != null){
+                endpoint = oTelConfigs.get("otel.exporter.otlp.traces.endpoint");
+            }
+            return OtlpGrpcSpanExporter.builder()
+                            .setEndpoint(endpoint)
+                            .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
+                            .build();
+        }
     }
 
     private HashMap<String,String> getTelemetryProperties(){
