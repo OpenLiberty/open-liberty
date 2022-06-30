@@ -1,18 +1,20 @@
-/*
- * IBM Confidential
- *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2013
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+/*******************************************************************************
+* Copyright (c) 2022 IBM Corporation and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*     IBM Corporation - initial API and implementation
+*******************************************************************************/
 package com.ibm.ws.ui.fat;
 
 import java.net.URLEncoder;
 
+/*
+ * A simple Bookmark class to remove the need to export the internal package from com.ibm.ws.ui project
+ */
 public class Bookmark {
     String id;
     String type;
