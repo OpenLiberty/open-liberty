@@ -24,11 +24,11 @@ Export-Package: \
   jakarta.annotation.sql;version="2.1.0"
 
 Include-Resource: \
-  @${repo;jakarta.annotation:jakarta.annotation-api;2.1.0;EXACT}!/META-INF/NOTICE
+  @${repo;jakarta.annotation:jakarta.annotation-api;2.1.1;EXACT}!/META-INF/NOTICE
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  jakarta.annotation:jakarta.annotation-api;version=2.1.0;strategy=exact
+  jakarta.annotation:jakarta.annotation-api;version=2.1.1;strategy=exact

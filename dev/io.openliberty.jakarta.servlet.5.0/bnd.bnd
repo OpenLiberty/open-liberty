@@ -27,4 +27,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-   jakarta.servlet:jakarta.servlet-api;version=5.0.0
+   jakarta.servlet:jakarta.servlet-api;version=5.0.0;strategy=exact

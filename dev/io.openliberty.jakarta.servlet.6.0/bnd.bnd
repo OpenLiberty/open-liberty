@@ -20,20 +20,19 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Bundle-SymbolicName: io.openliberty.jakarta.servlet.6.0; singleton:=true
 Bundle-Description: Jakarta Servlet, version 6.0
 
-#Export temporarily as 5.0 API
 Export-Package: \
-   	jakarta.servlet;thread-context=true;uses:="jakarta.servlet.annotation,jakarta.servlet.descriptor";version="5.0.0",\
-   	jakarta.servlet.annotation;thread-context=true;uses:="jakarta.servlet";version="5.0.0",\
-   	jakarta.servlet.descriptor;thread-context=true;version="5.0.0",\
-   	jakarta.servlet.http;thread-context=true;uses:="jakarta.servlet";version="5.0.0",\
-   	jakarta.servlet.resources;thread-context=true;version="5.0.0"
+   	jakarta.servlet;thread-context=true;uses:="jakarta.servlet.annotation,jakarta.servlet.descriptor";version="6.0.0",\
+   	jakarta.servlet.annotation;thread-context=true;uses:="jakarta.servlet";version="6.0.0",\
+   	jakarta.servlet.descriptor;thread-context=true;version="6.0.0",\
+   	jakarta.servlet.http;thread-context=true;uses:="jakarta.servlet";version="6.0.0",\
+   	jakarta.servlet.resources;thread-context=true;version="6.0.0"
 
 Include-Resource: \
-  @${repo;io.openliberty.jakarta.servlet:jakarta.servlet-api;6.0.0.20220119;EXACT}!/META-INF/NOTICE
+  @${repo;jakarta.servlet:jakarta.servlet-api;6.0.0;EXACT}!/META-INF/NOTICE
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-   io.openliberty.jakarta.servlet:jakarta.servlet-api;version=6.0.0.20220119
+   jakarta.servlet:jakarta.servlet-api;version=6.0.0;strategy=exact

@@ -149,7 +149,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         incompatibleValueAddFeatures.add("springBoot-2.0");
     }
 
-    static Set<String> getAllCompatibileFeatures() {
+    static Set<String> getAllCompatibleFeatures() {
         Set<String> compatFeatures = new HashSet<>();
         try {
             File featureDir = new File(Bootstrap.getInstance().getValue("libertyInstallPath") + "/lib/features/");
@@ -320,7 +320,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         }
 
         if (!errors.isEmpty()) {
-            Assert.fail("Found errors while checking EE9 features incompatibility with EE8 features:\n" + errors);
+            Assert.fail("Found errors while checking EE9 features incompatibility with previous EE features:\n" + errors);
         }
     }
 
