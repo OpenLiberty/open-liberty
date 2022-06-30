@@ -40,9 +40,9 @@ fat.project: true
   com.ibm.ws.persistence.jakarta;version=latest,\
   com.ibm.ws.tx.embeddable.jakarta;version=latest,\
   io.openliberty.jakarta.annotation.2.0,\
-  io.openliberty.jakarta.cdi.3.0,\
+  io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.concurrency.3.0,\
   io.openliberty.jakarta.interceptor.2.0,\
   io.openliberty.jakarta.persistence.3.0,\
-  io.openliberty.jakarta.servlet.5.0;version=latest,\
+  io.openliberty.jakarta.servlet.6.0;version=latest,\
   io.openliberty.jakarta.transaction.2.0;version=latest
