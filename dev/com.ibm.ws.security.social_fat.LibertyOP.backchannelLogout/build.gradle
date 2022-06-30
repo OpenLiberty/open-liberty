@@ -1,0 +1,87 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../com.ibm.ws.security.fat.common.backchannelLogout/CommonBackchannelLogout.gradle'
+
+addRequiredLibraries.dependsOn copySharedOPServer
+
+autoFVT.doLast {
+  
+  /*
+   * Copy common artifacts to test servers.
+   */
+  def servers = [
+    'com.ibm.ws.security.backchannelLogout_fat.social'
+  ]
+  servers.each { server ->
+    copy { 
+      from project(':com.ibm.ws.security.fat.common.backchannelLogout').file('publish/servers/' + server)
+      into new File(autoFvtDir, 'publish/servers/' + server)
+      include '**'
+    }
+    
+    copy { 
+      from project(':com.ibm.ws.security.fat.common.backchannelLogout').file('publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include '*.xml'
+    }
+    
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+  	/* copy shared key/trust stores from the common security fat project */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+     include 'allAlgKeyStore.p12'
+     include 'allAlgTrustStore.p12'
+    }
+    
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+      into new File(autoFvtDir, 'publish/servers/' + server)
+      include 'commonBasicKeyStore.jks'
+      include 'commonTrustStore.jks'
+      include 'commonBadTrustStore.jks'
+    }
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'oauthRoles_1.xml'
+    }  
+    
+    copy {
+      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/servers/' + server+ '/imports')
+      include 'signEncryptSSLSettings.xml'
+    }
+    
+    copy {
+      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+      include '*.pem'
+    }
+    
+    copy {
+      from new File(project(":com.ibm.ws.security.fat.common.backchannelLogout").buildDir, "test-application/backchannelLogoutTestApp.zip")
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+      rename 'backchannelLogoutTestApp.zip', 'backchannelLogoutTestApp.war'
+    }
+
+    copy {
+      from new File(project(":com.ibm.ws.security.fat.common.social").buildDir, "test-application/formlogin.war")
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+    
+  }
+              
+}
