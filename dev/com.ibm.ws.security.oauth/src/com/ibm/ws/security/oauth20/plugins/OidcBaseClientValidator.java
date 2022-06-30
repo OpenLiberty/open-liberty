@@ -692,7 +692,7 @@ public class OidcBaseClientValidator {
             throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_URI_INVALID_SCHEME", new Object[] { logoutUri, OidcBaseClient.SN_BACKCHANNEL_LOGOUT_URI }),
                     OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
-        if (scheme.equalsIgnoreCase("http") && !client.isConfidential()) {
+        if (scheme.equalsIgnoreCase("http") && client.isPublicClient()) {
             throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_URI_HTTP_SCHEME_CLIENT_NOT_CONFIDENTIAL", new Object[] { logoutUri, OidcBaseClient.SN_BACKCHANNEL_LOGOUT_URI, client.getClientId() }),
                     OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
