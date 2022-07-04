@@ -13,7 +13,6 @@
 dependencies {
   requiredLibs project(":com.ibm.ws.transaction.fat.util"),
                project(":com.ibm.ws.tx.embeddable"),
-               project(":com.ibm.ws.transaction.core_fat.base"),
                project(':io.openliberty.org.apache.commons.logging')
 }
 
