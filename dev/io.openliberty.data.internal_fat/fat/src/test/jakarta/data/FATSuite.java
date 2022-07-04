@@ -23,7 +23,8 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                DataTest.class
+                DataTest.class,
+                TemplateTest.class
 })
 public class FATSuite {
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("io.openliberty.data.internal.fat");
