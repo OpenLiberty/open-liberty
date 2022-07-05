@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -265,7 +265,6 @@ public class InvokerTask implements Runnable, Synchronization {
         String taskIdForPropTable = null;
         Long partitionId;
         TaskLocker ejbSingletonLockCollaborator = null;
-        String ownerForDeferredTask = null;
         ClassLoader loader = null;
         Throwable failure = null;
         Short prevFailureCount = null, nextFailureCount = null;
@@ -336,7 +335,7 @@ public class InvokerTask implements Runnable, Synchronization {
                 if (ejbSingletonRecord != null) {
                     String owner = ejbSingletonRecord.getIdentifierOfOwner();
                     if (!appTracker.isStarted(owner)) {
-                        ownerForDeferredTask = owner;
+                        appTracker.deferTask(this, owner, persistentExecutor);
                         if (trace && tc.isEntryEnabled())
                             Tr.exit(this, tc, "run[" + taskId + ']', "unavailable - deferred");
                         return; // Ignore, we are deferring the task because the application or module is unavailable
@@ -373,7 +372,7 @@ public class InvokerTask implements Runnable, Synchronization {
 
             String owner = taskRecord.getIdentifierOfOwner();
             if (loader == null || !appTracker.isStarted(owner)) {
-                ownerForDeferredTask = owner;
+                appTracker.deferTask(this, owner, persistentExecutor);
                 if (trace && tc.isEntryEnabled())
                     Tr.exit(this, tc, "run[" + taskId + ']', "unavailable - deferred");
                 return; // Ignore, we are deferring the task because the application or module is unavailable
@@ -665,9 +664,7 @@ public class InvokerTask implements Runnable, Synchronization {
                                 Tr.debug(this, tc, "deactivated - reschedule skipped");
                         } else
                             executor.schedule(this, delay, TimeUnit.MILLISECONDS);
-                    } else if (ownerForDeferredTask != null)
-                        appTracker.deferTask(this, ownerForDeferredTask, persistentExecutor);
-                    else {
+                    } else {
                         persistentExecutor.inMemoryTaskIds.remove(taskId);
                         if (failure != null) {
                             taskName = taskName == null || taskName.length() == 0 || taskName.length() == 1 && taskName.charAt(0) == ' ' ? String.valueOf(taskId) // empty task name
