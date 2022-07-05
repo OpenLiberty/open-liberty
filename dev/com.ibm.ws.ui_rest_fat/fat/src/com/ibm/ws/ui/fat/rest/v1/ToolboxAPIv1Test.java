@@ -18,6 +18,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ui.fat.APIConstants;
@@ -26,12 +27,14 @@ import com.ibm.ws.ui.fat.rest.CommonRESTTest;
 import com.ibm.ws.ui.fat.Bookmark;
 import com.ibm.ws.ui.fat.ToolEntry;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  *
  */
+@RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class ToolboxAPIv1Test extends CommonRESTTest implements APIConstants {
     private static final Class<?> c = ToolboxAPIv1Test.class;

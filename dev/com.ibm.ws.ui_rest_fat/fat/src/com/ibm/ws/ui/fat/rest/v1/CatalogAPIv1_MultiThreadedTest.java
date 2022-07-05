@@ -19,6 +19,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ui.fat.APIConstants;
@@ -26,12 +27,14 @@ import com.ibm.ws.ui.fat.FATSuite;
 import com.ibm.ws.ui.fat.rest.CommonMultiThreadedTest;
 import com.ibm.ws.ui.fat.Bookmark;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  * Validate the version 1 catalog resource add implementation is thread-safe.
  */
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class CatalogAPIv1_MultiThreadedTest extends CommonMultiThreadedTest implements APIConstants {
     private static final Class<?> c = CatalogAPIv1_MultiThreadedTest.class;

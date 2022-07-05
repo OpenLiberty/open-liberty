@@ -21,6 +21,7 @@ import javax.json.JsonObject;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ui.fat.APIConstants;
@@ -28,6 +29,7 @@ import com.ibm.ws.ui.fat.FATSuite;
 import com.ibm.ws.ui.fat.rest.CommonRESTTest;
 import com.ibm.ws.ui.fat.Bookmark;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -41,6 +43,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * the FAT.
  * </p>
  */
+@RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class CatalogAPIv1Test extends CommonRESTTest implements APIConstants {
     private static final Class<?> c = CatalogAPIv1Test.class;

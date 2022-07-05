@@ -4,6 +4,8 @@
 
     <featureManager>
         <feature>adminCenter-1.0</feature>
+        <feature>jsp-2.2</feature>
+        <feature>servlet-3.1</feature>
     </featureManager>
 
     <!-- Define the host name for use by the collective.

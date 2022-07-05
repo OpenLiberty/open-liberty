@@ -26,12 +26,15 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ui.fat.APIConstants;
 import com.ibm.ws.ui.fat.Bookmark;
 import com.ibm.ws.ui.fat.FATSuite;
 import com.ibm.ws.ui.fat.rest.CommonRESTTest;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -41,6 +44,7 @@ import componenttest.topology.impl.LibertyServer;
  * This test requires server restarts.
  * This can not be run via JUnit through Eclipse.
  */
+@RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstants {
     private static final Class<?> c = ToolboxPersistenceTest.class;

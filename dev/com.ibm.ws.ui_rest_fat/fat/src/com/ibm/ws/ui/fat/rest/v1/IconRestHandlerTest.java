@@ -32,6 +32,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.osgi.framework.Version;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -39,6 +40,7 @@ import com.ibm.ws.ui.fat.APIConstants;
 import com.ibm.ws.ui.fat.FATSuite;
 import com.ibm.ws.ui.fat.rest.CommonRESTTest;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
@@ -47,6 +49,7 @@ import componenttest.topology.utils.FileUtils;
 /**
  *
  */
+@RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class IconRestHandlerTest extends CommonRESTTest implements APIConstants {
     private static final Class<?> c = IconRestHandlerTest.class;
