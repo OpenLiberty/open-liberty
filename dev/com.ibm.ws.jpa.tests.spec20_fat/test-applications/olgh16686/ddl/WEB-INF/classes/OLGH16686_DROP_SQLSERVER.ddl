@@ -1,2 +1,2 @@
-DROP TABLE ElementCollectionEntityOLGH16686;
+DROP TABLE ElemCollEntityOLGH16686;
 DROP TABLE EntMapDateTemporal;

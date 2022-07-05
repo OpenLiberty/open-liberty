@@ -20,8 +20,8 @@ import javax.persistence.EntityManager;
 
 import org.junit.Assert;
 
-import com.ibm.ws.jpa.olgh16686.model.ElementCollectionEmbeddableTemporalOLGH16686;
-import com.ibm.ws.jpa.olgh16686.model.ElementCollectionEntityOLGH16686;
+import com.ibm.ws.jpa.olgh16686.model.ElemCollEmbedTemporalOLGH16686;
+import com.ibm.ws.jpa.olgh16686.model.ElemCollEntityOLGH16686;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.tranjacket.TransactionJacket;
@@ -60,12 +60,12 @@ public class JPATestOLGH16686Logic extends AbstractTestLogic {
             TransactionJacket tj = jpaResource.getTj();
 
             try {
-                ElementCollectionEntityOLGH16686 newEntity = new ElementCollectionEntityOLGH16686();
+                ElemCollEntityOLGH16686 newEntity = new ElemCollEntityOLGH16686();
                 newEntity.setId(99);
 
-                Map<Date, ElementCollectionEmbeddableTemporalOLGH16686> map = new HashMap<Date, ElementCollectionEmbeddableTemporalOLGH16686>();
-                map.put(new Date(1), new ElementCollectionEmbeddableTemporalOLGH16686(new Date(System.currentTimeMillis() - 200000000)));
-                newEntity.setMapKeyTemporalValueEmbed(new HashMap<Date, ElementCollectionEmbeddableTemporalOLGH16686>(map));
+                Map<Date, ElemCollEmbedTemporalOLGH16686> map = new HashMap<Date, ElemCollEmbedTemporalOLGH16686>();
+                map.put(new Date(1), new ElemCollEmbedTemporalOLGH16686(new Date(System.currentTimeMillis() - 200000000)));
+                newEntity.setMapKeyTemporalValueEmbed(new HashMap<Date, ElemCollEmbedTemporalOLGH16686>(map));
 
                 System.out.println("Beginning new transaction...");
                 tj.beginTransaction();
