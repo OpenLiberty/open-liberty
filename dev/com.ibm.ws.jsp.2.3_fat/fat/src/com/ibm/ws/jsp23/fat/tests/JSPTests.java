@@ -46,6 +46,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -260,6 +261,7 @@ public class JSPTests {
      */
     @Test
     @ExpectedFFDC("javax.el.PropertyNotWritableException")
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Mode(TestMode.FULL)
     public void testEL30AssignmentOperatorException() throws Exception {
         WebConversation wc = new WebConversation();
@@ -371,6 +373,7 @@ public class JSPTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testEL22Operators() throws Exception {
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
@@ -442,6 +445,7 @@ public class JSPTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testEL30LambdaExpressions() throws Exception {
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
@@ -521,6 +525,7 @@ public class JSPTests {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testOperatorPrecedence() throws Exception {
         String[] expectedInResponse = { "<b>Test 1:</b> EL 3.0 [] and . operators left-to-right (Expected:true): true",
                                         "<b>Test 2:</b> EL 3.0 [] and . operators left-to-right (Expected:true): true",
@@ -559,6 +564,7 @@ public class JSPTests {
      *                       if something goes wrong
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testEL30CoercionRules() throws Exception {
         String[] expectedInResponse = { "Testing Coercion of a Value X to Type Y.",
                                         "Test if X is null and Y is not a primitive type and also not a String, return null (Expected:true): true" };
@@ -751,7 +757,7 @@ public class JSPTests {
                                         "Testing StreamELResolver with distinct method (Expected: [1, 4, 3, 2, 5]): [1, 4, 3, 2, 5]",
                                         "Testing StreamELResolver with filter method (Expected: [4, 3, 5, 3]): [4, 3, 5, 3]" };
 
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             for (int i = 0; i < expectedInResponse.length; i++) {
                 expectedInResponse[i] = expectedInResponse[i].replace("javax.el", "jakarta.el");
             }
@@ -768,6 +774,7 @@ public class JSPTests {
      */
     @Mode(TestMode.FULL)
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testPI44611() throws Exception {
         this.verifyStringInResponse(PI44611_APP_NAME, "PI44611.jsp", "Test passed!");
     }
@@ -780,6 +787,7 @@ public class JSPTests {
      */
     @Mode(TestMode.FULL)
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testPI59436() throws Exception {
         this.verifyStringInResponse(PI59436_APP_NAME, "PI59436.jsp", "Test passed.");
     }
@@ -998,7 +1006,7 @@ public class JSPTests {
     }
 
     private void verifyExceptionInResponse(String expectedException, String responseText) throws Exception {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             expectedException = "jakarta." + expectedException;
         } else {
             expectedException = "javax." + expectedException;

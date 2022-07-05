@@ -8,11 +8,11 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/transform.props
+-include= ~../cnf/resources/bnd/transform9.props
 
-Bundle-Name: WAS JSP 2.3 Jakarta
-Bundle-SymbolicName: com.ibm.ws.jsp.2.3.jakarta
-Bundle-Description: WAS JSP 2.3, version ${bVersion}; Jakarta Enabled
+Bundle-Name: WAS JSP 3.0 Jakarta
+Bundle-SymbolicName: com.ibm.ws.jsp.3.0.jakarta
+Bundle-Description: WAS JSP 3.0, version ${bVersion}; Jakarta Enabled
 
 -includeresource: \
    com/ibm/ws/jsp/speclevel=resources/30

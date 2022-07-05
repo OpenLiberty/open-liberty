@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,7 +84,7 @@ public class JSP23JSP22ServerTest {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES})
     public void testJsp23to22FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -124,7 +124,7 @@ public class JSP23JSP22ServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE10_FEATURES})
     public void testJsp30to23FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -139,6 +139,46 @@ public class JSP23JSP22ServerTest {
         LOG.info("Response from a 3.0 compilation: " + response.getText());
 
         assertTrue("The response did not contain: JSP version: 3.0", response.getText().contains("JSP version: 3.0"));
+
+        List<String> jsp23Feature = new ArrayList<String>();
+        jsp23Feature.add("jsp-2.3");
+        server.changeFeatures(jsp23Feature);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("TestJspFeatureChange"), true, new String[0]);
+
+        LOG.info("Requesting JSP with jsp-2.3 feature enabled");
+
+        response = wc.getResponse(request);
+
+        LOG.info("Response from a 2.3 compilation: " + response.getText());
+
+        assertTrue("The response did not contain: JSP version: 2.3", response.getText().contains("JSP version: 2.3"));
+
+    }
+
+    /**
+     * Tests a request with the pages-3.1 feature enabled.
+     * Then changes the feature to jsp-2.3 and request the same JSP again.
+     * The JSP should be recompiled.
+     * The JSP file pulls the version out of it's generated code and displays it in the rendered page.
+     *
+     * @throws Exception
+     */
+    @Test
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES})
+    public void testJsp31to23FeatureChange() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        LOG.info("Requesting JSP with pages-3.1 feature enabled");
+
+        String url = JSPUtils.createHttpUrlString(server, APP_NAME, "testJspFeatureChange.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Response from a 3.1 compilation: " + response.getText());
+
+        assertTrue("The response did not contain: JSP version: 3.1", response.getText().contains("JSP version: 3.1"));
 
         List<String> jsp23Feature = new ArrayList<String>();
         jsp23Feature.add("jsp-2.3");
