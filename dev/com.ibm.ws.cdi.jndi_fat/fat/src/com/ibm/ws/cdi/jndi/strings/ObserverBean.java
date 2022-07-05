@@ -8,21 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.test.jndi.observer;
-
-import java.io.IOException;
-import java.io.PrintWriter;
+package com.ibm.ws.cdi.jndi.strings;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
 public class ObserverBean {
@@ -33,9 +25,9 @@ public class ObserverBean {
         return result;
     }
 
-    public void init(@Observes @Initialized(ApplicationScoped.class)Object event){
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object event) {
         try {
-            result = (String)new InitialContext().lookup("java:app/env/com.ibm.ws.cdi.jndi.test.result");
+            result = (String) new InitialContext().lookup("java:app/env/com.ibm.ws.cdi.jndi.test.result");
         } catch (NamingException e) {
             result = "test failed " + e.getMessage();
         }
