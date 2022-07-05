@@ -123,10 +123,10 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         boolean process = OpentracingService.process(incomingUri, incomingPath, SpanFilterType.INCOMING);
 
         if (process) {
+            if (incomingURL == null) {
+                incomingURL = incomingUri.toURL().toString();
+            }
             if (buildSpanName == null) {
-                if (incomingURL == null) {
-                    incomingURL = incomingUri.toURL().toString();
-                }
                 buildSpanName = incomingURL;
             }
 

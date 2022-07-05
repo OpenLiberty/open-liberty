@@ -119,23 +119,14 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
         boolean process = OpentracingService.process(incomingUri, incomingPath, SpanFilterType.INCOMING);
 
-        String buildSpanName;
-        if (helper != null) {
-            buildSpanName = helper.getBuildSpanName(incomingRequestContext, resourceInfo);
-            if (buildSpanName == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, methodName + " skipping not traced method");
-                }
-                process = false;
-            }
-        } else {
+        if (process) {
             if (incomingURL == null) {
                 incomingURL = incomingUri.toURL().toString();
             }
-            buildSpanName = incomingURL;
-        }
+            if (buildSpanName == null) {
+                buildSpanName = incomingURL;
+            }
 
-        if (process) {
             Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), incomingURL);
