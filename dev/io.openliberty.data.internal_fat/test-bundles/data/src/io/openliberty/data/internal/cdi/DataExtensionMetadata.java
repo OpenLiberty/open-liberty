@@ -21,14 +21,20 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.openliberty.data.Data;
+import io.openliberty.data.Entities;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = CDIExtensionMetadata.class) // TODO property to identify class?
 public class DataExtensionMetadata implements CDIExtensionMetadata {
 
     @Override
+    public Set<Class<?>> getBeanClasses() {
+        return Set.of(TemplateProducer.class);
+    }
+
+    @Override
     public Set<Class<? extends Annotation>> getBeanDefiningAnnotationClasses() {
-        return Collections.singleton(Data.class);
+        return Set.of(Data.class, Entities.class);
     }
 
     @Override

@@ -34,19 +34,30 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.Entities;
 import io.openliberty.data.Id;
 import io.openliberty.data.internal.DataPersistence;
 
 public class DataExtension implements Extension {
     private final ArrayList<Bean<?>> beans = new ArrayList<>();
     private final HashSet<AnnotatedType<?>> beanTypes = new HashSet<>();
+    private final ArrayList<Entities> entitiesList = new ArrayList<>();
 
-    public <T> void processAnnotatedType(@Observes @WithAnnotations(Data.class) ProcessAnnotatedType<T> event) {
-        System.out.println("processAnnotatedType");
+    public <T> void processAnnotatedTypeWithData(@Observes @WithAnnotations(Data.class) ProcessAnnotatedType<T> event) {
+        System.out.println("processAnnotatedTypeWithData");
 
         AnnotatedType<T> type = event.getAnnotatedType();
         System.out.println("    found " + type.getAnnotation(Data.class) + " on " + type.getJavaClass());
         beanTypes.add(type);
+    }
+
+    public <T> void processAnnotatedTypeWithEntities(@Observes @WithAnnotations(Entities.class) ProcessAnnotatedType<T> event) {
+        System.out.println("processAnnotatedTypeWithEntities");
+
+        AnnotatedType<T> type = event.getAnnotatedType();
+        System.out.println("    found " + type.getAnnotation(Entities.class) + " on " + type.getJavaClass());
+
+        entitiesList.add(type.getAnnotation(Entities.class));
     }
 
     public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
@@ -98,6 +109,21 @@ public class DataExtension implements Extension {
             BeanAttributes<?> attrs = beanMgr.createBeanAttributes(beanType);
             Bean<?> bean = beanMgr.createBean(attrs, beanInterface, new BeanProducerFactory<>(beanMgr, entityClass, keyAttribute));
             beans.add(bean);
+        }
+
+        for (Entities anno : entitiesList) {
+            String dataStore = anno.provider();
+
+            for (Class<?> entityClass : anno.value()) {
+                ClassLoader loader = entityClass.getClassLoader();
+                Entry<String, ClassLoader> key = new SimpleImmutableEntry<>(dataStore, loader);
+                Map<Class<?>, String> entities = entitiesMap.get(key);
+                if (entities == null)
+                    entitiesMap.put(key, entities = new HashMap<>());
+
+                String keyAttribute = getID(entityClass);
+                entities.put(entityClass, keyAttribute);
+            }
         }
 
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();

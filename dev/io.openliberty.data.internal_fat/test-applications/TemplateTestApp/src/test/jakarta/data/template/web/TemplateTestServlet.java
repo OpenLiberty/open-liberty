@@ -13,7 +13,6 @@ package test.jakarta.data.template.web;
 import java.time.Year;
 
 import jakarta.annotation.Resource;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
@@ -21,17 +20,16 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import io.openliberty.data.DataTemplate;
+import io.openliberty.data.Entities;
 import io.openliberty.data.Template;
 
-@ApplicationScoped
-@SuppressWarnings("serial")
+@Entities(House.class)
 @WebServlet("/*")
 public class TemplateTestServlet extends FATServlet {
-    private final long TIMEOUT_MINUTES = 2;
+    private static final long serialVersionUID = 1L;
+    private static final long TIMEOUT_MINUTES = 2L;
 
     @Inject
-    @DataTemplate(House.class)
     Template template;
 
     @Resource
