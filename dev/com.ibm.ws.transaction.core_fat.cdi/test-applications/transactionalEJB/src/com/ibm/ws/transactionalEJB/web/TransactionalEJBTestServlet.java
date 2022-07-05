@@ -14,7 +14,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
 
-import com.ibm.tx.jta.ut.util.TestServletBase;
+import componenttest.app.FATServlet;
 
 /**
  * Servlet implementation class TransactionalEJBTest
@@ -23,7 +23,7 @@ import com.ibm.tx.jta.ut.util.TestServletBase;
  */
 @SuppressWarnings("serial")
 @WebServlet("/transactionalEJB")
-public class TransactionalEJBTestServlet extends TestServletBase {
+public class TransactionalEJBTestServlet extends FATServlet {
 
     public void testNoTransactionalEJB() throws NamingException {
         @SuppressWarnings("unused")

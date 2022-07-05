@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.junit.Test;
 import com.ibm.wsspi.uow.UOWManager;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -416,6 +417,7 @@ public class TransactionalTestServlet extends FATServlet {
 
     @Test
     @Mode(TestMode.LITE)
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testNE008b() {
         testNE008(classAnnotatedNeverTestBean, "NE008b");
     }
@@ -814,6 +816,7 @@ public class TransactionalTestServlet extends FATServlet {
 
     @Test
     @Mode(TestMode.LITE)
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testRE010b() {
         testRE010(classAnnotatedRequiredTestBean, "RE010b");
     }
@@ -1333,6 +1336,7 @@ public class TransactionalTestServlet extends FATServlet {
 
     @Test
     @Mode(TestMode.LITE)
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
     public void testSU012b() {
         testSU012(classAnnotatedSupportsTestBean, "SU012b");
@@ -2926,6 +2930,7 @@ public class TransactionalTestServlet extends FATServlet {
                 tc.setFailed(new Exception("1"));
             }
         } catch (Throwable t) {
+            t.printStackTrace();
             tc.setFailed(t);
         } finally {
             try {
