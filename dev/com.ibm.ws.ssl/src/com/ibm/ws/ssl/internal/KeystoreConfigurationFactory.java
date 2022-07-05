@@ -55,7 +55,10 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * of a DS service: throwing the exception does not deactivate the component,
  * it just fails the update.
  */
-@Component(service = ManagedServiceFactory.class,
+@Component(reference = { @Reference(name = "keystoreConfigurationFactoryCondition",
+                                    service = Condition.class, //
+                                    target = "(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")") },
+           service = ManagedServiceFactory.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM", "service.pid=com.ibm.ws.ssl.keystore" })
 public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable, KeyringBasedActionable {
@@ -75,7 +78,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     @SuppressWarnings("unchecked")
     @Override
     @FFDCIgnore(IllegalArgumentException.class)
-    public void updated(String pid, Dictionary properties) {
+    public void updated(String pid, Dictionary properties) throws ConfigurationException {
         // If we are stopping ignore the update
         if (FrameworkState.isStopping()) {
             return;
