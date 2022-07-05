@@ -24,7 +24,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.Config;
 
 import io.opentelemetry.api.OpenTelemetry;
@@ -60,8 +59,7 @@ public class OpenTelemetryProducer {
 
         SpanExporter exporter = getSpanExporter(telemetryProperties);
 
-        Resource serviceNameResource =
-            Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, "open-liberty"));
+        Resource serviceNameResource = getServiceName(telemetryProperties);
         
         SdkTracerProvider tracerProvider =
             SdkTracerProvider.builder()
@@ -78,30 +76,39 @@ public class OpenTelemetryProducer {
     }
 
     @ApplicationScoped
+    private Resource getServiceName(Map<String,String> oTelConfigs){
+        String serviceName = "open-liberty-service";
+        if(oTelConfigs.get("otel.service.name") != null || oTelConfigs.get("OTEL_SERVICE_NAME") != null){
+            serviceName = oTelConfigs.get("otel.service.name");
+        }
+        return Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, serviceName));
+    }
+    @ApplicationScoped
     private SpanExporter getSpanExporter(Map<String,String> oTelConfigs) {
 
         //default endpoint
         String endpoint = "http://localhost:14250";
         String timeout = "10000";
-        if(oTelConfigs.get("otel.traces.exporter").equals("jaeger") || oTelConfigs.get("OTEL_TRACES_EXPORTER").equals("jaeger")){
-            if(oTelConfigs.get("otel.exporter.jaeger.endpoint") != null){
-                endpoint = oTelConfigs.get("otel.exporter.jaeger.endpoint");
+        if(oTelConfigs.get("otel.traces.exporter") != null){
+            if(oTelConfigs.get("otel.traces.exporter").equals("jaeger") || oTelConfigs.get("OTEL_TRACES_EXPORTER").equals("jaeger")){
+                if(oTelConfigs.get("otel.exporter.jaeger.endpoint") != null){
+                    endpoint = oTelConfigs.get("otel.exporter.jaeger.endpoint");
+                }
+                else if(oTelConfigs.get("OTEL_EXPORTER_JAEGER_ENDPOINT")!= null){
+                    endpoint = oTelConfigs.get("OTEL_EXPORTER_JAEGER_ENDPOINT");
+                }
+                if(oTelConfigs.get("otel.exporter.jaeger.timeout") != null){
+                    timeout = oTelConfigs.get("otel.exporter.jaeger.timeout");
+                }
+                else if(oTelConfigs.get("OTEL_EXPORTER_JAEGER_TIMEOUT")!= null){
+                    timeout = oTelConfigs.get("OTEL_EXPORTER_JAEGER_TIMEOUT");
+                }
+                return JaegerGrpcSpanExporter.builder()
+                                .setEndpoint(endpoint)
+                                .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
+                                .build();
             }
-            else if(oTelConfigs.get("OTEL_EXPORTER_JAEGER_ENDPOINT")!= null){
-                endpoint = oTelConfigs.get("OTEL_EXPORTER_JAEGER_ENDPOINT");
-            }
-            if(oTelConfigs.get("otel.exporter.jaeger.timeout") != null){
-                timeout = oTelConfigs.get("otel.exporter.jaeger.timeout");
-            }
-            else if(oTelConfigs.get("OTEL_EXPORTER_JAEGER_TIMEOUT")!= null){
-                timeout = oTelConfigs.get("OTEL_EXPORTER_JAEGER_TIMEOUT");
-            }
-            return JaegerGrpcSpanExporter.builder()
-                            .setEndpoint(endpoint)
-                            .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
-                            .build();
         }
-
         else{
             endpoint = "http://localhost:4317";
             if(oTelConfigs.get("OTEL_EXPORTER_OTLP_ENDPOINT") != null){
@@ -116,11 +123,12 @@ public class OpenTelemetryProducer {
             else if(oTelConfigs.get("otel.exporter.otlp.traces.endpoint") != null){
                 endpoint = oTelConfigs.get("otel.exporter.otlp.traces.endpoint");
             }
+        }
             return OtlpGrpcSpanExporter.builder()
                             .setEndpoint(endpoint)
                             .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
                             .build();
-        }
+        
     }
 
     private HashMap<String,String> getTelemetryProperties(){

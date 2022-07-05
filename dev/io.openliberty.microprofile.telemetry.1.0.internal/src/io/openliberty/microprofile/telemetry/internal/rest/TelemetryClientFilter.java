@@ -12,6 +12,7 @@ package io.openliberty.microprofile.telemetry.internal.rest;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import java.util.HashMap;
 
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -37,12 +38,17 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
 
+import org.eclipse.microprofile.config.Config;
+
 @Provider
 public class TelemetryClientFilter implements ClientRequestFilter, ClientResponseFilter {
 
     private Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
 
     private String configString = "otel.span.client.";
+
+    @Inject
+    Config config;
 
     //No arg constructor
     public TelemetryClientFilter() {
@@ -51,17 +57,18 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
     //Constructor injecting openTelemetry object
     @Inject
     public TelemetryClientFilter(final OpenTelemetry openTelemetry) {
-        ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
 
-        InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(
-                openTelemetry,
-                "Client filter",
-                HttpSpanNameExtractor.create(clientAttributesExtractor));
+            ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
 
-        this.instrumenter = builder
-                .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
-                .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
-                .newClientInstrumenter(new ClientRequestContextTextMapSetter());  
+                InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(
+                    openTelemetry,
+                    "Client filter",
+                    HttpSpanNameExtractor.create(clientAttributesExtractor));
+
+                this.instrumenter = builder
+                    .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
+                    .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
+                    .newClientInstrumenter(new ClientRequestContextTextMapSetter());
     }
 
     @Override

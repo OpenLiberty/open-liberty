@@ -12,6 +12,7 @@ package io.openliberty.microprofile.telemetry.internal.rest;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import java.util.HashMap;
 
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -38,6 +39,8 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
 
+import org.eclipse.microprofile.config.Config;
+
 @Provider
 public class TelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
@@ -60,17 +63,16 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     @Inject
     public TelemetryContainerFilter(final OpenTelemetry openTelemetry) {
 
-        ServerAttributesExtractor serverAttributesExtractor = new ServerAttributesExtractor();
+                ServerAttributesExtractor serverAttributesExtractor = new ServerAttributesExtractor();
 
-        InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
-                openTelemetry,
-                instrumentationName,
-                HttpSpanNameExtractor.create(serverAttributesExtractor)); 
-        this.instrumenter = builder
-                .setSpanStatusExtractor(HttpSpanStatusExtractor.create(serverAttributesExtractor))
-                .addAttributesExtractor(HttpServerAttributesExtractor.create(serverAttributesExtractor))
-                .newServerInstrumenter(new ContainerRequestContextTextMapGetter());
-
+                InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
+                    openTelemetry,
+                    instrumentationName,
+                    HttpSpanNameExtractor.create(serverAttributesExtractor)); 
+                this.instrumenter = builder
+                    .setSpanStatusExtractor(HttpSpanStatusExtractor.create(serverAttributesExtractor))
+                    .addAttributesExtractor(HttpServerAttributesExtractor.create(serverAttributesExtractor))
+                    .newServerInstrumenter(new ContainerRequestContextTextMapGetter());
     }
 
     @Override
@@ -110,6 +112,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     }
 
     private static class ContainerRequestContextTextMapGetter implements TextMapGetter<ContainerRequestContext> {
+        
         @Override
         public Iterable<String> keys(final ContainerRequestContext carrier) {
             return carrier.getHeaders().keySet();
