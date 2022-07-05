@@ -17,20 +17,20 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-Name: WAS WebContainer
-Bundle-SymbolicName: io.openliberty.servlet.6.0.internal.factories
+Bundle-SymbolicName: io.openliberty.webcontainer.servlet.6.0.internal.factories
 Bundle-Description: WAS WebContainer with object factories for Servlet 6.0 support
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
 
 -dsannotations: \
-  io.openliberty.servlet.internal.async.factory.AsyncContextFactory60Impl, \
-  io.openliberty.servlet.internal.osgi.container.config.factory.WebAppConfiguratorFactory60Impl, \
-  io.openliberty.servlet.internal.osgi.response.factory.IRequestResponseFactory60Impl, \
-  io.openliberty.servlet.internal.osgi.srt.factory.SRTConnectionContextPool60Impl, \
-  io.openliberty.servlet.internal.osgi.webapp.factory.WebAppFactory60Impl, \
-  io.openliberty.servlet.internal.servlet.factory.CacheServletWrapperFactory60Impl, \
-  io.openliberty.servlet.internal.session.impl.factory.SessionContextRegistryImplFactory60Impl, \
-  io.openliberty.servlet.internal.util.factory.URIMatcherFactory60Impl
+  io.openliberty.webcontainer.servlet.internal.async.factory.AsyncContextFactory60Impl, \
+  io.openliberty.webcontainer.servlet.internal.osgi.container.config.factory.WebAppConfiguratorFactory60Impl, \
+  io.openliberty.webcontainer.servlet.internal.osgi.response.factory.IRequestResponseFactory60Impl, \
+  io.openliberty.webcontainer.servlet.internal.osgi.srt.factory.SRTConnectionContextPool60Impl, \
+  io.openliberty.webcontainer.servlet.internal.osgi.webapp.factory.WebAppFactory60Impl, \
+  io.openliberty.webcontainer.servlet.internal.servlet.factory.CacheServletWrapperFactory60Impl, \
+  io.openliberty.webcontainer.servlet.internal.session.impl.factory.SessionContextRegistryImplFactory60Impl, \
+  io.openliberty.webcontainer.servlet.internal.util.factory.URIMatcherFactory60Impl
 
 Service-Component: \
   com.ibm.ws.webcontainer.v60.dd; \
@@ -52,17 +52,17 @@ Service-Component: \
 # for the exported API.
 Export-Package: \
     com.ibm.ws.webcontainer.speclevel, \
-    io.openliberty.servlet.internal.*factory*;provide:=true
+    io.openliberty.webcontainer.servlet.internal.*factory*;provide:=true
 
 Import-Package: \
-    !io.openliberty.servlet.internal.async.factory, \
-    !io.openliberty.servlet.internal.osgi.container.config.factory, \
-    !io.openliberty.servlet.internal.osgi.response.factory, \
-    !io.openliberty.servlet.internal.osgi.srt.factory, \
-    !io.openliberty.servlet.internal.osgi.webapp.factory, \
-    !io.openliberty.servlet.internal.servlet.factory, \
-    !io.openliberty.servlet.internal.session.impl.factory, \
-    !io.openliberty.servlet.internal.util.factory, \
+    !io.openliberty.webcontainer.servlet.internal.async.factory, \
+    !io.openliberty.webcontainer.servlet.internal.osgi.container.config.factory, \
+    !io.openliberty.webcontainer.servlet.internal.osgi.response.factory, \
+    !io.openliberty.webcontainer.servlet.internal.osgi.srt.factory, \
+    !io.openliberty.webcontainer.servlet.internal.osgi.webapp.factory, \
+    !io.openliberty.webcontainer.servlet.internal.servlet.factory, \
+    !io.openliberty.webcontainer.servlet.internal.session.impl.factory, \
+    !io.openliberty.webcontainer.servlet.internal.util.factory, \
     com.ibm.websphere.csi, \
     com.ibm.ws.webcontainer40.osgi.container.config, \
     com.ibm.ws.webcontainer40.osgi.request, \
