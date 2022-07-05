@@ -961,7 +961,8 @@ public class InstallKernelMap implements Map {
             } else {
                 resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
             }
-            ResolveDirector.resolveAutoFeatures(resolveResult, new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList));
+            //Resolver already returns auto features. Don't need it anymore.
+            //ResolveDirector.resolveAutoFeatures(resolveResult, new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList));
 
             if (!resolveResult.isEmpty()) {
                 for (List<RepositoryResource> item : resolveResult) {
