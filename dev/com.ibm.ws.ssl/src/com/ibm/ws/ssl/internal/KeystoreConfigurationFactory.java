@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -28,7 +27,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -45,8 +43,6 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
-import io.openliberty.checkpoint.spi.CheckpointPhase;
-
 /**
  * This accepts configuration from the service registry, creates the KeystoreConfig
  * for that configuration (or retrieves one it already created), verifies that the
@@ -59,10 +55,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * of a DS service: throwing the exception does not deactivate the component,
  * it just fails the update.
  */
-@Component(reference = { @Reference(name = "keystoreConfigurationFactoryCondition",
-                                    service = Condition.class, //
-                                    target = "(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")") },
-           service = ManagedServiceFactory.class,
+@Component(service = ManagedServiceFactory.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM", "service.pid=com.ibm.ws.ssl.keystore" })
 public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable, KeyringBasedActionable {
@@ -82,7 +75,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     @SuppressWarnings("unchecked")
     @Override
     @FFDCIgnore(IllegalArgumentException.class)
-    public void updated(String pid, Dictionary properties) throws ConfigurationException {
+    public void updated(String pid, Dictionary properties) {
         // If we are stopping ignore the update
         if (FrameworkState.isStopping()) {
             return;
@@ -111,15 +104,16 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
         try {
             if (svc.updateKeystoreConfig(properties)) {
                 svc.updateRegistration(bContext);
-
+                String location = svc.getKeyStore().getLocation();
                 //if needed set the file monitor
                 String trigger = svc.getKeyStore().getTrigger();
                 Boolean fileBased = svc.getKeyStore().getFileBased();
                 if (!(trigger.equalsIgnoreCase("disabled"))) {
                     if (fileBased.booleanValue()) {
-                        createFileMonitor(svc.getKeyStore().getName(), svc.getKeyStore().getLocation(), trigger, svc.getKeyStore().getPollingRate());
-                    } else if (svc.getKeyStore().getLocation().contains(KeyringMonitor.SAF_PREFIX)) {
-                        createKeyringMonitor(svc.getKeyStore().getName(), trigger, svc.getKeyStore().getLocation());
+                        createFileMonitor(svc.getKeyStore().getName(), location, trigger, svc.getKeyStore().getPollingRate());
+                    } else if (location.contains(KeyringMonitor.SAF_PREFIX) || (location.contains(KeyringMonitor.SAF_HWPREFIX))
+                               || location.contains(KeyringMonitor.SAF_HYBRIDPREFIX)) {
+                        createKeyringMonitor(svc.getKeyStore().getName(), trigger, location);
                     }
                 }
             } else {
