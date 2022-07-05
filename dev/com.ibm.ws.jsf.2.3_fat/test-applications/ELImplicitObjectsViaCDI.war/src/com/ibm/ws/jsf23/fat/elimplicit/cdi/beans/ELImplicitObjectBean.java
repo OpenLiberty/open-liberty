@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Bean that tests if EL implicit objects are injectable
@@ -70,6 +71,9 @@ public class ELImplicitObjectBean implements Serializable {
 
     @Inject
     private HttpSession httpSession; // #{session}
+
+    @Inject
+    private HttpServletRequest httpServletRequest; // #{request}
 
     @Inject
     @ApplicationMap
@@ -133,6 +137,8 @@ public class ELImplicitObjectBean implements Serializable {
             facesContext.addMessage(null, new FacesMessage("Flash isRedirect: " + flash.isRedirect()));
 
             facesContext.addMessage(null, new FacesMessage("HttpSession isNew: " + httpSession.isNew()));
+
+            facesContext.addMessage(null, new FacesMessage("Request contextPath: " + httpServletRequest.getContextPath()));
 
             facesContext.addMessage(null, new FacesMessage("Application name from ApplicationMap: " + applicationMap.get("com.ibm.websphere.servlet.enterprise.application.name")));
 
