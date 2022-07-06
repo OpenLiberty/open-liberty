@@ -1,3 +1,0 @@
-<server description="Server for testing appConfig">
-        <application location="hotAddMPConfig30App.war"/>
-</server>

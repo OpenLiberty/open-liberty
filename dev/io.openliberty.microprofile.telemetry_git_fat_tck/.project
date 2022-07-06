@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.microprofile.config_git_fat_tck</name>
+	<name>io.openliberty.microprofile.telemetry_git_fat_tck</name>
 	<comment></comment>
 	<projects>
 	</projects>

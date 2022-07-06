@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 2.0
+ * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
 package io.openliberty.microprofile.telemetry.internal.cdi;

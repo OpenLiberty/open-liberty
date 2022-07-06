@@ -156,7 +156,6 @@ io.smallrye:smallrye-graphql-schema-builder:1.0.26
 io.smallrye:smallrye-graphql-schema-model:1.0.26
 io.smallrye:smallrye-graphql-servlet:1.0.26
 io.smallrye:smallrye-graphql:1.0.26
-io.zipkin.zipkin2:zipkin:2.23.16
 jakarta.activation:jakarta.activation-api:2.0.0
 jakarta.activation:jakarta.activation-api:2.1.0-RC1
 jakarta.annotation:jakarta.annotation-api:2.0.0

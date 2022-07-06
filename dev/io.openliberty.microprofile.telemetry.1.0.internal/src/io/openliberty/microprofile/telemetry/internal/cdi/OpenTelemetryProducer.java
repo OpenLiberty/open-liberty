@@ -24,6 +24,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.eclipse.microprofile.config.Config;
 
 import io.opentelemetry.api.OpenTelemetry;
@@ -45,7 +48,14 @@ import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
 
 public class OpenTelemetryProducer {
 
-    private String instrumentationName = "io.openliberty.microprofile.telemetry";
+    private static final String instrumentationName = "io.openliberty.microprofile.telemetry";
+    private static final String configExporterProperty = "otel.exporter.";
+    private static final String envExporterProperty = "OTEL_EXPORTER_";
+    private static final String envTraceExporterProperty = "OTEL_TRACES_EXPORTER";
+    private static final String configTraceExporterProperty = "otel.traces.exporter";
+    private static final String envJaegerTimeoutProperty = "JAEGER_TIMEOUT";
+    private static final String configJaegerTimeoutProperty = "jaeger.timeout";
+
 
     @Inject
     Config config;
@@ -75,53 +85,54 @@ public class OpenTelemetryProducer {
         return openTelemetry;
     }
 
-    @ApplicationScoped
     private Resource getServiceName(Map<String,String> oTelConfigs){
         String serviceName = "open-liberty-service";
+
         if(oTelConfigs.get("otel.service.name") != null || oTelConfigs.get("OTEL_SERVICE_NAME") != null){
             serviceName = oTelConfigs.get("otel.service.name");
         }
         return Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, serviceName));
     }
+    
     @ApplicationScoped
     private SpanExporter getSpanExporter(Map<String,String> oTelConfigs) {
 
         //default endpoint
         String endpoint = "http://localhost:14250";
         String timeout = "10000";
-        if(oTelConfigs.get("otel.traces.exporter") != null){
-            if(oTelConfigs.get("otel.traces.exporter").equals("jaeger") || oTelConfigs.get("OTEL_TRACES_EXPORTER").equals("jaeger")){
-                if(oTelConfigs.get("otel.exporter.jaeger.endpoint") != null){
-                    endpoint = oTelConfigs.get("otel.exporter.jaeger.endpoint");
+
+        //Environment properties take priority
+        if(oTelConfigs.get(envTraceExporterProperty) != null && oTelConfigs.get(envTraceExporterProperty).equals("jaeger") || oTelConfigs.get(configTraceExporterProperty) != null && oTelConfigs.get(configTraceExporterProperty).equals("jaeger")){
+                if(oTelConfigs.get(envExporterProperty + "JAEGER_ENDPOINT")!= null){
+                    endpoint = oTelConfigs.get(envExporterProperty + "JAEGER_ENDPOINT");
                 }
-                else if(oTelConfigs.get("OTEL_EXPORTER_JAEGER_ENDPOINT")!= null){
-                    endpoint = oTelConfigs.get("OTEL_EXPORTER_JAEGER_ENDPOINT");
+                else if(oTelConfigs.get(configExporterProperty + "jaeger.endpoint") != null){
+                    endpoint = oTelConfigs.get(configExporterProperty + "jaeger.endpoint");
                 }
-                if(oTelConfigs.get("otel.exporter.jaeger.timeout") != null){
-                    timeout = oTelConfigs.get("otel.exporter.jaeger.timeout");
+                if(oTelConfigs.get(envExporterProperty + envJaegerTimeoutProperty)!= null){
+                    timeout = oTelConfigs.get(envExporterProperty + envJaegerTimeoutProperty);
                 }
-                else if(oTelConfigs.get("OTEL_EXPORTER_JAEGER_TIMEOUT")!= null){
-                    timeout = oTelConfigs.get("OTEL_EXPORTER_JAEGER_TIMEOUT");
+                else if(oTelConfigs.get(configExporterProperty + configJaegerTimeoutProperty) != null){
+                    timeout = oTelConfigs.get(configExporterProperty + configJaegerTimeoutProperty);
                 }
                 return JaegerGrpcSpanExporter.builder()
                                 .setEndpoint(endpoint)
                                 .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
                                 .build();
-            }
         }
         else{
             endpoint = "http://localhost:4317";
-            if(oTelConfigs.get("OTEL_EXPORTER_OTLP_ENDPOINT") != null){
-                endpoint = oTelConfigs.get("OTEL_EXPORTER_OTLP_ENDPOINT");
+            if(oTelConfigs.get(envExporterProperty + "OTLP_ENDPOINT") != null){
+                endpoint = oTelConfigs.get(envExporterProperty + "OTLP_ENDPOINT");
             }
-            else if(oTelConfigs.get("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT") != null){
-                endpoint = oTelConfigs.get("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT");
+            else if(oTelConfigs.get(envExporterProperty + "OTLP_TRACES_ENDPOINT") != null){
+                endpoint = oTelConfigs.get(envExporterProperty + "OTLP_TRACES_ENDPOINT");
             }
-            if(oTelConfigs.get("otel.exporter.otlp.endpoint") != null){
-                endpoint = oTelConfigs.get("otel.exporter.otlp.endpoint");
+            if(oTelConfigs.get(configExporterProperty + "otlp.endpoint") != null){
+                endpoint = oTelConfigs.get(configExporterProperty + "otlp.endpoint");
             }
-            else if(oTelConfigs.get("otel.exporter.otlp.traces.endpoint") != null){
-                endpoint = oTelConfigs.get("otel.exporter.otlp.traces.endpoint");
+            else if(oTelConfigs.get(configExporterProperty + "otlp.traces.endpoint") != null){
+                endpoint = oTelConfigs.get(configExporterProperty + "otlp.traces.endpoint");
             }
         }
             return OtlpGrpcSpanExporter.builder()

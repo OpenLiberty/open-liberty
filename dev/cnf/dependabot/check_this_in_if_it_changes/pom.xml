@@ -802,11 +802,6 @@
       <version>1.0.26</version>
     </dependency>
     <dependency>
-      <groupId>io.zipkin.zipkin2</groupId>
-      <artifactId>zipkin</artifactId>
-      <version>2.23.16</version>
-    </dependency>
-    <dependency>
       <groupId>jakarta.activation</groupId>
       <artifactId>jakarta.activation-api</artifactId>
       <version>2.0.0</version>
