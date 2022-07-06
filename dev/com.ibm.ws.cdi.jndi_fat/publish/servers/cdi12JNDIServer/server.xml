@@ -2,7 +2,15 @@
 
     <include location="../fatTestPorts.xml"/>
 
-    <featureManager> <feature>webProfile-7.0</feature></featureManager>
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>cdi-1.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
     <jndiEntry jndiName="myApp/test1" value="Value from Config"/>
 
 </server>

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.test.jndi;
+package com.ibm.ws.cdi.jndi.strings;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
