@@ -17,7 +17,8 @@ Bundle-Description: Common code for security Back Channel Logout FAT projects; v
 
 src: \
   fat/src, \
-  test-applications/backchannelLogoutTestApp/src
+  test-applications/backchannelLogoutTestApp/src, \
+  test-applications/simpleLogoutTestApp/src
 
 Import-Package: \
     !*.internal.*,  \

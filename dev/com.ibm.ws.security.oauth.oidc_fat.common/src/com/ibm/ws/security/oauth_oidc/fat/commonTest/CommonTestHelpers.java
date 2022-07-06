@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,21 +25,27 @@ import java.util.StringTokenizer;
 // import org.jdom.input.SAXBuilder;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.CommonMessageTools;
 import com.ibm.ws.security.fat.common.TestHelpers;
 import com.ibm.ws.security.fat.common.Utils;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.HttpException;
 import com.meterware.httpunit.HttpUnitOptions;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -1772,6 +1778,246 @@ public class CommonTestHelpers extends TestHelpers {
 
     }
 
+    public Object performIDPLogout(String testcase, WebClient webClient, Object somePage, TestSettings settings,
+            List<validationData> expectations) throws Exception {
+
+        String thisMethod = "performIDPLogout";
+        msgUtils.printMethodName(thisMethod);
+        Object thePage = null;
+        try {
+            setMarkToEndOfAllServersLogs();
+
+            webClient.getOptions().setThrowExceptionOnScriptError(true);
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
+
+            // Perform logout request
+            URL url = AutomationTools.getNewUrl(settings.getEndSession());
+            com.gargoylesoftware.htmlunit.WebRequest request = new com.gargoylesoftware.htmlunit.WebRequest(url, HttpMethod.POST);
+
+            msgUtils.printAllCookies(webClient);
+            msgUtils.printRequestParts(webClient, request, testcase, "Outgoing request");
+            thePage = webClient.getPage(request);
+            // make sure the page is processed before continuing
+            waitBeforeContinuing(webClient);
+
+            msgUtils.printAllCookies(webClient);
+            msgUtils.printResponseParts(thePage, testcase, thisMethod + " response");
+
+            validationTools.validateResult(thePage, Constants.PERFORM_IDP_LOGOUT, expectations, settings);
+        } catch (Exception e) {
+            Log.error(thisClass, testcase, e, "Exception occurred in " + thisMethod);
+            System.err.println("Exception: " + e);
+            validationTools.validateException(expectations, Constants.PERFORM_IDP_LOGOUT, e);
+        }
+        return thePage;
+    }
+
+    public Object processLogoutContinue(String testcase, WebClient webClient, HtmlPage startPage, TestSettings settings, List<validationData> expectations) throws Exception {
+        return processContinue(testcase, webClient, startPage, settings, expectations, Constants.PROCESS_LOGOUT_CONTINUE);
+    }
+
+    public Object processContinue(String testcase, WebClient webClient, HtmlPage startPage, TestSettings settings, List<validationData> expectations,
+            String step) throws Exception {
+
+        String thisMethod = "processContinue";
+        msgUtils.printMethodName(thisMethod);
+
+        Object thePage = null;
+
+        try {
+
+            setMarkToEndOfAllServersLogs();
+
+            // Read response from HTTP POST request, should be a login challenge
+            Log.info(thisClass, thisMethod, "Processing continue...");
+
+            HtmlForm form = startPage.getFormByName("form1");
+            //            webClient.getOptions().setJavaScriptEnabled(false);
+
+            // Fill in the login form and submit the login request
+
+            try {
+                HtmlElement button = form.getButtonByName("_eventId_proceed");
+
+                Log.info(thisClass, thisMethod, "\'Pressing the " + button + " button\'");
+                thePage = button.click();
+            } catch (com.gargoylesoftware.htmlunit.ElementNotFoundException e) {
+                HtmlInput continueButton = form.getInputByValue("Continue");
+                Log.info(thisClass, thisMethod, "\'Pressing the Continue button\'");
+                thePage = continueButton.click();
+            } catch (Exception e) {
+                // we should never get a different exception, so, rethrow and let the test case fail
+                throw e;
+            }
+            // make sure the page is processed before continuing
+            waitBeforeContinuing(webClient);
+
+            msgUtils.printAllCookies(webClient);
+            msgUtils.printResponseParts(thePage, testcase, thisMethod + " response");
+
+            validationTools.validateResult(thePage, step, expectations, settings);
+
+        } catch (Exception e) {
+            Log.error(thisClass, testcase, e, "Exception occurred in " + thisMethod);
+            System.err.println("Exception: " + e);
+            validationTools.validateException(expectations, step, e);
+        }
+        return (thePage);
+
+    }
+
+    public Object processLogoutPropagateYes(String testcase, WebClient webClient, HtmlPage startPage, TestSettings settings,
+            List<validationData> expectations) throws Exception {
+
+        String thisMethod = "processLogoutPropagateYes";
+        msgUtils.printMethodName(thisMethod);
+
+        Object thePage = null;
+
+        try {
+
+            setMarkToEndOfAllServersLogs();
+
+            //            webClient.getOptions().setJavaScriptEnabled(true);
+
+            // Read response from HTTP POST request, should be a login challenge
+            Log.info(thisClass, thisMethod, "Processing propagate logout...");
+
+            HtmlForm form = null;
+            List<HtmlForm> forms = startPage.getForms();
+            for (HtmlForm aForm : forms) {
+                if ("propagate_form".equals(aForm.getId())) {
+                    form = aForm;
+                }
+            }
+
+            if (form == null) {
+                thePage = startPage;
+            } else {
+                try {
+                    HtmlButton button = null;
+                    List<HtmlButton> buttons = form.getButtonsByName("_eventId");
+                    for (HtmlButton aButton : buttons) {
+                        if ("propagate_yes".equals(aButton.getId())) {
+                            button = aButton;
+                        }
+                    }
+
+                    Log.info(thisClass, thisMethod, "\'Pressing the " + button + " button\'");
+                    thePage = button.click();
+                } catch (Exception e) {
+                    // we should never get a different exception, so, rethrow and let the test case fail
+                    throw e;
+                }
+            }
+            // make sure the page is processed before continuing
+            waitBeforeContinuing(webClient);
+
+            msgUtils.printAllCookies(webClient);
+            msgUtils.printResponseParts(thePage, testcase, thisMethod + " response");
+
+            List<FrameWindow> frames = ((HtmlPage) thePage).getFrames();
+            Log.info(thisClass, thisMethod, "found " + frames.size() + " frames");
+            if (frames.size() == 0) {
+                if (thePage instanceof com.gargoylesoftware.htmlunit.html.HtmlPage) {
+                    HtmlForm form2 = ((HtmlPage) thePage).getForms().get(0);
+
+                    HtmlInput continueButton = form2.getInputByValue("Continue");
+                    thePage = continueButton.click();
+                    waitBeforeContinuing(webClient);
+                    msgUtils.printAllCookies(webClient);
+                    msgUtils.printResponseParts(thePage, testcase, thisMethod + " continue click");
+                }
+            } else {
+                for (FrameWindow frame : frames) {
+                    //                for (FrameWindow frame : sortFrames(frames)) {
+                    Log.info(thisClass, thisMethod, "iframe " + frame.toString());
+                    String id = frame.getFrameElement().getId();
+                    Log.info(thisClass, thisMethod, "iframe id: ::" + id + "::");
+
+                    Log.info(thisClass, thisMethod, "Using frame with id: " + frame.getFrameElement().getId());
+                    thePage = frame.getEnclosedPage();
+                    msgUtils.printResponseParts(thePage, testcase, thisMethod + " iframe");
+                    if (thePage instanceof com.gargoylesoftware.htmlunit.html.HtmlPage) {
+                        int numForms = ((HtmlPage) thePage).getForms().size();
+                        Log.info(thisClass, thisMethod, "Found " + numForms + " forms ");
+                        // use size() check cause checking ((HtmlPage) thePage).getForms() != null never catches the case where there are no frames, then the next line throws an npe
+                        if (numForms > 0) {
+                            HtmlForm form2 = ((HtmlPage) thePage).getForms().get(0);
+                            HtmlInput continueButton = form2.getInputByValue("Continue");
+                            thePage = continueButton.click();
+                            waitBeforeContinuing(webClient);
+                            msgUtils.printAllCookies(webClient);
+                            msgUtils.printResponseParts(thePage, testcase, thisMethod + " continue click");
+                            if (id != null && !id.isEmpty() && !(thePage instanceof com.gargoylesoftware.htmlunit.TextPage)) {
+                                processLogoutRedirect(testcase, webClient, (HtmlPage) thePage, settings, expectations);
+                            }
+                        }
+                    }
+                }
+            }
+
+            validationTools.validateResult(thePage, Constants.PROCESS_LOGOUT_PROPAGATE_YES, expectations, settings);
+
+        } catch (Exception e) {
+            Log.error(thisClass, testcase, e, "Exception occurred in " + thisMethod);
+            System.err.println("Exception: " + e);
+            validationTools.validateException(expectations, Constants.PROCESS_LOGOUT_PROPAGATE_YES, e);
+        }
+        return (thePage);
+
+    }
+
+    public Object processLogoutRedirect(String testcase, WebClient webClient, HtmlPage startPage, TestSettings settings, List<validationData> expectations) throws Exception {
+        return processRequest(testcase, webClient, startPage, settings, expectations, Constants.PROCESS_LOGOUT_REDIRECT);
+    }
+
+    public Object processRequest(String testcase, WebClient webClient, HtmlPage startPage, TestSettings settings, List<validationData> expectations,
+            String step) throws Exception {
+
+        String thisMethod = "processRequest";
+        msgUtils.printMethodName(thisMethod);
+
+        Object thePage = null;
+
+        try {
+
+            if (!step.equals(Constants.PROCESS_LOGOUT_REDIRECT)) {
+                setMarkToEndOfAllServersLogs();
+            }
+
+            // Read response from HTTP POST request, should be a login challenge
+            Log.info(thisClass, thisMethod, "Processing request...");
+            //            Log.info(thisClass, thisMethod, "Raw page is: " + startPage.asXml());
+
+            HtmlForm form = startPage.getFormByName("redirectform");
+
+            try {
+                HtmlElement button = form.getButtonByName("redirectform");
+
+                Log.info(thisClass, thisMethod, "\'Pressing the " + button + " button\'");
+                thePage = button.click();
+            } catch (Exception e) {
+                // we should never get a different exception, so, rethrow and let the test case fail
+                throw e;
+            }
+            // make sure the page is processed before continuing
+            waitBeforeContinuing(webClient);
+
+            msgUtils.printAllCookies(webClient);
+            msgUtils.printResponseParts(thePage, testcase, thisMethod + " response");
+
+            validationTools.validateResult(thePage, step, expectations, settings);
+
+        } catch (Exception e) {
+            Log.error(thisClass, testcase, e, "Exception occurred in " + thisMethod);
+            System.err.println("Exception: " + e);
+            validationTools.validateException(expectations, step, e);
+        }
+        return (thePage);
+
+    }
+
     public WebResponse invokeACS(String testcase, WebConversation wc, WebResponse response, TestSettings settings, List<validationData> expectations) throws Exception {
 
         String thisMethod = "invokeACS";
@@ -1882,6 +2128,123 @@ public class CommonTestHelpers extends TestHelpers {
         }
         theMap.put(settings.getHeaderName(), builtValue);
         return theMap;
+    }
+
+    public Page invokeEndpointWithBody(String testcase, WebClient webClient, String urlString, String method, String action, List<endpointSettings> parms,
+            List<endpointSettings> headers, List<validationData> expectations, String body) throws Exception {
+
+        String thisMethod = "invokeEndpointWithBody";
+        Page thePage = null;
+        try {
+
+            URL url = AutomationTools.getNewUrl(urlString);
+            com.gargoylesoftware.htmlunit.WebRequest requestSettings = new com.gargoylesoftware.htmlunit.WebRequest(url, convertStringToHttpMethod(method));
+            msgUtils.printRequestParts(webClient, requestSettings, thisMethod, "Request for " + thisMethod);
+
+            if (body != null) {
+                requestSettings.setRequestBody(body);
+            }
+
+            if (parms != null) {
+                ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+                for (endpointSettings parm : parms) {
+                    if (parm.value != null) {
+                        Log.info(thisClass, thisMethod, "Setting request parameter:  key: " + parm.key + " value: " + parm.value);
+                        params.add(new NameValuePair(parm.key, parm.value));
+                    }
+                }
+                //            if (skipTestCase) {
+                //                Log.info(thisClass, thisMethod, "NOT sending testCase name as a parm");
+                //            } else {
+                //                Log.info(thisClass, thisMethod, "Setting request parameter:  key: testCase value: " + testcase);
+                //                params.add(new NameValuePair("testCase", testcase));
+                //            }
+                requestSettings.setRequestParameters(params);
+            } else {
+                Log.info(thisClass, thisMethod, "No parameters to set");
+            }
+
+            if (headers != null) {
+                Map<String, String> headerParms = new HashMap<String, String>();
+                for (endpointSettings header : headers) {
+                    Log.info(thisClass, thisMethod, "Setting header field:  key: " + header.key + " value: " + header.value);
+                    headerParms.put(header.key, header.value);
+                }
+                requestSettings.setAdditionalHeaders(headerParms);
+            } else {
+                Log.info(thisClass, thisMethod, "No header fields to add");
+            }
+
+            Log.info(thisClass, thisMethod, "isRedirectEnabled: " + webClient.getOptions().isRedirectEnabled());
+            Log.info(thisClass, thisMethod, "isJavaScriptEnabled: " + webClient.getOptions().isJavaScriptEnabled());
+            Log.info(thisClass, thisMethod, "isDoNotTrackEnabled: " + webClient.getOptions().isDoNotTrackEnabled());
+            webClient.waitForBackgroundJavaScript(2000);
+            webClient.setJavaScriptTimeout(10000);
+
+            Log.info(thisClass, thisMethod, "Request: " + requestSettings.toString());
+            //            thePage = webClient.getCurrentWindow().getEnclosedPage();
+            thePage = webClient.getPage(requestSettings);
+
+            msgUtils.printAllCookies(webClient);
+            msgUtils.printResponseParts(thePage, thisMethod, "Invoke with Parms and Headers: ");
+        } catch (HttpException e) {
+
+            Log.info(thisClass, thisMethod, "Exception message: " + e.getMessage());
+            Log.info(thisClass, thisMethod, "Exception response code: " + e.getResponseCode());
+            Log.info(thisClass, thisMethod, "Exception response message: " + e.getResponseMessage());
+            Log.info(thisClass, thisMethod, "Exception Cause: " + e.getCause());
+
+            validationTools.validateException(expectations, action, e);
+
+        } catch (Exception e) {
+
+            Log.info(thisClass, thisMethod, "Exception message: " + e.getMessage());
+            Log.info(thisClass, thisMethod, "Exception stack: " + e.getStackTrace());
+            Log.info(thisClass, thisMethod, "Exception response message: " + e.getLocalizedMessage());
+            Log.info(thisClass, thisMethod, "Exception cause: " + e.getCause());
+
+            validationTools.validateException(expectations, action, e);
+
+        }
+
+        validationTools.validateResult(thePage, action, expectations, null);
+        return thePage;
+    }
+
+    public HttpMethod convertStringToHttpMethod(String method) throws Exception {
+
+        HttpMethod selectedMethod = null;
+        switch (method) {
+        case Constants.DELETEMETHOD:
+            selectedMethod = HttpMethod.DELETE;
+            break;
+        case Constants.GETMETHOD:
+            selectedMethod = HttpMethod.GET;
+            break;
+        case Constants.HEADMETHOD:
+            selectedMethod = HttpMethod.HEAD;
+            break;
+        case Constants.OPTIONSMETHOD:
+            selectedMethod = HttpMethod.OPTIONS;
+            break;
+        case Constants.PATCHMETHOD:
+            selectedMethod = HttpMethod.PATCH;
+            break;
+        case Constants.POSTMETHOD:
+            selectedMethod = HttpMethod.POST;
+            break;
+        case Constants.PUTMETHOD:
+            selectedMethod = HttpMethod.PUT;
+            break;
+        case Constants.TRACEMETHOD:
+            selectedMethod = HttpMethod.TRACE;
+            break;
+        default:
+            selectedMethod = HttpMethod.GET;
+            break;
+        }
+
+        return selectedMethod;
     }
 
 }

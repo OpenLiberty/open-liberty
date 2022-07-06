@@ -23,9 +23,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
+import com.ibm.ws.security.backchannelLogout.fat.utils.Constants;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
@@ -49,14 +49,12 @@ import componenttest.topology.impl.LibertyServerWrapper;
 public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
 
     public static Class<?> thisClass = LogoutTokenValidationTests.class;
-
-    //    // Repeat tests using the OIDC and Social endpoints
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(Constants.OIDC))
-    //            .andWith(new SecurityTestRepeatAction(SocialConstants.SOCIAL));
+    public static final String defaultClient = "clientSignHS256";
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
 
         List<String> apps = new ArrayList<String>() {
             {

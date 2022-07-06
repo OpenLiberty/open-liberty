@@ -21,8 +21,8 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.backchannelLogout.fat.utils.Constants;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
@@ -48,17 +48,14 @@ import componenttest.topology.impl.LibertyServerWrapper;
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
 public class HttpMethodsTests extends BackChannelLogoutCommonTests {
 
-    //    // Repeat tests using the OIDC and Social endpoints
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(Constants.OIDC))
-    //            .andWith(new SecurityTestRepeatAction(SocialConstants.SOCIAL));
-
     @BeforeClass
     public static void setUp() throws Exception {
 
+        currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
+
         testSettings = new TestSettings();
 
-        if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.OIDC)) {
+        if (currentRepeatAction.contains(Constants.OIDC)) {
             clientServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.rp", "rp_server_httpMethod.xml", Constants.OIDC_RP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY,
                     Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE);
         } else {
@@ -115,7 +112,7 @@ public class HttpMethodsTests extends BackChannelLogoutCommonTests {
         builder.setGeneratedJwtId(); // will ensure a unique jti for each test
 
         JSONObject events = new JSONObject();
-        events.put(logoutEventKey, new JSONObject());
+        events.put(Constants.logoutEventKey, new JSONObject());
         builder.setClaim("events", events); // required
 
         return builder;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -436,7 +436,7 @@ public class TestServer extends ExternalResource {
         boolean found = false;
         // TODO: Add other exceptions that we think a retry is appropriate for
         List<String> failureMsgs = Arrays.asList("CWWKE0701E", "java.lang.NoClassDefFoundError", "Unable to establish loopback",
-                                                 "com.ibm.wsspi.channelfw.exception.ChannelException");
+                "com.ibm.wsspi.channelfw.exception.ChannelException");
         for (String msg : failureMsgs) {
             List<String> msgFound = server.findStringsInLogs(msg);
             if (msgFound != null && !msgFound.isEmpty()) {
@@ -706,7 +706,7 @@ public class TestServer extends ExternalResource {
         if (server != null && server.isStarted()) {
             // ignore quiesce issues during server shutdown
             addIgnoredServerExceptions(MessageConstants.CWWKE1102W_QUIESCE_WARNING, MessageConstants.CWWKE1106W_QUIESCE_LISTENERS_NOT_COMPLETE,
-                                       MessageConstants.CWWKE1107W_QUIESCE_WAITING_ON_THREAD);
+                    MessageConstants.CWWKE1107W_QUIESCE_WAITING_ON_THREAD);
             // sometimes a port is in use during startup, but is available when tests run - the tests will have issues if
             // the port remains blocked and will generate their own errors - ignore this hiccup during the shutdown checks.
             addIgnoredServerException(MessageConstants.CWWKO0221E_PORT_IN_USE);
@@ -915,7 +915,7 @@ public class TestServer extends ExternalResource {
 
             String searchResult = server.waitForStringInLogUsingMark(expectedValue, server.getMatchingLogFile(logName));
             msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting to find " + expectedValue + " in " + logName + ", but did not find it there!",
-                                      searchResult != null);
+                    searchResult != null);
             Log.info(thisClass, thisMethod, "Found message: " + expectedValue);
 
         } catch (Exception e) {
@@ -1001,9 +1001,9 @@ public class TestServer extends ExternalResource {
 
     private void mergeAndCopyNewServerConfig(String newServerConfigFile, File testServerDir, String serverFileLoc, String testPrintName) throws Exception {
         String thisMethod = "mergeAndCopyNewServerConfig";
-        Log.info(thisClass, thisMethod, "Merging server.xml for '" + newServerConfigFile 
-                + "' with test server directory '" + testServerDir 
-                + "' and server file location '" + serverFileLoc +"'.");
+        Log.info(thisClass, thisMethod, "Merging server.xml for '" + newServerConfigFile
+                + "' with test server directory '" + testServerDir
+                + "' and server file location '" + serverFileLoc + "'.");
         CommonMergeTools merge = new CommonMergeTools();
         if (merge.mergeFile(newServerConfigFile, server.getServerSharedPath() + "config", serverFileLoc)) {
             newServerConfigFile = newServerConfigFile.replace(".xml", "_Merged.xml");
@@ -1015,6 +1015,31 @@ public class TestServer extends ExternalResource {
 
         Log.info(thisClass, thisMethod, "Copying: " + newServerConfigFile + " to " + serverFileLoc);
         LibertyFileManager.copyFileIntoLiberty(server.getMachine(), serverFileLoc, "server.xml", newServerConfigFile);
+    }
+
+    protected void serverInitCreateServerXml(String firstServerXml) throws Exception {
+        String thisMethod = "serverInitCreateServerXml";
+
+        if (firstServerXml == null || firstServerXml.isEmpty()) {
+            Log.info(thisClass, thisMethod, "Provided config file is null or empty; server config will not be changed");
+            return;
+        }
+        String fullFirstServerXml = buildFullServerConfigPath(firstServerXml);
+        File testServerDir = getTestServerDir();
+        String serverFileLoc = getServerFileLoc();
+        try {
+            Log.info(thisClass, thisMethod, "Merging server.xml for '" + fullFirstServerXml + "' with test server directory '" + testServerDir + "' and server file location '" + serverFileLoc + "'.");
+            CommonMergeTools merge = new CommonMergeTools();
+            if (merge.mergeFile(fullFirstServerXml, server.getServerSharedPath() + "config", serverFileLoc)) {
+                fullFirstServerXml = fullFirstServerXml.replace(".xml", "_Merged.xml");
+            }
+            LibertyFileManager.copyFileIntoLiberty(server.getMachine(), serverFileLoc, "server.xml", fullFirstServerXml);
+
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+            throw ex;
+        }
+
     }
 
     protected String buildFullServerConfigPath(String copyFromFile) {
@@ -1185,8 +1210,8 @@ public class TestServer extends ExternalResource {
         try {
             val = server.waitForStringInLogUsingMark(valueToCheck, outputFile);
             msgUtils.assertAndLog(thisMethod,
-                                  "Was expecting to find " + valueToCheck + " in " + where + " but did not find it there!",
-                                  val != null, true);
+                    "Was expecting to find " + valueToCheck + " in " + where + " but did not find it there!",
+                    val != null, true);
         } catch (Exception e) {
             e.printStackTrace();
             Log.error(thisClass, thisMethod, e, "Failure searching for " + valueToCheck + " in " + where);
@@ -1269,7 +1294,7 @@ public class TestServer extends ExternalResource {
             socket.bind(new InetSocketAddress(port));
         } catch (Exception ex) {
             Log.error(thisClass, "checkPortsOpen", ex, "port " + port + " is currently bound");
-//            printProcessHoldingPort(getHttpDefaultPort());
+            //            printProcessHoldingPort(getHttpDefaultPort());
             if (retryCount > 0) {
 
                 Log.info(thisClass, "checkPortsOpen", "Waiting 5 seconds and trying again");
