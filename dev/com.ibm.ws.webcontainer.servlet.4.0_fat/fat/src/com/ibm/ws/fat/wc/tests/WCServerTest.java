@@ -171,8 +171,6 @@ public class WCServerTest {
      *
      * This test is skipped for NO_MODIFICATION(servlet-4.0 feature).
      *
-     * TODO: Review this test for Jakarta EE10: https://github.com/OpenLiberty/open-liberty/issues/20419
-     *
      * @throws Exception
      *                       if something goes horribly wrong
      */
