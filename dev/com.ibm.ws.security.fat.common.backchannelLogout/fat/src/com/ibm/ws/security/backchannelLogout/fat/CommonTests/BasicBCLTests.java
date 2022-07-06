@@ -110,10 +110,10 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // note:  using the method addRepeat below instead of adding test repeats in line to simplify hacking up the tests locally to ony run one or 2 variations (all the calls are the same - dont' have to worry about using "with" vs "andWith")
         RepeatTests rTests = null;
         if (callingProject.equals(Constants.OIDC)) {
-            //            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
-            //            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
-            //            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
-            //            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
+            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
+            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
+            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
+            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
             rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
         } else
 
@@ -665,7 +665,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             if (id_token != null) {
                 parms = eSettings.addEndpointSettingsIfNotNull(parms, "id_token_hint", id_token);
             }
-            Log.info(thisClass, thisMethod, "chc - should be here");
             return genericInvokeEndpoint(_testName, webClient, null, logoutApp, Constants.POSTMETHOD, Constants.LOGOUT, parms, null, logoutExpectations, testSettings);
         default:
             fail("Logout method wasn't specified");
@@ -1306,7 +1305,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
-    //@Test
+    @Test
     public void BasicBCLTests_omittedBackchannelLogoutUri_withIdTokenHint() throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
@@ -1336,7 +1335,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     }
 
     @AllowedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidTokenException" })
-    //@Test
+    @Test
     public void BasicBCLTests_omittedBackchannelLogoutUri_withoutIdTokenHint() throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);

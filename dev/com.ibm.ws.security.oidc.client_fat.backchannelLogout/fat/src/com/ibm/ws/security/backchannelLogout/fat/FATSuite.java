@@ -19,14 +19,15 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        //        AlwaysPassesTest.class,
-        //        HttpMethodsTests.class,
-        //        LogoutTokenValidationTests.class,
+        AlwaysPassesTest.class,
+        HttpMethodsTests.class,
+        LogoutTokenValidationTests.class,
         BasicBCLTests.class
 
 })
