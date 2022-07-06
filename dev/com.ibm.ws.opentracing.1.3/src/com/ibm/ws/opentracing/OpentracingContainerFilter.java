@@ -108,15 +108,13 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         }
 
         String incomingURL = null;
+        SpanContext priorOutgoingContext = null;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             incomingURL = incomingUri.toURL().toString();
             Tr.debug(tc, methodName + " incomingURL", incomingURL);
-        }
 
-        SpanContext priorOutgoingContext = tracer.extract(Format.Builtin.HTTP_HEADERS,
-                                                          new MultivaluedMapToTextMap(incomingRequestContext.getHeaders()));
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            priorOutgoingContext = tracer.extract(Format.Builtin.HTTP_HEADERS,
+                new MultivaluedMapToTextMap(incomingRequestContext.getHeaders()));
             Tr.debug(tc, methodName + " priorContext", priorOutgoingContext);
         }
 
@@ -128,6 +126,10 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             }
             if (buildSpanName == null) {
                 buildSpanName = incomingURL;
+            }
+            if (priorOutgoingContext == null) {
+              priorOutgoingContext = tracer.extract(Format.Builtin.HTTP_HEADERS,
+                  new MultivaluedMapToTextMap(incomingRequestContext.getHeaders()));
             }
             Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
