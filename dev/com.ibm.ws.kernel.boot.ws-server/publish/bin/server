@@ -41,7 +41,7 @@
 #
 # CRIU_RESTORE_DISABLE_RECOVERY - 
 #              When restoring a server from a checkpoint it is possible
-#              that CRIU will fail to restore the proces.  By default
+#              that CRIU will fail to restore the process.  By default
 #              any failure to restore will result in the server
 #              recovering without using the checkpoint image.
 #              To disable this behavior set this to any value.
@@ -183,12 +183,11 @@ case ${uname} in
     ;;
 
   OS400)
-    # Avoid issues with qsh.
     tryShellExtensions=false
     # os400lib gets unset later if we cannot find WAS_PRODUCT_LIB and WAS_SHARED_LIB
     os400lib=true
-    # on os400 use 'umask -S o=', not 'umask o='
-    UMASK_O='umask -S o='
+    # on os400 determine current umask and replace o value with 7 (deny all permissions for other)
+    UMASK_O="umask `/QOpenSys/usr/bin/umask | sed 's|[0-7]$|7|g'`"
     ;;
 esac
 
@@ -1414,7 +1413,7 @@ restoreServer()
 
   # restore artifacts and environment prior to checkpoint here
     
-  # no good way to check for criu support since fast startup is imperitive
+  # no good way to check for criu support since fast startup is imperative
   #   just let criu invocation fail with a hopefully informative error message.
   mkdirs ${X_LOG_DIR}/checkpoint
 
@@ -1519,7 +1518,7 @@ case "$ACTION" in
       fi
 
       # WLP_JAR_CYGWIN is used only in support of java -jar startup of a Liberty server.
-      # When WLP_JAR_CYGWIN=true (or synonym) is specied, the PID of the launching 
+      # When WLP_JAR_CYGWIN=true (or synonym) is specified, the PID of the launching 
       # process (i.e. parent of server process) is determined and stored in the PID file
       # for use by the java -jar shutdown hook to ensure termination of the launching 
       # process. This is necessary because the launching process does not terminate on
