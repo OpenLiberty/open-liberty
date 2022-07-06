@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,17 +11,15 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: WebSphere CDI Weld Third Party API
-Bundle-SymbolicName: io.openliberty.cdi.3.0.thirdparty
-Bundle-Description: WebSphere CDI 3.0 Weld Third Party API
+-include= jar:${fileuri;${repo;org.jboss.logging:jboss-logging;3.5.0.Final;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-Export-Package:\
- org.jboss.weld.context;version=4.0.3.Final, \
- org.jboss.weld.context.*;version=4.0.3.Final
+Bundle-SymbolicName: io.openliberty.org.jboss.logging35; singleton:=true
 
-Import-Package:*
+-includeresource: \
+  @${repo;org.jboss.logging:jboss-logging;3.5.0.Final;EXACT}
 
-publish.wlp.jar.suffix: dev/api/third-party
+instrument.disabled: true
 
 -buildpath: \
-	io.openliberty.org.jboss.weld4;version=latest
+        org.jboss.logging:jboss-logging;version=3.5.0.Final, \
+        com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -2649,7 +2649,12 @@
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
-      <version>3.4.1.Final</version>
+      <version>3.4.3.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>3.5.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.arjunacore</groupId>
@@ -2814,7 +2819,7 @@
     <dependency>
       <groupId>org.jboss.weld.environment</groupId>
       <artifactId>weld-environment-common</artifactId>
-      <version>5.0.0.SP2</version>
+      <version>5.0.1.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -2829,7 +2834,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>5.0.0.SP2</version>
+      <version>5.0.1.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -2849,7 +2854,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>5.0.0.SP2</version>
+      <version>5.0.1.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jmock</groupId>
