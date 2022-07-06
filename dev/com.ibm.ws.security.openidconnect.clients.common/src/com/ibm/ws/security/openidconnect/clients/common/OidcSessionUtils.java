@@ -50,34 +50,37 @@ public class OidcSessionUtils {
         return CookieHelper.getCookie(request.getCookies(), ClientConstants.WAS_OIDC_STATE_KEY) != null;
     }
 
-    public static void removeOidcSession(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            ConvergedClientConfig clientConfig) {
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
-        if (sessionInfo == null) {
-            return;
-        }
+    public static void removeOidcSession(HttpServletRequest request, HttpServletResponse response, ConvergedClientConfig clientConfig) {
+        try {
+            OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request, clientConfig.getClientSecret());
+            if (sessionInfo == null) {
+                return;
+            }
 
-        String configId = sessionInfo.getConfigId();
-        if (!clientConfig.getId().equals(configId)) {
-            return;
-        }
+            String configId = sessionInfo.getConfigId();
+            if (!clientConfig.getId().equals(configId)) {
+                return;
+            }
 
-        String sub = sessionInfo.getSub();
-        String sid = sessionInfo.getSid();
+            String sub = sessionInfo.getSub();
+            String sid = sessionInfo.getSid();
 
-        OidcSessionCache oidcSessionCache = clientConfig.getOidcSessionCache();
-        if (!oidcSessionCache.isSessionInvalidated(sessionInfo)) {
-            if (sid != null && !sid.isEmpty()) {
-                oidcSessionCache.invalidateSession(sub, sid);
-            } else {
-                oidcSessionCache.invalidateSessionBySessionId(sub, sessionInfo.getSessionId());
+            OidcSessionCache oidcSessionCache = clientConfig.getOidcSessionCache();
+            if (!oidcSessionCache.isSessionInvalidated(sessionInfo)) {
+                if (sid != null && !sid.isEmpty()) {
+                    oidcSessionCache.invalidateSession(sub, sid);
+                } else {
+                    oidcSessionCache.invalidateSessionBySessionId(sub, sessionInfo.getSessionId());
+                }
+            }
+            oidcSessionCache.removeInvalidatedSession(sessionInfo);
+
+            clearWASOidcSessionCookie(request, response);
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not remove invalidated session. An exception is caught : " + e);
             }
         }
-        oidcSessionCache.removeInvalidatedSession(sessionInfo);
-
-        clearWASOidcSessionCookie(request, response);
     }
 
     private static void clearWASOidcSessionCookie(HttpServletRequest request, HttpServletResponse response) {

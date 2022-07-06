@@ -445,15 +445,25 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             return;
         }
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(req);
+        OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
+        String clientSecret = oidcClientConfig.getClientSecret();
+
+        OidcSessionInfo sessionInfo;
+        try {
+            sessionInfo = OidcSessionInfo.getSessionInfo(req, clientSecret);
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not get session info from client cookies.");
+            }
+            return;
+        }
+
         if (sessionInfo == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Session info not found from client cookies.");
             }
             return;
         }
-
-        OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
 
         OidcSessionUtils.logoutIfSessionInvalidated(req, sessionInfo, oidcClientConfig);
     }

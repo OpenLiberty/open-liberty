@@ -17,9 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
 public class OidcSessionInfo {
+
+    private static TraceComponent tc = Tr.register(OidcSessionInfo.class);
 
     private static String DELIMITER = ":";
 
@@ -30,7 +34,9 @@ public class OidcSessionInfo {
     private final String sid;
     private final String timestamp;
 
-    public OidcSessionInfo(String configId, String iss, String sub, String sid, String timestamp) {
+    private final static EncryptionUtils encryptionUtils = new EncryptionUtils();
+
+    public OidcSessionInfo(String configId, String iss, String sub, String sid, String timestamp, String clientSecret) throws OidcSessionException {
         if (configId == null) configId = "";
         if (iss == null) iss = "";
         if (sub == null) sub = "";
@@ -42,34 +48,43 @@ public class OidcSessionInfo {
         this.sub = sub;
         this.sid = sid;
         this.timestamp = timestamp;
-        this.sessionId = createSessionId();
+        this.sessionId = createSessionId(clientSecret);
     }
+
     /**
-     * Gets the base64 encoded session id from the request cookies
-     * and returns an OidcSessionInfo object which contains
-     * the config id, sub, sid, and timestamp embedded in the session id.
+     * Gets the session id in the format of
+     * 'AES(Base64(configId):Base64(sub):Base64(sid):Base64(timestamp), clientSecret)'
+     * from the request cookies and returns an OidcSessionInfo object which contains
+     * the config id, sub, sid, and timestamp.
      *
      * @param request The http servlet request.
      * @return An OidcSessionInfo object containing info parsed from the session id.
+     * @throws OidcSessionException
      */
-    public static OidcSessionInfo getSessionInfo(HttpServletRequest request) {
-        String sessionId = getSessionIdFromCookies(request.getCookies());
-        if (sessionId == null || sessionId.isEmpty()) {
-            return null;
+    public static OidcSessionInfo getSessionInfo(HttpServletRequest request, String clientSecret) throws OidcSessionException {
+        try {
+            String encryptedSessionId = getSessionIdFromCookies(request.getCookies());
+            if (encryptedSessionId == null || encryptedSessionId.isEmpty()) {
+                return null;
+            }
+
+            String sessionId = encryptionUtils.aesDecrypt(clientSecret, encryptedSessionId);
+            String[] parts = sessionId.split(DELIMITER);
+            if (parts.length != 5) {
+                return null;
+            }
+
+            String configId = new String(Base64.decodeBase64(parts[0]));
+            String iss = new String(Base64.decodeBase64(parts[1]));
+            String sub = new String(Base64.decodeBase64(parts[2]));
+            String sid = new String(Base64.decodeBase64(parts[3]));
+            String timestamp = new String(Base64.decodeBase64(parts[4]));
+
+            return new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientSecret);
+        } catch (Exception e) {
+            String errorMsg = Tr.formatMessage(tc, "OIDC_SESSION_PARSING_FAILURE", new Object[] { e.getLocalizedMessage() });
+            throw new OidcSessionException(errorMsg);
         }
-
-        String[] parts = sessionId.split(DELIMITER);
-        if (parts.length != 5) {
-            return null;
-        }
-
-        String configId = new String(Base64.decodeBase64(parts[0]));
-        String iss = new String(Base64.decodeBase64(parts[1]));
-        String sub = new String(Base64.decodeBase64(parts[2]));
-        String sid = new String(Base64.decodeBase64(parts[3]));
-        String timestamp = new String(Base64.decodeBase64(parts[4]));
-
-        return new OidcSessionInfo(configId, iss, sub, sid, timestamp);
     }
 
     private static String getSessionIdFromCookies(Cookie[] cookies) {
@@ -107,19 +122,27 @@ public class OidcSessionInfo {
 
     /**
      * Generate a new session id using the config id, sub, sid, and timestamp in the
-     * format of 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.
+     * format of 'AES(Base64(configId):Base64(sub):Base64(sid):Base64(timestamp), clientSecret)'.
      * It is assumed that the inputs have been validated before creating the session id.
      *
-     * @return A session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.
+     * @return A session id in the format 'AES(Base64(configId):Base64(sub):Base64(sid):Base64(timestamp), clientSecret)'.
+     * @throws OidcSessionException
      */
-    private String createSessionId() {
-        String encodedConfigId = new String(Base64.encodeBase64(configId.getBytes()));
-        String encodedIss = new String(Base64.encodeBase64(iss.getBytes()));
-        String encodedSub = new String(Base64.encodeBase64(sub.getBytes()));
-        String encodedSid = new String(Base64.encodeBase64(sid.getBytes()));
-        String encodedTimestamp = new String(Base64.encodeBase64(timestamp.getBytes()));
+    private String createSessionId(String clientSecret) throws OidcSessionException {
+        try {
+            String encodedConfigId = new String(Base64.encodeBase64(configId.getBytes()));
+            String encodedIss = new String(Base64.encodeBase64(iss.getBytes()));
+            String encodedSub = new String(Base64.encodeBase64(sub.getBytes()));
+            String encodedSid = new String(Base64.encodeBase64(sid.getBytes()));
+            String encodedTimestamp = new String(Base64.encodeBase64(timestamp.getBytes()));
 
-        return String.join(DELIMITER, encodedConfigId, encodedIss, encodedSub, encodedSid, encodedTimestamp);
+            String encodedSessionId = String.join(DELIMITER, encodedConfigId, encodedIss, encodedSub, encodedSid, encodedTimestamp);
+
+            return encryptionUtils.aesEncrypt(clientSecret, encodedSessionId);
+        } catch (Exception e) {
+            String errorMsg = Tr.formatMessage(tc, "OIDC_SESSION_CREATION_FAILURE", new Object[] { e.getLocalizedMessage() });
+            throw new OidcSessionException(errorMsg);
+        }
     }
 
     @Override

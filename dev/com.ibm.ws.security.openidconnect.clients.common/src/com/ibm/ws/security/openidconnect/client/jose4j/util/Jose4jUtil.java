@@ -48,6 +48,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorU
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
+import com.ibm.ws.security.openidconnect.clients.common.OidcSessionException;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.clients.common.TraceConstants;
@@ -200,14 +201,16 @@ public class Jose4jUtil {
         return oidcResult;
     }
 
-    private void createWASOidcSession(OidcClientRequest oidcClientRequest, @Sensitive JwtClaims jwtClaims, ConvergedClientConfig clientConfig) throws MalformedClaimException {
+    private void createWASOidcSession(OidcClientRequest oidcClientRequest, @Sensitive JwtClaims jwtClaims, ConvergedClientConfig clientConfig) throws OidcSessionException, MalformedClaimException {
         String configId = clientConfig.getId();
         String iss = jwtClaims.getIssuer();
         String sub = jwtClaims.getSubject();
         String sid = jwtClaims.getClaimValue("sid", String.class);
         String timestamp = OidcUtil.getTimeStamp();
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
+        String clientSecret = clientConfig.getClientSecret();
+
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientSecret);
 
         OidcSessionCache oidcSessionCache = clientConfig.getOidcSessionCache();
         oidcSessionCache.insertSession(sessionInfo);

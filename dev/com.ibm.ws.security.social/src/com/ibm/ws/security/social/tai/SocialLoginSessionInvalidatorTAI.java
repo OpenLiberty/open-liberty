@@ -81,7 +81,8 @@ public class SocialLoginSessionInvalidatorTAI implements TrustAssociationInterce
         if (!isRunningBetaMode()) {
             return false;
         }
-        taiRequestHelper.createSocialTaiRequestAndSetRequestAttribute(req);
+        SocialTaiRequest socialTaiRequest = taiRequestHelper.createSocialTaiRequestAndSetRequestAttribute(req);
+        taiRequestHelper.requestShouldBeHandledByTAI(req, socialTaiRequest);
         logoutIfSessionInvalidated(req);
         return false;
     }
@@ -108,19 +109,37 @@ public class SocialLoginSessionInvalidatorTAI implements TrustAssociationInterce
             }
             return;
         }
-
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
-        if (sessionInfo == null) {
+        
+        SocialLoginConfig clientConfig = null;
+        try {
+            clientConfig = socialTaiRequest.getTheOnlySocialLoginConfig();
+        } catch (SocialLoginException e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Session info coud not be retrieved from client cookies.");
+                Tr.debug(tc, "A unique social login config wasn't found for this request. Exception was " + e.getMessage());
             }
             return;
         }
         
-        SocialLoginConfig clientConfig = SocialLoginTAI.getSocialLoginConfig(sessionInfo.getConfigId());
         if (clientConfig == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Client config for request could not be found. An error must have occurred initializing this request.");
+            }
+            return;
+        }
+        
+        OidcSessionInfo sessionInfo;
+        try {
+            sessionInfo = OidcSessionInfo.getSessionInfo(request, clientConfig.getClientSecret());
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not get session info from client cookies.");
+            }
+            return;
+        }
+        
+        if (sessionInfo == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Session info coud not be retrieved from client cookies.");
             }
             return;
         }

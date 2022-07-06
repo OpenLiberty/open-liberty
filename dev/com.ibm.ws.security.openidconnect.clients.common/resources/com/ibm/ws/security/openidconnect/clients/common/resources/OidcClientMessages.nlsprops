@@ -304,5 +304,17 @@ NO_RECENT_SESSIONS_WITH_CLAIMS=CWWKS1552E: The [{0}] OpenID Connect client canno
 NO_RECENT_SESSIONS_WITH_CLAIMS.explanation=The OpenID Connect client does not have a recent session with an OpenID Connect provider that matches all of the claims that are specified in the message. The claims that are specified in the message must have values in the logout token that match the same claims of an ID token that was received recently.
 NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Ensure that claims that are specified in the message match an ID token that was recently obtained from an OpenID Connect provider.
 
+VALUE_NOT_HEXADECIMAL=CWWKS1553E: The provided value is not in hexadecimal format, so it cannot be decoded.
+VALUE_NOT_HEXADECIMAL.explanation=The value for an encrypted token is expected to be encoded in hexadecimal format.
+VALUE_NOT_HEXADECIMAL.useraction=Verify that the value is encoded correctly in hexadecimal format.
+
+OIDC_SESSION_CREATION_FAILURE=CWWKS1554E: An OpenID Connect session information object could not be created. {0}
+OIDC_SESSION_CREATION_FAILURE.explanation=The client secret that is used to encrypt the OpenID Connect session ID might be malformed or might not be valid. An error might have occurred while getting the initialization vector for the encryption algorithm, or the required AES encryption algorithm might not be available.
+OIDC_SESSION_CREATION_FAILURE.useraction=Verify that the client secret that is used to encrypt the OpenID Connect session ID is valid and can be used for AES encryption.
+
+OIDC_SESSION_PARSING_FAILURE=CWWKS1555E: The OpenID Connect session information could not be parsed. {0}
+OIDC_SESSION_PARSING_FAILURE.explanation=An error occurred that prevented the AES encryption algorithm from decrypting the OpenID Connect session ID. The secret key that is used to decrypt the OpenID Connect session ID might be malformed or might not be valid. The OpenID Connect session ID might not be formatted properly. An error might have occurred while retrieving the initialization vector for the decryption algorithm, or the required AES encryption algorithm might not be available.
+OIDC_SESSION_PARSING_FAILURE.useraction=Verify that the client secret is valid and can be used for AES decryption. Verify that the OpenID Connect session ID is formatted correctly and that the decryption algorithm is available.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 
