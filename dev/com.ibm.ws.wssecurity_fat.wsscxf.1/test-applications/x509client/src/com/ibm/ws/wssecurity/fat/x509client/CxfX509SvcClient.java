@@ -112,8 +112,8 @@ public class CxfX509SvcClient extends HttpServlet {
                        + "/x509token/"
                        + rawServiceName + "?wsdl";
         wsdlURL = new URL(wsdlLocation);
-        System.out.println("CxfX509SvcClient: wsdl:" + wsdlLocation);
-        System.out.println("thisMethod:" + thisMethod +
+        System.out.println("@AFTER API CHANGES - CxfX509SvcClient: wsdl:" + wsdlLocation);
+        System.out.println("@AFTER API CHANGES - thisMethod:" + thisMethod +
                            " testMode:" + testMode +
                            " serviceName:" + serviceName +
                            " servicePort:" + servicePort +

@@ -91,6 +91,8 @@
 		ws-security.username="user1"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 	>
+	  <!-- 2/2021 EE8 Callbackhandler -->
+	  
 		<signatureProperties
 			signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
@@ -108,6 +110,8 @@
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 	>
+	<!-- 2/2021 EE8 Callbackhandler -->
+
 		<signatureProperties
 			signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"

@@ -91,6 +91,8 @@
 		ws-security.password="security"
 		ws-security.username="user1"
 	>
+	<!-- 2/2021 EE8 Callbackhandler -->
+
 		<signatureProperties
 			signatureAlgorithm="sha384"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
@@ -108,6 +110,8 @@
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 	>
+	<!-- 2/2021 EE8 Callbackhandler -->
+
 		<signatureProperties
 			signatureAlgorithm="sha384"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
@@ -123,6 +127,6 @@
 	</wsSecurityProvider>
 
     <include location="imports/java2Permissions.xml" />
-     
+    
 </server>
 
