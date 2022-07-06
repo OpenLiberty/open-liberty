@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -51,7 +50,7 @@ public class DataPersistence {
 
     private static final ConcurrentHashMap<//
                     Entry<String, ClassLoader>, //
-                    Entry<PersistenceServiceUnit, Set<Class<?>>>> units = new ConcurrentHashMap<>();
+                    Entry<PersistenceServiceUnit, Map<Class<?>, String>>> units = new ConcurrentHashMap<>();
 
     @Reference(target = "(component.name=com.ibm.ws.threading)")
     protected ExecutorService executor;
@@ -181,23 +180,25 @@ public class DataPersistence {
                                                                             properties,
                                                                             entityClassNames.toArray(new String[entityClassNames.size()]));
         units.put(new SimpleImmutableEntry<>(dbStoreId, loader),
-                  new SimpleImmutableEntry<PersistenceServiceUnit, Set<Class<?>>>(punit, entityInfo.keySet()));
+                  new SimpleImmutableEntry<>(punit, entityInfo));
     }
 
     // TODO this is very inefficient, but works for now
-    PersistenceServiceUnit getPersistenceServiceUnit(Class<?> entityClass) {
+    Entry<String, PersistenceServiceUnit> getPersistenceServiceUnit(Class<?> entityClass) {
         System.out.println("Available persistence service units: " + units);
-        for (Entry<PersistenceServiceUnit, Set<Class<?>>> entry : units.values()) {
-            if (entry.getValue().contains(entityClass))
-                return entry.getKey();
+        for (Entry<PersistenceServiceUnit, Map<Class<?>, String>> entry : units.values()) {
+            Map<Class<?>, String> entityInfo = entry.getValue();
+            String keyAttribute = entityInfo.get(entityClass);
+            if (keyAttribute != null)
+                return new SimpleImmutableEntry<>(keyAttribute, entry.getKey());
         }
         throw new RuntimeException("Persistence layer unavailable for " + entityClass);
     }
 
-    Entry<PersistenceServiceUnit, Set<Class<?>>> getPersistenceInfo(String dbStoreId, ClassLoader loader) {
+    Entry<PersistenceServiceUnit, Map<Class<?>, String>> getPersistenceInfo(String dbStoreId, ClassLoader loader) {
         System.out.println("Available persistence service units: " + units);
         Entry<String, ClassLoader> key = new SimpleImmutableEntry<>(dbStoreId, loader);
-        Entry<PersistenceServiceUnit, Set<Class<?>>> unitInfo = units.get(key);
+        Entry<PersistenceServiceUnit, Map<Class<?>, String>> unitInfo = units.get(key);
         System.out.println("Found " + unitInfo + " using key: " + dbStoreId + "," + loader);
         return unitInfo;
     }

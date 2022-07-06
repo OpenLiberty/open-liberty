@@ -18,13 +18,16 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.HeuristicMixedException;
 import jakarta.transaction.HeuristicRollbackException;
-import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.Status;
 import jakarta.transaction.SystemException;
@@ -35,6 +38,8 @@ import org.osgi.framework.FrameworkUtil;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
+import io.openliberty.data.IdNotFoundException;
+import io.openliberty.data.MappingException;
 import io.openliberty.data.Template;
 
 /**
@@ -51,14 +56,106 @@ public class TemplateImpl implements Template {
 
     @Override
     public <T, K> void delete(Class<T> entityClass, K id) {
-        // TODO Auto-generated method stub
+        if (id == null || entityClass == null)
+            throw new NullPointerException(id == null ? "id" : "entityClass");
 
+        Entry<String, PersistenceServiceUnit> keyAndPSU = persistence.getPersistenceServiceUnit(entityClass);
+        String keyAttribute = keyAndPSU.getKey();
+        PersistenceServiceUnit punit = keyAndPSU.getValue();
+
+        if (keyAttribute == null)
+            throw new IdNotFoundException("Entity " + entityClass + " lacks a primary key column.");
+
+        String jpql = "DELETE FROM " + entityClass.getSimpleName() + " o WHERE o." + keyAttribute + "=?1";
+
+        LocalTransactionCoordinator suspendedLTC = null;
+        EntityManager em = null;
+        boolean failed = true;
+        boolean requiresNewTransaction = false;
+        try {
+            if (requiresNewTransaction = Status.STATUS_NO_TRANSACTION == persistence.tranMgr.getStatus()) {
+                suspendedLTC = persistence.localTranCurrent.suspend();
+                persistence.tranMgr.begin();
+            }
+
+            em = punit.createEntityManager();
+
+            Query update = em.createQuery(jpql);
+            update.setParameter(1, id);
+            int updateCount = update.executeUpdate();
+
+            System.out.println("delete " + entityClass.getName() + " " + id + "? " + (updateCount > 0));
+
+            em.flush();
+
+            failed = false;
+        } catch (Exception x) {
+            throw new MappingException(x);
+        } finally {
+            if (em != null)
+                em.close();
+
+            try {
+                if (requiresNewTransaction) {
+                    try {
+                        int status = persistence.tranMgr.getStatus();
+                        if (status == Status.STATUS_ACTIVE && !failed)
+                            persistence.tranMgr.commit();
+                        else if (status != Status.STATUS_NO_TRANSACTION)
+                            persistence.tranMgr.rollback();
+                    } catch (HeuristicMixedException | HeuristicRollbackException | IllegalStateException | RollbackException | SecurityException x) {
+                        throw new MappingException(x);
+                    }
+                } else if (failed && Status.STATUS_ACTIVE == persistence.tranMgr.getStatus()) {
+                    persistence.tranMgr.setRollbackOnly();
+                }
+            } catch (SystemException x) {
+                throw new MappingException(x);
+            } finally {
+                if (suspendedLTC != null)
+                    persistence.localTranCurrent.resume(suspendedLTC);
+            }
+        }
     }
 
     @Override
     public <T, K> Optional<T> find(Class<T> entityClass, K id) {
-        // TODO Auto-generated method stub
-        return null;
+        if (id == null || entityClass == null)
+            throw new NullPointerException(id == null ? "id" : "entityClass");
+
+        Entry<String, PersistenceServiceUnit> keyAndPSU = persistence.getPersistenceServiceUnit(entityClass);
+        String keyAttribute = keyAndPSU.getKey();
+        PersistenceServiceUnit punit = keyAndPSU.getValue();
+
+        if (keyAttribute == null)
+            throw new IdNotFoundException("Entity " + entityClass + " lacks a primary key column.");
+
+        String jpql = "SELECT o FROM " + entityClass.getSimpleName() + " o WHERE o." + keyAttribute + "=?1";
+
+        EntityManager em = null;
+        boolean failed = true;
+        try {
+            em = punit.createEntityManager();
+
+            TypedQuery<T> query = em.createQuery(jpql, entityClass);
+            query.setParameter(1, id);
+            List<T> results = query.getResultList();
+
+            System.out.println("find " + entityClass.getName() + " " + id + ": " + results);
+
+            failed = false;
+            return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        } finally {
+            if (em != null)
+                em.close(); // also detaches the entity
+
+            try {
+                if (failed && Status.STATUS_ACTIVE == persistence.tranMgr.getStatus())
+                    persistence.tranMgr.setRollbackOnly();
+            } catch (SystemException x) {
+                throw new MappingException(x);
+            }
+        }
     }
 
     @Override
@@ -68,12 +165,11 @@ public class TemplateImpl implements Template {
 
     @Override
     public <T> T insert(T entity, Duration ttl) {
-        PersistenceServiceUnit punit = persistence.getPersistenceServiceUnit(entity.getClass());
+        PersistenceServiceUnit punit = persistence.getPersistenceServiceUnit(entity.getClass()).getValue();
 
         LocalTransactionCoordinator suspendedLTC = null;
         EntityManager em = null;
         boolean failed = true;
-        T returnValue;
         boolean requiresNewTransaction = false;
         try {
             if (requiresNewTransaction = Status.STATUS_NO_TRANSACTION == persistence.tranMgr.getStatus()) {
@@ -88,40 +184,41 @@ public class TemplateImpl implements Template {
             if (ttl != null)
                 setQueryTimeout(em, ttl);
 
-            returnValue = em.merge(entity);
+            em.persist(entity);
             em.flush();
-        } catch (NotSupportedException | SystemException x) {
-            throw new RuntimeException(x);
+
+            failed = false;
+        } catch (Exception x) {
+            throw new MappingException(x);
         } finally {
             if (em != null)
-                em.close();
+                em.close(); // also detaches the entity
 
             try {
                 if (requiresNewTransaction) {
                     try {
                         int status = persistence.tranMgr.getStatus();
-                        if (status == Status.STATUS_MARKED_ROLLBACK || failed)
-                            persistence.tranMgr.rollback();
-                        else if (status != Status.STATUS_NO_TRANSACTION)
+                        if (status == Status.STATUS_ACTIVE && !failed)
                             persistence.tranMgr.commit();
+                        else if (status != Status.STATUS_NO_TRANSACTION)
+                            persistence.tranMgr.rollback();
                     } catch (HeuristicMixedException | HeuristicRollbackException | IllegalStateException | RollbackException | SecurityException x) {
-                        throw new RuntimeException(x);
+                        throw new MappingException(x);
                     } finally {
                         if (ttl != null)
                             persistence.tranMgr.setTransactionTimeout(0); // restore default
                     }
-                } else {
-                    if (failed && Status.STATUS_ACTIVE == persistence.tranMgr.getStatus())
-                        persistence.tranMgr.setRollbackOnly();
+                } else if (failed && Status.STATUS_ACTIVE == persistence.tranMgr.getStatus()) {
+                    persistence.tranMgr.setRollbackOnly();
                 }
             } catch (SystemException x) {
-                throw new RuntimeException(x);
+                throw new MappingException(x);
             } finally {
                 if (suspendedLTC != null)
                     persistence.localTranCurrent.resume(suspendedLTC);
             }
         }
-        return returnValue;
+        return entity;
     }
 
     @Override
@@ -135,12 +232,11 @@ public class TemplateImpl implements Template {
         if (!it.hasNext())
             return Collections.<T> emptyList();
 
-        PersistenceServiceUnit punit = persistence.getPersistenceServiceUnit(it.next().getClass());
+        PersistenceServiceUnit punit = persistence.getPersistenceServiceUnit(it.next().getClass()).getValue();
 
         LocalTransactionCoordinator suspendedLTC = null;
         EntityManager em = null;
         boolean failed = true;
-        ArrayList<T> returnValue;
         boolean requiresNewTransaction = false;
         try {
             if (requiresNewTransaction = Status.STATUS_NO_TRANSACTION == persistence.tranMgr.getStatus()) {
@@ -155,52 +251,47 @@ public class TemplateImpl implements Template {
             if (ttl != null)
                 setQueryTimeout(em, ttl);
 
-            returnValue = new ArrayList<>();
             for (T e : entities)
-                returnValue.add(em.merge(e));
+                em.persist(e);
             em.flush();
-        } catch (NotSupportedException | SystemException x) {
-            throw new RuntimeException(x);
+
+            failed = false;
+        } catch (Exception x) {
+            throw new MappingException(x);
         } finally {
             if (em != null)
-                em.close();
+                em.close(); // also detaches the entities
 
             try {
                 if (requiresNewTransaction) {
                     try {
                         int status = persistence.tranMgr.getStatus();
-                        if (status == Status.STATUS_MARKED_ROLLBACK || failed)
-                            persistence.tranMgr.rollback();
-                        else if (status != Status.STATUS_NO_TRANSACTION)
+                        if (status == Status.STATUS_ACTIVE && !failed)
                             persistence.tranMgr.commit();
+                        else if (status != Status.STATUS_NO_TRANSACTION)
+                            persistence.tranMgr.rollback();
                     } catch (HeuristicMixedException | HeuristicRollbackException | IllegalStateException | RollbackException | SecurityException x) {
-                        throw new RuntimeException(x);
+                        throw new MappingException(x);
                     } finally {
                         if (ttl != null)
                             persistence.tranMgr.setTransactionTimeout(0); // restore default
                     }
-                } else {
-                    if (failed && Status.STATUS_ACTIVE == persistence.tranMgr.getStatus())
-                        persistence.tranMgr.setRollbackOnly();
+                } else if (failed && Status.STATUS_ACTIVE == persistence.tranMgr.getStatus()) {
+                    persistence.tranMgr.setRollbackOnly();
                 }
             } catch (SystemException x) {
-                throw new RuntimeException(x);
+                throw new MappingException(x);
             } finally {
                 if (suspendedLTC != null)
                     persistence.localTranCurrent.resume(suspendedLTC);
             }
         }
-        return returnValue;
+        return entities;
     }
 
-    @Override
-    public <T> T update(T entity) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    // TODO lock timeout could be more appropriate for inserts
-    private void setQueryTimeout(EntityManager em, Duration timeToLive) {
+    // TODO Lock timeout could be more appropriate for inserts, but there is no way to set it in JPA
+    // and no standard for specifying it in JDBC.
+    private void setQueryTimeout(EntityManager em, Duration timeToLive) throws Exception {
         try {
             AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
                 Class<?> Session = em.getClass().getClassLoader().loadClass("org.eclipse.persistence.sessions.Session");
@@ -214,13 +305,115 @@ public class TemplateImpl implements Template {
                 return null;
             });
         } catch (PrivilegedActionException x) {
-            throw new RuntimeException(x.getCause());
+            throw (Exception) x.getCause();
         }
     }
 
     @Override
+    public <T> T update(T entity) {
+        PersistenceServiceUnit punit = persistence.getPersistenceServiceUnit(entity.getClass()).getValue();
+
+        LocalTransactionCoordinator suspendedLTC = null;
+        EntityManager em = null;
+        boolean failed = true;
+        T returnValue;
+        boolean requiresNewTransaction = false;
+        try {
+            if (requiresNewTransaction = Status.STATUS_NO_TRANSACTION == persistence.tranMgr.getStatus()) {
+                suspendedLTC = persistence.localTranCurrent.suspend();
+                persistence.tranMgr.begin();
+            }
+
+            em = punit.createEntityManager();
+
+            returnValue = em.merge(entity);
+            em.flush();
+
+            failed = false;
+        } catch (Exception x) {
+            throw new MappingException(x);
+        } finally {
+            if (em != null)
+                em.close(); // also detaches the entity
+
+            try {
+                if (requiresNewTransaction) {
+                    try {
+                        int status = persistence.tranMgr.getStatus();
+                        if (status == Status.STATUS_ACTIVE && !failed)
+                            persistence.tranMgr.commit();
+                        else if (status != Status.STATUS_NO_TRANSACTION)
+                            persistence.tranMgr.rollback();
+                    } catch (HeuristicMixedException | HeuristicRollbackException | IllegalStateException | RollbackException | SecurityException x) {
+                        throw new MappingException(x);
+                    }
+                } else if (failed && Status.STATUS_ACTIVE == persistence.tranMgr.getStatus()) {
+                    persistence.tranMgr.setRollbackOnly();
+                }
+            } catch (SystemException x) {
+                throw new MappingException(x);
+            } finally {
+                if (suspendedLTC != null)
+                    persistence.localTranCurrent.resume(suspendedLTC);
+            }
+        }
+        return returnValue;
+    }
+
+    @Override
     public <T> Iterable<T> update(Iterable<T> entities) {
-        // TODO Auto-generated method stub
-        return null;
+        Iterator<T> it = entities.iterator();
+        if (!it.hasNext())
+            return Collections.<T> emptyList();
+
+        PersistenceServiceUnit punit = persistence.getPersistenceServiceUnit(it.next().getClass()).getValue();
+
+        LocalTransactionCoordinator suspendedLTC = null;
+        EntityManager em = null;
+        boolean failed = true;
+        ArrayList<T> returnValue;
+        boolean requiresNewTransaction = false;
+        try {
+            if (requiresNewTransaction = Status.STATUS_NO_TRANSACTION == persistence.tranMgr.getStatus()) {
+                suspendedLTC = persistence.localTranCurrent.suspend();
+                persistence.tranMgr.begin();
+            }
+
+            em = punit.createEntityManager();
+
+            returnValue = new ArrayList<>();
+            for (T e : entities)
+                returnValue.add(em.merge(e));
+            em.flush();
+
+            failed = false;
+        } catch (Exception x) {
+            throw new MappingException(x);
+        } finally {
+            if (em != null)
+                em.close(); // also detaches the entities
+
+            try {
+                if (requiresNewTransaction) {
+                    try {
+                        int status = persistence.tranMgr.getStatus();
+                        if (status == Status.STATUS_ACTIVE && !failed)
+                            persistence.tranMgr.commit();
+                        else if (status != Status.STATUS_NO_TRANSACTION)
+                            persistence.tranMgr.rollback();
+                    } catch (HeuristicMixedException | HeuristicRollbackException | IllegalStateException | RollbackException | SecurityException x) {
+                        throw new MappingException(x);
+                    }
+                } else if (failed && Status.STATUS_ACTIVE == persistence.tranMgr.getStatus()) {
+                    persistence.tranMgr.setRollbackOnly();
+                }
+            } catch (SystemException x) {
+                throw new MappingException(x);
+            } finally {
+                if (suspendedLTC != null)
+                    persistence.localTranCurrent.resume(suspendedLTC);
+            }
+        }
+        return returnValue;
     }
 }
