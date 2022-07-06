@@ -8,8 +8,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/transform.props
 
-Bundle-Name: gRPC Shaded Jakarta
-Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.shaded.jakarta
-Bundle-Description: Liberty gRPC Shaded, version ${bVersion}; Jakarta Enabled
+Bundle-Name: gRPC Shaded
+Bundle-SymbolicName: io.openliberty.io.grpc.netty.shaded
+Bundle-Description: Liberty gRPC Shaded, version ${bVersion}
+

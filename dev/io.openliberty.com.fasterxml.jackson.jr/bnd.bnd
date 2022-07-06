@@ -19,4 +19,4 @@ Bundle-Description: Provides Jackson Jr Objects as a bundle
   @${repo;com.fasterxml.jackson.jr:jackson-jr-objects:jar;2.11.2;EXACT}
   
 Export-Package: \
-  com.fasterxml.jackson.*;version=2.11.2
+  com.fasterxml.jackson.jr.*;version=2.11.2
