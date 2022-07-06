@@ -123,7 +123,6 @@ public class FeatureToolServiceTest extends CommonRESTTest implements APIConstan
     @Before
     @After
     public void cleanup() throws Exception {
-        // stopServerAndValidate(FATSuite.server);
         ignoreErrorAndStopServerWithValidate();
 
         if (FATSuite.server.fileExistsInLibertyServerRoot(CATALOG_JSON)) {
@@ -152,9 +151,10 @@ public class FeatureToolServiceTest extends CommonRESTTest implements APIConstan
     }
 
     private void ignoreErrorAndStopServerWithValidate() throws Exception {
-        FATSuite.server.stopServer("CWWKF0002E: A bundle could not be found for com.ibm.ws.appserver.*", 
+        FATSuite.server.stopServer("CWWKF0002E: A bundle could not be found for com.ibm.ws.appserver.*",
                             "CWWKE0702E: Could not resolve module: com.ibm.ws.appserver.*",
                             "CWWKF0029E: Could not resolve module: com.ibm.ws.appserver.*",
+                            "CWWKF0001E: A feature definition could not be found for scopedprodextn.*",
                             "CWWKX1009E:.*");
         assertFalse("FAIL: Server is not stopped.",
                     FATSuite.server.isStarted());
@@ -826,6 +826,10 @@ public class FeatureToolServiceTest extends CommonRESTTest implements APIConstan
         FATSuite.server.installProductFeature(SCOPED_PRODUCT_EXTN, PROTECTED_PROD_EXTN);
         FATSuite.server.installProductFeature(SCOPED_PRODUCT_EXTN, PUBLIC_PROD_EXTN);
 
+        // use server.xml with scopedprodextn:publicprodextntool-1.0 feature
+        FATSuite.server.renameLibertyServerRootFile("server.xml", "server-original.xml");
+        FATSuite.server.copyFileToLibertyServerRoot("server-prodextn.xml");
+        FATSuite.server.renameLibertyServerRootFile("server-prodextn.xml", "server.xml");
         startServerAndValidate(FATSuite.server);
 
         response = get(url, adminUser, adminPassword, 200);
@@ -860,6 +864,9 @@ public class FeatureToolServiceTest extends CommonRESTTest implements APIConstan
         findFeatureTool(featureTools, "scopedprodextn%3Acom.ibm.websphere.appserver.prodextn1-1.0-1.0.0",
                         "scopedprodextn:com.ibm.websphere.appserver.prodextn1-1.0", "1.0.0",
                         "Prod Extn 1 Tool Display Name", null);
+
+        ignoreErrorAndStopServerWithValidate();
+        FATSuite.server.renameLibertyServerRootFile("server-original.xml", "server.xml");
     }
 
     /**

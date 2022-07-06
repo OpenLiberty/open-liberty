@@ -107,7 +107,11 @@ public class FATSuite {
     public static void suiteTearDown() throws Exception {
         if (server != null) {
             if (server.isStarted()) {
-                server.stopServer();
+                server.stopServer("CWWKF0002E: A bundle could not be found for com.ibm.ws.appserver.*",
+                            "CWWKE0702E: Could not resolve module: com.ibm.ws.appserver.*",
+                            "CWWKF0029E: Could not resolve module: com.ibm.ws.appserver.*",
+                            "CWWKF0001E: A feature definition could not be found for scopedprodextn.*",
+                            "CWWKX1009E:.*");
             }
 
             Log.info(c, "suiteTearDown", "Removing persistence directory: " + RESOURCES_ADMIN_CENTER_1_0);
