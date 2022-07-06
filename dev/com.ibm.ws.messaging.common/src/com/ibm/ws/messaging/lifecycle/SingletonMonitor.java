@@ -78,7 +78,7 @@ public class SingletonMonitor implements Introspector {
         this.configurationAdmin = configurationAdmin;
         String[] pids = (String[]) properties.get("singletonDeclarations");
         Objects.requireNonNull(pids);
-        declaredSingletons = unmodifiableSet(Stream.of(pids).map(this::servicePidToSingletonType).collect(toSet()));
+        declaredSingletons = unmodifiableSet(Stream.of(pids).map(this::servicePidToId).collect(toSet()));
         if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, String.format("Known configured messaging singleton types: %s%nagent pids: %s", declaredSingletons, Arrays.toString(pids)));
     }
 
@@ -87,7 +87,7 @@ public class SingletonMonitor implements Introspector {
         if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, this + " deactivate");
     }
 
-    private String servicePidToSingletonType(String servicePid) {
+    private String servicePidToId(String servicePid) {
         try {
             Configuration[] configs = this.configurationAdmin.listConfigurations("(" + SERVICE_PID + "=" + servicePid + ")");
             if (configs == null) {
@@ -96,9 +96,9 @@ public class SingletonMonitor implements Introspector {
             }
             if (configs.length > 1) throw new IllegalStateException("Non unique servicePid=" + servicePid + " matched configs=" + Arrays.toString(configs));
 
-            String type = (String) configs[0].getProperties().get("type");
-            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.debug(this, tc, servicePid + " -> " + type);
-            return type;
+            String id = (String) configs[0].getProperties().get("id");
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.debug(this, tc, servicePid + " -> " + id);
+            return id;
         } catch (IOException | InvalidSyntaxException | IllegalStateException e) {
             FFDCFilter.processException(e, "com.ibm.ws.messaging.lifecycle.SingletonMonitor.servicePidToConfigId", "98");
             StringWriter sw = new StringWriter();

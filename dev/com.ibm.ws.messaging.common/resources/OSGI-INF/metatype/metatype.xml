@@ -13,8 +13,7 @@
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
     <!-- Let config processing have a say in the properties provided to the start barrier service -->
     <OCD id="com.ibm.ws.messaging.lifecycle.SingletonsReady" description="internal use only" name="internal">
-        <!-- Config processing populates this attribute with a list of PIDs
-             of every configuration whose ibm:objectClass matches this AD's ibm:service -->
+        <!-- Config processing populates this attribute with a list of PIDs of every configured messaging-singleton -->
         <AD id="singletonDeclarations" name="internal" description="internal use only"
             type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
             ibm:reference="com.ibm.ws.messaging.lifecycle.SingletonAgent"
@@ -32,8 +31,7 @@
 
     <!-- Let config processing provide the list of matching PIDs to the singleton monitor service as well -->
     <OCD id="com.ibm.ws.messaging.lifecycle.SingletonMonitor" description="internal use only" name="internal">
-        <!-- Config processing populates this attribute with a list of PIDs
-             of every configuration whose ibm:objectClass matches this AD's ibm:service -->
+        <!-- Config processing populates this attribute with a list of PIDs of every configured messaging-singleton -->
         <AD id="singletonDeclarations" name="internal" description="internal use only"
             type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
             ibm:reference="com.ibm.ws.messaging.lifecycle.SingletonAgent"
