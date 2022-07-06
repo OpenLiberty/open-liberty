@@ -12,29 +12,29 @@
 bVersion=1.0
 
 Bundle-Name: JAX-WS ClientContainer Security
-Bundle-SymbolicName: com.ibm.ws.jaxws.clientcontainer.security
+Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.clientcontainer.security
 Bundle-Description: IBM JAX-WS ClientContainer Security; version=${bVersion}
 
 Import-Package: \
-  !com.ibm.ws.jaxws.clientcontainer.security, \
+  !com.ibm.ws.jaxws.2.3.clientcontainer.security, \
   org.apache.cxf.*;version="[2.6.2,3.5)", \
   com.ibm.ws.jaxws.security;version="[2.2,3)", \
   *
 
 Export-Package: \
-  com.ibm.ws.jaxws.clientcontainer.security
+  com.ibm.ws.jaxws.2.3.clientcontainer.security;version=1.0
 
--dsannotations: com.ibm.ws.jaxws.clientcontainer.security.JaxWsSecurityConfigurationServiceImpl
+-dsannotations: com.ibm.ws.jaxws.2.3.clientcontainer.security.JaxWsSecurityConfigurationServiceImpl
 
 -buildpath: \
-	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2, \
-	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2, \
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2, \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.websphere.appserver.api.ssl;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.ssl;version=latest,\
-	com.ibm.ws.jaxws.clientcontainer;version=latest,\
+	com.ibm.ws.jaxws.2.3.clientcontainer;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

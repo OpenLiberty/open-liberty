@@ -30,9 +30,9 @@ javac.endorsedDirs: \
 	../com.ibm.websphere.javaee.jaxws.2.2/generated
 
 -buildpath: \
-	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.2.6.2;version=latest,\
+    com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2;version=latest,\
 	com.ibm.websphere.appserver.api.ssl;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.appserver.spi.ssl;version=latest,\
@@ -41,7 +41,7 @@ javac.endorsedDirs: \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.jaxws.wsat;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

@@ -64,15 +64,15 @@ instrument.classesExcludes: com/ibm/ws/jaxws/web/internal/resources/*.class
 -buildpath: \
 	javax.jws:jsr181-api;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
-    com.ibm.ws.org.apache.cxf.cxf.api.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.management.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2,\
+    com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
@@ -82,7 +82,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/web/internal/resources/*.class
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.webcontainer;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

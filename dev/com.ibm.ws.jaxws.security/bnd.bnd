@@ -45,15 +45,14 @@ Private-Package: com.ibm.ws.jaxws.security.internal, \
 instrument.classesExcludes: com/ibm/ws/jaxws/security/internal/resources/*.class
 
 -buildpath: \
-    com.ibm.ws.org.apache.cxf.cxf.api.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.management.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2,\
 	com.ibm.websphere.appserver.api.ssl;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\
@@ -67,7 +66,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/security/internal/resources/*.class
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.javaee.ddmodel;version=latest,\
 	com.ibm.ws.javaee.ddmodel.wsbnd;version=latest,\
-	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.jaxws.webcontainer;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest, \
