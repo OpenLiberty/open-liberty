@@ -14,11 +14,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.openliberty.webcontainer.servlet60.fat.tests.SimpleTest;
+import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeaderTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                SimpleTest.class
+                Servlet60XPoweredByHeaderTest.class
 })
 public class FATSuite {
 
