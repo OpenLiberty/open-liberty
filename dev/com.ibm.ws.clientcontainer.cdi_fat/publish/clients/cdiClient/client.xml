@@ -7,6 +7,8 @@
     
    <application id="HelloAppClient" name="HelloAppClient" type="ear" location="HelloAppClient.ear"/>
    
+   <applicationManager startTimeout="200s"/> <!-- Fixes RTC Defect 290801, we saw intermitent long startups but the app worked fine. I observed a 42s start time, 5x should be more than ever needed -->
+
    <logging traceSpecification="**=info:JCDI=all:com.ibm.ws.cdi*=all:com.ibm.ws.weld*=all:org.jboss.*=all:Injection=all:org.apache.felix*=all:logservice=all=enabled"/>
 
 </client>
