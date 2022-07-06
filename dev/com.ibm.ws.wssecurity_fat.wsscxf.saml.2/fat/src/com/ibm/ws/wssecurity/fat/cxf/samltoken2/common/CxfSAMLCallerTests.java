@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken2.common;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import componenttest.custom.junit.runner.FATRunner;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
@@ -22,9 +21,9 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.topology.impl.LibertyServerWrapper;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.topology.impl.LibertyServerWrapper;
 
 
 /**
@@ -103,7 +102,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     }
    
     //scenario 2
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpsPolicy() throws Exception {
         
@@ -149,7 +148,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     }
  
     //scenario 3 - done
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCaller_WithRealmName() throws Exception {
         
@@ -195,7 +194,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
 
     }
  
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     //scenario 5
     @Test
     public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalse() throws Exception {

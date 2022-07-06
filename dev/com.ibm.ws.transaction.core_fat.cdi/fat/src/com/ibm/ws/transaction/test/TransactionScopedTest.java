@@ -30,7 +30,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
@@ -43,7 +42,6 @@ import transactionscopedtest.TransactionScopedTestServlet;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class TransactionScopedTest extends FATServletClient {
     final int instances = 100;
 

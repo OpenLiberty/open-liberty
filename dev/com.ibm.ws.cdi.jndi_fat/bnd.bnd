@@ -14,23 +14,15 @@ bVersion=1.0
 # Define the bundle for this FAT
 
 src: \
-	fat/src,\
-	test-applications/beanManagerLookupApp.war/src,\
-	test-applications/cdi12helloworldtest.war/src,\
-	test-applications/HelloAppClient.jar/src,\
-	test-applications/jndiLookup.war/src,\
-	test-applications/jndiLookup.jar/src
+	fat/src
 	
 tested.features:\
 	cdi-2.0,\
 	servlet-4.0,\
-	webprofile-8.0,\
 	cdi-3.0,\
-	connectors-2.0,\
-	expressionLanguage-4.0,\
-	pages-3.0,\
 	servlet-5.0,\
-	webProfile-9.1
+	cdi-4.0,\
+	servlet-6.0
 	
 	
 test.project: true

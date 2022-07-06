@@ -23,4 +23,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	jakarta.xml.soap:jakarta.xml.soap-api;version=2.0.0
+	jakarta.xml.soap:jakarta.xml.soap-api;version=2.0.0;strategy=exact

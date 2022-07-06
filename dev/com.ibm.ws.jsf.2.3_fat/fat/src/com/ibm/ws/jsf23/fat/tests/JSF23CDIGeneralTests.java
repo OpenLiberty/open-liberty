@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -324,6 +324,7 @@ public class JSF23CDIGeneralTests {
         assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
         assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
         assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
+        assertTrue(resultPage.asText().contains("Request contextPath: /ELImplicitObjectsViaCDI"));
 
         if (JakartaEE9Action.isActive()) {
             assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: jakarta.faces"));
@@ -379,9 +380,15 @@ public class JSF23CDIGeneralTests {
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("InitParam: ELImplicitObjectsViaCDI"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Param: Hello World"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ParamValues: Hello World"));
-            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Session isNew: true"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("View viewId: /implicit_objects.xhtml "));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ViewScope isEmpty: true"));
+            // See https://issues.apache.org/jira/projects/MYFACES/issues/MYFACES-4432
+            // Note: The request & session objects are not resolved by CDI, but via ImplicitObjectResolver
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Request contextPath: /ELImplicitObjectsViaCDI"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("HttpSession isNew: true"));
+            // Additional Requirement (See section 5.6.3)
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ExternalContext getApplicationContextPath: /ELImplicitObjectsViaCDI"));
+            
         }
     }
 

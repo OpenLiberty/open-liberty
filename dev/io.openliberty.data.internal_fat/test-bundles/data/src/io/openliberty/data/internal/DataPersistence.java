@@ -184,6 +184,16 @@ public class DataPersistence {
                   new SimpleImmutableEntry<PersistenceServiceUnit, Set<Class<?>>>(punit, entityInfo.keySet()));
     }
 
+    // TODO this is very inefficient, but works for now
+    PersistenceServiceUnit getPersistenceServiceUnit(Class<?> entityClass) {
+        System.out.println("Available persistence service units: " + units);
+        for (Entry<PersistenceServiceUnit, Set<Class<?>>> entry : units.values()) {
+            if (entry.getValue().contains(entityClass))
+                return entry.getKey();
+        }
+        throw new RuntimeException("Persistence layer unavailable for " + entityClass);
+    }
+
     Entry<PersistenceServiceUnit, Set<Class<?>>> getPersistenceInfo(String dbStoreId, ClassLoader loader) {
         System.out.println("Available persistence service units: " + units);
         Entry<String, ClassLoader> key = new SimpleImmutableEntry<>(dbStoreId, loader);

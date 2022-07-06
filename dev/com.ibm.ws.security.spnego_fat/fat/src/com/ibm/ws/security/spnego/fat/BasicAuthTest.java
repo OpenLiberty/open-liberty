@@ -120,6 +120,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
     @Test
     public void testSpnegoSuccessful_withJwtSsoFeature() throws Exception {
         preTestCheck();
+        setDefaultSpnegoServerConfig();
         ServerConfiguration newServerConfig = myServer.getServerConfiguration();
         newServerConfig.getFeatureManager().getFeatures().remove("servlet-3.1");
         newServerConfig.getFeatureManager().getFeatures().add("jwtSso-1.0");

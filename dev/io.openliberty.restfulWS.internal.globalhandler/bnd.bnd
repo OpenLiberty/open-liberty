@@ -34,7 +34,10 @@ Service-Component: \
     properties:="resources=${app-resources}"
 
 Export-Package: io.openliberty.restfulWS.internal.globalhandler;thread-context=true
- 
+
+Import-Package: \
+  jakarta.servlet.*;version="[5.0,7.0)", \
+  * 
 
 Include-Resource:\
   io/openliberty=${bin}/io/openliberty, \

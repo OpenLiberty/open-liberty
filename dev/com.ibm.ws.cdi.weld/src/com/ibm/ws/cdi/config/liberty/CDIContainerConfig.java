@@ -31,7 +31,7 @@ public class CDIContainerConfig {
     private static final TraceComponent tc = Tr.register(CDIContainerConfig.class);
 
     private Boolean enableImplicitBeanArchives = null;
-    private Boolean emptyBeansXMLExplicitBeanArchive = null;
+    private Boolean emptyBeansXmlCDI3Compatibility = null;
 
     @Reference
     private AggregatedConfiguration aggregatedConfig;
@@ -84,15 +84,15 @@ public class CDIContainerConfig {
         if (properties != null) {
             //we actually only care about two properties so read them here
             this.enableImplicitBeanArchives = (Boolean) properties.get(AggregatedConfiguration.ENABLE_IMPLICIT_BEAN_ARCHIVES);
-            this.emptyBeansXMLExplicitBeanArchive = (Boolean) properties.get(AggregatedConfiguration.EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE);
+            this.emptyBeansXmlCDI3Compatibility = (Boolean) properties.get(AggregatedConfiguration.EMPTY_BEANS_XML_CDI3_COMPATIBILITY);
         } else {
             this.enableImplicitBeanArchives = null;
-            this.emptyBeansXMLExplicitBeanArchive = null;
+            this.emptyBeansXmlCDI3Compatibility = null;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "cdi." + AggregatedConfiguration.ENABLE_IMPLICIT_BEAN_ARCHIVES + ": " + this.enableImplicitBeanArchives);
-            Tr.debug(tc, "cdi." + AggregatedConfiguration.EMPTY_BEANS_XML_EXPLICIT_BEAN_ARCHIVE + ": " + this.emptyBeansXMLExplicitBeanArchive);
+            Tr.debug(tc, "cdi." + AggregatedConfiguration.EMPTY_BEANS_XML_CDI3_COMPATIBILITY + ": " + this.emptyBeansXmlCDI3Compatibility);
         }
-        this.aggregatedConfig.setCdiConfig(this.enableImplicitBeanArchives, this.emptyBeansXMLExplicitBeanArchive);
+        this.aggregatedConfig.setCdiConfig(this.enableImplicitBeanArchives, this.emptyBeansXmlCDI3Compatibility);
     }
 }

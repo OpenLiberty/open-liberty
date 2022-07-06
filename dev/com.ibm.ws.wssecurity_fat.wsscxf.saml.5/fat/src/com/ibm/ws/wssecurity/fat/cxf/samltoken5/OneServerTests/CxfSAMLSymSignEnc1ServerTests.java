@@ -90,6 +90,7 @@ public class CxfSAMLSymSignEnc1ServerTests extends CxfSAMLSymSignEncTests {
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlcxfclient/CxfSamlSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
 
+        /*
         //issue 18363
         Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures();
         if (features.contains("jaxws-2.2")) {
@@ -97,6 +98,8 @@ public class CxfSAMLSymSignEnc1ServerTests extends CxfSAMLSymSignEncTests {
         } else if (features.contains("jaxws-2.3")) {
             setFeatureVersion("EE8");
         } // End of 18363
+        */
+        setFeatureVersion("EE7");
         
     }
 }

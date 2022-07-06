@@ -62,7 +62,7 @@ public class LegacyConfigTest extends FATServletClient {
         ServerConfiguration config = server.getServerConfiguration();
         ConfigElementList<Cdi> cdis = config.getCdi();
         Cdi cdi = new Cdi();
-        cdi.setEmptyBeansXMLExplicitBeanArchive(true);
+        cdi.setEmptyBeansXmlCDI3Compatibility(true);
         cdis.add(cdi);
         server.updateServerConfiguration(config);
 

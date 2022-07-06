@@ -42,6 +42,7 @@ Import-Package: \
  org.jboss.resteasy.plugins.interceptors, \
  org.jboss.resteasy.spi, \
  org.jboss.resteasy.util, \
+ jakarta.servlet.*;version="[5.0,7.0)", \
  *
 
 

@@ -38,8 +38,8 @@ publish.wlp.jar.suffix: dev/api/spec
 	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
 	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
 	io.openliberty.jakarta.validation.3.0;version=latest,\
-	io.openliberty.jakarta.jstl.2.0;version=latest,\
-	io.openliberty.jakarta.pages.3.0;version=latest,\
-	io.openliberty.jakarta.servlet.5.0;version=latest, \
-	io.openliberty.jakarta.websocket.2.0;version=latest, \
+	io.openliberty.jakarta.tags.3.0;version=latest,\
+	io.openliberty.jakarta.pages.3.1;version=latest,\
+	io.openliberty.jakarta.servlet.6.0;version=latest, \
+	io.openliberty.jakarta.websocket.2.1;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
