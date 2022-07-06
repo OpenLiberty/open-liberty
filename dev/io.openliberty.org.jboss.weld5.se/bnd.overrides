@@ -7,5 +7,4 @@ bFullVersion=${version;==;${bVersion}}.${libertyBundleMicroVersion}
 Build-Identifier: SNAPSHOT-${now}
 Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclipse}
 
-Export-Package:
 Import-Package:
