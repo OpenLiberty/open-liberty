@@ -44,7 +44,7 @@ Subsystem-Name: Jakarta RESTful Web Services 3.1 Client
   io.openliberty.org.apache.commons.codec, \
   io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.org.apache.httpcomponents, \
-  com.ibm.ws.org.jboss.logging, \
+  io.openliberty.org.jboss.logging35, \
   io.openliberty.org.jboss.resteasy.common.jakarta, \
   io.openliberty.restfulWS.internal.globalhandler
 -jars=\

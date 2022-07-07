@@ -213,7 +213,7 @@ Include-Resource:\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.container.service.compat;version=latest,\
   com.ibm.ws.logging.core,\
-  com.ibm.ws.org.jboss.logging,\
+  io.openliberty.org.jboss.logging35,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest,\
