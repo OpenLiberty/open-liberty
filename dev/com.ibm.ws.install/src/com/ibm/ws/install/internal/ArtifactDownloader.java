@@ -170,8 +170,8 @@ public class ArtifactDownloader implements AutoCloseable {
 
     private String FormatUrlSuffix(String url) {
         String result = url;
-        if (!url.endsWith(File.separator)) {
-            result += File.separator;
+        if (!url.endsWith("/")) {
+            result += "/";
         }
         return result;
     }
