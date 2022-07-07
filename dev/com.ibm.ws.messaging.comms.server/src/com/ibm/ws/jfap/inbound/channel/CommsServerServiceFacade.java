@@ -90,7 +90,7 @@ public class CommsServerServiceFacade {
     /** Lock to guard chain actions (update,stop and sslOnlyStop).. as of now as all chain actions are executed by SCR thread */
     private final Object actionLock = new Object();
 
-    public void activate(Map<String, Object> properties, ComponentContext context) {
+    public synchronized void activate(Map<String, Object> properties, ComponentContext context) {
         final String methodName = "activate";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, methodName, new Object[] {this, properties});
@@ -144,7 +144,7 @@ public class CommsServerServiceFacade {
             SibTr.exit(tc, "Activate");
     }
 
-    protected void deactivate(ComponentContext ctx, int reason) {
+    protected synchronized void deactivate(ComponentContext ctx, int reason) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
             Tr.event(tc, "CommsServerServiceFacade deactivated, reason=" + reason);
         //First make Config NULL
@@ -166,7 +166,7 @@ public class CommsServerServiceFacade {
 
     }
 
-    protected void modified(ComponentContext context,
+    protected synchronized void modified(ComponentContext context,
                             Map<String, Object> properties) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "modified", properties);
@@ -361,7 +361,7 @@ public class CommsServerServiceFacade {
     	return _tlsProviderService.getService();
     }
 
-    protected void setTlsProviderService(ServiceReference<NettyTlsProvider> ref) {
+    protected synchronized void setTlsProviderService(ServiceReference<NettyTlsProvider> ref) {
     	if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
             Tr.event(this, tc, "setNettyTlsProvider", ref);
         _tlsProviderService.setReference(ref);
@@ -371,7 +371,7 @@ public class CommsServerServiceFacade {
         performAction(updateSSLChainAction);
     }
 
-    protected void unsetTlsProviderService(ServiceReference<NettyTlsProvider> ref) {
+    protected synchronized void unsetTlsProviderService(ServiceReference<NettyTlsProvider> ref) {
     	if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
             Tr.event(this, tc, "unsetNettyTlsProvider", ref);
         if (this._tlsProviderService.unsetReference(ref)) {
@@ -381,7 +381,7 @@ public class CommsServerServiceFacade {
     }
 
     @Trivial
-    protected void setSslSupport(ServiceReference<ChannelFactoryProvider> ref) {
+    protected synchronized void setSslSupport(ServiceReference<ChannelFactoryProvider> ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "enable ssl support " + ref.getProperty("type"), this);
         }
@@ -395,7 +395,7 @@ public class CommsServerServiceFacade {
     }
 
     @Trivial
-    public void unsetSslSupport(ServiceReference<ChannelFactoryProvider> ref) {
+    public synchronized void unsetSslSupport(ServiceReference<ChannelFactoryProvider> ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "disable ssl support " + ref.getProperty("type"), this);
         }
@@ -428,7 +428,7 @@ public class CommsServerServiceFacade {
     }
 
     @Trivial
-    protected void updatedTcpOptions(ServiceReference<ChannelConfiguration> service) {
+    protected synchronized void updatedTcpOptions(ServiceReference<ChannelConfiguration> service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
             Tr.event(this, tc, "update tcp options " + service.getProperty("id"), this);
 
@@ -445,7 +445,7 @@ public class CommsServerServiceFacade {
     }
 
     @Trivial
-    protected void setSslOptions(ServiceReference<ChannelConfiguration> service) {
+    protected synchronized void setSslOptions(ServiceReference<ChannelConfiguration> service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "set ssl options " + service.getProperty("id"));
         }
@@ -456,7 +456,7 @@ public class CommsServerServiceFacade {
     }
 
     @Trivial
-    protected void updatedSslOptions(ServiceReference<ChannelConfiguration> service) {
+    protected synchronized void updatedSslOptions(ServiceReference<ChannelConfiguration> service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "update ssl options " + service.getProperty("id"));
         }
@@ -466,7 +466,7 @@ public class CommsServerServiceFacade {
     }
 
     @Trivial
-    protected void unsetSslOptions(ServiceReference<ChannelConfiguration> service) {
+    protected synchronized void unsetSslOptions(ServiceReference<ChannelConfiguration> service) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "unset ssl options " + service.getProperty("id"));
         }
