@@ -88,25 +88,4 @@
     <properties.wasJms topicSpace="NewTopic1" topicName="testTopic1"/>
   </jmsTopic>
 
-  <!--
-  JMSContextInjectServlet.java    
-    jmsQCFBindings = (QueueConnectionFactory)
-      new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
-    jmsQCFTCP = (QueueConnectionFactory)
-      new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-    jmsQueue = (Queue)
-      new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
-    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF")
-    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF1")
-    @JMSConnectionFactory("java:comp/env/eis/qcf")
-    @JMSConnectionFactory("java:comp/env/eis/qcf1")
-    @JMSConnectionFactory("java:comp/env/eis/tcf")
-    @JMSConnectionFactory("java:comp/env/eis/tcf1")
-
-    Topic jmsTopic = jmsContextTopic.createTopic("Topic1");
-
-  SampleSecureStatelessBean.java
-    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF")
-    -->
-
 </server>
