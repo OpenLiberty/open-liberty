@@ -1,0 +1,53 @@
+<server description="UI FAT Server">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>adminCenter-1.0</feature>
+        <feature>jsp-2.2</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <!-- Define the host name for use by the collective.
+         If the host name needs to be changed, the server should be
+         removed from the collective and re-joined. -->
+    <variable name="defaultHostName" value="localhost" />
+
+    <!-- Define an Administrator and non-Administrator -->
+    <basicRegistry id="basic">
+       <user name="admin" password="adminpwd" />
+       <user name="bob" password="bobpwd" />
+       <user name="nonadmin" password="nonadminpwd" />
+       <user name="reader" password="readerpwd" />
+        <user name="test/test" password="testpwd" />
+    </basicRegistry>
+    
+    <!-- Assign 'admin' to Administrator -->
+    <administrator-role>
+        <user>admin</user>
+        <user>bob</user>
+        <user>test/test</user>
+    </administrator-role>
+    
+    <reader-role>
+        <user>reader</user>
+    </reader-role>
+
+    <!-- Remote host authentication configuration. Exists to prevent key generation. -->
+    <hostAuthInfo rpcUser="ignored" rpcUserPassword="ignored" />
+    
+    <!-- clientAuthenticationSupported set to enable bidirectional trust -->
+    <ssl id="defaultSSLConfig"
+         keyStoreRef="defaultKeyStore"
+         trustStoreRef="defaultTrustStore"
+         clientAuthenticationSupported="true" />
+
+    <!-- inbound (HTTPS) keystore -->
+    <keyStore id="defaultKeyStore" password="Liberty"
+              location="${server.config.dir}/resources/security/key.jks" />
+
+    <!-- inbound (HTTPS) truststore -->
+    <keyStore id="defaultTrustStore" password="Liberty"
+              location="${server.config.dir}/resources/security/trust.jks" />
+              
+</server>
