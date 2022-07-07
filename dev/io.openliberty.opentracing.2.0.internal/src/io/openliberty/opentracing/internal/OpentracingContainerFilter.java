@@ -74,6 +74,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     @Override
     public void filter(ContainerRequestContext incomingRequestContext) throws IOException {
         String methodName = "filter(incoming)";
+
         helper = OpentracingFilterHelperProvider.getInstance().getOpentracingFilterHelper();
 
         Tracer tracer = OpentracingTracerManager.getTracer();
@@ -88,40 +89,48 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             }
         }
 
-        URI incomingUri = incomingRequestContext.getUriInfo().getRequestUri();
-        String incomingPath = incomingRequestContext.getUriInfo().getPath();
-        if (!incomingPath.startsWith("/")) {
-            incomingPath = "/" + incomingPath;
-        }
-
-        String incomingURL = incomingUri.toURL().toString();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName + " incomingURL", incomingURL);
-        }
-
-        SpanContext priorOutgoingContext = tracer.extract(Format.Builtin.HTTP_HEADERS,
-                                                          new MultivaluedMapToTextMap(incomingRequestContext.getHeaders()));
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName + " priorContext", priorOutgoingContext);
-        }
-
-        boolean process = OpentracingService.process(incomingUri, incomingPath, SpanFilterType.INCOMING);
-
-        String buildSpanName;
+        String buildSpanName = null;
         if (helper != null) {
             buildSpanName = helper.getBuildSpanName(incomingRequestContext, resourceInfo);
             if (buildSpanName == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, methodName + " skipping not traced method");
                 }
-                process = false;
+                incomingRequestContext.setProperty(SERVER_SPAN_SKIPPED_ID, true);
+                return;
             }
-        } else {
-            buildSpanName = incomingURL;
         }
 
+        URI incomingUri = incomingRequestContext.getUriInfo().getRequestUri();
+        String incomingPath = incomingRequestContext.getUriInfo().getPath();
+        if (!incomingPath.startsWith("/")) {
+            incomingPath = "/" + incomingPath;
+        }
+
+        String incomingURL = null;
+        SpanContext priorOutgoingContext = null;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            incomingURL = incomingUri.toURL().toString();
+            Tr.debug(tc, methodName + " incomingURL", incomingURL);
+
+            priorOutgoingContext = tracer.extract(Format.Builtin.HTTP_HEADERS,
+                new MultivaluedMapToTextMap(incomingRequestContext.getHeaders()));
+            Tr.debug(tc, methodName + " priorContext", priorOutgoingContext);
+        }
+
+        boolean process = OpentracingService.process(incomingUri, incomingPath, SpanFilterType.INCOMING);
+
         if (process) {
+            if (incomingURL == null) {
+                incomingURL = incomingUri.toURL().toString();
+            }
+            if (buildSpanName == null) {
+                buildSpanName = incomingURL;
+            }
+            if (priorOutgoingContext == null) {
+                priorOutgoingContext = tracer.extract(Format.Builtin.HTTP_HEADERS,
+                    new MultivaluedMapToTextMap(incomingRequestContext.getHeaders()));
+            }
             Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), incomingURL);
