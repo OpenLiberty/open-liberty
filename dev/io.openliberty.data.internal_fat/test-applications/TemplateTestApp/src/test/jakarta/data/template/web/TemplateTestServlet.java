@@ -44,7 +44,7 @@ import io.openliberty.data.Entities;
 import io.openliberty.data.MappingException;
 import io.openliberty.data.Template;
 
-@Entities(House.class)
+@Entities({ House.class, Vehicle.class })
 @WebServlet("/*")
 public class TemplateTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
@@ -60,7 +60,7 @@ public class TemplateTestServlet extends FATServlet {
      * Uses a template to insert, update, find, and delete entities.
      */
     @Test
-    public void testTemplate() {
+    public void testEntity1() {
         // find none
         Optional<House> found = template.find(House.class, "001-203-401");
         assertEquals(true, found.isEmpty());
@@ -164,6 +164,103 @@ public class TemplateTestServlet extends FATServlet {
 
         // delete nothing
         template.delete(House.class, h1.parcel);
+    }
+
+    /**
+     * Use the same template to insert, update, find, and delete a different type of entity.
+     */
+    @Test
+    public void testEntity2() {
+        Vehicle v1 = new Vehicle();
+        v1.make = "Honda";
+        v1.model = "Accord";
+        v1.numSeats = 5;
+        v1.price = 26000f;
+        v1.vin = "TE201234567890001";
+
+        Vehicle v2 = new Vehicle();
+        v2.make = "Ford";
+        v2.model = "F-150";
+        v2.numSeats = 3;
+        v2.price = 32000f;
+        v2.vin = "TE201234567890002";
+
+        Vehicle v3 = new Vehicle();
+        v3.make = "Toyota";
+        v3.model = "Camry";
+        v3.numSeats = 5;
+        v3.price = 25000f;
+        v3.vin = "TE201234567890003";
+
+        // insert multiple with time-to-live
+        Iterable<Vehicle> inserted = template.insert(List.of(v1, v2, v3), Duration.of(150, ChronoUnit.SECONDS));
+        Iterator<Vehicle> i = inserted.iterator();
+        assertEquals(true, i.hasNext());
+        assertEquals("Honda", i.next().make);
+        assertEquals(true, i.hasNext());
+        assertEquals(3, i.next().numSeats);
+        assertEquals(true, i.hasNext());
+        assertEquals(25000f, i.next().price, 0.001f);
+        assertEquals(false, i.hasNext());
+
+        // delete
+        template.delete(Vehicle.class, v1.vin);
+
+        // find none
+        Optional<Vehicle> found = template.find(Vehicle.class, v1.vin);
+        assertEquals(false, found.isPresent());
+
+        // update
+        v3.price += 500f;
+        v3 = template.update(v3);
+        assertEquals("TE201234567890003", v3.vin);
+
+        // find
+        found = template.find(Vehicle.class, "TE201234567890003");
+        assertEquals(true, found.isPresent());
+        assertEquals(25500f, found.get().price, 0.001f);
+    }
+
+    /**
+     * Intermix two different types of entities in same inserts and updates.
+     */
+    @Test
+    public void testMixedEntities() {
+        House h1 = new House();
+        h1.area = 1900;
+        h1.lotSize = 0.19f;
+        h1.numBedrooms = 4;
+        h1.parcel = "111-222-333";
+        h1.purchasePrice = 219000.00f;
+        h1.sold = Year.of(2019);
+
+        Vehicle v1 = new Vehicle();
+        v1.make = "Nissan";
+        v1.model = "Altima";
+        v1.numSeats = 5;
+        v1.price = 24000f;
+        v1.vin = "TME09876543210001";
+
+        Iterable<Object> inserted = template.insert(List.of(h1, v1));
+        Iterator<Object> i = inserted.iterator();
+        assertEquals(true, i.hasNext());
+        assertEquals(Year.of(2019), ((House) i.next()).sold);
+        assertEquals(true, i.hasNext());
+        assertEquals(24000f, ((Vehicle) i.next()).price, 0.001f);
+        assertEquals(false, i.hasNext());
+
+        h1.purchasePrice = 241000f;
+        h1.sold = Year.of(2021);
+
+        v1.price += 500f;
+
+        Iterable<Object> updated = template.update(List.of(v1, h1));
+        Iterator<Object> u = updated.iterator();
+        assertEquals(true, u.hasNext());
+        assertEquals(24500f, ((Vehicle) u.next()).price, 0.001f);
+        assertEquals(true, u.hasNext());
+        assertEquals(Year.of(2021), ((House) u.next()).sold);
+        assertEquals(false, u.hasNext());
     }
 
     // TODO enable if we find a way to specify a lock timeout on a JPA merge (insert).

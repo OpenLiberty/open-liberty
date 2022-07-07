@@ -59,6 +59,7 @@ import io.openliberty.data.Page;
 import io.openliberty.data.Pagination;
 import io.openliberty.data.Sort;
 import io.openliberty.data.Sorts;
+import io.openliberty.data.Template;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -88,6 +89,9 @@ public class DataTestServlet extends FATServlet {
 
     @Inject
     Tariffs tariffs;
+
+    @Inject
+    Template template;
 
     @Resource
     private UserTransaction tran;
@@ -340,25 +344,25 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "TDM-SE";
         prod1.name = "TestDeleteMultiple Standard Edition";
         prod1.price = 115.99f;
-        products.insert(prod1);
+        products.addOrModify(prod1);
 
         Product prod2 = new Product();
         prod2.id = "TDM-AE";
         prod2.name = "TestDeleteMultiple Advanced Edition";
         prod2.price = 197.99f;
-        products.insert(prod2);
+        products.addOrModify(prod2);
 
         Product prod3 = new Product();
         prod3.id = "TDM-EE";
         prod3.name = "TestDeleteMultiple Expanded Edition";
         prod3.price = 153.99f;
-        products.insert(prod3);
+        products.addOrModify(prod3);
 
         Product prod4 = new Product();
         prod4.id = "TDM-NFE";
         prod4.name = "TestDeleteMultiple Nearly Free Edition";
         prod4.price = 1.99f;
-        products.insert(prod4);
+        products.addOrModify(prod4);
 
         assertEquals(2, products.discontinueProducts(Set.of("TDM-AE", "TDM-NFE", "TDM-NOT-FOUND")));
 
@@ -436,7 +440,7 @@ public class DataTestServlet extends FATServlet {
         prod.price = 3.99f;
         prod.description = "An item for sale.";
 
-        products.insert(prod);
+        products.addOrModify(prod);
 
         Product p = products.findItem("OL306-233F");
         assertEquals(prod.id, p.id);
@@ -464,8 +468,8 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            people.insert(jane);
-            people.insert(joe);
+            people.save(jane);
+            people.save(joe);
         } finally {
             if (tran.getStatus() == Status.STATUS_MARKED_ROLLBACK)
                 tran.rollback();
@@ -1277,6 +1281,42 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Entity classes that are accessed via repository methods can also be accessed via template.
+     */
+    @Test
+    public void testTemplateUsesRepositoryEntities() {
+        // insert by repository
+        Product prod1 = new Product();
+        prod1.id = "TTU-75-00-6144RE";
+        prod1.name = "testTemplateUsesRepositoryEntities Item";
+        prod1.price = 10.99f;
+        products.addOrModify(prod1);
+
+        // find by template
+        Optional<Product> found = template.find(Product.class, prod1.id);
+        assertEquals(true, found.isPresent());
+        Product p = found.get();
+        assertEquals("TTU-75-00-6144RE", p.id);
+        assertEquals("testTemplateUsesRepositoryEntities Item", p.name);
+        assertEquals(10.99f, p.price, 0.001f);
+
+        // insert by template
+        Order order1 = new Order();
+        order1.purchasedBy = "testTemplateUsesRepositoryEntities Buyer";
+        order1.purchasedOn = OffsetDateTime.now();
+        order1.total = 16.87f;
+        order1 = template.insert(order1);
+        assertNotNull(order1.id);
+
+        // find by repository
+        Optional<Order> ofound = orders.findById(order1.id);
+        assertEquals(true, ofound.isPresent());
+        Order o = ofound.get();
+        assertEquals(order1.id, o.id);
+        assertEquals("testTemplateUsesRepositoryEntities Buyer", o.purchasedBy);
+    }
+
+    /**
      * Update multiple entries.
      */
     @Test
@@ -1287,25 +1327,25 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "800-2024-S";
         prod1.name = "Small size TestUpdateMultiple-matched item";
         prod1.price = 10.00f;
-        products.insert(prod1);
+        products.addOrModify(prod1);
 
         Product prod2 = new Product();
         prod2.id = "800-3024-M";
         prod2.name = "Medium size TestUpdateMultiple-matched item";
         prod2.price = 15.00f;
-        products.insert(prod2);
+        products.addOrModify(prod2);
 
         Product prod3 = new Product();
         prod3.id = "C6000-814BH0003Y";
         prod3.name = "Medium size TestUpdateMultiple non-matching item";
         prod3.price = 18.00f;
-        products.insert(prod3);
+        products.addOrModify(prod3);
 
         Product prod4 = new Product();
         prod4.id = "800-4024-L";
         prod4.name = "Large size TestUpdateMultiple-matched item";
         prod4.price = 20.00f;
-        products.insert(prod4);
+        products.addOrModify(prod4);
 
         assertEquals(3, products.putOnSale("TestUpdateMultiple-match", .20f));
 
