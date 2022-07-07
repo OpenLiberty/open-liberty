@@ -161,7 +161,7 @@ io.smallrye:smallrye-graphql-schema-model:1.0.26
 io.smallrye:smallrye-graphql-servlet:1.0.26
 io.smallrye:smallrye-graphql:1.0.26
 jakarta.activation:jakarta.activation-api:2.0.0
-jakarta.activation:jakarta.activation-api:2.1.0-RC1
+jakarta.activation:jakarta.activation-api:2.1.0
 jakarta.annotation:jakarta.annotation-api:2.0.0
 jakarta.annotation:jakarta.annotation-api:2.1.1
 jakarta.authentication:jakarta.authentication-api:2.0.0
