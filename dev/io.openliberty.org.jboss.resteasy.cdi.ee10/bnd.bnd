@@ -100,6 +100,6 @@ Include-Resource:\
   com.ibm.ws.webcontainer.jakarta;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   io.openliberty.org.jboss.resteasy.common.ee10,\
-  io.openliberty.jakarta.restfulWS.3.0,\
-  io.openliberty.jakarta.cdi.3.0,\
-  io.openliberty.jakarta.annotation.2.0
+  io.openliberty.jakarta.restfulWS.3.1,\
+  io.openliberty.jakarta.cdi.4.0,\
+  io.openliberty.jakarta.annotation.2.1
