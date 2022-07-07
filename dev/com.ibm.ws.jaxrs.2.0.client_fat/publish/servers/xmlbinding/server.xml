@@ -3,6 +3,7 @@
         <feature>componenttest-1.0</feature>
         <feature>jaxrsClient-2.0</feature>
         <feature>jaxb-2.2</feature>
+        <feature>servlet-3.1</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
