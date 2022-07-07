@@ -10,4 +10,4 @@ Subsystem-Version: 1.0.0
  com.ibm.ws.security.jaas.common, \
  com.ibm.ws.security.auth.data
 kind=ga
-edition=base
+edition=core

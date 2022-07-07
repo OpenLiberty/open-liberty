@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package com.ibm.websphere.security.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -25,11 +26,13 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -75,7 +78,7 @@ public class PasswordUtilAPITest {
      * passwordUtilities-1.0 feature exists. (the negative test is done by PublicAPITestSecurityDisabled class
      */
     @Test
-    public void testPasswordUtilApiEnabled() throws Exception {
+    public void testPasswordUtilApiEnabled_passwordUtilities10() throws Exception {
         String method = name.getMethodName();
         Log.info(thisClass, method, "Entering test " + method);
         // stop server, and then update the feature.
@@ -93,6 +96,57 @@ public class PasswordUtilAPITest {
 
             invokeServlet(urlBase, className, "encode", encodeInput, 200, expectedEncodeOutput);
             invokeServlet(urlBase, className, "decode", decodeInput, 200, expectedDecodeOutput);
+
+            /*
+             * The feature passwordUtilties-1.0 starts federatedRegistry-1.0, except when using EE9 since then
+             * appSecurity-1.0 (which brings in federatedRegistry-1.0) is no longer compatible.
+             */
+            if (!JakartaEE9Action.isActive()) {
+                assertFalse("Federated registry feature (federatedRegistry-1.0) should have started.", myServer.findStringsInLogs("federatedRegistry-1.0").isEmpty());
+            } else {
+                assertTrue("Federated registry feature (federatedRegistry-1.0) should not have started.", myServer.findStringsInLogs("federatedRegistry-1.0").isEmpty());
+            }
+        } finally {
+            myServer.stopServer();
+        }
+
+        Log.info(thisClass, method, "Exiting test " + method);
+
+    }
+
+    /*
+     * test PasswordUtil class is visible from the application when
+     * passwordUtilities-1.1 feature exists. (the negative test is done by PublicAPITestSecurityDisabled class
+     */
+    @Test
+    public void testPasswordUtilApiEnabled_passwordUtilities11() throws Exception {
+        String method = name.getMethodName();
+        Log.info(thisClass, method, "Entering test " + method);
+        // stop server, and then update the feature.
+        LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.websphere.security.fat.passwordutil.api");
+        ServerConfiguration config = myServer.getServerConfiguration().clone();
+        config.getFeatureManager().getFeatures().remove("passwordUtilities-1.0");
+        config.getFeatureManager().getFeatures().remove("passwordutilities-1.0"); // JakartaEE9Action lower-cases feature names
+        config.getFeatureManager().getFeatures().add("passwordUtilities-1.1");
+        myServer.updateServerConfiguration(config);
+        SecurityFatUtils.transformApps(myServer, "PasswordUtilAPI.war");
+
+        try {
+            myServer.startServer(true);
+            String urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort() + "/PasswordUtilAPI";
+            String className = "PasswordUtil";
+            String encodeInput = "&input=sensitiveText";
+            String decodeInput = "&input=%7bxor%7dLDoxLDYrNik6CzonKw%3d%3d";
+            String expectedEncodeOutput = "encode output is: {xor}LDoxLDYrNik6CzonKw==";
+            String expectedDecodeOutput = "decode output is: sensitiveText";
+
+            invokeServlet(urlBase, className, "encode", encodeInput, 200, expectedEncodeOutput);
+            invokeServlet(urlBase, className, "decode", decodeInput, 200, expectedDecodeOutput);
+
+            /*
+             * The feature passwordUtilties-1.1 does not start federatedRegistry-1.0.
+             */
+            assertTrue("Federated registry feature (federatedRegistry-1.0) should not have started.", myServer.findStringsInLogs("federatedRegistry-1.0").isEmpty());
         } finally {
             myServer.stopServer();
         }
