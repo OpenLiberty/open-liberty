@@ -10,6 +10,6 @@ IBM-Process-Types: client
 -features=\
   io.openliberty.xmlws.common-4.0
 -bundles=\
-  com.ibm.ws.jaxws.2.3.clientcontainer.jakarta
+  com.ibm.ws.jaxws.clientcontainer.jakarta
 kind=noship
 edition=full

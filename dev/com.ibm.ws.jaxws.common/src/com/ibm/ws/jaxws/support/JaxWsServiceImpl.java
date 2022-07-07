@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,11 @@ import java.util.Map;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
+import org.apache.cxf.staxutils.StaxUtils;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.bus.ExtensionProvider;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusFactory;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusListener;
@@ -29,11 +32,11 @@ import com.ibm.wsspi.jaxws.JaxWsService;
 /**
  * JAXWSServiceImpl is used to initial global JAX-WS configurations
  */
-
 public class JaxWsServiceImpl implements JaxWsService {
 
-    private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR =
-                    AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
+    private static final TraceComponent tc = Tr.register(JaxWsServiceImpl.class);
+
+    private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
 
     /*
      * Called by Declarative Services to activate service
@@ -48,6 +51,7 @@ public class JaxWsServiceImpl implements JaxWsService {
             properties.put("org.apache.cxf.bus.id", "Default Bus");
             Bus defaultBus = LibertyApplicationBusFactory.getInstance().createBus(null, properties);
             LibertyApplicationBusFactory.setDefaultBus(defaultBus);
+
         } finally {
             THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), orignalClassLoader);
         }
@@ -55,6 +59,16 @@ public class JaxWsServiceImpl implements JaxWsService {
         //Eager initialize the StaxUtils
         try {
             THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), StAXUtils.getStAXProviderClassLoader());
+            if(System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER) == null) {
+                System.setProperty(StaxUtils.ALLOW_INSECURE_PARSER, "true");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Insecure Stax property was null setting it to true.");
+                }
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Insecure Stax property is set to: " + System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER));
+            }
+            
             Class.forName("org.apache.cxf.staxutils.StaxUtils");
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
@@ -66,7 +80,8 @@ public class JaxWsServiceImpl implements JaxWsService {
     /*
      * Called by Declarative Services to modify service configuration properties
      */
-    protected void modified(Map<String, Object> newProps) {}
+    protected void modified(Map<String, Object> newProps) {
+    }
 
     /*
      * Called by Declarative Services to deactivate service
@@ -85,7 +100,7 @@ public class JaxWsServiceImpl implements JaxWsService {
 
     /**
      * Register a new extension provier
-     * 
+     *
      * @param provider The extension provider
      */
     public void registerExtensionProvider(ExtensionProvider provider) {
@@ -94,7 +109,7 @@ public class JaxWsServiceImpl implements JaxWsService {
 
     /**
      * Unregister the extension provider
-     * 
+     *
      * @param provider The extension provider
      */
     public void unregisterExtensionProvider(ExtensionProvider provider) {

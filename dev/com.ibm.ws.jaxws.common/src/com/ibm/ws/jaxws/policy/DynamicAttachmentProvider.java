@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,12 +20,13 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.common.injection.NoJSR250Annotations;
-import org.apache.cxf.helpers.DOMUtils;
+import org.apache.cxf.message.Message;
 import org.apache.cxf.service.model.BindingFaultInfo;
 import org.apache.cxf.service.model.BindingMessageInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.service.model.ServiceInfo;
+import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.ws.policy.PolicyConstants;
 import org.apache.cxf.ws.policy.PolicyException;
 import org.apache.cxf.ws.policy.PolicyProvider;
@@ -45,9 +46,7 @@ import org.w3c.dom.Node;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-/**
- * 
- */
+
 @NoJSR250Annotations
 public class DynamicAttachmentProvider extends AbstractPolicyProvider implements PolicyProvider {
     private static final TraceComponent tc = Tr.register(DynamicAttachmentProvider.class);
@@ -55,7 +54,8 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
     private String location = null;
     private Collection<PolicyAttachment> attachments;
 
-    public DynamicAttachmentProvider() {}
+    public DynamicAttachmentProvider() {
+    }
 
     public DynamicAttachmentProvider(Bus b) {
         super(b);
@@ -70,7 +70,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
     }
 
     @Override
-    public Policy getEffectivePolicy(BindingFaultInfo bfi) {
+    public Policy getEffectivePolicy(BindingFaultInfo bfi, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for BindingFaultInfo", bfi != null ? bfi : null);
         }
@@ -90,7 +90,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
     }
 
     @Override
-    public Policy getEffectivePolicy(BindingMessageInfo bmi) {
+    public Policy getEffectivePolicy(BindingMessageInfo bmi, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for BindingMessageInfo", bmi != null ? bmi.getMessageInfo() : null);
         }
@@ -109,8 +109,9 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         return p;
     }
 
+
     @Override
-    public Policy getEffectivePolicy(BindingOperationInfo boi) {
+    public Policy getEffectivePolicy(BindingOperationInfo boi, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for BindingOperationInfo", boi != null ? boi : null);
         }
@@ -130,7 +131,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
     }
 
     @Override
-    public Policy getEffectivePolicy(EndpointInfo ei) {
+    public Policy getEffectivePolicy(EndpointInfo ei, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for EndpointInfo", ei != null ? ei : null);
         }
@@ -150,7 +151,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
     }
 
     @Override
-    public Policy getEffectivePolicy(ServiceInfo si) {
+    public Policy getEffectivePolicy(ServiceInfo si, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for ServiceInfo", si != null ? si.getName() : null);
         }
@@ -169,11 +170,8 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         return p;
     }
 
-    synchronized void readDocument() {
+    void readDocument() {
         if (null != attachments) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Policy already loaded, return");
-            }
             return;
         }
 
@@ -192,7 +190,8 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
             if (null == is) {
                 throw new PolicyException(new Exception("Could not open the special policy attachment file because getResourceAsStream is null"));
             }
-            doc = DOMUtils.readXml(is);
+            // Changed from DOMUtils.readXml(InputStream) to StaxUtils.read(InputStream)
+            doc = StaxUtils.read(is);
         } catch (Exception ex) {
             throw new PolicyException(ex);
         }
@@ -326,5 +325,4 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
 
         });
     }
-
 }

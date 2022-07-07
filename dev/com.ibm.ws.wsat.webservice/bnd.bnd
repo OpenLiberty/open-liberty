@@ -74,7 +74,7 @@ Service-Component: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
-	com.ibm.ws.jaxws.2.3.common;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest,\
 	com.ibm.ws.jaxws.wsat;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\

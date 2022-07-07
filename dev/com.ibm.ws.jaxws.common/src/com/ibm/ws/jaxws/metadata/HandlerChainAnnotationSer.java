@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,8 @@ import java.io.Serializable;
 
 import javax.jws.HandlerChain;
 
-/**
- *
- */
 public class HandlerChainAnnotationSer implements Serializable {
-    /**  */
+    
     private static final long serialVersionUID = 7771198760827340305L;
     private String file;
     private String name;

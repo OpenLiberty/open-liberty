@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -41,6 +42,10 @@ import org.apache.cxf.transport.servlet.BaseUrlHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.JaxWsConstants;
+
+import org.apache.cxf.ext.logging.LoggingFeature;
+import org.apache.cxf.feature.Feature;
+
 import com.ibm.ws.jaxws.metadata.EndpointInfo;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager;
@@ -50,6 +55,8 @@ import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
 import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
 import com.ibm.ws.jaxws.utils.StringUtils;
+import org.apache.cxf.ext.logging.LoggingFeature;
+import org.apache.cxf.Bus;
 
 public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
@@ -134,9 +141,6 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
         }
 
-//        if (!wsdlLocationEmpty && wsdlUrl == null) {
-//            wsdlLocationExisted = false;
-//        }
         if (!wsdlLocationEmpty && wsdlLocationExisted) {
             return;
         }
@@ -159,17 +163,48 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
                 Tr.debug(tc, JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR
                              + " has been enabled, enabling SOAP Message Logging with the LibertyLoggingInInterceptor and LibertyLoggingOutInterceptor");
             }
-            List<Interceptor<? extends Message>> inInterceptors = server.getEndpoint().getInInterceptors();
-            // Remove LoggingInInterceptor if one already exists
-            inInterceptors.remove(LibertyLoggingInInterceptor.INSTANCE);
-            inInterceptors.add(new LibertyLoggingInInterceptor(true));
+            
+            if(this.jaxWsModuleMetaData != null) {
+   
+                if( jaxWsModuleMetaData.getServerMetaData().getServerBus() != null ) {
 
-            List<Interceptor<? extends Message>> outInterceptors = server.getEndpoint().getOutInterceptors();
-            // Remove LoggingOutInterceptor if one already exists
-            outInterceptors.remove(LibertyLoggingOutInterceptor.INSTANCE);
-            outInterceptors.add(new LibertyLoggingOutInterceptor(true));
+                    Bus bus = jaxWsModuleMetaData.getServerMetaData().getServerBus();
+                
+                    Collection<Feature> featureList = bus.getFeatures();
+                
+                    if( !featureList.contains(LoggingFeature.class)) {
+                        LoggingFeature loggingFeature = new LoggingFeature();
+
+                    
+                        if (!featureList.contains(loggingFeature)) {
+                            loggingFeature.setPrettyLogging(true);
+                            loggingFeature.initialize(bus);
+                            featureList.add(loggingFeature);
+                            bus.setFeatures(featureList);
+                        }
+                        
+                    }
+                } else if ( jaxWsModuleMetaData.getClientMetaData() != null ) {
+                    Bus bus = jaxWsModuleMetaData.getClientMetaData().getClientBus();
+                    
+                    Collection<Feature> featureList = bus.getFeatures();
+                    
+                    if(!featureList.contains(LoggingFeature.class)) {
+                        LoggingFeature loggingFeature = new LoggingFeature();
+
+                        
+                        if (!featureList.contains(loggingFeature)) {
+                            loggingFeature.setPrettyLogging(true);
+                            loggingFeature.initialize(bus);
+                            
+                            featureList.add(loggingFeature);
+                            bus.setFeatures(featureList);
+                        }
+                    }
+                }
+            } 
+
         }
-
     }
 
     public AbstractHTTPDestination getDestination() {
@@ -189,10 +224,9 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
      * {@inheritDoc}
      */
     @Override
-    public void invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public void invoke(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         try {
             updateDestination(request);
-
             final HttpServletRequest req = request;
             final HttpServletResponse resp = response;
             try {
@@ -257,7 +291,6 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
     }
 
     protected void updateDestination(HttpServletRequest request) {
-
         String ad = destination.getEndpointInfo().getAddress();
         if (ad != null && ad.startsWith(HTTP_PREFIX)) {
             return;
@@ -277,10 +310,13 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             if (ad != null && !ad.startsWith(HTTP_PREFIX)) {
                 String base = getBaseURL(request);
                 if (disableAddressUpdates) {
+
                     request.setAttribute("org.apache.cxf.transport.endpoint.address",
                                          base + ad);
                 } else {
-                    BaseUrlHelper.setAddress(destination, base + ad);
+                    // Only set the address if the Endpoint URL hasn't already been set
+                    if (destination.getEndpointInfo().getAddress() == null)
+                        BaseUrlHelper.setAddress(destination, base + ad);
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,13 @@
 package com.ibm.ws.jaxws.bus;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.cxf.Bus;
@@ -26,6 +28,8 @@ import org.apache.cxf.bus.extension.ExtensionManager;
 import org.apache.cxf.bus.extension.ExtensionManagerImpl;
 import org.apache.cxf.buslifecycle.BusLifeCycleListener;
 import org.apache.cxf.buslifecycle.BusLifeCycleManager;
+import org.apache.cxf.ext.logging.LoggingFeature;
+import org.apache.cxf.feature.Feature;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -68,12 +72,12 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
         final ClassLoader moduleClassLoader = moduleInfo.getClassLoader();
         Object origTccl = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(moduleClassLoader);
-
         try {
             return createBus(extensions, properties, moduleClassLoader);
         } finally {
             THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(origTccl);
         }
+        //return createBus(extensions, properties, moduleClassLoader);
     }
 
     public LibertyApplicationBus createClientScopedBus(JaxWsModuleMetaData moduleMetaData) {
@@ -88,12 +92,12 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
         final ClassLoader moduleClassLoader = moduleInfo.getClassLoader();
         Object origTccl = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(moduleClassLoader);
-
         try {
             return createBus(extensions, properties, moduleClassLoader);
         } finally {
             THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(origTccl);
         }
+        //return createBus(extensions, properties, moduleClassLoader);
     }
 
     @Override
@@ -101,13 +105,17 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         return createBus(e, properties, THREAD_CONTEXT_ACCESSOR.getContextClassLoader(Thread.currentThread()));
     }
 
-    public LibertyApplicationBus createBus(Map<Class<?>, Object> e, Map<String, Object> properties, ClassLoader classLoader) {
+    public LibertyApplicationBus createBus(final Map<Class<?>, Object> e, final Map<String, Object> properties, final ClassLoader classLoader) {
 
         Bus originalBus = getThreadDefaultBus(false);
 
         try {
-            LibertyApplicationBus bus = new LibertyApplicationBus(e, properties, classLoader);
-
+            LibertyApplicationBus bus = AccessController.doPrivileged(new PrivilegedAction<LibertyApplicationBus>() {
+                @Override
+                public LibertyApplicationBus run() {
+                    return new LibertyApplicationBus(e, properties, classLoader);
+                }
+            });
             //Considering that we have set the default bus in JaxWsService, no need to set default bus
             //Also, it avoids polluting the thread bus.
             //possiblySetDefaultBus(bus);
@@ -125,6 +133,20 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
             }
 
             bus.initialize();
+
+            // Add Logging Feature here if tracing is enabled
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                LoggingFeature loggingFeature = new LoggingFeature();
+
+                Collection<Feature> featureList = bus.getFeatures();
+                if (!featureList.contains(loggingFeature)) {
+                    loggingFeature.setPrettyLogging(true);
+                    loggingFeature.initialize(bus);
+                    featureList.add(loggingFeature);
+                    bus.setFeatures(featureList);
+                }
+            }
+
             return bus;
 
         } finally {
@@ -165,7 +187,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
     /**
      * register LibertyApplicationBusListener to bus factory, those methods will be invoked with the bus lifecycle
-     * 
+     *
      * @param initializer
      */
     public void registerApplicationBusListener(LibertyApplicationBusListener listener) {
@@ -196,7 +218,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
      * The static method from parent class BusFactory also tries to change the thread bus, which is not required.
      * Use BusFactory.class as the synchronized lock due to the signature of the BusFactory.setDefaultBus is
      * public static void synchronized setDefaultBus(Bus bus)
-     * 
+     *
      * @param bus
      */
     public static void setDefaultBus(Bus bus) {

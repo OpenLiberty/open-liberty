@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import java.security.PrivilegedAction;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.ws.policy.PolicyException;
-import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -28,7 +27,6 @@ import com.ibm.ws.jaxws.bus.LibertyApplicationBusListener;
  * PolicyAttachmentApplicationBusListener will create and save a DynamicAttachmentProvider as a bus extension, which will be used
  * to resolve the special policy attachment in the runtime
  */
-@Component(immediate = true, property = { "service.vendor=IBM" })
 public class PolicyAttachmentApplicationBusListener implements LibertyApplicationBusListener {
 
     private static final TraceComponent tc = Tr.register(PolicyAttachmentApplicationBusListener.class);
@@ -36,8 +34,7 @@ public class PolicyAttachmentApplicationBusListener implements LibertyApplicatio
     private static final String serviceFileName = "policy-attachments-server.xml";
 
     @Override
-    public void preInit(Bus bus) {
-    }
+    public void preInit(Bus bus) {}
 
     @Override
     public void initComplete(Bus bus) {
@@ -96,12 +93,10 @@ public class PolicyAttachmentApplicationBusListener implements LibertyApplicatio
     }
 
     @Override
-    public void preShutdown(Bus bus) {
-    }
+    public void preShutdown(Bus bus) {}
 
     @Override
-    public void postShutdown(Bus bus) {
-    }
+    public void postShutdown(Bus bus) {}
 
     private ClassLoader getThreadContextClassLoader() {
         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {

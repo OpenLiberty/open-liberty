@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
@@ -27,6 +29,8 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
  * JaxWsModuleMetaData holds all the runtime data for the webservice engine, e.g. Container, classloader and etc.
  */
 public class JaxWsModuleMetaData {
+    
+    private static final TraceComponent tc = Tr.register( JaxWsModuleMetaData.class);
 
     private volatile JaxWsServerMetaData serverMetaData;
 
@@ -54,6 +58,7 @@ public class JaxWsModuleMetaData {
     private String contextRoot;
 
     public JaxWsModuleMetaData(ModuleMetaData moduleMetaData, Container moduleContainer, ClassLoader appContextClassLoader) {
+        
         this.moduleContainer = moduleContainer;
         this.enclosingModuleMetaDatas.add(moduleMetaData);
         this.j2EEName = moduleMetaData.getJ2EEName();
@@ -80,7 +85,7 @@ public class JaxWsModuleMetaData {
     /**
      * @param referenceContext the referenceContext to set
      */
-    public void setReferenceContext(Class<?> clazz, ReferenceContext referenceContext) {
+    public void setReferenceContext(Class<?> clazz, ReferenceContext referenceContext) {      
         this.referenceContextMap.put(clazz, referenceContext);
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,11 +22,11 @@ import javax.xml.ws.WebServiceException;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.LogicalHandler;
 
-import org.apache.cxf.helpers.XMLUtils;
-import org.apache.cxf.jaxws.javaee.CString;
-import org.apache.cxf.jaxws.javaee.ParamValueType;
-import org.apache.cxf.jaxws.javaee.PortComponentHandlerType;
-import org.apache.cxf.jaxws.javaee.XsdQNameType;
+import org.apache.cxf.jaxws.handler.types.CString;
+import org.apache.cxf.jaxws.handler.types.ParamValueType;
+import org.apache.cxf.jaxws.handler.types.PortComponentHandlerType;
+import org.apache.cxf.jaxws.handler.types.XsdQNameType;
+import org.apache.cxf.staxutils.StaxUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,9 +58,12 @@ public class HandlerChainInfoBuilder {
 
     private static JAXBContext context;
 
+    private static JAXBContext xmlWSContext;
+
     static {
         try {
             context = JAXBUtils.newInstance(PortComponentHandlerType.class);
+            xmlWSContext = JAXBUtils.newInstance(org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType.class);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -75,7 +78,7 @@ public class HandlerChainInfoBuilder {
 
     /**
      * Build the handlerChain info from web.xml
-     * 
+     *
      * @param hChain
      * @return
      */
@@ -83,16 +86,14 @@ public class HandlerChainInfoBuilder {
         HandlerChainInfo hcInfo = new HandlerChainInfo();
         // set Service QName
         if (hChain.getServiceNamePattern() != null) {
-            hcInfo.setServiceNamePattern(new QName(hChain.getServiceNamePattern().getNamespaceURI(),
-                            hChain.getServiceNamePattern().getLocalPart()));
+            hcInfo.setServiceNamePattern(new QName(hChain.getServiceNamePattern().getNamespaceURI(), hChain.getServiceNamePattern().getLocalPart()));
         } else {
             hcInfo.setServiceNamePattern(new QName("*"));
         }
         // set Port QName
         if (hChain.getPortNamePattern() != null) {
 
-            hcInfo.setPortNamePattern(new QName(hChain.getPortNamePattern().getNamespaceURI(),
-                            hChain.getPortNamePattern().getLocalPart()));
+            hcInfo.setPortNamePattern(new QName(hChain.getPortNamePattern().getNamespaceURI(), hChain.getPortNamePattern().getLocalPart()));
         } else {
             hcInfo.setPortNamePattern(new QName("*"));
         }
@@ -107,7 +108,7 @@ public class HandlerChainInfoBuilder {
 
     /**
      * Build the handler info from web.xml
-     * 
+     *
      * @param handler
      * @return
      */
@@ -132,7 +133,7 @@ public class HandlerChainInfoBuilder {
 
     /**
      * Get the handlerChainsInfo from @HandlerChain
-     * 
+     *
      * @param serviceClazzName
      * @param hcSer
      * @param portQName
@@ -152,14 +153,15 @@ public class HandlerChainInfoBuilder {
 
     /**
      * Get the handlerChainsInfo from @HandlerChain
-     * 
+     *
      * @param clz
      * @param portQName
      * @param serviceQName
      * @param bindingID
      * @return
      */
-    public HandlerChainsInfo buildHandlerChainsInfoFromAnnotation(ClassInfo clzInfo, String seiClassName, InfoStore infoStore, QName portQName, QName serviceQName, String bindingID) {
+    public HandlerChainsInfo buildHandlerChainsInfoFromAnnotation(ClassInfo clzInfo, String seiClassName, InfoStore infoStore, QName portQName, QName serviceQName,
+                                                                  String bindingID) {
         HandlerChainsInfo chainsInfo = new HandlerChainsInfo();
 
         HandlerChainAnnotation hcAnn = findHandlerChainAnnotation(clzInfo, seiClassName, infoStore, true);
@@ -181,12 +183,15 @@ public class HandlerChainInfoBuilder {
                 throw new WebServiceException(Tr.formatMessage(tc, "error.no.handlerChainFile.found", fileName));
             }
 
-            Document doc = XMLUtils.parse(handlerFileURL.openStream());
+            // Change from XMLUtil.parse to StaxUtils.read
+            Document doc = StaxUtils.read(handlerFileURL.openStream());
             Element el = doc.getDocumentElement();
-            if (!"http://java.sun.com/xml/ns/javaee".equals(el.getNamespaceURI())
+            if ((!"http://java.sun.com/xml/ns/javaee".equals(el.getNamespaceURI()) &&
+                 !"https://jakarta.ee/xml/ns/jakartaee".equals(el.getNamespaceURI()))
                 || !"handler-chains".equals(el.getLocalName())) {
 
-                String xml = XMLUtils.toString(el);
+                // Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
+                String xml = StaxUtils.toString(el);
                 throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));
             }
 
@@ -194,10 +199,12 @@ public class HandlerChainInfoBuilder {
             while (node != null) {
                 if (node instanceof Element) {
                     el = (Element) node;
-                    if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")
+                    if ((!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee") &&
+                         !el.getNamespaceURI().equals("https://jakarta.ee/xml/ns/jakartaee"))
                         || !el.getLocalName().equals("handler-chain")) {
 
-                        String xml = XMLUtils.toString(el);
+                        // Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
+                        String xml = StaxUtils.toString(el);
                         throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));
                     }
                     chainsInfo.addHandlerChainInfo(processHandlerChainElement(el, portQName, serviceQName, bindingID));
@@ -221,8 +228,10 @@ public class HandlerChainInfoBuilder {
             QName elQName = null;
             if (cur instanceof Element) {
                 el = (Element) cur;
-                if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")) {
-                    String xml = XMLUtils.toString(el);
+                if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee") &&
+                    !el.getNamespaceURI().equals("https://jakarta.ee/xml/ns/jakartaee")) {
+                    // Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
+                    String xml = StaxUtils.toString(el);
                     throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));
                 }
                 String name = el.getLocalName();
@@ -266,13 +275,37 @@ public class HandlerChainInfoBuilder {
 
     protected HandlerInfo processHandlerElement(Element el) {
         try {
-            PortComponentHandlerType pt = context.createUnmarshaller()
-                            .unmarshal(el, PortComponentHandlerType.class).getValue();
-            return adaptToHandlerInfo(pt);
+            if (el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")) {
+                PortComponentHandlerType pt = context.createUnmarshaller().unmarshal(el, PortComponentHandlerType.class).getValue();
+                return adaptToHandlerInfo(pt);
+            } else {
+                org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType pt = xmlWSContext.createUnmarshaller().unmarshal(el,
+                                                                                                                               org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType.class).getValue();
+                return adaptToHandlerInfo(pt);
+            }
         } catch (JAXBException e) {
             // log the error info
         }
         return null;
+    }
+
+    private HandlerInfo adaptToHandlerInfo(org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType pt) {
+        HandlerInfo handler = new HandlerInfo();
+
+        handler.setId(pt.getId());
+        handler.setHandlerClass(pt.getHandlerClass().getValue());
+        handler.setHandlerName(pt.getHandlerName().getValue());
+
+        for (org.apache.cxf.jaxws30.handler.types.CString sRole : pt.getSoapRole()) {
+            handler.addSoapRole(sRole.getValue());
+        }
+        for (org.apache.cxf.jaxws30.handler.types.XsdQNameType sHead : pt.getSoapHeader()) {
+            handler.addSoapHeader(new XsdQNameInfo(sHead.getValue(), sHead.getId()));
+        }
+        for (org.apache.cxf.jaxws30.handler.types.ParamValueType param : pt.getInitParam()) {
+            handler.addInitParam(new ParamValueInfo(param.getParamName().getValue(), param.getParamValue().getValue()));
+        }
+        return handler;
     }
 
     private HandlerInfo adaptToHandlerInfo(PortComponentHandlerType pt) {
@@ -348,7 +381,7 @@ public class HandlerChainInfoBuilder {
 
     /**
      * Resolve handler chain configuration file associated with the given class
-     * 
+     *
      * @param clzName
      * @param fileName
      * @return A URL object or null if no resource with this name is found
@@ -390,10 +423,10 @@ public class HandlerChainInfoBuilder {
             //
             // Previously the logic was to get java package name from class name,
             // and then search the package name as resource. It has been found that
-            // the same java package could exist in more than one jar achieves, in 
-            // such case it could found the wrong path. 
-            // The new logic is to search where the java class file is. Since we 
-            // just want to locate the handler chain configuration file from there. 
+            // the same java package could exist in more than one jar achieves, in
+            // such case it could found the wrong path.
+            // The new logic is to search where the java class file is. Since we
+            // just want to locate the handler chain configuration file from there.
             //
             //classResourceName = clzName.substring(0, index + 1).replace('.', '/');
             classResourceName = clzName.replace('.', '/');
@@ -431,7 +464,7 @@ public class HandlerChainInfoBuilder {
     /**
      * sorts the handlers into correct order. All of the logical handlers first
      * followed by the protocol handlers
-     * 
+     *
      * @param handlers
      * @return sorted list of handlers
      */

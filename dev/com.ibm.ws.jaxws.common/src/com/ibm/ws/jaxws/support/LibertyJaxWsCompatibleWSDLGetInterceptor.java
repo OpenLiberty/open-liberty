@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.common.util.UrlUtils;
 import org.apache.cxf.frontend.WSDLGetInterceptor;
+
+import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
@@ -78,7 +80,6 @@ public class LibertyJaxWsCompatibleWSDLGetInterceptor extends WSDLGetInterceptor
 
     }
 
-    @Override
     public Document getDocument(Message message, String base, Map<String, String> params, String ctxUri, EndpointInfo endpointInfo) {
 
         if (wsdlLoationExisted) {
@@ -112,11 +113,13 @@ public class LibertyJaxWsCompatibleWSDLGetInterceptor extends WSDLGetInterceptor
         //time as the addresses may get mixed up
         synchronized (message.getExchange().getEndpoint()) {
             Map<String, String> map = UrlUtils.parseQueryString(query);
-            if (isRecognizedQuery(map, baseUri, ctx,
-                                  message.getExchange().getEndpoint().getEndpointInfo())) {
+            if (isRecognizedQuery(map, baseUri, ctx, message.getExchange().getEndpoint().getEndpointInfo())) {
 
                 try {
-                    Conduit c = message.getExchange().getDestination().getBackChannel(message, null, null);
+
+                	Conduit c = message.getExchange().getDestination().getBackChannel(message);
+                    Endpoint e = message.getExchange().getEndpoint();
+                    
                     Message mout = new MessageImpl();
                     mout.setExchange(message.getExchange());
                     message.getExchange().setOutMessage(mout);
@@ -161,16 +164,10 @@ public class LibertyJaxWsCompatibleWSDLGetInterceptor extends WSDLGetInterceptor
                         //pretty much ignorable and nothing we can do about it (cannot
                         //send a fault or anything anyway
                     } finally {
-                        if (writer != null) {
-                            try {
+                        if (writer != null) 
                                 writer.close();
-                            } catch (Exception e) {
-                            }
-                        }
-                        try {
+                        if (os != null) 
                             os.close();
-                        } catch (Exception e) {
-                        }
                     }
                 } catch (IOException e) {
                     throw new Fault(e);
@@ -183,4 +180,14 @@ public class LibertyJaxWsCompatibleWSDLGetInterceptor extends WSDLGetInterceptor
         }
     }
 
+    public boolean isRecognizedQuery(Map<String, String> map,
+                                     String baseUri,
+                                     String ctx, 
+                                     EndpointInfo endpointInfo) {
+        if (map.containsKey("wsdl")
+            || map.containsKey("xsd")) {
+            return true;
+        }
+        return false;
+    }
 }

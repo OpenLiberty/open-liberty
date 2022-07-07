@@ -52,7 +52,6 @@ tested.features:\
   com.ibm.websphere.javaee.servlet.3.0;version=latest,\
   httpunit:httpunit;version=1.5.4,\
   com.ibm.websphere.security;version=latest,\
-  com.ibm.ws.wssecurity;version=latest,\
   io.openliberty.org.apache.commons.codec;version=latest,\
   com.ibm.ws.org.apache.commons.lang3;version=latest,\
   io.openliberty.org.apache.commons.logging;version=latest,\

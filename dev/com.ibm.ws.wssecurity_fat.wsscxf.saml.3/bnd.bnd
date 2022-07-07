@@ -52,9 +52,9 @@ tested.features:\
   com.ibm.ws.security.saml.sso_fat.common;version=latest, \
   com.ibm.websphere.javaee.servlet.3.0;version=latest,\
   httpunit:httpunit;version=1.5.4,\
-  com.ibm.ws.org.apache.cxf.ws.security.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.rt.ws.security.3.4.1;version=latest,\
   com.ibm.websphere.security;version=latest,\
-  com.ibm.ws.wssecurity;version=latest,\
+  com.ibm.ws.wssecurity.3.4.1;version=latest,\
   io.openliberty.org.apache.commons.codec;version=latest,\
   com.ibm.ws.org.apache.commons.lang3;version=latest,\
   io.openliberty.org.apache.commons.logging;version=latest,\

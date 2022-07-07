@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ import org.apache.cxf.databinding.DataBinding;
 import org.apache.cxf.databinding.source.SourceDataBinding;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointException;
-import org.apache.cxf.feature.AbstractFeature;
+import org.apache.cxf.feature.Feature;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.jaxws.JAXWSMethodDispatcher;
 import org.apache.cxf.jaxws.JAXWSProviderMethodDispatcher;
@@ -42,7 +42,6 @@ import org.apache.cxf.jaxws.support.JaxWsServiceConfiguration;
 import org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean;
 import org.apache.cxf.jaxws.support.WebServiceProviderConfiguration;
 import org.apache.cxf.service.Service;
-import org.apache.cxf.service.factory.AbstractServiceConfiguration;
 import org.apache.cxf.service.factory.FactoryBeanListener;
 import org.apache.cxf.service.model.BindingInfo;
 import org.apache.cxf.service.model.DescriptionInfo;
@@ -53,6 +52,7 @@ import org.apache.cxf.ws.addressing.JAXWSAConstants;
 import org.apache.cxf.ws.addressing.Names;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.apache.cxf.wsdl.WSDLManager;
+import org.apache.cxf.wsdl.service.factory.AbstractServiceConfiguration;
 import org.w3c.dom.Element;
 
 import com.ibm.websphere.ras.Tr;
@@ -160,8 +160,7 @@ public class LibertyJaxWsServiceFactoryBean extends JaxWsServiceFactoryBean {
 
     @Override
     public Endpoint createEndpoint(EndpointInfo ei) throws EndpointException {
-        Endpoint ep = new JaxWsEndpointImpl(getBus(), getService(), ei, implInfo, wsFeatures,
-                        this.getFeatures(), true);// set isFromWsdl = true to avoid process @Addressing, will process the AddressingFeature when get the Endpoint.
+        Endpoint ep = new JaxWsEndpointImpl(getBus(), getService(), ei, implInfo, wsFeatures, this.getFeatures(), true);// set isFromWsdl = true to avoid process @Addressing, will process the AddressingFeature when get the Endpoint.
         if (null != ei && !isFromWsdl()) {
             // build the wsdl Extensibilities
             JaxWsEndpointImplHelper helper = new JaxWsEndpointImplHelper((JaxWsEndpointImpl) ep, ei);
@@ -253,12 +252,10 @@ public class LibertyJaxWsServiceFactoryBean extends JaxWsServiceFactoryBean {
         public void buildWsdlExtensibilities() {
             AddressingFeature addressing = getAddressFeature();
             if (addressing != null) {
-                ExtensionRegistry extensionRegistry = getBus().getExtension(WSDLManager.class)
-                                .getExtensionRegistry();
+                ExtensionRegistry extensionRegistry = getBus().getExtension(WSDLManager.class).getExtensionRegistry();
                 try {
                     ExtensibilityElement el = extensionRegistry.createExtension(javax.wsdl.Binding.class,
-                                                                                JAXWSAConstants.
-                                                                                WSAW_USINGADDRESSING_QNAME);
+                                                                                JAXWSAConstants.WSAW_USINGADDRESSING_QNAME);
                     el.setRequired(addressing.isRequired());
                     bindingInfo.addExtensor(el);
 
@@ -345,7 +342,7 @@ public class LibertyJaxWsServiceFactoryBean extends JaxWsServiceFactoryBean {
 
         /**
          * Validate the Addressing feature and set the endpointReference to the EndpointInfo
-         * 
+         *
          */
         public void extractWsdlExtensibilities() {
             List<ExtensibilityElement> bindingExtensors = endpointInfo.getBinding().getExtensors(ExtensibilityElement.class);
@@ -366,8 +363,7 @@ public class LibertyJaxWsServiceFactoryBean extends JaxWsServiceFactoryBean {
             if (exts != null) {
                 Iterator<ExtensibilityElement> extensionElements = exts.iterator();
                 while (extensionElements.hasNext() && !found) {
-                    ExtensibilityElement ext =
-                                    extensionElements.next();
+                    ExtensibilityElement ext = extensionElements.next();
                     found = JAXWSAConstants.WSAW_USINGADDRESSING_QNAME.equals(ext.getElementType());
                 }
             }
@@ -379,8 +375,7 @@ public class LibertyJaxWsServiceFactoryBean extends JaxWsServiceFactoryBean {
             if (exts != null) {
                 Iterator<ExtensibilityElement> extensionElements = exts.iterator();
                 while (extensionElements.hasNext() && !found) {
-                    ExtensibilityElement ext =
-                                    extensionElements.next();
+                    ExtensibilityElement ext = extensionElements.next();
                     if (JAXWSAConstants.WSAW_USINGADDRESSING_QNAME.equals(ext.getElementType())
                         && ext.getRequired() != null) {
                         return ext.getRequired();
@@ -411,11 +406,13 @@ public class LibertyJaxWsServiceFactoryBean extends JaxWsServiceFactoryBean {
             }
         }
 
-        private void addAddressingFeature(AbstractFeature feature) {
+        private void addAddressingFeature(Feature feature) {
             if (endpoint.getFeatures() == null || endpoint.getFeatures().isEmpty()) {
                 endpoint.getFeatures().add(feature);
             } else {
-                for (AbstractFeature f : endpoint.getFeatures()) {
+                // Changed AbstractFeature to Feature as CXF 3.3 Endpoint.getFeatures() returns
+                // List<Features>
+                for (Feature f : endpoint.getFeatures()) {
                     if (f instanceof WSAddressingFeature) {
                         return;
                     }

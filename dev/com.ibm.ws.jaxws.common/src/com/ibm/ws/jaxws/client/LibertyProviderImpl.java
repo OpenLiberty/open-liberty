@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,12 @@ import javax.xml.ws.spi.ServiceDelegate;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
-import org.apache.cxf.jaxws22.spi.ProviderImpl;
+import org.apache.cxf.jaxws.spi.ProviderImpl;
+import org.apache.cxf.staxutils.StaxUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.metadata.JaxWsClientMetaData;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
@@ -51,33 +53,55 @@ public class LibertyProviderImpl extends ProviderImpl {
      * @see javax.xml.ws.spi.Provider#createServiceDelegate(java.net.URL, javax.xml.namespace.QName, java.lang.Class)
      */
     @Override
-    public ServiceDelegate createServiceDelegate(URL url, QName qname,
-                                                 @SuppressWarnings("rawtypes") Class cls) {
-        Bus bus = null;
-        JaxWsClientMetaData clientMetaData = JaxWsMetaDataManager.getJaxWsClientMetaData();
-        if (clientMetaData != null) {
-            bus = clientMetaData.getClientBus();
+    public ServiceDelegate createServiceDelegate(final URL url, final QName qname,
+                                                final @SuppressWarnings("rawtypes") Class cls) {
+        // TODO: 
+        // WOODSTOX
+        //Eager initialize the StaxUtils
+        try {
+            // The default jaxws-2.2 Stax is always from the RI, so ensure same behavior
+            // Should revist this property to allow use of WoodStox API
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    System.setProperty(StaxUtils.ALLOW_INSECURE_PARSER, "true");
+                    return null;
+                }
+            });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Client-Side Insecure Stax property is set to: " + System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER));
+            }        
+            Class.forName("org.apache.cxf.staxutils.StaxUtils");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
         }
-        if (bus == null) {
+        
+
+        final Bus bus;
+        JaxWsClientMetaData clientMetaData = JaxWsMetaDataManager.getJaxWsClientMetaData();
+        if(clientMetaData != null) {
+            boolean hasClientBus = (clientMetaData.getClientBus() != null);
+            if (hasClientBus) { 
+                bus = clientMetaData.getClientBus();
+            } else {
+                bus = BusFactory.getThreadDefaultBus();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No client  bus is found, the thread context default bus " + bus.getId() + " is used");
+                }
+            }
+        } else {
             bus = BusFactory.getThreadDefaultBus();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No client  bus is found, the thread context default bus " + bus.getId() + " is used");
             }
         }
 
-        WebServiceRefInfo wsrInfo = wsRefInfo.get();
+        final WebServiceRefInfo wsrInfo = wsRefInfo.get();
         List<WebServiceFeature> serviceFeatures = wsFeatures.get();
 
         AtomicServiceReference<JaxWsSecurityConfigurationService> secConfigSR = securityConfigSR.get();
-        JaxWsSecurityConfigurationService securityConfigService = secConfigSR == null ? null : secConfigSR.getService();
+        final JaxWsSecurityConfigurationService securityConfigService = secConfigSR == null ? null : secConfigSR.getService();
 
-        // @TJJ create final vars in order to call a doPriv when creating the LibertyServiceImpl as required by java 2 security
-        final JaxWsSecurityConfigurationService scs = securityConfigService;
-        final WebServiceRefInfo wi = wsrInfo;
-        final Bus b = bus;
-        final URL u = url;
-        final QName qn = qname;
-        final Class c = cls;
         final List<WebServiceFeature> sf = serviceFeatures;
 
         if (serviceFeatures != null) {
@@ -88,7 +112,7 @@ public class LibertyProviderImpl extends ProviderImpl {
             LibertyServiceImpl lsl = AccessController.doPrivileged(new PrivilegedAction<LibertyServiceImpl>() {
                 @Override
                 public LibertyServiceImpl run() {
-                    return new LibertyServiceImpl(scs, wi, b, u, qn, c, sf.toArray(new WebServiceFeature[sf.size()]));
+                    return new LibertyServiceImpl(securityConfigService, wsrInfo, bus, url, qname, cls, sf.toArray(new WebServiceFeature[sf.size()]));
                 }
             });
             return lsl;
@@ -101,7 +125,7 @@ public class LibertyProviderImpl extends ProviderImpl {
             LibertyServiceImpl lsl = AccessController.doPrivileged(new PrivilegedAction<LibertyServiceImpl>() {
                 @Override
                 public LibertyServiceImpl run() {
-                    return new LibertyServiceImpl(scs, wi, b, u, qn, c);
+                    return new LibertyServiceImpl(securityConfigService, wsrInfo, bus, url, qname, cls);
                 }
             });
             return lsl;

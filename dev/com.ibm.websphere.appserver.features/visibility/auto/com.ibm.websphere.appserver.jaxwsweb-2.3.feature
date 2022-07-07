@@ -7,7 +7,7 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jaxws-2.3))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.servlet-4.0)))"
 IBM-Install-Policy: when-satisfied
--bundles=com.ibm.ws.jaxws.2.3.web, \
+-bundles=com.ibm.ws.jaxws.web, \
  com.ibm.ws.jaxws.webcontainer
 kind=noship
 edition=full

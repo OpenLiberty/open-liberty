@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,13 +15,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusFactory;
 
-/**
- *
- */
 public class JaxWsServerMetaData {
+
+    private static final TraceComponent tc = Tr.register( JaxWsServerMetaData.class);
 
     private final LibertyApplicationBus applicationBus;
 

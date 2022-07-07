@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,12 @@ package com.ibm.ws.jaxws;
 
 import javax.xml.ws.http.HTTPBinding;
 import javax.xml.ws.soap.SOAPBinding;
+
+/*
+ * This class is a holder for the jaxws.2.3.common component constants. The strings point to package names in
+ * the JAX-WS spec, file locations for catalog files, annotation names, SOAP Binding types, annotation property
+ * names for metadata processing, and CXF factory PIDs.
+ */
 
 public class JaxWsConstants {
 

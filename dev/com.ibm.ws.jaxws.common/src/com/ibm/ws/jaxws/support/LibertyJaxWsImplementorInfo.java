@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPBinding;
 
-import org.apache.cxf.jaxws.spi.ProviderImpl;
 import org.apache.cxf.jaxws.support.JaxWsImplementorInfo;
 
 import com.ibm.websphere.ras.Tr;
@@ -129,7 +128,7 @@ public class LibertyJaxWsImplementorInfo extends JaxWsImplementorInfo {
             }
         }
 
-        //Note that the targetNameSpace used here should be interface TargetNameSpace which 
+        //Note that the targetNameSpace used here should be interface TargetNameSpace which
         //may be different from implementation TargetNameSpace.
         return interfaceName = new QName(endpointInfo.getInterfaceTragetNameSpaceURL(), name);
     }
@@ -156,7 +155,6 @@ public class LibertyJaxWsImplementorInfo extends JaxWsImplementorInfo {
         }
 
         URL wsdlUrl = JaxWsUtils.resolve(endpointInfo.getWsdlLocation(), publisherContext.getModuleMetaData().getModuleContainer());
-        // return wsdlLocation = (null == wsdlUrl ? "" : wsdlUrl.toString());
         return wsdlLocation = (null == wsdlUrl ? endpointInfo.getWsdlLocation() : wsdlUrl.toString());
     }
 
@@ -177,23 +175,24 @@ public class LibertyJaxWsImplementorInfo extends JaxWsImplementorInfo {
     public AddressingFeature getAddressingFeature() {
         AddressingFeatureInfo featureInfo = endpointInfo.getAddressingFeatureInfo();
         if (null != featureInfo) {
-            if (ProviderImpl.isJaxWs22()) {
-                try {
-                    Object responses = featureInfo.getResponses();
-                    java.lang.reflect.Constructor<?> constructor =
-                                    AddressingFeature.class.getConstructor(new Class[] {
-                                                                                        boolean.class, boolean.class, responses.getClass()
-                                    });
-                    return (AddressingFeature) constructor.newInstance(featureInfo.isEnabled(), featureInfo.isRequired(), responses);
-                } catch (Exception e) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "could not use AddressingFeature(boolean, boolean, Responses) construction", e);
-                    }
-                    return new AddressingFeature(featureInfo.isEnabled(), featureInfo.isRequired());
+            // Commenting out this check as JAX-WS 2.2 is the default in CXF 3.3
+            // and this code as been deprecated
+            //if (ProviderImpl.isJaxWs22()) {
+            try {
+                Object responses = featureInfo.getResponses();
+                java.lang.reflect.Constructor<?> constructor = AddressingFeature.class.getConstructor(new Class[] {
+                                                                                                                    boolean.class, boolean.class, responses.getClass()
+                });
+                return (AddressingFeature) constructor.newInstance(featureInfo.isEnabled(), featureInfo.isRequired(), responses);
+            } catch (Exception e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "could not use AddressingFeature(boolean, boolean, Responses) construction", e);
                 }
-            } else {
                 return new AddressingFeature(featureInfo.isEnabled(), featureInfo.isRequired());
             }
+            //} else {
+            //    return new AddressingFeature(featureInfo.isEnabled(), featureInfo.isRequired());
+            //}
         }
         return null;
     }

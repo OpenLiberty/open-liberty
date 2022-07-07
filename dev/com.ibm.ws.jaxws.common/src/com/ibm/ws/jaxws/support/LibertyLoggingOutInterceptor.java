@@ -20,12 +20,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.cxf.common.injection.NoJSR250Annotations;
 import org.apache.cxf.common.logging.LogUtils;
+import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.interceptor.*;
 import org.apache.cxf.io.CacheAndWriteOutputStream;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.io.CachedOutputStreamCallback;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.Phase;
+import org.apache.cxf.service.model.EndpointInfo;
+import org.apache.cxf.service.model.InterfaceInfo;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -125,6 +128,7 @@ public class LibertyLoggingOutInterceptor extends LoggingOutInterceptor {
         }
     }
 
+    @Trivial
     private LoggingMessage setupBuffer(Message message) {
         String id = (String) message.getExchange().get(LoggingMessage.ID_KEY);
         if (id == null) {
@@ -161,6 +165,7 @@ public class LibertyLoggingOutInterceptor extends LoggingOutInterceptor {
         return buffer;
     }
 
+    @Trivial
     private class LogWriter extends FilterWriter {
         StringWriter out2;
         int count;
@@ -221,10 +226,12 @@ public class LibertyLoggingOutInterceptor extends LoggingOutInterceptor {
         }
     }
 
+    @Trivial
     protected String formatLoggingMessage(LoggingMessage buffer) {
         return buffer.toString();
     }
 
+    @Trivial
     class LoggingCallback implements CachedOutputStreamCallback {
 
         private final Message message;
@@ -266,7 +273,7 @@ public class LibertyLoggingOutInterceptor extends LoggingOutInterceptor {
             }
             try {
                 String encoding = (String) message.get(Message.ENCODING);
-                writePayload(buffer.getPayload(), cos, encoding, ct);
+                writePayload(buffer.getPayload(), cos, encoding, ct, prettyLogging);
             } catch (Exception ex) {
                 //ignore
             }
@@ -292,5 +299,32 @@ public class LibertyLoggingOutInterceptor extends LoggingOutInterceptor {
 
     public void setEnableLoggingProp(boolean loggingInterceptorConfigProp) {
         this.loggingInterceptorConfigProp = loggingInterceptorConfigProp;
+    }
+    
+    @Trivial
+    Logger getMessageLogger(Message message) {
+        if (isLoggingDisabledNow(message)) {
+            return null;
+        }
+        Endpoint ep = message.getExchange().getEndpoint();
+        if (ep == null || ep.getEndpointInfo() == null) {
+            return getLogger();
+        }
+        EndpointInfo endpoint = ep.getEndpointInfo();
+        if (endpoint.getService() == null) {
+            return getLogger();
+        }
+        Logger logger = endpoint.getProperty("MessageLogger", Logger.class);
+        if (logger == null) {
+            String serviceName = endpoint.getService().getName().getLocalPart();
+            InterfaceInfo iface = endpoint.getService().getInterface();
+            String portName = endpoint.getName().getLocalPart();
+            String portTypeName = iface.getName().getLocalPart();
+            String logName = "org.apache.cxf.services." + serviceName + "."
+                + portName + "." + portTypeName;
+            logger = LogUtils.getL7dLogger(this.getClass(), null, logName);
+            endpoint.setProperty("MessageLogger", logger);
+        }
+        return logger;
     }
 }

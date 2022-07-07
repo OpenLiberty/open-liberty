@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,6 @@ public class JaxWsInjectionMetaDataListener implements InjectionMetaDataListener
     @Override
     public void injectionMetaDataCreated(InjectionMetaData injectionMetaData) throws InjectionException {
 
-        // PI22432 Adding the judgement for null
         if (injectionMetaData == null)
             return;
         
