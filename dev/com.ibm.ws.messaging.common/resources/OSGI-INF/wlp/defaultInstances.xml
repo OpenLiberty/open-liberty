@@ -9,8 +9,6 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-    <!-- Implicit defaultInstances: SingletonsReady, SingletonMonitor 
-         When metatype provides all the <AD> values for a singleton <OCD>, 
-         config processing creates the default config for that <OCD>.  -->
     <messaging-singleton id="com.ibm.ws.sib.common.service" />
+    <com.ibm.ws.messaging.lifecycle.SingletonsReady waitForConfig="please" />
 </server>

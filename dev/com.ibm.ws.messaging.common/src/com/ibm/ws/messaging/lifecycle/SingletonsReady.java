@@ -18,6 +18,7 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toList;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,11 +72,14 @@ public class SingletonsReady {
             @Reference(name = "singletons") List<SingletonAgent> singletonAgents,
             // This @Reference is unfiltered and will receive every
             // available singleton whether it matches anything or not
-            @Reference List<Singleton> allSingletons) {
+            @Reference List<Singleton> allSingletons,
+            Map<String, Object> properties) {
 
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "<init>", singletonAgents, allSingletons);
-        
+        properties.entrySet().forEach(e -> debug(tc, "### SingletonsReady property " + e.getKey() + " = " + (e.getValue() instanceof String[] ? Arrays.toString((Object[]) e.getValue()) : e.getValue())));
+
         List<Singleton> singletons = singletonAgents.stream().map(SingletonAgent::getSingleton).collect(toList()); 
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) debug(this, tc, "singletons, allSingletons", singletons, allSingletons);
 
         {
             final List<String> unexpected = allSingletons

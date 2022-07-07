@@ -26,22 +26,10 @@
         <AD id="singletons.target" name="internal" description="internal use only"
             type="String" cardinality="0" required="true"
             default="${servicePidOrFilter(singletonDeclarations)}" />
+        <AD id="waitForConfig" name="internal" description="internal use only"
+            type="String" required="true" />
     </OCD>
     <Designate pid="com.ibm.ws.messaging.lifecycle.SingletonsReady"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonsReady" /></Designate>
-
-    <!-- Let config processing provide the list of matching PIDs to the singleton monitor service as well -->
-    <OCD id="com.ibm.ws.messaging.lifecycle.SingletonMonitor" description="internal use only" name="internal">
-        <!-- Config processing populates this attribute with a list of PIDs of every configured messaging-singleton -->
-        <AD id="singletonDeclarations" name="internal" description="internal use only"
-            type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
-            ibm:reference="com.ibm.ws.messaging.lifecycle.SingletonAgent"
-            default="*" />
-        <!-- Config processing will generate an LDAP filter to match only configured singletons -->
-        <AD id="Singleton.target" name="internal" description="internal use only"
-            type="String" cardinality="0" required="true"
-            default="${servicePidOrFilter(singletonDeclarations)}" />
-    </OCD>
-    <Designate pid="com.ibm.ws.messaging.lifecycle.SingletonMonitor"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonMonitor"/></Designate>
     
     <OCD id="com.ibm.ws.messaging.lifecycle.SingletonAgent" name="internal" description="internal use only" ibm:alias="messaging-singleton">
         <AD id="id" name="internal" description="internal use only" type="String" required="true" />
