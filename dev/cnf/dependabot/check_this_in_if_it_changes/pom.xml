@@ -3379,12 +3379,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>3.0.7.RELEASE</version>
+      <version>3.2.5.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>5.3.21</version>
+      <version>3.2.5.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4099,12 +4099,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>4.3.13.RELEASE</version>
+      <version>3.2.5.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>5.0.4.RELEASE</version>
+      <version>3.2.5.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>xml-resolver</groupId>
