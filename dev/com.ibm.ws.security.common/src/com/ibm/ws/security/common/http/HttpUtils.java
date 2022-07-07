@@ -151,12 +151,12 @@ public class HttpUtils {
     }
 
     public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
-        boolean isSecure = (url != null && url.startsWith("https:"));
-        return createHttpClient(sslSocketFactory, isSecure, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
+        return createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
     }
     
-    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, boolean isSecure, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
+    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
         HttpClient client = null;
+        boolean isSecure = (url != null && url.startsWith("https:"));
         if (isSecure) {
             ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
             ThreadContextHelper.setClassLoader(getClass().getClassLoader());
@@ -187,6 +187,13 @@ public class HttpUtils {
     
     HttpClientBuilder createBuilder(boolean useSystemProperties) {
         return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+    }
+    
+    public String getHttpJsonRequest(HttpClient client, String url) throws SocialLoginWrapperException, IOException {
+        if (client != null) {
+            return getHttpJsonRequestAsString(client, url);
+        }
+        return null;
     }
 
     public String getHttpJsonRequest(SSLSocketFactory sslSocketFactory, String url, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws SocialLoginWrapperException, IOException {

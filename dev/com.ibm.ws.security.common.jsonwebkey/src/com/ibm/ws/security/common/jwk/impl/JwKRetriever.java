@@ -64,6 +64,7 @@ import com.ibm.ws.security.common.jwk.impl.PemKeyUtil.KeyType;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
 import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.common.http.SocialLoginWrapperException;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
@@ -77,7 +78,6 @@ public class JwKRetriever {
     final static String PEM_END_TOKEN = "--END--";
     final static String JWKS = "keys";
     final static String JSON_START = "{";
-    public HttpUtils httpUtils;
 
     public enum JwkKeyType {
         PUBLIC, PRIVATE
@@ -106,10 +106,16 @@ public class JwKRetriever {
     String locationUsed = null;
 
     KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
+    
+    public HttpUtils httpUtils;
 
     public JwKRetriever(JWKSet jwkSet) {
         this.jwkSet = jwkSet;
-        httpUtils = new HttpUtils();
+        this.httpUtils = new HttpUtils();
+    }
+    
+    protected void setHttpUtils(HttpUtils httpUtils) {
+        this.httpUtils = httpUtils;
     }
 
     /**
@@ -141,6 +147,7 @@ public class JwKRetriever {
         this.sigAlg = signatureAlgorithm;
         this.keyText = keyText;
         this.keyLocation = keyLocation;
+        this.httpUtils = new HttpUtils();
     }
 
     public void setSignatureAlgorithm(String signatureAlgorithm) {
@@ -426,7 +433,7 @@ public class JwKRetriever {
         return key;
     }
 
-    @FFDCIgnore({ Exception.class, KeyStoreException.class })
+    @FFDCIgnore({ Exception.class })
     protected Key doJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws KeyStoreException {
 
         String jsonString = null;
@@ -442,7 +449,7 @@ public class JwKRetriever {
                 sslSocketFactory = getSSLSocketFactory(locationUsed, sslConfigurationName, sslSupport);
             }
             HttpClient client = createHTTPClient(sslSocketFactory, locationUsed, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
-            jsonString = getHTTPRequestAsString(client, locationUsed);
+            jsonString = httpUtils.getHttpJsonRequest(client, locationUsed);
             boolean bJwk = parseJwk(jsonString, null, jwkSet, sigAlg);
 
             if (!bJwk) {
@@ -455,11 +462,6 @@ public class JwKRetriever {
                 }
             }
 
-        } catch (KeyStoreException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Fail to retrieve remote key: ", e.getCause());
-            }
-            throw e;
         } catch (Exception e) {
             // could be ignored
             if (tc.isDebugEnabled()) {
@@ -783,82 +785,22 @@ public class JwKRetriever {
         return sslSocketFactory;
     }
 
-    @FFDCIgnore({ KeyStoreException.class })
-    protected String getHTTPRequestAsString(HttpClient httpClient, String url) throws Exception {
-
-        String json = null;
-        try {
-            HttpGet request = new HttpGet(url);
-            request.addHeader("content-type", "application/json");
-            HttpResponse result = null;
-            
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                result = httpClient.execute(request);
-            } catch (IOException ioex) {
-                logCWWKS6049E(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
-                throw ioex;
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
-            }
-            StatusLine statusLine = result.getStatusLine();
-            int iStatusCode = statusLine.getStatusCode();
-            if (iStatusCode == 200) {
-                json = EntityUtils.toString(result.getEntity(), "UTF-8");
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Response: ", json);
-                }
-                if (json == null || json.isEmpty()) { // NO JWK returned
-                    throw new Exception(logCWWKS6049E(url, iStatusCode, json));
-                }
-            } else {
-                String errMsg = EntityUtils.toString(result.getEntity(), "UTF-8");
-                // error in getting JWK
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "status:" + iStatusCode + " errorMsg:" + errMsg);
-                }
-                throw new Exception(logCWWKS6049E(url, iStatusCode, errMsg));
-            }
-        } catch (KeyStoreException e) {
-            throw e;
-        }
-
-        return json;
-    }
-
-    private String logCWWKS6049E(String url, int iStatusCode, String errMsg) {
-        // TODO - Message will be added to .nlsprops file under 222394
-        String defaultMessage = "CWWKS6049E: A JSON Web Key (JWK) was not returned from the URL [" + url
-                + "]. The response status was [" + iStatusCode + "] and the content returned was [" + errMsg + "].";
-
-        String message = TraceNLS.getFormattedMessage(getClass(),
-                "com.ibm.ws.security.jwt.internal.resources.JWTMessages", "JWT_JWK_RETRIEVE_FAILED",
-                new Object[] { url, Integer.valueOf(iStatusCode), errMsg }, defaultMessage);
-        Tr.error(JwKRetriever.tc, message, new Object[0]);
-        return message;
-    }
-
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
 
-        boolean addBasicAuthHeader = false;
+        HttpClient client = null;
 
         if (jwkClientId != null && jwkClientSecret != null) {
-            addBasicAuthHeader = true;
-        }
+            client = httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, createCredentialsProvider());     
+        } else {
+            client = httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
 
-        BasicCredentialsProvider credentialsProvider = null;
-        if (addBasicAuthHeader) {
-            credentialsProvider = createCredentialsProvider();
         }
-        
-        return httpUtils.createHttpClient(sslSocketFactory, url.startsWith("https"), isHostnameVerification, useSystemPropertiesForHttpClientConnections, credentialsProvider);
-        
+        return client;
     }
 
     private BasicCredentialsProvider createCredentialsProvider() {
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(jwkClientId, jwkClientSecret));
-        return credentialsProvider;
+        return credentialsProvider; 
     }
 }

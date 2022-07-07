@@ -12,6 +12,7 @@ package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +26,16 @@ import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.ras.Tr;
@@ -36,18 +43,15 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class OidcClientHttpUtil {
     private static final TraceComponent tc = Tr.register(OidcClientHttpUtil.class);
     private String clientId;
-    static OidcClientHttpUtil instance = null;
-    private final HttpUtils httpUtils;
 
     protected OidcClientHttpUtil() {
-        httpUtils = new HttpUtils();
 
     }
 
@@ -111,7 +115,12 @@ public class OidcClientHttpUtil {
      * @return
      */
     HttpPost createPostMethod(String url, final List<NameValuePair> commonHeaders) {
-        return httpUtils.createHttpPostMethod(url, commonHeaders);
+        HttpPost postMethod = new HttpPost(url);
+        for (Iterator<NameValuePair> i = commonHeaders.iterator(); i.hasNext();) {
+            NameValuePair nvp = i.next();
+            postMethod.addHeader(nvp.getName(), nvp.getValue());
+        }
+        return postMethod;
     }
 
     /**
@@ -119,7 +128,12 @@ public class OidcClientHttpUtil {
      * @return
      */
     HttpGet createHttpGetMethod(String url, final List<NameValuePair> commonHeaders) {
-        return httpUtils.createHttpGetMethod(url, commonHeaders);
+        HttpGet getMethod = new HttpGet(url);
+        for (Iterator<NameValuePair> i = commonHeaders.iterator(); i.hasNext();) {
+            NameValuePair nvp = i.next();
+            getMethod.addHeader(nvp.getName(), nvp.getValue());
+        }
+        return getMethod;
     }
 
     @FFDCIgnore({ SSLException.class })
@@ -278,20 +292,131 @@ public class OidcClientHttpUtil {
             @Sensitive String baPassword,
             String accessToken,
             final List<NameValuePair> commonHeaders) {
-        httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "OIDC _SSO RP POST TO URL [" + WebUtils.stripSecretFromUrl(url, "client_secret") + "]");
+            Tr.debug(tc, "postToEndpoint: url: " + url + " headers: "
+                    + commonHeaders + " params: " + "*****" + " baUsername: "
+                    + baUsername + " baPassword: " + (baPassword != null ? "****" : null)
+                    + " accessToken: " + accessToken);
+            StringBuffer sb = new StringBuffer();
+            sb.append("curl -k -v");
+            if (commonHeaders != null) {
+                for (Iterator<NameValuePair> i = commonHeaders.iterator(); i.hasNext();) {
+                    NameValuePair nvp = i.next();
+                    sb.append(" -H \"");
+                    sb.append(nvp.getName());
+                    sb.append(": ");
+                    sb.append(nvp.getValue());
+                    sb.append("\"");
+                }
+            }
+            if (params != null && params.size() > 0) {
+                sb.append(" -d \"");
+                for (Iterator<NameValuePair> i = params.iterator(); i.hasNext();) {
+                    NameValuePair nvp = i.next();
+                    String name = nvp.getName();
+                    sb.append(name);
+                    sb.append("=");
+                    if (name.equals("client_secret")) {
+                        sb.append("*****");
+                    } else {
+                        sb.append(nvp.getValue());
+                    }
+
+                    if (i.hasNext()) {
+                        sb.append("&");
+                    }
+                }
+                sb.append("\"");
+            }
+            if (baUsername != null && baPassword != null) {
+                sb.append(" -u \"");
+                sb.append(baUsername);
+                sb.append(":");
+                sb.append("****");
+                sb.append("\"");
+            }
+            if (accessToken != null) {
+                sb.append(" -H \"Authorization: bearer ");
+                sb.append(accessToken);
+                sb.append("\"");
+            }
+            sb.append(" ");
+            sb.append(url);
+            Tr.debug(tc, "CURL Command: " + sb.toString());
+        }
     }
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
-        return httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
+
+        HttpClient client = null;
+
+        if (url.startsWith("http:")) {
+            client = createBuilder(useSystemPropertiesForHttpClientConnections).build();
+        } else {
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                client = createBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
+            }
+        }
+
+        // BasicCredentialsProvider credentialsProvider = new
+        // BasicCredentialsProvider();
+        // credentialsProvider.setCredentials(AuthScope.ANY, new
+        // UsernamePasswordCredentials("username", "mypassword"));
+
+        return client;
+
+    }
+
+    private HttpClientBuilder createBuilder(boolean useSystemProperties) {
+        return useSystemProperties ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
+        // return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
     }
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification,
             String baUser, @Sensitive String baPassword, boolean useSystemPropertiesForHttpClientConnections) {
+
+        HttpClient client = null;
+
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(baUser, baPassword));
 
-        return httpUtils.createHttpClient(sslSocketFactory, url.startsWith("httsp:"), isHostnameVerification, useSystemPropertiesForHttpClientConnections, credentialsProvider);
+        if (url.startsWith("http:")) {
+            client = createBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).build();
+        } else {
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                RequestConfig rcfg = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
+                client = createBuilder(useSystemPropertiesForHttpClientConnections)
+                        .setDefaultCredentialsProvider(credentialsProvider)
+                        .setSSLSocketFactory(connectionFactory)
+                        .setDefaultRequestConfig(rcfg)
+                        .build();
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
+            }
+        }
+        return client;
     }
+
+    static OidcClientHttpUtil instance = null;;
 
     /**
      * @return
