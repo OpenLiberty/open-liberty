@@ -480,9 +480,9 @@ public class FeatureUtility {
         Collection<String> actionReturnResult = new ArrayList<String>();
         List<String> currentReturnResult;
         try {
-            double increment = ((progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
+
             for (File esaFile : artifacts) {
-            	
+				double increment = ((progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
             	String featureName = extractFeature(esaFile.getName());
                 fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING", featureName));
                 map.put("license.accept", true);
