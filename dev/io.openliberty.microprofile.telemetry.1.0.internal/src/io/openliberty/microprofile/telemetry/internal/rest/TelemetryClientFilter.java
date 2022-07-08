@@ -57,7 +57,6 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
     //Constructor injecting openTelemetry object
     @Inject
     public TelemetryClientFilter(final OpenTelemetry openTelemetry) {
-
             ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
 
                 InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(

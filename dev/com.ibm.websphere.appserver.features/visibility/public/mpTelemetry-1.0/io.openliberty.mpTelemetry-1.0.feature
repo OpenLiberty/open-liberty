@@ -11,7 +11,8 @@ IBM-API-Package: \
   io.opentelemetry.extension.annotations;type="stable",\
   io.opentelemetry.api.trace;type="stable",\
   io.opentelemetry.api.baggage;type="stable",\
-  io.opentelemetry.context;type="stable"
+  io.opentelemetry.context;type="stable",\
+  io.opentelemetry.api.trace.propagation;type="stable"
 -features=\
   com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
