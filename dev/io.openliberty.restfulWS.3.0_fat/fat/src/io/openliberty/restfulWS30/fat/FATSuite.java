@@ -10,9 +10,12 @@
  *******************************************************************************/
 package io.openliberty.restfulWS30.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -31,5 +34,6 @@ import org.junit.runners.Suite.SuiteClasses;
                 XmlWithoutJaxbTest.class
 })
 public class FATSuite {
-
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification();
 }

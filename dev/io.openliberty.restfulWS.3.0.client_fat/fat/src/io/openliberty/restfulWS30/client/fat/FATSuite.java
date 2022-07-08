@@ -10,10 +10,12 @@
  *******************************************************************************/
 package io.openliberty.restfulWS30.client.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.restfulWS30.client.fat.test.PathParamTest;
 
 
@@ -23,5 +25,7 @@ import io.openliberty.restfulWS30.client.fat.test.PathParamTest;
                 SslTest.class,
                 PathParamTest.class
 })
-public class FATSuite {    
+public class FATSuite { 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification();
 }
