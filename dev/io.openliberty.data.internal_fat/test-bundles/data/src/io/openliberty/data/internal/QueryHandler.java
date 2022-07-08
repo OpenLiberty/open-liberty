@@ -130,12 +130,12 @@ public class QueryHandler<T> implements InvocationHandler {
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         persistence = bc.getService(bc.getServiceReference(DataPersistence.class));
 
-        Entry<PersistenceServiceUnit, Set<Class<?>>> persistenceInfo = //
+        Entry<PersistenceServiceUnit, Map<Class<?>, String>> persistenceInfo = //
                         persistence.getPersistenceInfo(data.provider(), beanClass.getClassLoader());
         if (persistenceInfo == null)
             throw new RuntimeException("Persistence layer unavailable for " + data);
         punit = persistenceInfo.getKey();
-        entityClassesAvailable = persistenceInfo.getValue();
+        entityClassesAvailable = persistenceInfo.getValue().keySet();
 
         // TODO replace this ugly code that maps from Java field or setter attribute name to database column name.
         EntityManager em = punit.createEntityManager();

@@ -20,8 +20,8 @@ import io.openliberty.data.Query;
  */
 @Data
 public interface PersonRepo {
-    void insert(Person p);
-
     @Query("SELECT o FROM Person o WHERE o.lastName=?1")
     List<Person> find(String lastName);
+
+    void save(Person p);
 }
