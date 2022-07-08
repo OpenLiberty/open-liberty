@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2021 IBM Corporation and others.
+    Copyright (c) 2021, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -35,32 +35,36 @@
     <!-- Shared oracle connection properties -->
  	<variable name="oracle.conn.props" value="oracle.net.ssl_version=1.2;oracle.net.ssl_server_dn_match=false;oracle.net.authentication_services=TCPS;" />
         
-    <!-- Datasource using oracle wallet auth and ssl connection -->
-    <variable name="oracle.wallet"            value="oracle.net.wallet_location=${server.config.dir}/security/;" />
-    <variable name="oracle.conn.props.wallet" value="${oracle.conn.props}${oracle.wallet}" /> 
+    <!-- Datasource using oracle wallet SSO auth and ssl connection -->
+    <variable name="oracle.wallet.sso"            value="oracle.net.wallet_location=${server.config.dir}/security/;" />
 
-    <dataSource id="oracleWallet" jndiName="jdbc/oracleWallet">
+    <dataSource id="oracleWalletSSO" jndiName="jdbc/oracleWalletSSO">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties.oracle URL="${env.SSL_URL}" connectionProperties="${oracle.conn.props.wallet}"/>
+    	<properties.oracle URL="${env.SSL_URL}" connectionProperties="${oracle.conn.props}${oracle.wallet.sso}"/>
+    </dataSource>
+
+    <!-- Datasource using oracle wallet P12 auth and ssl connection -->
+    <variable name="oracle.wallet.p12"        value="oracle.net.wallet_location=${server.config.dir}/security/;oracle.net.wallet_password=${env.WALLET_PASS};" />
+
+    <dataSource id="oracleWalletP12" jndiName="jdbc/oracleWalletP12">
+        <jdbcDriver libraryRef="DBLib"/>
+        <properties.oracle URL="${env.SSL_URL}" connectionProperties="${oracle.conn.props}${oracle.wallet.p12}"/>
     </dataSource>
     
-    <!-- Datasource using keystore/truststore for ssl connection -->
-<!-- 	TODO handshake fails:
-	[3/15/21, 10:26:49:829 CDT] 0000004c id=00000000 SystemErr                                                    R javax.net.ssl|DEBUG|4C|Default Executor-thread-20|2021-03-15 10:26:49.829 CDT|CertificateMessage.java:290|No X.509 certificate for client authentication, use empty Certificate message instead
-	[3/15/21, 10:26:49:830 CDT] 0000004c id=00000000 SystemErr                                                    R javax.net.ssl|DEBUG|4C|Default Executor-thread-20|2021-03-15 10:26:49.830 CDT|CertificateMessage.java:321|Produced client Certificate handshake message (
-	"Certificates": <empty list> --> 
-<!-- 	
-    <variable name="oracle.keystore"			value="javax.net.ssl.keystore=${server.config.dir}/store/client-keystore.jks;javax.net.ssl.trustStoreType=JKS;javax.net.ssl.keyStorePassword=${env.WALLET_PASS};"/>
+    <!-- Datasource using oracle wallet JKS auth for ssl connection -->
+    <variable name="oracle.keystore"			value="javax.net.ssl.keyStore=${server.config.dir}/store/client-keystore.jks;javax.net.ssl.keyStoreType=JKS;javax.net.ssl.keyStorePassword=${env.WALLET_PASS};"/>
     <variable name="oracle.truststore"		  	value="javax.net.ssl.trustStore=${server.config.dir}/store/client-truststore.jks;javax.net.ssl.trustStoreType=JKS;javax.net.ssl.trustStorePassword=${env.WALLET_PASS};"/>
     <variable name="oracle.conn.props.jks"      value="${oracle.conn.props}${oracle.truststore}${oracle.keystore}" />
     
-    <dataSource id="oraclejks" jndiName="jdbc/oraclejks">
+    <dataSource id="oracleWalletJKS" jndiName="jdbc/oracleWalletJKS">
     	<jdbcDriver libraryRef="DBLib"/>
     	<properties.oracle URL="${env.SSL_URL}" connectionProperties="${oracle.conn.props.jks}" />
     </dataSource>
-     -->
+
     <javaPermission codebase="${shared.resource.dir}/ssl/ojdbc8_g.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/oraclesslfat.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.security.SecurityPermission" name="putProviderProperty.OraclePKI"/>
+    <javaPermission className="java.security.SecurityPermission" name="insertProvider"/>
 
     <variable name="onError" value="FAIL"/>
 </server>
