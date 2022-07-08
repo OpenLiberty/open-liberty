@@ -37,6 +37,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -73,6 +74,37 @@ public class FATSuite {
                                                 "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
                                                 "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
                                                 "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
+
+    @ClassRule
+    public static RepeatTests r;
+
+    static {
+        // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
+        // If we are running on Java 8 have EE9 be the lite mode test to run.
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            r = RepeatTests.withoutModificationInFullMode()
+                            .andWith(new JakartaEE9Action().fullFATOnly()
+                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"))
+                            .andWith(new JakartaEE10Action()
+                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
+        } else {
+            RepeatTests.withoutModificationInFullMode()
+                            .andWith(new JakartaEE9Action()
+                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
+        }
+    }
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
