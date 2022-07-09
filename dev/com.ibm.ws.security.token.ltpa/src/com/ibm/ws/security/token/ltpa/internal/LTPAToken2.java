@@ -237,13 +237,6 @@ public class LTPAToken2 implements Token, Serializable {
                 expirationInMilliseconds = Long.parseLong(fields[1]);
             }
 
-            // If we have an old and new expiration formats, check to make sure they are the same value
-            if (expirationArray != null && expirationArray[expirationArray.length - 1] != null &&
-                fields[1] != null &&
-                expirationInMilliseconds != Long.parseLong(fields[1])) {
-                throw new InvalidTokenException("Token Validation Failed");
-            }
-
             byte[] signature = Base64Coder.base64Decode(Base64Coder.getBytes(fields[2]));
             setSignature(signature);
         } catch (BadPaddingException e) {
