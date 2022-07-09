@@ -1,6 +1,7 @@
 <server>
     <featureManager>
         <feature>jaxrs-2.1</feature>
+        <feature>servlet-4.0</feature>
     </featureManager>
    
     <include location="../fatTestPorts.xml"/>

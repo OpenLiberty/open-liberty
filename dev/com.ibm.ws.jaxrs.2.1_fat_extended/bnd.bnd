@@ -27,7 +27,7 @@ src: \
   test-applications/subResourceApp/src
 
 fat.project: true
-tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0, mpconfig-1.4, restfulWSClient-3.0, restfulWS-3.0, jsonb-2.0, jsonbcontainer-2.0
+tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0, mpconfig-1.4, restfulWSClient-3.0, restfulWS-3.0, jsonb-2.0, jsonbcontainer-2.0, servlet-5.0
 
 
 -buildpath: \
