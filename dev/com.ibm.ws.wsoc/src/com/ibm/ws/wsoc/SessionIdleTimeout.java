@@ -44,7 +44,7 @@ public class SessionIdleTimeout implements Runnable {
         //no action. session timeout is infinite. 
         if (maxIdleTimeout < 1) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Session idle timeout is default which is no time out");
+                Tr.debug(tc, "Session timeout " + maxIdleTimeout + " is less than 1. No timeout enabled.");
             }
             return;
         }

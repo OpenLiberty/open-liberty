@@ -1,3 +1,4 @@
+
 #*******************************************************************************
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
@@ -11,18 +12,23 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+Bundle-SymbolicName: io.openliberty.jakarta.websocket.2.1; singleton:=true
+
 javac.source: 11
 javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-Bundle-SymbolicName: io.openliberty.jakarta.websocket.2.1; singleton:=true
-
 Export-Package: \
-	jakarta.websocket; version="2.1.0",\
 	jakarta.websocket.server; version="2.1.0"
 
--includeresource: \
-   @${repo;jakarta.websocket:jakarta.websocket-api;2.1.0;EXACT}!/!(META-INF/maven/*|module-info.class), \
-   @${repo;jakarta.websocket:jakarta.websocket-client-api;2.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
-   
+Include-Resource: \
+  @${repo;jakarta.websocket:jakarta.websocket-api;2.1.0}!/META-INF/LICENSE, \
+  @${repo;jakarta.websocket:jakarta.websocket-api;2.1.0}!/META-INF/NOTICE
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	jakarta.websocket:jakarta.websocket-api;version=2.1.0
