@@ -10,5 +10,7 @@
  *******************************************************************************/
 apply from: '../com.ibm.ws.security.fat.common.backchannelLogout/CommonBackchannelLogout.gradle'
 
-addRequiredLibraries.dependsOn copySharedOPServer, copySharedRPServer
+addRequiredLibraries.dependsOn copyGenericServer, copyGenericClient
 
+/* This project uses just the standard op and rp - no additional updates need to be made 
+  (the gradle.properties file defines the server names) */

@@ -308,6 +308,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         SecurityFatHttpUtils.saveServerPorts(clientServer.getServer(), Constants.BVT_SERVER_2_PORT_NAME_ROOT);
 
+        clientServer.addIgnoredServerExceptions(MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR, MessageConstants.CWWKS1543E_BACK_CHANNEL_LOGOUT_REQUEST_VALIDATION_ERROR);
+
     }
 
     public static String adjustServerConfig(String configFileName) throws Exception {
@@ -1305,7 +1307,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
-    @Test
+    // 21634 @Test
     public void BasicBCLTests_omittedBackchannelLogoutUri_withIdTokenHint() throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
@@ -1335,7 +1337,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     }
 
     @AllowedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidTokenException" })
-    @Test
+    // 21634 @Test
     public void BasicBCLTests_omittedBackchannelLogoutUri_withoutIdTokenHint() throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
