@@ -358,20 +358,28 @@ public class FailoverServlet extends FATServlet {
 
         // Access the Database
         boolean rowNotFound = false;
-        boolean isPostgreSQL = false;;
+        boolean isPostgreSQL = false;
+        boolean isSQLServer = false;
         if (dbName.toLowerCase().contains("postgresql")) {
             // we are PostgreSQL
             isPostgreSQL = true;
             System.out.println("insertStaleLease: This is a PostgreSQL Database");
+        } else if (dbName.toLowerCase().contains("microsoft sql")) {
+            // we are MS SQL Server
+            isSQLServer = true;
+            System.out.println("insertStaleLease: This is an MS SQL Server Database");
         }
+
         Statement claimPeerlockingStmt = con.createStatement();
         ResultSet claimPeerLockingRS = null;
 
         try {
             String queryString = "SELECT LEASE_TIME" +
                                  " FROM WAS_LEASES_LOG" +
+                                 (isSQLServer ? "" : " WITH (UPDLOCK)") +
                                  " WHERE SERVER_IDENTITY='cloudstale'" +
-                                 (isPostgreSQL ? "" : " FOR UPDATE OF LEASE_TIME");
+                                 (isSQLServer ? "" : " FOR UPDATE") +
+                                 (isSQLServer || isPostgreSQL ? "" : " OF LEASE_TIME");
             System.out.println("insertStaleLease: Attempt to select the row for UPDATE using - " + queryString);
             claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString);
         } catch (Exception e) {
