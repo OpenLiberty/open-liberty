@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,29 +19,12 @@ import com.ibm.ws.transaction.web.XAServlet;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-/**
- * Example Shrinkwrap FAT project:
- * <li> Application packaging is done in the @BeforeClass, instead of ant scripting.
- * <li> Injects servers via @Server annotation. Annotation value corresponds to the
- * server directory name in 'publish/servers/%annotation_value%' where ports get
- * assigned to the LibertyServer instance when the 'testports.properties' does not
- * get used.
- * <li> Specifies an @RunWith(FATRunner.class) annotation. Traditionally this has been
- * added to bytecode automatically by ant.
- * <li> Uses the @TestServlet annotation to define test servlets. Notice that not all @Test
- * methods are defined in this class. All of the @Test methods are defined on the test
- * servlet referenced by the annotation, and will be run whenever this test class runs.
- */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
 public class XADBTranlogTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
@@ -51,11 +34,11 @@ public class XADBTranlogTest extends FATServletClient {
     @TestServlet(servlet = XAServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
-    public static XATestBase xa = new XATestBase(APP_NAME, SERVLET_NAME);
+    public static XATestBase xa = null;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        xa.setup(server);
+        xa = new XATestBase(server, APP_NAME, SERVLET_NAME);
     }
 
     @AfterClass
@@ -64,22 +47,18 @@ public class XADBTranlogTest extends FATServletClient {
     }
 
     @Test
-    @Mode(TestMode.LITE)
-    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     public void testSetTransactionTimeoutReturnsTrue() throws Exception {
-        xa.testSetTransactionTimeoutReturnsTrue(testName);
+        xa.testSetTransactionTimeoutReturnsTrue();
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     public void testSetTransactionTimeoutReturnsFalse() throws Exception {
-        xa.testSetTransactionTimeoutReturnsFalse(testName);
+        xa.testSetTransactionTimeoutReturnsFalse();
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testSetTransactionTimeoutThrowsException() throws Exception {
-        xa.testSetTransactionTimeoutThrowsException(testName);
+        xa.testSetTransactionTimeoutThrowsException();
     }
 }
