@@ -32,11 +32,17 @@ public class LibertyRestfulWSThreadContextImpl implements ThreadContext<Componen
 
     @Override
     public void push(ComponentMetaData context) {
-        compMetadataAccessor.beginContext(context);
+        //This may run in a JavaSE environment without ComponentMetaData, so skip when CMD is null
+        if (context != null) {
+            compMetadataAccessor.beginContext(context);
+        }
     }
 
     @Override
     public void reset(ComponentMetaData context) {
-        compMetadataAccessor.endContext();
+        //This may run in a JavaSE environment without ComponentMetaData, so skip when CMD is null
+        if (context != null) {
+            compMetadataAccessor.endContext();
+        }
     }
 }
