@@ -262,6 +262,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         updateServerSettings(testOPServer, vars);
 
         SecurityFatHttpUtils.saveServerPorts(testOPServer.getServer(), Constants.BVT_SERVER_1_PORT_NAME_ROOT);
+        testOPServer.addIgnoredServerException(MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI);
 
     }
 

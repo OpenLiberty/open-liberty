@@ -34,6 +34,7 @@ public class Constants {
     public static final String STRING_EQUALS = "equals";
     public static final String STRING_NULL = "null";
     public static final String STRING_NOT_NULL = "not null";
+    public static final String MSG_NOT_LOGGED = "msg not logged";
     public static final String TIME_TYPE = "time type";
     public static final String LIST_MATCHES = "listmatches";
 

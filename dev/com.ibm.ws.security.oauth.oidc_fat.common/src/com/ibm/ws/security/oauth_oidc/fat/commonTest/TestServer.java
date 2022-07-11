@@ -146,9 +146,14 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
             String logName = getGenericLogName(expected.getWhere());
             Log.info(thisClass, thisMethod, "Searching for [" + expectedValue + "] in " + logName);
 
-            String searchResult = server.waitForStringInLogUsingMark(expectedValue, server.getMatchingLogFile(logName));
+            String searchResult = null;
+            if (expected.getCheckType().equals(Constants.MSG_NOT_LOGGED)) {
+                searchResult = server.verifyStringNotInLogUsingMark(expectedValue, 2000); // short timeout because we already expect the msg to "not" be there
+            } else {
+                searchResult = server.waitForStringInLogUsingMark(expectedValue, server.getMatchingLogFile(logName));
+            }
 
-            if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN) || expected.getCheckType().equals(Constants.STRING_DOES_NOT_MATCH)) {
+            if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN) || expected.getCheckType().equals(Constants.STRING_DOES_NOT_MATCH) || expected.getCheckType().equals(Constants.MSG_NOT_LOGGED)) {
                 msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting NOT to find [" + expectedValue + "] in " + logName + ", but did find it there!", searchResult == null);
                 Log.info(thisClass, thisMethod, "DID NOT find message: " + expectedValue);
             } else {

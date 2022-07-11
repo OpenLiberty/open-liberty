@@ -810,7 +810,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         if (theNum != null) {
             theInstance = " - " + theNum;
         }
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_DOES_NOT_MATCH, "Message log contained a message indicating that a bcl request was made for client " + settings.getClientID(), ".*BackChannelLogout_logMsg_Servlet: " + settings.getClientID() + theInstance);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.MSG_NOT_LOGGED, "Message log contained a message indicating that a bcl request was made for client " + settings.getClientID(), ".*BackChannelLogout_logMsg_Servlet: " + settings.getClientID() + theInstance);
 
         return expectations;
     }
