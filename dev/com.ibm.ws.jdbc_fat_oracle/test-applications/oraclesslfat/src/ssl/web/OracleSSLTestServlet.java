@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,16 +10,20 @@
  *******************************************************************************/
 package ssl.web;
 
+import java.security.Provider;
+import java.security.Security;
 import java.sql.Connection;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import oracle.security.pki.OraclePKIProvider;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/OracleSSLTestServlet")
@@ -28,11 +32,25 @@ public class OracleSSLTestServlet extends FATServlet {
     @Resource
     private DataSource ds;
 
-    @Resource(lookup = "jdbc/oracleWallet")
-    private DataSource ds_oracle_wallet;
+    @Resource(lookup = "jdbc/oracleWalletSSO")
+    private DataSource ds_oracle_wallet_sso;
 
-//    @Resource(lookup = "jdbc/oraclejks")
-//    private DataSource ds_oracle_jks;
+    @Resource(lookup = "jdbc/oracleWalletP12")
+    private DataSource ds_oracle_wallet_p12;
+
+    @Resource(lookup = "jdbc/oracleWalletJKS")
+    private DataSource ds_oracle_wallet_jks;
+
+    @Override
+    public void init() throws ServletException {
+        Security.insertProviderAt(new OraclePKIProvider(), 1);
+        System.out.println("init method: OraclePKIProvider has been successfully instantiated");
+
+        int i = 0;
+        for (Provider p : Security.getProviders()) {
+            System.out.println("provider." + ++i + ": " + p.getName());
+        }
+    }
 
     @Test
     public void testSimpleConnection() throws Exception {
@@ -42,17 +60,23 @@ public class OracleSSLTestServlet extends FATServlet {
     }
 
     @Test
-    public void testOracleWallet() throws Exception {
-        try (Connection con = ds_oracle_wallet.getConnection(); Statement stmt = con.createStatement()) {
+    public void testOracleWalletSSO() throws Exception {
+        try (Connection con = ds_oracle_wallet_sso.getConnection(); Statement stmt = con.createStatement()) {
             stmt.execute("SELECT 1 FROM DUAL");
         }
     }
 
-    //TODO need to resolve handshake failure
-//    @Test
-//    public void testOracleJKS() throws Exception {
-//        try (Connection con = ds_oracle_jks.getConnection(); Statement stmt = con.createStatement()) {
-//            stmt.execute("SELECT 1 FROM DUAL");
-//        }
-//    }
+    @Test
+    public void testOracleWalletP12() throws Exception {
+        try (Connection con = ds_oracle_wallet_p12.getConnection(); Statement stmt = con.createStatement()) {
+            stmt.execute("SELECT 1 FROM DUAL");
+        }
+    }
+
+    @Test
+    public void testOracleJKS() throws Exception {
+        try (Connection con = ds_oracle_wallet_jks.getConnection(); Statement stmt = con.createStatement()) {
+            stmt.execute("SELECT 1 FROM DUAL");
+        }
+    }
 }

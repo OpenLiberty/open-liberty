@@ -28,7 +28,7 @@ Import-Package: \
   jakarta.ws.rs.core, \
   jakarta.ws.rs.ext, \
   jakarta.ws.rs.sse, \
-  org.jboss.resteasy.plugins.providers.multipart
+  org.jboss.resteasy.plugins.providers.multipart;version="[4.7,6.2.0)"
 
 
 Export-Package: \

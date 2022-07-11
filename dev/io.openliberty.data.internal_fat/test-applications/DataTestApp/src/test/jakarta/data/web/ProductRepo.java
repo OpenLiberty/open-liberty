@@ -22,7 +22,7 @@ import io.openliberty.data.Where;
  */
 @Data
 public interface ProductRepo {
-    void insert(Product p);
+    void addOrModify(Product p);
 
     @Query("DELETE FROM Product o WHERE o.id IN ?1")
     int discontinueProducts(Set<String> ids);

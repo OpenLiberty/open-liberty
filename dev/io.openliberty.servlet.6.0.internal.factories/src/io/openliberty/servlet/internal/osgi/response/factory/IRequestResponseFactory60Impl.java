@@ -16,9 +16,10 @@ import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.ws.webcontainer.osgi.request.IRequestFactory;
 import com.ibm.ws.webcontainer.osgi.response.IResponseFactory;
-import com.ibm.ws.webcontainer40.osgi.request.IRequest40Impl;
 import com.ibm.ws.webcontainer40.osgi.response.IResponse40Impl;
 import com.ibm.wsspi.http.HttpInboundConnection;
+
+import io.openliberty.webcontainer60.osgi.request.IRequest60Impl;
 
 @Component(property = { "service.vendor=IBM", "service.ranking:Integer=60", "servlet.version=6.0" })
 public class IRequestResponseFactory60Impl implements IRequestFactory, IResponseFactory {
@@ -30,8 +31,7 @@ public class IRequestResponseFactory60Impl implements IRequestFactory, IResponse
      */
     @Override
     public IRequest createRequest(HttpInboundConnection inboundConnection) {
-        // there appears to be nothing in IRequestImpl that needs to be different in servlet 3.1, so return the 3.0 version
-        return new IRequest40Impl(inboundConnection);
+        return new IRequest60Impl(inboundConnection);
     }
 
     /*
@@ -41,6 +41,7 @@ public class IRequestResponseFactory60Impl implements IRequestFactory, IResponse
      */
     @Override
     public IResponse createResponse(IRequest ireq, HttpInboundConnection inboundConnection) {
+        //Servlet 6.0 - nothing new in IResponseImpl so return IResponse40Impl
         return new IResponse40Impl(ireq, inboundConnection);
     }
 

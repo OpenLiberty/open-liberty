@@ -18,7 +18,7 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-resteasy-version=6.0.0.Final
+resteasy-version=6.1.0.Beta2
 
 src: src, resources
 
@@ -64,16 +64,16 @@ Import-Package: \
   jakarta.ws.rs;version="[3.0,4.0)", \
   jakarta.ws.rs.core;version="[3.0,4.0)", \
   jakarta.ws.rs.ext;version="[3.0,4.0)", \
-  org.jboss.logging;version="[3.4,4)", \
-  org.jboss.resteasy.cdi;version="[6.0,7)", \
-  org.jboss.resteasy.cdi.i18n;version="[6.0,7)", \
-  org.jboss.resteasy.core;version="[6.0,7)", \
-  org.jboss.resteasy.plugins.providers.multipart;version="[6.0,7)", \
-  org.jboss.resteasy.spi;version="[6.0,7)", \
-  org.jboss.resteasy.spi.metadata;version="[6.0,7)", \
-  org.jboss.resteasy.spi.util;version="[6.0,7)", \
-  org.jboss.resteasy.spi.validation;version="[6.0,7)", \
-  org.jboss.resteasy.util;version="[6.0,7)", \
+  org.jboss.logging;version="[3.5,4)", \
+  org.jboss.resteasy.cdi;version="[6.1,7)", \
+  org.jboss.resteasy.cdi.i18n;version="[6.1,7)", \
+  org.jboss.resteasy.core;version="[6.1,7)", \
+  org.jboss.resteasy.plugins.providers.multipart;version="[6.1,7)", \
+  org.jboss.resteasy.spi;version="[6.1,7)", \
+  org.jboss.resteasy.spi.metadata;version="[6.1,7)", \
+  org.jboss.resteasy.spi.util;version="[6.1,7)", \
+  org.jboss.resteasy.spi.validation;version="[6.1,7)", \
+  org.jboss.resteasy.util;version="[6.1,7)", \
   org.jboss.weld.proxy
 
 Private-Package: \
@@ -95,11 +95,11 @@ Include-Resource:\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.container.service.compat;version=latest,\
   com.ibm.ws.logging.core,\
-  com.ibm.ws.org.jboss.logging,\
+  io.openliberty.org.jboss.logging35,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.webcontainer.jakarta;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   io.openliberty.org.jboss.resteasy.common.ee10,\
-  io.openliberty.jakarta.restfulWS.3.0,\
-  io.openliberty.jakarta.cdi.3.0,\
-  io.openliberty.jakarta.annotation.2.0
+  io.openliberty.jakarta.restfulWS.3.1,\
+  io.openliberty.jakarta.cdi.4.0,\
+  io.openliberty.jakarta.annotation.2.1

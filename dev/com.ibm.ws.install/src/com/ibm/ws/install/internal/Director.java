@@ -1939,10 +1939,11 @@ public class Director extends AbstractDirector {
     /**
      * Check if assets are installed
      *
-     * @param assetIds Collection of assets names to check
+     * @param assetIds          Collection of assets names to check
+     * @param installingFeature True if called from featureUtility
      * @throws InstallException
      */
-    public void checkAssetsNotInstalled(Collection<String> assetIds) throws InstallException {
-        getResolveDirector().checkAssetsNotInstalled(assetIds);
+    public void checkAssetsNotInstalled(Collection<String> assetIds, boolean installingFeature) throws InstallException {
+        getResolveDirector().checkAssetsNotInstalled(assetIds, installingFeature);
     }
 }
