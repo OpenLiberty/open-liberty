@@ -638,8 +638,7 @@ class ResolveDirector extends AbstractDirector {
                 // call resolveAsSet --> detects singleton exceptions and tolerated features
                 log(Level.FINE, "Calling resolveAsSet api");
                 installResources = resolver.resolveAsSet(assetNamesProcessed);
-                //Resolver already returns auto features. Don't need it anymore.
-                //resolveAutoFeatures(installResources, new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo));
+                resolveAutoFeatures(installResources, new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo));
             } else {
                 Collection<String> assetsToInstall = getFeaturesToInstall(assetNamesProcessed, download);
                 if (assetsToInstall.isEmpty()) {
