@@ -52,7 +52,7 @@ task oAuth20MongoSetup_WAR(type: War, dependsOn: classes) {
  ******************************************************************/
 task oAuth20MongoSetup_EAR(type: Zip) {
   dependsOn 'oAuth20MongoSetup_WAR'
-  dependsOn ':com.ibm.ws.com.google.gson:assemble'
+  dependsOn ':io.openliberty.com.google.gson:assemble'
   dependsOn ':com.ibm.ws.com.google.guava:assemble'
   
 
@@ -66,8 +66,8 @@ task oAuth20MongoSetup_EAR(type: Zip) {
   from ('test-applications/oAuth20MongoSetupEar') {
     include '**'
   }
-  from (project(':com.ibm.ws.com.google.gson').buildDir) {
-    include 'com.ibm.ws.com.google.gson*.jar'
+  from (project(':io.openliberty.com.google.gson').buildDir) {
+    include 'io.openliberty.com.google.gson*.jar'
   }
   from (project(':com.ibm.ws.com.google.guava').buildDir) {
     include 'com.ibm.ws.com.google.guava*.jar'

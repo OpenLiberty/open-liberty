@@ -37,7 +37,7 @@ tested.features: mpOpenTracing-2.0
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     com.ibm.ws.cdi.interfaces;version=latest,\
     com.ibm.ws.componenttest,\
-    com.google.code.gson:gson;version=2.9.0,\
+    io.openliberty.com.google.gson;version=latest,\
     io.opentracing:opentracing-util;version=0.33.0,\
     io.opentracing:opentracing-noop;version=0.33.0,\
     io.jaegertracing:jaeger-core;version=1.6.0,\

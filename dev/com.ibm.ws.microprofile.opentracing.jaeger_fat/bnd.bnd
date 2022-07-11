@@ -43,7 +43,7 @@ tested.features: jaeger-1.0
     com.ibm.ws.javaee.servlet.3.1,\
     javax.servlet-api,\
     org.apache.geronimo.specs.geronimo-servlet_3.0_spec,\
-    com.google.code.gson:gson;version=2.9.0,\
+    io.openliberty.com.google.gson;version=latest,\
     io.opentracing:opentracing-util;version=0.31.0,\
     io.opentracing:opentracing-noop;version=0.31.0,\
     io.jaegertracing:jaeger-core;version=0.34.3,\
