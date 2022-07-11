@@ -48,6 +48,7 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
+import io.openliberty.microprofile.openapi20.fat.OpenApiActions;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestResource;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPIConnection;
@@ -67,9 +68,10 @@ public class MergeTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
-                                                             MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+    public static RepeatTests r = OpenApiActions.repeat(SERVER_NAME,
+                                                        OpenApiActions.MP_OPENAPI_31, // mpOpenAPI-3.1, LITE
+                                                        MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
+                                                        MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
 
     private final List<String> deployedApps = new ArrayList<>();
 
