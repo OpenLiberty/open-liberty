@@ -28,6 +28,8 @@ import javax.net.ssl.SSLSocketFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -187,6 +189,12 @@ public class HttpUtils {
     
     HttpClientBuilder createBuilder(boolean useSystemProperties) {
         return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+    }
+    
+    public BasicCredentialsProvider createCredentialsProvider(String username, String password) {
+        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+        return credentialsProvider; 
     }
     
     public String getHttpJsonRequest(HttpClient client, String url) throws SocialLoginWrapperException, IOException {

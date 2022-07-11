@@ -790,7 +790,8 @@ public class JwKRetriever {
         HttpClient client = null;
 
         if (jwkClientId != null && jwkClientSecret != null) {
-            client = httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, createCredentialsProvider());     
+            BasicCredentialsProvider credentialsProvider = httpUtils.createCredentialsProvider(jwkClientId, jwkClientSecret);
+            client = httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, credentialsProvider);     
         } else {
             client = httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
 
@@ -798,9 +799,4 @@ public class JwKRetriever {
         return client;
     }
 
-    private BasicCredentialsProvider createCredentialsProvider() {
-        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(jwkClientId, jwkClientSecret));
-        return credentialsProvider; 
-    }
 }
