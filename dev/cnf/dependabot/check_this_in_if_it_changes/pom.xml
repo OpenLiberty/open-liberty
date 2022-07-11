@@ -107,6 +107,11 @@
       <version>2.11.2</version>
     </dependency>
     <dependency>
+      <groupId>com.fasterxml.jackson.jr</groupId>
+      <artifactId>jackson-jr-objects</artifactId>
+      <version>jar</version>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <version>2.11.2</version>
@@ -255,6 +260,16 @@
       <groupId>com.sebastian-daschner</groupId>
       <artifactId>jaxrs-analyzer</artifactId>
       <version>0.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>4.10.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okio</groupId>
+      <artifactId>okio</artifactId>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.sun.activation</groupId>
@@ -448,8 +463,18 @@
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty-shaded</artifactId>
+      <version>1.43.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
       <version>1.43.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-okhttp</artifactId>
+      <version>1.47.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
@@ -550,6 +575,131 @@
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
       <version>4.1.77.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-instrumentation-api-annotation-support</artifactId>
+      <version>1.14.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-instrumentation-api-semconv</artifactId>
+      <version>1.14.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-instrumentation-api</artifactId>
+      <version>1.14.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-context</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-jaeger</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-logging</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp-common</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp-http-logs</artifactId>
+      <version>1.14.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp-http-metrics</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp-http-trace</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp-logs</artifactId>
+      <version>1.14.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp-metrics</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp-trace</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-zipkin</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-extension-annotations</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-common</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-extension-autoconfigure-spi</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
+      <version>1.14.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-logs</artifactId>
+      <version>1.14.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-metrics</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-trace</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-semconv</artifactId>
+      <version>1.14.0-alpha</version>
     </dependency>
     <dependency>
       <groupId>io.opentracing</groupId>
