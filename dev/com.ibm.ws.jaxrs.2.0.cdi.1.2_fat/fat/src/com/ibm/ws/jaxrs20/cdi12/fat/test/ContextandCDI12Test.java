@@ -30,7 +30,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // skip because cdi injection of singletons has changed
+@SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // skip because cdi injection of singletons has changed
 public class ContextandCDI12Test extends AbstractTest {
 
     public static final String[] ignore_messages =  new String[] { "CWWKW1001W" , "CWWKW1002W" , "CWWKE1102W", "CWWKE1106W" , "CWWKE1107W" };    

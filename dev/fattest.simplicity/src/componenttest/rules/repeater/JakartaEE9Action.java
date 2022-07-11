@@ -474,6 +474,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             Log.info(c, m, "Unable to transform app at path: " + appPath);
             Log.error(c, m, e);
             throw new RuntimeException(e);
+        } catch (Throwable e) {
+            String mesg = "Unable to load the org.eclipse.transformer.cli.JakartaTransformerCLI class. " +
+                          "Did you include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FAT's build.gradle file?";
+            Log.error(c, m, e, mesg);
+            throw new RuntimeException(mesg, e);
         } finally {
             try {
                 fos.close();

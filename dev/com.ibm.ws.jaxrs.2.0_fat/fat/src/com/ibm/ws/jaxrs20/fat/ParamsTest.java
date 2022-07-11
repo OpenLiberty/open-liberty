@@ -1337,7 +1337,7 @@ public class ParamsTest {
      * Tests the constructor query parameter is processed.
      */
     @Test
-    @SkipForRepeat("EE9_FEATURES") // query params in constructors are not allowed in EE9, since they are a CDI bean
+    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // query params in constructors are not allowed in EE9, since they are a CDI bean
     public void testConstructorQueryParam() throws Exception {
         assertEquals("deleteConstructorQueryID:HelloWorld",
                      sendGoodRequestAndGetResponse("query?queryid=HelloWorld", HttpDelete.class));

@@ -22,6 +22,19 @@ src: \
 
 fat.project: true
 
+# These features get added programmatically
+tested.features: \
+  restfulwsclient-3.0, \
+  restfulws-3.0, \
+  restfulwsclient-3.1, \
+  restfulws-3.1, \
+  beanvalidation-3.0, \
+  servlet-6.0, \
+  expressionlanguage-5.0, \
+  xmlbinding-4.0,\
+  jsonb-3.0, \
+  connectors-2.1
+
 -buildpath: \
     io.openliberty.jakarta.annotation.2.0;version=latest,\
     io.openliberty.jakarta.xmlBinding.3.0;version=latest,\

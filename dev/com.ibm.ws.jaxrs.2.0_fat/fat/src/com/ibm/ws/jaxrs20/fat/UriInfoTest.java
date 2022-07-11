@@ -25,7 +25,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to client @Context UriInfo injection failing
+@SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // currently broken due to client @Context UriInfo injection failing
 public class UriInfoTest extends FATServletClient {
 
     private static final String app = "uriInfo";

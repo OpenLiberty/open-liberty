@@ -26,7 +26,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // Continue to skip these tests for EE9 as JSON4JObjectProvider is not supported
+@SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // Continue to skip these tests for EE9 as JSON4JObjectProvider is not supported
 public class IBMJson4JProvidersTest extends AbstractTest {
 
     @Server("jaxrs20.client.IBMJson4JProvidersTest")
