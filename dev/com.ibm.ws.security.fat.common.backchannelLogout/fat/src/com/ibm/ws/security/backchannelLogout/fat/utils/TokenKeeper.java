@@ -95,7 +95,12 @@ public class TokenKeeper {
     private String getRefreshTokenFromResponse(Object response) throws Exception {
 
         String refreshToken = validationTools.getTokenFromResponse(response, Constants.REFRESH_TOKEN_KEY);
-        Log.info(thisClass, "getRefreshToken", "Refresh Token: " + refreshToken);
+        Log.info(thisClass, "getRefreshTokenFromResponse", "raw Refresh Token: " + refreshToken);
+        if (refreshToken != null && refreshToken.endsWith("}")) {
+            Log.info(thisClass, "getRefreshTokenFromResponse", "refreshToken length: " + Integer.toString(refreshToken.length()));
+            refreshToken = refreshToken.substring(0, refreshToken.length() - 1);
+            Log.info(thisClass, "getRefreshTokenFromResponse", "fixed Refresh Token: " + refreshToken);
+        }
         return refreshToken;
 
     }

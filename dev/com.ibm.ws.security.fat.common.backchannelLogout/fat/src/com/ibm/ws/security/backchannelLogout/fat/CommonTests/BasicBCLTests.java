@@ -1260,28 +1260,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
-    //    /**
-    //    *
-    //    */
-    //    @ExpectedFFDC({ "java.util.concurrent.CancellationException" })
-    //  @Test
-    //    public void BasicBCLTests_shortBCLTimeout_multipleLogins() throws Exception {
-    //
-    //        WebClient webClient1 = getAndSaveWebClient(true);
-    //        WebClient webClient2 = getAndSaveWebClient(true);
-    //
-    //        TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_shortBCLTimeout", "bcl_shortBCLTimeout");
-    //
-    //        Object response1 = accessProtectedApp(webClient1, updatedTestSettings);
-    //        Object response2 = accessProtectedApp(webClient2, updatedTestSettings);
-    //
-    //        List<validationData> expectations = initLogoutExpectations();
-    //        expectations = validationTools.addMessageExpectation(testOPServer, expectations, Constants.LOGOUT, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that a there was a problem invoking the back channel logout.", MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_TIMEOUT);
-    //
-    //       invokeLogout(webClient1, updatedTestSettings, expectations, response1);
-    //
-    //    }
-
     @Test
     public void BasicBCLTests_invalidBackchannelLogoutUri() throws Exception {
 
@@ -1308,7 +1286,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
-    // 21634 @Test
+    @Test
     public void BasicBCLTests_omittedBackchannelLogoutUri_withIdTokenHint() throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
@@ -1338,7 +1316,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     }
 
     @AllowedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidTokenException" })
-    // 21634 @Test
+    @Test
     public void BasicBCLTests_omittedBackchannelLogoutUri_withoutIdTokenHint() throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
@@ -1367,11 +1345,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesFakeBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
         states.setOPAllCookiesRemoved(); // after logout, this test expects all OP cookies to be removed
 
-        // keep refresh_token marked invalid even though it won't be cleaned up by a bcl process - we don't have the client info we need to validate the token passed in, so, we'll get a 400 status code and
-        //        if (logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT) || logoutMethodTested.equals(Constants.HTTP_SESSION)) {
-        //states.setIsRefreshTokenValid(true);
-        //             when we're using logout from from the OP and we do NOT have a bcl coded, we won't clean up the refresh_token
-        //        }
+        states.setIsRefreshTokenValid(true);
+
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
 
     }
@@ -1460,7 +1435,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // Test has a test app configured for the backchannelLogoutUri - so just he normal end_session steps will be performed - set expected states accordingly
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesFakeBCLEndpoint, updatedTestSettings1.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings1.getRsTokenType());
         states.setOPAllCookiesRemoved(); // after logout, this test expects all OP cookies to be removed
-        //        states.setClientCookieRemovalBasedOnLogoutType();
+
         states.setAllTokensCleanedUp(); // after logout, this test expects access and refresh tokens to be invalid
         validateLogoutResult(webClient1, updatedTestSettings1, tokens1, states);
 
@@ -1596,12 +1571,4 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      *
      *
      */
-    //  @Test
-    //    public void BasicBCLTests_xx() throws Exception {
-    //
-    //        WebClient webClient = getAndSaveWebClient(true);
-    //
-    //        invokeGenericForm_refreshToken(_testName,  webClient,  testSettings, refresh_token, expectations) ;
-    //    }
-    // do and don't invoke back channel logout
 }
