@@ -30,8 +30,9 @@ src: src, resources
 app-resources= \
   META-INF/services/jakarta.ws.rs.ext.Providers
 
-Include-Resource:\
-  META-INF=resources/META-INF
+Include-Resource: \
+  META-INF=resources/META-INF,\
+  io/opentelemetry/extension/annotations/WithSpan.class=${bin}/io/opentelemetry/extension/annotations/WithSpan.class
 
 Service-Component: \
     io.openliberty.microprofile.telemetry.internal.ResourceProvider; \
@@ -62,5 +63,5 @@ Private-Package: \
     com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
     com.ibm.ws.injection;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    io.openliberty.org.eclipse.microprofile.telemetry.1.0;version=latest, \
+    io.openliberty.microprofile.telemetry.internal;version=latest, \
     io.openliberty.org.eclipse.microprofile.config.3.0

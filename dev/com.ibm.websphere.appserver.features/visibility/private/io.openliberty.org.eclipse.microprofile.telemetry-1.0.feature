@@ -3,7 +3,7 @@ symbolicName=io.openliberty.org.eclipse.microprofile.telemetry-1.0
 visibility=private
 singleton=true
 -features=io.openliberty.mpCompatible-5.0
--bundles=io.openliberty.org.eclipse.microprofile.telemetry.1.0; location:="dev/api/stable/,lib/"
+-bundles=io.openliberty.microprofile.telemetry.internal; location:="dev/api/stable/,lib/"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

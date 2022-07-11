@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package io.openliberty.microprofile.telemetry.internal.cdi;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;

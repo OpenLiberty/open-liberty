@@ -9,7 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-//https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/instrumentation/opentelemetry-annotations-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/otelannotations/MethodRequest.java
+/*https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/instrumentation/opentelemetry-annotations-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/otelannotations/MethodRequest.java
+Provides method name and arguments for the tracer*/
 
 package io.openliberty.microprofile.telemetry.internal.cdi;
 
