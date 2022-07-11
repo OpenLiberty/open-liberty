@@ -388,7 +388,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
 
         // Liberty Change Start
         if (LOG.isLoggable(Level.FINE)) {
-            LOG.info("Creating Service " + getServiceQName() + " from WSDL: " + url);
+            LOG.fine("Creating Service " + getServiceQName() + " from WSDL: " + url);
         }
         //Liberty Change End
         populateFromClass = false;
@@ -434,8 +434,8 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             throw new ServiceConstructionException(new Message("NO_WSDL_PROVIDED", LOG,
                                                                getServiceClass().getName()));
         }
-        if (LOG.isLoggable(Level.INFO)) {
-            LOG.info("Creating Service " + getServiceQName() + " from class " + getServiceClass().getName());
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("Creating Service " + getServiceQName() + " from class " + getServiceClass().getName());
         }
         populateFromClass = true;
 
