@@ -15,8 +15,10 @@
     <featureManager>
         <feature>servlet-6.0</feature>
     </featureManager>
-    
-     <webContainer disableXPoweredBy="false"/>
-    
+
+    <!-- Setting to false to ensure that the behavior does not change for the servlet-6.0 feature.
+         The false value should be ignored and the behavior should be the same as the default behavior which
+         is true. -->
+    <webContainer disableXPoweredBy="false"/>
 
 </server>
