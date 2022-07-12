@@ -54,7 +54,7 @@ public class EncryptionUtilsTest extends CommonTestClass {
     private final static String CLIENT_SECRET = "myClientSecret";
     private final static String LOWER_ALPHANUM_REGEX = "[a-z0-9]";
 
-    private final static String MSG_VALUE_NOT_HEXADECIMAL = "CWWKS1552E";
+    private final static String MSG_VALUE_NOT_HEXADECIMAL = "CWWKS1553E";
 
     private final int RSA_ENC_TOKEN_LENGTH = 512;
     private final int AES_ENC_TOKEN_LENGTH = 384;
