@@ -298,5 +298,11 @@ LOGOUT_TOKEN_DUP_JTI=CWWKS1551E: El cliente de [{1}] OpenID Connect ya ha recibi
 LOGOUT_TOKEN_DUP_JTI.explanation=La reclamaci\u00f3n "jti" identifica de forma exclusiva una se\u00f1al de cierre de sesi\u00f3n. Se ha utilizado otra se\u00f1al de cierre de sesi\u00f3n con este "jti", por lo que no se puede volver a utilizar la se\u00f1al.
 LOGOUT_TOKEN_DUP_JTI.useraction=Aseg\u00farese de que la se\u00f1al de cierre de sesi\u00f3n contenga un valor "jti" exclusivo y que las se\u00f1ales de cierre de sesi\u00f3n no se utilicen varias veces.
 
+# Do not translate "iss", "sub", or "sid"
+# 0=OpenID Connect client config ID, 1="iss" claim value, 2="sub" claim value, 3="sid" claim value
+NO_RECENT_SESSIONS_WITH_CLAIMS=CWWKS1552E: El cliente de [{0}] OpenID Connect no puede encontrar ninguna sesi\u00f3n reciente que coincida con la reclamaci\u00f3n [{1}] "iss", la reclamaci\u00f3n "sub" [{2}] y la reclamaci\u00f3n [{3}] "sid".
+NO_RECENT_SESSIONS_WITH_CLAIMS.explanation=El cliente de OpenID Connect no tiene una sesi\u00f3n reciente con un proveedor de OpenID Connect que coincida con todas las reclamaciones especificadas en el mensaje. Las reclamaciones que se especifican en el mensaje deben tener valores en la se\u00f1al de cierre de sesi\u00f3n que coincidan con las mismas reclamaciones de una se\u00f1al de ID recibida recientemente.
+NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Aseg\u00farese de que las reclamaciones especificadas en el mensaje coincidan con una se\u00f1al de ID obtenida recientemente de un proveedor de OpenID Connect.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

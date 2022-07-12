@@ -29,9 +29,9 @@
 # 0350 - 0399: jakarta.batch
 # 
 
-batch.container.unavailable=CWWKY0350E: Il contenitore batch non \u00e8 attivato. Verificare che la persistenza batch sia stata configurata mediante l''elemento di configurazione {0}.
-batch.container.unavailable.explanation=Un tentativo di accedere al contenitore batch non \u00e8 riuscito poich\u00e9 il contenitore batch non \u00e8 attivato. Questo avviene comunemente a causa di configurazione mancante. 
-batch.container.unavailable.useraction=Verificare che persistenza batch sia stata configurata.
+batch.container.unavailable=CWWKY0350E: Il contenitore batch non \u00e8 attivato. Assicurarsi che la persistenza batch sia configurata nell''elemento di configurazione {0}.
+batch.container.unavailable.explanation=Un tentativo di accedere al contenitore batch non \u00e8 riuscito poich\u00e9 il contenitore batch non \u00e8 attivato. Questo errore \u00e8 comunemente dovuto a una configurazione mancante. 
+batch.container.unavailable.useraction=Assicurarsi che la persistenza batch sia configurata.
  
 
  

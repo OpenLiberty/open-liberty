@@ -29,9 +29,9 @@
 # 0350 - 0399: jakarta.batch
 # 
 
-batch.container.unavailable=CWWKY0350E: A k\u00f6tegelt t\u00e1rol\u00f3 nincs aktiv\u00e1lva. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6tegelt perzisztencia a(z) {0} konfigur\u00e1ci\u00f3s elemen kereszt\u00fcl ker\u00fclt be\u00e1ll\u00edt\u00e1sra.
-batch.container.unavailable.explanation=A k\u00f6tegelt t\u00e1rol\u00f3 el\u00e9r\u00e9s\u00e9re ir\u00e1nyul\u00f3 k\u00eds\u00e9rlet sikertelen, mivel a k\u00f6tegelt t\u00e1rol\u00f3 nincs aktiv\u00e1lva. Ez \u00e1ltal\u00e1ban a hi\u00e1nyz\u00f3 konfigur\u00e1ci\u00f3 miatt k\u00f6vetkezik be. 
-batch.container.unavailable.useraction=Gondoskodj\u00e9k r\u00f3la, hogy be\u00e1ll\u00edt\u00e1sra ker\u00fclj\u00f6n a k\u00f6tegelt perzisztencia.
+batch.container.unavailable=CWWKY0350E: A k\u00f6tegelt t\u00e1rol\u00f3 nincs aktiv\u00e1lva. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6tegmegmarad\u00e1s be van-e \u00e1ll\u00edtva a {0} konfigur\u00e1ci\u00f3s elemben.
+batch.container.unavailable.explanation=A k\u00f6tegelt t\u00e1rol\u00f3 el\u00e9r\u00e9s\u00e9re ir\u00e1nyul\u00f3 k\u00eds\u00e9rlet sikertelen, mivel a k\u00f6tegelt t\u00e1rol\u00f3 nincs aktiv\u00e1lva. Ez a hiba \u00e1ltal\u00e1ban a hi\u00e1nyz\u00f3 konfigur\u00e1ci\u00f3 miatt l\u00e9p fel. 
+batch.container.unavailable.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a k\u00f6tegmegmarad\u00e1s be legyen \u00e1ll\u00edtva.
  
 
  

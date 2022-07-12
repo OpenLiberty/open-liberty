@@ -96,7 +96,9 @@ error.secPermission=CWWKE0016E: A bootstrap JAR f\u00e1jlhoz az AllPermission bi
 error.secPermission.explanation=A Java 2 biztons\u00e1gi enged\u00e9lyek nem elegend\u0151ek ahhoz, hogy a bootstrap JAR f\u00e1jl elind\u00edtsa a fut\u00e1si k\u00f6rnyezetet \u00e9s az OSGi keretrendszert.
 error.secPermission.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a bootstrap JAR f\u00e1jlnak meg vannak adva az AllPermission jogosults\u00e1gok a Java 2 biztons\u00e1gi ir\u00e1nyelv f\u00e1jlban.
 
-# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+error.badBitmode=CWWKE0017E: A folyamat 31 bites Java virtu\u00e1lis g\u00e9pet \u00e9szlelt, amely nem t\u00e1mogatott. A fut\u00e1si k\u00f6rnyezet 64 bites Java 8 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel.
+error.badBitmode.explanation=A JAVA_HOME rendszerv\u00e1ltoz\u00f3 31 bites Java v\u00e1ltozatra mutat.
+error.badBitmode.useraction=\u00c1ll\u00edtsa be a JAVA_HOME rendszerv\u00e1ltoz\u00f3t, hogy az egy 64 bites Java 8 vagy \u00fajabb v\u00e1ltozatra mutasson.
 
 error.unknownException=CWWKE0018E: Kiv\u00e9tel t\u00f6rt\u00e9nt a fut\u00e1si k\u00f6rnyezet ind\u00edt\u00e1sakor: {0}
 error.unknownException.explanation=A kiv\u00e9tel megakad\u00e1lyozta a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1s\u00e1t.

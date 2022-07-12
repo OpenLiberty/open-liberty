@@ -96,7 +96,9 @@ error.secPermission=CWWKE0016E: Plik JAR programu startowego wymaga konfiguracji
 error.secPermission.explanation=Uprawnienia zabezpiecze\u0144 Java 2 Security dla pliku JAR programu startowego nie wystarczaj\u0105 do uruchomienia \u015brodowiska wykonawczego i struktury OSGi.
 error.secPermission.useraction=Sprawd\u017a, czy plikowi JAR programu startowego nadano uprawnienia AllPermission w pliku strategii zabezpiecze\u0144 Java 2 Security.
 
-# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+error.badBitmode=CWWKE0017E: Proces wykry\u0142 31-bitow\u0105 maszyn\u0119 JVM, kt\u00f3ra nie jest obs\u0142ugiwana. \u015arodowisko wykonawcze wymaga 64-bitowej wersji Java 8 lub nowszej.
+error.badBitmode.explanation=Zmienna systemowa JAVA_HOME\nwskazuje 31-bitow\u0105 wersj\u0119 \u015brodowiska Java.
+error.badBitmode.useraction=Zmodyfikuj zmienn\u0105 systemow\u0105 JAVA_HOME, aby wskazywa\u0142a na 64-bitow\u0105 wersj\u0119 \u015brodowiska Java w wersji 8 lub nowszej.
 
 error.unknownException=CWWKE0018E: Wyst\u0105pi\u0142 wyj\u0105tek podczas uruchamiania \u015brodowiska wykonawczego: {0}
 error.unknownException.explanation=Wyj\u0105tek uniemo\u017cliwi\u0142 uruchomienie serwera.

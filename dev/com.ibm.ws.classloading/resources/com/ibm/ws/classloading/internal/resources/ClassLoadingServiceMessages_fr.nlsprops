@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ cls.classloader.missing.explanation=Pour faire r\u00e9f\u00e9rence \u00e0 un cha
 cls.classloader.missing.useraction=Examinez la configuration du serveur et v\u00e9rifiez que le chargeur de classe a \u00e9t\u00e9 d\u00e9fini et que l'ID est correct.
 
 cls.fileset.not.ready=CWWKL0011W: Le syst\u00e8me n''a pas pu extraire l''ensemble de fichiers [{0}] pour la biblioth\u00e8que partag\u00e9e [{1}].
-cls.fileset.not.ready.explanation=Une biblioth\u00e8que partag\u00e9e est utilis\u00e9e, mais l'un des ensembles de fichiers associ\u00e9s ne peut pas \u00eatre extrait \u00e0 temps.
+cls.fileset.not.ready.explanation=Une biblioth\u00e8que partag\u00e9e est utilis\u00e9e, mais l'un des ensembles de fichiers associ\u00e9s n'a pas pu \u00eatre extrait \u00e0 temps.
 cls.fileset.not.ready.useraction=Recherchez et corrigez les erreurs ou avertissements associ\u00e9s \u00e0 l'ensemble de fichiers.
 
 cls.library.file.invalid=CWWKL0012W: La biblioth\u00e8que [{0}] indique un fichier ayant le nom [{1}]. Le fichier n''existe pas ou n''est pas correctement d\u00e9fini.
@@ -97,6 +97,7 @@ cls.library.archive.useraction=Editez la configuration du serveur et v\u00e9rifi
 cls.library.destroyed=CWWKL0018I: La biblioth\u00e8que [{0}] est indisponible.
 cls.library.destroyed.explanation=Une biblioth\u00e8que est devenue indisponible, par exemple, parce qu'elle a \u00e9t\u00e9 supprim\u00e9e de la configuration de serveur.
 cls.library.destroyed.useraction=Si la biblioth\u00e8que est toujours n\u00e9cessaire, v\u00e9rifiez qu'elle est correctement configur\u00e9e.
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 
@@ -133,9 +134,11 @@ cls.provider.class.space.conflict.useraction=Mettez \u00e0 jour la configuration
 slf.no.cache=CWWKL0070E: La cr\u00e9ation du r\u00e9pertoire cache n'a pas abouti .
 slf.no.cache.explanation=Le syst\u00e8me n'est pas parvenu \u00e0 cr\u00e9er un dossier sur le disque.
 slf.no.cache.useraction=Assurez-vous que les autorisations d'\u00e9criture correctes ont \u00e9t\u00e9 d\u00e9finies sur l'unit\u00e9 et que l'espace est suffisant sur le disque.
+
 slf.no.acf=CWWKL0071E: Une valeur NULL a \u00e9t\u00e9 rencontr\u00e9e pour l'objet ArtifactContainerFactory.
 slf.no.acf.explanation=L'objet ArtifactContainerFactory ne doit pas avoir la valeur NULL lorsque le serveur est en ex\u00e9cution.
 slf.no.acf.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support, ou contactez le fournisseur de services du fournisseur de classe.
+
 slf.failed.delete=CWWKL0072W: Le fichier cache [{0}] ne peut pas \u00eatre supprim\u00e9. Cette situation pourrait entra\u00eener une alt\u00e9ration des archives imbriqu\u00e9es.
 slf.failed.delete.explanation=Le syst\u00e8me n'est pas parvenu \u00e0 supprimer le fichier cache. Comme le fichier existe toujours sur le syst\u00e8me, ceci pourrait entra\u00eener une alt\u00e9ration des archives imbriqu\u00e9es.
 slf.failed.delete.useraction=V\u00e9rifier que le fichier cache n'est pas \u00e0 l'\u00e9tat verrouill\u00e9, ce qui pourrait entra\u00eener l'\u00e9chec de la suppression du fichier.

@@ -96,7 +96,9 @@ error.secPermission=CWWKE0016E: Il file JAR di avvio richiede la configurazione 
 error.secPermission.explanation=Le autorizzazioni Java 2 Security non sono sufficienti per consentire al file JAR di avvio di avviare l'ambiente di runtime ed il framework OSGi.
 error.secPermission.useraction=Verificare che al file JAR di avvio siano stati concessi i privilegi AllPermission nel file delle politiche Java 2 Security.
 
-# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+error.badBitmode=CWWKE0017E: Il processo ha rilevato una JVM da 31 bit che non \u00e8 supportata. L'ambiente di runtime richiede Java a 64 bit versione 8 o successive.
+error.badBitmode.explanation=La variabile di sistema JAVA_HOME \u00e8 impostata per puntare a una versione di Java a 31 bit.
+error.badBitmode.useraction=Regolare la variabile di sistema JAVA_HOME per puntare a un Java a 64 bit versione 8 o successive.
 
 error.unknownException=CWWKE0018E: Si \u00e8 verificata un''eccezione durante l''avvio dell''ambiente di runtime: {0}
 error.unknownException.explanation=L'eccezione ha impedito l'avvio del server.
