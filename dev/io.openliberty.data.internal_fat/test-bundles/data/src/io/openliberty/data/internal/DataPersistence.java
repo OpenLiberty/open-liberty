@@ -37,10 +37,13 @@ import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Column;
+import io.openliberty.data.DiscriminatorColumn;
+import io.openliberty.data.DiscriminatorValue;
 import io.openliberty.data.Embeddable;
 import io.openliberty.data.Entity;
 import io.openliberty.data.Generated;
 import io.openliberty.data.Id;
+import io.openliberty.data.Inheritance;
 import io.openliberty.data.MappedSuperclass;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
@@ -102,20 +105,49 @@ public class DataPersistence {
 
             if (c.getAnnotation(jakarta.persistence.Entity.class) == null) {
                 Entity entity = c.getAnnotation(Entity.class);
-                String tableName = tablePrefix + (entity == null || entity.value() == null ? c.getSimpleName() : entity.value());
                 StringBuilder xml = new StringBuilder(500)
                                 .append(" <entity class=\"" + c.getName() + "\">")
-                                .append(EOLN)
-                                .append("  <table name=\"" + tableName + "\"/>")
-                                .append(EOLN)
+                                .append(EOLN);
+
+                if (c.getAnnotation(Inheritance.class) == null) {
+                    String tableName = tablePrefix + (entity == null || entity.value() == null ? c.getSimpleName() : entity.value());
+                    xml
+                                    .append("  <table name=\"" + tableName + "\"/>")
+                                    .append(EOLN);
+                } else {
+                    xml
+                                    .append("  <inheritance strategy=\"SINGLE_TABLE\"/>")
+                                    .append(EOLN);
+                }
+
+                DiscriminatorValue discriminatorValue = c.getAnnotation(DiscriminatorValue.class);
+                if (discriminatorValue != null)
+                    xml
+                                    .append("  <discriminator-value>")
+                                    .append(discriminatorValue.value())
+                                    .append("</discriminator-value>")
+                                    .append(EOLN);
+
+                DiscriminatorColumn discriminatorColumn = c.getAnnotation(DiscriminatorColumn.class);
+                if (discriminatorColumn != null)
+                    xml
+                                    .append("  <discriminator-column name=\"")
+                                    .append(discriminatorColumn.value())
+                                    .append("\"/>")
+                                    .append(EOLN);
+
+                xml
                                 .append("  <attributes>")
                                 .append(EOLN);
 
                 List<Field> fields = new ArrayList<Field>();
-                for (Class<?> superc = c; superc != null; superc = superc.getSuperclass())
-                    if (superc == c || superc.getAnnotation(MappedSuperclass.class) != null)
+                for (Class<?> superc = c; superc != null; superc = superc.getSuperclass()) {
+                    boolean isMappedSuperclass = superc.getAnnotation(MappedSuperclass.class) != null;
+                    if (isMappedSuperclass || superc == c)
                         for (Field f : superc.getFields())
-                            fields.add(f);
+                            if (isMappedSuperclass || c.equals(f.getDeclaringClass()))
+                                fields.add(f);
+                }
 
                 for (Field field : fields) {
                     Id id = field.getAnnotation(Id.class);

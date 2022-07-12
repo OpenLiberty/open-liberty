@@ -8,30 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package io.openliberty.data;
 
-import io.openliberty.data.Embeddable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import jakarta.enterprise.inject.Stereotype;
 
 /**
- *
+ * Copied from jakarta.nosql.mapping.Inheritance to investigate how well the
+ * JNoSQL repository-related annotations work for relational database access.
  */
-@Embeddable
-public class StreetAddress {
-
-    public int houseNumber;
-
-    public String streetName;
-
-    public StreetAddress() {
-    }
-
-    public StreetAddress(int houseNumber, String streetName) {
-        this.houseNumber = houseNumber;
-        this.streetName = streetName;
-    }
-
-    @Override
-    public String toString() {
-        return "StreetAddress@" + Integer.toHexString(hashCode()) + ": " + houseNumber + " " + streetName;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Stereotype
+public @interface Inheritance {
 }

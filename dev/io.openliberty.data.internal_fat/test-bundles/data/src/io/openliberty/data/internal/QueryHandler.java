@@ -50,6 +50,7 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
+import io.openliberty.data.Inheritance;
 import io.openliberty.data.Limit;
 import io.openliberty.data.OrderBy;
 import io.openliberty.data.Page;
@@ -115,6 +116,7 @@ public class QueryHandler<T> implements InvocationHandler {
     final Class<?> entityClass;
     private final Set<Class<?>> entityClassesAvailable; // TODO is this information needed?
     private final String entityName;
+    private final boolean inheritance;
     private final String keyAttribute;
     final DataPersistence persistence;
     final PersistenceServiceUnit punit;
@@ -125,6 +127,8 @@ public class QueryHandler<T> implements InvocationHandler {
         data = beanClass.getAnnotation(Data.class);
         this.entityClass = entityClass;
         this.entityName = entityClass.getSimpleName();
+        this.inheritance = entityClass.getAnnotation(Inheritance.class) != null ||
+                           entityClass.getAnnotation(jakarta.persistence.Inheritance.class) != null;
         this.keyAttribute = keyAttribute;
 
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
@@ -353,7 +357,8 @@ public class QueryHandler<T> implements InvocationHandler {
                     type = returnType;
             }
         }
-        if (type == null || Select.AutoDetect.class.equals(type))
+        if (type == null || Select.AutoDetect.class.equals(type) ||
+            inheritance && entityClass.isAssignableFrom(type))
             if (cols == null || cols.length == 0) {
                 q.append("SELECT o FROM ");
             } else {
@@ -552,11 +557,7 @@ public class QueryHandler<T> implements InvocationHandler {
 
             switch (queryType) {
                 case MERGE:
-                    if (entityClassesAvailable.contains(args[0].getClass()) ||
-                        entityClassesAvailable.contains(paramTypes[0])) {
-                        returnValue = em.merge(args[0]);
-                        em.flush();
-                    } else if (Iterable.class.isAssignableFrom(paramTypes[0])) {
+                    if (Iterable.class.isAssignableFrom(paramTypes[0])) {
                         ArrayList<Object> results = new ArrayList<>();
                         for (Object e : ((Iterable<?>) args[0]))
                             results.add(em.merge(e));
@@ -571,7 +572,8 @@ public class QueryHandler<T> implements InvocationHandler {
                         em.flush();
                         returnValue = results;
                     } else {
-                        throw new UnsupportedOperationException(method.toString());
+                        returnValue = em.merge(args[0]);
+                        em.flush();
                     }
 
                     if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
