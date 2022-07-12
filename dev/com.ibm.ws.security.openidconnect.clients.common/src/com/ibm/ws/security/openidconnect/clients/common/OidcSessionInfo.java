@@ -19,6 +19,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
 public class OidcSessionInfo {
@@ -36,7 +37,7 @@ public class OidcSessionInfo {
 
     private final static EncryptionUtils encryptionUtils = new EncryptionUtils();
 
-    public OidcSessionInfo(String configId, String iss, String sub, String sid, String timestamp, String clientSecret) throws OidcSessionException {
+    public OidcSessionInfo(String configId, String iss, String sub, String sid, String timestamp, @Sensitive String clientSecret) throws OidcSessionException {
         if (configId == null) configId = "";
         if (iss == null) iss = "";
         if (sub == null) sub = "";
@@ -61,7 +62,7 @@ public class OidcSessionInfo {
      * @return An OidcSessionInfo object containing info parsed from the session id.
      * @throws OidcSessionException
      */
-    public static OidcSessionInfo getSessionInfo(HttpServletRequest request, String clientSecret) throws OidcSessionException {
+    public static OidcSessionInfo getSessionInfo(HttpServletRequest request, @Sensitive String clientSecret) throws OidcSessionException {
         try {
             String encryptedSessionId = getSessionIdFromCookies(request.getCookies());
             if (encryptedSessionId == null || encryptedSessionId.isEmpty()) {
@@ -128,7 +129,7 @@ public class OidcSessionInfo {
      * @return A session id in the format 'AES(Base64(configId):Base64(sub):Base64(sid):Base64(timestamp), clientSecret)'.
      * @throws OidcSessionException
      */
-    private String createSessionId(String clientSecret) throws OidcSessionException {
+    private String createSessionId(@Sensitive String clientSecret) throws OidcSessionException {
         try {
             String encodedConfigId = new String(Base64.encodeBase64(configId.getBytes()));
             String encodedIss = new String(Base64.encodeBase64(iss.getBytes()));

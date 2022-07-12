@@ -101,6 +101,7 @@ public class EncryptionUtils {
         return baos.toByteArray();
     }
 
+    @Trivial
     public String aesEncrypt(String secret, @Sensitive String plaintext) throws Exception {
         String ciphertext = null;
         if (plaintext == null) {
@@ -120,6 +121,7 @@ public class EncryptionUtils {
         return ciphertext;
     }
 
+    @Trivial
     public String aesDecrypt(String secret, @Sensitive String ciphertext) throws Exception {
         if (ciphertext == null) {
             if (tc.isDebugEnabled()) {
