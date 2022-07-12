@@ -70,7 +70,7 @@ public class OidcSessionInfo {
             }
 
             String sessionId = encryptionUtils.aesDecrypt(clientSecret, encryptedSessionId);
-            String[] parts = sessionId.split(DELIMITER);
+            String[] parts = sessionId.split(DELIMITER, -1);
             if (parts.length != 5) {
                 return null;
             }
