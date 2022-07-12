@@ -402,15 +402,17 @@ public class CpuInfo {
         @Override
         // In checkpoint mode force initialization of osmx variable to complete
         // prior to checkpoint dump. (this avoids possible deadlock on restore).
-        public synchronized void prepare() {
-            try {
-                if (osmx == null) {
-                    osmx = createCpuInfoAccessor();
+        public void prepare() {
+            synchronized (CpuInfo.this) {
+                try {
+                    if (osmx == null) {
+                        osmx = createCpuInfoAccessor();
+                    }
+                } catch (Exception e) {
+                    // Fail the checkpoint to avoid possible deadlock on restore
+                    FFDCFilter.processException(e, getClass().getName(), "prepare()");
+                    throw new RuntimeException("e.getMessage()", e);
                 }
-            } catch (Exception e) {
-                // Fail the checkpoint to avoid possible deadlock on restore
-                FFDCFilter.processException(e, getClass().getName(), "prepare()");
-                throw new RuntimeException("e.getMessage()", e);
             }
         }
 
