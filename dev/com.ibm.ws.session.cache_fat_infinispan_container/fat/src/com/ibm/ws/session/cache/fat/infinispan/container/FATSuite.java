@@ -37,6 +37,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -60,19 +61,34 @@ public class FATSuite {
     }
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action()
-                                    .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"))
-                    .andWith(new JakartaEE10Action()
-                                    .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
+    public static RepeatTests repeat;
+
+    static {
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            repeat = RepeatTests.withoutModificationInFullMode()
+                            .andWith(new JakartaEE9Action()
+                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB")
+                                            .fullFATOnly())
+                            .andWith(new JakartaEE10Action()
+                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
+        } else {
+            repeat = RepeatTests.withoutModificationInFullMode()
+                            .andWith(new JakartaEE9Action()
+                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
+        }
+    }
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
@@ -129,6 +145,7 @@ public class FATSuite {
     public static String run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {
         HttpURLConnection con = HttpUtils.getHttpConnection(server, path + '?' + FATServletClient.TEST_METHOD + '=' + testMethod);
         Log.info(FATSuite.class, "run", "HTTP GET: " + con.getURL());
+        Log.info(FATSuite.class, "run", "JAVA_VERSION: " + JavaInfo.JAVA_VERSION);
 
         if (session != null)
             for (String cookie : session)
