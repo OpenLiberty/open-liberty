@@ -138,8 +138,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @MaximumJavaLevel(javaLevel = 8) // test uses DSA cert and that is no longer supported
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException", "org.opensaml.xml.signature.SignatureException" }, repeatAction = {EmptyAction.ID})
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException" }, repeatAction = {JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException" }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
     @Test
     public void testNoKeyAlias_DefaultKeyAliasInKeystore_MultipleCertsInKeystore_MissingCorrectCert() throws Exception {
 
@@ -191,8 +190,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @MaximumJavaLevel(javaLevel = 8) // test uses DSA cert and that is no longer supported
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException", "org.opensaml.xml.signature.SignatureException" }, repeatAction = {EmptyAction.ID})
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException" }, repeatAction = {JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException" }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
     @Test
     public void testNoKeyAlias_DefaultKeyAliasInKeystore_OneCertInKeystore_WrongCert() throws Exception {
 
@@ -264,8 +262,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException" },repeatAction = {EmptyAction.ID})
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" },repeatAction = {JakartaEE9SAMLRepeatAction.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" },repeatAction = {EmptyAction.ID,JakartaEE9SAMLRepeatAction.ID})
     @Test
     public void testKeyAlias_MultipleCertsInKeystore_KeyAliasIsWrongCert() throws Exception {
 
@@ -338,8 +335,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @MaximumJavaLevel(javaLevel = 8) // test uses DSA cert and that is no longer supported
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException", "org.opensaml.xml.signature.SignatureException" },repeatAction = {EmptyAction.ID})
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException" },repeatAction = {JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException" },repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
     @Test
     public void testKeyAlias_OneCertInKeystore_KeyAliasIsWrongCert() throws Exception {
 

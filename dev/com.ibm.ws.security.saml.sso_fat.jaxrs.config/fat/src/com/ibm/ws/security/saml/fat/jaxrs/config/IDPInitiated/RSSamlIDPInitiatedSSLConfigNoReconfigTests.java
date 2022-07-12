@@ -134,9 +134,7 @@ public class RSSamlIDPInitiatedSSLConfigNoReconfigTests extends RSSamlIDPInitiat
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException" })
-    @ExpectedFFDC(value = { "org.opensaml.xml.encryption.DecryptionException" }, repeatAction = {EmptyAction.ID})
-    @ExpectedFFDC(value = { "org.opensaml.xmlsec.encryption.support.DecryptionException" }, repeatAction = {JakartaEE9Action.ID})
+    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyStoreRef_singleKey_invalid() throws Exception {
 
@@ -246,9 +244,7 @@ public class RSSamlIDPInitiatedSSLConfigNoReconfigTests extends RSSamlIDPInitiat
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException" })
-    @ExpectedFFDC(value = { "org.opensaml.xml.encryption.DecryptionException" }, repeatAction = {EmptyAction.ID})
-    @ExpectedFFDC(value = { "org.opensaml.xmlsec.encryption.support.DecryptionException" }, repeatAction = {JakartaEE9Action.ID})
+    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_notSpecified_oneKeyInKeystore_invalid() throws Exception {
 
@@ -575,9 +571,7 @@ public class RSSamlIDPInitiatedSSLConfigNoReconfigTests extends RSSamlIDPInitiat
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException" })
-    @ExpectedFFDC(value = { "org.opensaml.xml.encryption.DecryptionException" }, repeatAction = {EmptyAction.ID})
-    @ExpectedFFDC(value = { "org.opensaml.xmlsec.encryption.support.DecryptionException" }, repeatAction = {JakartaEE9Action.ID})
+    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_notSpecified_keystoreKeyPassword_matchesKeystore_multipleKeysInKeystore_keyAlias_invalidKey() throws Exception {
 
@@ -1000,9 +994,7 @@ public class RSSamlIDPInitiatedSSLConfigNoReconfigTests extends RSSamlIDPInitiat
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException" })
-    @ExpectedFFDC(value = { "org.opensaml.xml.encryption.DecryptionException" }, repeatAction = {EmptyAction.ID})
-    @ExpectedFFDC(value = { "org.opensaml.xmlsec.encryption.support.DecryptionException" }, repeatAction = {JakartaEE9Action.ID})
+    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_notSpecified_multipleKeysInKeystore_keyAlias_invalidKey() throws Exception {
 
@@ -1084,9 +1076,7 @@ public class RSSamlIDPInitiatedSSLConfigNoReconfigTests extends RSSamlIDPInitiat
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException" })
-    @ExpectedFFDC(value = { "org.opensaml.xml.encryption.DecryptionException" }, repeatAction = {EmptyAction.ID})
-    @ExpectedFFDC(value = { "org.opensaml.xmlsec.encryption.support.DecryptionException" }, repeatAction = {JakartaEE9Action.ID})
+    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_empty_multipleKeysInKeystore_keyAlias_invalidKey() throws Exception {
 
