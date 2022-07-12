@@ -1903,7 +1903,7 @@ public abstract class HTTPConduit
                     || !newUri.getHost().equals(lastUri.getHost())) {
                     String msg = "Different HTTP Scheme or Host Redirect detected on Conduit '"
                         + conduitName + "' on '" + newURL + "'";
-                    LOG.log(Level.INFO, msg);
+                    LOG.log(Level.FINEST, msg);
                     throw new IOException(msg);
                 }
             }
@@ -1911,7 +1911,7 @@ public abstract class HTTPConduit
             String allowedRedirectURI = (String)message.getContextualProperty(AUTO_REDIRECT_ALLOWED_URI);
             if (allowedRedirectURI != null && !newURL.startsWith(allowedRedirectURI)) {
                 String msg = "Forbidden Redirect URI " + newURL + "detected on Conduit '" + conduitName;
-                LOG.log(Level.INFO, msg);
+                LOG.log(Level.FINEST, msg);
                 throw new IOException(msg);
             }
 
