@@ -54,9 +54,9 @@ public class OidcSessionInfo {
 
     /**
      * Gets the session id in the format of
-     * 'AES(Base64(configId):Base64(sub):Base64(sid):Base64(timestamp), clientSecret)'
+     * 'AES(Base64(configId):Base64(iss):Base64(sub):Base64(sid):Base64(timestamp), clientSecret)'
      * from the request cookies and returns an OidcSessionInfo object which contains
-     * the config id, sub, sid, and timestamp.
+     * the config id, iss, sub, sid, and timestamp.
      *
      * @param request The http servlet request.
      * @return An OidcSessionInfo object containing info parsed from the session id.
@@ -123,10 +123,10 @@ public class OidcSessionInfo {
 
     /**
      * Generate a new session id using the config id, sub, sid, and timestamp in the
-     * format of 'AES(Base64(configId):Base64(sub):Base64(sid):Base64(timestamp), clientSecret)'.
+     * format of 'AES(Base64(configId):Base64(iss):Base64(sub):Base64(sid):Base64(timestamp), clientSecret)'.
      * It is assumed that the inputs have been validated before creating the session id.
      *
-     * @return A session id in the format 'AES(Base64(configId):Base64(sub):Base64(sid):Base64(timestamp), clientSecret)'.
+     * @return A session id in the format 'AES(Base64(configId):Base64(iss):Base64(sub):Base64(sid):Base64(timestamp), clientSecret)'.
      * @throws OidcSessionException
      */
     private String createSessionId(@Sensitive String clientSecret) throws OidcSessionException {
