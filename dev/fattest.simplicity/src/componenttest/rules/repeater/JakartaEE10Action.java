@@ -41,6 +41,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
     private static final String TRANSFORMER_RULES_APPEND_ROOT = System.getProperty("user.dir") + "/publish/rules/";
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap();
+    private static boolean WIDEN = false;
 
     static {
         // Fill the default transformation rules for the transformer
@@ -262,6 +263,16 @@ public class JakartaEE10Action extends FeatureReplacementAction {
         return this;
     }
 
+    /**
+     * The widen option in the transformer enables the transformer to handle things like jars
+     * inside of other jars or zips inside of other zips. These are not the usual setup of
+     * of bundles and applications, so it is only enabled by an argument to the transformer.
+     */
+    public JakartaEE10Action withWiden() {
+        WIDEN = true;
+        return this;
+    }
+
     @Override
     public void setup() throws Exception {
         // Ensure all shared servers are stopped and applications are cleaned
@@ -320,6 +331,6 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {
-        JakartaEE9Action.transformApp(appPath, newAppPath, DEFAULT_TRANSFORMATION_RULES, TRANSFORMATION_RULES_APPEND);
+        JakartaEE9Action.transformApp(appPath, newAppPath, DEFAULT_TRANSFORMATION_RULES, TRANSFORMATION_RULES_APPEND, WIDEN);
     }
 }
