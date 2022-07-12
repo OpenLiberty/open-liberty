@@ -126,7 +126,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 		assertTrue("Should contain jsp-2.2", output.contains("jsp-2.2"));
 		assertTrue("Should contain jsp-2.3", output.contains("jsp-2.3"));
-		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		if(!output.contains("Connection reset")) {
+			assertFalse("Connection timed out" + System.lineSeparator() + output,output.contains("Connection timed out"));
+			assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		}
 	}
 
 	/**
@@ -164,7 +167,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		String output = po.getStdout();
 
 		assertTrue("Should contain json-1.0", output.contains("json-1.0"));
-		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		if(!output.contains("Connection reset")) {
+			assertFalse("Connection timed out" + System.lineSeparator() + output,output.contains("Connection timed out"));
+			assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		}
 
 		Log.exiting(c, METHOD_NAME);
 	}
@@ -227,7 +233,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 		assertTrue("Output should contain eventLogging-1.0", output.indexOf("eventLogging-1.0") >= 0);
 		assertTrue("Output should contain osgiConsole-1.0", output.indexOf("osgiConsole-1.0") >= 0);
-		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		if(!output.contains("Connection reset")) {
+			assertFalse("Connection timed out" + System.lineSeparator() + output,output.contains("Connection timed out"));
+			assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		}
 
 		Log.exiting(c, METHOD_NAME);
 	}
@@ -374,7 +383,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 		deleteEtcFolder(METHOD_NAME);
 		assertTrue("Should contain el-3.0", output.contains("el-3.0"));
-		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		if(!output.contains("Connection reset")) {
+			assertFalse("Connection timed out" + System.lineSeparator() + output,output.contains("Connection timed out"));
+			assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		}
 
 		Log.exiting(c, METHOD_NAME);
 	}
@@ -445,8 +457,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		String[] param1s = { "installFeature", "ssl-1.0", "--verbose" };
 
 		ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-		assertEquals("Exit code should be 0", 0, po.getReturnCode());
 		String output = po.getStdout();
+		if(!output.contains("Connection reset")) {
+			assertFalse("Connection timed out" + System.lineSeparator() + output,output.contains("Connection timed out"));
+			assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		}
 		assertTrue("Should contain ssl-1.0", output.contains("ssl-1.0"));
 
 		po = runFeatureUtility(METHOD_NAME, param1s);
@@ -667,7 +682,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		deleteUsrExtFolder(METHOD_NAME);
 		deleteEtcFolder(METHOD_NAME);
 
-		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		if(!output.contains("Connection reset")) {
+			assertFalse("Connection timed out" + System.lineSeparator() + output,output.contains("Connection timed out"));
+			assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		}
 		Log.exiting(c, METHOD_NAME);
 	}
 
@@ -712,7 +730,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		deleteUsrToExtFolder(METHOD_NAME);
 		deleteEtcFolder(METHOD_NAME);
 
-		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		if(!output.contains("Connection reset")) {
+			assertFalse("Connection timed out" + System.lineSeparator() + output,output.contains("Connection timed out"));
+			assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		}
 
 		Log.exiting(c, METHOD_NAME);
 	}
@@ -820,7 +841,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		deleteFiles(METHOD_NAME, "testIfix-1.0",
 				new String[] { relativeMinifiedRoot + "/wlp/lib/platform/testIfix-1.0.mf" });
 
-		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		String output = po.getStdout();
+		if(!output.contains("Connection reset")) {
+			assertFalse("Connection timed out" + System.lineSeparator() + output,output.contains("Connection timed out"));
+			assertEquals("Exit code should be 0", 0, po.getReturnCode());
+		}
 
 		Log.exiting(c, METHOD_NAME);
 	}
