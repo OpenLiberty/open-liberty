@@ -376,7 +376,7 @@ public class FailoverServlet extends FATServlet {
         try {
             String queryString = "SELECT LEASE_TIME" +
                                  " FROM WAS_LEASES_LOG" +
-                                 (isSQLServer ? "" : " WITH (UPDLOCK)") +
+                                 (isSQLServer ? " WITH (UPDLOCK)" : "") +
                                  " WHERE SERVER_IDENTITY='cloudstale'" +
                                  (isSQLServer ? "" : " FOR UPDATE") +
                                  (isSQLServer || isPostgreSQL ? "" : " OF LEASE_TIME");
