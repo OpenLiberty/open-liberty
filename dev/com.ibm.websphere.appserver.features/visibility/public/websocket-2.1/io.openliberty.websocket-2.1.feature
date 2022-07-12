@@ -13,7 +13,8 @@ Subsystem-Name: Jakarta WebSocket 2.1
   com.ibm.websphere.appserver.servlet-6.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=com.ibm.ws.wsoc.jakarta, \
- com.ibm.ws.wsoc.1.1.jakarta
+ com.ibm.ws.wsoc.2.1.jakarta, \
+ io.openliberty.wsoc.2.1.internal
 -jars=io.openliberty.wsoc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.wsoc_1.0-javadoc.zip
 kind=noship

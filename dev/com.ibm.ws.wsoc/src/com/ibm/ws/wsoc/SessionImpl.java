@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,10 +137,13 @@ public class SessionImpl {
 
         connLink.setEndpointManager(things.getEndpointManager());
 
-        // Not sure if we should do this right before or right after onOpen, spec is ambigioius, seems like right before is better.
-        userProperties = new HashMap<String, Object>();
-        things.setUserProperties(userProperties);
-
+        if(WebSocketVersionServiceManager.isWsoc21rHigher()){
+            things.setUserProperties(endpointConfig.getUserProperties());
+        } else {
+            userProperties = new HashMap<String, Object>();
+            things.setUserProperties(userProperties);
+        }
+        
         things.setSessionID(sessionID);
 
         // add session to the list of open endpoints

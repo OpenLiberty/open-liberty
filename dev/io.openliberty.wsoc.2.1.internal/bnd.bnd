@@ -8,14 +8,18 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props,
+
+bVersion=1.0
+bSymbolicName=io.openliberty.wsoc.2.1.internal
 
 Bundle-Name: WebSocket
-Bundle-SymbolicName: com.ibm.ws.wsoc.1.1; singleton:=true
+Bundle-SymbolicName: io.openliberty.wsoc.2.1.internal
 Bundle-Description: WebSocket, version ${bVersion}
 
 Export-Package: \
  io.openliberty.wsoc.speclevel
- 
--includeresource: \
-  io/openliberty/wsoc/speclevel=resources/11
+
+-buildpath: \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
