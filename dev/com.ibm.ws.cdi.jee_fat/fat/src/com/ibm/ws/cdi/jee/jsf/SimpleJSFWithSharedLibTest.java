@@ -26,7 +26,6 @@ import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.ws.cdi.jee.ShrinkWrapUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
@@ -68,7 +67,6 @@ public class SimpleJSFWithSharedLibTest {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) //This must be re-enabled when the session code for EE10 is ready. See issue 20854. It was disabled because errors appeared after disabling testSimpleJSF
     public void testSimpleJSFWithSharedLib() throws Exception {
         HttpUtils.findStringInUrl(server, "/" + APP_NAME + "/faces/testBasicJsf.xhtml",
                                   "SimpleJsfBean injected with: Hello from an InjectedHello, I am here: SimpleJsfBean");
