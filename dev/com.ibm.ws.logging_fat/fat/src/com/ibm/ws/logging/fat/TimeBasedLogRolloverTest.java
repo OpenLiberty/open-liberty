@@ -371,7 +371,7 @@ public class TimeBasedLogRolloverTest {
 
     /*
      * Tests that maxFileSize takes priority over timed log rollover.
-     */
+     * 
     @Test
     public void testMaxFileSizePriorityRolling() throws Exception {
         setUp(server_xml, "testMaxFileSizeRolling");
@@ -403,6 +403,7 @@ public class TimeBasedLogRolloverTest {
         //check Log is rolled over at next rollover time
         checkForRolledLogsAtTime(getNextRolloverTime(0,1)); 
     }
+    */
 
     private static String getLogsDirPath() throws Exception {
         return serverInUse.getDefaultLogFile().getParentFile().getAbsolutePath();
