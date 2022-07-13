@@ -103,14 +103,12 @@ public class AuthorizationRequestParameters {
             if (query == null) {
                 query = "";
             }
-            String queryPrefix = "%s";
             if (!query.isEmpty()) {
-                queryPrefix += "&";
+                query += "&";
             }
-            query = String.format(queryPrefix + "%s", query, URLEncoder.encode(parameterName, "UTF-8"));
+            query += URLEncoder.encode(parameterName, "UTF-8");
             if (parameterValue != null) {
-                // Only append "=<value>" if the parameter value is not null
-                query = String.format("%s=%s", query, URLEncoder.encode(parameterValue, "UTF-8"));
+                query += "=" + URLEncoder.encode(parameterValue, "UTF-8");
             }
         } catch (UnsupportedEncodingException e) {
             // Do nothing - UTF-8 encoding will be supported

@@ -254,7 +254,9 @@ public class OidcAuthorizationRequestCreator {
         for (String entry : forwardAuthzParams) {
             if (entry != null) {
                 String value = request.getParameter(entry);
-                authzParameters.addParameter(entry, value);
+                if (value != null) {
+                    authzParameters.addParameter(entry, value);
+                }
             }
         }
     }
