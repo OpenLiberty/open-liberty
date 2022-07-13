@@ -1335,9 +1335,9 @@ public class BaseTraceService implements TrService {
 
         //if both rolloverStartTime and rolloverInterval are empty, return
         if ((rolloverStartTime == null || rolloverStartTime.isEmpty()) && (rolloverInterval < 0)) { 
-            Tr.debug(tc, "No time based log rollover is scheduled.");
-            Tr.debug(tc, "rolloverInterval=" + rolloverInterval);
-            Tr.debug(tc, "rolloverStartTime=" + rolloverStartTime);
+            // Tr.debug(tc, "No time based log rollover is scheduled.");
+            // Tr.debug(tc, "rolloverInterval=" + rolloverInterval);
+            // Tr.debug(tc, "rolloverStartTime=" + rolloverStartTime);
             return;
         }
 
