@@ -52,6 +52,9 @@ public abstract class JSONEventsTest {
 
         ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
 
+        // Reset the log marks, so the log mark is at the start of the log file, since this test checks for the server
+        // started message (CWWKF0011I), it will find the string in the log file, if the tests are not run in order.
+        getServer().resetLogMarks();
         String line = getServer().waitForStringInLog("\\{.*\"ibm_messageId\":\"CWWKF0011I\".*\\}", getLogFile());
         assertNotNull("Cannot find \"ibm_messageId\":\"CWWKF0011I\" from messages.log", line);
         checkJsonMessage(line, messageKeysMandatoryList, messageKeysOptionalList);
