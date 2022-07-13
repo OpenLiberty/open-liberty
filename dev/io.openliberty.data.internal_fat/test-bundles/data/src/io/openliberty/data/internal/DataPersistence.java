@@ -11,7 +11,6 @@
 package io.openliberty.data.internal;
 
 import java.lang.reflect.Field;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +18,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -60,12 +58,12 @@ import io.openliberty.data.MappedSuperclass;
 public class DataPersistence {
     private static final String EOLN = String.format("%n");
 
-    // provider name --> entity class --> upper case attribute name --> properly cased/qualified JPQL attribute name
-    private final Map<String, Map<Class<?>, LinkedHashMap<String, String>>> attributeNamesMap = new HashMap<>();
+    // entity class --> entity information,
+    // where classes for all providers are combined together
+    private final Map<Class<?>, EntityInfo> entityInfoPerClass = new HashMap<>();
 
-    private final ConcurrentHashMap<//
-                    Entry<String, ClassLoader>, // (data access provider, class loader)
-                    Entry<PersistenceServiceUnit, Map<Class<?>, String>>> units = new ConcurrentHashMap<>();
+    // data access provider name --> entity class --> entity information
+    private final ConcurrentHashMap<String, Map<Class<?>, EntityInfo>> entityInfoPerProvider = new ConcurrentHashMap<>();
 
     @Reference(target = "(component.name=com.ibm.ws.threading)")
     protected ExecutorService executor;
@@ -84,17 +82,17 @@ public class DataPersistence {
     /**
      * Define entity classes.
      *
-     * @param dbStoreId id of databaseStore config element
+     * @param provider  id of databaseStore config element
      * @param loader    class loader
      * @param classList entity classes
      * @throws Exception
      */
-    public void defineEntities(String dbStoreId, ClassLoader loader, Map<Class<?>, String> entityInfo) throws Exception {
+    public void defineEntities(String provider, ClassLoader loader, List<Class<?>> entities) throws Exception {
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
-                                                                                   FilterUtils.createPropertyFilter("id", dbStoreId));
+                                                                                   FilterUtils.createPropertyFilter("id", provider));
         if (refs.isEmpty())
-            throw new IllegalArgumentException("Not found: " + dbStoreId);
+            throw new IllegalArgumentException("Not found: " + provider);
 
         DatabaseStore dbstore = bc.getService(refs.iterator().next());
         String tablePrefix = dbstore.getTablePrefix();
@@ -104,16 +102,18 @@ public class DataPersistence {
             tablePrefix = "";
 
         // Classes explicitly annotated with JPA @Entity:
-        ArrayList<String> entityClassNames = new ArrayList<>(entityInfo.size());
+        ArrayList<String> entityClassNames = new ArrayList<>(entities.size());
 
         // XML to make all other classes into JPA entities:
-        ArrayList<String> entityClassInfo = new ArrayList<>(entityInfo.size());
+        ArrayList<String> entityClassInfo = new ArrayList<>(entities.size());
 
         List<Class<?>> embeddableTypes = new ArrayList<>();
 
-        for (Entry<Class<?>, String> entry : entityInfo.entrySet()) {
-            Class<?> c = entry.getKey();
-            String keyAttribute = entry.getValue();
+        Map<Class<?>, String> keyAttributeNames = new HashMap<>();
+
+        for (Class<?> c : entities) {
+            String keyAttributeName = getID(c);
+            keyAttributeNames.put(c, keyAttributeName);
 
             if (c.getAnnotation(jakarta.persistence.Entity.class) == null) {
                 Entity entity = c.getAnnotation(Entity.class);
@@ -174,7 +174,7 @@ public class DataPersistence {
 
                     String columnType;
                     if (embeddable == null) {
-                        columnType = id == null && !keyAttribute.equals(attributeName) ? "basic" : "id";
+                        columnType = id == null && !keyAttributeName.equals(attributeName) ? "basic" : "id";
                     } else {
                         columnType = "embedded";
                         embeddableTypes.add(field.getType());
@@ -228,6 +228,7 @@ public class DataPersistence {
         try {
             Metamodel model = em.getMetamodel();
             for (EntityType<?> entityType : model.getEntities()) {
+                entityType.getName();//TODO
                 LinkedHashMap<String, String> attributeNames = new LinkedHashMap<>();
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
@@ -244,11 +245,19 @@ public class DataPersistence {
                     }
                 }
 
-                Map<Class<?>, LinkedHashMap<String, String>> attrNamesPerClassMap = attributeNamesMap.get(dbStoreId);
-                if (attrNamesPerClassMap == null)
-                    attributeNamesMap.put(dbStoreId, attrNamesPerClassMap = new HashMap<>());
+                Class<?> entityClass = entityType.getJavaType();
+                EntityInfo entityInfo = new EntityInfo(entityType.getName(), //
+                                entityClass, //
+                                attributeNames, //
+                                keyAttributeNames.get(entityClass), //
+                                punit);
 
-                attrNamesPerClassMap.put(entityType.getJavaType(), attributeNames);
+                entityInfoPerClass.put(entityClass, entityInfo);
+
+                Map<Class<?>, EntityInfo> entityInfoPerClassAndProvider = entityInfoPerProvider.get(provider);
+                if (entityInfoPerClassAndProvider == null)
+                    entityInfoPerProvider.put(provider, entityInfoPerClassAndProvider = new HashMap<>());
+                entityInfoPerClassAndProvider.put(entityClass, entityInfo);
 
                 System.out.println(attributeNames);
 
@@ -262,41 +271,56 @@ public class DataPersistence {
         } finally {
             em.close();
         }
-
-        units.put(new SimpleImmutableEntry<>(dbStoreId, loader),
-                  new SimpleImmutableEntry<>(punit, entityInfo));
     }
 
     String getAttributeName(String name, Class<?> entityClass, String provider) {
-        Map<Class<?>, LinkedHashMap<String, String>> attrNamesPerClassMap = attributeNamesMap.get(provider);
-        LinkedHashMap<String, String> attributeNames = attrNamesPerClassMap == null ? null : attrNamesPerClassMap.get(entityClass);
-        String attributeName = attributeNames == null ? null : attributeNames.get(name.toUpperCase());
+        Map<Class<?>, EntityInfo> entityInfoMap = entityInfoPerProvider.get(provider);
+        EntityInfo entityInfo = entityInfoMap == null ? null : entityInfoMap.get(entityClass);
+        String attributeName = entityInfo == null ? null : entityInfo.attributeNames.get(name.toUpperCase());
         return attributeName == null ? name : attributeName;
     }
 
     Collection<String> getAttributeNames(Class<?> entityClass, String provider) {
-        Map<Class<?>, LinkedHashMap<String, String>> attrNamesPerClassMap = attributeNamesMap.get(provider);
-        LinkedHashMap<String, String> attributeNames = attrNamesPerClassMap == null ? null : attrNamesPerClassMap.get(entityClass);
+        Map<Class<?>, EntityInfo> entityInfoMap = entityInfoPerProvider.get(provider);
+        EntityInfo entityInfo = entityInfoMap == null ? null : entityInfoMap.get(entityClass);
+        LinkedHashMap<String, String> attributeNames = entityInfo == null ? null : entityInfo.attributeNames;
         return attributeNames.values();
     }
 
-    // TODO this is very inefficient, but works for now
-    Entry<String, PersistenceServiceUnit> getPersistenceServiceUnit(Class<?> entityClass) {
-        System.out.println("Available persistence service units: " + units);
-        for (Entry<PersistenceServiceUnit, Map<Class<?>, String>> entry : units.values()) {
-            Map<Class<?>, String> entityInfo = entry.getValue();
-            String keyAttribute = entityInfo.get(entityClass);
-            if (keyAttribute != null)
-                return new SimpleImmutableEntry<>(keyAttribute, entry.getKey());
-        }
-        throw new RuntimeException("Persistence layer unavailable for " + entityClass);
+    // For use by Template only. For other patterns, use the signature that also supplies the provider name
+    EntityInfo getEntityInfo(Class<?> entityClass) {
+        EntityInfo entityInfo = entityInfoPerClass.get(entityClass);
+        if (entityInfo == null)
+            throw new RuntimeException("Persistence layer unavailable for " + entityClass);
+        return entityInfo;
     }
 
-    Entry<PersistenceServiceUnit, Map<Class<?>, String>> getPersistenceInfo(String dbStoreId, ClassLoader loader) {
-        System.out.println("Available persistence service units: " + units);
-        Entry<String, ClassLoader> key = new SimpleImmutableEntry<>(dbStoreId, loader);
-        Entry<PersistenceServiceUnit, Map<Class<?>, String>> unitInfo = units.get(key);
-        System.out.println("Found " + unitInfo + " using key: " + dbStoreId + "," + loader);
-        return unitInfo;
+    EntityInfo getEntityInfo(String provider, Class<?> entityClass) {
+        Map<Class<?>, EntityInfo> entityInfoMap = entityInfoPerProvider.get(provider);
+        return entityInfoMap == null ? null : entityInfoMap.get(entityClass);
+    }
+
+    // Moved from DataExtension
+    private static String getID(Class<?> entityClass) {
+        // For now, choosing "id" or any field that ends with id
+        String id = null;
+        String upperID = null;
+        for (Field field : entityClass.getFields()) {
+            if (field.getAnnotation(Id.class) != null)
+                return field.getName();
+
+            String name = field.getName().toUpperCase();
+            if ("ID".equals(name))
+                id = field.getName();
+            else if ((id == null || id.length() != 2) && name.endsWith("ID"))
+                if (upperID == null || name.compareTo(upperID) < 0) {
+                    upperID = name;
+                    id = field.getName();
+                }
+        }
+
+        if (id == null)
+            throw new IllegalArgumentException(entityClass + " lacks public field with @Id or of the form *ID");
+        return id;
     }
 }

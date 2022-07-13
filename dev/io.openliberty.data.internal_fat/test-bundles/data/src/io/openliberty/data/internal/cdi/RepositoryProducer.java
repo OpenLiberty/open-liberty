@@ -26,18 +26,16 @@ import jakarta.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator;
 import io.openliberty.data.Data;
 import io.openliberty.data.internal.QueryHandler;
 
-public class BeanProducer<T> implements Producer<T> {
+public class RepositoryProducer<T> implements Producer<T> {
     private final Bean<T> bean;
     private final BeanManager beanMgr;
     private final Class<?> entityClass;
-    private final String keyAttribute;
 
-    public BeanProducer(Bean<T> bean, BeanManager beanMgr, Class<?> entityClass, String keyAttribute) {
+    public RepositoryProducer(Bean<T> bean, BeanManager beanMgr, Class<?> entityClass) {
         System.out.println("Producer created for " + bean + ". Entity is " + entityClass);
         this.bean = bean;
         this.beanMgr = beanMgr;
         this.entityClass = entityClass;
-        this.keyAttribute = keyAttribute;
     }
 
     @Override
@@ -67,7 +65,7 @@ public class BeanProducer<T> implements Producer<T> {
                     System.out.println("Add " + anno + " for " + method.getAnnotated().getJavaMember());
                 }
 
-        T instance = c.cast(Proxy.newProxyInstance(c.getClassLoader(), new Class<?>[] { c }, new QueryHandler<T>(bean, entityClass, keyAttribute)));
+        T instance = c.cast(Proxy.newProxyInstance(c.getClassLoader(), new Class<?>[] { c }, new QueryHandler<T>(bean, entityClass)));
         return intercept ? interception.createInterceptedInstance(instance) : instance;
     }
 }
