@@ -6,6 +6,7 @@ visibility = private
   io.openliberty.jsonp-2.0
 -bundles=\
   io.openliberty.security.social.internal,\
-  io.openliberty.security.openidconnect.internal.clients.common
+  io.openliberty.security.openidconnect.internal.clients.common,\
+  io.openliberty.security.oidcclientcore.internal.jakarta
 kind=ga
 edition=core
