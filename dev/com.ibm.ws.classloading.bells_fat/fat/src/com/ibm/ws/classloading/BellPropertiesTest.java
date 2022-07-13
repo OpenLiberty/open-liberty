@@ -353,11 +353,11 @@ public class BellPropertiesTest {
         Map<String,String> sysProps = new HashMap<String,String>(3){};
         sysProps.put(BETA_EDITION_JVM_OPTION, runAsBetaEdition.toString());
 
+        final LibertyServer propsInvalidServer = LibertyServerFactory.getLibertyServer("bell_props_invalid_server");
         try {
-            LibertyServer server = LibertyServerFactory.getLibertyServer("bell_props_invalid_server");
-            server.startServerAndValidate(
+            propsInvalidServer.startServerAndValidate(
                     true,   // preClean
-                    false,  // cleanStart
+                    true,   // cleanStart
                     false,  // validateApps
                     false,  // expectStartFailure
                     false); // validateTimedExit
@@ -369,13 +369,15 @@ public class BellPropertiesTest {
             // configured with malformed properties.
 
             assertNull("The server should not register service testInvalidPropertiesLib/MultipleValidServices1, but did",
-                    server.waitForStringInLog(".*CWWKL0050I: .*testInvalidPropertiesLib.*MultipleValidServices1", TimeOut));
+                       propsInvalidServer.waitForStringInLog(".*CWWKL0050I: .*testInvalidPropertiesLib.*MultipleValidServices1", TimeOut));
         }
         finally {
-            server.stopServer(
-                    ".*CWWKG0014E: .*TIP_P0.*properties", // xml parse error on malformed property
-                    ".*CWWKF0009W:");                     // no features installed
-            removeSysProps(server, sysProps);
+            if (propsInvalidServer.isStarted()) {
+                propsInvalidServer.stopServer(
+                        ".*CWWKG0014E:.*TIP_P0.*properties", // xml parse error on malformed property
+                        ".*CWWKF0009W:");                    // no features installed
+            }
+            removeSysProps(propsInvalidServer, sysProps);
          }
     }
 

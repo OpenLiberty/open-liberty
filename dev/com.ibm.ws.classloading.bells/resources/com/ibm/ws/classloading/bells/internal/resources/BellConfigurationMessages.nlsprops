@@ -102,6 +102,6 @@ bell.spi.visibility.disabled.libref.global.useraction=Modify the BELL configurat
 # {0} - the name of the implementation class
 # {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
 # {2} - the name of the library
-bell.missing.property.injection.methods=CWWKL0062W: The system cannot inject BELL properties into an instance of the {0} implementation class because the class is missing a public constructor or updateBell method having a single parameter of type java.util.Map<String,String>. The class is an implementation of the service that is declared in the {1} file and registered from the {2} library.
-bell.missing.property.injection.methods.explanation=The system cannot access the public constructor or updateBell method it requires to inject BELL properties into the service implementation instance.
-bell.missing.property.injection.methods.useraction=Ensure the class defines a public constructor or updateBell method having a single parameter of type java.util.Map<String, String>.
+bell.missing.property.injection.methods=CWWKL0062W: The system did not inject BELL properties into an instance of the {0} implementation class. The class does not define a public constructor, or a public updateBell method, with a single parameter of type java.util.Map<String,String>. The class is an implementation of the service that is declared in the {1} file and registered from the {2} library.
+bell.missing.property.injection.methods.explanation=The system cannot access the public constructor or the updateBell method required to inject BELL properties into the service implementation instance.
+bell.missing.property.injection.methods.useraction=Ensure that the class defines a public constructor, or a public updateBell method, with a single parameter of type java.util.Map<String, String>.

@@ -228,18 +228,19 @@ public class Bell implements LibraryChangeListener {
     }
 
     @SuppressWarnings("restriction")
-    boolean getSpiVisibility(boolean enableSpiVisibility, String libraryId) {
-        if (enableSpiVisibility) {
+    boolean getSpiVisibility(Boolean enableSpiVisibility, String libraryId) {
+        boolean spiVisibility = Boolean.TRUE.equals(enableSpiVisibility);
+        if (spiVisibility) {
             if (GLOBAL_SHARED_LIBRARY_ID.equals(libraryId)) {
                 // The liberty "global" library is intended for use by EE applications, not OSGi services
                 // TODO Should we establish this restriction for all BELL configurations?
                 Tr.warning(tc, "bell.spi.visibility.disabled.libref.global");
-                enableSpiVisibility = false;
+                spiVisibility = false;
             } else {
                 Tr.info(tc, "bell.spi.visibility.enabled", libraryId);
             }
         }
-        return enableSpiVisibility;
+        return spiVisibility;
     }
 
     private static final String propKeyPrefix = PROPERTIES_ATT + ".0.";
@@ -258,13 +259,15 @@ public class Bell implements LibraryChangeListener {
             pMap = new HashMap<String, String>();
             for (String key : config.keySet()) {
                 if (key.startsWith(propKeyPrefix) && !!!key.endsWith("config.referenceType")) {
-                    String pValue = (String) config.get(key);
-                    String pName = key.substring(propKeyPrefixLen);
-                    pMap.put(pName, pValue);
+                    Object pValue = config.get(key);
+                    if (pValue instanceof String) {
+                        String pName = key.substring(propKeyPrefixLen);
+                        pMap.put(pName, (String) pValue);
+                    }
                 }
             }
         }
-        return pMap;
+        return (pMap == null) ? null : Collections.unmodifiableMap(pMap);
     }
 
     /**
@@ -545,24 +548,21 @@ public class Bell implements LibraryChangeListener {
 
     private static Object createService(final Class<?> serviceType, final String libID, final URL fileUrl, final Map<String, String> properties) {
         Object service = null;
+        Constructor<?> singleArgCtor;
+        Method updateMethod;
         try {
             if (properties == null) {
                 service = serviceType.newInstance();
+            } else if ((singleArgCtor = getConstructor(serviceType, java.util.Map.class)) != null) {
+                service = singleArgCtor.newInstance(properties);
+            } else if ((updateMethod = getMethod(serviceType, "updateBell", java.util.Map.class)) != null) {
+                service = serviceType.newInstance();
+                updateMethod.invoke(service, properties);
             } else {
-                // Inject a shallow clone of the properties map
-                final Constructor<?> singleArgCtor;
-                final Method updateMethod;
-                if ((singleArgCtor = getConstructor(serviceType, java.util.Map.class)) != null) {
-                    service = singleArgCtor.newInstance(((HashMap<String, String>) properties).clone());
-                } else if ((updateMethod = getMethod(serviceType, "updateBell", java.util.Map.class)) != null) {
-                    service = serviceType.newInstance();
-                    updateMethod.invoke(service, ((HashMap<String, String>) properties).clone());
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                        Tr.warning(tc, "bell.missing.property.injection.methods", serviceType.getName(), fileUrl, libID);
-                    }
-                    service = serviceType.newInstance();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "bell.missing.property.injection.methods", serviceType.getName(), fileUrl, libID);
                 }
+                service = serviceType.newInstance();
             }
         } catch (final IllegalAccessException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
