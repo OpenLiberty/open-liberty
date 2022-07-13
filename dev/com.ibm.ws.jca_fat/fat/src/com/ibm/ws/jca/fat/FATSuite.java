@@ -22,6 +22,7 @@ import com.ibm.ws.jca.fat.regr.InboundSecurityTest;
 import com.ibm.ws.jca.fat.regr.InboundSecurityTestRapid;
 
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -41,14 +42,19 @@ public class FATSuite {
     public static final String jakartaeeServer = "com.ibm.ws.jca.fat.jakarta";
 
     /*
-     * EE7 will run with full fat only. EE9 will be run with lite and full fat.
+     * EE7 will run in full mode only.
+     * EE9 will run in full mode only.
+     * EE10 will run in full and lite mode.
      */
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(new JakartaEE9Action().withWiden()); // need widen option to handle jar file within a jar file.
+                    // need widen option to handle jar file within a jar file.
+                    .andWith(new JakartaEE9Action().withWiden())
+                    // need widen option to handle jar file within a jar file.
+                    .andWith(new JakartaEE10Action().withWiden());
 
     public static LibertyServer getServer() {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             return LibertyServerFactory.getLibertyServer(jakartaeeServer);
         } else {
             return LibertyServerFactory.getLibertyServer(javaeeServer);
