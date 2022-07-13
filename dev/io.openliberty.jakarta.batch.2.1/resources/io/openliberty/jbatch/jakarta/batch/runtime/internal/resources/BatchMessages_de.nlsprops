@@ -29,9 +29,9 @@
 # 0350 - 0399: jakarta.batch
 # 
 
-batch.container.unavailable=CWWKY0350E: Der Stapelcontainer ist nicht aktiviert. Stellen Sie sicher, dass die Stapelpersistenz mit dem Konfigurationselement {0} konfiguriert wurde.
-batch.container.unavailable.explanation=Der Versuch, auf den Stapelcontainer zuzugreifen, ist fehlgeschlagen, weil der Stapelcontainer nicht aktiviert ist. Gew\u00f6hnlich ist dies darauf zur\u00fcckzuf\u00fchren, dass die Konfiguration fehlt. 
-batch.container.unavailable.useraction=Stellen Sie sicher, dass die Stapelpersistenz konfiguriert wurde.
+batch.container.unavailable=CWWKY0350E: Der Stapelcontainer ist nicht aktiviert. Stellen Sie sicher, dass die Stapelpersistenz im Konfigurationselement {0} konfiguriert ist.
+batch.container.unavailable.explanation=Der Versuch, auf den Stapelcontainer zuzugreifen, ist fehlgeschlagen, weil der Stapelcontainer nicht aktiviert ist. Dieser Fehler ist normalerweise auf eine fehlende Konfiguration zur\u00fcckzuf\u00fchren. 
+batch.container.unavailable.useraction=Stellen Sie sicher, dass die Stapelpersistenz konfiguriert ist.
  
 
  

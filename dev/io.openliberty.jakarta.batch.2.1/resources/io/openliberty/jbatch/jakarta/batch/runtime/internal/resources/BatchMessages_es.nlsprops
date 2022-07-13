@@ -29,9 +29,9 @@
 # 0350 - 0399: jakarta.batch
 # 
 
-batch.container.unavailable=CWWKY0350E: El contenedor de proceso por lotes no est\u00e1 activado. Aseg\u00farese de que ha configurado la persistencia de proceso por lotes mediante el elemento de configuraci\u00f3n {0}.
-batch.container.unavailable.explanation=Un intento de acceder al contenedor de proceso por lotes ha fallado porque el contenedor de proceso por lotes no est\u00e1 activado. Normalmente esto se debe a que falta una configuraci\u00f3n. 
-batch.container.unavailable.useraction=Aseg\u00farese de que ha configurado la persistencia de proceso por lotes.
+batch.container.unavailable=CWWKY0350E: El contenedor de proceso por lotes no est\u00e1 activado. Aseg\u00farese de que la persistencia por lotes est\u00e9 configurada en el elemento de configuraci\u00f3n {0}.
+batch.container.unavailable.explanation=Un intento de acceder al contenedor de proceso por lotes ha fallado porque el contenedor de proceso por lotes no est\u00e1 activado. Esta anomal\u00eda se debe normalmente a que falta la configuraci\u00f3n. 
+batch.container.unavailable.useraction=Aseg\u00farese de que la persistencia por lotes est\u00e9 configurada.
  
 
  

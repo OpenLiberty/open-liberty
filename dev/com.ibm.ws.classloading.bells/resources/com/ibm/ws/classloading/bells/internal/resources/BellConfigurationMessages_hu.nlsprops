@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,21 @@ bell.error.ctor.useraction=Ha kiv\u00e9tel fordult el\u0151 a konstruktorban, n\
 bell.no.services.config=CWWKL0058W: A(z) {0} szolg\u00e1ltat\u00e1s nem tal\u00e1lhat\u00f3 a META-INF/services mapp\u00e1ban a(z) {1} f\u00fcggv\u00e9nyt\u00e1rb\u00f3l.
 bell.no.services.config.explanation=Nincs megfelel\u0151 szolg\u00e1ltat\u00e1s deklar\u00e1lva a META-INF/services mapp\u00e1ban.
 bell.no.services.config.useraction= Semmit sem kell tennie.
+
+# BETA
+# {0} - library identifier
+bell.spi.visibility.enabled=CWWKL0059I: A BELL SPI l\u00e1that\u00f3s\u00e1g a(z) {0} k\u00f6nyvt\u00e1rra enged\u00e9lyezett. A BELL a(z) {0} k\u00f6nyvt\u00e1rra egy egyedi oszt\u00e1lybet\u00f6lt\u0151n kereszt\u00fcl hivatkozik, amely l\u00e1thatja az SPI csomagokat.
+bell.spi.visibility.enabled.explanation=Hogy az alkalmaz\u00e1sok \u00e9s er\u0151forr\u00e1sok ne l\u00e1thass\u00e1k az SPI csomagokat, a BELL a k\u00f6nyvt\u00e1rra egy olyan egyedi oszt\u00e1lybet\u00f6lt\u0151n kereszt\u00fcl hivatkozik, amely nincs megosztva az azonos k\u00f6nyvt\u00e1rra hivatkoz\u00f3 alkalmaz\u00e1sokkal.
+bell.spi.visibility.enabled.useraction=Tiltsa le az SPI l\u00e1that\u00f3s\u00e1got a BELL konfigur\u00e1ci\u00f3ban minden alkalommal, amikor a BELL szolg\u00e1ltat\u00e1snak olyan oszt\u00e1lybet\u00f6lt\u0151n kereszt\u00fcl kell a k\u00f6nyvt\u00e1rra hivatkoznia, amely meg van osztva az ugyanazon k\u00f6nyvt\u00e1rra hivatkoz\u00f3 alkalmaz\u00e1sokkal. M\u00e1sk\u00fcl\u00f6nben semmilyen tov\u00e1bbi beavatkoz\u00e1sra nincs\nsz\u00fcks\u00e9g.
+
+# BETA
+bell.spi.visibility.disabled.libref.global=CWWKL0060W: A BELL SPI l\u00e1that\u00f3s\u00e1g a Liberty glob\u00e1lis megosztott k\u00f6nyvt\u00e1rra vonatkoz\u00f3an nincs enged\u00e9lyezve.
+bell.spi.visibility.disabled.libref.global.explanation=A BELL SPI l\u00e1that\u00f3s\u00e1ga a Liberty glob\u00e1lis megosztott k\u00f6nyvt\u00e1r eset\u00e9ben nem t\u00e1mogatott.
+bell.spi.visibility.disabled.libref.global.useraction=M\u00f3dos\u00edtsa a BELL konfigur\u00e1ci\u00f3t, hogy az a Liberty glob\u00e1lis megosztott k\u00f6nyvt\u00e1rt\u00f3l elt\u00e9r\u0151 k\u00f6nyvt\u00e1rra hivatkozzon.
+
+# BETA: NOT IMPLEMENTED
+# {0} - application identifier
+# {1} - library identifier
+#bell.spi.visible.share.common.libref=CWWKL0061W: The {0} application and BELL share a common library reference, but do not reference the {1} library through a common class loader because the BELL is enabled for SPI visibility.
+#bell.spi.visible.share.common.libref.explanation=To prevent applications and resources from seeing SPI packages, the BELL references the library through a unique class loader that is not shared with the application.
+#bell.spi.visible.share.common.libref.useraction=Disable SPI visibility in the BELL configuration whenever the application and BELL must share a common library class loader. Otherwise, no action is required.

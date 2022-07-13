@@ -31,8 +31,7 @@
 
 7501=Modul de validare bean pe marshaller-ul {0} este setat la o valoare nesuportat\u0103, "{1}".
 
-7510=Constr\u00e2ngeri \u00eenc\u0103lcate pe bean-ul verificat de marshaller-ul {0}:
-#{1}{2}
+7510=Au fost \u00eenc\u0103lcate constr\u00e2ngeri pentru bean-ul pentru care s-a efectuat marshalling {0}: {1}{2}
 
 7525=Nu se poate parsa proprietatea {0}, deoarece este at\u00e2t adnotat\u0103 cu @NotNull, c\u00e2t \u015fi are atributul "xs:nillable=true".
 

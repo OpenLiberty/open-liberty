@@ -605,7 +605,7 @@
 
 7342=O valor booleano especificado [{0}] para a configura\u00e7\u00e3o permitir consultas SQL nativo \u00e9 inv\u00e1lido, o valor deve ser "true" ou "false".
 
-7343=V\u00e1rios identificadores de VPD (propriedade de contexto de discriminador de locat\u00e1rio) foram especificados. A entidade [{1}] usa [{0}] e a entity [{3]} usa [{2}]. Ao usar uma estrat\u00e9gia de VPD com diversos locat\u00e1rios, s\u00f3 pode haver uma coluna de discriminador de locat\u00e1rio por entidade e sua propriedade de contexto deve ser consistente entre todas as entidades de VPD com diversos locat\u00e1rios.
+7343=V\u00e1rios identificadores de VPD (propriedade de contexto de discriminador de locat\u00e1rio) foram especificados. Entidade [{1}] usa [{0}] e Entidade [{3}] usa [{2}]. Ao usar uma estrat\u00e9gia de VPD com diversos locat\u00e1rios, s\u00f3 pode haver uma coluna de discriminador de locat\u00e1rio por entidade e sua propriedade de contexto deve ser consistente entre todas as entidades de VPD com diversos locat\u00e1rios.
 
 7344=VPD (conex\u00f5es e gera\u00e7\u00e3o de DDL) n\u00e3o \u00e9 suportado para a plataforma: [{0}].
 

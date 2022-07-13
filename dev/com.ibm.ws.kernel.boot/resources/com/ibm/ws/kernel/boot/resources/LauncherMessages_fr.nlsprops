@@ -96,7 +96,9 @@ error.secPermission=CWWKE0016E: Le fichier JAR d''amor\u00e7age n\u00e9cessite l
 error.secPermission.explanation=Les droits Java 2 Security sont insuffisants pour permettre au fichier JAR d'amor\u00e7age de lancer l'environnement d'ex\u00e9cution et l'infrastructure OSGi.
 error.secPermission.useraction=Assurez-vous que le fichier JAR d'amor\u00e7age (bootstrap) a re\u00e7u les privil\u00e8ges AllPermission dans le fichier de r\u00e8gles Java 2 Security.
 
-# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+error.badBitmode=CWWKE0017E: Le processus a d\u00e9tect\u00e9 une JVM 31 bits non prise en charge. L'environnement d'ex\u00e9cution requiert une version Java 8 64 bits ou une version ult\u00e9rieure.
+error.badBitmode.explanation=La variable syst\u00e8me JAVA_HOME pointe sur une version de Java pr\u00e9vue pour le mode 31 bits.
+error.badBitmode.useraction=R\u00e9glez la variable syst\u00e8me JAVA_HOME pour qu'elle pointe vers une version Java 8 64 bits ou sup\u00e9rieure.
 
 error.unknownException=CWWKE0018E: Une exception s''est produite au lancement de l''environnement d''ex\u00e9cution : {0}
 error.unknownException.explanation=L'exception a emp\u00each\u00e9 le lancement du serveur.

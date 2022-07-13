@@ -96,7 +96,9 @@ error.secPermission=CWWKE0016E: O arquivo JAR de autoinicializa\u00e7\u00e3o req
 error.secPermission.explanation=As permiss\u00f5es Java 2 Security s\u00e3o insuficientes para o arquivo JAR de autoinicializa\u00e7\u00e3o ativar o ambiente de tempo de execu\u00e7\u00e3o e a estrutura OSGi.
 error.secPermission.useraction=Assegure que o arquivo JAR de autoinicializa\u00e7\u00e3o tenha concedido privil\u00e9gios AllPermission no arquivo de pol\u00edtica Java 2 Security.
 
-# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+error.badBitmode=CWWKE0017E: O processo detectou uma JVM de 31 bits que n\u00e3o \u00e9 suportada. O ambiente de tempo de execu\u00e7\u00e3o requer o Java de 64 bits vers\u00e3o 8 ou mais recente.
+error.badBitmode.explanation=A vari\u00e1vel de sistema\nJAVA_HOME est\u00e1 configurada para apontar para uma vers\u00e3o de Java que tem 31\nbits.
+error.badBitmode.useraction=Ajuste a vari\u00e1vel do sistema JAVA_HOME para apontar para um Java de 64 bits vers\u00e3o 8 ou mais recente.
 
 error.unknownException=CWWKE0018E: Ocorreu uma exce\u00e7\u00e3o durante a ativa\u00e7\u00e3o do ambiente de tempo de execu\u00e7\u00e3o: {0}
 error.unknownException.explanation=A exce\u00e7\u00e3o evitou a ativa\u00e7\u00e3o do servidor.

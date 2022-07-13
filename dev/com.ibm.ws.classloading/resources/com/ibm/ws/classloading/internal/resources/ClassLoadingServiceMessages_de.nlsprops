@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ cls.classloader.missing.explanation=Zum Referenzieren eines Klassenladeprogramms
 cls.classloader.missing.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration, und stellen Sie sicher, dass das Klassenladeprogramm definiert wurde und dass die ID korrekt ist.
 
 cls.fileset.not.ready=CWWKL0011W: Das System konnte die Dateigruppe [{0}] f\u00fcr die gemeinsam genutzte Bibliothek [{1}] nicht abrufen.
-cls.fileset.not.ready.explanation=Eine gemeinsam genutzte Bibliothek wird verwendet, aber eine der zugeordneten Dateigruppen kann nicht rechtzeitig abgerufen werden.
+cls.fileset.not.ready.explanation=Eine gemeinsam genutzte Bibliothek wird verwendet, aber eine der zugeordneten Dateigruppen konnte nicht rechtzeitig abgerufen werden.
 cls.fileset.not.ready.useraction=Suchen Sie nach Fehlern und Warnungen, die sich auf die Datengruppe beziehen, und beheben Sie sie.
 
 cls.library.file.invalid=CWWKL0012W: Die Bibliothek [{0}] gibt eine Datei mit dem Namen [{1}] an. Diese Datei ist nicht vorhanden oder falsch angegeben.
@@ -97,6 +97,7 @@ cls.library.archive.useraction=Bearbeiten Sie die Serverkonfiguration, und stell
 cls.library.destroyed=CWWKL0018I: Die Bibliothek [{0}] ist nicht verf\u00fcgbar.
 cls.library.destroyed.explanation=Eine Bibliothek ist nicht verf\u00fcgbar, z. B., weil sie aus der Serverkonfiguration entfernt wurde.
 cls.library.destroyed.useraction=Wenn die Bibliothek weiterhin ben\u00f6tigt wird, stellen Sie sicher, dass sie weiterhin ordnungsgem\u00e4\u00df konfiguriert ist.
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 
@@ -133,9 +134,11 @@ cls.provider.class.space.conflict.useraction=Aktualisieren Sie die Konfiguration
 slf.no.cache=CWWKL0070E: Das Cacheverzeichnis wurde nicht erstellt.
 slf.no.cache.explanation=Das System konnte keinen Ordner auf der Platte erstellen.
 slf.no.cache.useraction=Stellen Sie sicher, dass das Laufwerk die erforderlichen Schreibberechtigungen besitzt und dass gen\u00fcgend Speicherplatz auf der Platte verf\u00fcgbar ist.
+
 slf.no.acf=CWWKL0071E: Es wurde ein Nullwert f\u00fcr das ArtifactContainerFactory-Objekt gefunden.
 slf.no.acf.explanation=Das ArtifactContainerFactory-Objekt darf nicht null sein, wenn der Server aktiv ist.
 slf.no.acf.useraction=Sehen Sie sich die Informationen zur Fehlerbestimmung auf der Support-Webseite f\u00fcr WebSphere Application Server Support (http://www.ibm.com/software/webservers/appserv/was/support) an oder wenden Sie sich an den Serviceanbieter des Klassenproviders.
+
 slf.failed.delete=CWWKL0072W: Die Cachedatei [{0}] kann nicht gel\u00f6scht werden. Dieses Ergebnis kann zur Besch\u00e4digung verschachtelter Archive f\u00fchren.
 slf.failed.delete.explanation=Das System konnte die Cachedatei nicht l\u00f6schen. Weil die Datei immer noch im System vorhanden ist, kann dies zu einer Besch\u00e4digung der verschachtelten Archive f\u00fchren.
 slf.failed.delete.useraction=Vergewissern Sie sich, dass die Cachedatei nicht gesperrt ist, weil dies dazu f\u00fchrt, dass das L\u00f6schen der Datei fehlschl\u00e4gt. 

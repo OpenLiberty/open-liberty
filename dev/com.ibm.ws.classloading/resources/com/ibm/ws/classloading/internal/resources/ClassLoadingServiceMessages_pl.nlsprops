@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ cls.classloader.missing.explanation=Aby odwo\u0142a\u0107 si\u0119 do programu \
 cls.classloader.missing.useraction=Sprawd\u017a konfiguracj\u0119 serwera, aby si\u0119 upewni\u0107, \u017ce zdefiniowano program \u0142aduj\u0105cy klasy oraz \u017ce identyfikator jest poprawny.
 
 cls.fileset.not.ready=CWWKL0011W: System nie mo\u017ce pobra\u0107 zestawu plik\u00f3w [{0}] dla biblioteki wsp\u00f3\u0142u\u017cytkowanej [{1}].
-cls.fileset.not.ready.explanation=Biblioteka wsp\u00f3\u0142u\u017cytkowana jest u\u017cywana, ale nie mo\u017cna pobra\u0107 na czas jednego z powi\u0105zanych zestaw\u00f3w plik\u00f3w.
+cls.fileset.not.ready.explanation=Biblioteka wsp\u00f3\u0142u\u017cytkowana jest u\u017cywana, ale jeden z powi\u0105zanych zestaw\u00f3w plik\u00f3w nie mo\u017ce zosta\u0107 pobrany w odpowiednim czasie.
 cls.fileset.not.ready.useraction=Sprawd\u017a, czy wyst\u0119puj\u0105 b\u0142\u0119dy lub ostrze\u017cenia powi\u0105zane z zestawem plik\u00f3w i wyeliminuj je.
 
 cls.library.file.invalid=CWWKL0012W: Biblioteka [{0}] okre\u015bla plik o nazwie [{1}]. Plik ten nie istnieje albo jest niepoprawnie okre\u015blony.
@@ -97,6 +97,7 @@ cls.library.archive.useraction=Zmodyfikuj konfiguracj\u0119 serwera i upewnij si
 cls.library.destroyed=CWWKL0018I: Biblioteka [{0}] jest niedost\u0119pna.
 cls.library.destroyed.explanation=Biblioteka sta\u0142a si\u0119 niedost\u0119pna na przyk\u0142ad dlatego, \u017ce zosta\u0142a usuni\u0119ta z konfiguracji serwera.
 cls.library.destroyed.useraction=Je\u015bli biblioteka jest nadal wymagana, upewnij si\u0119, \u017ce nadal jest ona skonfigurowana poprawnie.
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 
@@ -133,9 +134,11 @@ cls.provider.class.space.conflict.useraction=Zaktualizuj konfiguracj\u0119 w tak
 slf.no.cache=CWWKL0070E: Katalog pami\u0119ci podr\u0119cznej nie zosta\u0142 pomy\u015blnie utworzony.
 slf.no.cache.explanation=System nie m\u00f3g\u0142 utworzy\u0107 folderu na dysku.
 slf.no.cache.useraction=Upewnij si\u0119, \u017ce ustawiono poprawne uprawnienia dost\u0119pu do dysku i \u017ce na dysku jest wystarczaj\u0105ca ilo\u015b\u0107 miejsca.
+
 slf.no.acf=CWWKL0071E: Znaleziono warto\u015b\u0107 null obiektu ArtifactContainerFactory.
 slf.no.acf.explanation=Obiekt ArtifactContainerFactory nie mo\u017ce mie\u0107 warto\u015bci null podczas dzia\u0142ania serwera.
 slf.no.acf.useraction=Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support lub uzyska\u0107 od dostawcy us\u0142ug dostawcy klas.
+
 slf.failed.delete=CWWKL0072W: Nie mo\u017cna usun\u0105\u0107 pliku pami\u0119ci podr\u0119cznej [{0}]. Ten wynik mo\u017ce doprowadzi\u0107 do uszkodzenia zagnie\u017cd\u017conych archiw\u00f3w.
 slf.failed.delete.explanation=System nie usun\u0105\u0142 pliku pami\u0119ci podr\u0119cznej. Poniewa\u017c plik istnieje wci\u0105\u017c w systemie, mo\u017ce to doprowadzi\u0107 do uszkodzenia w zagnie\u017cd\u017conych archiwach.
 slf.failed.delete.useraction=Sprawd\u017a, czy plik pami\u0119ci podr\u0119cznej nie jest zablokowany, co mo\u017ce by\u0107 przyczyn\u0105 niepowodzenia jego usuni\u0119cia.

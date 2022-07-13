@@ -96,7 +96,9 @@ error.secPermission=CWWKE0016E: Soubor JAR zav\u00e1d\u011bc\u00edho programu vy
 error.secPermission.explanation=Opr\u00e1vn\u011bn\u00ed zabezpe\u010den\u00ed Java 2 jsou pro spu\u0161t\u011bn\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed a r\u00e1mce OSGi souborem JAR zav\u00e1d\u011bc\u00edho programu nedostate\u010dn\u00e1.
 error.secPermission.useraction=Zkontrolujte, zda byla souboru JAR zav\u00e1d\u011bc\u00edho programu v souboru z\u00e1sad zabezpe\u010den\u00ed Java 2 ud\u011blena opr\u00e1vn\u011bn\u00ed AllPermission.
 
-# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+error.badBitmode=CWWKE0017E: Proces zjistil 31bitov\u00e9 prost\u0159ed\u00ed JVM, kter\u00e9 nen\u00ed podporov\u00e1no. B\u011bhov\u00e9 prost\u0159ed\u00ed vy\u017eaduje 64bitovou verzi jazyka Java 8 nebo vy\u0161\u0161\u00ed.
+error.badBitmode.explanation=Prom\u011bnn\u00e1 syst\u00e9mu JAVA_HOME je nastavena na 31bitovou verzi Java.
+error.badBitmode.useraction=Upravte syst\u00e9movou prom\u011bnnou JAVA_HOME tak, aby ukazovala na 64bitovou verzi jazyka Java 8 nebo vy\u0161\u0161\u00ed.
 
 error.unknownException=CWWKE0018E: P\u0159i spou\u0161t\u011bn\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed do\u0161lo k v\u00fdjimce: {0}.
 error.unknownException.explanation=V\u00fdjimka zabr\u00e1nila ve spu\u0161t\u011bn\u00ed serveru.
