@@ -26,13 +26,13 @@ import com.ibm.ws.cache.stat.CachePerf;
  * It tries to wake up once every time granule, which is a configurable
  * number of seconds.
  * It may get behind temporarily due to bursts of server processor activity
- * (e.g., garbage collection).  However, it will catch back up when
+ * (e.g., garbage collection). However, it will catch back up when
  * processor resources are available.
  */
 public class TimeLimitDaemon extends RealTimeDaemon {
     private static TraceComponent tc = Tr.register(TimeLimitDaemon.class, "WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");
 
-    public final static boolean UNIT_TEST_INACTIVITY = false; 
+    public final static boolean UNIT_TEST_INACTIVITY = false;
 
     private static final boolean IS_UNIT_TEST = false;
 
@@ -45,15 +45,15 @@ public class TimeLimitDaemon extends RealTimeDaemon {
      * It is set by the Configuration class in the TimeLimitDaemon constructor.
      */
 
-    private InvalidationTaskPool taskPool = new InvalidationTaskPool(100);
+    private final InvalidationTaskPool taskPool = new InvalidationTaskPool(100);
 
-    private ConcurrentHashMap <DCache, ExpirationMetaData> cacheInstancesTable = new ConcurrentHashMap <DCache, ExpirationMetaData>(10,2,2);
+    private final ConcurrentHashMap<DCache, ExpirationMetaData> cacheInstancesTable = new ConcurrentHashMap<DCache, ExpirationMetaData>(10, 2, 2);
 
-    private long lastTimeReleaseDiskCachePool = 0; 
+    private long lastTimeReleaseDiskCachePool = 0;
 
     private long lastTimeoutCheckedTime = 0;
 
-    private int timeoutTriggerTime   = 0; // TLD granularity (in msec)
+    private int timeoutTriggerTime = 0; // TLD granularity (in msec)
     private int lruToDiskTriggerTime = 0; // frequency of removing cache entries from overflow buffer asynchronously (in msec)
 
     private boolean isLruToDiskRunnning = false;
@@ -67,7 +67,9 @@ public class TimeLimitDaemon extends RealTimeDaemon {
      *
      * @param maxTimeLimitInSeconds This determines how many seconds the
      * longest time limit can be on a cache entry. DEPRECATED
+     *
      * @param timeGranularityInSeconds This is the timeGranularity.
+     *
      * @param lruToDiskTriggerTime This is the frequency of removing cache entries from overflow buffer asynchronously
      */
     public TimeLimitDaemon(int timeGranularityInSeconds, int lruToDiskTriggerTime) {
@@ -86,6 +88,7 @@ public class TimeLimitDaemon extends RealTimeDaemon {
     /**
      * This is alled by the CacheUnitImpl when things start up.
      */
+    @Override
     public void start() {
         super.start();
     }
@@ -99,24 +102,25 @@ public class TimeLimitDaemon extends RealTimeDaemon {
      * by processing multiple timeLimitArray elements.
      *
      * @param startDaemonTime The time (in milliseconds) when the daemon
-     * was started.
+     *                            was started.
      * @param startWakeUpTime The time (in milliseconds) just before
-     * the wakeUp method was called.
+     *                            the wakeUp method was called.
      */
+    @Override
     public void wakeUp(long startDaemonTime, long startWakeUpTime) {
-        if ( UNIT_TEST_INACTIVITY ) {
+        if (UNIT_TEST_INACTIVITY) {
             System.out.println("wakUp() - entry");
         }
-        //final String methodName = "wakeUp()";
+        final String methodName = "wakeUp()";
         boolean bTimeOutChecked = false;
         try {
             // check the cache entries timeout when one of following conditions meet
             // (1) lruToDiskTriggerTime == timeoutTriggerTime (TLD granularity; default 5 sec)
             // (2) time elapsed >= timeoutTriggerTime (5 sec) since the last timeout checked.
-            if (this.lruToDiskTriggerTime == this.timeoutTriggerTime || 
+            if (this.lruToDiskTriggerTime == this.timeoutTriggerTime ||
                 ((startWakeUpTime - this.lastTimeoutCheckedTime) >= this.timeoutTriggerTime)) {
                 this.lastTimeoutCheckedTime = startWakeUpTime;
-                ArrayList <InvalidationData> invalidateIds = new ArrayList <InvalidationData>();
+                ArrayList<InvalidationData> invalidateIds = new ArrayList<InvalidationData>();
                 Iterator walker = cacheInstancesTable.entrySet().iterator();
                 while (walker.hasNext()) {
                     Map.Entry entry = (Map.Entry) walker.next();
@@ -125,10 +129,11 @@ public class TimeLimitDaemon extends RealTimeDaemon {
                     synchronized (expirationMetaData) {
                         InvalidationTask currentTask = expirationMetaData.timeLimitHeap.minimum();
                         while (currentTask != null) {
-                            if ( UNIT_TEST_INACTIVITY ) {
-                                System.out.println(" startWakeUpTime="+ startWakeUpTime);
-                                System.out.println(" currentTask.expirationTime="+ currentTask.expirationTime);
-                                System.out.println(" currentTask.isInactivityTimeOut="+ currentTask.isInactivityTimeOut);
+                            if (UNIT_TEST_INACTIVITY) {
+                                System.out.println(methodName + " startWakeUpTime=" + startWakeUpTime);
+                                System.out.println(methodName + " currentTask.expirationTime=" + currentTask.expirationTime);
+                                System.out.println(methodName + " currentTask.isInactivityTimeOut=" + currentTask.isInactivityTimeOut);
+                                System.out.println(methodName + " currentTask.id=" + currentTask.id);
                             }
                             if (currentTask.expirationTime <= startWakeUpTime) {
                                 currentTask = expirationMetaData.timeLimitHeap.deleteMin();
@@ -149,35 +154,35 @@ public class TimeLimitDaemon extends RealTimeDaemon {
                         Iterator it = invalidateIds.iterator();
                         while (it.hasNext()) {
                             InvalidationData idata = (InvalidationData) it.next();
-                            cache.invalidateById(idata.id, idata.isInactivityTimeOut?CachePerf.INACTIVE:CachePerf.TIMEOUT, false); // CPF-Inactivity
+                            cache.invalidateById(idata.id, idata.isInactivityTimeOut ? CachePerf.INACTIVE : CachePerf.TIMEOUT, false); // CPF-Inactivity
                         }
                         invalidateIds.clear();
                     }
                 }
-                diskCacheHouseKeeping();  //3821
+                diskCacheHouseKeeping(); //3821
                 bTimeOutChecked = true;
             }
         } catch (Throwable ex) {
             com.ibm.ws.ffdc.FFDCFilter.processException(ex, "com.ibm.ws.cache.TimeLimitDaemon.wakeUp", "152", this);
         } finally {
-            // skip trimCache (removing entries in the overflow buffer) operation if trimCache operation 
+            // skip trimCache (removing entries in the overflow buffer) operation if trimCache operation
             // is still in process
             // loop through each cache instances to remove cache entries in the overflow buffer
-            // and asynchronously offloaded to disk at a frequency of lruToDiskTriggerTime 
+            // and asynchronously offloaded to disk at a frequency of lruToDiskTriggerTime
             // milliseconds. Process trimCache when one of the following conditions meet:
             // (1) timeout has just finished checking (sane behavior as before).
             // (2) lruToDiskTriggerPercent for a particular cache instance > 0
-        	// (3) we need to contrain the cache instance in terms of JVM heap
+            // (3) we need to contrain the cache instance in terms of JVM heap
             if (this.isLruToDiskRunnning == false) {
                 this.isLruToDiskRunnning = true;
                 Map caches = ServerCache.getCacheInstances();
                 Iterator i = caches.values().iterator();
-                while ( i.hasNext() ) {
-                    DCache cache = (DCache)i.next();
+                while (i.hasNext()) {
+                    DCache cache = (DCache) i.next();
                     if (cache != null && cache.getCacheConfig().isDefaultCacheProvider()) {
                         if (bTimeOutChecked ||
-                        		cache.getCacheConfig().getLruToDiskTriggerPercent() > 0 || 
-                        		cache.isCacheSizeInMBEnabled()) {
+                            cache.getCacheConfig().getLruToDiskTriggerPercent() > 0 ||
+                            cache.isCacheSizeInMBEnabled()) {
                             cache.trimCache();
                         }
                     }
@@ -187,7 +192,7 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         }
     }
 
-    private void diskCacheHouseKeeping(){
+    private void diskCacheHouseKeeping() {
         boolean bReleaseDiskCachePool = false;
         if ((System.currentTimeMillis() - this.lastTimeReleaseDiskCachePool) > CacheConfig.DEFAULT_DISKCACHE_POOL_ENTRY_LIFE * 12) {
             bReleaseDiskCachePool = true;
@@ -199,8 +204,8 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         //Handle all the cache instances
         Iterator it = (ServerCache.getCacheInstances()).keySet().iterator();
         while (it.hasNext()) {
-            cacheName = (String)it.next();      
-            ci = ServerCache.getCache(cacheName);       
+            cacheName = (String) it.next();
+            ci = ServerCache.getCache(cacheName);
             if (ci != null && ci.getCacheConfig().isDefaultCacheProvider()) {
                 if (ci.isDiskInvalidationBufferFull()) {
                     ci.invokeDiskCleanup(!HTODInvalidationBuffer.SCAN);
@@ -217,35 +222,37 @@ public class TimeLimitDaemon extends RealTimeDaemon {
      * so the expiration time should be updated.
      * It updates internal tables and indexes accordingly.
      *
-     * @param cache The cache instance.
-     * @param id The cache id.
+     * @param cache          The cache instance.
+     * @param id             The cache id.
      * @param expirationTime The new expiration time.
      */
-    public void valueHasChanged(DCache cache, Object id, long expirationTime, int inactivity) {  // CPF-Inactivity
-        //final String methodName = "valueHasChanged()";
-        if (expirationTime <= 0 && inactivity <=0 ) { // CPF-Inactivity
+    public void valueHasChanged(DCache cache, Object id, long expirationTime, int inactivity) { // CPF-Inactivity
+        final String methodName = "valueHasChanged()";
+        if (expirationTime <= 0 && inactivity <= 0) { // CPF-Inactivity
             throw new IllegalArgumentException("expirationTime or inactivity must be positive");
         }
-        if ( UNIT_TEST_INACTIVITY ) {
-            System.out.println(" valueHasChanged() - entry");
-            System.out.println(" expirationTime="+expirationTime);
-            System.out.println(" inactivity="+inactivity);
+        if (UNIT_TEST_INACTIVITY) {
+            System.out.println(methodName + " valueHasChanged() - entry");
+            System.out.println(methodName + " expirationTime=" + expirationTime);
+            System.out.println(methodName + " inactivity=" + inactivity);
         }
         // CPF-Inactivity
         //-----------------------------------------------------------
         // Force an expriationTime if we have an inactivity timer
         //-----------------------------------------------------------
         boolean isInactivityTimeOut = false;
-        if ( inactivity > 0 ) {
+        if (inactivity > 0) {
             // For 7.0, use QuickApproxTime.getRef.getApproxTime()
-            long adjustedExpirationTime = System.currentTimeMillis() + ( inactivity * 1000 );
-            if ( adjustedExpirationTime < expirationTime ||
-                 expirationTime <= 0 ) {
+            long inactivityLong = inactivity;
+            long adjustedExpirationTime = System.currentTimeMillis() + (inactivityLong * 1000);
+
+            if (adjustedExpirationTime < expirationTime ||
+                expirationTime <= 0) {
                 expirationTime = adjustedExpirationTime;
                 isInactivityTimeOut = true;
             }
         }
-        ExpirationMetaData expirationMetaData = (ExpirationMetaData)cacheInstancesTable.get(cache);
+        ExpirationMetaData expirationMetaData = cacheInstancesTable.get(cache);
         // Just make sure expirationMetaData is NOT NULL in case of an internal-error condition
         if (expirationMetaData == null) {
             return;
@@ -261,6 +268,7 @@ public class TimeLimitDaemon extends RealTimeDaemon {
             }
             it.expirationTime = expirationTime;
             it.isInactivityTimeOut = isInactivityTimeOut;
+
             expirationMetaData.timeLimitHeap.insert(it);
             //ccount++;
             //traceDebug(methodName, "cacheName=" + cache.getCacheName() + " id=" + id + " expirationTableSize=" + expirationMetaData.expirationTable.size() + " timeLimitHeapSize=" + expirationMetaData.timeLimitHeap.size() + " count=" + ccount);
@@ -272,14 +280,14 @@ public class TimeLimitDaemon extends RealTimeDaemon {
      * It removes the entry from the internal tables.
      *
      * @param cache The cache instance.
-     * @param id The cache id.
+     * @param id    The cache id.
      */
     public void valueWasRemoved(DCache cache, Object id) {
         //final String methodName = "valueWasRemoved()";
-        if ( UNIT_TEST_INACTIVITY ) {
+        if (UNIT_TEST_INACTIVITY) {
             System.out.println("valueWasRemoved() - entry");
         }
-        ExpirationMetaData expirationMetaData = (ExpirationMetaData)cacheInstancesTable.get(cache);
+        ExpirationMetaData expirationMetaData = cacheInstancesTable.get(cache);
         if (expirationMetaData == null) {
             return;
         }
@@ -306,7 +314,7 @@ public class TimeLimitDaemon extends RealTimeDaemon {
      */
     public void createExpirationMetaData(DCache cache) {
         //final String methodName = "createExpirationMetaData()";
-        ExpirationMetaData expirationMetaData = (ExpirationMetaData)cacheInstancesTable.get(cache);
+        ExpirationMetaData expirationMetaData = cacheInstancesTable.get(cache);
         if (expirationMetaData == null) {
             int initialTableSize = DEFAULT_SIZE_FOR_MEM;
             if (cache.getSwapToDisk() && cache.getCacheConfig().getDiskCachePerformanceLevel() == CacheConfig.HIGH) {
@@ -322,11 +330,11 @@ public class TimeLimitDaemon extends RealTimeDaemon {
      * It clears the internal tables
      *
      * @param cache The cache instance.
-     * @param id The cache id.
+     * @param id    The cache id.
      */
     public void cacheCleared(DCache cache) {
         final String methodName = "cacheCleared()";
-        ExpirationMetaData expirationMetaData = (ExpirationMetaData)cacheInstancesTable.get(cache);
+        ExpirationMetaData expirationMetaData = cacheInstancesTable.get(cache);
         if (expirationMetaData == null) {
             return;
         }
@@ -334,14 +342,14 @@ public class TimeLimitDaemon extends RealTimeDaemon {
             if (!expirationMetaData.expirationTable.isEmpty()) {
                 Enumeration e = expirationMetaData.expirationTable.elements();
                 while (e.hasMoreElements()) {
-                    InvalidationTask it = (InvalidationTask)e.nextElement();
+                    InvalidationTask it = (InvalidationTask) e.nextElement();
                     it.reset();
                     taskPool.add(it);
                 }
                 expirationMetaData.expirationTable.clear();
                 expirationMetaData.timeLimitHeap.clear();
-                if (tc.isDebugEnabled()){
-                	Tr.debug(tc, methodName + cache.getCacheName() + " expirationTable=" + expirationMetaData.expirationTable.size());
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + cache.getCacheName() + " expirationTable=" + expirationMetaData.expirationTable.size());
                 }
             }
         }
@@ -363,13 +371,14 @@ public class TimeLimitDaemon extends RealTimeDaemon {
 
         public ExpirationMetaData(int initialTableSize) {
             this.expirationTable = new NonSyncHashtable(initialTableSize);
-            this.timeLimitHeap   = new BinaryHeap(initialTableSize);
+            this.timeLimitHeap = new BinaryHeap(initialTableSize);
         }
     }
 
     static public class InvalidationData {
         public Object id;
         public boolean isInactivityTimeOut;
+
         public InvalidationData(Object id, boolean isInactivityTimeOut) {
             this.id = id;
             this.isInactivityTimeOut = isInactivityTimeOut;
@@ -377,10 +386,10 @@ public class TimeLimitDaemon extends RealTimeDaemon {
     }
 
     static public class InvalidationTask {
-        public Object id;              // cache id
-        public long expirationTime;    // expiration time 
+        public Object id; // cache id
+        public long expirationTime; // expiration time
         public boolean isInactivityTimeOut = false;
-        public int index;              // index in heap
+        public int index; // index in heap
 
         public final boolean lessThan(InvalidationTask other) {
             return expirationTime < other.expirationTime;
@@ -393,13 +402,13 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         public final boolean lessThanOrEquals(InvalidationTask other) {
             return expirationTime <= other.expirationTime;
         }
-        
-        public final void reset(){        	
-        	id = null;
-        	expirationTime = -1;  
-        	isInactivityTimeOut = false;
-        	index = -1;      
-        }        
+
+        public final void reset() {
+            id = null;
+            expirationTime = -1;
+            isInactivityTimeOut = false;
+            index = -1;
+        }
 
     }
 
@@ -434,22 +443,22 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         }
 
         /*
-        public void dump() {
-           for (int i=0;i<=heapSize;i++) {
-              System.out.println("["+i+"]="+heapArray[i].expirationTime);
-           }
-        }
-        */
+         * public void dump() {
+         * for (int i=0;i<=heapSize;i++) {
+         * System.out.println("["+i+"]="+heapArray[i].expirationTime);
+         * }
+         * }
+         */
 
         //
         // Heap operations
         //
 
         /**
-         *  Insert an element E with key E.key into the heap, preserving
-         *  heap order.
+         * Insert an element E with key E.key into the heap, preserving
+         * heap order.
          *
-         *  @param el  the InvalidationTask element to insert
+         * @param el the InvalidationTask element to insert
          *
          */
         public synchronized void insert(InvalidationTask el) {
@@ -466,8 +475,8 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         }
 
         /**
-         *  Return a reference to the minimum element in the heap,
-         *  without removing it.
+         * Return a reference to the minimum element in the heap,
+         * without removing it.
          */
 
         public final InvalidationTask minimum() {
@@ -478,8 +487,8 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         } // minimum
 
         /**
-         *  Return a reference to the minimum element in the heap,
-         *  removing it from the heap.
+         * Return a reference to the minimum element in the heap,
+         * removing it from the heap.
          */
         public final synchronized InvalidationTask deleteMin() {
             InvalidationTask min;
@@ -503,9 +512,9 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         }
 
         /**
-         *  Deletes the item with the given key from the heap.
+         * Deletes the item with the given key from the heap.
          *
-         *  @param i  the index, or key, of the item to delete
+         * @param i the index, or key, of the item to delete
          */
         public synchronized void delete(InvalidationTask el) {
             int i = findKey(el);
@@ -523,10 +532,10 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         }
 
         /**
-         *  Reestablish heap property with the precondition
-         *  that the element at i is smaller than it's parent.
+         * Reestablish heap property with the precondition
+         * that the element at i is smaller than it's parent.
          *
-         *  @param i  the index which violates heap property
+         * @param i the index which violates heap property
          */
         private void percolateUp(int i) {
             while (heapArray[i].lessThan(heapArray[parent(i)])) {
@@ -546,12 +555,12 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         }
 
         /**
-         *  Heapify assumes that given an index i into the heap, left(i)
-         *  and right(i) are heaps, but i may violate the heap property.
-         *  It effectively percolates i down the heap until the heap property
-         *  is reestablished. <p>
+         * Heapify assumes that given an index i into the heap, left(i)
+         * and right(i) are heaps, but i may violate the heap property.
+         * It effectively percolates i down the heap until the heap property
+         * is reestablished. <p>
          *
-         *  @param index  the index of the heap array which violates the heap property.
+         * @param index the index of the heap array which violates the heap property.
          */
         private final void heapify(int i) {
             InvalidationTask tmp = heapArray[i];
@@ -593,7 +602,7 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         }
 
         private static final int parent(int i) {
-            return(int) i / 2;
+            return i / 2;
         }
 
         private static final int left(int i) {
