@@ -78,7 +78,33 @@ task backchannelLogoutTestApp_ZIP (type: Zip, dependsOn: classes) {
     include 'META-INF/**', 'WEB-INF/**', '*.jsp', '*.html'
   }
   from (new File(projectDir, 'build/classes/java/main')) {
-    include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/LogBackChannelLogout_logoutToken_Servlet.class'
+    include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/BackChannelLogout_logoutToken_Servlet.class'
+    include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/BackChannelLogout_Sleep_Servlet.class'
+    include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/BackChannelLogout_400_Servlet.class'
+    include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/BackChannelLogout_501_Servlet.class'
+    include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/BackChannelLogout_logMsg_Servlet.class'
+    include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/BackChannelLogout_logJSessionId_Servlet.class'
+    include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/utils/BackChannelLogout_utils.class'    
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** simpleLogoutTestApp.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task simpleLogoutTestApp_ZIP (type: Zip, dependsOn: classes) {
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'simpleLogoutTestApp.zip'
+
+  from (new File(projectDir, 'test-applications/simpleLogoutTestApp/resources')) {
+    include 'META-INF/**', 'WEB-INF/**', '*.jsp', '*.html'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/fat/simpleLogoutTestApps/SimpleLogout_Servlet.class'
     into 'WEB-INF/classes'
   }
 }
@@ -95,4 +121,4 @@ assemble.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 assemble.dependsOn ':com.ibm.ws.security.fat.common.social:assemble'
 assemble.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
 assemble.dependsOn backchannelLogoutTestApp_ZIP
-
+assemble.dependsOn simpleLogoutTestApp_ZIP

@@ -14,7 +14,6 @@
 		id="OidcConfigJtiSample"
 		jtiClaimEnabled="true"
 		signatureAlgorithm="HS256"
-		keyStoreRef="key_allSigAlg"
 		oauthProviderRef="OAuthConfigJtiSample" />
 
 	<oauthProvider
@@ -27,10 +26,7 @@
 			<client
 				name="client_jtiInOP"
 				secret="secret"
-				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				backchannelLogoutSessionRequired="false"
-				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				displayname="user1"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_jtiInOP"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_jtiInOP"
 				scope="ALL_SCOPES"
 				enabled="true"
@@ -43,7 +39,6 @@
 	<openidConnectProvider
 		id="OidcConfigIssuerSample"
 		signatureAlgorithm="HS256"
-		keyStoreRef="key_allSigAlg"
 		issuerIdentifier="someIssuer"
 		oauthProviderRef="OAuthConfigIssuerSample" />
 
@@ -59,10 +54,7 @@
 			<client
 				name="client_nonDefaultIssuer"
 				secret="secret"
-				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				backchannelLogoutSessionRequired="false"
-				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				displayname="user1"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_nonDefaultIssuer"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_nonDefaultIssuer"
 				scope="ALL_SCOPES"
 				enabled="true"
@@ -76,7 +68,6 @@
 		id="OidcConfigAudienceAllSample"
 		signatureAlgorithm="HS256"
 		audience="aud1"
-		keyStoreRef="key_allSigAlg"
 		oauthProviderRef="OAuthConfigAudienceAllSample" />
 
 	<oauthProvider
@@ -89,10 +80,7 @@
 			<client
 				name="client_nonDefaultAudienceAll"
 				secret="secret"
-				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				backchannelLogoutSessionRequired="false"
-				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				displayname="user1"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_nonDefaultAudienceAll"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_nonDefaultAudienceAll"
 				scope="ALL_SCOPES"
 				enabled="true"
@@ -106,7 +94,6 @@
 		id="OidcConfigAudienceOneSample"
 		signatureAlgorithm="HS256"
 		audience="aud1"
-		keyStoreRef="key_allSigAlg"
 		oauthProviderRef="OAuthConfigAudienceOneSample" />
 
 	<oauthProvider
@@ -119,16 +106,13 @@
 			<client
 				name="client_nonDefaultAudienceOne"
 				secret="secret"
-				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				backchannelLogoutSessionRequired="false"
-				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				displayname="user1"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_nonDefaultAudienceOne"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_nonDefaultAudienceOne"
 				scope="ALL_SCOPES"
 				enabled="true"
 			>
 			</client>
-						
+			
 		</localStore>
 	</oauthProvider>
 
@@ -136,7 +120,7 @@
 		id="OidcConfigAudienceMultipleSample"
 		signatureAlgorithm="HS256"
 		audience="aud1"
-		keyStoreRef="key_allSigAlg"
+
 		oauthProviderRef="OAuthConfigAudienceMultipleSample" />
 
 	<oauthProvider
@@ -149,10 +133,7 @@
 			<client
 				name="client_nonDefaultAudienceMultiple"
 				secret="secret"
-				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				backchannelLogoutSessionRequired="false"
-				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				displayname="user1"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_nonDefaultAudienceMultiple"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_nonDefaultAudienceMultiple"
 				scope="ALL_SCOPES"
 				enabled="true"
@@ -165,7 +146,7 @@
 	<openidConnectProvider
 		id="OidcConfigHS256Sample"
 		signatureAlgorithm="HS256"
-		keyStoreRef="key_allSigAlg"
+
 		oauthProviderRef="OAuthConfigHS256Sample" />
 
 	<oauthProvider
@@ -178,9 +159,7 @@
 			<client
 				name="client_hs256"
 				secret="secret"
-				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				displayname="user1"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_hs256"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_hs256"
 				scope="ALL_SCOPES"
 				enabled="true"
@@ -207,10 +186,7 @@
 			<client
 				name="client_rs256"
 				secret="secret"
-				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				backchannelLogoutSessionRequired="false"
-				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				displayname="user1"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_rs256"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_rs256"
 				scope="ALL_SCOPES"
 				enabled="true"
@@ -224,7 +200,6 @@
 		id="OidcConfigNonceSample"
 		nonceEnabled="true"
 		signatureAlgorithm="HS256"
-		keyStoreRef="key_allSigAlg"
 		oauthProviderRef="OAuthConfigNonceSample" />
 
 	<oauthProvider
@@ -237,10 +212,7 @@
 			<client
 				name="client_nonceInOP"
 				secret="secret"
-				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				backchannelLogoutSessionRequired="false"
-				postLogoutRedirectUris="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/logBackChannelLogoutUri"
-				displayname="user1"
+				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_nonceInOP"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_nonceInOP"
 				scope="ALL_SCOPES"
 				enabled="true"
