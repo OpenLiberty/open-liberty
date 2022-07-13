@@ -270,6 +270,7 @@ public class MicroProfileActions extends RepeatActions {
 
     private static final String[] STANDALONE9_FEATURES_ARRAY = { "mpContextPropagation-1.3",
                                                                  "mpGraphQL-2.0",
+                                                                 "mpTelemetry-1.0",
                                                                  "mpOpenAPI-3.1" };//,
 //                                                                 "mpLRA-2.0",
 //                                                                 "mpLRACoordinator-2.0",
