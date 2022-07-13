@@ -31,6 +31,8 @@ import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -156,7 +158,42 @@ public class HttpUtils {
         return createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
     }
     
-    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
+    public HttpClient createHttpClientWithCookieSpec(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, 
+            boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
+        
+        HttpClient client = null;
+        boolean isSecure = (url != null && url.startsWith("https:"));
+        if (isSecure) {
+            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
+            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
+            try {
+                SSLConnectionSocketFactory connectionFactory = null;
+                if (!isHostnameVerification) {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
+                } else {
+                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
+                }
+                RequestConfig rcfg = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
+                client = createBuilder(useSystemPropertiesForHttpClientConnections)
+                        .setDefaultCredentialsProvider(credentialsProvider)
+                        .setSSLSocketFactory(connectionFactory)
+                        .setDefaultRequestConfig(rcfg)
+                        .build();
+            } finally {
+                ThreadContextHelper.setClassLoader(origCL);
+            }
+        } else {
+            HttpClientBuilder clientBuilder = createBuilder(useSystemPropertiesForHttpClientConnections);
+            if (credentialsProvider != null) {
+                clientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+            }
+            client = clientBuilder.build();
+        }
+        return client;
+    }
+    
+    public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, 
+            boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
         HttpClient client = null;
         boolean isSecure = (url != null && url.startsWith("https:"));
         if (isSecure) {
@@ -191,7 +228,7 @@ public class HttpUtils {
         return useSystemProperties ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
     }
     
-    public BasicCredentialsProvider createCredentialsProvider(String username, String password) {
+    public BasicCredentialsProvider createCredentialsProvider(String username, @Sensitive String password) {
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
         return credentialsProvider; 
@@ -211,6 +248,7 @@ public class HttpUtils {
         }
         return null;
     }
+   
 
     String getHttpJsonRequestAsString(HttpClient httpClient, String url) throws SocialLoginWrapperException, IOException {
         List<NameValuePair> headers = new ArrayList<>();
@@ -218,6 +256,7 @@ public class HttpUtils {
 
         return getHttpRequestAsString(httpClient, url, headers);
     }
+    
 
     @FFDCIgnore({ AbstractHttpResponseException.class })
     String getHttpRequestAsString(HttpClient httpClient, String url, List<NameValuePair> headers) throws SocialLoginWrapperException, IOException {

@@ -63,6 +63,8 @@ import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.PemKeyUtil.KeyType;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
+import com.ibm.ws.security.common.http.HttpResponseNot200Exception;
+import com.ibm.ws.security.common.http.HttpResponseNullOrEmptyException;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.http.SocialLoginWrapperException;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -449,9 +451,9 @@ public class JwKRetriever {
                 sslSocketFactory = getSSLSocketFactory(locationUsed, sslConfigurationName, sslSupport);
             }
             HttpClient client = createHTTPClient(sslSocketFactory, locationUsed, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
-            jsonString = httpUtils.getHttpJsonRequest(client, locationUsed);
+            jsonString = getHTTPRequestAsString(client, locationUsed);
+            
             boolean bJwk = parseJwk(jsonString, null, jwkSet, sigAlg);
-
             if (!bJwk) {
                 // can not get back any JWK from OP
                 // since getJwkLocal will be called later and NO key exception
@@ -470,6 +472,45 @@ public class JwKRetriever {
         }
 
         return getJwkFromJWKSet(locationUsed, kid, x5t, use, jsonString, keyType);
+    }
+    
+    private String logCWWKS6049E(String url, int iStatusCode, String errMsg) {
+        // TODO - Message will be added to .nlsprops file under 222394
+        String defaultMessage = "CWWKS6049E: A JSON Web Key (JWK) was not returned from the URL [" + url
+                + "]. The response status was [" + iStatusCode + "] and the content returned was [" + errMsg + "].";
+
+        String message = TraceNLS.getFormattedMessage(getClass(),
+                "com.ibm.ws.security.jwt.internal.resources.JWTMessages", "JWT_JWK_RETRIEVE_FAILED",
+                new Object[] { url, Integer.valueOf(iStatusCode), errMsg }, defaultMessage);
+        Tr.error(JwKRetriever.tc, message, new Object[0]);
+        return message;
+    }
+    
+    @FFDCIgnore({ SocialLoginWrapperException.class })
+    protected String getHTTPRequestAsString(HttpClient client, String url) throws Exception, IOException {
+        String jsonString = null;
+        
+        try {
+            jsonString = httpUtils.getHttpJsonRequest(client, url);
+        } catch (SocialLoginWrapperException sle) {
+            Throwable cause = sle.getCause();
+            if (cause instanceof HttpResponseNullOrEmptyException) {
+                HttpResponseNullOrEmptyException ex = (HttpResponseNullOrEmptyException) cause;
+                throw new Exception(logCWWKS6049E(url, ex.getStatusCode(), jsonString));
+            } else if (cause instanceof HttpResponseNot200Exception) {
+                HttpResponseNot200Exception ex = (HttpResponseNot200Exception) cause;
+                throw new Exception(logCWWKS6049E(url, ex.getStatusCode(), jsonString));
+            } else if (cause instanceof IOException) {
+                IOException ioex = (IOException) cause;
+                logCWWKS6049E(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
+                throw ioex;
+            }
+        } catch (IOException ioex) {
+            logCWWKS6049E(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
+            throw ioex;
+        }
+        
+        return jsonString;
     }
 
     // separate to be an independent method for unit tests
