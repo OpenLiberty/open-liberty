@@ -15,11 +15,20 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.metamodel.Attribute;
+import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
+import jakarta.persistence.metamodel.EmbeddableType;
+import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.Metamodel;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -51,8 +60,11 @@ import io.openliberty.data.MappedSuperclass;
 public class DataPersistence {
     private static final String EOLN = String.format("%n");
 
-    private static final ConcurrentHashMap<//
-                    Entry<String, ClassLoader>, //
+    // provider name --> entity class --> upper case attribute name --> properly cased/qualified JPQL attribute name
+    private final Map<String, Map<Class<?>, LinkedHashMap<String, String>>> attributeNamesMap = new HashMap<>();
+
+    private final ConcurrentHashMap<//
+                    Entry<String, ClassLoader>, // (data access provider, class loader)
                     Entry<PersistenceServiceUnit, Map<Class<?>, String>>> units = new ConcurrentHashMap<>();
 
     @Reference(target = "(component.name=com.ibm.ws.threading)")
@@ -211,8 +223,61 @@ public class DataPersistence {
         PersistenceServiceUnit punit = dbstore.createPersistenceServiceUnit(loader,
                                                                             properties,
                                                                             entityClassNames.toArray(new String[entityClassNames.size()]));
+
+        EntityManager em = punit.createEntityManager();
+        try {
+            Metamodel model = em.getMetamodel();
+            for (EntityType<?> entityType : model.getEntities()) {
+                LinkedHashMap<String, String> attributeNames = new LinkedHashMap<>();
+                for (Attribute<?, ?> attr : entityType.getAttributes()) {
+                    String attributeName = attr.getName();
+                    if (PersistentAttributeType.EMBEDDED.equals(attr.getPersistentAttributeType())) {
+                        // TODO this only covers one level of embedded attributes, which is fine for now because this isn't a real implementation
+                        EmbeddableType<?> embeddable = model.embeddable(attr.getJavaType());
+                        for (Attribute<?, ?> embAttr : embeddable.getAttributes()) {
+                            String embeddableAttributeName = embAttr.getName();
+                            String fullAttributeName = attributeName + '.' + embeddableAttributeName;
+                            attributeNames.put(embeddableAttributeName.toUpperCase(), fullAttributeName);
+                        }
+                    } else {
+                        attributeNames.put(attributeName.toUpperCase(), attributeName);
+                    }
+                }
+
+                Map<Class<?>, LinkedHashMap<String, String>> attrNamesPerClassMap = attributeNamesMap.get(dbStoreId);
+                if (attrNamesPerClassMap == null)
+                    attributeNamesMap.put(dbStoreId, attrNamesPerClassMap = new HashMap<>());
+
+                attrNamesPerClassMap.put(entityType.getJavaType(), attributeNames);
+
+                System.out.println(attributeNames);
+
+                // TODO entityType.hasVersionAttribute() and entityType.getVersion(versionType) might be useful,
+                // but how is the version class parameter determined?
+            }
+        } catch (RuntimeException x) {
+            throw x;
+        } catch (Exception x) {
+            throw new RuntimeException(x);
+        } finally {
+            em.close();
+        }
+
         units.put(new SimpleImmutableEntry<>(dbStoreId, loader),
                   new SimpleImmutableEntry<>(punit, entityInfo));
+    }
+
+    String getAttributeName(String name, Class<?> entityClass, String provider) {
+        Map<Class<?>, LinkedHashMap<String, String>> attrNamesPerClassMap = attributeNamesMap.get(provider);
+        LinkedHashMap<String, String> attributeNames = attrNamesPerClassMap == null ? null : attrNamesPerClassMap.get(entityClass);
+        String attributeName = attributeNames == null ? null : attributeNames.get(name.toUpperCase());
+        return attributeName == null ? name : attributeName;
+    }
+
+    Collection<String> getAttributeNames(Class<?> entityClass, String provider) {
+        Map<Class<?>, LinkedHashMap<String, String>> attrNamesPerClassMap = attributeNamesMap.get(provider);
+        LinkedHashMap<String, String> attributeNames = attrNamesPerClassMap == null ? null : attrNamesPerClassMap.get(entityClass);
+        return attributeNames.values();
     }
 
     // TODO this is very inefficient, but works for now

@@ -565,7 +565,6 @@ public class DataTestServlet extends FATServlet {
         assertEquals("37th St NW", a.streetAddress.streetName);
         assertEquals(55901, a.zipCode);
 
-/* TODO generated query needs to find correct property name from subclass (with lower case f in floorNumber)
         WorkAddress[] secondFloorOfficesOn37th = shippingAddresses.findByStreetNameAndFloorNumber("37th St NW", 2);
 
         assertArrayEquals(new WorkAddress[] { work }, secondFloorOfficesOn37th,
@@ -577,7 +576,7 @@ public class DataTestServlet extends FATServlet {
                                           .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.streetAddress.streetName))
                                           .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
                                           .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.zipCode)));
-*/
+
         ShippingAddress[] found = shippingAddresses.findByStreetNameOrderByHouseNumber("37th St NW");
 
         assertArrayEquals(new ShippingAddress[] { work }, found,

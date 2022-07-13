@@ -25,15 +25,17 @@ import io.openliberty.data.Param;
  * A real implementation wouldn't do this.
  */
 public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable {
+    private final Class<?> entityClass;
     private final String jpql;
     private final Method method;
     private final int numParams; // can differ from args.length due to Pagination and Sort/Sorts
     private final Object[] args;
     private final QueryHandler<T> queryHandler;
 
-    PublisherImpl(String jpql, QueryHandler<T> queryHandler, Method method, int numParams, Object[] args) {
+    PublisherImpl(String jpql, QueryHandler<T> queryHandler, Class<?> entityClass, Method method, int numParams, Object[] args) {
         this.jpql = jpql;
         this.queryHandler = queryHandler;
+        this.entityClass = entityClass;
         this.method = method;
         this.numParams = numParams;
         this.args = args;
@@ -47,7 +49,7 @@ public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable
         try {
             em = queryHandler.punit.createEntityManager();
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryHandler.entityClass);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityClass);
             if (args != null) {
                 Parameter[] params = method.getParameters();
                 for (int i = 0; i < numParams; i++) {

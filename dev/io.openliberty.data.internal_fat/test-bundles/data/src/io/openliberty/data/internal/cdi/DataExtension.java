@@ -12,7 +12,6 @@ package io.openliberty.data.internal.cdi;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,7 +62,7 @@ public class DataExtension implements Extension {
     public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
         System.out.println("afterTypeDiscovery");
 
-        Map<Entry<String, ClassLoader>, Map<Class<?>, String>> entitiesMap = new HashMap<>();
+        Map<EntityGroupKey, Map<Class<?>, String>> entitiesMap = new HashMap<>();
 
         for (AnnotatedType<?> beanType : beanTypes) {
             Class<?> beanInterface = beanType.getJavaClass();
@@ -72,10 +71,10 @@ public class DataExtension implements Extension {
             Data data = beanType.getAnnotation(Data.class);
             String dataStore = data.provider();
 
-            Entry<String, ClassLoader> key = new SimpleImmutableEntry<>(dataStore, loader);
-            Map<Class<?>, String> entities = entitiesMap.get(key);
+            EntityGroupKey entityGroupKey = new EntityGroupKey(dataStore, loader);
+            Map<Class<?>, String> entities = entitiesMap.get(entityGroupKey);
             if (entities == null)
-                entitiesMap.put(key, entities = new HashMap<>());
+                entitiesMap.put(entityGroupKey, entities = new HashMap<>());
 
             Class<?> entityClass = data.value();
             if (void.class.equals(entityClass)) {
@@ -116,10 +115,10 @@ public class DataExtension implements Extension {
 
             for (Class<?> entityClass : anno.value()) {
                 ClassLoader loader = entityClass.getClassLoader();
-                Entry<String, ClassLoader> key = new SimpleImmutableEntry<>(dataStore, loader);
-                Map<Class<?>, String> entities = entitiesMap.get(key);
+                EntityGroupKey entityGroupKey = new EntityGroupKey(dataStore, loader);
+                Map<Class<?>, String> entities = entitiesMap.get(entityGroupKey);
                 if (entities == null)
-                    entitiesMap.put(key, entities = new HashMap<>());
+                    entitiesMap.put(entityGroupKey, entities = new HashMap<>());
 
                 String keyAttribute = getID(entityClass);
                 entities.put(entityClass, keyAttribute);
@@ -129,16 +128,16 @@ public class DataExtension implements Extension {
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         DataPersistence persistence = bc.getService(bc.getServiceReference(DataPersistence.class));
 
-        for (Entry<Entry<String, ClassLoader>, Map<Class<?>, String>> entry : entitiesMap.entrySet())
+        for (Entry<EntityGroupKey, Map<Class<?>, String>> entry : entitiesMap.entrySet()) {
+            EntityGroupKey entityGroupKey = entry.getKey();
+            Map<Class<?>, String> entityInfo = entry.getValue();
             try {
-                String dataStore = entry.getKey().getKey();
-                ClassLoader loader = entry.getKey().getValue();
-                Map<Class<?>, String> entityInfo = entry.getValue();
-                persistence.defineEntities(dataStore, loader, entityInfo);
+                persistence.defineEntities(entityGroupKey.provider, entityGroupKey.loader, entityInfo);
             } catch (Exception x) {
                 x.printStackTrace();
-                System.err.println("ERROR: Unable to define entities for " + entry.getKey().getKey() + ": " + entry.getValue());
+                System.err.println("ERROR: Unable to define entities for " + entityGroupKey.provider + ": " + entry.getValue());
             }
+        }
     }
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {

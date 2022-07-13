@@ -26,6 +26,7 @@ import io.openliberty.data.Param;
  */
 public class PaginatedIterator<T> implements Iterator<T> {
     private final Object[] args;
+    private final Class<?> entityClass;
     private int index;
     private Boolean hasNext;
     private final String jpql;
@@ -35,10 +36,12 @@ public class PaginatedIterator<T> implements Iterator<T> {
     private Pagination pagination;
     private final QueryHandler<T> queryHandler;
 
-    PaginatedIterator(String jpql, Pagination pagination, QueryHandler<T> queryHandler, Method method, int numParams, Object[] args) {
+    PaginatedIterator(String jpql, Pagination pagination, QueryHandler<T> queryHandler,
+                      Class<?> entityClass, Method method, int numParams, Object[] args) {
         this.jpql = jpql;
         this.pagination = pagination == null ? Pagination.page(1).size(100) : pagination;
         this.queryHandler = queryHandler;
+        this.entityClass = entityClass;
         this.method = method;
         this.numParams = numParams;
         this.args = args;
@@ -50,7 +53,7 @@ public class PaginatedIterator<T> implements Iterator<T> {
         EntityManager em = queryHandler.punit.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryHandler.entityClass);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityClass);
             if (args != null) {
                 Parameter[] params = method.getParameters();
                 for (int i = 0; i < numParams; i++) {
