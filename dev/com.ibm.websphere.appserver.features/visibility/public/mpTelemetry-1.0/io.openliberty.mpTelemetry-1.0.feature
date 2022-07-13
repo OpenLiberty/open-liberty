@@ -26,7 +26,6 @@ IBM-API-Package: \
   io.openliberty.grpcClient1.0.internal.ee-9.0,\
   io.openliberty.org.eclipse.microprofile.telemetry-1.0, \
   io.openliberty.grpcClient-1.0,\
-  io.openliberty.io.netty,\
   com.ibm.websphere.appserver.channelfw-1.0
 -bundles=\
   io.openliberty.com.fasterxml.jackson.jr, \
