@@ -40,6 +40,6 @@ IBM-API-Package: \
   com.ibm.ws.com.google.guava,\
   io.openliberty.microprofile.telemetry.internal.common,\
   io.openliberty.microprofile.telemetry.1.0.internal
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel 
