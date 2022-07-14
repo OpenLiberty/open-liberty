@@ -134,9 +134,6 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
             }
         }
 
-        // TODO this is temporarily tolerated with EE 9 features for the early concurrent-3.0 beta. Remove it before GA.
-        nonEE9JavaEEFeatures.remove("concurrent-3.0");
-
         incompatibleValueAddFeatures.add("openid-2.0"); // stabilized
         incompatibleValueAddFeatures.add("openapi-3.1"); // depends on mpOpenAPI
         incompatibleValueAddFeatures.add("opentracing-1.0"); // opentracing depends on mpConfig
