@@ -10,7 +10,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
     
-@RegisterRestClient(baseUri = "http://localhost:8010/webappWAR/endpoint")
+@RegisterRestClient(configKey="testClient")
 @Path("/server")
 public interface RESTclient extends AutoCloseable {
 

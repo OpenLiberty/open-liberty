@@ -1,5 +1,6 @@
 package restClient;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.net.URI;
@@ -14,20 +15,22 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.POST;
 
 @Path("client")
+@ApplicationScoped
 public class ClientEndpoints {
 
 	@Inject
 	@RestClient
-	public RESTclient restClient;
+	private RESTclient restClient;
 	
 	@Inject
 	@ConfigProperty(name = "default.http.port")
-	public String port;
+	private String port;
 	
 	@GET
-	@Path("default")
+	@Path("properties")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String produceOutput() {
 	    try {
@@ -38,21 +41,15 @@ public class ClientEndpoints {
 	    }
 	}
 	
-	@GET
-	@Path("{host}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String queryHost(@PathParam(value="host") String baseURI) {
+	@POST
+	@Path("setHost/{host}")
+	public void setHost(@PathParam(value="host") String baseURI) {
 	    String customURIString = "http://localhost:" + port + "/webappWAR/" + baseURI;
-	    try {
-	      URI customURI = URI.create(customURIString);
-	      RESTclient customRestClient = RestClientBuilder.newBuilder()
+	    URI customURI = URI.create(customURIString);
+	    RESTclient customRestClient = RestClientBuilder.newBuilder()
                   .baseUri(customURI)
                   .build(RESTclient.class);
-	      return customRestClient.getProperties();
-	    } catch (Exception e) {
-	    	e.printStackTrace();
-	    	return "Exception Thrown";
-	    }
+	    restClient = customRestClient;
 	}
 	
 }

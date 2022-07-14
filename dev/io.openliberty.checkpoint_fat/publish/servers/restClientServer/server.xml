@@ -21,8 +21,8 @@
     </featureManager>
 
 	<variable name="default.http.port" defaultValue="${bvt.prop.HTTP_default}"/>
-
-	<webApplication id="webappWAR" location="webappWAR.war"  name="webappWAR" contextRoot="webappWAR"/>
+	<variable id="testClient" name="testClient/mp-rest/uri" value="http://localhost:${bvt.prop.HTTP_default}/webappWAR/endpoint"/>
+	<webApplication id="webappWAR" location="webappWAR.war" name="webappWAR" contextRoot="webappWAR"/>
 	
 	<include location="../fatTestPorts.xml"/>
     <applicationManager autoExpand="true"/>
