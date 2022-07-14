@@ -181,12 +181,7 @@ public class EncryptionUtils {
 
     @Trivial
     protected byte[] hexStringToBytes(String string) throws NumberFormatException {
-        try {
-            return encodingUtils.hexStringToBytes(string);
-        } catch (NumberFormatException e) {
-            String errorMsg = Tr.formatMessage(tc, "VALUE_NOT_HEXADECIMAL");
-            throw new NumberFormatException(errorMsg);
-        }
+        return encodingUtils.hexStringToBytes(string);
     }
 
 }

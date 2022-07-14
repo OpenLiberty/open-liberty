@@ -54,8 +54,6 @@ public class EncryptionUtilsTest extends CommonTestClass {
     private final static String CLIENT_SECRET = "myClientSecret";
     private final static String LOWER_ALPHANUM_REGEX = "[a-z0-9]";
 
-    private final static String MSG_VALUE_NOT_HEXADECIMAL = "CWWKS1553E";
-
     private final int RSA_ENC_TOKEN_LENGTH = 512;
     private final int AES_ENC_TOKEN_LENGTH = 384;
     private final BigInteger keyModulus = BigInteger.probablePrime(512, new Random());
@@ -642,13 +640,11 @@ public class EncryptionUtilsTest extends CommonTestClass {
     @Test
     public void hexStringToBytes_notHexadecimal() throws Exception {
         try {
-            final String logAndExceptionMsg = MSG_VALUE_NOT_HEXADECIMAL;
-
             try {
                 byte[] result = utils.hexStringToBytes("Some non-hex value.");
                 fail("Should have thrown NumberFormatException but did not. Got result: " + result);
             } catch (NumberFormatException e) {
-                verifyException(e, logAndExceptionMsg);
+                // expected
             }
 
             verifyNoLogMessage(MSG_BASE);
