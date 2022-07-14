@@ -13,6 +13,11 @@ bVersion=1.0
 
 -include= jar:${fileuri;${repo;org.jboss.logging:jboss-logging;3.5.0.Final;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Bundle-SymbolicName: io.openliberty.org.jboss.logging35; singleton:=true
 
 -includeresource: \
