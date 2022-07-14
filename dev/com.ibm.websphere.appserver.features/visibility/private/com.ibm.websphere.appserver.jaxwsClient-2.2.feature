@@ -50,7 +50,7 @@ IBM-API-Package: \
   com.ibm.websphere.javaee.jws.1.0; location:="dev/api/spec/,lib/"; require-java:="9",\
   com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2, \
   com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
-  com.ibm.ws.jaxws.clientcontainer, \
+  com.ibm.ws.jaxws.2.3.clientcontainer, \
   com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
   com.ibm.ws.prereq.wsdl4j.1.6.2, \
   com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2, \

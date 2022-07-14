@@ -8,8 +8,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
+-include= ~../cnf/resources/bnd/transform.props
 
-Bundle-Name: JAX-WS 2.3 Common
-Bundle-SymbolicName: com.ibm.ws.jaxws.common
-Bundle-Description: IBM JAX-WS 2.3 Common; version=${bVersion}
-
+Bundle-Name: JAX-WS ClientContainer Jakarta
+Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.clientcontainer.jakarta
+Bundle-Description: IBM JAX-WS ClientContainer; version=${bVersion}; Jakarta Enabled

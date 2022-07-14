@@ -81,8 +81,8 @@ instrument.classesExcludes: com/ibm/ws/wsat/resources/*.class
   com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
   com.ibm.ws.jaxb.tools.2.2.10;version=latest,\
-  com.ibm.ws.jaxws.common;version=latest,\
-  com.ibm.ws.jaxws.clientcontainer;version=latest,\
+  com.ibm.ws.jaxws.2.3.common;version=latest,\
+  com.ibm.ws.jaxws.2.3.clientcontainer;version=latest,\
   com.ibm.ws.jaxws.webcontainer;version=latest,\
   com.ibm.ws.jaxws.wsat;version=latest,\
   com.ibm.ws.jdbc;version=latest,\

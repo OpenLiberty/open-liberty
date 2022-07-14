@@ -35,6 +35,6 @@ Export-Package: \
 	com.ibm.websphere.appserver.api.ssl;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.ssl;version=latest,\
-	com.ibm.ws.jaxws.clientcontainer;version=latest,\
+	com.ibm.ws.jaxws.2.3.clientcontainer;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -10,6 +10,6 @@ IBM-Process-Types: client
 -features=\
   com.ibm.websphere.appserver.jaxws.common-2.3
 -bundles=\
-  com.ibm.ws.jaxws.clientcontainer
+  com.ibm.ws.jaxws.2.3.clientcontainer
 kind=noship
 edition=full

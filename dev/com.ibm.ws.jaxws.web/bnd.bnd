@@ -57,7 +57,7 @@ Private-Package:\
 instrument.classesExcludes: com/ibm/ws/jaxws23/web/internal/resources/*.class
 
 -buildpath: \
-	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.webcontainer;version=latest, \
 	javax.jws:jsr181-api;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
