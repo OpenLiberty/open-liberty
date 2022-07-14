@@ -24,7 +24,8 @@ Subsystem-Name: Application Security 3.0
  com.ibm.ws.security.javaeesec.cdi, \
  com.ibm.ws.security.authentication.tai, \
  com.ibm.websphere.javaee.jaspic.1.1; location:=dev/api/spec/; mavenCoordinates="javax.security.auth.message:javax.security.auth.message-api:1.1", \
- com.ibm.ws.security.jaspic.1.1
+ com.ibm.ws.security.jaspic.1.1, \
+ io.openliberty.security.javaeesec.internal.cdi
 kind=ga
 edition=core
 -jars=com.ibm.websphere.appserver.spi.jaspic; location:=dev/spi/ibm/

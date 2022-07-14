@@ -40,7 +40,6 @@ Private-Package: \
 -cdiannotations:
 
 -dsannotations: \
-    com.ibm.ws.security.javaeesec.cdi.extensions.JavaEESecCDIExtension,\
     com.ibm.ws.security.javaeesec.cdi.extensions.SecurityContextHelper,\
     com.ibm.ws.security.javaeesec.cdi.extensions.IdentityStoreHandlerServiceImpl
 

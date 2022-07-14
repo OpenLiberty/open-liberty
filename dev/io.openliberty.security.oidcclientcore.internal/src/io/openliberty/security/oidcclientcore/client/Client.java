@@ -15,4 +15,10 @@ package io.openliberty.security.oidcclientcore.client;
  */
 public class Client {
 
+    private final OidcClientConfig oidcClientConfig;
+
+    public Client(OidcClientConfig oidcClientConfig) {
+        this.oidcClientConfig = oidcClientConfig;
+    }
+
 }

@@ -74,4 +74,5 @@ src: \
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
 	com.ibm.ws.security.javaeesec.cdi;version=latest,\
+	io.openliberty.security.javaeesec.internal.cdi;version=latest,\
 	com.ibm.ws.security.javaeesec_fat;version=latest

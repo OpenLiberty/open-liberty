@@ -8,14 +8,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+-include= ~../cnf/resources/bnd/transform.props
 
-javac.source: 11
-javac.target: 11
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
-
-Bundle-Name: Security 3.0 Internal
-Bundle-SymbolicName: io.openliberty.security.3.0.internal
-Bundle-Description: TODO
+Bundle-Name: Jakarta Security 2.0 CDI Extension
+Bundle-SymbolicName: io.openliberty.security.jakartasec.internal.cdi
+Bundle-Description: Jakarta Security 2.0 CDI Extension

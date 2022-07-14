@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ import com.ibm.ws.security.javaeesec.CDIHelper;
 /**
  * Class to help with evaulating EL expressions for identity stores.
  */
-class ELHelper {
+public class ELHelper {
     private static final String OBFUSCATED_STRING = "******";
     private static final TraceComponent tc = Tr.register(ELHelper.class);
 
@@ -53,8 +53,8 @@ class ELHelper {
      * Evaluate a possible EL expression.
      *
      * @param expression The expression to evaluate.
-     * @param mask Set whether to mask the expression and result. Useful for when passwords might be
-     *            contained in either the expression or the result.
+     * @param mask       Set whether to mask the expression and result. Useful for when passwords might be
+     *                       contained in either the expression or the result.
      * @return The evaluated expression.
      */
     @Trivial
@@ -103,7 +103,7 @@ class ELHelper {
      * @return True if the expression is a deferred EL expression.
      */
     @Trivial
-    static boolean isDeferredExpression(String expression) {
+    public static boolean isDeferredExpression(String expression) {
         return isDeferredExpression(expression, false);
     }
 
@@ -148,8 +148,8 @@ class ELHelper {
      * Return whether the expression is an immediate EL expression.
      *
      * @param expression The expression to evaluate.
-     * @param mask Set whether to mask the expression and result. Useful for when passwords might be
-     *            contained in either the expression or the result.
+     * @param mask       Set whether to mask the expression and result. Useful for when passwords might be
+     *                       contained in either the expression or the result.
      * @return True if the expression is an immediate EL expression.
      */
     @Trivial
@@ -177,13 +177,13 @@ class ELHelper {
      * the evaluated expression; otherwise, it
      * will return the non-EL value.
      *
-     * @param name The name of the property. Used for error messages.
-     * @param expression The EL expression returned from from the identity store definition.
-     * @param value The non-EL value.
+     * @param name          The name of the property. Used for error messages.
+     * @param expression    The EL expression returned from from the identity store definition.
+     * @param value         The non-EL value.
      * @param immediateOnly Return null if the value is a deferred EL expression.
      * @return Either the evaluated EL expression or the non-EL value.
      */
-    protected Integer processInt(String name, String expression, int value, boolean immediateOnly) {
+    public Integer processInt(String name, String expression, int value, boolean immediateOnly) {
         Integer result = null;
         boolean immediate = false;
 
@@ -213,15 +213,109 @@ class ELHelper {
         return (immediateOnly && !immediate) ? null : result;
     }
 
+    public Boolean processBoolean(String name, String expression, boolean value, boolean immediateOnly) {
+        Boolean result = null;
+        boolean immediate = false;
+
+        /*
+         * The expression language value takes precedence over the direct setting.
+         */
+        if (expression.isEmpty()) {
+            /*
+             * Direct setting.
+             */
+            result = value;
+        } else {
+            /*
+             * Evaluate the EL expression to get the value.
+             */
+            Object obj = evaluateElExpression(expression);
+            if (obj == null) {
+                throw new IllegalArgumentException("EL expression '" + expression + "' for '" + name + "' evaluated to null.");
+            } else if (obj instanceof Boolean) {
+                result = (Boolean) obj;
+                immediate = isImmediateExpression(expression);
+            } else {
+                throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a Boolean value.");
+            }
+        }
+
+        return (immediateOnly && !immediate) ? null : result;
+    }
+
+    @SuppressWarnings("unchecked")
+    @FFDCIgnore(Exception.class)
+    public <T> T processGeneric(String name, String expression, T value, boolean immediateOnly) {
+        T result = null;
+        boolean immediate = false;
+
+        /*
+         * The expression language value takes precedence over the direct setting.
+         */
+        if (expression.isEmpty()) {
+            /*
+             * Direct setting.
+             */
+            result = value;
+        } else {
+            /*
+             * Evaluate the EL expression to get the value.
+             */
+            Object obj = evaluateElExpression(expression);
+            if (obj == null) {
+                throw new IllegalArgumentException("EL expression '" + expression + "' for '" + name + "' evaluated to null.");
+            } else {
+                try {
+                    result = (T) obj;
+                    immediate = isImmediateExpression(expression);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a " + value.getClass().getName() + " value.");
+                }
+            }
+        }
+
+        return (immediateOnly && !immediate) ? null : result;
+    }
+
+    public String[] processStringArray(String name, String expression, String[] value, boolean immediateOnly) {
+        String[] result = null;
+        boolean immediate = false;
+
+        /*
+         * The expression language value takes precedence over the direct setting.
+         */
+        if (expression.isEmpty()) {
+            /*
+             * Direct setting.
+             */
+            result = value;
+        } else {
+            /*
+             * Evaluate the EL expression to get the value.
+             */
+            Object obj = evaluateElExpression(expression);
+            if (obj == null) {
+                throw new IllegalArgumentException("EL expression '" + expression + "' for '" + name + "' evaluated to null.");
+            } else if (obj instanceof String[]) {
+                result = (String[]) obj;
+                immediate = isImmediateExpression(expression);
+            } else {
+                throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a String[] value.");
+            }
+        }
+
+        return (immediateOnly && !immediate) ? null : result;
+    }
+
     /**
      * This method will process a configuration value for LdapSearchScope setting in
      * {@link LdapIdentityStoreDefinition}. It will first check to see if there is an
      * EL expression. It there is, it will return the evaluated expression; otherwise, it
      * will return the non-EL value.
      *
-     * @param name The name of the property. Used for error messages.
-     * @param expression The EL expression returned from from the identity store definition.
-     * @param value The non-EL value.
+     * @param name          The name of the property. Used for error messages.
+     * @param expression    The EL expression returned from from the identity store definition.
+     * @param value         The non-EL value.
      * @param immediateOnly Return null if the value is a deferred EL expression.
      * @return Either the evaluated EL expression or the non-EL value.
      */
@@ -263,14 +357,14 @@ class ELHelper {
      * is a EL expression. It it is, it will return the evaluated expression; otherwise, it
      * will return the literal String.
      *
-     * @param name The name of the property. Used for error messages.
-     * @param expression The value returned from from the identity store definition, which can
-     *            either be a literal String or an EL expression.
+     * @param name          The name of the property. Used for error messages.
+     * @param expression    The value returned from from the identity store definition, which can
+     *                          either be a literal String or an EL expression.
      * @param immediateOnly Return null if the value is a deferred EL expression.
      * @return The String value.
      */
     @Trivial
-    protected String processString(String name, String expression, boolean immediateOnly) {
+    public String processString(String name, String expression, boolean immediateOnly) {
         return processString(name, expression, immediateOnly, false);
     }
 
@@ -281,17 +375,17 @@ class ELHelper {
      * is a EL expression. It it is, it will return the evaluated expression; otherwise, it
      * will return the literal String.
      *
-     * @param name The name of the property. Used for error messages.
-     * @param expression The value returned from from the identity store definition, which can
-     *            either be a literal String or an EL expression.
+     * @param name          The name of the property. Used for error messages.
+     * @param expression    The value returned from from the identity store definition, which can
+     *                          either be a literal String or an EL expression.
      * @param immediateOnly Return null if the value is a deferred EL expression.
-     * @param mask Set whether to mask the expression and result. Useful for when passwords might
-     *            be contained in either the expression or the result.
+     * @param mask          Set whether to mask the expression and result. Useful for when passwords might
+     *                          be contained in either the expression or the result.
      * @return The String value.
      */
     @FFDCIgnore(ELException.class)
     @Trivial
-    protected String processString(String name, String expression, boolean immediateOnly, boolean mask) {
+    public String processString(String name, String expression, boolean immediateOnly, boolean mask) {
 
         final String methodName = "processString";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -330,16 +424,16 @@ class ELHelper {
      * It will first check to see if there is an EL expression. It there is, it will return
      * the evaluated expression; otherwise, it will return the non-EL value.
      *
-     * @param name The name of the property. Used for error messages.
-     * @param expression The EL expression returned from from the identity store definition.
+     * @param name          The name of the property. Used for error messages.
+     * @param expression    The EL expression returned from from the identity store definition.
      * @param immediateOnly Return null if the value is a deferred EL expression.
-     * @param mask Set whether to mask the expression and result. Useful for when passwords might be
-     *            contained in either the expression or the result.
+     * @param mask          Set whether to mask the expression and result. Useful for when passwords might be
+     *                          contained in either the expression or the result.
      * @return Either the evaluated EL expression or the non-EL value.
      */
     @FFDCIgnore(ELException.class)
     @Trivial
-    protected String[] processStringArray(String name, String expression, boolean immediateOnly, boolean mask) {
+    public String[] processStringArray(String name, String expression, boolean immediateOnly, boolean mask) {
 
         final String methodName = "processStringArray";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -377,11 +471,11 @@ class ELHelper {
      * It will first check to see if there is an EL expression. It there is, it will return
      * the evaluated expression; otherwise, it will return the non-EL value.
      *
-     * @param name The name of the property. Used for error messages.
-     * @param expression The EL expression returned from from the identity store definition.
+     * @param name          The name of the property. Used for error messages.
+     * @param expression    The EL expression returned from from the identity store definition.
      * @param immediateOnly Return null if the value is a deferred EL expression.
-     * @param mask Set whether to mask the expression and result. Useful for when passwords might be
-     *            contained in either the expression or the result.
+     * @param mask          Set whether to mask the expression and result. Useful for when passwords might be
+     *                          contained in either the expression or the result.
      * @return Either the evaluated EL expression or the non-EL value.
      */
     @FFDCIgnore(ELException.class)
@@ -423,8 +517,8 @@ class ELHelper {
      * the EL expression or the direct useFor setting.
      *
      * @param useForExpression The EL expression returned from from the identity store definition.
-     * @param useFor The non-EL value.
-     * @param immediateOnly Return null if the value is a deferred EL expression.
+     * @param useFor           The non-EL value.
+     * @param immediateOnly    Return null if the value is a deferred EL expression.
      *
      * @return The validated useFor types.
      */
@@ -492,8 +586,8 @@ class ELHelper {
      * Remove the brackets from an EL expression.
      *
      * @param expression The expression to remove the brackets from.
-     * @param mask Set whether to mask the expression and result. Useful for when passwords might
-     *            be contained in either the expression or the result.
+     * @param mask       Set whether to mask the expression and result. Useful for when passwords might
+     *                       be contained in either the expression or the result.
      * @return The EL expression without the brackets.
      */
     @Trivial

@@ -4,8 +4,10 @@ visibility=public
 singleton=true
 IBM-API-Package: jakarta.security.enterprise; type="spec", \
  jakarta.security.enterprise.authentication.mechanism.http; type="spec", \
+ jakarta.security.enterprise.authentication.mechanism.http.openid; type="spec", \
  jakarta.security.enterprise.credential; type="spec", \
  jakarta.security.enterprise.identitystore; type="spec", \
+ jakarta.security.enterprise.identitystore.openid; type="spec", \
  jakarta.security.auth.message; type="spec", \
  jakarta.security.auth.message.callback; type="spec", \
  jakarta.security.auth.message.config; type="spec", \
@@ -25,6 +27,8 @@ Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
 -bundles=\
   io.openliberty.security.jakartasec.2.0.internal, \
   io.openliberty.security.jakartasec.2.0.internal.cdi, \
+  io.openliberty.security.jakartasec.3.0.internal, \
+  io.openliberty.security.jakartasec.3.0.internal.cdi, \
   io.openliberty.security.authentication.internal.filter, \
   io.openliberty.security.authentication.internal.tai, \
   io.openliberty.security.sso.internal, \

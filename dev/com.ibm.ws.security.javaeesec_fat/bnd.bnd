@@ -76,6 +76,7 @@ src: \
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest, \
 	com.ibm.ws.security.javaeesec.cdi;version=latest,\
+	io.openliberty.security.javaeesec.internal.cdi;version=latest,\
 	org.apache.derby:derby;version=10.11.1.1,\
 	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
 	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\

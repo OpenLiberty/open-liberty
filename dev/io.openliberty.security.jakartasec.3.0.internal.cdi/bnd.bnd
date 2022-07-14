@@ -1,0 +1,67 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
+bVersion=1.0
+
+# Only publish the Jakarta one
+publish.wlp.jar.include: io.openliberty.security.jakartasec.3.0.internal.cdi.jar
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+WS-TraceGroup: JAKARTASEC 
+
+Export-Package: \
+    io.openliberty.security.jakartasec.cdi.beans, \
+    io.openliberty.security.jakartasec.cdi.extensions
+
+Import-Package: \
+	!*.internal.*,\
+	!com.ibm.ws.kernel.boot.cmdline,\
+	*   
+
+Private-Package: \
+    io.openliberty.security.jakartasec.cdi.internal.*,\
+    com.ibm.ws.security.javaeesec.cdi.beans,\
+    com.ibm.ws.security.javaeesec.cdi.beans.hash,\
+    com.ibm.ws.security.javaeesec.cdi.extensions
+
+Include-Resource: \
+    META-INF=resources/META-INF
+#    OSGI-INF=resources/OSGI-INF
+
+src: src, resources
+
+-cdiannotations:
+
+-dsannotations: \
+    io.openliberty.security.jakartasec.cdi.extensions.JakartaSecurity30CDIExtensionMetadata
+
+# com.ibm.websphere.javaee.cdi.2.0 included for build dependency on javax.enterprise.inject.spi when extending CommonJavaEESecCDIExtension
+-buildpath: \
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.jakarta.cdi.4.0,\
+	io.openliberty.jakarta.security.3.0,\
+	io.openliberty.jakarta.servlet.6.0,\
+	io.openliberty.security.jakartasec.3.0.internal,\
+	io.openliberty.security.oidcclientcore.internal,\
+	com.ibm.ws.security.javaeesec.1.0,\
+	com.ibm.ws.security.javaeesec.cdi,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0
+		

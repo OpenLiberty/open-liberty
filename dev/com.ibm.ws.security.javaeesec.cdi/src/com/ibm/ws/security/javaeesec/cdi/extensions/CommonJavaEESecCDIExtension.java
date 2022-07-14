@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,18 +34,15 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.DeploymentException;
-import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.inject.spi.WithAnnotations;
-import javax.security.enterprise.authentication.mechanism.http.AutoApplySession;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
-import javax.security.enterprise.authentication.mechanism.http.RememberMe;
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
@@ -54,20 +51,17 @@ import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.PasswordHash;
 import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
-import org.osgi.service.component.annotations.Component;
-
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.security.javaeesec.ApplicationUtils;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
-import com.ibm.ws.security.javaeesec.ApplicationUtils;
 import com.ibm.ws.threadContext.ModuleMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
@@ -75,18 +69,9 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
-/**
- * TODO: Add all JSR-375 API classes that can be bean types to api.classes.
- *
- * @param <T>
- */
-@Component(service = { WebSphereCDIExtension.class },
-           property = { "api.classes=javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;javax.security.enterprise.identitystore.IdentityStore;javax.security.enterprise.identitystore.IdentityStoreHandler;javax.security.enterprise.identitystore.RememberMeIdentityStore;javax.security.enterprise.SecurityContext;com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider",
-                        "bean.defining.annotations=javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;javax.security.enterprise.authentication.mechanism.http.LoginToContinue;javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;javax.security.enterprise.identitystore.LdapIdentityStoreDefinition" },
-           immediate = true)
-public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtension {
+public class CommonJavaEESecCDIExtension<T> {
 
-    private static final TraceComponent tc = Tr.register(JavaEESecCDIExtension.class);
+    private static final TraceComponent tc = Tr.register(CommonJavaEESecCDIExtension.class);
 
     // TODO: Track beans by annotated type
     private final Set<Bean> beansToAdd = new HashSet<Bean>();
@@ -100,7 +85,11 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         processAnnotatedType(processAnnotatedType, beanManager);
     }
 
-    public <T> void processAnnotatedHAMandIS(@Observes @WithAnnotations({BasicAuthenticationMechanismDefinition.class, FormAuthenticationMechanismDefinition.class, CustomFormAuthenticationMechanismDefinition.class, LdapIdentityStoreDefinition.class, DatabaseIdentityStoreDefinition.class, LoginToContinue.class}) ProcessAnnotatedType<T> processAnnotatedType, BeanManager beanManager) {
+    public <T> void processAnnotatedHAMandIS(@Observes @WithAnnotations({ BasicAuthenticationMechanismDefinition.class, FormAuthenticationMechanismDefinition.class,
+                                                                          CustomFormAuthenticationMechanismDefinition.class, LdapIdentityStoreDefinition.class,
+                                                                          DatabaseIdentityStoreDefinition.class,
+                                                                          LoginToContinue.class }) ProcessAnnotatedType<T> processAnnotatedType,
+                                             BeanManager beanManager) {
         processAnnotatedType(processAnnotatedType, beanManager);
     }
 
@@ -153,8 +142,19 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             } else if (DatabaseIdentityStoreDefinition.class.equals(annotationType)) {
                 createDatabaseIdentityStoreBeanToAdd(beanManager, annotation, annotationType);
                 identityStoreRegistered = true;
+            } else if (isKnownType(annotationType)) {
+                processKnownType(beanManager, annotation, annotationType, javaClass);
             }
         }
+    }
+
+    // Subclasses can override this method to indicate that they know this annotation
+    public boolean isKnownType(Class<? extends Annotation> annotationType) {
+        return false;
+    }
+
+    // Subclasses can override this method to process new annotations
+    public <T> void processKnownType(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType, Class<?> annotatedClass) {
     }
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
@@ -229,7 +229,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
     }
 
-    public void processCustomFormAuthMechNeeded(@Observes ProcessBeanAttributes<CustomFormAuthenticationMechanism>  processBeanAttributes, BeanManager beanManager) {
+    public void processCustomFormAuthMechNeeded(@Observes ProcessBeanAttributes<CustomFormAuthenticationMechanism> processBeanAttributes, BeanManager beanManager) {
         if (!existAuthMech(CustomFormAuthenticationMechanism.class)) {
             processBeanAttributes.veto();
             if (tc.isDebugEnabled()) {
@@ -285,8 +285,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     /**
      * @param beanManager
-     * @param ltc LoginToContinue annotation if it exists.
-     * @param implClass the implementation class
+     * @param ltc         LoginToContinue annotation if it exists.
+     * @param implClass   the implementation class
      */
     @SuppressWarnings("rawtypes")
     private void createModulePropertiesProviderBeanForApplicationAuthMechToAdd(BeanManager beanManager, Annotation ltc, Class implClass) {
@@ -327,7 +327,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
     }
 
-    private void addAuthMech(Class<?> annotatedClass, Class<?> implClass, Properties props) {
+    protected void addAuthMech(Class<?> annotatedClass, Class<?> implClass, Properties props) {
         Map<String, ModuleProperties> moduleMap = getModuleMap();
         String moduleName = getModuleFromClass(annotatedClass, moduleMap);
         if (tc.isDebugEnabled())
@@ -670,7 +670,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                disd1.useForExpression().equals(disd2.useForExpression());
     }
 
-    private boolean equalsHashAlgorithmParameters(String[] params1,  String[] params2) {
+    private boolean equalsHashAlgorithmParameters(String[] params1, String[] params2) {
         // don't need to consider null.
         if (params1 == params2) {
             return true;
@@ -774,7 +774,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     protected String getClassFileLocation(Class klass) {
         return klass.getProtectionDomain().getCodeSource().getLocation().getFile();
     }
-
 
     private DatabaseIdentityStoreDefinition getInstanceOfDBAnnotation(final Map<String, Object> overrides) {
         DatabaseIdentityStoreDefinition annotation = new DatabaseIdentityStoreDefinition() {
@@ -1026,7 +1025,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         loginURL = FixUpUrl(loginURL, contextRoot);
         errorURL = FixUpUrl(errorURL, contextRoot);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "The container provided FormAuthenticationMechanism will be used with the following attributes. login page  : " + loginURL + ", error page : " + errorURL + ", context root : " + contextRoot);
+            Tr.debug(tc, "The container provided FormAuthenticationMechanism will be used with the following attributes. login page  : " + loginURL + ", error page : " + errorURL
+                         + ", context root : " + contextRoot);
         }
         Properties props = new Properties();
         if (loginURL != null) {
@@ -1049,7 +1049,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      * There are two condtions when the global login setting needs to be used:
      * 1. when overrideHttpAuthMethod attribute is set to FORM or BASIC.
      * 2. when overrideHttpAuthMethod attribute is set to CLIENT_CERT, and allowAuthenticationFailOverToAuthMethod
-     *    attribute is set to BASIC or FORM.
+     * attribute is set to BASIC or FORM.
      */
     private boolean isAuthMechOverridden() {
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
@@ -1117,7 +1117,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return output;
     }
 
-    private boolean existAuthMech(Class authMechToExist) {
+    protected boolean existAuthMech(Class authMechToExist) {
         Map<Class<?>, Properties> authMechs = null;
         Map<String, ModuleProperties> moduleMap = getModuleMap();
         for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {

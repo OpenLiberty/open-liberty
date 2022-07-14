@@ -18,6 +18,7 @@ dependencies {
                project(':fattest.simplicity'),
                project(':com.ibm.ws.webcontainer.security_test.servlets'),
                project(':com.ibm.ws.security.javaeesec.cdi'),
+               project(':io.openliberty.security.javaeesec.internal.cdi'),
                project(':com.ibm.ws.security.javaeesec_fat')
 }
 
