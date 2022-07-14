@@ -592,6 +592,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
 
     @Override
     public boolean isUseContextRootAsCookiePath() {
-        return useContextRootAsCookiePath;
+        return true;
+//        return useContextRootAsCookiePath;
     }
 }
