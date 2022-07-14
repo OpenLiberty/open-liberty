@@ -16,20 +16,21 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 DDTimeoutTest.class,
-//                ForcePrepareTest.class,
-//                OnePCOptimizationDisabledTest.class,
-//                TimeoutTest.class,
-//                UOWEventListenerTest.class,
+                ForcePrepareTest.class,
+                OnePCOptimizationDisabledTest.class,
+                TimeoutTest.class,
+                UOWEventListenerTest.class,
 })
 public class FATSuite {
+
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES())
-                    .andWith(new JakartaEE9Action());
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
 }

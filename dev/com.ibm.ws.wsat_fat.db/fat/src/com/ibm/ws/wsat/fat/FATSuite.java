@@ -37,5 +37,6 @@ public class FATSuite {
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly()
                             .removeFeature("jaxws-2.2").alwaysAddFeature("jaxws-2.3").withID("jaxws-2.3"))
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3")); 
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3"))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("jaxws-2.3")); 
 }

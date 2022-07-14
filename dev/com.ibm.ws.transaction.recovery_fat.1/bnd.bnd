@@ -23,14 +23,20 @@ fat.project: true
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, servlet-4.0 is added programmatically at runtime by the RepeatTests rule.
 tested.features:\
-  cdi-2.0,\
-  cdi-3.0,\
+  cdi-2.0, cdi-3.0, cdi-4.0,\
+  connectors-2.0, connectors-2.1,\
+  enterprisebeans-4.0,\
+  enterprisebeanshome-4.0,\
+  enterprisebeanslite-4.0,\
+  enterprisebeanspersistenttimer-4.0,\
+  enterprisebeansremote-4.0,\
   jaxrs-2.1,\
   jaxrsclient-2.1,\
   jdbc-4.2,\
   jsonp-1.1,\
-  servlet-4.0,\
-  servlet-5.0
+  mdb-4.0,\
+  servlet-4.0, servlet-5.0, servlet-6.0,\
+  xmlbinding-3.0, xmlbinding-4.0
 
 #  jpacontainer-2.2,\
 #  jpa-2.2,\
