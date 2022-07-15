@@ -1,2 +1,3 @@
 #com.ibm.ws.security.oidc.client_fat.backchannelLogout.saml
+com.ibm.ws.security.oidc.social_fat.backchannelLogout
 com.ibm.ws.security.social_fat.LibertyOP.backchannelLogout

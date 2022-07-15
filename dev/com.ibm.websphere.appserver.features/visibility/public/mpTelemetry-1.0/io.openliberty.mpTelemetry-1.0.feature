@@ -35,7 +35,7 @@ IBM-API-Package: \
   io.openliberty.accesslists.internal, \
   com.ibm.ws.managedobject,\
   io.openliberty.grpc.1.0.internal.common.jakarta,\
-  io.openliberty.io.grpc.netty.shaded.jakarta, \
+  io.openliberty.io.grpc.netty.shaded, \
   com.ibm.ws.cdi.interfaces.jakarta, \
   com.ibm.ws.com.google.guava,\
   io.openliberty.microprofile.telemetry.internal.common,\
