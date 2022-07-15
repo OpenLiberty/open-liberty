@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<taglib-cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.ibm.com/xml/ns/TagLibCacheConfig.xsd">
+	<implict-taglib>
+		<uri>http://websphere.ibm.com/tags/tsx</uri>
+		<prefix>tsx</prefix>
+		<location>/com/ibm/ws/jsp/tsx/tag/tsx.tld</location>
+	</implict-taglib>
+	<implict-taglib>
+		<uri>http://websphere.ibm.com/tags/jsx</uri>
+		<prefix>jsxFunction</prefix>
+		<location>/com/ibm/ws/jsp/jsx/tags/jsxFunction.tld</location>
+	</implict-taglib>
+	<global-taglib>
+		<jar-name>standard.tags.3.0.jar</jar-name>
+
+		<!-- New URIs added in verision 3.0 / EE10 -->
+		<tld-path path="META-INF/c.tld" uri="jakarta.tags.core"/>
+		<tld-path path="META-INF/fmt.tld" uri="jakarta.tags.fmt"/>>
+		<tld-path path="META-INF/fn.tld" uri="jakarta.tags.functions"/>
+		<tld-path path="META-INF/permittedTaglibs.tld" uri="jakarta.tags.permittedTaglibs"/>
+		<tld-path path="META-INF/scriptfree.tld" uri="jakarta.tags.scriptfree"/>
+		<tld-path path="META-INF/sql.tld" uri="jakarta.tags.sql"/>>
+		<tld-path path="META-INF/x.tld" uri="jakarta.tags.xml"/>
+
+		<!-- OLD URIs Kept for Backwards compatbility (File renamed) -->
+        <tld-path path="META-INF/c-1_2.tld" uri="http://java.sun.com/jsp/jstl/core"/>
+        <tld-path path="META-INF/fmt-1_1.tld" uri="http://java.sun.com/jsp/jstl/fmt"/>
+        <tld-path path="META-INF/fn-1_1.tld" uri="http://java.sun.com/jsp/jstl/functions"/>
+        <tld-path path="META-INF/sql-1_1.tld" uri="http://java.sun.com/jsp/jstl/sql"/>
+        <tld-path path="META-INF/x-1_1.tld" uri="http://java.sun.com/jsp/jstl/xml"/>
+        <tld-path path="META-INF/permittedTaglibs-1_1.tld" uri="http://jakarta.apache.org/taglibs/standard/permittedTaglibs"/>
+        <tld-path path="META-INF/scriptfree.tld-1_1" uri="http://jakarta.apache.org/taglibs/standard/scriptfree"/>
+
+		<!-- Untouched  -->
+        <tld-path path="META-INF/c-1_0.tld" uri="http://java.sun.com/jstl/core"/>
+        <tld-path path="META-INF/c-1_0-rt.tld" uri="http://java.sun.com/jstl/core_rt"/>
+        <tld-path path="META-INF/fmt-1_0.tld" uri="http://java.sun.com/jstl/fmt"/>
+        <tld-path path="META-INF/fmt-1_0-rt.tld" uri="http://java.sun.com/jstl/fmt_rt"/>
+        <tld-path path="META-INF/sql-1_0.tld" uri="http://java.sun.com/jstl/sql"/>
+        <tld-path path="META-INF/sql-1_0-rt.tld" uri="http://java.sun.com/jstl/sql_rt"/>
+        <tld-path path="META-INF/x-1_0.tld" uri="http://java.sun.com/jstl/xml"/>
+        <tld-path path="META-INF/x-1_0-rt.tld" uri="http://java.sun.com/jstl/xml_rt"/>
+
+	</global-taglib>
+    <global-taglib>
+        <jar-name>ard.jar</jar-name>
+        <tld-path path="META-INF/ard.tld" uri="http://www.ibm.com/jsp/ard"/>
+    </global-taglib> 
+</taglib-cache-config>
+                
