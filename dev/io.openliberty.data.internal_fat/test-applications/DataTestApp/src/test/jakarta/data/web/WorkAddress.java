@@ -10,28 +10,15 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import io.openliberty.data.Embeddable;
+import io.openliberty.data.DiscriminatorValue;
 
 /**
  *
  */
-@Embeddable
-public class StreetAddress {
+@DiscriminatorValue("Work")
+public class WorkAddress extends ShippingAddress {
 
-    public int houseNumber;
+    public int floorNumber;
 
-    public String streetName;
-
-    public StreetAddress() {
-    }
-
-    public StreetAddress(int houseNumber, String streetName) {
-        this.houseNumber = houseNumber;
-        this.streetName = streetName;
-    }
-
-    @Override
-    public String toString() {
-        return "StreetAddress@" + Integer.toHexString(hashCode()) + ": " + houseNumber + " " + streetName;
-    }
+    public String office;
 }
