@@ -140,8 +140,6 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
 
     private volatile Timer timedLogRollover_Timer = new Timer();
 
-    private static Boolean isBetaEdition;
-
     /**
      * Constructor of this NCSA access log file.
      *
@@ -235,21 +233,7 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
             stop();
         }
 
-        if (betaFenceCheck())
-            scheduleTimeBasedLogRollover(config);
-    }
-
-    public Boolean betaFenceCheck() {
-        //TraceComponent tc = Tr.register(BaseTraceService.class);
-        if (isBetaEdition == null) {
-            if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
-                isBetaEdition = true;
-            } else {
-                Tr.warning(tc, "The 'rolloverInterval' and 'rolloverStartTime' logging format options are in beta and are not available in this version of OpenLiberty.");
-                isBetaEdition = false;
-            }
-        }
-        return isBetaEdition;
+        scheduleTimeBasedLogRollover(config);
     }
 
     /**
