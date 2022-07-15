@@ -79,7 +79,7 @@ public class LTPATokenizer {
      */
     @FFDCIgnore(Exception.class)
     protected static final String[] parseToken(String tokenStr) throws InvalidTokenException {
-        String[] fields = new String[3];
+        String[] fields = null;
         int tokenLen = tokenStr.length();
         char c;
 
@@ -113,11 +113,15 @@ public class LTPATokenizer {
             // Notice: Liberty only supports LTPAToken2
             if (expireBegin == -1) {
                 // Support only LTPAToken2 expire format
+                // Token format: userData % sign
                 expireBegin = signBegin;
+                fields = new String[2];
                 fields[0] = tokenStr.substring(0, expireBegin - 1);
                 fields[1] = tokenStr.substring(expireBegin, tokenLen);
             } else {
                 // two DELIM encountered for LTPAToken and LTPAToken2
+                // Token format: userData % expiration % sign
+                fields = new String[3];
                 fields[0] = tokenStr.substring(0, expireBegin - 1);
                 fields[1] = tokenStr.substring(expireBegin, signBegin - 1);
                 fields[2] = tokenStr.substring(signBegin, tokenLen);
