@@ -31,8 +31,6 @@ import com.ibm.ws.logging.data.LogTraceData;
  */
 public class CollectorJsonUtils {
 
-    static boolean betaSysProp = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-
     public static final int MAX_USER_AGENT_LENGTH = 2048;
     private static final int LOGSTASH_KEY = CollectorConstants.KEYS_LOGSTASH;
 
@@ -143,13 +141,6 @@ public class CollectorJsonUtils {
 
         StringBuilder formattedValue = new StringBuilder(CollectorJsonHelpers.formatMessage(message, maxFieldLength));
 
-        if (betaSysProp == false) {
-            String oldThrowable = logData.getThrowable();
-            if (oldThrowable != null) {
-                formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(oldThrowable);
-            }
-        }
-
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
 
         //@formatter:off
@@ -164,14 +155,12 @@ public class CollectorJsonUtils {
                    .addField(LogTraceData.getSequenceKey(LOGSTASH_KEY, isMessageEvent), logData.getSequence(), false, true);
         //@formatter:on
 
-        //append Throwable informatoin (i.e. exception name and stacktrace)
-        if (betaSysProp == true) {
-            String exceptionName = logData.getExceptionName();
-            String throwable = logData.getThrowable();
-            if (exceptionName != null && throwable != null) {
-                jsonBuilder.addField(LogTraceData.getExceptionNameKey(LOGSTASH_KEY, isMessageEvent), exceptionName, false, true);
-                jsonBuilder.addField(LogTraceData.getStackTraceKey(LOGSTASH_KEY, isMessageEvent), throwable, false, true);
-            }
+        //append Throwable information (i.e. exception name and stacktrace)
+        String exceptionName = logData.getExceptionName();
+        String throwable = logData.getThrowable();
+        if (exceptionName != null && throwable != null) {
+            jsonBuilder.addField(LogTraceData.getExceptionNameKey(LOGSTASH_KEY, isMessageEvent), exceptionName, false, true);
+            jsonBuilder.addField(LogTraceData.getStackTraceKey(LOGSTASH_KEY, isMessageEvent), throwable, false, true);
         }
 
         ArrayList<KeyValuePair> extensions = null;
