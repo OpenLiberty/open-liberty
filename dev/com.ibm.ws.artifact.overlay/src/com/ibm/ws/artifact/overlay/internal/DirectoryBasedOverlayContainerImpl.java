@@ -1237,26 +1237,52 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         // If the overlay does not exist, the overlay directory is required
         // to be empty.  (Note: We do not do the corresponding test if the
         // overlay exists, which would be that the overlay be the only
-        // file in the overlay directory.)
+        // file in the overlay directory.)  It is not clear why the overlay
+        // directory is required to have at most the overlay file.
 
-        if (FileUtils.fileExists(overlay)) {
-            if (!FileUtils.fileIsDirectory(overlay)) {
-                String path = overlay.getAbsolutePath();
-                Tr.error(tc, "overlay.exists.not.directory", path);
-                throw new IllegalArgumentException("Overlay [ " + path + " ] exists but is not a directory");
+        if (!checkOverlay(overlay)) {
+            File[] overlayFiles = FileUtils.listFiles(overlayDir);
+            if (overlayFiles.length == 0) {
+                // Expected: The overlay directory is empty.  Create the overlay file.
+                FileUtils.fileMkDir(overlay);
+
             } else {
-                // We don't care if the overlay directory has any other elements!
+                // Expected, but only if the overlay directory is a singleton and the
+                // overlay file is the only element, and the overlay file exists and
+                // is a directory
+
+                // Normally, 'checkOverlay' cannot answer true, above, and false, here.
+                // The value can change because multiple equal directory overlays can
+                // exist, and these can concurrently create the overlay file.
+
+                // Since the directory overlays are independent instances, normal
+                // synchronization won't work.  A new "file name" based lock would be
+                // needed.  As an (ugly) work-around, the code handles the concurrent
+                // creation of the overlay file by doing 'checkOverlay' twice.
+
+                boolean isValid;
+                if (isValid = (overlayFiles.length == 1)) { // Maybe valid ...
+                    File firstFile = overlayFiles[0];
+                    if (isValid = firstFile.getName().equals(".overlay")) { // .. still maybe valid ...
+                        if (!checkOverlay(firstFile)) { // No longer exists!
+                            throw new IllegalStateException("Strange: Inconsistent overlay [ " + firstFile.getAbsolutePath() + " ]");
+                        } else {
+                            // Exists and is a directory ... valid.
+                        }
+                    }
+                }
+                if (!isValid) {
+                    String path = overlayDir.getAbsolutePath();
+                    Tr.error(tc, "overlay.not.empty", path);
+                    throw new IllegalArgumentException("Overlay [ " + path + " ] is not empty");
+                }
             }
 
         } else {
-            if (FileUtils.listFiles(overlayDir).length != 0) {
-                // Why do we care if the overlay directory is not empty?
-                String path = overlayDir.getAbsolutePath();
-                Tr.error(tc, "overlay.not.empty", path);
-                throw new IllegalArgumentException("Overlay [ " + path + " ] is not empty");
-            } else {
-                FileUtils.fileMkDir(overlay);
-            }
+            // Expected: The overlay file exists and is a directory.
+            //
+            // We don't care if there are any other files, which is inconsistent
+            // with the other branch.
         }
 
         this.overlayDirectory = overlay;
@@ -1280,6 +1306,21 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
             this.isPassThroughMode = true;
         } else {
             this.isPassThroughMode = false;
+        }
+    }
+
+    private boolean checkOverlay(File overlay) {
+        if (FileUtils.fileExists(overlay)) {
+            if (!FileUtils.fileIsDirectory(overlay)) {
+                String path = overlay.getAbsolutePath();
+                Tr.error(tc, "overlay.exists.not.directory", path);
+                throw new IllegalArgumentException("Overlay [ " + path + " ] exists but is not a directory");
+            } else {
+                return true;
+                // We don't care if the overlay directory has any other elements!
+            }
+        } else {
+            return false;
         }
     }
 
