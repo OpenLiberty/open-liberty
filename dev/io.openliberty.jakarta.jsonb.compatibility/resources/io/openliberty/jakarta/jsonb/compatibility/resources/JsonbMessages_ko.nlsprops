@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME io.openliberty.jakarta.jsonb.compatibility/resources/io/openliberty/jakarta/jsonb/compatibility/resources/JsonbMessages.nlsprops
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR JSON Binding
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# Reserved Range CWWKJ0350-CWWKJ0499
+
+CWWKJ0350.feature.compatibility=CWWKJ0350I: jsonb \ubc0f jsonbContainer \uae30\ub2a5\uc740 \ubaa8\ub450 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub429\ub2c8\ub2e4. jsonbContainer \uae30\ub2a5\uc740 jsonb \uae30\ub2a5\uc744 \ub300\uccb4\ud569\ub2c8\ub2e4.
+CWWKJ0350.feature.compatibility.explanation=Jakarta JSON \ubc14\uc778\ub529 API\uc758 \uc368\ub4dc\ud30c\ud2f0 \uad6c\ud604\uc744 \uc81c\uacf5\ud558\ub824\uba74 jsonbContainer \uae30\ub2a5\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624. jsonb \uae30\ub2a5\uc740 \uae30\ubcf8 \uad6c\ud604\ub9cc \uc81c\uacf5\ud569\ub2c8\ub2e4.
+CWWKJ0350.feature.compatibility.useraction=\uc11c\ubc84 \uad6c\uc131\uc5d0\uc11c Jakarta JSON \ubc14\uc778\ub529 API\uc758 \uad6c\ud604\uc744 \uc81c\uacf5\ud558\ub294 BELL \uad6c\uc131 \uc694\uc18c\ub97c \uad6c\uc131\ud574\uc57c \ud569\ub2c8\ub2e4.
+
+# CWWKJ0351 used in io.openliberty.jakarta.jsonp.compatibility

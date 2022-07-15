@@ -48,6 +48,6 @@ Subsystem-Name: Jakarta RESTful Web Services 3.1 Client
   io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
 -files=\
   dev/spi/ibm/javadoc/io.openliberty.globalhandler.spi_1.0-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

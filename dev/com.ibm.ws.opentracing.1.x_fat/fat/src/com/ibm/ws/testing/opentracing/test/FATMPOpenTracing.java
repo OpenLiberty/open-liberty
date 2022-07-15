@@ -143,6 +143,7 @@ public class FATMPOpenTracing {
 
     }
 
+/*
     @Test
     public void testNotFoundRemoval() throws Exception {
         String methodName = "testNotFoundRemoval";
@@ -161,6 +162,8 @@ public class FATMPOpenTracing {
         assertNull("HTTP 404 Not Found exception appeared in the logs", line);
     }
 
+*/
+    
     protected List<String> executeWebService(String method) throws Exception {
         return executeWebService(FATUtilsServer.HttpRequestMethod.GET, method);
     }

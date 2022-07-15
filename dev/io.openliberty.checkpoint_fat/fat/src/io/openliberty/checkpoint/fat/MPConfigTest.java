@@ -65,8 +65,8 @@ public class MPConfigTest extends FATServletClient {
         server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
     }
 
-    private void configureBeforeCheckpoint(TestMethod testMethod) {
-        if (testMethod == TestMethod.envValueChangeTest) {
+    private void configureBeforeCheckpoint(TestMethod testMethod) throws Exception {
+        if (testMethod == TestMethod.envValueChangeTest || testMethod == TestMethod.appScopeEnvValueChangeTest) {
             try {
                 server.copyFileToLibertyServerRoot("envValueTest/server.env");
             } catch (Exception e) {
@@ -76,28 +76,39 @@ public class MPConfigTest extends FATServletClient {
     }
 
     private void configureBeforeRestore(TestMethod testMethod) {
+        ServerConfiguration config;
         try {
             server.saveServerConfiguration();
             Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
             switch (testMethod) {
                 case envValueTest:
+                case appScopeEnvValueTest:
                     // environment value overrides defaultValue in restore
                     server.copyFileToLibertyServerRoot("envValueTest/server.env");
                     break;
                 case serverValueTest:
+                case appScopeServerValueTest:
                     // change config of variable for restore
-                    ServerConfiguration config = removeTestKeyVar(server.getServerConfiguration());
+                    config = removeTestKeyVar(server.getServerConfiguration());
                     config.getVariables().add(new Variable("test_key", "serverValue"));
                     server.updateServerConfiguration(config);
                     break;
+                case applicationScopedValueTest:
+                    config = removeTestKeyVar(server.getServerConfiguration());
+                    config.getVariables().add(new Variable("test_key", "applicationScopedValue"));
+                    server.updateServerConfiguration(config);
+                    break;
                 case annoValueTest:
+                case appScopeAnnoValueTest:
                     // remove variable for restore, fall back to default value on annotation
                     server.updateServerConfiguration(removeTestKeyVar(server.getServerConfiguration()));
                     break;
                 case envValueChangeTest:
+                case appScopeEnvValueChangeTest:
                     server.copyFileToLibertyServerRoot("envValueChangeTest/server.env");
                     break;
                 case defaultValueTest:
+                case appScopeDefaultValueTest:
                     // Just fall through and do the default (no configuration change)
                     // should use the defaultValue from server.xml
                 default:
@@ -133,6 +144,12 @@ public class MPConfigTest extends FATServletClient {
         serverValueTest,
         annoValueTest,
         defaultValueTest,
+        appScopeEnvValueTest,
+        appScopeEnvValueChangeTest,
+        appScopeServerValueTest,
+        appScopeAnnoValueTest,
+        appScopeDefaultValueTest,
+        applicationScopedValueTest,
         unknown
     }
 }

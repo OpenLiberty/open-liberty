@@ -10,7 +10,7 @@
  *******************************************************************************/
 apply from: '../com.ibm.ws.security.fat.common.backchannelLogout/CommonBackchannelLogout.gradle'
 
-addRequiredLibraries.dependsOn copySharedOPServer
+addRequiredLibraries.dependsOn copyGenericServer
 
 autoFVT.doLast {
   

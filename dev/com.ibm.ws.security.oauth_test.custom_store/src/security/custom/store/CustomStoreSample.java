@@ -251,6 +251,7 @@ public class CustomStoreSample implements OAuthStore {
             try {
                 DBCollection col = getClientCollection();
                 col.insert(createClientDBObjectHelper(oauthClient));
+                break;
             } catch (Exception e) {
                 if (i < RETRY_COUNT && isNetworkFailure(e)) {
                     try {
@@ -266,11 +267,12 @@ public class CustomStoreSample implements OAuthStore {
 
     private BasicDBObject createClientDBObjectHelper(OAuthClient oauthClient) {
         BasicDBObject d = new BasicDBObject(CLIENTID, oauthClient.getClientId());
+        System.out.println("Setting clients to always be enabled!  Previous setting was: " + oauthClient.isEnabled());
 
         d.append(PROVIDERID, oauthClient.getProviderId());
         d.append(CLIENTSECRET, oauthClient.getClientSecret());
         d.append(DISPLAYNAME, oauthClient.getDisplayName());
-        d.append(ENABLED, oauthClient.isEnabled());
+        d.append(ENABLED, true);
         d.append(METADATA, oauthClient.getClientMetadata());
         return d;
     }
@@ -284,6 +286,7 @@ public class CustomStoreSample implements OAuthStore {
                 col.insert(createTokenDBObjectHelper(oauthToken));
 
                 System.out.println("CustomStoreSample create Token " + oauthToken.getTokenString());
+                break;
             } catch (Exception e) {
                 if (i < RETRY_COUNT && isNetworkFailure(e)) {
                     try {

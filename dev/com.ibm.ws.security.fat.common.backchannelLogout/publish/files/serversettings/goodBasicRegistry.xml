@@ -17,6 +17,15 @@
 		<user
 			name="testuser"
 			password="testuserpwd" />
+			
+		<user
+			name="user1"
+			password="user1pwd" />
+
+		<user
+			name="user2"
+			password="user2pwd" />
+			
 	</basicRegistry>
 
 </server>

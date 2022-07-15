@@ -44,7 +44,8 @@ public class OidcBaseClientValidatorTest {
         redirectUris.add(new JsonPrimitive(redirectUri1));
         redirectUris.add(new JsonPrimitive(redirectUri2));
         client = new OidcBaseClient(clientId, clientSecret, redirectUris, clientName, componentId, true);
-        publicClient = new OidcBaseClient(clientId, null, redirectUris, clientName, componentId, true);
+        publicClient = new OidcBaseClient(clientId, clientSecret, redirectUris, clientName, componentId, true);
+        publicClient.setPublicClient(true);
     }
 
     @Test

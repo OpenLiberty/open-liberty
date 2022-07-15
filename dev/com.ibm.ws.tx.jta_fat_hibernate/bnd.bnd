@@ -18,10 +18,8 @@ src: \
 fat.project: true
 
 tested.features:\
-   servlet-4.0,\
-   servlet-5.0,\
-   jdbc-4.2,\
-   jdbc-4.3
+   jdbc-4.2, jdbc-4.3,\
+   servlet-4.0, servlet-5.0, servlet-6.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

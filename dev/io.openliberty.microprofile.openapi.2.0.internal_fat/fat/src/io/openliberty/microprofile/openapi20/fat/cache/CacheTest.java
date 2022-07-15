@@ -35,6 +35,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.microprofile.openapi20.fat.OpenApiActions;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -46,9 +47,10 @@ public class CacheTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
-                                                             MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+    public static RepeatTests r = OpenApiActions.repeat(SERVER_NAME,
+                                                        OpenApiActions.MP_OPENAPI_31, // mpOpenAPI-3.1, LITE
+                                                        MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
+                                                        MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
 
     @Test
     public void testCacheHit() throws Exception {

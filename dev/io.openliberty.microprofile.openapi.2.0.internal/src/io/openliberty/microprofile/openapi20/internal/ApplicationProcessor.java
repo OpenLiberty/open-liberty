@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,8 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 
 import io.openliberty.microprofile.openapi20.internal.cache.CacheEntry;
+import io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer;
+import io.openliberty.microprofile.openapi20.internal.services.ConfigFieldProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.IndexUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
@@ -76,6 +78,12 @@ public class ApplicationProcessor {
 
     @Reference
     private MergeDisabledAlerter mergeDisabledAlerter;
+
+    @Reference
+    private ConfigSerializer configSerializer;
+
+    @Reference
+    private ConfigFieldProvider configFieldProvider;
 
     /**
      * The processApplication method processes applications that are added to the OpenLiberty instance.
@@ -199,7 +207,7 @@ public class ApplicationProcessor {
         OpenAPI openAPIModel = null;
 
         // Read and process the MicroProfile config. Try with resources will close the ConfigProcessor when done.
-        try (ConfigProcessor configProcessor = new ConfigProcessor(appClassloader)) {
+        try (ConfigProcessor configProcessor = new ConfigProcessor(appClassloader, configFieldProvider)) {
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Retrieved configuration values : " + configProcessor);
             }
@@ -211,7 +219,7 @@ public class ApplicationProcessor {
 
             if (modulePath != null && isWar(modulePath) && cacheDir != null) {
                 // The web module is a single file. We should use the cache if possible.
-                newCacheEntry = CacheEntry.createNew(moduleInfo.getApplicationInfo().getDeploymentName(), cacheDir);
+                newCacheEntry = CacheEntry.createNew(moduleInfo.getApplicationInfo().getDeploymentName(), cacheDir, configSerializer);
                 newCacheEntry.setConfig(config);
                 newCacheEntry.addDependentFile(modulePath);
 

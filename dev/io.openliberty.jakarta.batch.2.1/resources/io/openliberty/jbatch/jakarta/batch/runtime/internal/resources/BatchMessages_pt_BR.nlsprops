@@ -29,9 +29,9 @@
 # 0350 - 0399: jakarta.batch
 # 
 
-batch.container.unavailable=CWWKY0350E: O cont\u00eainer de lote n\u00e3o est\u00e1 ativado. Assegure-se que a persist\u00eancia em lote tenha sido configurada por meio do elemento de configura\u00e7\u00e3o {0}.
-batch.container.unavailable.explanation=Uma tentativa de acessar o cont\u00eainer de lote falhou porque o cont\u00eainer de lote n\u00e3o est\u00e1 ativado. Isso \u00e9 normalmente devido \u00e0 configura\u00e7\u00e3o ausente. 
-batch.container.unavailable.useraction=Certifique-se de que a persist\u00eancia de lote foi configurada.
+batch.container.unavailable=CWWKY0350E: O cont\u00eainer de lote n\u00e3o est\u00e1 ativado. Assegure-se de que a persist\u00eancia de lote esteja configurada no elemento de configura\u00e7\u00e3o {0}.
+batch.container.unavailable.explanation=Uma\ntentativa de acessar o cont\u00eainer de lote falhou porque o cont\u00eainer\nde lote n\u00e3o est\u00e1 ativado. Essa falha deve-se comumente \u00e0 configura\u00e7\u00e3o ausente. 
+batch.container.unavailable.useraction=Assegure-se de que a persist\u00eancia de lote esteja configurada.
  
 
  

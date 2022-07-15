@@ -1,0 +1,67 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: io.openliberty.microprofile.telemetry.1.0.internal
+Bundle-SymbolicName: io.openliberty.microprofile.telemetry.1.0.internal
+Bundle-Description: MicroProfile.telemetry, version 1.0
+
+src: src, resources
+
+#-cdiannotations:
+
+-dsannotations: \
+  io.openliberty.microprofile.telemetry.internal.cdi.SPIMetaData,\
+  io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryProducer,\
+  io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter,\
+  io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter
+
+-dsannotations-inherit: true
+
+app-resources= \
+  META-INF/services/jakarta.ws.rs.ext.Providers
+
+Include-Resource: \
+  META-INF=resources/META-INF,\
+  io/opentelemetry/extension/annotations/WithSpan.class=${bin}/io/opentelemetry/extension/annotations/WithSpan.class
+
+Service-Component: \
+    io.openliberty.microprofile.telemetry.internal.ResourceProvider; \
+        implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+        provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+        configuration-policy:=optional; \
+	properties:="resources=${app-resources}" 
+
+Import-Package: \
+	*
+
+Export-Package: \
+  io.openliberty.microprofile.telemetry.internal.*;version=1.0;thread-context=true
+
+Private-Package: \
+  io.openliberty.microprofile.telemetry.internal.cdi
+
+-buildpath: \
+    com.google.guava:failureaccess;version=1.0.1,\
+    com.ibm.websphere.appserver.api.servlet;version=latest,\
+    io.openliberty.jakarta.servlet.5.0;version=latest,\
+    io.openliberty.jakarta.restfulWS.3.0;version=latest,\
+    io.openliberty.jakarta.annotation.2.0;version=latest,\
+    io.openliberty.jakarta.interceptor.2.0;version=latest,\
+    io.openliberty.jakarta.cdi.3.0;version=latest,\
+    io.openliberty.microprofile.telemetry.internal.common;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+    com.ibm.ws.injection;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    io.openliberty.microprofile.telemetry.internal;version=latest, \
+    io.openliberty.org.eclipse.microprofile.config.3.0

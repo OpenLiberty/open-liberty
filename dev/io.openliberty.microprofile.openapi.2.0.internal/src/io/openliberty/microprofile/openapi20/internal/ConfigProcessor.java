@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,10 +19,11 @@ import org.eclipse.microprofile.openapi.OASConfig;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.microprofile.openapi20.internal.services.ConfigField;
+import io.openliberty.microprofile.openapi20.internal.services.ConfigFieldProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.api.OpenApiConfigImpl;
-import io.smallrye.openapi.api.constants.OpenApiConstants;
 
 public class ConfigProcessor implements Closeable {
 
@@ -46,6 +47,7 @@ public class ConfigProcessor implements Closeable {
 
     private Config oaConfig;
     private final OpenApiConfigImpl smallryeConfig;
+    private final ConfigFieldProvider configFieldProvider;
 
     /**
      * Constructor
@@ -56,9 +58,10 @@ public class ConfigProcessor implements Closeable {
      * @param appClassloader
      *     The ClassLoader to use when discovering the MicroProfile configuration.
      */
-    public ConfigProcessor(ClassLoader appClassloader) {
+    public ConfigProcessor(ClassLoader appClassloader, ConfigFieldProvider configFieldProvider) {
         this.oaConfig = ConfigProvider.getConfig(appClassloader);
         this.smallryeConfig = new OpenApiConfigImpl(oaConfig);
+        this.configFieldProvider = configFieldProvider;
 
         validation = oaConfig.getOptionalValue(VALIDATION, Boolean.class).orElse(VALIDATION_DEFAULT_VALUE);
         pollingInterval = oaConfig.getOptionalValue(FILE_POLLING_INTERVAL, Integer.class).filter(v -> v >= 0).orElse(FILE_POLLING_INTERVAL_DEFAULT_VALUE);
@@ -93,25 +96,16 @@ public class ConfigProcessor implements Closeable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
+
         StringBuilder builder = new StringBuilder();
         builder.append("ConfigProcessor : {\n");
-        builder.append(OASConfig.MODEL_READER).append("=").append(smallryeConfig.modelReader()).append("\n");
-        builder.append(OASConfig.FILTER).append("=").append(smallryeConfig.filter()).append("\n");
-        builder.append(OASConfig.SCAN_DISABLE).append("=").append(smallryeConfig.scanDisable()).append("\n");
-        builder.append(OASConfig.SCAN_PACKAGES).append("=").append(smallryeConfig.scanPackages()).append("\n");
-        builder.append(OASConfig.SCAN_CLASSES).append("=").append(smallryeConfig.scanClasses()).append("\n");
-        builder.append(OASConfig.SCAN_EXCLUDE_PACKAGES).append("=").append(smallryeConfig.scanExcludePackages()).append("\n");
-        builder.append(OASConfig.SCAN_EXCLUDE_CLASSES).append("=").append(smallryeConfig.scanExcludeClasses()).append("\n");
-        builder.append(OASConfig.SERVERS).append("=").append(smallryeConfig.servers()).append("\n");
 
-        builder.append(OpenApiConstants.SCAN_DEPENDENCIES_DISABLE).append("=").append(smallryeConfig.scanDependenciesDisable()).append("\n");
-        builder.append(OpenApiConstants.SCAN_DEPENDENCIES_JARS).append("=").append(smallryeConfig.scanDependenciesJars()).append("\n");
-        builder.append(OpenApiConstants.CUSTOM_SCHEMA_REGISTRY_CLASS).append("=").append(smallryeConfig.customSchemaRegistryClass()).append("\n");
-        builder.append(OpenApiConstants.APP_PATH_DISABLE).append("=").append(smallryeConfig.applicationPathDisable()).append("\n");
+        for (ConfigField field : configFieldProvider.getConfigFields()) {
+            builder.append(field.getProperty()).append("=").append(field.getValue(smallryeConfig)).append("\n");
+        }
 
         builder.append(VALIDATION).append("=").append(validation).append("\n");
         builder.append(FILE_POLLING_INTERVAL).append("=").append(pollingInterval).append("\n");
-
         builder.append("}\n");
         return builder.toString();
     }

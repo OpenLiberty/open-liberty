@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.ibm.ws.microprofile.openapi.fat.OpenApiActions;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 
@@ -33,8 +34,9 @@ public class OpenAPIValidationTestThree {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+    public static RepeatTests r = OpenApiActions.repeat(SERVER_NAME,
+        OpenApiActions.MP_OPENAPI_31, // mpOpenAPI-3.1, LITE
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
         MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
         MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
         MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
@@ -72,7 +74,7 @@ public class OpenAPIValidationTestThree {
 
     @Test
     @SkipForRepeat({
-        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID
+        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID, OpenApiActions.MP_OPENAPI_31_ID
     })
     public void testBlankInfo() throws Exception {
         OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);

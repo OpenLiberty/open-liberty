@@ -354,10 +354,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * 12571, 17002, 17008, 17009, 17410, 17401, 17430, 25408, 24794, 17447, 30006 }; // N.B. POSITIVE - is that correct?
      * private int _sqlTransientErrorCodes[];
      */
-    private final int LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME = 1000; // In milliseconds, ie 1 second
-    private int _lightweightTransientRetrySleepTime;
-    private final int LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS = 2; // We'll keep retrying for 2 seconds in the lightweight case
-    private int _lightweightTransientRetryAttempts;
     private boolean _sqlTransientErrorHandlingEnabled = true;
 
     /**
@@ -435,14 +431,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
          *
          * _transientRetryAttempts = getTransientSQLErrorRetryAttempts().intValue();
          * _transientRetrySleepTime = getTransientSQLErrorRetrySleepTime().intValue();
-         *
-         * Liberty
-         * =======
-         *
-         * Set the default values for the HADB SQL retry parameters
          */
-        _lightweightTransientRetrySleepTime = LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME;
-        _lightweightTransientRetryAttempts = LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS;
 
         // Now output consolidated trace information regarding the configuration of this object.
         if (tc.isDebugEnabled()) {
@@ -2346,7 +2335,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT SERVER_NAME" +
                                  " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                 " WHERE RU_ID=" + "-1 FOR UPDATE";
+                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 " WHERE RU_ID=-1" +
+                                 (_isSQLServer ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
             lockingRS = lockingStmt.executeQuery(queryString);
@@ -3343,7 +3334,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // Use RDBMS SELECT FOR UPDATE to lock table for recovery
         String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                              " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                             " WHERE RU_ID=" + "-1 FOR UPDATE";
+                             (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                             " WHERE RU_ID=-1" +
+                             (_isSQLServer ? "" : " FOR UPDATE");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE - " + queryString);
         return lockingStmt.executeQuery(queryString);
@@ -3755,8 +3748,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         }
 
                         HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
-                        sqlSuccess = heartbeatRetry.retryAndReport(this, _serverName, currentSqlEx, _lightweightTransientRetryAttempts,
-                                                                   _lightweightTransientRetrySleepTime);
+                        sqlSuccess = heartbeatRetry.retryAndReport(this, _serverName, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
+                                                                   SQLRetry.getLightweightRetrySleepTime());
                         if (!sqlSuccess)
                             nonTransientException = heartbeatRetry.getNonTransientException();
                     } else {
@@ -3810,7 +3803,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT RUSECTION_ID" +
                                  " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                                 " WHERE RU_ID=" + "-1 FOR UPDATE";
+                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 " WHERE RU_ID=-1" +
+                                 (_isSQLServer ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
             lockingRS = lockingStmt.executeQuery(queryString);
@@ -4015,7 +4010,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                                  " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                                 " WHERE RU_ID=" + "-1 FOR UPDATE";
+                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 " WHERE RU_ID=-1" +
+                                 (_isSQLServer ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
             lockingRS = lockingStmt.executeQuery(queryString);
@@ -4221,8 +4218,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     }
 
                     ClaimPeerRetry claimPeerRetry = new ClaimPeerRetry();
-                    sqlSuccess = claimPeerRetry.retryAndReport(this, _serverName, currentSqlEx, _lightweightTransientRetryAttempts,
-                                                               _lightweightTransientRetrySleepTime);
+                    sqlSuccess = claimPeerRetry.retryAndReport(this, _serverName, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
+                                                               SQLRetry.getLightweightRetrySleepTime());
                     // If the retry operation succeeded, retrieve the result of the underlying operation
                     if (sqlSuccess)
                         isClaimed = claimPeerRetry.isClaimed();
@@ -4304,8 +4301,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     public void setLightweightLogRetryInterval(int lightweightLogRetryInterval) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setLightweightLogRetryInterval", lightweightLogRetryInterval);
-
-        _lightweightTransientRetrySleepTime = lightweightLogRetryInterval * 1000;
+        SQLRetry.setLightweightRetrySleepTime(lightweightLogRetryInterval * 1000);
     }
 
     /*
@@ -4317,8 +4313,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     public void setLightweightLogRetryLimit(int lightweightLogRetryLimit) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setLightweightLogRetryLimit", lightweightLogRetryLimit);
-
-        _lightweightTransientRetryAttempts = lightweightLogRetryLimit;
+        SQLRetry.setLightweightRetryAttempts(lightweightLogRetryLimit);
     }
 
     /*

@@ -6,6 +6,6 @@ singleton=true
 -bundles=\
  io.openliberty.jakarta.xmlWS.4.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.xml.ws:jakarta.xml.ws-api:4.0.0",\
  io.openliberty.jakarta.soap.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.xml.soap:jakarta.xml.soap-api:3.0.0"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

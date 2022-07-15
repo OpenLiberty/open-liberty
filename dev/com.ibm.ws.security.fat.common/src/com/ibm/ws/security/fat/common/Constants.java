@@ -34,6 +34,7 @@ public class Constants {
     public static final String STRING_EQUALS = "equals";
     public static final String STRING_NULL = "null";
     public static final String STRING_NOT_NULL = "not null";
+    public static final String MSG_NOT_LOGGED = "msg not logged";
     public static final String TIME_TYPE = "time type";
     public static final String LIST_MATCHES = "listmatches";
 
@@ -129,10 +130,12 @@ public class Constants {
     public static final String UNAUTHORIZED_EXCEPTION = "401 Unauthorized";
     public static final String HTTP_UNAUTHORIZED_EXCEPTION = "HTTP " + UNAUTHORIZED_EXCEPTION;
     public static final String CONTEXT_ROOT_NOT_FOUND = "<title [^>]+\"CONTEXT_ROOT_NOT_FOUND\".+</title>";
+    public static final String invalidClientMetadata = "invalid_client_metadata";
 
     /********************** Page Values *********************/
     public static final String FORM_LOGIN_HEADING = "Form Login Page";
     public static final String FORM_LOGIN_TITLE = "login.jsp";
+    public static final String FORMLOGIN_SERVLET = "ServletName: FormLoginServlet";
 
     /********************** Server Info *********************/
     public static final String BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME = "fat.server.hostname";
@@ -219,6 +222,8 @@ public class Constants {
     public static final String RESPONSE_HEADER_CACHE_CONTROL = "Cache-Control";
     public static final String RESPONSE_HEADER_PRAGMA = "Pragma";
 
+    /* ********************** Cookies *********************** */
+    public static final String JSESSION_ID_COOKIE = "JSESSIONID";
     /* ****************** test apps ************************* */
     public static final String TESTMARKER_START_APP = "testmarker";
 

@@ -37,3 +37,22 @@ RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Nie powiod\u0142o si\u0119 odtworzenie ser
 RESTORE_FAILED_CWWKC0454E.explanation=Pr\u00f3ba odtworzenia serwera z punktu kontrolnego si\u0119 nie powiod\u0142a.  Serwer nie jest uruchomiony.
 RESTORE_FAILED_CWWKC0454E.useraction=Sprawd\u017a katalog punkt\u00f3w kontrolnych znajduj\u0105cy si\u0119 w katalogu dziennik\u00f3w serwera, aby uzyska\u0107 dodatkowe pliki dziennik\u00f3w i okre\u015bli\u0107, dlaczego nie mo\u017cna by\u0142o odtworzy\u0107 serwera.
 
+UKNOWN_FAILURE_CWWKC0455E=CWWKC0455E: Wyst\u0105pi\u0142 nieznany b\u0142\u0105d z nast\u0119puj\u0105cym komunikatem: {0}
+UKNOWN_FAILURE_CWWKC0455E.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas zg\u0142aszania \u017c\u0105dania dotycz\u0105cego punktu kontrolnego lub w trakcie pr\u00f3by przywr\u00f3cenia serwera z punktu kontrolnego.
+UKNOWN_FAILURE_CWWKC0455E.useraction=Sprawd\u017a katalog punkt\u00f3w kontrolnych znajduj\u0105cy si\u0119 w katalogu dziennik\u00f3w serwera, aby uzyska\u0107 dodatkowe pliki dziennik\u00f3w w celu okre\u015blenia przyczyny wyst\u0105pienia b\u0142\u0119du.
+
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E=CWWKC0456E: Nie mo\u017cna utworzy\u0107 punktu kontrolnego, poniewa\u017c nast\u0119puj\u0105ce funkcje skonfigurowane w pliku server.xml nie s\u0105 obs\u0142ugiwane w przypadku punktu kontrolnego: {0}
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.explanation=Dzia\u0142anie punktu kontrolnego serwera mo\u017ce by\u0107 u\u017cywane tylko z funkcjami, kt\u00f3re obs\u0142uguj\u0105 punkt kontrolny.  
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.useraction=W\u0142\u0105cz tylko funkcje, kt\u00f3re obs\u0142uguj\u0105 punkt kontrolny, aby korzysta\u0107 z dzia\u0142ania punktu kontrolnego serwera. Szczeg\u00f3\u0142owe informacje na temat funkcji, kt\u00f3re obs\u0142uguj\u0105 punkt kontrolny, mo\u017cna znale\u017a\u0107 w dokumentacji.
+
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E=CWWKC0457E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przygotowywania do utworzenia punktu kontrolnego z nast\u0119puj\u0105cym komunikatem: {0}
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas przygotowywania do utworzenia punktu kontrolnego.  
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.useraction=Sprawd\u017a, czy w katalogu dziennik\u00f3w serwera znajduj\u0105 si\u0119 dodatkowe pliki dziennik\u00f3w, aby okre\u015bli\u0107 dlaczego wyst\u0105pi\u0142o niepowodzenie dotycz\u0105ce punktu kontrolnego serwera.
+
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E=CWWKC0458E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przywracania procesu serwera z nast\u0119puj\u0105cym komunikatem: {0}
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas przywracania procesu serwera.  
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Sprawd\u017a, czy katalog dziennik\u00f3w serwera nie zawiera dodatkowych plik\u00f3w dziennika, aby okre\u015bli\u0107, dlaczego przywr\u00f3cenie serwera nie powiod\u0142o si\u0119.
+
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Nie mo\u017cna utworzy\u0107 punktu kontrolnego, poniewa\u017c u\u017cywana wersja \u015brodowiska Java nie obs\u0142uguje punktu kontrolnego.
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=Dzia\u0142anie punktu kontrolnego serwera mo\u017ce by\u0107 u\u017cywane tylko z wersj\u0105 \u015brodowiska Java, kt\u00f3ra obs\u0142uguje punkt kontrolny.  
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=U\u017cyj wersji \u015brodowiska Java, kt\u00f3ra obs\u0142uguje punkt kontrolny. Zapoznaj si\u0119 z dokumentacj\u0105, aby uzyska\u0107 szczeg\u00f3\u0142owe informacje na temat wymaganej wersji \u015brodowiska Java, kt\u00f3ra obs\u0142uguje punkt kontrolny.

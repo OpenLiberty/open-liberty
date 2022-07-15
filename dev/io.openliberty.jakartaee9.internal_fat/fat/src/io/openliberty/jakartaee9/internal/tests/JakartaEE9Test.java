@@ -49,6 +49,7 @@ public class JakartaEE9Test extends FATServletClient {
         compatFeatures.remove("jsonpContainer-2.0");
         compatFeatures.remove("passwordUtilities-1.1");
         compatFeatures.remove("persistenceContainer-3.0");
+        compatFeatures.remove("mpOpenAPI-3.1");
 
         // remove client features
         compatFeatures.remove("jakartaeeClient-9.1");

@@ -37,3 +37,22 @@ RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Le serveur n''a pas pu \u00eatre restaur\u
 RESTORE_FAILED_CWWKC0454E.explanation=Une tentative de restauration du serveur \u00e0 partir d'un point de contr\u00f4le a \u00e9chou\u00e9.  Le serveur est inactif.
 RESTORE_FAILED_CWWKC0454E.useraction=Examinez le r\u00e9pertoire des points de contr\u00f4le situ\u00e9 dans le r\u00e9pertoire des journaux du serveur pour obtenir des fichiers journaux suppl\u00e9mentaires afin de d\u00e9terminer la raison de l'\u00e9chec de la restauration du serveur.
 
+UKNOWN_FAILURE_CWWKC0455E=CWWKC0455E: Une erreur inconnue s''est produite avec le message suivant : {0}
+UKNOWN_FAILURE_CWWKC0455E.explanation=Une erreur inattendue s'est produite lors d'une demande de point de contr\u00f4le ou lors d'une tentative de restauration du serveur \u00e0 partir d'un point de contr\u00f4le.
+UKNOWN_FAILURE_CWWKC0455E.useraction=Examinez le r\u00e9pertoire de points de contr\u00f4le situ\u00e9 dans le r\u00e9pertoire des journaux du serveur pour obtenir des fichiers journaux suppl\u00e9mentaires, afin de d\u00e9terminer la raison de l'erreur.
+
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E=CWWKC0456E: Un point de contr\u00f4le ne peut pas \u00eatre pris, car les fonctions suivantes configur\u00e9es dans le fichier server.xml ne sont pas prises en charge pour le point de contr\u00f4le : {0}
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.explanation=L'action de point de contr\u00f4le du serveur ne peut \u00eatre utilis\u00e9e qu'avec les fonctions qui prennent en charge le point de contr\u00f4le.  
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.useraction=N'activez que les fonctions qui prennent en charge le point de contr\u00f4le pour utiliser une action de point de contr\u00f4le de serveur. Consultez la documentation pour plus de d\u00e9tails sur les fonctions qui prennent en charge le point de contr\u00f4le.
+
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E=CWWKC0457E: Une erreur s''est produite lors de la pr\u00e9paration d''un point de contr\u00f4le avec le message suivant : {0}
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.explanation=Une exception s'est produite lors de la pr\u00e9paration d'un point de contr\u00f4le.  
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.useraction=Examinez le r\u00e9pertoire des journaux du serveur pour obtenir des fichiers journaux suppl\u00e9mentaires, afin de d\u00e9terminer la raison de l'\u00e9chec du point de contr\u00f4le du serveur.
+
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E=CWWKC0458E: Une erreur s''est produite lors de la restauration du processus serveur avec le message suivant : {0}
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.explanation=Une exception s'est produite lors de la restauration du processus serveur.  
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Examinez le r\u00e9pertoire des journaux du serveur pour obtenir des fichiers journaux suppl\u00e9mentaires afin de d\u00e9terminer la raison pour laquelle le serveur n'a pas pu \u00eatre restaur\u00e9.
+
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Un point de contr\u00f4le ne peut pas \u00eatre pris, car la version Java utilis\u00e9e ne prend pas en charge le point de contr\u00f4le.
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=L'action de point de contr\u00f4le du serveur ne peut \u00eatre utilis\u00e9e qu'avec une version Java prenant en charge le point de contr\u00f4le.  
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Utilisez une version Java prenant en charge le point de contr\u00f4le. Consultez la documentation pour plus de d\u00e9tails sur la version Java requise prenant en charge le point de contr\u00f4le.

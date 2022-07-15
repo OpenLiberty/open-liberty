@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ cls.classloader.missing.explanation=Para fazer refer\u00eancia a um carregador d
 cls.classloader.missing.useraction=Verifique a configura\u00e7\u00e3o do servidor para assegurar-se de que o carregador de classes tenha sido definido e que o ID esteja correto.
 
 cls.fileset.not.ready=CWWKL0011W: O sistema n\u00e3o p\u00f4de recuperar o conjunto de arquivo [{0}] para a biblioteca compartilhada [{1}].
-cls.fileset.not.ready.explanation=Uma biblioteca compartilhada est\u00e1 em uso, mas um dos conjuntos de arquivos associados n\u00e3o pode ser recuperado a tempo.
+cls.fileset.not.ready.explanation=Uma biblioteca compartilhada est\u00e1 em uso, mas um dos conjuntos de arquivos associados n\u00e3o p\u00f4de ser recuperado em tempo.
 cls.fileset.not.ready.useraction=Verifique e corrija quaisquer erros ou avisos associados ao conjunto de arquivos.
 
 cls.library.file.invalid=CWWKL0012W: A biblioteca [{0}] especifica um arquivo com o nome [{1}]. Esse arquivo n\u00e3o existe ou est\u00e1 especificado incorretamente.
@@ -97,6 +97,7 @@ cls.library.archive.useraction=Edite a configura\u00e7\u00e3o do servidor e asse
 cls.library.destroyed=CWWKL0018I: A biblioteca [{0}] est\u00e1 indispon\u00edvel.
 cls.library.destroyed.explanation=Uma biblioteca foi indisponibilizada, por exemplo, por ter sido removida da configura\u00e7\u00e3o do servidor.
 cls.library.destroyed.useraction=Se a biblioteca ainda for necess\u00e1ria, assegure-se de que ainda esteja configurada corretamente.
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 
@@ -133,9 +134,11 @@ cls.provider.class.space.conflict.useraction=Atualize a configura\u00e7\u00e3o p
 slf.no.cache=CWWKL0070E: O diret\u00f3rio de cache n\u00e3o foi criado com \u00eaxito.
 slf.no.cache.explanation=O sistema n\u00e3o p\u00f4de criar uma pasta no disco.
 slf.no.cache.useraction=Certifique-se de que a unidade possui as permiss\u00f5es de grava\u00e7\u00e3o corretas e que h\u00e1 espa\u00e7o suficiente em disco
+
 slf.no.acf=CWWKL0071E: Um valor null foi encontrado para o objeto ArtifactContainerFactory.
 slf.no.acf.explanation=O objeto ArtifactContainerFactory n\u00e3o pode ser null quando o servidor estiver em execu\u00e7\u00e3o.
 slf.no.acf.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support ou entre em contato com o fornecedor de servi\u00e7o do provedor de classe.
+
 slf.failed.delete=CWWKL0072W: O arquivo de cache [{0}] n\u00e3o pode ser exclu\u00eddo. Esse resultado pode ocasionar a distor\u00e7\u00e3o dos arquivos aninhados.
 slf.failed.delete.explanation=O sistema falhou ao excluir o arquivo de cache. Como o arquivo ainda existe no sistema, isso pode causar distor\u00e7\u00e3o nos arquivos aninhados.
 slf.failed.delete.useraction=Verifique se o arquivo de cache n\u00e3o est\u00e1 em estado de bloqueio, o que pode fazer com que a exclus\u00e3o do arquivo falhe.

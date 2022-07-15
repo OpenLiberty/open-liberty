@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ cls.classloader.missing.explanation=Pentru a face referire la un \u00eenc\u0103r
 cls.classloader.missing.useraction=Verifica\u0163i configura\u0163ia de server pentru a v\u0103 asigura c\u0103 \u00eenc\u0103rc\u0103torul de clase a fost definit \u015fi c\u0103 ID-ul este corect.
 
 cls.fileset.not.ready=CWWKL0011W: Sistemul nu a putut extrage setul de fi\u015fiere [{0}] pentru biblioteca partajat\u0103 [{1}].
-cls.fileset.not.ready.explanation=Este \u00een utilizare bibliotec\u0103 partajat\u0103, dar unul din seturile de fi\u015fiere asociate nu poate fi extras la timp.
+cls.fileset.not.ready.explanation=O bibliotec\u0103 partajat\u0103 este \u00een uz, dar unul dintre seturile de fi\u0219iere asociate nu a putut fi extras la timp.
 cls.fileset.not.ready.useraction=Verifica\u0163i \u015fi corecta\u0163i toate erorile sau avertismentele asociate cu setul de fi\u015fiere.
 
 cls.library.file.invalid=CWWKL0012W: Biblioteca [{0}] specific\u0103 un fi\u015fier cu numele [{1}]. Acest fi\u015fier nu exist\u0103 sau este specificat incorect.
@@ -97,6 +97,7 @@ cls.library.archive.useraction=Edita\u0163i configura\u0163ia serverului \u015fi
 cls.library.destroyed=CWWKL0018I: Biblioteca [{0}] este indisponibil\u0103.
 cls.library.destroyed.explanation=O bibliotec\u00ee a devenit indisponibil\u0103, de exemplu, pentru c\u0103 a fost \u00eenl\u0103turat\u0103 din configura\u0163ia serverului.
 cls.library.destroyed.useraction=Dac\u0103 biblioteca este \u00eenc\u0103 necesar\u0103, asigura\u0163i-v\u0103 c\u0103 \u00eenc\u0103 e configurat\u0103 corect.
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 
@@ -133,9 +134,11 @@ cls.provider.class.space.conflict.useraction=Actualiza\u0163i configura\u0163ia 
 slf.no.cache=CWWKL0070E: Directorul de cache nu a fost creat cu succes.
 slf.no.cache.explanation=Sistemul nu a putut crea un folder pe disc.
 slf.no.cache.useraction=Asigura\u0163i-v\u0103 c\u0103 unitatea are permisiuni de scriere corecte \u015fi c\u0103 exist\u0103 suficient spa\u0163iu pe disc
+
 slf.no.acf=CWWKL0071E: A fost g\u0103sit\u0103 o valoare null pentru obiectul ArtifactContainerFactory.
 slf.no.acf.explanation=Obiectul ArtifactContainerFactory nu poate fi null c\u00e2nd serverul ruleaz\u0103.
 slf.no.acf.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support sau verifica\u0163i la v\u00e2nz\u0103torul serviciului furnizor de clase.
+
 slf.failed.delete=CWWKL0072W: Fi\u015fierul cache [{0}] nu poate fi \u015fters. Acest rezultat poate duce la coruperea arhivelor imbricate.
 slf.failed.delete.explanation=Sistemul nu a reu\u015fit s\u0103 \u015ftearg\u0103 fi\u015fierul de cache. Deoarece fi\u015fierul \u00eenc\u0103 exist\u0103 \u00een sistem, poate fi cauzat\u0103 coruperea arhivelor imbricate.
 slf.failed.delete.useraction=Verifica\u0163i c\u0103 fi\u015fierul de cache nu este \u00eentr-o stare de blocare, care ar putea cauza e\u015fuarea \u015ftergerii fi\u015fierului.

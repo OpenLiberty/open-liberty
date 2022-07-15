@@ -63,27 +63,47 @@ addRequiredLibraries.dependsOn addJakartaTransformer
  */
 def appBuildDir = "${buildDir}/test-application"
 
-task copySharedOPServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.fat.common.jwt:assemble', ':com.ibm.ws.security.oauth.oidc_fat.common:assemble', ':com.ibm.ws.security.fat.common.backchannelLogout:assemble']) {
+/**********************************/
+task copyGenericServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.fat.common.jwt:assemble', ':com.ibm.ws.security.oauth.oidc_fat.common:assemble', ':com.ibm.ws.security.fat.common.backchannelLogout:assemble']) {
   doLast {
 
+    println "in copyGenericServer"
+      def serverNames = project.findProperty('serverNames').split(",")
+      def srcServerName = project.findProperty('srcServerName')
+      
+      println "serverNames: ${serverNames}"
+      println "srcServerName: ${srcServerName}"
+	
+	serverNames.each { serverName ->
   /*
    * Copy common artifacts to test servers.
    */
-	def serverName = "com.ibm.ws.security.backchannelLogout_fat.op"
     println "serverName: ${serverName}"
     
-    copy { 
-      from project(':com.ibm.ws.security.fat.common.backchannelLogout').file("publish/servers/${serverName}")
-      into new File(autoFvtDir, "publish/servers/${serverName}")
-      include '**'
+    /* copy the base server from the common project */
+    if (project.findProperty(serverName + '_copyServerConfigs')) {
+      copy { 
+        from project(':com.ibm.ws.security.fat.common.backchannelLogout').file("publish/servers/${srcServerName}")
+        into new File(autoFvtDir, "publish/servers/${serverName}")
+        include '**'
+      }
+    } else {
+      copy { 
+        from project(':com.ibm.ws.security.fat.common.backchannelLogout').file("publish/servers/${srcServerName}")
+        into new File(autoFvtDir, "publish/servers/${serverName}")
+        exclude 'configs'
+        include '**'
+      }
     }
     
+    /* copy shared config files */
     copy { 
       from project(':com.ibm.ws.security.fat.common.backchannelLogout').file('publish/files/serversettings/')
       into new File(autoFvtDir, "publish/servers/${serverName}/imports")
       include '*.xml'
     }
     
+    /* copy the test marker app - used to log test case start/stop in server side logs */
     copy { 
       from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
@@ -104,11 +124,6 @@ task copySharedOPServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble',
       include 'commonTrustStore.jks'
       include 'commonBadTrustStore.jks'
     }
-    copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
-      into new File(autoFvtDir, "publish/servers/${serverName}/imports")
-      include 'oauthRoles_1.xml'
-    }  
     
     copy {
       from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
@@ -121,24 +136,49 @@ task copySharedOPServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble',
       into new File(autoFvtDir, "publish/servers/${serverName}/imports")
       include 'op_fatTestPorts.xml'
     }  
+    
+    /* app needed to run refresh token (contains the refresh.jsp) */
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/oauthclient.zip')
+      into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
+      rename 'oauthclient.zip', 'oauthclient.war'
+    }
         
   }
 }
+}
  
-task copySharedRPServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.fat.common.jwt:assemble', ':com.ibm.ws.security.oauth.oidc_fat.common:assemble', ':com.ibm.ws.security.fat.common.backchannelLogout:assemble']) {
+task copyGenericClient (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.fat.common.jwt:assemble', ':com.ibm.ws.security.oauth.oidc_fat.common:assemble', ':com.ibm.ws.security.fat.common.backchannelLogout:assemble']) {
   doLast {
 
+    println "in copyGenericClient"
+      def serverNames = project.findProperty('clientNames').split(",")
+      def srcServerName = project.findProperty('srcClientName')
+      
+      println "serverNames: ${serverNames}"
+      println "srcServerName: ${srcServerName}"
+	
+	serverNames.each { serverName ->
   /*
    * Copy common artifacts to test servers.
    */
-	def serverName = "com.ibm.ws.security.backchannelLogout_fat.rp"
-	
-	copy { 
-      from project(':com.ibm.ws.security.fat.common.backchannelLogout').file("publish/servers/${serverName}")
-      into new File(autoFvtDir, "publish/servers/${serverName}")
-      include '**'
-    }
     
+    /* copy the base server from the common project */
+    if (project.findProperty(serverName + '_copyClientConfigs')) {
+      copy { 
+        from project(':com.ibm.ws.security.fat.common.backchannelLogout').file("publish/servers/${srcServerName}")
+        into new File(autoFvtDir, "publish/servers/${serverName}")
+        include '**'
+      }
+    } else {
+      copy { 
+        from project(':com.ibm.ws.security.fat.common.backchannelLogout').file("publish/servers/${srcServerName}")
+        into new File(autoFvtDir, "publish/servers/${serverName}")
+        exclude 'configs'
+        include '**'
+      }
+    }
+	
     copy { 
       from project(':com.ibm.ws.security.fat.common.backchannelLogout').file('publish/files/serversettings/')
       into new File(autoFvtDir, "publish/servers/${serverName}/imports")
@@ -165,11 +205,6 @@ task copySharedRPServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble',
       include 'commonTrustStore.jks'
       include 'commonBadTrustStore.jks'
     }
-    copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
-      into new File(autoFvtDir, "publish/servers/${serverName}/imports")
-      include 'oauthRoles_1.xml'
-    }  
     
     copy {
       from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
@@ -190,10 +225,17 @@ task copySharedRPServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble',
     }
 
     copy {
+      from new File(project(":com.ibm.ws.security.fat.common.backchannelLogout").buildDir, "test-application/simpleLogoutTestApp.zip")
+      into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
+      rename 'simpleLogoutTestApp.zip', 'simpleLogoutTestApp.war'
+    }
+
+    copy {
       from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/formlogin.zip')
       into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
       rename 'formlogin.zip', 'formlogin.war'
     }
                
   }
+}
 }

@@ -37,3 +37,22 @@ RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Il ripristino del server da un punto di co
 RESTORE_FAILED_CWWKC0454E.explanation=Un tentativo di ripristinare il server da un punto di controllo non \u00e8 riuscito.  Il server non \u00e8 in esecuzione.
 RESTORE_FAILED_CWWKC0454E.useraction=Esaminare la directory del punto di controllo ubicata nella directory dei log del server per ulteriori file di log utili per determinare il motivo per cui non \u00e8 stato possibile ripristinare il server.
 
+UKNOWN_FAILURE_CWWKC0455E=CWWKC0455E: Si \u00e8 verificato un errore sconosciuto con il seguente messaggio: {0}
+UKNOWN_FAILURE_CWWKC0455E.explanation=Si \u00e8 verificato un errore imprevisto durante una richiesta di punto di controllo o durante un tentativo di ripristinare il server da un punto di controllo.
+UKNOWN_FAILURE_CWWKC0455E.useraction=Esaminare la directory del punto di controllo ubicata nella directory dei log del server per ulteriori file di log utili per determinare il motivo per cui si \u00e8 verificato l'errore.
+
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E=CWWKC0456E: Non \u00e8 possibile eseguire un punto di controllo perch\u00e9 le seguenti funzioni configurate nel file server.xml non sono supportate per il punto di controllo: {0}
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.explanation=L'azione del punto di controllo del server pu\u00f2 essere utilizzata solo con le funzioni che supportano il punto di controllo.  
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.useraction=Abilitare solo le funzioni che supportano il punto di controllo per utilizzare un'azione di punto di controllo del server. Consultare la documentazione per i dettagli sulle funzioni che supportano il punto di controllo.
+
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E=CWWKC0457E: Si \u00e8 verificato un errore durante la preparazione dell''esecuzione di un punto di controllo con il seguente messaggio: {0}
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.explanation=Si \u00e8 verificata un'eccezione durante la preparazione dell'esecuzione di un punto di controllo.  
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.useraction=Esaminare la directory dei log del server per ulteriori file di log per determinare il motivo per cui il punto di controllo del server non \u00e8 riuscito.
+
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E=CWWKC0458E: Si \u00e8 verificato un errore durante il ripristino del processo del server con il seguente messaggio: {0}
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.explanation=Si \u00e8 verificata un'eccezione durante il ripristino del processo del server.  
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Esaminare la directory dei log del server per ulteriori file di log per determinare il motivo per cui il ripristino del server non \u00e8 riuscito.
+
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Non \u00e8 possibile eseguire un punto di controllo perch\u00e9 la versione Java utilizzata non supporta il punto di controllo.
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=L'azione del punto di controllo del server pu\u00f2 essere utilizzata solo con una versione Java che supporta il punto di controllo.  
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Utilizzare una versione Java che supporta il punto di controllo. Consultare la documentazione per i dettagli sulla versione Java richiesta che supporta il punto di controllo.

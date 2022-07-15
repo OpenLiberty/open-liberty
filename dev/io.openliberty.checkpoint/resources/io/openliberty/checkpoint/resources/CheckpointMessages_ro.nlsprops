@@ -37,3 +37,22 @@ RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Serverul a e\u0219uat s\u0103 restaureze d
 RESTORE_FAILED_CWWKC0454E.explanation=O \u00eencercare de a restaura serverul de la un punct de control a e\u0219uat.  Serverul nu ruleaz\u0103.
 RESTORE_FAILED_CWWKC0454E.useraction=Inspecta\u021bi fi\u0219ierele istoric suplimentare din directorul punctului de control, situat \u00een directorul istoricelor de server, pentru a determina de ce nu a putut fi restaurat serverul.
 
+UKNOWN_FAILURE_CWWKC0455E=CWWKC0455E: A ap\u0103rut o eroare necunoscut\u0103 cu urm\u0103torul mesaj: {0}
+UKNOWN_FAILURE_CWWKC0455E.explanation=A ap\u0103rut o eroare nea\u0219teptat\u0103 \u00een timpul unei cereri de punct de control sau \u00een timpul unei \u00eencerc\u0103ri de a restaura serverul de la un punct de control.
+UKNOWN_FAILURE_CWWKC0455E.useraction=Inspecta\u021bi directorul punctului de control aflat \u00een directorul istoricelor de server pentru fi\u0219iere istoric suplimentare, pentru a determina de ce a ap\u0103rut eroarea.
+
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E=CWWKC0456E: Un punct de control nu poate fi luat deoarece urm\u0103toarele caracteristici configurate \u00een fi\u0219ierul server.xml nu sunt acceptate pentru punctul de control: {0}
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.explanation=Ac\u021biunea de punct de control al serverului poate fi utilizat\u0103 numai cu caracteristicile care suport\u0103 punctul de control.  
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.useraction=Activa\u021bi doar caracteristici care accept\u0103 punctul de control pentru a utiliza o ac\u021biune de punct de control al serverului. Verifica\u021bi documenta\u021bia pentru detalii cu privire la caracteristicile care suport\u0103 punctul de control.
+
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E=CWWKC0457E: A ap\u0103rut o eroare la preg\u0103tirea pentru a lua un punct de control, cu urm\u0103torul mesaj: {0}
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.explanation=A ap\u0103rut o excep\u021bie la preg\u0103tirea pentru a lua punctul de control.  
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.useraction=Inspecta\u021bi directorul istoricelor de server pentru fi\u0219iere istoric suplimentare, pentru a determina de ce a e\u0219uat punctul de control al serverului.
+
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E=CWWKC0458E: A ap\u0103rut o eroare la restaurarea procesului de server, cu urm\u0103torul mesaj: {0}
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.explanation=A ap\u0103rut o excep\u021bie la restaurarea procesului de server.  
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Inspecta\u021bi directorul istoricelor de server pentru fi\u0219ierele istoric suplimentare, pentru a determina de ce nu a reu\u0219it restaurarea serverului.
+
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Un punct de control nu poate fi luat deoarece versiunea Java utilizat\u0103 nu are suport pentru punct de control.
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=Ac\u021biunea de punct de control al serverului poate fi utilizat\u0103 numai cu o versiune Java care suport\u0103 punctul de control.  
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Utiliza\u021bi o versiune Java care suport\u0103 punctul de control. Verifica\u021bi documenta\u021bia pentru detalii cu privire la versiunea Java necesar\u0103 care suport\u0103 punctul de control.
