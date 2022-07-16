@@ -14,8 +14,6 @@
  */
 @org.osgi.annotation.versioning.Version("1.0.0")
 @TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
-package io.openliberty.security.oidcclientcore.discovery;
+package io.openliberty.security.oidcclientcore;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
-
-import io.openliberty.security.oidcclientcore.TraceConstants;

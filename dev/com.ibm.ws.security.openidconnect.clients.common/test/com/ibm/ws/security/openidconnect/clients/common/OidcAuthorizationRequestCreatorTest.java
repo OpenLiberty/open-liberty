@@ -34,6 +34,7 @@ import org.junit.rules.TestName;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
+import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import test.common.SharedOutputManager;
 
 public class OidcAuthorizationRequestCreatorTest {
@@ -50,6 +51,13 @@ public class OidcAuthorizationRequestCreatorTest {
     };
 
     private static final String TEST_URL = "http://harmonic.austin.ibm.com:8010/formlogin/SimpleServlet";
+
+    private final String authorizationEndpointUrl = "https://localhost:8020/oidc/op/authorize";
+    private final String scope = "openid";
+    private final String responseType = "code";
+    private final String clientId = "oidcClientId";
+    private final String redirectUri = "https://localhost:9020/oidc/rp/callback";
+    private final String state = "statevalue";
 
     private final HttpServletRequest request = mock.mock(HttpServletRequest.class);
     private final HttpServletResponse response = mock.mock(HttpServletResponse.class);
@@ -84,7 +92,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_forwardLoginParametersNull() {
         try {
-            String query = "";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final List<String> configuredValue = null;
             mock.checking(new Expectations() {
                 {
@@ -92,8 +101,9 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(configuredValue));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
+            assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -102,7 +112,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_forwardLoginParametersEmpty() {
         try {
-            String query = "The quick brown fox jumps over the lazy dog.";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final List<String> configuredValue = new ArrayList<String>();
             mock.checking(new Expectations() {
                 {
@@ -110,8 +121,9 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(configuredValue));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
+            assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -120,7 +132,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_oneParameter_emptyString_requestMissingThatParameter() {
         try {
-            String query = "scope=myScope";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final String paramName = "";
             final List<String> configuredValue = Arrays.asList(paramName);
             mock.checking(new Expectations() {
@@ -131,8 +144,9 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(null));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
+            assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -141,7 +155,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_oneParameter_emptyString_matchingParam_emptyString() {
         try {
-            String query = "some existing query string";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final String paramName = "";
             final List<String> configuredValue = Arrays.asList(paramName);
             final String paramValue = "";
@@ -153,10 +168,11 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
 
-            String expectedQuery = query + "&=";
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
+            String expectedQuery = originalUrl + "&=";
+            assertEquals("Returned query did not match expected value.", expectedQuery, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -165,7 +181,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_oneParameter_emptyString_matchingParam_whitespaceOnly() {
         try {
-            String query = "some existing query string";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final String paramName = "";
             final List<String> configuredValue = Arrays.asList(paramName);
             final String paramValue = " \t\n \r";
@@ -177,11 +194,12 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
 
             // Parameter value should have been encoded
-            String expectedQuery = query + "&=+%09%0A+%0D";
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
+            String expectedQuery = originalUrl + "&=+%09%0A+%0D";
+            assertEquals("Returned query did not match expected value.", expectedQuery, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -190,7 +208,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_oneParameter_emptyString_matchingParam_nonEmpty() {
         try {
-            String query = "some existing query string";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final String paramName = "";
             final List<String> configuredValue = Arrays.asList(paramName);
             final String paramValue = "some_simple_param_value";
@@ -202,10 +221,11 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
 
-            String expectedQuery = query + "&=" + paramValue;
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
+            String expectedQuery = originalUrl + "&=" + paramValue;
+            assertEquals("Returned query did not match expected value.", expectedQuery, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -214,7 +234,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_oneParameter_whitespace_requestMissingThatParameter() {
         try {
-            String query = "some existing query string";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final String paramName = " ";
             final List<String> configuredValue = Arrays.asList(paramName);
             mock.checking(new Expectations() {
@@ -225,8 +246,10 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(null));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
+
+            assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -235,7 +258,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_oneParameter_whitespace_matchingParam_whitespaceOnly() {
         try {
-            String query = "some existing query string";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final String paramName = "\n\r\t";
             final List<String> configuredValue = Arrays.asList(paramName);
             final String paramValue = "    ";
@@ -247,11 +271,12 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
 
             // Parameter name and value should have been encoded
-            String expectedQuery = query + "&" + "%0A%0D%09" + "=" + "++++";
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
+            String expectedQuery = originalUrl + "&" + "%0A%0D%09" + "=" + "++++";
+            assertEquals("Returned query did not match expected value.", expectedQuery, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -260,7 +285,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_oneParameter_whitespace_matchingParam_nonEmpty() {
         try {
-            String query = "some existing query string";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final String paramName = "\n \n";
             final List<String> configuredValue = Arrays.asList(paramName);
             final String paramValue = "some parameter value";
@@ -272,11 +298,12 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
 
             // Parameter name and value should have been encoded
-            String expectedQuery = query + "&" + "%0A+%0A" + "=" + "some+parameter+value";
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
+            String expectedQuery = originalUrl + "&" + "%0A+%0A" + "=" + "some+parameter+value";
+            assertEquals("Returned query did not match expected value.", expectedQuery, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -285,7 +312,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_oneParameter_nonEmpty_requestMissingThatParameter() {
         try {
-            String query = "scope=mySCope";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final String paramName = "missingParam";
             final List<String> configuredValue = Arrays.asList(paramName);
             mock.checking(new Expectations() {
@@ -296,8 +324,10 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(null));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
+
+            assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -306,7 +336,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_oneParameter_specialChars_matchingParam_specialChars() {
         try {
-            String query = "scope=myScope&redirect_uri=some value";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final String paramName = "`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?";
             final List<String> configuredValue = Arrays.asList(paramName);
             final String paramValue = paramName;
@@ -318,12 +349,13 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
 
             String encodedSpecialChars = "%60%7E%21%40%23%24%25%5E%26*%28%29-_%3D%2B%5B%7B%5D%7D%5C%7C%3B%3A%27%22%2C%3C.%3E%2F%3F";
             // Parameter name and value should have been encoded
-            String expectedQuery = query + "&" + encodedSpecialChars + "=" + encodedSpecialChars;
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
+            String expectedQuery = originalUrl + "&" + encodedSpecialChars + "=" + encodedSpecialChars;
+            assertEquals("Returned query did not match expected value.", expectedQuery, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -332,7 +364,8 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_multipleParameters_noneInRequest() {
         try {
-            String query = "initial query";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
             final List<String> configuredValues = Arrays.asList("", "my param", "Special! \n\t (Param) ", " 1234567890 ");
             mock.checking(new Expectations() {
                 {
@@ -348,8 +381,10 @@ public class OidcAuthorizationRequestCreatorTest {
                     }
                 });
             }
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
-            assertEquals("Returned query should have matched original query.", query, newQuery);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
+
+            assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -358,7 +393,9 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_multipleParameters_oneInRequest() {
         try {
-            String query = "initial query";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
+
             final String emptyParam = "";
             final String paramWithSpace = "my param";
             final String paramWithSpecialChars = "Special! \n\t (Param) ";
@@ -380,11 +417,12 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(null));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
 
             // Parameter name and value should have been encoded
-            String expectedQuery = query + "&" + "my+param" + "=" + "My%0AParam%0DValue";
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
+            String expectedQuery = originalUrl + "&" + "my+param" + "=" + "My%0AParam%0DValue";
+            assertEquals("Returned query did not match expected value.", expectedQuery, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -393,7 +431,9 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_multipleParameters_multipleInRequest() {
         try {
-            String query = "initial query";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
+
             final String emptyParam = "";
             final String paramWithSpace = "my param";
             final String paramWithSpecialChars = "Special! \n\t (Param) ";
@@ -415,11 +455,12 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(foundParamValue2));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
 
             // Parameter names and values should have been encoded
-            String expectedQuery = query + "&" + "my+param" + "=" + "My%0AParam%0DValue" + "&" + "+1234567890+" + "=" + foundParamValue2;
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
+            String expectedQuery = originalUrl + "&" + "my+param" + "=" + "My%0AParam%0DValue" + "&" + "+1234567890+" + "=" + foundParamValue2;
+            assertEquals("Returned query did not match expected value.", expectedQuery, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -428,7 +469,9 @@ public class OidcAuthorizationRequestCreatorTest {
     @Test
     public void test_addForwardLoginParamsToQuery_multipleParameters_allInRequest() {
         try {
-            String query = "initial query";
+            AuthorizationRequestParameters parameters = createDefaultAuthorizationRequestParameters();
+            String originalUrl = parameters.buildRequestUrl();
+
             final String paramName1 = "name1";
             final String paramName2 = "name2";
             final String paramName3 = "name3";
@@ -452,122 +495,15 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue4));
                 }
             });
-            String newQuery = creator.addForwardLoginParamsToQuery(query);
+            creator.addForwardLoginParams(parameters);
+            String newUrl = parameters.buildRequestUrl();
 
             // Parameter names and values should have been encoded
-            String expectedQuery = query + "&" + paramName1 + "=" + paramValue1 + "&" + paramName2 + "=" + paramValue2 + "&" + paramName3 + "=" + paramValue3 + "&" + paramName4 + "=" + paramValue4;
-            assertEquals("Returned query did not match expected value.", expectedQuery, newQuery);
+            String expectedQuery = originalUrl + "&" + paramName1 + "=" + paramValue1 + "&" + paramName2 + "=" + paramValue2 + "&" + paramName3 + "=" + paramValue3 + "&" + paramName4 + "=" + paramValue4;
+            assertEquals("Returned query did not match expected value.", expectedQuery, newUrl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
-    }
-
-    @Test
-    public void test_appendParameterToQuery_nameNull() {
-        String query = "start";
-        String parameterName = null;
-        String parameterValue = "value";
-
-        String result = creator.appendParameterToQuery(query, parameterName, parameterValue);
-        assertEquals("Query string should not have been modified.", query, result);
-    }
-
-    @Test
-    public void test_appendParameterToQuery_nameEmpty() {
-        String query = "start";
-        String parameterName = "";
-        String parameterValue = "value";
-
-        String result = creator.appendParameterToQuery(query, parameterName, parameterValue);
-        String expected = query + "&" + parameterName + "=" + parameterValue;
-        assertEquals(expected, result);
-    }
-
-    @Test
-    public void test_appendParameterToQuery_nameContainsSpecialCharacters() {
-        String query = "start";
-        String parameterName = "special=&,?/:chars";
-        String parameterValue = "value";
-
-        String result = creator.appendParameterToQuery(query, parameterName, parameterValue);
-        String expected = query + "&" + "special%3D%26%2C%3F%2F%3Achars" + "=" + parameterValue;
-        assertEquals(expected, result);
-    }
-
-    @Test
-    public void test_appendParameterToQuery_valueNull() {
-        String query = "start";
-        String parameterName = "name";
-        String parameterValue = null;
-
-        String result = creator.appendParameterToQuery(query, parameterName, parameterValue);
-        assertEquals("Query string should not have been modified.", query, result);
-    }
-
-    @Test
-    public void test_appendParameterToQuery_valueEmpty() {
-        String query = "start";
-        String parameterName = "name";
-        String parameterValue = "";
-
-        String result = creator.appendParameterToQuery(query, parameterName, parameterValue);
-        String expected = query + "&" + parameterName + "=" + parameterValue;
-        assertEquals(expected, result);
-    }
-
-    @Test
-    public void test_appendParameterToQuery_valueContainsSpecialCharacters() {
-        String query = "start";
-        String parameterName = "name";
-        String parameterValue = "special=&,?/:chars";
-
-        String result = creator.appendParameterToQuery(query, parameterName, parameterValue);
-        String expected = query + "&" + parameterName + "=" + "special%3D%26%2C%3F%2F%3Achars";
-        assertEquals(expected, result);
-    }
-
-    @Test
-    public void test_appendParameterToQuery_queryNull() {
-        String query = null;
-        String parameterName = "name";
-        String parameterValue = "value";
-
-        String result = creator.appendParameterToQuery(query, parameterName, parameterValue);
-        String expected = parameterName + "=" + parameterValue;
-        assertEquals(expected, result);
-    }
-
-    @Test
-    public void test_appendParameterToQuery_queryEmpty() {
-        String query = "";
-        String parameterName = "name";
-        String parameterValue = "value";
-
-        String result = creator.appendParameterToQuery(query, parameterName, parameterValue);
-        String expected = parameterName + "=" + parameterValue;
-        assertEquals(expected, result);
-    }
-
-    @Test
-    public void test_appendParameterToQuery_queryNotEmpty() {
-        String query = "start";
-        String parameterName = "name";
-        String parameterValue = "value";
-
-        String result = creator.appendParameterToQuery(query, parameterName, parameterValue);
-        String expected = query + "&" + parameterName + "=" + parameterValue;
-        assertEquals(expected, result);
-    }
-
-    @Test
-    public void test_appendParameterToQuery_queryContainsOtherParameters() {
-        String query = "value=1&other_value=some+other+value";
-        String parameterName = "name";
-        String parameterValue = "value";
-
-        String result = creator.appendParameterToQuery(query, parameterName, parameterValue);
-        String expected = query + "&" + parameterName + "=" + parameterValue;
-        assertEquals(expected, result);
     }
 
     @Test
@@ -609,6 +545,10 @@ public class OidcAuthorizationRequestCreatorTest {
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
+    }
+
+    private AuthorizationRequestParameters createDefaultAuthorizationRequestParameters() {
+        return new AuthorizationRequestParameters(authorizationEndpointUrl, scope, responseType, clientId, redirectUri, state);
     }
 
     private void createReqUrlExpectations(final String queryString) {
