@@ -132,12 +132,12 @@
 
         <AD name="%rollover.start.time" description="%rollover.start.time.desc" 
             ibm:variable="com.ibm.ws.logging.rollover.start.time"
-            id="rolloverStartTime" required="false" type="String" default="" ibm:beta="true">
+            id="rolloverStartTime" required="false" type="String" default="">
         </AD>
 
         <AD name="%rollover.interval" description="%rollover.interval.desc" 
             ibm:variable="com.ibm.ws.logging.rollover.interval"
-            id="rolloverInterval" required="false" type="String" ibm:type="duration(m)" default="-1" ibm:beta="true">
+            id="rolloverInterval" required="false" type="String" ibm:type="duration(m)" default="-1">
         </AD>
     </OCD>
   

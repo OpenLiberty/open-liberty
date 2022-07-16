@@ -7,6 +7,7 @@ visibility = private
   com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1, 4.0"
 -bundles=\
   com.ibm.ws.security.social,\
-  com.ibm.ws.security.openidconnect.clients.common
+  com.ibm.ws.security.openidconnect.clients.common,\
+  io.openliberty.security.oidcclientcore.internal
 kind=ga
 edition=core

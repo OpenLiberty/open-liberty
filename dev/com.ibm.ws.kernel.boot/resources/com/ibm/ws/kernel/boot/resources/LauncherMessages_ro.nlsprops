@@ -96,7 +96,9 @@ error.secPermission=CWWKE0016E: Fi\u015fierul JAR bootstrap necesit\u0103 config
 error.secPermission.explanation=Permisiunile Java 2 Security sunt insuficiente pentru ca fi\u015fierul JAR bootstrap s\u0103 lanseze mediul runtime \u015fi cadrul de lucru OSGi.
 error.secPermission.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul JAR bootstrap are acordate privilegii AllPermission \u00een fi\u015fierul de politici Java 2 Security.
 
-# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+error.badBitmode=CWWKE0017E: Procesul a detectat un JVM pe 31 de bi\u021bi care nu este suportat. Mediul runtime necesit\u0103 versiunea Java 8 pe 64 de bi\u021bi sau o versiune ulterioar\u0103.
+error.badBitmode.explanation=Variabila de sistem JAVA_HOME este setat\u0103 s\u0103 pointeze la o versiune de Java care este 31-bit.
+error.badBitmode.useraction=Ajusta\u021bi variabila de sistem JAVA_HOME pentru a indica o versiune Java 8 pe 64 de bi\u021bi sau ulterioar\u0103.
 
 error.unknownException=CWWKE0018E: A ap\u0103rut o excep\u0163ie \u00een timp ce se lansa mediul runtime: {0}
 error.unknownException.explanation=Excep\u0163ia a \u00eempiedicat lansarea serverului.

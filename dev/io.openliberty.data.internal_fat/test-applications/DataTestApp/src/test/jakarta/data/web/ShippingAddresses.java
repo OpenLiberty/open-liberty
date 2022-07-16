@@ -12,6 +12,7 @@ package test.jakarta.data.web;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
+import io.openliberty.data.Query;
 import io.openliberty.data.Select;
 
 /**
@@ -22,7 +23,12 @@ public interface ShippingAddresses {
     @Select({ "houseNumber", "streetName" })
     StreetAddress[] findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(int minHouseNumber, int maxHouseNumber);
 
+    WorkAddress[] findByStreetNameAndFloorNumber(String streetName, int floorNumber);
+
     ShippingAddress[] findByStreetNameOrderByHouseNumber(String streetName);
+
+    @Query("SELECT o FROM WorkAddress o WHERE o.office=?1")
+    WorkAddress forOffice(String officeNum);
 
     @Delete
     long removeAll();

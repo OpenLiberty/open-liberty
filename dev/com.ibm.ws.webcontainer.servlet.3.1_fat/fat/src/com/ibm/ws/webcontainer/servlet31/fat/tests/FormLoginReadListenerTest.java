@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +38,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.webcontainer.security.test.servlets.PostParamsClient;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -47,7 +45,6 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class FormLoginReadListenerTest {
     @Server("servlet31_formLoginReadListener")
     public static LibertyServer server;
@@ -92,7 +89,6 @@ public class FormLoginReadListenerTest {
      * Tests where ReadListener methods throw an exception to make sure onError is called correctly.
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) //This must be re-enabled when the session code for EE10 is ready. See issue 20854. The test that failed was test_Login_AsyncRL_Exceptions but disabling it alone cuased other failures.
     public void test_Login_AsyncRL_Exceptions() throws Exception {
         HashMap<String, String> headerMap = new HashMap<String, String>();
         headerMap.put("TestToCall", "onDataAvailableException");
@@ -111,7 +107,6 @@ public class FormLoginReadListenerTest {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) //This must be re-enabled when the session code for EE10 is ready. See issue 20854. The test that failed was test_Login_AsyncRL_Exceptions but disabling it alone cuased other failures.
     public void test_Login_AsyncRL_variousDataLengths() throws Exception {
         test_Login_AsyncRL(2, null, true);
         test_Login_AsyncRL(20, null, true);

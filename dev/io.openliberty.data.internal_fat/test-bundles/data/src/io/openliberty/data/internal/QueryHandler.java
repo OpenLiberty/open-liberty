@@ -19,13 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
-import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow.Publisher;
@@ -46,10 +41,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
-import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
+import io.openliberty.data.Inheritance;
 import io.openliberty.data.Limit;
 import io.openliberty.data.OrderBy;
 import io.openliberty.data.Page;
@@ -109,99 +104,49 @@ public class QueryHandler<T> implements InvocationHandler {
         DELETE, MERGE, SELECT, UPDATE
     }
 
-    private final Map<String, String> attributeNames = new LinkedHashMap<>();
     private final Class<T> beanClass;
     private final Data data;
-    final Class<?> entityClass;
-    private final Set<Class<?>> entityClassesAvailable; // TODO is this information needed?
-    private final String entityName;
-    private final String keyAttribute;
-    final DataPersistence persistence;
-    final PersistenceServiceUnit punit;
+    private final Class<?> defaultEntityClass; // repository methods can return subclasses in the case of @Inheritance
+    private final boolean inheritance;
+    private final DataPersistence persistence;
 
     @SuppressWarnings("unchecked")
-    public QueryHandler(Bean<T> bean, Class<?> entityClass, String keyAttribute) {
+    public QueryHandler(Bean<T> bean, Class<?> entityClass) {
         beanClass = (Class<T>) bean.getBeanClass();
         data = beanClass.getAnnotation(Data.class);
-        this.entityClass = entityClass;
-        this.entityName = entityClass.getSimpleName();
-        this.keyAttribute = keyAttribute;
+        defaultEntityClass = entityClass;
+        inheritance = entityClass.getAnnotation(Inheritance.class) != null ||
+                      entityClass.getAnnotation(jakarta.persistence.Inheritance.class) != null;
 
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         persistence = bc.getService(bc.getServiceReference(DataPersistence.class));
-
-        Entry<PersistenceServiceUnit, Map<Class<?>, String>> persistenceInfo = //
-                        persistence.getPersistenceInfo(data.provider(), beanClass.getClassLoader());
-        if (persistenceInfo == null)
-            throw new RuntimeException("Persistence layer unavailable for " + data);
-        punit = persistenceInfo.getKey();
-        entityClassesAvailable = persistenceInfo.getValue().keySet();
-
-        // TODO replace this ugly code that maps from Java field or setter attribute name to database column name.
-        EntityManager em = punit.createEntityManager();
-        try {
-            Class<?> Session = em.getClass().getClassLoader().loadClass("org.eclipse.persistence.sessions.Session");
-            Object session = em.unwrap(Session);
-            Object classDescriptor = session.getClass().getMethod("getDescriptor", Class.class).invoke(session, entityClass);
-            Vector<?> databaseMappings = (Vector<?>) classDescriptor.getClass().getMethod("getMappings").invoke(classDescriptor);
-            for (Object mapping : databaseMappings) {
-                String attributeName = (String) mapping.getClass().getMethod("getAttributeName").invoke(mapping);
-                Object databaseField = mapping.getClass().getMethod("getField").invoke(mapping);
-                if (databaseField == null) {
-                    // TODO this will likely only cover one level of embedded attributes, but this isn't a real implementaiton
-                    List<?> databaseFields = (List<?>) mapping.getClass().getMethod("getFields").invoke(mapping);
-                    for (Object embeddedDatabaseField : databaseFields) {
-                        Object referenceClassDescriptor = mapping.getClass().getMethod("getReferenceDescriptor").invoke(mapping);
-                        Vector<?> referenceDatabaseMappings = (Vector<?>) referenceClassDescriptor.getClass().getMethod("getMappings").invoke(referenceClassDescriptor);
-                        for (Object embeddedMapping : referenceDatabaseMappings) {
-                            String embeddableAttributeName = (String) embeddedMapping.getClass().getMethod("getAttributeName").invoke(embeddedMapping);
-                            String fullAttributeName = attributeName + '.' + embeddableAttributeName;
-                            System.out.println("Attribute: " + fullAttributeName + "; Column: " + embeddableAttributeName);
-                            attributeNames.put(embeddableAttributeName.toUpperCase(), fullAttributeName);
-                        }
-                    }
-                } else {
-                    String columnName = (String) databaseField.getClass().getMethod("getName").invoke(databaseField);
-                    System.out.println("Attribute: " + attributeName + "; Column: " + columnName);
-                    attributeNames.put(attributeName.toUpperCase(), attributeName);
-                }
-            }
-            System.out.println(attributeNames);
-        } catch (RuntimeException x) {
-            throw x;
-        } catch (Exception x) {
-            throw new RuntimeException(x);
-        } finally {
-            em.close();
-        }
-
     }
 
-    private String getBuiltInRepositoryQuery(String methodName, Object[] args, Class<?>[] paramTypes) {
+    private String getBuiltInRepositoryQuery(EntityInfo e, String methodName, Object[] args, Class<?>[] paramTypes) {
         if (args == null) {
             if ("count".equals(methodName))
-                return "SELECT COUNT(o) FROM " + entityName + " o";
+                return "SELECT COUNT(o) FROM " + e.name + " o";
         } else if (args.length == 1) {
             if ("save".equals(methodName))
                 return null; // default handling covers this
             if (Iterable.class.equals(paramTypes[0])) {
                 if ("findById".equals(methodName))
-                    return "SELECT o FROM " + entityName + " o WHERE o." + keyAttribute + " IN ?1";
+                    return "SELECT o FROM " + e.name + " o WHERE o." + e.keyName + " IN ?1";
                 else if ("deleteById".equals(methodName))
-                    return "DELETE FROM " + entityName + " o WHERE o." + keyAttribute + " IN ?1";
+                    return "DELETE FROM " + e.name + " o WHERE o." + e.keyName + " IN ?1";
             } else {
                 if ("findById".equals(methodName))
-                    return "SELECT o FROM " + entityName + " o WHERE o." + keyAttribute + "=?1";
+                    return "SELECT o FROM " + e.name + " o WHERE o." + e.keyName + "=?1";
                 else if ("existsById".equals(methodName))
-                    return "SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM " + entityName + " o WHERE o." + keyAttribute + "=?1";
+                    return "SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM " + e.name + " o WHERE o." + e.keyName + "=?1";
                 else if ("deleteById".equals(methodName))
-                    return "DELETE FROM " + entityName + " o WHERE o." + keyAttribute + "=?1";
+                    return "DELETE FROM " + e.name + " o WHERE o." + e.keyName + "=?1";
             }
         }
         throw new UnsupportedOperationException("Repository method " + methodName + " with parameters " + Arrays.toString(paramTypes));
     }
 
-    private String generateRepositoryQuery(Method method) {
+    private String generateRepositoryQuery(EntityInfo entityInfo, Method method) {
         String methodName = method.getName();
         int start = methodName.startsWith("findBy") ? 6 //
                         : methodName.startsWith("deleteBy") ? 8 //
@@ -209,9 +154,9 @@ public class QueryHandler<T> implements InvocationHandler {
         if (start > 0) {
             StringBuilder q = new StringBuilder(200);
             if (start == 6) { // findBy
-                generateSelect(q, method);
+                generateSelect(entityInfo, q, method);
             } else {
-                q.append("DELETE FROM ").append(entityName).append(" o");
+                q.append("DELETE FROM ").append(entityInfo.name).append(" o");
             }
 
             int orderBy = methodName.indexOf("OrderBy");
@@ -225,7 +170,7 @@ public class QueryHandler<T> implements InvocationHandler {
                     if (iNext < 0)
                         iNext = Math.max(and, or);
                     String condition = iNext < 0 ? s.substring(i) : s.substring(i, iNext);
-                    paramCount = generateRepositoryQueryCondition(condition, q, paramCount);
+                    paramCount = generateRepositoryQueryCondition(entityInfo.type, condition, q, paramCount);
                     if (iNext > 0) {
                         q.append(iNext == and ? " AND " : " OR ");
                         iNext += (iNext == and ? 3 : 2);
@@ -249,7 +194,7 @@ public class QueryHandler<T> implements InvocationHandler {
                         }
 
                     String attribute = methodName.substring(i, stopAt);
-                    String name = attributeNames.get(attribute.toUpperCase());
+                    String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
                     q.append("o.").append(name == null ? attribute : name);
 
                     if (desc)
@@ -269,7 +214,7 @@ public class QueryHandler<T> implements InvocationHandler {
     /**
      * Generates JPQL for a findBy or deleteBy condition such as MyColumn[Not?]Like
      */
-    private int generateRepositoryQueryCondition(String expression, StringBuilder q, int paramCount) {
+    private int generateRepositoryQueryCondition(Class<?> entityClass, String expression, StringBuilder q, int paramCount) {
         int length = expression.length();
 
         Condition condition = Condition.EQUALS;
@@ -317,7 +262,7 @@ public class QueryHandler<T> implements InvocationHandler {
             }
         }
 
-        String name = attributeNames.get(attribute.toUpperCase());
+        String name = persistence.getAttributeName(attribute, entityClass, data.provider());
         q.append("o.").append(name == null ? attribute : name);
 
         if (negated)
@@ -337,7 +282,8 @@ public class QueryHandler<T> implements InvocationHandler {
         return paramCount;
     }
 
-    private void generateSelect(StringBuilder q, Method method) {
+    private void generateSelect(EntityInfo entityInfo, StringBuilder q, Method method) {
+        // TODO entityClass now includes inheritance subtypes and much of the following was already computed.
         Select select = method.getAnnotation(Select.class);
         Class<?> type = select == null ? null : select.type();
         String[] cols = select == null ? null : select.value();
@@ -348,12 +294,13 @@ public class QueryHandler<T> implements InvocationHandler {
                 returnType = arrayType == null ? returnType : arrayType;
                 if (!returnType.isPrimitive()
                     && !returnType.isInterface()
-                    && !returnType.isAssignableFrom(entityClass)
+                    && !returnType.isAssignableFrom(entityInfo.type)
                     && !returnType.getName().startsWith("java"))
                     type = returnType;
             }
         }
-        if (type == null || Select.AutoDetect.class.equals(type))
+        if (type == null || Select.AutoDetect.class.equals(type) ||
+            inheritance && entityInfo.type.isAssignableFrom(type))
             if (cols == null || cols.length == 0) {
                 q.append("SELECT o FROM ");
             } else {
@@ -366,18 +313,18 @@ public class QueryHandler<T> implements InvocationHandler {
             q.append("SELECT NEW ").append(type.getName());
             boolean first = true;
             if (cols == null || cols.length == 0)
-                for (String name : attributeNames.values()) {
+                for (String name : persistence.getAttributeNames(entityInfo.type, data.provider())) {
                     q.append(first ? "(o." : ", o.").append(name);
                     first = false;
                 }
             else
                 for (int i = 0; i < cols.length; i++) {
-                    String name = attributeNames.get(cols[i].toUpperCase());
+                    String name = persistence.getAttributeName(cols[i], entityInfo.type, data.provider());
                     q.append(i == 0 ? "(o." : ", o.").append(name == null ? cols[i] : name);
                 }
             q.append(") FROM ");
         }
-        q.append(entityName).append(" o");
+        q.append(entityInfo.name).append(" o");
     }
 
     @Override
@@ -399,8 +346,21 @@ public class QueryHandler<T> implements InvocationHandler {
 
         System.out.println("Handler invoke " + method);
 
-        Class<?> returnType = method.getReturnType();
         Object returnValue;
+        Class<?> returnType = method.getReturnType();
+        Class<?> returnArrayType = returnType.getComponentType();
+
+        Select select = method.getAnnotation(Select.class);
+        Class<?> selectType = select == null ? null : select.type();
+
+        Class<?> entityClass = selectType == null || Select.AutoDetect.class.equals(selectType) //
+                        ? returnArrayType == null ? returnType : returnArrayType // computed from return type
+                        : selectType;
+        if (!inheritance || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
+            entityClass = defaultEntityClass;
+
+        EntityInfo entityInfo = persistence.getEntityInfo(data.provider(), entityClass);
+
         QueryType queryType;
         boolean requiresTransaction;
         Collector<Object, Object, Object> collector = null;
@@ -414,7 +374,7 @@ public class QueryHandler<T> implements InvocationHandler {
 
         // Repository built-in methods
         if (jpql == null && Repository.class.equals(method.getDeclaringClass()))
-            jpql = getBuiltInRepositoryQuery(methodName, args, paramTypes);
+            jpql = getBuiltInRepositoryQuery(entityInfo, methodName, args, paramTypes);
 
         // @Delete/@Update/@Where/@OrderBy annotations
         if (jpql == null) {
@@ -424,20 +384,20 @@ public class QueryHandler<T> implements InvocationHandler {
                 if (method.getAnnotation(Delete.class) == null) {
                     if (where != null) {
                         StringBuilder q = new StringBuilder(200);
-                        generateSelect(q, method);
+                        generateSelect(entityInfo, q, method);
                         q.append(" WHERE ").append(where.value());
                         jpql = q.toString();
                     }
                 } else {
                     StringBuilder q = new StringBuilder(200);
-                    q.append("DELETE FROM ").append(entityName).append(" o");
+                    q.append("DELETE FROM ").append(entityInfo.name).append(" o");
                     if (where != null)
                         q.append(" WHERE ").append(where.value());
                     jpql = q.toString();
                 }
             } else {
                 StringBuilder q = new StringBuilder(200);
-                q.append("UPDATE ").append(entityName).append(" o SET ").append(update.value());
+                q.append("UPDATE ").append(entityInfo.name).append(" o SET ").append(update.value());
                 if (where != null)
                     q.append(" WHERE ").append(where.value());
                 jpql = q.toString();
@@ -446,7 +406,7 @@ public class QueryHandler<T> implements InvocationHandler {
 
         // Repository method name pattern queries
         if (jpql == null)
-            jpql = generateRepositoryQuery(method);
+            jpql = generateRepositoryQuery(entityInfo, method);
 
         // Jakarta NoSQL allows the last 3 parameter positions to be used for Pagination, Sorts, and Consumer
         // Collector is added here for experimentation.
@@ -472,7 +432,7 @@ public class QueryHandler<T> implements InvocationHandler {
         if (orderBy.length > 0) {
             StringBuilder q = jpql == null ? new StringBuilder(200) : new StringBuilder(jpql);
             if (jpql == null)
-                generateSelect(q, method);
+                generateSelect(entityInfo, q, method);
             for (int i = 0; i < orderBy.length; i++) {
                 q.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
                 if (orderBy[i].descending())
@@ -485,7 +445,7 @@ public class QueryHandler<T> implements InvocationHandler {
             boolean first = true;
             StringBuilder q = jpql == null ? new StringBuilder(200) : new StringBuilder(jpql);
             if (jpql == null)
-                generateSelect(q, method);
+                generateSelect(entityInfo, q, method);
             for (Sort sort : sorts.getSorts()) {
                 q.append(first ? " ORDER BY o." : ", o.").append(sort.getName());
                 if (sort.getType() == SortType.DESC)
@@ -508,15 +468,15 @@ public class QueryHandler<T> implements InvocationHandler {
                                                      (void.class.equals(returnType) || CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType));
 
         if (asyncCompatibleResultForPagination && collector != null)
-            return runAndCollect(jpql, pagination, collector, method, paramCount, args, returnType);
+            return runAndCollect(jpql, pagination, collector, entityInfo, method, paramCount, args, returnType);
         else if (asyncCompatibleResultForPagination && consumer != null)
-            return runWithConsumer(jpql, pagination, consumer, method, paramCount, args, returnType);
+            return runWithConsumer(jpql, pagination, consumer, entityInfo, method, paramCount, args, returnType);
         else if (pagination != null && Iterator.class.equals(returnType))
-            return new PaginatedIterator<T>(jpql, pagination, this, method, paramCount, args);
+            return new PaginatedIterator<T>(jpql, pagination, entityInfo, method, paramCount, args);
         else if (Page.class.equals(returnType))
-            return new PageImpl<T>(jpql, pagination, this, method, paramCount, args);
+            return new PageImpl<T>(jpql, pagination, entityInfo, method, paramCount, args);
         else if (Publisher.class.equals(returnType))
-            return new PublisherImpl<T>(jpql, this, method, paramCount, args);
+            return new PublisherImpl<T>(jpql, persistence.executor, entityInfo, method, paramCount, args);
 
         // TODO Actual implementation is lacking so we are cheating by
         // temporarily sending in the JPQL directly:
@@ -548,15 +508,11 @@ public class QueryHandler<T> implements InvocationHandler {
                 persistence.tranMgr.begin();
             }
 
-            em = punit.createEntityManager();
+            em = entityInfo.persister.createEntityManager();
 
             switch (queryType) {
                 case MERGE:
-                    if (entityClassesAvailable.contains(args[0].getClass()) ||
-                        entityClassesAvailable.contains(paramTypes[0])) {
-                        returnValue = em.merge(args[0]);
-                        em.flush();
-                    } else if (Iterable.class.isAssignableFrom(paramTypes[0])) {
+                    if (Iterable.class.isAssignableFrom(paramTypes[0])) {
                         ArrayList<Object> results = new ArrayList<>();
                         for (Object e : ((Iterable<?>) args[0]))
                             results.add(em.merge(e));
@@ -571,7 +527,8 @@ public class QueryHandler<T> implements InvocationHandler {
                         em.flush();
                         returnValue = results;
                     } else {
-                        throw new UnsupportedOperationException(method.toString());
+                        returnValue = em.merge(args[0]);
+                        em.flush();
                     }
 
                     if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
@@ -581,8 +538,6 @@ public class QueryHandler<T> implements InvocationHandler {
                     }
                     break;
                 case SELECT:
-                    Class<?> returnArrayType = returnType.getComponentType();
-
                     TypedQuery<?> query = em.createQuery(jpql, entityClass);
                     if (args != null) {
                         Parameter[] params = method.getParameters();
@@ -730,6 +685,7 @@ public class QueryHandler<T> implements InvocationHandler {
      * @param jpql
      * @param pagination
      * @param collector
+     * @param entityInfo
      * @param method
      * @param paramCount
      * @param args
@@ -740,17 +696,17 @@ public class QueryHandler<T> implements InvocationHandler {
      *         that is controlled by the database's async support.
      */
     private CompletableFuture<Object> runAndCollect(String jpql, Pagination pagination,
-                                                    Collector<Object, Object, Object> collector,
+                                                    Collector<Object, Object, Object> collector, EntityInfo entityInfo,
                                                     Method method, int numParams, Object[] args, Class<?> returnType) {
 
         Object r = collector.supplier().get();
         BiConsumer<Object, Object> accumulator = collector.accumulator();
 
         // TODO it would be possible to process multiple pages in parallel if we wanted to and if the collector supports it
-        EntityManager em = punit.createEntityManager();
+        EntityManager em = entityInfo.persister.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityClass);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityInfo.type);
             if (args != null) {
                 Parameter[] params = method.getParameters();
                 for (int i = 0; i < numParams; i++) {
@@ -790,6 +746,7 @@ public class QueryHandler<T> implements InvocationHandler {
      * @param jpql
      * @param pagination
      * @param consumer
+     * @param entityInfo
      * @param method
      * @param paramCount
      * @param args
@@ -799,14 +756,14 @@ public class QueryHandler<T> implements InvocationHandler {
      *         asynchronous patterns, it could be a not-yet-completed completion stage
      *         that is controlled by the database's async support.
      */
-    private CompletableFuture<Void> runWithConsumer(String jpql, Pagination pagination, Consumer<Object> consumer,
+    private CompletableFuture<Void> runWithConsumer(String jpql, Pagination pagination, Consumer<Object> consumer, EntityInfo entityInfo,
                                                     Method method, int numParams, Object[] args, Class<?> returnType) {
 
         // TODO it would be possible to process multiple pages in parallel if we wanted to and if the consumer supports it
-        EntityManager em = punit.createEntityManager();
+        EntityManager em = entityInfo.persister.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityClass);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityInfo.type);
             if (args != null) {
                 Parameter[] params = method.getParameters();
                 for (int i = 0; i < numParams; i++) {

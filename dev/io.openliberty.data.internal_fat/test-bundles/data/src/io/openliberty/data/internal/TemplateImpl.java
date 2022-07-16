@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +35,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
-import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.data.IdNotFoundException;
 import io.openliberty.data.MappingException;
@@ -59,14 +57,12 @@ public class TemplateImpl implements Template {
         if (id == null || entityClass == null)
             throw new NullPointerException(id == null ? "id" : "entityClass");
 
-        Entry<String, PersistenceServiceUnit> keyAndPSU = persistence.getPersistenceServiceUnit(entityClass);
-        String keyAttribute = keyAndPSU.getKey();
-        PersistenceServiceUnit punit = keyAndPSU.getValue();
+        EntityInfo entityInfo = persistence.getEntityInfo(entityClass);
 
-        if (keyAttribute == null)
+        if (entityInfo.keyName == null)
             throw new IdNotFoundException("Entity " + entityClass + " lacks a primary key column.");
 
-        String jpql = "DELETE FROM " + entityClass.getSimpleName() + " o WHERE o." + keyAttribute + "=?1";
+        String jpql = "DELETE FROM " + entityInfo.name + " o WHERE o." + entityInfo.keyName + "=?1";
 
         LocalTransactionCoordinator suspendedLTC = null;
         EntityManager em = null;
@@ -78,7 +74,7 @@ public class TemplateImpl implements Template {
                 persistence.tranMgr.begin();
             }
 
-            em = punit.createEntityManager();
+            em = entityInfo.persister.createEntityManager();
 
             Query update = em.createQuery(jpql);
             update.setParameter(1, id);
@@ -123,19 +119,17 @@ public class TemplateImpl implements Template {
         if (id == null || entityClass == null)
             throw new NullPointerException(id == null ? "id" : "entityClass");
 
-        Entry<String, PersistenceServiceUnit> keyAndPSU = persistence.getPersistenceServiceUnit(entityClass);
-        String keyAttribute = keyAndPSU.getKey();
-        PersistenceServiceUnit punit = keyAndPSU.getValue();
+        EntityInfo entityInfo = persistence.getEntityInfo(entityClass);
 
-        if (keyAttribute == null)
+        if (entityInfo.keyName == null)
             throw new IdNotFoundException("Entity " + entityClass + " lacks a primary key column.");
 
-        String jpql = "SELECT o FROM " + entityClass.getSimpleName() + " o WHERE o." + keyAttribute + "=?1";
+        String jpql = "SELECT o FROM " + entityInfo.name + " o WHERE o." + entityInfo.keyName + "=?1";
 
         EntityManager em = null;
         boolean failed = true;
         try {
-            em = punit.createEntityManager();
+            em = entityInfo.persister.createEntityManager();
 
             TypedQuery<T> query = em.createQuery(jpql, entityClass);
             query.setParameter(1, id);
@@ -165,7 +159,7 @@ public class TemplateImpl implements Template {
 
     @Override
     public <T> T insert(T entity, Duration ttl) {
-        PersistenceServiceUnit punit = persistence.getPersistenceServiceUnit(entity.getClass()).getValue();
+        EntityInfo entityInfo = persistence.getEntityInfo(entity.getClass());
 
         LocalTransactionCoordinator suspendedLTC = null;
         EntityManager em = null;
@@ -179,7 +173,7 @@ public class TemplateImpl implements Template {
                 persistence.tranMgr.begin();
             }
 
-            em = punit.createEntityManager();
+            em = entityInfo.persister.createEntityManager();
 
             if (ttl != null)
                 setQueryTimeout(em, ttl);
@@ -232,7 +226,7 @@ public class TemplateImpl implements Template {
         if (!it.hasNext())
             return Collections.<T> emptyList();
 
-        PersistenceServiceUnit punit = persistence.getPersistenceServiceUnit(it.next().getClass()).getValue();
+        EntityInfo entityInfo = persistence.getEntityInfo(it.next().getClass());
 
         LocalTransactionCoordinator suspendedLTC = null;
         EntityManager em = null;
@@ -246,7 +240,7 @@ public class TemplateImpl implements Template {
                 persistence.tranMgr.begin();
             }
 
-            em = punit.createEntityManager();
+            em = entityInfo.persister.createEntityManager();
 
             if (ttl != null)
                 setQueryTimeout(em, ttl);
@@ -311,7 +305,7 @@ public class TemplateImpl implements Template {
 
     @Override
     public <T> T update(T entity) {
-        PersistenceServiceUnit punit = persistence.getPersistenceServiceUnit(entity.getClass()).getValue();
+        EntityInfo entityInfo = persistence.getEntityInfo(entity.getClass());
 
         LocalTransactionCoordinator suspendedLTC = null;
         EntityManager em = null;
@@ -324,7 +318,7 @@ public class TemplateImpl implements Template {
                 persistence.tranMgr.begin();
             }
 
-            em = punit.createEntityManager();
+            em = entityInfo.persister.createEntityManager();
 
             returnValue = em.merge(entity);
             em.flush();
@@ -366,7 +360,7 @@ public class TemplateImpl implements Template {
         if (!it.hasNext())
             return Collections.<T> emptyList();
 
-        PersistenceServiceUnit punit = persistence.getPersistenceServiceUnit(it.next().getClass()).getValue();
+        EntityInfo entityInfo = persistence.getEntityInfo(it.next().getClass());
 
         LocalTransactionCoordinator suspendedLTC = null;
         EntityManager em = null;
@@ -379,7 +373,7 @@ public class TemplateImpl implements Template {
                 persistence.tranMgr.begin();
             }
 
-            em = punit.createEntityManager();
+            em = entityInfo.persister.createEntityManager();
 
             returnValue = new ArrayList<>();
             for (T e : entities)

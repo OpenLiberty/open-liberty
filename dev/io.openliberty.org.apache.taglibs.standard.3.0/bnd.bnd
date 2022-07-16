@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+Bundle-SymbolicName: io.openliberty.org.apache.taglibs.standard.3.0
+Bundle-Description: Jakarta Standard Tag Library Implementation, version 3.0
+
+Fragment-Host: com.ibm.ws.jsp.jakarta
+
+Import-Package: \
+   !org.eclipse.tags.shaded.org.apache.xml.serialize,\
+   !org.eclipse.tags.shaded.org.apache.xml.serializer,\
+   !org.apache.xerces*, \
+   *
+
+Export-Package: \
+   org.apache.taglibs.standard.tlv;thread-context=true;version=3.0, \
+   org.apache.taglibs.standard.tei;thread-context=true;version=3.0, \
+   org.apache.taglibs*;version=3.0
+
+-privatepackage: \
+  org.eclipse.tags.shaded.*
+
+-buildpath: \
+  org.glassfish.web:jakarta.servlet.jsp.jstl;version=3.0, \
+  io.openliberty.jakarta.servlet.6.0;version=latest,\
+  io.openliberty.jakarta.pages.3.0;version=latest

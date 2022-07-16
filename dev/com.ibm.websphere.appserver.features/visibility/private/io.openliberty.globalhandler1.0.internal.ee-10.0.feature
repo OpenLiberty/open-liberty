@@ -6,6 +6,6 @@ visibility = private
   io.openliberty.servlet.api-6.0; apiJar=false
 -bundles=\
   io.openliberty.webservices.handler
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

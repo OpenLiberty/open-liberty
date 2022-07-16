@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ import com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -109,9 +109,9 @@ public class RestMetricsTest {
                       server.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        //TODO: make sure to remove this check when MP 5.0 is available - where MP Metrics supports EE9
-        //      metrics loads LTPA, so when we use MP Metrics in MP 5, we'll need to verify that LTPA is started
-        if (!JakartaEE9Action.isActive()) {
+        //TODO: make sure to remove this check when MP 6.0 is available - where MP Metrics supports EE10
+        //      metrics loads LTPA, so when we use MP Metrics in MP 6, we'll need to verify that LTPA is started
+        if (!JakartaEE10Action.isActive()) {
             assertNotNull("CWWKS4105I.* not received on server",
                       server.waitForStringInLog("CWWKS4105I.*"));
         }
@@ -121,7 +121,7 @@ public class RestMetricsTest {
     public static void tearDown() throws Exception {
         if (server != null) {
             server.stopServer("MetricsUnmappedUncheckedException", "MetricsUnmappedCheckedException",
-                              "Fault: Unmapped Checked","SRVE0777E", "SRVE0315E");
+                              "Fault: Unmapped Checked","SRVE0777E", "SRVE0315E", "CWPMI2005W");
         }
     }
 
@@ -198,7 +198,7 @@ public class RestMetricsTest {
         boolean allow404 = true;
         ArrayList<String> metricsList = getMetricsStrings(200, METRICS_URL_STRING, allow404);
 
-        // getMetricsStrings() doesn't run for EE9 so metricsList will be null in that case
+        // getMetricsStrings() doesn't run for EE10 so metricsList will be null in that case
         if ((metricsList != null) && (metricsList.contains("abortTest"))) {
             fail("The /restmetrics/rest/restmetrics/abortTest method should not have run following the ContainerRequestFilter abort so no metrics information should be collected." + metricsList.toString());
         }
@@ -644,8 +644,8 @@ public class RestMetricsTest {
     }
 
     private ArrayList<String> getMetricsStrings(int expectedRc, String metricString, boolean allow404) {
-        //TODO: remove this check when MP 5.0 is available - where MP Metrics supports EE9:
-        if (JakartaEE9Action.isActive()) {
+        //TODO: remove this check when MP 6.0 is available - where MP Metrics supports EE10:
+        if (JakartaEE10Action.isActive()) {
             return null;
         }
 
@@ -699,8 +699,8 @@ public class RestMetricsTest {
 
 
     private float checkMetrics(ArrayList<String> lines, int index) {
-        //TODO: remove this check when MP 5.0 is available - where MP Metrics supports EE9:
-        if (JakartaEE9Action.isActive()) {
+        //TODO: remove this check when MP 6.0 is available - where MP Metrics supports EE10:
+        if (JakartaEE10Action.isActive()) {
             return -1.0f;
         }
 

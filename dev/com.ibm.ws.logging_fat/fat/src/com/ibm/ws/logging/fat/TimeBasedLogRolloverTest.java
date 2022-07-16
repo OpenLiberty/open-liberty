@@ -108,13 +108,7 @@ public class TimeBasedLogRolloverTest {
         server_no_trace.saveServerConfiguration();
         server_json_logs.saveServerConfiguration();
 
-        ShrinkHelper.defaultDropinApp(server_xml, "logger-servlet", "com.ibm.ws.logging.fat.logger.servlet");
-
-        //create app for quicklog
-        // WebArchive quickLogWar = ShrinkWrap.create(WebArchive.class, "QuickLogTest.war");
-        // quickLogWar.addPackage("com.ibm.ws.logging.fat.quick.log.servlet");
-        // quickLogWar.addAsWebInfResource(new File("test-applications/quick-log-servlet/resources/beans.xml"));
-        // ShrinkHelper.exportAppToServer(server_xml, quickLogWar);
+        ShrinkHelper.defaultDropinApp(server_xml, "quicklogtest", "com.ibm.ws.logging.fat.quick.log.test");
     }
 
     public void setUp(LibertyServer server, String method) throws Exception {
@@ -371,20 +365,24 @@ public class TimeBasedLogRolloverTest {
 
     /*
      * Tests that maxFileSize takes priority over timed log rollover.
+     * 
      */
     @Test
     public void testMaxFileSizePriorityRolling() throws Exception {
         setUp(server_xml, "testMaxFileSizeRolling");
+
+        //wait to do a server config update at the start of the minute
+        if (Calendar.getInstance().get(Calendar.SECOND) != 0) {
+            Thread.sleep((60000 - Calendar.getInstance().get(Calendar.SECOND)*1000));
+            Thread.sleep(2000); //padding
+        }
+
         setServerConfiguration(false, false, true, "", "", 1);
 
         //check for rolled log first, to ensure we start writing messages at the next minute
         checkForRolledLogsAtTime(getNextRolloverTime(0,1)); 
 
-        //hit QuickLogTest endpoint (run for 10s)
-        long startTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startTime < 60000) {
-            hitWebPage("logger-servlet", "LoggerServlet", false, null);
-        }
+        getHttpServlet("/quicklogtest/QuickLogTest?threads=1&duration=10&messageSize=0&delay=0&action=log&stepThreads=false", server_xml);
 
         File logsDir = new File(getLogsDirPath());
         String[] logsDirFiles = logsDir.list();
@@ -403,6 +401,7 @@ public class TimeBasedLogRolloverTest {
         //check Log is rolled over at next rollover time
         checkForRolledLogsAtTime(getNextRolloverTime(0,1)); 
     }
+
 
     private static String getLogsDirPath() throws Exception {
         return serverInUse.getDefaultLogFile().getParentFile().getAbsolutePath();
@@ -477,23 +476,31 @@ public class TimeBasedLogRolloverTest {
         serverInUse.waitForConfigUpdateInLogUsingMark(null);
     }
 
-    private static void hitWebPage(String contextRoot, String servletName, boolean failureAllowed, String params) throws MalformedURLException, IOException, ProtocolException {
+    //setup connection for extension fields
+    private String getHttpServlet(String servletPath, LibertyServer server) throws Exception {
+        HttpURLConnection con = null;
         try {
-            String urlStr = "http://" + serverInUse.getHostname() + ":" + serverInUse.getHttpDefaultPort() + "/" + contextRoot + "/" + servletName;
-            urlStr = params != null ? urlStr + params : urlStr;
-            URL url = new URL(urlStr);
-            int expectedResponseCode = failureAllowed ? HttpURLConnection.HTTP_INTERNAL_ERROR : HttpURLConnection.HTTP_OK;
-            HttpURLConnection con = HttpUtils.getHttpConnection(url, expectedResponseCode, CONN_TIMEOUT);
-            BufferedReader br = HttpUtils.getConnectionStream(con);
-            String line = br.readLine();
-            // Make sure the server gave us something back
-            assertNotNull(line);
-            con.disconnect();
-        } catch (IOException e) {
-            // A message about a 500 code may be fine
-            if (!failureAllowed) {
-                throw e;
+            String sURL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + servletPath;
+            URL checkerServletURL = new URL(sURL);
+            con = (HttpURLConnection) checkerServletURL.openConnection();
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("GET");
+
+            String sep = System.getProperty("line.separator");
+            String line = null;
+            StringBuilder lines = new StringBuilder();
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            while ((line = br.readLine()) != null && line.length() > 0) {
+                lines.append(line).append(sep);
             }
+            Log.info(c, "getHttpServlet", sURL);
+            return lines.toString();
+        } finally {
+            if (con != null)
+                con.disconnect();
         }
     }
 }

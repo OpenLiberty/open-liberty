@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,6 +73,9 @@ public class TldParser extends DefaultHandler {
     
     public static final String TAGLIB_XSD_SYSTEM_ID_20 = "web-jsptaglibrary_2_0.xsd";
     public static final String TAGLIB_XSD_RESOURCE_PATH_20 = "/javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd";
+
+    public static final String TAGLIB_XSD_SYSTEM_ID_30 = "web-jsptaglibrary_3_0.xsd";
+    public static final String TAGLIB_XSD_RESOURCE_PATH_30 = "/jakarta/servlet/resources/web-jsptaglibrary_3_0.xsd";
     
     public static final String J2EE14_XSD_SYSTEM_ID = "j2ee_1_4.xsd";
     public static final String J2EE14_XSD_RESOURCE_PATH = "/javax/servlet/resources/j2ee_1_4.xsd";
@@ -874,7 +877,10 @@ public class TldParser extends DefaultHandler {
             }
         }
         else if (systemId != null) {
-            if (systemId.endsWith(TAGLIB_XSD_SYSTEM_ID_20)) {
+            if (systemId.endsWith(TAGLIB_XSD_SYSTEM_ID_30)) {
+                resourcePath = TAGLIB_XSD_RESOURCE_PATH_30;
+            }
+            else if (systemId.endsWith(TAGLIB_XSD_SYSTEM_ID_20)) {
                 resourcePath = TAGLIB_XSD_RESOURCE_PATH_20;
             }
             else if (systemId.endsWith(J2EE14_XSD_SYSTEM_ID)) {

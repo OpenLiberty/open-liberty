@@ -50,7 +50,6 @@ import com.ibm.ws.fat.util.browser.WebResponse;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
@@ -160,7 +159,6 @@ public class CDIAPITests extends FATServletClient {
 
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) //This must be re-enabled when the session code for EE10 is ready. See issue 20854.
     public void testConversationFilter() throws Exception {
         WebBrowser browser = WebBrowserFactory.getInstance().createWebBrowser((File) null);
 

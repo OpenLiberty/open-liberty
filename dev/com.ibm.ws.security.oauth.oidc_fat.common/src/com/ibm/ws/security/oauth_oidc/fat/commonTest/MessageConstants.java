@@ -94,6 +94,9 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1625E_FAILED_TO_VALIDATE_ID_TOKEN = "CWWKS1625E";
     public static final String CWWKS1631I_OIDC_ENDPOINT_SERVICE_ACTIVATED = "CWWKS1631I";
     public static final String CWWKS1633E_USERINFO_UNSUPPORTED_PARAM = "CWWKS1633E";
+    public static final String CWWKS1636E_POST_LOGOUT_REDIRECT_MISMATCH = "CWWKS1636E";
+    public static final String CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI = "CWWKS1648E";
+    public static final String CWWKS1649E_BACK_CHANNEL_LOGOUT_TIMEOUT = "CWWKS1649E";
 
     public static final String CWWKS1703E_CLIENT_REQUIRES_HTTPS = "CWWKS1703E";
     public static final String CWWKS1704E_STATE_MISMATCH = "CWWKS1704E";
@@ -131,6 +134,8 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1781E_TOKEN_ISSUER_NOT_TRUSTED = "CWWKS1781E";
     public static final String CWWKS1783W_DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED = "CWWKS1783W";
 
+    public static final String CWWKS1951E_FAILURE_SENDING_BCL_REQUEST = "CWWKS1951E";
+
     public static final String CWWKS4358I_AUTH_FILTER_PROCESSED = "CWWKS4358I";
 
     public static final String CWWKS1722E_UNABLE_TO_AUTHENTICATE_BADCLAIM = "CWWKS1722E";
@@ -160,6 +165,8 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS1551E_LOGOUT_TOKEN_DUP_JTI = "CWWKS1551E";
     public static final String CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS = "CWWKS1552E";
+
+    public static final String CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT = "CWWKS2300E";
 
     public static final String CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES = "CWWKS5207W";
 

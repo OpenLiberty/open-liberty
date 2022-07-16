@@ -13,7 +13,6 @@ package com.ibm.ws.security.openidconnect.clients.common;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -32,6 +31,8 @@ import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
+
+import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 
 public class OidcAuthorizationRequestCreator {
 
@@ -174,63 +175,39 @@ public class OidcAuthorizationRequestCreator {
             strResponse_type = clientConfig.getResponseType();
         }
         String clientId = clientConfig.getClientId() == null ? "" : clientConfig.getClientId();
-        String query = "";
-        query = appendParameterToQuery(query, "response_type", strResponse_type);
-        query = appendParameterToQuery(query, "client_id", clientId);
-        query = appendParameterToQuery(query, "state", state);
-        query = appendParameterToQuery(query, "redirect_uri", redirect_url);
-        query = appendParameterToQuery(query, "scope", clientConfig.getScope());
 
-        query = appendOptionalParametersToAuthzQueryString(query, oidcClientRequest, state, acr_values, isImplicit);
+        AuthorizationRequestParameters authzParameters = new AuthorizationRequestParameters(clientConfig.getAuthorizationEndpointUrl(), clientConfig.getScope(), strResponse_type, clientId, redirect_url, state);
 
-        return getAuthorizationEndpointWithQueryStringAppended(query);
+        addOptionalParameters(authzParameters, oidcClientRequest, state, acr_values, isImplicit);
+
+        return authzParameters.buildRequestUrl();
     }
 
-    String appendParameterToQuery(String query, String parameterName, String parameterValue) {
-        if (parameterName == null || parameterValue == null) {
-            return query;
-        }
-        try {
-            if (query == null) {
-                query = "";
-            }
-            String queryPrefix = "%s";
-            if (!query.isEmpty()) {
-                queryPrefix += "&";
-            }
-            query = String.format(queryPrefix + "%s=%s", query, URLEncoder.encode(parameterName, ClientConstants.CHARSET), URLEncoder.encode(parameterValue, ClientConstants.CHARSET));
-        } catch (UnsupportedEncodingException e) {
-            // Do nothing - UTF-8 encoding will be supported
-        }
-        return query;
-    }
-
-    String appendOptionalParametersToAuthzQueryString(String query, OidcClientRequest oidcClientRequest, String state, String acr_values, boolean isImplicit) throws UnsupportedEncodingException {
+    void addOptionalParameters(AuthorizationRequestParameters authzParameters, OidcClientRequest oidcClientRequest, String state, String acr_values, boolean isImplicit) throws UnsupportedEncodingException {
         if (clientConfig.isNonceEnabled() || isImplicit) {
             String nonceValue = OidcUtil.generateRandom(Constants.STATE_LENGTH);
             OidcUtil.createNonceCookie(oidcClientRequest, nonceValue, state, clientConfig);
-            query = appendParameterToQuery(query, "nonce", nonceValue);
+            authzParameters.addParameter("nonce", nonceValue);
         }
 
         if (acr_values != null && !acr_values.isEmpty()) {
-            query = appendParameterToQuery(query, "acr_values", acr_values);
+            authzParameters.addParameter("acr_values", acr_values);
         } else if (isACRConfigured()) {
-            query = appendParameterToQuery(query, "acr_values", clientConfig.getAuthContextClassReference());
+            authzParameters.addParameter("acr_values", clientConfig.getAuthContextClassReference());
         }
 
         if (clientConfig.getPrompt() != null) {
-            query = appendParameterToQuery(query, "prompt", clientConfig.getPrompt());
+            authzParameters.addParameter("prompt", clientConfig.getPrompt());
         }
 
         if (isImplicit) {
-            query = appendImplicitParametersToQueryString(query);
+            addImplicitParameters(authzParameters);
         }
         // look for custom params in the configuration to send to the authorization ep
-        query = handleCustomParams(query);
+        addCustomParams(authzParameters);
 
         // check and see if we have any additional params to forward from the request
-        query = addForwardLoginParamsToQuery(query);
-        return query;
+        addForwardLoginParams(authzParameters);
     }
 
     private boolean isACRConfigured() {
@@ -242,59 +219,46 @@ public class OidcAuthorizationRequestCreator {
         return isACR;
     }
 
-    String appendImplicitParametersToQueryString(String query) throws UnsupportedEncodingException {
-        query = appendParameterToQuery(query, "response_mode", "form_post");
+    void addImplicitParameters(AuthorizationRequestParameters authzParameters) throws UnsupportedEncodingException {
+        authzParameters.addParameter("response_mode", "form_post");
         // add resource
         String resources = getResourcesParameter();
         if (resources != null) {
-            query += resources;
+            authzParameters.addParameter("resource", resources);
         }
-        return query;
     }
 
     String getResourcesParameter() throws UnsupportedEncodingException {
-        String result = null;
         String resources = OIDCClientAuthenticatorUtil.getResources(clientConfig);
         if (resources != null && !resources.isEmpty()) {
-            result = "&resource=" + URLEncoder.encode(resources, ClientConstants.CHARSET);
+            return resources;
         }
-        return result;
+        return null;
     }
 
-    private String handleCustomParams(String query) {
+    private void addCustomParams(AuthorizationRequestParameters authzParameters) {
         HashMap<String, String> customParams = clientConfig.getAuthzRequestParams();
         if (customParams != null && !customParams.isEmpty()) {
             Set<Entry<String, String>> entries = customParams.entrySet();
             for (Entry<String, String> entry : entries) {
-                query = appendParameterToQuery(query, entry.getKey(), entry.getValue());
+                authzParameters.addParameter(entry.getKey(), entry.getValue());
             }
         }
-        return query;
     }
 
-    String addForwardLoginParamsToQuery(String query) {
+    void addForwardLoginParams(AuthorizationRequestParameters authzParameters) {
         List<String> forwardAuthzParams = clientConfig.getForwardLoginParameter();
         if (forwardAuthzParams == null || forwardAuthzParams.isEmpty()) {
-            return query;
+            return;
         }
         for (String entry : forwardAuthzParams) {
             if (entry != null) {
                 String value = request.getParameter(entry);
-                query = appendParameterToQuery(query, entry, value);
-
+                if (value != null) {
+                    authzParameters.addParameter(entry, value);
+                }
             }
         }
-        return query;
-    }
-
-    String getAuthorizationEndpointWithQueryStringAppended(String queryString) {
-        // in case the AuthorizationEndpoint already has set up its own parameters
-        String authzEndpointUrl = clientConfig.getAuthorizationEndpointUrl();
-        String queryMark = "?";
-        if (authzEndpointUrl != null && authzEndpointUrl.indexOf("?") > 0) {
-            queryMark = "&";
-        }
-        return authzEndpointUrl + queryMark + queryString;
     }
 
     void savePostParameters() {

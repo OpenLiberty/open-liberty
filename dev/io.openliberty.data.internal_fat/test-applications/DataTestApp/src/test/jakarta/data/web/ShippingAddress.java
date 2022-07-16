@@ -10,9 +10,16 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import io.openliberty.data.DiscriminatorColumn;
+import io.openliberty.data.DiscriminatorValue;
+import io.openliberty.data.Inheritance;
+
 /**
  *
  */
+@Inheritance
+@DiscriminatorColumn("ADDRESS_TYPE")
+@DiscriminatorValue("Standard")
 public class ShippingAddress {
 
     public Long id;

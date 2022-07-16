@@ -18,11 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.consumer.InvalidJwtException;
-import org.jose4j.jwt.consumer.JwtConsumer;
-import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.jose4j.jwt.consumer.JwtContext;
-import org.jose4j.jwx.JsonWebStructure;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,7 +27,8 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.backchannelLogout.fat.CommonTests.BackChannelLogoutCommonTests;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
+import com.ibm.ws.security.backchannelLogout.fat.utils.Constants;
+import com.ibm.ws.security.backchannelLogout.fat.utils.TokenKeeper;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 
@@ -63,12 +59,6 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
      *
      */
 
-    @AfterClass
-    public static void afterClass() {
-        Log.info(thisClass, "afterClass", "Resetting useLdap to: " + defaultUseLdap);
-        useLdap = defaultUseLdap;
-    }
-
     @BeforeClass
     public static void setUp() throws Exception {
 
@@ -79,7 +69,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         List<String> apps = new ArrayList<String>() {
             {
                 add(Constants.OPENID_APP);
-                add("backchannelLogoutTestApp");
+                add(Constants.backchannelLogoutApp);
             }
         };
 
@@ -90,86 +80,19 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         testSettings.setFlowType(Constants.RP_FLOW);
         // set up the postlogout redirect to call the test app - it will build a response with the logout_token saved from the invocation of the back channel logout request
         // it'll do this to retrieve the logout_token content
-        testSettings.setPostLogoutRedirect(clientServer.getHttpString() + "/backchannelLogoutTestApp/logBackChannelLogoutUri");
+        //        testSettings.setPostLogoutRedirect(clientServer.getHttpString() + "/backchannelLogoutTestApp/logBackChannelLogoutUri");
+        testSettings.setPostLogoutRedirect(null);
 
     }
 
-    public JwtClaims getHeaderAlg(String jwtTokenString) throws Exception, InvalidJwtException {
-
-        Log.info(thisClass, "getHeaderAlg", "Original JWS Token String: " + jwtTokenString);
-        JwtClaims jwtClaims = new JwtClaims();
-
-        try {
-
-            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                    .setSkipAllValidators()
-                    .setDisableRequireSignature()
-                    .setSkipSignatureVerification()
-                    .build();
-
-            JwtContext context = jwtConsumer.process(jwtTokenString);
-            List<JsonWebStructure> jsonStructures = context.getJoseObjects();
-            if (jsonStructures == null || jsonStructures.isEmpty()) {
-                throw new Exception("Invalid JsonWebStructure");
-            }
-            JsonWebStructure jsonStruct = jsonStructures.get(0);
-
-            jwtClaims.setClaim(Constants.HEADER_ALGORITHM, jsonStruct.getAlgorithmHeaderValue());
-
-            Log.info(thisClass, "getHeaderAlg", "JWT consumer populated succeeded! " + jwtClaims);
-        } catch (InvalidJwtException e) {
-            // InvalidJwtException will be thrown, if the JWT failed processing or validation in anyway.
-            // Hopefully with meaningful explanations(s) about what went wrong.
-            Log.info(thisClass, "getHeaderAlg", "Invalid JWT! " + e);
-            throw e;
-        }
-
-        // debug if ever needed
-        //        Map<String, Object> claimMap = jwtClaims.getClaimsMap();
-        //        for (Map.Entry<String, Object> entry : claimMap.entrySet()) {
-        //            Log.info(thisClass, "getHeaderAlg", "Key = " + entry.getKey() + ", Value = " + entry.getValue());
-        //            Log.info(thisClass, "getHeaderAlg", "value of type: " + entry.getValue().getClass().toString());
-        //        }
-
-        return jwtClaims;
-
-    }
-
-    public JwtClaims getClaims(String jwtTokenString) throws Exception, InvalidJwtException {
-
-        JwtClaims jwtClaims = null;
-
-        Log.info(thisClass, "getClaims", "Original JWS Token String: " + jwtTokenString);
-
-        try {
-
-            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                    .setSkipAllValidators()
-                    .setDisableRequireSignature()
-                    .setSkipSignatureVerification()
-                    .build();
-
-            jwtClaims = jwtConsumer.process(jwtTokenString).getJwtClaims();
-            Log.info(thisClass, "getClaims", "JWT consumer populated succeeded! " + jwtClaims);
-        } catch (InvalidJwtException e) {
-            // InvalidJwtException will be thrown, if the JWT failed processing or validation in anyway.
-            // Hopefully with meaningful explanations(s) about what went wrong.
-            Log.info(thisClass, "getClaims", "Invalid JWT! " + e);
-            throw e;
-        }
-
-        // debug if ever needed
-        //        Map<String, Object> claimMap = jwtClaims.getClaimsMap();
-        //        for (Map.Entry<String, Object> entry : claimMap.entrySet()) {
-        //            Log.info(thisClass, "getClaims", "Key = " + entry.getKey() + ", Value = " + entry.getValue());
-        //            Log.info(thisClass, "getClaims", "value of type: " + entry.getValue().getClass().toString());
-        //        }
-
-        return jwtClaims;
-
+    @AfterClass
+    public static void afterClass() {
+        Log.info(thisClass, "afterClass", "Resetting useLdap to: " + defaultUseLdap);
+        useLdap = defaultUseLdap;
     }
 
     /**
+     * Validate the content of the logout_token - use the content of the id_token from the client login request
      *
      * @param idTokenData
      * @param logoutToken
@@ -186,8 +109,8 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     public void validateLogoutTokenHeader(String id_token, String logout_token) throws Exception {
 
-        JwtClaims idTokenClaims = getHeaderAlg(id_token);
-        JwtClaims logoutTokenClaims = getHeaderAlg(logout_token);
+        JwtClaims idTokenClaims = new TokenKeeper(id_token).getHeaderClaims();
+        JwtClaims logoutTokenClaims = new TokenKeeper(logout_token).getHeaderClaims();
 
         mustHaveString(Constants.HEADER_ALGORITHM, idTokenClaims, logoutTokenClaims, true);
 
@@ -195,8 +118,8 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
     public void validateLogoutTokenClaims(String id_token, String logout_token, boolean sidRequired) throws Exception {
 
-        JwtClaims idTokenClaims = getClaims(id_token);
-        JwtClaims logoutTokenClaims = getClaims(logout_token);
+        JwtClaims idTokenClaims = new TokenKeeper(id_token).getPayloadClaims();
+        JwtClaims logoutTokenClaims = new TokenKeeper(logout_token).getPayloadClaims();
 
         mustHaveString(Constants.PAYLOAD_ISSUER, idTokenClaims, logoutTokenClaims, true);
 
@@ -225,7 +148,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         if (logoutTokenValue == null) {
             fail("Key: " + key + " was missing in the logout_token");
         } else {
-            // all of the required keys should be in the id_token, so we should be able to compare the value,
+            // all of the required key/claim should be in the id_token, so we should be able to compare the value,
             // but check for a null in the idToken - just in case...
             if (idTokenValue == null) {
                 if (mustBeInIdToken) {
@@ -260,7 +183,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
             fail("Key: " + key + " was missing in the logout_token");
         } else {
 
-            // all of the required keys should be in the id_token, so we should be able to compare the value
+            // all of the required key/claim should be in the id_token, so we should be able to compare the value
             if (idTokenValue == null) {
                 if (mustBeInIdToken) {
                     fail("Key: " + key + " was missing in the id_token (nothing to validate the logout_token value against");
@@ -286,7 +209,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         } else {
             Log.info(thisClass, "mustHaveArray", "array type: " + rawLogoutTokenValues.getClass());
 
-            // all of the required keys should be in the id_token, so we should be able to compare the value,
+            // all of the required key/claim should be in the id_token, so we should be able to compare the value,
             // but check for a null in the idToken - just in case...
             if (rawIdTokenValues == null) {
                 fail("Key: " + key + " was missing in the id_token (nothing to validate the logout_token value against");
@@ -365,24 +288,24 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
 
         Log.info(thisClass, "mustHaveEvents", "events:" + events.getClass().toString());
 
-        if (!events.containsKey(logoutEventKey)) {
-            fail("Key: events in the logout_token does not contain a Json object containing the key: " + logoutEventKey);
+        if (!events.containsKey(Constants.logoutEventKey)) {
+            fail("Key: events in the logout_token does not contain a Json object containing the key: " + Constants.logoutEventKey);
         }
         // check for key being of type JSONObject
         try {
-            value = events.get(logoutEventKey);
+            value = events.get(Constants.logoutEventKey);
         } catch (Exception e) {
-            fail(logoutEventKey + " is not of type JSONObject");
+            fail(Constants.logoutEventKey + " is not of type JSONObject");
         }
 
         if (value == null) {
             // should not be able to have a null content, but, just in case
-            fail(logoutEventKey + " value is null and should at least contain an empty Json object");
+            fail(Constants.logoutEventKey + " value is null and should at least contain an empty Json object");
         } else {
             Log.info(thisClass, "mustHaveEvents", "value: " + value.getClass().toString());
             if (!value.equals(new JSONObject())) {
                 Log.info(thisClass, "mustHaveEvents", "*************************************************************************************************************************");
-                Log.info(thisClass, "mustHaveEvents", "value for the: " + logoutEventKey + " within events is NOT an empty Json object - the value is: " + value);
+                Log.info(thisClass, "mustHaveEvents", "value for the: " + Constants.logoutEventKey + " within events is NOT an empty Json object - the value is: " + value);
                 Log.info(thisClass, "mustHaveEvents", "*************************************************************************************************************************");
                 //                    fail("value for the: " + logoutEventKey + " within events is NOT an empty Json object - the value is: " + value);
             } else {
@@ -391,16 +314,42 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         }
     }
 
-    public void generic_logoutTokenCreationValidation(TestSettings settings, String provider, boolean sidRequired) throws Exception {
+    /**
+     * This method provides the "generic" steps that each of the test cases in this class needs to perform
+     * - clear the response string in the test bcl endpoint
+     * - Update the test settings based on the provider and client info passed
+     * - Login to access a protected app
+     * - gather the id_token, parse and save it in JwtTokenForTest format
+     * - invoke end_session
+     * - gather the logout_token and save it in JwtTokenForTest format
+     * - validate the content of the logout_token against what was in the id_token
+     *
+     * @param provider
+     *            the OP Provider that the test case is using - used to build the end_session endpoint
+     * @param client
+     *            the client that the test case is using - used to build the app name, post redirect uri and search for the
+     *            logout_token in the post logout response
+     * @param sidRequired
+     *            flag inidicating if the sid is required by the config (used when validating the logout_token)
+     * @throws Exception
+     */
+    public void generic_logoutTokenCreationValidation(String provider, String client, boolean sidRequired) throws Exception {
 
+        restoreAppMap(client);
         WebClient webClient = getAndSaveWebClient(true);
+
+        TestSettings settings = testSettings.copyTestSettings();
+        // set up the postlogout redirect to call the test app - it will build a response with the logout_token saved from the invocation of the back channel logout request
+        // it'll do this to retrieve the logout_token content
+        settings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/" + client);
 
         // update the end_session that the test will use (it needs the specific provider)
         settings.setEndSession(settings.getEndSession().replace("OidcConfigSample", provider));
 
         // Access a protected app - using a normal RP flow
         List<validationData> expectations = vData.addSuccessStatusCodes(); // this call will also add the successful status check for logout
-        expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, clientServer.getHttpString() + "/backchannelLogoutTestApp/logBackChannelLogoutUri");
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, settings.getTestURL());
+        expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, testOPServer.getHttpsString() + "/oidc/end_session_logout.html");
 
         Object response = genericRP(_testName, webClient, settings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
         // grab the id_token that was created and store its contents in a JwtTokenForTest object
@@ -408,16 +357,15 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
         Log.info(thisClass, _testName, "id token: " + id_token);
 
         // invoke logout/end_session which will invoke the backchannel uri - which we've configured to use our test app that will print/log the logout_token
-        Object logoutResponse = genericOP(_testName, webClient, settings, Constants.LOGOUT_ONLY_ACTIONS, expectations, response, null);
-        String logoutToken = getLogoutTokenFromOutput(Constants.LOGOUT_TOKEN, logoutResponse);
-        Log.info(thisClass, _testName, "Logout token: " + logoutToken);
+        genericOP(_testName, webClient, settings, Constants.LOGOUT_ONLY_ACTIONS, expectations, response, null);
 
+        String logoutToken = getLogoutToken(client);
         validateLogoutTokenContent(id_token, logoutToken, sidRequired);
 
     }
 
     /**
-     * Test that the logout_token constains a jti claim that does NOT match the jti that is contained in the id_token
+     * Test that the logout_token contains a jti claim that does NOT match the jti that is contained in the id_token
      *
      * @throws Exception
      */
@@ -425,10 +373,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_jtiEnabledInOP() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_jtiInOP");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigJtiSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigJtiSample", "client_jtiInOP", Constants.sidIsNotRequired);
 
     }
 
@@ -440,10 +385,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_nonDefaultIssuer() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultIssuer");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigIssuerSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigIssuerSample", "client_nonDefaultIssuer", Constants.sidIsNotRequired);
 
     }
 
@@ -455,10 +397,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_nonDefaultAudience_All() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultAudienceAll");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceAllSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigAudienceAllSample", "client_nonDefaultAudienceAll", Constants.sidIsNotRequired);
 
     }
 
@@ -470,10 +409,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_nonDefaultAudience_one() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultAudienceOne");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceOneSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigAudienceOneSample", "client_nonDefaultAudienceOne", Constants.sidIsNotRequired);
 
     }
 
@@ -485,10 +421,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_nonDefaultAudience_multiple() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonDefaultAudienceMultiple");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigAudienceMultipleSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigAudienceMultipleSample", "client_nonDefaultAudienceMultiple", Constants.sidIsNotRequired);
 
     }
 
@@ -501,10 +434,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_nonceEnabledInOP() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_nonceInOP");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigNonceSample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigNonceSample", "client_nonceInOP", Constants.sidIsNotRequired);
 
     }
 
@@ -517,10 +447,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_sign_HS256() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_hs256");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigHS256Sample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigHS256Sample", "client_hs256", Constants.sidIsNotRequired);
 
     }
 
@@ -546,10 +473,7 @@ public class LogoutTokenCreationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenCreationTests_sign_RS256() throws Exception {
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setTestURL(clientServer.getHttpsString() + "/formlogin/simple/client_rs256");
-
-        generic_logoutTokenCreationValidation(updatedTestSettings, "OidcConfigRS256Sample", sidIsNotRequired);
+        generic_logoutTokenCreationValidation("OidcConfigRS256Sample", "client_rs256", Constants.sidIsNotRequired);
 
     }
 

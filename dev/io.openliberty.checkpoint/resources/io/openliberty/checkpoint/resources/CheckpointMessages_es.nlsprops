@@ -37,3 +37,22 @@ RESTORE_FAILED_CWWKC0454E=CWWKC0454E: El servidor no se ha podido restaurar desd
 RESTORE_FAILED_CWWKC0454E.explanation=Ha fallado un intento de restaurar el servidor desde un punto de comprobaci\u00f3n.  El servidor no se est\u00e1 ejecutando.
 RESTORE_FAILED_CWWKC0454E.useraction=Inspeccione el directorio de punto de comprobaci\u00f3n ubicado en el directorio de registros del servidor para ver archivos de registro adicionales para determinar por qu\u00e9 no se ha podido restaurar el servidor.
 
+UKNOWN_FAILURE_CWWKC0455E=CWWKC0455E: Se ha producido un error desconocido con el siguiente mensaje: {0}
+UKNOWN_FAILURE_CWWKC0455E.explanation=Se ha producido un error inesperado durante una solicitud de punto de comprobaci\u00f3n o durante un intento de restaurar el servidor desde un punto de comprobaci\u00f3n.
+UKNOWN_FAILURE_CWWKC0455E.useraction=Inspeccione el directorio de punto de comprobaci\u00f3n ubicado en el directorio de registros del servidor para obtener archivos de registro adicionales para determinar por qu\u00e9 se ha producido el error.
+
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E=CWWKC0456E: No se puede tomar un punto de comprobaci\u00f3n porque las siguientes caracter\u00edsticas configuradas en el archivo server.xml no est\u00e1n soportadas para el punto de comprobaci\u00f3n: {0}
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.explanation=La acci\u00f3n de punto de comprobaci\u00f3n del servidor s\u00f3lo puede utilizarse con caracter\u00edsticas que den soporte al punto de comprobaci\u00f3n.  
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.useraction=Habilite s\u00f3lo las caracter\u00edsticas que den soporte el punto de comprobaci\u00f3n para utilizar una acci\u00f3n de punto de comprobaci\u00f3n del servidor Consulte la documentaci\u00f3n para obtener detalles sobre las caracter\u00edsticas que dan soporte al punto de comprobaci\u00f3n.
+
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E=CWWKC0457E: Se ha producido un error al preparar la toma de un punto de comprobaci\u00f3n con el siguiente mensaje: {0}
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.explanation=Se ha producido una excepci\u00f3n al preparar la toma de un punto de comprobaci\u00f3n.  
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.useraction=Inspeccione el directorio de registros del servidor para obtener archivos de registro adicionales para determinar por qu\u00e9 ha fallado el punto de comprobaci\u00f3n del servidor
+
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E=CWWKC0458E: Se ha producido un error al restaurar el proceso del servidor con el siguiente mensaje: {0}
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.explanation=Se ha producido una excepci\u00f3n al restaurar el proceso del servidor.  
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Inspeccione el directorio de registros del servidor para ver los archivos de registro adicionales para determinar por qu\u00e9 el servidor no se ha podido restaurar.
+
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: No se puede tomar un punto de comprobaci\u00f3n porque la versi\u00f3n de Java utilizada no da soporte al punto de comprobaci\u00f3n.
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=La acci\u00f3n de punto de comprobaci\u00f3n del servidor s\u00f3lo se puede utilizar con una versi\u00f3n de Java que d\u00e9 soporte al punto de comprobaci\u00f3n.  
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Utilice una versi\u00f3n de Java que d\u00e9 soporte al punto de comprobaci\u00f3n. Consulte la documentaci\u00f3n para obtener detalles sobre la versi\u00f3n de Java necesaria que da soporte al punto de comprobaci\u00f3n.

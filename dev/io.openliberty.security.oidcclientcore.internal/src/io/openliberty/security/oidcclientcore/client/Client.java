@@ -10,9 +10,34 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.client;
 
-/**
- *
- */
+import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
+
 public class Client {
+
+    /**
+     * From https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowSteps:
+     * 1. Client prepares an Authentication Request containing the desired request parameters.
+     * 2. Client sends the request to the Authorization Server.
+     */
+    public ProviderAuthenticationResult startFlow() {
+        // TODO
+        return null;
+    }
+
+    /**
+     * Validates the Authentication Response that was the result of a previous call to <code>startFlow()</code>. If the response is
+     * valid, this moves on to the following steps (From https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowSteps):
+     * 6. Client requests a response using the Authorization Code at the Token Endpoint.
+     * 7. Client receives a response that contains an ID Token and Access Token in the response body.
+     * 8. (Not done for Jakarta Security 3.0) Client validates the ID token and retrieves the End-User's Subject Identifier.
+     */
+    public ProviderAuthenticationResult continueFlow() {
+        // TODO
+        return null;
+    }
+
+    public void logout() {
+        // TODO
+    }
 
 }

@@ -24,10 +24,13 @@ public class CDIResource {
 
     private HelloWorldBean helloWorldBean;
 
-    public CDIResource() {}
+    public CDIResource() {
+        System.out.println("no-args xtor");
+    }
 
     @Inject
     public CDIResource(HelloWorldBean helloWorldBean) {
+        System.out.println("xtor: " + helloWorldBean);
         this.helloWorldBean = helloWorldBean;
     }
 
@@ -36,8 +39,14 @@ public class CDIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response get() {
         System.out.println("GET!");
-        System.out.println(helloWorldBean.message());
-        return Response.ok().type(MediaType.TEXT_PLAIN).entity(helloWorldBean.message()).build();
+        String result;
+        if (helloWorldBean == null) {
+            result = "Injected HelloWorldBean was null";
+        } else {
+            result = helloWorldBean.message();
+        }
+        System.out.println(result);
+        return Response.ok().type(MediaType.TEXT_PLAIN).entity(result).build();
     }
 
     @POST

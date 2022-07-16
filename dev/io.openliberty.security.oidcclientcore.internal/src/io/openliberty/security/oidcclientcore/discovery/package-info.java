@@ -17,3 +17,5 @@
 package io.openliberty.security.oidcclientcore.discovery;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
+
+import io.openliberty.security.oidcclientcore.TraceConstants;

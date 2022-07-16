@@ -250,21 +250,7 @@ public class BaseTraceService implements TrService {
     private static final String ROLLOVER_START_TIME_FORMAT = "([0-1][0-9]|2[0-3]):[0-5][0-9]";
     private boolean isLogRolloverScheduled = false;
 
-    private static Boolean isBetaEdition;
     private static TraceComponent tc = Tr.register(BaseTraceService.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
-
-    public Boolean betaFenceCheck() {
-        //TraceComponent tc = Tr.register(BaseTraceService.class);
-        if (isBetaEdition == null) {
-            if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
-                isBetaEdition = true;
-            } else {
-                Tr.warning(tc, "The 'rolloverInterval' and 'rolloverStartTime' logging format options are in beta and are not available in this version of OpenLiberty.");
-                isBetaEdition = false;
-            }
-        }
-        return isBetaEdition;
-    }
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -392,8 +378,7 @@ public class BaseTraceService implements TrService {
             Tr.info(TraceSpecification.getTc(), msgKey, new Object[] { hideMessageids });
         }
 
-        if (betaFenceCheck())
-            scheduleTimeBasedLogRollover(trConfig);
+        scheduleTimeBasedLogRollover(trConfig);
 
         /*
          * Need to know the values of wlpServerName and wlpUserDir
@@ -1350,9 +1335,9 @@ public class BaseTraceService implements TrService {
 
         //if both rolloverStartTime and rolloverInterval are empty, return
         if ((rolloverStartTime == null || rolloverStartTime.isEmpty()) && (rolloverInterval < 0)) { 
-            Tr.debug(tc, "No time based log rollover is scheduled.");
-            Tr.debug(tc, "rolloverInterval=" + rolloverInterval);
-            Tr.debug(tc, "rolloverStartTime=" + rolloverStartTime);
+            // Tr.debug(tc, "No time based log rollover is scheduled.");
+            // Tr.debug(tc, "rolloverInterval=" + rolloverInterval);
+            // Tr.debug(tc, "rolloverStartTime=" + rolloverStartTime);
             return;
         }
 

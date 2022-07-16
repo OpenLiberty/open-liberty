@@ -67,7 +67,7 @@ public class Soap12FaultOutInterceptor extends AbstractSoapInterceptor {
             super(Phase.MARSHAL);
         }
         public void handleMessage(@Sensitive SoapMessage message) throws Fault { //Liberty Change
-            LOG.info(getClass() + (String) message.get(Message.CONTENT_TYPE));
+            LOG.finest(getClass() + (String) message.get(Message.CONTENT_TYPE));
 
             XMLStreamWriter writer = message.getContent(XMLStreamWriter.class);
             Fault f = (Fault)message.getContent(Exception.class);

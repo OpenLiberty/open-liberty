@@ -55,12 +55,14 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.data.Entities;
 import io.openliberty.data.Page;
 import io.openliberty.data.Pagination;
 import io.openliberty.data.Sort;
 import io.openliberty.data.Sorts;
 import io.openliberty.data.Template;
 
+@Entities(WorkAddress.class) // TODO make inheritance work without this
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
@@ -526,6 +528,74 @@ public class DataTestServlet extends FATServlet {
         o2 = orders.findById(o2.id).get();
 
         assertEquals(168.89f, o2.total, 0.01f);
+    }
+
+    /**
+     * Use an entity that inherits from another where both are kept in the same table.
+     */
+    @Test
+    public void testInheritance() {
+        shippingAddresses.removeAll();
+
+        ShippingAddress home = new ShippingAddress();
+        home.id = 10L;
+        home.city = "Rochester";
+        home.state = "Minnesota";
+        home.streetAddress = new StreetAddress(1234, "5th St SW");
+        home.zipCode = 55902;
+
+        WorkAddress work = new WorkAddress();
+        work.id = 20L;
+        work.city = "Rochester";
+        work.floorNumber = 2;
+        work.office = "H115";
+        work.state = "Minnesota";
+        work.streetAddress = new StreetAddress(2800, "37th St NW");
+        work.zipCode = 55901;
+
+        shippingAddresses.save(home);
+        shippingAddresses.save(work);
+
+        WorkAddress a = shippingAddresses.forOffice("H115");
+        assertEquals(Long.valueOf(20), a.id);
+        assertEquals("Rochester", a.city);
+        assertEquals(2, a.floorNumber);
+        assertEquals("H115", a.office);
+        assertEquals("Minnesota", a.state);
+        assertEquals("37th St NW", a.streetAddress.streetName);
+        assertEquals(55901, a.zipCode);
+
+        WorkAddress[] secondFloorOfficesOn37th = shippingAddresses.findByStreetNameAndFloorNumber("37th St NW", 2);
+
+        assertArrayEquals(new WorkAddress[] { work }, secondFloorOfficesOn37th,
+                          Comparator.<WorkAddress, Long> comparing(o -> o.id)
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.city))
+                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.floorNumber))
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.office))
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.state))
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.streetAddress.streetName))
+                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
+                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.zipCode)));
+
+        ShippingAddress[] found = shippingAddresses.findByStreetNameOrderByHouseNumber("37th St NW");
+
+        assertArrayEquals(new ShippingAddress[] { work }, found,
+                          Comparator.<ShippingAddress, Long> comparing(o -> o.id)
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> ((WorkAddress) o).floorNumber))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> ((WorkAddress) o).office))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.streetAddress.streetName))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
+
+        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(1000, 3000);
+
+        assertArrayEquals(new StreetAddress[] { work.streetAddress, home.streetAddress }, streetAddresses,
+                          Comparator.<StreetAddress, Integer> comparing(o -> o.houseNumber)
+                                          .thenComparing(Comparator.<StreetAddress, String> comparing(o -> o.streetName)));
+
+        shippingAddresses.removeAll();
     }
 
     /**

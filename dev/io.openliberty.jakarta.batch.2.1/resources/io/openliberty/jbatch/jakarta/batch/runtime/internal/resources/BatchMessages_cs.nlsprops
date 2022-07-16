@@ -29,9 +29,9 @@
 # 0350 - 0399: jakarta.batch
 # 
 
-batch.container.unavailable=CWWKY0350E: Kontejner d\u00e1vek nen\u00ed aktivovan\u00fd. Ujist\u011bte se, \u017ee perzistence d\u00e1vky byla zkonfigurov\u00e1na p\u0159es prvek konfigurace {0}.
-batch.container.unavailable.explanation=Pokus o p\u0159istoupen\u00ed kontejneru d\u00e1vek se nezda\u0159il, proto\u017ee kontejner d\u00e1vek nen\u00ed aktivovan\u00fd. Toto je b\u011b\u017en\u011b v d\u016fsledku chyb\u011bj\u00edc\u00ed konfigurace. 
-batch.container.unavailable.useraction=Ujist\u011bte se, \u017ee perzistence d\u00e1vky byla zkonfigurov\u00e1na.
+batch.container.unavailable=CWWKY0350E: Kontejner d\u00e1vek nen\u00ed aktivovan\u00fd. Ujist\u011bte se, \u017ee je v prvku konfigurace {0} nakonfigurov\u00e1na perzistence d\u00e1vky.
+batch.container.unavailable.explanation=Pokus o p\u0159istoupen\u00ed kontejneru d\u00e1vek se nezda\u0159il, proto\u017ee kontejner d\u00e1vek nen\u00ed aktivovan\u00fd. Toto selh\u00e1n\u00ed je obvykle zp\u016fsobeno chyb\u011bj\u00edc\u00ed konfigurac\u00ed. 
+batch.container.unavailable.useraction=Ujist\u011bte se, \u017ee je nakonfigurov\u00e1na perzistence d\u00e1vky.
  
 
  

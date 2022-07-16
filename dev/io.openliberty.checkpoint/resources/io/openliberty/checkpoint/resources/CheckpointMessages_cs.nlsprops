@@ -37,3 +37,22 @@ RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Do\u0161lo k selh\u00e1n\u00ed serveru p\u
 RESTORE_FAILED_CWWKC0454E.explanation=Pokus o obnovu serveru z kontroln\u00edho bodu selhal.  Server nen\u00ed spu\u0161t\u011bn.
 RESTORE_FAILED_CWWKC0454E.useraction=Zkontrolujte adres\u00e1\u0159 kontroln\u00edho bodu um\u00edst\u011bn\u00fd v adres\u00e1\u0159i protokol\u016f serveru, zda neobsahuje dal\u0161\u00ed soubory protokolu a ur\u010dete, pro\u010d nebyl server obnoven.
 
+UKNOWN_FAILURE_CWWKC0455E=CWWKC0455E: Do\u0161lo k nezn\u00e1m\u00e9 chyb\u011b s touto zpr\u00e1vou: {0}
+UKNOWN_FAILURE_CWWKC0455E.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b b\u011bhem po\u017eadavku kontroln\u00edho bodu nebo b\u011bhem pokusu o obnovu serveru z kontroln\u00edho bodu.
+UKNOWN_FAILURE_CWWKC0455E.useraction=Zkontrolujte, zda v adres\u00e1\u0159i kontroln\u00edho bodu, kter\u00fd je um\u00edst\u011bn\u00fd v adres\u00e1\u0159i protokol\u016f serveru, existuj\u00ed dal\u0161\u00ed soubory protokolu a ur\u010dete p\u0159\u00ed\u010dinu v\u00fdskytu chyby.
+
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E=CWWKC0456E: Kontroln\u00ed bod nelze vytvo\u0159it, proto\u017ee n\u00e1sleduj\u00edc\u00ed funkce nakonfigurovan\u00e9 v souboru server.xml nejsou podporov\u00e1ny pro kontroln\u00ed bod: {0}
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.explanation=Akci kontroln\u00edho bodu serveru lze pou\u017e\u00edt pouze s funkcemi, kter\u00e9 podporuj\u00ed kontroln\u00ed bod.  
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.useraction=Povolte pouze funkce, kter\u00e9 podporuj\u00ed kontroln\u00ed bod, aby pou\u017e\u00edvaly akci kontroln\u00edho bodu serveru. Podrobnosti o funkc\u00edch, kter\u00e9 podporuj\u00ed kontroln\u00ed body, naleznete v dokumentaci.
+
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E=CWWKC0457E: P\u0159i p\u0159\u00edprav\u011b na vytvo\u0159en\u00ed kontroln\u00edho bodu do\u0161lo k chyb\u011b s touto zpr\u00e1vou: {0}
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.explanation=B\u011bhem p\u0159\u00edpravy na vytvo\u0159en\u00ed kontroln\u00edho bodu se vyskytla v\u00fdjimka.  
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.useraction=Zkontrolujte, zda v adres\u00e1\u0159i protokol\u016f serveru existuj\u00ed dal\u0161\u00ed soubory protokolu, a ur\u010dete, pro\u010d se nezda\u0159ilo vytvo\u0159it kontroln\u00ed bod serveru.
+
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E=CWWKC0458E: Do\u0161lo k chyb\u011b p\u0159i obnovov\u00e1n\u00ed procesu serveru s touto zpr\u00e1vou: {0}
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.explanation=P\u0159i obnovov\u00e1n\u00ed procesu serveru se vyskytla v\u00fdjimka.  
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Zkontrolujte, zda v adres\u00e1\u0159i protokol\u016f serveru existuj\u00ed dal\u0161\u00ed soubory protokolu, a ur\u010dete, pro\u010d se nezda\u0159ilo obnovit server.
+
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Kontroln\u00ed bod nelze vytvo\u0159it, proto\u017ee pou\u017eit\u00e1 verze jazyka Java nepodporuje kontroln\u00ed bod.
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=Akci kontroln\u00edho bodu serveru lze pou\u017e\u00edt pouze s verz\u00ed jazyka Java, kter\u00e1 podporuje kontroln\u00ed bod.  
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Pou\u017eijte verzi jazyka Java, kter\u00e1 podporuje kontroln\u00ed bod. Podrobnosti o po\u017eadovan\u00e9 verzi jazyka Java, kter\u00e1 podporuje kontroln\u00ed body, naleznete v dokumentaci.

@@ -22,7 +22,9 @@ src: \
 
 fat.project: true
 
-tested.features: cdi-3.0, servlet-5.0
+tested.features:\
+  cdi-3.0, cdi-4.0,\
+  servlet-5.0, servlet-6.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\

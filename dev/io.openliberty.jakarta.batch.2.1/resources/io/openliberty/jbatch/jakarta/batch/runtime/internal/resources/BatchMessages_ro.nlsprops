@@ -29,9 +29,9 @@
 # 0350 - 0399: jakarta.batch
 # 
 
-batch.container.unavailable=CWWKY0350E: Containerul batch nu este activat. Asigura\u0163i-v\u0103 c\u0103 persisten\u0163a de batch a fost configurat\u0103 via elementul de configurare {0}.
-batch.container.unavailable.explanation=O \u00eencercare de a accesa containerul batch a e\u015fuat pentru c\u0103 containerul batch nu este activat. Acest lucru este \u00een mod obi\u015fnuit datorat lipsei configura\u0163iei. 
-batch.container.unavailable.useraction=Asigura\u0163i-v\u0103 c\u0103 persisten\u0163a de batch a fost configurat\u0103.
+batch.container.unavailable=CWWKY0350E: Containerul batch nu este activat. Asigura\u021bi-v\u0103 c\u0103 persisten\u021ba batch este configurat\u0103 \u00een elementul de configurare {0}.
+batch.container.unavailable.explanation=O \u00eencercare de a accesa containerul batch a e\u015fuat pentru c\u0103 containerul batch nu este activat. Acest e\u0219ec este de obicei cauzat de lipsa configura\u021biei. 
+batch.container.unavailable.useraction=Asigura\u021bi-v\u0103 c\u0103 persisten\u021ba batch este configurat\u0103.
  
 
  

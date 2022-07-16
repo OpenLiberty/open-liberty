@@ -25,10 +25,12 @@ Import-Package: \
     io.openliberty.microprofile.openapi.internal.resources,\
     io.openliberty.microprofile.openapi.internal.resources.validation,\
     javax.xml.bind.annotation;version=!,\
+    io.smallrye.openapi.*;version="[2.0,4.0)",\
     *
 
 Export-Package: \
-    com.ibm.ws.microprofile.openapi.servlet.filter
+    com.ibm.ws.microprofile.openapi.servlet.filter, \
+    io.openliberty.microprofile.openapi20.internal.services
 
 Private-Package: \
     io.openliberty.microprofile.openapi20.internal.*
@@ -47,7 +49,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
     io.openliberty.microprofile.openapi20.internal.MergeDisabledAlerter,\
     io.openliberty.microprofile.openapi20.internal.OLOASFactoryResolverImpl,\
     io.openliberty.microprofile.openapi20.internal.css.CustomCSSProcessor,\
-    io.openliberty.microprofile.openapi20.internal.DefaultHostListener
+    io.openliberty.microprofile.openapi20.internal.DefaultHostListener,\
+    io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer
 
 WS-TraceGroup: MPOPENAPI
 

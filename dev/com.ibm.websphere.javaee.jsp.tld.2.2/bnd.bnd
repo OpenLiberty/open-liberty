@@ -26,7 +26,7 @@ Export-Package: \
     org.apache.taglibs.standard.tag.rt.sql;version="1.0.0", \
     org.apache.taglibs.standard.tag.rt.xml;version="1.0.0"
 
--includeresource: @${repo;com.ibm.ws.javax.j2ee:jsp.tld.standard;1.2}
+-includeresource: @${repo;com.ibm.ws.javax.j2ee:jsp.tld.standard;1.2;EXACT}
 
 instrument.disabled: true
 

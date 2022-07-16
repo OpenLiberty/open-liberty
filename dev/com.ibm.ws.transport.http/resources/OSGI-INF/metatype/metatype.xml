@@ -356,11 +356,11 @@
             id="maxFiles" required="false" type="Integer" min="0" default="2" />
 
         <AD name="%log.access.rollover.start.time" description="%log.access.rollover.start.time.desc" 
-            id="rolloverStartTime" required="false" type="String" default="" ibm:beta="true">
+            id="rolloverStartTime" required="false" type="String" default="">
         </AD>
 
         <AD name="%log.access.rollover.interval" description="%log.access.rollover.interval.desc" 
-            id="rolloverInterval" required="false" type="String" ibm:type="duration(m)" default="-1" ibm:beta="true">
+            id="rolloverInterval" required="false" type="String" ibm:type="duration(m)" default="-1">
         </AD>
     </OCD>
 

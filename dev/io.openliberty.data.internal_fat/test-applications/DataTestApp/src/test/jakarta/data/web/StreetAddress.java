@@ -29,4 +29,9 @@ public class StreetAddress {
         this.houseNumber = houseNumber;
         this.streetName = streetName;
     }
+
+    @Override
+    public String toString() {
+        return "StreetAddress@" + Integer.toHexString(hashCode()) + ": " + houseNumber + " " + streetName;
+    }
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ cls.classloader.missing.explanation=Para hacer referencia a un cargador de clase
 cls.classloader.missing.useraction=Compruebe la configuraci\u00f3n de servidor para asegurarse que se ha definido el cargador de clases y que el ID es correcto.
 
 cls.fileset.not.ready=CWWKL0011W: El sistema no ha podido recuperar el conjunto de archivos [{0}] para la biblioteca compartida [{1}].
-cls.fileset.not.ready.explanation=Una biblioteca compartida est\u00e1 en uso pero uno de los conjuntos de archivo asociado no se ha recuperado a tiempo.
+cls.fileset.not.ready.explanation=Se est\u00e1 utilizando una biblioteca compartida, pero no se ha podido recuperar a tiempo uno de los conjuntos de archivos asociados.
 cls.fileset.not.ready.useraction=Busque y corrija los errores o avisos asociados con el conjunto de archivos.
 
 cls.library.file.invalid=CWWKL0012W: La biblioteca [{0}] especifica un archivo con el nombre [{1}]. Este archivo no existe o se ha especificado de forma incorrecta.
@@ -97,6 +97,7 @@ cls.library.archive.useraction=Edite la configuraci\u00f3n del servidor y aseg\u
 cls.library.destroyed=CWWKL0018I: La biblioteca [{0}] no est\u00e1 disponible.
 cls.library.destroyed.explanation=Una biblioteca ya no est\u00e1 disponible, por ejemplo, porque se ha eliminado de la configuraci\u00f3n del servidor.
 cls.library.destroyed.useraction=Si la biblioteca todav\u00eda es necesaria, aseg\u00farese de que contin\u00fae configurada correctamente. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 
@@ -133,9 +134,11 @@ cls.provider.class.space.conflict.useraction=Actualice la configuraci\u00f3n par
 slf.no.cache=CWWKL0070E: El directorio de cach\u00e9 no se ha creado satisfactoriamente.
 slf.no.cache.explanation=El sistema no ha podido crear una carpeta en el disco.
 slf.no.cache.useraction=Aseg\u00farese de que la unidad tenga los permisos de escritura adecuados y de que haya espacio suficiente en disco.
+
 slf.no.acf=CWWKL0071E: Se ha encontrado un valor nulo para el objeto ArtifactContainerFactory.
 slf.no.acf.explanation=El objeto ArtifactContainerFactory no puede ser nulo cuando ejecuta el servidor.
 slf.no.acf.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support o consulte con el proveedor de servicios del proveedor de clases.
+
 slf.failed.delete=CWWKL0072W: No se puede suprimir el archivo de cach\u00e9 [{0}]. Este resultado puede dar lugar a la corrupci\u00f3n de los archivos anidados.
 slf.failed.delete.explanation=El sistema no ha podido suprimir el archivo de cach\u00e9. Puesto que el archivo a\u00fan existe en el sistema, esto podr\u00eda provocar una corrupci\u00f3n de los archivos anidados.
 slf.failed.delete.useraction=Compruebe que el archivo de cach\u00e9 no se encuentre en estado bloqueado, lo que podr\u00eda provocar que la supresi\u00f3n del archivo fallara.

@@ -27,26 +27,27 @@ import io.openliberty.data.Param;
 /**
  */
 public class PageImpl<T> implements Page<T> {
+    private final EntityInfo entityInfo;
     private final String jpql;
     private final Method method;
     private final int numParams; // can differ from args.length due to Pagination and Sort/Sorts
     private final Object[] args;
     private final Pagination pagination;
-    private final QueryHandler<T> queryHandler;
     private final List<T> results;
 
-    PageImpl(String jpql, Pagination pagination, QueryHandler<T> queryHandler, Method method, int numParams, Object[] args) {
+    PageImpl(String jpql, Pagination pagination, EntityInfo entityInfo,
+             Method method, int numParams, Object[] args) {
+        this.entityInfo = entityInfo;
         this.jpql = jpql;
         this.pagination = pagination == null ? Pagination.page(1).size(100) : pagination;
-        this.queryHandler = queryHandler;
         this.method = method;
         this.numParams = numParams;
         this.args = args;
 
-        EntityManager em = queryHandler.punit.createEntityManager();
+        EntityManager em = entityInfo.persister.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryHandler.entityClass);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityInfo.type);
             if (args != null) {
                 Parameter[] params = method.getParameters();
                 for (int i = 0; i < numParams; i++) {
@@ -94,7 +95,7 @@ public class PageImpl<T> implements Page<T> {
         if (results.isEmpty())
             return null;
 
-        PageImpl<T> next = new PageImpl<T>(jpql, pagination.next(), queryHandler, method, numParams, args);
+        PageImpl<T> next = new PageImpl<T>(jpql, pagination.next(), entityInfo, method, numParams, args);
 
         if (next.results.isEmpty())
             return null;

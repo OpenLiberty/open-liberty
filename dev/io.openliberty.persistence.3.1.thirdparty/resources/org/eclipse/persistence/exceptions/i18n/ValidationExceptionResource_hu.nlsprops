@@ -605,7 +605,7 @@
 
 7342=A nat\u00edv sql lek\u00e9rdez\u00e9sek enged\u00e9lyez\u00e9se be\u00e1ll\u00edt\u00e1s\u00e1hoz megadott [{0}] logikai \u00e9rt\u00e9k \u00e9rv\u00e9nytelen, az \u00e9rt\u00e9k csak "true" vagy "false" lehet.
 
-7343=T\u00f6bb VPD azonos\u00edt\u00f3 (b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 kontextus tulajdons\u00e1g) lett megadva. A(z) [{1}] entit\u00e1s [{0}] azonos\u00edt\u00f3t haszn\u00e1l, a(z) [{3]} entit\u00e1s pedig [{2}] azonos\u00edt\u00f3t. T\u00f6bb b\u00e9rl\u0151s VPD strat\u00e9gia haszn\u00e1latakor entit\u00e1sonk\u00e9nt csak egyetlen b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 oszlop lehet, \u00e9s a kontextus tulajdons\u00e1g\u00e1nak konzisztensnek kell lennie az \u00f6sszes t\u00f6bb b\u00e9rl\u0151s VPD entit\u00e1sra vonatkoz\u00f3an.
+7343=T\u00f6bb VPD azonos\u00edt\u00f3 (b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 kontextustulajdons\u00e1g) lett megadva. A(z) [{1}] entit\u00e1s a k\u00f6vetkez\u0151t haszn\u00e1lja: [{0}], \u00e9s a(z) [{3}] entit\u00e1s a k\u00f6vetkez\u0151t: [{2}]. T\u00f6bb-b\u00e9rl\u0151s VPD strat\u00e9gia haszn\u00e1latakor entit\u00e1sonk\u00e9nt csak egy b\u00e9rl\u0151megk\u00fcl\u00f6nb\u00f6ztet\u0151 oszlop alkalmazhat\u00f3, \u00e9s a hozz\u00e1 tartoz\u00f3 kontextustulajdons\u00e1gnak az \u00f6sszes t\u00f6bbszint\u0171 VPD entit\u00e1sra vonatkoz\u00f3an k\u00f6vetkezetesnek kell lennie.
 
 7344=A VPD (kapcsolatok \u00e9s DDL el\u0151\u00e1ll\u00edt\u00e1s) nem t\u00e1mogatott a platformhoz: [{0}].
 

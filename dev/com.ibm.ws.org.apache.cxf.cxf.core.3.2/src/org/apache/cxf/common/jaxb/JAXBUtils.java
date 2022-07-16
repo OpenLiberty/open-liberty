@@ -627,17 +627,7 @@ public final class JAXBUtils {
 
     public static Object setNamespaceMapper(Bus bus, final Map<String, String> nspref,
                                             Marshaller marshaller) throws PropertyException {
-        LOG.info("****@TTJJ className of mapper is: " + marshaller.getClass() + " nspref stands for " + nspref);
         ClassLoaderService classLoaderService = bus.getExtension(ClassLoaderService.class);
-//        if(marshaller.getClass().getName().startsWith("com.ibm")) {
-//            try {
-//                Object mapper = classLoaderService.createNamespaceWrapperInstance(marshaller.getClass(), nspref);  
-//            } catch (NoClassDefFound) {
-//                if(NoClassDefFoundError e) {
-//                    // do nothing since XLXP has messed with the way this property gets read. 
-//                }
-//            }
-//        }
         Object mapper = classLoaderService.createNamespaceWrapperInstance(marshaller.getClass(), nspref);
         if (mapper != null) {
             if ((marshaller.getClass().getName().contains("com.sun") && marshaller.getClass().getName().contains(".internal."))) {
