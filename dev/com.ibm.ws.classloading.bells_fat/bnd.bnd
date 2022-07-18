@@ -14,7 +14,8 @@ bVersion=1.0
 -sub: *.bnd
 
 src: \
-	fat/src,\
+	fat/src, \
+	test-applications/testProperties.jar/src, \
 	test-applications/SpiTypeVisibility.war/src, \
 	test-applications/testSpiTypeVisible.jar/src, \
 	test-applications/testImplClassNotConstructible.jar/src, \
