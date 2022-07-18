@@ -33,105 +33,116 @@ public abstract class AbstractHttpSessionFacade implements IBMSession, IBMSessio
     protected AbstractHttpSessionFacade(AbstractSessionData sessionData) {
         _session = sessionData;
     }
-   
-    protected AbstractSessionData getSessionData() {
-        return _session;
-    }
+
     /**
      * @see IBMSession#getUserName()
      */
-    public String getUserName() {
+    @Override
+    public final String getUserName() {
         return _session.getUserName();
     }
 
     /**
      * @see IBMSession#sync()
      */
-    public void sync() {
+    @Override
+    public final void sync() {
         _session.sync();
     }
 
     /**
      * @see IBMSession#isOverflow()
      */
-    public boolean isOverflow() {
+    @Override
+    public final boolean isOverflow() {
         return _session.isOverflow();
     }
 
     /**
      * @see IBMSessionExt#invalidateAll()
      */
-    public void invalidateAll() {
+    @Override
+    public final void invalidateAll() {
         _session.invalidateAll();
     }
 
     /**
      * @see IBMSessionExt#invalidateAll(boolean)
      */
-    public void invalidateAll(boolean remote) {
+    @Override
+    public final void invalidateAll(boolean remote) {
         _session.invalidateAll(remote);
     }
 
     /**
      * @see HttpSession#getCreationTime()
      */
-    public long getCreationTime() {
+    @Override
+    public final long getCreationTime() {
         return _session.getCreationTime();
     }
 
     /**
      * @see HttpSession#getId()
      */
-    public String getId() {
+    @Override
+    public final String getId() {
         return _session.getId();
     }
 
     /**
      * @see HttpSession#getLastAccessedTime()
      */
-    public long getLastAccessedTime() {
+    @Override
+    public final long getLastAccessedTime() {
         return _session.getLastAccessedTime();
     }
 
     /**
      * @see HttpSession#getServletContext()
      */
-    public ServletContext getServletContext() {
+    @Override
+    public final ServletContext getServletContext() {
         return _session.getServletContext();
     }
 
     /**
      * @see HttpSession#setMaxInactiveInterval(int)
      */
-    public void setMaxInactiveInterval(int arg0) {
+    @Override
+    public final void setMaxInactiveInterval(int arg0) {
         _session.setMaxInactiveInterval(arg0);
     }
 
     /**
      * @see HttpSession#getMaxInactiveInterval()
      */
-    public int getMaxInactiveInterval() {
+    @Override
+    public final int getMaxInactiveInterval() {
         return _session.getMaxInactiveInterval();
     }
 
     /**
      * @see HttpSession#getAttribute(String)
      */
-    public Object getAttribute(String arg0) {
+    @Override
+    public final Object getAttribute(String arg0) {
         return _session.getAttribute(arg0);
     }
 
     /**
      * @see HttpSession#getAttributeNames()
      */
-    public Enumeration getAttributeNames() {
+    @Override
+    public final Enumeration<String> getAttributeNames() {
         return _session.getAttributeNames();
     }
 
     /**
      * @see HttpSession#setAttribute(String, Object)
      */
-    public void setAttribute(String arg0, Object arg1) {
+    @Override
+    public final void setAttribute(String arg0, Object arg1) {
         _session.setAttribute(arg0, arg1);
     }
 
@@ -139,7 +150,8 @@ public abstract class AbstractHttpSessionFacade implements IBMSession, IBMSessio
     /**
      * @see HttpSession#removeAttribute(String)
      */
-    public void removeAttribute(String arg0) {
+    @Override
+    public final void removeAttribute(String arg0) {
         _session.removeAttribute(arg0);
     }
 
@@ -147,20 +159,23 @@ public abstract class AbstractHttpSessionFacade implements IBMSession, IBMSessio
     /**
      * @see HttpSession#invalidate()
      */
-    public void invalidate() {
+    @Override
+    public final void invalidate() {
         _session.invalidate();
     }
 
     /**
      * @see HttpSession#isNew()
      */
-    public boolean isNew() {
+    @Override
+    public final boolean isNew() {
         return _session.isNew();
     }
 
     /**
      * toString
      */
+    @Override
     public String toString() {
         return _session.toString();
     }
@@ -168,20 +183,24 @@ public abstract class AbstractHttpSessionFacade implements IBMSession, IBMSessio
     // -------------------------------------
     // java.io.Externalizable methods
     // -------------------------------------
+    @Override
     public void writeExternal(ObjectOutput pOut) throws IOException {
         _session.writeExternal(pOut);
     }
 
+    @Override
     public void readExternal(ObjectInput pIn) throws IOException, ClassNotFoundException {
         _session.readExternal(pIn);
     }
 
     // Added to IBMSession interface
-    public IBMApplicationSession getIBMApplicationSession() {
+    @Override
+    public final IBMApplicationSession getIBMApplicationSession() {
         return _session.getIBMApplicationSession();
     }
 
-    public IBMApplicationSession getIBMApplicationSession(boolean create) {
+    @Override
+    public final IBMApplicationSession getIBMApplicationSession(boolean create) {
         return _session.getIBMApplicationSession(create);
     }
 
@@ -190,5 +209,4 @@ public abstract class AbstractHttpSessionFacade implements IBMSession, IBMSessio
     public void setIBMApplicationSession(IBMApplicationSession IBMAppSess) {
         _session.setIBMApplicationSession(IBMAppSess);
     }
-
 }
