@@ -37,6 +37,7 @@ import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
+import com.ibm.ws.security.oauth20.plugins.OidcBaseClientValidator;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JwsSigner;
 import com.ibm.ws.security.oauth20.util.CacheUtil;
@@ -217,9 +218,7 @@ public class LogoutTokenBuilder {
                 if (client == null) {
                     continue;
                 }
-                // Only log out clients that have a backchannel_logout_uri configured
-                String logoutUri = client.getBackchannelLogoutUri();
-                if (logoutUri != null) {
+                if (isValidClientForBackchannelLogout(client)) {
                     addCachedIdTokenToMap(cachedIdTokensMap, client, cachedToken);
                 }
             }
@@ -239,6 +238,20 @@ public class LogoutTokenBuilder {
             }
         }
         return client;
+    }
+
+    @FFDCIgnore(OidcServerException.class)
+    boolean isValidClientForBackchannelLogout(OidcBaseClient client) {
+        String logoutUri = client.getBackchannelLogoutUri();
+        if (logoutUri == null) {
+            return false;
+        }
+        try {
+            OidcBaseClientValidator.validateBackchannelLogoutUri(client, logoutUri);
+        } catch (OidcServerException e) {
+            return false;
+        }
+        return true;
     }
 
     void addCachedIdTokenToMap(Map<OidcBaseClient, List<OAuth20Token>> cachedIdTokensMap, OidcBaseClient client, OAuth20Token cachedToken) {

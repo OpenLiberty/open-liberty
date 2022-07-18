@@ -668,11 +668,15 @@ public class OidcBaseClientValidator {
      * 4. This URL SHOULD use the https scheme and MAY contain port, path, and query parameter components; however, it MAY use the http scheme, provided that the Client Type is confidential, as defined in Section 2.1 of OAuth 2.0 [RFC6749], and provided the OP allows the use of http RP URIs.
      */
     void validateBackchannelLogoutUri() throws OidcServerException {
-        URI uri;
         String logoutUri = client.getBackchannelLogoutUri();
         if (logoutUri == null) {
             return;
         }
+        validateBackchannelLogoutUri(client, logoutUri);
+    }
+
+    public static void validateBackchannelLogoutUri(OidcBaseClient client, String logoutUri) throws OidcServerException {
+        URI uri;
         try {
             uri = new URI(logoutUri);
         } catch (URISyntaxException e) {
