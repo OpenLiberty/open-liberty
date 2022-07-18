@@ -105,13 +105,19 @@ public class CxfInteropX509Tests {
         WSSampleClientUrl = serviceClientUrl + "/WSSampleSeiClient/ClientServlet";
         Log.info(thisClass, thisMethod, "****portNumber is:" + portNumber + " **portNumberSecure is:" + portNumberSecure);
 
+        //RTC 291296
+        String vendorName = System.getProperty("java.vendor");
+        Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
+
         ibmJDK = true;
         //RTC 290711
-        if (JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) {
+        //RTC 291296 handles the case with java runtime OSX_12_MONTEREY_IBMJDK8 which is hybrid jdk where 
+        //Security, ORB and XML components are IBM Java and JVM, JIT, most class libraries are Oracle Java
+        if ((JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) & (vendorName.contains("IBM"))) {
             Log.info(thisClass, thisMethod, "Using an IBM JDK");
         } else {
-            Log.info(thisClass, thisMethod, "Using NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
-            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
             ibmJDK = false;
         }
 
@@ -151,8 +157,8 @@ public class CxfInteropX509Tests {
     public void testEcho22Service() throws Exception {
         String thisMethod = "testEcho22Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
             return;
         }
 
@@ -180,8 +186,8 @@ public class CxfInteropX509Tests {
     public void testEcho23Service() throws Exception {
         String thisMethod = "testEcho23Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
             return;
         }
 
