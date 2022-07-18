@@ -253,7 +253,8 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
     }
 
     private static String[] breakApartDDLIntoCommands(String ddl) {
-        return ddl.split(";");
+        // Split on either ';' at the end of a line or ';' at the end of the file
+        return ddl.split("(;\\s*\\n)|(;\\s*$)");
     }
 
     /**

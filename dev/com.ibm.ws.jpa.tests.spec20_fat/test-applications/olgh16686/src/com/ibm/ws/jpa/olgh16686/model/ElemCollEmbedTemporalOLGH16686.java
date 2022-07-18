@@ -17,15 +17,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Embeddable
-public class ElementCollectionEmbeddableTemporalOLGH16686 {
+public class ElemCollEmbedTemporalOLGH16686 {
 
     @Temporal(value = TemporalType.DATE)
     private Date temporalValue;
 
-    public ElementCollectionEmbeddableTemporalOLGH16686() {
+    public ElemCollEmbedTemporalOLGH16686() {
     }
 
-    public ElementCollectionEmbeddableTemporalOLGH16686(Date temporalValue) {
+    public ElemCollEmbedTemporalOLGH16686(Date temporalValue) {
         this.temporalValue = temporalValue;
     }
 }
