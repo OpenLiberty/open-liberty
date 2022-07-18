@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
@@ -34,8 +35,6 @@ import componenttest.topology.utils.FATServletClient;
  */
 @Mode
 public abstract class DualServerDynamicTestBase extends FATServletClient {
-
-    protected static final int LOG_SEARCH_TIMEOUT = 300000;
 
     protected static LibertyServer serverTemplate;
     public static final String APP_NAME = "transaction";
@@ -69,7 +68,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         try {
             // We expect this to fail since it is gonna crash the server
             runTestWithResponse(server1, servletName, "setupRec" + id);
-        } catch (Throwable e) {
+        } catch (IOException e) {
         }
 
         // wait for 1st server to have gone away
@@ -84,15 +83,10 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
         // wait for 2nd server to perform peer recovery
         assertNotNull(server2.getServerName() + " did not perform peer recovery",
-                      server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT));
+                      server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, FATUtils.LOG_SEARCH_TIMEOUT));
 
         // flush the resource states
-        try {
-            runTestWithResponse(server2, servletName, "dumpState");
-        } catch (Exception e) {
-            Log.error(this.getClass(), method, e);
-            fail(e.getMessage());
-        }
+        runTestWithResponse(server2, servletName, "dumpState");
 
         //Stop server2
         FATUtils.stopServers(server2);
@@ -103,25 +97,18 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         assertNotNull("Recovery incomplete on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0133I"));
 
         // check resource states
-        Log.info(this.getClass(), method, "calling checkRec" + id);
-        try {
-            runTestWithResponse(server1, servletName, "checkRec" + id);
-        } catch (Exception e) {
-            Log.error(this.getClass(), "dynamicTest", e);
-            throw e;
-        }
+        runTestWithResponse(server1, servletName, "checkRec" + id);
 
         // Check log was cleared
         assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I"));
         assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
-
-        // Finally stop server1
-        FATUtils.stopServers(server1);
     }
 
     protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
 
-        for (LibertyServer server : servers) {
+    	FATUtils.stopServers(servers);
+
+    	for (LibertyServer server : servers) {
             try {
                 final RemoteFile rf = server.getFileFromLibertySharedDir(LastingXAResourceImpl.STATE_FILE_ROOT);
                 if (rf.exists()) {
@@ -154,8 +141,8 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
 
-        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 
         server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
     }
