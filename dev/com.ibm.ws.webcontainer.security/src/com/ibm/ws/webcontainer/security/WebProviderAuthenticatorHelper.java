@@ -136,7 +136,7 @@ public class WebProviderAuthenticatorHelper {
         hashtable.put(AttributeNameConstants.WSCREDENTIAL_USERID, userName);
     }
 
-    private void removeSecurityNameAndUniquedIdFromHashtable(Subject subject, Hashtable<String, ?> props, boolean mapIdentityToRegistryUser) {
+    private synchronized void removeSecurityNameAndUniquedIdFromHashtable(Subject subject, Hashtable<String, ?> props, boolean mapIdentityToRegistryUser) {
         if (!mapIdentityToRegistryUser && !subject.isReadOnly()) {
             Set<Object> privateCredentials = subject.getPrivateCredentials();
             if (privateCredentials.remove(props)) {

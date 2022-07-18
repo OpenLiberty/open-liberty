@@ -379,7 +379,7 @@ public class TAIAuthenticator implements WebAuthenticator {
         return authResult;
     }
 
-    protected void removeInternalProps(Subject subject, SubjectHelper subjectHelper, String propName) {
+    protected synchronized void removeInternalProps(Subject subject, SubjectHelper subjectHelper, String propName) {
         Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getSensitiveHashtableFromSubject(subject);
         if (hashtable == null || subject.isReadOnly())
             return;
