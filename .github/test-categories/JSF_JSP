@@ -3,3 +3,5 @@ com.ibm.ws.jsf.2.3_fat
 com.ibm.ws.jsfContainer_fat_2.2
 com.ibm.ws.jsfContainer_fat_2.3
 com.ibm.ws.jsp.2.3_fat
+io.openliberty.pages.3.1.internal_fat
+io.openliberty.org.apache.myfaces.4.0_fat
