@@ -11,13 +11,16 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
 src: \
     fat/src
 
 fat.project: true
 
 -buildpath: \
-    io.openliberty.jakarta.pages.3.0;version=latest,\
+    io.openliberty.jakarta.pages.3.1;version=latest,\
     io.openliberty.jakarta.cdi.4.0;version=latest,\
     io.openliberty.jakarta.servlet.6.0;version=latest,\
     io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
