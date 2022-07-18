@@ -294,15 +294,27 @@ public class CpuInfo {
         java.lang.management.OperatingSystemMXBean mbean = ManagementFactory.getOperatingSystemMXBean();
 
         if (mbean == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning NullCpuInfoAccessor");
+            }
             return new NullCpuInfoAccessor();
         }
         try {
             if (JavaInfo.isSystemClassAvailable("com.ibm.lang.management.OperatingSystemMXBean")) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Returning IBMJavaCpuInfoAccessor");
+                }
                 return new IBMJavaCpuInfoAccessor(mbean);
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning ModernJavaCpuInfoAccessor");
             }
             return new ModernJavaCpuInfoAccessor(mbean);
 
         } catch (NoClassDefFoundError e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning StandardAPICpuInfoAccessor");
+            }
             return new StandardAPICpuInfoAccessor(mbean);
         }
 
