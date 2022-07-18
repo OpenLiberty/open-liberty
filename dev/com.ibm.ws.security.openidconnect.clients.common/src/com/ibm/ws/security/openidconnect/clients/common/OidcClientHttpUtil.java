@@ -24,7 +24,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.util.EntityUtils;
@@ -103,22 +102,6 @@ public class OidcClientHttpUtil {
         }
     }
 
-    /**
-     * @param url
-     * @return
-     */
-    HttpPost createPostMethod(String url, final List<NameValuePair> commonHeaders) {
-        return httpUtils.createHttpPostMethod(url, commonHeaders);
-    }
-
-    /**
-     * @param url
-     * @return
-     */
-    HttpGet createHttpGetMethod(String url, final List<NameValuePair> commonHeaders) {
-        return httpUtils.createHttpGetMethod(url, commonHeaders);
-    }
-
     HttpPost setupPost(String url,
             @Sensitive List<NameValuePair> params,
             String baUsername,
@@ -126,8 +109,11 @@ public class OidcClientHttpUtil {
             String accessToken,
             final List<NameValuePair> commonHeaders,
             String authMethod) throws Exception {
-        debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
-        HttpPost postMethod = createPostMethod(url, commonHeaders);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "OIDC _SSO RP POST TO URL [" + WebUtils.stripSecretFromUrl(url, "client_secret") + "]");
+            httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
+        }
+        HttpPost postMethod = httpUtils.createHttpPostMethod(url, commonHeaders);
         postMethod.setEntity(new UrlEncodedFormEntity(params));
         setAuthorizationHeaderForPostMethod(baUsername, baPassword, accessToken, postMethod, authMethod);
         return postMethod;
@@ -139,7 +125,7 @@ public class OidcClientHttpUtil {
             boolean isHostnameVerification,
             boolean useSystemPropertiesForHttpClientConnections,
             HttpPost postMethod) throws Exception {
-        HttpClient httpClient = OidcClientHttpUtil.getInstance().createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
+        HttpClient httpClient = createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
         HttpResponse response = null;
 
         ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
@@ -253,26 +239,6 @@ public class OidcClientHttpUtil {
 
         return port;
 
-    }
-
-    /**
-     * @param url
-     * @param headers
-     * @param params
-     * @param baUsername
-     * @param baPassword
-     * @param accessToken
-     */
-    void debugPostToEndPoint(String url,
-            @Sensitive List<NameValuePair> params,
-            String baUsername,
-            @Sensitive String baPassword,
-            String accessToken,
-            final List<NameValuePair> commonHeaders) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "OIDC _SSO RP POST TO URL [" + WebUtils.stripSecretFromUrl(url, "client_secret") + "]");
-            httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
-        }
     }
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {

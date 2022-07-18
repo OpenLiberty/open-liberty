@@ -37,7 +37,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -45,6 +45,8 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.ibm.ws.security.common.http.HttpUtils;
 
 import test.common.SharedOutputManager;
 
@@ -92,6 +94,8 @@ public class OidcClientHttpUtilTest {
     protected final SSLSocketFactory sslSocketFactory = mock.mock(SSLSocketFactory.class, "sslSocketFactory");
     private static final String authMethod = "basic";
     mockOidcClientHttpUtil moichu = new mockOidcClientHttpUtil();
+    protected final HttpUtils mockHttpUtils = mock.mock(HttpUtils.class, "mockHttpUtils");
+    protected final BasicCredentialsProvider mockBcp = mock.mock(BasicCredentialsProvider.class, "mockBcp");
 
     @Before
     public void setUp() throws Exception {
@@ -167,79 +171,6 @@ public class OidcClientHttpUtilTest {
     }
 
     @Test
-    public void testCreatePostMethod() {
-        final String methodName = "testCreatePostMethod";
-        try {
-            final List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
-            commonHeaders.add(new BasicNameValuePair("Accept", "application/json"));
-            commonHeaders.add(new BasicNameValuePair("Accept-Encoding", "gzip, deflate"));
-            String strUrl = "http://unknownclient.ibm.com:8010/oidcserver/postopendpoint";
-            OidcClientHttpUtil oidcHttpUtil = new OidcClientHttpUtil();
-            HttpPost result = oidcHttpUtil.createPostMethod(strUrl, commonHeaders);
-            assertNotNull("expect to get an HttpPost instance but none returned", result);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
-
-    }
-
-    @Test
-    public void testCreateHttpGetMethod() {
-        final String methodName = "testCreateHttpGetMethod";
-        try {
-            final List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
-            commonHeaders.add(new BasicNameValuePair("Accept", "application/json"));
-            commonHeaders.add(new BasicNameValuePair("Accept-Encoding", "gzip, deflate"));
-            String strUrl = "http://unknownclient.ibm.com:8010/oidcserver/getopendpoint";
-            OidcClientHttpUtil oidcHttpUtil = new OidcClientHttpUtil();
-            HttpGet result = oidcHttpUtil.createHttpGetMethod(strUrl, commonHeaders);
-            assertNotNull("expect to get an HttpGet instance but none returned", result);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
-    }
-
-    @Test
-    public void testCreateHTTPClientWithDefaultSSLConfig_http() {
-        final String methodName = "testCreateHTTPClientWithDefaultSSLConfig_http";
-        try {
-            OidcClientHttpUtil oidcHttpUtil = new OidcClientHttpUtil();
-            String strUrl = "http://unknownclient.ibm.com:8010/oidcserver/opendpoint";
-            HttpClient result = oidcHttpUtil.createHTTPClient(sslSocketFactory, strUrl, false, false);
-            assertNotNull("expect to get an HttpClient instance but none returned", result);
-            assertTrue("expect to get an DefaultHttpClient instance but not", result instanceof HttpClient);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
-    }
-
-    @Test
-    public void testCreateHTTPClientWithDefaultSSLConfig_https() {
-        final String methodName = "testCreateHTTPClientWithDefaultSSLConfig_https";
-        try {
-            String strUrl = "https://unknownclient.ibm.com:8020/oidcserver/opendpoint";
-            OidcClientHttpUtil oidcHttpUtil = new OidcClientHttpUtil();
-            HttpClient result = oidcHttpUtil.createHTTPClient(sslSocketFactory, strUrl, false, false);
-            assertNotNull("expect to get an DefaultHttpClient instance but none returned", result);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
-    }
-
-    @Test
-    public void testCreateHTTPClient_https_1() {
-        final String methodName = "testCreateHTTPClientWithDefaultSSLConfig_https_1";
-        try {
-            String strUrl = "https://unknownclient.ibm.com:8020/oidcserver/opendpoint";
-            OidcClientHttpUtil oidcHttpUtil = new OidcClientHttpUtil();
-            HttpClient result = oidcHttpUtil.createHTTPClient(sslSocketFactory, strUrl, false, false);
-            assertNotNull("expect to get an DefaultHttpClient instance but none returned", result);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
-    }
-
-    @Test
     public void testSetAuthorizationHeaderForGetMethod() {
         final String methodName = "testSetAuthorizationHeaderForGetMethod";
         try {
@@ -289,25 +220,7 @@ public class OidcClientHttpUtilTest {
         return new mockSSLContext(mockSslContextSpi, provider, "https");
     }
 
-    @Test
-    public void testDebugPostToEndPoint() {
-        final String methodName = "testDebugPostToEndPoint";
-        try {
-            OidcClientHttpUtil oichu = new OidcClientHttpUtil();
-            assertNotNull("Expected to get an instance of OidcClientHttpUtil but none", oichu);
-            String url = "https://localhost:8020/url1";
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            String baUsername = "testuser";
-            String baPassword = "testuserpwd";
-            String accessToken = "accesstokenstringabcdef";
-            List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
-            oichu.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
-            // nothing ought to happen, this is a debugging method
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
-    }
-
+    @SuppressWarnings("unchecked")
     @Test
     public void testPostToEndPoint() {
         final String methodName = "testPostToEndPoint";
@@ -537,12 +450,7 @@ public class OidcClientHttpUtilTest {
                     will(returnValue((Header) null));
                 }
             });
-            mockOidcClientHttpUtil mockClientUtil = new mockOidcClientHttpUtil();
-
-            ;
-            String jsonString = util.getHTTPRequestAsString(
-                    mockClientUtil.createHTTPClient(sslSocketFactory, jwkUrl, false, false),
-                    jwkUrl, null, null);
+            String jsonString = util.getHTTPRequestAsString(httpClient, jwkUrl, null, null);
             assertNotNull("expected to get response from jwk endpoint", jsonString);
             assertEquals("expected = ", jwks, jsonString);
 

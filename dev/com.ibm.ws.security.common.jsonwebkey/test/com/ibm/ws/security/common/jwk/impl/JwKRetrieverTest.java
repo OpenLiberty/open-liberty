@@ -181,26 +181,6 @@ public class JwKRetrieverTest extends CommonTestClass {
         assertNull("There must not be a public key.", publicKey);
     }
 
-    // check that when useSystemPropertiesForHttpClientConnections is passed in, client gets created with correct option
-    @Test
-    public void testGetPublicKeyFromJwk_useSystemProperties() throws Exception {
-        keyLocation = "badKeyLocation";
-        String jwkEndpointUrl2 = "http://somewheretotallybogusurl";
-        MockJwKRetriever jwkRetriever = new MockJwKRetriever(configId, sslConfigurationName, jwkEndpointUrl2,
-                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
-        jwkRetriever.setHttpUtils(httpUtils);
-        mockery.checking(new Expectations() {
-            {
-                one(httpUtils).createHttpClient(null, jwkEndpointUrl2, false, true, null);
-                will(returnValue(null));
-                one(httpUtils).getHttpJsonRequest(null, jwkEndpointUrl2);
-                will(returnValue(null));
-            }
-        });
-        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
-        // a "real" retriever would through an io exception due to bogus url, but the mock one doesn't.   
-    }
-
     @Test
     public void testParseKeyText_nullArgs() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,

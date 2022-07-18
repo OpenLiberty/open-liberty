@@ -147,7 +147,7 @@ public class OAuthClientHttpUtil {
 
         SocialUtil.validateEndpointWithQuery(url);
 
-        debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
+        httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
 
         HttpPost postMethod = createPostMethod(url, commonHeaders);
         postMethod = setPostParameters(postMethod, params);
@@ -167,7 +167,7 @@ public class OAuthClientHttpUtil {
 
         SocialUtil.validateEndpointWithQuery(url);
 
-        debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
+        httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
 
         HttpGet getMethod = createHttpGetMethod(url, commonHeaders);
 
@@ -234,15 +234,6 @@ public class OAuthClientHttpUtil {
 
             httpUriRequest.addHeader(ClientConstants.AUTHORIZATION, basicAuth);
         }
-    }
-
-    void debugPostToEndPoint(String url,
-            @Sensitive List<NameValuePair> params,
-            String baUsername,
-            @Sensitive String baPassword,
-            String accessToken,
-            final List<NameValuePair> commonHeaders) {
-        httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
     }
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useJvmProps) {

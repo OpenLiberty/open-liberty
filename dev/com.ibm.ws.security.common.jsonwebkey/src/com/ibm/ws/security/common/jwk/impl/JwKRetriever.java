@@ -493,18 +493,7 @@ public class JwKRetriever {
         try {
             jsonString = httpUtils.getHttpJsonRequest(client, url);
         } catch (SocialLoginWrapperException sle) {
-            Throwable cause = sle.getCause();
-            if (cause instanceof HttpResponseNullOrEmptyException) {
-                HttpResponseNullOrEmptyException ex = (HttpResponseNullOrEmptyException) cause;
-                throw new Exception(logCWWKS6049E(url, ex.getStatusCode(), jsonString));
-            } else if (cause instanceof HttpResponseNot200Exception) {
-                HttpResponseNot200Exception ex = (HttpResponseNot200Exception) cause;
-                throw new Exception(logCWWKS6049E(url, ex.getStatusCode(), jsonString));
-            } else if (cause instanceof IOException) {
-                IOException ioex = (IOException) cause;
-                logCWWKS6049E(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
-                throw ioex;
-            }
+            throw new Exception(logCWWKS6049E(url, sle.getStatusCode(), sle.getNlsMessage()));
         } catch (IOException ioex) {
             logCWWKS6049E(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
             throw ioex;

@@ -32,6 +32,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.google.gson.JsonObject;
@@ -42,6 +43,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.genericbnf.PasswordNullifier;
+import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
@@ -56,12 +58,14 @@ public class OidcClientUtil {
     private static final TraceComponent tc = Tr.register(OidcClientUtil.class);
     private final List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
     OidcClientHttpUtil oidcHttpUtil = null;
+    public HttpUtils httpUtils;
 
     public OidcClientUtil() {
         commonHeaders.add(new BasicNameValuePair("Accept", "application/json"));
         // commonHeaders.add(new BasicNameValuePair("Accept-Encoding",
         // "gzip, deflate"));
         init(OidcClientHttpUtil.getInstance());
+        httpUtils = new HttpUtils();
     }
 
     void init(OidcClientHttpUtil oidcHttpUtil) {
@@ -240,7 +244,9 @@ public class OidcClientUtil {
             request.setHeader(ClientConstants.AUTHORIZATION, ClientConstants.BEARER + accessToken);
         }
 
-        HttpClient httpClient = baUsername != null ? oidcHttpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, baUsername, baPassword, useSystemPropertiesForHttpClientConnections) : oidcHttpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
+        HttpClient httpClient = baUsername != null ? httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, 
+                                useSystemPropertiesForHttpClientConnections, httpUtils.createCredentialsProvider(baUsername, baPassword)) : 
+                                httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
 
         HttpResponse responseCode = null;
 
