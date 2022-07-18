@@ -256,13 +256,14 @@ public class SingleRecoveryTest {
 			result = callServlet("setupRec" + id);
 			System.out.println(logKeyword + "callServlet with setupRec and "
 					+ id + " end");
-		} catch (Throwable e) {
+		} catch (IOException e) {
 			Log.info(this.getClass(), method, "setupRec" + id + " failed to return. As expected.");
 		}
 
 		System.out.println(logKeyword + "waitForStringInLog Dump State start");
         assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 		System.out.println(logKeyword + "waitForStringInLog Dump State end");
+        server1.postStopServerArchive(); // must explicitly collect since server start failed
 
 		ProgramOutput po;
 		// Some tests kill the server twice so we need an extra restart here
@@ -298,18 +299,24 @@ public class SingleRecoveryTest {
 		
 		server1.validateAppsLoaded();
 
-		Log.info(this.getClass(), method, "callServlet checkRec" + id);
-		try {
-			System.out.println(logKeyword + "callServlet checkRec " + id
-					+ " start");
-			result = callServlet("checkRec" + id);
-			System.out.println(logKeyword + "callServlet checkRec " + id
-					+ " start");
-			System.out.println(logKeyword
-					+ "callServlet finally get result: " + result);
-		} catch (Exception e) {
-			Log.error(this.getClass(), "recoveryTest", e);
-			throw e;
+		int attempt = 0;
+		while (true) {
+			Log.info(FATUtils.class, method, "calling checkRec" + id);
+			try {
+				result = callServlet("checkRec" + id);
+				Log.info(FATUtils.class, method, "checkRec" + id + " returned: " + result);
+				break;
+			} catch (Exception e) {
+				Log.error(FATUtils.class, method, e);
+				if (++attempt < 5) {
+					Thread.sleep(10000);
+				} else {
+					// Something is seriously wrong with this server instance. Reset so the next test has a chance
+					FATUtils.stopServers(server1);
+					FATUtils.startServers(server1);
+					throw e;
+				}
+			}
 		}
 
 		Log.info(this.getClass(), method, "checkRec" + id + " returned: "
