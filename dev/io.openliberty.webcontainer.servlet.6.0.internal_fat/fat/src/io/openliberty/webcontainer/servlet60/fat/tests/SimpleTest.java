@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.webcontainer.servlet60.fat.test;
+package io.openliberty.webcontainer.servlet60.fat.tests;
 
 import java.util.logging.Logger;
 

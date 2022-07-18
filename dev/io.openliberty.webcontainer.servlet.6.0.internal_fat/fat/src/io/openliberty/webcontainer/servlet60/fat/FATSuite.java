@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.openliberty.webcontainer.servlet60.fat.test.SimpleTest;
+import io.openliberty.webcontainer.servlet60.fat.tests.SimpleTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
