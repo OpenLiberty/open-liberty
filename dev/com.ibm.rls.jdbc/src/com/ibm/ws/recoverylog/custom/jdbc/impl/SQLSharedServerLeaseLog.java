@@ -1383,7 +1383,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "claimPeerLeaseForRecovery");
+            Tr.exit(tc, "claimPeerLeaseFromTable");
         return peerClaimed;
     }
 
