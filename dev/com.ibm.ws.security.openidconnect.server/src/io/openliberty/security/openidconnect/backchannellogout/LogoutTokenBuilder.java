@@ -249,6 +249,10 @@ public class LogoutTokenBuilder {
         try {
             OidcBaseClientValidator.validateBackchannelLogoutUri(client, logoutUri);
         } catch (OidcServerException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "The {0} OAuth client cannot be used for back-channel logout because its back-channel logout URI ({1}) is not valid: {2}",
+                         client.getClientId(), logoutUri, e.getErrorDescription());
+            }
             return false;
         }
         return true;
