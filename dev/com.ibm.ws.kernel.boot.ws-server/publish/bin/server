@@ -30,10 +30,10 @@
 #TODO need to reflect this to criu checkpoint
 #                  Set to 1-4 with 4 being max verbosity. Two "2" is the default.
 #
-# CRIU_UNPRIVILEGED - Use criu in unprivileged mode.
-#                     Set to one of true, True, TRUE, 1
-#                     or false, False, FALSE, 0 to continue
-#                     to use criu in privileged mode.
+# CRIU_UNPRIVILEGED - If true, True, TRUE, or 1 the --unprivileged option is 
+#                     passed to criu during checkpoint operations. If set to any other 
+#                     value the switch will not be passed in. 
+#                     If unset, the unprivileged switch is passed in unless the current user is root
 #
 # CRIU_EXTRA_ARGS   - Pass extra arguments to `criu restore`. Extra arguments are
 #                     appended to the end of the list of arguments and can therefore
@@ -312,15 +312,14 @@ if [ -n "${WLP_SKIP_BOOTSTRAP_AGENT}" ]; then
 fi
 
 ##
-## Determine if CRIU supports unprivileged mode.
-## Determine which CRIU mode to use, based on current euid, whether or not criu supports unprivileged mode, and the value of the CRIU_UNPRIVILEGED env var.
+## Determine which CRIU mode to use, based on current euid, and the value of the CRIU_UNPRIVILEGED env var.
 ## Set DO_CRIU_UNPRIVILEGED based on the above.
 ##
 checkCriuUnprivileged()
 {
+  # Use the environment variable, if it's set, to determine mode.
   if [ -n "$CRIU_UNPRIVILEGED" ]; then
     if [ "${CRIU_UNPRIVILEGED}" = "true" -o "${CRIU_UNPRIVILEGED}" = "1" -o "${CRIU_UNPRIVILEGED}" = "TRUE" -o "${CRIU_UNPRIVILEGED}" = "True" ]; then
-      # Use unprivileged if explicitly requested; if CRIU doesn't support it we'll hit an error later that will be shown to the user
       DO_CRIU_UNPRIVILEGED=true
     else
       DO_CRIU_UNPRIVILEGED=false
@@ -328,16 +327,13 @@ checkCriuUnprivileged()
     return
   fi
 
-  # Determine if CRIU supports unprivileged mode
-  criu --help | grep -q -e '--unprivileged' && CRIU_SUPPORTS_UNPRIVILEGED=true || CRIU_SUPPORTS_UNPRIVILEGED=false
-
-  # Determine which CRIU mode to use, based on current euid and value of CRIU_SUPPORTS_UNPRIVILEGED
-  DO_CRIU_UNPRIVILEGED=false
-  if [ "$(id -u)" != 0 ]; then
-    # Not root, unprivileged by default if CRIU supports it
-    if [ $CRIU_SUPPORTS_UNPRIVILEGED = true ]; then
-      DO_CRIU_UNPRIVILEGED=true
-    fi
+  # Environment variable CRIU_UNPRIVILEGED is not set so determine which CRIU mode to use based on current euid. 
+  if [ "$(id -u)" = 0 ]; then
+    # root user
+    DO_CRIU_UNPRIVILEGED=false
+  else  
+    # Not root, use unprivileged mode in criu
+    DO_CRIU_UNPRIVILEGED=true
   fi
 }
 
