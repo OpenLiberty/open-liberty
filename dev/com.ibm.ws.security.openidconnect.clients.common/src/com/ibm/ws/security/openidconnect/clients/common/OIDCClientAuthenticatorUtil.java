@@ -38,12 +38,16 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
+import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
+import io.openliberty.security.oidcclientcore.utils.Utils;
+
 public class OIDCClientAuthenticatorUtil {
     public static final TraceComponent tc = Tr.register(OIDCClientAuthenticatorUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
     private static int badStateCount = 0;
-    public static final String[] OIDC_COOKIES = { ClientConstants.WAS_OIDC_STATE_KEY, ClientConstants.WAS_REQ_URL_OIDC,
+    public static final String[] OIDC_COOKIES = { OidcClientStorageConstants.WAS_OIDC_STATE_KEY, ClientConstants.WAS_REQ_URL_OIDC,
             ClientConstants.WAS_OIDC_CODE, ClientConstants.WAS_OIDC_NONCE };
 
     public OIDCClientAuthenticatorUtil() {
@@ -62,8 +66,8 @@ public class OIDCClientAuthenticatorUtil {
      * This method handle the redirect to the OpenID Connect server with query parameters
      */
     public ProviderAuthenticationResult handleRedirectToServer(HttpServletRequest req, HttpServletResponse res, ConvergedClientConfig clientConfig) {
-        OidcAuthorizationRequestCreator authzRequestHelper = new OidcAuthorizationRequestCreator(req, res, clientConfig);
-        return authzRequestHelper.sendAuthorizationEndpointRequest();
+        OidcAuthorizationRequest authzRequestHelper = new OidcAuthorizationRequest(req, res, clientConfig);
+        return authzRequestHelper.sendRequest();
     }
 
     /**
@@ -435,7 +439,7 @@ public class OIDCClientAuthenticatorUtil {
         }
 
         String stateCookieValue = getStateCookieValue(req, res, responseState);
-        String expectedCookieValue = HashUtils.createStateCookieValue(clientConfig, responseState);
+        String expectedCookieValue = OidcCookieUtils.createStateCookieValue(clientConfig.getClientSecret(), responseState);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "stateKey:'" + stateCookieValue + "' cookieValue:'" + expectedCookieValue + "'");
@@ -450,7 +454,7 @@ public class OIDCClientAuthenticatorUtil {
     String getStateCookieValue(HttpServletRequest req, HttpServletResponse res, String responseState) {
         javax.servlet.http.Cookie[] cookies = req.getCookies();
 
-        String cookieName = ClientConstants.WAS_OIDC_STATE_KEY + HashUtils.getStrHashCode(responseState);
+        String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(responseState);
         String stateCookieValue = CookieHelper.getCookieValue(cookies, cookieName); // this could be null if used
         OidcClientUtil.invalidateReferrerURLCookie(req, res, cookieName);
         return stateCookieValue;

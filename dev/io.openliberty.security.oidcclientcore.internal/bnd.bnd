@@ -26,7 +26,10 @@ Import-Package: \
 Export-Package: \
 	io.openliberty.security.oidcclientcore.authentication, \
 	io.openliberty.security.oidcclientcore.discovery, \
-	io.openliberty.security.oidcclientcore.client
+	io.openliberty.security.oidcclientcore.client, \
+	io.openliberty.security.oidcclientcore.exceptions, \
+	io.openliberty.security.oidcclientcore.storage, \
+	io.openliberty.security.oidcclientcore.utils
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
@@ -36,7 +39,8 @@ Export-Package: \
 	com.ibm.websphere.appserver.api.json;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.ws.webcontainer.security;version=latest
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\

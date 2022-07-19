@@ -6,13 +6,12 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -20,10 +19,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
-import com.ibm.ws.security.openidconnect.clients.common.HashUtils;
-import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
+import com.ibm.ws.security.common.crypto.HashUtils;
 
+import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
+import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
 
 public class HashUtilsTest {
@@ -55,9 +54,9 @@ public class HashUtilsTest {
 
     @Test
     public void testGetStrHashCode() {
-        String strHashCode = HashUtils.getStrHashCode(null);
+        String strHashCode = Utils.getStrHashCode(null);
         assertEquals("strHashCode is not empty", "", strHashCode);
-        strHashCode = HashUtils.getStrHashCode(input);
+        strHashCode = Utils.getStrHashCode(input);
         int iHashCode = input.hashCode();
         int oldHashCode = 0;
         if (strHashCode.startsWith("n")) {
@@ -72,35 +71,12 @@ public class HashUtilsTest {
 
     @Test
     public void testGetCookieName() {
-        mock.checking(new Expectations() {
-            {
-                one(clientConfig).getId();
-                will(returnValue("client01"));
-            }
-        });
-        String cookieName = HashUtils.getCookieName("WASOidc", clientConfig, state);
+        String cookieName = OidcCookieUtils.getCookieName("WASOidc", "client01", state);
         String newValue = state + "client01";
-        String newName = HashUtils.getStrHashCode(newValue);
+        String newName = Utils.getStrHashCode(newValue);
         String newCookieName = "WASOidc" + newName;
         assertEquals("The cookie name is '" + cookieName + "' which is not the expected value '" + newCookieName + "'",
                 cookieName, newCookieName);
-    }
-
-    @Test
-    public void testCreateStateCookieValue() {
-        mock.checking(new Expectations() {
-            {
-                one(clientConfig).getClientSecret();
-                will(returnValue("secret"));
-            }
-        });
-        String cookieValue = HashUtils.createStateCookieValue(clientConfig, state);
-        String timestamp = state.substring(0, OidcUtil.TIMESTAMP_LENGTH);
-        String newValue = state + "secret";
-        String value = HashUtils.digest(newValue);
-        String newCookieValue = timestamp + value;
-        assertEquals("The cookie value is '" + cookieValue + "' which is not the expected value '" + newCookieValue + "'",
-                cookieValue, newCookieValue);
     }
 
 }
