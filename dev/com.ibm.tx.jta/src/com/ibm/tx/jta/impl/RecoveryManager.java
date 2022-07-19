@@ -1798,6 +1798,17 @@ public class RecoveryManager implements Runnable {
 
         final String serverName = _failureScopeController.serverName();
         boolean localRecovery = true;
+
+        if (_leaseLog != null) {
+            if (_localRecoveryIdentity != null && _localRecoveryIdentity.equals(serverName)) {
+                localRecovery = true;
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "This is peer recovery");
+                localRecovery = false;
+            }
+        }
+
         try {
 
             if (tc.isDebugEnabled())
@@ -1805,39 +1816,6 @@ public class RecoveryManager implements Runnable {
 
             // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
             _agent.setReplayThread();
-
-            // Lets update our entry in the leaseLog early
-            if (_leaseLog != null) {
-                // TODO - need a sensible lease time
-                try {
-                    //Don't update the server lease if this is a peer rather than local server.
-                    if (_localRecoveryIdentity != null && _localRecoveryIdentity.equals(serverName)) {
-                        _leaseLog.updateServerLease(serverName, _recoveryGroup, true);
-                    } else {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "This is peer recovery");
-                        localRecovery = false;
-                    }
-                } catch (Exception exc) {
-                    FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1698", this);
-                    Tr.error(tc, "WTRN0112_LOG_OPEN_FAILURE", _leaseLog);
-                    Object[] errorObject = new Object[] { _localRecoveryIdentity };
-                    Tr.audit(tc, "CWRLS0008_RECOVERY_LOG_FAILED",
-                             errorObject);
-                    Tr.info(tc, "CWRLS0009_RECOVERY_LOG_FAILED_DETAIL", exc);
-                    // If the logs were opened successfully then attempt to close them with a close immediate. This does
-                    // not cause any keypointing, it just closes the file channels and handles (if they are still open)
-                    closeLogs();
-
-                    recoveryFailed(exc);
-
-                    if (tc.isEventEnabled())
-                        Tr.event(tc, "Exception caught opening Lease log!", exc);
-                    if (tc.isEntryEnabled())
-                        Tr.exit(tc, "run");
-                    return;
-                }
-            }
 
             // Open the transaction log. This contains details of inflight transactions.
             if (_tranLog != null) {

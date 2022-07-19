@@ -416,6 +416,15 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex);
                             throw rex;
                         }
+
+                        try {
+                            _leaseLog.updateServerLease(recoveredServerIdentity, _recoveryGroup, true);
+                        } catch (Exception e) {
+                            final RecoveryFailedException rfe = new RecoveryFailedException(e);
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "initiateRecovery", rfe);
+                            throw rfe;
+                        }
                     }
 
                     _recoveryManager.configurePeerRecovery(_leaseLog, _recoveryGroup, localRecoveryIdentity);
@@ -532,9 +541,10 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         if (localRecovery && !doNotShutdownOnRecoveryFailure()) {
                             cp = ConfigurationProviderManager.getConfigurationProvider();
                             if (cp == null) {
+                                final RecoveryFailedException rfe = new RecoveryFailedException("ConfigurationProvider is null");
                                 if (tc.isEntryEnabled())
-                                    Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
-                                throw new RecoveryFailedException("ConfigurationProvider is null");
+                                    Tr.exit(tc, "initiateRecovery", rfe);
+                                throw rfe;
                             }
                             cp.shutDownFramework();
                         }
