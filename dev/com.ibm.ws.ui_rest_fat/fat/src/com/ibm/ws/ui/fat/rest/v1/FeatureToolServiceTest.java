@@ -132,6 +132,16 @@ public class FeatureToolServiceTest extends CommonRESTTest implements APIConstan
             }
         }
 
+        if (FATSuite.server.fileExistsInLibertyServerRoot("server-original.xml")){
+            FATSuite.server.deleteFileFromLibertyServerRoot("server.xml");
+            FATSuite.server.renameLibertyServerRootFile("server-original.xml", "server.xml");
+            if (FATSuite.server.fileExistsInLibertyServerRoot("server-original.xml")) {
+                Log.info(c, method.getMethodName(), "WARNING: The original server.xml file couldn't be restored. It would cause other testsuites to fail.");
+            } else {
+                Log.info(c, method.getMethodName(), "The original server.xml was successfully restored.");
+            }
+        }
+
         removeCoreFeatureL10N(BASIC_AUTOFEATURE_L10N);
         for (String feature : coreFeatures)
             removeCoreFeature(feature);
@@ -864,9 +874,6 @@ public class FeatureToolServiceTest extends CommonRESTTest implements APIConstan
         findFeatureTool(featureTools, "scopedprodextn%3Acom.ibm.websphere.appserver.prodextn1-1.0-1.0.0",
                         "scopedprodextn:com.ibm.websphere.appserver.prodextn1-1.0", "1.0.0",
                         "Prod Extn 1 Tool Display Name", null);
-
-        ignoreErrorAndStopServerWithValidate();
-        FATSuite.server.renameLibertyServerRootFile("server-original.xml", "server.xml");
     }
 
     /**
