@@ -83,11 +83,13 @@ public class MPConfigTest extends FATServletClient {
             switch (testMethod) {
                 case envValueTest:
                 case appScopeEnvValueTest:
+                case configObjectAppScopeEnvValueTest:
                     // environment value overrides defaultValue in restore
                     server.copyFileToLibertyServerRoot("envValueTest/server.env");
                     break;
                 case serverValueTest:
                 case appScopeServerValueTest:
+                case configObjectAppScopeServerValueTest:
                     // change config of variable for restore
                     config = removeTestKeyVar(server.getServerConfiguration());
                     config.getVariables().add(new Variable("test_key", "serverValue"));
@@ -100,15 +102,18 @@ public class MPConfigTest extends FATServletClient {
                     break;
                 case annoValueTest:
                 case appScopeAnnoValueTest:
+                case configObjectAppScopeAnnoValueTest:
                     // remove variable for restore, fall back to default value on annotation
                     server.updateServerConfiguration(removeTestKeyVar(server.getServerConfiguration()));
                     break;
                 case envValueChangeTest:
                 case appScopeEnvValueChangeTest:
+                case configObjectAppScopeEnvValueChangeTest:
                     server.copyFileToLibertyServerRoot("envValueChangeTest/server.env");
                     break;
                 case defaultValueTest:
                 case appScopeDefaultValueTest:
+                case configObjectAppScopeDefaultValueTest:
                     // Just fall through and do the default (no configuration change)
                     // should use the defaultValue from server.xml
                 default:
@@ -150,6 +155,11 @@ public class MPConfigTest extends FATServletClient {
         appScopeAnnoValueTest,
         appScopeDefaultValueTest,
         applicationScopedValueTest,
+        configObjectAppScopeEnvValueTest,
+        configObjectAppScopeEnvValueChangeTest,
+        configObjectAppScopeServerValueTest,
+        configObjectAppScopeAnnoValueTest,
+        configObjectAppScopeDefaultValueTest,
         unknown
     }
 }
