@@ -28,6 +28,9 @@ public class FATUtils {
 
 	public static final Duration TESTCONTAINER_STARTUP_TIMEOUT = Duration.ofMinutes(5);
 	public static final int LOG_SEARCH_TIMEOUT = 300000;
+	
+	private static final int RETRY_COUNT = 5;
+	private static final int RETRY_INTERVAL = 10000;
 
     /**
      * @param servers
@@ -262,5 +265,26 @@ public class FATUtils {
 
 	public static void stopServers(LibertyServer... servers) throws Exception {
 		stopServers((String[])null, servers);
+	}
+
+	public static String runWithRetries(Repeatable r) throws Exception {
+        int attempt = 0;
+        while (true) {
+            try {
+            	return r.execute();
+            } catch (Exception e) {
+                Log.error(FATUtils.class, "runWithRetries", e);
+                if (++attempt < RETRY_COUNT) {
+                    Thread.sleep(RETRY_INTERVAL);
+                } else {
+                    throw e;
+                }
+            }
+        }
+	}
+	
+	@FunctionalInterface
+	public interface Repeatable {
+		String execute() throws Exception;
 	}
 }

@@ -298,25 +298,14 @@ public class SingleRecoveryTest {
 //		}
 		
 		server1.validateAppsLoaded();
-
-		int attempt = 0;
-		while (true) {
-			Log.info(FATUtils.class, method, "calling checkRec" + id);
-			try {
-				result = callServlet("checkRec" + id);
-				Log.info(FATUtils.class, method, "checkRec" + id + " returned: " + result);
-				break;
-			} catch (Exception e) {
-				Log.error(FATUtils.class, method, e);
-				if (++attempt < 5) {
-					Thread.sleep(10000);
-				} else {
-					// Something is seriously wrong with this server instance. Reset so the next test has a chance
-					FATUtils.stopServers(server1);
-					FATUtils.startServers(server1);
-					throw e;
-				}
-			}
+		
+		try {
+			result = FATUtils.runWithRetries(()->callServlet("checkRec" + id));
+		} catch (Exception e) {
+			// Something is seriously wrong with this server instance. Reset so the next test has a chance
+			FATUtils.stopServers(server1);
+			FATUtils.startServers(server1);
+			throw e;
 		}
 
 		Log.info(this.getClass(), method, "checkRec" + id + " returned: "
