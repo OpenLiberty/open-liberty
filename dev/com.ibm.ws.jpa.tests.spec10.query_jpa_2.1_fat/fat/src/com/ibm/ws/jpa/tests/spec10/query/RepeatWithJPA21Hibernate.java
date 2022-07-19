@@ -42,4 +42,12 @@ public class RepeatWithJPA21Hibernate extends EE7FeatureReplacementAction {
     public String getID() {
         return ID;
     }
+
+    @Override
+    public boolean isEnabled() {
+        if (!Boolean.getBoolean("jpa.enable.repeat.hibernate"))
+            return false;
+
+        return super.isEnabled();
+    }
 }
