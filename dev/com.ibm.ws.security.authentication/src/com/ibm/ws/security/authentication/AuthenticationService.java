@@ -90,4 +90,13 @@ public interface AuthenticationService {
      *
      */
     public String getInvalidDelegationUser();
+
+    /**
+     * Returns if DisplayName Should be used to set the WSCredentials
+     *
+     * @return
+     *
+     */
+    public Boolean isUseSecNameIfDifferentFromLoginNameInCUR();
+
 }

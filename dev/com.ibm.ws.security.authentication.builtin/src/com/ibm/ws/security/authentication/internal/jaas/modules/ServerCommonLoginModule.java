@@ -108,8 +108,27 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      */
     protected String getSecurityName(String loginName, String urAuthenticatedId) throws EntryNotFoundException, RegistryException {
 
+        return getSecurityName(loginName, urAuthenticatedId, false);
+
+    }
+
+        /**
+     * Common method called by all login modules that use the UserRegistry (UsernameAndPasswordLoginModule,
+     * CertificateLoginModule, HashtableLoginModule and TokenLoginModule). Determines the securityName to use
+     * for the login.
+     *
+     * @param loginName         The username passed to the login
+     * @param urAuthenticatedId The id returned by UserRegistry checkPassword or mapCertificate.
+     *
+     * @return The securityName to use for the WSPrincipal.
+     *
+     * @throws EntryNotFoundException
+     * @throws RegistryException
+     */
+    protected String getSecurityName(String loginName, String urAuthenticatedId, boolean isUseSecurityNameIfDifferentFromLoginNameProp) throws EntryNotFoundException, RegistryException {
+
         UserRegistry ur = getUserRegistry();
-        if (ur != null && ur.getType() != "CUSTOM") { // Preserve the existing behavior for CUSTOM user registries
+        if (ur != null && (ur.getType() != "CUSTOM" || (ur.getType() == "CUSTOM" && isUseSecurityNameIfDifferentFromLoginNameProp)))  { // Preserve the existing behavior for CUSTOM user registries
             String securityName = ur.getUserSecurityName(urAuthenticatedId);
             if (securityName != null) {
                 return securityName;
@@ -127,6 +146,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
             throw new NullPointerException("No user registry");
         }
     }
+
 
     /**
      * Set the relevant Credentials for this login module into the Subject,
