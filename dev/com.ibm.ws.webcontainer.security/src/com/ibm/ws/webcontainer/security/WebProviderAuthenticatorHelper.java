@@ -74,7 +74,10 @@ public class WebProviderAuthenticatorHelper {
             return new AuthenticationResult(AuthResult.FAILURE, "subject is null");
         }
 
-        removeSecurityNameAndUniquedIdFromHashtable(subject, customProperties, mapIdentityToRegistryUser);
+        if (!mapIdentityToRegistryUser && !subject.isReadOnly()) {
+            removeSecurityNameAndUniquedIdFromHashtable(subject, customProperties, mapIdentityToRegistryUser);
+        }
+    
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subject);
         return authResult;
     }
@@ -137,14 +140,12 @@ public class WebProviderAuthenticatorHelper {
     }
 
     private synchronized void removeSecurityNameAndUniquedIdFromHashtable(Subject subject, Hashtable<String, ?> props, boolean mapIdentityToRegistryUser) {
-        if (!mapIdentityToRegistryUser && !subject.isReadOnly()) {
-            Set<Object> privateCredentials = subject.getPrivateCredentials();
-            if (privateCredentials.remove(props)) {
-                props.remove(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
-                props.remove(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
-                if (!props.isEmpty()) {
-                    privateCredentials.add(props);
-                }
+        Set<Object> privateCredentials = subject.getPrivateCredentials();
+        if (privateCredentials.remove(props)) {
+            props.remove(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+            props.remove(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
+            if (!props.isEmpty()) {
+                privateCredentials.add(props);
             }
         }
     }
