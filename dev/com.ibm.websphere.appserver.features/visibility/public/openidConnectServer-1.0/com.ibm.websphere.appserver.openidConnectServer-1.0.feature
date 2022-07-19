@@ -27,8 +27,7 @@ Subsystem-Endpoint-Icons: clientManagement=OSGI-INF/clientManagement_142.png,OSG
   com.ibm.ws.security.openidconnect.common, \
   com.ibm.ws.org.jose4j, \
   com.ibm.ws.org.json.simple.1.1.1, \
-  com.ibm.ws.com.google.gson.2.2.4, \
-  io.openliberty.security.oidcclientcore.internal
+  io.openliberty.com.google.gson
 -jars=\
   com.ibm.websphere.appserver.api.oidc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.oidc_1.0-javadoc.zip

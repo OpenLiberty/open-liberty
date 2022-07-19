@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ task oAuth20MongoSetup_WAR(type: War, dependsOn: classes) {
  ******************************************************************/
 task oAuth20MongoSetup_EAR(type: Zip) {
   dependsOn 'oAuth20MongoSetup_WAR'
-  dependsOn ':com.ibm.ws.com.google.gson:assemble'
+  dependsOn ':io.openliberty.com.google.gson:assemble'
   dependsOn ':com.ibm.ws.com.google.guava:assemble'
   
 
@@ -66,8 +66,8 @@ task oAuth20MongoSetup_EAR(type: Zip) {
   from ('test-applications/oAuth20MongoSetupEar') {
     include '**'
   }
-  from (project(':com.ibm.ws.com.google.gson').buildDir) {
-    include 'com.ibm.ws.com.google.gson*.jar'
+  from (project(':io.openliberty.com.google.gson').buildDir) {
+    include 'io.openliberty.com.google.gson*.jar'
   }
   from (project(':com.ibm.ws.com.google.guava').buildDir) {
     include 'com.ibm.ws.com.google.guava*.jar'

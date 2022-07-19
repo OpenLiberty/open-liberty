@@ -16,7 +16,7 @@ Subsystem-Name: JSON Web Token 1.0
   com.ibm.ws.security.common.jsonwebkey, \
   io.openliberty.org.apache.commons.codec, \
   com.ibm.ws.org.jose4j, \
-  com.ibm.ws.com.google.gson.2.2.4, \
+  io.openliberty.com.google.gson, \
   com.ibm.json4j
 -jars=\
   com.ibm.websphere.appserver.api.jwt; location:=dev/api/ibm/, \

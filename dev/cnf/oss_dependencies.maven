@@ -23,7 +23,6 @@ com.fasterxml.jackson.module:jackson-module-parameter-names:2.11.2
 com.github.docker-java:docker-java-api:3.2.13
 com.github.docker-java:docker-java-transport-zerodep:3.2.13
 com.github.docker-java:docker-java-transport:3.2.13
-com.google.code.gson:gson:2.8.6
 com.google.errorprone:error_prone_annotations:2.4.0
 com.google.guava:guava:30.1-android
 com.google.inject:guice:2.0

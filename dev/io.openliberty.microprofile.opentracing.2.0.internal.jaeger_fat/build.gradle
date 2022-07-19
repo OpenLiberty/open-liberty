@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ configurations {
 
 dependencies {
   requiredLibs 'org.glassfish:javax.json:1.1'
-  jaegerClient 'com.google.code.gson:gson:2.8.6'
   jaegerClient 'io.opentracing:opentracing-util:0.33.0'
   jaegerClient 'io.opentracing:opentracing-noop:0.33.0'
   jaegerClient 'io.jaegertracing:jaeger-core:1.6.0'
@@ -26,6 +25,7 @@ dependencies {
   jaegerClient 'org.apache.thrift:libthrift:0.14.1'
   jaegerClient project(':com.ibm.ws.org.slf4j.api')
   jaegerClient project(':com.ibm.ws.org.slf4j.simple')
+  jaegerClient project(':io.openliberty.com.google.gson')
 }
 
 autoFVT {
