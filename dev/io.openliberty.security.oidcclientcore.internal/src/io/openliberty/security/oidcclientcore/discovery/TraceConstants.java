@@ -8,14 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.common.http;
+package io.openliberty.security.oidcclientcore.discovery;
 
-public class HttpResponseNullOrEmptyException extends AbstractHttpResponseException {
+/**
+ *
+ */
+public class TraceConstants {
 
-    private static final long serialVersionUID = 1L;
+    public static final String TRACE_GROUP = "OpenIdConnect";
+    public static final String MESSAGE_BUNDLE = "io.openliberty.security.oidcclientcore.internal.resources.OidcClientCoreMessages";
 
-    public HttpResponseNullOrEmptyException(String url, int statusCode, String errMsg) {
-        super(url, statusCode, errMsg);
-    }
-    
 }

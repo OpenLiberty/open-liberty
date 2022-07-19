@@ -29,6 +29,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.message.BasicNameValuePair;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -37,6 +38,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Test;
 
+import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
@@ -70,6 +72,8 @@ public class OidcClientUtilTest extends CommonTestClass {
     protected final HttpGet mockHttpGet = mock.mock(HttpGet.class, "mockHttpGet");
     protected final HttpClient mockHttpClient = mock.mock(HttpClient.class, "mockHttpClient");
     protected final HttpResponse mockHttpResponse = mock.mock(HttpResponse.class, "mockHttpResponse");
+    protected final HttpUtils mockHttpUtils = mock.mock(HttpUtils.class, "mockHttpUtils");
+    protected final BasicCredentialsProvider mockBcp = mock.mock(BasicCredentialsProvider.class, "mockBcp");
     private static final String authMethod = "basic";
 
     final String access_token = "access_token";
@@ -84,6 +88,38 @@ public class OidcClientUtilTest extends CommonTestClass {
     public void tearDown() {
         mock.assertIsSatisfied();
         outputMgr.resetStreams();
+    }
+
+    private void createHttpClientExpectations(boolean isCredentialProviderNeeded) {
+        if (isCredentialProviderNeeded) {
+            mock.checking(new Expectations() {
+                {
+                    one(mockHttpUtils).createCredentialsProvider(with("baUsername"), with("baPassword"));
+                    will(returnValue(mockBcp));
+                    one(mockHttpUtils).createHttpClient(with(any(SSLSocketFactory.class)), with(any(String.class)),
+                            with(any(Boolean.class)), with(any(Boolean.class)), with(any(BasicCredentialsProvider.class)));
+                    will(returnValue(mockHttpClient));
+                }
+            });
+        } else {
+            mock.checking(new Expectations() {
+                {
+                    one(mockHttpUtils).createHttpClient(with(any(SSLSocketFactory.class)), with(any(String.class)),
+                            with(any(Boolean.class)), with(any(Boolean.class)), with(aNull(BasicCredentialsProvider.class)));
+                    will(returnValue(mockHttpClient));
+                }
+            });
+        }
+        try {
+            mock.checking(new Expectations() {
+                {
+                    one(mockHttpClient).execute(with(any(HttpUriRequest.class)));
+                    will(returnValue(mockHttpResponse));
+                }
+            });
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
     }
 
     @Test
@@ -142,18 +178,11 @@ public class OidcClientUtilTest extends CommonTestClass {
         try {
             final HttpGet getMethod = new HttpGet("http://localhost:8010/oidc/someEndPoint");
 
-            mock.checking(new Expectations() {
-                {
-                    one(oidcHttpUtil).createHTTPClient(with(any(SSLSocketFactory.class)), with(any(String.class)),
-                            with(any(Boolean.class)), with(any(String.class)), with(any(String.class)), with(any(Boolean.class)));
-                    will(returnValue(mockHttpClient));
-                    one(mockHttpClient).execute(with(any(HttpUriRequest.class)));
-                    will(returnValue(mockHttpResponse));
-                }
-            });
+            createHttpClientExpectations(true);
 
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             oicu.oidcHttpUtil = oidcHttpUtil;
+            oicu.httpUtils = mockHttpUtils;
             Map<String, Object> result = oicu.getFromEndpoint("http://localhost:8010/oidc/someEndPoint", params, "baUsername", "baPassword", access_token_content, sslSocketFactory, false, false);
             HttpResponse responseCode = (HttpResponse) result.get(ClientConstants.RESPONSEMAP_CODE);
             assertNotNull("Expect to see valid response code", responseCode);
@@ -174,18 +203,12 @@ public class OidcClientUtilTest extends CommonTestClass {
             final String userInfoEndpoint = "https://localhost:8010/oidc/userInfo";
             final OidcClientUtil oicu = new OidcClientUtil();
             oicu.oidcHttpUtil = oidcHttpUtil;
+            oicu.httpUtils = mockHttpUtils;
             final Map<String, Object> postResponseMap = new HashMap<String, Object>();
             postResponseMap.put(token_type, "bearer");
 
-            mock.checking(new Expectations() {
-                {
-                    one(oidcHttpUtil).createHTTPClient(with(any(SSLSocketFactory.class)), with(any(String.class)),
-                            with(any(Boolean.class)), with(any(Boolean.class)));
-                    will(returnValue(mockHttpClient));
-                    one(mockHttpClient).execute(with(any(HttpUriRequest.class)));
-                    will(returnValue(mockHttpResponse));
-                }
-            });
+            createHttpClientExpectations(false);
+
             Map<String, Object> userInfoResponse = oicu.getUserinfo(userInfoEndpoint, access_token_content, sslSocketFactory, false, false);
             assertNotNull("Expected to get an instance of userInfo map", userInfoResponse);
             assertTrue("Returned map did not contain expected " + ClientConstants.RESPONSEMAP_CODE + " entry. Map was: " + userInfoResponse, userInfoResponse.containsKey(ClientConstants.RESPONSEMAP_CODE));

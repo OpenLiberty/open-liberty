@@ -42,6 +42,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 /**
@@ -51,9 +52,10 @@ public class OAuthClientHttpUtil {
     private static final TraceComponent tc = Tr.register(OAuthClientHttpUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     static OAuthClientHttpUtil instance = null;
+    private HttpUtils httpUtils;
 
     OAuthClientHttpUtil() {
-
+    	httpUtils = new HttpUtils();
     }
 
     @Sensitive
@@ -84,28 +86,14 @@ public class OAuthClientHttpUtil {
 
         SocialUtil.validateEndpointWithQuery(url);
 
-        HttpPost postMethod = new HttpPost(url);
-        if (commonHeaders != null) {
-            for (Iterator<NameValuePair> i = commonHeaders.iterator(); i.hasNext();) {
-                NameValuePair nvp = i.next();
-                postMethod.addHeader(nvp.getName(), nvp.getValue());
-            }
-        }
-        return postMethod;
+        return httpUtils.createHttpPostMethod(url, commonHeaders);
     }
 
     HttpGet createHttpGetMethod(String url, final List<NameValuePair> commonHeaders) throws SocialLoginException {
 
         SocialUtil.validateEndpointWithQuery(url);
 
-        HttpGet getMethod = new HttpGet(url);
-        if (commonHeaders != null) {
-            for (Iterator<NameValuePair> i = commonHeaders.iterator(); i.hasNext();) {
-                NameValuePair nvp = i.next();
-                getMethod.addHeader(nvp.getName(), nvp.getValue());
-            }
-        }
-        return getMethod;
+        return httpUtils.createHttpGetMethod(url, commonHeaders);
     }
 
     HttpResponse executeRequest(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, HttpUriRequest httpUriRequest, boolean useJvmProps) throws SocialLoginException {
@@ -159,7 +147,7 @@ public class OAuthClientHttpUtil {
 
         SocialUtil.validateEndpointWithQuery(url);
 
-        debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
+        httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
 
         HttpPost postMethod = createPostMethod(url, commonHeaders);
         postMethod = setPostParameters(postMethod, params);
@@ -179,7 +167,7 @@ public class OAuthClientHttpUtil {
 
         SocialUtil.validateEndpointWithQuery(url);
 
-        debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
+        httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
 
         HttpGet getMethod = createHttpGetMethod(url, commonHeaders);
 
@@ -202,15 +190,7 @@ public class OAuthClientHttpUtil {
             final List<NameValuePair> commonHeaders,
             boolean isHostnameVerification,
             String authMethod, boolean useJvmProps) throws SocialLoginException {
-
-        SocialUtil.validateEndpointWithQuery(url);
-
-        debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
-
-        HttpPost postMethod = createPostMethod(url, commonHeaders);
-        postMethod = setPostParameters(postMethod, params);
-
-        return commonEndpointInvocation(postMethod, url, baUsername, baPassword, accessToken, sslSocketFactory, isHostnameVerification, authMethod, useJvmProps);
+         return postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, commonHeaders, isHostnameVerification, authMethod, useJvmProps);
     }
 
     HttpPost setPostParameters(HttpPost postMethod, @Sensitive List<NameValuePair> params) {
@@ -256,119 +236,13 @@ public class OAuthClientHttpUtil {
         }
     }
 
-    void debugPostToEndPoint(String url, @Sensitive List<NameValuePair> params, String baUsername, @Sensitive String baPassword, String accessToken, final List<NameValuePair> commonHeaders) {
-        if (!tc.isDebugEnabled()) {
-            // Trace isn't enabled, so don't bother executing the method
-            return;
-        }
-
-        // Trace the cURL command that will be used using the provided arguments
-
-        Tr.debug(tc, "postToEndpoint: url: " + url + " headers: " + commonHeaders + " params: " + "*****" + " baUsername: " + baUsername + " baPassword: " + (baPassword != null ? "****" : null) + " accessToken: " + accessToken);
-        StringBuffer sb = new StringBuffer();
-        sb.append("curl -k -v");
-        if (commonHeaders != null) {
-            for (Iterator<NameValuePair> i = commonHeaders.iterator(); i.hasNext();) {
-                NameValuePair nvp = i.next();
-                sb.append(" -H \"");
-                sb.append(nvp.getName());
-                sb.append(": ");
-                sb.append(nvp.getValue());
-                sb.append("\"");
-            }
-        }
-        if (params != null && params.size() > 0) {
-            sb.append(" -d \"");
-            for (Iterator<NameValuePair> i = params.iterator(); i.hasNext();) {
-                NameValuePair nvp = i.next();
-                String name = nvp.getName();
-                sb.append(name);
-                sb.append("=");
-                if (name.equals("client_secret")) {
-                    sb.append("*****");
-                } else {
-                    sb.append(nvp.getValue());
-                }
-
-                if (i.hasNext()) {
-                    sb.append("&");
-                }
-            }
-            sb.append("\"");
-        }
-        if (baUsername != null && baPassword != null) {
-            sb.append(" -u \"");
-            sb.append(baUsername);
-            sb.append(":");
-            sb.append("****");
-            sb.append("\"");
-        }
-        if (accessToken != null) {
-            sb.append(" -H \"Authorization: bearer ");
-            sb.append(accessToken);
-            sb.append("\"");
-        }
-        sb.append(" ");
-        sb.append(url);
-
-        Tr.debug(tc, "CURL Command: " + sb.toString());
-    }
-
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useJvmProps) {
-
-        HttpClient client = null;
-
-        if (url != null && url.startsWith("http:")) {
-            client = getBuilder(useJvmProps).build();
-        } else {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                client = getBuilder(useJvmProps).setSSLSocketFactory(connectionFactory).build();
-            } finally {
-            	ThreadContextHelper.setClassLoader(origCL);
-            }
-        }
-
-        return client;
+        return httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useJvmProps);
     }
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, String baUser, @Sensitive String baPassword, boolean useJvmProps) {
-
-        HttpClient client = null;
-
-        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(baUser, baPassword));
-
-        if (url != null && url.startsWith("http:")) {
-            client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).build();
-        } else {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-            } finally {
-            	ThreadContextHelper.setClassLoader(origCL);
-            }
-        }
-
-        return client;
-    }
-
-    private HttpClientBuilder getBuilder(boolean useJvmProps) {
-        return useJvmProps ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
+        BasicCredentialsProvider credentialsProvider = httpUtils.createCredentialsProvider(baUser, baPassword);
+        return httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useJvmProps, credentialsProvider);
     }
 
     public static OAuthClientHttpUtil getInstance() {

@@ -63,6 +63,10 @@ import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.PemKeyUtil.KeyType;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
+import com.ibm.ws.security.common.http.HttpResponseNot200Exception;
+import com.ibm.ws.security.common.http.HttpResponseNullOrEmptyException;
+import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.common.http.SocialLoginWrapperException;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
@@ -104,9 +108,16 @@ public class JwKRetriever {
     String locationUsed = null;
 
     KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
+    
+    public HttpUtils httpUtils;
 
     public JwKRetriever(JWKSet jwkSet) {
         this.jwkSet = jwkSet;
+        this.httpUtils = new HttpUtils();
+    }
+    
+    protected void setHttpUtils(HttpUtils httpUtils) {
+        this.httpUtils = httpUtils;
     }
 
     /**
@@ -138,6 +149,7 @@ public class JwKRetriever {
         this.sigAlg = signatureAlgorithm;
         this.keyText = keyText;
         this.keyLocation = keyLocation;
+        this.httpUtils = new HttpUtils();
     }
 
     public void setSignatureAlgorithm(String signatureAlgorithm) {
@@ -423,7 +435,7 @@ public class JwKRetriever {
         return key;
     }
 
-    @FFDCIgnore({ Exception.class, KeyStoreException.class })
+    @FFDCIgnore({ Exception.class })
     protected Key doJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws KeyStoreException {
 
         String jsonString = null;
@@ -440,8 +452,8 @@ public class JwKRetriever {
             }
             HttpClient client = createHTTPClient(sslSocketFactory, locationUsed, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             jsonString = getHTTPRequestAsString(client, locationUsed);
+            
             boolean bJwk = parseJwk(jsonString, null, jwkSet, sigAlg);
-
             if (!bJwk) {
                 // can not get back any JWK from OP
                 // since getJwkLocal will be called later and NO key exception
@@ -452,11 +464,6 @@ public class JwKRetriever {
                 }
             }
 
-        } catch (KeyStoreException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Fail to retrieve remote key: ", e.getCause());
-            }
-            throw e;
         } catch (Exception e) {
             // could be ignored
             if (tc.isDebugEnabled()) {
@@ -465,6 +472,34 @@ public class JwKRetriever {
         }
 
         return getJwkFromJWKSet(locationUsed, kid, x5t, use, jsonString, keyType);
+    }
+    
+    private String logCWWKS6049E(String url, int iStatusCode, String errMsg) {
+        // TODO - Message will be added to .nlsprops file under 222394
+        String defaultMessage = "CWWKS6049E: A JSON Web Key (JWK) was not returned from the URL [" + url
+                + "]. The response status was [" + iStatusCode + "] and the content returned was [" + errMsg + "].";
+
+        String message = TraceNLS.getFormattedMessage(getClass(),
+                "com.ibm.ws.security.jwt.internal.resources.JWTMessages", "JWT_JWK_RETRIEVE_FAILED",
+                new Object[] { url, Integer.valueOf(iStatusCode), errMsg }, defaultMessage);
+        Tr.error(JwKRetriever.tc, message, new Object[0]);
+        return message;
+    }
+    
+    @FFDCIgnore({ SocialLoginWrapperException.class })
+    protected String getHTTPRequestAsString(HttpClient client, String url) throws Exception, IOException {
+        String jsonString = null;
+        
+        try {
+            jsonString = httpUtils.getHttpJsonRequest(client, url);
+        } catch (SocialLoginWrapperException sle) {
+            throw new Exception(logCWWKS6049E(url, sle.getStatusCode(), sle.getNlsMessage()));
+        } catch (IOException ioex) {
+            logCWWKS6049E(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
+            throw ioex;
+        }
+        
+        return jsonString;
     }
 
     // separate to be an independent method for unit tests
@@ -780,118 +815,18 @@ public class JwKRetriever {
         return sslSocketFactory;
     }
 
-    @FFDCIgnore({ KeyStoreException.class })
-    protected String getHTTPRequestAsString(HttpClient httpClient, String url) throws Exception {
-
-        String json = null;
-        try {
-            HttpGet request = new HttpGet(url);
-            request.addHeader("content-type", "application/json");
-            HttpResponse result = null;
-            
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                result = httpClient.execute(request);
-            } catch (IOException ioex) {
-                logCWWKS6049E(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
-                throw ioex;
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
-            }
-            StatusLine statusLine = result.getStatusLine();
-            int iStatusCode = statusLine.getStatusCode();
-            if (iStatusCode == 200) {
-                json = EntityUtils.toString(result.getEntity(), "UTF-8");
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Response: ", json);
-                }
-                if (json == null || json.isEmpty()) { // NO JWK returned
-                    throw new Exception(logCWWKS6049E(url, iStatusCode, json));
-                }
-            } else {
-                String errMsg = EntityUtils.toString(result.getEntity(), "UTF-8");
-                // error in getting JWK
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "status:" + iStatusCode + " errorMsg:" + errMsg);
-                }
-                throw new Exception(logCWWKS6049E(url, iStatusCode, errMsg));
-            }
-        } catch (KeyStoreException e) {
-            throw e;
-        }
-
-        return json;
-    }
-
-    private String logCWWKS6049E(String url, int iStatusCode, String errMsg) {
-        // TODO - Message will be added to .nlsprops file under 222394
-        String defaultMessage = "CWWKS6049E: A JSON Web Key (JWK) was not returned from the URL [" + url
-                + "]. The response status was [" + iStatusCode + "] and the content returned was [" + errMsg + "].";
-
-        String message = TraceNLS.getFormattedMessage(getClass(),
-                "com.ibm.ws.security.jwt.internal.resources.JWTMessages", "JWT_JWK_RETRIEVE_FAILED",
-                new Object[] { url, Integer.valueOf(iStatusCode), errMsg }, defaultMessage);
-        Tr.error(JwKRetriever.tc, message, new Object[0]);
-        return message;
-    }
-
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections) {
 
         HttpClient client = null;
-        boolean addBasicAuthHeader = false;
 
         if (jwkClientId != null && jwkClientSecret != null) {
-            addBasicAuthHeader = true;
-        }
-
-        BasicCredentialsProvider credentialsProvider = null;
-        if (addBasicAuthHeader) {
-            credentialsProvider = createCredentialsProvider();
-        }
-
-        client = createHttpClient(url.startsWith("https:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider, useSystemPropertiesForHttpClientConnections);
-        return client;
-
-    }
-
-    protected HttpClientBuilder getBuilder(boolean useSystemPropertiesForHttpClientConnections) {
-        return useSystemPropertiesForHttpClientConnections ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
-    }
-
-    private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider, boolean useSystemPropertiesForHttpClientConnections) {
-        HttpClient client = null;
-        if (isSecure) {
-            ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-            ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-            try {
-                SSLConnectionSocketFactory connectionFactory = null;
-                if (!isHostnameVerification) {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
-                } else {
-                    connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
-                }
-                if (addBasicAuthHeader) {
-                    client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
-                } else {
-                    client = getBuilder(useSystemPropertiesForHttpClientConnections).setSSLSocketFactory(connectionFactory).build();
-                }
-            } finally {
-                ThreadContextHelper.setClassLoader(origCL);
-            }
+            BasicCredentialsProvider credentialsProvider = httpUtils.createCredentialsProvider(jwkClientId, jwkClientSecret);
+            client = httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, credentialsProvider);     
         } else {
-            if (addBasicAuthHeader) {
-                client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).build();
-            } else {
-                client = getBuilder(useSystemPropertiesForHttpClientConnections).build();
-            }
+            client = httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
+
         }
         return client;
     }
 
-    private BasicCredentialsProvider createCredentialsProvider() {
-        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(jwkClientId, jwkClientSecret));
-        return credentialsProvider;
-    }
 }
