@@ -226,10 +226,11 @@ public class ConcurrencyTestServlet extends FATServlet {
     public void init(ServletConfig config) throws ServletException {
         unmanagedThreads = Executors.newFixedThreadPool(5);
 
-        // This EJB needs to first be used so that its ContextServiceDefinition,
-        // which is relied upon by the other EJB, can be processed
+        // These EJBs need to be used so that their ContextServiceDefinition annotations,
+        // which are relied upon by the web module and the other EJB, can be processed
         try {
             InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ContextServiceDefinerBean!test.jakarta.concurrency.ejb.ContextServiceDefinerBean");
+            Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
         } catch (NamingException x) {
             throw new ServletException(x);
         }
@@ -3489,10 +3490,6 @@ public class ConcurrencyTestServlet extends FATServlet {
      */
     @Test
     public void testWebMergedManagedScheduledExecutorDefinitionContext() throws Exception {
-        // Ensure annotations from the EJB are processed
-        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
-        assertNotNull(bean);
-
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:app/concurrent/merged/web/LPScheduledExecutor");
 
         CountDownLatch blocker = new CountDownLatch(1);
