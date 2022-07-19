@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
@@ -185,7 +185,8 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         String ctRoot = "/";
         if (config.isUseContextRootAsCookiePath()) {
             WebAppConfig webapp = WebConfigUtils.getWebAppConfig();
-            ctRoot = webapp.getContextRoot();
+            if (webapp != null) // form login has no context root
+                ctRoot = webapp.getContextRoot();
         }
         return ctRoot;
     }
