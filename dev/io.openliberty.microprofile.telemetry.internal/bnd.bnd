@@ -16,7 +16,9 @@ Bundle-SymbolicName: io.openliberty.microprofile.telemetry.internal; singleton:=
 
 Import-Package: \
   !io.opentelemetry.exporter.prometheus,\
-  javax.net.ssl
+  javax.net,javax.net.ssl, \
+  okhttp3,\
+  okio
   
 Export-Package: \
   io.opentelemetry.*; version="1.0.0"
@@ -35,6 +37,9 @@ Include-Resource: \
   @${repo;io.opentelemetry:opentelemetry-sdk-metrics;1.14.0;EXACT}, \
   @${repo;io.opentelemetry:opentelemetry-sdk-common;1.14.0;EXACT}, \
   @${repo;io.opentelemetry:opentelemetry-sdk-trace;1.14.0;EXACT}, \
+  @${repo;io.opentelemetry:opentelemetry-exporter-jaeger;1.14.0;EXACT},\
+  @${repo;io.opentelemetry:opentelemetry-exporter-otlp-common;1.14.0;EXACT},\
+  @${repo;io.opentelemetry:opentelemetry-exporter-otlp-trace;1.14.0;EXACT},\
   @${repo;io.opentelemetry:opentelemetry-semconv;1.14.0.alpha;EXACT}
 
 WS-TraceGroup: opentelemetry

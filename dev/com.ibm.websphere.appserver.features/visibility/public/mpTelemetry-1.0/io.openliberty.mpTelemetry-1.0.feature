@@ -12,7 +12,8 @@ IBM-API-Package: \
   io.opentelemetry.api.trace;type="stable",\
   io.opentelemetry.api.baggage;type="stable",\
   io.opentelemetry.context;type="stable",\
-  io.opentelemetry.api.trace.propagation;type="stable"
+  io.opentelemetry.api.trace.propagation;type="stable",\
+  io.opentelemetry.sdk.trace.export;type="stable"
 -features=\
   com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
@@ -38,7 +39,6 @@ IBM-API-Package: \
   io.openliberty.io.grpc.netty.shaded, \
   com.ibm.ws.cdi.interfaces.jakarta, \
   com.ibm.ws.com.google.guava,\
-  io.openliberty.microprofile.telemetry.internal.common,\
   io.openliberty.microprofile.telemetry.1.0.internal
 kind=noship
 edition=full
