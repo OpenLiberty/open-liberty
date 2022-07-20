@@ -27,6 +27,8 @@ public interface ProductRepo {
     @Query("DELETE FROM Product o WHERE o.id IN ?1")
     int discontinueProducts(Set<String> ids);
 
+    Product[] findByVersionGreaterThanEqualOrderById(long minVersion);
+
     @Query("SELECT o FROM Product o WHERE o.id=:productId")
     Product findItem(@Param("productId") String id);
 

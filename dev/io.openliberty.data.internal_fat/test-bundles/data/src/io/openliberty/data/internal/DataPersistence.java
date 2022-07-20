@@ -174,7 +174,9 @@ public class DataPersistence {
 
                     String columnType;
                     if (embeddable == null) {
-                        columnType = id == null && !keyAttributeName.equals(attributeName) ? "basic" : "id";
+                        columnType = id != null || keyAttributeName.equals(attributeName) ? "id" : //
+                                        "version".equals(attributeName) ? "version" : //
+                                                        "basic";
                     } else {
                         columnType = "embedded";
                         embeddableTypes.add(field.getType());

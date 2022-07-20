@@ -56,6 +56,7 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 import io.openliberty.data.Entities;
+import io.openliberty.data.MappingException;
 import io.openliberty.data.Page;
 import io.openliberty.data.Pagination;
 import io.openliberty.data.Sort;
@@ -1417,18 +1418,100 @@ public class DataTestServlet extends FATServlet {
         prod4.price = 20.00f;
         products.addOrModify(prod4);
 
+        Product[] p = products.findByVersionGreaterThanEqualOrderById(0);
+
+        // JPA knows to update the version even through the JPQL didn't explicitly tell it to
         assertEquals(3, products.putOnSale("TestUpdateMultiple-match", .20f));
 
         Product p1 = products.findItem(prod1.id);
         assertEquals(8.00f, p1.price, 0.001f);
+        assertEquals(p[0].version + 1, p1.version); // updated
 
         Product p2 = products.findItem(prod2.id);
         assertEquals(12.00f, p2.price, 0.001f);
+        assertEquals(p[1].version + 1, p2.version); // updated
 
         Product p3 = products.findItem(prod3.id);
-        assertEquals(prod3.price, p3.price, 0.001f);
+        assertEquals(18.00f, p3.price, 0.001f);
+        assertEquals(p[2].version, p3.version); // not updated, version remains the same
 
         Product p4 = products.findItem(prod4.id);
         assertEquals(16.00f, p4.price, 0.001f);
+        assertEquals(p[3].version + 1, p4.version); // updated
+    }
+
+    /**
+     * Update based on version.
+     */
+    @Test
+    public void testVersionedUpdateViaRepository() {
+        Product prod1 = new Product();
+        prod1.id = "3400R-6120-1";
+        prod1.name = "TestVersionedUpdateViaRepository Product 1";
+        prod1.price = 139.99f;
+        products.addOrModify(prod1);
+
+        Product prod1a = products.findItem(prod1.id);
+        Product prod1b = products.findItem(prod1.id);
+
+        long version;
+        assertEquals(version = prod1a.version, prod1b.version);
+
+        prod1a.price += 15.00f;
+        prod1b.price += 10.00f;
+
+        products.addOrModify(prod1b);
+
+        try {
+            products.addOrModify(prod1a);
+            fail("Able to update using old version.");
+        } catch (RuntimeException x) {
+            if ("jakarta.persistence.OptimisticLockException".equals(x.getClass().getName()))
+                ; // expected;
+            else
+                throw x;
+        }
+
+        Product p = products.findItem(prod1.id);
+        assertEquals(149.99f, p.price, 0.001f);
+        assertEquals(version + 1, p.version);
+    }
+
+    /**
+     * Update based on version.
+     */
+    @Test
+    public void testVersionedUpdateViaTemplate() {
+        Product prod1 = new Product();
+        prod1.id = "G1600-T-90251";
+        prod1.name = "TestVersionedUpdateViaTemplate Product 1";
+        prod1.price = 210.00f;
+        prod1 = template.insert(prod1);
+
+        long version = prod1.version;
+
+        Product prod1a = template.find(Product.class, prod1.id).orElseThrow();
+        Product prod1b = template.find(Product.class, prod1.id).orElseThrow();
+
+        prod1a.price += 25.00f;
+        prod1b.price += 20.00f;
+
+        Product p1b = template.update(prod1b);
+
+        try {
+            Product p1a = template.update(prod1a);
+            fail("Able to update using old version " + p1a);
+        } catch (MappingException x) {
+            Throwable cause = x.getCause();
+            if (cause == null || !"jakarta.persistence.OptimisticLockException".equals(cause.getClass().getName()))
+                throw x;
+        }
+
+        assertEquals(230.00f, p1b.price, 0.001f);
+        assertEquals(version + 1, p1b.version);
+
+        Product p = products.findItem(prod1.id);
+        assertEquals(230.00f, p.price, 0.001f);
+        assertEquals(version + 1, p.version);
     }
 }
