@@ -135,7 +135,7 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
      */
     @Test
     public void catalogLoadNoErrorTest() throws Exception {
-        restartWithNewPersistedCatalog("simpleCatalog.json");
+        ignoreErrorAndRestartWithNewPersistedCatalog("simpleCatalog.json");
 
         // Confirm the catalog JSON contents
         response = get(url, adminUser, adminPassword, 200);
@@ -164,7 +164,7 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
      */
     @Test
     public void catalogLoadJSONWrongFieldTest() throws Exception {
-        restartWithNewPersistedCatalog("simpleTool.json");
+        ignoreErrorAndRestartWithNewPersistedCatalog("simpleTool.json");
 
         // Confirm catalog contents
         response = get(url, adminUser, adminPassword, 200);
@@ -283,7 +283,7 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
         assertSize(bookmarks, 2); // The default (openliberty.io) + newly added
 
         // restart server
-        stopServerAndValidate(server);
+        ignoreErrorAndStopServerWithValidate();
         startServerAndValidate(server);
 
         // Get the (now persisted)
