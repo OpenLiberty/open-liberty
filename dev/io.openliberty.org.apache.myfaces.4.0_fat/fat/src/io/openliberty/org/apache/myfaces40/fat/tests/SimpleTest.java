@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.webcontainer.servlet60.fat.test;
+package io.openliberty.org.apache.myfaces40.fat.tests;
 
 import java.util.logging.Logger;
 
@@ -25,9 +25,9 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * Simple Test for Servlet 6.0
+ * Simple Test for Faces 4.0.
  *
- * TODO: This can be deleted once we have other tests in the Servlet 6.0 bucket this is
+ * TODO: This can be deleted once we have other tests in the Faces 4.0 bucket this is
  * just a place holder so we have one test case that executes.
  */
 @RunWith(FATRunner.class)
@@ -36,12 +36,12 @@ public class SimpleTest {
     private static final Logger LOG = Logger.getLogger(SimpleTest.class.getName());
     private static final String SIMPLE_TEST_APP_NAME = "SimpleTest";
 
-    @Server("servlet60_simpleTest")
+    @Server("faces40_simpleTest")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, SIMPLE_TEST_APP_NAME + ".war", "simpletest.servlets");
+        ShrinkHelper.defaultDropinApp(server, SIMPLE_TEST_APP_NAME + ".war");
 
         server.startServer(SimpleTest.class.getSimpleName() + ".log");
     }
@@ -57,12 +57,12 @@ public class SimpleTest {
     }
 
     /**
-     * Request a TestServlet.
+     * Request a simple Faces page.
      *
      * @throws Exception
      */
     @Test
     public void testTestServlet() throws Exception {
-        HttpUtils.findStringInReadyUrl(server, "/" + SIMPLE_TEST_APP_NAME + "/TestServlet", "Hello from the TestServlet!!");
+        HttpUtils.findStringInReadyUrl(server, "/" + SIMPLE_TEST_APP_NAME + "/SimpleTest.xhtml", "HELLO WORLD!");
     }
 }

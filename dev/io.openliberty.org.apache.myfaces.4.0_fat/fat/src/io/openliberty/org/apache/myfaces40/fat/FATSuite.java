@@ -8,13 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.webcontainer.servlet60.fat;
+package io.openliberty.org.apache.myfaces40.fat;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.openliberty.webcontainer.servlet60.fat.tests.SimpleTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
