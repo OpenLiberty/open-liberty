@@ -77,6 +77,8 @@ import com.ibm.wsspi.classloading.ClassLoaderIdentity;
 import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 abstract class ContainerClassLoader extends LibertyLoader implements Keyed<ClassLoaderIdentity> {
     static {
         ClassLoader.registerAsParallelCapable();
@@ -510,7 +512,7 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         }
 
         @FFDCIgnore(value = { IOException.class })
-        private Map<Name, String> getManifestMainAttributes() {
+        Map<Name, String> getManifestMainAttributes() {
             // See if we've already loaded the manifest
             if (this.manifestMainAttributes == null) {
                 synchronized (this) {
@@ -609,6 +611,11 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         public ContainerUniversalContainer(Container container) {
             this.container = container;
             this.isRoot = container.isRoot();
+            // If we are doing checkpoint, process the manifest file when the container is created.
+            CheckpointPhase phase = CheckpointPhase.getPhase();
+            if (phase != null && !phase.restored()) {
+                getManifestMainAttributes();
+            }
         }
 
         @Override
@@ -803,6 +810,11 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         public ArtifactContainerUniversalContainer(ArtifactContainer container) {
             this.container = container;
             this.isRoot = container.isRoot();
+            // If we are doing checkpoint, process the manifest file when the container is created.
+            CheckpointPhase phase = CheckpointPhase.getPhase();
+            if (phase != null && !phase.restored()) {
+                getManifestMainAttributes();
+            }
         }
 
         @Override
