@@ -37,7 +37,6 @@ import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
-import com.ibm.ws.security.oauth20.plugins.OidcBaseClientValidator;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JwsSigner;
 import com.ibm.ws.security.oauth20.util.CacheUtil;
@@ -218,7 +217,9 @@ public class LogoutTokenBuilder {
                 if (client == null) {
                     continue;
                 }
-                if (isValidClientForBackchannelLogout(client)) {
+                // Only log out clients that have a backchannel_logout_uri configured
+                String logoutUri = client.getBackchannelLogoutUri();
+                if (logoutUri != null) {
                     addCachedIdTokenToMap(cachedIdTokensMap, client, cachedToken);
                 }
             }
@@ -238,24 +239,6 @@ public class LogoutTokenBuilder {
             }
         }
         return client;
-    }
-
-    @FFDCIgnore(OidcServerException.class)
-    boolean isValidClientForBackchannelLogout(OidcBaseClient client) {
-        String logoutUri = client.getBackchannelLogoutUri();
-        if (logoutUri == null) {
-            return false;
-        }
-        try {
-            OidcBaseClientValidator.validateBackchannelLogoutUri(client, logoutUri);
-        } catch (OidcServerException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "The {0} OAuth client cannot be used for back-channel logout because its back-channel logout URI ({1}) is not valid: {2}",
-                         client.getClientId(), logoutUri, e.getErrorDescription());
-            }
-            return false;
-        }
-        return true;
     }
 
     void addCachedIdTokenToMap(Map<OidcBaseClient, List<OAuth20Token>> cachedIdTokensMap, OidcBaseClient client, OAuth20Token cachedToken) {
