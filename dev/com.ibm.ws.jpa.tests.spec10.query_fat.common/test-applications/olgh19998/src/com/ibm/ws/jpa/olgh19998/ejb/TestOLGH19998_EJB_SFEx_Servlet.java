@@ -39,6 +39,9 @@ public class TestOLGH19998_EJB_SFEx_Servlet extends EJBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_EJB_SFEx_CMTS_Web() throws Exception {
+        if (isDB2ForZOS())
+            return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
+
         final String testName = "jpa10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_EJB_SFEx_CMTS_Web";
         final String testMethod = "testUpdateAllQueryWithTimestampLocking";
         final String testResource = "test-jpa-resource-cmex";
@@ -49,6 +52,9 @@ public class TestOLGH19998_EJB_SFEx_Servlet extends EJBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_EJB_SFEx_CMTS_Web() throws Exception {
+        if (isDB2ForZOS())
+            return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
+
         final String testName = "jpa10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_EJB_SFEx_CMTS_Web";
         final String testMethod = "testTimestampLockingUpdateWithUpdateAllQuery";
         final String testResource = "test-jpa-resource-cmex";

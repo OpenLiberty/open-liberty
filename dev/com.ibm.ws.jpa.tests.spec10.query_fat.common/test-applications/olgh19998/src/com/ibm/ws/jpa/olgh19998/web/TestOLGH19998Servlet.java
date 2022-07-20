@@ -58,6 +58,9 @@ public class TestOLGH19998Servlet extends JPATestServlet {
 
     @Test
     public void jpa_spec10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_AMJTA_Web() throws Exception {
+        if (isDB2ForZOS())
+            return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
+
         final String testName = "jpa10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_AMJTA_Web";
         final String testMethod = "testUpdateAllQueryWithTimestampLocking";
         final String testResource = "test-jpa-resource-amjta";
@@ -66,6 +69,9 @@ public class TestOLGH19998Servlet extends JPATestServlet {
 
     @Test
     public void jpa_spec10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_AMRL_Web() throws Exception {
+        if (isDB2ForZOS())
+            return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
+
         final String testName = "jpa10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_AMRL_Web";
         final String testMethod = "testUpdateAllQueryWithTimestampLocking";
         final String testResource = "test-jpa-resource-amrl";
@@ -74,6 +80,9 @@ public class TestOLGH19998Servlet extends JPATestServlet {
 
     @Test
     public void jpa_spec10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_CMTS_Web() throws Exception {
+        if (isDB2ForZOS())
+            return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
+
         final String testName = "jpa10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_CMTS_Web";
         final String testMethod = "testUpdateAllQueryWithTimestampLocking";
         final String testResource = "test-jpa-resource-cmts";
@@ -84,6 +93,9 @@ public class TestOLGH19998Servlet extends JPATestServlet {
 
     @Test
     public void jpa_spec10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_AMJTA_Web() throws Exception {
+        if (isDB2ForZOS())
+            return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
+
         final String testName = "jpa10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_AMJTA_Web";
         final String testMethod = "testTimestampLockingUpdateWithUpdateAllQuery";
         final String testResource = "test-jpa-resource-amjta";
@@ -92,6 +104,9 @@ public class TestOLGH19998Servlet extends JPATestServlet {
 
     @Test
     public void jpa_spec10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_AMRL_Web() throws Exception {
+        if (isDB2ForZOS())
+            return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
+
         final String testName = "jpa10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_AMRL_Web";
         final String testMethod = "testTimestampLockingUpdateWithUpdateAllQuery";
         final String testResource = "test-jpa-resource-amrl";
@@ -100,6 +115,9 @@ public class TestOLGH19998Servlet extends JPATestServlet {
 
     @Test
     public void jpa_spec10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_CMTS_Web() throws Exception {
+        if (isDB2ForZOS())
+            return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
+
         final String testName = "jpa10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_CMTS_Web";
         final String testMethod = "testTimestampLockingUpdateWithUpdateAllQuery";
         final String testResource = "test-jpa-resource-cmts";
