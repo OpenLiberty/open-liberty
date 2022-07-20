@@ -10,21 +10,18 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
 
-Bundle-Name: gRPC Shaded Jakarta
-Bundle-SymbolicName: io.openliberty.io.grpc.netty.shaded
-Bundle-Description: Liberty gRPC Shaded, version ${bVersion}; Jakarta Enabled
+Bundle-Name: Square Okio JVM
+Bundle-SymbolicName: io.openliberty.com.squareup.okio-jvm
+Bundle-Description: Liberty, Square Okio JVM version ${bVersion}; Jakarta Enabled
 
 bVersion=1.0
 
 Import-Package: \
   !android.net.http,\
-  javax.net,javax.net.ssl
+  javax.net,javax.net.ssl,\
+  kotlin.*
 
 Export-Package: \
-  okhttp3;version="1.0.0",\
-  okhttp3.*;version="1.0.0",\
-  kotlin;version="1.0.0",\
-  kotlin.*;version="1.0.0",\
   okio;version="1.0.0",\
   okio.*;version="1.0.0"
 
@@ -33,8 +30,4 @@ instrument.disabled: true
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \
-  com.squareup.okhttp3:okhttp;version=4.10.0,\
-  org.jetbrains.kotlin:kotlin-stdlib;version=1.6.20,\
-  org.jetbrains:annotations;version=13.0,\
-  org.jetbrains.kotlin:kotlin-stdlib-common;version=1.6.2,\
   com.squareup.okio:okio-jvm;version=3.0.0

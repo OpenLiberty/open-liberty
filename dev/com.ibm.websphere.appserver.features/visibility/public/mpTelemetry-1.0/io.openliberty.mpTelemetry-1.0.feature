@@ -24,7 +24,6 @@ IBM-API-Package: \
   io.openliberty.cdi-3.0, \
   io.openliberty.mpCompatible-5.0,\
   com.ibm.websphere.appserver.injection-2.0, \
-  io.openliberty.grpcClient1.0.internal.ee-9.0,\
   io.openliberty.org.eclipse.microprofile.telemetry-1.0, \
   io.openliberty.grpcClient-1.0,\
   io.openliberty.io.netty,\
@@ -35,10 +34,10 @@ IBM-API-Package: \
   com.ibm.ws.transport.http,\
   io.openliberty.accesslists.internal, \
   com.ibm.ws.managedobject,\
-  io.openliberty.grpc.1.0.internal.common.jakarta,\
-  io.openliberty.io.grpc.netty.shaded, \
+  io.openliberty.com.squareup.okhttp,\
+  io.openliberty.com.squareup.okio-jvm,\
+  io.openliberty.org.jetbrains.kotlin,\
   com.ibm.ws.cdi.interfaces.jakarta, \
-  com.ibm.ws.com.google.guava,\
   io.openliberty.microprofile.telemetry.1.0.internal
 kind=noship
 edition=full
