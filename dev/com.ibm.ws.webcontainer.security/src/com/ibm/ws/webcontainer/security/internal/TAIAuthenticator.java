@@ -371,7 +371,10 @@ public class TAIAuthenticator implements WebAuthenticator {
             authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject);
             if (addLtpaCookieToResp) {
                 ssoCookieHelper.addSSOCookiesToResponse(new_subject, req, res);
-                removeInternalProps(new_subject, subjectHelper, AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE);
+                Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getSensitiveHashtableFromSubject(subject);
+                if (hashtable != null && !subject.isReadOnly()) {
+                    removeInternalProps(new_subject, subjectHelper, AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE, hashtable);
+                }
             }
         } catch (AuthenticationException e) {
             authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());
@@ -379,11 +382,8 @@ public class TAIAuthenticator implements WebAuthenticator {
         return authResult;
     }
 
-    protected void removeInternalProps(Subject subject, SubjectHelper subjectHelper, String propName) {
-        Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getSensitiveHashtableFromSubject(subject);
-        if (hashtable == null || subject.isReadOnly())
-            return;
-
+    protected synchronized void removeInternalProps(Subject subject, SubjectHelper subjectHelper, String propName, Hashtable hashtable) {
+        
         Set<Object> publicCredentials = subject.getPublicCredentials();
         publicCredentials.remove(hashtable);
         hashtable.remove(propName);
