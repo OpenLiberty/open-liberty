@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.netty.jfapchannel;
+package com.ibm.ws.sib.netty.jfapchannel;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -39,7 +39,7 @@ public class NettyToWsBufferDecoder extends ByteToMessageDecoder {
 	{
 		if (tc.isDebugEnabled())
 			SibTr.debug(tc,
-					"@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/netty/jfapchannel/NettyToWsBufferDecoder.java, SIB.comms, WASX.SIB, uu1215.01 1.1");
+					"@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/sib/netty/jfapchannel/NettyToWsBufferDecoder.java, SIB.comms, WASX.SIB, uu1215.01 1.1");
 	}
 
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.netty.jfapchannel;
+package com.ibm.ws.sib.netty.jfapchannel;
 
 import java.util.Map;
 
@@ -24,7 +24,6 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionTarget;
 import com.ibm.ws.sib.jfapchannel.impl.OutboundConnection;
 import com.ibm.ws.sib.utils.ras.SibTr;
-import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -34,7 +33,6 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.NettyFramework;
-import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
 import io.netty.handler.ssl.SslContext;
@@ -58,7 +56,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 	/** Log class info on load */
 	static
 	{
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/netty/jfapchannel/NettyNetworkConnection.java, SIB.comms, WASX.SIB, uu1215.01 1.2");
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/sib/netty/jfapchannel/NettyNetworkConnection.java, SIB.comms, WASX.SIB, uu1215.01 1.2");
 	}
 
 	/** The virtual connection */

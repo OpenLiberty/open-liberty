@@ -20,7 +20,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIResourceException;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.netty.jfapchannel.NettyNetworkConnection;
 import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.ConversationReceiveListener;
 import com.ibm.ws.sib.jfapchannel.ConversationUsageType;
@@ -35,6 +34,7 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory;
 import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
 import com.ibm.ws.sib.jfapchannel.impl.JFapAddress;
 import com.ibm.ws.sib.jfapchannel.impl.OutboundConnection;
+import com.ibm.ws.sib.netty.jfapchannel.NettyNetworkConnection;
 import com.ibm.ws.sib.utils.Semaphore;
 import com.ibm.ws.sib.utils.ras.SibTr;
 

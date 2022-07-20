@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.netty.jfapchannel;
+package com.ibm.ws.sib.netty.jfapchannel;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
@@ -16,14 +16,15 @@ import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
+import com.ibm.ws.sib.jfapchannel.impl.Connection;
 import com.ibm.ws.sib.jfapchannel.impl.NettyConnectionReadCompletedCallback;
-import com.ibm.ws.sib.jfapchannel.impl.OutboundConnection;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
+import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * Main handler class for managing connections for each Netty JMS client.
@@ -45,11 +46,11 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 	{
 		if (tc.isDebugEnabled())
 			SibTr.debug(tc,
-					"@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/netty/jfapchannel/NettyJMSClientHandler.java, SIB.comms, WASX.SIB, uu1215.01 1.1");
+					"@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/sib/netty/jfapchannel/NettyJMSClientHandler.java, SIB.comms, WASX.SIB, uu1215.01 1.1");
 	}
 
 
-	protected final static AttributeKey<OutboundConnection> CONNECTION_KEY = AttributeKey.valueOf("OutboundConnection");
+	protected final static AttributeKey<Connection> CONNECTION_KEY = AttributeKey.valueOf("OutboundConnection");
 	protected final static AttributeKey<String> CHAIN_ATTR_KEY = AttributeKey.valueOf("CHAIN_NAME");
 
 	/** Called when a new connection is established */
@@ -68,8 +69,8 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 		if (tc.isEntryEnabled())
 			SibTr.entry(this, tc, "channelRead0", ctx.channel());
 
-		Attribute<OutboundConnection> attr = ctx.channel().attr(CONNECTION_KEY);
-		OutboundConnection connection = attr.get();
+		Attribute<Connection> attr = ctx.channel().attr(CONNECTION_KEY);
+		Connection connection = attr.get();
 
 		if (connection != null) {
 			IOReadCompletedCallback callback = connection.getReadCompletedCallback();
@@ -81,9 +82,11 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 					networkConnection instanceof NettyNetworkConnection) {
 				((NettyConnectionReadCompletedCallback)callback).readCompleted(msg, readCtx, (NettyNetworkConnection)networkConnection);
 			}else {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-					SibTr.warning(tc, "channelRead0: Callback or read context is not Netty specific. This should not happen. Message will be ignored", new Object[] {connection, callback, readCtx});
-				}
+				if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+        			SibTr.warning(tc, "channelRead0: Something's wrong. Callback, network connection, or read context is not netty specific. This shouldn't happen.", new Object[] {connection, callback, readCtx, networkConnection});
+                }
+        		exceptionCaught(ctx, new NettyException("Illegal callback type for channel."));
+        		return;
 			}
 
 		}else {
@@ -102,7 +105,11 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 			SibTr.entry(this, tc, "channelInactive", ctx.channel());
 
 		// TODO: Check how to manage inactive channels appropriately
-		OutboundConnection connection = ctx.channel().attr(CONNECTION_KEY).get();
+		Connection connection = ctx.channel().attr(CONNECTION_KEY).get();
+		
+		if (tc.isEntryEnabled() && tc.isDebugEnabled()) {
+			SibTr.debug(this, tc, "Fired for connection which is closed?: " + connection.isClosed() + " closedDeffered?: " + connection.isCloseDeferred(), new Object[] {ctx.channel(), connection});
+		}
 		ctx.channel().attr(CONNECTION_KEY).set(null);
 		ctx.close();
 
@@ -115,10 +122,20 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 		if (tc.isEntryEnabled())
 			SibTr.entry(this, tc, "exceptionCaught", new Object[] {ctx.channel(), cause});
 
-		OutboundConnection connection = ctx.channel().attr(CONNECTION_KEY).get();
-		connection.invalidate(false, cause, "Connection closed due to exception");
-		ctx.channel().attr(CONNECTION_KEY).set(null);
-		ctx.close();
+		Attribute<Connection> attr = ctx.channel().attr(CONNECTION_KEY);
+		Connection connection = attr.get();
+
+		if (connection == null) {
+			if (tc.isEntryEnabled() && tc.isDebugEnabled())
+				SibTr.debug(this, tc, "Found null connection for JMS Channel. Closing channel and moving cause through pipeline.", ctx.channel());
+			ctx.close();
+		}else {
+			connection.invalidate(false, cause, "Connection closed due to exception");
+			ctx.channel().attr(CONNECTION_KEY).set(null);
+			ctx.close();
+		}
+
+		super.exceptionCaught(ctx, cause);
 
 		if (tc.isEntryEnabled())
 			SibTr.exit(this, tc, "exceptionCaught", ctx.channel());

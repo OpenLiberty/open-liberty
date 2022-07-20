@@ -26,29 +26,29 @@ Import-Package: \
   *
 
 Export-Package: \
-com.ibm.ws.sib.comms.client,\
-com.ibm.ws.sib.comms.client.proxyqueue,\
-com.ibm.ws.sib.comms.client.proxyqueue.asynch,\
-com.ibm.ws.sib.comms.client.proxyqueue.impl,\
-com.ibm.ws.sib.comms.client.proxyqueue.queue,\
-com.ibm.ws.sib.comms.client.util,\
-com.ibm.ws.sib.comms.common,\
-com.ibm.ws.sib.jfapchannel.approxtime,\
-com.ibm.ws.sib.jfapchannel.framework,\
-com.ibm.ws.sib.jfapchannel.impl,\
-com.ibm.ws.sib.jfapchannel.impl.eventrecorder,\
-com.ibm.ws.sib.jfapchannel.impl.octracker,\
-com.ibm.ws.sib.jfapchannel.impl.rldispatcher,\
-com.ibm.ws.sib.jfapchannel.richclient.approxtime.impl,\
-com.ibm.ws.sib.jfapchannel.richclient.framework.impl,\
-com.ibm.ws.sib.jfapchannel.richclient.impl,\
-com.ibm.ws.sib.jfapchannel.richclient.impl.octracker,\
-com.ibm.ws.sib.jfapchannel.richclient.threadpool.impl,\
-com.ibm.ws.sib.jfapchannel.threadpool,\
-com.ibm.ws.sib.jfapchannel,\
-com.ibm.ws.sib.jfapchannel.buffer,\
-com.ibm.ws.sib.jfapchannel.richclient.buffer.impl,\
-com.ibm.ws.netty.jfapchannel
+	com.ibm.ws.sib.comms.client,\
+	com.ibm.ws.sib.comms.client.proxyqueue,\
+	com.ibm.ws.sib.comms.client.proxyqueue.asynch,\
+	com.ibm.ws.sib.comms.client.proxyqueue.impl,\
+	com.ibm.ws.sib.comms.client.proxyqueue.queue,\
+	com.ibm.ws.sib.comms.client.util,\
+	com.ibm.ws.sib.comms.common,\
+	com.ibm.ws.sib.jfapchannel.approxtime,\
+	com.ibm.ws.sib.jfapchannel.framework,\
+	com.ibm.ws.sib.jfapchannel.impl,\
+	com.ibm.ws.sib.jfapchannel.impl.eventrecorder,\
+	com.ibm.ws.sib.jfapchannel.impl.octracker,\
+	com.ibm.ws.sib.jfapchannel.impl.rldispatcher,\
+	com.ibm.ws.sib.jfapchannel.richclient.approxtime.impl,\
+	com.ibm.ws.sib.jfapchannel.richclient.framework.impl,\
+	com.ibm.ws.sib.jfapchannel.richclient.impl,\
+	com.ibm.ws.sib.jfapchannel.richclient.impl.octracker,\
+	com.ibm.ws.sib.jfapchannel.richclient.threadpool.impl,\
+	com.ibm.ws.sib.jfapchannel.threadpool,\
+	com.ibm.ws.sib.jfapchannel,\
+	com.ibm.ws.sib.jfapchannel.buffer,\
+	com.ibm.ws.sib.jfapchannel.richclient.buffer.impl,\
+	com.ibm.ws.sib.netty.jfapchannel
 
 
 Service-Component: \

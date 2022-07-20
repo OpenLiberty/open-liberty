@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.netty.jfapchannel;
+package com.ibm.ws.sib.netty.jfapchannel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,15 +20,9 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory;
 import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
 import com.ibm.ws.sib.utils.ras.SibTr;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.ByteToMessageDecoder;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;

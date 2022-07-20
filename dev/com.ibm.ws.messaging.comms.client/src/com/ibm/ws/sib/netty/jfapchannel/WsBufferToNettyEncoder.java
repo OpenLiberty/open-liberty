@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.netty.jfapchannel;
+package com.ibm.ws.sib.netty.jfapchannel;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
@@ -37,7 +37,7 @@ public class WsBufferToNettyEncoder extends MessageToByteEncoder<WsByteBuffer> {
 	{
 		if (tc.isDebugEnabled())
 			SibTr.debug(tc,
-					"@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/netty/jfapchannel/WsBufferToNettyEncoder.java, SIB.comms, WASX.SIB, uu1215.01 1.1");
+					"@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/sib/netty/jfapchannel/WsBufferToNettyEncoder.java, SIB.comms, WASX.SIB, uu1215.01 1.1");
 	}
 
 	@Override

@@ -9,4 +9,4 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.0.16")
-package com.ibm.ws.netty.jfapchannel;
+package com.ibm.ws.sib.netty.jfapchannel;

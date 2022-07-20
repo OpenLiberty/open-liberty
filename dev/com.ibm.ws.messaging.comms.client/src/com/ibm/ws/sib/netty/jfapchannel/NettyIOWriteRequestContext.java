@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.netty.jfapchannel;
+package com.ibm.ws.sib.netty.jfapchannel;
 
 import java.io.IOException;
 import com.ibm.websphere.ras.TraceComponent;
@@ -41,7 +41,7 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 	/** Log class info on load */
 	static
 	{
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/netty/jfapchannel/NettyIOWriteRequestContext.java, SIB.comms, WASX.SIB, uu1215.01 1.5");
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/sib/netty/jfapchannel/NettyIOWriteRequestContext.java, SIB.comms, WASX.SIB, uu1215.01 1.5");
 	}
 
 

@@ -14,7 +14,6 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIResourceException;
-import com.ibm.ws.netty.jfapchannel.NettyNetworkConnection;
 import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.ConversationMetaData;
 import com.ibm.ws.sib.jfapchannel.ConversationReceiveListener;
@@ -25,6 +24,7 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext;
 import com.ibm.ws.sib.jfapchannel.impl.octracker.ConnectionData;
 import com.ibm.ws.sib.jfapchannel.impl.octracker.OutboundConnectionTracker;
+import com.ibm.ws.sib.netty.jfapchannel.NettyNetworkConnection;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
 import io.openliberty.netty.internal.exception.NettyException;

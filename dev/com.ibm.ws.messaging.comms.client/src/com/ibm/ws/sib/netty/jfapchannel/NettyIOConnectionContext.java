@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.netty.jfapchannel;
+package com.ibm.ws.sib.netty.jfapchannel;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -38,7 +38,7 @@ public class NettyIOConnectionContext implements IOConnectionContext{
 	   /** Log class info on load */
 	   static
 	   {
-	      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/netty/jfapchannel/NettyIOConnectionContext.java, SIB.comms, WASX.SIB, uu1215.01 1.2");
+	      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/sib/netty/jfapchannel/NettyIOConnectionContext.java, SIB.comms, WASX.SIB, uu1215.01 1.2");
 	   }
 
 
