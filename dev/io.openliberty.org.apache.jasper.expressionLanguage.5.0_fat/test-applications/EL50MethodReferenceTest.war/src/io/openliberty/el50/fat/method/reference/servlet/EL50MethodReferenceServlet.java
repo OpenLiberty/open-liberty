@@ -203,7 +203,7 @@ public class EL50MethodReferenceServlet extends FATServlet {
      *
      * NullPointerException - If the supplied context is null
      *
-     * @throws Excpetion
+     * @throws Exception
      */
     @Test
     @Mode(TestMode.FULL)
@@ -231,7 +231,7 @@ public class EL50MethodReferenceServlet extends FATServlet {
      *
      * PropertyNotFoundException - If a property/variable resolution failed because no match was found or a match was found but was not readable
      *
-     * @throws Excpetion
+     * @throws Exception
      */
     @Test
     @Mode(TestMode.FULL)
@@ -259,7 +259,7 @@ public class EL50MethodReferenceServlet extends FATServlet {
      *
      * MethodNotFoundException - If no matching method can be found
      *
-     * @throws Excpetion
+     * @throws Exception
      */
     @Test
     @Mode(TestMode.FULL)
