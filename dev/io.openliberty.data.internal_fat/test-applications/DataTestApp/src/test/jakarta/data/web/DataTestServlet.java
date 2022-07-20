@@ -1441,7 +1441,30 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Update based on version.
+     * Use JPQL query to update based on version.
+     */
+    @Test
+    public void testVersionedUpdateViaQuery() {
+        Product prod1 = new Product();
+        prod1.id = "Q6008-U8-21001";
+        prod1.name = "testVersionedUpdateViaQuery Product 1";
+        prod1.price = 82.99f;
+        products.addOrModify(prod1);
+
+        Product p = products.findItem(prod1.id);
+        long initialVersion = p.version;
+
+        assertEquals(true, products.setPrice(prod1.id, initialVersion, 84.99f));
+        assertEquals(false, products.setPrice(prod1.id, initialVersion, 83.99f));
+        assertEquals(true, products.setPrice(prod1.id, initialVersion + 1, 88.99f));
+
+        p = products.findItem(prod1.id);
+        assertEquals(88.99f, p.price, 0.001f);
+        assertEquals(initialVersion + 2, p.version);
+    }
+
+    /**
+     * Use repository save method to update based on version.
      */
     @Test
     public void testVersionedUpdateViaRepository() {
@@ -1478,7 +1501,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Update based on version.
+     * Use template to update based on version.
      */
     @Test
     public void testVersionedUpdateViaTemplate() {

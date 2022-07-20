@@ -247,6 +247,16 @@ public class DataPersistence {
                     }
                 }
 
+                // This works for version Fields, and might work for version getter/setter methods
+                // but is debatable whether we should do it.
+                //Member versionMember = null;
+                //if (entityType.hasVersionAttribute())
+                //    for (SingularAttribute<?, ?> attr : entityType.getSingularAttributes())
+                //        if (attr.isVersion()) {
+                //            versionMember = attr.getJavaMember(); // Field or Method, which could be used to update a passed-in entity with the new version number
+                //            break;
+                //        }
+
                 Class<?> entityClass = entityType.getJavaType();
                 EntityInfo entityInfo = new EntityInfo(entityType.getName(), //
                                 entityClass, //
@@ -262,9 +272,6 @@ public class DataPersistence {
                 entityInfoPerClassAndProvider.put(entityClass, entityInfo);
 
                 System.out.println(attributeNames);
-
-                // TODO entityType.hasVersionAttribute() and entityType.getVersion(versionType) might be useful,
-                // but how is the version class parameter determined?
             }
         } catch (RuntimeException x) {
             throw x;
