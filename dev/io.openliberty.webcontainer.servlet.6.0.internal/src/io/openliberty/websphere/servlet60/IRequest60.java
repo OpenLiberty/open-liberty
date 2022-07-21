@@ -30,5 +30,4 @@ public interface IRequest60 extends IRequest40 {
      * @return (int) connection id from dispatcher link. Need to convert to String.
      */
     public int getConnectionId();
-
 }
