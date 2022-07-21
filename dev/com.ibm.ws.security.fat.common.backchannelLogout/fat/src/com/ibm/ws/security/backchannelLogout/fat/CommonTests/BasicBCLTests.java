@@ -769,7 +769,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @AllowedFFDC({ "org.apache.http.NoHttpResponseException", "java.util.concurrent.ExecutionException", "com.ibm.oauth.core.api.error.OidcServerException" })
-    @Test
+    //@Test
     public void BasicBCLTests_httpBackchannelLogoutUri_publicClient() throws Exception {
 
         if (currentRepeatAction.contains(Constants.MONGODB)) {
