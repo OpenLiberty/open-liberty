@@ -26,7 +26,7 @@
     </featureManager>
 
     <!-- Use logging instead of bootstrap for standalone WLP case -->
-    <logging traceSpecification="*=info:concurrent=all:concurrencyPolicy=all:context=all" />
+    <logging traceSpecification="*=info:concurrent=all:concurrencyPolicy=all:context=all:EJBContainer=all" />
 
     <!-- Allow Arquillian to monitor application -->
     <applicationMonitor updateTrigger="mbean"/>
