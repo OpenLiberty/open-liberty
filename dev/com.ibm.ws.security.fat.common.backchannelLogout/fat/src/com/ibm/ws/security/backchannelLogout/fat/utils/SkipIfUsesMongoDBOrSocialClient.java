@@ -13,14 +13,17 @@ package com.ibm.ws.security.backchannelLogout.fat.utils;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.utils.MySkipRule;
 
-public class SkipIfHttpLogout extends MySkipRule {
+public class SkipIfUsesMongoDBOrSocialClient extends MySkipRule {
 
-    protected static Class<?> thisClass = SkipIfHttpLogout.class;
-    public static Boolean usingHttpLogout = false;
+    protected static Class<?> thisClass = SkipIfUsesMongoDBOrSocialClient.class;
+    public static Boolean usesMongoDB = false;
+    public static Boolean socialClient = false;
 
     @Override
     public Boolean callSpecificCheck() {
-        Log.info(thisClass, "callSpecificCheck", Boolean.toString(usingHttpLogout));
-        return usingHttpLogout;
+        Log.info(thisClass, "callSpecificCheck", "Uses MongoDB:" + Boolean.toString(usesMongoDB));
+        Log.info(thisClass, "callSpecificCheck", "Uses a Social Client: " + Boolean.toString(socialClient));
+        return usesMongoDB || socialClient;
     }
+
 }

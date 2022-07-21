@@ -14,7 +14,6 @@
 
 	<oidcLogin
 		id="bcl_mainPath"
-		scope="profile email openid"
 		clientId="bcl_mainPath"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
@@ -30,7 +29,6 @@
 
 	<oidcLogin
 		id="bcl_defaultBCLTimeout"
-		scope="profile email openid"
 		clientId="bcl_defaultBCLTimeout"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
@@ -48,7 +46,6 @@
 
 	<oidcLogin
 		id="bcl_otherDefaultBCLTimeout"
-		scope="profile email openid"
 		clientId="bcl_otherDefaultBCLTimeout"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="HS256"
@@ -67,7 +64,6 @@
 
 	<oidcLogin
 		id="bcl_shortBCLTimeout"
-		scope="profile email openid"
 		clientId="bcl_shortBCLTimeout"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="HS256"
@@ -368,7 +364,6 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_useLogoutTokenForAccess/token"
 		hostNameVerificationEnabled="false"
 		authFilterRef="useLogoutTokenForAccess_introspect_filter"
-		accessTokenSupported="true"
 	>
 	</oidcLogin>
 	<oidcLogin
@@ -386,7 +381,6 @@
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
 		authFilterRef="useLogoutTokenForAccess_userinfo_filter"
-		accessTokenSupported="true"
 	>
 	</oidcLogin>
 				
@@ -453,7 +447,6 @@
 	</oidcLogin>
 	<oidcLogin
 		id="checkDupBcl_client2"
-		scope="profile email openid"
 		clientId="checkDupBcl_client2"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="HS256"
@@ -469,7 +462,6 @@
 
 	<oidcLogin
 		id="bcl_http_confClient_httpsRequired_true"
-		scope="profile email openid"
 		clientId="bcl_http_confClient_httpsRequired_true"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="RS256"
@@ -486,7 +478,6 @@
 
 	<oidcLogin
 		id="bcl_http_publicClient_httpsRequired_true_withSecret"
-		scope="profile email openid"
 		clientId="bcl_http_publicClient_httpsRequired_true_withSecret"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="RS256"
@@ -505,7 +496,6 @@
 	<!--
 	<oidcLogin
 		id="bcl_http_publicClient_withoutSecret"
-		scope="profile email openid"
 		clientId="bcl_http_publicClient_withoutSecret"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="RS256"
@@ -523,7 +513,6 @@
 
 	<oidcLogin
 		id="bcl_http_confClient_httpsRequired_false"
-		scope="profile email openid"
 		clientId="bcl_http_confClient_httpsRequired_false"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="RS256"
@@ -540,7 +529,6 @@
 
 	<oidcLogin
 		id="bcl_http_publicClient_httpsRequired_false_withSecret"
-		scope="profile email openid"
 		clientId="bcl_http_publicClient_httpsRequired_false_withSecret"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="RS256"
@@ -558,7 +546,6 @@
 		
 	<oidcLogin
 		id="idTokenCacheEnabledFalseClient-1"
-		scope="profile email openid"
 		clientId="idTokenCacheEnabledFalseClient-1"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="HS256"
@@ -574,7 +561,6 @@
 
 	<oidcLogin
 		id="idTokenCacheEnabledFalseClient-2"
-		scope="profile email openid"
 		clientId="idTokenCacheEnabledFalseClient-2"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="HS256"
@@ -590,7 +576,6 @@
 
 	<oidcLogin
 		id="idTokenCacheEnabledFalseClient-3"
-		scope="profile email openid"
 		clientId="idTokenCacheEnabledFalseClient-3"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="HS256"
@@ -606,7 +591,6 @@
 		
 	<oidcLogin
 		id="accessTokenCacheEnabledFalseClient-1"
-		scope="profile email openid"
 		clientId="accessTokenCacheEnabledFalseClient-1"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="HS256"
@@ -622,7 +606,6 @@
 
 	<oidcLogin
 		id="accessTokenCacheEnabledFalseClient-2"
-		scope="profile email openid"
 		clientId="accessTokenCacheEnabledFalseClient-2"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="HS256"
@@ -638,7 +621,6 @@
 
 	<oidcLogin
 		id="accessTokenCacheEnabledFalseClient-3"
-		scope="profile email openid"
 		clientId="accessTokenCacheEnabledFalseClient-3"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="HS256"
