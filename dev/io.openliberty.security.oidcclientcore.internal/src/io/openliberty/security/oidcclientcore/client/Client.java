@@ -14,6 +14,12 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 public class Client {
 
+    private final OidcClientConfig oidcClientConfig;
+
+    public Client(OidcClientConfig oidcClientConfig) {
+        this.oidcClientConfig = oidcClientConfig;
+    }
+
     /**
      * From https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowSteps:
      * 1. Client prepares an Authentication Request containing the desired request parameters.

@@ -1,0 +1,48 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+Bundle-Name: Jakarta Security 3.0
+Bundle-SymbolicName: io.openliberty.security.jakartasec.3.0.internal
+Bundle-Description: Jakarta Security 3.0; version=${bVersion}
+
+Export-Package: \
+    io.openliberty.security.jakartasec
+
+Import-Package: \
+    !io.openliberty.security.jakartasec.*,\
+    *
+
+-buildpath: \
+    com.ibm.ws.kernel.boot;version=latest,\
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.logging.core;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.security.javaeesec.1.0,\
+    io.openliberty.jakarta.security.3.0,\
+    io.openliberty.security.oidcclientcore.internal
+
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+    com.ibm.ws.junit.extensions;version=latest,\
+    com.ibm.ws.container.service;version=latest,\
+    com.ibm.ws.kernel.boot;version=latest,\
+    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+    com.ibm.websphere.javaee.el.3.0;version=latest,\
+    com.ibm.ws.org.apache.jasper.el.3.0;version=latest,\
+    io.openliberty.jakarta.security.3.0 
