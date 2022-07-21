@@ -36,14 +36,6 @@ import com.ibm.wsspi.session.ISession;
  */
 public abstract class AbstractSessionData extends AbstractHttpSession implements IBMSessionExt {
 
-    protected static final String SECURITY_PROP_NAME = "com_ibm_ejs_security_httpsession_info";
-
-    protected boolean _hasSecurityInfo = true; // used in
-    // getAttributeNames/getValueNames
-    // we have to assume true and we'll set to false
-    // in getValueNames if the sec prop isn't found
-
-    protected AbstractHttpSessionFacade _httpSessionFacade = returnFacade();
     protected LinkedList lockList;
     protected HashMap locks = null;
     protected String pathInfoForAppSession = null;
@@ -81,8 +73,6 @@ public abstract class AbstractSessionData extends AbstractHttpSession implements
         }
     }
     
-    protected abstract AbstractHttpSessionFacade returnFacade();
-
     /*
      * invalidateAll(boolean)
      * 
@@ -151,7 +141,7 @@ public abstract class AbstractSessionData extends AbstractHttpSession implements
      */
     public Object getAttribute(String pName) {
         crossoverCheck("getAttribute");
-        return getSessionValue(pName, false);
+        return getSessionValue(pName);
     }
 
 
@@ -164,7 +154,7 @@ public abstract class AbstractSessionData extends AbstractHttpSession implements
         if (pName != null && pValue == null)
             removeAttribute(pName);
         else
-            putSessionValue(pName, pValue, false);
+            putSessionValue(pName, pValue);
     }
 
     /*
@@ -186,7 +176,7 @@ public abstract class AbstractSessionData extends AbstractHttpSession implements
     /*
      * putSessionValue - handles special security property
      */
-    protected void putSessionValue(String pName, Object value, boolean securityInfo) {
+    protected void putSessionValue(String pName, Object value) {
         if (pName == null) {
             LoggingUtil.SESSION_LOGGER_CORE.logp(Level.SEVERE, methodClassName, methodNames[PUT_SESSION_VALUE], "SessionData.putValErr1");
             return;
@@ -195,26 +185,11 @@ public abstract class AbstractSessionData extends AbstractHttpSession implements
             LoggingUtil.SESSION_LOGGER_CORE.logp(Level.SEVERE, methodClassName, methodNames[PUT_SESSION_VALUE], "SessionData.putValErr2", pName);
             return;
         }
-        if (pName.equals(SECURITY_PROP_NAME) && (securityInfo == false)) {
-            if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-                LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[PUT_SESSION_VALUE], "attempt to set security info failed");
-            }
-            return;
-        }
         super.setAttribute(pName, value);
 
     }
 
-    /*
-     * getSessionValue - handles special security property
-     */
-    protected Object getSessionValue(String pName, boolean securityInfo) {
-        if (pName.equals(SECURITY_PROP_NAME) && (securityInfo == false)) {
-            if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-                LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[GET_SESSION_VALUE], "attempt to retrieve security info failed");
-            }
-            return null;
-        }
+    protected Object getSessionValue(String pName) {
         return super.getAttribute(pName);
     }
 
@@ -222,12 +197,6 @@ public abstract class AbstractSessionData extends AbstractHttpSession implements
      * removeSessionValue - handles special security property
      */
     protected void removeSessionValue(String pName) {
-        if (pName.equals(SECURITY_PROP_NAME)) { // make sure app doesn't try to remove this
-            if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-                LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[REMOVE_SESSION_VALUE], "attempt to remove security info failed");
-            }
-            return;
-        }
         super.removeAttribute(pName);
     }
 

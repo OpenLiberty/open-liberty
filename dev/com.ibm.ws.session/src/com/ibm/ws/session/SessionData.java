@@ -18,7 +18,6 @@ import javax.servlet.ServletContext;
 
 import com.ibm.ws.session.http.HttpSessionImpl;
 import com.ibm.ws.session.utils.LoggingUtil;
-import com.ibm.ws.util.ArrayEnumeration;
 import com.ibm.wsspi.session.ISession;
 
 /**
@@ -45,44 +44,21 @@ public class SessionData extends HttpSessionImpl {
      * @see javax.servlet.http.HttpSession#getValue(java.lang.String)
      */
     public Object getValue(String pName) {
-        return getSessionValue(pName, false);
+        return getSessionValue(pName);
     }
     
-    /* 
-     * Updated for Servlet 6.0 
-     *  - Keep here to support getValueNames(); looping if move into AbstractSessionData
-     * 
-     * @see javax.servlet.http.HttpSession#getAttributeNames()
-     */
-    public Enumeration getAttributeNames() {
-        Enumeration attrNameEnum;
-        if (!_hasSecurityInfo) {
-            attrNameEnum = super.getAttributeNames();
-        } else {
-            String[] attrNames = getValueNames();
-            attrNameEnum = new ArrayEnumeration(attrNames);
-        }
-        return attrNameEnum;
-    }
-  
     /*
      * @see javax.servlet.http.HttpSession#getValueNames()
      */
     public String[] getValueNames() {
 
-        Enumeration enumeration = super.getAttributeNames();
-        Vector valueNames = new Vector();
+        Enumeration<String> enumeration = super.getAttributeNames();
+        Vector<String> valueNames = new Vector<>();
         String name = null;
-        boolean securityPropFound = false;
         while (enumeration.hasMoreElements()) {
             name = (String) enumeration.nextElement();
-            if (!name.equals(SECURITY_PROP_NAME)) {
-                valueNames.add(name);
-            } else {
-                securityPropFound = true;
-            }
+            valueNames.add(name);
         }
-        _hasSecurityInfo = securityPropFound;
         String[] names = new String[valueNames.size()];
         return (String[]) valueNames.toArray(names);
     }
@@ -92,7 +68,7 @@ public class SessionData extends HttpSessionImpl {
      * java.lang.Object)
      */
     public void putValue(String pName, Object pValue) {
-        putSessionValue(pName, pValue, false);
+        putSessionValue(pName, pValue);
     }
 
     /*

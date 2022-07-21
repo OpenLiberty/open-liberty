@@ -10,17 +10,15 @@
  *******************************************************************************/
 package io.openliberty.session.impl.http;
 
-import jakarta.servlet.ServletContext;
 import java.util.logging.Level;
 
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.session.AbstractHttpSessionFacade;
 import com.ibm.ws.session.AbstractSessionData;
 import com.ibm.ws.session.SessionContext;
 import com.ibm.ws.session.utils.LoggingUtil;
 import com.ibm.wsspi.session.ISession;
 
-import io.openliberty.session.impl.HttpSessionFacade60;
+import jakarta.servlet.ServletContext;
 
 /**
  * This class provides the adapted version of the ISession.
@@ -39,15 +37,6 @@ public class HttpSessionImpl60 extends AbstractSessionData {
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " Constructor");
         }
-    }
-
-    @Override
-    protected AbstractHttpSessionFacade returnFacade() {
-        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
-            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " returnFacade HttpSessionFacade60");
-        }
-
-        return new HttpSessionFacade60(this);
     }
 
     /**

@@ -15,14 +15,13 @@ import javax.servlet.sip.SipApplicationSession;
 
 import com.ibm.ws.session.HttpSessionFacade;
 import com.ibm.ws.session.SessionData;
-import com.ibm.ws.session.AbstractSessionData;
 import com.ibm.wsspi.sip.converge.ConvergedHttpSessionImpl;
 
 public class WsHttpSessionFacade extends HttpSessionFacade implements ConvergedHttpSession {
 
     private static final long serialVersionUID = 3108339284895967670L;
 
-    public WsHttpSessionFacade(AbstractSessionData data) {
+    public WsHttpSessionFacade(SessionData data) {
         super(data);
     }
 

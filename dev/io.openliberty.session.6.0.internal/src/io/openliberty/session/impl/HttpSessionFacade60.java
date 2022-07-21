@@ -11,15 +11,14 @@
 package io.openliberty.session.impl;
 
 import com.ibm.ws.session.AbstractHttpSessionFacade;
-import com.ibm.ws.session.AbstractSessionData;
+
+import io.openliberty.session.impl.http.HttpSessionImpl60;
 
 public class HttpSessionFacade60 extends AbstractHttpSessionFacade {
 
-    //  protected transient SessionData60 _session = null;
     private static final long serialVersionUID = 3108339284895967670L;
 
-    public HttpSessionFacade60(AbstractSessionData data) {
+    public HttpSessionFacade60(HttpSessionImpl60 data) {
         super(data);
     }
-
 }

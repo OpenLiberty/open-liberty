@@ -18,9 +18,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionContext;
 
 import com.ibm.ws.session.utils.LoggingUtil;
-import com.ibm.ws.session.AbstractHttpSessionFacade;
 import com.ibm.ws.session.AbstractSessionData;
-import com.ibm.ws.session.HttpSessionFacade;
 import com.ibm.ws.session.SessionContext;
 import com.ibm.wsspi.session.ISession;
 
@@ -33,6 +31,7 @@ import com.ibm.wsspi.session.ISession;
  * This class now provides specific API up to servlet 5.0.  
  * Common APIs are moved up into the AbstractHttpSession
  */
+@SuppressWarnings("deprecation")
 public class HttpSessionImpl extends AbstractSessionData {
 
     private static final String methodClassName = "HttpSessionImpl";
@@ -83,18 +82,6 @@ public class HttpSessionImpl extends AbstractSessionData {
         }
     }
     
-    /*
-     * Servlet 6 - moved up from SessionData
-     */
-    
-    @Override
-    protected AbstractHttpSessionFacade returnFacade() {
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
-            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " returnFacade HttpSessionFacade");
-        }
-        return new HttpSessionFacade(this);
-    }
-
     // ----------------------------------------
     // Public Methods
     // ----------------------------------------
@@ -131,8 +118,8 @@ public class HttpSessionImpl extends AbstractSessionData {
     public String[] getValueNames() {
         if (!getISession().isValid())
             throw new IllegalStateException(iseMessage + getISession().getId());
-        Enumeration enumeration = this.getAttributeNames();
-        Vector valueNames = new Vector();
+        Enumeration<String> enumeration = this.getAttributeNames();
+        Vector<String> valueNames = new Vector<>();
         String name = null;
         while (enumeration.hasMoreElements()) {
             name = (String) enumeration.nextElement();
