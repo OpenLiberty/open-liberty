@@ -112,6 +112,14 @@ public class FATSuite {
                 ps.setString(2, "maroon");
                 ps.executeUpdate();
 
+                // Create BLOBTABLE for OracleTest.class
+                try {
+                    stmt.execute("DROP TABLE BLOBTABLE");
+                } catch (SQLException x) {
+                    // probably didn't exist
+                }
+                stmt.execute("CREATE TABLE BLOBTABLE (ID NUMBER NOT NULL PRIMARY KEY, MYFILE BLOB)");
+
                 // Close statements
                 ps.close();
                 stmt.close();

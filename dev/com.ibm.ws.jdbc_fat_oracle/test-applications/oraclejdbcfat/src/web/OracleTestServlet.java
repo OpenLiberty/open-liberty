@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -389,6 +391,38 @@ public class OracleTestServlet extends FATServlet {
             }
         } finally {
             tx.commit();
+        }
+    }
+
+    @Test
+    public void testBlobCreation() throws Exception {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("/data/myDataFile.txt");) {
+
+            //First try to use setBlob
+            try (Connection con1 = ds.getConnection();
+                            PreparedStatement ps = con1.prepareStatement("INSERT INTO BLOBTABLE VALUES (?, ?)");) {
+
+                byte[] byteData = new byte[inputStream.available()];
+                inputStream.read(byteData);
+
+                Blob blob = con1.createBlob();
+                blob.setBytes(1, byteData);
+
+                ps.setInt(1, 1);
+                ps.setBlob(2, blob);
+                ps.executeUpdate();
+
+                blob.free();
+            }
+
+            //Next try to use setBinaryStream
+            try (Connection con1 = ds.getConnection();
+                            PreparedStatement ps = con1.prepareStatement("INSERT INTO BLOBTABLE VALUES (?, ?)");) {
+
+                ps.setInt(1, 2);
+                ps.setBinaryStream(2, inputStream);
+                ps.executeUpdate();
+            }
         }
     }
 }
