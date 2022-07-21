@@ -194,22 +194,44 @@
 	</oauthProvider>
 	
 	<openidConnectProvider
-		id="OidcConfigSample_http"
+		id="OidcConfigSample_http_httpsRequired_true"
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keyStoreRef="key_allSigAlg"
 		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
 		allowPublicClients="true"
-		oauthProviderRef="OAuthConfigSample_http" />
+		oauthProviderRef="OAuthConfigSample_http_httpsRequired_true" />
 
 	<oauthProvider
-		id="OAuthConfigSample_http"
+		id="OAuthConfigSample_http_httpsRequired_true"
 		tokenFormat="${oidcTokenFormat}"
 		autoAuthorize="true"
 	>
 		<customStore storeId="mongoDbStore" />
-		<autoAuthorizeClient>bcl_http_confClient</autoAuthorizeClient>
-		<autoAuthorizeClient>bcl_http_publicClient</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_http_confClient_httpsRequired_true</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_http_publicClient_httpsRequired_true_withSecret</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_http_publicClient_httpsRequired_true_withoutSecret</autoAuthorizeClient>
+		
+	</oauthProvider>
+		
+	<openidConnectProvider
+		id="OidcConfigSample_http_httpsRequired_false"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keyStoreRef="key_allSigAlg"
+		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
+		allowPublicClients="true"
+		oauthProviderRef="OAuthConfigSample_http_httpsRequired_false" />
+
+	<oauthProvider
+		id="OAuthConfigSample_http_httpsRequired_false"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_http_confClient_httpsRequired_false</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_http_publicClient_httpsRequired_false_withSecret</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_http_publicClient_httpsRequired_false_withoutSecret</autoAuthorizeClient>
 		
 	</oauthProvider>
 		

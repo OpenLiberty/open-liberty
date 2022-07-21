@@ -172,16 +172,40 @@
 			urlPattern="/simple/checkDupBcl_client2" />
 	</authFilter>
 
-	<authFilter id="bcl_httpConfClient_filter">
+	<authFilter id="bcl_httpConfClient_httpsRequired_true_filter">
 		<requestUrl
 			matchType="contains" 
-			urlPattern="/simple/bcl_http_confClient" />
+			urlPattern="/simple/bcl_http_confClient_httpsRequired_true" />
 	</authFilter>
 
-	<authFilter id="bcl_httpPublicClient_filter">
+	<authFilter id="bcl_httpPublicClient_httpsRequired_true_withSecret_filter">
 		<requestUrl
 			matchType="contains" 
-			urlPattern="/simple/bcl_http_publicClient" />
+			urlPattern="/simple/bcl_http_publicClient_httpsRequired_true_withSecret" />
+	</authFilter>
+
+	<authFilter id="bcl_httpPublicClient_httpsRequired_true_withoutSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_publicClient_httpsRequired_true_withoutSecret" />
+	</authFilter>
+
+	<authFilter id="bcl_httpConfClient_httpsRequired_false_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_confClient_httpsRequired_false" />
+	</authFilter>
+
+	<authFilter id="bcl_httpPublicClient_httpsRequired_false_withSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_publicClient_httpsRequired_false_withSecret" />
+	</authFilter>
+
+	<authFilter id="bcl_httpPublicClient_httpsRequired_false_withoutSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_publicClient_httpsRequired_false_withoutSecret" />
 	</authFilter>
 
 	<authFilter id="idTokenCacheEnabledFalseClient-1_filter">

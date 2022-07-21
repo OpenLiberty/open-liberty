@@ -2705,7 +2705,11 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
         List<endpointSettings> parms = eSettings.addEndpointSettings(null, "refresh_token", originalRefreshToken);
         parms = eSettings.addEndpointSettings(parms, "client_id", settings.getClientID());
-        parms = eSettings.addEndpointSettings(parms, "client_secret", settings.getClientSecret());
+        if (settings.getClientSecret() != null) {
+            parms = eSettings.addEndpointSettings(parms, "client_secret", settings.getClientSecret());
+        } else {
+            parms = eSettings.addEndpointSettings(parms, "client_secret", "null");
+        }
         parms = eSettings.addEndpointSettings(parms, "token_endpoint", settings.getTokenEndpt());
         parms = eSettings.addEndpointSettings(parms, "scope", settings.getScope());
         // parms = eSettings.addEndpointSettings(parms, "grant_type",

@@ -31,6 +31,7 @@ import com.ibm.ws.security.backchannelLogout.fat.utils.AfterLogoutStates;
 import com.ibm.ws.security.backchannelLogout.fat.utils.BackChannelLogout_RegisterClients;
 import com.ibm.ws.security.backchannelLogout.fat.utils.Constants;
 import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfHttpLogout;
+import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfSocialClient;
 import com.ibm.ws.security.backchannelLogout.fat.utils.TokenKeeper;
 import com.ibm.ws.security.fat.common.Utils;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
@@ -45,11 +46,11 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings.StoreType;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServerWrapper;
 
@@ -74,9 +75,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
-
-    //    @ClassRule
-    //    public static RepeatTests repeat = createRepeats();
 
     private static String finalAppWithPostRedirect = null;
     private static String finalAppWithoutPostRedirect = null;
@@ -110,18 +108,25 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // note:  using the method addRepeat below instead of adding test repeats in line to simplify hacking up the tests locally to ony run one or 2 variations (all the calls are the same - dont' have to worry about using "with" vs "andWith")
         RepeatTests rTests = null;
         if (callingProject.equals(Constants.OIDC)) {
-            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
-            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
-            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
-            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
-            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
-        } else
-
-        {
-            if (callingProject.equals("SOCIAL")) {
-                //        rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.END_SESSION));
-                //        rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
-                //        rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
+            if (TestModeFilter.shouldRun(TestMode.FULL)) {
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
+            } else {
+                // LITE mode only run one instance
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
+            }
+        } else {
+            if (callingProject.equals(Constants.SOCIAL)) {
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.END_SESSION));
+                // LITE mode only run one instance
+                if (TestModeFilter.shouldRun(TestMode.FULL)) {
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.LOGOUT_ENDPOINT));
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
+                }
             } else {
                 // saml runtime isn't implemented yet - the tests can get an access_token, but bcl function is not called, so we won't hit our bcl test apps, or clear the proper cookies, ...
                 //        rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
@@ -182,14 +187,9 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         String thisMethod = "makeRandomSettingSelections";
         String[] propagationTokenTypes = rsTools.chooseTokenSettings(Constants.OIDC_OP);
         tokenType = propagationTokenTypes[0];
-        //        // TODO - remove hard coded token selection
-        //        tokenType = Constants.ACCESS_TOKEN_KEY;
-        //        tokenType = Constants.JWT_TOKEN;
 
+        // Randomly enable/disable securityIntegration for this class instance to give more coverage
         httpSessionEnabled = Utils.getRandomSelection("true", "false");
-
-        // TODO - take out override and really randomly set securityIntegration true/false
-        httpSessionEnabled = "true"; // TODO false causes tests that omit the id_token_hint to fail - investigating
 
         printRandom(thisMethod);
         Log.info(thisClass, "makeRandomSettingSelections", "inited tokenType to: " + tokenType);
@@ -213,14 +213,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         List<String> serverApps = new ArrayList<String>() {
             {
                 add(Constants.OAUTHCLIENT_APP); // need this app to get the refresh forms
-                //                add(Constants.simpleLogoutApp);
             }
         };
-
-        //        // For tests using httpsessionlogout, we need an intermediate app to perform the logout (including making calls to individual bcl endpoints on the RPs)
-        //        if (!currentRepeatAction.contains(Constants.HTTP_SESSION) && currentRepeatAction.contains(Constants.LOGOUT_ENDPOINT)) {
-        //            serverApps.add(Constants.simpleLogoutApp);
-        //        }
 
         if (currentRepeatAction.contains(Constants.SAML)) {
             Log.info(thisClass, "setUp", "pickAnIDP: " + pickAnIDP);
@@ -257,7 +251,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             // openidconnect client
             vars.put("bclRoot", "oidcclient/backchannel_logout");
         }
-        //        vars.put("securityIntEnabled", httpSessionEnabled);
 
         updateServerSettings(testOPServer, vars);
 
@@ -295,15 +288,15 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             //            client2CookieName = "testRP2Cookie";
             //            updateClientCookieNameAndPort(clientServer2, "clientCookieName", client2CookieName);
             testSettings.setFlowType(Constants.RP_FLOW);
+            SkipIfSocialClient.socialClient = false;
         } else {
             clientServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.social", adjustServerConfig("social_server_basicTests.xml"), Constants.OIDC_RP, clientApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
             vars = updateClientCookieNameAndPort(clientServer, "clientCookieName", Constants.clientCookieName);
             // TODO - add second client
             testSettings.setFlowType(SocialConstants.SOCIAL);
-
+            clientServer.addIgnoredServerException(MessageConstants.CWWKG0058E_CONFIG_MISSING_REQUIRED_ATTRIBUTE); // the social client isn't happy with the public client not having a secret
+            SkipIfSocialClient.socialClient = true;
         }
-
-        //        vars.put("securityIntEnabled", httpSessionEnabled);  // doesn't dynamically update
 
         updateServerSettings(clientServer, vars);
 
@@ -705,6 +698,35 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         return expectations;
     }
 
+    /**
+     * Most of the tests use a localstore - this method checks for msg CWWKS2300E for a specific client - the message will be
+     * logged during server startup.
+     * We have to reset the mark to the top of the log and look for <client>*CWWKS2300E.
+     *
+     * @param client
+     *            the client that msg CWWKS2300E should reference
+     * @throws Exception
+     */
+    public void testForInvalidPublicClientUsingHttpAtStartup(String client) throws Exception {
+        // make sure that there is an error message for this client from startup
+        testOPServer.resetLogMarks();
+        try {
+            Log.info(thisClass, "startProviderBasedOnRepeat", "Searching for " + client + ".*" + MessageConstants.CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT + " in the trace.log file");
+            String searchMsg = testOPServer.getServer().waitForStringInLog(client + ".*" + MessageConstants.CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT, testOPServer.getServer().getMatchingLogFile(Constants.TRACE_LOG));
+            if (searchMsg == null) {
+                fail("Did not find message " + MessageConstants.CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT + " in the OP Trace log");
+            } else {
+                Log.info(thisClass, "startProviderBasedOnRepeat", "Found: " + searchMsg);
+            }
+        } catch (Exception e) {
+            Log.info(thisClass, "startProviderBasedOnRepeat", e.toString());
+            fail("Failed trying to detect " + MessageConstants.CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT + " in the OP Trace");
+        } finally {
+            testOPServer.setMarkToEndOfLogs();
+        }
+
+    }
+
     /********************************************** Tests **********************************************/
 
     /**
@@ -741,12 +763,136 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
-    public void BasicBCLTests_httpBackchannelLogoutUri_confidentialClient() throws Exception {
+    public void BasicBCLTests_httpBackchannelLogoutUri_confidentialClient_httpsRequired_true() throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
 
-        TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_http", "bcl_http_confClient", false);
+        TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_http_httpsRequired_true", "bcl_http_confClient_httpsRequired_true", false);
+
+        Object response = accessProtectedApp(webClient, updatedTestSettings);
+
+        TokenKeeper tokens = new TokenKeeper(webClient, response, updatedTestSettings.getFlowType());
+
+        // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
+        invokeLogout(webClient, updatedTestSettings, initLogoutExpectations(finalAppWithoutPostRedirect), response);
+
+        // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+        AfterLogoutStates states = new AfterLogoutStates(Constants.usesValidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
+
+        // Make sure that all cookies and tokens have been cleaned up
+        validateLogoutResult(webClient, updatedTestSettings, tokens, states);
+    }
+
+    /**
+     * Test that we can't use an http back channel uri with a public client - we should receive an exception when the bcl request
+     * is made. The end_session/logout should return success, but errors should be logged in the server logs
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @AllowedFFDC({ "org.apache.http.NoHttpResponseException", "java.util.concurrent.ExecutionException", "com.ibm.oauth.core.api.error.OidcServerException" })
+    @Test
+    public void BasicBCLTests_httpBackchannelLogoutUri_publicClient_httpsRequired_true_withSecret() throws Exception {
+
+        String client = "bcl_http_publicClient_httpsRequired_true_withSecret";
+
+        if (currentRepeatAction.contains(Constants.MONGODB)) {
+            // when testing using a db store, we fail to register the client when it is public and the bck is http, so, we can't test the behavior, but, we can check for the registration failure
+            List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.BAD_REQUEST_STATUS);
+            // note: using 2 string_contains checks instead of a string_matches in case the order in the reponse changes.
+            expectations = vData.addExpectation(expectations, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find an error stating that http can not be used with a public client.", null, MessageConstants.CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT);
+            expectations = vData.addExpectation(expectations, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find an error stating that http can not be used with a public client.", null, Constants.invalidClientMetadata);
+            regClients.registerClient("OidcConfigSample_http_httpsRequired_true", client, clientServer.getHttpString() + "/oidcclient/backchannel_logout/" + client, null, null, expectations);
+
+        } else {
+
+            testForInvalidPublicClientUsingHttpAtStartup(client);
+
+            // when testing using a localstore, we get a warning message during server start, but, we can attempt to use the client
+            WebClient webClient = getAndSaveWebClient(true);
+
+            TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_http_httpsRequired_true", client, false);
+
+            Object response = accessProtectedApp(webClient, updatedTestSettings);
+
+            TokenKeeper tokens = new TokenKeeper(webClient, response, updatedTestSettings.getFlowType());
+
+            // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
+            invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
+
+            // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+            AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
+            //states.setIsRefreshTokenValid(true);
+
+            // Make sure that all cookies and tokens have been cleaned up
+            validateLogoutResult(webClient, updatedTestSettings, tokens, states);
+
+        }
+    }
+
+    /**
+     * Test that we can't use an http back channel uri with a public client - we should receive an exception when the bcl request
+     * is made. The end_session/logout should return success, but errors should be logged in the server logs
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfSocialClient.class)
+    @AllowedFFDC({ "org.apache.http.NoHttpResponseException", "java.util.concurrent.ExecutionException", "com.ibm.oauth.core.api.error.OidcServerException" })
+    @Test
+    public void BasicBCLTests_httpBackchannelLogoutUri_publicClient_httpsRequired_true_withoutSecret() throws Exception {
+
+        String client = "bcl_http_publicClient_httpsRequired_true_withoutSecret";
+
+        if (currentRepeatAction.contains(Constants.MONGODB)) {
+            // when testing using a db store, we fail to register the client when it is public and the bck is http, so, we can't test the behavior, but, we can check for the registration failure
+            List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.BAD_REQUEST_STATUS);
+            // note: using 2 string_contains checks instead of a string_matches in case the order in the reponse changes.
+            expectations = vData.addExpectation(expectations, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find an error stating that http can not be used with a public client.", null, MessageConstants.CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT);
+            expectations = vData.addExpectation(expectations, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find an error stating that http can not be used with a public client.", null, Constants.invalidClientMetadata);
+            regClients.registerClient("OidcConfigSample_http_httpsRequired_true", client, clientServer.getHttpString() + "/oidcclient/backchannel_logout/" + client, null, null, expectations);
+
+        } else {
+
+            testForInvalidPublicClientUsingHttpAtStartup(client);
+
+            // when testing using a localstore, we get a warning message during server start, but, we can attempt to use the client
+            WebClient webClient = getAndSaveWebClient(true);
+
+            TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_http_httpsRequired_true", client, false);
+            updatedTestSettings.setClientSecret(null);
+
+            Object response = accessProtectedApp(webClient, updatedTestSettings);
+
+            TokenKeeper tokens = new TokenKeeper(webClient, response, updatedTestSettings.getFlowType());
+
+            // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
+            invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
+
+            // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+            AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
+            //states.setIsRefreshTokenValid(true);
+
+            // Make sure that all cookies and tokens have been cleaned up
+            validateLogoutResult(webClient, updatedTestSettings, tokens, states);
+
+        }
+    }
+
+    /**
+     * Test that we can use an http back channel logout uri with a confidential client - this test should behave the same as the
+     * bcl main path test
+     *
+     * @throws Exception
+     */
+    @Test
+    public void BasicBCLTests_httpBackchannelLogoutUri_confidentialClient_httpsRequired_false() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient(true);
+
+        TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_http_httpsRequired_false", "bcl_http_confClient_httpsRequired_false", false);
 
         Object response = accessProtectedApp(webClient, updatedTestSettings);
 
@@ -769,8 +915,10 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @AllowedFFDC({ "org.apache.http.NoHttpResponseException", "java.util.concurrent.ExecutionException", "com.ibm.oauth.core.api.error.OidcServerException" })
-    //@Test
-    public void BasicBCLTests_httpBackchannelLogoutUri_publicClient() throws Exception {
+    @Test
+    public void BasicBCLTests_httpBackchannelLogoutUri_publicClient_httpsRequired_false_withSecret() throws Exception {
+
+        String client = "bcl_http_publicClient_httpsRequired_false_withSecret";
 
         if (currentRepeatAction.contains(Constants.MONGODB)) {
             // when testing using a db store, we fail to register the client when it is public and the bck is http, so, we can't test the behavior, but, we can check for the registration failure
@@ -778,24 +926,74 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             // note: using 2 string_contains checks instead of a string_matches in case the order in the reponse changes.
             expectations = vData.addExpectation(expectations, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find an error stating that http can not be used with a public client.", null, MessageConstants.CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT);
             expectations = vData.addExpectation(expectations, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find an error stating that http can not be used with a public client.", null, Constants.invalidClientMetadata);
-            regClients.registerClient("OidcConfigSample_http", "bcl_http_publicClient", clientServer.getHttpString() + "/oidcclient/backchannel_logout/bcl_http_publicClient", null, null, expectations);
+            regClients.registerClient("OidcConfigSample_http_httpsRequired_false", client, clientServer.getHttpString() + "/oidcclient/backchannel_logout/" + client, null, null, expectations);
 
         } else {
+
+            testForInvalidPublicClientUsingHttpAtStartup(client);
+
             // when testing using a localstore, we get a warning message during server start, but, we can attempt to use the client
             WebClient webClient = getAndSaveWebClient(true);
 
-            TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_http", "bcl_http_publicClient", false);
+            TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_http_httpsRequired_false", client, false);
 
             Object response = accessProtectedApp(webClient, updatedTestSettings);
 
             TokenKeeper tokens = new TokenKeeper(webClient, response, updatedTestSettings.getFlowType());
 
-            testOPServer.addIgnoredServerException(MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED);
             // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
-            invokeLogout(webClient, updatedTestSettings, initLogoutExpectations(finalAppWithoutPostRedirect), response);
+            invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
 
             // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
-            AfterLogoutStates states = new AfterLogoutStates(Constants.usesValidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
+            AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
+            //states.setIsRefreshTokenValid(true);
+
+            // Make sure that all cookies and tokens have been cleaned up
+            validateLogoutResult(webClient, updatedTestSettings, tokens, states);
+
+        }
+    }
+
+    /**
+     * Test that we can't use an http back channel uri with a public client - we should receive an exception when the bcl request
+     * is made. The end_session/logout should return success, but errors should be logged in the server logs
+     *
+     * @throws Exception
+     */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfSocialClient.class)
+    @AllowedFFDC({ "org.apache.http.NoHttpResponseException", "java.util.concurrent.ExecutionException", "com.ibm.oauth.core.api.error.OidcServerException" })
+    @Test
+    public void BasicBCLTests_httpBackchannelLogoutUri_publicClient_httpsRequired_false_withoutSecret() throws Exception {
+
+        String client = "bcl_http_publicClient_httpsRequired_false_withoutSecret";
+
+        if (currentRepeatAction.contains(Constants.MONGODB)) {
+            // when testing using a db store, we fail to register the client when it is public and the bck is http, so, we can't test the behavior, but, we can check for the registration failure
+            List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.BAD_REQUEST_STATUS);
+            // note: using 2 string_contains checks instead of a string_matches in case the order in the reponse changes.
+            expectations = vData.addExpectation(expectations, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find an error stating that http can not be used with a public client.", null, MessageConstants.CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT);
+            expectations = vData.addExpectation(expectations, Constants.INVOKE_REGISTRATION_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find an error stating that http can not be used with a public client.", null, Constants.invalidClientMetadata);
+            regClients.registerClient("OidcConfigSample_http_httpsRequired_false", client, clientServer.getHttpString() + "/oidcclient/backchannel_logout/" + client, null, null, expectations);
+
+        } else {
+
+            testForInvalidPublicClientUsingHttpAtStartup(client);
+
+            // when testing using a localstore, we get a warning message during server start, but, we can attempt to use the client
+            WebClient webClient = getAndSaveWebClient(true);
+
+            TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_http_httpsRequired_false", client, false);
+            updatedTestSettings.setClientSecret(null);
+
+            Object response = accessProtectedApp(webClient, updatedTestSettings);
+
+            TokenKeeper tokens = new TokenKeeper(webClient, response, updatedTestSettings.getFlowType());
+
+            // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
+            invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
+
+            // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+            AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
             //states.setIsRefreshTokenValid(true);
 
             // Make sure that all cookies and tokens have been cleaned up
@@ -812,6 +1010,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicBCLTests_confirmBCLUriCalledForEachLogin_withIdTokenHint() throws Exception {
 
@@ -857,6 +1056,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicBCLTests_confirmBCLUriCalledForEachLogin_withoutIdTokenHint() throws Exception {
 
@@ -1030,6 +1230,12 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Test that bcl endpoints are not invoked even when the id_token is passed on the logout - the id_tokens are not known since
+     * they're not cached
+     *
+     * @throws Exception
+     */
     @Test
     public void BasicBCLTests_idTokenCacheEnabled_false_withIdTokenHint() throws Exception {
 
@@ -1059,6 +1265,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Test that bcl endpoints are not invoked - the id_tokens are not known since they're not cached
+     *
+     * @throws Exception
+     */
     @Test
     public void BasicBCLTests_idTokenCacheEnabled_false_withoutIdTokenHint() throws Exception {
 
@@ -1089,6 +1300,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Test that bcl endpoints are invoked - not caching the access_token should make no difference
+     *
+     * @throws Exception
+     */
     @Test
     public void BasicBCLTests_accessTokenCacheEnabled_false_withIdTokenHint() throws Exception {
 
@@ -1123,6 +1339,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         validateCorrectBCLUrisCalled(clientServer, updatedTestSettings3, keeper3.getSessionId());
     }
 
+    /**
+     * Test that bcl endpoints are invoked - caching the access_token should make no difference
+     *
+     * @throws Exception
+     */
     @Test
     public void BasicBCLTests_accessTokenCacheEnabled_false_withoutIdTokenHint() throws Exception {
 
@@ -1260,6 +1481,14 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Configure an invalid back channel url - show that we'll perform all of the other cleanup that would be done when bcl is
+     * enabled - the failure that occurs when the invalid url is invoked will not result in a bad status code being returned to
+     * the caller.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicBCLTests_invalidBackchannelLogoutUri() throws Exception {
 
@@ -1280,12 +1509,20 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // Make sure that we do NOT need to log in to gain access to the app after we've only logged out on the OP (still have client cookie)
         // test uses a bcl uri that just sleeps
         // Test has a test app configured for the backchannelLogoutUri - so just he normal end_session steps will be performed - set expected states accordingly
-        AfterLogoutStates states = new AfterLogoutStates(Constants.usesFakeBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
+        AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
 
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
 
     }
 
+    /**
+     * Configure a client without a backchannelLogoutUri - show that with the id_token included in the request that the
+     * access_token and refresh_token are still cleaned up when end_session is used, but that the refresh_token is NOT cleaned up
+     * when logout is used
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicBCLTests_omittedBackchannelLogoutUri_withIdTokenHint() throws Exception {
 
@@ -1305,7 +1542,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // Make sure that we do NOT need to log in to gain access to the app after we've only logged out on the OP (still have client cookie)
         // test uses a bcl uri that just sleeps
         // Test has a test app configured for the backchannelLogoutUri - so just he normal end_session steps will be performed - set expected states accordingly
-        AfterLogoutStates states = new AfterLogoutStates(Constants.usesFakeBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
+        AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
         states.setOPAllCookiesRemoved(); // after logout, this test expects all OP cookies to be removed
 
         if (logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT) || (logoutMethodTested.equals(Constants.HTTP_SESSION) && sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT))) {
@@ -1315,6 +1552,13 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Configure a client without a backchannelLogoutUri - show that without the id_token included in the request that only
+     * the access_token is cleaned up - the refresh_token will still be valid
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @AllowedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidTokenException" })
     @Test
     public void BasicBCLTests_omittedBackchannelLogoutUri_withoutIdTokenHint() throws Exception {
@@ -1342,7 +1586,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // Make sure that we do NOT need to log in to gain access to the app after we've only logged out on the OP (still have client cookie)
         // test uses a bcl uri that just sleeps
         // Test has a test app configured for the backchannelLogoutUri - so just he normal end_session steps will be performed - set expected states accordingly
-        AfterLogoutStates states = new AfterLogoutStates(Constants.usesFakeBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
+        AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
         states.setOPAllCookiesRemoved(); // after logout, this test expects all OP cookies to be removed
 
         states.setIsRefreshTokenValid(true);
@@ -1351,6 +1595,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Show that the caller will receive a 200 status code when the bcl uri returns a 400
+     *
+     * @throws Exception
+     */
     @Test
     public void BasicBCLTests_backchannelLogoutUri_returns400() throws Exception {
 
@@ -1373,12 +1622,17 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // Test has a test app configured for the backchannelLogoutUri - so just he normal end_session steps will be performed - set expected states accordingly
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesFakeBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
         states.setOPAllCookiesRemoved(); // after logout, this test expects all OP cookies to be removed
-        //        states.setClientCookieRemovalBasedOnLogoutType();
+
         states.setAllTokensCleanedUp(); // after logout, this test expects access and refresh tokens to be invalid
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
 
     }
 
+    /**
+     * Show that the caller will receive a 200 status code when the bcl uri returns a 501
+     *
+     * @throws Exception
+     */
     @Test
     public void BasicBCLTests_backchannelLogoutUri_returns501() throws Exception {
 
@@ -1407,6 +1661,12 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Show that the caller will receive a 200 status code when the bcl uris invoked for multiple clients return non-200 status
+     * codes
+     *
+     * @throws Exception
+     */
     @Test
     public void BasicBCLTests_backchannelLogoutUri_returnsMultipleDifferentFailures() throws Exception {
 
@@ -1449,6 +1709,12 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Show that the caller will receive a 200 status code when the bcl uris invoked for multiple clients return 400 status
+     * codes
+     *
+     * @throws Exception
+     */
     @Test
     public void BasicBCLTests_backchannelLogoutUri_returnsMultipleSameFailures() throws Exception {
 
@@ -1478,6 +1744,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
+    /**
+     * Make sure that back channel logout is not used for clients that do not have it configured
+     *
+     * @throws Exception
+     */
     @Test
     public void BasicBCLTests_noBCLInvocationForClientWithoutBCLConfigured() throws Exception {
 
@@ -1512,7 +1783,16 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         validateCorrectBCLUrisCalled(clientServer, updatedTestSettings3, keeper3.getSessionId());
     }
 
-    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException" })
+    /**
+     * Try to use a logout_token instead of an access_token for access to a protected app - make sure that access is denied and we
+     * have to log in again.
+     * NOTE: Social client oidcLogin does not allow token propagation, so, we'll skip this test in that case.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfSocialClient.class)
+    @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException" }) // expected in cases where the test runs, have to use AllowedFFDC for instances that we skip the test
     @Test
     public void BasicBCLTests_tryToAccessProtectedAppUsingLogoutTokenAsAccessToken() throws Exception {
 
@@ -1572,3 +1852,4 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      *
      */
 }
+

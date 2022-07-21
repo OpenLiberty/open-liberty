@@ -84,6 +84,7 @@ public class BackChannelLogout_RegisterClients {
     private JSONObject setRegistrationBody(String clientId, String bcl, String postRedirect, String[] redirectOverride) {
 
         msgUtils.printMethodName("setRegistrationBody");
+        String defaultSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger";
 
         JSONObject prefix = new JSONObject();
 
@@ -96,8 +97,19 @@ public class BackChannelLogout_RegisterClients {
         // if public client, set the public flag and don't configure a secret
         if (clientId.toLowerCase().contains("public")) {
             prefix.put("publicClient", true);
+            if (clientId.toLowerCase().contains("withSecret")) {
+                prefix.put("client_secret", defaultSecret);
+            }
+            // otherwise omit the secret
         } else {
-            prefix.put("client_secret", "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger");
+            prefix.put("client_secret", defaultSecret);
+        }
+
+        // default config value for httpsRequired is true, so, only need to set the value when false
+        if (clientId.toLowerCase().contains("httpsRequired")) {
+            if (clientId.toLowerCase().contains("httpsRequired_false")) {
+                prefix.put("httpsRequired", "false");
+            }
         }
 
         // need to update this to allow a client without a bcl
@@ -256,9 +268,10 @@ public class BackChannelLogout_RegisterClients {
         registerClient("OidcConfigSample_checkDuplicateBCLCalls", "checkDupBcl_client1", clientHttpsRoot + "/backchannelLogoutTestApp/backChannelLogoutLogMsg/checkDupBcl_client1", null);
         registerClient("OidcConfigSample_checkDuplicateBCLCalls", "checkDupBcl_client2", clientHttpsRoot + "/backchannelLogoutTestApp/backChannelLogoutLogMsg/checkDupBcl_client2", null);
 
-        registerClient("OidcConfigSample_http", "bcl_http_confClient", clientHttpRoot + "/oidcclient/backchannel_logout/bcl_http_confClient", null);
+        registerClient("OidcConfigSample_http_httpsRequired_true", "bcl_http_confClient_httpsRequired_true", clientHttpRoot + "/oidcclient/backchannel_logout/bcl_http_confClient_httpsRequired_true", null);
+        registerClient("OidcConfigSample_http_httpsRequired_false", "bcl_http_confClient_httpsRequired_false", clientHttpRoot + "/oidcclient/backchannel_logout/bcl_http_confClient_httpsRequired_false", null);
         // We can't register a "bad" client - the public client test will test for the proper behavior in this case
-        //            registerClient("OidcConfigSample_http", "bcl_http_publicClient", clientHttpRoot + "/oidcclient/backchannel_logout/bcl_http_publicClient", null);
+        //            registerClient("OidcConfigSample_http_httpsRequired_true", "bcl_http_publicClient", clientHttpRoot + "/oidcclient/backchannel_logout/bcl_http_publicClient_httpsRequired_true_withSecret", null);
 
         registerClient("OidcConfigSample_idTokenCacheEnabledFalse", "idTokenCacheEnabledFalseClient-1", clientHttpsRoot + "/backchannelLogoutTestApp/backChannelLogoutLogMsg/idTokenCacheEnabledFalseClient-1", null);
         registerClient("OidcConfigSample_idTokenCacheEnabledFalse", "idTokenCacheEnabledFalseClient-2", clientHttpsRoot + "/backchannelLogoutTestApp/backChannelLogoutLogMsg/idTokenCacheEnabledFalseClient-2", null);
