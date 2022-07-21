@@ -15,6 +15,7 @@ import java.util.Set;
 import io.openliberty.data.Data;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
+import io.openliberty.data.Update;
 import io.openliberty.data.Where;
 
 /**
@@ -27,12 +28,15 @@ public interface ProductRepo {
     @Query("DELETE FROM Product o WHERE o.id IN ?1")
     int discontinueProducts(Set<String> ids);
 
+    Product[] findByVersionGreaterThanEqualOrderById(long minVersion);
+
     @Query("SELECT o FROM Product o WHERE o.id=:productId")
     Product findItem(@Param("productId") String id);
 
-    @Where("o.name LIKE CONCAT(:prefix, '%')")
-    Product[] getBrandNameItems(@Param("prefix") String brandName);
-
     @Query("UPDATE Product o SET o.price = o.price - (?2 * o.price) WHERE o.name LIKE CONCAT('%', ?1, '%')")
     long putOnSale(String nameContains, float discount);
+
+    @Update("o.price=?3")
+    @Where("o.id=?1 AND o.version=?2")
+    boolean setPrice(String id, long currentVersion, float newPrice);
 }
