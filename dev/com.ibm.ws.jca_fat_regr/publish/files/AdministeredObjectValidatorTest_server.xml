@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+        <feature>servlet-3.1</feature>
+	    <feature>jca-1.7</feature>
+	    <feature>jndi-1.0</feature>
+	    <feature>jms-2.0</feature>
+    </featureManager>
+   
+    <include location="../fatTestPorts.xml"/>
+    <variable value="FAIL" name="onError"/>
+ 
+ 	 <resourceAdapter id="TRA_jca16_ann_AdministeredObjectValidator_MultipleInterfacesEmptyArray"  location="${server.config.dir}/connectors/TRA_jca16_ann_AdministeredObjectValidator_MultipleInterfacesEmptyArray.rar"/>
+ 	 <resourceAdapter id="TRA_jca16_ann_AdministeredObjectValidator_MultipleInterfacesNoElement"  location="${server.config.dir}/connectors/TRA_jca16_ann_AdministeredObjectValidator_MultipleInterfacesNoElement.rar"/>
+ 	 <resourceAdapter id="TRA_jca16_ann_AdministeredObjectValidator_SuperClassTwoInterfaces"  location="${server.config.dir}/connectors/TRA_jca16_ann_AdministeredObjectValidator_SuperClassTwoInterfaces.rar"/>
+    
+    
+</server>

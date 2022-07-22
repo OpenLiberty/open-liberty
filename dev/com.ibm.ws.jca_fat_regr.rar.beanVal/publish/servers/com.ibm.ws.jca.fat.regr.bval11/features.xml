@@ -1,0 +1,15 @@
+<server description="Bean Valiation 1.1 features.">
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jca-1.7</feature>
+        <feature>jndi-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>jms-2.0</feature>
+        <feature>jmsMdb-3.2</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>jcaInboundSecurity-1.0</feature>
+        <feature>beanvalidation-1.1</feature>
+        <feature>cdi-1.2</feature>
+    </featureManager>
+</server>

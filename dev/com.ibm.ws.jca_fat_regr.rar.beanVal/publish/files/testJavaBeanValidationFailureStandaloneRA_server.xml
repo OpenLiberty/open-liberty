@@ -1,0 +1,10 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+    <resourceAdapter id="adapter_jca16_jbv_ResourceAdapterValidation_Failure"  location="${server.config.dir}/connectors/adapter_jca16_jbv_ResourceAdapterValidation_Failure.rar" autoStart="true">
+    </resourceAdapter>
+    
+    <include optional="true" location="../fatTestPorts.xml"/>
+    
+    <javaPermission actions="read" className="java.util.PropertyPermission" name="*"/>
+    <variable name="onError" value="FAIL"/>
+</server>

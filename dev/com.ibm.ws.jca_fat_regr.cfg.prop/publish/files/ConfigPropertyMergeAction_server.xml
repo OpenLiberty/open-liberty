@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+<!--         <feature>servlet-3.0</feature> -->
+		<feature>servlet-3.1</feature>
+<!--         <feature>jca-1.6</feature> -->
+		<feature>jca-1.7</feature>
+        <feature>jndi-1.0</feature>
+<!--         <feature>jms-1.1</feature> -->
+		<feature>jms-2.0</feature>
+<!--         <feature>jmsMdb-3.1</feature> -->
+        <feature>jmsMdb-3.2</feature>
+<!--         <feature>ejbLite-3.1</feature> -->
+        <feature>ejbLite-3.2</feature>
+    </featureManager>
+    <resourceAdapter location="${server.config.dir}/connectors/TRA_jca16_ann_ConfigPropertyMergeAction_NoElement.rar"/>
+    <resourceAdapter location="${server.config.dir}/connectors/TRA_jca16_ann_ConfigPropertyMergeAction_NoElementAnn.rar"/>
+    
+    <include optional="true" location="../fatTestPorts.xml"/>
+    <variable value="FAIL" name="onError"/>
+    
+</server>

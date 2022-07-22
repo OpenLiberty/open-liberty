@@ -1,0 +1,10 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+
+    <application type="ear" location="sampleapp_jca16_jbv_embeddedravalconfig_ejbvalconfig.ear" id="sampleapp_jca16_jbv_embeddedravalconfig_ejbvalconfig"/>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+	<javaPermission actions="read" className="java.util.PropertyPermission" name="*"/>
+    <variable name="onError" value="FAIL"/>
+</server>

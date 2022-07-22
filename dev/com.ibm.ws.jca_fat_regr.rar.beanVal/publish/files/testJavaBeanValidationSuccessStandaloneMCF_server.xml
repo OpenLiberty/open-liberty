@@ -1,0 +1,19 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+    <application type="ear" location="Jbvapp.ear" id="Jbvapp">
+    </application>
+    <resourceAdapter
+        id="adapter_jca16_jbv_ManagedConnectionFactoryValidation_Success"
+        location="${server.config.dir}/connectors/adapter_jca16_jbv_ManagedConnectionFactoryValidation_Success.rar">
+        <classloader commonLibraryRef="DerbyLib"/>
+    </resourceAdapter>
+    <connectionFactory id="TestMCFSuccess" jndiName="jms/TestMCFSuccess">
+        <properties.adapter_jca16_jbv_ManagedConnectionFactoryValidation_Success />
+    </connectionFactory>
+    <library id="DerbyLib">
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+    
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <include location="../fatTestPorts.xml" />
+</server>
