@@ -186,7 +186,7 @@ public class CacheServiceImpl implements CacheService {
                      */
                     try {
                         CacheManager cacheManager = cacheManagerService.getCacheManager();
-                        
+
                         /*
                          * The JCache specification says that any cache created outside of the JCache
                          * APIs should have no types for the key or value. Some providers seem to respect
@@ -296,9 +296,6 @@ public class CacheServiceImpl implements CacheService {
 
         /*
          * If there is a java.io.NotSerializableException, let's only print out a message once for each class.
-         *
-         * As we add more functionality, we probably should also suppress internal Liberty classes that we
-         * know are not Serializable.
          */
         if (cause instanceof NotSerializableException) {
             String className = cause.getMessage(); // The message is the class name.
@@ -307,6 +304,12 @@ public class CacheServiceImpl implements CacheService {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
                     Tr.error(tc, msg);
                 }
+            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                /*
+                 * If debug is enabled, emit the message even if we emitted the error message for
+                 * this class already.
+                 */
+                Tr.debug(tc, msg);
             }
         }
         throw new SerializationException(msg, cause);

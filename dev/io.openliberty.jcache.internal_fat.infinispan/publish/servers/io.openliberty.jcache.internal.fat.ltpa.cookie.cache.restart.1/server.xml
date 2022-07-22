@@ -48,7 +48,7 @@
 
 		<cachingProvider
 			providerClass="org.infinispan.jcache.remote.JCachingProvider"
-			libraryRef="InfinispanLib,CustomLoginLib" />
+			jCacheLibraryRef="InfinispanLib" commonLibraryRef="CustomLoginLib" />
 
 	</cacheManager>
 

@@ -12,7 +12,6 @@
 
 	<featureManager>
 		<feature>timedexit-1.0</feature>
-		<feature>distributedSecurityCache-1.0</feature> <!-- TODO Remove when GA -->
 	</featureManager>
 	
 </server>

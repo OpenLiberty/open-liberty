@@ -22,30 +22,47 @@ import com.ibm.websphere.simplicity.config.ConfigElement;
  * </ul>
  */
 public class CachingProvider extends ConfigElement {
-    private String libraryRef;
+    private String commonLibraryRef;
+    private String jCacheLibraryRef;
     private String providerClass;
 
     public CachingProvider() {}
 
-    public CachingProvider(String id, String libraryRef, String providerClass) {
-        this.libraryRef = libraryRef;
+    public CachingProvider(String id, String jCacheLibraryRef, String commonLibraryRef, String providerClass) {
+        this.commonLibraryRef = commonLibraryRef;
+        this.jCacheLibraryRef = jCacheLibraryRef;
         this.providerClass = providerClass;
         setId(id);
     }
 
     /**
-     * @param libraryRef the libraryRef to set
+     * @param commonLibraryRef the commonLibraryRef to set
      */
-    @XmlAttribute(name = "libraryRef")
-    public void setLibraryRef(String libraryRef) {
-        this.libraryRef = libraryRef;
+    @XmlAttribute(name = "commonLibraryRef")
+    public void setCommonLibraryRef(String commonLibraryRef) {
+        this.commonLibraryRef = commonLibraryRef;
     }
 
     /**
-     * @return the libraryRef
+     * @return the commonLibraryRef
      */
-    public String getLibraryRef() {
-        return libraryRef;
+    public String getCommonLibraryRef() {
+        return commonLibraryRef;
+    }
+
+    /**
+     * @param jCacheLibraryRef the jCacheLibraryRef to set
+     */
+    @XmlAttribute(name = "jCacheLibraryRef")
+    public void setJCacheLibraryRef(String jCacheLibraryRef) {
+        this.jCacheLibraryRef = jCacheLibraryRef;
+    }
+
+    /**
+     * @return the jCacheLibraryRef
+     */
+    public String getJCacheLibraryRef() {
+        return jCacheLibraryRef;
     }
 
     /**
