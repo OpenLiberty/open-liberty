@@ -60,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     static final String CFG_ALLOW_HASHTABLE_LOGIN_WITH_ID_ONLY = "allowHashtableLoginWithIdOnly";
     static final String CFG_CACHE_ENABLED = "cacheEnabled";
-    static final String CFG_USE_SECURITYNAME_IF_DIFFERENT_FROM_LOGINNAME = "useSecNameIfDifferentFromLoginNameInCUR";
+    static final String CFG_USE_SECURITYNAME_IF_DIFFERENT_FROM_LOGINNAME_IN_CUR = "useSecNameIfDifferentFromLoginNameInCUR";
     static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";
     static final String KEY_USER_REGISTRY_SERVICE = "userRegistryService";
     static final String KEY_DELEGATION_PROVIDER = "delegationProvider";
@@ -166,9 +166,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             cacheEnabled = state;
         }
 
-        Boolean useSecurityNameIfDiffFromLoginModuleState = (Boolean) props.get(CFG_USE_SECURITYNAME_IF_DIFFERENT_FROM_LOGINNAME);
-        if (useSecurityNameIfDiffFromLoginModuleState != null) {
-            useSecNameIfDifferentFromLoginNameInCUR = useSecurityNameIfDiffFromLoginModuleState;
+        Boolean useSecNameIfDifferentFromLoginName = (Boolean) props.get(CFG_USE_SECURITYNAME_IF_DIFFERENT_FROM_LOGINNAME_IN_CUR);
+        if (useSecNameIfDifferentFromLoginName != null) {
+            useSecNameIfDifferentFromLoginNameInCUR = useSecNameIfDifferentFromLoginName;
         }
     }
 

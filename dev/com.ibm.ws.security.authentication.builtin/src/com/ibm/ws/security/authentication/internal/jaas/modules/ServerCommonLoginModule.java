@@ -112,7 +112,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
 
     }
 
-        /**
+    /**
      * Common method called by all login modules that use the UserRegistry (UsernameAndPasswordLoginModule,
      * CertificateLoginModule, HashtableLoginModule and TokenLoginModule). Determines the securityName to use
      * for the login.
@@ -125,10 +125,11 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      * @throws EntryNotFoundException
      * @throws RegistryException
      */
-    protected String getSecurityName(String loginName, String urAuthenticatedId, boolean isUseSecurityNameIfDifferentFromLoginNameProp) throws EntryNotFoundException, RegistryException {
+    protected String getSecurityName(String loginName, String urAuthenticatedId,
+                                     boolean useSecurityNameIfDifferentFromLoginNameInCUR) throws EntryNotFoundException, RegistryException {
 
         UserRegistry ur = getUserRegistry();
-        if (ur != null && (ur.getType() != "CUSTOM" || (ur.getType() == "CUSTOM" && isUseSecurityNameIfDifferentFromLoginNameProp)))  { // Preserve the existing behavior for CUSTOM user registries
+        if (ur != null && (ur.getType() != "CUSTOM" || (ur.getType() == "CUSTOM" && useSecurityNameIfDifferentFromLoginNameInCUR))) { // Preserve the existing behavior for CUSTOM user registries
             String securityName = ur.getUserSecurityName(urAuthenticatedId);
             if (securityName != null) {
                 return securityName;
