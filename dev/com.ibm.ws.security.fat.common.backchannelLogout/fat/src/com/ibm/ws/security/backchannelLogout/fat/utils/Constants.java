@@ -20,6 +20,7 @@ public class Constants extends com.ibm.ws.security.oauth_oidc.fat.commonTest.Con
     public static final String sharedHSSharedKey = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger";
     public static final String logoutEventKey = "http://schemas.openid.net/event/backchannel-logout";
     public static final String defaultLogoutPage = "/oidc/end_session_logout.html";
+    public static final String samlLogoutPage = "/idp/profile/SAML2/POST/SLO";
     public static final String postLogoutJSessionIdApp = "/backchannelLogoutTestApp/backChannelLogoutJSessionId";
     public static final String simpleLogoutApp = "simpleLogoutTestApp";
     public static final String backchannelLogoutApp = "backchannelLogoutTestApp";
