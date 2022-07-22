@@ -169,15 +169,15 @@ public class TestServer extends ExternalResource {
     }
 
     public void setServerHttpPort(Integer port) {
-        this.serverHttpPort = port;
+        serverHttpPort = port;
     }
 
     public void setServerHttpsPort(Integer port) {
-        this.serverHttpsPort = port;
+        serverHttpsPort = port;
     }
 
     public Integer getServerHttpPort() {
-        return this.serverHttpPort;
+        return serverHttpPort;
     }
 
     public Integer getServerHttpsPort() {
@@ -198,11 +198,11 @@ public class TestServer extends ExternalResource {
     }
 
     public void setIgnoredServerExceptions(String[] ignoredExceptions) {
-        this.ignoredServerExceptions = ignoredExceptions.clone();
+        ignoredServerExceptions = ignoredExceptions.clone();
     }
 
     public String[] getIgnoredServerExceptions() {
-        return this.ignoredServerExceptions;
+        return ignoredServerExceptions;
     }
 
     public void setServerHostname(String hostname) {
@@ -336,6 +336,22 @@ public class TestServer extends ExternalResource {
         }
     }
 
+    /**
+     * Reset the log mark - used when the whole log needs to be scanned (not just what was logged since the last mark)
+     */
+    public void resetLogMarks() {
+        String methodName = "resetLogMarks";
+        if (!server.isStarted()) {
+            return;
+        }
+        try {
+            Log.info(thisClass, methodName, "re-setting marks for: " + server.getServerName());
+            server.resetLogMarks();// resets map to a new map - equating to resetting marks to the start of all files.
+        } catch (Exception e) {
+            Log.error(thisClass, methodName, e, "Failure re-setting the log mark.");
+        }
+    }
+
     public int getRetryTimeoutCount() {
         return retryTimeoutCount;
     }
@@ -351,9 +367,12 @@ public class TestServer extends ExternalResource {
     /**
      * Starts the current server using the server configuration file provided.
      *
-     * @param checkApps - List of apps to be validated as ready upon server start
-     * @param waitForMessages - List of regular expressions to be waited for upon server start
-     * @param reportViaJunit - boolean indicating whether failures should be reported via JUnit or if we should just
+     * @param checkApps
+     *            - List of apps to be validated as ready upon server start
+     * @param waitForMessages
+     *            - List of regular expressions to be waited for upon server start
+     * @param reportViaJunit
+     *            - boolean indicating whether failures should be reported via JUnit or if we should just
      *            log a message
      */
     public void startServer(String serverXml, String testName, List<String> checkApps, List<String> waitForMessages, boolean reportViaJunit, int[] requiredPorts) throws Exception {
@@ -547,7 +566,8 @@ public class TestServer extends ExternalResource {
      * JUnit.
      *
      * @param newServerXml
-     * @param testName - Test name that should be included in messages
+     * @param testName
+     *            - Test name that should be included in messages
      * @throws exception
      */
     public void reconfigServer(String newServerXml, String testName) throws Exception {
@@ -559,9 +579,12 @@ public class TestServer extends ExternalResource {
      * indicating that the server configuration was updated.
      *
      * @param newServerXml
-     * @param testName - Test name that should be included in messages
-     * @param waitForMessages - List of regular expressions to be waited for upon server update/restart
-     * @param reportViaJunit - boolean indicating whether failures should be reported via JUnit or if we should just
+     * @param testName
+     *            - Test name that should be included in messages
+     * @param waitForMessages
+     *            - List of regular expressions to be waited for upon server update/restart
+     * @param reportViaJunit
+     *            - boolean indicating whether failures should be reported via JUnit or if we should just
      *            log a message
      * @throws exception
      */
@@ -574,10 +597,14 @@ public class TestServer extends ExternalResource {
      * indicating that the server configuration was updated.
      *
      * @param newServerXml
-     * @param testName - Test name that should be included in messages
-     * @param waitForMessages - List of regular expressions to be waited for upon server update/restart
-     * @param restartServer - boolean indicating whether the server should be restarted
-     * @param reportViaJunit - boolean indicating whether failures should be reported via JUnit or if we should just
+     * @param testName
+     *            - Test name that should be included in messages
+     * @param waitForMessages
+     *            - List of regular expressions to be waited for upon server update/restart
+     * @param restartServer
+     *            - boolean indicating whether the server should be restarted
+     * @param reportViaJunit
+     *            - boolean indicating whether failures should be reported via JUnit or if we should just
      *            log a message
      * @throws exception
      */
@@ -662,10 +689,14 @@ public class TestServer extends ExternalResource {
      * Restarts the current server using the server configuration file provided.
      *
      * @param serverXml
-     * @param testName - Test name that should be included in messages
-     * @param checkApps - List of apps to be validated as ready upon server start
-     * @param waitForMessages - List of regular expressions to be waited for upon server start
-     * @param reportViaJunit - boolean indicating whether failures should be reported via JUnit or if we should just
+     * @param testName
+     *            - Test name that should be included in messages
+     * @param checkApps
+     *            - List of apps to be validated as ready upon server start
+     * @param waitForMessages
+     *            - List of regular expressions to be waited for upon server start
+     * @param reportViaJunit
+     *            - boolean indicating whether failures should be reported via JUnit or if we should just
      *            log a message
      * @throws exception
      */
@@ -766,10 +797,13 @@ public class TestServer extends ExternalResource {
      * Waits for the server to complete a configuration update. Also waits for all messages included in startMessages
      * to appear in the log.
      *
-     * @param testName - Test name that should be included in messages
-     * @param reportViaJunit - boolean indicating whether failures should be reported via JUnit or if we should just
+     * @param testName
+     *            - Test name that should be included in messages
+     * @param reportViaJunit
+     *            - boolean indicating whether failures should be reported via JUnit or if we should just
      *            log a message
-     * @param waitForMessages - List of regular expressions to be waited for
+     * @param waitForMessages
+     *            - List of regular expressions to be waited for
      * @throws Exception
      */
     public void waitForServer(String testName, List<String> waitForMessages, boolean reportViaJunit) throws Exception {
@@ -977,7 +1011,8 @@ public class TestServer extends ExternalResource {
      * Copy the specified server config file to server.xml. Make a copy of the server config in the testServers sub-directory for
      * debug use later.
      *
-     * @param copyFromFile - File to copy into the server's root directory as server.xml
+     * @param copyFromFile
+     *            - File to copy into the server's root directory as server.xml
      */
     public void copyNewServerConfig(String copyFromFile, String testName) throws Exception {
         String thisMethod = "copyNewServerConfig";
@@ -1056,8 +1091,10 @@ public class TestServer extends ExternalResource {
      * Builds and returns the absolute path to the specified file within the configs/ directory under the given
      * server's root directory.
      *
-     * @param theServer - The server instance containing the specified file
-     * @param fileName - Name of the file within the configs/ directory to build the path for
+     * @param theServer
+     *            - The server instance containing the specified file
+     * @param fileName
+     *            - Name of the file within the configs/ directory to build the path for
      * @return The absolute path to the specified file within the server's configs/ directory
      */
     public String buildFullServerConfigPath(LibertyServer theServer, String fileName) {
@@ -1093,8 +1130,10 @@ public class TestServer extends ExternalResource {
      * Searches and waits for message strings in the default log and reports success/failure of the search either via a
      * message and possibly JUnit reporting.
      *
-     * @param waitForMessages - List of regular expression strings to wait for in the default log
-     * @param reportViaJunit - boolean indicating whether failures should be reported via JUnit or if we should just
+     * @param waitForMessages
+     *            - List of regular expression strings to wait for in the default log
+     * @param reportViaJunit
+     *            - boolean indicating whether failures should be reported via JUnit or if we should just
      *            log a message
      */
     public void validateStartMessages(List<String> waitForMessages, boolean reportViaJunit) throws Exception {
@@ -1106,10 +1145,13 @@ public class TestServer extends ExternalResource {
      * message and possibly JUnit reporting. If expectedResult is false, the passed messages are expected NOT to be
      * found.
      *
-     * @param waitForMessages - List of regular expression strings to wait for in the default log
-     * @param reportViaJunit - boolean indicating whether failures should be reported via JUnit or if we should just
+     * @param waitForMessages
+     *            - List of regular expression strings to wait for in the default log
+     * @param reportViaJunit
+     *            - boolean indicating whether failures should be reported via JUnit or if we should just
      *            log a message
-     * @param expectedResult - If true, the messages specified are expected to be found. Otherwise, the passed messages
+     * @param expectedResult
+     *            - If true, the messages specified are expected to be found. Otherwise, the passed messages
      *            are expected NOT to be found.
      * @throws Exception
      */
@@ -1154,7 +1196,8 @@ public class TestServer extends ExternalResource {
     /**
      * Searches for a message string in the specified server log.
      *
-     * @param expected - a validationMsg type to search (contains the log to search and the string to search for)
+     * @param expected
+     *            - a validationMsg type to search (contains the log to search and the string to search for)
      * @throws Exception
      */
     public void validateWithServerLog(String checkType, String where, String errorMsg, String valueToCheck) throws Exception {
@@ -1196,9 +1239,12 @@ public class TestServer extends ExternalResource {
     /**
      * Searches for and returns the line containing message string in the specified server log.
      *
-     * @param valueToCheck - identified unique string to determine the line containing the string
-     * @param where - which log to search for
-     * @exception - throws error if no string is found
+     * @param valueToCheck
+     *            - identified unique string to determine the line containing the string
+     * @param where
+     *            - which log to search for
+     * @exception -
+     *                throws error if no string is found
      *
      * @return - returns the string of the line found within the specified server log
      *
@@ -1223,7 +1269,8 @@ public class TestServer extends ExternalResource {
     /**
      * Searches for passwords in the server logs.
      *
-     * @param expected - a validationMsg type to search (contains the log to search and the string to search for)
+     * @param expected
+     *            - a validationMsg type to search (contains the log to search and the string to search for)
      * @throws Exception
      */
     public int searchForPasswordsInLogs(String where) throws Exception {
@@ -1334,7 +1381,6 @@ public class TestServer extends ExternalResource {
         }
     }
 
-
     public void unInstallCallbackHandler(String callbackHandler, String feature) throws Exception {
         if (feature != null) {
             Log.info(thisClass, "unInstallCallbackHandler", "Un-Installing callback handler feature: " + feature);
@@ -1345,7 +1391,6 @@ public class TestServer extends ExternalResource {
             server.uninstallUserBundle(callbackHandler);
         }
     }
-
 
     /** TODO *************************************** Bootstrap utils *****************************************/
 

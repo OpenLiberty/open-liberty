@@ -44,5 +44,8 @@ public class Constants extends com.ibm.ws.security.oauth_oidc.fat.commonTest.Con
 
     public static final boolean usesValidBCLEndpoint = true;
     public static final boolean usesFakeBCLEndpoint = false;
+    public static final boolean usesInvalidBCLEndpoint = false;
+
+    public static final String SOCIAL = "SOCIAL";
 
 }

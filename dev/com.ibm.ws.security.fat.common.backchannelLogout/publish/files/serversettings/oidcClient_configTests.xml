@@ -514,9 +514,9 @@
 	</openidConnectClient>
 
 	<openidConnectClient
-		id="bcl_http_confClient"
+		id="bcl_http_confClient_httpsRequired_true"
 		scope="openid profile"
-		clientId="bcl_http_confClient"
+		clientId="bcl_http_confClient_httpsRequired_true"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
@@ -525,16 +525,17 @@
 		jwtAccessTokenRemoteValidation="require"
 		httpsRequired="false"
 		redirectToRPHostAndPort="https://localhost:${client2Port}"
-		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http/authorize"
-		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http/token"
-		authFilterRef="bcl_httpConfClient_filter"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/token"
+		authFilterRef="bcl_httpConfClient_httpsRequired_true_filter"
 	>
 	</openidConnectClient>
 
 	<openidConnectClient
-		id="bcl_http_publicClient"
+		id="bcl_http_publicClient_httpsRequired_true_withSecret"
 		scope="openid profile"
-		clientId="bcl_http_publicClient"
+		clientId="bcl_http_publicClient_httpsRequired_true_withSecret"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="RS256"
@@ -542,9 +543,79 @@
 		jwtAccessTokenRemoteValidation="require"
 		httpsRequired="false"
 		redirectToRPHostAndPort="https://localhost:${client2Port}"
-		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http/authorize"
-		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http/token"
-		authFilterRef="bcl_httpPublicClient_filter"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/token"
+		authFilterRef="bcl_httpPublicClient_httpsRequired_true_withSecret_filter"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="bcl_http_publicClient_httpsRequired_true_withoutSecret"
+		scope="openid profile"
+		clientId="bcl_http_publicClient_httpsRequired_true_withoutSecret"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		inboundPropagation="supported"
+		jwtAccessTokenRemoteValidation="require"
+		httpsRequired="false"
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/token"
+		authFilterRef="bcl_httpPublicClient_httpsRequired_true_withoutSecret_filter"
+	>
+	</openidConnectClient>
+		
+	<openidConnectClient
+		id="bcl_http_confClient_httpsRequired_false"
+		scope="openid profile"
+		clientId="bcl_http_confClient_httpsRequired_false"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		inboundPropagation="supported"
+		jwtAccessTokenRemoteValidation="require"
+		httpsRequired="false"
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/token"
+		authFilterRef="bcl_httpConfClient_httpsRequired_false_filter"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="bcl_http_publicClient_httpsRequired_false_withSecret"
+		scope="openid profile"
+		clientId="bcl_http_publicClient_httpsRequired_false_withSecret"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		inboundPropagation="supported"
+		jwtAccessTokenRemoteValidation="require"
+		httpsRequired="false"
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/token"
+		authFilterRef="bcl_httpPublicClient_httpsRequired_false_withSecret_filter"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="bcl_http_publicClient_httpsRequired_false_withoutSecret"
+		scope="openid profile"
+		clientId="bcl_http_publicClient_httpsRequired_false_withoutSecret"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		inboundPropagation="supported"
+		jwtAccessTokenRemoteValidation="require"
+		httpsRequired="false"
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/token"
+		authFilterRef="bcl_httpPublicClient_httpsRequired_false_withoutSecret_filter"
 	>
 	</openidConnectClient>
 		
