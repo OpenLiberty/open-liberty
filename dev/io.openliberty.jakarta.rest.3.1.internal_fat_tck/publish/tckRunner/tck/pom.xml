@@ -61,7 +61,6 @@
         <maven-surefire-report-plugin.version>3.0.0-M5</maven-surefire-report-plugin.version>
 
         <!-- Jakarta EE API -->
-        <jakartaee-api.version>9.1.0</jakartaee-api.version>
         <jakarta.ws.rs.version>3.1.0</jakarta.ws.rs.version>
 
         <!-- TODO: update Arquillian BOM -->
@@ -79,7 +78,7 @@
         <liberty.runtime.version>21.0.0.12-beta</liberty.runtime.version>
         <liberty-maven-plugin.version>3.3.4</liberty-maven-plugin.version>
         <arquillian-liberty-jakarta.version>2.0.2</arquillian-liberty-jakarta.version>
-        <jersey.version>3.0.3</jersey.version>
+        <jersey.version>3.0.5</jersey.version>
 
         <!-- By default, skip tests -->
         <skip.unit.tests>true</skip.unit.tests>
@@ -88,9 +87,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>jakarta.platform</groupId>
-                <artifactId>jakarta.jakartaee-api</artifactId>
-                <version>${jakartaee-api.version}</version>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>${jakarta.ws.rs.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -187,13 +186,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>3.0.2</version>
+            <version>4.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -323,12 +322,15 @@
                         <dependency>io.openliberty.jakarta.ws.rs:jakarta-restful-ws-tck</dependency>
                     </dependenciesToScan>
                     <includes>
+                        <!--  Example to run just one test. 
+                        <include>ee/jakarta/tck/ws/rs/spec/contextprovider/JsonbContextProviderIT</include> 
+                        -->                        
                         <include>**/tck/**/*Test</include>
                         <include>**/tck/**/*IT</include>
-                    </includes>
-                    <excludes>
+                     </includes>
+<!--                      <excludes>
                         <exclude>**/tck/**/SeBootstrapIT</exclude>
-                    </excludes>
+                    </excludes>  -->
                 </configuration>
             </plugin>
             <!-- The following commented lines may be useful for running the TCK as integration tests (failsafe) rather than unit tests (surefire). -->
@@ -439,7 +441,7 @@
                 <dependency>
                     <groupId>org.glassfish.jersey.media</groupId>
                     <artifactId>jersey-media-sse</artifactId>
-                    <version>3.0.3</version>
+                    <version>3.0.5</version>
                 </dependency>
             </dependencies>
             <build>
