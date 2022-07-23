@@ -25,10 +25,9 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT())
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly()
-                            .removeFeature("jaxws-2.2").alwaysAddFeature("jaxws-2.3").withID("jaxws-2.3"))
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3"))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("jaxws-2.3")); 
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly())
+                    ;
 }
