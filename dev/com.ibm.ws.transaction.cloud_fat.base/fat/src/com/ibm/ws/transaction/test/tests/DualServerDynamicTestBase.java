@@ -11,7 +11,6 @@
 package com.ibm.ws.transaction.test.tests;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,7 +19,6 @@ import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
 
@@ -85,8 +83,9 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         assertNotNull(server2.getServerName() + " did not perform peer recovery",
                       server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, FATUtils.LOG_SEARCH_TIMEOUT));
 
-        // flush the resource states
-        runTestWithResponse(server2, servletName, "dumpState");
+
+        // flush the resource states - retry a few times if this fails
+        FATUtils.runWithRetries(() -> runTestWithResponse(server2, servletName, "dumpState").toString());
 
         //Stop server2
         FATUtils.stopServers(server2);
@@ -96,15 +95,20 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
         assertNotNull("Recovery incomplete on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0133I"));
 
-        // check resource states
-        runTestWithResponse(server1, servletName, "checkRec" + id);
+        // check resource states - retry a few times if this fails
+        FATUtils.runWithRetries(() -> runTestWithResponse(server1, servletName, "checkRec" + id).toString());
 
         // Check log was cleared
         assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I"));
         assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
     }
 
-    protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
+	private void retry(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
 
     	FATUtils.stopServers(servers);
 
