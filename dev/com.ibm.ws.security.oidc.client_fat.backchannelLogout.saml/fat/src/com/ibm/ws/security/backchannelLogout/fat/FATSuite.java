@@ -11,11 +11,17 @@
 
 package com.ibm.ws.security.backchannelLogout.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
+
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -28,14 +34,14 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
  */
 public class FATSuite {
 
-    //    /*
-    //     * Run EE9 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
-    //     *
-    //     * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
-    //     */
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-    //            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
-    //            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().alwaysAddFeature("servlet-5.0").fullFATOnly());
+    /*
+     * Run EE9 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
+     *
+     * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
+     */
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
+            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
+            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().alwaysAddFeature("servlet-5.0").fullFATOnly());
 
 }
