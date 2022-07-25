@@ -96,7 +96,7 @@ public class SSLLinkConfig {
             }
             // Found the security level.
             ciphers = Constants.adjustSupportedCiphersToSecurityLevel(
-                                                                      sslEngine.getEnabledCipherSuites(), securityLevel);
+                                                                      sslEngine.getSupportedCipherSuites(), securityLevel);
         } else {
             // Found enabled cipher suites. Now we need to put them in the right kind of object.
             if (ciphersObject instanceof String) {
