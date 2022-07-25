@@ -13,7 +13,7 @@ bVersion=1.0
 
 # Eclipselink version info
 eclVersion=4.0.0
-eclFullVersion=${eclVersion}.70bac7a
+eclFullVersion=${eclVersion}.202d992
 eclPackageVersion=4.0.0
 asmFullVersion=9.3.0
 
@@ -57,7 +57,7 @@ Import-Package: \
             javax.imageio;resolution:=optional, \
             javax.imageio.stream;resolution:=optional, \
             jakarta.jms;resolution:=optional, \
-            jakarta.json;resolution:=optional, \
+            jakarta.json, \
             jakarta.json.stream;resolution:=optional, \
             javax.management;resolution:=optional, \
             javax.management.openmbean;resolution:=optional, \

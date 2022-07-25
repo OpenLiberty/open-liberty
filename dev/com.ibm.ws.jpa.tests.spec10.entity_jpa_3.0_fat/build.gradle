@@ -30,9 +30,8 @@ dependencies {
 task addJPAFATTools (type: Copy) {
   mustRunAfter jar
   from configurations.jpaFatTools
-  include "**/com.ibm.ws.jpa_testframework*.jar"
+  include "**/com.ibm.ws.jpa_testframework.jar"
   into new File(autoFvtDir, 'lib')
-  rename 'com.ibm.ws.jpa_testframework-(.*).jar', 'com.ibm.ws.jpa_testframework.jar'
 }
 
 task addHibernate_JPA30(type: Copy) {

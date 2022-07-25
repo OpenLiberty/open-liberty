@@ -72,6 +72,7 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
             final String base64EncodedData = base64Encoder.encodeToString(baos.toByteArray());
 
             final PrintWriter pw = resp.getWriter();
+            System.out.println("AbstractDatabaseManagementServlet: execRequest(): sending " + base64EncodedData.length() + " Base64 characters back to calling client.");
             pw.println(base64EncodedData);
         } else {
             resp.sendError(400);
