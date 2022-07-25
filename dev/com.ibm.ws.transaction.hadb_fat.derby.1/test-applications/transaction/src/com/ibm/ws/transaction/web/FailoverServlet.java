@@ -479,18 +479,34 @@ public class FailoverServlet extends FATServlet {
         return (result.toString());
     }
 
+    /**
+     * This method supports a retry when a connection is required.
+     *
+     * @param dSource
+     * @return
+     * @throws Exception
+     */
     private Connection getConnection() throws Exception {
         Connection conn = null;
-        try {
-            InitialContext context = new InitialContext();
+        int retries = 0;
+        boolean retrievedConn = false;
+        Exception excToThrow = null;
+        while (retries < 2 && !retrievedConn) {
+            try {
+                InitialContext context = new InitialContext();
 
-            DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/tranlogDataSource");
-            System.out.println("FAILOVERSERVLET: getConnection called against resource - " + ds);
-            conn = ds.getConnection();
-        } catch (Exception ex) {
-            System.out.println("FAILOVERSERVLET: getConnection caught exception - " + ex);
-            throw ex;
+                DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/tranlogDataSource");
+                System.out.println("FAILOVERSERVLET: getConnection called against resource - " + ds);
+                conn = ds.getConnection();
+                retrievedConn = true;
+            } catch (Exception ex) {
+                System.out.println("FAILOVERSERVLET: getConnection caught exception - " + ex);
+                excToThrow = ex;
+                retries++;
+            }
         }
+        if (!retrievedConn && excToThrow != null)
+            throw excToThrow;
 
         System.out.println("FAILOVERSERVLET: getConnection returned connection - " + conn);
         return conn;
