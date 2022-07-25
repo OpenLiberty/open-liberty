@@ -287,6 +287,7 @@ public class QueryHandler<T> implements InvocationHandler {
         Select select = method.getAnnotation(Select.class);
         Class<?> type = select == null ? null : select.type();
         String[] cols = select == null ? null : select.value();
+        boolean distinct = select != null && select.distinct();
         if (type == null || Select.AutoDetect.class.equals(type)) {
             Class<?> returnType = method.getReturnType();
             if (!Iterable.class.isAssignableFrom(returnType)) {
@@ -299,18 +300,23 @@ public class QueryHandler<T> implements InvocationHandler {
                     type = returnType;
             }
         }
+
+        q.append("SELECT");
+
+        if (distinct)
+            q.append(" DISTINCT");
+
         if (type == null || Select.AutoDetect.class.equals(type) ||
             inheritance && entityInfo.type.isAssignableFrom(type))
             if (cols == null || cols.length == 0) {
-                q.append("SELECT o FROM ");
+                q.append(" o FROM ");
             } else {
-                q.append("SELECT");
                 for (int i = 0; i < cols.length; i++)
                     q.append(i == 0 ? " o." : ", o.").append(cols[i]);
                 q.append(" FROM ");
             }
         else {
-            q.append("SELECT NEW ").append(type.getName());
+            q.append(" NEW ").append(type.getName());
             boolean first = true;
             if (cols == null || cols.length == 0)
                 for (String name : persistence.getAttributeNames(entityInfo.type, data.provider())) {

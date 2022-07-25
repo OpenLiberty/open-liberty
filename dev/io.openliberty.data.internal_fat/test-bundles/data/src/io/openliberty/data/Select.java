@@ -29,10 +29,21 @@ public @interface Select {
     }
 
     /**
+     * Requests that only unique values of an entity attribute be returned.
+     * When specifying <code>distinct</code> the {@link #value} should be a single entity attribute.
+     * The default value is <code>false</code>.
+     *
+     * @return whether only unique values of an entity attribute should be returned.
+     */
+    boolean distinct() default false;
+
+    /**
      * Specifies a return type for query results.
      * Instances of this type are constructed with the entity attributes
      * selected in the order that is specified by {@link #value}.
      * The default value is the marker class for automatic detection based on the method return type and entity type.
+     *
+     * @return the return type for query results, or {@link AutoDetect}.
      */
     Class<?> type() default AutoDetect.class;
 
@@ -41,6 +52,8 @@ public @interface Select {
      * The order in which the are listed is honored, enabling the attributes to be supplied as
      * constructor arguments per the {@link #type}.
      * When specified as empty (the default), all entity attributes are retrieved.
+     *
+     * @return names of entity attributes to select, or empty list for all.
      */
     String[] value() default {};
 }

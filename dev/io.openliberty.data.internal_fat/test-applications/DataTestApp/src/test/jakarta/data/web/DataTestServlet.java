@@ -375,6 +375,57 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Query for distinct values of an attribute.
+     */
+    @Test
+    public void testDistinctAttribute() {
+        Product prod1 = new Product();
+        prod1.id = "TDA-T-L1";
+        prod1.name = "TestDistinctAttribute T-Shirt Size Large";
+        prod1.price = 7.99f;
+        products.addOrModify(prod1);
+
+        Product prod2 = new Product();
+        prod2.id = "TDA-T-M1";
+        prod1.name = "TestDistinctAttribute T-Shirt Size Medium";
+        prod2.price = 7.89f;
+        products.addOrModify(prod2);
+
+        Product prod3 = new Product();
+        prod3.id = "TDA-T-S1";
+        prod3.name = "TestDistinctAttribute T-Shirt Size Small";
+        prod3.price = 7.79f;
+        products.addOrModify(prod3);
+
+        Product prod4 = new Product();
+        prod4.id = "TDA-T-M2";
+        prod4.name = "TestDistinctAttribute T-Shirt Size Medium";
+        prod4.price = 7.49f;
+        products.addOrModify(prod4);
+
+        Product prod5 = new Product();
+        prod5.id = "TDA-T-XS1";
+        prod5.name = "TestDistinctAttribute T-Shirt Size Extra Small";
+        prod5.price = 7.59f;
+        products.addOrModify(prod5);
+
+        Product prod6 = new Product();
+        prod6.id = "TDA-T-L2";
+        prod6.name = "TestDistinctAttribute T-Shirt Size Large";
+        prod6.price = 7.49f;
+        products.addOrModify(prod6);
+
+        List<String> uniqueProductNames = products.findByNameLike("TestDistinctAttribute");
+
+        // only 4 of the 6 names are unique
+        assertIterableEquals(List.of("TestDistinctAttribute T-Shirt Size Extra Small",
+                                     "TestDistinctAttribute T-Shirt Size Large",
+                                     "TestDistinctAttribute T-Shirt Size Medium",
+                                     "TestDistinctAttribute T-Shirt Size Small"),
+                             uniqueProductNames);
+    }
+
+    /**
      * Add, search, and remove entities with Embeddable fields.
      */
     @Test
