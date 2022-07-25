@@ -204,6 +204,8 @@ public class AcmeConfigVariationsTest {
 			configuration.getFeatureManager().getFeatures().remove("acmeCA-2.0");
 			AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, useAcmeURIs(), DOMAINS_1);
 			AcmeFatUtils.waitAcmeFeatureUninstall(server);
+			
+			AcmeFatUtils.resetMarksInLogs(server); // reset marks in case the cert checker woke up during the server update.
 
 			long timeElapsed = System.currentTimeMillis();
 
