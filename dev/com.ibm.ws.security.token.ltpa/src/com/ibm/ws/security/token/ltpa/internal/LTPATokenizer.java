@@ -209,18 +209,21 @@ public class LTPATokenizer {
     private static final ArrayList<String> convertStringToArrayList(String key, String value) {
         if (value != null && value.length() > 0) {
             ArrayList<String> result = new ArrayList<String>();
-            StringTokenizer st = null;
             if (key.equals("u")) {
-                st = new StringTokenizer(value);
+                String nextString = unescape(value);
+                    if (nextString != null) {
+                        result.add(nextString);
+                    }
             } else {
-                st = new StringTokenizer(value, STRING_ATTRIB_DELIM_PIPE);
-            }
-            while (st.hasMoreTokens()) {
-                String nextString = unescape(st.nextToken());
-                if (nextString != null) {
-                    result.add(nextString);
+                StringTokenizer st = new StringTokenizer(value, STRING_ATTRIB_DELIM_PIPE);
+                while (st.hasMoreTokens()) {
+                    String nextString = unescape(st.nextToken());
+                    if (nextString != null) {
+                        result.add(nextString);
+                    }
                 }
             }
+            
             return result;
         }
         return null;
