@@ -92,7 +92,7 @@
 		<wsdl:port binding="tns:ImageServiceImplServiceSoapBinding"
 			name="ImageServiceImplPort">
 			<soap:address
-				location="http://localhost:8010/webServiceRefFeatures/image"></soap:address>
+				location="https://localhost:8010/webServiceRefFeatures/image"></soap:address>
 		</wsdl:port>
 	</wsdl:service>
 	<wsdl:service name="ImageServiceImplServiceTwo">
@@ -100,7 +100,7 @@
 			binding="tns:ImageServiceImplServiceSoapBindingTwo"
 			name="ImageServiceImplPortTwo">
 			<soap:address
-				location="http://localhost:8010/webServiceRefFeatures/image"></soap:address>
+				location="https://localhost:8010/webServiceRefFeatures/image"></soap:address>
 		</wsdl:port>
 	</wsdl:service>
 	<wsp:Policy wsu:Id="UserNameToken6s">

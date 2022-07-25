@@ -64,8 +64,10 @@ public class LibertyCXFNegativePropertiesTest {
                                       "", "image.wsdl");
 
         server.startServer("LibertyCXFNegativePropertiesTestServer.log");
-//        server.resetLogMarks();
+
         server.waitForStringInLog("CWWKF0011I");
+
+        assertNotNull("SSL service needs to be started for tests, but the HTTPS was never started", server.waitForStringInLog("CWWKO0219I.*ssl"));
     }
 
     @AfterClass
