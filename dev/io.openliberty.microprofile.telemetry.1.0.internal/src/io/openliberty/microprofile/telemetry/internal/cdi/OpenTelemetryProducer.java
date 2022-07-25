@@ -51,13 +51,13 @@ import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
 
 public class OpenTelemetryProducer {
 
-    private static final String instrumentationName = "io.openliberty.microprofile.telemetry";
-    private static final String configExporterProperty = "otel.exporter.";
-    private static final String envExporterProperty = "OTEL_EXPORTER_";
-    private static final String envTraceExporterProperty = "OTEL_TRACES_EXPORTER";
-    private static final String configTraceExporterProperty = "otel.traces.exporter";
-    private static final String envJaegerTimeoutProperty = "JAEGER_TIMEOUT";
-    private static final String configJaegerTimeoutProperty = "jaeger.timeout";
+    private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
+    private static final String CONFIG_EXPORTER_PROPERTY = "otel.exporter.";
+    private static final String ENV_EXPORTER_PROPERTY = "OTEL_EXPORTER_";
+    private static final String ENV_TRACE_EXPORTER_PROPERTY = "OTEL_TRACES_EXPORTER";
+    private static final String CONFIG_TRACE_EXPORTER_PROPERTY = "otel.traces.exporter";
+    private static final String ENV_JAEGER_TIMEOUT_PROPERTY = "JAEGER_TIMEOUT";
+    private static final String CONFIG_JAEGER_TIMEOUT_PROPERTY = "jaeger.timeout";
 
 
     @Inject
@@ -107,18 +107,18 @@ public class OpenTelemetryProducer {
         String timeout = "10000";
 
         //Environment properties take priority
-        if(oTelConfigs.get(envTraceExporterProperty) != null && oTelConfigs.get(envTraceExporterProperty).equals("jaeger") || oTelConfigs.get(configTraceExporterProperty) != null && oTelConfigs.get(configTraceExporterProperty).equals("jaeger")){
-                if(oTelConfigs.get(envExporterProperty + "JAEGER_ENDPOINT")!= null){
-                    endpoint = oTelConfigs.get(envExporterProperty + "JAEGER_ENDPOINT");
+        if(oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY).equals("jaeger") || oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY).equals("jaeger")){
+                if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "JAEGER_ENDPOINT")!= null){
+                    endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "JAEGER_ENDPOINT");
                 }
-                else if(oTelConfigs.get(configExporterProperty + "jaeger.endpoint") != null){
-                    endpoint = oTelConfigs.get(configExporterProperty + "jaeger.endpoint");
+                else if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "jaeger.endpoint") != null){
+                    endpoint = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "jaeger.endpoint");
                 }
-                if(oTelConfigs.get(envExporterProperty + envJaegerTimeoutProperty)!= null){
-                    timeout = oTelConfigs.get(envExporterProperty + envJaegerTimeoutProperty);
+                if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + ENV_JAEGER_TIMEOUT_PROPERTY)!= null){
+                    timeout = oTelConfigs.get(ENV_EXPORTER_PROPERTY + ENV_JAEGER_TIMEOUT_PROPERTY);
                 }
-                else if(oTelConfigs.get(configExporterProperty + configJaegerTimeoutProperty) != null){
-                    timeout = oTelConfigs.get(configExporterProperty + configJaegerTimeoutProperty);
+                else if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + CONFIG_JAEGER_TIMEOUT_PROPERTY) != null){
+                    timeout = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + CONFIG_JAEGER_TIMEOUT_PROPERTY);
                 }
                 return JaegerGrpcSpanExporter.builder()
                                 .setEndpoint(endpoint)
@@ -127,17 +127,17 @@ public class OpenTelemetryProducer {
         }
         else{
             endpoint = "http://localhost:4317";
-            if(oTelConfigs.get(envExporterProperty + "OTLP_ENDPOINT") != null){
-                endpoint = oTelConfigs.get(envExporterProperty + "OTLP_ENDPOINT");
+            if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_ENDPOINT") != null){
+                endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_ENDPOINT");
             }
-            else if(oTelConfigs.get(envExporterProperty + "OTLP_TRACES_ENDPOINT") != null){
-                endpoint = oTelConfigs.get(envExporterProperty + "OTLP_TRACES_ENDPOINT");
+            else if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_TRACES_ENDPOINT") != null){
+                endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_TRACES_ENDPOINT");
             }
-            if(oTelConfigs.get(configExporterProperty + "otlp.endpoint") != null){
-                endpoint = oTelConfigs.get(configExporterProperty + "otlp.endpoint");
+            if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "otlp.endpoint") != null){
+                endpoint = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "otlp.endpoint");
             }
-            else if(oTelConfigs.get(configExporterProperty + "otlp.traces.endpoint") != null){
-                endpoint = oTelConfigs.get(configExporterProperty + "otlp.traces.endpoint");
+            else if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "otlp.traces.endpoint") != null){
+                endpoint = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "otlp.traces.endpoint");
             }
         }
             return OtlpGrpcSpanExporter.builder()
@@ -160,7 +160,7 @@ public class OpenTelemetryProducer {
 
     @Produces
     public Tracer getTracer(OpenTelemetry openTelemetry) {
-        return openTelemetry.getTracer(instrumentationName);
+        return openTelemetry.getTracer(INSTRUMENTATION_NAME);
     }
 
     @Produces
