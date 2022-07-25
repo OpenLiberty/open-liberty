@@ -13,6 +13,7 @@ package org.eclipse.microprofile.graphql.tck;
 import java.util.Map;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,10 +33,15 @@ public class GraphQLTckPackageTest {
     @Server("FATServer")
     public static LibertyServer server;
 
+    @BeforeClass
+    public static void setUp() throws Exception {
+        server.startServer();
+    }
+
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.postStopServerArchive(); // must explicitly collect since arquillian is starting/stopping the server
+        	server.stopServer("CWNEN0047W", "CWNEN0049W", "CWWKZ0014W");
         }
     }
 
