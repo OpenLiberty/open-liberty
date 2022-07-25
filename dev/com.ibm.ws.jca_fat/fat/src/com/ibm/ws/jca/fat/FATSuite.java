@@ -49,7 +49,7 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
                     // need widen option to handle jar file within a jar file.
-                    .andWith(new JakartaEE9Action().withWiden())
+                    .andWith(new JakartaEE9Action().fullFATOnly().withWiden())
                     // need widen option to handle jar file within a jar file.
                     .andWith(new JakartaEE10Action().withWiden());
 
