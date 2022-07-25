@@ -286,8 +286,8 @@ public class HttpUtils {
     String extractResponseAsString(HttpResponse result, String url) throws IOException, AbstractHttpResponseException {
         StatusLine statusLine = result.getStatusLine();
         int iStatusCode = statusLine.getStatusCode();
+        String response = EntityUtils.toString(result.getEntity(), "UTF-8");
         if (iStatusCode == 200) {
-            String response = EntityUtils.toString(result.getEntity(), "UTF-8");
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Response: ", response);
             }
@@ -296,12 +296,11 @@ public class HttpUtils {
             }
             return response;
         } else {
-            String errMsg = statusLine.getReasonPhrase();
             // error in getting the response
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "status:" + iStatusCode + " errorMsg:" + errMsg);
+                Tr.debug(tc, "status:" + iStatusCode + " errorMsg:" + response);
             }
-            throw new HttpResponseNot200Exception(url, iStatusCode, errMsg);
+            throw new HttpResponseNot200Exception(url, iStatusCode, response);
         }
     }
 
