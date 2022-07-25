@@ -47,7 +47,7 @@ public class OpenAPIServlet extends HttpServlet {
             String acceptHeader = "";
             acceptHeader = request.getHeader(Constants.ACCEPT_HEADER);
             String format = "yaml";
-            if (acceptHeader != null && acceptHeader.equals(MediaType.APPLICATION_JSON)) {
+            if (acceptHeader != null && jsonRequested(acceptHeader)) {
                 format = "json";
             }
             String formatParam = request.getParameter("format");
@@ -88,5 +88,14 @@ public class OpenAPIServlet extends HttpServlet {
             response.setStatus(405);
         }
 
+    }
+
+    private boolean jsonRequested(String acceptHeader) {
+        for (String acceptedType : acceptHeader.split(",")) {
+            if (acceptedType.trim().equals(MediaType.APPLICATION_JSON)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

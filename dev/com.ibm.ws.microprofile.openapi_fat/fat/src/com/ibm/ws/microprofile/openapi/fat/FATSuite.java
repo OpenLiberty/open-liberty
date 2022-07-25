@@ -27,6 +27,7 @@ import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestTwo;
 @SuiteClasses({
     AnnotationProcessingTest.class,
     ApplicationProcessorTest.class,
+    ContentTypeTest.class,
     OpenAPIValidationTestOne.class,
     OpenAPIValidationTestTwo.class,
     OpenAPIValidationTestThree.class,
