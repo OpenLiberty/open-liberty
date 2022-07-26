@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ public class oAuth20MongoSetup extends HttpServlet {
     static String OAUTHTOKEN = OAUTHTOKEN_BASE;
     static String OAUTHCONSENT = OAUTHCONSENT_BASE;
 
-    private final static int RETRY_COUNT = 3;
+    private final static int RETRY_COUNT = 5;
 
     // Database keys
     // Do not change these unless the CustomStoreSample is also changing
@@ -263,9 +263,10 @@ public class oAuth20MongoSetup extends HttpServlet {
     private void addEntryMongo(DB ds, String compId, String clientID, String secret, String dispName,
                                String redirectUri, boolean enabled, JSONObject metaData) throws Exception {
 
-        System.out.println(CLASS_NAME + "Creating on OauthClient: " + clientID + " " + compId);
+        System.out.println(CLASS_NAME + " Creating an OauthClient: " + clientID + " " + compId);
+        boolean created = false;
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < RETRY_COUNT; i++) {
             try {
                 DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
                 BasicDBObject d = new BasicDBObject(CLIENTID, clientID);
@@ -280,13 +281,23 @@ public class oAuth20MongoSetup extends HttpServlet {
 
                 col.insert(d);
 
-                System.out.println(CLASS_NAME + "Created on OauthClient: " + clientID + " " + compId);
+                System.out.println(CLASS_NAME + " Successfully created an OauthClient: " + clientID + " " + compId);
+                created = true;
                 break;
             } catch (Throwable e) {
                 System.out.println("oAuth20MongoSetup Exception trying to add " + clientID + ", will try again");
                 e.printStackTrace();
                 Thread.sleep(1000);
+                /*
+                 * We didn't throw an exception here as we don't need every entry for every test. If a user fails to
+                 * be added, but the test doesn't need it, prefer not to tank the test because of intermittent
+                 * network issues.
+                 */
             }
+        }
+
+        if (!created) {
+            System.out.println(CLASS_NAME + " **Failed** to create an OauthClient, may effect later tests: " + clientID + " " + compId);
         }
     }
 
