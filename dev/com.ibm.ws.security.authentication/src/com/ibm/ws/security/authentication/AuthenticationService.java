@@ -97,6 +97,6 @@ public interface AuthenticationService {
      * @return
      *
      */
-    public Boolean isUseSecNameIfDifferentFromLoginNameInCUR();
+    public Boolean isUseDisplayName();
 
 }

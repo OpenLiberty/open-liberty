@@ -126,19 +126,24 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      * @throws RegistryException
      */
     protected String getSecurityName(String loginName, String urAuthenticatedId,
-                                     boolean useSecurityNameIfDifferentFromLoginNameInCUR) throws EntryNotFoundException, RegistryException {
+                                     boolean useDisplayNameProp) throws EntryNotFoundException, RegistryException {
 
         UserRegistry ur = getUserRegistry();
         
-        if (ur != null && (ur.getType() != "CUSTOM" || (ur.getType() == "CUSTOM" && useSecurityNameIfDifferentFromLoginNameInCUR))) { // Preserve the existing behavior for CUSTOM user registries
-            if (useSecurityNameIfDifferentFromLoginNameInCUR){
+            if (ur != null) { // Preserve the existing behavior for CUSTOM user registries
+            if (ur.getType() != "CUSTOM"){
+                String securityName = ur.getUserSecurityName(urAuthenticatedId);
+                if (securityName != null) {
+                    return securityName;
+                }
+            }
+            else 
+            {
+                if (useDisplayNameProp){
                 String uniqueId = ur.getUniqueUserId(urAuthenticatedId);
                 if (uniqueId !=null)
                     return uniqueId;
-            }
-            String securityName = ur.getUserSecurityName(urAuthenticatedId);
-            if (securityName != null) {
-                return securityName;
+                }
             }
         }
 

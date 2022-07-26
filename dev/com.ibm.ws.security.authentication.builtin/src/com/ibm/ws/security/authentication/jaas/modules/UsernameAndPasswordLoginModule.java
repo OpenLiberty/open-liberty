@@ -80,7 +80,7 @@ public class UsernameAndPasswordLoginModule extends ServerCommonLoginModule impl
                     //This method doesn't provide information about the user logging in, only
                     //that there is a SAF registry.
                     SubjectRegistryManager.startSubjectRegistryDetectionOnZOS();
-                    username = getSecurityName(user, urAuthenticatedId, getAuthenticationService().isUseSecNameIfDifferentFromLoginNameInCUR());
+                    username = getSecurityName(user, urAuthenticatedId, getAuthenticationService().isUseDisplayName());
                     setUpTemporarySubject();
                 } finally {
                     SubjectRegistryManager.clearSubjectRegistryDetectionOnZOS();
