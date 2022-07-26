@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,13 +22,14 @@ import org.junit.Test;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import jaxb.web.dataobjects.ObjectFactory;
 
 @SuppressWarnings("serial")
 @WebServlet("/JAXBTestServlet")
 public class JAXBTestServlet extends FATServlet {
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     public void testJaxbAPILoadedFromLiberty() throws Exception {
         assertNull("System property 'javax.xml.bind.context.factory' effects the entire JVM and should not be set by the Liberty runtime!",
                    System.getProperty("javax.xml.bind.context.factory"));
@@ -62,9 +63,26 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXRS", "JAXB-2.3", SkipForRepeat.EE9_FEATURES })
+    public void testJakartaEE10JaxbAPILoadedFromLiberty() throws Exception {
+        assertNull("System property 'jakarta.xml.bind.context.factory' effects the entire JVM and should not be set by the Liberty runtime!",
+                   System.getProperty("jakarta.xml.bind.context.factory"));
+
+        ClassLoader apiLoader = JAXBContext.class.getClassLoader();
+        CodeSource apiSrc = JAXBContext.class.getProtectionDomain().getCodeSource();
+        String apiLocation = apiSrc == null ? null : apiSrc.getLocation().toString();
+        System.out.println("Got JAX-B API from loader=  " + apiLoader);
+        System.out.println("Got JAX-B API from location=" + apiLocation);
+        assertTrue("Expected JAX-B API to come from Liberty bundle, but it came from: " + apiLoader,
+                   apiLoader != null && apiLoader.toString().contains("io.openliberty.jakarta.xmlBinding.4."));
+        assertTrue("Expected JAX-B API to come from Liberty, but it came from: " + apiLocation,
+                   apiLocation != null && apiLocation.contains("io.openliberty.jakarta.xmlBinding.4."));
+    }
+
+    @Test
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     public void testJaxbImplLoadedFromLiberty() throws Exception {
-        JAXBContext ctx = JAXBContext.newInstance("jaxb.web", ObjectFactory.class.getClassLoader());
+        JAXBContext ctx = JAXBContext.newInstance("jaxb.web.dataobjects", ObjectFactory.class.getClassLoader());
         ClassLoader implLoader = ctx.getClass().getClassLoader();
         CodeSource implSrc = ctx.getClass().getProtectionDomain().getCodeSource();
         String implLocation = implSrc == null ? null : implSrc.getLocation().toString();
@@ -78,23 +96,7 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
-    public void testXMLBindingImplLoadedFromLiberty() throws Exception {
-        JAXBContext ctx = JAXBContext.newInstance("jaxb.web", ObjectFactory.class.getClassLoader());
-        ClassLoader implLoader = ctx.getClass().getClassLoader();
-        CodeSource implSrc = ctx.getClass().getProtectionDomain().getCodeSource();
-        String implLocation = implSrc == null ? null : implSrc.getLocation().toString();
-        System.out.println("XML Binding impl is: " + ctx.getClass());
-        System.out.println("Got XML Binding impl from loader=  " + implLoader);
-        System.out.println("Got XML Binding impl from location=" + implLocation);
-        assertTrue("Expected XML Binding impl to come from JDK classloader, but it came from: " + implLoader,
-                   implLoader != null && implLoader.toString().contains("io.openliberty."));
-        assertTrue("Expected XML Binding impl to come from JDK, but it came from: " + implLocation,
-                   implLocation != null && implLocation.contains("io.openliberty."));
-    }
-
-    @Test
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     public void testActivationLoaded() throws Exception {
         // Verify Activation API came from the JDK
         ClassLoader apiLoader = javax.activation.DataHandler.class.getClassLoader();
