@@ -709,10 +709,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
         // Stop lease timeout alarm popping when server is on its way down
         LeaseTimeoutManager.stopTimeout();
-        // Additionally, if we have a lease log for peer recovery, alert it that the server is stopping (the alarm may already have popped)
-        if (_leaseLog != null) {
-            _leaseLog.serverStopping();
-        }
 
         // Drive the serverStopping() method on the SQLMultiScopeRecoveryLog if appropriate. This will manage
         // the cancelling of the HADB Log Availability alarm
