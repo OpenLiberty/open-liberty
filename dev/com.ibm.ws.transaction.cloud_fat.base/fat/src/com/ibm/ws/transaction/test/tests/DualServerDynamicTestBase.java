@@ -103,11 +103,6 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
     }
 
-	private void retry(Object object) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
 
     	FATUtils.stopServers(servers);

@@ -155,13 +155,18 @@ public class ProtocolImpl {
     @FFDCIgnore(WSATException.class)
     public void rollback(String globalId, EndpointReferenceType fromEpr) {
         final WSATTransaction tran = WSATTransaction.getTran(globalId);
-        try {
-            tranService.rollbackTransaction(globalId);
-        } catch (WSATException e) {
-            if (TC.isDebugEnabled()) {
-                Tr.debug(TC, "Unable to complete rollback: {0}", e);
+
+        // Tran might have already gone
+        if (tran != null) {
+            try {
+                tranService.rollbackTransaction(globalId);
+            } catch (WSATException e) {
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Unable to complete rollback: {0}", e);
+                }
             }
         }
+
         try {
             participantResponse(tran, globalId, fromEpr, WSATParticipantState.ABORTED);
         } catch (WSATException e) {
@@ -169,6 +174,22 @@ public class ProtocolImpl {
                 Tr.debug(TC, "Unable to send rollback response: {0}", e);
             }
         }
+    }
+
+    private void coordinatorResponse(String globalId, EndpointReferenceType fromEpr, String partId, WSATParticipantState response) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "From EPR address: {0}", fromEpr.getAddress().getValue());
+            Tr.debug(TC, "Coordinator Endpoint: {0}", coordinatorEndpoint.getAddress().getValue());
+            Tr.debug(TC, "From EPR address: {0}", participantEndpoint.getAddress().getValue());
+        }
+
+        WSATParticipant part = new WSATParticipant(globalId, partId, fromEpr);
+        WSATCoordinator coord = new WSATCoordinator(globalId, coordinatorEndpoint);
+        coord.setParticipant(part);
+        part.setCoordinator(coord);
+
+        WebClient client = WebClient.getWebClient(part, coord);
+        client.rollback();
     }
 
     private void participantResponse(WSATTransaction tran, String globalId, EndpointReferenceType fromEpr, WSATParticipantState response) throws WSATException {
@@ -230,9 +251,15 @@ public class ProtocolImpl {
             // During participant recovery we might receive an unexpected 'prepared' if the participant
             // wants a re-send of the final commit/rollback state.
             if (TC.isDebugEnabled()) {
-                Tr.debug(TC, "Unsolicited PREPARED received: {0}/{1}. Replaying completion", globalId, partId);
+                Tr.debug(TC, "Unsolicited PREPARED received: {0}/{1}/{2}. Replaying completion", globalId, partId, fromEpr.getAddress());
             }
-            tranService.replayCompletion(globalId);
+            if (!tranService.replayCompletion(globalId)) {
+                // Couldn't find the tran. Probably never got logged. Send a rollback
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Couldn't find tran. Need to send rollback");
+                    coordinatorResponse(globalId, fromEpr, partId, WSATParticipantState.ROLLBACK);
+                }
+            }
         }
     }
 
