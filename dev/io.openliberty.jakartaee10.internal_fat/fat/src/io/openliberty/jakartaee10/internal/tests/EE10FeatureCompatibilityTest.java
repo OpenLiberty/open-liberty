@@ -260,6 +260,9 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         // j2eeManagement-1.1 was removed in Jakarta EE 9 so there is no replacement
         ee8Features.remove("j2eeManagement-1.1");
 
+        // jcaInboundSecurity-1.0 was removed in Jakarta EE 10 in favor of using an auto feature.
+        ee8Features.remove("jcaInboundSecurity-1.0");
+
         // A couple of special cases that we want to make sure work.
         ee8Features.add("jaxb-2.3");
         ee8Features.add("jaxws-2.3");
@@ -281,6 +284,9 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
 
         // j2eeManagement-1.1 was removed in Jakarta EE 9 so there is no replacement
         ee7Features.remove("j2eeManagement-1.1");
+
+        // jcaInboundSecurity-1.0 was removed in Jakarta EE 10 in favor of using an auto feature.
+        ee7Features.remove("jcaInboundSecurity-1.0");
 
         // A couple of special cases that we want to make sure work.
         ee7Features.add("appSecurity-1.0");
