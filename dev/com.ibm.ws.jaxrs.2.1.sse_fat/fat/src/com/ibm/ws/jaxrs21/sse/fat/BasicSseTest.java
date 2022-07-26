@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxrs21.sse.fat;
 
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -83,7 +84,7 @@ public class BasicSseTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(EE9_FEATURES) // per spec discussions, only unrecoverable connection-related errors should trigger onError
+    @SkipForRepeat({EE9_FEATURES,EE10_FEATURES}) // per spec discussions, only unrecoverable connection-related errors should trigger onError
     public void testErrorSse() throws Exception {
         runTest(server, SERVLET_PATH, "testErrorSse");
     }

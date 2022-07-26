@@ -41,6 +41,7 @@ import com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
@@ -141,7 +142,7 @@ public class RestMetricsTest {
         return server.getHostname();
     }
 
-
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     public void testCoreMethods() throws IOException {
 
@@ -188,6 +189,7 @@ public class RestMetricsTest {
         }
     }
 
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     public void testAbort() throws IOException {
 
@@ -205,6 +207,7 @@ public class RestMetricsTest {
         ensureEmptyMonitorStats(ABORT_METHOD_INDEX);
     }
 
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     @AllowedFFDC({"org.apache.cxf.interceptor.Fault", "org.jboss.resteasy.spi.UnhandledException"})
     public void testCheckedExceptions() throws IOException {
@@ -223,6 +226,7 @@ public class RestMetricsTest {
         runCheckMonitorStats(200, CHECKED_METHOD_INDEX);
     }
 
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     @AllowedFFDC({"com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testUncheckedExceptions() throws IOException {

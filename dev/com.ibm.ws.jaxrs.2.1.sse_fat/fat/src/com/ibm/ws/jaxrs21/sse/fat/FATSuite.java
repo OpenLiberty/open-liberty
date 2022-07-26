@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -33,7 +34,10 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0").alwaysAddFeature("xmlBinding-3.0"));
+                  .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0").alwaysAddFeature("xmlBinding-3.0"));
+    //skip- major probelems
+    //               .andWith(new JakartaEE10Action().withID("EE10").alwaysAddFeature("jsonb-3.0").alwaysAddFeature("xmlBinding-4.0"));
+
 }
 
 

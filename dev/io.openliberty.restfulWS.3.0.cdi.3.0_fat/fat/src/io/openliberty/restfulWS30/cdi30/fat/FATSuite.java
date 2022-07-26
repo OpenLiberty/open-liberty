@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.restfulWS30.cdi30.fat.test.ApplicationSingletonsTest;
 import io.openliberty.restfulWS30.cdi30.fat.test.Basic12Test;
@@ -36,5 +37,6 @@ import io.openliberty.restfulWS30.cdi30.fat.test.LifeCycleMismatch12Test;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
+    public static RepeatTests r = RepeatTests.withoutModification()
+    .andWith(new JakartaEE10Action().withID("EE10"));
 }

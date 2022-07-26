@@ -26,7 +26,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // skip because cdi injection in Application subclasses require the @ApplicationPath annotation in our EE9 implementation
+@SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // skip because cdi injection in Application subclasses require the @ApplicationPath annotation in our EE9 implementation
 public class CDIInjectIntoAppTest extends FATServletClient {
 
     public static final String APP_NAME = "cdiinjectintoapp";

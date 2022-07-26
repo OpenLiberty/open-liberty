@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
@@ -114,6 +115,7 @@ public class ExtraProvidersTest extends AbstractTest {
      * warning message if the customer provides a provider class that does
      * not contain a public constructor.
      */
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     public void testNoPublicConstructorProvider() {
         final String prefix = JakartaEE9Action.isActive() ? "CWWKW1305W" : "CWWKW0100W";

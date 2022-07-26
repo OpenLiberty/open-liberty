@@ -170,7 +170,7 @@ public class ClientTest extends AbstractTest {
      */
     @Mode(TestMode.FULL)
     @Test
-    @SkipForRepeat("EE9_FEATURES") // RESTEasy does not honor CXF properties
+    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // RESTEasy does not honor CXF properties
     public void testReadTimeoutTimeout_cxfProp() throws Exception {
         this.runTestOnServer(target, "testReadTimeoutTimeout_cxfProp", null, "OK");
     }

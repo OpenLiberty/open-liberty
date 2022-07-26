@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.restfulWS30.client.fat.test.PathParamTest;
 
@@ -27,5 +28,6 @@ import io.openliberty.restfulWS30.client.fat.test.PathParamTest;
 })
 public class FATSuite { 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
+    public static RepeatTests r = RepeatTests.withoutModification()
+    .andWith(new JakartaEE10Action().withID("EE10"));
 }

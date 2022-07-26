@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
@@ -95,6 +96,7 @@ public class HelloWorldTest {
         runGetMethod(200, "/helloworld/apppathrest%21/helloworld", "Hello World");
     }
 
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     public void testInvalidCharset() throws Exception {
         int status = runPostMethodInvalidCharset("/helloworld/rest/helloworld");

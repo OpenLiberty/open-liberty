@@ -32,28 +32,31 @@ import com.ibm.ws.jaxrs20.cdi12.fat.test.ResourceInfoAtStartupTest;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                AlwaysPassesTest.class,
-               Basic12Test.class,             // Skip for JakartaEE9
-               BeanValidation12Test.class,    // Skip for JakartaEE9
-               CDIInjectIntoAppTest.class,
-               Complex12Test.class,           // Skip for JakartaEE9
+               Basic12Test.class,             // Skip for JakartaEE9/EE10
+               BeanValidation12Test.class,
+               CDIInjectIntoAppTest.class,    // Skip for JackartaEE9/EE10
+               Complex12Test.class,           // Skip for JakartaEE9/EE10
                ContextAndClientTest.class,
-               ContextandCDI12Test.class,     // Skip for JakartaEE9
-               DependentIntoJaxTest.class,    // Skip for JakartaEE9
-               DisableTest.class,             // Skip for JakartaEE9
+               ContextandCDI12Test.class,     // Skip for JakartaEE9/EE10
+               DependentIntoJaxTest.class,    // Skip for JakartaEE9/EE10
+               DisableTest.class,             // Skip for JakartaEE9/EE10
                InterceptorTest.class,
-               LifeCycle12Test.class,         // Skip for JakartaEE9
-               LifeCycleMismatch12Test.class, // Skip for JakartaEE9
+               LifeCycle12Test.class,         // Skip for JakartaEE9/EE10
+               LifeCycleMismatch12Test.class, // Skip for JakartaEE9/EE10
                LoadOnStartup12Test.class,
                ResourceInfoAtStartupTest.class
 })
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
-                    .andWith(new JakartaEE9Action());
+        .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
+        .andWith(new JakartaEE9Action())
+        .andWith(new JakartaEE10Action());
+
 }

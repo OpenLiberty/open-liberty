@@ -38,6 +38,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -421,7 +422,7 @@ public class AnnotationScanTest {
      * the Application init-param element.
      */
     @Test
-    @SkipForRepeat(JakartaEE9Action.ID) // this actually should be fine under the EE8/EE9 spec - but it would ignore any Application subclasses
+    @SkipForRepeat({JakartaEE9Action.ID,JakartaEE10Action.ID}) // this actually should be fine under the EE8/EE9 spec - but it would ignore any Application subclasses
     public void testServletSpecifiedWithoutApplicationInitParam() throws Exception {
         assertEquals("Did not find expected warning indicating servlet is missing Application init-param", 1,
                      server.findStringsInLogs("CWWKW0101W.*annotationscan.*App7IBMRestServlet.*com.ibm.websphere.jaxrs.server.IBMRestServlet").size());
@@ -431,6 +432,7 @@ public class AnnotationScanTest {
      * Tests that we see the expected warning message when a user specifies an
      * Application class that does not actually extend javax.ws.rs.Application.
      */
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     public void testServletSpecifiedWithInvalidApplicationClass() throws Exception {
         int messageCount = 0;

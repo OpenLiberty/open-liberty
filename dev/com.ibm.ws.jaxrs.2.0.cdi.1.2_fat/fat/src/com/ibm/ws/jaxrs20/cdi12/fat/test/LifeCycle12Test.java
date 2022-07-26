@@ -30,7 +30,7 @@ import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // skip because cdi injection of singletons has changed
+@SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // skip because cdi injection of singletons has changed
 public class LifeCycle12Test extends AbstractTest {
 
     private static final String LIFECYCLEWAR = "lifecyclemethod.war";

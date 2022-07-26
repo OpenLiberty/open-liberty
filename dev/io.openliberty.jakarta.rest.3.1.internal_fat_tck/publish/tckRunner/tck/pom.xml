@@ -62,6 +62,7 @@
 
         <!-- Jakarta EE API -->
         <jakarta.ws.rs.version>3.1.0</jakarta.ws.rs.version>
+        <jakarta.ws.rs.tck.version>3.1.1</jakarta.ws.rs.tck.version>
 
         <!-- TODO: update Arquillian BOM -->
         <arquillian-bom.version>1.7.0.Alpha10</arquillian-bom.version>
@@ -182,7 +183,7 @@
         <dependency>
             <groupId>io.openliberty.jakarta.ws.rs</groupId>
             <artifactId>jakarta-restful-ws-tck</artifactId>
-            <version>${jakarta.ws.rs.version}</version>
+            <version>${jakarta.ws.rs.tck.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -322,11 +323,11 @@
                         <dependency>io.openliberty.jakarta.ws.rs:jakarta-restful-ws-tck</dependency>
                     </dependenciesToScan>
                     <includes>
-                        <!--  Example to run just one test. 
-                        <include>ee/jakarta/tck/ws/rs/spec/contextprovider/JsonbContextProviderIT</include> 
-                        -->                        
-                        <include>**/tck/**/*Test</include>
-                        <include>**/tck/**/*IT</include>
+                        <!--  Example to run just one test. -->
+                        <!-- include>ee/jakarta/tck/ws/rs/spec/client/exceptions/ClientExceptionsIT</include--> 
+                                              
+                         <include>**/tck/**/*Test</include>
+                        <include>**/tck/**/*IT</include>                     
                      </includes>
 <!--                      <excludes>
                         <exclude>**/tck/**/SeBootstrapIT</exclude>

@@ -49,5 +49,7 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"));
+                      .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"));
+ // skip -- major problems
+ //   .andWith(new JakartaEE9Action().withID("EE10").alwaysAddFeature("jsonb-3.0"));
 }

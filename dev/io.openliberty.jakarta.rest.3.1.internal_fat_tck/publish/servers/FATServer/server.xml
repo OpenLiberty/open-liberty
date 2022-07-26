@@ -37,4 +37,6 @@
         </group>
    </basicRegistry>
    
+   <!-- This line can be uncommented to avoid the problem we are currently seeing with @ApplicationPath and CDI -->
+   <!-- cdi enableImplicitBeanArchives="false"/ -->
 </server>

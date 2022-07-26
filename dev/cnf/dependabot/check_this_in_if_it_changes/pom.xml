@@ -2929,7 +2929,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-cdi</artifactId>
-      <version>6.1.0.Beta2</version>
+      <version>6.1.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -2944,7 +2944,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client-api</artifactId>
-      <version>6.1.0.Beta2</version>
+      <version>6.1.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -2969,7 +2969,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
-      <version>6.1.0.Beta2</version>
+      <version>6.1.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -2984,7 +2984,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core-spi</artifactId>
-      <version>6.1.0.Beta2</version>
+      <version>6.1.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -2999,7 +2999,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core</artifactId>
-      <version>6.1.0.Beta2</version>
+      <version>6.1.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3014,7 +3014,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
-      <version>6.1.0.Beta2</version>
+      <version>6.1.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3029,7 +3029,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
-      <version>6.1.0.Beta2</version>
+      <version>6.1.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3039,7 +3039,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-rxjava2</artifactId>
-      <version>6.1.0.Beta2</version>
+      <version>6.1.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3054,7 +3054,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-servlet-initializer</artifactId>
-      <version>6.1.0.Beta2</version>
+      <version>6.1.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3074,7 +3074,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-validator-provider</artifactId>
-      <version>6.1.0.Beta2</version>
+      <version>6.1.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>

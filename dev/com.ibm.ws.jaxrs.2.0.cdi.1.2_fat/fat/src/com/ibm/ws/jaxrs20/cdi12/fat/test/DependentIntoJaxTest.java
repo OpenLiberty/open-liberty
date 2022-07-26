@@ -24,7 +24,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") //The fact this doesn't work on EE9 is probably a bug and needs investigating
+@SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) //The fact this doesn't work on EE9 is probably a bug and needs investigating
 public class DependentIntoJaxTest extends AbstractTest {
 
     @Server("com.ibm.ws.jaxrs20.cdi12.fat.basic")

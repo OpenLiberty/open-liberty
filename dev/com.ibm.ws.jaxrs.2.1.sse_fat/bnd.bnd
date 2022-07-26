@@ -34,7 +34,8 @@ tested.features: \
   jsonp-2.0,\
   xmlBinding-3.0,\
   xmlBinding-4.0,\
-  servlet-5.0
+  servlet-5.0,\
+  servlet-6.0
 
 
 -buildpath: \

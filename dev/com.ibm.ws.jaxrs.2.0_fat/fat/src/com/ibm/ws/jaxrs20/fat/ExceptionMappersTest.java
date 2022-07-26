@@ -42,6 +42,7 @@ import com.ibm.ws.jaxrs.fat.exceptionmappers.mapped.CommentError;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
@@ -601,7 +602,7 @@ public class ExceptionMappersTest {
      *
      * @throws Exception
      */
-
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     public void testWebExceptionWithCauseAndResponse() throws Exception {
 
@@ -706,6 +707,7 @@ public class ExceptionMappersTest {
      *
      * @throws Exception
      */
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     @AllowedFFDC({"org.apache.cxf.interceptor.Fault", "org.jboss.resteasy.spi.UnhandledException"})
     public void testThrowableCanBeThrown() throws Exception {

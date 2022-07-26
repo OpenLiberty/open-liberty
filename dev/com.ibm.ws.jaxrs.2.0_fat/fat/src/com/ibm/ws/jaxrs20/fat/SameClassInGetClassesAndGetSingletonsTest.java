@@ -35,7 +35,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // getSingletons should not be used in EE9
+@SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // getSingletons should not be used in EE9
 public class SameClassInGetClassesAndGetSingletonsTest {
 
     @Server("com.ibm.ws.jaxrs.fat.getCgetS")

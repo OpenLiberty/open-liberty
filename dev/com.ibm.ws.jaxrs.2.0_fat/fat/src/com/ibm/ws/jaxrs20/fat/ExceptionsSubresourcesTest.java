@@ -42,6 +42,7 @@ import com.ibm.ws.jaxrs.fat.subresource.CommentError;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -407,6 +408,7 @@ public class ExceptionsSubresourcesTest {
      *
      * @throws Exception
      */
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     @AllowedFFDC({"org.apache.cxf.interceptor.Fault", "org.jboss.resteasy.spi.UnhandledException"})
     public void testCheckedException() throws Exception {
@@ -429,6 +431,7 @@ public class ExceptionsSubresourcesTest {
      *
      * @throws Exception
      */
+    @SkipForRepeat("EE10_FEATURES")
     @Test
     @AllowedFFDC({"java.lang.NumberFormatException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testRuntimeException() throws Exception {

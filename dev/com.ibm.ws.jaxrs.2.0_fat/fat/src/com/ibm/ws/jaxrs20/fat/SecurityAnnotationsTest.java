@@ -20,10 +20,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs.fat.security.servlet.SecurityAnnotationsTestServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat("EE10_FEATURES")
 @RunWith(FATRunner.class)
 public class SecurityAnnotationsTest {
 
