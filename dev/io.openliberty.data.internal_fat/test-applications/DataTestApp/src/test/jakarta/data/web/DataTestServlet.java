@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -1129,7 +1130,7 @@ public class DataTestServlet extends FATServlet {
         assertArrayEquals(new Reservation[] { r9, r3, r2, r1 }, array,
                           Comparator.<Reservation, Long> comparing(o -> o.meetingID)
                                           .thenComparing(Comparator.<Reservation, String> comparing(o -> o.host))
-                                          .thenComparing(Comparator.<Reservation, String> comparing(o -> o.invitees.toString()))
+                                          .thenComparing(Comparator.<Reservation, String> comparing(o -> new TreeSet<String>(o.invitees).toString()))
                                           .thenComparing(Comparator.<Reservation, String> comparing(o -> o.location))
                                           .thenComparing(Comparator.<Reservation, Instant> comparing(o -> o.start.toInstant()))
                                           .thenComparing(Comparator.<Reservation, Instant> comparing(o -> o.stop.toInstant())));
@@ -1330,6 +1331,20 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
         assertEquals(null, page3.next());
+
+        // find by member of a collection
+        assertIterableEquals(List.of(10030002L, 10030007L),
+                             reservations.findByInviteesContainsOrderByMeetingID("testRepositoryCustom-2b@example.org")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+
+        // find by not a member of a collection
+        Set<Reservation> set = reservations.findByLocationAndInviteesNotContains("050-2 B120", "testRepositoryCustom-2b@example.org");
+        assertNotNull(set);
+        assertEquals(set.toString(), 1, set.size());
+        Reservation found = set.iterator().next();
+        assertEquals(10030005L, found.meetingID);
 
         assertEquals(false, reservations.deleteByHostIn(List.of("testRepositoryCustom-host5@example.org")));
 

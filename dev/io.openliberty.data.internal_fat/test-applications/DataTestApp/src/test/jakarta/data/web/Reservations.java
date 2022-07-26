@@ -15,6 +15,8 @@ import java.util.AbstractCollection;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -28,6 +30,7 @@ import io.openliberty.data.Data;
 import io.openliberty.data.Limit;
 import io.openliberty.data.Page;
 import io.openliberty.data.Pagination;
+import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
 import io.openliberty.data.Select;
 import io.openliberty.data.Sort;
@@ -93,6 +96,12 @@ public interface Reservations extends Repository<Reservation, Long> {
     Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostSubstring);
 
     Page<Reservation> findByHostLike(String hostSubstring, Pagination pagination, Sort sort);
+
+    @Query("SELECT o FROM Reservation o WHERE ?1 MEMBER OF o.invitees ORDER BY o.meetingID")
+    LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
+
+    @Query("SELECT o FROM Reservation o WHERE o.location = ?1 AND ?2 NOT MEMBER OF o.invitees ORDER BY o.meetingID")
+    HashSet<Reservation> findByLocationAndInviteesNotContains(String location, String noninvitee);
 
     // Use a record as the return type
     @Select({ "start", "stop" })
