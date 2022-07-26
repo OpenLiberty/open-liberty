@@ -412,7 +412,8 @@ public class TestServer extends ExternalResource {
             }
             // if we haven't exceeded the retry count, try to stop and restart the server
             // update the retryTimeoutCount for retrys only, not when we've exceeded our retry count
-            retryTimeoutCount += 1;
+            // since we logged the exception (which contains the string "Timed out", we need to increase the count by 2 (not 1)
+            retryTimeoutCount += 2;
             retryStartServer(testName, waitForMessages, reportViaJunit, tryNum + 1);
         }
 
