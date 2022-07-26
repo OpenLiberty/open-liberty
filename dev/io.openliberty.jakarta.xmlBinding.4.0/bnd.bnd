@@ -18,7 +18,15 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-SymbolicName: io.openliberty.jakarta.xmlBinding.4.0; singleton:=true
 
-Export-Package: jakarta.xml.bind.*;version="4.0"
+Export-Package: jakarta.xml.bind.*;thread-context=true;version="4.0", \
+  io.openliberty.jakarta.xmlBinding.*;version="4.0"
+
+Service-Component: \
+  io.openliberty.jakarta.xmlBinding._4_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:= "resources=${app-resources}"
 
 Import-Package: \
   jakarta.activation, \
@@ -31,12 +39,17 @@ DynamicImport-Package: \
   org.glassfish.jaxb.*
 
 Include-Resource:\
-  @${repo;jakarta.xml.bind:jakarta.xml.bind-api;4.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.xml.bind:jakarta.xml.bind-api;4.0.0;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  io/openliberty/jakarta=${bin}/io/openliberty/jakarta
+  jakarta/xml/bind=${bin}/jakarta/xml/bind
 
-instrument.disabled: true
+Multi-Release: true
+
+instrument.ffdc: false
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version=4.0.0,\
-	io.openliberty.org.glassfish.hk2.osgi-resource-locator
+	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version='4.0.0',\
+	io.openliberty.org.glassfish.hk2.osgi-resource-locator,\
+	com.ibm.ws.logging

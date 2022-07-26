@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -27,6 +28,7 @@ import componenttest.topology.utils.FATServletClient;
 import jaxb.web.JAXBTestServlet;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 11)
 public class LibertyJAXBTest extends FATServletClient {
 
     private static final String APP_NAME = "jaxbApp";
@@ -37,7 +39,7 @@ public class LibertyJAXBTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "jaxb.web");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "jaxb.web", "jaxb.web.dataobjects", "jaxb.web.utils");
 
         if (JakartaEE9Action.isActive()) {
             server.changeFeatures(Arrays.asList("xmlBinding-3.0", "servlet-5.0", "componenttest-2.0"));
