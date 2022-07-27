@@ -630,8 +630,9 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         } else {
             String[] protocols = protocolVal.split(",");
             if (protocols.length > 1)
-                protocolVal = protocols[0];
+                protocolVal = defaultProtocol;
         }
+
         final String protocol = protocolVal;
 
         try {

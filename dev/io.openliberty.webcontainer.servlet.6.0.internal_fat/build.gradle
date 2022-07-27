@@ -9,12 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+// Define G:A:V coordinates of each dependency
 dependencies {
-    //if there is a existing project, reference it directly
-    //requiredLibs project(':io.openliberty.org.apache.commons.logging')
-
-    //if not, Define G:A:V coordinates of each dependency
-    //requiredLibs 'commons-logging:commons-logging:1.1.3'
+  requiredLibs 'org.apache.httpcomponents.client5:httpclient5:5.0.2',
+    'org.apache.httpcomponents.core5:httpcore5:5.0.2',
+    project(':com.ibm.ws.org.slf4j.api')
 }
-
-//addRequiredLibraries.dependsOn addJakartaTransformer

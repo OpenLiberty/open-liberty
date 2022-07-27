@@ -35,7 +35,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
     public void testLeaseTableAccess(HttpServletRequest request,
                                      HttpServletResponse response) throws Exception {
-        Connection con = ds.getConnection();
+        Connection con = getConnection(ds);
         con.setAutoCommit(false);
 
         try {
@@ -79,7 +79,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
     public void modifyLeaseOwner(HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
 
-        Connection con = dsTranLog.getConnection();
+        Connection con = getConnection(dsTranLog);
         con.setAutoCommit(false);
         DatabaseMetaData mdata = con.getMetaData();
         String dbName = mdata.getDatabaseProductName();
@@ -126,7 +126,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
     public void setLatch(HttpServletRequest request,
                          HttpServletResponse response) throws Exception {
 
-        Connection con = dsTranLog.getConnection();
+        Connection con = getConnection(dsTranLog);
         try {
             // Statement used to drop table
             Statement stmt = con.createStatement();
@@ -152,7 +152,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
     public void setPeerOwnership(HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
 
-        Connection con = dsTranLog.getConnection();
+        Connection con = getConnection(dsTranLog);
         try {
             // Statement used to drop table
             Statement stmt = con.createStatement();
@@ -175,7 +175,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
     public void testTranlogTableAccess(HttpServletRequest request,
                                        HttpServletResponse response) throws Exception {
-        Connection con = dsTranLog.getConnection();
+        Connection con = getConnection(dsTranLog);
         con.setAutoCommit(false);
 
         try {
@@ -241,5 +241,35 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
         } catch (Exception ex) {
             System.out.println("testTranlogTableAccess: caught exception " + ex);
         }
+    }
+
+    /**
+     * This method supports a retry when a connection is required.
+     * 
+     * @param dSource
+     * @return
+     * @throws Exception
+     */
+    private Connection getConnection(DataSource dSource) throws Exception {
+        Connection conn = null;
+        int retries = 0;
+        boolean retrievedConn = false;
+        Exception excToThrow = null;
+        while (retries < 2 && !retrievedConn) {
+            try {
+                System.out.println("Simple2PCCloudServlet: getConnection called against resource - " + dSource);
+                conn = dSource.getConnection();
+                retrievedConn = true;
+            } catch (Exception ex) {
+                System.out.println("Simple2PCCloudServlet: getConnection caught exception - " + ex);
+                excToThrow = ex;
+                retries++;
+            }
+        }
+        if (!retrievedConn && excToThrow != null)
+            throw excToThrow;
+
+        System.out.println("Simple2PCCloudServlet: getConnection returned connection - " + conn);
+        return conn;
     }
 }

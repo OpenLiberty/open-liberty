@@ -83,7 +83,6 @@ public class JakartaEE10Action extends FeatureReplacementAction {
                                                   "cdi-4.0",
                                                   "concurrent-3.0",
                                                   "connectors-2.1",
-                                                  "connectorsInboundSecurity-2.0",
                                                   "expressionLanguage-5.0",
                                                   "enterpriseBeans-4.0",
                                                   "enterpriseBeansHome-4.0",

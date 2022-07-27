@@ -22,8 +22,6 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * Test Servlet that just prints a message in the Response.
  *
- * TODO: This can be deleted once we have other tests in the Servlet 6.0 bucket this is
- * just a place holder so we have one test case that executes.
  */
 @WebServlet("/TestServlet")
 public class TestServlet extends HttpServlet {

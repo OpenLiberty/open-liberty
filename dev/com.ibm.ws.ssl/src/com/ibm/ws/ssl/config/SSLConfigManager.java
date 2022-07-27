@@ -1395,7 +1395,7 @@ public class SSLConfigManager {
                 if (securityLevel == null)
                     securityLevel = "HIGH";
 
-                ciphers = adjustSupportedCiphersToSecurityLevel(socket.getEnabledCipherSuites(), securityLevel);
+                ciphers = adjustSupportedCiphersToSecurityLevel(socket.getSupportedCipherSuites(), securityLevel);
 
             }
         } catch (Exception e) {

@@ -439,50 +439,51 @@ public class JMS2AsyncSend extends ClientMain {
   public void testJMS2TransactionAndListener() throws JMSException, InterruptedException, Exception {
     clearQueue(depthLimitedQueue_);
 
-    JMSContext context = queueConnectionFactory_.createContext(Session.SESSION_TRANSACTED);
-    JMSProducer producer = context.createProducer();
-    producer.setAsync(completionListener_);
-    TextMessage textMessage = context.createTextMessage("testJMS2TransactionAndListener");
+    try (JMSContext context = queueConnectionFactory_.createContext(Session.SESSION_TRANSACTED)) {
+    	JMSProducer producer = context.createProducer();
+    	producer.setAsync(completionListener_);
+    	TextMessage textMessage = context.createTextMessage("testJMS2TransactionAndListener");
 
-    for (int i=0;5>i;++i) producer.send(depthLimitedQueue_, textMessage);
-    completionListener_.waitFor(5, 0);
-    context.commit();
-    Util.CODEPATH();
+    	for (int i=0;5>i;++i) producer.send(depthLimitedQueue_, textMessage);
+    	completionListener_.waitFor(5, 0);
+    	context.commit();
+    	Util.CODEPATH();
 
-    // Because this is a locally transacted session this send will succeed and the exception will be raised on the subsequent
-    // commit (onException must NOT be called)
-    producer.send(depthLimitedQueue_, textMessage);
+    	// Because this is a locally transacted session this send will succeed and the exception will be raised on the subsequent
+    	// commit (onException must NOT be called)
+    	producer.send(depthLimitedQueue_, textMessage);
 
-    boolean conditionMet = completionListener_.waitFor(6, 0);
+    	boolean conditionMet = completionListener_.waitFor(6, 0);
 
-    boolean exceptionOnCommit = false;
-    try {
-      context.commit();
-    } catch (javax.jms.JMSRuntimeException e) {
-      if (null!=e.getCause()
-          &&"com.ibm.wsspi.sib.core.exception.SIRollbackException".equals(e.getCause().getClass().getName())
-         ) {
-        Throwable t = e.getCause();
-        if (null!=t.getCause()
-            &&"com.ibm.wsspi.sib.core.exception.SILimitExceededException".equals(t.getCause().getClass().getName())
-           ) {
-          Util.TRACE("commit failed with expected exception: "+t.getCause().getClass().getName());
-          exceptionOnCommit = true;
-        } else {
-          throw e;
-        }
-      } else {
-        throw e;
-      }
-    }
+    	boolean exceptionOnCommit = false;
+    	try {
+    		context.commit();
+    	} catch (javax.jms.JMSRuntimeException e) {
+    		if (null!=e.getCause()
+    				&&"com.ibm.wsspi.sib.core.exception.SIRollbackException".equals(e.getCause().getClass().getName())
+    				) {
+    			Throwable t = e.getCause();
+    			if (null!=t.getCause()
+    					&&"com.ibm.wsspi.sib.core.exception.SILimitExceededException".equals(t.getCause().getClass().getName())
+    					) {
+    				Util.TRACE("commit failed with expected exception: "+t.getCause().getClass().getName());
+    				exceptionOnCommit = true;
+    			} else {
+    				throw e;
+    			}
+    		} else {
+    			throw e;
+    		}
+    	}
 
-    Util.TRACE("completionCount="+completionListener_.completionCount_
-              +",exceptionCount="+completionListener_.exceptionCount_
-              );
-    if (conditionMet == true && exceptionOnCommit == true ) {
-      reportSuccess();
-    } else {
-      reportFailure();
+    	Util.TRACE("completionCount="+completionListener_.completionCount_
+    			+",exceptionCount="+completionListener_.exceptionCount_
+    			);
+    	if (conditionMet == true && exceptionOnCommit == true ) {
+    		reportSuccess();
+    	} else {
+    		reportFailure();
+    	}	
     }
     clearQueue(depthLimitedQueue_);
   }
