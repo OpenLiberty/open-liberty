@@ -1346,6 +1346,22 @@ public class DataTestServlet extends FATServlet {
         Reservation found = set.iterator().next();
         assertEquals(10030005L, found.meetingID);
 
+        // endsWith
+        assertIterableEquals(List.of(10030002L, 10030005L, 10030007L),
+                             reservations.findByHostEndsWith("host2@example.org")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // startsWith
+        assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
+                             reservations.findByLocationStartsWith("050-2 B")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
         assertEquals(false, reservations.deleteByHostIn(List.of("testRepositoryCustom-host5@example.org")));
 
         assertEquals(true, reservations.deleteByHostIn(List.of("testRepositoryCustom-host1@example.org",

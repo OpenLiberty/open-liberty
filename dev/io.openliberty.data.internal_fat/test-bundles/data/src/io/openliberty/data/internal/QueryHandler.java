@@ -64,6 +64,7 @@ public class QueryHandler<T> implements InvocationHandler {
     private static enum Condition {
         BETWEEN(null, 7),
         CONTAINS(null, 8),
+        ENDS_WITH(null, 8),
         EQUALS("=", 0),
         GREATER_THAN(">", 11),
         GREATER_THAN_EQUAL(">=", 16),
@@ -71,7 +72,8 @@ public class QueryHandler<T> implements InvocationHandler {
         LESS_THAN("<", 8),
         LESS_THAN_EQUAL("<=", 13),
         LIKE(null, 4),
-        NOT_EQUALS("<>", 3);
+        NOT_EQUALS("<>", 3),
+        STARTS_WITH(null, 10);
 
         final int length;
         final String operator;
@@ -246,6 +248,12 @@ public class QueryHandler<T> implements InvocationHandler {
                 if (expression.endsWith("Like"))
                     condition = Condition.LIKE;
                 break;
+            case 'h': // StartsWith | EndsWith
+                if (expression.endsWith("StartsWith"))
+                    condition = Condition.STARTS_WITH;
+                else if (expression.endsWith("EndsWith"))
+                    condition = Condition.ENDS_WITH;
+                break;
             case 's': // Contains
                 if (expression.endsWith("Contains"))
                     condition = Condition.CONTAINS;
@@ -270,6 +278,12 @@ public class QueryHandler<T> implements InvocationHandler {
         name = name == null ? attribute : name;
 
         switch (condition) {
+            case STARTS_WITH:
+                q.append("o.").append(name).append(negated ? " NOT " : " ").append("LIKE CONCAT(?").append(++paramCount).append(", '%')");
+                break;
+            case ENDS_WITH:
+                q.append("o.").append(name).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(")");
+                break;
             case LIKE:
                 q.append("o.").append(name).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(", '%')");
                 break;

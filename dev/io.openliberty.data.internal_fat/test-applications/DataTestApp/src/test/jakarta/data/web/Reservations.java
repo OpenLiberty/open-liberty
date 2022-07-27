@@ -13,6 +13,7 @@ package test.jakarta.data.web;
 import java.time.OffsetDateTime;
 import java.util.AbstractCollection;
 import java.util.AbstractList;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -96,6 +97,8 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     Page<Reservation> findByHostLike(String hostSubstring, Pagination pagination, Sort sort);
 
+    CopyOnWriteArrayList<Reservation> findByHostEndsWith(String hostPostfix);
+
     LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
 
     HashSet<Reservation> findByLocationAndInviteesNotContains(String location, String noninvitee);
@@ -103,4 +106,6 @@ public interface Reservations extends Repository<Reservation, Long> {
     // Use a record as the return type
     @Select({ "start", "stop" })
     ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
+
+    ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 }
