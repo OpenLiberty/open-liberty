@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
@@ -51,6 +52,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     }
 
     @Override
+    @FFDCIgnore(OidcUrlNotHttpsException.class)
     public ProviderAuthenticationResult sendRequest() {
         try {
             return super.sendRequest();
