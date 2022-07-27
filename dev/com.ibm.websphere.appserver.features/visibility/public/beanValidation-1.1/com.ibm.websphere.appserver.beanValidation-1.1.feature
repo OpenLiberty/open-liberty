@@ -16,7 +16,7 @@ IBM-API-Package: \
   javax.validation.metadata; type="spec", \
   javax.validation.spi; type="spec",\
   com.ibm.ws.beanvalidation.accessor; type="internal"
--features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:="2.3", \
+-features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2, \
   com.ibm.websphere.appserver.transaction-1.2, \
   com.ibm.websphere.appserver.eeCompatible-7.0, \
   com.ibm.websphere.appserver.javax.cdi-1.2, \
