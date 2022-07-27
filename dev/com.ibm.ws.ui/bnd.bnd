@@ -80,4 +80,4 @@ Include-Resource: \
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.ws.org.apache.commons.fileupload;version=latest,\
-	com.ibm.ws.com.google.gson.2.2.4;version=latest
+	io.openliberty.com.google.gson;version=latest

@@ -31,7 +31,7 @@
             name="${server.config.dir}/jaegerLib/com.ibm.ws.org.slf4j.simple.jar" />
         <file
             name="${server.config.dir}/jaegerLib/libthrift-0.14.1.jar" />
-        <file name="${server.config.dir}/jaegerLib/gson-2.8.6.jar" />
+        <file name="${server.config.dir}/jaegerLib/gson-2.9.0.jar" />
         <file
             name="${server.config.dir}/jaegerLib/opentracing-util-0.33.0.jar" />
         <file

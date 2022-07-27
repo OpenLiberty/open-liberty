@@ -14,6 +14,6 @@ Subsystem-Icon: OSGI-INF/admincenter_200x200.png,OSGI-INF/admincenter_200x200.pn
 -bundles=\
     com.ibm.websphere.jsonsupport,\
     com.ibm.ws.org.joda.time.1.6.2, \
-    com.ibm.ws.com.google.gson.2.2.4
+    io.openliberty.com.google.gson
 kind=ga
 edition=core
