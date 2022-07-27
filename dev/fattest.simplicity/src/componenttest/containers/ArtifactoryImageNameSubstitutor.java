@@ -10,11 +10,20 @@
  *******************************************************************************/
 package componenttest.containers;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.ExternalTestService;
 
 /**
@@ -30,21 +39,26 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
     @Override
     public DockerImageName apply(DockerImageName original) {
-        // Priority 1: If we are using a programmatically built image, or a registry was explicit set, do not substitute
-        if (isSyntheticImage(original) || (original.getRegistry() != null && !original.getRegistry().isEmpty())) {
+        // Priority 1: If we are using a synthetic image do not substitute nor cache
+        if (isSyntheticImage(original)) {
             return original;
         }
 
-        // Priority 2: Ask the docker strategy if we should substitute the image.
+        // Priority 2: If registry was explicit set, do not substitute
+        if (original.getRegistry() != null && !original.getRegistry().isEmpty()) {
+            return andCacheImageName(original, false);
+        }
+
+        // Priority 3: Ask the docker strategy if we should substitute the image.
         // This takes into account local/remote docker and properties to force the use of Artifactory.
         if (!ExternalTestServiceDockerClientStrategy.USE_ARTIFACTORY_NAME_SUBSTITUTION) {
-            return original;
+            return andCacheImageName(original, true);
         }
 
         // Need to substitute image name to use private registry
         String privateImage = getPrivateRegistry() + '/' + original.asCanonicalNameString();
         Log.info(c, "apply", "Swapping docker image name from " + original.asCanonicalNameString() + " --> " + privateImage);
-        return DockerImageName.parse(privateImage).asCompatibleSubstituteFor(original);
+        return andCacheImageName(DockerImageName.parse(privateImage).asCompatibleSubstituteFor(original), false);
     }
 
     @Override
@@ -91,6 +105,26 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Caches image names in the file autoFVT/output/testcontainer.image.cache
+     * this will be used to generate a file of all testcontainer images used in Open Liberty
+     */
+    static DockerImageName andCacheImageName(DockerImageName output, boolean withPrivateRegistry) {
+        if (FATRunner.FAT_TEST_LOCALRUN) {
+            final Path path = Paths.get("./output/testcontainer.image.cache");
+            try {
+                Files.write(path,
+                            Arrays.asList(withPrivateRegistry ? getPrivateRegistry() + '/' + output.asCanonicalNameString() : output.asCanonicalNameString()),
+                            StandardCharsets.UTF_8,
+                            Files.exists(path) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE);
+            } catch (IOException e) {
+                Log.warning(c, "Unable to create a testcontainers.cache");
+            }
+        }
+
+        return output;
     }
 
 }

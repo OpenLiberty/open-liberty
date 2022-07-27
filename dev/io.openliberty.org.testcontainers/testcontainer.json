@@ -1,0 +1,7 @@
+{
+    "build.example.testcontainers_fat": [
+        "wasliberty-docker-remote.artifactory.swg-devops.com/testcontainers/ryuk:0.3.3",
+        "wasliberty-docker-remote.artifactory.swg-devops.com/postgres:14.1-alpine",
+        "wasliberty-docker-remote.artifactory.swg-devops.com/kyleaure/postgres-test-table:3.0"
+    ]
+}

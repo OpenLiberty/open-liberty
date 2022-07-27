@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.function.Predicate;
 
@@ -104,10 +106,29 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         Log.entering(c, m, setupComplete);
         if (setupComplete)
             return;
+        generateTestcontainersMarker();
         generateTestcontainersConfig();
         generateArtifactorySubstitutorConfig();
         setupComplete = true;
         Log.exiting(c, m, setupComplete);
+    }
+
+    /**
+     * Generates an empty file at autoFVT/output/testcontainer.marker that
+     * will mark this project as a testcontainers project.
+     */
+    private static void generateTestcontainersMarker() {
+        if (FATRunner.FAT_TEST_LOCALRUN) {
+            final Path path = Paths.get("./output/testcontainer.marker");
+            if (!Files.exists(path)) {
+                try {
+                    Files.createFile(path);
+                } catch (IOException e) {
+                    Log.error(c, "generateTestcontainersMarker", e);
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     private static void generateTestcontainersConfig() {
