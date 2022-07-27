@@ -42,6 +42,7 @@ import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
+import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 import test.common.SharedOutputManager;
 
 public class OidcClientUtilTest extends CommonTestClass {
@@ -300,8 +301,7 @@ public class OidcClientUtilTest extends CommonTestClass {
                             with(any(String.class)), //isHostnameVerification
                             with(any(Boolean.class)));
                     will(returnValue(postResponseMap));
-                    allowing(oidcHttpUtil).setClientId(strClientId);
-                    one(oidcHttpUtil).extractTokensFromResponse(with(any(Map.class)));
+                    one(oidcHttpUtil).extractEntityFromTokenResponse(with(any(Map.class)));
                     will(returnValue(strContent));
                 }
             });

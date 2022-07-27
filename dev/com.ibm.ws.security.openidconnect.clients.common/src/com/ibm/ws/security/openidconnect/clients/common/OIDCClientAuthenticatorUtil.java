@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
@@ -38,6 +39,7 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
+import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
@@ -233,9 +235,14 @@ public class OIDCClientAuthenticatorUtil {
         boolean needHttps = clientConfig.getUserInfoEndpointUrl().toLowerCase().startsWith("https");
         SSLSocketFactory sslSocketFactory = null;
         try {
-            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig, sslSupport, false, needHttps);
+            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), clientConfig.getClientId(), sslSupport);
+            if (sslSocketFactory == null && needHttps) {
+                Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientConfig.getClientId() });
+            }
         } catch (com.ibm.websphere.ssl.SSLException e) {
-            //ffdc
+            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, clientConfig.getClientId() });
+        } catch (NoSSLSocketFactoryException e) {
+            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientConfig.getClientId() });
         }
         new UserInfoHelper(clientConfig, sslSupport).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory, oidcClientRequest);
     }

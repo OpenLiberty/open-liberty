@@ -51,6 +51,7 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
+import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
 
 @SuppressWarnings("restriction")
@@ -94,44 +95,55 @@ public class OidcClientUtil {
             HashMap<String, String> customParams,
             boolean useSystemPropertiesForHttpClientConnections) throws Exception {
 
-        // List<String> result = new ArrayList<String>();
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair(ClientConstants.GRANT_TYPE, grantType));
-        if (resources != null) {
-            params.add(new BasicNameValuePair("resource", resources));
-        }
-        params.add(new BasicNameValuePair(ClientConstants.REDIRECT_URI, redirectUri));
-        params.add(new BasicNameValuePair(Constants.CODE, code));
-        oidcHttpUtil.setClientId(clientId);
-        if (authMethod.equals(ClientConstants.METHOD_POST) || authMethod.equals(ClientConstants.METHOD_CLIENT_SECRET_POST)) {
-            params.add(new BasicNameValuePair(Constants.CLIENT_ID, clientId));
-            params.add(new BasicNameValuePair(Constants.CLIENT_SECRET, clientSecret));
-        }
-
-        handleCustomParams(params, customParams); // custom token ep params
-        Map<String, Object> postResponseMap = postToTokenEndpoint(tokenEnpoint, params, clientId, clientSecret, sslSocketFactory, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
-
-        String tokenResponse = oidcHttpUtil.extractTokensFromResponse(postResponseMap);
-
-        JSONObject jobject = JSONObject.parse(tokenResponse);
-        // result.add(0, (String) jobject.get(Constants.ID_TOKEN));
-        // result.add(1, (String) jobject.get(Constants.ACCESS_TOKEN));
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        Iterator<Entry> it = jobject.entrySet().iterator();
-        HashMap<String, String> tokens = new HashMap<String, String>();
-        while (it.hasNext()) {
-            @SuppressWarnings("rawtypes")
-            Entry obj = it.next();
-            if (obj.getKey() instanceof String) {
-                Object value = obj.getValue();
-                if (value == null) {
-                    value = "";
-                }
-                tokens.put((String) obj.getKey(), value.toString());
+        try {
+            // List<String> result = new ArrayList<String>();
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair(ClientConstants.GRANT_TYPE, grantType));
+            if (resources != null) {
+                params.add(new BasicNameValuePair("resource", resources));
             }
-        }
+            params.add(new BasicNameValuePair(ClientConstants.REDIRECT_URI, redirectUri));
+            params.add(new BasicNameValuePair(Constants.CODE, code));
+            if (authMethod.equals(ClientConstants.METHOD_POST) || authMethod.equals(ClientConstants.METHOD_CLIENT_SECRET_POST)) {
+                params.add(new BasicNameValuePair(Constants.CLIENT_ID, clientId));
+                params.add(new BasicNameValuePair(Constants.CLIENT_SECRET, clientSecret));
+            }
 
-        return tokens;
+            handleCustomParams(params, customParams); // custom token ep params
+            Map<String, Object> postResponseMap = postToTokenEndpoint(tokenEnpoint, params, clientId, clientSecret, sslSocketFactory, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
+
+            String tokenResponse = oidcHttpUtil.extractEntityFromTokenResponse(postResponseMap);
+
+            JSONObject jobject = JSONObject.parse(tokenResponse);
+            // result.add(0, (String) jobject.get(Constants.ID_TOKEN));
+            // result.add(1, (String) jobject.get(Constants.ACCESS_TOKEN));
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            Iterator<Entry> it = jobject.entrySet().iterator();
+            HashMap<String, String> tokens = new HashMap<String, String>();
+            while (it.hasNext()) {
+                @SuppressWarnings("rawtypes")
+                Entry obj = it.next();
+                if (obj.getKey() instanceof String) {
+                    Object value = obj.getValue();
+                    if (value == null) {
+                        value = "";
+                    }
+                    tokens.put((String) obj.getKey(), value.toString());
+                }
+            }
+
+            return tokens;
+        } catch (Exception e) {
+            // get/set the default error message (indicating we can't get tokens from a returned response)
+            String insertMsg = Tr.formatMessage(tc, "OIDC_CLIENT_INVALID_HTTP_RESPONSE_NO_MSG");
+            String eMsg = e.getMessage();
+            // if we got an usable error message in the exception, use it, otherwise, use the more generic error messages
+            if (eMsg != null && !eMsg.isEmpty()) {
+                insertMsg = eMsg;
+            }
+            Tr.error(tc, "OIDC_CLIENT_INVALID_HTTP_RESPONSE", new Object[] { insertMsg, clientId });
+            throw e;
+        }
     }
 
     /**

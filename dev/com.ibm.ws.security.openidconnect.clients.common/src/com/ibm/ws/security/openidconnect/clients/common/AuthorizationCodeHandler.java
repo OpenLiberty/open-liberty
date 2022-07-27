@@ -25,11 +25,15 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.ssl.SSLSupport;
+
+import io.openliberty.security.oidcclientcore.http.BadPostRequestException;
+import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 
 public class AuthorizationCodeHandler {
     private static final TraceComponent tc = Tr.register(AuthorizationCodeHandler.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
@@ -96,9 +100,16 @@ public class AuthorizationCodeHandler {
         SSLSocketFactory sslSocketFactory = null;
         try {
             boolean throwExc = clientConfig.getTokenEndpointUrl() != null && clientConfig.getTokenEndpointUrl().startsWith("https");
-            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig, sslSupport, throwExc, false);
+            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), clientId, sslSupport);
+            if (sslSocketFactory == null && throwExc) {
+                String errorMessage = Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientId });
+                throw new SSLException(errorMessage);
+            }
         } catch (SSLException e) {
             Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, clientConfig.getClientId() });
+            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (NoSSLSocketFactoryException e) {
+            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientConfig.getClientId() });
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
 
