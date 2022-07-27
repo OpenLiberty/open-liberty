@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.ws.jaxrs20.client.fat.test.ComplexClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.HandleResponsesTest;
 import com.ibm.ws.jaxrs20.client.fat.test.IBMJson4JProvidersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientAsyncInvokerTest;
+import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientAsyncInvokerTestWithConcurrency;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientInvocationTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientSyncInvokerTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20WithClientFeatureEnabledTest;
@@ -56,6 +57,7 @@ import componenttest.rules.repeater.RepeatTests;
                 IBMJson4JProvidersTest.class,
                 JacksonProvidersTest.class,
                 JAXRS20ClientAsyncInvokerTest.class,
+                JAXRS20ClientAsyncInvokerTestWithConcurrency.class,
                 JAXRS20ClientInvocationTest.class,
                 JAXRS20ClientSyncInvokerTest.class,
                 JAXRS20WithClientFeatureEnabledTest.class,
