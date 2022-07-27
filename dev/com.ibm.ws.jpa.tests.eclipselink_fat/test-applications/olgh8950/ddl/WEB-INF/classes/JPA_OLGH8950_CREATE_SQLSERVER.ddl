@@ -1,1 +1,0 @@
-CREATE TABLE SimpleMappingEntityOLGH8950 (id BIGINT NOT NULL, mappingField1 INT, embeddedField1 VARCHAR(255), embeddedField2 VARCHAR(255), PRIMARY KEY (id));

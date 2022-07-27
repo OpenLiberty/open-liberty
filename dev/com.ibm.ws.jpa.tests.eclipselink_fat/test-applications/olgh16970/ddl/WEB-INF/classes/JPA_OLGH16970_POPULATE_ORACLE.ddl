@@ -1,2 +1,0 @@
-INSERT INTO ${schemaname}.SimpleEntityOLGH16970 (ID,INTVAL1,STRVAL1) VALUES (21,51,'simple1');
-INSERT INTO ${schemaname}.SimpleEntityOLGH16970 (ID,INTVAL1,STRVAL1) VALUES (22,52,'simple2');

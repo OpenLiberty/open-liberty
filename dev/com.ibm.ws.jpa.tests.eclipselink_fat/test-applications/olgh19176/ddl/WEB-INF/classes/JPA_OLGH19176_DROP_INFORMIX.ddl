@@ -1,1 +1,0 @@
-DROP TABLE ${schemaname}.WeavedEntityAOLGH19176;

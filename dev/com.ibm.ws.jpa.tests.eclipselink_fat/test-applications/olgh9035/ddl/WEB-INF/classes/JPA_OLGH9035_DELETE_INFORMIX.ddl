@@ -1,1 +1,0 @@
-DELETE FROM ${schemaname}.SimpleEntityOLGH9035;

@@ -1,1 +1,0 @@
-DELETE FROM SimpleEntityOLGH8294;

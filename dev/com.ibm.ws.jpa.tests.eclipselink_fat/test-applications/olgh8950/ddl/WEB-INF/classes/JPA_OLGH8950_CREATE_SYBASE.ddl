@@ -1,1 +1,0 @@
-CREATE TABLE ${schemaname}.SimpleMappingEntityOLGH8950 (id NUMERIC(38) NOT NULL, mappingField1 INT NULL, embeddedField1 VARCHAR(255) NULL, embeddedField2 VARCHAR(255) NULL, UNQ_INDEX NUMERIC IDENTITY UNIQUE, PRIMARY KEY (id));

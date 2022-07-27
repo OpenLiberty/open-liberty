@@ -1,1 +1,0 @@
-DROP TABLE SimpleMappingEntityOLGH8950;

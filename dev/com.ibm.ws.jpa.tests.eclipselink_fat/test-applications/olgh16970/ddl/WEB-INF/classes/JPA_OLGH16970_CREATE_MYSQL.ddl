@@ -1,1 +1,0 @@
-CREATE TABLE ${schemaname}.SimpleEntityOLGH16970 (id BIGINT NOT NULL, intVal1 INTEGER, strVal1 VARCHAR(255), PRIMARY KEY (id)) ENGINE = innodb;

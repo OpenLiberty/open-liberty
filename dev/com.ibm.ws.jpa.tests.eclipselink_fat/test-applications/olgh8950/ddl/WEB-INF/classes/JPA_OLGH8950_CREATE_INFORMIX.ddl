@@ -1,1 +1,0 @@
-CREATE TABLE ${schemaname}.SimpleMappingEntityOLGH8950 (id NUMERIC(32,0) NOT NULL, mappingField1 INTEGER, embeddedField1 VARCHAR(255), embeddedField2 VARCHAR(255), PRIMARY KEY (id)) LOCK MODE ROW;
