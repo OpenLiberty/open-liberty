@@ -24,6 +24,7 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Flow.Publisher;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -97,8 +98,6 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     Page<Reservation> findByHostLike(String hostSubstring, Pagination pagination, Sort sort);
 
-    CopyOnWriteArrayList<Reservation> findByHostEndsWith(String hostPostfix);
-
     LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
 
     HashSet<Reservation> findByLocationAndInviteesNotContains(String location, String noninvitee);
@@ -107,5 +106,9 @@ public interface Reservations extends Repository<Reservation, Long> {
     @Select({ "start", "stop" })
     ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
 
+    LinkedBlockingQueue<Reservation> findByLowerLocationIn(List<String> locations);
+
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
+
+    CopyOnWriteArrayList<Reservation> findByUpperHostEndsWith(String hostPostfix);
 }

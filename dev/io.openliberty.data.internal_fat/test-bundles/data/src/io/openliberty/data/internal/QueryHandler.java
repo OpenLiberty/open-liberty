@@ -274,27 +274,45 @@ public class QueryHandler<T> implements InvocationHandler {
             }
         }
 
+        boolean upper = false;
+        boolean lower = false;
+        if (attribute.length() > 5 && ((upper = attribute.startsWith("Upper")) || (lower = attribute.startsWith("Lower"))))
+            attribute = attribute.substring(5);
+
+        StringBuilder a = new StringBuilder();
+        if (upper)
+            a.append("UPPER(o.");
+        else if (lower)
+            a.append("LOWER(o.");
+        else
+            a.append("o.");
+
         String name = persistence.getAttributeName(attribute, entityClass, data.provider());
-        name = name == null ? attribute : name;
+        a.append(name == null ? attribute : name);
+
+        if (upper || lower)
+            a.append(")");
+
+        String attributeExpr = a.toString();
 
         switch (condition) {
             case STARTS_WITH:
-                q.append("o.").append(name).append(negated ? " NOT " : " ").append("LIKE CONCAT(?").append(++paramCount).append(", '%')");
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(?").append(++paramCount).append(", '%')");
                 break;
             case ENDS_WITH:
-                q.append("o.").append(name).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(")");
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(")");
                 break;
             case LIKE:
-                q.append("o.").append(name).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(", '%')");
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(", '%')");
                 break;
             case BETWEEN:
-                q.append("o.").append(name).append(negated ? " NOT " : " ").append("BETWEEN ?").append(++paramCount).append(" AND ?").append(++paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ?").append(++paramCount).append(" AND ?").append(++paramCount);
                 break;
             case CONTAINS:
-                q.append(" ?").append(++paramCount).append(negated ? " NOT " : " ").append("MEMBER OF o.").append(name);
+                q.append(" ?").append(++paramCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
                 break;
             default:
-                q.append("o.").append(name).append(negated ? " NOT " : " ").append(condition.operator).append('?').append(++paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append(condition.operator).append('?').append(++paramCount);
         }
 
         return paramCount;
