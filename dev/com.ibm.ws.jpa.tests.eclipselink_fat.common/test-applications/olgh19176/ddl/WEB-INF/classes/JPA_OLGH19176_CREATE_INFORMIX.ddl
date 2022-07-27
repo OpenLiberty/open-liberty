@@ -1,0 +1,1 @@
+CREATE TABLE ${schemaname}.WeavedEntityAOLGH19176 (id NUMERIC(32,0) NOT NULL, hiddenAttribute INT8, parentOnlyAttribute VARCHAR(255), PRIMARY KEY (id)) LOCK MODE ROW;
