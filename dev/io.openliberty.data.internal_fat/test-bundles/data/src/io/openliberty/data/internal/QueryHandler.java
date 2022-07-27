@@ -63,10 +63,11 @@ import io.openliberty.data.Where;
 public class QueryHandler<T> implements InvocationHandler {
     private static enum Condition {
         BETWEEN(null, 7),
+        CONTAINS(null, 8),
         EQUALS("=", 0),
         GREATER_THAN(">", 11),
         GREATER_THAN_EQUAL(">=", 16),
-        IN(" IN ", 2),
+        IN("IN ", 2),
         LESS_THAN("<", 8),
         LESS_THAN_EQUAL("<=", 13),
         LIKE(null, 4),
@@ -245,6 +246,9 @@ public class QueryHandler<T> implements InvocationHandler {
                 if (expression.endsWith("Like"))
                     condition = Condition.LIKE;
                 break;
+            case 's': // Contains
+                if (expression.endsWith("Contains"))
+                    condition = Condition.CONTAINS;
         }
 
         boolean negated = length > condition.length + 3 //
@@ -263,20 +267,20 @@ public class QueryHandler<T> implements InvocationHandler {
         }
 
         String name = persistence.getAttributeName(attribute, entityClass, data.provider());
-        q.append("o.").append(name == null ? attribute : name);
-
-        if (negated)
-            q.append(" NOT");
+        name = name == null ? attribute : name;
 
         switch (condition) {
             case LIKE:
-                q.append(" LIKE CONCAT('%', ?").append(++paramCount).append(", '%')");
+                q.append("o.").append(name).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(", '%')");
                 break;
             case BETWEEN:
-                q.append(" BETWEEN ?").append(++paramCount).append(" AND ?").append(++paramCount);
+                q.append("o.").append(name).append(negated ? " NOT " : " ").append("BETWEEN ?").append(++paramCount).append(" AND ?").append(++paramCount);
+                break;
+            case CONTAINS:
+                q.append(" ?").append(++paramCount).append(negated ? " NOT " : " ").append("MEMBER OF o.").append(name);
                 break;
             default:
-                q.append(condition.operator).append('?').append(++paramCount);
+                q.append("o.").append(name).append(negated ? " NOT " : " ").append(condition.operator).append('?').append(++paramCount);
         }
 
         return paramCount;
