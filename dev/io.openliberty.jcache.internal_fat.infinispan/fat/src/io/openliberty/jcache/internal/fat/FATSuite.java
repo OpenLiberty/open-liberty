@@ -18,7 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.Machine;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -49,7 +49,7 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
                 JCacheDynamicUpdateTest.class,
                 JCacheAuthenticationCacheServerRestartTest.class
 })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     /*
      * Run EE9 tests in LITE mode and run all tests in FULL mode.
@@ -63,7 +63,6 @@ public class FATSuite {
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         TestPluginHelper.setTestPlugin(new InfinispanTestPlugin());
 
         /*
