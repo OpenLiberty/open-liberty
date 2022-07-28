@@ -163,7 +163,6 @@ public class BootstrapManifest {
             }
 
             Method classGetModule = Class.class.getMethod("getModule"); //$NON-NLS-1$
-            Object thisModule = classGetModule.invoke(getClass());
             Class<?> moduleLayerClass = Class.forName("java.lang.ModuleLayer"); //$NON-NLS-1$
             Method boot = moduleLayerClass.getMethod("boot"); //$NON-NLS-1$
             Method modules = moduleLayerClass.getMethod("modules"); //$NON-NLS-1$
@@ -177,9 +176,51 @@ public class BootstrapManifest {
             Method isQualified = exportsClass.getMethod("isQualified"); //$NON-NLS-1$
             Method source = exportsClass.getMethod("source"); //$NON-NLS-1$
 
-            Object bootLayer = boot.invoke(null);
-            Set<?> bootModules = (Set<?>) modules.invoke(bootLayer);
+            // The reflective code below is the equivalent of the following code:
+            // @formatter:off - turns off eclipse formatter
+            /*
+            ModuleLayer bootLayer = ModuleLayer.boot();
+            Set<Module> bootModules = bootLayer.modules();
+            Module thisModule = getClass().getModule();
             Set<String> packages = new TreeSet<>();
+
+            for (Module m : bootModules) {
+                if (m.equals(thisModule)) {
+                    // Do not calculate the exports from the framework module.
+                    // This is to handle the case where the framework is on the module path
+                    // to avoid double exports from the system.bundles
+                    continue;
+                }
+                ModuleDescriptor descriptor = m.getDescriptor();
+                if (descriptor.isAutomatic()) {
+                     // Automatic modules are supposed to export all their packages.
+                     // However, java.lang.module.ModuleDescriptor::exports returns an empty set for them.
+                     // Add all their packages (as returned by java.lang.module.ModuleDescriptor::packages)
+                     // to the list of VM supplied packages.
+                    packages.addAll(descriptor.packages());
+                } else {
+                    for (Exports export : descriptor.exports()) {
+                        String pkg = export.source();
+                        if (!(export.isQualified())) {
+                            packages.add(pkg);
+                        }
+                    }
+                }
+            }
+            */
+            // @formatter:on - turns back on eclipse formatter.
+
+            // TODO when Java 8 support ends we can replace the following reflective code with the code commented out above.
+
+            // bootLayer is type java.lang.ModuleLayer
+            Object bootLayer = boot.invoke(null);
+            // bootModules is type Set<java.lang.Module>
+            Set<?> bootModules = (Set<?>) modules.invoke(bootLayer);
+            // thisModule is type java.lang.Module
+            Object thisModule = classGetModule.invoke(getClass());
+            Set<String> packages = new TreeSet<>();
+
+            // m is type java.lang.Module
             for (Object m : bootModules) {
                 if (m.equals(thisModule)) {
                     // Do not calculate the exports from the framework module.
@@ -187,6 +228,7 @@ public class BootstrapManifest {
                     // to avoid double exports from the system.bundles
                     continue;
                 }
+                // descriptor is type java.lang.module.ModuleDescriptor
                 Object descriptor = getDescriptor.invoke(m);
                 if ((Boolean) isAutomatic.invoke(descriptor)) {
                     /*
@@ -197,14 +239,16 @@ public class BootstrapManifest {
                      */
                     packages.addAll((Set<String>) packagesMethod.invoke(descriptor));
                 } else {
+                    // export is type java.lang.module.ModuleDescriptor$Exports
                     for (Object export : (Set<?>) exports.invoke(descriptor)) {
                         String pkg = (String) source.invoke(export);
-                        if (!((Boolean) isQualified.invoke(export))) {
+                        if (!((boolean) isQualified.invoke(export))) {
                             packages.add(pkg);
                         }
                     }
                 }
             }
+
             // HACK ALERT always add javax.xml.soap to keep the incorrect behavior
             packages.add("javax.xml.soap");
             // HACK ALERT always add these IBM packages to keep incorrect behavior
