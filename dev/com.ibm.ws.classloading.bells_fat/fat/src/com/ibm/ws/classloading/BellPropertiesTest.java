@@ -113,7 +113,7 @@ public class BellPropertiesTest {
 
 
     /**
-     * Verify a service impl logged a messaging indicating the expected injection operation
+     * Verify a service impl logged a message indicating the expected injection operation
      * and property set.
      * @serviceName The simple name of a service impl class.
      * @injectOp The expected method used to inject properties into the service impl.
@@ -374,8 +374,8 @@ public class BellPropertiesTest {
         finally {
             if (propsInvalidServer.isStarted()) {
                 propsInvalidServer.stopServer(
-                        ".*CWWKG0014E:.*TIP_P0.*properties", // xml parse error on malformed property
-                        ".*CWWKF0009W:");                    // no features installed
+                        "CWWKG0014E: .*TIP_P0", // xml parse error on malformed property TIP_P0
+                        "CWWKF0009W");          // no features installed
             }
             removeSysProps(propsInvalidServer, sysProps);
          }
