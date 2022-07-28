@@ -19,8 +19,7 @@ Import-Package: \
   !io.opentelemetry.exporter.prometheus,\
   javax.net,javax.net.ssl, \
   okhttp3,\
-  okio,\
-  io.opentelemetry.api.trace
+  okio
   
 Export-Package: \
   io.opentelemetry.api.baggage.propagation; version=${openTelemetryVersion},\
