@@ -135,12 +135,15 @@ public class PolicyExecutorTest {
         blockerLatch2.countDown();
 
         globalExecutor.deactivate(0);
+        globalExecutor.getThreadPool().shutdownNow();
+        globalExecutor.awaitTermination(30, TimeUnit.SECONDS);
+
     }
 
     // Verify that expedite can be -1 (unlimited) but otherwise not negative or greater than maximum concurrency,
     // except where maximum concurrency is -1 (unlimited).
     @Test
-    public void testExpediteConfiguration() {
+    public void testExpediteConfiguration() throws Exception {
         PolicyExecutor executor = provider.create("testExpediteConfiguration");
 
         try {
@@ -178,6 +181,8 @@ public class PolicyExecutorTest {
         executor.expedite(0);
 
         executor.shutdownNow();
+
+        executor.awaitTermination(30, TimeUnit.SECONDS);
     }
 
     /**
