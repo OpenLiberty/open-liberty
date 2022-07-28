@@ -1134,7 +1134,10 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     private List<String> getServerReconfigMessages() {
         List<String> extraMsgs = new ArrayList<String>();
-        extraMsgs.add(MSG_CWWKO0219I_SSL_PORT_READY);
+        // removed the "default" keystore key.p12 - so, this message won't appear for reconfigs now
+        // This method was added to aid in a timing issue, but, hopefully the default keystore was contributing to
+        // that timing issue and its removal will clean up the root cause of the timing problem
+//        extraMsgs.add(MSG_CWWKO0219I_SSL_PORT_READY);
         return extraMsgs;
     }
 
