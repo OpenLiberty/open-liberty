@@ -33,6 +33,8 @@ public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable
     private final Object[] args;
 
     PublisherImpl(String jpql, ExecutorService executor, EntityInfo entityInfo, Method method, int numParams, Object[] args) {
+        super(executor, 200);
+
         this.jpql = jpql;
         this.entityInfo = entityInfo;
         this.method = method;

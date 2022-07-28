@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -1173,6 +1174,7 @@ public class DataTestServlet extends FATServlet {
 
             @Override
             public void onNext(Reservation item) {
+                System.out.println(Long.toHexString(Thread.currentThread().getId()) + " onNext " + item);
                 results.add(item);
                 if (++count % REQUEST_SIZE == 0)
                     subscription.request(REQUEST_SIZE);
@@ -1189,56 +1191,22 @@ public class DataTestServlet extends FATServlet {
             }
         });
 
-        Object result;
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030001L, ((Reservation) result).meetingID);
+        Set<Long> expected = new HashSet<Long>();
+        expected.addAll(List.of(10030001L, 10030002L, 10030003L, 10030004L, 10030005L, 10030006L, 10030007L, 10030008L, 10030009L));
 
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030002L, ((Reservation) result).meetingID);
+        for (int i = 1; i <= 10; i++) {
+            Object result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+            assertNotNull(result);
+            System.out.println("Received " + result);
+            if (result instanceof Throwable)
+                throw new AssertionError("onError notification received", (Throwable) result);
+            else if (result instanceof String)
+                assertEquals("DONE", result); // DONE notification
+            else
+                assertEquals(result.toString() + " is not expected", true, expected.remove(((Reservation) result).meetingID));
+        }
 
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030003L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030004L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030005L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030006L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030007L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030008L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030009L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals("DONE", result);
+        assertEquals("Some results are missing", Collections.EMPTY_SET, expected);
 
         // Paging where the final page includes less than the maximum page size,
         Page<Reservation> page1 = reservations.findByHostLike("testRepositoryCustom-host",
