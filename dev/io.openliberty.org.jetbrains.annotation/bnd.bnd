@@ -17,9 +17,7 @@ Bundle-Description: Liberty JetBrains Annotation, version ${bVersion}; Jakarta E
 bVersion=1.0
 
 Import-Package: \
-  !android.net.http,\
-  javax.net,\
-  javax.net.ssl
+  *
 
 Export-Package: \
   org.jetbrains.*;version="1.0.0"

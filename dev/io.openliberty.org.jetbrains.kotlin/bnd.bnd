@@ -17,9 +17,7 @@ Bundle-Description: Liberty JetBrains Kotlin, version ${bVersion}; Jakarta Enabl
 bVersion=1.0
 
 Import-Package: \
-  !android.net.http,\
-  javax.net,\
-  javax.net.ssl
+  *
 
 Export-Package: \
   kotlin;version="1.0.0",\

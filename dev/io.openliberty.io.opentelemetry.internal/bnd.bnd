@@ -36,7 +36,8 @@ Export-Package: \
   io.opentelemetry.exporter.*; version=${openTelemetryVersion},\
   io.opentelemetry.instrumentation.*; version=${openTelemetryVersion},\
   io.opentelemetry.sdk.*; version=${openTelemetryVersion},\
-  io.opentelemetry.semconv.*; version=${openTelemetryVersion}
+  io.opentelemetry.semconv.*; version=${openTelemetryVersion},\
+  io.opentelemetry.proto.*; version=${openTelemetryVersion}
 
 -buildpath: \
   io.opentelemetry.instrumentation:opentelemetry-instrumentation-api;version=1.14.0.alpha,\

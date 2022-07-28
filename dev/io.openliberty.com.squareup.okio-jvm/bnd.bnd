@@ -17,9 +17,7 @@ Bundle-Description: Liberty, Square Okio JVM version ${bVersion}; Jakarta Enable
 bVersion=1.0
 
 Import-Package: \
-  !android.net.http,\
-  javax.net,javax.net.ssl,\
-  kotlin.*
+  *
 
 Export-Package: \
   okio;version="3.0.0",\
