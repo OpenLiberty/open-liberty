@@ -18,7 +18,7 @@ src: \
 
 fat.project: true
 tested.features: appsecurity-4.0, expressionlanguage-4.0, servlet-5.0, cdi-3.0, pages-3.0, jsonp-2.0, \
-                 restfulwsclient-3.0, concurrent-2.0, restfulws-3.0
+                 restfulwsclient-3.0, concurrent-2.0, restfulws-3.0, sessioncache-1.0
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
