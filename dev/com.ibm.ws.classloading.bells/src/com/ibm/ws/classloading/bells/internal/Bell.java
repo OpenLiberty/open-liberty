@@ -105,7 +105,7 @@ public class Bell implements LibraryChangeListener {
     private Map<String, Object> config;
 
     private static final String SERVICE_ATT = "service";
-    private static final String ENABLE_SPI_VISIBILITY_ATT = "enableSpiVisibility";
+    private static final String SPI_VISIBILITY_ATT = "spiVisibility";
     private static final String PROPERTIES_ATT = "properties";
 
     @Activate
@@ -161,7 +161,7 @@ public class Bell implements LibraryChangeListener {
         }
 
         final Set<String> serviceNames = getServiceNames((String[]) config.get(SERVICE_ATT));
-        final boolean spiVisibility = !!!betaFenceCheck() ? false : getSpiVisibility((Boolean) config.get(ENABLE_SPI_VISIBILITY_ATT), libraryRef);
+        final boolean spiVisibility = !!!betaFenceCheck() ? false : getSpiVisibility((Boolean) config.get(SPI_VISIBILITY_ATT), libraryRef);
         final Map<String, String> properties = !!!betaFenceCheck() ? null : getProperties(config); // PROPERTIES_ATT
 
         // create a tracker that will register the services once the library becomes available
@@ -228,8 +228,8 @@ public class Bell implements LibraryChangeListener {
     }
 
     @SuppressWarnings("restriction")
-    boolean getSpiVisibility(Boolean enableSpiVisibility, String libraryId) {
-        boolean spiVisibility = Boolean.TRUE.equals(enableSpiVisibility);
+    boolean getSpiVisibility(Boolean configuredSpiVisibility, String libraryId) {
+        boolean spiVisibility = Boolean.TRUE.equals(configuredSpiVisibility);
         if (spiVisibility) {
             if (GLOBAL_SHARED_LIBRARY_ID.equals(libraryId)) {
                 // The liberty "global" library is intended for use by EE applications, not OSGi services
@@ -253,13 +253,13 @@ public class Bell implements LibraryChangeListener {
      * @return a map containing zero or more BELL properties, otherwise return null whenever
      *         the configuration lacks a properties element.
      */
-    private Map<String, String> getProperties(Map<String, Object> config) {
+    private Map<String, String> getProperties(Map<String, Object> configuration) {
         Map<String, String> pMap = null;
-        if (config.get(propKeyPrefix + "config.referenceType") != null) {
+        if (configuration.get(propKeyPrefix + "config.referenceType") != null) {
             pMap = new HashMap<String, String>();
-            for (String key : config.keySet()) {
+            for (String key : configuration.keySet()) {
                 if (key.startsWith(propKeyPrefix) && !!!key.endsWith("config.referenceType")) {
-                    Object pValue = config.get(key);
+                    Object pValue = configuration.get(key);
                     if (pValue instanceof String) {
                         String pName = key.substring(propKeyPrefixLen);
                         pMap.put(pName, (String) pValue);

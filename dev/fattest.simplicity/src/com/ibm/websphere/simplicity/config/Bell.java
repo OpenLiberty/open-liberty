@@ -25,7 +25,7 @@ public class Bell extends ConfigElement {
 
     private Set<String> service;
 
-    private String enableSpiVisibility;
+    private String spiVisibility;
 
     @XmlAttribute(required = true)
     public String getLibraryRef() {
@@ -46,12 +46,12 @@ public class Bell extends ConfigElement {
     }
 
     @XmlAttribute
-    public String getEnableSpiVisibility() {
-        return enableSpiVisibility;
+    public String getSpiVisibility() {
+        return spiVisibility;
     }
 
-    public void setEnableSpiVisibility(String spiVisibility) {
-        this.enableSpiVisibility = spiVisibility;
+    public void setSpiVisibility(String spiVisibility) {
+        this.spiVisibility = spiVisibility;
     }
 
     @Override
@@ -64,8 +64,8 @@ public class Bell extends ConfigElement {
             buf.append("libraryRef=").append(getLibraryRef()).append(' ');
         if (getService() != null)
             buf.append("service=").append(getService()).append(' ');
-        if (getEnableSpiVisibility() != null)
-            buf.append("enableSpiVisibility=").append(getEnableSpiVisibility()).append(' ');
+        if (getSpiVisibility() != null)
+            buf.append("spiVisibility=").append(getSpiVisibility()).append(' ');
         buf.append('}');
         return buf.toString();
     }
