@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -236,7 +236,11 @@ public class LDAPRegressionTest {
 
         ServerConfiguration clone = basicConfiguration.clone();
         LdapRegistry ldap = createLdapRegistry(clone);
-        ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "5s"), new SearchResultsCache(true, 5555, 3333, "2s")));
+        /*
+         * Upped attributes cache timeout from 5 seconds to 7 seconds because of slow Windows VM times, if Windows VM perf improves,
+         * we coul drop back to 5s.
+         */
+        ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "7s"), new SearchResultsCache(true, 5555, 3333, "2s")));
         updateConfigDynamically(libertyServer, clone);
 
         assertEquals("LdapRealm", urServlet.getRealm());
@@ -257,7 +261,7 @@ public class LDAPRegressionTest {
         assertEquals("There should only be 1 entry", 1, result.getList().size());
 
         // sleep to allow attributes cache to timeout.
-        Thread.sleep(2500);
+        Thread.sleep(4500);
 
         trMsgs = libertyServer.findStringsInLogsAndTraceUsingMark(trTrue);
         assertTrue("Should not have found, " + trTrue, trMsgs.isEmpty());
