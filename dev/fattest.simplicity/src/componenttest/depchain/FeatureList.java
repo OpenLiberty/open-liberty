@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,9 +41,14 @@ public class FeatureList {
         Process featureListProc = new ProcessBuilder("java", "-jar", featureListJar, featureList.getAbsolutePath())
                         .redirectErrorStream(true)
                         .start();
-        boolean completed = featureListProc.waitFor(2, TimeUnit.MINUTES);
+        int minutesToWait = 2;
+        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+            minutesToWait = 4;
+            // Windows is currently running slow. When we improve our automated Windows performance, this can be removed.
+        }
+        boolean completed = featureListProc.waitFor(minutesToWait, TimeUnit.MINUTES);
         if (!completed) {
-            Exception e = new Exception("Generating " + FAT_FEATURE_LIST + " timed out after 2 minutes. Aborting process.");
+            Exception e = new Exception("Generating " + FAT_FEATURE_LIST + " timed out after " + minutesToWait + " minutes. Aborting process.");
             Log.error(c, m, e);
             featureListProc.destroyForcibly();
             featureListProc.waitFor();
