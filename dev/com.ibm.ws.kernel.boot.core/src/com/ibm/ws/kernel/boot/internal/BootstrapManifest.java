@@ -25,6 +25,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -160,7 +161,7 @@ public class BootstrapManifest {
             if (version < 9) {
                 return null;
             }
-            List<String> packages = new ArrayList<>();
+
             Method classGetModule = Class.class.getMethod("getModule"); //$NON-NLS-1$
             Object thisModule = classGetModule.invoke(getClass());
             Class<?> moduleLayerClass = Class.forName("java.lang.ModuleLayer"); //$NON-NLS-1$
@@ -178,6 +179,7 @@ public class BootstrapManifest {
 
             Object bootLayer = boot.invoke(null);
             Set<?> bootModules = (Set<?>) modules.invoke(bootLayer);
+            Set<String> packages = new TreeSet<>();
             for (Object m : bootModules) {
                 if (m.equals(thisModule)) {
                     // Do not calculate the exports from the framework module.
@@ -203,7 +205,13 @@ public class BootstrapManifest {
                     }
                 }
             }
-            Collections.sort(packages);
+            // HACK ALERT always add javax.xml.soap to keep the incorrect behavior
+            packages.add("javax.xml.soap");
+            // HACK ALERT always add these IBM packages to keep incorrect behavior
+            packages.add("com.ibm.tools.attach");
+            packages.add("com.ibm.security.jgss");
+            packages.add("com.ibm.security.auth.module");
+            packages.add("com.ibm.security.auth.callback");
             StringBuilder result = new StringBuilder();
             for (String pkg : packages) {
                 if (result.length() != 0) {
