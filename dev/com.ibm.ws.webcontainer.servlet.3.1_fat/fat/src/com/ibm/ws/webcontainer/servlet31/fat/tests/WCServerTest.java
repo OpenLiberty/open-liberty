@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
@@ -177,12 +178,12 @@ public class WCServerTest extends LoggingTest {
             appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_MAPPING_APP_NAME);
             LOG.info("addAppToServer : " + TEST_SERVLET_MAPPING_APP_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingApp);
+                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingApp, DISABLE_VALIDATION);
 
             appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_MAPPING_ANNO_APP_NAME);
             LOG.info("addAppToServer : " + TEST_SERVLET_MAPPING_ANNO_APP_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingAnnoApp);
+                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), TestServletMappingAnnoApp, DISABLE_VALIDATION);
         }
 
         SHARED_SERVER.startIfNotStarted();
