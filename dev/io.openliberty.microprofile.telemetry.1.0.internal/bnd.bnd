@@ -51,17 +51,16 @@ Private-Package: \
   io.openliberty.microprofile.telemetry.internal.cdi
 
 -buildpath: \
-    com.google.guava:failureaccess;version=1.0.1,\
     com.ibm.websphere.appserver.api.servlet;version=latest,\
     io.openliberty.jakarta.servlet.5.0;version=latest,\
     io.openliberty.jakarta.restfulWS.3.0;version=latest,\
     io.openliberty.jakarta.annotation.2.0;version=latest,\
     io.openliberty.jakarta.interceptor.2.0;version=latest,\
     io.openliberty.jakarta.cdi.3.0;version=latest,\
-    io.openliberty.microprofile.telemetry.internal.common;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
     com.ibm.ws.injection;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     io.openliberty.microprofile.telemetry.internal;version=latest, \
+    io.openliberty.io.opentelemetry;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.3.0
