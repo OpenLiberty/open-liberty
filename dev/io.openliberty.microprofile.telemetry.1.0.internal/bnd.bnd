@@ -62,4 +62,5 @@ Private-Package: \
     com.ibm.ws.injection;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     io.openliberty.microprofile.telemetry.internal;version=latest, \
+    io.openliberty.io.opentelemetry;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.3.0

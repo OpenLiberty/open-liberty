@@ -22,12 +22,12 @@ Import-Package: \
   kotlin.*
 
 Export-Package: \
-  okio;version="1.0.0",\
-  okio.*;version="1.0.0"
+  okio;version="3.0.0",\
+  okio.*;version="3.0.0"
 
 instrument.disabled: true
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \
-  com.squareup.okio:okio-jvm;version=3.0.0
+  com.squareup.okio:okio-jvm;version=latest

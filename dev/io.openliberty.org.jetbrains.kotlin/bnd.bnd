@@ -18,7 +18,8 @@ bVersion=1.0
 
 Import-Package: \
   !android.net.http,\
-  javax.net,javax.net.ssl
+  javax.net,\
+  javax.net.ssl
 
 Export-Package: \
   kotlin;version="1.0.0",\
@@ -29,6 +30,5 @@ instrument.disabled: true
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \
-  org.jetbrains:annotations;version=13.0,\
   org.jetbrains.kotlin:kotlin-stdlib;version=1.6.20,\
-  org.jetbrains.kotlin:kotlin-stdlib-common;version=1.6.2,\
+  org.jetbrains.kotlin:kotlin-stdlib-common;version=1.6.2

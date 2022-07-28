@@ -8,28 +8,18 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
-
-Bundle-Name: Square OkHttp Jakarta
-Bundle-SymbolicName: io.openliberty.com.squareup.okhttp
-Bundle-Description: Liberty Square OkHttp, version ${bVersion}; Jakarta Enabled
-
+-include ~../cnf/resources/bnd/transform.props
 bVersion=1.0
+publish.wlp.jar.suffix: dev/api/stable
 
-Import-Package: \
-  !android.net.http,\
-  javax.net,\
-  javax.net.ssl,\
-  kotlin.*,\
-  okio
-
+Bundle-SymbolicName: io.openliberty.io.opentelemetry; singleton:=true
+  
 Export-Package: \
-  okhttp3;version="4.10.0",\
-  okhttp3.*;version="4.10.0"
-
-instrument.disabled: true
-
--fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
+  io.opentelemetry.api.trace; version="1.14.0",\
+  io.opentelemetry.api; version="1.14.0",\
+  io.opentelemetry.api.baggage; version="1.14.0"
 
 -buildpath: \
-  com.squareup.okhttp3:okhttp;version=latest
+  io.opentelemetry:opentelemetry-api;version=1.14.0
+
+WS-TraceGroup: opentelemetry
