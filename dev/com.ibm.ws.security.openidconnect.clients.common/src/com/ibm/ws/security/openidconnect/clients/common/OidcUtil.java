@@ -25,8 +25,11 @@ import javax.servlet.http.Cookie;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.CookieHelper;
+
+import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
 
 /**
  * Collection of utility methods for String to byte[] conversion.
@@ -231,7 +234,7 @@ public class OidcUtil {
 
     @Trivial
     public static void createNonceCookie(OidcClientRequest oidcClientRequest, String nonceValue, String state, ConvergedClientConfig clientConfig) {
-        String cookieName = HashUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig, state);
+        String cookieName = OidcCookieUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig.getId(), state);
         String cookieValue = createNonceCookieValue(nonceValue, state, clientConfig);
         Cookie cookie = OidcClientUtil.createCookie(cookieName, cookieValue, oidcClientRequest.getRequest());
         oidcClientRequest.getResponse().addCookie(cookie);
@@ -239,7 +242,7 @@ public class OidcUtil {
 
     @Trivial
     public static boolean verifyNonce(OidcClientRequest oidcClientRequest, String nonceInIDToken, ConvergedClientConfig clientConfig, String responseState) {
-        String cookieName = HashUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig, responseState);
+        String cookieName = OidcCookieUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig.getId(), responseState);
         String cookieValue = createNonceCookieValue(nonceInIDToken, responseState, clientConfig);
         String oldCookieValue = CookieHelper.getCookieValue(oidcClientRequest.getRequest().getCookies(), cookieName);
         OidcClientUtil.invalidateReferrerURLCookie(oidcClientRequest.getRequest(), oidcClientRequest.getResponse(), cookieName);

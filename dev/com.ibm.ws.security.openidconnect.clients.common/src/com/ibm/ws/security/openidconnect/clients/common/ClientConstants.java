@@ -54,7 +54,6 @@ public class ClientConstants {
     public static final String IMPLICIT = Constants.IMPLICIT; // "implicit"
     public final static String AUTHORIZATION_CODE = "authorization_code";
     public static final String STATE = Constants.STATE; // "state";
-    public static final String WAS_OIDC_STATE_KEY = "WASOidcState";
     public static final String WAS_REQ_URL_OIDC = "WASReqURLOidc";
     public static final String WAS_OIDC_CODE = "WASOidcCode";
     public static final String WAS_OIDC_NONCE = "WASOidcNonce";

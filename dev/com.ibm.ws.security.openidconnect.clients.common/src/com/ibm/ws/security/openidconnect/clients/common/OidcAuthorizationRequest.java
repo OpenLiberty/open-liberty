@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
@@ -32,71 +33,71 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
+import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequest;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
+import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
+import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
+import io.openliberty.security.oidcclientcore.utils.Utils;
 
-public class OidcAuthorizationRequestCreator {
+public class OidcAuthorizationRequest extends AuthorizationRequest {
 
-    public static final TraceComponent tc = Tr.register(OidcAuthorizationRequestCreator.class);
+    public static final TraceComponent tc = Tr.register(OidcAuthorizationRequest.class);
 
-    HttpServletRequest request;
-    HttpServletResponse response;
     ConvergedClientConfig clientConfig;
 
-    public OidcAuthorizationRequestCreator(HttpServletRequest request, HttpServletResponse res, ConvergedClientConfig clientConfig) {
-        this.request = request;
-        this.response = res;
+    public OidcAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ConvergedClientConfig clientConfig) {
+        super(request, response);
         this.clientConfig = clientConfig;
     }
 
-    public ProviderAuthenticationResult sendAuthorizationEndpointRequest() {
+    @Override
+    @FFDCIgnore(OidcUrlNotHttpsException.class)
+    public ProviderAuthenticationResult sendRequest() {
+        try {
+            return super.sendRequest();
+        } catch (OidcUrlNotHttpsException e) {
+            Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", e.getUrl());
+            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+        }
+    }
+
+    @Override
+    protected String getAuthorizationEndpoint() throws OidcUrlNotHttpsException {
         String authorizationEndpoint = clientConfig.getAuthorizationEndpointUrl();
         if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, authorizationEndpoint)) {
-            Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", authorizationEndpoint);
-            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+            throw new OidcUrlNotHttpsException(authorizationEndpoint);
         }
+        return authorizationEndpoint;
+    }
 
-        createSessionIfNecessary();
+    @Override
+    protected String getRedirectUrl() throws OidcUrlNotHttpsException {
+        String redirectUrl = OIDCClientAuthenticatorUtil.setRedirectUrlIfNotDefined(request, clientConfig);
+        if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, redirectUrl)) {
+            throw new OidcUrlNotHttpsException(redirectUrl);
+        }
+        return redirectUrl;
+    }
 
-        String state = generateStateValue();
+    @Override
+    protected boolean shouldCreateSession() {
+        return clientConfig.createSession();
+    }
+
+    @Override
+    protected void storeStateValue(String state) {
         createAndAddStateCookie(state);
-
-        String redirect_url = OIDCClientAuthenticatorUtil.setRedirectUrlIfNotDefined(request, clientConfig);
-        if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, redirect_url)) {
-            Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", redirect_url);
-            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
-        }
-
-        return redirectToAuthorizationEndpoint(state, redirect_url);
-    }
-
-    void createSessionIfNecessary() {
-        if (clientConfig.createSession()) {
-            try {
-                request.getSession(true);
-            } catch (Exception e) {
-                // ignore it. Session exists
-            }
-        }
-    }
-
-    String generateStateValue() {
-        String strRandom = OidcUtil.generateRandom(OidcUtil.RANDOM_LENGTH);
-        String timestamp = OidcUtil.getTimeStamp();
-        String state = timestamp + strRandom;
-        if (!request.getMethod().equalsIgnoreCase("GET") && request.getParameter("oidc_client") != null) {
-            state = state + request.getParameter("oidc_client");
-        }
-        return state;
     }
 
     void createAndAddStateCookie(String state) {
-        String cookieName = ClientConstants.WAS_OIDC_STATE_KEY + HashUtils.getStrHashCode(state);
-        String cookieValue = HashUtils.createStateCookieValue(clientConfig, state);
+        String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
+        String cookieValue = OidcCookieUtils.createStateCookieValue(clientConfig.getClientSecret(), state);
         createAndAddCookie(cookieName, cookieValue);
     }
 
     void createAndAddWasReqUrlCookie(String state) {
-        String urlCookieName = ClientConstants.WAS_REQ_URL_OIDC + HashUtils.getStrHashCode(state);
+        String urlCookieName = ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
         String cookieValue = getReqURL();
         createAndAddCookie(urlCookieName, cookieValue);
     }
@@ -111,7 +112,8 @@ public class OidcAuthorizationRequestCreator {
         response.addCookie(c);
     }
 
-    ProviderAuthenticationResult redirectToAuthorizationEndpoint(String state, String redirect_url) {
+    @Override
+    protected ProviderAuthenticationResult redirectToAuthorizationEndpoint(String state, String redirectUrl) {
         String authzEndPointUrlWithQuery = null;
         try {
             ProviderAuthenticationResult result = checkIfOpenIdScopeIsMissing();
@@ -121,7 +123,7 @@ public class OidcAuthorizationRequestCreator {
 
             String acr_values = request.getParameter("acr_values");
 
-            authzEndPointUrlWithQuery = buildAuthorizationUrlWithQuery((OidcClientRequest) request.getAttribute(ClientConstants.ATTRIB_OIDC_CLIENT_REQUEST), state, redirect_url, acr_values);
+            authzEndPointUrlWithQuery = buildAuthorizationUrlWithQuery((OidcClientRequest) request.getAttribute(ClientConstants.ATTRIB_OIDC_CLIENT_REQUEST), state, redirectUrl, acr_values);
 
             savePostParameters();
 
@@ -299,7 +301,7 @@ public class OidcAuthorizationRequestCreator {
 
     private String createJavaScriptForRedirect(String loginURL, String state, String domain) {
 
-        String cookieName = ClientConstants.WAS_REQ_URL_OIDC + HashUtils.getStrHashCode(state);
+        String cookieName = ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
         StringBuilder sb = new StringBuilder();
 
         String strDomain = "";

@@ -36,7 +36,6 @@ import org.junit.rules.TestName;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.openidconnect.clients.common.AuthorizationCodeHandler;
-import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
@@ -51,6 +50,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import test.common.SharedOutputManager;
 
 public class OidcClientAuthenticatorTest {
@@ -194,7 +194,7 @@ public class OidcClientAuthenticatorTest {
             final Cookie[] cookies = new Cookie[] {
                     cookie1
             };
-            final String cookieName = ClientConstants.WAS_OIDC_STATE_KEY +
+            final String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY +
                     TEST_ORIGINAL_STATE.hashCode();
             final String originalState = TEST_ORIGINAL_STATE;
 
@@ -264,7 +264,7 @@ public class OidcClientAuthenticatorTest {
             final Cookie[] cookies = new Cookie[] {
                     cookie1
             };
-            final String cookieName = ClientConstants.WAS_OIDC_STATE_KEY +
+            final String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY +
                     TEST_ORIGINAL_STATE.hashCode();
             final String originalState = TEST_ORIGINAL_STATE;
             mock.checking(new Expectations() {

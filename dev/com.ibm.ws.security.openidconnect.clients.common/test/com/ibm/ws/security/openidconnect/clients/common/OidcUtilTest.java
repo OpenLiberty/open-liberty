@@ -33,6 +33,7 @@ import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
+import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
 import test.common.SharedOutputManager;
 
 public class OidcUtilTest {
@@ -136,7 +137,7 @@ public class OidcUtilTest {
                 will(returnValue("serect"));
             }
         });
-        final String expectedNonceCookieName = HashUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, convClientConfig, state);
+        final String expectedNonceCookieName = OidcCookieUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, "client01", state);
         final String expectedNonceCookieValue = OidcUtil.createNonceCookieValue(nonceValue, state, convClientConfig);
 
         mock.checking(new Expectations() {

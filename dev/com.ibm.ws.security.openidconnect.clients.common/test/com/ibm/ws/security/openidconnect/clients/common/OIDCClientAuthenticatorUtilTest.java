@@ -52,6 +52,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.encoder.Base64Coder;
+import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.IDToken;
@@ -69,6 +70,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import test.common.SharedOutputManager;
 
 public class OIDCClientAuthenticatorUtilTest {
@@ -504,12 +506,12 @@ public class OIDCClientAuthenticatorUtilTest {
                 one(req).getCookies();
                 will(returnValue(cookies));
                 one(cookie1).getName();
-                will(returnValue(ClientConstants.WAS_OIDC_STATE_KEY + cookieState.hashCode()));
+                will(returnValue(OidcClientStorageConstants.WAS_OIDC_STATE_KEY + cookieState.hashCode()));
                 one(cookie1).getValue();
                 will(returnValue(currentState));
             }
         });
-        createReferrerUrlCookieExpectations(ClientConstants.WAS_OIDC_STATE_KEY + cookieState.hashCode());
+        createReferrerUrlCookieExpectations(OidcClientStorageConstants.WAS_OIDC_STATE_KEY + cookieState.hashCode());
     }
 
     private void createCreateResultExpectations(String idToken) {
@@ -786,7 +788,7 @@ public class OIDCClientAuthenticatorUtilTest {
 
     private void createResponseStateExpectations(final String stateKey) {
         final Cookie[] cookies = new Cookie[] { cookie1 };
-        final String cookieName = ClientConstants.WAS_OIDC_STATE_KEY + ANOTHER_ORIGINAL_STATE.hashCode();
+        final String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + ANOTHER_ORIGINAL_STATE.hashCode();
         mock.checking(new Expectations() {
             {
                 one(req).getCookies();
@@ -1123,7 +1125,7 @@ public class OIDCClientAuthenticatorUtilTest {
     public void testVerifyResponseStateFailure() {
         try {
             final String originalState = TEST_ORIGINAL_STATE;
-            final String cookieName = ClientConstants.WAS_OIDC_STATE_KEY + ("notA" + originalState).hashCode();
+            final String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + ("notA" + originalState).hashCode();
             mock.checking(new Expectations() {
                 {
                     one(convClientConfig).getClientId();

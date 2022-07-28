@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.CookieHelper;
+
+import io.openliberty.security.oidcclientcore.utils.Utils;
 
 /**
  * Processes the End-User redirection to the Client by the OP.
@@ -133,7 +135,7 @@ public class RedirectionProcessor {
     }
 
     private String getOriginalRequestUrl(String state) {
-        String cookieName = ClientConstants.WAS_REQ_URL_OIDC + HashUtils.getStrHashCode(state);
+        String cookieName = ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
         Cookie[] cookies = request.getCookies();
         String requestUrl = CookieHelper.getCookieValue(cookies, cookieName);
         OidcClientUtil.invalidateReferrerURLCookie(request, response, cookieName);

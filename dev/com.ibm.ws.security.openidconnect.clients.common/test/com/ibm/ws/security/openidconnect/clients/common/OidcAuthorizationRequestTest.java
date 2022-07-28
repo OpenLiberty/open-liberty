@@ -37,7 +37,7 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import test.common.SharedOutputManager;
 
-public class OidcAuthorizationRequestCreatorTest {
+public class OidcAuthorizationRequestTest {
 
     protected static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
@@ -64,7 +64,7 @@ public class OidcAuthorizationRequestCreatorTest {
     private final WebAppSecurityConfig webAppSecConfig = mock.mock(WebAppSecurityConfig.class);
     private final ConvergedClientConfig convClientConfig = mock.mock(ConvergedClientConfig.class);
 
-    private OidcAuthorizationRequestCreator creator;
+    private OidcAuthorizationRequest oidcAuthzReq;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -74,7 +74,7 @@ public class OidcAuthorizationRequestCreatorTest {
     @Before
     public void setUp() {
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(webAppSecConfig);
-        creator = new OidcAuthorizationRequestCreator(request, response, convClientConfig);
+        oidcAuthzReq = new OidcAuthorizationRequest(request, response, convClientConfig);
     }
 
     @After
@@ -101,7 +101,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(configuredValue));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
             assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
         } catch (Throwable t) {
@@ -121,7 +121,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(configuredValue));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
             assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
         } catch (Throwable t) {
@@ -144,7 +144,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(null));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
             assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
         } catch (Throwable t) {
@@ -168,7 +168,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             String expectedQuery = originalUrl + "&=";
@@ -194,7 +194,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             // Parameter value should have been encoded
@@ -221,7 +221,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             String expectedQuery = originalUrl + "&=" + paramValue;
@@ -246,7 +246,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(null));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
@@ -271,7 +271,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             // Parameter name and value should have been encoded
@@ -298,7 +298,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             // Parameter name and value should have been encoded
@@ -324,7 +324,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(null));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
@@ -349,7 +349,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             String encodedSpecialChars = "%60%7E%21%40%23%24%25%5E%26*%28%29-_%3D%2B%5B%7B%5D%7D%5C%7C%3B%3A%27%22%2C%3C.%3E%2F%3F";
@@ -381,7 +381,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     }
                 });
             }
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             assertEquals("Returned query should have matched original query.", originalUrl, newUrl);
@@ -417,7 +417,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(null));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             // Parameter name and value should have been encoded
@@ -455,7 +455,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(foundParamValue2));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             // Parameter names and values should have been encoded
@@ -495,7 +495,7 @@ public class OidcAuthorizationRequestCreatorTest {
                     will(returnValue(paramValue4));
                 }
             });
-            creator.addForwardLoginParams(parameters);
+            oidcAuthzReq.addForwardLoginParams(parameters);
             String newUrl = parameters.buildRequestUrl();
 
             // Parameter names and values should have been encoded
@@ -510,7 +510,7 @@ public class OidcAuthorizationRequestCreatorTest {
     public void test_getReqUrlNull() {
         try {
             createReqUrlExpectations(null);
-            String strUrl = creator.getReqURL();
+            String strUrl = oidcAuthzReq.getReqURL();
 
             assertEquals("The URL must not contain a query string.", TEST_URL, strUrl);
         } catch (Throwable t) {
@@ -523,7 +523,7 @@ public class OidcAuthorizationRequestCreatorTest {
         try {
             final String query = "response_type=code";
             createReqUrlExpectations(query);
-            String strUrl = creator.getReqURL();
+            String strUrl = oidcAuthzReq.getReqURL();
             String expect = TEST_URL + "?" + query;
 
             assertEquals("The URL must contain the query string.", expect, strUrl);
@@ -538,7 +538,7 @@ public class OidcAuthorizationRequestCreatorTest {
             String value = "code>\"><script>alert(100)</script>";
             final String query = "response_type=" + value;
             createReqUrlExpectations(query);
-            String strUrl = creator.getReqURL();
+            String strUrl = oidcAuthzReq.getReqURL();
             String expect = TEST_URL + "?response_type=" + value;
 
             assertEquals("The URL must contain the unencoded query string.", expect, strUrl);

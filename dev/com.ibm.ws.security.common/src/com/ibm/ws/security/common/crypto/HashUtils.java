@@ -15,11 +15,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.common.TraceConstants;
 
 public class HashUtils {
@@ -70,7 +70,7 @@ public class HashUtils {
             try {
                 md = MessageDigest.getInstance(algorithm);
                 md.update(input.getBytes(charset));
-                output = Base64Coder.toString(Base64Coder.base64Encode(md.digest()));
+                output = Base64.getEncoder().encodeToString(md.digest());
             } catch (NoSuchAlgorithmException nsae) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Exception instanciating MessageDigest. The algorithm is " + algorithm + nsae);
