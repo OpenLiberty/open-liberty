@@ -154,8 +154,7 @@ public class OpenAPITestUtil {
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(null);
             waitForApplicationProcessorRemovedEvent(server, appName);
-            assertNotNull("FAIL: App didn't report is has been stopped.",
-                server.waitForStringInLogUsingMark("CWWKZ0009I.*" + appName));
+            server.removeInstalledAppForValidation(appName);
         } catch (Exception e) {
             fail("FAIL: Could not remove the application " + appName);
         }
