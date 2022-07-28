@@ -13,15 +13,17 @@
 bVersion=1.0
 openTelemetryVersion=1.14.0
 
-Bundle-SymbolicName: io.openliberty.microprofile.telemetry.internal; singleton:=true
+Bundle-SymbolicName: io.openliberty.io.opentelemetry.internal; singleton:=true
 
 Import-Package: \
   !io.opentelemetry.exporter.prometheus,\
   javax.net,javax.net.ssl, \
   okhttp3,\
   okio,\
-  io.opentelemetry.api.trace
-  
+  io.opentelemetry.api.trace,\
+  io.opentelemetry.api,\
+  io.opentelemetry.api.baggage
+
 Export-Package: \
   io.opentelemetry.api.baggage.propagation; version=${openTelemetryVersion},\
   io.opentelemetry.api.common; version=${openTelemetryVersion},\
