@@ -39,8 +39,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 
@@ -79,9 +81,6 @@ public class ArtifactDownloader implements AutoCloseable {
 
     public Set<String> getMissingFeaturesFromRepo(List<String> mavenCoords, MavenRepository repository) throws InstallException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
-        checkValidProxy();
-        configureProxyAuthentication();
-        configureAuthentication(repository);
 
         String repo = FormatUrlSuffix(repository.getRepositoryUrl());
         Map<String, String> URLtoMavenCoordMap = new HashMap<>();
@@ -185,9 +184,6 @@ public class ArtifactDownloader implements AutoCloseable {
         checksumFormats[1] = "SHA1";
         checksumFormats[2] = "SHA256";
 
-        checkValidProxy();
-        configureProxyAuthentication();
-        configureAuthentication(repository);
         dLocation = FormatPathSuffix(dLocation);
         String repo = FormatUrlSuffix(repository.getRepositoryUrl());
 
@@ -297,17 +293,44 @@ public class ArtifactDownloader implements AutoCloseable {
         }
     }
 
-    private void configureAuthentication(final MavenRepository repository) {
+    private void configureAuthentication(final MavenRepository repository) throws InstallException {
 
         if (repository.getUserId() != null && repository.getPassword() != null &&
             envMap.get("https.proxyUser") == null && envMap.get("http.proxyUser") == null) {
+            final String encodedPassword = formatAndCheckRepositoryPassword(repository.getPassword());
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(repository.getUserId(), repository.getPassword().toCharArray());
+                    return new PasswordAuthentication(repository.getUserId(), PasswordUtil.passwordDecode(encodedPassword).toCharArray());
                 }
             });
         }
+    }
+
+    /**
+     * @param pwd - repository password
+     * @return a formated password string
+     * @throws InstallException if decoding the password fails due to an unsupported algorithm or invalid password.
+     */
+    private String formatAndCheckRepositoryPassword(String pwd) throws InstallException {
+        String crypto_algorithm = PasswordUtil.getCryptoAlgorithm(pwd);
+        if (!pwd.startsWith("{")) {
+            pwd = "{}" + pwd;
+            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
+                                   + InstallUtils.NEWLINE);
+            return pwd;
+        }
+
+        if (PasswordUtil.passwordDecode(pwd) == null) {
+            if (!PasswordUtil.isValidCryptoAlgorithm(crypto_algorithm)) {
+                // don't accept unsupported crypto algorithm
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED"));
+            } else {
+                throw new InstallException(Messages.PASSWORD_UTIL_MESSAGES.getLogMessage("PASSWORDUTIL_CYPHER_EXCEPTION"));
+            }
+        }
+
+        return pwd;
     }
 
     /**
@@ -316,16 +339,17 @@ public class ArtifactDownloader implements AutoCloseable {
      * @return
      */
     protected boolean testConnection(MavenRepository repository) {
-        configureProxyAuthentication();
-        configureAuthentication(repository);
         try {
+            checkValidProxy();
+            configureProxyAuthentication();
+            configureAuthentication(repository);
             int responseCode = ArtifactDownloaderUtils.exists(repository.getRepositoryUrl(), envMap);
-            logger.fine("Response code: " + responseCode);
+            logger.fine("Response code - " + repository.getRepositoryUrl() + ":" + responseCode);
             if (responseCode != 404) {
                 // repo is fine for use
                 return true;
             }
-        } catch (IOException e) {
+        } catch (IOException | InstallException e) {
             logger.warning(repository.getRepositoryUrl() + " cannot be connected");
             logger.fine(e.getMessage());
         }
