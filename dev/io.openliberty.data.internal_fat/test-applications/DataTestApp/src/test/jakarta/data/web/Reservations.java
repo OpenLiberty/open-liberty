@@ -13,14 +13,18 @@ package test.jakarta.data.web;
 import java.time.OffsetDateTime;
 import java.util.AbstractCollection;
 import java.util.AbstractList;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Flow.Publisher;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -94,7 +98,17 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     Page<Reservation> findByHostLike(String hostSubstring, Pagination pagination, Sort sort);
 
+    LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
+
+    HashSet<Reservation> findByLocationAndInviteesNotContains(String location, String noninvitee);
+
     // Use a record as the return type
     @Select({ "start", "stop" })
     ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
+
+    LinkedBlockingQueue<Reservation> findByLowerLocationIn(List<String> locations);
+
+    ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
+
+    CopyOnWriteArrayList<Reservation> findByUpperHostEndsWith(String hostPostfix);
 }

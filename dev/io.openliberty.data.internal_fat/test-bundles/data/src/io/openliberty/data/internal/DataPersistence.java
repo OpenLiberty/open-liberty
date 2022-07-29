@@ -171,12 +171,14 @@ public class DataPersistence {
                     String columnName = column == null || column.value().length() == 0 ? //
                                     id == null || id.value().length() == 0 ? null : id.value() : //
                                     column.value();
+                    boolean isCollection = Collection.class.isAssignableFrom(field.getType());
 
                     String columnType;
                     if (embeddable == null) {
                         columnType = id != null || keyAttributeName.equals(attributeName) ? "id" : //
                                         "version".equals(attributeName) ? "version" : //
-                                                        "basic";
+                                                        isCollection ? "element-collection" : //
+                                                                        "basic";
                     } else {
                         columnType = "embedded";
                         embeddableTypes.add(field.getType());

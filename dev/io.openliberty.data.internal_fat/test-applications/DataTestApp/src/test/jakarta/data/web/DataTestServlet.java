@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -373,6 +374,57 @@ public class DataTestServlet extends FATServlet {
         // expect that 2 remain
         assertNotNull(products.findItem("TDM-SE"));
         assertNotNull(products.findItem("TDM-EE"));
+    }
+
+    /**
+     * Query for distinct values of an attribute.
+     */
+    @Test
+    public void testDistinctAttribute() {
+        Product prod1 = new Product();
+        prod1.id = "TDA-T-L1";
+        prod1.name = "TestDistinctAttribute T-Shirt Size Large";
+        prod1.price = 7.99f;
+        products.addOrModify(prod1);
+
+        Product prod2 = new Product();
+        prod2.id = "TDA-T-M1";
+        prod1.name = "TestDistinctAttribute T-Shirt Size Medium";
+        prod2.price = 7.89f;
+        products.addOrModify(prod2);
+
+        Product prod3 = new Product();
+        prod3.id = "TDA-T-S1";
+        prod3.name = "TestDistinctAttribute T-Shirt Size Small";
+        prod3.price = 7.79f;
+        products.addOrModify(prod3);
+
+        Product prod4 = new Product();
+        prod4.id = "TDA-T-M2";
+        prod4.name = "TestDistinctAttribute T-Shirt Size Medium";
+        prod4.price = 7.49f;
+        products.addOrModify(prod4);
+
+        Product prod5 = new Product();
+        prod5.id = "TDA-T-XS1";
+        prod5.name = "TestDistinctAttribute T-Shirt Size Extra Small";
+        prod5.price = 7.59f;
+        products.addOrModify(prod5);
+
+        Product prod6 = new Product();
+        prod6.id = "TDA-T-L2";
+        prod6.name = "TestDistinctAttribute T-Shirt Size Large";
+        prod6.price = 7.49f;
+        products.addOrModify(prod6);
+
+        List<String> uniqueProductNames = products.findByNameLike("TestDistinctAttribute");
+
+        // only 4 of the 6 names are unique
+        assertIterableEquals(List.of("TestDistinctAttribute T-Shirt Size Extra Small",
+                                     "TestDistinctAttribute T-Shirt Size Large",
+                                     "TestDistinctAttribute T-Shirt Size Medium",
+                                     "TestDistinctAttribute T-Shirt Size Small"),
+                             uniqueProductNames);
     }
 
     /**
@@ -1079,7 +1131,7 @@ public class DataTestServlet extends FATServlet {
         assertArrayEquals(new Reservation[] { r9, r3, r2, r1 }, array,
                           Comparator.<Reservation, Long> comparing(o -> o.meetingID)
                                           .thenComparing(Comparator.<Reservation, String> comparing(o -> o.host))
-                                          .thenComparing(Comparator.<Reservation, String> comparing(o -> o.invitees.toString()))
+                                          .thenComparing(Comparator.<Reservation, String> comparing(o -> new TreeSet<String>(o.invitees).toString()))
                                           .thenComparing(Comparator.<Reservation, String> comparing(o -> o.location))
                                           .thenComparing(Comparator.<Reservation, Instant> comparing(o -> o.start.toInstant()))
                                           .thenComparing(Comparator.<Reservation, Instant> comparing(o -> o.stop.toInstant())));
@@ -1247,6 +1299,51 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
         assertEquals(null, page3.next());
+
+        // find by member of a collection
+        assertIterableEquals(List.of(10030002L, 10030007L),
+                             reservations.findByInviteesContainsOrderByMeetingID("testRepositoryCustom-2b@example.org")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+
+        // find by not a member of a collection
+        Set<Reservation> set = reservations.findByLocationAndInviteesNotContains("050-2 B120", "testRepositoryCustom-2b@example.org");
+        assertNotNull(set);
+        assertEquals(set.toString(), 1, set.size());
+        Reservation found = set.iterator().next();
+        assertEquals(10030005L, found.meetingID);
+
+        // EndsWith, Upper
+        assertIterableEquals(List.of(10030002L, 10030005L, 10030007L),
+                             reservations.findByUpperHostEndsWith("HOST2@EXAMPLE.ORG")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(Collections.EMPTY_LIST,
+                             reservations.findByUpperHostEndsWith("host2@example.org") // should not match with lower case
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // StartsWith
+        assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
+                             reservations.findByLocationStartsWith("050-2 B")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // Lower
+        assertIterableEquals(List.of(10030001L, 10030004L, 10030006L, 10030008L),
+                             reservations.findByLowerLocationIn(List.of("050-2 g105", "030-2 e314", "050-2 h115", "050-3 H103")) // H103 has upper case and should not match
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
 
         assertEquals(false, reservations.deleteByHostIn(List.of("testRepositoryCustom-host5@example.org")));
 

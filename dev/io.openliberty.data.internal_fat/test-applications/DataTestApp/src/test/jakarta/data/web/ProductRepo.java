@@ -10,11 +10,14 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.List;
 import java.util.Set;
 
 import io.openliberty.data.Data;
+import io.openliberty.data.OrderBy;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
+import io.openliberty.data.Select;
 import io.openliberty.data.Update;
 import io.openliberty.data.Where;
 
@@ -27,6 +30,10 @@ public interface ProductRepo {
 
     @Query("DELETE FROM Product o WHERE o.id IN ?1")
     int discontinueProducts(Set<String> ids);
+
+    @Select(value = "name", distinct = true)
+    @OrderBy("name")
+    List<String> findByNameLike(String nameContains);
 
     Product[] findByVersionGreaterThanEqualOrderById(long minVersion);
 

@@ -63,14 +63,17 @@ import io.openliberty.data.Where;
 public class QueryHandler<T> implements InvocationHandler {
     private static enum Condition {
         BETWEEN(null, 7),
+        CONTAINS(null, 8),
+        ENDS_WITH(null, 8),
         EQUALS("=", 0),
         GREATER_THAN(">", 11),
         GREATER_THAN_EQUAL(">=", 16),
-        IN(" IN ", 2),
+        IN("IN ", 2),
         LESS_THAN("<", 8),
         LESS_THAN_EQUAL("<=", 13),
         LIKE(null, 4),
-        NOT_EQUALS("<>", 3);
+        NOT_EQUALS("<>", 3),
+        STARTS_WITH(null, 10);
 
         final int length;
         final String operator;
@@ -245,6 +248,15 @@ public class QueryHandler<T> implements InvocationHandler {
                 if (expression.endsWith("Like"))
                     condition = Condition.LIKE;
                 break;
+            case 'h': // StartsWith | EndsWith
+                if (expression.endsWith("StartsWith"))
+                    condition = Condition.STARTS_WITH;
+                else if (expression.endsWith("EndsWith"))
+                    condition = Condition.ENDS_WITH;
+                break;
+            case 's': // Contains
+                if (expression.endsWith("Contains"))
+                    condition = Condition.CONTAINS;
         }
 
         boolean negated = length > condition.length + 3 //
@@ -262,21 +274,45 @@ public class QueryHandler<T> implements InvocationHandler {
             }
         }
 
-        String name = persistence.getAttributeName(attribute, entityClass, data.provider());
-        q.append("o.").append(name == null ? attribute : name);
+        boolean upper = false;
+        boolean lower = false;
+        if (attribute.length() > 5 && ((upper = attribute.startsWith("Upper")) || (lower = attribute.startsWith("Lower"))))
+            attribute = attribute.substring(5);
 
-        if (negated)
-            q.append(" NOT");
+        StringBuilder a = new StringBuilder();
+        if (upper)
+            a.append("UPPER(o.");
+        else if (lower)
+            a.append("LOWER(o.");
+        else
+            a.append("o.");
+
+        String name = persistence.getAttributeName(attribute, entityClass, data.provider());
+        a.append(name == null ? attribute : name);
+
+        if (upper || lower)
+            a.append(")");
+
+        String attributeExpr = a.toString();
 
         switch (condition) {
+            case STARTS_WITH:
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(?").append(++paramCount).append(", '%')");
+                break;
+            case ENDS_WITH:
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(")");
+                break;
             case LIKE:
-                q.append(" LIKE CONCAT('%', ?").append(++paramCount).append(", '%')");
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(", '%')");
                 break;
             case BETWEEN:
-                q.append(" BETWEEN ?").append(++paramCount).append(" AND ?").append(++paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ?").append(++paramCount).append(" AND ?").append(++paramCount);
+                break;
+            case CONTAINS:
+                q.append(" ?").append(++paramCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
                 break;
             default:
-                q.append(condition.operator).append('?').append(++paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append(condition.operator).append('?').append(++paramCount);
         }
 
         return paramCount;
@@ -287,6 +323,7 @@ public class QueryHandler<T> implements InvocationHandler {
         Select select = method.getAnnotation(Select.class);
         Class<?> type = select == null ? null : select.type();
         String[] cols = select == null ? null : select.value();
+        boolean distinct = select != null && select.distinct();
         if (type == null || Select.AutoDetect.class.equals(type)) {
             Class<?> returnType = method.getReturnType();
             if (!Iterable.class.isAssignableFrom(returnType)) {
@@ -299,18 +336,23 @@ public class QueryHandler<T> implements InvocationHandler {
                     type = returnType;
             }
         }
+
+        q.append("SELECT");
+
+        if (distinct)
+            q.append(" DISTINCT");
+
         if (type == null || Select.AutoDetect.class.equals(type) ||
             inheritance && entityInfo.type.isAssignableFrom(type))
             if (cols == null || cols.length == 0) {
-                q.append("SELECT o FROM ");
+                q.append(" o FROM ");
             } else {
-                q.append("SELECT");
                 for (int i = 0; i < cols.length; i++)
                     q.append(i == 0 ? " o." : ", o.").append(cols[i]);
                 q.append(" FROM ");
             }
         else {
-            q.append("SELECT NEW ").append(type.getName());
+            q.append(" NEW ").append(type.getName());
             boolean first = true;
             if (cols == null || cols.length == 0)
                 for (String name : persistence.getAttributeNames(entityInfo.type, data.provider())) {
