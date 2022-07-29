@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -474,7 +474,7 @@ var core = (function() {
         alert.addClass("alert-" + messageType);
         if(dismissable) {
             alert.addClass("alert-dismissable");
-            alert.append("<button type=\"button\" role=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>");
+            alert.append("<button type=\"button\" role=\"button\" class=\"close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>");
         }
         alert.append(messageText);
         if(jqXHR && jqXHR.responseText) {

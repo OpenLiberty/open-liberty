@@ -23,6 +23,7 @@
 	"editorForm": "true",
 	"orion": "true",
 	"login": "true",
-	"apiMsgUtils": "true"
+	"apiMsgUtils": "true",
+	"bootstrap": "true"
 }
 
