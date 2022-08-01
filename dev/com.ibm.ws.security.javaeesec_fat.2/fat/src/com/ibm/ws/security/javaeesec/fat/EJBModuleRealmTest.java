@@ -109,6 +109,7 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
     }
 
     protected static void startServer(String config, String appName, String appName2) throws Exception {
+        myServer.removeAllInstalledAppsForValidation(); // We're changing configuration, so clear the list of apps expected to start
         myServer.setServerConfigurationFile(config);
         myServer.addInstalledAppForValidation(appName);
         myServer.addInstalledAppForValidation(appName2);
@@ -194,8 +195,6 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
-        myServer.removeInstalledAppForValidation(EJB_REALM_APP_NAME);
-        myServer.removeInstalledAppForValidation(EJB_REALM2_APP_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -277,8 +276,6 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
-        myServer.removeInstalledAppForValidation(EJB_REALM_APP_NAME);
-        myServer.removeInstalledAppForValidation(EJB_REALM2_APP_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 

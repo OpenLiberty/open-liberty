@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat_helper;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,35 +38,44 @@ public class FATHelper {
          * Get the apps to remove.
          */
         ConfigElementList<Application> toRemove = new ConfigElementList<Application>(config.getApplications().stream().filter(app -> appIdsToReload.contains(app.getId())).collect(Collectors.toList()));
+        List<String> appNames = toRemove.stream().map(FATHelper::getAppName).collect(Collectors.toList());
 
         /*
          * Remove the applications.
          */
         config.getApplications().removeAll(toRemove);
-        updateConfigDynamically(server, config, true);
+        updateConfigDynamically(server, config, appNames, null);
 
         /*
          * Reload applications.
          */
         config.getApplications().addAll(toRemove);
-        updateConfigDynamically(server, config, true);
+        updateConfigDynamically(server, config, null, appNames);
     }
 
     /**
      * This method will the reset the log and trace marks for log and trace searches, update the
      * configuration and then wait for the server to re-initialize. Optionally it will then wait for the application to start.
      *
-     * @param server The server to update.
-     * @param config The configuration to use.
-     * @param waitForAppToStart Wait for the application to start.
+     * @param server       The server to update.
+     * @param config       The configuration to use.
+     * @param appsStopping The names of apps which are expected to stop after the config update
+     * @param appsStarting The names of apps which are expected to start after the config update
      * @throws Exception If there was an issue updating the server configuration.
      */
-    public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config, boolean waitForAppToStart) throws Exception {
+    public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config, List<String> appsStopping, List<String> appsStarting) throws Exception {
         resetMarksInLogs(server);
         server.updateServerConfiguration(config);
         server.waitForStringInLogUsingMark("CWWKG001[7-8]I");
-        if (waitForAppToStart) {
-            server.waitForStringInLogUsingMark("CWWKZ0003I"); //CWWKZ0003I: The application **** updated in 0.020 seconds.
+        if (appsStopping != null) {
+            for (String name : appsStopping) {
+                assertNotNull(name + " application did not stop", server.waitForStringInLogUsingMark("CWWKZ0009I:.*" + name));
+            }
+        }
+        if (appsStarting != null) {
+            for (String name : appsStarting) {
+                assertNotNull(name + " application did not start", server.waitForStringInLogUsingMark("CWWKZ0001I:.*" + name));
+            }
         }
     }
 
@@ -76,5 +88,27 @@ public class FATHelper {
     public static void resetMarksInLogs(LibertyServer server) throws Exception {
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         server.setMarkToEndOfLog(server.getMostRecentTraceFile());
+    }
+
+    /**
+     * Get the name of an application based on the server configuration
+     *
+     * @param application
+     * @return
+     */
+    private static String getAppName(Application application) {
+        if (application.getName() != null) {
+            return application.getName();
+        } else if (application.getLocation() != null) {
+            String name = application.getLocation();
+            if (name.lastIndexOf("/") != -1) {
+                name = name.substring(name.lastIndexOf("/"));
+            }
+            if (name.toLowerCase().endsWith(".ear") || name.toLowerCase().endsWith(".war")) {
+                name = name.substring(0, name.length() - 4);
+            }
+            return name;
+        }
+        throw new RuntimeException("Couldn't work out the app name for config element " + application);
     }
 }
