@@ -16,7 +16,6 @@ openTelemetryVersion=1.14.0
 Bundle-SymbolicName: io.openliberty.io.opentelemetry.internal; singleton:=true
 
 Import-Package: \
-  !io.opentelemetry.exporter.prometheus,\
   javax.net,\
   javax.net.ssl,\
   okhttp3,\
