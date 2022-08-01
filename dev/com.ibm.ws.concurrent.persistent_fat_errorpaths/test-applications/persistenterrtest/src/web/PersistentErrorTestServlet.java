@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,9 +139,10 @@ public class PersistentErrorTestServlet extends HttpServlet {
             if (status != null)
                 throw new Exception("Task did not complete in a timely manner or was not autopurged upon completion. " + status);
 
+            // Some failures, such as transaction timeout, are not recorded by the counter, so it is valid to be less than 2.
             long counter = SharedFailingTask.counter.get();
-            if (counter != 2)
-                throw new Exception("Task should be attempted exactly 2 times (with both attempts failing). Instead " + counter);
+            if (counter > 2)
+                throw new Exception("Task should be attempted at most 2 times (with both attempts failing). Instead " + counter);
         } finally {
             SharedFailingTask.clear();
         }
