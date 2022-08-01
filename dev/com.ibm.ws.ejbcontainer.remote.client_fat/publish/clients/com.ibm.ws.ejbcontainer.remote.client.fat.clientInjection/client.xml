@@ -31,6 +31,8 @@
     <javaPermission className="java.net.SocketPermission" name="*" actions="connect,listen,resolve"/>
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    
+    <orb id="defaultOrb" orbSSLInitTimeout="90"/>
 
     <logging traceSpecification="com.ibm.ws.clientcontainer.*=all:Naming=all:Injection=all:EJBContainer=all:org.apache.yoko.*=all:com.ibm.ws.security.csiv2.*=all" maxFileSize="0"/>
 </client>
