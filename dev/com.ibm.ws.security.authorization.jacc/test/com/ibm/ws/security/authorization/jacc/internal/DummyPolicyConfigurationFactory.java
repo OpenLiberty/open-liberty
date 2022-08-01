@@ -22,7 +22,14 @@ public class DummyPolicyConfigurationFactory extends PolicyConfigurationFactory 
         this.pc = pc;
     }
 
-    public DummyPolicyConfigurationFactory() {
+    public DummyPolicyConfigurationFactory() {}
+
+    public PolicyConfiguration getPolicyConfiguration() {
+        return pc;
+    }
+
+    public PolicyConfiguration getPolicyConfiguration(String contextID) {
+        return pc;
     }
 
     @Override

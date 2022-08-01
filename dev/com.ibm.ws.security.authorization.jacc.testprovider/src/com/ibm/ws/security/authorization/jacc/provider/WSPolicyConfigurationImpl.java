@@ -12,6 +12,7 @@
 package com.ibm.ws.security.authorization.jacc.provider;
 
 import java.security.Permission;
+import java.security.Permissions;
 import java.security.PermissionCollection;
 import java.security.SecurityPermission;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import java.util.Map;
 
 import javax.security.jacc.PolicyConfiguration;
 import javax.security.jacc.PolicyContextException;
+
+//import jakarta.security.jacc.PolicyConfiguration;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -297,7 +300,61 @@ public class WSPolicyConfigurationImpl implements PolicyConfiguration {
     public Map<String, List<Permission>> getRoleToPermMap() {
         return roleToPermMap;
     }
+    
+    // JakartaEE9 Authorization begin
+    
+    public PermissionCollection getExcludedPermissions() {
+        Permissions permList = new Permissions();
+        if (state != ContextState.STATE_IN_SERVICE) {
+            throw new java.lang.UnsupportedOperationException("getExcludedPermissions called when the PolicyConfiguration is not in the in_service state. The current state is = "
+                                                              + getStateString(state));
+        }
+        List<Permission> excludedPermissionList = getExcludedList();  
+        for (Permission p : excludedPermissionList) {
+            permList.add(p);
+        }
+        return permList;         
+    }
+    
+    public PermissionCollection getUncheckedPermissions() {
+        Permissions permList = new Permissions();
+        if (state != ContextState.STATE_IN_SERVICE) {
+            throw new java.lang.UnsupportedOperationException("getUncheckedPermissions called when the PolicyConfiguration is not in the in_service state. The current state is = "
+                                                              + getStateString(state));
+        }
+        List<Permission> uncheckedPermissionList = getUncheckedList();  
+        for (Permission p : uncheckedPermissionList) {
+            permList.add(p);
+        }
+        return permList;         
+    }
+    
+    public Map<String, PermissionCollection> getPerRolePermissions() {
+       Map<String, PermissionCollection> permList = new HashMap<String, PermissionCollection>();
+       PermissionCollection newPermList = null;    
+       if (state != ContextState.STATE_IN_SERVICE) {
+           throw new java.lang.UnsupportedOperationException("getPerRolePermissions called when the PolicyConfiguration is not in the in_service state. The current state is = "
+                           + getStateString(state));
+       }
 
+       Map<String, List<Permission>> roleToPermMap = getRoleToPermMap();
+       if (roleToPermMap != null) {
+           for (Map.Entry<String, List<Permission>> entry : roleToPermMap.entrySet())  {
+               newPermList = new Permissions();
+               List<Permission> pList = roleToPermMap.get((List<Permission>)entry.getValue());
+               if (pList != null) {
+                   for (Permission p : pList) {
+                      newPermList.add(p);
+                   }
+                   permList.put(entry.getKey(), newPermList);
+               }   
+           }
+        } 
+        return permList;
+    }
+    
+    // JakartaEE9 Authorization - end
+    
     private String getStateString(ContextState state) {
         String output = null;
         switch (state) {

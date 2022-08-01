@@ -15,6 +15,7 @@ import java.security.SecurityPermission;
 
 import javax.security.jacc.PolicyConfiguration;
 import javax.security.jacc.PolicyConfigurationFactory;
+import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
 
 import com.ibm.websphere.ras.Tr;
@@ -30,6 +31,49 @@ public class WSPolicyConfigurationFactoryImpl extends PolicyConfigurationFactory
         if (allConfigs == null) {
             allConfigs = AllPolicyConfigs.getInstance();
         }
+    }
+
+    public PolicyConfiguration getPolicyConfiguration() {
+        System.out.println("in new getPolicyConfiguration");
+
+        String contextID = null;
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(new SecurityPermission("setPolicy"));
+        }
+
+        contextID = PolicyContext.getContextID();
+        if (contextID == null) {
+            return null;
+        } else {
+            return getPolicyConfiguration(contextID);
+        }
+
+    }
+
+    public PolicyConfiguration getPolicyConfiguration(String contextID) {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(new SecurityPermission("setPolicy"));
+        }
+
+        WSPolicyConfigurationImpl policyConfig = allConfigs.getPolicyConfig(contextID);
+        if (policyConfig == null) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "hashMap does not contain the contextID: " + contextID);
+            try {
+                policyConfig = new WSPolicyConfigurationImpl(contextID);
+            } catch (PolicyContextException e) {
+            }
+            allConfigs.setPolicyConfig(contextID, policyConfig);
+        }
+        try {
+            policyConfig.setState(ContextState.STATE_OPEN);
+        } catch (PolicyContextException e) {
+        }
+
+        return policyConfig;
+
     }
 
     @Override

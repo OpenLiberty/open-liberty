@@ -24,6 +24,14 @@ public class DummyPolicyConfigurationFactory extends PolicyConfigurationFactory 
 
     public DummyPolicyConfigurationFactory() {}
 
+    public PolicyConfiguration getPolicyConfiguration() {
+        return pc;
+    }
+
+    public PolicyConfiguration getPolicyConfiguration(String contextID) {
+        return pc;
+    }
+
     @Override
     public PolicyConfiguration getPolicyConfiguration(String contextId, boolean flag) throws PolicyContextException {
         return pc;
