@@ -19,7 +19,7 @@ Please provide the following information the week before the GA/beta date (to al
 
 2. Who is the target persona? Who do you expect to use the update? eg application developer, operations.
 
-3. Write a paragraph to summarises the update, including the following points:
+3. Write a paragraph to summarise the update, including the following points:
    
    - A sentence or two that introduces the update to someone new to the general technology/concept.
 
