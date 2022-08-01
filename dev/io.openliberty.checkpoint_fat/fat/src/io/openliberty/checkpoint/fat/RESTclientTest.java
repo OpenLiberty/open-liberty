@@ -77,6 +77,7 @@ public class RESTclientTest {
 
         server.startServer();
         HttpUtils.findStringInUrl(server, "webappWAR/app/client/properties", "{\'property\':\'value\'}");
+        HttpUtils.findStringInUrl(server, "webappWAR/app/client/early/properties", "{\'property\':\'value\'}");
         server.stopServer();
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
@@ -89,6 +90,7 @@ public class RESTclientTest {
         server.checkpointRestore();
 
         HttpUtils.findStringInUrl(server, "webappWAR/app/client/properties", "{\'property\':\'alternate value\'}");
+        HttpUtils.findStringInUrl(server, "webappWAR/app/client/early/properties", "{\'property\':\'alternate value\'}");
 
         URL postURL = new URL("http://localhost:" + server.getHttpDefaultPort() + "/webappWAR/app/client/setHost/endpoint");
         int responseCode = HttpUtils.getHttpConnection(postURL, 5000, HTTPRequestMethod.POST).getResponseCode();
