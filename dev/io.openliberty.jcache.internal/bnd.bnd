@@ -45,4 +45,10 @@ instrument.classesExcludes: io/openliberty/jcache/internal/resources/*.class
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.serialization;version=latest
+	
+	
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	com.ibm.ws.kernel.boot;version=latest
 		
