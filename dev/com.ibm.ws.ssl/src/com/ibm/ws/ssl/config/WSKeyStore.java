@@ -57,6 +57,7 @@ import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateFactory;
 import com.ibm.ws.crypto.certificateutil.DefaultSubjectDN;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStore;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStoreList;
@@ -120,6 +121,14 @@ public class WSKeyStore extends Properties {
     private static final String IBMPKCS11Impl_PROVIDER_NAME = "IBMPKCS11Impl";
     private static final String SUNPKCS11_PROVIDER_NAME = "SunPKCS11";
     private final String contextProvider = JSSEProviderFactory.getInstance().getContextProvider();
+
+    /** SafKeyring prefixes **/
+    private static final String PREFIX_SAFKEYRING = "safkeyring:";
+    private static final String PREFIX_SAFKEYRINGHYBRID = "safkeyringhybrid:";
+    private static final String PREFIX_SAFKEYRINGHW = "safkeyringhw:";
+    private static final String PREFIX_SAFKEYRINGJCE = "safkeyringjce:";
+    private static final String PREFIX_SAFKEYRINGJCEHYBRID = "safkeyringjcehybrid:";
+    private static final String PREFIX_SAFKEYRINGJCECCA = "safkeyringjcecca:";
 
     private final Map<String, SerializableProtectedString> certAliasInfo = new HashMap<String, SerializableProtectedString>();
 
@@ -251,12 +260,6 @@ public class WSKeyStore extends Properties {
             setFileBased(false);
         }
 
-        if ((type.equals(Constants.KEYSTORE_TYPE_JCERACFKS) || type.equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
-             || type.equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
-            if (password == null || password.isEmpty())
-                password = racfPass;
-        }
-
         this.isDefault = LibertyConstants.DEFAULT_KEYSTORE_REF_ID.equals(name);
 
         if (this.fileBased) {
@@ -324,6 +327,16 @@ public class WSKeyStore extends Properties {
                 // resolve paths now
                 setLocation(this.location);
             }
+        } else {
+            if ((type.equals(Constants.KEYSTORE_TYPE_JCERACFKS) || type.equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
+                 || type.equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
+                if (password == null || password.isEmpty())
+                    password = racfPass;
+
+                // adjust the location if needed
+                location = processKeyringURL(location);
+            }
+
         }
 
         setUpInternalProperties();
@@ -1802,4 +1815,40 @@ public class WSKeyStore extends Properties {
         }
         return original;
     }
+
+    protected String processKeyringURL(String safKeyringURL) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "processKeyringURL: " + safKeyringURL);
+        String processedUrl = safKeyringURL;
+
+        //Check the prefix first,  it may need to be converted first
+        String replacePrefix = null;
+        if (JavaInfo.majorVersion() >= 11) {
+            if (processedUrl.startsWith(PREFIX_SAFKEYRING))
+                replacePrefix = PREFIX_SAFKEYRINGJCE;
+            else if (processedUrl.startsWith(PREFIX_SAFKEYRINGHYBRID))
+                replacePrefix = PREFIX_SAFKEYRINGJCEHYBRID;
+            else if (processedUrl.startsWith(PREFIX_SAFKEYRINGHW))
+                replacePrefix = PREFIX_SAFKEYRINGJCECCA;
+        } else {
+            if (processedUrl.startsWith(PREFIX_SAFKEYRINGJCE))
+                replacePrefix = PREFIX_SAFKEYRING;
+            else if (processedUrl.startsWith(PREFIX_SAFKEYRINGJCEHYBRID))
+                replacePrefix = PREFIX_SAFKEYRINGHYBRID;
+            else if (processedUrl.startsWith(PREFIX_SAFKEYRINGJCECCA))
+                replacePrefix = PREFIX_SAFKEYRINGHW;
+        }
+
+        if (replacePrefix != null) {
+            int index = processedUrl.indexOf(":");
+            String removedPrefix = processedUrl.substring(index + 1);
+            processedUrl = replacePrefix + removedPrefix;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "processKeyringURL: " + processedUrl);
+
+        return processedUrl;
+    }
+
 }
