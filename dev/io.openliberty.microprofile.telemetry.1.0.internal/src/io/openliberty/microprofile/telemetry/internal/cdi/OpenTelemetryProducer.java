@@ -39,6 +39,7 @@ import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.exporter.jaeger.JaegerGrpcSpanExporter;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
+import io.opentelemetry.exporter.zipkin.ZipkinSpanExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
@@ -59,7 +60,6 @@ public class OpenTelemetryProducer {
     private static final String ENV_JAEGER_TIMEOUT_PROPERTY = "JAEGER_TIMEOUT";
     private static final String CONFIG_JAEGER_TIMEOUT_PROPERTY = "jaeger.timeout";
 
-
     @Inject
     Config config;
 
@@ -69,9 +69,7 @@ public class OpenTelemetryProducer {
     public OpenTelemetry getOpenTelemetry() {
 
         HashMap<String,String> telemetryProperties = getTelemetryProperties();
-
         SpanExporter exporter = getSpanExporter(telemetryProperties);
-
         Resource serviceNameResource = getServiceName(telemetryProperties);
         
         SdkTracerProvider tracerProvider =
@@ -102,13 +100,15 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     private SpanExporter getSpanExporter(Map<String,String> oTelConfigs) {
 
-        //default endpoint
-        String endpoint = "http://localhost:14250";
+        //default otlp endpoint
+        String endpoint = "http://localhost:4317";
         String timeout = "10000";
 
         //Environment properties take priority
         if(oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY).equals("jaeger") || oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY).equals("jaeger")){
-                if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "JAEGER_ENDPOINT")!= null){
+            //default jaeger endpoint
+            endpoint = "http://localhost:14250";
+            if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "JAEGER_ENDPOINT")!= null){
                     endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "JAEGER_ENDPOINT");
                 }
                 else if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "jaeger.endpoint") != null){
@@ -121,12 +121,24 @@ public class OpenTelemetryProducer {
                     timeout = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + CONFIG_JAEGER_TIMEOUT_PROPERTY);
                 }
                 return JaegerGrpcSpanExporter.builder()
-                                .setEndpoint(endpoint)
-                                .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
-                                .build();
+                            .setEndpoint(endpoint)
+                            .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
+                            .build();
+        }
+        if(oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY).equals("zipkin") || oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY).equals("zipkin")){
+            //default zipkin endpoint
+            endpoint = "http://localhost:9411/api/v2/spans";
+            if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "ZIPKIN_ENDPOINT")!= null){
+                    endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "ZIPKIN_ENDPOINT");
+                }
+            else if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "zipkin.endpoint") != null){
+                    endpoint = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "zipkin.endpoint");
+            }
+                return ZipkinSpanExporter.builder()
+                            .setEndpoint(endpoint)
+                            .build();
         }
         else{
-            endpoint = "http://localhost:4317";
             if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_ENDPOINT") != null){
                 endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_ENDPOINT");
             }
@@ -144,9 +156,7 @@ public class OpenTelemetryProducer {
                             .setEndpoint(endpoint)
                             .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
                             .build();
-        
     }
-
     private HashMap<String,String> getTelemetryProperties(){
         HashMap<String,String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {

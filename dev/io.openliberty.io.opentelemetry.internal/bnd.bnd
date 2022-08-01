@@ -21,6 +21,11 @@ Import-Package: \
   javax.net.ssl,\
   okhttp3,\
   okio,\
+  zipkin2,\
+  zipkin2.codec,\
+  zipkin2.internal,\
+  zipkin2.reporter,\
+  zipkin2.reporter.okhttp3,\
   io.opentelemetry.api.trace,\
   io.opentelemetry.api,\
   io.opentelemetry.api.baggage
@@ -56,6 +61,7 @@ Export-Package: \
   io.opentelemetry:opentelemetry-exporter-jaeger;version=1.14.0,\
   io.opentelemetry:opentelemetry-exporter-otlp-common;version=1.14.0,\
   io.opentelemetry:opentelemetry-exporter-otlp-trace;version=1.14.0,\
+  io.opentelemetry:opentelemetry-exporter-zipkin;version=1.14.0,\
   io.opentelemetry:opentelemetry-semconv;version=1.14.0.alpha
 
 WS-TraceGroup: opentelemetry

@@ -10,23 +10,28 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
 
-Bundle-Name: JetBrains Kotlin Jakarta
-Bundle-SymbolicName: io.openliberty.org.jetbrains.kotlin
-Bundle-Description: Liberty JetBrains Kotlin, version ${bVersion}; Jakarta Enabled
+Bundle-Name: Zipkin Core Library 
+Bundle-SymbolicName: io.openliberty.io.zipkin.zipkin2
+Bundle-Description: Zipkin Core Library
 
 bVersion=1.0
 
-Import-Package: \
-  *
-
 Export-Package: \
-  kotlin;version="1.6.20",\
-  kotlin.*;version="1.6.20"
+  zipkin2;version=2.23.2,\
+  zipkin2.codec;version=2.23.2,\
+  zipkin2.v1;version=2.23.2,\
+  zipkin2.internal;version=2.23.2,\
+  zipkin2.storage;version=2.23.2,\
+  zipkin2.reporter;version=2.16.3,\
+  zipkin2.reporter.*;version=2.16.3
 
 instrument.disabled: true
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \
-  org.jetbrains.kotlin:kotlin-stdlib;version=1.6.20,\
-  org.jetbrains.kotlin:kotlin-stdlib-common;version=1.6.20
+  io.zipkin.zipkin2:zipkin;version=latest,\
+  io.zipkin.reporter2:zipkin-reporter;version=latest,\
+  io.zipkin.reporter2:zipkin-sender-okhttp3;version=latest
+
+

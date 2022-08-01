@@ -812,6 +812,21 @@
       <version>1.0.26</version>
     </dependency>
     <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-reporter</artifactId>
+      <version>2.16.3</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-sender-okhttp3</artifactId>
+      <version>2.16.3</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.zipkin2</groupId>
+      <artifactId>zipkin</artifactId>
+      <version>2.23.2</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.activation</groupId>
       <artifactId>jakarta.activation-api</artifactId>
       <version>2.0.0</version>
@@ -3119,7 +3134,7 @@
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib-common</artifactId>
-      <version>1.6.2</version>
+      <version>1.6.20</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>

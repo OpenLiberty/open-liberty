@@ -158,6 +158,9 @@ io.smallrye:smallrye-graphql-schema-builder:1.0.26
 io.smallrye:smallrye-graphql-schema-model:1.0.26
 io.smallrye:smallrye-graphql-servlet:1.0.26
 io.smallrye:smallrye-graphql:1.0.26
+io.zipkin.reporter2:zipkin-reporter:2.16.3
+io.zipkin.reporter2:zipkin-sender-okhttp3:2.16.3
+io.zipkin.zipkin2:zipkin:2.23.2
 jakarta.activation:jakarta.activation-api:2.0.0
 jakarta.activation:jakarta.activation-api:2.1.0
 jakarta.annotation:jakarta.annotation-api:2.0.0
@@ -619,7 +622,7 @@ org.jboss.weld:weld-osgi-bundle:2.4.8.Final
 org.jboss.weld:weld-osgi-bundle:3.1.9.Final
 org.jboss.weld:weld-osgi-bundle:4.0.3.Final
 org.jboss.weld:weld-osgi-bundle:5.0.1.Final
-org.jetbrains.kotlin:kotlin-stdlib-common:1.6.2
+org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20
 org.jetbrains.kotlin:kotlin-stdlib:1.6.20
 org.jetbrains:annotations:13.0
 org.jmock:jmock-junit4:2.5.1
