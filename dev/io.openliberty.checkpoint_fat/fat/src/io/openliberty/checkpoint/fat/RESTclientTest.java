@@ -18,6 +18,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,7 +28,10 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -35,6 +39,7 @@ import restClient.AlternateApp;
 import restClient.AlternateEndpoint;
 import restClient.ClientApp;
 import restClient.ClientEndpoints;
+import restClient.ClientEndpointsEarlyStart;
 import restClient.RESTclient;
 import restClient.ServerApp;
 import restClient.ServerEndpoint;
@@ -42,10 +47,13 @@ import restClient.ServerEndpoint;
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
 public class RESTclientTest {
+    public static final String SERVER_NAME = "restClientServer";
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP41, MicroProfileActions.MP50);
 
     public static final String APP_NAME = "restClient";
 
-    @Server("restClientServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -56,6 +64,7 @@ public class RESTclientTest {
                         .addClass(AlternateEndpoint.class)
                         .addClass(ClientApp.class)
                         .addClass(ClientEndpoints.class)
+                        .addClass(ClientEndpointsEarlyStart.class)
                         .addClass(RESTclient.class)
                         .addClass(ServerApp.class)
                         .addClass(ServerEndpoint.class);
@@ -64,7 +73,7 @@ public class RESTclientTest {
     }
 
     @Test
-    public void testDefaultEndpoint() throws Exception {
+    public void testConfigureRestClient() throws Exception {
 
         server.startServer();
         HttpUtils.findStringInUrl(server, "webappWAR/app/client/properties", "{\'property\':\'value\'}");
@@ -99,6 +108,7 @@ public class RESTclientTest {
         server.updateServerConfiguration(config);
 
         server.stopServer();
+        server.setCheckpoint((CheckpointInfo) null);
     }
 
 }
