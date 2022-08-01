@@ -29,7 +29,7 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.olgh10310.web.TestOLGH10310Servlet;
 import com.ibm.ws.jpa.spec10.embeddable.FATSuite;
-import com.ibm.ws.jpa.spec10.embeddable.tests.JPAFATServletClient;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

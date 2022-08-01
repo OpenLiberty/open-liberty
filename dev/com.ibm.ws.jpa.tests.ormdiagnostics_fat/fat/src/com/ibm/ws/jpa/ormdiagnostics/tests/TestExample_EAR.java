@@ -36,6 +36,7 @@ import com.ibm.ws.jpa.ormdiagnostics.FATSuite;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper.JPAClass;
 import com.ibm.ws.ormdiag.example.war.ExampleServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

@@ -31,7 +31,7 @@ import com.ibm.ws.jpa.cache.web.CacheTestServlet;
 import com.ibm.ws.jpa.cache.web.FindCacheTestServlet;
 import com.ibm.ws.jpa.cache.web.RefreshCacheTestServlet;
 import com.ibm.ws.jpa.tests.spec20.FATSuite;
-import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

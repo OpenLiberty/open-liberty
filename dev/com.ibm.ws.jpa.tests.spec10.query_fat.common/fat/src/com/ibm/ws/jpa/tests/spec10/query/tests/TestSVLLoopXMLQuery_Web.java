@@ -53,6 +53,7 @@ import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_020_Servlet;
 import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_021_Servlet;
 import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -35,7 +36,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 import io.openliberty.jpa.FATSuite;
-import io.openliberty.jpa.JPAFATServletClient;
 import io.openliberty.jpa.cev.web.TestConcurrentEnhancementVerificationServlet;
 
 @RunWith(FATRunner.class)

@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.ormdiagnostics.FATSuite;
 import com.ibm.ws.ormdiag.enhancementerror.war.EnhancementErrorServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

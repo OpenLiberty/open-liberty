@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.web.TestOneXManyCollectionTypeServlet;
 import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.web.TestOneXManyCompoundPKServlet;
 import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.web.TestOneXManyUnidirectionalServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

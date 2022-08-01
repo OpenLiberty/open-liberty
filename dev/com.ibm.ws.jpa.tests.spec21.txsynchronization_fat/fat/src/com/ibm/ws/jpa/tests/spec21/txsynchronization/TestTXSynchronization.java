@@ -39,6 +39,7 @@ import com.ibm.ws.jpa.fvt.txsync.tests.ejb.TxSynchronizationEJBSFTestServlet;
 import com.ibm.ws.jpa.fvt.txsync.tests.ejb.TxSynchronizationEJBSLTestServlet;
 import com.ibm.ws.jpa.fvt.txsync.tests.web.TxSynchronizationCMTSSpecificWebTestServlet;
 import com.ibm.ws.jpa.fvt.txsync.tests.web.TxSynchronizationWebTestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

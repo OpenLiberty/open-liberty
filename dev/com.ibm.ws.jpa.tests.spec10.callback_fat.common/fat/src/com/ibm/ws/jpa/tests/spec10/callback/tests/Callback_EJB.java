@@ -47,6 +47,7 @@ import com.ibm.ws.jpa.fvt.callback.tests.ejb.TestCallbackOrderOfInvocation_EJB_S
 import com.ibm.ws.jpa.fvt.callback.tests.ejb.TestCallback_EJB_SFEX_Servlet;
 import com.ibm.ws.jpa.fvt.callback.tests.ejb.TestCallback_EJB_SF_Servlet;
 import com.ibm.ws.jpa.fvt.callback.tests.ejb.TestCallback_EJB_SL_Servlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
