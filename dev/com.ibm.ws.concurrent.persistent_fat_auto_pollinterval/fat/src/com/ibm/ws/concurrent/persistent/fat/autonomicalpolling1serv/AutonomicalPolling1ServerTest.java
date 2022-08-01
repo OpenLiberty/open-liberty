@@ -694,7 +694,7 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
 
         try {
-            while (attempts < 5) {
+            while (attempts < 10) {
                 attempts++;
                 System.out.println("testPollIntervalStable attempt #" + attempts);
 
