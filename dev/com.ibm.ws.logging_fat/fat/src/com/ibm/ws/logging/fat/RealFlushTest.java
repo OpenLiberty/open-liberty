@@ -15,7 +15,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -326,8 +325,8 @@ public class RealFlushTest {
     @AfterClass
     public static void completeTest() throws Exception {
         if (server != null && server.isStarted()) {
-            server.removeAllInstalledAppsForValidation();
             server.stopServer("CWWKW1001W");
+            server.removeAllInstalledAppsForValidation();
         }
     }
 }
