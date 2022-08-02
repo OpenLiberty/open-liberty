@@ -902,8 +902,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * time (not having to reconfig multiple times) we'll do all of this in one
      * test)
      */
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.xml.signature.SignatureException" }, repeatAction = {EmptyAction.ID})
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "org.opensaml.xmlsec.signature.support.SignatureException"  }, repeatAction = {JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "org.opensaml.xmlsec.signature.support.SignatureException"  }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
     // @Mode(TestMode.LITE)
     @Test
     public void test_config_errorPageURL() throws Exception {
@@ -973,8 +972,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * value (non existant url) Test shows that we get a decent
      */
     @ExpectedFFDC(value = {"com.ibm.ws.security.saml.error.SamlException"})
-    @ExpectedFFDC(value = {"org.opensaml.ws.security.SecurityPolicyException"}, repeatAction = {EmptyAction.ID})
-    @ExpectedFFDC(value = {"org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {JakartaEE9Action.ID})
+    @ExpectedFFDC(value = {"org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
     @AllowedFFDC(value = {"com.ibm.ws.jsp.webcontainerext.JSPErrorReport"})
     // @Mode(TestMode.LITE)
     @Test

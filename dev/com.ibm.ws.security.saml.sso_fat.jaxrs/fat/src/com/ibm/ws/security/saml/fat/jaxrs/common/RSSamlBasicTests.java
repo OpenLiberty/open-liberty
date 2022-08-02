@@ -72,9 +72,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      */
 
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "java.lang.NullPointerException" })
-    @AllowedFFDC(value = { "org.opensaml.xml.parse.XMLParserException", "org.opensaml.ws.message.decoder.MessageDecodingException" }, repeatAction = {EmptyAction.ID})
-    @AllowedFFDC(value = { "net.shibboleth.utilities.java.support.xml.XMLParserException", "org.opensaml.messaging.decoder.MessageDecodingException" }, repeatAction = {JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "java.lang.NullPointerException", "net.shibboleth.utilities.java.support.xml.XMLParserException", "org.opensaml.messaging.decoder.MessageDecodingException" })
     @Test
     public void RSSamlBasicTests_mangleSAMLToken_sendGarbage() throws Exception {
 
@@ -113,9 +111,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      * Tests removes the saml token, but the config allows an unsigned token, so it's ok
      */
 
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @ExpectedFFDC(value = {"org.opensaml.ws.security.SecurityPolicyException"}, repeatAction = {EmptyAction.ID})
-    @ExpectedFFDC(value = {"org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = {JakartaEE9Action.ID})
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Test
     public void RSSamlBasicTests_mangleSAMLToken_userNameInAssertion() throws Exception {
 
@@ -138,9 +134,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
-    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = {JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Mode(TestMode.LITE)
     @Test
     public void RSSamlBasicTests_samlCertNotInDefaultTrust_wantAssertionsSigned_true() throws Exception {
@@ -170,10 +164,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "com.ibm.wsspi.channelfw.exception.InvalidChainNameException" })
-    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
-    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = {JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "com.ibm.wsspi.channelfw.exception.InvalidChainNameException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Mode(TestMode.LITE)
     @Test
     public void RSSamlBasicTests_samlCertNotInDefaultTrust_wantAssertionsSigned_false() throws Exception {
@@ -205,9 +196,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
-    @ExpectedFFDC(value = {"com.ibm.ws.security.saml.error.SamlException"})
-    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
-    @ExpectedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {JakartaEE9Action.ID})
+    @ExpectedFFDC(value = {"com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException"})
     @Mode(TestMode.LITE)
     @Test
     public void RSSamlBasicTests_samlCertNotInRSSamlTrust_wantAssertionsSigned_true() throws Exception {
@@ -230,9 +219,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
-    @ExpectedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {JakartaEE9Action.ID})
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException","org.opensaml.messaging.handler.MessageHandlerException" })
     @Mode(TestMode.LITE)
     @Test
     public void RSSamlBasicTests_samlCertNotInRSSamlTrust_wantAssertionsSigned_false() throws Exception {
@@ -287,9 +274,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      * Tests
      */
 
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
-    @ExpectedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {JakartaEE9Action.ID})
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Mode(TestMode.LITE)
     @Test
     public void RSSamlBasicTests_signatureAlgorithNotSatisfied() throws Exception {
