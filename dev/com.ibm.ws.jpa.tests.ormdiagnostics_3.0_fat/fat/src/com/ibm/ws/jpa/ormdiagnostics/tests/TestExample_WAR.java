@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.ormdiagnostics.tests;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -97,7 +95,7 @@ public class TestExample_WAR extends JPAFATServletClient {
         webApp.addAsLibrary(ejbJar);
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + "resources/war");
 
-        ShrinkHelper.exportAppToServer(server, webApp, DISABLE_VALIDATION);
+        ShrinkHelper.exportToServer(server, "apps", webApp);
 
         Application appRecord = new Application();
         appRecord.setLocation(appName + "_WAR.war");
