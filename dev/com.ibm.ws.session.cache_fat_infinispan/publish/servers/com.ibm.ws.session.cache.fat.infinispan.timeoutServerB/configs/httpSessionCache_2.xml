@@ -18,6 +18,6 @@
 
 	<cacheManager id="CacheManager"
 		uri="file:///${shared.resource.dir}/infinispan/infinispan-config-lacking-http-session-cache-name.xml">
-		<cachingProvider libraryRef="InfinispanLib" />
+		<cachingProvider jCacheLibraryRef="InfinispanLib" />
 	</cacheManager>
 </server>

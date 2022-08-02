@@ -16,7 +16,7 @@
 	<httpSessionCache cacheManagerRef="CacheManager" />
 
 	<cacheManager id="CacheManager">
-		<cachingProvider libraryRef="InfinispanLib" />
+		<cachingProvider jCacheLibraryRef="InfinispanLib" />
 	    
 		<!-- set username and password in users.properties -->
 		<properties

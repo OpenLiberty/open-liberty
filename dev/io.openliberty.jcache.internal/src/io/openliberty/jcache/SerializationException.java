@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.jcache;
 
+import java.io.NotSerializableException;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
@@ -19,6 +21,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial
 public class SerializationException extends RuntimeException {
     private static final long serialVersionUID = 1L;
+    private String notSerializableClassName = null;
 
     /**
      * Instantiate a new {@link SerializationException}.
@@ -28,5 +31,18 @@ public class SerializationException extends RuntimeException {
      */
     public SerializationException(String message, Throwable cause) {
         super(message, cause);
+
+        if (cause instanceof NotSerializableException) {
+            notSerializableClassName = cause.getMessage(); // The message is the class name.
+        }
+    }
+
+    /**
+     * If the cause was a {@link NotSerializableException}, return the class name from the exception.
+     *
+     * @return The class name, or null if the cause was not a {@link NotSerializableException}.
+     */
+    public String getNotSerializableClass() {
+        return notSerializableClassName;
     }
 }

@@ -128,7 +128,7 @@ public class JCacheAuthCacheFailureTest extends BaseTestCase {
          * Currently this is just in debug / trace.
          */
         assertFalse("Request should have resulted in an error: " + JCACHE_HIT_USER1_BASICAUTH,
-                    server.findStringsInLogsAndTraceUsingMark("io.openliberty.jcache.SerializationException: CWLJC0009E").isEmpty());
+                    server.findStringsInLogsAndTraceUsingMark("CWLJC0009E: Error serializing object to the").isEmpty());
     }
 
     /**
