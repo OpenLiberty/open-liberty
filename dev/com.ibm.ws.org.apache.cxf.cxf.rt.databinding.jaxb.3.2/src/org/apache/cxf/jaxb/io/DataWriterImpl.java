@@ -132,9 +132,9 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
         }
         Marshaller marshaller;
         try {
-
-            marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
+            // Liberty change begin
+            marshaller = databinding.getJAXBMarshaller(noEscape, setEventHandler, bus, veventHandler);
+            /*marshaller.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
             marshaller.setListener(databinding.getMarshallerListener());
@@ -171,7 +171,8 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
                         LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
                     }
                 }
-            }
+            }*/
+            // Liberty change end
 
             marshaller.setSchema(schema);
             AttachmentMarshaller atmarsh = getAttachmentMarshaller();
@@ -197,7 +198,8 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
     }
 
     //REVISIT should this go into JAXBUtils?
-    private static void setContextualNamespaceDecls(Object mapper, Map<String, String> nsctxt) {
+    // Liberty change - made public to be called from JAXBDataBinding
+    public static void setContextualNamespaceDecls(Object mapper, Map<String, String> nsctxt) {
         try {
             Method m = ReflectionUtil.getDeclaredMethod(mapper.getClass(),
                                                         "setContextualNamespaceDecls", new Class<?>[]{String[].class});
@@ -222,6 +224,7 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
         }
         checkPart(part, obj);
 
+        Marshaller marshaller = null; // Liberty change
         if (obj != null
             || !(part.getXmlSchema() instanceof XmlSchemaElement)) {
 
@@ -229,7 +232,7 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
                 && part != null
                 && Boolean.TRUE.equals(part.getProperty(JAXBDataBinding.class.getName()
                                                         + ".CUSTOM_EXCEPTION"))) {
-                JAXBEncoderDecoder.marshallException(createMarshaller(obj, part),
+                JAXBEncoderDecoder.marshallException(marshaller = createMarshaller(obj, part), // Liberty change
                                                      (Exception)obj,
                                                      part,
                                                      output);
@@ -237,7 +240,7 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
             } else {
                 Annotation[] anns = getJAXBAnnotation(part);
                 if (!honorJaxbAnnotation || anns.length == 0) {
-                    JAXBEncoderDecoder.marshall(createMarshaller(obj, part), obj, part, output);
+                    JAXBEncoderDecoder.marshall(marshaller = createMarshaller(obj, part), obj, part, output); // Liberty change
                     onCompleteMarshalling();
                 } else if (honorJaxbAnnotation && anns.length > 0) {
                     //RpcLit will use the JAXB Bridge to marshall part message when it is
@@ -254,11 +257,12 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
                 }
             }
         } else if (needToRender(part)) {
-            JAXBEncoderDecoder.marshallNullElement(createMarshaller(null, part),
+            JAXBEncoderDecoder.marshallNullElement(marshaller = createMarshaller(null, part), // Liberty change
                                                    output, part);
 
             onCompleteMarshalling();
         }
+        databinding.releaseJAXBMarshaller(marshaller, noEscape); // Liberty change
     }
 
     private void checkPart(MessagePartInfo part, Object object) {

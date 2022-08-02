@@ -22,20 +22,24 @@ package org.apache.cxf.jaxb;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,12 +48,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
@@ -121,6 +128,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                                                                                Node.class,
                                                                                XMLEventWriter.class,
                                                                                XMLStreamWriter.class};
+    // Liberty change begin
+    private static final boolean ENABLE_MARSHALL_POOLING = true;
+    private static final boolean ENABLE_UNMARSHALL_POOLING = true;
+    private static final int MAX_LOAD_FACTOR = 50;
+    // Liberty change end
 
     private static class DelayedDOMResult extends DOMResult {
         private final URL resource;
@@ -215,6 +227,15 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     private boolean unwrapJAXBElement = true;
     private boolean scanPackages = true;
     private boolean qualifiedSchemas;
+
+    // Liberty change begin
+    private Deque<SoftReference<Marshaller>> escapeMarshallers 
+        = new LinkedBlockingDeque<SoftReference<Marshaller>>(MAX_LOAD_FACTOR);
+    private Deque<SoftReference<Marshaller>> noEscapeMarshallers 
+        = new LinkedBlockingDeque<SoftReference<Marshaller>>(MAX_LOAD_FACTOR);
+    private Deque<SoftReference<Unmarshaller>> unmarshallers 
+        = new LinkedBlockingDeque<SoftReference<Unmarshaller>>(MAX_LOAD_FACTOR);
+    // Liberty change end
 
     public JAXBDataBinding() {
     }
@@ -863,4 +884,203 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         }
     }
 
+     // Liberty change begin
+    /**
+     * releaseJAXBMarshalller
+     * Do not call this method if an exception occurred while using the
+     * Marshaller. We don't want an object in an invalid state.
+     * 
+     * @param marshaller Marshaller
+     */
+    public void releaseJAXBMarshaller(Marshaller marshaller, boolean noEscape) {
+        if (ENABLE_MARSHALL_POOLING && marshaller != null) {
+            Deque<SoftReference<Marshaller>> marshallers = noEscape ? noEscapeMarshallers : escapeMarshallers;
+            marshallers.offerFirst(new SoftReference<Marshaller>(marshaller));
+        }
+    }    
+
+    /**
+     * Get JAXBMarshaller
+     * 
+     * @param context JAXBContext
+     * @throws JAXBException
+     */
+    public Marshaller getJAXBMarshaller(boolean noEscape, boolean setEventHandler, Bus bus, ValidationEventHandler veventHandler) throws JAXBException {
+        Marshaller m = null;
+
+        if (!ENABLE_MARSHALL_POOLING) {
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine("Marshaller created [no pooling]");
+            }
+        } else {
+            Deque<SoftReference<Marshaller>> marshallers = noEscape ? noEscapeMarshallers : escapeMarshallers;
+            SoftReference<Marshaller> ref = marshallers.poll();
+            while (ref != null && (m = ref.get()) == null) {
+                ref = marshallers.poll();
+            }
+            if (LOG.isLoggable(Level.FINE)) {
+                if (m == null) {
+                    LOG.fine("Marshaller created [not in pool]");
+                } else {
+                    LOG.fine("Marshaller obtained [from  pool]");
+                }
+            }
+        }
+
+        if (m != null) {
+            ValidationEventHandler oldEventHandler = m.getEventHandler();
+            Class<? extends ValidationEventHandler> handlerClass = oldEventHandler == null ? null : oldEventHandler.getClass();
+            if (!setEventHandler) {
+                if (handlerClass != DefaultValidationEventHandler.class) {
+                    m.setEventHandler(null);
+                }
+            } else {
+                ValidationEventHandler h = veventHandler;
+                if (veventHandler == null) {
+                    h = new ValidationEventHandler() {
+                        public boolean handleEvent(ValidationEvent event) {
+                            //continue on warnings only
+                            return event.getSeverity() == ValidationEvent.WARNING;
+                        }
+                    };
+                }
+                m.setEventHandler(h);
+            }
+        } else {
+            m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
+            m.setProperty(Marshaller.JAXB_FRAGMENT, true);
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
+            m.setListener(marshallerListener);
+            if (!noEscape) {
+                JAXBUtils.setEscapeHandler(m, escapeHandler);
+            } else if (noEscapeHandler != null) {
+                JAXBUtils.setEscapeHandler(m, noEscapeHandler);
+            }
+
+            if (setEventHandler) {
+                ValidationEventHandler h = veventHandler;
+                if (veventHandler == null) {
+                    h = new ValidationEventHandler() {
+                        public boolean handleEvent(ValidationEvent event) {
+                            //continue on warnings only
+                            return event.getSeverity() == ValidationEvent.WARNING;
+                        }
+                    };
+                }
+                m.setEventHandler(h);
+            }
+
+            final Map<String, String> nspref = getDeclaredNamespaceMappings();
+            final Map<String, String> nsctxt = getContextualNamespaceMap();
+            // set the prefix mapper if either of the prefix map is configured
+            if (nspref != null || nsctxt != null) {
+                Object mapper = JAXBUtils.setNamespaceMapper(bus, nspref != null ? nspref : nsctxt, m);
+                if (nsctxt != null) {
+                    DataWriterImpl.setContextualNamespaceDecls(mapper, nsctxt);
+                }
+            }
+            if (marshallerProperties != null) {
+                for (Map.Entry<String, Object> propEntry
+                    : marshallerProperties.entrySet()) {
+                    try {
+                        m.setProperty(propEntry.getKey(), propEntry.getValue());
+                    } catch (PropertyException pe) {
+                        LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
+                    }
+                }
+            }
+        }
+        return m;
+    }
+    
+    /**
+     * Get the unmarshaller. You must call releaseUnmarshaller to put it back into the pool
+     * 
+     * @param binding JAXBDataBinding
+     * @return Unmarshaller
+     * @throws JAXBException
+     */
+    public Unmarshaller getJAXBUnmarshaller(boolean setEventHandler, ValidationEventHandler veventHandler) throws JAXBException {
+        Unmarshaller unm = null;
+        if (!ENABLE_UNMARSHALL_POOLING) {
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine("Unmarshaller created [no pooling]");
+            }
+        } else {
+            SoftReference<Unmarshaller> ref = unmarshallers.poll();
+            while (ref != null && (unm = ref.get()) == null) {
+                ref = unmarshallers.poll();
+            }
+            if (LOG.isLoggable(Level.FINE)) {
+                if (unm == null) {
+                    LOG.fine("Unmarshaller created [not in pool]");
+                } else {
+                    LOG.fine("Unmarshaller obtained [from  pool]");
+                }
+            }
+        }
+
+        if (unm != null) {
+            ValidationEventHandler oldEventHandler = unm.getEventHandler();
+            Class<? extends ValidationEventHandler> handlerClass = oldEventHandler == null ? null : oldEventHandler.getClass();
+            if (!setEventHandler) {
+                if (handlerClass != DefaultValidationEventHandler.class) {
+                    unm.setEventHandler(null);
+                }
+            } else {
+                unm.setEventHandler(veventHandler);
+            }
+        } else {
+            unm = context.createUnmarshaller();
+            if (unmarshallerListener != null) {
+                unm.setListener(unmarshallerListener);
+            }
+            if (setEventHandler) {
+                unm.setEventHandler(veventHandler);
+            }
+            if (unmarshallerProperties != null) {
+                for (Map.Entry<String, Object> propEntry
+                    : unmarshallerProperties.entrySet()) {
+                    try {
+                        unm.setProperty(propEntry.getKey(), propEntry.getValue());
+                    } catch (PropertyException pe) {
+                        LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
+                    }
+                }
+            }
+        }
+        return unm;
+    }
+
+    /**
+     * Release Unmarshaller Do not call this method if an exception occurred while using the
+     * Unmarshaller. We object my be in an invalid state.
+     * 
+     * @param context JAXBContext
+     * @param unmarshaller Unmarshaller
+     */
+    public void releaseJAXBUnmarshaller(Unmarshaller unmarshaller) {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("Unmarshaller placed back into pool");
+        }
+        if (ENABLE_UNMARSHALL_POOLING && unmarshaller != null) {
+            try {
+                //defect 176959
+                //Don't remove the event handler
+                //unmarshaller.setEventHandler(null);
+                if (!unmarshallers.offerFirst(new SoftReference<Unmarshaller>(unmarshaller))) {
+                    JAXBUtils.closeUnmarshaller(unmarshaller);
+                }
+            } catch (Throwable t) {
+                // Log the problem, and continue without pooling
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.fine("The following exception is ignored. Processing continues " + t);
+                }
+            }
+        } else {
+            JAXBUtils.closeUnmarshaller(unmarshaller);
+        }
+    }
+    // Liberty change end
 }

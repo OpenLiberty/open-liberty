@@ -110,8 +110,10 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
     private Unmarshaller createUnmarshaller() {
         try {
             Unmarshaller um = null;
-            um = context.createUnmarshaller();
-            if (databinding.getUnmarshallerListener() != null) {
+            // Liberty change begin
+            // Move the logic that is 
+            um = databinding.getJAXBUnmarshaller(setEventHandler, setEventHandler ? new WSUIDValidationHandler(veventHandler) : null);
+            /*if (databinding.getUnmarshallerListener() != null) {
                 um.setListener(databinding.getUnmarshallerListener());
             }
             if (setEventHandler) {
@@ -126,7 +128,8 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
                         LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
                     }
                 }
-            }
+            }*/
+            // Liberty change end
             um.setSchema(schema);
             um.setAttachmentUnmarshaller(getAttachmentUnmarshaller());
             for (XmlAdapter<?, ?> adapter : databinding.getConfiguredXmlAdapters()) {
@@ -166,29 +169,45 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
         }
 
         Unmarshaller um = createUnmarshaller();
+        boolean noError = false; // Liberty change
         try {
             Object obj = JAXBEncoderDecoder.unmarshall(um, reader, part,
                                                  unwrapJAXBElement);
             onCompleteUnmarshalling();
+            noError = true; // Liberty change
 
             return obj;
         } finally {
-            JAXBUtils.closeUnmarshaller(um);
+            // Liberty change begin
+            if (noError) {
+                databinding.releaseJAXBUnmarshaller(um);
+            } else {
+                JAXBUtils.closeUnmarshaller(um);
+            }
+            // Liberty change end
         }
     }
 
     public Object read(QName name, T input, Class<?> type) {
         Unmarshaller um = createUnmarshaller();
 
+        boolean noError = false; // Liberty change
         try {
             Object obj = JAXBEncoderDecoder.unmarshall(um, input,
                                              name, type,
                                              unwrapJAXBElement);
             onCompleteUnmarshalling();
+            noError = true; // Liberty change
 
             return obj;
         } finally {
-            JAXBUtils.closeUnmarshaller(um);
+            // Liberty change begin
+            if (noError) {
+                databinding.releaseJAXBUnmarshaller(um);
+            } else {
+                JAXBUtils.closeUnmarshaller(um);
+            }
+            // Liberty change end
         }
 
     }
