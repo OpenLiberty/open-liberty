@@ -37,7 +37,7 @@ Import-Package: com.ibm.ejs.ras, \
                 com.ibm.wsspi.collector.manager, \
                 com.ibm.ws.collector.manager.buffer, \
                 com.ibm.websphere.logging, \
-                com.ibm.tools.attach, \
+                com.ibm.tools.attach; resolution:="optional", \
                 org.osgi.service.cm, \
                 com.ibm.wsspi.logging
 
