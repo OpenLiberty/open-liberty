@@ -251,9 +251,7 @@ public class EJBJndiTest {
 
     protected void runTest(String responseString) throws Exception {
 
-        String testMethod = (((testName.getMethodName()).replace("_jaxws-2.3",
-                                                                 "")).replace("_EE9_FEATURES",
-                                                                              ""));;
+        String testMethod = testName.getMethodName().replace("_EE9_FEATURES", "");
 
         String target = null;
         String remoteTestMethod = null;
