@@ -172,7 +172,7 @@ public class TimeoutImpl {
         try {
             debugRelativeTime("Stop!");
             this.stopped = true;
-            if (this.future != null && !this.future.isDone()) {
+            if (this.future != null && !this.future.isDone() && timedout == false) {
                 debugRelativeTime("Cancelling");
                 this.future.cancel(true);
             }
