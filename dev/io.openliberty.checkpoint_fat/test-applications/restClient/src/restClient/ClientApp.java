@@ -22,6 +22,7 @@ public class ClientApp extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> resources = new HashSet<>();
         resources.add(ClientEndpoints.class);
+        resources.add(ClientEndpointsEarlyStart.class);
         return resources;
     }
 }
