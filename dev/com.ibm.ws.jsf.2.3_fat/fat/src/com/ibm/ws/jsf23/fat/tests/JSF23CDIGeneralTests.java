@@ -42,6 +42,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
@@ -388,7 +389,7 @@ public class JSF23CDIGeneralTests {
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("HttpSession isNew: true"));
             // Additional Requirement (See section 5.6.3)
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ExternalContext getApplicationContextPath: /ELImplicitObjectsViaCDI"));
-            
+
         }
     }
 
@@ -448,7 +449,8 @@ public class JSF23CDIGeneralTests {
         // Use the ELImplicitObjectsViaCDIErrorAppServer.xml server configuration file.
         server.setMarkToEndOfLog();
         server.saveServerConfiguration();
-        ShrinkHelper.defaultApp(server, appName, "com.ibm.ws.jsf23.fat.elimplicit.cdi.error.beans");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.defaultApp(server, appName, options, "com.ibm.ws.jsf23.fat.elimplicit.cdi.error.beans");
         server.setServerConfigurationFile("ELImplicitObjectsViaCDIErrorAppServer.xml");
 
         // Make sure the application doesn't start
@@ -475,8 +477,7 @@ public class JSF23CDIGeneralTests {
         // Ensure that the server configuration has completed before uninstalling the application
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        // Now uninstall the application and archive the logs.
-        server.removeInstalledAppForValidation(appName.substring(0, appName.length() - 4));
+        // Now archive the logs.
         server.postStopServerArchive();
     }
 
