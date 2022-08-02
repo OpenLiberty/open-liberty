@@ -11,6 +11,7 @@ singleton=true
   com.ibm.ws.security.saml.sso.2.0,\
   com.ibm.ws.org.opensaml.xmltooling.1.4.4, \
   com.ibm.ws.org.joda.time.1.6.2, \
-  com.ibm.ws.org.apache.commons.httpclient
+  com.ibm.ws.org.apache.commons.httpclient, \
+  com.ibm.ws.org.apache.httpcomponents
 kind=ga
 edition=core
