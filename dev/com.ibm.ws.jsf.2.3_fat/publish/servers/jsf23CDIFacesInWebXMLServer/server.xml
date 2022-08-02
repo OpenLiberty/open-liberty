@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Server for testing JavaServer Faces 2.2">
+<server description="Server for testing JavaServer Faces 2.3">
     <!--    CDI applications can take a while to start up; when multiple CDI apps are packaged in the same server, the cumulative startup time
             on slower build machines can cause the corresponding tests to run past the timeout limit of 30 seconds.  We'll limit the number
             of apps that run on each by creating a separate server definition for each CDI test class.  -->
