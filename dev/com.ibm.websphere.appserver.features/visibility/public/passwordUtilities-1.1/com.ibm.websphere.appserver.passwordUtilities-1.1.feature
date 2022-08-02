@@ -18,5 +18,5 @@ Subsystem-Name: Password Utilities 1.1
 -files=\
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.authData_1.0-javadoc.zip, \
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.passwordUtil_1.0-javadoc.zip
-kind=beta
+kind=ga
 edition=core
