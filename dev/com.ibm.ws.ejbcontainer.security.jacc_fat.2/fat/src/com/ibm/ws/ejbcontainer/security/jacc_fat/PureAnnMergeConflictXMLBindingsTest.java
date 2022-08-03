@@ -11,6 +11,9 @@
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -82,9 +85,12 @@ public class PureAnnMergeConflictXMLBindingsTest extends EJBAnnTestBase {
     @Test
     public void testPureAnnMergeConflict_EmployeeAndManagerWithParams_DenyAccessUserRemovedFromEmployeeRoleServerXML() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
+        String waitForMessage = "CWWKT0016I.*/securityejb/";
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(waitForMessage);
 
         try {
-            testHelper.reconfigureServer(Constants.MERGE_CONFLICT_RUNAS_SERVER_XML, getName().getMethodName(), Constants.DO_NOT_RESTART_SERVER);
+            testHelper.reconfigureServer(Constants.MERGE_CONFLICT_RUNAS_SERVER_XML, getName().getMethodName(), msgs, Constants.DO_NOT_RESTART_SERVER);
             String queryString = "/SimpleServlet?testInstance=ejb01&testMethod=employeeAndManagerwithParams";
             String response = generateResponseFromServlet(queryString, Constants.EMPLOYEE_USER, Constants.EMPLOYEE_PWD);
             verifyResponse(response, Constants.EMPLOYEE_USER_PRINCIPAL, Constants.EMPLOYEE_USER_IDENTITY, Constants.IS_MANAGER_FALSE, Constants.IS_EMPLOYEE_TRUE);
@@ -114,9 +120,12 @@ public class PureAnnMergeConflictXMLBindingsTest extends EJBAnnTestBase {
     @Test
     public void testPureAnnMergeConflict_EmployeeAndManagerWithParams_PermitAccessNewUserInEmployeeRoleInServerXML() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
+        String waitForMessage = "CWWKT0016I.*/securityejb/";
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(waitForMessage);
 
         try {
-            testHelper.reconfigureServer(Constants.MERGE_CONFLICT_RUNAS_SERVER_XML, getName().getMethodName(), Constants.DO_NOT_RESTART_SERVER);
+            testHelper.reconfigureServer(Constants.MERGE_CONFLICT_RUNAS_SERVER_XML, getName().getMethodName(), msgs, Constants.DO_NOT_RESTART_SERVER);
             String queryString = "/SimpleServlet?testInstance=ejb01&testMethod=employeeAndManagerwithParams";
             String response = generateResponseFromServlet(queryString, Constants.EMPLOYEE_CONFLICT_USER, Constants.EMPLOYEE_CONFLICT_PWD);
             verifyResponse(response, Constants.EMPLOYEE_CONFLICT_USER_PRINCIPAL, Constants.EMPLOYEE_CONFLICT_USER_IDENTITY, Constants.IS_MANAGER_FALSE, Constants.IS_EMPLOYEE_TRUE);
@@ -151,9 +160,12 @@ public class PureAnnMergeConflictXMLBindingsTest extends EJBAnnTestBase {
     @Test
     public void testPureAnnMergeConflict_RunAsSpecified_AllowAccessDifferentRunAsUserInServerXml() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
+        String waitForMessage = "CWWKT0016I.*/securityejb/";
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(waitForMessage);
 
         try {
-            testHelper.reconfigureServer(Constants.MERGE_CONFLICT_RUNAS_SERVER_XML, getName().getMethodName(), Constants.DO_NOT_RESTART_SERVER);
+            testHelper.reconfigureServer(Constants.MERGE_CONFLICT_RUNAS_SERVER_XML, getName().getMethodName(), msgs, Constants.DO_NOT_RESTART_SERVER);
             String queryString = "/SimpleServlet?testInstance=ejb01&testMethod=runAsSpecified";
             String response = generateResponseFromServlet(queryString, Constants.MANAGER_USER, Constants.MANAGER_PWD);
             verifyResponseWithoutDeprecated(response, Constants.RUN_AS_USER2, Constants.IS_MANAGER_FALSE, Constants.IS_EMPLOYEE_TRUE);
