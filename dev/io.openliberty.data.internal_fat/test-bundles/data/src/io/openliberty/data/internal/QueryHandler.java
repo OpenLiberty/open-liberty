@@ -53,6 +53,7 @@ import io.openliberty.data.Pagination;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
+import io.openliberty.data.Result;
 import io.openliberty.data.Select;
 import io.openliberty.data.Sort;
 import io.openliberty.data.SortType;
@@ -320,11 +321,12 @@ public class QueryHandler<T> implements InvocationHandler {
 
     private void generateSelect(EntityInfo entityInfo, StringBuilder q, Method method) {
         // TODO entityClass now includes inheritance subtypes and much of the following was already computed.
+        Result result = method.getAnnotation(Result.class);
         Select select = method.getAnnotation(Select.class);
-        Class<?> type = select == null ? null : select.type();
+        Class<?> type = result == null ? null : result.value();
         String[] cols = select == null ? null : select.value();
         boolean distinct = select != null && select.distinct();
-        if (type == null || Select.AutoDetect.class.equals(type)) {
+        if (type == null) {
             Class<?> returnType = method.getReturnType();
             if (!Iterable.class.isAssignableFrom(returnType)) {
                 Class<?> arrayType = returnType.getComponentType();
@@ -342,7 +344,7 @@ public class QueryHandler<T> implements InvocationHandler {
         if (distinct)
             q.append(" DISTINCT");
 
-        if (type == null || Select.AutoDetect.class.equals(type) ||
+        if (type == null ||
             inheritance && entityInfo.type.isAssignableFrom(type))
             if (cols == null || cols.length == 0) {
                 q.append(" o FROM ");
@@ -392,12 +394,12 @@ public class QueryHandler<T> implements InvocationHandler {
         Class<?> returnType = method.getReturnType();
         Class<?> returnArrayType = returnType.getComponentType();
 
-        Select select = method.getAnnotation(Select.class);
-        Class<?> selectType = select == null ? null : select.type();
+        Result resultAnno = method.getAnnotation(Result.class);
+        Class<?> resultType = resultAnno == null ? null : resultAnno.value();
 
-        Class<?> entityClass = selectType == null || Select.AutoDetect.class.equals(selectType) //
+        Class<?> entityClass = resultType == null //
                         ? returnArrayType == null ? returnType : returnArrayType // computed from return type
-                        : selectType;
+                        : resultType;
         if (!inheritance || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
             entityClass = defaultEntityClass;
 
