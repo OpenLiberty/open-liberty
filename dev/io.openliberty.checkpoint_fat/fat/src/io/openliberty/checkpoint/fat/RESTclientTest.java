@@ -28,6 +28,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -49,7 +50,7 @@ import restClient.ServerEndpoint;
 public class RESTclientTest {
     public static final String SERVER_NAME = "restClientServer";
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP41, MicroProfileActions.MP50);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.LITE, MicroProfileActions.MP41, MicroProfileActions.MP50);
 
     public static final String APP_NAME = "restClient";
 
