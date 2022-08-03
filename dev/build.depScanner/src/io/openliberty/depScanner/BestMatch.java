@@ -115,7 +115,7 @@ public class BestMatch {
     private static void writePom(Set<Module> matched, String path) {
 
         matched.forEach(library -> {
-            if (!library.getGroupId().equals("com.ibm.ws")) {
+            if (!filteredLibraries(library)) {
                 List<String> versions = depVersionMap.computeIfAbsent((library.getGroupId() + library.getArtifactId()), k -> new ArrayList<>());
                 versions.add(library.getVersion());
                 if (versions.size() > pomFiles)
@@ -133,7 +133,7 @@ public class BestMatch {
             new File(path + "/proj_" + count.intValue()).mkdirs(); //Make sure directory is created first
 
             matched.forEach(library -> {
-                if (!library.getGroupId().equals("com.ibm.ws")) {
+                if (!filteredLibraries(library)) {
                     List<String> versions = depVersionMap.get((library.getGroupId() + library.getArtifactId()));
                     if (versions.size() > count.intValue()) {
 
@@ -186,6 +186,15 @@ public class BestMatch {
             }
         }
 
+    }
+
+    /**
+     * @param library
+     * @return
+     */
+    private static boolean filteredLibraries(Module library) {
+        return library.getGroupId().equals("com.ibm.ws") ||
+               (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces")));
     }
 
     private static String toMavenCoords(String coords) {
