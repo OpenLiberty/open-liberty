@@ -11,6 +11,9 @@
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -75,9 +78,12 @@ public class PureAnnA01Test extends PureAnnA01Base {
     @Test
     public void testPureA01_RunAsSpecified_DenyAccessBadRunAsPassword() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
+        String waitForMessage = "CWWKT0016I.*/securityejb/";
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(waitForMessage);
 
         try {
-            testHelper.reconfigureServer(Constants.BAD_RUNAS_PWD_SERVER_XML, getName().getMethodName(), Constants.DO_NOT_RESTART_SERVER);
+            testHelper.reconfigureServer(Constants.BAD_RUNAS_PWD_SERVER_XML, getName().getMethodName(), msgs, Constants.DO_NOT_RESTART_SERVER);
             String queryString = "/SimpleServlet?testInstance=ejb01&testMethod=runAsSpecified";
             String response = generateResponseFromServlet(queryString, Constants.MANAGER_USER, Constants.MANAGER_PWD);
             verifyExceptionWithUserAndRole(response, MessageConstants.EJB_ACCESS_EXCEPTION, MessageConstants.JACC_AUTH_DENIED_USER_NOT_GRANTED_REQUIRED_ROLE,
