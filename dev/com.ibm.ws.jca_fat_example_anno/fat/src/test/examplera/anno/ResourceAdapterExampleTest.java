@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,7 +74,7 @@ public class ResourceAdapterExampleTest extends FATServletClient {
 
         // find
         runTest("?functionName=FIND&capital=Saint%20Paul",
-                "Successfully performed FIND with output: {area=86939, capital=Saint Paul, population=5379139, state=Minnesota}");
+                "Successfully performed FIND with output: [area=86939, capital=Saint Paul, population=5379139, state=Minnesota]");;
 //        output = runInServlet("functionName=FIND&capital=Saint%20Paul");
 //        if (output.indexOf("Successfully performed FIND with output: {area=86939, capital=Saint Paul, population=5379139, state=Minnesota}") < 0)
 //            throw new Exception("Did not find entry. Output: " + output);
@@ -89,7 +89,7 @@ public class ResourceAdapterExampleTest extends FATServletClient {
 
         // remove
         runTest("?functionName=REMOVE&city=Stewartville",
-                "Successfully performed REMOVE with output: {city=Stewartville, population=5916, state=Minnesota}");
+                "Successfully performed REMOVE with output: [city=Stewartville, population=5916, state=Minnesota]");
 
         // attempt removal of something that doesn't exist
         runTest("?functionName=REMOVE&city=Stewartville",
@@ -101,9 +101,9 @@ public class ResourceAdapterExampleTest extends FATServletClient {
         server.setMarkToEndOfLog();
 
         runTest("?functionName=ADD&county=Olmsted&state=Minnesota&population=147066&area=654.5",
-                "Successfully performed ADD with output: {area=654.5, county=Olmsted, population=147066, state=Minnesota}");
+                "Successfully performed ADD with output: [area=654.5, county=Olmsted, population=147066, state=Minnesota]");
 
         // search messages log for MDB output
-        server.waitForStringInLog("ExampleMessageDrivenBean.onMessage record = {area=654.5, county=Olmsted, population=147066, state=Minnesota}");
+        server.waitForStringInLog("ExampleMessageDrivenBean.onMessage record = [area=654.5, county=Olmsted, population=147066, state=Minnesota]");
     }
 }

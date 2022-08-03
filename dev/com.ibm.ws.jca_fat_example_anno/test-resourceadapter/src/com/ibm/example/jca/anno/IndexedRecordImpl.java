@@ -10,14 +10,14 @@
  *******************************************************************************/
 package com.ibm.example.jca.anno;
 
-import java.util.TreeMap;
+import java.util.ArrayList;
 
-import jakarta.resource.cci.MappedRecord;
+import jakarta.resource.cci.IndexedRecord;
 
 /**
- * Example MappedRecord where entries are kept in a TreeMap.
+ * Example IndexedRecord where entries are kept in a ArrayList.
  */
-public class MappedRecordImpl<K, V> extends TreeMap<K, V> implements MappedRecord<K, V> {
+public class IndexedRecordImpl<K> extends ArrayList<K> implements IndexedRecord<K> {
     private static final long serialVersionUID = 5653529590057147554L;
 
     private String recordName;
