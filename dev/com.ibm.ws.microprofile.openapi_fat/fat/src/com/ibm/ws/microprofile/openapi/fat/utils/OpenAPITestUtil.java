@@ -183,7 +183,7 @@ public class OpenAPITestUtil {
         if (waitForAppProcessor) {
             waitForApplicationProcessorAddedEvent(server, name);
         }
-        server.validateAppLoaded(name);
+        server.addInstalledAppForValidation(name);
         return app;
     }
 
