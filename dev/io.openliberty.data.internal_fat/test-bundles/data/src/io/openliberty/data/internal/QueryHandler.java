@@ -55,6 +55,7 @@ import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
 import io.openliberty.data.Result;
 import io.openliberty.data.Select;
+import io.openliberty.data.Select.Aggregate;
 import io.openliberty.data.Sort;
 import io.openliberty.data.SortType;
 import io.openliberty.data.Sorts;
@@ -326,6 +327,8 @@ public class QueryHandler<T> implements InvocationHandler {
         Class<?> type = result == null ? null : result.value();
         String[] cols = select == null ? null : select.value();
         boolean distinct = select != null && select.distinct();
+        String function = select == null ? null : toFunctionName(select.function());
+
         if (type == null) {
             Class<?> returnType = method.getReturnType();
             if (!Iterable.class.isAssignableFrom(returnType)) {
@@ -339,36 +342,44 @@ public class QueryHandler<T> implements InvocationHandler {
             }
         }
 
-        q.append("SELECT");
-
-        if (distinct)
-            q.append(" DISTINCT");
+        q.append("SELECT ");
 
         if (type == null ||
             inheritance && entityInfo.type.isAssignableFrom(type))
             if (cols == null || cols.length == 0) {
-                q.append(" o FROM ");
+                q.append(distinct ? "DISTINCT o" : "o");
             } else {
-                for (int i = 0; i < cols.length; i++)
-                    q.append(i == 0 ? " o." : ", o.").append(cols[i]);
-                q.append(" FROM ");
+                for (int i = 0; i < cols.length; i++) {
+                    generateSelectExpression(q, i == 0, function, distinct, cols[i]);
+                }
             }
         else {
-            q.append(" NEW ").append(type.getName());
+            q.append("NEW ").append(type.getName()).append('(');
             boolean first = true;
             if (cols == null || cols.length == 0)
                 for (String name : persistence.getAttributeNames(entityInfo.type, data.provider())) {
-                    q.append(first ? "(o." : ", o.").append(name);
+                    generateSelectExpression(q, first, function, distinct, name);
                     first = false;
                 }
             else
                 for (int i = 0; i < cols.length; i++) {
                     String name = persistence.getAttributeName(cols[i], entityInfo.type, data.provider());
-                    q.append(i == 0 ? "(o." : ", o.").append(name == null ? cols[i] : name);
+                    generateSelectExpression(q, i == 0, function, distinct, name == null ? cols[i] : name);
                 }
-            q.append(") FROM ");
+            q.append(')');
         }
-        q.append(entityInfo.name).append(" o");
+        q.append(" FROM ").append(entityInfo.name).append(" o");
+    }
+
+    private void generateSelectExpression(StringBuilder q, boolean isFirst, String function, boolean distinct, String attributeName) {
+        if (!isFirst)
+            q.append(", ");
+        if (function != null)
+            q.append(function).append('(');
+        q.append(distinct ? "DISTINCT o." : "o.");
+        q.append(attributeName);
+        if (function != null)
+            q.append(')');
     }
 
     @Override
@@ -451,6 +462,16 @@ public class QueryHandler<T> implements InvocationHandler {
         // Repository method name pattern queries
         if (jpql == null)
             jpql = generateRepositoryQuery(entityInfo, method);
+
+        // @Select annotation only
+        if (jpql == null) {
+            Select select = method.getAnnotation(Select.class);
+            if (select != null) {
+                StringBuilder q = new StringBuilder(100);
+                generateSelect(entityInfo, q, method);
+                jpql = q.toString();
+            }
+        }
 
         // Jakarta NoSQL allows the last 3 parameter positions to be used for Pagination, Sorts, and Consumer
         // Collector is added here for experimentation.
@@ -669,8 +690,28 @@ public class QueryHandler<T> implements InvocationHandler {
                             returnValue = CompletableFuture.completedFuture(results.isEmpty() ? null : results.get(0));
                         else // multiple
                             returnValue = CompletableFuture.completedFuture(results);
+                    } else if (results.isEmpty()) {
+                        returnValue = null;
+                    } else if (results.size() == 1) {
+                        // single result
+                        returnValue = results.get(0);
+                        if (returnValue != null && !returnType.isAssignableFrom(returnValue.getClass())) {
+                            // TODO these conversions are not all safe
+                            if (double.class.equals(returnType) || Double.class.equals(returnType))
+                                returnValue = ((Number) returnValue).doubleValue();
+                            else if (float.class.equals(returnType) || Float.class.equals(returnType))
+                                returnValue = ((Number) returnValue).floatValue();
+                            else if (long.class.equals(returnType) || Long.class.equals(returnType))
+                                returnValue = ((Number) returnValue).longValue();
+                            else if (int.class.equals(returnType) || Integer.class.equals(returnType))
+                                returnValue = ((Number) returnValue).intValue();
+                            else if (short.class.equals(returnType) || Short.class.equals(returnType))
+                                returnValue = ((Number) returnValue).shortValue();
+                            else if (byte.class.equals(returnType) || Byte.class.equals(returnType))
+                                returnValue = ((Number) returnValue).byteValue();
+                        }
                     } else { // TODO convert other return types?
-                        returnValue = results.isEmpty() ? null : results.get(0);
+                        returnValue = results;
                     }
                     break;
                 case UPDATE:
@@ -839,6 +880,21 @@ public class QueryHandler<T> implements InvocationHandler {
         }
 
         return void.class.equals(returnType) ? null : CompletableFuture.completedFuture(null);
+    }
+
+    private static final String toFunctionName(Aggregate function) {
+        switch (function) {
+            case UNSPECIFIED:
+                return null;
+            case AVERAGE:
+                return "AVG";
+            case MAXIMUM:
+                return "MAX";
+            case MINIMUM:
+                return "MIN";
+            default: // COUNT, SUM
+                return function.name();
+        }
     }
 
     private static final Object toReturnValue(int i, Class<?> resultType, Class<?> returnType) {
