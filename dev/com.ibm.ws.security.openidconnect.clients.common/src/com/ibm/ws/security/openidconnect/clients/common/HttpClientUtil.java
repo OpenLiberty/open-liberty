@@ -27,6 +27,8 @@ import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
+import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
@@ -43,19 +45,11 @@ public class HttpClientUtil {
 
     protected SSLSocketFactory getSSLSocketFactory(String requestUrl, String sslConfigurationName, SSLSupport sslSupport, String clientId) throws SSLException {
         SSLSocketFactory sslSocketFactory = null;
-
-        if (sslSupport != null) {
-            try {
-                sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
-            } catch (javax.net.ssl.SSLException e) {
-                throw new SSLException(e);
-            }
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);
-            }
-        }
-
-        if (sslSocketFactory == null) {
+        try {
+            sslSocketFactory = SecuritySSLUtils.getSSLSocketFactory(sslSupport, sslConfigurationName);
+        } catch (javax.net.ssl.SSLException e) {
+            throw new SSLException(e);
+        } catch (NoSSLSocketFactoryException e) {
             if (requestUrl != null && requestUrl.startsWith("https")) {
                 throw new SSLException(Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientId }));
             }

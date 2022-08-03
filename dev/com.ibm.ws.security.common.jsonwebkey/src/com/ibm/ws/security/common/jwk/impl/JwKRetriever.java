@@ -63,6 +63,8 @@ import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.PemKeyUtil.KeyType;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
+import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
+import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
 import com.ibm.ws.security.common.http.HttpResponseNot200Exception;
 import com.ibm.ws.security.common.http.HttpResponseNullOrEmptyException;
 import com.ibm.ws.security.common.http.HttpUtils;
@@ -793,23 +795,17 @@ public class JwKRetriever {
         return null;
     }
 
+    @FFDCIgnore(NoSSLSocketFactoryException.class)
     protected SSLSocketFactory getSSLSocketFactory(String requestUrl, String sslConfigurationName,
             SSLSupport sslSupport) throws SSLException {
         SSLSocketFactory sslSocketFactory = null;
-
         try {
-            sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
+            sslSocketFactory = SecuritySSLUtils.getSSLSocketFactory(sslSupport, sslConfigurationName);
         } catch (javax.net.ssl.SSLException e) {
             throw new SSLException(e);
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);
-        }
-
-        if (sslSocketFactory == null) {
+        } catch (NoSSLSocketFactoryException e) {
             if (requestUrl != null && requestUrl.startsWith("https")) {
-                throw new SSLException(Tr.formatMessage(tc, "JWT_HTTPS_WITH_SSLCONTEXT_NULL",
-                        new Object[] { "Null ssl socket factory", configId }));
+                throw new SSLException(Tr.formatMessage(tc, "JWT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", configId }));
             }
         }
         return sslSocketFactory;

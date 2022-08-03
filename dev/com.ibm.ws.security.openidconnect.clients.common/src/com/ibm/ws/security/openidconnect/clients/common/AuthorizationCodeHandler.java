@@ -95,7 +95,6 @@ public class AuthorizationCodeHandler {
 
         SSLSocketFactory sslSocketFactory = null;
         try {
-            //sslSocketFactory = getSSLSocketFactory(clientConfig.getTokenEndpointUrl(), clientConfig.getSSLConfigurationName(), clientId);
             boolean throwExc = clientConfig.getTokenEndpointUrl() != null && clientConfig.getTokenEndpointUrl().startsWith("https");
             sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig, sslSupport, throwExc, false);
         } catch (SSLException e) {
