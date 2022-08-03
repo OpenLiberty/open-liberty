@@ -7,6 +7,6 @@ IBM-Process-Types: server
 IBM-API-Package: io.openliberty.checkpoint.internal.criu; type="internal"
 Subsystem-Name: Checkpoint and Restore Support 1.0
 -bundles=io.openliberty.checkpoint
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
