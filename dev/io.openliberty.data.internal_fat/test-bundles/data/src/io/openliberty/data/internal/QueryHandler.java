@@ -689,7 +689,7 @@ public class QueryHandler<T> implements InvocationHandler {
 
                     int updateCount = update.executeUpdate();
 
-                    returnValue = toReturnValue(updateCount, returnType);
+                    returnValue = toReturnValue(updateCount, resultType, returnType);
                     break;
                 default:
                     throw new UnsupportedOperationException(queryType.name());
@@ -841,18 +841,29 @@ public class QueryHandler<T> implements InvocationHandler {
         return void.class.equals(returnType) ? null : CompletableFuture.completedFuture(null);
     }
 
-    private static final Object toReturnValue(int i, Class<?> returnType) {
-        if (int.class.equals(returnType) || Integer.class.equals(returnType) || Number.class.equals(returnType))
-            return i;
-        else if (long.class.equals(returnType) || Long.class.equals(returnType))
-            return Long.valueOf(i);
-        else if (boolean.class.equals(returnType) || Boolean.class.equals(returnType))
-            return i != 0;
-        else if (void.class.equals(returnType) || Void.class.equals(returnType))
-            return null;
-        else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
-            return CompletableFuture.completedFuture(Long.valueOf(i)); // TODO would need something like @Result(Integer.class) to identify the type
+    private static final Object toReturnValue(int i, Class<?> resultType, Class<?> returnType) {
+        if (resultType == null)
+            resultType = returnType;
+
+        boolean returnsCompletionStage = CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType);
+
+        Object result;
+        if (int.class.equals(resultType) || Integer.class.equals(resultType) || Number.class.equals(resultType))
+            result = i;
+        else if (long.class.equals(resultType) || Long.class.equals(resultType))
+            result = Long.valueOf(i);
+        else if (boolean.class.equals(resultType) || Boolean.class.equals(resultType))
+            result = i != 0;
+        else if (void.class.equals(resultType) || Void.class.equals(resultType))
+            result = null;
+        else if (returnsCompletionStage && resultType.equals(returnType))
+            result = Long.valueOf(i); // default for completion stages that do not specify @Result
         else
             throw new UnsupportedOperationException("Return update count as " + returnType);
+
+        if (returnsCompletionStage)
+            result = CompletableFuture.completedFuture(result);
+
+        return result;
     }
 }
