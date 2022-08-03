@@ -159,10 +159,12 @@ public class OIDCClientAuthenticatorUtilTest {
                 will(returnValue(null));
                 allowing(webAppSecConfig).getSSOUseDomainFromURL();
                 will(returnValue(false));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("Lax"));
                 allowing(webAppSecConfig).createSSOCookieHelper();
                 will(returnValue(new SSOCookieHelperImpl(webAppSecConfig)));
                 allowing(webAppSecConfig).createReferrerURLCookieHandler();
-                will(returnValue(new ReferrerURLCookieHandler(webAppSecConfig)));
+                will(returnValue(referrerURLCookieHandler));
 
                 allowing(req).getAttribute("com.ibm.wsspi.security.oidc.client.request");
                 will(returnValue(oidcClientRequest));

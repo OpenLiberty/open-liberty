@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.common.crypto.HashUtils;
+import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
@@ -219,7 +220,8 @@ public class OidcUtil {
     public static void createNonceCookie(OidcClientRequest oidcClientRequest, String nonceValue, String state, ConvergedClientConfig clientConfig) {
         String cookieName = OidcCookieUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig.getId(), state);
         String cookieValue = createNonceCookieValue(nonceValue, state, clientConfig);
-        Cookie cookie = OidcClientUtil.createCookie(cookieName, cookieValue, oidcClientRequest.getRequest());
+        WebSSOUtils webSsoUtils = new WebSSOUtils();
+        Cookie cookie = webSsoUtils.createCookie(cookieName, cookieValue, oidcClientRequest.getRequest());
         oidcClientRequest.getResponse().addCookie(cookie);
     }
 

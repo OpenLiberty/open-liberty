@@ -14,13 +14,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.TraceConstants;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
+import com.ibm.ws.webcontainer.security.SSOCookieHelper;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
@@ -89,6 +92,26 @@ public class WebSSOUtils {
             return config.createReferrerURLCookieHandler();
         }
         return new ReferrerURLCookieHandler(config);
+    }
+
+    public Cookie createCookie(String cookieName, @Sensitive String cookieValue, HttpServletRequest req) {
+        return createCookie(cookieName, cookieValue, -1, req);
+    }
+
+    public Cookie createCookie(String cookieName, @Sensitive String cookieValue, int maxAge, HttpServletRequest req) {
+        Cookie cookie = getCookieHandler().createCookie(cookieName, cookieValue, req);
+        String domainName = getSsoDomain(req);
+        if (domainName != null && !domainName.isEmpty()) {
+            cookie.setDomain(domainName);
+        }
+        cookie.setMaxAge(maxAge);
+        return cookie;
+    }
+
+    public String getSsoDomain(HttpServletRequest req) {
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
+        SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
+        return ssoCookieHelper.getSSODomainName(req, webAppSecConfig.getSSODomainList(), webAppSecConfig.getSSOUseDomainFromURL());
     }
 
     WebAppSecurityConfig getWebAppSecurityConfig() {

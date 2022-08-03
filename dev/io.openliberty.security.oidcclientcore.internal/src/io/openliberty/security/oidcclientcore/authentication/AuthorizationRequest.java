@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
+import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
 
 public abstract class AuthorizationRequest {
 
@@ -23,10 +24,12 @@ public abstract class AuthorizationRequest {
     protected HttpServletResponse response;
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
+    protected OidcCookieUtils cookieUtils;
 
     public AuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
+        cookieUtils = new OidcCookieUtils(request, response);
     }
 
     public ProviderAuthenticationResult sendRequest() throws OidcUrlNotHttpsException {

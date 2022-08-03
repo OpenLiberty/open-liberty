@@ -439,7 +439,7 @@ public class OIDCClientAuthenticatorUtil {
         }
 
         String stateCookieValue = getStateCookieValue(req, res, responseState);
-        String expectedCookieValue = OidcCookieUtils.createStateCookieValue(clientConfig.getClientSecret(), responseState);
+        String expectedCookieValue = OidcCookieUtils.createStateCookieValue(responseState, clientConfig.getClientSecret());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "stateKey:'" + stateCookieValue + "' cookieValue:'" + expectedCookieValue + "'");

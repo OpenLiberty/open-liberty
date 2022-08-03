@@ -13,11 +13,19 @@ package io.openliberty.security.oidcclientcore.authentication;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.websphere.ras.ProtectedString;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
 
 public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
+
+    public static final TraceComponent tc = Tr.register(JakartaOidcAuthorizationRequest.class);
+
+    final int defaultStateCookieLifetime = 420;
 
     private final OidcClientConfig config;
     private final OidcProviderMetadata providerMetadata;
@@ -51,10 +59,23 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     @Override
     protected void storeStateValue(String state) {
         if (config != null && config.isUseSession()) {
-            // TODO - store in HTTP session
+            storeStateValueInHttpSession(state);
         } else {
-//            createAndAddStateCookie(state);
+            storeStateValueInCookie(state);
         }
+    }
+
+    void storeStateValueInHttpSession(String state) {
+        // TODO - store in HTTP session
+    }
+
+    void storeStateValueInCookie(String state) {
+        String clientSecret = null;
+        ProtectedString clientSecretProtectedString = config.getClientSecret();
+        if (clientSecretProtectedString != null) {
+            clientSecret = new String(clientSecretProtectedString.getChars());
+        }
+        cookieUtils.createAndAddStateCookie(state, clientSecret, defaultStateCookieLifetime);
     }
 
 }

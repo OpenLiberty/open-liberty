@@ -10,7 +10,12 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.client;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
+
+import io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest;
 
 public class Client {
 
@@ -25,9 +30,9 @@ public class Client {
      * 1. Client prepares an Authentication Request containing the desired request parameters.
      * 2. Client sends the request to the Authorization Server.
      */
-    public ProviderAuthenticationResult startFlow() {
-        // TODO
-        return null;
+    public ProviderAuthenticationResult startFlow(HttpServletRequest request, HttpServletResponse response) {
+        JakartaOidcAuthorizationRequest authzRequest = new JakartaOidcAuthorizationRequest(request, response, oidcClientConfig);
+        return authzRequest.sendRequest();
     }
 
     /**

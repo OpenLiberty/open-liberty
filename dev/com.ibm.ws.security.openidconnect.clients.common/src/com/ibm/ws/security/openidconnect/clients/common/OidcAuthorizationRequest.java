@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,8 +35,6 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequest;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
-import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
-import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class OidcAuthorizationRequest extends AuthorizationRequest {
@@ -87,29 +84,13 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
 
     @Override
     protected void storeStateValue(String state) {
-        createAndAddStateCookie(state);
-    }
-
-    void createAndAddStateCookie(String state) {
-        String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
-        String cookieValue = OidcCookieUtils.createStateCookieValue(clientConfig.getClientSecret(), state);
-        createAndAddCookie(cookieName, cookieValue);
+        cookieUtils.createAndAddStateCookie(state, clientConfig.getClientSecret(), (int) clientConfig.getAuthenticationTimeLimitInSeconds(), clientConfig.isHttpsRequired());
     }
 
     void createAndAddWasReqUrlCookie(String state) {
         String urlCookieName = ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
         String cookieValue = getReqURL();
-        createAndAddCookie(urlCookieName, cookieValue);
-    }
-
-    void createAndAddCookie(String cookieName, String cookieValue) {
-        int cookieLifeTime = (int) clientConfig.getAuthenticationTimeLimitInSeconds();
-        Cookie c = OidcClientUtil.createCookie(cookieName, cookieValue, cookieLifeTime, request);
-        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
-        if (clientConfig.isHttpsRequired() && isHttpsRequest) {
-            c.setSecure(true);
-        }
-        response.addCookie(c);
+        cookieUtils.createAndAddCookie(urlCookieName, cookieValue, (int) clientConfig.getAuthenticationTimeLimitInSeconds(), clientConfig.isHttpsRequired());
     }
 
     @Override

@@ -32,7 +32,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.google.gson.JsonObject;
@@ -45,6 +44,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.genericbnf.PasswordNullifier;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
@@ -245,9 +245,8 @@ public class OidcClientUtil {
             request.setHeader(ClientConstants.AUTHORIZATION, ClientConstants.BEARER + accessToken);
         }
 
-        HttpClient httpClient = baUsername != null ? httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, 
-                                useSystemPropertiesForHttpClientConnections, httpUtils.createCredentialsProvider(baUsername, baPassword)) : 
-                                httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
+        HttpClient httpClient = baUsername != null ? httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification,
+                useSystemPropertiesForHttpClientConnections, httpUtils.createCredentialsProvider(baUsername, baPassword)) : httpUtils.createHttpClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, null);
 
         HttpResponse responseCode = null;
 
@@ -297,24 +296,6 @@ public class OidcClientUtil {
     static AtomicReference<ReferrerURLCookieHandler> referrerURLCookieHandlerRef = new AtomicReference<ReferrerURLCookieHandler>();
     static AtomicReference<WebAppSecurityConfig> webAppSecurityConfigRef = new AtomicReference<WebAppSecurityConfig>();
 
-    /*
-     * In case, the ReferrerURLCookieHandler is dynamic in every request, then we will need to make this into
-     * OidcClientRequest. And do not do static.
-     */
-    public static Cookie createCookie(String cookieName, @Sensitive String cookieValue, HttpServletRequest req) {
-        return createCookie(cookieName, cookieValue, -1, req);
-    }
-
-    public static Cookie createCookie(String cookieName, @Sensitive String cookieValue, int maxAge, HttpServletRequest req) {
-        Cookie cookie = getReferrerURLCookieHandler().createCookie(cookieName, cookieValue, req);
-        String domainName = getSsoDomain(req);
-        if (domainName != null && !domainName.isEmpty()) {
-            cookie.setDomain(domainName);
-        }
-        cookie.setMaxAge(maxAge);
-        return cookie;
-    }
-
     // 240540: rather than call webcontainer code, replace the cookie with an empty one having same cookie and domain name and add to response.
     public static void invalidateReferrerURLCookie(HttpServletRequest req, HttpServletResponse res, String cookieName) {
         // 240540 getReferrerURLCookieHandler().invalidateReferrerURLCookie(req, res, cookieName); // need to have domain here too
@@ -324,7 +305,8 @@ public class OidcClientUtil {
             }
             return;
         }
-        Cookie c = createCookie(cookieName, "", req);
+        WebSSOUtils webSsoUtils = new WebSSOUtils();
+        Cookie c = webSsoUtils.createCookie(cookieName, "", req);
         String domainName = getSsoDomain(req);
         if (domainName != null && !domainName.isEmpty()) {
             c.setDomain(domainName);
@@ -442,7 +424,8 @@ public class OidcClientUtil {
         if (encodedReqParams != null) {
             encodedHash = calculateOidcCodeCookieValue(encodedReqParams, clientCfg);
         }
-        Cookie c = OidcClientUtil.createCookie(ClientConstants.WAS_OIDC_CODE, encodedHash, request);
+        WebSSOUtils webSsoUtils = new WebSSOUtils();
+        Cookie c = webSsoUtils.createCookie(ClientConstants.WAS_OIDC_CODE, encodedHash, request);
         if (clientCfg.isHttpsRequired() && isHttpsRequest) {
             c.setSecure(true);
         }

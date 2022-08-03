@@ -35,7 +35,7 @@ public class OidcCookieUtilsTest {
 
     @Test
     public void testCreateStateCookieValue() {
-        String cookieValue = OidcCookieUtils.createStateCookieValue("secret", state);
+        String cookieValue = OidcCookieUtils.createStateCookieValue(state, "secret");
         String timestamp = state.substring(0, Utils.TIMESTAMP_LENGTH);
         String newValue = state + "secret";
         String value = HashUtils.digest(newValue);

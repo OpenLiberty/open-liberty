@@ -39,6 +39,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
+import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.openidconnect.clients.common.AttributeToSubject;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
@@ -46,7 +47,6 @@ import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.JtiNonceCache;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
-import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
@@ -70,6 +70,8 @@ public class Jose4jUtil {
     private static final String SIGNATURE_ALG_NONE = "none";
     private final SSLSupport sslSupport;
     private static final JtiNonceCache jtiCache = new JtiNonceCache(); // Jose4jUil has only one instance
+
+    WebSSOUtils webSsoUtils = new WebSSOUtils();
 
     private static boolean issuedBetaMessage = false;
 
@@ -215,7 +217,7 @@ public class Jose4jUtil {
         oidcSessionCache.insertSession(sessionInfo);
 
         String wasOidcSessionId = sessionInfo.getSessionId();
-        Cookie cookie = OidcClientUtil.createCookie(ClientConstants.WAS_OIDC_SESSION, wasOidcSessionId, oidcClientRequest.getRequest());
+        Cookie cookie = webSsoUtils.createCookie(ClientConstants.WAS_OIDC_SESSION, wasOidcSessionId, oidcClientRequest.getRequest());
         cookie.setSecure(true);
 
         oidcClientRequest.getResponse().addCookie(cookie);

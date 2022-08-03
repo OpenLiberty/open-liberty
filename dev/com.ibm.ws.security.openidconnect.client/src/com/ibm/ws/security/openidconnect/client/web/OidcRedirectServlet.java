@@ -34,6 +34,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.common.crypto.HashUtils;
+import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.oauth20.web.WebUtils;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl;
@@ -64,6 +65,8 @@ public class OidcRedirectServlet extends HttpServlet {
     private transient OidcClient oidcClient = null;
 
     public static OidcClientImpl activatedOidcClientImpl = null; // this will be initialized when the feature starts
+
+    WebSSOUtils webSsoUtils = new WebSSOUtils();
 
     /**
      * @param activatedOidcClientImpl
@@ -255,7 +258,7 @@ public class OidcRedirectServlet extends HttpServlet {
             }
         }
 
-        Cookie c = OidcClientUtil.createCookie(ClientConstants.WAS_OIDC_CODE, encodedReqParams, request);
+        Cookie c = webSsoUtils.createCookie(ClientConstants.WAS_OIDC_CODE, encodedReqParams, request);
         if (clientCfg.isHttpsRequired() && isHttpsRequest) {
             c.setSecure(true);
         }
