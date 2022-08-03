@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.fat;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -300,11 +298,11 @@ public class ReplayCookieTests extends CommonSecurityFat {
     @Test
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie() throws Exception {
 
-        expandAndUpdateServerConfiguration(server, "server_noFeature.xml", true, "formlogin", "testmarker");
+        expandAndUpdateServerConfiguration(server, "server_noFeature.xml", true, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
 
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
-        expandAndUpdateServerConfiguration(server, DEFAULT_CONFIG, true, APP_NAME_JWT_BUILDER, "formlogin", "testmarker");
+        expandAndUpdateServerConfiguration(server, DEFAULT_CONFIG, true, APP_NAME_JWT_BUILDER, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
 
         // Access the protected again using a new conversation with the LTPA cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -330,11 +328,11 @@ public class ReplayCookieTests extends CommonSecurityFat {
     @Test
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie_useLtpaIfJwtAbsent() throws Exception {
 
-        expandAndUpdateServerConfiguration(server, "server_noFeature.xml", true, "formlogin", "testmarker");
+        expandAndUpdateServerConfiguration(server, "server_noFeature.xml", true, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
 
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
-        expandAndUpdateServerConfiguration(server, "server_useLtpaIfJwtAbsent_true.xml", true, "formlogin", "testmarker");
+        expandAndUpdateServerConfiguration(server, "server_useLtpaIfJwtAbsent_true.xml", true, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
 
         // Access the protected again using a new conversation with the LTPA cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -350,8 +348,6 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
         Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, ltpaCookie);
         validationUtils.validateResult(response, currentAction, expectations);
-        
-        //expandAndUpdateServerConfiguration(server, DEFAULT_CONFIG, false, APP_NAME_JWT_BUILDER, "formlogin", "testmarker");
     }
 
     /**
@@ -367,7 +363,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
-        expandAndUpdateServerConfiguration(server, "server_noFeature.xml", true, "formlogin", "testmarker");
+        expandAndUpdateServerConfiguration(server, "server_noFeature.xml", true, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
 
         // Access the protected again using a new conversation with the JWT SSO cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -377,8 +373,6 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
         Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
-        
-        //expandAndUpdateServerConfiguration(server, DEFAULT_CONFIG, true, APP_NAME_JWT_BUILDER, "formlogin", "testmarker");
     }
 
     /**
@@ -413,8 +407,6 @@ public class ReplayCookieTests extends CommonSecurityFat {
         validationUtils.validateResult(response, currentAction, expectations);
 
         actions.destroyWebClient(webClient);
-        
-        //expandAndUpdateServerConfiguration(server, DEFAULT_CONFIG, false, APP_NAME_JWT_BUILDER);
     }
 
     /**
