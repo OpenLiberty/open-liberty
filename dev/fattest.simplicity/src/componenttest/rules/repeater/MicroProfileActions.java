@@ -254,7 +254,7 @@ public class MicroProfileActions extends RepeatActions {
     public static final FeatureSet MP50 = new FeatureSet(MP50_ID, MP50_FEATURE_SET, EEVersion.EE9);
 
     //The FeatureSet for the latest MicrotProfile version
-    public static final FeatureSet LATEST = MP41;
+    public static final FeatureSet LATEST = MP50;
 
     //All MicroProfile FeatureSets
     private static final FeatureSet[] ALL_SETS_ARRAY = { MP10, MP12, MP13, MP14, MP20, MP21, MP22, MP30, MP32, MP33, MP40, MP41, MP50 };
