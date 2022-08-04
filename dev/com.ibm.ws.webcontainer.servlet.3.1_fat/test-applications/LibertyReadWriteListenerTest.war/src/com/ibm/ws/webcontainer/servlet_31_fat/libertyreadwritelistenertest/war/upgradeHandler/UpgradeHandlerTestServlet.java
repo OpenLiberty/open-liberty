@@ -80,12 +80,12 @@ public class UpgradeHandlerTestServlet extends HttpServlet {
 
         else if (testType.equals("test_SingleWriteLargeData1000000__UpgradeWL")) {
             TestHttpUpgradeHandler.setTestSet("test_SingleWriteLargeData1000000__UpgradeWL");
-            handler.setContentSize(req.getHeader("ContentSizeSent")); //send contentdataSize, received from the client for testWriteListnerUpgradeLargeData
+            handler.setContentSize(req.getHeader("ContentSizeSent")); //send contentdataSize, received from the client for testWriteListenerUpgradeLargeData
         }
 
         else if (testType.equals("test_LargeDataInChunks_UpgradeWL")) {
             TestHttpUpgradeHandler.setTestSet("test_LargeDataInChunks_UpgradeWL");
-            handler.setContentSize(req.getHeader("ContentSizeSent")); //send contentdataSize, received from the client for testWriteListnerUpgradeLargeData
+            handler.setContentSize(req.getHeader("ContentSizeSent")); //send contentdataSize, received from the client for testWriteListenerUpgradeLargeData
         }
 
         else if (testType.equals("test_Close_WebConnection_Container_UpgradeWL")) {
