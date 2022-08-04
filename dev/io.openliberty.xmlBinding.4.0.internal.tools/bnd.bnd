@@ -76,9 +76,7 @@ Export-Package: \
 Include-Resource: \
   @${repo;org.glassfish.jaxb:codemodel;4.0.0}!/!(META-INF/maven/*|module-info.class), \
   @${repo;org.glassfish.jaxb:jaxb-core;4.0.0}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:jaxb-jxc;4.0.0}!/!(META-INF/maven/*|module-info.class), \
   @${repo;org.glassfish.jaxb:jaxb-runtime;4.0.0}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:jaxb-xjc;4.0.0}!/!(META-INF/maven/*|module-info.class), \
   @${repo;org.glassfish.jaxb:txw2;4.0.0}!/!(META-INF/maven/*|module-info.class), \
   @${repo;org.glassfish.jaxb:xsom;4.0.0}!/!(META-INF/maven/*|module-info.class), \
   @${repo;com.sun.xml.bind.external:relaxng-datatype;3.0.1}!/!(META-INF/maven/*|module-info.class), \
@@ -93,7 +91,8 @@ Private-Package:\
   com.sun.tools.rngdatatype.*, \
   com.sun.tools.rngom.*
 
-Multi-Release: true
+javac.source: 11
+javac.target: 11
 
 instrument.disabled: true
 

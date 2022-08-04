@@ -40,12 +40,10 @@ DynamicImport-Package: \
 
 Include-Resource:\
   @${repo;jakarta.xml.bind:jakarta.xml.bind-api;4.0.0;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  io/openliberty/jakarta=${bin}/io/openliberty/jakarta
+  io/openliberty/jakarta=${bin}/io/openliberty/jakarta, \
   jakarta/xml/bind=${bin}/jakarta/xml/bind
 
-Multi-Release: true
-
-instrument.ffdc: false
+instrument.classesExcludes: jakarta/**/*.class
 
 publish.wlp.jar.suffix: dev/api/spec
 

@@ -46,7 +46,6 @@ Import-Package: \
   org.apache.xml.*; resolution:=optional, \
   org.w3c.dom.*, \
   !javax.activation, \
-  javax.xml.catalog;resolution:=optional, \
   javax.xml.stream.*, \
   javax.xml.transform.*, \
   javax.xml.parsers.*, \
@@ -54,7 +53,6 @@ Import-Package: \
   javax.xml.datatype.*, \
   javax.xml.validation.*, \
   javax.xml.xpath.*, \
-  javax.xml.catalog.*,resolution:=optional \
   org.xml.sax.*, \
   !com.sun.xml.internal.bind.v2, \
   !com.sun.xml.bind.v2, \
