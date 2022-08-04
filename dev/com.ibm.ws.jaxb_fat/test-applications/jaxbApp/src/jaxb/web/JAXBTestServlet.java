@@ -45,7 +45,7 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXRS", "JAXB-2.3" })
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXRS" })
     public void testJakartaJaxbAPILoadedFromLiberty() throws Exception {
         assertNull("System property 'jakarta.xml.bind.context.factory' effects the entire JVM and should not be set by the Liberty runtime!",
                    System.getProperty("jakarta.xml.bind.context.factory"));
@@ -78,7 +78,7 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXB-2.3" })
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
     public void testXMLBindingImplLoadedFromLiberty() throws Exception {
         JAXBContext ctx = JAXBContext.newInstance("jaxb.web", ObjectFactory.class.getClassLoader());
         ClassLoader implLoader = ctx.getClass().getClassLoader();
@@ -116,7 +116,7 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXB-2.3" })
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
     public void testJakartaActivationLoaded() throws Exception {
         // Verify Activation API came from the JDK
         ClassLoader apiLoader = jakarta.activation.DataHandler.class.getClassLoader();

@@ -13,7 +13,7 @@ IBM-API-Package: javax.persistence; type="spec", \
  javax.persistence.metamodel; type="spec"
 IBM-App-ForceRestart: uninstall, \
  install
--features=com.ibm.websphere.appserver.optional.jaxb-2.2; ibm.tolerates:="2.3", \
+-features=com.ibm.websphere.appserver.optional.jaxb-2.2, \
   com.ibm.websphere.appserver.transaction-1.2, \
   com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false, \
   com.ibm.websphere.appserver.classloading-1.0, \

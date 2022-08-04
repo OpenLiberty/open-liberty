@@ -39,7 +39,5 @@ Include-Resource:\
 
 instrument.disabled: true
 
-publish.wlp.jar.suffix: dev/api/spec
-
 -buildpath: \
 	javax.xml.bind:jaxb-api;strategy=exact;version=2.3.0

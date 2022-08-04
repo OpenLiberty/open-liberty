@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -23,15 +22,11 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 LibertyJAXBTest.class,
                 ThirdPartyJAXBTest.class,
-                JAXBToolsTest.class,
-                LibertyJAXBTolerationTest.class
+                JAXBToolsTest.class
 })
 
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new FeatureReplacementAction("jaxb-2.2", "jaxb-2.3")
-                                    .forceAddFeatures(false)
-                                    .withID("JAXB-2.3"))
                     .andWith(new JakartaEE9Action());
 }

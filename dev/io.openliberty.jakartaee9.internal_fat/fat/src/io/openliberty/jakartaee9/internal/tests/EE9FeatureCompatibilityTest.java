@@ -101,8 +101,6 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         // jsp-2.2 is a EE6 feature that is included with open liberty.
         // websocket-1.0 is a special case.  Part of EE7, but 1.1 is used by liberty.
         nonEE9JavaEEFeatures.add("appSecurity-1.0");
-        nonEE9JavaEEFeatures.add("jaxb-2.3");
-        nonEE9JavaEEFeatures.add("jaxws-2.3");
         nonEE9JavaEEFeatures.add("jsp-2.2");
         nonEE9JavaEEFeatures.add("websocket-1.0");
 
@@ -259,10 +257,6 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
         // j2eeManagement-1.1 was removed in Jakarta EE 9 so there is no replacement
         ee8Features.remove("j2eeManagement-1.1");
-
-        // A couple of special cases that we want to make sure work.
-        ee8Features.add("jaxb-2.3");
-        ee8Features.add("jaxws-2.3");
 
         // servlet long name is the same for EE9 so it will fail because the prefixes
         // match and it is marked as a singleton.
