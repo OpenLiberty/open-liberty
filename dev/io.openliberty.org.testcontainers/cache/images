@@ -1,0 +1,6 @@
+# Updated on 04/08/2022
+kyleaure/db2:1.0
+kyleaure/oracle-18.4.0-expanded:1.0.full
+kyleaure/postgres-test-table:3.0
+mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04
+postgres:14.1-alpine

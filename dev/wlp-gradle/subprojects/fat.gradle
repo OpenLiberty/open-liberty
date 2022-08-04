@@ -427,34 +427,6 @@ task runfat(type: Exec) {
   }
 
   doLast {
-    // Automatically keep track of projects that use test containers, and the images they use.
-    File testMarker = new File(autoFvtDir, 'output/testcontainer.marker')
-    if(testMarker.exists()) {
-      File projectList = new File(project.getProjectDir(), '../io.openliberty.org.testcontainers/testcontainer.json')
-      if(! projectList.exists() )
-        projectList.text = '{}'
-    
-      def slurped = new groovy.json.JsonSlurper().parseText(projectList.text)
-      
-      if(! slurped.keySet().contains(project.name) )
-        slurped.put(project.name, new java.util.ArrayList())
-      
-      File testImageCache = new File(autoFvtDir, 'output/testcontainer.image.cache')
-      if(testImageCache.exists()) {
-        def knownImages = slurped.get(project.name)
-        if(! knownImages.containsAll(testImageCache.readLines()) ) {
-          testImageCache.eachLine { String line ->
-            if(!knownImages.contains(line))
-              knownImages.add(line)
-          }
-          slurped.remove(project.name)
-          slurped.put(project.name, knownImages)
-        }
-      }
-      def builder = new groovy.json.JsonBuilder(slurped)
-      projectList.write(builder.toPrettyString())
-    }
-  
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail
     // the build. If we ever run FATs in remote builds, we should also gate this on a property like
     // 'is.running.remote.build' so we don't fail the entire build whenever a testcase fails

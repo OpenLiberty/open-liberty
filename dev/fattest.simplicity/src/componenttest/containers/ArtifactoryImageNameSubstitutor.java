@@ -10,20 +10,11 @@
  *******************************************************************************/
 package componenttest.containers;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
-
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.ExternalTestService;
 
 /**
@@ -46,19 +37,19 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
         // Priority 2: If registry was explicit set, do not substitute
         if (original.getRegistry() != null && !original.getRegistry().isEmpty()) {
-            return andCacheImageName(original, false);
+            return andVerifyImage(original);
         }
 
         // Priority 3: Ask the docker strategy if we should substitute the image.
         // This takes into account local/remote docker and properties to force the use of Artifactory.
         if (!ExternalTestServiceDockerClientStrategy.USE_ARTIFACTORY_NAME_SUBSTITUTION) {
-            return andCacheImageName(original, true);
+            return andVerifyImage(original);
         }
 
         // Need to substitute image name to use private registry
         String privateImage = getPrivateRegistry() + '/' + original.asCanonicalNameString();
         Log.info(c, "apply", "Swapping docker image name from " + original.asCanonicalNameString() + " --> " + privateImage);
-        return andCacheImageName(DockerImageName.parse(privateImage).asCompatibleSubstituteFor(original), false);
+        return andVerifyImage(original, DockerImageName.parse(privateImage).asCompatibleSubstituteFor(original));
     }
 
     @Override
@@ -108,23 +99,26 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
     }
 
     /**
-     * Caches image names in the file autoFVT/output/testcontainer.image.cache
-     * this will be used to generate a file of all testcontainer images used in Open Liberty
+     * Verifies image name has been documented to ensure we can generate an accurate list.
      */
-    static DockerImageName andCacheImageName(DockerImageName output, boolean withPrivateRegistry) {
-        if (FATRunner.FAT_TEST_LOCALRUN) {
-            final Path path = Paths.get("./output/testcontainer.image.cache");
-            try {
-                Files.write(path,
-                            Arrays.asList(withPrivateRegistry ? getPrivateRegistry() + '/' + output.asCanonicalNameString() : output.asCanonicalNameString()),
-                            StandardCharsets.UTF_8,
-                            Files.exists(path) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE);
-            } catch (IOException e) {
-                Log.warning(c, "Unable to create a testcontainers.cache");
-            }
+    static DockerImageName andVerifyImage(DockerImageName original) {
+        return andVerifyImage(original, null);
+    }
+
+    static DockerImageName andVerifyImage(DockerImageName original, DockerImageName output) {
+
+        if (!ImageVerifier.hasImage(original)) {
+            RuntimeException e = new RuntimeException("Used testcontainer image " + original.asCanonicalNameString() +
+                                                      " was not defined in the autoFVT/fat.bnd.properties file! " +
+                                                      "To correct this, add " + original.asCanonicalNameString() + " to the '" + ImageVerifier.imageProperty + "' " +
+                                                      "property in the bnd.bnd or build-test.xml file for this FAT so that an testcontainer image " +
+                                                      "graph can be generated in the future.");
+
+            Log.error(c, "andVerifyImage", e);
+            throw e;
         }
 
-        return output;
+        return output == null ? original : output;
     }
 
 }
