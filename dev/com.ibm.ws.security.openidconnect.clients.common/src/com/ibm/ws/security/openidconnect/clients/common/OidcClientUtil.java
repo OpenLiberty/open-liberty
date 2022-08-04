@@ -407,7 +407,11 @@ public class OidcClientUtil {
             encodedHash = calculateOidcCodeCookieValue(encodedReqParams, clientCfg);
         }
         CookieBasedStorage store = new CookieBasedStorage(getReferrerURLCookieHandler(), request, response);
-        store.addCookie(ClientConstants.WAS_OIDC_CODE, encodedHash);
+        boolean isSecure = false;
+        if (clientCfg.isHttpsRequired() && isHttpsRequest) {
+            isSecure = true;
+        }
+        store.addCookie(ClientConstants.WAS_OIDC_CODE, encodedHash, isSecure);
     }
 
     public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {

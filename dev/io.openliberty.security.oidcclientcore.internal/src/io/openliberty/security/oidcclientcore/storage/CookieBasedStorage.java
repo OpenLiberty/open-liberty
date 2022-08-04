@@ -44,7 +44,7 @@ public class CookieBasedStorage implements Storage {
     @Override
     public void store(String name, @Sensitive String value) {
         String cookieName = JakartaOIDCConstants.COOKIE_NAME_OIDC_CLIENT_CORE_PREFIX + name;
-        addCookie(cookieName, value);
+        addCookie(cookieName, value, false);
     }
 
     @Override
@@ -75,10 +75,9 @@ public class CookieBasedStorage implements Storage {
         response.addCookie(c);
     }
 
-    public void addCookie(String cookieName, @Sensitive String cookieValue) {
+    public void addCookie(String cookieName, @Sensitive String cookieValue, boolean isSecure) {
         Cookie c = createCookie(cookieName, cookieValue, -1);
-        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
-        if (isHttpsRequest) {
+        if (isSecure) {
             c.setSecure(true);
         }
         response.addCookie(c);
