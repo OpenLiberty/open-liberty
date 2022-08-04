@@ -85,7 +85,7 @@ public class PureAnnMergeConflictXMLBindingsTest extends EJBAnnTestBase {
     @Test
     public void testPureAnnMergeConflict_EmployeeAndManagerWithParams_DenyAccessUserRemovedFromEmployeeRoleServerXML() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
-        String waitForMessage = "CWWKT0016I.*/securityejb/";
+        String waitForMessage = "CWWKT0016I.*/securityejbXMLmerge/";
         List<String> msgs = new ArrayList<String>();
         msgs.add(waitForMessage);
 
@@ -120,7 +120,7 @@ public class PureAnnMergeConflictXMLBindingsTest extends EJBAnnTestBase {
     @Test
     public void testPureAnnMergeConflict_EmployeeAndManagerWithParams_PermitAccessNewUserInEmployeeRoleInServerXML() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
-        String waitForMessage = "CWWKT0016I.*/securityejb/";
+        String waitForMessage = "CWWKT0016I.*/securityejbXMLmerge/";
         List<String> msgs = new ArrayList<String>();
         msgs.add(waitForMessage);
 
@@ -160,7 +160,7 @@ public class PureAnnMergeConflictXMLBindingsTest extends EJBAnnTestBase {
     @Test
     public void testPureAnnMergeConflict_RunAsSpecified_AllowAccessDifferentRunAsUserInServerXml() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
-        String waitForMessage = "CWWKT0016I.*/securityejb/";
+        String waitForMessage = "CWWKT0016I.*/securityejbXMLmerge/";
         List<String> msgs = new ArrayList<String>();
         msgs.add(waitForMessage);
 
