@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -1230,7 +1231,8 @@ public class WCResponseHeadersTest {
         Header expectedHeader = null;
 
         // Build and deploy the application that we need for this test
-        ShrinkHelper.defaultApp(server, APP_NAME_SECURE_APP + ".war", "samesite.security.servlet");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.defaultApp(server, APP_NAME_SECURE_APP + ".war", options, "samesite.security.servlet");
 
         // Use the necessary server.xml for this test.
         ServerConfiguration configuration = server.getServerConfiguration();
@@ -1371,8 +1373,6 @@ public class WCResponseHeadersTest {
 
                 assertTrue("Response did not contain expected response: " + expectedResponse,
                            content.equals(expectedResponse));
-            } finally {
-                server.removeInstalledAppForValidation(APP_NAME_SECURE_APP);
             }
         }
 

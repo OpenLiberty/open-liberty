@@ -418,9 +418,6 @@ public class LibertyServer implements LogMonitorClient {
 
     protected long serverStartTimeout = SERVER_START_TIMEOUT;
 
-    protected final AtomicInteger stopApplicationMessages = new AtomicInteger(0);
-    protected final AtomicInteger startApplicationMessages = new AtomicInteger(0);
-
     public String getPathToAutoFVTNamedServer() {
         return pathToAutoFVTNamedServer;
     }
@@ -2874,7 +2871,6 @@ public class LibertyServer implements LogMonitorClient {
                 // command port isn't disabled, we won't have shut down the
                 // server, so we don't need to reset the log marks
                 resetLogOffsets();
-                clearMessageCounters();
             }
 
             if (isJava2SecurityEnabled()) {
@@ -3011,12 +3007,6 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(c, method, "No unexpected errors or warnings found in server logs.");
         else
             throw ex;
-    }
-
-    protected void clearMessageCounters() {
-        //this is because we will be getting a new log file
-        stopApplicationMessages.set(0);
-        startApplicationMessages.set(0);
     }
 
     public void restartServer() throws Exception {
@@ -4973,8 +4963,8 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
-     * This method will search the output and trace files for this server
-     * for the specified expression. The default trace prefix is assumed.
+     * This method will search the messages.log for this server
+     * for the specified expression.
      *
      * @param  regexp    pattern to search for
      * @return           A list of the lines in the trace files which contain the matching
@@ -4986,8 +4976,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
-     * This method will search the output and trace files for this server
-     * for the specified expression. The default trace prefix is assumed.
+     * This method will search {@code logFile} for the specified expression.
      *
      * @param  regexp    pattern to search for
      * @return           A list of the lines in the trace files which contain the matching
@@ -5986,62 +5975,87 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected void searchForMessages(String message_code, String message_type, AtomicInteger counter) {
-        final String method = "searchForMessages";
-        // Get a remote file whether it exists yet or not (thus don't use the LibertyFileManager API)
-        if (messageAbsPath == null) {
-            Log.info(c, method, "Messages file path  is null - no check for message in logs");
-        } else {
-            RemoteFile outputFile = new RemoteFile(machine, messageAbsPath);
-            int oldNumber = counter.getAndIncrement();
-            int newNumber = oldNumber + 1;
-            int numberFound = waitForMultipleStringsInLog(newNumber, message_code, serverStartTimeout, outputFile);
-            //waitForStringInLog(REMOVE_APP_MESSAGE_CODE, serverStartTimeout, outputFile);
-            if (numberFound == newNumber) {
-                Log.info(c, method, message_type + " message appears in log " + numberFound + " time(s)");
-            } else if (numberFound > counter.get()) {
-                //need to update stopApplicationMessages
-                Log.info(c, method, "Resetting the number of " + message_type + " messages that appear in the log");
-                counter.set(numberFound);
-            } else {
-                Log.info(c, method, "Incorrect number of " + message_type + " messages in the log.  An error may have occurred.");
+    private enum AppState {
+        STARTED,
+        STOPPED
+    }
+
+    /**
+     * Wait for an application to be started or stopped
+     *
+     * @param  appName          the application name to wait for
+     * @param  state            whether we're waiting for it to start or stop
+     * @param  timeout          the timeout in ms
+     * @throws RuntimeException if the app does not reach the expected state within the timeout
+     */
+    private void waitForAppState(String appName, AppState state, long timeout) {
+        Log.info(c, "waitForAppState", "Starting wait for " + appName + " to be " + state);
+        AppState currentState = null;
+        String lastMessage = null;
+        long waited = 0;
+        while (waited <= timeout) {
+            try {
+                List<String> strings = findStringsInLogs("CWWKZ000(1|9)I:.*" + appName);
+                if (!strings.isEmpty()) {
+                    lastMessage = strings.get(strings.size() - 1);
+                    if (lastMessage.contains("CWWKZ0001I")) {
+                        currentState = AppState.STARTED;
+                    } else {
+                        currentState = AppState.STOPPED;
+                    }
+                } else {
+                    currentState = AppState.STOPPED; // If there's no started message, assume it's stopped
+                }
+                if (currentState == state) {
+                    break;
+                }
+                Thread.sleep(LogMonitor.WAIT_INCREMENT);
+                waited += LogMonitor.WAIT_INCREMENT;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
+        }
+
+        if (currentState != state) {
+            throw new RuntimeException("Timed out waiting for " + appName + " to be in state " + state + ". Actual state: " + currentState + ", Last log message:" + lastMessage);
+        } else {
+            Log.info(c, "waitForAppState", "Application " + appName + " reached " + state + " in " + waited + "ms");
         }
     }
 
     public void addInstalledAppForValidation(String app) {
         final String method = "addInstalledAppForValidation";
-        final String START_APP_MESSAGE_CODE = "CWWKZ0001I:.*" + app;
         Log.info(c, method, "Adding installed app: " + app + " for validation");
         installedApplications.add(app);
 
         if (isStarted) {
-            searchForMessages(START_APP_MESSAGE_CODE, "installApp", startApplicationMessages);
+            waitForAppState(app, AppState.STARTED, APP_START_TIMEOUT);
         }
     }
 
     public void removeInstalledAppForValidation(String app) {
         final String method = "removeInstalledAppForValidation";
-        final String REMOVE_APP_MESSAGE_CODE = "CWWKZ0009I:.*" + app;
         Log.info(c, method, "Removing installed app: " + app + " for validation");
         installedApplications.remove(app);
 
         if (isStarted) {
-            searchForMessages(REMOVE_APP_MESSAGE_CODE, "uninstallApp", stopApplicationMessages);
+            waitForAppState(app, AppState.STOPPED, LOG_SEARCH_TIMEOUT);
         }
     }
 
     public void removeAllInstalledAppsForValidation() {
         final String method = "removeInstalledAppForValidation";
-        final String REMOVE_APP_MESSAGE_CODE = "CWWKZ0009I";
         Log.info(c, method, "Removing following list of installed application for validation");
         for (String app : installedApplications) {
             Log.info(c, method, " -" + app);
         }
+        List<String> appsRemoved = new ArrayList<>(installedApplications);
         installedApplications.clear();
 
         if (isStarted) {
-            searchForMessages(REMOVE_APP_MESSAGE_CODE, "uninstallApp", stopApplicationMessages);
+            for (String app : appsRemoved) {
+                waitForAppState(app, AppState.STOPPED, LOG_SEARCH_TIMEOUT);
+            }
         }
     }
 

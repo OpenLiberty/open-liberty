@@ -62,8 +62,8 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
     protected static String XML_DB_NAME = "multipleModuleRunAsDB.xml";
     protected static String APP_NAME = "multipleModuleRunAs";
     protected static String EAR_NAME = APP_NAME + ".ear";
-    protected static String APP_DB_NAME = "multipleDB";
-    protected static String WAR_DB_NAME = APP_DB_NAME + ".war";
+    protected static String APP_DB_NAME = "MultipleDBServlet";
+    protected static String WAR_DB_NAME = "multipleDB.war";
     protected static String APP1_SERVLET = "/" + MODULE1_ROOT + "/MultipleISFormRunAsServlet";
     protected static String APP2_SERVLET = "/" + MODULE2_ROOT + "/MultipleISCustomFormRunAsServlet";
 
