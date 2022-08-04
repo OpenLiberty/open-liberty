@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
@@ -62,6 +64,7 @@ public class CacheServiceImpl implements CacheService {
     private CacheManagerService cacheManagerService = null;
     private SerializationService serializationService = null;
     private ScheduledExecutorService scheduledExecutorService = null;
+    private ScheduledFuture<?> getCacheFuture = null;
 
     private String cacheName = null;
     private Cache<Object, Object> cache = null;
@@ -91,12 +94,12 @@ public class CacheServiceImpl implements CacheService {
          * Schedule a task to initialize the cache in the background. This will
          * alleviate delays on the first request to the cache.
          */
-        scheduledExecutorService.execute(new Runnable() {
+        getCacheFuture = scheduledExecutorService.schedule(new Runnable() {
             @Override
             public void run() {
                 getCache();
             }
-        });
+        }, 0, TimeUnit.SECONDS);
     }
 
     @Deactivate
@@ -105,6 +108,7 @@ public class CacheServiceImpl implements CacheService {
             cache.close();
         }
         cache = null;
+        getCacheFuture = null;
         NOTSERIALIZABLE_CLASSES_LOGGED.clear();
     }
 
@@ -179,13 +183,26 @@ public class CacheServiceImpl implements CacheService {
              */
             synchronized (syncObject) {
                 if (cache == null) {
-                    long loadTimeMs;
+                    /*
+                     * Configuration updates can occur while this task is either queued to run or while running.
+                     * If this occurs, the CachingProviderService could be unregistered. Make sure it is still
+                     * registered, if not, no-op this task.
+                     */
+                    if (cacheManagerService == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "It appears that perhaps the CacheManagerService was stopped after this task was started." +
+                                         " Perhaps a configuration change was processed?");
+                        }
+                        return null;
+                    }
 
                     /*
                      * Search for an existing cache.
                      */
+                    CacheManager cacheManager = null;
+                    long loadTimeMs;
                     try {
-                        CacheManager cacheManager = cacheManagerService.getCacheManager();
+                        cacheManager = cacheManagerService.getCacheManager();
 
                         /*
                          * The JCache specification says that any cache created outside of the JCache
@@ -219,7 +236,6 @@ public class CacheServiceImpl implements CacheService {
                         /*
                          * Finally, create the JCache instance.
                          */
-                        CacheManager cacheManager = cacheManagerService.getCacheManager();
                         loadTimeMs = System.currentTimeMillis();
                         cache = new CacheProxy(cacheManager.createCache(cacheName, config), this);
                         loadTimeMs = System.currentTimeMillis() - loadTimeMs;
@@ -260,6 +276,23 @@ public class CacheServiceImpl implements CacheService {
     }
 
     public void unsetCachingProviderService(CacheManagerService service) {
+        /*
+         * Wait for the getCacheFuture to complete if in progress.
+         */
+        waitForBackgroundTask();
+
+        /*
+         * Close the cache.
+         */
+        if (this.cache != null) {
+            cache.close();
+        }
+
+        /*
+         * Null out any instance fields derived from the CacheManager service.
+         */
+        this.cache = null;
+        this.getCacheFuture = null;
         this.cacheManagerService = null;
     }
 
@@ -313,5 +346,27 @@ public class CacheServiceImpl implements CacheService {
             }
         }
         throw new SerializationException(msg, cause);
+    }
+
+    /**
+     * Wait for the {@link #getCacheFuture} task to finish.
+     */
+    private void waitForBackgroundTask() {
+        if (this.getCacheFuture != null && !this.getCacheFuture.isDone()) {
+            boolean shouldTrace = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+            try {
+                if (shouldTrace) {
+                    Tr.debug(tc, "Started waiting for background task to finish.");
+                }
+                this.getCacheFuture.get(60, TimeUnit.SECONDS);
+                if (shouldTrace) {
+                    Tr.debug(tc, "Finished waiting for background task to finish.");
+                }
+            } catch (Exception e) {
+                if (shouldTrace) {
+                    Tr.debug(tc, "Caught the following exception while waiting for background task to finish: " + e);
+                }
+            }
+        }
     }
 }
