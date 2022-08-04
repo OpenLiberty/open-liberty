@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -171,6 +171,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
         // when concurrent-3.0 moves to EE10 only you can remove this line since it won't be in the Set any longer.
         compatFeatures.remove("concurrent-3.0");
+
+        //when mpTelemetry-1.0 moves to EE10 only you can remove this line since it won't be in the Set any longer.
+        compatFeatures.remove("mpTelemetry-1.0");
 
         return compatFeatures;
     }

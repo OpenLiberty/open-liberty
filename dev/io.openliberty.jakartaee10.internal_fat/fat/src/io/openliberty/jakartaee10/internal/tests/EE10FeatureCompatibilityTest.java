@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,6 +126,18 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
                 nonEE10MicroProfileFeatures.addAll(mpFeatureSet.getFeatures());
             }
         }
+
+        //These MP6 features are now EE10 based (even if MP 6.0 is still EE9), they should not conflict
+        nonEE10MicroProfileFeatures.remove("mpOpenAPI-3.1");
+        nonEE10MicroProfileFeatures.remove("mpMetrics-5.0");
+        nonEE10MicroProfileFeatures.remove("mpJwt-2.1");
+
+        //These MP5 features are also in MP6 and have had EE10 toleration added, they should not conflict
+        nonEE10MicroProfileFeatures.remove("mpFaultTolerance-4.0");
+        //nonEE10MicroProfileFeatures.remove("mpRestClient-3.0"); //EE10 toleration does not work yet
+        nonEE10MicroProfileFeatures.remove("mpConfig-3.0");
+        nonEE10MicroProfileFeatures.remove("mpHealth-4.0");
+        nonEE10MicroProfileFeatures.remove("mpContextPropagation-1.3");
 
         // Add EE9 features that are not part of EE10
         for (String feature : JakartaEE9Action.EE9_FEATURE_SET) {
