@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,7 @@ public class AbstractTest extends FATServletClient {
         Log.info(this.getClass(), testMethod, "The response: " + logOutput.toString());
         boolean foundExpectedResponse = false;
         for (String expectedResponse : expectedResponses) {
-            if (line.contains(expectedResponse)) {
+            if (line != null && line.contains(expectedResponse)) {
                 foundExpectedResponse = true;
                 break;
             }
