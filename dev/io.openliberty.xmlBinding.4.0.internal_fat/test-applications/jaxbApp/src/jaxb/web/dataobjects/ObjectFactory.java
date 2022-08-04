@@ -20,10 +20,10 @@ import jakarta.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _Image_QName = new QName("https://jaxb.web.dataobjects/", "Image");
-    private final static QName _Items_QName = new QName("https://jaxb.web.dataobjects/", "Items");
-    private final static QName _PurchaseOrderType_QName = new QName("https://jaxb.web.dataobjects/", "PurchaseOrderType");
-    private final static QName _ShippingAddress_QName = new QName("https://jaxb.web.dataobjects/", "ShippingAddress");
+    private final static QName _Image_QName = new QName("http://jaxb.web.dataobjects/", "Image");
+    private final static QName _Items_QName = new QName("http://jaxb.web.dataobjects/", "Items");
+    private final static QName _PurchaseOrderType_QName = new QName("http://jaxb.web.dataobjects/", "PurchaseOrderType");
+    private final static QName _ShippingAddress_QName = new QName("http://jaxb.web.dataobjects/", "ShippingAddress");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: mtomservice
@@ -69,17 +69,17 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link GetAttachmentResponse }{@code >}}
      *
      */
-    @XmlElementDecl(namespace = "https://jaxb.web.dataobjects/", name = "Image")
+    @XmlElementDecl(namespace = "http://jaxb.web.dataobjects/", name = "Image")
     public JAXBElement<Image> createGetAttachmentResponse(Image value) {
         return new JAXBElement<Image>(_Image_QName, Image.class, null, value);
     }
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link SendAttachment }{@code >}}
-     * private final static QName _ShippingAddress_QName = new QName("https://jaxb.web.dataobjects/", "ShippingAddress");
+     * private final static QName _ShippingAddress_QName = new QName("http://jaxb.web.dataobjects/", "ShippingAddress");
      *
      */
-    @XmlElementDecl(namespace = "https://jaxb.web.dataobjects/", name = "Items")
+    @XmlElementDecl(namespace = "http://jaxb.web.dataobjects/", name = "Items")
     public JAXBElement<Items> createItems(Items value) {
         return new JAXBElement<Items>(_Items_QName, Items.class, null, value);
     }
@@ -87,10 +87,10 @@ public class ObjectFactory {
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link SendAttachmentResponse }{@code >}}
      *
-     * private final static QName _PurchaseOrderType_QName = new QName("https://jaxb.web.dataobjects/", "PurchaseOrderType");
+     * private final static QName _PurchaseOrderType_QName = new QName("http://jaxb.web.dataobjects/", "PurchaseOrderType");
      *
      */
-    @XmlElementDecl(namespace = "https://jaxb.web.dataobjects/", name = "PurchaseOrderType")
+    @XmlElementDecl(namespace = "http://jaxb.web.dataobjects/", name = "PurchaseOrderType")
     public JAXBElement<PurchaseOrderType> createPurchaseOrderType(PurchaseOrderType value) {
         return new JAXBElement<PurchaseOrderType>(_PurchaseOrderType_QName, PurchaseOrderType.class, null, value);
     }
@@ -99,7 +99,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link GetAttachment }{@code >}}
      *
      */
-    @XmlElementDecl(namespace = "https://jaxb.web.dataobjects/", name = "ShippingAddress")
+    @XmlElementDecl(namespace = "http://jaxb.web.dataobjects/", name = "ShippingAddress")
     public JAXBElement<ShippingAddress> createShippingAddress(ShippingAddress value) {
         return new JAXBElement<ShippingAddress>(_ShippingAddress_QName, ShippingAddress.class, null, value);
     }

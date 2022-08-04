@@ -13,7 +13,7 @@
                        @XmlJavaTypeAdapter(NormalizedStringAdapter.class),
                        @XmlJavaTypeAdapter(HexBinaryAdapter.class) })
 @XmlSchema(
-           namespace = "https://jaxb.web.dataobjects/",
+           namespace = "http://jaxb.web.dataobjects/",
            elementFormDefault = XmlNsForm.QUALIFIED,
            xmlns = {
                      @XmlNs(prefix = "ns0", namespaceURI = "http://jaxb.web.dataobjects/")

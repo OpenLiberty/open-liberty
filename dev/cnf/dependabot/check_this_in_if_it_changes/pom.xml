@@ -2538,11 +2538,6 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
-      <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>4.0.0-M3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
       <version>2.7.10</version>
     </dependency>

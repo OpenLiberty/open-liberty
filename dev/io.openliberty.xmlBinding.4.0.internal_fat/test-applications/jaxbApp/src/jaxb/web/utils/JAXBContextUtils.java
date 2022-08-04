@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +47,7 @@ public class JAXBContextUtils {
     public static Items ITEMS = null;
     public static ShippingAddress SHIPPING_ADDRESS = null;
     public static PurchaseOrderType PURCHASE_ORDER_TYPE = null;
+    private static XMLGregorianCalendar shipDate = null;
 
     public static JAXBContext setupJAXBContext() throws Exception {
         return JAXBContext.newInstance("jaxb.web.dataobjects");
@@ -130,7 +130,7 @@ public class JAXBContextUtils {
             pot.setBillTo(getShippingAddress());
             pot.setItems(getItems());
             pot.setComment("New Order");
-            pot.setOrderDate(createDate());
+            pot.setOrderDate(getDate());
             pot.setShipTo(getShippingAddress());
             PURCHASE_ORDER_TYPE = pot;
             return PURCHASE_ORDER_TYPE;
@@ -150,7 +150,7 @@ public class JAXBContextUtils {
         item.setPrice(price);
         item.setQuantity(15);
 
-        item.setShipDate(createDate());
+        item.setShipDate(getDate());
 
         Item item2 = new Item();
 
@@ -159,7 +159,7 @@ public class JAXBContextUtils {
         BigDecimal price2 = new BigDecimal(135165.999999999898);
         item2.setPrice(price2);
         item2.setQuantity(1251);
-        item2.setShipDate(createDate());
+        item2.setShipDate(getDate());
 
         List<Item> itemList = new ArrayList<Item>();
         itemList.add(item);
@@ -187,29 +187,28 @@ public class JAXBContextUtils {
         }
     }
 
-    public static XMLGregorianCalendar createDate() {
+    public static XMLGregorianCalendar getDate() {
+        if (shipDate == null) {
 
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-        Date date;
-        XMLGregorianCalendar shipDate = null;
-        try {
-            date = simpleDateFormat.parse("2018-09-09");
+            Date date;
+            XMLGregorianCalendar sd = null;
+            try {
+                date = simpleDateFormat.parse("2018-09-09");
 
-            // Gregorian Calendar object creation
-            GregorianCalendar gc = new GregorianCalendar();
+                sd = DatatypeFactory.newInstance().newXMLGregorianCalendar(new SimpleDateFormat("yyyy-MM-dd").format(date));
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            shipDate = sd;
 
-            // giving current date and time to gc
-            gc.setTime(date);
-
-            shipDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
-        } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            return sd;
+        } else {
+            return shipDate;
         }
-
-        return shipDate;
     }
 
     /**
