@@ -121,7 +121,10 @@ public class PureAnnServletToEJBRunAsTest extends EJBAnnTestBase {
     @Test
     public void testPureAnnRunAs_RunAsSpecified_serverXML_MissingRunAs() throws Exception {
         Log.info(logClass, name.getMethodName(), "**Entering " + name.getMethodName());
-        testHelper.reconfigureServer(Constants.SERVLET_TO_EJB_RUNAS_MISSING, name.getMethodName(), Constants.DO_NOT_RESTART_SERVER);
+        String waitForMessage = "CWWKT0016I.*/securityejb/";
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(waitForMessage);
+        testHelper.reconfigureServer(Constants.SERVLET_TO_EJB_RUNAS_MISSING, name.getMethodName(), msgs, Constants.DO_NOT_RESTART_SERVER);
         String queryString = "/SimpleRunAsServlet?testInstance=ejb01&testMethod=runAsSpecified";
         String response = generateResponseFromServlet(queryString, Constants.DECLARED_ROLE_USER, Constants.DECLARED_ROLE_USER_PWD);
         verifyExceptionWithUserAndRole(response, MessageConstants.EJB_ACCESS_EXCEPTION, MessageConstants.JACC_AUTH_DENIED_USER_NOT_GRANTED_REQUIRED_ROLE, Constants.RUN_AS_USER2,
