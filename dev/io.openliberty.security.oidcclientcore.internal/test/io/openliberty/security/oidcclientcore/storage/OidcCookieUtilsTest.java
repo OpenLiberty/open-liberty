@@ -43,4 +43,13 @@ public class OidcCookieUtilsTest {
         assertEquals(newCookieValue, cookieValue);
     }
 
+    @Test
+    public void testGetCookieName() {
+        String cookieName = OidcCookieUtils.getCookieName("WASOidc", "client01", state);
+        String newValue = state + "client01";
+        String newName = Utils.getStrHashCode(newValue);
+        String expectedCookieName = "WASOidc" + newName;
+        assertEquals(expectedCookieName, cookieName);
+    }
+
 }
