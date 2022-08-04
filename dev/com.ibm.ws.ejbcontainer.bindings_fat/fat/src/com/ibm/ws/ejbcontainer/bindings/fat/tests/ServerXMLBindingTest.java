@@ -78,9 +78,6 @@ public class ServerXMLBindingTest extends FATServletClient {
         //lookupServerXMLBindings
         FATServletClient.runTest(server, servlet, "lookupServerXMLBindings");
 
-        //remove app
-        server.removeAllInstalledAppsForValidation();
-
         if (server != null && server.isStarted()) {
             server.stopServer("CNTR0338W");
         }
@@ -100,9 +97,6 @@ public class ServerXMLBindingTest extends FATServletClient {
 
         //lookupServerXMLBindings
         FATServletClient.runTest(server, servlet, "lookupServerXMLBindings");
-
-        //remove app
-        server.removeAllInstalledAppsForValidation();
 
         if (server != null && server.isStarted()) {
             server.stopServer("CNTR0338W");

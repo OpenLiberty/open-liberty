@@ -130,6 +130,7 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
         ldapServer = new LocalLdapServer();
         ldapServer.start();
 
+        myServer.removeAllInstalledAppsForValidation(); // Ensure there's no expected installed apps from a previous repeat
         myServer.setServerConfigurationFile(XML_BASE_NAME);
         myServer.startServer(true);
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
@@ -202,14 +203,14 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
 
         myServer.setServerConfigurationFile(XML_FORM_NAME);
         myServer.addInstalledAppForValidation(APP_NAME);
-        myServer.addInstalledAppForValidation(GLOBAL_LOGIN_WAR);
+        myServer.addInstalledAppForValidation(GLOBAL_LOGIN_ROOT);
 
         runMultipulModuleFormScenario();
 
         myServer.setMarkToEndOfLog();
         myServer.setServerConfigurationFile(XML_BASE_NAME);
         myServer.removeInstalledAppForValidation(APP_NAME);
-        myServer.removeInstalledAppForValidation(GLOBAL_LOGIN_WAR);
+        myServer.removeInstalledAppForValidation(GLOBAL_LOGIN_ROOT);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -251,14 +252,14 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
 
         myServer.setServerConfigurationFile(XML_NO_ROOT_CONTEXT_NAME);
         myServer.addInstalledAppForValidation(APP_NAME);
-        myServer.addInstalledAppForValidation(GLOBAL_LOGIN_WAR);
+        myServer.addInstalledAppForValidation(GLOBAL_LOGIN_ROOT);
 
         runMultipulModuleFormScenario();
 
         myServer.setMarkToEndOfLog();
         myServer.setServerConfigurationFile(XML_BASE_NAME);
         myServer.removeInstalledAppForValidation(APP_NAME);
-        myServer.removeInstalledAppForValidation(GLOBAL_LOGIN_WAR);
+        myServer.removeInstalledAppForValidation(GLOBAL_LOGIN_ROOT);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 

@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
@@ -176,8 +177,10 @@ public class JSF23FaceletVDLTests {
 
         server.setMarkToEndOfLog();
         server.saveServerConfiguration();
-        ShrinkHelper.defaultApp(server, appName);
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.defaultApp(server, appName, options);
         server.setServerConfigurationFile(contextRoot + ".xml");
+        server.addInstalledAppForValidation(contextRoot);
 
         // Ensure the application was installed successfully.
         assertNotNull("The application " + appName + " did not appear to have been installed.",
@@ -234,7 +237,7 @@ public class JSF23FaceletVDLTests {
         // restore the original server configuration and uninstall the application
         server.restoreServerConfiguration();
 
-        // Ensure that the server configuration has completed before uninstalling the application
+        // Ensure that the server configuration has completed and that the app then stops
         server.waitForConfigUpdateInLogUsingMark(null);
 
         server.removeInstalledAppForValidation(contextRoot);

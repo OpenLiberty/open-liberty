@@ -109,6 +109,7 @@ public class JSFApplication implements TestRule {
                 server.addInstalledAppForValidation(appName);
                 Log.info(c, description.getMethodName(), "STARTED MOJARRA TEST");
                 base.evaluate();
+                server.removeDropinsApplications(mojarraApp.getName());
                 server.removeInstalledAppForValidation(appName);
             }
 
@@ -117,6 +118,7 @@ public class JSFApplication implements TestRule {
                 server.addInstalledAppForValidation(appName);
                 Log.info(c, description.getMethodName(), "STARTED MYFACES TEST");
                 base.evaluate();
+                server.removeDropinsApplications(myfacesApp.getName());
                 server.removeInstalledAppForValidation(appName);
             }
         }

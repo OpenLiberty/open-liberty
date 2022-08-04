@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
+
 import java.io.File;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -83,7 +85,7 @@ public class SecureTest {
             Set<String> appInstalled = LS.getInstalledAppNames(SECURE_WAR_NAME);
             LOG.info("addAppToServer : " + SECURE_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(LS, SecureApp);
+                ShrinkHelper.exportDropinAppToServer(LS, SecureApp, DISABLE_VALIDATION);
         }
 
         LS.saveServerConfiguration();

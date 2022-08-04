@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.ormdiagnostics.tests;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -106,7 +108,7 @@ public class TestExample_EAR extends JPAFATServletClient {
         app.addAsLibrary(jpa_libJar);
         ShrinkHelper.addDirectory(app, RESOURCE_ROOT + "resources/ear");
 
-        ShrinkHelper.exportAppToServer(server, app);
+        ShrinkHelper.exportAppToServer(server, app, DISABLE_VALIDATION);
 
         Application appRecord = new Application();
         appRecord.setLocation(appName + "_EAR.ear");
