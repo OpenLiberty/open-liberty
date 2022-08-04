@@ -293,6 +293,8 @@
 
 		<echo message="test.bucket.path including junit: ${toString:test.bucket.path}" />
 
+		<echo message="test to see if this xml is used" />
+
 		<iff>
 			<istrue value="${is.windows.platform}" />
 			<then>
