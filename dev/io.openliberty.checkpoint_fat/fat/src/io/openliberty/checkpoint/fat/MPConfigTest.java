@@ -138,7 +138,7 @@ public class MPConfigTest extends FATServletClient {
 
     @After
     public void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKC0651W");
         server.restoreServerConfiguration();
         server.deleteFileFromLibertyServerRoot("server.env");
     }

@@ -110,10 +110,7 @@ public class MPConfigServlet extends FATServlet {
         appScopeOnCheckpointWithConfigObject.appScopeAnnoValueTest();
     }
 
-    //@Test
-    //Commenting this test temporarily because this test fails when config is updated during restore
-    //since the instance of config object is created during the checkpoint side during the initialization of application context
-    //and it fails to update itself with the latest config on restore.
+    @Test
     public void applicationScopedValueTest() {
         appScopeOnCheckpointBean.applicationScopedValueTest();
     }

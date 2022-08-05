@@ -27,7 +27,9 @@ public class ApplicationScopedOnCheckpointBean {
     String testKey;
 
     public void applicationScopedValueTest() {
-        check("applicationScopedValue");
+        // The value of test_key was not updated here because the property was accessed during the checkpoint.
+        // A warning CWWKC0651W is thrown to let the user know that the updated value of the property might not be used during restore.
+        check("defaultValue");
     }
 
     //@Initialized(ApplicationScoped.class) is seen before any request. Accessing the bean in the early startup code of application.
