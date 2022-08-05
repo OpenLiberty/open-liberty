@@ -51,8 +51,6 @@ public class OidcAuthorizationRequestTest {
         }
     };
 
-    private static final String TEST_URL = "http://harmonic.austin.ibm.com:8010/formlogin/SimpleServlet";
-
     private final String authorizationEndpointUrl = "https://localhost:8020/oidc/op/authorize";
     private final String scope = "openid";
     private final String responseType = "code";
@@ -516,64 +514,8 @@ public class OidcAuthorizationRequestTest {
         }
     }
 
-    @Test
-    public void test_getReqUrlNull() {
-        try {
-            createReqUrlExpectations(null);
-            String strUrl = oidcAuthzReq.getReqURL();
-
-            assertEquals("The URL must not contain a query string.", TEST_URL, strUrl);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_getReqUrlQuery() {
-        try {
-            final String query = "response_type=code";
-            createReqUrlExpectations(query);
-            String strUrl = oidcAuthzReq.getReqURL();
-            String expect = TEST_URL + "?" + query;
-
-            assertEquals("The URL must contain the query string.", expect, strUrl);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_getReqUrlQuery_withSpecialCharacters() {
-        try {
-            String value = "code>\"><script>alert(100)</script>";
-            final String query = "response_type=" + value;
-            createReqUrlExpectations(query);
-            String strUrl = oidcAuthzReq.getReqURL();
-            String expect = TEST_URL + "?response_type=" + value;
-
-            assertEquals("The URL must contain the unencoded query string.", expect, strUrl);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
     private AuthorizationRequestParameters createDefaultAuthorizationRequestParameters() {
         return new AuthorizationRequestParameters(authorizationEndpointUrl, scope, responseType, clientId, redirectUri, state);
-    }
-
-    private void createReqUrlExpectations(final String queryString) {
-        mock.checking(new Expectations() {
-            {
-                allowing(request).getScheme();
-                will(returnValue("https"));
-                one(request).getServerPort();
-                will(returnValue(8020));
-                one(request).getRequestURL();
-                will(returnValue(new StringBuffer(TEST_URL)));
-                one(request).getQueryString();
-                will(returnValue(queryString));
-            }
-        });
     }
 
 }

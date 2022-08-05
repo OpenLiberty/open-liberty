@@ -37,6 +37,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
 /**
@@ -122,7 +123,7 @@ public class OidcRedirectServlet extends HttpServlet {
         //  when OIDCClientAuthenticatorUtil.doClientSideRedirect initially redirected the browser,
         //  this cookie was set to hold the original URL.
         //  Now it's time to get it back.
-        String cookieName = ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
+        String cookieName = OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
         String requestUrl = OidcClientUtil.getReferrerURLCookieHandler().getReferrerURLFromCookies(request, cookieName);
         // 240540
         //CookieHelper.clearCookie(request, response, cookieName, cookies); //clear the WAS_REQ_URL_OIDC cookie

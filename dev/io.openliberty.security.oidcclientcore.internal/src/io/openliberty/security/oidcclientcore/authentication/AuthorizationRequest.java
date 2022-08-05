@@ -60,9 +60,19 @@ public abstract class AuthorizationRequest {
 
     protected abstract String createStateValueForStorage(String state);
 
+    protected abstract String createNonceValueForStorage(String nonce, String state);
+
+    protected abstract ProviderAuthenticationResult redirectToAuthorizationEndpoint(String state, String redirectUrl);
+
     protected StorageProperties getStateStorageProperties() {
         StorageProperties props = new StorageProperties();
         props.setStorageLifetimeSeconds(OidcClientStorageConstants.DEFAULT_STATE_STORAGE_LIFETIME_SECONDS);
+        return props;
+    }
+
+    protected StorageProperties getOriginalRequestUrlStorageProperties() {
+        StorageProperties props = new StorageProperties();
+        props.setStorageLifetimeSeconds(OidcClientStorageConstants.DEFAULT_REQ_URL_STORAGE_LIFETIME_SECONDS);
         return props;
     }
 
@@ -73,6 +83,19 @@ public abstract class AuthorizationRequest {
         storage.store(storageName, storageValue, stateStorageProperties);
     }
 
+    protected void storeNonceValue(String nonce, String state) {
+        String storageName = OidcStorageUtils.getStorageKey(OidcClientStorageConstants.WAS_OIDC_NONCE, clientId, state);
+        String storageValue = createNonceValueForStorage(nonce, state);
+        storage.store(storageName, storageValue);
+    }
+
+    protected void storeOriginalRequestUrl(String state) {
+        String storageName = OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
+        String storageValue = requestUtils.getRequestUrl(request);
+        StorageProperties reqUrlStorageProperties = getOriginalRequestUrlStorageProperties();
+        storage.store(storageName, storageValue, reqUrlStorageProperties);
+    }
+
     void createSessionIfNecessary() {
         if (shouldCreateSession()) {
             try {
@@ -81,11 +104,6 @@ public abstract class AuthorizationRequest {
                 // ignore it. Session exists
             }
         }
-    }
-
-    protected ProviderAuthenticationResult redirectToAuthorizationEndpoint(String state, String redirectUrl) {
-        // TODO
-        return null;
     }
 
 }

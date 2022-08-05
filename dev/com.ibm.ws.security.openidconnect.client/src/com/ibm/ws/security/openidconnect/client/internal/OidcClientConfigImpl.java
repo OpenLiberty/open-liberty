@@ -911,7 +911,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             SSLSocketFactory sslSocketFactory = getSSLSocketFactory(discoveryUrl, sslConfigurationName, sslSupportRef.getService());
             if (isRunningBetaMode()) {
                 DiscoveryHandler discoveryHandler = new DiscoveryHandler(sslSocketFactory);
-                jsonString = discoveryHandler.fetchDiscoveryData(discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
+                jsonString = discoveryHandler.fetchDiscoveryDataString(discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             } else {
                 jsonString = fetchDiscoveryData(discoveryUrl, sslSocketFactory);
             }

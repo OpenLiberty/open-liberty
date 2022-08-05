@@ -10,12 +10,10 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.discovery;
 
-/**
- *
- */
-public class TraceConstants {
+public class OidcDiscoveryConstants {
 
-    public static final String TRACE_GROUP = "OpenIdConnect";
-    public static final String MESSAGE_BUNDLE = "io.openliberty.security.oidcclientcore.internal.resources.OidcClientCoreMessages";
+    public static final String METADATA_KEY_AUTHORIZATION_ENDPOINT = "authorization_endpoint";
+
+    public static final String WELL_KNOWN_SUFFIX = ".well-known/openid-configuration";
 
 }

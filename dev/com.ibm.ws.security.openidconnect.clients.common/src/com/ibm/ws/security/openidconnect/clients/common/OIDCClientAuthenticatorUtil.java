@@ -49,8 +49,8 @@ public class OIDCClientAuthenticatorUtil {
     SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
     private static int badStateCount = 0;
-    public static final String[] OIDC_COOKIES = { OidcClientStorageConstants.WAS_OIDC_STATE_KEY, ClientConstants.WAS_REQ_URL_OIDC,
-            ClientConstants.WAS_OIDC_CODE, ClientConstants.WAS_OIDC_NONCE };
+    public static final String[] OIDC_COOKIES = { OidcClientStorageConstants.WAS_OIDC_STATE_KEY, OidcClientStorageConstants.WAS_REQ_URL_OIDC,
+            ClientConstants.WAS_OIDC_CODE, OidcClientStorageConstants.WAS_OIDC_NONCE };
 
     public OIDCClientAuthenticatorUtil() {
     }

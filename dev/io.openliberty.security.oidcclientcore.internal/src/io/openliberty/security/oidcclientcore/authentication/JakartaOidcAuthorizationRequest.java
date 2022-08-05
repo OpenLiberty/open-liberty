@@ -10,18 +10,25 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
+import java.util.Set;
+
+import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
+import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
+import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
@@ -31,6 +38,9 @@ import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     public static final TraceComponent tc = Tr.register(JakartaOidcAuthorizationRequest.class);
+
+    // TODO Discovery metadata will be cleared from the cache after 5 minutes
+    private static SingleTableCache cachedDiscoveryMetadata = new SingleTableCache(1000 * 60 * 5);
 
     private final OidcClientConfig config;
     private final OidcProviderMetadata providerMetadata;
@@ -65,26 +75,85 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     @Override
     protected String getAuthorizationEndpoint() throws OidcClientConfigurationException, OidcDiscoveryException {
+        String authzEndpoint = getAuthorizationEndpointFromProviderMetadata();
+        if (authzEndpoint != null) {
+            return authzEndpoint;
+        }
+        // Provider metadata is empty or authz endpoint is not in it, so perform discovery
+        JSONObject discoveryData = getProviderMetadata();
+        authzEndpoint = (String) discoveryData.get(OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
+        if (authzEndpoint == null) {
+            String nlsMessage = Tr.formatMessage(tc, "DISCOVERY_METADATA_MISSING_VALUE", OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
+            throw new OidcDiscoveryException(clientId, config.getProviderURI(), nlsMessage);
+        }
+        return authzEndpoint;
+    }
+
+    String getAuthorizationEndpointFromProviderMetadata() {
         if (providerMetadata != null) {
             // Provider metadata overrides properties discovered via providerUri
             String authzEndpoint = providerMetadata.getAuthorizationEndpoint();
             if (authzEndpoint != null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Authorization endpoint found in the provider metadata: [" + authzEndpoint + "]");
+                }
                 return authzEndpoint;
             }
         }
-        performDiscovery();
-        // TODO - get endpoint from discovery data
         return null;
     }
 
-    void performDiscovery() throws OidcClientConfigurationException {
+    JSONObject getProviderMetadata() throws OidcClientConfigurationException, OidcDiscoveryException {
         String discoveryrUri = config.getProviderURI();
         if (discoveryrUri == null || discoveryrUri.isEmpty()) {
             String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_MISSING_PROVIDER_URI", clientId);
             throw new OidcClientConfigurationException(clientId, nlsMessage);
         }
-        // TODO - perform discovery
-        // TODO - how to get SSLSocketFactory?
+        discoveryrUri = addWellKnownSuffixIfNeeded(discoveryrUri);
+
+        // See if we already have cached metadata for this endpoint to avoid sending discovery requests too frequently
+        JSONObject discoveryData = (JSONObject) cachedDiscoveryMetadata.get(discoveryrUri);
+        if (discoveryData != null) {
+            return discoveryData;
+        }
+        discoveryData = fetchProviderMetadataFromDiscoveryUrl(discoveryrUri);
+
+        cachedDiscoveryMetadata.put(discoveryrUri, discoveryData);
+
+        return discoveryData;
+    }
+
+    /**
+     * Per https://github.com/jakartaee/security/blob/master/spec/src/main/asciidoc/authenticationMechanism.adoc#metadata-configuration,
+     * the providerURI "defines the base URL of the OpenID Connect Provider where the /.well-known/openid-configuration is
+     * appended to (or used as-is when it is the well known configuration URL itself)."
+     *
+     * @param providerUri
+     * @return
+     */
+    String addWellKnownSuffixIfNeeded(String providerUri) {
+        if (!providerUri.endsWith(OidcDiscoveryConstants.WELL_KNOWN_SUFFIX)) {
+            if (!providerUri.endsWith("/")) {
+                providerUri += "/";
+            }
+            providerUri += OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
+        }
+        return providerUri;
+    }
+
+    JSONObject fetchProviderMetadataFromDiscoveryUrl(String discoveryrUri) throws OidcDiscoveryException {
+        DiscoveryHandler discoveryHandler = getDiscoveryHandler();
+        return discoveryHandler.fetchDiscoveryDataJson(discoveryrUri, clientId);
+    }
+
+    DiscoveryHandler getDiscoveryHandler() {
+        SSLSocketFactory sslSocketFactory = getSSLSocketFactory();
+        return new DiscoveryHandler(sslSocketFactory);
+    }
+
+    SSLSocketFactory getSSLSocketFactory() {
+        // TODO
+        return null;
     }
 
     @Override
@@ -105,6 +174,90 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
             clientSecret = new String(clientSecretProtectedString.getChars());
         }
         return OidcStorageUtils.createStateStorageValue(state, clientSecret);
+    }
+
+    @Override
+    protected String createNonceValueForStorage(String nonce, String state) {
+        String clientSecret = null;
+        ProtectedString clientSecretProtectedString = config.getClientSecret();
+        if (clientSecretProtectedString != null) {
+            clientSecret = new String(clientSecretProtectedString.getChars());
+        }
+        return OidcStorageUtils.createNonceStorageValue(nonce, state, clientSecret);
+    }
+
+    @Override
+    @FFDCIgnore(Exception.class)
+    protected ProviderAuthenticationResult redirectToAuthorizationEndpoint(String state, String redirectUrl) {
+        String authzEndPointUrlWithQuery = null;
+        try {
+            authzEndPointUrlWithQuery = buildAuthorizationUrlWithQuery(state, redirectUrl);
+        } catch (Exception e) {
+            Tr.error(tc, "ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL", clientId, e);
+            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+
+        }
+        storeOriginalRequestUrl(state);
+        return new ProviderAuthenticationResult(AuthResult.REDIRECT_TO_PROVIDER, HttpServletResponse.SC_OK, null, null, null, authzEndPointUrlWithQuery);
+    }
+
+    String buildAuthorizationUrlWithQuery(String state, String redirectUrl) throws OidcClientConfigurationException, OidcDiscoveryException {
+        String authorizationEndpoint = getAuthorizationEndpoint();
+        String scopes = getScopeString();
+        String responseType = config.getResponseType();
+
+        AuthorizationRequestParameters authzParameters = new AuthorizationRequestParameters(authorizationEndpoint, scopes, responseType, clientId, redirectUrl, state);
+
+        addOptionalParameters(authzParameters, state);
+
+        return authzParameters.buildRequestUrl();
+    }
+
+    String getScopeString() {
+        String scopes = "";
+        Set<String> scopesSet = config.getScope();
+        for (String scope : scopesSet) {
+            scopes += scope + " ";
+        }
+        scopes = scopes.trim();
+        return scopes;
+    }
+
+    void addOptionalParameters(AuthorizationRequestParameters authzParameters, String state) {
+        if (config.isUseNonce()) {
+            String nonceValue = requestUtils.generateNonceValue();
+            storeNonceValue(nonceValue, state);
+            authzParameters.addParameter(AuthorizationRequestParameters.NONCE, nonceValue);
+        }
+        String prompt = config.getPromptParameter();
+        if (prompt != null) {
+            authzParameters.addParameter(AuthorizationRequestParameters.PROMPT, prompt);
+        }
+        String responseMode = config.getResponseMode();
+        if (responseMode != null) {
+            authzParameters.addParameter(AuthorizationRequestParameters.RESPONSE_MODE, responseMode);
+        }
+        String display = config.getDisplayParameter();
+        if (display != null) {
+            authzParameters.addParameter(AuthorizationRequestParameters.DISPLAY, display);
+        }
+        addExtraParameters(authzParameters);
+    }
+
+    void addExtraParameters(AuthorizationRequestParameters authzParameters) {
+        String[] extraParametersArray = config.getExtraParameters();
+        if (extraParametersArray == null) {
+            return;
+        }
+        for (String extraParamAndValue : extraParametersArray) {
+            String[] keyAndValue = extraParamAndValue.split("=");
+            String key = keyAndValue[0];
+            String value = "";
+            if (keyAndValue.length > 1) {
+                value = keyAndValue[1];
+            }
+            authzParameters.addParameter(key, value);
+        }
     }
 
 }

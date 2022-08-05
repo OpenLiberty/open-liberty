@@ -34,6 +34,7 @@ public class AuthorizationRequestParameters {
     public static final String NONCE = "nonce";
     public static final String PROMPT = "prompt";
     public static final String ACR_VALUES = "acr_values";
+    public static final String DISPLAY = "display";
 
     private final String authorizationEndpointUrl;
     private final String scope;

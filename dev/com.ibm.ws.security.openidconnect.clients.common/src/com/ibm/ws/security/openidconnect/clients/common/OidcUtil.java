@@ -19,16 +19,14 @@ import java.util.Iterator;
 import java.util.Random;
 
 import javax.security.auth.Subject;
-import javax.servlet.http.Cookie;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.security.common.crypto.HashUtils;
-import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 
 /**
@@ -217,26 +215,12 @@ public class OidcUtil {
     }
 
     @Trivial
-    public static void createNonceCookie(OidcClientRequest oidcClientRequest, String nonceValue, String state, ConvergedClientConfig clientConfig) {
-        String cookieName = OidcStorageUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig.getId(), state);
-        String cookieValue = createNonceCookieValue(nonceValue, state, clientConfig);
-        WebSSOUtils webSsoUtils = new WebSSOUtils();
-        Cookie cookie = webSsoUtils.createCookie(cookieName, cookieValue, oidcClientRequest.getRequest());
-        oidcClientRequest.getResponse().addCookie(cookie);
-    }
-
-    @Trivial
     public static boolean verifyNonce(OidcClientRequest oidcClientRequest, String nonceInIDToken, ConvergedClientConfig clientConfig, String responseState) {
-        String cookieName = OidcStorageUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig.getId(), responseState);
-        String cookieValue = createNonceCookieValue(nonceInIDToken, responseState, clientConfig);
+        String cookieName = OidcStorageUtils.getStorageKey(OidcClientStorageConstants.WAS_OIDC_NONCE, clientConfig.getClientId(), responseState);
+        String cookieValue = OidcStorageUtils.createNonceStorageValue(nonceInIDToken, responseState, clientConfig.getClientSecret());
         String oldCookieValue = CookieHelper.getCookieValue(oidcClientRequest.getRequest().getCookies(), cookieName);
         OidcClientUtil.invalidateReferrerURLCookie(oidcClientRequest.getRequest(), oidcClientRequest.getResponse(), cookieName);
         return cookieValue.equals(oldCookieValue);
-    }
-
-    // calculate the cookie value of Nonce
-    public static String createNonceCookieValue(String nonceValue, String state, ConvergedClientConfig clientConfig) {
-        return HashUtils.digest(nonceValue + state + clientConfig.getClientSecret());
     }
 
 }

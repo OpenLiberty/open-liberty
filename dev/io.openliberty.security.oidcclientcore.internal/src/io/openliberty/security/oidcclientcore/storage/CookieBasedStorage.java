@@ -47,6 +47,10 @@ public class CookieBasedStorage implements Storage {
     @Override
     public void store(String name, @Sensitive String value, StorageProperties properties) {
         Cookie c = referrerURLCookieHandler.createCookie(name, value, request);
+        String domainName = webSsoUtils.getSsoDomain(request);
+        if (domainName != null && !domainName.isEmpty()) {
+            c.setDomain(domainName);
+        }
         if (properties != null) {
             setAdditionalCookieProperties(c, (CookieStorageProperties) properties);
         }
