@@ -36,6 +36,7 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequest;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
+import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
@@ -131,7 +132,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             // If clientSideRedirect is true (default is true) then do the
             // redirect.  If the user agent doesn't support javascript then config can set this to false.
             if (clientConfig.isClientSideRedirect()) {
-                String domain = OidcClientUtil.getSsoDomain(request);
+                String domain = CookieBasedStorage.getSsoDomain(request);
                 doClientSideRedirect(authzEndPointUrlWithQuery, state, domain);
             } else {
                 createAndAddWasReqUrlCookie(state);
