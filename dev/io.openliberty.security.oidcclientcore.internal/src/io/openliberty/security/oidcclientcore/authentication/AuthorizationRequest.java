@@ -15,24 +15,27 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
-import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
 
 public abstract class AuthorizationRequest {
 
     protected HttpServletRequest request;
     protected HttpServletResponse response;
+    protected String clientId;
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
     protected OidcCookieUtils cookieUtils;
 
-    public AuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
+    public AuthorizationRequest(HttpServletRequest request, HttpServletResponse response, String clientId) {
         this.request = request;
         this.response = response;
+        this.clientId = clientId;
         cookieUtils = new OidcCookieUtils(request, response);
     }
 
-    public ProviderAuthenticationResult sendRequest() throws OidcUrlNotHttpsException {
+    public ProviderAuthenticationResult sendRequest() throws OidcClientConfigurationException, OidcDiscoveryException {
         getAuthorizationEndpoint();
 
         createSessionIfNecessary();
@@ -44,9 +47,9 @@ public abstract class AuthorizationRequest {
         return redirectToAuthorizationEndpoint(state, redirectUrl);
     }
 
-    protected abstract String getAuthorizationEndpoint() throws OidcUrlNotHttpsException;
+    protected abstract String getAuthorizationEndpoint() throws OidcClientConfigurationException, OidcDiscoveryException;
 
-    protected abstract String getRedirectUrl() throws OidcUrlNotHttpsException;
+    protected abstract String getRedirectUrl() throws OidcClientConfigurationException;
 
     protected abstract boolean shouldCreateSession();
 
@@ -62,49 +65,9 @@ public abstract class AuthorizationRequest {
         }
     }
 
-//    void createAndAddStateCookie(String state) {
-//        String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
-    // TODO
-//        String cookieValue = OidcCookieUtils.createStateCookieValue(clientConfig.getClientSecret(), state);
-//        createAndAddCookie(cookieName, cookieValue);
-//    }
-
-//    void createAndAddCookie(String cookieName, String cookieValue) {
-//        int cookieLifeTime = (int) clientConfig.getAuthenticationTimeLimitInSeconds();
-//        Cookie c = OidcClientUtil.createCookie(cookieName, cookieValue, cookieLifeTime, request);
-//        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
-//        if (clientConfig.isHttpsRequired() && isHttpsRequest) {
-//            c.setSecure(true);
-//        }
-//        response.addCookie(c);
-//    }
-
     protected ProviderAuthenticationResult redirectToAuthorizationEndpoint(String state, String redirectUrl) {
         // TODO
         return null;
-//        String authzEndPointUrlWithQuery = null;
-//        try {
-//            authzEndPointUrlWithQuery = buildAuthorizationUrlWithQuery((OidcClientRequest) request.getAttribute(ClientConstants.ATTRIB_OIDC_CLIENT_REQUEST), state, redirectUrl,
-//                                                                       acr_values);
-//
-//            savePostParameters();
-//
-//            // Redirect to OP
-//            // If clientSideRedirect is true (default is true) then do the
-//            // redirect.  If the user agent doesn't support javascript then config can set this to false.
-//            if (clientConfig.isClientSideRedirect()) {
-//                String domain = OidcClientUtil.getSsoDomain(request);
-//                doClientSideRedirect(authzEndPointUrlWithQuery, state, domain);
-//            } else {
-//                createAndAddWasReqUrlCookie(state);
-//            }
-//
-//        } catch (Exception ioe) {
-//            // TODO - NLS
-//            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
-//
-//        }
-//        return new ProviderAuthenticationResult(AuthResult.REDIRECT_TO_PROVIDER, HttpServletResponse.SC_OK, null, null, null, authzEndPointUrlWithQuery);
     }
 
 }

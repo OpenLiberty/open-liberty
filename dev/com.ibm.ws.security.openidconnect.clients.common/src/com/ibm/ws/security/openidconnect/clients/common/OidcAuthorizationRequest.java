@@ -44,17 +44,20 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     ConvergedClientConfig clientConfig;
 
     public OidcAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ConvergedClientConfig clientConfig) {
-        super(request, response);
+        super(request, response, clientConfig.getClientId());
         this.clientConfig = clientConfig;
     }
 
     @Override
-    @FFDCIgnore(OidcUrlNotHttpsException.class)
+    @FFDCIgnore({ OidcUrlNotHttpsException.class, Exception.class })
     public ProviderAuthenticationResult sendRequest() {
         try {
             return super.sendRequest();
         } catch (OidcUrlNotHttpsException e) {
             Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", e.getUrl());
+            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (Exception e) {
+            Tr.error(tc, "ERROR_SENDING_AUTHORIZATION_REQUEST", clientId, e.getMessage());
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
@@ -63,7 +66,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     protected String getAuthorizationEndpoint() throws OidcUrlNotHttpsException {
         String authorizationEndpoint = clientConfig.getAuthorizationEndpointUrl();
         if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, authorizationEndpoint)) {
-            throw new OidcUrlNotHttpsException(authorizationEndpoint);
+            throw new OidcUrlNotHttpsException(authorizationEndpoint, clientId);
         }
         return authorizationEndpoint;
     }
@@ -72,7 +75,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     protected String getRedirectUrl() throws OidcUrlNotHttpsException {
         String redirectUrl = OIDCClientAuthenticatorUtil.setRedirectUrlIfNotDefined(request, clientConfig);
         if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, redirectUrl)) {
-            throw new OidcUrlNotHttpsException(redirectUrl);
+            throw new OidcUrlNotHttpsException(redirectUrl, clientId);
         }
         return redirectUrl;
     }
@@ -119,10 +122,10 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             }
 
         } catch (UnsupportedEncodingException e) {
-            Tr.error(tc, "OIDC_CLIENT_AUTHORIZE_ERR", new Object[] { clientConfig.getClientId(), e.getLocalizedMessage(), ClientConstants.CHARSET });
+            Tr.error(tc, "OIDC_CLIENT_AUTHORIZE_ERR", new Object[] { clientId, e.getLocalizedMessage(), ClientConstants.CHARSET });
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         } catch (IOException ioe) {
-            Tr.error(tc, "OIDC_CLIENT_AUTHORIZE_ERR", new Object[] { clientConfig.getClientId(), ioe.getLocalizedMessage(), ClientConstants.CHARSET });
+            Tr.error(tc, "OIDC_CLIENT_AUTHORIZE_ERR", new Object[] { clientId, ioe.getLocalizedMessage(), ClientConstants.CHARSET });
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
 
         }
@@ -134,7 +137,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
         boolean scopeMissing = clientConfig.getScope() == null || clientConfig.getScope().length() == 0;
         if (openidScopeMissing || scopeMissing) {
             Tr.error(tc, "OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE",
-                    clientConfig.getClientId(), clientConfig.getScope()); // CWWKS1713E
+                    clientId, clientConfig.getScope()); // CWWKS1713E
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
         return null;
@@ -157,9 +160,9 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             isImplicit = true;
             strResponse_type = clientConfig.getResponseType();
         }
-        String clientId = clientConfig.getClientId() == null ? "" : clientConfig.getClientId();
+        String clientIdParam = clientId == null ? "" : clientId;
 
-        AuthorizationRequestParameters authzParameters = new AuthorizationRequestParameters(clientConfig.getAuthorizationEndpointUrl(), clientConfig.getScope(), strResponse_type, clientId, redirect_url, state);
+        AuthorizationRequestParameters authzParameters = new AuthorizationRequestParameters(clientConfig.getAuthorizationEndpointUrl(), clientConfig.getScope(), strResponse_type, clientIdParam, redirect_url, state);
 
         addOptionalParameters(authzParameters, oidcClientRequest, state, acr_values, isImplicit);
 

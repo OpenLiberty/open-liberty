@@ -8,12 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oidcclientcore.storage;
+package io.openliberty.security.oidcclientcore.exceptions;
 
-public class OidcClientStorageConstants {
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
-    public static final String WAS_OIDC_STATE_KEY = "WASOidcState";
+public class OidcDiscoveryException extends Exception {
 
-    public static final int STATE_COOKIE_DEFAULT_LIFETIME = 420;
+    public static final TraceComponent tc = Tr.register(OidcDiscoveryException.class);
+
+    private static final long serialVersionUID = 1L;
+
+    public OidcDiscoveryException(String clientId, String nlsMessage) {
+        super(Tr.formatMessage(tc, "DISCOVERY_EXCEPTION", clientId, nlsMessage));
+    }
 
 }

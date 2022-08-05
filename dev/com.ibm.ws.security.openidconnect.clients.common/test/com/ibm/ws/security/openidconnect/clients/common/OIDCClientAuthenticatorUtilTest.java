@@ -1181,6 +1181,8 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue("some non URL"));
                     one(convClientConfig).isHttpsRequired();
                     will(returnValue(true));
+                    one(convClientConfig).getClientId();
+                    will(returnValue(CLIENT01));
                 }
             });
             ProviderAuthenticationResult result = oidcCAUtil.handleRedirectToServer(req, res, convClientConfig);

@@ -16,3 +16,23 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2400 - CWWKS2499
+
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS2400E: The {0} OpenID Connect client encountered an error while sending an authorization request to the OpenID Connect provider. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=The OpenID Connect client configuration might be missing information, or the client encountered an error while communicating with the OpenID Connect provider.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=See the error in the message for more information.
+
+OIDC_CLIENT_CONFIGURATION_ERROR=CWWKS2401E: The configuration for the {0} OpenID Connect client is not valid or is missing data. {1}
+OIDC_CLIENT_CONFIGURATION_ERROR.explanation=The OpenID Connect client configuration is missing information that is needed.
+OIDC_CLIENT_CONFIGURATION_ERROR.useraction=See the error in the message for more information. Verify that the OpenID Connect client configuration is complete and accurate.
+
+URL_NOT_HTTPS=CWWKS2402E: The {0} endpoint URL that is configured for the {1} OpenID Connect client does not use the HTTPS protocol, but HTTPS is required.
+URL_NOT_HTTPS.explanation=The endpoint URL must use the HTTPS protocol to ensure requests are secure.
+URL_NOT_HTTPS.useraction=Update the endpoint URL to use the HTTPS protocol.
+
+DISCOVERY_EXCEPTION=CWWKS2403E: The {0} OpenID Connect client encountered an error while discovering metadata for the OpenID Connect provider. {1}
+DISCOVERY_EXCEPTION.explanation=The OpenID Connect client configuration might be missing information, or the client encountered an error while communicating with the OpenID Connect provider.
+DISCOVERY_EXCEPTION.useraction=See the error in the message for more information.
+
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: The providerURI attribute for the {0} OpenID Connect client is null or empty, and there is no metadata available for the OpenID Connect provider.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=The OpenID Connect client must discover metadata for the OpenID Connect provider, but the client does not have a providerURI attribute or provider metadata configured.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Specify a value for the providerURI attribute in the OpenID Connect client configuration, or specify OpenID Connect provider metadata in the client configuration.

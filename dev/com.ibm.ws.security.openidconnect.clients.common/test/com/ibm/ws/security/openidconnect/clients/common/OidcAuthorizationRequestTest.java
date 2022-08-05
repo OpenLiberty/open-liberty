@@ -74,6 +74,12 @@ public class OidcAuthorizationRequestTest {
     @Before
     public void setUp() {
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(webAppSecConfig);
+        mock.checking(new Expectations() {
+            {
+                one(convClientConfig).getClientId();
+                will(returnValue(clientId));
+            }
+        });
         oidcAuthzReq = new OidcAuthorizationRequest(request, response, convClientConfig);
     }
 
