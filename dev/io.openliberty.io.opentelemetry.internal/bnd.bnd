@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
--include ~../cnf/resources/bnd/transform.props
+-include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
 bVersion=1.0
 openTelemetryVersion=1.14.0
 
