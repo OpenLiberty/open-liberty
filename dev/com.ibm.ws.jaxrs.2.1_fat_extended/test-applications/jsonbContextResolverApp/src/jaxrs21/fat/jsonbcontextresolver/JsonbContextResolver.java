@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,9 @@ public class JsonbContextResolver implements ContextResolver<Jsonb> {
     public Jsonb getContext(Class<?> type) {
         if (!"CanReadHeaderFromContextInjection".equals(httpHeaders.getHeaderString("MyHeader"))) {
             throw new IllegalStateException("Context injection worked, but we didn't get the expected header");
+        }
+        if (!Person.class.isAssignableFrom(type)) {
+            throw new IllegalStateException("The wrong class was passed to getContext " + type);
         }
         JsonbConfig config = new JsonbConfig().
                 withPropertyVisibilityStrategy(new PrivateVisibilityStrategy());
