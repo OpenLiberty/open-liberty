@@ -20,11 +20,4 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>bndtools.core.bndnature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>com.ibm.ws.wsat.common-src</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.common/src</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

@@ -34,14 +34,13 @@ Export-Package: \
  com.ibm.ws.wsat.webservice.client.wsat
  
 Include-Resource: \
-  META-INF=../com.ibm.ws.wsat.webclient/resources/META-INF
+  META-INF=./resources/META-INF
 
 javac.endorsedDirs: \
 	../com.ibm.websphere.javaee.jaxb.2.2/generated, \
 	../com.ibm.websphere.javaee.jaxws.2.2/generated
 
 -buildpath: \
-    com.ibm.ws.wsat.webclient;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
 	com.ibm.websphere.appserver.api.ssl;version=latest,\
@@ -52,8 +51,8 @@ javac.endorsedDirs: \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.ws.jaxws.common;version=latest,\
-	com.ibm.ws.jaxws.wsat;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
+	com.ibm.ws.jaxws.2.3.wsat;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.ssl;version=latest,\

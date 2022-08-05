@@ -6,9 +6,9 @@ WLP-DisableAllFeatures-OnConflict: false
 -features=\
   com.ibm.websphere.appserver.jaxws-2.2
 -bundles=\
-  com.ibm.ws.wsat.common; start-phase:=CONTAINER_LATE, \
+  com.ibm.ws.wsat.common.3.2; start-phase:=CONTAINER_LATE, \
   com.ibm.ws.wsat.cxf.utils.3.2, \
-  com.ibm.ws.wsat.webclient, \
-  com.ibm.ws.wsat.webservice
+  com.ibm.ws.wsat.webclient.3.2, \
+  com.ibm.ws.wsat.webservice.3.2
 kind=ga
 edition=base

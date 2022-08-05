@@ -46,7 +46,6 @@ Service-Component: \
 
 -buildpath: \
 	com.ibm.ws.jaxws.2.3.common;version=latest, \
-	com.ibm.ws.jaxws.wsat;version=latest, \
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2,\
