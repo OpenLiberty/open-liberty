@@ -6,4 +6,7 @@
         <feature>microProfile-4.0</feature>
         <feature>jakartaee-9.1</feature>
     </featureManager>
+
+    <keyStore id="defaultKeyStore" password="openliberty"/>
+    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
 </server>
