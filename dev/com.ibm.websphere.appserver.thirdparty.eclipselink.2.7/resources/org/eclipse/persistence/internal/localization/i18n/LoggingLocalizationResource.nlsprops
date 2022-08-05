@@ -727,6 +727,14 @@ toplink_severe=[EL Severe]:
 
 toplink_warning=[EL Warning]: 
 
+unit_of_work_thread_info=Current unit of work in session ({0}) was created by another thread (id: {1} name: {2}), than current thread (id: {3} name: {4})
+
+unit_of_work_thread_info_thread_dump=Creation thread (id: {0} name: {1}) stack trace:
+{2}
+
+Current thread (id: {3} name: {4}) stack trace:
+{5}
+
 unitofwork_identity_hashcode={0}UnitOfWork identity hashcode: {1}
 
 update_all_fields_not_supported=Oc4j native CMP feature "update-all-fields" on entity({0}) is not directly supported in EclipseLink CMP. See migration doc for details.
