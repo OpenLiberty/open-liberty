@@ -13,8 +13,6 @@ package com.ibm.ws.security.openidconnect.clients.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -111,17 +109,6 @@ public class OidcUtilTest {
         assertEquals("param=value+of+param&param2&param3=value", OidcUtil.encodeQuery("param=value of param&param2&param3=value"));
         assertEquals("param=value+of+param&param2=%3Cscript%3Ealert%28300%29%3C%2Fscript%3E&param3=value",
                 OidcUtil.encodeQuery("param=value of param&param2=<script>alert(300)</script>&param3=value"));
-    }
-
-    @Test
-    public void testTimeStampInLong() {
-        Date date = new Date();
-        long lNumber = date.getTime();
-        String state = OidcUtil.getTimeStamp(lNumber) + OidcUtil.generateRandom(OidcUtil.RANDOM_LENGTH);
-        long lTmp = OidcUtil.convertNormalizedTimeStampToLong(state);
-        Date newDate = new Date(lTmp);
-        assertTrue("lNumber is " + lNumber + ", lTmp is " + lTmp + " are not equal", lNumber == lTmp);
-        assertTrue("date is " + date + "newDate is " + newDate + " are not equal", date.equals(newDate));
     }
 
     @Test

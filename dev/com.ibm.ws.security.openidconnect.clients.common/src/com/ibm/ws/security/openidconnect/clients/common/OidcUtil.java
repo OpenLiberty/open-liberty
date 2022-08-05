@@ -15,7 +15,6 @@ import java.net.URLEncoder;
 import java.security.Principal;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -207,22 +206,6 @@ public class OidcUtil {
         } else {
             return result;
         }
-    }
-
-    static String[] zeroFillers = new String[] {
-            "", "0", "00", "000", "0000", "00000", "000000"
-    };
-
-    public static String getTimeStamp() {
-        long lNumber = (new Date()).getTime();
-        return getTimeStamp(lNumber);
-    }
-
-    // for unit test
-    public static String getTimeStamp(long lNumber) {
-        String timeStamp = "" + lNumber;
-        int iIndex = TIMESTAMP_LENGTH - timeStamp.length(); // this is enough for 3000 years
-        return zeroFillers[iIndex] + timeStamp;
     }
 
     public static long convertNormalizedTimeStampToLong(String input) {
