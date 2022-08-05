@@ -1,4 +1,2 @@
 com.ibm.ws.security.oidc.client_fat.backchannelLogout
 #com.ibm.ws.security.oidc.client_fat.backchannelLogout.saml
-# the com.ibm.ws.security.oidc.social_fat.backchannelLogout will be removed soon
-com.ibm.ws.security.oidc.social_fat.backchannelLogout
