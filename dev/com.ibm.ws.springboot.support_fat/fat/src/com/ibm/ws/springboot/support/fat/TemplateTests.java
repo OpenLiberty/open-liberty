@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,11 +37,10 @@ import componenttest.topology.utils.LibertyServerUtils;
 @RunWith(FATRunner.class)
 public class TemplateTests {
 
-    private final static String serverName = "com.ibm.ws.springboot.support.fat.TemplateServer";
+    // Class-specific fields
     private static Bootstrap bootstrap;
     private static Machine machine;
-    private static String installPath;;
-    private static String springBootServerPath;
+    private static String installPath;
     private static String previousWorkDir;
 
     @BeforeClass
@@ -51,7 +50,6 @@ public class TemplateTests {
         previousWorkDir = machine.getWorkDir();
         machine.setWorkDir(null);
         installPath = LibertyFileManager.getInstallPath(bootstrap);
-        springBootServerPath = installPath + "/usr/servers/" + serverName;
         // Use absolute path in case this is running on Windows without CYGWIN
         bootstrap.setValue("libertyInstallPath", installPath);
     }
@@ -61,22 +59,28 @@ public class TemplateTests {
         machine.setWorkDir(previousWorkDir);
     }
 
-    @Before
-    public void cleanupBeforeRun() throws Exception {
-        // since we are not using the normal LibertyServer class for this server,
-        // we need to make sure to explicitly clean up.  We do this before running
-        // the test in order to preserve the contents on disk.
-        if (LibertyFileManager.libertyFileExists(machine, springBootServerPath)) {
-            LibertyFileManager.deleteLibertyDirectoryAndContents(machine, springBootServerPath);
+    // Test-specific fields
+    private static String[] expectedFeatures;
+    private static String serverName;
+    private static String serverPath;
+
+    @After
+    public void cleanupServer() throws Exception {
+        // Since we are not using the normal LibertyServer class, we need to explicitly
+        // clean up a server. We cleanup before server creation to ensure a server does
+        // not already exist, and then after each test to leave the test environment as
+        // we found it.
+        if (LibertyFileManager.libertyFileExists(machine, serverPath)) {
+            LibertyFileManager.deleteLibertyDirectoryAndContents(machine, serverPath);
         }
     }
-
-    static String[] expectedFeatures;
 
     @Test
     @Mode(FULL)
     public void testCreateServerFromSpringBoot1() throws Exception {
         expectedFeatures = new String[] { "servlet-4.0", "ssl-1.0", "transportSecurity-1.0", "websocket-1.1", "springBoot-1.5" };
+        serverName = "com.ibm.ws.springboot.support.fat.TemplateServer1";
+        serverPath = installPath + "/usr/servers/" + serverName;
 
         createServerFromTemplate("springBoot1", expectedFeatures);
     }
@@ -84,11 +88,15 @@ public class TemplateTests {
     @Test
     public void testCreateServerFromSpringBoot2() throws Exception {
         expectedFeatures = new String[] { "servlet-4.0", "ssl-1.0", "transportSecurity-1.0", "websocket-1.1", "springBoot-2.0" };
+        serverName = "com.ibm.ws.springboot.support.fat.TemplateServer2";
+        serverPath = installPath + "/usr/servers/" + serverName;
 
         createServerFromTemplate("springBoot2", expectedFeatures);
     }
 
     void createServerFromTemplate(String templateName, String[] expectedFeatures) throws Exception {
+        cleanupServer();
+
         ProgramOutput po;
         try {
             po = LibertyServerUtils.executeLibertyCmd(bootstrap, "server", "create", serverName, "--template=" + templateName);
@@ -97,7 +105,7 @@ public class TemplateTests {
             po = LibertyServerUtils.executeLibertyCmd(bootstrap, "server", "start", serverName);
             assertEquals("Unexpected return code from server start command: STDOUT: " + po.getStdout() + " STDERR: " + po.getStderr(), 0, po.getReturnCode());
 
-            RemoteFile serverLog = LibertyFileManager.getLibertyFile(machine, springBootServerPath + "/logs/messages.log");
+            RemoteFile serverLog = LibertyFileManager.getLibertyFile(machine, serverPath + "/logs/messages.log");
 
             // Scrape messages.log to see what features were installed
             List<String> installedFeaturesRaw = LibertyFileManager.findStringsInFile("CWWKF0012I: .*", serverLog);
@@ -114,7 +122,6 @@ public class TemplateTests {
             po = LibertyServerUtils.executeLibertyCmd(bootstrap, "server", "stop", serverName);
             assertEquals("Unexpected return code from server stop command: STDOUT: " + po.getStdout() + " STDERR: " + po.getStderr(), 0, po.getReturnCode());
         }
-
     }
 
 }
