@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.config.internal.serverxml.AppPropertyConfigSource;
 import io.openliberty.microprofile.config.internal.serverxml.ServerXMLDefaultVariableConfigSource;
 import io.openliberty.microprofile.config.internal.serverxml.ServerXMLVariableConfigSource;
@@ -55,20 +56,30 @@ public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
         defaultSources.add(new AppPropertyConfigSource());
         defaultSources.add(new ServerXMLVariableConfigSource());
         defaultSources.add(new ServerXMLDefaultVariableConfigSource());
-
+        CheckpointPhase phase = CheckpointPhase.getPhase();
+        if (phase != null && !phase.restored()) {
+            for (ListIterator<ConfigSource> iSources = defaultSources.listIterator(); iSources.hasNext();) {
+                ConfigSource source = iSources.next();
+                iSources.set(new ConfigSourceWrapper(source, phase));
+            }
+        }
         return defaultSources;
     }
 
     @Override
     @Trivial
     public SmallRyeConfig build() {
-        SmallRyeConfig config = super.build();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            // Note: SMALLRYE_PROFILE gets internally mapped to also pick up the standard Config.PROFILE
-            String profileName = config.getRawValue(SmallRyeConfig.SMALLRYE_CONFIG_PROFILE);
-            Tr.event(this, tc, "Config created with profile: " + profileName, config);
+        boolean stopped = OLSmallRyeConfigExtension.stopRecordingReads();
+        try {
+            SmallRyeConfig config = super.build();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                // Note: SMALLRYE_PROFILE gets internally mapped to also pick up the standard Config.PROFILE
+                String profileName = config.getRawValue(SmallRyeConfig.SMALLRYE_CONFIG_PROFILE);
+                Tr.event(this, tc, "Config created with profile: " + profileName, config);
+            }
+            return config;
+        } finally {
+            OLSmallRyeConfigExtension.startRecordingReads(stopped);
         }
-        return config;
     }
-
 }
