@@ -20,4 +20,5 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({ AlwaysPassesTest.class,
                 DuplicateResourceAdaptersTest.class })
 public class FATSuite {
+    //this tests the EE10 connectors version 2.1 resource adapter and should not be repeated for previous versions
 }

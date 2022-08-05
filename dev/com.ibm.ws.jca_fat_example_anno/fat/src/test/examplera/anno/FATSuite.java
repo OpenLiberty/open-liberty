@@ -20,4 +20,5 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({ AlwaysPassesTest.class,
                 ResourceAdapterExampleTest.class })
 public class FATSuite {
+    //this tests the EE10 connectors version 2.1 added generic support for MappedRecord, IndexedRecord and should not be repeated for previous versions
 }

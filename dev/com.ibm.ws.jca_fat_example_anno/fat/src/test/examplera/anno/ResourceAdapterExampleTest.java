@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -28,6 +29,7 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 11)
 public class ResourceAdapterExampleTest extends FATServletClient {
 
     public static final String APP_NAME = "ExampleApp";
