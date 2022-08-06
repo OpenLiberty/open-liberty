@@ -129,7 +129,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
                 }
             } else {
                 // saml runtime isn't implemented yet - the tests can get an access_token, but bcl function is not called, so we won't hit our bcl test apps, or clear the proper cookies, ...
-                //        rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
             }
         }
         // TODO - should we try to test with SP initiated and ibm_security_logout flows using saml?
@@ -347,7 +347,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             // TODO will probably need some more specific code from SAML once the runtime code is written
             if (currentRepeatAction.contains(Constants.SAML)) {
                 logoutMethodTested = Constants.SAML;
-                finalAppWithoutPostRedirect = Constants.defaultLogoutPage;
+                finalAppWithoutPostRedirect = Constants.samlLogoutPage;
             } else {
                 if (currentRepeatAction.contains(Constants.END_SESSION)) {
                     logoutMethodTested = Constants.END_SESSION;
@@ -1852,4 +1852,3 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      *
      */
 }
-
