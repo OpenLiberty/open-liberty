@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,4 +70,20 @@ public interface HttpInboundConnectionExtended extends HttpInboundConnection {
      * @return
      */
     boolean useForwardedHeaders();
+
+    /**
+     * Since Servlet 6.0 : support jakarta.servlet.ServletRequest#getProtocolRequestId()
+     *
+     * @return (int) Stream ID; -1 otherwise
+     *
+     */
+    public int getStreamId();
+
+    /**
+     * Since Servlet 6.0 : support jakarta.servlet.ServletConnection#getConnectionId()
+     *
+     * @return (int) connection dispatcher link for the servlet request
+     *
+     */
+    public int getConnectionId();
 }

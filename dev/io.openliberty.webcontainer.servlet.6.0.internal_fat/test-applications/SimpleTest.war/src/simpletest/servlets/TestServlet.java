@@ -12,6 +12,7 @@ package simpletest.servlets;
 
 import java.io.IOException;
 
+import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
@@ -26,6 +27,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/TestServlet")
 public class TestServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static final String CLASS_NAME = TestServlet.class.getName();
 
     public TestServlet() {
         super();
@@ -36,5 +38,39 @@ public class TestServlet extends HttpServlet {
         ServletOutputStream sos = response.getOutputStream();
 
         sos.println("Hello from the TestServlet!!");
+
+        displayRequest60APIs(request);
+    }
+
+    private void displayRequest60APIs(HttpServletRequest request) {
+        StringBuilder sBuilder = new StringBuilder();
+        ServletConnection sConn = request.getServletConnection();
+
+        sBuilder.append("Testing 3 ServletRequest APIs \n");
+        sBuilder.append(addDivider());
+        sBuilder.append("   request.getRequestID() [" + request.getRequestId() + "] \n");
+        sBuilder.append("   request.getProtocolRequestId() [" + request.getProtocolRequestId() + "] \n");
+        sBuilder.append("   request.getServletConnection() [" + sConn + "] \n");
+        sBuilder.append(addDivider());
+        LOG(sBuilder.toString());
+
+        sBuilder.setLength(0);
+        sBuilder.append("Testing 4 ServletConnection APIs \n");
+        sBuilder.append(addDivider());
+        sBuilder.append("   ServletConnection getConnectionId() [" + sConn.getConnectionId() + "] \n");
+        sBuilder.append("   ServletConnection getProtocol() [" + sConn.getProtocol() + "] \n");
+        sBuilder.append("   ServletConnection getProtocalConnectionId() [" + sConn.getProtocolConnectionId() + "] \n");
+        sBuilder.append("   ServletConnection isSecure() [" + sConn.isSecure() + "] \n");
+        sBuilder.append(addDivider());
+
+        LOG(sBuilder.toString());
+    }
+
+    public static void LOG(String s) {
+        System.out.println(CLASS_NAME + s);
+    }
+
+    public static String addDivider() {
+        return ("=============================\n");
     }
 }

@@ -8,8 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package io.openliberty.security.oidcclientcore.storage;
+
 /**
- * @version 2.0
+ *
  */
-@org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.microprofile.telemetry.internal;
+public class SessionBasedStorage {
+
+}

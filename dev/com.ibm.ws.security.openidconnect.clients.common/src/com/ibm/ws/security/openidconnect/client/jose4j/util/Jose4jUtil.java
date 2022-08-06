@@ -59,6 +59,8 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.oidcclientcore.utils.Utils;
+
 public class Jose4jUtil {
 
     private static final TraceComponent tc = Tr.register(Jose4jUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
@@ -205,7 +207,7 @@ public class Jose4jUtil {
         String iss = jwtClaims.getIssuer();
         String sub = jwtClaims.getSubject();
         String sid = jwtClaims.getClaimValue("sid", String.class);
-        String timestamp = OidcUtil.getTimeStamp();
+        String timestamp = Utils.getTimeStamp();
 
         OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
 
