@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,16 +59,16 @@ define([
             if (this.userPrefs[toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION]) {
                 this.textDirection = this.userPrefs[toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION];
                 if (this.textDirection === toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION_RTL){
-                    this.rtlTextDirectionChecked = "checked aria-checked=true";
+                    this.rtlTextDirectionChecked = "checked";
                 } else if (this.textDirection === toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION_CONTEXTUAL){
-                    this.conTextDirectionChecked = "checked aria-checked=true";
+                    this.conTextDirectionChecked = "checked";
                 } else {
                     // default to ltr
-                    this.ltrTextDirectionChecked = "checked aria-checked=true";
+                    this.ltrTextDirectionChecked = "checked";
                 }
             } else {
                 // default to ltr
-                this.ltrTextDirectionChecked = "checked aria-checked=true";
+                this.ltrTextDirectionChecked = "checked";
             }
         },
 
@@ -89,9 +89,9 @@ define([
         bidiEnabled: false,
         textDirection: "ltr",
         enableBidiChecked: "",
-        ltrTextDirectionChecked: "aria-checked=false",
-        rtlTextDirectionChecked: "aria-checked=false",
-        conTextDirectionChecked: "aria-checked=false",
+        ltrTextDirectionChecked: "",
+        rtlTextDirectionChecked: "",
+        conTextDirectionChecked: "",
 
         postCreate : function() {
             this.inherited(arguments);
@@ -106,7 +106,15 @@ define([
                 // enable the radio buttons and set color for text
                 this.setRadioButtonCSS(false, textColorE);
             }
+        },
 
+        // startup is called after widget rendrer and mounted to dom
+        startup: function() {
+            // remove aria-checked attribute that is put there by dojo
+            this.removeAriaChecked();
+
+            // set the user profile text direction
+            this.setUserProfileTextDir();
         },
 
         changeBidi : function(evt){
@@ -130,6 +138,8 @@ define([
                 has.add("adminCenter-bidi", false);
                 console.log("has bidi should be false:" + has("adminCenter-bidi"));
             }
+            // this.removeAriaChecked();
+            this.setUserProfileTextDir();
             this.setPrefs();
         },
 
@@ -156,6 +166,9 @@ define([
             this.textDirection = textDirection;
             this.userPrefs[toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION] = textDirection;
             this.setPrefs();
+            this.removeAriaChecked();
+            this.setRadioButtonChecked(this.textDirection);
+            this.setUserProfileTextDir();
          },
 
          setPrefs: function(){
@@ -200,7 +213,6 @@ define([
           this.setLabelColor(LTRWidget, color);
           this.setLabelColor(RTLWidget, color);
           this.setLabelColor(contextualWidget, color);
-          dom.byId("textDirectionLabel").style.color = color;
         },
         
         setLabelColor: function(buttonWidget, color) {
@@ -215,6 +227,62 @@ define([
               labelDOM.style.paddingLeft = '10px';
             }
           }
+        },
+
+        // Remove the "aria-checked" attribute put in by dojo as the attribute violates the latest deployment accessibility rule
+        // when "type" and "role" attributes are set to "radio"
+        removeAriaChecked: function() {
+          var LTRDom = dom.byId("textDirectionLTR");
+          if (LTRDom !== undefined) {
+            LTRDom.removeAttribute("aria-checked");
+          }
+          var RTLDom = dom.byId("textDirectionRTL");
+          if (RTLDom !== undefined) {
+            RTLDom.removeAttribute("aria-checked");
+          }
+          var contextualDom = dom.byId("textDirectionContextual");
+          if (contextualDom !== undefined) {
+            contextualDom.removeAttribute("aria-checked");
+          }
+        },
+
+        // set the "checked" attribute to the correct radio input
+        setRadioButtonChecked: function(textDirection) {
+            var LTRDom = dom.byId("textDirectionLTR");
+            var RTLDom = dom.byId("textDirectionRTL");
+            var contextualDom = dom.byId("textDirectionContextual");
+
+            if (this.textDirection === toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION_LTR) {
+                LTRDom.setAttribute("checked", "");
+                RTLDom.removeAttribute("checked");
+                contextualDom.removeAttribute("checked");
+            } else if (this.textDirection === toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION_RTL) {
+                LTRDom.removeAttribute("checked");
+                RTLDom.setAttribute("checked", "");
+                contextualDom.removeAttribute("checked");
+            } else if (this.textDirection === toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION_CONTEXTUAL) {
+                LTRDom.removeAttribute("checked");
+                RTLDom.removeAttribute("checked");
+                contextualDom.setAttribute("checked", "");
+            }
+        },
+
+        // update the "dir" attritbute in user profile when bidi changes
+        setUserProfileTextDir: function() {
+            var bidiEnabled = this.userPrefs[toolbox.getToolbox().PREFERENCE_BIDI_ENABLED];
+            var dirValue = this.textDirection;
+            if (this.textDirection === "contextual") {
+                dirValue = "auto";
+            }
+            var usernameDOM = document.querySelector("div.user-profile h2.username > span");
+            var roleDOM = document.querySelector("div.user-profile h2.role > span");
+            if (bidiEnabled) {
+                usernameDOM.setAttribute("dir", dirValue);
+                roleDOM.setAttribute("dir", dirValue);
+            } else {
+                usernameDOM.removeAttribute("dir");
+                roleDOM.removeAttribute("dir");
+            }
         }
         
     });
