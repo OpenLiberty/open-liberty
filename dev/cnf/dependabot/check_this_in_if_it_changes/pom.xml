@@ -1833,6 +1833,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
+      <artifactId>myfaces-api</artifactId>
+      <version>4.0.0-RC1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
       <version>2.2.12</version>
     </dependency>
