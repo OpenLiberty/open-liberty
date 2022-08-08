@@ -53,7 +53,7 @@ public class Telemetry10 extends FATServletClient {
         .addAsManifestResource(new File("publish/resources/META-INF/microprofile-config.properties"),"microprofile-config.properties");
         app.addClasses(Telemetry10Servlet.class);
         ShrinkHelper.exportDropinAppToServer(server, app, deployOptions);
-        server.startServerAndValidate(true, true, false);
+        server.startServer();
     }
 
     @AfterClass
