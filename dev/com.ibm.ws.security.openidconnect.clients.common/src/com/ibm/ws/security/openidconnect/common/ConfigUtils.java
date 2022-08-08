@@ -219,7 +219,8 @@ public class ConfigUtils {
                     if (key.startsWith(".")
                             || key.startsWith("config.")
                             || key.startsWith("service.")
-                            || key.equals("id")) {
+                            || key.equals("id")
+                            || key.startsWith("osgi.ds.")) {
                         continue;
                     }
                     Object value = cProps.get(key);
@@ -320,7 +321,8 @@ public class ConfigUtils {
                     || key.startsWith("config.")
                     || key.startsWith("service.")
                     || key.startsWith("property.")
-                    || key.equals("id")) {
+                    || key.equals("id")
+                    || key.startsWith("osgi.ds.")) {
                 continue;
             }
             Object value = entry.getValue();
