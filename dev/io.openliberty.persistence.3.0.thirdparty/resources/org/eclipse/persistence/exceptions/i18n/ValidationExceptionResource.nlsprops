@@ -605,7 +605,7 @@
 
 7342=The specified boolean value [{0}] for setting allow native sql queries is invalid, the value must either be "true" or "false".
 
-7343=Multiple VPD identifiers (tenant discriminator context property) have been specified. Entity [{1}] uses [{0}] and Entity [{3]} uses [{2}]. When using a Multitenant VPD strategy, there can only be one tenant discriminator column per entity and its context property must be consistent across all the Multitenant VPD entities.
+7343=Multiple VPD identifiers (tenant discriminator context property) have been specified. Entity [{1}] uses [{0}] and Entity [{3}] uses [{2}]. When using a Multitenant VPD strategy, there can only be one tenant discriminator column per entity and its context property must be consistent across all the Multitenant VPD entities.
 
 7344=VPD (connections and DDL generation) is not supported for the platform: [{0}].
 
@@ -621,7 +621,7 @@
 
 7351=The converter class [{2}] specified on the mapping attribute [{1}] from the class [{0}] was not found. Please ensure the converter class name is correct and exists with the persistence unit definition.
 
-7352=The converter class [{0}] must implement the JPA javax.persistence.AttributeConverter<X, Y> interface to be a valid converter class.
+7352=The converter class [{0}] must implement the JPA jakarta.persistence.AttributeConverter<X, Y> interface to be a valid converter class.
 
 7353=The mapping attribute [{1}] from the class [{0}] is not a valid mapping type for a convert specification.
 
@@ -630,4 +630,6 @@
 7355=The mapping attribute [{1}] from the class [{0}] is not a valid mapping type for a convert using an attribute name specification. An attribute name should only be specified to traverse an Embedded mapping type.
 
 7356=Procedure: [{1}] cannot be executed because {0} does not currently support multiple out parameters
+
+7357=URL [{0}] for resource [{1}] does not belong to a valid persistence root (as per JPA Specification)
 

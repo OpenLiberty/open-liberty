@@ -161,6 +161,8 @@ do_select_before_insert_not_supported=Oc4j native CMP feature "do-select-before-
 
 drop_connection_on_error=Warning: Dropping remote command connection to {0} on error {1}
 
+eclipselink_version_error=File: {0} not exist or is corrupted.
+
 ejbSelect2=EjbSelect: {0}
 
 ejb_jar_xml_not_found_in_input=The ejb-jar.xml is not present under input directory ({0}).
@@ -316,6 +318,10 @@ jpars_could_not_find_persistence_context=A JPA-RS call is requesting persistence
 jpars_could_not_find_session_bean=A call is being made to a session bean with JNDI Name: [{0}].  That bean can not be found.
 
 jta_cannot_be_disabled_in_cmp=When using Container Managed Persistence (CMP), JTA cannot be disabled. EclipseLink will act as if JTA is enabled.
+
+jta_duplicate_ctrl_property=JTA transaction controller class defined in both eclipselink.target-server and eclipselink.jta.controller properties. Using value from eclipselink.target-server.
+
+jta_tsr_lookup_failure=Could not lookup TransactionSynchronizationRegistry instance: {0}
 
 key_identity_hash_code_object={0}Key: {1}{2}Identity Hash Code: {3}{2}Object: {4}
 
@@ -517,7 +523,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Ignoring the primary key s
 
 metadata_warning_ignore_mapped_superclass_read_only=Ignoring the read only setting on the mapped superclass [{1}] for the entity class [{0}] since read only metadata was previously discovered for that entity (either on the entity itself or another mapped-superclass).
 
-metadata_warning_ignore_mapping_metadata=Ignoring the javax.persistence metadata applied to the attribute [{0}] from class [{1}]. javax.persistence metadata is ignored on fields or properties that are transient, static or abstract.
+metadata_warning_ignore_mapping_metadata=Ignoring the jakarta.persistence metadata applied to the attribute [{0}] from class [{1}]. jakarta.persistence metadata is ignored on fields or properties that are transient, static or abstract.
 
 metadata_warning_ignore_serialized=Ignoring default serialization on element [{1}] within entity class [{0}] since EclipseLink convert metadata is specified.
 
@@ -726,6 +732,14 @@ toplink_info=[EL Info]:
 toplink_severe=[EL Severe]: 
 
 toplink_warning=[EL Warning]: 
+
+unit_of_work_thread_info=Current unit of work in session ({0}) was created by another thread (id: {1} name: {2}), than current thread (id: {3} name: {4})
+
+unit_of_work_thread_info_thread_dump=Creation thread (id: {0} name: {1}) stack trace:
+{2}
+
+Current thread (id: {3} name: {4}) stack trace:
+{5}
 
 unitofwork_identity_hashcode={0}UnitOfWork identity hashcode: {1}
 
