@@ -173,7 +173,8 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
                 if (key.startsWith(".")
                     || key.startsWith("config.")
                     || key.startsWith("service.")
-                    || key.equals("id")) {
+                    || key.equals("id")
+                    || key.startsWith("osgi.ds.")) {
                     continue;
                 }
                 properties.put(key, cProps.get(key));
