@@ -19,7 +19,6 @@ import javax.persistence.EntityManager;
 import org.junit.Assert;
 
 import com.ibm.ws.jpa.olgh19176.model.WeavedEntityAOLGH19176;
-import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -49,12 +48,6 @@ public class JPATestOLGH19176Logic extends AbstractTestLogic {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
-        }
-
-        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
-            return;
         }
 
         long id = 123l;
