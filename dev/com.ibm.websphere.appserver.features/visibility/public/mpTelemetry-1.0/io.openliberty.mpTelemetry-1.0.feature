@@ -33,6 +33,6 @@ IBM-API-Package: \
   com.ibm.ws.cdi.interfaces.jakarta, \
   io.openliberty.microprofile.telemetry.1.0.internal,\
   io.openliberty.io.opentelemetry.internal
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel 

@@ -4,6 +4,6 @@ visibility=private
 singleton=true
 -features=io.openliberty.mpCompatible-5.0
 -bundles=io.openliberty.io.opentelemetry; location:="dev/api/stable/,lib/"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
