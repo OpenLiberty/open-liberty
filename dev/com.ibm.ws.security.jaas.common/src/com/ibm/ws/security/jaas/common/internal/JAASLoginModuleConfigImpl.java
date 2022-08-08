@@ -384,7 +384,8 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig, Synchro
                 if (key.startsWith(".")
                     || key.startsWith("config.")
                     || key.startsWith("service.")
-                    || key.equals("id")) {
+                    || key.equals("id")
+                    || key.startsWith("osgi.ds.")) {
                     continue;
                 }
                 options.put(key, option.getValue());
