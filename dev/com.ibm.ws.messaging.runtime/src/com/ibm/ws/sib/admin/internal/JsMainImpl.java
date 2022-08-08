@@ -128,7 +128,7 @@ public final class JsMainImpl implements JsMain {
     }
 
     // Constructor for liberty release
-    public JsMainImpl(BundleContext bContext, RuntimeSecurityService runtimeSecurityService) {
+    public JsMainImpl(BundleContext bContext, RuntimeSecurityService runtimeSecurityService) throws IllegalStateException {
         String methodName = "JSMainImpl";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
             SibTr.entry(tc, methodName, new Object[] {this, bContext, runtimeSecurityService, services});
@@ -441,6 +441,9 @@ public final class JsMainImpl implements JsMain {
             }
         }
         _messagingEngines = null;
+        
+        JsMainAdminComponentImpl.getJsAdminService().reset();
+        
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.exit(tc, thisMethodName);
         }

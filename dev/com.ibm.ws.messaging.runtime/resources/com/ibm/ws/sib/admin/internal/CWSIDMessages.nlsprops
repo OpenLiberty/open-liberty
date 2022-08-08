@@ -76,12 +76,6 @@
 ### Search on "TBD" for messages that need information from other components ###
  
 # -------------------------------------------------------------------------------------------------
-# {0} Messaging engine name
-ME_INITIALIZING_SIAS0001=CWSID0001I: Messaging engine {0} is initializing.
-ME_INITIALIZING_SIAS0001.explanation=The specified messaging engine is commencing initialization.
-ME_INITIALIZING_SIAS0001.useraction=No action is required.
- 
-# -------------------------------------------------------------------------------------------------
 # {0} Internal reason string
 INTERNAL_ERROR_SIAS0003=CWSID0003E: An internal error occurred; reason: {0}
 INTERNAL_ERROR_SIAS0003.explanation=An unexpected internal error occurred during system operation.
