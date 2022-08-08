@@ -53,28 +53,11 @@ public class Telemetry10 extends FATServletClient {
         .addAsManifestResource(new File("publish/resources/META-INF/microprofile-config.properties"),"microprofile-config.properties");
         app.addClasses(Telemetry10Servlet.class);
         ShrinkHelper.exportDropinAppToServer(server, app, deployOptions);
-        server.startServerAndValidate(true, true, false); //don't validate because the app won't have started properly
+        server.startServerAndValidate(true, true, false);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("CWNEN0047W.*Telemetry10Servlet");
-    }
-
-    /**
-     * Copy a server config file to the server root and wait for notification that the server config has been updated
-     *
-     * @param filename
-     * @throws Exception
-     */
-    private static void copyConfigFileToLibertyServerRoot(String filename, String appName) throws Exception {
-        server.setMarkToEndOfLog();
-        server.copyFileToLibertyServerRoot(filename);
-
-        if (appName == null) {
-            server.waitForConfigUpdateInLogUsingMark(null, false);
-        } else {
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(appName), false);
-        }
     }
 }
