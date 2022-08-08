@@ -96,6 +96,16 @@ public class CachingProviderService {
 
     @Deactivate
     public void deactivate() {
+        /*
+         * Close the CachingProvider.
+         */
+        if (cachingProvider != null) {
+            cachingProvider.close();
+        }
+
+        /*
+         * Null out any instance fields.
+         */
         cachingProvider = null;
         classLoader = null;
     }
