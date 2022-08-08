@@ -14,7 +14,6 @@ IBM-API-Package: \
 -features=\
   io.openliberty.jakarta.annotation-2.0, \
   io.openliberty.restfulWS-3.0, \
-  io.openliberty.mpRestClient-3.0,\
   io.openliberty.mpConfig-3.0, \
   io.openliberty.cdi-3.0, \
   io.openliberty.mpCompatible-5.0,\
