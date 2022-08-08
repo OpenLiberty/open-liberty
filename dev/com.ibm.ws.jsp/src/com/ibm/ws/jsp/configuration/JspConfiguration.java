@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,12 @@ public class JspConfiguration {
     protected boolean elIgnored = true;
     protected boolean elIgnoredSetTrueInPropGrp = false;
     protected boolean elIgnoredSetTrueInPage = false;
+
+    protected boolean errorOnELNotFound = false;
+    protected boolean errorOnELNotFoundInPropGroup = false;
+    protected boolean errorOnELNotFoundInPage = false;
+
+
     protected boolean scriptingInvalid = false;
     protected String pageEncoding = null;
     protected ArrayList preludeList = new ArrayList();
@@ -80,6 +86,7 @@ public class JspConfiguration {
                                boolean isXml, 
                                boolean isXmlSpecified,
                                boolean elIgnored, 
+                               boolean errorOnELNotFound,
                                boolean scriptingInvalid,
                                boolean trimDirectiveWhitespaces, // jsp2.1work
                                boolean deferredSyntaxAllowedAsLiteral, // jsp2.1ELwork
@@ -87,20 +94,23 @@ public class JspConfiguration {
                                String deferredSyntaxAllowedAsLiteralValue, // jsp2.1ELwork
                                boolean elIgnoredSetTrueInPropGrp,
                                boolean elIgnoredSetTrueInPage,
+                               boolean errorOnELNotFoundInPropGroup,
+                               boolean errorOnELNotFoundInPage,
                                String defaultContentType,
                                String buffer,
                                boolean errorOnUndeclaredNamespace
                                ) {
 		
 		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "JspConfiguration", "isXml = [{0}] isXmlSpecified = [{1}] elIgnored = [{2}] scriptingInvalid = [{3}] pageEncoding = [{4}] trimDirectiveWhitespacesValue = [{5}] deferredSyntaxAllowedAsLiteralValue = [{6}] trimDirectiveWhitespaces = [{7}] deferredSyntaxAllowedAsLiteral = [{8}] elIgnoredSetTrueInPropGrp = [{9}] elIgnoredSetTrueInPage = [{10}]", 
-						new Object[] {new Boolean(isXml), new Boolean(isXmlSpecified), new Boolean(elIgnored), new Boolean(scriptingInvalid), pageEncoding, trimDirectiveWhitespacesValue, deferredSyntaxAllowedAsLiteralValue, trimDirectiveWhitespaces, deferredSyntaxAllowedAsLiteral, elIgnoredSetTrueInPropGrp, elIgnoredSetTrueInPage});
+			logger.logp(Level.FINER, CLASS_NAME, "JspConfiguration", "isXml = [{0}] isXmlSpecified = [{1}] elIgnored = [{2}] scriptingInvalid = [{3}] pageEncoding = [{4}] trimDirectiveWhitespacesValue = [{5}] deferredSyntaxAllowedAsLiteralValue = [{6}] trimDirectiveWhitespaces = [{7}] deferredSyntaxAllowedAsLiteral = [{8}] elIgnoredSetTrueInPropGrp = [{9}] elIgnoredSetTrueInPage = [{10}] errorOnELNotFoundInPropGroup = [{11}] errorOnELNotFoundInPage = [{12}]", 
+						new Object[] {new Boolean(isXml), new Boolean(isXmlSpecified), new Boolean(elIgnored), new Boolean(errorOnELNotFound), new Boolean(scriptingInvalid), pageEncoding, trimDirectiveWhitespacesValue, deferredSyntaxAllowedAsLiteralValue, trimDirectiveWhitespaces, deferredSyntaxAllowedAsLiteral, elIgnoredSetTrueInPropGrp, elIgnoredSetTrueInPage, errorOnELNotFoundInPropGroup, errorOnELNotFoundInPage });
 		}
         this.servletVersion=servletVersion;
         this.jspVersion=jspVersion;
         this.isXml = isXml;
         this.isXmlSpecified = isXmlSpecified;
         this.elIgnored = elIgnored;
+        this.errorOnELNotFound = errorOnELNotFound;
         this.scriptingInvalid = scriptingInvalid;         	
         this.trimDirectiveWhitespaces = trimDirectiveWhitespaces;// jsp2.1work
         this.deferredSyntaxAllowedAsLiteral = deferredSyntaxAllowedAsLiteral; // jsp2.1ELwork
@@ -109,6 +119,8 @@ public class JspConfiguration {
         this.configManager = configManager;
         this.elIgnoredSetTrueInPropGrp = elIgnoredSetTrueInPropGrp;
         this.elIgnoredSetTrueInPage = elIgnoredSetTrueInPage;
+        this.errorOnELNotFoundInPropGroup = errorOnELNotFoundInPropGroup;
+        this.errorOnELNotFoundInPage = errorOnELNotFoundInPage;
         this.defaultContentType = defaultContentType;
         this.buffer = buffer;
         this.errorOnUndeclaredNamespace = errorOnUndeclaredNamespace; 
@@ -116,7 +128,7 @@ public class JspConfiguration {
     
     //This method is used for creating a configuration for a tag file.  The tag file may want to override some properties if it's jsp version in the tld is different than the server version
     public JspConfiguration createClonedJspConfiguration() {
-        return new JspConfiguration(configManager, this.getServletVersion(), this.jspVersion, this.isXml, this.isXmlSpecified, this.elIgnored, this.scriptingInvalid(), this.isTrimDirectiveWhitespaces(), this.isDeferredSyntaxAllowedAsLiteral(), this.getTrimDirectiveWhitespaces(), this.getDeferredSyntaxAllowedAsLiteral(), this.elIgnoredSetTrueInPropGrp(), this.elIgnoredSetTrueInPage(), this.getDefaultContentType(), this.getBuffer(), this.isErrorOnUndeclaredNamespace());
+        return new JspConfiguration(configManager, this.getServletVersion(), this.jspVersion, this.isXml, this.isXmlSpecified, this.elIgnored, this.errorOnELNotFound, this.scriptingInvalid(), this.isTrimDirectiveWhitespaces(), this.isDeferredSyntaxAllowedAsLiteral(), this.getTrimDirectiveWhitespaces(), this.getDeferredSyntaxAllowedAsLiteral(), this.elIgnoredSetTrueInPropGrp(), this.elIgnoredSetTrueInPage(), this.errorOnELNotFoundSetTrueInPropGrp(), this.errorOnELNotFoundSetTrueInPage(), this.getDefaultContentType(), this.getBuffer(), this.isErrorOnUndeclaredNamespace());
     }
     
     public JspConfiguration createEmptyJspConfiguration() {
@@ -145,6 +157,10 @@ public class JspConfiguration {
     
     public boolean elIgnored() {
         return (elIgnored);
+    }
+
+    public boolean errorOnELNotFound(){
+        return (errorOnELNotFound);
     }
     
     public boolean scriptingInvalid() {
@@ -178,6 +194,14 @@ public class JspConfiguration {
     public boolean elIgnoredSetTrueInPage() {
         return (elIgnoredSetTrueInPage);
     }
+
+    public boolean errorOnELNotFoundSetTrueInPage() {
+        return (errorOnELNotFoundInPage);
+    }
+    
+    public boolean errorOnELNotFoundSetTrueInPropGrp() {
+        return (errorOnELNotFoundInPropGroup);
+    }
     
     public String getPageEncoding() {
         return (pageEncoding);
@@ -201,6 +225,18 @@ public class JspConfiguration {
     
     public void setElIgnoredSetTrueInPage(boolean elIgnoredSetTrueInPage) {
         this.elIgnoredSetTrueInPage = elIgnoredSetTrueInPage;
+    }
+
+    public void setErrorOnELNotFound(boolean errorOnELNotFound) {
+        this.errorOnELNotFound = errorOnELNotFound;
+    }
+
+    public void setErrorOnELNotFoundSetTrueInPropGrp(boolean errorOnELNotFoundInPropGroup) {
+        this.errorOnELNotFoundInPropGroup = errorOnELNotFoundInPropGroup;
+    }
+    
+    public void setErrorOnELNotFoundSetTrueInPage(boolean errorOnELNotFoundInPage) {
+        this.errorOnELNotFoundInPage = errorOnELNotFoundInPage;
     }
     
     // jsp2.1work
@@ -316,6 +352,8 @@ public class JspConfiguration {
 		 	"elIgnored =                          [" + elIgnored +"]"+separatorString+
 		 	"elIgnoredSetTrueInPropGrp =          [" + elIgnoredSetTrueInPropGrp +"]"+separatorString+
 		 	"elIgnoredSetTrueInPage =             [" + elIgnoredSetTrueInPage +"]"+separatorString+
+            "errorOnELNotFoundInPropGroup =       [" + errorOnELNotFoundInPropGroup +"]"+separatorString+
+		 	"errorOnELNotFoundInPage =            [" + errorOnELNotFoundInPage +"]"+separatorString+
 		 	"scriptingInvalid              		  [" + scriptingInvalid +"]"+separatorString+
 			"pageEncoding                  		  [" + pageEncoding +"]"+separatorString+
 		 	"preludeList                   		  [" + preludeList +"]"+separatorString+

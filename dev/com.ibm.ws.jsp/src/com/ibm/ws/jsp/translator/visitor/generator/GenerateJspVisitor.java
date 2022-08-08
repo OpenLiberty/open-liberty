@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.w3c.dom.Element;
 
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JspCoreException;
+import com.ibm.ws.jsp.PagesVersionHandler;
 import com.ibm.ws.jsp.configuration.JspConfiguration;
 import com.ibm.ws.jsp.translator.visitor.JspVisitorInputMap;
 import com.ibm.ws.jsp.translator.visitor.JspVisitorResult;
@@ -29,7 +30,7 @@ import com.ibm.ws.jsp.translator.visitor.validator.ValidateJspResult;
 import com.ibm.wsspi.jsp.context.JspCoreContext;
 import com.ibm.wsspi.jsp.resource.translation.JspResources;
 
-public class GenerateJspVisitor extends GenerateVisitor { 
+public class GenerateJspVisitor extends GenerateVisitor {
     protected GenerateJspResult result = null;
     protected ArrayList interfaces = new ArrayList();
     protected String jspServletBase = Constants.JSP_SERVLET_BASE;
@@ -43,12 +44,12 @@ public class GenerateJspVisitor extends GenerateVisitor {
 	static{
 		logger = Logger.getLogger("com.ibm.ws.jsp");
 	}
-    
+
     public GenerateJspVisitor(JspVisitorUsage visitorUsage,
-                              JspConfiguration jspConfiguration, 
-                              JspCoreContext context, 
+                              JspConfiguration jspConfiguration,
+                              JspCoreContext context,
                               HashMap resultMap,
-                              JspVisitorInputMap inputMap) 
+                              JspVisitorInputMap inputMap)
         throws JspCoreException {
         super(visitorUsage, jspConfiguration, context, resultMap, inputMap, "JspValidate");
         result = new GenerateJspResult(visitorUsage.getJspVisitorDefinition().getId());
@@ -59,16 +60,16 @@ public class GenerateJspVisitor extends GenerateVisitor {
 		jspSourceFileName = jspSourceFileName.replace('\\','/'); // defect 204907
         createWriter(jspFiles.getGeneratedSourceFile().getPath(), jspClassName, result.getCustomTagMethodJspIdMap()); //232818
     }
-    
+
     public JspVisitorResult getResult() throws JspCoreException {
         closeWriter();
         return result;
     }
-    
+
     public void visit(Document jspDocument, int visitCount) throws JspCoreException {
         ValidateJspResult validatorResult = (ValidateJspResult)resultMap.get("JspValidate");
         boolean genSessionVariable = validatorResult.isGenSessionVariable();
-        
+
         switch (visitCount) {
             case CodeGenerationPhase.IMPORT_SECTION: {
 				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
@@ -77,15 +78,18 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 generateImportSection(validatorResult);
                 break;
             }
-            
+
             case CodeGenerationPhase.CLASS_SECTION: {
 				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
 					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase CLASS_SECTION");
 				}
                 generateClassSection(validatorResult);
+                if(PagesVersionHandler.isPages31Loaded()){
+                    generateIsErrorOnELFoundMethod(jspConfiguration.errorOnELNotFound());
+                }
                 break;
             }
-            
+
             case CodeGenerationPhase.STATIC_SECTION: {
 				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
 					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase STATIC_SECTION");
@@ -93,7 +97,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 generateStaticSection();
                 break;
             }
-            
+
             case CodeGenerationPhase.INIT_SECTION: {
 				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
 					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase INIT_SECTION");
@@ -102,7 +106,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 generateInitSection(validatorResult);
                 break;
             }
-            
+
             case CodeGenerationPhase.METHOD_INIT_SECTION: {
 				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
 					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase METHOD_INIT_SECTION");
@@ -110,7 +114,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 generateServiceInitSection(validatorResult, genSessionVariable);
                 break;
             }
-            
+
             case CodeGenerationPhase.METHOD_SECTION: {
 				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
 					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase METHOD_SECTION");
@@ -119,21 +123,21 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 generateServiceSection(validatorResult, genSessionVariable, jspDocument);
                 break;
             }
-            
+
             case CodeGenerationPhase.FINALLY_SECTION: {
 				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
 					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase FINALLY_SECTION");
 				}
                 generateFinallySection();
                 break;
-            } 
+            }
         }
-        
+
         super.visit(jspDocument, visitCount);
-        
+
         if (visitCount == CodeGenerationPhase.FINALLY_SECTION) {
             writer.println("}");
-    
+
             writer.println("}");
             boolean poolingTagMethodsCreated = false;
             for (Iterator itr = methodWriterList.iterator(); itr.hasNext();) {
@@ -151,7 +155,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 //247815 End
                 writer.printMultiLn(methodWriter.toString());
             }
-            
+
             //247815 Start
             if ((jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())&& poolingTagMethodsCreated == false) {
                 InitTaglibLookupWriter initTaglibLookupWriter = new InitTaglibLookupWriter(jspOptions.isUseThreadTagPool());
@@ -167,7 +171,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 fragmentHelperClassWriter.generatePostamble();
                 writer.printMultiLn(fragmentHelperClassWriter.toString());
             }
-    
+
             writer.println("}");
 
 			if(jspOptions.isKeepGenerated() == true){
@@ -191,13 +195,21 @@ public class GenerateJspVisitor extends GenerateVisitor {
 				writer.println("deferredSyntaxAllowedAsLiteral = [" + jspConfiguration.isDeferredSyntaxAllowedAsLiteral() +"]"); // jsp2.1ELwork
 
 				writer.println("*/");
-				
-				
-				
+
+
+
 			}
 
         }
 
+    }
+
+    // Added for Pages 3.1's errorOnELNotFound option
+    private void generateIsErrorOnELFoundMethod(boolean flag) {
+
+        writer.println(" public boolean isErrorOnELNotFound() {");
+        writer.println("return "+ flag  + ";");
+        writer.println("}");
     }
 
     protected void generateImportSection(ValidateJspResult validatorResult) {
@@ -205,13 +217,13 @@ public class GenerateJspVisitor extends GenerateVisitor {
 
         writer.println("package " + servletPackageName + ";");
         writer.println();
-        
+
         for(int i = 0; i < Constants.STANDARD_IMPORTS.length; i++)
             writer.println("import " + (String) Constants.STANDARD_IMPORTS[i] + ";");
-        
+
         writer.println();
     }
-    
+
     protected void generateClassSection(ValidateJspResult validatorResult) {
         writer.println();
         writer.print("public final class " + jspClassName + " extends ");
@@ -219,45 +231,53 @@ public class GenerateJspVisitor extends GenerateVisitor {
         writer.print(extendsClass == null
                 ? jspServletBase
                 : extendsClass);
-        interfaces.add("com.ibm.ws.jsp.runtime.JspClassInformation");                
-        boolean singleThreaded = validatorResult.isSingleThreaded();
-        if (singleThreaded)
-            interfaces.add("SingleThreadModel");
-        
+        interfaces.add("com.ibm.ws.jsp.runtime.JspClassInformation");
+        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+            interfaces.add("com.ibm.ws.jsp.runtime.JspDirectiveInfo");
+        }
+        //SingleThread was removed in Servlet 6.0 (Pages 3.1)
+        if(PagesVersionHandler.isPages30OrLowerLoaded()){
+            boolean singleThreaded = validatorResult.isSingleThreaded();
+
+            if (singleThreaded)
+                interfaces.add("SingleThreadModel");
+        }
+
         if (interfaces.size() != 0) {
             writer.println();
             writer.print("     implements");
-        
+
             for (int i = 0; i < interfaces.size() - 1; i++)
                 writer.print(" " + interfaces.get(i) + ",");
             writer.print(" " + interfaces.get(interfaces.size() - 1));
         }
-        
+
         writer.println(" {");
         writer.println();
         GeneratorUtils.generateFactoryInitialization(writer, jspConfiguration.getConfigManager().isJCDIEnabled());
 		writer.println();
         GeneratorUtils.generateDependencyList(writer, validatorResult, context, jspOptions.isTrackDependencies());
 		writer.println();
-        
+
         // LIDB4147-24
-          
+
 		if (!jspOptions.isDisableResourceInjection()){		//PM06063
 			GeneratorUtils.generateInjectionSection (writer);
 		}													//PM06063
-		
+
         writer.println();
-        
+
 		// begin 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
 		//GeneratorUtils.generateVersionInformation(writer);
 		GeneratorUtils.generateVersionInformation(writer, jspOptions.isDebugEnabled());
 		// end 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
-		
+
         // PK81147 start
 		// declare class variable to indicate whether _jspInit() has been called.
 		writer.println();
 		writer.println("private boolean _jspx_isJspInited = false;");
 		writer.println();
+
         // PK81147 end
         if (validatorResult.getInfo() != null) {
             writer.println();
@@ -275,12 +295,12 @@ public class GenerateJspVisitor extends GenerateVisitor {
         writer.println("static {");
     }
 
-    protected void generateInitSection(ValidateJspResult validatorResult) 
+    protected void generateInitSection(ValidateJspResult validatorResult)
         throws JspCoreException {
         writer.println("}");
         writer.println();
         GeneratorUtils.generateInitSectionCode(writer, GeneratorUtils.JSP_FILE_TYPE, jspOptions);  //PM06063
-        writer.println();        
+        writer.println();
         GeneratorUtils.generateELFunctionCode(writer, validatorResult);
         writer.println();
     }
@@ -293,21 +313,21 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 + "("
                 + "HttpServletRequest request, "
                 + "HttpServletResponse  response)");
-        
+
         writer.println("    throws java.io.IOException, ServletException {");
         writer.println();
         result.setServiceMethodLineNumber(((JavaFileWriter)writer).getCurrentLineNumber());
         //writer.println("JspFactory _jspxFactory = null;");
         writer.println("PageContext pageContext = null;");
-        
+
         if (genSessionVariable)
             writer.println("HttpSession session = null;");
-        
+
         boolean isErrorPage = validatorResult.isErrorPage();
         if (isErrorPage) {
             writer.println("Throwable exception = org.apache.jasper.runtime.JspRuntimeLibrary.getThrowable(request);");
         }
-        
+
         writer.println("ServletContext application = null;");
         writer.println("ServletConfig config = null;");
         writer.println("JspWriter out = null;");
@@ -315,19 +335,19 @@ public class GenerateJspVisitor extends GenerateVisitor {
         writer.println();
         writer.println("JspWriter _jspx_out = null;");
         writer.println();
-        
+
         // PK81147 start
-        // add check to see if the _jspInit() method has been called yet. 
-        //If not we need to call it in order to init the annotation helper  
+        // add check to see if the _jspInit() method has been called yet.
+        //If not we need to call it in order to init the annotation helper
 
         writer.println();
         writer.println("if(!_jspx_isJspInited){");
         writer.println("this._jspInit();");
         writer.println("}");
         writer.println();
-        
+
         // PK81147 end
-        
+
         // 247815 Start
         if (jspOptions.isUsePageTagPool()) {
             writer.println("java.util.HashMap _jspx_TagLookup = initTaglibLookup();"); //247815
@@ -344,10 +364,10 @@ public class GenerateJspVisitor extends GenerateVisitor {
         writer.println();
         //writer.println("_jspxFactory = JspFactory.getDefaultFactory();");
         String contentType = validatorResult.getContentType();
-        
+
         // 221843: obtain whether autoResponseEncoding is enabled for this web module.
         boolean autoResponseEncoding = jspOptions.isAutoResponseEncoding();
-        
+
         if (contentType == null) {
             if (jspConfiguration.isXml()) {
                 contentType = "text/xml";
@@ -356,7 +376,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 contentType = "text/html";
             }
         }
-        
+
         if (contentType.indexOf("charset=") < 0) {
             if (jspConfiguration.isXml()) {
             	// 221843: add only if autoResponseEncoding is false. Else leave it to webcontainer.
@@ -375,8 +395,8 @@ public class GenerateJspVisitor extends GenerateVisitor {
                     if(responseEncoding!=null && !responseEncoding.equals("")){
                     	contentType += ";charset=" + responseEncoding;
                     }
-                    
-                    /* - 
+
+                    /* -
                     if (pageEncoding != null && pageEncoding.equals("") == false) {
                         contentType += ";charset=" + pageEncoding;
                     }
@@ -396,9 +416,9 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 }
             }
         }
-        
+
         writer.println("response.setContentType(" + writer.quoteString(contentType) + ");");
-                    
+
         String error = validatorResult.getError();
         int bufferSize = validatorResult.getBufferSize();
         boolean autoFlush = validatorResult.isAutoFlush();
@@ -421,12 +441,12 @@ public class GenerateJspVisitor extends GenerateVisitor {
         writer.println("_jspx_out = out;");
         writer.println();
         writer.println("pageContext.setAttribute(\""+Constants.JSP_EXPRESSION_FACTORY_OBJECT+"\", _el_expressionfactory);");
-        
+
         if (jspConfiguration.isXml()) {
             boolean omitXmlDeclaration = false;
-            
+
             if (jspDocument.getElementsByTagNameNS(Constants.JSP_NAMESPACE, Constants.JSP_ROOT_TYPE).getLength() > 0) {
-                omitXmlDeclaration = true;    
+                omitXmlDeclaration = true;
             }
             Element outputElement = null;
             if (jspDocument.getElementsByTagNameNS(Constants.JSP_NAMESPACE, Constants.JSP_OUTPUT_TYPE).getLength() > 0) {
@@ -439,13 +459,13 @@ public class GenerateJspVisitor extends GenerateVisitor {
                     omitXmlDeclaration = true;
                 }
             }
-            
+
             if (omitXmlDeclaration == false) {
                 String pageEncoding = validatorResult.getPageEncoding();
                 if (pageEncoding == null || pageEncoding.equals("")) {
                     pageEncoding = jspConfiguration.getPageEncoding();
                     if (pageEncoding == null || pageEncoding.equals("")) {
-                        pageEncoding = "UTF-8";    
+                        pageEncoding = "UTF-8";
                     }
                 }
                 writer.println("out.write(\"<?xml version=\\\"1.0\\\" encoding=\\\"" + pageEncoding + "\\\"?>\\n\");");
@@ -458,15 +478,15 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 String docTypeRootElement =  outputElement.getAttribute("doctype-root-element");
                 String docTypeSystem = outputElement.getAttribute("doctype-system");
                 String docTypePublic = outputElement.getAttribute("doctype-public");
-                
+
                 writer.print("out.write(\"<!DOCTYPE " + docTypeRootElement);
                 if (docTypePublic.equals("") == false) {
                     writer.print(" PUBLIC \\\"" + docTypePublic + "\\\" \\\"" + docTypeSystem + "\\\">\\n\");");
-                    writer.println();     
+                    writer.println();
                 }
                 else {
                     writer.print(" SYSTEM \\\"" + docTypeSystem + "\\\">\\n\");");
-                    writer.println();     
+                    writer.println();
                 }
             }
         }
@@ -486,7 +506,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
         writer.println("((com.ibm.ws.jsp.runtime.WsSkipPageException)t).printStackTraceIfTraceEnabled();");
         writer.println("}");
     	// end 242714: enhance error reporting for SkipPageException.
-        
+
         writer.println("} finally {");
         //writer.println("if (_jspxFactory != null) _jspxFactory.releasePageContext(pageContext);");
         writer.println("_jspxFactory.releasePageContext(pageContext);");

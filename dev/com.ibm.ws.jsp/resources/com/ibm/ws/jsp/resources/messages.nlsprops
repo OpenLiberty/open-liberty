@@ -1261,4 +1261,8 @@ system.java.compiler.not.found.useraction=Ensure that the Java SDK jar file, too
 
 jsp.feature.not.loaded.correctly=CWWJS0001: The JSP [Pages] feature did not load with an acceptable version.
 jsp.feature.not.loaded.correctly.explanation=The JSP [Pages] feature is loaded with a version that corresponds to the Java [Jakarta] EE specification of that JSP [Pages] feature. The feature was loaded with no version defined.
-jsp.feature.not.loaded.correctly.useraction=Check the server.xml file for existence of either a JSP [Pages] feature. Only one should be specified.
+jsp.feature.not.loaded.correctly.useraction=Check the server.xml file for the existence of multiple JSP [Pages] features. Only one should be specified.
+
+jsp.error.page.invalid.erroronelnotfound=CWWJS0002: Invalid value for errorOnELNotFound attribute
+jsp.error.page.invalid.erroronelnotfound.explanation=
+jsp.error.page.invalid.erroronelnotfound.useraction=

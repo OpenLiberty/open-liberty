@@ -47,6 +47,7 @@ import org.w3c.dom.NodeList;
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JspCoreException;
 import com.ibm.ws.jsp.JspOptions;
+import com.ibm.ws.jsp.PagesVersionHandler;
 import com.ibm.ws.jsp.bean.BeanRepository;
 import com.ibm.ws.jsp.configuration.JspConfiguration;
 import com.ibm.ws.jsp.inputsource.JspInputSourceContainerImpl;
