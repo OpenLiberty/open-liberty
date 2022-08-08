@@ -198,7 +198,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
                     superStatement.evaluate();
 
-                    int retryCount = 3;
+                    int retryCount = 5;
+                    int retryInterval = 120;
 
                     Map<String, FFDCInfo> unexpectedFFDCs = null;
                     ArrayList<String> errors = new ArrayList<String>();
@@ -234,10 +235,12 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                          * This sleep is arbitrary, if we continue to have problems, a longer sleep could be tried. Or a new solution and remove
                          * this retry.
                          */
-                        if (!expectedFFDCs.isEmpty() && !errors.isEmpty()) {
+                        if (!expectedFFDCs.isEmpty() && !errors.isEmpty() && (i + 1 <= retryCount)) {
                             Log.info(c, "evaluate",
-                                     "Try " + i + " did not find the expectedFFDCs but sometimes there's a timing/flush issue. Sleep and retry. Longer sleep can be added if we're still not picking up the FFDC in time.");
-                            Thread.sleep(100);
+                                     "Try " + i + " did not find the expectedFFDCs but sometimes there's a timing/flush issue. Sleep for " + retryInterval
+                                                    + " milliseconds and retry. Longer sleep can be added if we're still not picking up the FFDC in time.");
+                            Thread.sleep(retryInterval);
+                            retryInterval = retryInterval * 10;
                         } else {
                             break;
                         }

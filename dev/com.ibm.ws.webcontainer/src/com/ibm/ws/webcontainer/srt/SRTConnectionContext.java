@@ -41,10 +41,6 @@ public class SRTConnectionContext implements Cloneable
         }
         _request = newSRTServletRequest();
         _response = newSRTServletResponse();
-        
-        //TODO: why is this necessary?  this is basically setting the dispatcher context to null...
-        //  it is duplicated by the subclass's constructor
-        _request.setWebAppDispatcherContext(_dispatchContext);
     }
 
     protected SRTServletRequest newSRTServletRequest() {

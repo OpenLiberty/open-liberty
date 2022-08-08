@@ -31,7 +31,6 @@ public class SRTServletRequestThreadData {
     protected static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer.srt");
     private static final String CLASS_NAME="com.ibm.ws.webcontainer.srt.SRTServletRequestThreadData";
 
-
     private IWebAppDispatcherContext _dispatchContext;
     private String _requestURI = null;
     private String _pathInfo = null;
@@ -40,13 +39,11 @@ public class SRTServletRequestThreadData {
     private LinkedList _queryStringList = null; // 256836
     private boolean _qsSetExplicit = false;
 
-
-    private UnsynchronizedStack _paramStack = new UnsynchronizedStack();
-
+    final Thread thread;
+    
     private static WSThreadLocal<SRTServletRequestThreadData> instance = new WSThreadLocal<SRTServletRequestThreadData>();
 
     public static SRTServletRequestThreadData getInstance () {
-
         SRTServletRequestThreadData tempState = null;
         tempState=(SRTServletRequestThreadData) instance.get();
          
@@ -60,13 +57,13 @@ public class SRTServletRequestThreadData {
 
 
     public SRTServletRequestThreadData() {
+        thread = Thread.currentThread();
+        
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
             logger.logp(Level.FINE, CLASS_NAME,"constructor"," " + super.toString());
     }
 
-
     public void init(SRTServletRequestThreadData data) {
-
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
             logger.logp(Level.FINE, CLASS_NAME, "int ["+super.toString()+"] " , "init data : " + data);
 
@@ -87,9 +84,6 @@ public class SRTServletRequestThreadData {
             _queryStringList = data.getQueryStringList();
             _qsSetExplicit = data.isQSSetExplicit();
         }
-        if (!_paramStack.isEmpty()) {
-            _paramStack.clear();
-        }
     }
 
     /* (non-Javadoc)
@@ -107,7 +101,6 @@ public class SRTServletRequestThreadData {
         return _requestURI;
     }
 
-
     /**
      * @param _requestURI the _requestURI to set
      */
@@ -117,14 +110,12 @@ public class SRTServletRequestThreadData {
         this._requestURI = requestURI;
     }
 
-
     /**
      * @return the _pathInfo
      */
     public String getPathInfo() {
         return _pathInfo;
     }
-
 
     /**
      * @param _pathInfo the _pathInfo to set
@@ -135,14 +126,12 @@ public class SRTServletRequestThreadData {
         this._pathInfo = pathInfo;
     }
 
-
     /**
      * @return the _queryString
      */
     public String getQueryString() {
         return _queryString;
     }
-
 
     /**
      * @param _queryString the _queryString to set
@@ -161,15 +150,12 @@ public class SRTServletRequestThreadData {
         return _qsSetExplicit;
     }
 
-
     /**
      * @return the _dispatchContext
      */
     public IWebAppDispatcherContext getDispatchContext() {
         return _dispatchContext;
     }
-
-
 
     /**
      * @param _dispatchContext the _dispatchContext to set
@@ -180,14 +166,12 @@ public class SRTServletRequestThreadData {
         this._dispatchContext = dispatchContext;
     }
 
-
     /**
      * @return the _parameters
      */
     public Map getParameters() {
         return _parameters;
     }
-
 
     /**
      * @param _parameters the _parameters to set
@@ -199,42 +183,11 @@ public class SRTServletRequestThreadData {
     }
 
     /**
-     * Save the state of the parameters before a call to include or forward.
-     */
-    public void pushParameterStack(Map parameters)
-    {
-        if (parameters == null)
-        {
-            _paramStack.push(null);
-        } else {
-            _paramStack.push(((Hashtable)parameters).clone());
-        }
-    }
-
-    /**
-     * Revert the state of the parameters which was saved before an include call
-     * 
-     */
-    public void popParameterStack()
-    {
-        try
-        {
-            _parameters = (Hashtable) _paramStack.pop();
-        } catch (java.util.EmptyStackException empty) {
-            /// tbd
-        }
-    }
-
-
-
-    /**
      * @return the _queryStringList
      */
     public LinkedList getQueryStringList() {
         return _queryStringList;
     }
-
-
 
     /**
      * @param _queryStringList the _queryStringList to set
@@ -244,6 +197,4 @@ public class SRTServletRequestThreadData {
             logger.logp(Level.FINE, CLASS_NAME,"setQueryStringList", "Number in list = " + (_queryStringList==null? "none": _queryStringList.size()));
         this._queryStringList = _queryStringList;
     }
-
-
 }

@@ -31,8 +31,7 @@ app-resources= \
   META-INF/services/jakarta.ws.rs.sse.SseEventSource\$Builder | \
   META-INF/services/jakarta.ws.rs.sse.SseEventSource.Builder | \
   META-INF/services/jakarta.ws.rs.ext.RuntimeDelegate | \
-  META-INF/services/jakarta.ws.rs.ext.Providers | \
-  META-INF/services/org.jboss.resteasy.spi.concurrent.ThreadContext
+  META-INF/services/jakarta.ws.rs.ext.Providers
 
 -cdiannotations:
 
@@ -61,7 +60,6 @@ Export-Package: \
   com.ibm.ws.resteasy.cdi.component;version=${resteasy-version};thread-context=true, \
   io.openliberty.restfulWS.client, \
   io.openliberty.org.jboss.resteasy.common.client;thread-context=true, \
-  io.openliberty.restfulWS.client.concurrent;version=${resteasy-version};thread-context=true, \
   io.openliberty.restfulWS.providers;thread-context=true, \
   org.jboss.resteasy.annotations.cache;version=${resteasy-version}, \
   org.jboss.resteasy.annotations.jaxrs;version=${resteasy-version}, \

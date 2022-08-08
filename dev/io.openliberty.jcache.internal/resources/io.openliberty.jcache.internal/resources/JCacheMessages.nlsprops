@@ -48,9 +48,9 @@ CWLJC0005_MANAGER_LOADED=CWLJC0005I: The {0} JCache CacheManager took {1} ms to 
 CWLJC0005_MANAGER_LOADED.explanation=The JCache CacheManager was successfully loaded.
 CWLJC0005_MANAGER_LOADED.useraction=No user action required.
 
-#
-# CWLJC0006 IS AVAILABLE.
-#
+CWLJC0006_MULTI_REF_LIB=CWLJC0006E: The {0} caching provider referenced the {1} library from both jCacheLibaryRef and commonLibraryRef. This is not supported. 
+CWLJC0006_MULTI_REF_LIB.explanation=Referencing the same library from the commonLibraryRef and the jCacheLibraryRef can lead to undefined behavior due to classloading issues. 
+CWLJC0006_MULTI_REF_LIB.useraction=The commonLibraryRef cannot reference the same library as the jCacheLibraryRef.
 
 CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Invalid syntax in cacheManager URI.  Cause is {0}.
 CWLJC0007_URI_INVALID_SYNTAX.explanation=The syntax of the specified JCache configuration URI is invalid.

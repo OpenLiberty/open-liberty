@@ -263,8 +263,8 @@
     </dependency>
     <dependency>
       <groupId>com.squareup.okio</groupId>
-      <artifactId>okio</artifactId>
-      <version>3.1.0</version>
+      <artifactId>okio-jvm</artifactId>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.sun.activation</groupId>
@@ -454,11 +454,6 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.43.2</version>
-    </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-netty-shaded</artifactId>
       <version>1.43.2</version>
     </dependency>
     <dependency>
@@ -815,6 +810,21 @@
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql</artifactId>
       <version>1.0.26</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-reporter</artifactId>
+      <version>2.16.3</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-sender-okhttp3</artifactId>
+      <version>2.16.3</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.zipkin2</groupId>
+      <artifactId>zipkin</artifactId>
+      <version>2.23.2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.activation</groupId>
@@ -3120,6 +3130,21 @@
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
       <version>5.0.1.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-common</artifactId>
+      <version>1.6.20</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>1.6.20</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>13.0</version>
     </dependency>
     <dependency>
       <groupId>org.jmock</groupId>

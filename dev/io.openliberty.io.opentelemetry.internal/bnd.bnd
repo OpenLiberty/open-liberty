@@ -1,0 +1,66 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
+bVersion=1.0
+openTelemetryVersion=1.14.0
+
+Bundle-SymbolicName: io.openliberty.io.opentelemetry.internal; singleton:=true
+
+Import-Package: \
+  javax.net,\
+  javax.net.ssl,\
+  okhttp3,\
+  okio,\
+  zipkin2,\
+  zipkin2.codec,\
+  zipkin2.internal,\
+  zipkin2.reporter,\
+  zipkin2.reporter.okhttp3,\
+  io.opentelemetry.api.trace,\
+  io.opentelemetry.api,\
+  io.opentelemetry.api.baggage
+
+Export-Package: \
+  io.opentelemetry.api.baggage.propagation; version=${openTelemetryVersion},\
+  io.opentelemetry.api.common; version=${openTelemetryVersion},\
+  io.opentelemetry.api.internal; version=${openTelemetryVersion},\
+  io.opentelemetry.api.metrics; version=${openTelemetryVersion},\
+  io.opentelemetry.api.trace.propagation; version=${openTelemetryVersion},\
+  io.opentelemetry.context.*; version=${openTelemetryVersion},\
+  io.opentelemetry.extension.*;version=${openTelemetryVersion},\
+  io.opentelemetry.exporter.*; version=${openTelemetryVersion},\
+  io.opentelemetry.instrumentation.*; version=${openTelemetryVersion},\
+  io.opentelemetry.sdk.*; version=${openTelemetryVersion},\
+  io.opentelemetry.semconv.*; version=${openTelemetryVersion},\
+  io.opentelemetry.proto.*; version=${openTelemetryVersion}
+
+-buildpath: \
+  io.opentelemetry.instrumentation:opentelemetry-instrumentation-api;version=1.14.0.alpha,\
+  io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-annotation-support;version=1.14.0.alpha,\
+  io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv;version=1.14.0.alpha,\
+  io.opentelemetry:opentelemetry-api;version=1.14.0,\
+  io.opentelemetry:opentelemetry-context;version=1.14.0,\
+  io.opentelemetry:opentelemetry-extension-annotations;version=1.14.0,\
+  io.opentelemetry:opentelemetry-sdk-extension-autoconfigure;version=1.14.0.alpha,\
+  io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi;version=1.14.0,\
+  io.opentelemetry:opentelemetry-sdk;version=1.14.0,\
+  io.opentelemetry:opentelemetry-sdk-logs;version=1.14.0.alpha,\
+  io.opentelemetry:opentelemetry-sdk-metrics;version=1.14.0,\
+  io.opentelemetry:opentelemetry-sdk-common;version=1.14.0,\
+  io.opentelemetry:opentelemetry-sdk-trace;version=1.14.0,\
+  io.opentelemetry:opentelemetry-exporter-jaeger;version=1.14.0,\
+  io.opentelemetry:opentelemetry-exporter-otlp-common;version=1.14.0,\
+  io.opentelemetry:opentelemetry-exporter-otlp-trace;version=1.14.0,\
+  io.opentelemetry:opentelemetry-exporter-zipkin;version=1.14.0,\
+  io.opentelemetry:opentelemetry-semconv;version=1.14.0.alpha
+
+WS-TraceGroup: opentelemetry

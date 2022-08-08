@@ -174,7 +174,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
             CompletionStage.class.equals( ((ParameterizedType)genericType).getRawType())) {
             genericType = ((ParameterizedType)genericType).getActualTypeArguments()[0];
         }
-        Object obj = getJsonb(mediaType).fromJson(entityStream, genericType);
+        Object obj = getJsonb(mediaType, clazz).fromJson(entityStream, genericType);
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);
@@ -219,7 +219,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     @Override
     public void writeTo(Object obj, Class<?> type, Type genericType, Annotation[] annotations,
                         MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
-        String json = getJsonb(mediaType).toJson(obj);
+        String json = getJsonb(mediaType, type).toJson(obj);
         entityStream.write(json.getBytes(charset(httpHeaders))); // do not close entityStream
 
         if (tc.isDebugEnabled()) {
@@ -227,10 +227,13 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
         }
     }
 
-    private Jsonb getJsonb(MediaType mediaType) {
+    private Jsonb getJsonb(MediaType mediaType, Class<?> clazz) {
         ContextResolver<Jsonb> cr = providers.getContextResolver(Jsonb.class, mediaType);
         if (cr != null) {
-            return cr.getContext(Jsonb.class);
+            Jsonb contextJsonb = cr.getContext(clazz);
+            if (contextJsonb != null) {
+                return contextJsonb;
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

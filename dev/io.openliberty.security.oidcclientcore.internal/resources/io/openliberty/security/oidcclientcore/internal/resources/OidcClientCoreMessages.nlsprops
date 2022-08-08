@@ -26,7 +26,7 @@ OIDC_CLIENT_CONFIGURATION_ERROR.explanation=The OpenID Connect client configurat
 OIDC_CLIENT_CONFIGURATION_ERROR.useraction=See the error in the message for more information. Verify that the OpenID Connect client configuration is complete and accurate.
 
 URL_NOT_HTTPS=CWWKS2402E: The {0} endpoint URL that is configured for the {1} OpenID Connect client does not use the HTTPS protocol, but HTTPS is required.
-URL_NOT_HTTPS.explanation=The endpoint URL must use the HTTPS protocol to ensure requests are secure.
+URL_NOT_HTTPS.explanation=The endpoint URL must use the HTTPS protocol to ensure that requests are secure.
 URL_NOT_HTTPS.useraction=Update the endpoint URL to use the HTTPS protocol.
 
 DISCOVERY_EXCEPTION=CWWKS2403E: The {0} OpenID Connect client encountered an error while discovering metadata for the OpenID Connect provider. {1}

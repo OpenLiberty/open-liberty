@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
+
+Bundle-Name: JetBrains Annotation Jakarta
+Bundle-SymbolicName: io.openliberty.org.jetbrains.annotation
+Bundle-Description: Liberty JetBrains Annotation, version ${bVersion}; Jakarta Enabled
+
+bVersion=1.0
+
+Import-Package: \
+  *
+
+Export-Package: \
+  org.jetbrains.*;version="1.0.0"
+
+instrument.disabled: true
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
+
+-buildpath: \
+  org.jetbrains:annotations;version=13.0

@@ -22,7 +22,5 @@ Import-Package: javax.xml.bind.*; version="[2.3,3)", \
 
 instrument.disabled: true
 
-publish.wlp.jar.suffix: dev/api/spec
-
 -buildpath: \
 	javax.xml.ws:jaxws-api;version=2.3

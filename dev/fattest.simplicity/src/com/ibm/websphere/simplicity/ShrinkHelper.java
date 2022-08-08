@@ -145,6 +145,9 @@ public class ShrinkHelper {
      * Writes an application to a a file in the 'publish/servers/<server_name>/apps/' directory
      * with the file name returned by a.getName(), which should include the
      * file type extension (.ear, .war, .jar, .rar, etc)
+     * <p>
+     * Note that if you're deploying to a running server, this method will wait for the application to start before returning unless you pass the
+     * {@link DeployOptions#DISABLE_VALIDATION DISABLE_VALIDATION} option.
      *
      * @param server  The server to publish the application to
      * @param a       The archive to export as a file

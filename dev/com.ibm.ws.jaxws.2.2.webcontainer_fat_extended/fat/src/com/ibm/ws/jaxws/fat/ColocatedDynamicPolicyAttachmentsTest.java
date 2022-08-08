@@ -209,7 +209,7 @@ public class ColocatedDynamicPolicyAttachmentsTest {
     /*
      * Negative Test: Jakarta Version of above test
      */
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "jaxws-2.3" })
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
     @Test
     @ExpectedFFDC("jakarta.xml.ws.soap.SOAPFaultException")
     public void testPolicyAttachments_serviceURI_Annon_NonResponses_JakartaFailure() throws Exception {
@@ -240,7 +240,7 @@ public class ColocatedDynamicPolicyAttachmentsTest {
     /*
      * Negative Test: Jakarta Version of above test
      */
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "jaxws-2.3" })
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
     @Test
     @ExpectedFFDC("jakarta.xml.ws.soap.SOAPFaultException")
     public void testPolicyAttachments_serviceURI_Non_AnnonResponses_JakartaFailure() throws Exception {

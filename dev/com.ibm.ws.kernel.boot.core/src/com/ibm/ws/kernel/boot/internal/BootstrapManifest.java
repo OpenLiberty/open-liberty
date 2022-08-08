@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.boot.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -23,6 +24,8 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -150,6 +153,126 @@ public class BootstrapManifest {
         return manifestAttributes.getValue(BUNDLE_VERSION);
     }
 
+    @SuppressWarnings("unchecked")
+    private String calculateSystemPackages(String javaVersion) {
+        try {
+            javaVersion = javaVersion.split("\\.")[0];
+            int version = Integer.parseInt(javaVersion);
+            if (version < 9) {
+                return null;
+            }
+
+            Method classGetModule = Class.class.getMethod("getModule"); //$NON-NLS-1$
+            Class<?> moduleLayerClass = Class.forName("java.lang.ModuleLayer"); //$NON-NLS-1$
+            Method boot = moduleLayerClass.getMethod("boot"); //$NON-NLS-1$
+            Method modules = moduleLayerClass.getMethod("modules"); //$NON-NLS-1$
+            Class<?> moduleClass = Class.forName("java.lang.Module"); //$NON-NLS-1$
+            Method getDescriptor = moduleClass.getMethod("getDescriptor"); //$NON-NLS-1$
+            Class<?> moduleDescriptorClass = Class.forName("java.lang.module.ModuleDescriptor"); //$NON-NLS-1$
+            Method exports = moduleDescriptorClass.getMethod("exports"); //$NON-NLS-1$
+            Method isAutomatic = moduleDescriptorClass.getMethod("isAutomatic"); //$NON-NLS-1$
+            Method packagesMethod = moduleDescriptorClass.getMethod("packages"); //$NON-NLS-1$
+            Class<?> exportsClass = Class.forName("java.lang.module.ModuleDescriptor$Exports"); //$NON-NLS-1$
+            Method isQualified = exportsClass.getMethod("isQualified"); //$NON-NLS-1$
+            Method source = exportsClass.getMethod("source"); //$NON-NLS-1$
+
+            // The reflective code below is the equivalent of the following code:
+            // @formatter:off - turns off eclipse formatter
+            /*
+            ModuleLayer bootLayer = ModuleLayer.boot();
+            Set<Module> bootModules = bootLayer.modules();
+            Module thisModule = getClass().getModule();
+            Set<String> packages = new TreeSet<>();
+
+            for (Module m : bootModules) {
+                if (m.equals(thisModule)) {
+                    // Do not calculate the exports from the framework module.
+                    // This is to handle the case where the framework is on the module path
+                    // to avoid double exports from the system.bundles
+                    continue;
+                }
+                ModuleDescriptor descriptor = m.getDescriptor();
+                if (descriptor.isAutomatic()) {
+                     // Automatic modules are supposed to export all their packages.
+                     // However, java.lang.module.ModuleDescriptor::exports returns an empty set for them.
+                     // Add all their packages (as returned by java.lang.module.ModuleDescriptor::packages)
+                     // to the list of VM supplied packages.
+                    packages.addAll(descriptor.packages());
+                } else {
+                    for (Exports export : descriptor.exports()) {
+                        String pkg = export.source();
+                        if (!(export.isQualified())) {
+                            packages.add(pkg);
+                        }
+                    }
+                }
+            }
+            */
+            // @formatter:on - turns back on eclipse formatter.
+
+            // TODO when Java 8 support ends we can replace the following reflective code with the code commented out above.
+
+            // bootLayer is type java.lang.ModuleLayer
+            Object bootLayer = boot.invoke(null);
+            // bootModules is type Set<java.lang.Module>
+            Set<?> bootModules = (Set<?>) modules.invoke(bootLayer);
+            // thisModule is type java.lang.Module
+            Object thisModule = classGetModule.invoke(getClass());
+            Set<String> packages = new TreeSet<>();
+
+            // m is type java.lang.Module
+            for (Object m : bootModules) {
+                if (m.equals(thisModule)) {
+                    // Do not calculate the exports from the framework module.
+                    // This is to handle the case where the framework is on the module path
+                    // to avoid double exports from the system.bundles
+                    continue;
+                }
+                // descriptor is type java.lang.module.ModuleDescriptor
+                Object descriptor = getDescriptor.invoke(m);
+                if ((Boolean) isAutomatic.invoke(descriptor)) {
+                    /*
+                     * Automatic modules are supposed to export all their packages.
+                     * However, java.lang.module.ModuleDescriptor::exports returns an empty set for them.
+                     * Add all their packages (as returned by java.lang.module.ModuleDescriptor::packages)
+                     * to the list of VM supplied packages.
+                     */
+                    packages.addAll((Set<String>) packagesMethod.invoke(descriptor));
+                } else {
+                    // export is type java.lang.module.ModuleDescriptor$Exports
+                    for (Object export : (Set<?>) exports.invoke(descriptor)) {
+                        String pkg = (String) source.invoke(export);
+                        if (!((boolean) isQualified.invoke(export))) {
+                            packages.add(pkg);
+                        }
+                    }
+                }
+            }
+
+            // HACK ALERT always add javax.xml.soap to keep the incorrect behavior
+            packages.add("javax.xml.soap");
+            // HACK ALERT always add these IBM packages to keep incorrect behavior
+            packages.add("com.ibm.tools.attach");
+            packages.add("com.ibm.security.jgss");
+            packages.add("com.ibm.security.auth.module");
+            packages.add("com.ibm.security.auth.callback");
+            StringBuilder result = new StringBuilder();
+            for (String pkg : packages) {
+                if (result.length() != 0) {
+                    result.append(',').append(' ');
+                }
+                result.append(pkg);
+                result.append("; ibm-api-type=spec");
+                if ("javax.transaction.xa".equals(pkg)) {
+                    result.append("; javax.transaction=JavaSE; mandatory:=javax.transaction");
+                }
+            }
+            return result.toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /**
      * @param bootProps
      * @throws IOException
@@ -181,6 +304,13 @@ public class BootstrapManifest {
             int index = javaVersion.indexOf('_');
             index = (index == -1) ? javaVersion.indexOf('-') : index;
             javaVersion = (index == -1) ? javaVersion : javaVersion.substring(0, index);
+            String calculatedPackages = calculateSystemPackages(javaVersion);
+            if (calculatedPackages != null) {
+                // save the calculated system packages
+                bootProps.put(BootstrapConstants.INITPROP_OSGI_SYSTEM_PACKAGES, calculatedPackages);
+                return;
+            }
+            // TODO this code below can be removed when support for Java 8 ends
             String pkgListFileName = SYSTEM_PKG_PREFIX + javaVersion + SYSTEM_PKG_SUFFIX;
 
             JarFile jarFile = null;
@@ -266,10 +396,7 @@ public class BootstrapManifest {
 
     private String getMergedSystemProperties(JarFile jarFile, List<String> pkgListFileNames) throws IOException {
         String packages = null;
-        boolean inheritSystemPackages = true;
         for (String pkgListFileName : pkgListFileNames) {
-            if (!inheritSystemPackages)
-                continue;
             ZipEntry propFile = jarFile.getEntry(pkgListFileName);
             if (propFile != null) {
                 // read org.osgi.framework.system.packages property value from the file
@@ -281,7 +408,6 @@ public class BootstrapManifest {
                     if (loadedPackages != null) {
                         packages = (packages == null) ? loadedPackages : packages + "," + loadedPackages;
                     }
-                    inheritSystemPackages &= Boolean.parseBoolean(properties.getProperty(BootstrapConstants.INITPROP_WAS_INHERIT_SYSTEM_PACKAGES, "true"));
                 } finally {
                     Utils.tryToClose(is);
                 }

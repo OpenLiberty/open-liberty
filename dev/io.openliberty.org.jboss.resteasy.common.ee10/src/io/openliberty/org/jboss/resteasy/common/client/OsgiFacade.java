@@ -45,6 +45,9 @@ class OsgiFacade {
 
     <T> Optional<ServiceReference<T>> getServiceRef(Class<T> serviceClass) {
         BundleContext ctx = getBundleContext();
+        if (ctx == null) {
+            return Optional.empty();
+        }
         if (isSecurityManagerPresent) {
             try {
                 return Optional.ofNullable(AccessController.doPrivileged((PrivilegedExceptionAction<ServiceReference<T>>) () -> {

@@ -53,7 +53,7 @@ public class JsAdminServiceImpl implements JsAdminService
   /* (non-Javadoc)
    * @see com.ibm.ws.sib.admin.JsAdminService#getAdminMain()
    */
-  public JsMain getAdminMain() throws Exception
+  public JsMain getAdminMain() throws IllegalStateException
   {
     return null;
   }

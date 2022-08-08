@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -371,8 +372,8 @@ public class ApplicationProcessorTest extends FATServletClient {
         WebArchive test2 = ShrinkWrap.create(WebArchive.class, "test2.war")
             .addPackage(JAXRSApp.class.getPackage());
 
-        ShrinkHelper.exportAppToServer(server, test1, SERVER_ONLY);
-        ShrinkHelper.exportAppToServer(server, test2, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, test1, SERVER_ONLY, DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, test2, SERVER_ONLY, DISABLE_VALIDATION);
 
         // Deploy both in the same server.xml update and ensure they start
         server.setMarkToEndOfLog(server.getDefaultLogFile());
@@ -382,8 +383,8 @@ public class ApplicationProcessorTest extends FATServletClient {
         config.addApplication("test2", "${server.config.dir}/apps/test2.war", "war");
         server.updateServerConfiguration(config);
 
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*test1");
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*test2");
+        server.addInstalledAppForValidation("test1");
+        server.addInstalledAppForValidation("test2");
 
         // Check there were no errors or warnings emitted during startup
         List<String> errorsAndWarnings = server.findStringsInLogsUsingMark("[EW] .*\\d{4}[EW]:",

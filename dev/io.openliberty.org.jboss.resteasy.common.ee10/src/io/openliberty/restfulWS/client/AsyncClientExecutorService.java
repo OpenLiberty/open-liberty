@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.restfulWS.client;
 
-import static io.openliberty.restfulWS.client.internal.ClientAsyncTaskWrapperComponent.wrap;
+import static io.openliberty.restfulWS.client.internal.AsyncClientExecutorHelper.wrap;
 
 import java.util.Collection;
 import java.util.List;

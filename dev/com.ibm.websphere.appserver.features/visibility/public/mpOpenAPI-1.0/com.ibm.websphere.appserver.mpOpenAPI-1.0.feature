@@ -33,7 +33,7 @@ IBM-API-Package: \
 	org.eclipse.microprofile.openapi.models.servers; type="stable",\
 	org.eclipse.microprofile.openapi.models.tags; type="stable",\
 	org.eclipse.microprofile.openapi.spi; type="stable"
--features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:="2.3", \
+-features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2, \
   com.ibm.websphere.appserver.mpConfig-1.2; ibm.tolerates:="1.3,1.4", \
   io.openliberty.mpCompatible-0.0, \
   com.ibm.wsspi.appserver.webBundle-1.0, \

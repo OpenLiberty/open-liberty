@@ -30,7 +30,7 @@ public class WSAPropertyTestServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    @WebServiceRef(value = ImageServiceImplServiceTwo.class)
+    @WebServiceRef(value = ImageServiceImplServiceTwo.class, name = "services/ImageServiceImplServiceTwo")
     ImageServiceImplServiceTwo imageService;
 
     @WebServiceRef(value = ImageServicePropertyImplService.class, name = "services/ImageServicePropertyImplService")

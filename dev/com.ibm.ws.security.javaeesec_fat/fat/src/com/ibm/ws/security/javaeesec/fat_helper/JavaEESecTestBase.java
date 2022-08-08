@@ -19,7 +19,9 @@ import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -115,7 +117,7 @@ public class JavaEESecTestBase {
      * Process the response from an http invocation, such as validating
      * the status code, extracting the response entity...
      *
-     * @param response the HttpResponse
+     * @param response           the HttpResponse
      * @param expectedStatusCode
      * @return The response entity text, or null if request failed
      * @throws IOException
@@ -295,10 +297,10 @@ public class JavaEESecTestBase {
      * Send HttpClient get request to the given URL, ensure that the user is redirected to the form login page
      * and that the JASPI provider was or was not called, as expected.
      *
-     * @param httpclient HttpClient object to execute request
-     * @param url URL for request, should be protected and redirect to form login page
+     * @param httpclient   HttpClient object to execute request
+     * @param url          URL for request, should be protected and redirect to form login page
      * @param providerName Name of JASPI provider that should authenticate the request, null if JASPI not enabled for request
-     * @param formTitle Name of Login form (defaults to Form Login Page if not specified)
+     * @param formTitle    Name of Login form (defaults to Form Login Page if not specified)
      * @throws Exception
      */
     public void getFormLoginPage(HttpClient httpclient, String url, String providerName) throws Exception {
@@ -341,10 +343,10 @@ public class JavaEESecTestBase {
      * This propety let httpclient disable following the redirect automatically.
      *
      * @param httpclient HttpClient object to execute request
-     * @param url URL for request, should be protected and redirect to form login page
-     * @param redirect true if redirect is used to go to the login page, otherwise, use forward.
-     * @param formUrl Url of login page. this value is used when redirect is set as true.
-     * @param formTitle Name of Login form.
+     * @param url        URL for request, should be protected and redirect to form login page
+     * @param redirect   true if redirect is used to go to the login page, otherwise, use forward.
+     * @param formUrl    Url of login page. this value is used when redirect is set as true.
+     * @param formTitle  Name of Login form.
      * @throws Exception
      */
 
@@ -397,11 +399,11 @@ public class JavaEESecTestBase {
      * This propety let httpclient disable following the redirect automatically.
      *
      * @param httpclient HttpClient object to execute request
-     * @param url URL for request, should be protected and redirect to form login page
-     * @param params post parameters.
-     * @param redirect true if redirect is used to go to the login page, otherwise, use forward.
-     * @param formUrl Url of login page. this value is used when redirect is set as true.
-     * @param formTitle Name of Login form.
+     * @param url        URL for request, should be protected and redirect to form login page
+     * @param params     post parameters.
+     * @param redirect   true if redirect is used to go to the login page, otherwise, use forward.
+     * @param formUrl    Url of login page. this value is used when redirect is set as true.
+     * @param formTitle  Name of Login form.
      * @throws Exception
      */
 
@@ -451,9 +453,9 @@ public class JavaEESecTestBase {
      * Post HttpClient request to execute a form login on the given page, using the given username and password
      *
      * @param httpclient HttpClient object to execute login
-     * @param url URL for login page
-     * @param username User name
-     * @param password User password
+     * @param url        URL for login page
+     * @param username   User name
+     * @param password   User password
      * @return URL of page redirected to after the login
      * @throws Exception
      */
@@ -869,11 +871,7 @@ public class JavaEESecTestBase {
             Log.info(logClass, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
             server.setMarkToEndOfLog();
             server.setServerConfigurationFile("/" + serverXML);
-            if (appNames != null) {
-                for (String appName : appNames) {
-                    server.addInstalledAppForValidation(appName);
-                }
-            }
+            server.waitForConfigUpdateInLogUsingMark(new HashSet<>(Arrays.asList(appNames)));
             serverConfigurationFile = serverXML;
         }
     }
@@ -886,7 +884,7 @@ public class JavaEESecTestBase {
 
     /**
      * Assert that the regular expression string is present or NOT present in the server's logs.
-     * 
+     *
      * @param regexp The regular expression string to search for.
      * @throws Exception If there was an error checking the log or trace files.
      */
@@ -896,8 +894,8 @@ public class JavaEESecTestBase {
 
     /**
      * Assert that the regular expression string is present or NOT present in the server's logs.
-     * 
-     * @param regexp The regular expression string to search for.
+     *
+     * @param regexp    The regular expression string to search for.
      * @param isPresent If true, check that the string is present. If false, check that it is NOT present.
      * @throws Exception If there was an error checking the log or trace files.
      */
@@ -912,7 +910,7 @@ public class JavaEESecTestBase {
 
     /**
      * Assert that the regular expression string is present in the server's logs or trace
-     * 
+     *
      * @param regexp The regular expression string to search for.
      * @throws Exception If there was an error checking the log or trace files.
      */
@@ -922,8 +920,8 @@ public class JavaEESecTestBase {
 
     /**
      * Assert that the regular expression string is present or NOT present in the server's logs or trace.
-     * 
-     * @param regexp The regular expression string to search for.
+     *
+     * @param regexp    The regular expression string to search for.
      * @param isPresent If true, check that the string is present. If false, check that it is NOT present.
      * @throws Exception If there was an error checking the log or trace files.
      */

@@ -26,8 +26,8 @@ import com.ibm.websphere.simplicity.config.cache.CacheManager;
 import com.ibm.websphere.simplicity.config.cache.CachingProvider;
 import com.ibm.websphere.simplicity.config.dsprops.Properties;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -38,11 +38,12 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Contains distributed JCache test dynamic server.xml changes
  */
+@SuppressWarnings("restriction")
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JCacheDynamicUpdateTest extends BaseTestCase {
-    private static final Class<?> c = JCacheDynamicUpdateTest.class;
+
     @Server("io.openliberty.jcache.internal.fat.dynamicupdate.1")
     public static LibertyServer server1;
     /**
@@ -66,7 +67,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         /*
          * Stop the servers in the reverse order they were started.
          */
-        stopServer(server1, "CWWKG0033W", "CWLJC0004E", "CWWKE0701E", "CWLJC0011E");
+        stopServer(server1, "CWWKG0033W", "CWLJC0004E", "CWWKE0701E", "CWLJC0011E", "CWWKG0058E", "CWLJC0006E");
     }
 
     /**
@@ -74,7 +75,8 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
      *
      * @throws Exception If there was an error configuring the server.
      */
-    private static void updateLibertyServer(String cacheManagerRef, String cachingProviderRef, String providerClass, String libraryRef, String uri) throws Exception {
+    private static void updateLibertyServer(String cacheManagerRef, String cachingProviderRef, String providerClass, String jCacheLibraryRef, String commonLibraryRef,
+                                            String uri) throws Exception {
         ServerConfiguration server = emptyConfiguration.clone();
 
         Cache cache = new Cache("AuthCache", "AuthCache", cacheManagerRef);
@@ -85,7 +87,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         properties.setExtraAttribute("infinispan.client.hotrod.uri", "${infinispan.client.hotrod.uri}");
         cacheManager.setProps(properties);
 
-        CachingProvider cachingProvider = new CachingProvider("CachingProvider", libraryRef, providerClass);
+        CachingProvider cachingProvider = new CachingProvider("CachingProvider", jCacheLibraryRef, commonLibraryRef, providerClass);
 
         server.getCaches().add(cache);
         server.getAuthCaches().add(authCache);
@@ -103,7 +105,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
     @Test
     public void addAndRemoveCaches() throws Exception {
         // Create a working cache configuration
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib,CustomLoginLib",
+        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
                             "file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props");
         ServerConfiguration current = server1.getServerConfiguration();
 
@@ -134,7 +136,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
      *
      * <cachingProvider id="CachingProvider"
      * providerClass="org.infinispan.jcache.remote.JCachingProviderBad"
-     * libraryRef="InfinispanLibBad,CustomLoginLib" />
+     * jCacheLibraryRef="InfinispanLibBad" commonLibraryRef="CustomLoginLib" />
      *
      * <cacheManager cachingProviderRef="CachingProviderBad" id="CacheManager"
      * uri="file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props">
@@ -143,22 +145,32 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
      * ... />
      * </cacheManager>
      *
-     * 1. Fix the cachingProviderRef and cacheManagerRef
-     * 2. Fix the providerClass
-     * 3. Fix the libraryRef
-     * 4. Fix the uri
-     * 5. Ensure auth cache / auth provider starts
+     * 1. Start where everything is "bad".
+     * 2. Update server to have correct cacheManagerRef, cachingProviderRef, but incorrect jCacheLibraryRef and commonLibraryRef
+     * 3. Update server to have correct jCacheLibraryRef and has commonLibraryRef with a library that matches the jCacheLibraryRef.
+     * 4. Update server to have commonLibraryRef.
+     * 5. Update server to have correct cachingProvider->providerClass.
+     * 6. Update uri so it is good. Working server.
      *
      * @throws Exception if the test fails for some unforeseen reason.
      */
     @Test
     @CheckForLeakedPasswords(USER1_PASSWORD)
-    @AllowedFFDC(value = { "javax.cache.CacheException" })
+    @ExpectedFFDC(value = { "javax.cache.CacheException", "java.lang.IllegalStateException" })
     public void dynamicUpdate() throws Exception {
-        updateLibertyServer("CacheManagerBad", "CachingProviderBad", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLibBad,CustomLoginLib",
+
+        /*
+         * ***********************************************************************
+         *
+         * 1. Start where everything is "bad".
+         *
+         * ***********************************************************************
+         */
+        updateLibertyServer("CacheManagerBad", "CachingProviderBad", "org.infinispan.jcache.remote.JCachingProviderBad", null, null,
                             "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
-        /**
-         * First look for two warnings: bad cacheManagerRef and bad cachingProviderRef.
+
+        /*
+         * Check for warning for invalid references for cachingProviderRef, cacheManagerRef. No values for commonLibraryRef and jCacheLibraryRef.
          */
         String error = "CWWKG0033W: The value \\[CachingProviderBad\\] specified for the reference attribute \\[cachingProviderRef\\] was not found in the configuration.";
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
@@ -166,39 +178,85 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         error = "CWWKG0033W: The value \\[CacheManagerBad\\] specified for the reference attribute \\[cacheManagerRef\\] was not found in the configuration.";
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
 
-        //Update server to have correct cacheManagerRef and cachingProviderRef (bad JCachingProvider, libraryRef and uri)
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLibBad,CustomLoginLib",
+        error = "CWWKG0058E: The element cachingProvider with the unique identifier CachingProvider is missing the required attribute jCacheLibraryRef.";
+        assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
+
+        /*
+         * ***********************************************************************
+         *
+         * 2. Update server to have correct cacheManagerRef, cachingProviderRef, but incorrect jCacheLibraryRef and commonLibraryRef
+         *
+         * Bad: cachingProvider->providerClass and uri
+         *
+         * ***********************************************************************
+         */
+        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLibBad", "CustomLoginLibBad",
                             "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
 
-        /**
-         * Next issue is bad cachingProvider providerClass.
+        /*
+         * Check for warning for invalid references for commonLibraryRef and jCacheLibraryRef.
+         */
+        error = "CWWKG0033W: The value \\[CustomLoginLibBad\\] specified for the reference attribute \\[commonLibraryRef\\] was not found in the configuration.";
+        assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
+
+        error = "CWWKG0033W: The value \\[InfinispanLibBad\\] specified for the reference attribute \\[jCacheLibraryRef\\] was not found in the configuration.";
+        assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
+
+        /*
+         * ***********************************************************************
          *
-         * Look for providerClass error:
+         * 3. Update server to have correct commonLibraryRef with a library that matches the jCacheLibraryRef.
+         *
+         * Bad: cachingProvider->providerClass and uri
+         *
+         * ***********************************************************************
+         */
+        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLib", "CustomLoginLib,InfinispanLib",
+                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+
+        /*
+         * Check for warning that a library is being shared between jCacheLibraryRef and commonLibraryRef.
+         */
+        error = "CWLJC0006E: The CachingProvider caching provider referenced the InfinispanLib library from both jCacheLibaryRef and commonLibraryRef";
+        assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
+
+        /*
+         * ***********************************************************************
+         *
+         * 4. Update server to have commonLibraryRef
+         *
+         * Bad: cachingProvider->providerClass and uri
+         *
+         * ***********************************************************************
+         */
+        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLib", "CustomLoginLib",
+                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+
+        /*
+         * Next issue is bad cachingProvider->providerClass.
+         *
          * CWLJC0004E: The io.openliberty.jcache.cache[AuthCache]...
          * javax.cache.CacheException: Failed to load the CachingProvider [org.infinispan.jcache.remote.JCachingProviderBad]
          * Caused by: java.lang.ClassNotFoundException
-         *
          */
         error = "javax.cache.CacheException: Failed to load the CachingProvider \\[org.infinispan.jcache.remote.JCachingProviderBad\\]";
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
 
-        //Update server to have correct JCachingProvider (bad libraryRef and uri)
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLibBad,CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
-
-        /**
-         * The providerClass is fixed. Look for libraryRef warning.
-         * CWWKG0033W: The value [InfinispanLibBad] specified for the reference attribute [libraryRef] was not found in the configuration.
+        /*
+         * ***********************************************************************
+         *
+         * 5. Update server to have correct cachingProvider->providerClass.
+         *
+         * Bad: uri.
+         *
+         * ***********************************************************************
          */
-        error = "CWWKG0033W: The value \\[InfinispanLibBad\\] specified for the reference attribute \\[libraryRef\\] was not found in the configuration.";
-        assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
-
-        //Update server to have the correct library (bad uri)
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib,CustomLoginLib",
+        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
                             "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
 
-        /**
-         * The providerClass and libraryRef are fixed. Look for bad uri error.
+        /*
+         * The providerClass, jCacheLibraryRef, and commonLibraryRef are fixed. Look for bad uri error.
+         *
          * CWLJC0011E: Error encountered while retrieving the AuthCache JCache: javax.cache.CacheException: Could not load configuration
          * Caused by: java.io.FileNotFoundException: /Users/eschr/libertyGit/open-liberty/dev/build.image/wlp/usr/shared/resources/infinispan/infinispan_hotrod_bad.props (No such
          * file or directory)
@@ -206,11 +264,17 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         error = "CWLJC0011E: Error encountered while retrieving the AuthCache JCache: javax.cache.CacheException: Could not load configuration";
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
 
-        //Update to working server
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib,CustomLoginLib",
+        /*
+         * ***********************************************************************
+         *
+         * 6. Update uri so it is good. Working server.
+         *
+         * ***********************************************************************
+         */
+        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
                             "file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props");
 
-        /**
+        /*
          * All issues have been fixed, so wait for the auth cache to start.
          */
         waitForCachingProvider(server1, AUTH_CACHE_NAME);

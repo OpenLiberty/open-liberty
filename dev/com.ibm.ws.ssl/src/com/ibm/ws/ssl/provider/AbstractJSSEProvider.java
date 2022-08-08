@@ -51,6 +51,7 @@ import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.util.StreamHandlerUtils;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.config.KeyStoreManager;
@@ -106,7 +107,8 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         this.socketFactory = factory;
         this.defaultProtocol = protocolType;
 
-        if (!handlersInitialized && System.getProperty("os.name").equalsIgnoreCase("z/OS"))
+        if (!handlersInitialized && System.getProperty("os.name").equalsIgnoreCase("z/OS")
+            && JavaInfo.majorVersion() < 11)
             addHandlers();
         else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())

@@ -10,17 +10,24 @@
  *******************************************************************************/
 package io.openliberty.websphere.servlet60;
 
-import java.util.HashMap;
-
 import com.ibm.websphere.servlet40.IRequest40;
-import com.ibm.wsspi.http.HttpRequest;
 
 /**
- * Since: Servlet 6.0      
+ * Since: Servlet 6.0
  */
 public interface IRequest60 extends IRequest40 {
-    
-    default void dummy60() {
-    }
 
+    /**
+     * Added to support ServletRequest.getProtocolRequestId()
+     *
+     * @return (int) stream id; -1 otherwise. Need to convert to String.
+     */
+    public int getStreamId();
+
+    /**
+     * Added to support ServletConnection.getConnectionId()
+     *
+     * @return (int) connection id from dispatcher link. Need to convert to String.
+     */
+    public int getConnectionId();
 }

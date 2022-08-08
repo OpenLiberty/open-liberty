@@ -54,7 +54,7 @@
 				hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
 
 			<cachingProvider
-				libraryRef="HazelcastLib,CustomLoginLib" />
+				jCacheLibraryRef="HazelcastLib" commonLibraryRef="CustomLoginLib" />
 		</cacheManager>
 	</cache>
 

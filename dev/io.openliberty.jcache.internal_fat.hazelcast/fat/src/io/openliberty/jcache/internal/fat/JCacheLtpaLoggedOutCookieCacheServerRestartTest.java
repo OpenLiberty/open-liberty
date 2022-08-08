@@ -141,6 +141,9 @@ public class JCacheLtpaLoggedOutCookieCacheServerRestartTest extends BaseTestCas
          * 5. Restart the server
          */
         server1.restartServer();
+        waitForCachingProvider(server1, COOKIE_CACHE_NAME);
+        waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
+        waitForDefaultHttpsEndpoint(server1);
 
         /*
          * 6. Call server1 with the LTPA cookie. This will result in a LogOut cache hit because

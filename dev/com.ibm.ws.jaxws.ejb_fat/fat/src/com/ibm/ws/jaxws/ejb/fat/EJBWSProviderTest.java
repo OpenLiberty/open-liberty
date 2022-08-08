@@ -163,7 +163,7 @@ public class EJBWSProviderTest {
 
     @Mode(TestMode.FULL)
     @Test
-    @SkipForRepeat({ "EE9_FEATURES", "jaxws-2.3" })
+    @SkipForRepeat({ "EE9_FEATURES" })
     public void testUserNotFoundExceptionProvider() throws Exception {
         Service service = Service.create(new URL(ENDPOINT_URL + "?wsdl"), SERVICE_NAME);
         Dispatch<Source> dispatch = service.createDispatch(PORT_NAME, Source.class, Service.Mode.PAYLOAD, new AddressingFeature());
