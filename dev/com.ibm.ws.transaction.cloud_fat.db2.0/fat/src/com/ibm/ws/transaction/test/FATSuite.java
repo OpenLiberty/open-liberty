@@ -25,17 +25,17 @@ import componenttest.topology.database.container.DatabaseContainerType;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                DualServerDynamicDBRotationTest1.class,
+                DBRotationTest.class,
 })
 public class FATSuite extends FATSuiteBase {
 
     static {
-        databaseContainerType = DatabaseContainerType.Derby;
+        databaseContainerType = DatabaseContainerType.DB2;
     }
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
+	@ClassRule
+	public static RepeatTests r = RepeatTests.withoutModification()
+				.andWith(FeatureReplacementAction.EE8_FEATURES())
+				.andWith(FeatureReplacementAction.EE9_FEATURES())
+				.andWith(FeatureReplacementAction.EE10_FEATURES());
 }

@@ -26,7 +26,6 @@ import componenttest.topology.database.container.DatabaseContainerType;
 @RunWith(Suite.class)
 @SuiteClasses({
                 DualServerDynamicDBRotationTest1.class,
-                DBRotationTest.class,
 })
 public class FATSuite extends FATSuiteBase {
 

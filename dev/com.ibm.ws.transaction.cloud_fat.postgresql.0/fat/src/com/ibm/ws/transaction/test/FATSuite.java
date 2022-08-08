@@ -31,7 +31,7 @@ import componenttest.topology.database.container.PostgreSQLContainer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                DualServerDynamicDBRotationTest1.class,
+                DBRotationTest.class,
 })
 public class FATSuite extends FATSuiteBase {
 
