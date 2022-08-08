@@ -65,7 +65,7 @@ public class VariableServerXMLTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP41, MicroProfileActions.MP20);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP41, MicroProfileActions.MP20);
 
     @BeforeClass
     public static void setUp() throws Exception {
