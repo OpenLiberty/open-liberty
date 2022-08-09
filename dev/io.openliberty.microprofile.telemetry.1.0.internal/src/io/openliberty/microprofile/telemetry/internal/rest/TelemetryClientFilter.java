@@ -34,6 +34,8 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
+
+import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttributesExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttributesGetter;
@@ -53,9 +55,16 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
     @Inject
     Config config;
 
+    @Inject
+    OpenTelemetry openTelemetry;
     // RESTEasy requires no-arg constructor for CDI injection: https://issues.redhat.com/browse/RESTEASY-1538
-    public TelemetryClientFilter() {
-        OpenTelemetry openTelemetry = CDI.current().select( OpenTelemetry.class ).get();
+    public TelemetryClientFilter() {}
+
+    @jakarta.annotation.PostConstruct
+    public void PostConstruct() {
+        System.out.println("RUNNING POST CONSTRUCT");
+        //Tracer tracer= CDI.current().select( Tracer.class ).get();
+        //OpenTelemetry openTelemetry = CDI.current().select( OpenTelemetry.class ).get();
 
         ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
 
@@ -72,6 +81,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     @Override
     public void filter(final ClientRequestContext request) {
+        
         System.out.println(index);
         Context parentContext = Context.current();
         if (instrumenter.shouldStart(parentContext, request)) {

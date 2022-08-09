@@ -51,9 +51,9 @@ public class Telemetry10Servlet extends FATServlet {
     private void doWork() {
         try {
           Thread.sleep(500);
-          //span.addEvent("Doing work");
+          span.addEvent("Doing work");
         } catch (InterruptedException e) {
-          // do the right thing here
+          //do the right thing here
         }
     }
 

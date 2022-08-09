@@ -67,7 +67,7 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetry getOpenTelemetry() {
-
+        System.out.println("running");
         HashMap<String,String> telemetryProperties = getTelemetryProperties();
         SpanExporter exporter = getSpanExporter(telemetryProperties);
         Resource serviceNameResource = getServiceName(telemetryProperties);
@@ -84,7 +84,7 @@ public class OpenTelemetryProducer {
             .build();
 
         Runtime.getRuntime().addShutdownHook(new Thread(tracerProvider::close));
-
+        System.out.println("RETURNING " + openTelemetry);
         return openTelemetry;
     }
 
