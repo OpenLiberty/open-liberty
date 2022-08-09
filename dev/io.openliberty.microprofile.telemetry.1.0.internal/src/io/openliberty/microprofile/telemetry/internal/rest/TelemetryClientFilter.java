@@ -50,7 +50,6 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
     private Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
 
     private String configString = "otel.span.client.";
-    private long index = 0;
 
     @Inject
     Config config;
@@ -62,9 +61,6 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     @jakarta.annotation.PostConstruct
     public void PostConstruct() {
-        System.out.println("RUNNING POST CONSTRUCT");
-        //Tracer tracer= CDI.current().select( Tracer.class ).get();
-        //OpenTelemetry openTelemetry = CDI.current().select( OpenTelemetry.class ).get();
 
         ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
 
@@ -81,8 +77,6 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     @Override
     public void filter(final ClientRequestContext request) {
-        
-        System.out.println(index);
         Context parentContext = Context.current();
         if (instrumenter.shouldStart(parentContext, request)) {
             Context spanContext = instrumenter.start(parentContext, request);

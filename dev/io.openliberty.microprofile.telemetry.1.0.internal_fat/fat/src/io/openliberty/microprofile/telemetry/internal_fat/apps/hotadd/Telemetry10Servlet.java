@@ -71,7 +71,7 @@ public class Telemetry10Servlet extends FATServlet {
     public void testJAXRS(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         Client client = ClientBuilder.newBuilder().build();
         try {
-            String url = "http://" + req.getServerName() + ':' + req.getServerPort() + "/rest/test";
+            String url = "http://" + req.getServerName() + ':' + req.getServerPort() + "/TelemetryApp/rest/test";
             System.out.println("Making a PATCH request to URL: " + url);
             String result = client.target(url)
                             .request()
