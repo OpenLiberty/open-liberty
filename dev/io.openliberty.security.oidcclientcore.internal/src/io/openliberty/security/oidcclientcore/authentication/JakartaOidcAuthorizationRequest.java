@@ -24,7 +24,9 @@ import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
-import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
+import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
+import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 
 public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
@@ -39,6 +41,15 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         super(request, response, config.getClientId());
         this.config = config;
         this.providerMetadata = (config == null) ? null : config.getProviderMetadata();
+        instantiateStorage(config);
+    }
+
+    private void instantiateStorage(OidcClientConfig config) {
+        if (config.isUseSession()) {
+            this.storage = new SessionBasedStorage();
+        } else {
+            this.storage = new CookieBasedStorage(request, response);
+        }
     }
 
     @Override
@@ -87,25 +98,13 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     }
 
     @Override
-    protected void storeStateValue(String state) {
-        if (config != null && config.isUseSession()) {
-            storeStateValueInHttpSession(state);
-        } else {
-            storeStateValueInCookie(state);
-        }
-    }
-
-    void storeStateValueInHttpSession(String state) {
-        // TODO - store in HTTP session
-    }
-
-    void storeStateValueInCookie(String state) {
+    protected String createStateValueForStorage(String state) {
         String clientSecret = null;
         ProtectedString clientSecretProtectedString = config.getClientSecret();
         if (clientSecretProtectedString != null) {
             clientSecret = new String(clientSecretProtectedString.getChars());
         }
-        cookieUtils.createAndAddStateCookie(state, clientSecret, OidcClientStorageConstants.STATE_COOKIE_DEFAULT_LIFETIME);
+        return OidcStorageUtils.createStateStorageValue(state, clientSecret);
     }
 
 }

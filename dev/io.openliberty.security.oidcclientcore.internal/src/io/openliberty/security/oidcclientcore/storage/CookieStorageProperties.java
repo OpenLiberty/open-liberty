@@ -10,8 +10,25 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.storage;
 
-public class OidcClientStorageConstants {
+public class CookieStorageProperties extends StorageProperties {
 
-    public static final String WAS_OIDC_STATE_KEY = "WASOidcState";
+    private int maxAge = -1;
+    private boolean isSecure = false;
+
+    public void setMaxAge(int maxAge) {
+        this.maxAge = maxAge;
+    }
+
+    public int getMaxAge() {
+        return maxAge;
+    }
+
+    public void setSecure(boolean isSecure) {
+        this.isSecure = isSecure;
+    }
+
+    public boolean isSecure() {
+        return isSecure;
+    }
 
 }

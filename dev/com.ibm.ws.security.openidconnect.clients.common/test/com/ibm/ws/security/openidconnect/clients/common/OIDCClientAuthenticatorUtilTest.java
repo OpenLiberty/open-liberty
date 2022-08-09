@@ -71,6 +71,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
+import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
 
 public class OIDCClientAuthenticatorUtilTest {
@@ -1127,7 +1128,7 @@ public class OIDCClientAuthenticatorUtilTest {
     public void testVerifyResponseStateFailure() {
         try {
             final String originalState = TEST_ORIGINAL_STATE;
-            final String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + ("notA" + originalState).hashCode();
+            final String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode("notA" + originalState);
             mock.checking(new Expectations() {
                 {
                     one(convClientConfig).getClientId();
@@ -1136,10 +1137,10 @@ public class OIDCClientAuthenticatorUtilTest {
                     will(returnValue(cookies));
                     one(convClientConfig).getClientSecret();
                     will(returnValue("clientsecret"));
+                    one(referrerURLCookieHandler).invalidateCookie(req, res, cookieName, true);
                 }
             });
             OidcClientUtil.setReferrerURLCookieHandler(referrerURLCookieHandler);
-            createReferrerUrlCookieExpectations(cookieName);
 
             ProviderAuthenticationResult result = oidcCAUtil.verifyResponseState(req, res, "notA" + originalState, convClientConfig);
             assertNotNull("Did not get an expecyted result", result);
@@ -1177,10 +1178,10 @@ public class OIDCClientAuthenticatorUtilTest {
         try {
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getAuthorizationEndpointUrl();
-                    will(returnValue("some non URL"));
                     one(convClientConfig).isHttpsRequired();
                     will(returnValue(true));
+                    one(convClientConfig).getAuthorizationEndpointUrl();
+                    will(returnValue("some non URL"));
                     one(convClientConfig).getClientId();
                     will(returnValue(CLIENT01));
                 }

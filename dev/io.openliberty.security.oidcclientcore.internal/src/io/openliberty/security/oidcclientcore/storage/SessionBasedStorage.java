@@ -10,9 +10,23 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.storage;
 
-/**
- *
- */
-public class SessionBasedStorage {
+public class SessionBasedStorage implements Storage {
+
+    @Override
+    public void store(String name, String value) {
+        // TODO
+        store(name, value, null);
+    }
+
+    @Override
+    public void store(String name, String value, StorageProperties properties) {
+        // TODO
+    }
+
+    @Override
+    public String get(String name) {
+        // TODO
+        return null;
+    }
 
 }

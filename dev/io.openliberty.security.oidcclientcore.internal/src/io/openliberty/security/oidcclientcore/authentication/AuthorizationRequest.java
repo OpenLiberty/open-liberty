@@ -17,7 +17,10 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
-import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
+import io.openliberty.security.oidcclientcore.storage.Storage;
+import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public abstract class AuthorizationRequest {
 
@@ -25,14 +28,15 @@ public abstract class AuthorizationRequest {
     protected HttpServletResponse response;
     protected String clientId;
 
+    protected Storage storage;
+
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
-    protected OidcCookieUtils cookieUtils;
+    protected OidcStorageUtils storageUtils = new OidcStorageUtils();
 
     public AuthorizationRequest(HttpServletRequest request, HttpServletResponse response, String clientId) {
         this.request = request;
         this.response = response;
         this.clientId = clientId;
-        cookieUtils = new OidcCookieUtils(request, response);
     }
 
     public ProviderAuthenticationResult sendRequest() throws OidcClientConfigurationException, OidcDiscoveryException {
@@ -53,7 +57,13 @@ public abstract class AuthorizationRequest {
 
     protected abstract boolean shouldCreateSession();
 
-    protected abstract void storeStateValue(String state);
+    protected abstract String createStateValueForStorage(String state);
+
+    protected void storeStateValue(String state) {
+        String storageName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
+        String storageValue = createStateValueForStorage(state);
+        storage.store(storageName, storageValue);
+    }
 
     void createSessionIfNecessary() {
         if (shouldCreateSession()) {

@@ -12,14 +12,10 @@ package com.ibm.ws.security.openidconnect.client.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,14 +23,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import com.google.gson.JsonObject;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20Exception;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.common.encoder.Base64Coder;
-import com.ibm.ws.security.common.crypto.HashUtils;
-import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.oauth20.web.WebUtils;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl;
@@ -65,8 +57,6 @@ public class OidcRedirectServlet extends HttpServlet {
     private transient OidcClient oidcClient = null;
 
     public static OidcClientImpl activatedOidcClientImpl = null; // this will be initialized when the feature starts
-
-    WebSSOUtils webSsoUtils = new WebSSOUtils();
 
     /**
      * @param activatedOidcClientImpl
@@ -193,7 +183,7 @@ public class OidcRedirectServlet extends HttpServlet {
         boolean isHttpsRequest = requestUrl.toLowerCase().startsWith("https");
         OidcClientConfigImpl clientCfg = activatedOidcClientImpl.getOidcClientConfig(request, clientId);
         // store all request params in digested cookie
-        new OidcClientUtil().setCookieForRequestParameter(request, response, clientId, state, isHttpsRequest, clientCfg);
+        OidcClientUtil.setCookieForRequestParameter(request, response, clientId, state, isHttpsRequest, clientCfg);
 
         if ((oidcClientId != null && !oidcClientId.isEmpty()) || id_token != null) {
             postToWASReqURL(request, response, requestUrl, oidcClientId); //  implicit flow???
@@ -223,46 +213,6 @@ public class OidcRedirectServlet extends HttpServlet {
             query.append(Constants.ERROR + "=" + OAuth20Exception.ACCESS_DENIED);
         }
         response.sendError(HttpServletResponse.SC_FORBIDDEN, query.toString());
-    }
-
-    // todo: call oidcClientUtil version of this method instead.
-    void setCookieForRequestParameter(HttpServletRequest request, HttpServletResponse response, String id, String state, boolean isHttpsRequest) {
-        OidcClientConfigImpl clientCfg = activatedOidcClientImpl.getOidcClientConfig(request, id);
-        Map<String, String[]> map = request.getParameterMap(); // at least it gets state parameter
-        JsonObject jsonObject = new JsonObject();
-        Set<Map.Entry<String, String[]>> entries = map.entrySet();
-        for (Map.Entry<String, String[]> entry : entries) {
-            String key = entry.getKey();
-            if (Constants.ACCESS_TOKEN.equals(key) || Constants.ID_TOKEN.equals(key)) {
-                continue;
-            }
-            String[] strs = entry.getValue();
-            if (strs != null && strs.length > 0) {
-                jsonObject.addProperty(key, strs[0]);
-            }
-        }
-        String requestParameters = jsonObject.toString();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "requestParameters:" + requestParameters);
-        }
-        // digest with the client_secret value
-        String digestValue = HashUtils.digest(requestParameters + clientCfg.getClientSecret());
-        String hashReqParams = requestParameters + digestValue;
-        String encodedReqParams = null;
-        try {
-            encodedReqParams = Base64Coder.toString(Base64Coder.base64Encode(hashReqParams.getBytes(ClientConstants.CHARSET)));
-        } catch (UnsupportedEncodingException e) {
-            //This should not happen, we are using UTF-8
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "get unexpected exception", e);
-            }
-        }
-
-        Cookie c = webSsoUtils.createCookie(ClientConstants.WAS_OIDC_CODE, encodedReqParams, request);
-        if (clientCfg.isHttpsRequired() && isHttpsRequest) {
-            c.setSecure(true);
-        }
-        response.addCookie(c);
     }
 
     /**

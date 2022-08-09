@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.JavaScriptUtils;
+import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
@@ -36,8 +37,8 @@ import io.openliberty.security.oidcclientcore.authentication.AuthorizationReques
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
-import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
-import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
+import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class OidcAuthorizationRequest extends AuthorizationRequest {
@@ -45,10 +46,12 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     public static final TraceComponent tc = Tr.register(OidcAuthorizationRequest.class);
 
     ConvergedClientConfig clientConfig;
+    WebSSOUtils webSsoUtils = new WebSSOUtils();
 
     public OidcAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ConvergedClientConfig clientConfig) {
         super(request, response, clientConfig.getClientId());
         this.clientConfig = clientConfig;
+        this.storage = new CookieBasedStorage(request, response);
     }
 
     @Override
@@ -89,14 +92,24 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     }
 
     @Override
-    protected void storeStateValue(String state) {
-        cookieUtils.createAndAddStateCookie(state, clientConfig.getClientSecret(), (int) clientConfig.getAuthenticationTimeLimitInSeconds(), clientConfig.isHttpsRequired());
+    protected String createStateValueForStorage(String state) {
+        return OidcStorageUtils.createStateStorageValue(state, clientConfig.getClientSecret());
+    }
+
+    private boolean shouldCookiesBeSecure() {
+        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
+        return (clientConfig.isHttpsRequired() && isHttpsRequest);
     }
 
     void createAndAddWasReqUrlCookie(String state) {
         String urlCookieName = ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
         String cookieValue = getReqURL();
-        cookieUtils.createAndAddCookie(urlCookieName, cookieValue, (int) clientConfig.getAuthenticationTimeLimitInSeconds(), clientConfig.isHttpsRequired());
+
+        CookieStorageProperties cookieProps = new CookieStorageProperties();
+        cookieProps.setMaxAge((int) clientConfig.getAuthenticationTimeLimitInSeconds());
+        cookieProps.setSecure(shouldCookiesBeSecure());
+
+        storage.store(urlCookieName, cookieValue, cookieProps);
     }
 
     @Override
@@ -118,7 +131,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             // If clientSideRedirect is true (default is true) then do the
             // redirect.  If the user agent doesn't support javascript then config can set this to false.
             if (clientConfig.isClientSideRedirect()) {
-                String domain = CookieBasedStorage.getSsoDomain(request);
+                String domain = webSsoUtils.getSsoDomain(request);
                 doClientSideRedirect(authzEndPointUrlWithQuery, state, domain);
             } else {
                 createAndAddWasReqUrlCookie(state);

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.storage;
 
-public class OidcClientStorageConstants {
-
-    public static final String WAS_OIDC_STATE_KEY = "WASOidcState";
+public abstract class StorageProperties {
 
 }

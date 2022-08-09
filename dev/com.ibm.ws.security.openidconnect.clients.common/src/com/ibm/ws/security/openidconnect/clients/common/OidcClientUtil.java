@@ -51,6 +51,7 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
 
 @SuppressWarnings("restriction")
 public class OidcClientUtil {
@@ -298,7 +299,7 @@ public class OidcClientUtil {
 
     // 240540: rather than call webcontainer code, replace the cookie with an empty one having same cookie and domain name and add to response.
     public static void invalidateReferrerURLCookie(HttpServletRequest req, HttpServletResponse res, String cookieName) {
-        CookieBasedStorage store = new CookieBasedStorage(getReferrerURLCookieHandler(), req, res);
+        CookieBasedStorage store = new CookieBasedStorage(req, res, getReferrerURLCookieHandler());
         store.remove(cookieName);
     }
 
@@ -310,17 +311,24 @@ public class OidcClientUtil {
             }
             return;
         }
-        CookieBasedStorage store = new CookieBasedStorage(getReferrerURLCookieHandler(), req, res);
+        CookieBasedStorage store = new CookieBasedStorage(req, res, getReferrerURLCookieHandler());
         for (String name : cookieNames) {
             store.remove(name);
         }
+    }
+
+    static WebAppSecurityConfig getWebAppSecurityConfig() {
+        if (webAppSecurityConfigRef.get() == null) {
+            webAppSecurityConfigRef.set(WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig());
+        }
+        return webAppSecurityConfigRef.get();
     }
 
     public static ReferrerURLCookieHandler getReferrerURLCookieHandler() {
         //240331 - never return a null even if another thread clears the handler.
         ReferrerURLCookieHandler handler = OidcClientUtil.referrerURLCookieHandlerRef.get();
         if (handler == null) {
-            handler = CookieBasedStorage.getWebAppSecurityConfig().createReferrerURLCookieHandler();
+            handler = getWebAppSecurityConfig().createReferrerURLCookieHandler();
             OidcClientUtil.referrerURLCookieHandlerRef.set(handler);
         }
         return handler;
@@ -346,7 +354,7 @@ public class OidcClientUtil {
         try {
             // Get the redirection domain names from the global security configuration, <webAppSecurity wasReqURLRedirectDomainNames="mydomain"/>
             ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(requestUrl),
-                    CookieBasedStorage.getWebAppSecurityConfig().getWASReqURLRedirectDomainNames());
+                    getWebAppSecurityConfig().getWASReqURLRedirectDomainNames());
             return true;
         } catch (Exception re) {
             return false;
@@ -392,12 +400,12 @@ public class OidcClientUtil {
         if (encodedReqParams != null) {
             encodedHash = calculateOidcCodeCookieValue(encodedReqParams, clientCfg);
         }
-        CookieBasedStorage store = new CookieBasedStorage(getReferrerURLCookieHandler(), request, response);
-        boolean isSecure = false;
+        CookieBasedStorage store = new CookieBasedStorage(request, response, getReferrerURLCookieHandler());
+        CookieStorageProperties cookieProps = new CookieStorageProperties();
         if (clientCfg.isHttpsRequired() && isHttpsRequest) {
-            isSecure = true;
+            cookieProps.setSecure(true);
         }
-        store.addCookie(ClientConstants.WAS_OIDC_CODE, encodedHash, isSecure);
+        store.store(ClientConstants.WAS_OIDC_CODE, encodedHash, cookieProps);
     }
 
     public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {

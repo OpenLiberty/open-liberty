@@ -39,7 +39,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
-import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class OIDCClientAuthenticatorUtil {
@@ -439,7 +439,7 @@ public class OIDCClientAuthenticatorUtil {
         }
 
         String stateCookieValue = getStateCookieValue(req, res, responseState);
-        String expectedCookieValue = OidcCookieUtils.createStateCookieValue(responseState, clientConfig.getClientSecret());
+        String expectedCookieValue = OidcStorageUtils.createStateStorageValue(responseState, clientConfig.getClientSecret());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "stateKey:'" + stateCookieValue + "' cookieValue:'" + expectedCookieValue + "'");

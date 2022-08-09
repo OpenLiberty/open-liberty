@@ -60,6 +60,8 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
                 will(returnValue(clientId));
                 one(config).getProviderMetadata();
                 will(returnValue(providerMetadata));
+                one(config).isUseSession();
+                will(returnValue(true));
             }
         });
         authzRequest = new JakartaOidcAuthorizationRequest(request, response, config);

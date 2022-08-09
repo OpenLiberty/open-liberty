@@ -31,7 +31,7 @@ import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
-import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import test.common.SharedOutputManager;
 
 public class OidcUtilTest {
@@ -77,14 +77,7 @@ public class OidcUtilTest {
     public void testInvalidateReferrerURLCookie() {
         mock.checking(new Expectations() {
             {
-                one(referCookieHandler).createCookie("fred", "", request);
-                will(returnValue(cookie));
-                allowing(webAppSecConfig).createSSOCookieHelper();
-                allowing(webAppSecConfig).getSSODomainList();
-                allowing(webAppSecConfig).getSSOUseDomainFromURL();
-                one(cookie).setMaxAge(-1);
-                one(cookie).setMaxAge(0);
-                one(response).addCookie(cookie);
+                one(referCookieHandler).invalidateCookie(request, response, "fred", true);
             }
         });
         OidcClientUtil.invalidateReferrerURLCookie(request, response, "fred");
@@ -124,7 +117,7 @@ public class OidcUtilTest {
                 will(returnValue("serect"));
             }
         });
-        final String expectedNonceCookieName = OidcCookieUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, "client01", state);
+        final String expectedNonceCookieName = OidcStorageUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, "client01", state);
         final String expectedNonceCookieValue = OidcUtil.createNonceCookieValue(nonceValue, state, convClientConfig);
 
         mock.checking(new Expectations() {
@@ -154,14 +147,7 @@ public class OidcUtilTest {
                 will(returnValue(expectedNonceCookieValue));
                 one(convClientRequest).getResponse();
                 will(returnValue(response));
-                one(referCookieHandler).createCookie(expectedNonceCookieName, "", request);
-                will(returnValue(cookie2));
-                allowing(webAppSecConfig).createSSOCookieHelper();
-                allowing(webAppSecConfig).getSSODomainList();
-                allowing(webAppSecConfig).getSSOUseDomainFromURL();
-                one(cookie2).setMaxAge(-1);
-                one(cookie2).setMaxAge(0);
-                one(response).addCookie(cookie2);
+                one(referCookieHandler).invalidateCookie(request, response, expectedNonceCookieName, true);
             }
         });
         boolean validNonceCookie = OidcUtil.verifyNonce(convClientRequest, nonceValue, convClientConfig, state);

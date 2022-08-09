@@ -22,7 +22,7 @@ import com.ibm.ws.security.common.random.RandomUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
 
-public class OidcCookieUtilsTest {
+public class OidcStorageUtilsTest {
 
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
@@ -35,7 +35,7 @@ public class OidcCookieUtilsTest {
 
     @Test
     public void testCreateStateCookieValue() {
-        String cookieValue = OidcCookieUtils.createStateCookieValue(state, "secret");
+        String cookieValue = OidcStorageUtils.createStateStorageValue(state, "secret");
         String timestamp = state.substring(0, Utils.TIMESTAMP_LENGTH);
         String newValue = state + "secret";
         String value = HashUtils.digest(newValue);
@@ -45,7 +45,7 @@ public class OidcCookieUtilsTest {
 
     @Test
     public void testGetCookieName() {
-        String cookieName = OidcCookieUtils.getCookieName("WASOidc", "client01", state);
+        String cookieName = OidcStorageUtils.getCookieName("WASOidc", "client01", state);
         String newValue = state + "client01";
         String newName = Utils.getStrHashCode(newValue);
         String expectedCookieName = "WASOidc" + newName;

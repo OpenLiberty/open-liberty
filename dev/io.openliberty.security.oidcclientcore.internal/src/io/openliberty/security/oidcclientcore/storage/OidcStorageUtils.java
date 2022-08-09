@@ -10,32 +10,17 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.storage;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.common.crypto.HashUtils;
-import com.ibm.ws.security.common.web.WebSSOUtils;
 
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
-public class OidcCookieUtils {
-
-    HttpServletRequest request;
-    HttpServletResponse response;
-
-    WebSSOUtils webSsoUtils = new WebSSOUtils();
-
-    public OidcCookieUtils(HttpServletRequest request, HttpServletResponse response) {
-        this.request = request;
-        this.response = response;
-    }
+public class OidcStorageUtils {
 
     @Sensitive
     @Trivial
-    public static String createStateCookieValue(String state, String clientSecret) {
+    public static String createStateStorageValue(String state, String clientSecret) {
         String newValue = state + clientSecret; // state already has a timestamp in it
         String hashedStateValue = HashUtils.digest(newValue);
         String timestamp = state.substring(0, Utils.TIMESTAMP_LENGTH);
@@ -50,28 +35,14 @@ public class OidcCookieUtils {
         return prefix + newName;
     }
 
-    public void createAndAddStateCookie(String state, @Sensitive String clientSecret, int cookieLifetime) {
-        createAndAddStateCookie(state, clientSecret, cookieLifetime, true);
-    }
-
-    public void createAndAddStateCookie(String state, @Sensitive String clientSecret, int cookieLifetime, boolean isHttpsRequired) {
-        String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
-        String cookieValue = createStateCookieValue(state, clientSecret);
-        createAndAddCookie(cookieName, cookieValue, cookieLifetime, isHttpsRequired);
-    }
-
-    public void createAndAddCookie(String cookieName, String cookieValue, int cookieLifetime) {
-        createAndAddCookie(cookieName, cookieValue, cookieLifetime, true);
-    }
-
-    public void createAndAddCookie(String cookieName, String cookieValue, int cookieLifetime, boolean isHttpsRequired) {
-        Cookie c = webSsoUtils.createCookie(cookieName, cookieValue, cookieLifetime, request);
-        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
-        if (isHttpsRequired && isHttpsRequest) {
-            c.setSecure(true);
-        }
-        response.addCookie(c);
-    }
+//    public void createAndAddCookie(String cookieName, String cookieValue, int cookieLifetime, boolean isHttpsRequired) {
+//        Cookie c = webSsoUtils.createCookie(cookieName, cookieValue, cookieLifetime, request);
+//        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
+//        if (isHttpsRequired && isHttpsRequest) {
+//            c.setSecure(true);
+//        }
+//        response.addCookie(c);
+//    }
 
 //    @Trivial
 //    public static void createNonceCookie(HttpServletRequest request, HttpServletResponse response, String nonceValue, String state, ConvergedClientConfig clientConfig) {
