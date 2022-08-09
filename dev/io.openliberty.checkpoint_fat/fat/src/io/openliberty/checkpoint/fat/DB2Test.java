@@ -31,6 +31,7 @@ import org.testcontainers.utility.DockerImageName;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
@@ -44,6 +45,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipIfCheckpointNotSupported
 public class DB2Test extends FATServletClient {
 
     static {
