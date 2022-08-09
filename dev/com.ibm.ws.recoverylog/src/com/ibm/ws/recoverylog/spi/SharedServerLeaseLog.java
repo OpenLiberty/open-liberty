@@ -49,9 +49,4 @@ public interface SharedServerLeaseLog {
     public boolean releasePeerLease(String recoveryIdentity) throws Exception;
 
     public void setPeerRecoveryLeaseTimeout(int leaseTimeout);
-
-    /**
-     * Inform the lease log that the server is stopping.
-     */
-    public void serverStopping();
 }

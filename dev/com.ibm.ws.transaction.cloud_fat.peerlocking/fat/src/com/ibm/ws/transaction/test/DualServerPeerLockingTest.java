@@ -769,6 +769,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     }
 
     @Override
-    protected void setUp(LibertyServer server) throws Exception {
+    public void setUp(LibertyServer server) throws Exception {
     }
 }

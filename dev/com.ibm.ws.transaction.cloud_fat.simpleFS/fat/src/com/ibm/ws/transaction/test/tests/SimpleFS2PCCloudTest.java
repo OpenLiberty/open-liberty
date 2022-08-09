@@ -157,7 +157,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
         try {
             assertNotNull(server2.getServerName() + " did not recover for " + server1.getServerName(),
-                          server2.waitForStringInTrace("Performed recovery for " + server1.getServerName()));
+                          server2.waitForStringInTrace("Performed recovery for " + server1.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
 
             // Check to see that the peer recovery log files have been deleted
             assertFalse(server1.getServerName() + " transaction log has not been deleted", server1.fileExistsInLibertyServerRoot(tranlog));
@@ -227,7 +227,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         try {
             // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
             assertNotNull(server2.getServerName() + " did not recover for " + server1.getServerName(),
-                          server2.waitForStringInTrace("Performed recovery for " + server1.getServerName()));
+                          server2.waitForStringInTrace("Performed recovery for " + server1.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
         } finally {
             FATUtils.stopServers(server2);
         }

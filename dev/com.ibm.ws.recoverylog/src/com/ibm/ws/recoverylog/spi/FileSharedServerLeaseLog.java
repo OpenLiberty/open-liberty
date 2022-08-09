@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -109,7 +109,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     public static FileSharedServerLeaseLog getFileSharedServerLeaseLog(String logDirStem, String localRecoveryIdentity, String recoveryGroup) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getFileSharedServerLeaseLog", new Object[] { logDirStem, localRecoveryIdentity, recoveryGroup });
+            Tr.entry(tc, "getFileSharedServerLeaseLog", logDirStem, localRecoveryIdentity, recoveryGroup);
 
         if (_serverInstallLeaseLogDir == null)
             setLeaseLog(logDirStem, localRecoveryIdentity, recoveryGroup);
@@ -121,7 +121,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
 
     private static void setLeaseLog(String tranRecoveryLogDirStem, String localRecoveryIdentity, String recoveryGroup) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setLeaseLog", new Object[] { tranRecoveryLogDirStem, localRecoveryIdentity, recoveryGroup });
+            Tr.entry(tc, "setLeaseLog", tranRecoveryLogDirStem, localRecoveryIdentity, recoveryGroup);
 
         // append the recovery group to the directory
         if (recoveryGroup == null)
@@ -202,7 +202,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     @Override
     public void updateServerLease(String recoveryIdentity, String recoveryGroup, boolean isServerStartup) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "updateServerLease", new Object[] { recoveryIdentity, recoveryGroup, isServerStartup, this });
+            Tr.entry(tc, "updateServerLease", recoveryIdentity, recoveryGroup, isServerStartup, this);
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Using recoveryIdentity " + recoveryIdentity + " and log directory " + _tranRecoveryLogDirStem);
@@ -270,7 +270,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     @Override
     public void deleteServerLease(final String recoveryIdentity) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteServerLease", new Object[] { recoveryIdentity, this });
+            Tr.entry(tc, "deleteServerLease", recoveryIdentity, this);
 
         // Is a lease file (equivalent to a record in the DB table) available for deletion
         final File leaseFile = new File(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryIdentity);
@@ -375,7 +375,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     @Override
     public boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "claimPeerLeaseForRecovery", new Object[] { recoveryIdentityToRecover, myRecoveryIdentity, this });
+            Tr.entry(tc, "claimPeerLeaseForRecovery", recoveryIdentityToRecover, myRecoveryIdentity, this);
         // What we need to do is to extract the log location for peer servers and put them somewhere to be used in TxRecoveryAgentImp.initiateRecovery.
         boolean claimedLease = false;
 
@@ -459,7 +459,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     @Override
     public void getLeasesForPeers(final PeerLeaseTable peerLeaseTable, String recoveryGroup) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getLeasesForPeers", new Object[] { peerLeaseTable, recoveryGroup, this });
+            Tr.entry(tc, "getLeasesForPeers", peerLeaseTable, recoveryGroup, this);
 
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override
@@ -557,7 +557,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     @FFDCIgnore({ OverlappingFileLockException.class })
     public boolean lockPeerLease(String recoveryIdentity) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "lockPeerLease", new Object[] { recoveryIdentity, this });
+            Tr.entry(tc, "lockPeerLease", recoveryIdentity, this);
         // What we need to do is to extract the log location for peer servers and put them somewhere to be used in TxRecoveryAgentImp.initiateRecovery.
         boolean claimedLock = false;
         // Read the appropriate lease file (equivalent to a record in the DB table)
@@ -652,7 +652,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     @Override
     public boolean releasePeerLease(String recoveryIdentity) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "releasePeerLease", new Object[] { recoveryIdentity, this });
+            Tr.entry(tc, "releasePeerLease", recoveryIdentity, this);
         // Release the lock - if it is not null!
         FileLock fLock = null;
         FileChannel fChannel = null;
@@ -690,7 +690,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     @Override
     public boolean lockLocalLease(String recoveryIdentity) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "lockLocalLease", new Object[] { recoveryIdentity, this });
+            Tr.entry(tc, "lockLocalLease", recoveryIdentity, this);
         // What we need to do is to extract the log location for peer servers and put them somewhere to be used in TxRecoveryAgentImp.initiateRecovery.
         boolean claimedLock = false;
         // Read the appropriate lease file (equivalent to a record in the DB table)
@@ -763,7 +763,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     @Override
     public boolean releaseLocalLease(String recoveryIdentity) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "releaseLocalLease", new Object[] { recoveryIdentity, this });
+            Tr.entry(tc, "releaseLocalLease", recoveryIdentity, this);
         // Release the lock - if it is not null!
         FileLock fLock = null;
         FileChannel fChannel = null;
@@ -801,7 +801,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
         // Constructor
         public LeaseLock(String recIdentity, FileLock fLock, FileChannel fChannel) {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "LeaseLock", new Object[] { recIdentity, fLock, fChannel });
+                Tr.entry(tc, "LeaseLock", recIdentity, fLock, fChannel);
             _recoveryIdentity = recIdentity;
             _leaseFileLock = fLock;
             _leaseChannel = fChannel;
@@ -840,13 +840,5 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "setPeerRecoveryLeaseTimeout", this);
 
-    }
-
-    /**
-     * Signals to the Lease Log that the server is stopping.
-     */
-    @Override
-    public void serverStopping() {
-        // No-op in filesystem implementation
     }
 }
