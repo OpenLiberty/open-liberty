@@ -12,16 +12,21 @@
 package io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd;
 
 import static org.junit.Assert.assertNotNull;
-
+import static org.junit.Assert.assertEquals;
 import componenttest.app.FATServlet;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 import org.junit.Test;
-
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/")
 @ApplicationScoped
@@ -46,7 +51,7 @@ public class Telemetry10Servlet extends FATServlet {
     private void doWork() {
         try {
           Thread.sleep(500);
-          span.addEvent("Doing work");
+          //span.addEvent("Doing work");
         } catch (InterruptedException e) {
           // do the right thing here
         }
@@ -60,6 +65,21 @@ public class Telemetry10Servlet extends FATServlet {
     @Test
     public void testSpanNotNull(){
         assertNotNull(span);
+    }
+    
+    @Test
+    public void testJAXRS(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        try {
+            String url = "http://" + req.getServerName() + ':' + req.getServerPort() + "/rest/test";
+            System.out.println("Making a PATCH request to URL: " + url);
+            String result = client.target(url)
+                            .request()
+                            .method("PATCH", String.class);
+            assertEquals("patch-success", result);
+        } finally {
+            client.close();
+        }
     }
 
 }

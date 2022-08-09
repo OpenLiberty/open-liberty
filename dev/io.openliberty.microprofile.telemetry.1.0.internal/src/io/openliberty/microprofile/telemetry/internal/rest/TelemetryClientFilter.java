@@ -27,6 +27,8 @@ import jakarta.ws.rs.client.ClientResponseFilter;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.ext.Provider;
 
+import jakarta.enterprise.inject.spi.CDI;
+
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
@@ -46,32 +48,31 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
     private Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
 
     private String configString = "otel.span.client.";
+    private long index = 0;
 
     @Inject
     Config config;
 
-    //No arg constructor
+    // RESTEasy requires no-arg constructor for CDI injection: https://issues.redhat.com/browse/RESTEASY-1538
     public TelemetryClientFilter() {
-    }
+        OpenTelemetry openTelemetry = CDI.current().select( OpenTelemetry.class ).get();
 
-    //Constructor injecting openTelemetry object
-    @Inject
-    public TelemetryClientFilter(final OpenTelemetry openTelemetry) {
-            ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
+        ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
 
-                InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(
-                    openTelemetry,
-                    "Client filter",
-                    HttpSpanNameExtractor.create(clientAttributesExtractor));
+        InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(
+            openTelemetry,
+            "Client filter",
+            HttpSpanNameExtractor.create(clientAttributesExtractor));
 
-                this.instrumenter = builder
-                    .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
-                    .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
-                    .newClientInstrumenter(new ClientRequestContextTextMapSetter());
+        this.instrumenter = builder
+            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
+            .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
+            .newClientInstrumenter(new ClientRequestContextTextMapSetter());
     }
 
     @Override
     public void filter(final ClientRequestContext request) {
+        System.out.println(index);
         Context parentContext = Context.current();
         if (instrumenter.shouldStart(parentContext, request)) {
             Context spanContext = instrumenter.start(parentContext, request);
