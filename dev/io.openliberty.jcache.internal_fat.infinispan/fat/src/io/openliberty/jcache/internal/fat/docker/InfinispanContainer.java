@@ -10,7 +10,10 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal.fat.docker;
 
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
@@ -119,8 +122,22 @@ public class InfinispanContainer extends GenericContainer<InfinispanContainer> {
      * @throws Exception If there was an error deleting all the caches.
      */
     public void deleteAllCaches() throws Exception {
-        for (String cache : listCaches()) {
-            deleteCache(cache);
+        List<String> cacheNames = listCaches();
+        for (int idx = 0; idx < 3; idx++) {
+            for (String cache : cacheNames) {
+                deleteCache(cache);
+            }
+
+            /*
+             * See if we succeeded. There are times where we the Infinispan instance will return
+             * a cache to us but we will get a 404 when we try to delete it. So in that instance, we
+             * will try again (and again perhaps).
+             */
+            cacheNames = listCaches();
+            if (cacheNames.isEmpty()) {
+                break;
+            }
+            Thread.sleep(100);
         }
     }
 
@@ -209,7 +226,8 @@ public class InfinispanContainer extends GenericContainer<InfinispanContainer> {
              */
             try (CloseableHttpResponse response = httpClient.execute(request, context)) {
                 logHttpResponse(InfinispanContainer.class, METHOD_NAME, request, response);
-                assertEquals("Expected 200 as the response code.", 200, response.getStatusLine().getStatusCode());
+                assertThat("Expected 200 or 404 as the response code while deleting cache " + name + ".",
+                           response.getStatusLine().getStatusCode(), anyOf(is(200), is(404)));
             }
         }
     }
