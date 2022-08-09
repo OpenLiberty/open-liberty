@@ -56,6 +56,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     @Inject
     OpenTelemetry openTelemetry;
+    
     // RESTEasy requires no-arg constructor for CDI injection: https://issues.redhat.com/browse/RESTEASY-1538
     public TelemetryClientFilter() {}
 
