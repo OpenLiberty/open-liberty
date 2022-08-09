@@ -10,6 +10,5 @@
 		<feature>mpTelemetry-1.0</feature>
 		<feature>componentTest-2.0</feature>
 	</featureManager>
-	<logging traceSpecification="org.apache.cxf.*=all:org.jboss.resteasy.*=all:io.openliberty.org.jboss.resteasy.*=all:io.openliberty.restfulWS.*=all:com.ibm.ws.jaxrs*=all:com.ibm.websphere.jaxrs*=all"/>
 
 </server>
