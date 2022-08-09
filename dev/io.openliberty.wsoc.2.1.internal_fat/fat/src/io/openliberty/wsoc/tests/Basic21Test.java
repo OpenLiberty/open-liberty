@@ -168,14 +168,15 @@ public class Basic21Test {
      * by confirming the "No timeout enabled" string is found in the logs. 
      * Spec clarification as part of 2.1  
      * https://github.com/jakartaee/websocket/issues/382
+     * SKIPPED DUE TO Defect 291298
+     * @Mode(TestMode.LITE)
+     * @Test
+     * public void testZeroTimeOut() throws Exception {
+     *  timeout.testZeroTimeOut();
+     *   String result  = LS.waitForStringInTraceUsingMark("Session timeout 0 is less than 1. No timeout enabled");
+     *  assertNotNull("Timeout message not found!", result);
+     * }
      */
-    @Mode(TestMode.LITE)
-    @Test
-    public void testZeroTimeOut() throws Exception {
-        timeout.testZeroTimeOut();
-        String result  = LS.waitForStringInTraceUsingMark("Session timeout 0 is less than 1. No timeout enabled");
-        assertNotNull("Timeout message not found!", result);
-    }
 
     @Mode(TestMode.LITE)
     @Test
