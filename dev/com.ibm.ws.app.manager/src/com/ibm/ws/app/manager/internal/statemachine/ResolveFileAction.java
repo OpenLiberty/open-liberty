@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,12 +35,10 @@ import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
-/**
- *
- */
 class ResolveFileAction implements Action, FileMonitor {
     private static final TraceComponent _tc = Tr.register(ResolveFileAction.class);
     private final WsLocationAdmin _locAdmin;
+    private final String _configId;
     private final String _configPid;
     private final String _location;
     private final AtomicReference<ResourceCallback> _callback = new AtomicReference<ResourceCallback>();
@@ -54,16 +52,11 @@ class ResolveFileAction implements Action, FileMonitor {
     private final AtomicReference<ApplicationHandler<?>> _handler;
     private final ReentrantLock lock;
 
-    /**
-     * @param _locAdmin
-     * @param string
-     * @param fm
-     * @param callback
-     */
     public ResolveFileAction(BundleContext ctx, long pollRate, UpdateTrigger trigger,
-                             WsLocationAdmin locAdmin, String name, String configPid, String location,
+                             WsLocationAdmin locAdmin, String name, String configId, String configPid, String location,
                              ResourceCallback callback, AtomicReference<ApplicationHandler<?>> handler) {
         _locAdmin = locAdmin;
+        _configId = configId;
         _configPid = configPid;
         _location = location;
         _callback.set(callback);
@@ -97,7 +90,7 @@ class ResolveFileAction implements Action, FileMonitor {
             _file.set(f);
             ResourceCallback callback = _callback.get();
             if (callback != null) {
-                _container.set(callback.setupContainer(_configPid, f));
+                _container.set(callback.setupContainer(_configId, _configPid, f));
 
                 if (_container.get() != null) {
                     if (!complete) {

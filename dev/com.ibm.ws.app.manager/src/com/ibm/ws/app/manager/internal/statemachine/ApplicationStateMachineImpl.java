@@ -603,7 +603,15 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
 
         @Override
         public Container setupContainer(String pid, File locationFile) {
-            File cacheDir = new File(getCacheDir(), pid);
+            return setupContainer(null, pid, locationFile);
+        }
+        
+        @Override
+        public Container setupContainer(String configId, String pid, File locationFile) {
+            String cacheId = ( (configId == null) ? pid : configId );
+            Tr.event(_tc, asmLabel() + "Workarea cache ID {0}", cacheId);
+            
+            File cacheDir = new File(getCacheDir(), cacheId);
             if (!FileUtils.ensureDirExists(cacheDir)) {
                 if (_tc.isEventEnabled()) {
                     Tr.event(_tc, asmLabel() + "Could not create directory at {0}.", cacheDir.getAbsolutePath());
@@ -616,7 +624,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                 return null;
             }
 
-            File cacheDirAdapt = new File(getCacheAdaptDir(), pid);
+            File cacheDirAdapt = new File(getCacheAdaptDir(), cacheId);
             if (!FileUtils.ensureDirExists(cacheDirAdapt)) {
                 if (_tc.isEventEnabled()) {
                     Tr.event(_tc, asmLabel() + "Could not create directory at {0}.", cacheDirAdapt.getAbsolutePath());
@@ -624,7 +632,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                 return null;
             }
 
-            File cacheDirOverlay = new File(getCacheOverlayDir(), pid);
+            File cacheDirOverlay = new File(getCacheOverlayDir(), cacheId);
             if (!FileUtils.ensureDirExists(cacheDirOverlay)) {
                 if (_tc.isEventEnabled()) {
                     Tr.event(_tc, asmLabel() + "Could not create directory at {0}.", cacheDirOverlay.getAbsolutePath());
@@ -1321,13 +1329,14 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         synchronized (_stateLock) {
                             resolveFileCallback = new ResolveFileCallback();
                             ApplicationConfig appConfig = _appConfig.get();
+                            String configId = (String) appConfig.getConfigProperty("id");
                             String configPid = appConfig.getConfigPid();
                             String location = appConfig.getLocation();
                             if (isLocationAURL(location)) {
-                                resolveFileAction = new DownloadFileAction(_locAdmin, configPid, location, resolveFileCallback, _handler);
+                                resolveFileAction = new DownloadFileAction(_locAdmin, configId, configPid, location, resolveFileCallback, _handler);
                             } else {
                                 ApplicationMonitorConfig appMonitorConfig = _appMonitor.getConfig();
-                                resolveFileAction = new ResolveFileAction(_ctx, appMonitorConfig.getPollingRate(), appMonitorConfig.getUpdateTrigger(), _locAdmin, appConfig.getName(), configPid, location, resolveFileCallback, _handler);
+                                resolveFileAction = new ResolveFileAction(_ctx, appMonitorConfig.getPollingRate(), appMonitorConfig.getUpdateTrigger(), _locAdmin, appConfig.getName(), configId, configPid, location, resolveFileCallback, _handler);
                                 _rfa.set((ResolveFileAction) resolveFileAction);
                             }
                             _currentAction.set(resolveFileAction);

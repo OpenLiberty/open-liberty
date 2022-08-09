@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,28 +38,27 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
-/**
- *
- */
 class DownloadFileAction implements Runnable, Action {
     private static final TraceComponent _tc = Tr.register(DownloadFileAction.class);
+
     private final WsLocationAdmin _locAdmin;
+    private final String _configId;
     private final String _servicePid;
     private final String _location;
     private final ResourceCallback _callback;
     private final AtomicBoolean _active = new AtomicBoolean(true);
     private final AtomicReference<ApplicationHandler<?>> _handler;
 
-    public DownloadFileAction(WsLocationAdmin locAdmin, String servicePid,
+    public DownloadFileAction(WsLocationAdmin locAdmin, String configId, String servicePid,
                               String location, ResourceCallback callback, AtomicReference<ApplicationHandler<?>> handler) {
         _locAdmin = locAdmin;
+        _configId = configId;
         _servicePid = servicePid;
         _location = location;
         _callback = callback;
         _handler = handler;
     }
 
-    /** {@inheritDoc} */
     @Override
     @FFDCIgnore({ MalformedURLException.class, IOException.class })
     public void run() {
@@ -102,7 +101,7 @@ class DownloadFileAction implements Runnable, Action {
             output = new BufferedOutputStream(new FileOutputStream(downloadedFile));
 
             input = urlConection.getInputStream();
-            buf = new byte[1024]; //you can change the 1024 to a different size value
+            buf = new byte[32 * 1024]; //you can change the 1024 to a different size value
             while (_active.get() && (byteRead = input.read(buf)) != -1) {
                 output.write(buf, 0, byteRead);
             }
@@ -117,7 +116,7 @@ class DownloadFileAction implements Runnable, Action {
                     }
                 }
 
-                Container c = _callback.setupContainer(_servicePid, downloadedFile);
+                Container c = _callback.setupContainer(_configId, _servicePid, downloadedFile);
                 WsResource r = _locAdmin.resolveResource(downloadedFile.getAbsolutePath());
                 _callback.successfulCompletion(c, r);
             }
@@ -147,10 +146,6 @@ class DownloadFileAction implements Runnable, Action {
         }
     }
 
-    /**
-     * @param _location2
-     * @return
-     */
     private String getFileName() {
         int index = _location.lastIndexOf('/');
         if (index != -1) {
@@ -159,13 +154,11 @@ class DownloadFileAction implements Runnable, Action {
         return _servicePid;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(ExecutorService executor) {
         executor.execute(this);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void cancel() {
         _active.set(false);
