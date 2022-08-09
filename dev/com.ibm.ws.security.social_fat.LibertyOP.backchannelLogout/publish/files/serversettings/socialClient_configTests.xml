@@ -13,20 +13,38 @@
 <server>
 
 	<oidcLogin
-		id="bcl_mainPath"
-		clientId="bcl_mainPath"
+		id="bcl_mainPath_confClient"
+		clientId="bcl_mainPath_confClient"
 		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
-		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
-		signatureAlgorithm="HS256"
-		createSession="true"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"	
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/token"
 		hostNameVerificationEnabled="false"
-		authFilterRef="bcl_mainPath_filter"
+		authFilterRef="bcl_mainPath_confClient_filter"
 	>
 	</oidcLogin>
 
+	<oidcLogin
+		id="bcl_mainPath_publicClient_withSecret"
+		clientId="bcl_mainPath_publicClient_withSecret"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"	
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_mainPath/token"
+		hostNameVerificationEnabled="false"
+		authFilterRef="bcl_mainPath_publicClient_withSecret_filter"
+	>
+	</oidcLogin>
+
+<!-- can't use 		id="bcl_mainPath_publicClient_withoutSecret" with social clients - they require use of a secret -->
 	<oidcLogin
 		id="bcl_defaultBCLTimeout"
 		clientId="bcl_defaultBCLTimeout"

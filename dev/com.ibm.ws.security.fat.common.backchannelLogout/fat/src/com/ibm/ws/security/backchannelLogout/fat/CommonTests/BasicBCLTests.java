@@ -796,12 +796,18 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     }
 
-    // TODO - something is wrong -can't omit the secret - refresh checking blows up
     /**
      * Main path back channel logout. Uses the real bcl endpoint, not a test app
      * One login and then end_session/logout
      *
      */
+    /**
+     * When using mongodb, we need to programmatically register the public client - the registration endpoint will not
+     * create a client without a secret - it generates one for us, so we'll need to skip this test in that case.
+     *
+     * @throws Exception
+     */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsesMongoDBOrSocialClient.class)
     @Mode(TestMode.LITE)
     @Test
     public void BasicBCLTests_mainPath_publicClient_withoutSecret() throws Exception {
@@ -809,6 +815,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         WebClient webClient = getAndSaveWebClient(true);
 
         TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_mainPath", "bcl_mainPath_publicClient_withoutSecret", false);
+        updatedTestSettings.setClientSecret(null);
 
         Object response = accessProtectedApp(webClient, updatedTestSettings);
 

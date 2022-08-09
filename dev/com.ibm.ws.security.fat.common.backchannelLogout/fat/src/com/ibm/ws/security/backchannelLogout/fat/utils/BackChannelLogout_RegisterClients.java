@@ -97,7 +97,7 @@ public class BackChannelLogout_RegisterClients {
         // if public client, set the public flag and don't configure a secret
         if (clientId.toLowerCase().contains("public")) {
             prefix.put("publicClient", true);
-            if (clientId.toLowerCase().contains("withSecret")) {
+            if (clientId.toLowerCase().contains("withsecret")) {
                 prefix.put("client_secret", defaultSecret);
             }
             // otherwise omit the secret
