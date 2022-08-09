@@ -78,6 +78,7 @@ Import-Package: \
     com.ibm.wsspi.injectionengine, \
     io.openliberty.webcontainer60.session.impl, \
     io.openliberty.webcontainer60.osgi.request, \
+    io.openliberty.webcontainer60.osgi.response, \
     io.openliberty.webcontainer60.osgi.srt, \
     *
 

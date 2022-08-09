@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,51 +59,72 @@ public class IResponseImpl implements IResponse
     this.allocateDirect = false;
 
   }  
-  
+ 
+  /*
+   * Since Servlet 6.0 - refactor to support Cookie setAttribute
+   */
+  protected HttpCookie addCookieHelper(Cookie cookie) {
+      String methodName = "addCookieHelper";
+      String cookieName = cookie.getName();
+      
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
+          Tr.entry(tc, methodName + " cookie ["+cookieName+"]");
+      }
+
+      HttpCookie hc = new HttpCookie(cookieName, cookie.getValue());
+      hc.setPath(cookie.getPath());
+      hc.setVersion(cookie.getVersion());
+      hc.setComment(cookie.getComment());
+      hc.setDomain(cookie.getDomain());
+      hc.setMaxAge(cookie.getMaxAge());
+      hc.setSecure(cookie.getSecure());
+      hc.setHttpOnly(cookie.isHttpOnly());
+
+      /*
+       * Check to see if the WebContainerRequestState has an attribute defined for 
+       * the Cookie that is being added.
+       *
+       * If the attribute is not recognized by the Channel Framework then it is ignored (in Servlet 5.0 and earlier)
+       *
+       * Current support by the Channel Framework is for the SameSite Cookie Attribute.
+       * Started with Servlet 6.0, any attribute is recognized by Channel.
+       */
+      WebContainerRequestState requestState = WebContainerRequestState.getInstance(false);
+      if (requestState != null) {
+          String cookieAttributes = requestState.getCookieAttributes(cookieName);
+          if (cookieAttributes != null) {
+              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
+                  Tr.debug(tc, methodName, "cookieName: " + cookieName + " cookieAttribute: " + cookieAttributes);
+              }
+
+              if(cookieAttributes.contains("=")) {
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
+                      Tr.debug(tc, methodName, "Setting the cookieAttribute on the HttpCookie");
+                  }
+
+                  String[] attribute = cookieAttributes.split("=");
+                  hc.setAttribute(attribute[0], attribute[1]);
+              }
+
+              // Remove the Cookie attribute that was used as it is no longer needed.
+              requestState.removeCookieAttributes(cookieName);
+          }
+      }
+
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
+          Tr.exit(tc, methodName);
+      }
+
+      return hc;
+  }
+
   public void addCookie(Cookie cookie)
   {
-    String methodName = "addCookie";
-    String cookieName = cookie.getName();
-    HttpCookie hc = new HttpCookie(cookieName, cookie.getValue());
-    hc.setPath(cookie.getPath());
-    hc.setVersion(cookie.getVersion());
-    hc.setComment(cookie.getComment());
-    hc.setDomain(cookie.getDomain());
-    hc.setMaxAge(cookie.getMaxAge());
-    hc.setSecure(cookie.getSecure());
-    hc.setHttpOnly(cookie.isHttpOnly());
-
-    /*
-     * Check to see if the WebContainerRequestState has an attribute defined for 
-     * the Cookie that is being added.
-     *
-     * If the attribute is not recognized by the Channel Framework then it is ignored.
-     *
-     * Current support by the Channel Framework is for the SameSite Cookie Attribute.
-     */
-    WebContainerRequestState requestState = WebContainerRequestState.getInstance(false);
-    if (requestState != null) {
-        String cookieAttributes = requestState.getCookieAttributes(cookieName);
-        if (cookieAttributes != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
-                Tr.debug(tc, methodName, "cookieName: " + cookieName + " cookieAttribute: " + cookieAttributes);
-            }
-
-            if(cookieAttributes.contains("=")) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
-                    Tr.debug(tc, methodName, "Setting the cookieAttribute on the HttpCookie");
-                }
-
-                String[] attribute = cookieAttributes.split("=");
-                hc.setAttribute(attribute[0], attribute[1]);
-            }
-
-            // Remove the Cookie attribute that was used as it is no longer needed.
-            requestState.removeCookieAttributes(cookieName);
-        }
-    }
-
-    this.response.addCookie(hc);
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
+          Tr.debug(tc, "addCookie , cookie [" + cookie.getName() +"] , this [" + this + "]");
+      }
+      
+      this.response.addCookie(addCookieHelper(cookie));
   }
 
   public void addDateHeader(String name, long t)
