@@ -10,6 +10,11 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.io.UncheckedIOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -74,14 +79,6 @@ public class DB2Test extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.checkpoint.db2.web");
 
-        server.addEnvVar("DB2_DBNAME", db2.getDatabaseName());
-        server.addEnvVar("DB2_HOSTNAME", db2.getHost());
-        server.addEnvVar("DB2_PORT", String.valueOf(db2.getMappedPort(50000)));
-        server.addEnvVar("DB2_PORT_SECURE", String.valueOf(db2.getMappedPort(50001)));
-        server.addEnvVar("DB2_USER", db2.getUsername());
-        server.addEnvVar("DB2_PASS", db2.getPassword());
-        server.addEnvVar("WLP_IMMUTABLE_VARS", "DB2_DBNAME,DB2_HOSTNAME,DB2_PORT,DB2_PORT_SECURE,DB2_USER,DB2_PASS");
-
         Connection con = db2.createConnection("");
 
         try {
@@ -99,7 +96,21 @@ public class DB2Test extends FATServletClient {
             con.close();
         }
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, null);
+        // at this point the server no longer has the env set; we set them just before restore
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, checkpointServer -> {
+            File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+            try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                serverEnvWriter.println("DB2_DBNAME=" + db2.getDatabaseName());
+                serverEnvWriter.println("DB2_HOSTNAME=" + db2.getHost());
+                serverEnvWriter.println("DB2_PORT=" + String.valueOf(db2.getMappedPort(50000)));
+                serverEnvWriter.println("DB2_PORT_SECURE=" + String.valueOf(db2.getMappedPort(50001)));
+                serverEnvWriter.println("DB2_USER=" + db2.getUsername());
+                serverEnvWriter.println("DB2_PASS=" + db2.getPassword());
+            } catch (FileNotFoundException e) {
+                throw new UncheckedIOException(e);
+            }
+        });
+
         // Launch servlet with embedded junit tests,
         server.startServer();
     }

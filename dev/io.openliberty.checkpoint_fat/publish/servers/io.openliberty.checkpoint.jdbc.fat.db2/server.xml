@@ -32,7 +32,16 @@
   </library>
   
   <keyStore id="defaultKeyStore" location="security/db2-keystore.p12" password="db2test" />
-    
+
+  <!-- these are place holders so we don't have to have the env set before checkpoint -->
+  <variable name="DB2_DBNAME" defaultValue="placeholder" />
+  <variable name="DB2_HOSTNAME" defaultValue="placeholder" />
+  <variable name="DB2_PASS" defaultValue="placeholder" />
+  <variable name="DB2_PORT" defaultValue="45000" />
+  <variable name="DB2_PORT_SECURE" defaultValue="45001" />
+  <variable name="DB2_USER" defaultValue="placeholder" />
+
+
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DB2Lib"/>
     <properties.db2.jcc
