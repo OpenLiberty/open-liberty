@@ -12,15 +12,18 @@ package mpapp1;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Iterator;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 
 @ApplicationScoped
-public class ApplicationScopedOnCheckpointBeanWithConfigObject {
+public class ApplicationScopedOnCheckpointBeanWithConfigObjectProperties {
 
     @Inject
     Config config;
@@ -46,19 +49,16 @@ public class ApplicationScopedOnCheckpointBeanWithConfigObject {
         check("serverValue");
     }
 
-    public void appScopeAnnoValueTest() {
-        check("annoValue");
-    }
-
     private void check(String expected) {
-        //Get optional value
-        String optionalValue = config.getOptionalValue("test_key", String.class).orElse("annoValue");
-        assertEquals("Wrong value for test key.", expected, optionalValue);
-
-        if (!expected.equals("annoValue")) {
-            // Get value
-            String value = config.getValue("test_key", String.class);
-            assertEquals("Wrong value for test key.", expected, value);
+        String actual = "";
+        Iterable<ConfigSource> configSources = config.getConfigSources();
+        for (Iterator<ConfigSource> iSources = configSources.iterator(); iSources.hasNext();) {
+            ConfigSource source = iSources.next();
+            String value = source.getProperties().get("test_key");
+            if (value != null) {
+                actual = value;
+            }
         }
+        assertEquals("Wrong value for test key.", expected, actual);
     }
 }

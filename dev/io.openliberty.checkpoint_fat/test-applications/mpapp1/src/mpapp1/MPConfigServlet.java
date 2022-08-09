@@ -35,6 +35,9 @@ public class MPConfigServlet extends FATServlet {
     @Inject
     ApplicationScopedOnCheckpointBeanWithConfigObject appScopeOnCheckpointWithConfigObject;
 
+    @Inject
+    ApplicationScopedOnCheckpointBeanWithConfigObjectProperties appScopeOnCheckpointWithConfigObjectProperties;
+
     @Test
     public void defaultValueTest() {
         reqScopeBean.defaultValueTest();
@@ -108,6 +111,28 @@ public class MPConfigServlet extends FATServlet {
     @Test
     public void configObjectAppScopeAnnoValueTest() {
         appScopeOnCheckpointWithConfigObject.appScopeAnnoValueTest();
+    }
+
+    @Test
+    public void configObjectPropertiesAppScopeDefaultValueTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeDefaultValueTest();
+    }
+
+    //@Test
+    //The test is failing to get the environment variable property value.
+    public void configObjectPropertiesAppScopeEnvValueTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeEnvValueTest();
+    }
+
+    //@Test
+    //The test is failing to get the environment variable property value.
+    public void configObjectPropertiesAppScopeEnvValueChangeTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeEnvValueChangeTest();
+    }
+
+    @Test
+    public void configObjectPropertiesAppScopeServerValueTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeServerValueTest();
     }
 
     @Test
