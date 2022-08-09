@@ -455,7 +455,7 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
                 if (securityCollaborator.isCDINeeded()) {
                     // Invoke notifyServletRequestCreated here because JSR 375 requires that all CDI scopes are available. 
 
-                    // Same fix as OLGH18333 -- For Async Error Path & ServletRequestListners 
+                    // Same fix as OLGH18333 -- For Async Error Path & ServletRequestListeners 
                     if (DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR && reqState != null && reqState.getAttribute("_invokeAsyncErrorHandling") != null ) {
                         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
                             logger.logp(Level.FINE, CLASS_NAME, "preInvokeCollaborators", "Async error handling, setting servlet request created manually"); 
