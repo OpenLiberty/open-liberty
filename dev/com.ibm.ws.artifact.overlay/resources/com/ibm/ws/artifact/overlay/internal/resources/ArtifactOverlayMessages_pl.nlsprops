@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.overlay/resources/com/ibm/ws/artifact/overlay/internal/resources/ArtifactOverlayMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# # A file path.
+overlay.does.not.exist=CWWKM0301E: Folder nak\u0142adki {0} nie istnieje.
+overlay.does.not.exist.explanation=System plik\u00f3w Liberty nie jest sp\u00f3jny z konfiguracj\u0105 nak\u0142adki.  Taka sytuacja mo\u017ce mie\u0107 miejsce, gdy serwer zostanie zrestartowany z powodu zmian w konfiguracji nak\u0142adki.
+overlay.does.not.exist.useraction=Zrestartuj serwer z opcj\u0105 '--clean'.
+
+# # A file path.
+overlay.not.directory=CWWKM0302E: Folder nak\u0142adki {0} nie jest katalogiem.
+overlay.not.directory.explanation=System plik\u00f3w Liberty nie jest sp\u00f3jny z konfiguracj\u0105 nak\u0142adki.  Taka sytuacja mo\u017ce mie\u0107 miejsce, gdy serwer zostanie zrestartowany z powodu zmian w konfiguracji nak\u0142adki.
+overlay.not.directory.useraction=Zrestartuj serwer z opcj\u0105 '--clean'.
+
+# # A file path.
+overlay.not.empty=CWWKM0303E: Folder nak\u0142adki {0} nie jest pusty.
+overlay.not.empty.explanation=System plik\u00f3w Liberty nie jest sp\u00f3jny z konfiguracj\u0105 nak\u0142adki.  Taka sytuacja mo\u017ce mie\u0107 miejsce, gdy serwer zostanie zrestartowany z powodu zmian w konfiguracji nak\u0142adki.
+overlay.not.empty.useraction=Zrestartuj serwer z opcj\u0105 '--clean'.
+
+# # A file path.
+overlay.cache.does.not.exist=CWWKM0304E: Folder pami\u0119ci podr\u0119cznej nak\u0142adki {0} nie istnieje.
+overlay.cache.does.not.exist.explanation=System plik\u00f3w Liberty nie jest sp\u00f3jny z konfiguracj\u0105 nak\u0142adki.  Taka sytuacja mo\u017ce mie\u0107 miejsce, gdy serwer zostanie zrestartowany z powodu zmian w konfiguracji nak\u0142adki.
+overlay.cache.does.not.exist.useraction=Zrestartuj serwer z opcj\u0105 '--clean'.
+
+# # A file path.
+overlay.cache.not.directory=CWWKM0305E: Folder pami\u0119ci podr\u0119cznej nak\u0142adki {0} nie jest katalogiem.
+overlay.cache.not.directory.explanation=System plik\u00f3w Liberty nie jest sp\u00f3jny z konfiguracj\u0105 nak\u0142adki.  Taka sytuacja mo\u017ce mie\u0107 miejsce, gdy serwer zostanie zrestartowany z powodu zmian w konfiguracji nak\u0142adki.
+overlay.cache.not.directory.useraction=Zrestartuj serwer z opcj\u0105 '--clean'.
+
+# # A file path.
+overlay.exists.not.directory=CWWKM0306E: Plik nak\u0142adki {0} istnieje, ale nie jest katalogiem.
+overlay.exists.not.directory.explanation=System plik\u00f3w Liberty nie jest sp\u00f3jny z konfiguracj\u0105 nak\u0142adki.  Taka sytuacja mo\u017ce mie\u0107 miejsce, gdy serwer zostanie zrestartowany z powodu zmian w konfiguracji nak\u0142adki.
+overlay.exists.not.directory.useraction=Zrestartuj serwer z opcj\u0105 '--clean'.
