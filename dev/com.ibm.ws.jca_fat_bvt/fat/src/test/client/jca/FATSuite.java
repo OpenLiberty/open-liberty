@@ -41,13 +41,13 @@ public class FATSuite {
         if (JavaInfo.JAVA_VERSION >= 11) {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                             // need widen option to handle jar file within a jar file.
-                            .andWith(new JakartaEE9Action().fullFATOnly().withWiden())
+                            .andWith(new JakartaEE9Action().fullFATOnly())
                             // need widen option to handle jar file within a jar file.
-                            .andWith(new JakartaEE10Action().withWiden());
+                            .andWith(new JakartaEE10Action());
         } else {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                             // need widen option to handle jar file within a jar file.
-                            .andWith(new JakartaEE9Action().withWiden());
+                            .andWith(new JakartaEE9Action());
         }
 
     }

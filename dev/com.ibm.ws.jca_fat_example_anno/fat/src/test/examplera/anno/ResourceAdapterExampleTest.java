@@ -76,7 +76,7 @@ public class ResourceAdapterExampleTest extends FATServletClient {
 
         // find
         runTest("?functionName=FIND&capital=Saint%20Paul",
-                "Successfully performed FIND with output: [area=86939, capital=Saint Paul, population=5379139, state=Minnesota]");;
+                "Successfully performed FIND with output: [area=86939, capital=Saint Paul, population=5379139, state=Minnesota]");
 //        output = runInServlet("functionName=FIND&capital=Saint%20Paul");
 //        if (output.indexOf("Successfully performed FIND with output: {area=86939, capital=Saint Paul, population=5379139, state=Minnesota}") < 0)
 //            throw new Exception("Did not find entry. Output: " + output);
