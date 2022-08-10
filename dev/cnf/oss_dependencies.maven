@@ -509,7 +509,6 @@ org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.7.10
 org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:3.0.2
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.10
 org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.2
-org.eclipse.persistence:org.eclipse.persistence.moxy:4.0.0-M3
 org.eclipse:yasson:2.0.1
 org.eclipse:yasson:3.0.0
 org.ehcache:ehcache:3.8.1
@@ -526,19 +525,12 @@ org.glassfish.hk2:hk2-utils:2.5.0-b42
 org.glassfish.hk2:osgi-resource-locator:1.0.1
 org.glassfish.hk2:osgi-resource-locator:1.0.3
 org.glassfish.jaxb:codemodel:3.0.1
-org.glassfish.jaxb:codemodel:4.0.0
 org.glassfish.jaxb:jaxb-core:3.0.1
-org.glassfish.jaxb:jaxb-core:4.0.0
 org.glassfish.jaxb:jaxb-jxc:3.0.1
-org.glassfish.jaxb:jaxb-jxc:4.0.0
 org.glassfish.jaxb:jaxb-runtime:3.0.1
-org.glassfish.jaxb:jaxb-runtime:4.0.0
 org.glassfish.jaxb:jaxb-xjc:3.0.1
-org.glassfish.jaxb:jaxb-xjc:4.0.0
 org.glassfish.jaxb:txw2:3.0.1
-org.glassfish.jaxb:txw2:4.0.0
 org.glassfish.jaxb:xsom:3.0.1
-org.glassfish.jaxb:xsom:4.0.0
 org.glassfish.jersey.bundles.repackaged:jersey-guava:2.12
 org.glassfish.jersey.containers:jersey-container-servlet-core:2.12
 org.glassfish.jersey.containers:jersey-container-servlet:2.12
