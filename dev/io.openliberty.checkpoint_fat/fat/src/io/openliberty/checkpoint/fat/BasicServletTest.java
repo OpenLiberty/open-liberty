@@ -14,8 +14,10 @@ import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodName;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
@@ -27,6 +29,9 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -42,6 +47,9 @@ public class BasicServletTest extends FATServletClient {
     @Server("checkpointFATServer")
     @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointFATServer", TestMode.LITE, MicroProfileActions.MP41, MicroProfileActions.MP50);
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
@@ -64,6 +72,11 @@ public class BasicServletTest extends FATServletClient {
     @After
     public void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    @AfterClass
+    public static void removeWebApp() throws Exception {
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
 }
