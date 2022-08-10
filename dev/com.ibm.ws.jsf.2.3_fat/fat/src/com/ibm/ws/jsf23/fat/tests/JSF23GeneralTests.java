@@ -292,7 +292,7 @@ public class JSF23GeneralTests {
      * @throws Exception
      */
     @Test
-    public void testPerViewPhaseListnerQueueExceptionDefault() throws Exception {
+    public void testPerViewPhaseListenerQueueExceptionDefault() throws Exception {
         String contextRoot = "PerViewPhaseListenerDoNotQueueException";
         try (WebClient webClient = new WebClient()) {
 

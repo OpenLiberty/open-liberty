@@ -17,8 +17,10 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Set;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -30,6 +32,9 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import componenttest.topology.utils.HttpUtils;
@@ -44,6 +49,9 @@ public class CheckpointPhaseTest {
 
     @Server("checkpointFATServer")
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointFATServer", TestMode.LITE, MicroProfileActions.MP41, MicroProfileActions.MP50);
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -124,6 +132,11 @@ public class CheckpointPhaseTest {
     @After
     public void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    @AfterClass
+    public static void removeWebApp() throws Exception {
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
 }

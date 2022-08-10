@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.test.tests.DualServerDynamicFSTest1;
 import com.ibm.ws.transaction.test.tests.DualServerDynamicFSTest2;
+import com.ibm.ws.transaction.test.tests.FATSuiteBase;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -26,10 +27,16 @@ import componenttest.rules.repeater.RepeatTests;
                 DualServerDynamicFSTest1.class,
                 DualServerDynamicFSTest2.class,
 })
-public class FATSuite {
+public class FATSuite extends FATSuiteBase {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
+
+    public static void beforeSuite() throws Exception {
+    }
+
+    public static void afterSuite() {
+    }
 }
