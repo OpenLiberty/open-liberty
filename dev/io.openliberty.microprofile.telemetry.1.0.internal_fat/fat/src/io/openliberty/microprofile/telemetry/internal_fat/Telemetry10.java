@@ -33,6 +33,7 @@ import componenttest.topology.utils.FATServletClient;
 
 import jakarta.servlet.annotation.WebServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.Telemetry10Servlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.PatchTestApp;
 import java.io.File;
 
 @RunWith(FATRunner.class)
@@ -52,6 +53,7 @@ public class Telemetry10 extends FATServletClient {
         .addAsManifestResource(new File("publish/resources/permissions.xml"), "permissions.xml")
         .addAsManifestResource(new File("publish/resources/META-INF/microprofile-config.properties"),"microprofile-config.properties");
         app.addClasses(Telemetry10Servlet.class);
+        app.addClasses(PatchTestApp.class);
         ShrinkHelper.exportDropinAppToServer(server, app, deployOptions);
         server.startServer();
     }

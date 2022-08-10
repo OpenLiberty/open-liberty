@@ -67,7 +67,6 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetry getOpenTelemetry() {
-
         HashMap<String,String> telemetryProperties = getTelemetryProperties();
         SpanExporter exporter = getSpanExporter(telemetryProperties);
         Resource serviceNameResource = getServiceName(telemetryProperties);
@@ -84,7 +83,6 @@ public class OpenTelemetryProducer {
             .build();
 
         Runtime.getRuntime().addShutdownHook(new Thread(tracerProvider::close));
-
         return openTelemetry;
     }
 
