@@ -141,7 +141,11 @@ public class CacheManagerServiceImpl implements CacheManagerService {
          * Close and clear the CacheManager instance.
          */
         if (cacheManager != null) {
-            cacheManager.close();
+            try {
+                cacheManager.close();
+            } catch (Exception e) {
+                Tr.warning(tc, "CWLJC0013_CLOSE_CACHEMGR_ERR", ((id == null) ? "" : id), e);
+            }
         }
 
         /*
