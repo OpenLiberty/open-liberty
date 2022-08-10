@@ -27,6 +27,7 @@ import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.resteasy.cdi.Utils;
 import org.jboss.resteasy.cdi.i18n.LogMessages;
 import org.jboss.resteasy.cdi.i18n.Messages;
 
@@ -49,57 +50,32 @@ public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements
        }
        return false;
     }
-
+    
     /**
-     * Set a default scope for each CDI bean which is a RESTful WS Resource.
-     *
-     * @param <T> type
-     * @param event event
-     * @param beanManager bean manager
-     */
-    @Override
-    public <T> void observeResources(@WithAnnotations({Path.class}) @Observes ProcessAnnotatedType<T> event, BeanManager beanManager)
-    {
-       AnnotatedType<T> annotatedType = event.getAnnotatedType();
-       Class<?> javaClass = annotatedType.getJavaClass();
-       if(!javaClass.isInterface()
-           && !isSessionBean(annotatedType)
-           && !annotatedType.isAnnotationPresent(Decorator.class))
-       {
-          LogMessages.LOGGER.debug(Messages.MESSAGES.discoveredCDIBeanJaxRsResource(annotatedType.getJavaClass().getCanonicalName()));
-          //Liberty change start
-          if (Application.class.isAssignableFrom(javaClass)) {
-              event.setAnnotatedType(wrapAnnotatedType(annotatedType, applicationScopedLiteral));
-          } /* else {
-              event.setAnnotatedType(wrapAnnotatedType(annotatedType, requestScopedLiteral));
-          }
-          */
+    * Set a default scope for each CDI bean which is a RESTful WS Resource.
+    *
+    * @param <T>         type
+    * @param event       event
+    * @param beanManager bean manager
+    */
+   public <T> void observeResources(@WithAnnotations({Path.class}) @Observes ProcessAnnotatedType<T> event,
+                                    BeanManager beanManager) {
+      AnnotatedType<T> annotatedType = event.getAnnotatedType();
+      Class<?> javaClass = annotatedType.getJavaClass();
+      if (!javaClass.isInterface()
+              && !isSessionBean(annotatedType)
+              && !annotatedType.isAnnotationPresent(Decorator.class)) {
+         if (!Utils.isScopeDefined(annotatedType, beanManager)) {
+            LogMessages.LOGGER.debug(Messages.MESSAGES.discoveredCDIBeanJaxRsResource(annotatedType.getJavaClass()
+                    .getCanonicalName()));
+            //Liberty change start
+            if (Application.class.isAssignableFrom(javaClass)) {
+              event.configureAnnotatedType().add(applicationScopedLiteral);
+            } 
           //Liberty change end
-          this.getResources().add(javaClass);
-       }
-    }
-
-    /**
-     * Set a default scope for each CDI bean which is a RESTful WS Provider.
-     *
-     * @param <T> type
-     * @param event event
-     * @param beanManager bean manager
-     */
-    @Override
-    public <T> void observeProviders(@WithAnnotations({Provider.class}) @Observes ProcessAnnotatedType<T> event, BeanManager beanManager)
-    {
-       AnnotatedType<T> annotatedType = event.getAnnotatedType();
-
-       if(!annotatedType.getJavaClass().isInterface()
-          && !isSessionBean(annotatedType)
-          && !isUnproxyableClass(annotatedType.getJavaClass()))
-       {
-          LogMessages.LOGGER.debug(Messages.MESSAGES.discoveredCDIBeanJaxRsProvider(annotatedType.getJavaClass().getCanonicalName()));
-          event.setAnnotatedType(wrapAnnotatedType(annotatedType, applicationScopedLiteral));
-          this.getProviders().add(annotatedType.getJavaClass());
-       }
-    }
+         }
+      }
+   }
 
     /**
      * Check for select case of unproxyable bean type.
