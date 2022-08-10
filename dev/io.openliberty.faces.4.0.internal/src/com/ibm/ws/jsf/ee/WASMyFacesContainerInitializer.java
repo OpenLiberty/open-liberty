@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,35 +14,26 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.ResourceDependencies;
-import javax.faces.application.ResourceDependency;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.CustomScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.NoneScoped;
-import javax.faces.bean.ReferencedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.component.FacesComponent;
-import javax.faces.component.UIComponent;
-import javax.faces.component.behavior.FacesBehavior;
-import javax.faces.convert.FacesConverter;
-import javax.faces.convert.Converter;
-import javax.faces.event.ListenerFor;
-import javax.faces.event.ListenersFor;
-import javax.faces.event.NamedEvent;
-import javax.faces.model.FacesDataModel;
-import javax.faces.render.FacesBehaviorRenderer;
-import javax.faces.render.FacesRenderer;
-import javax.faces.render.Renderer;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.HandlesTypes;
+import jakarta.faces.application.ResourceDependencies;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.component.FacesComponent;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.behavior.FacesBehavior;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.event.ListenerFor;
+import jakarta.faces.event.ListenersFor;
+import jakarta.faces.event.NamedEvent;
+import jakarta.faces.model.FacesDataModel;
+import jakarta.faces.render.FacesBehaviorRenderer;
+import jakarta.faces.render.FacesRenderer;
+import jakarta.faces.render.Renderer;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.HandlesTypes;
 
 import org.apache.myfaces.ee.MyFacesContainerInitializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
@@ -54,8 +45,6 @@ import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
  *
  */
 @HandlesTypes({
-        ApplicationScoped.class,
-        CustomScoped.class,
         FacesBehavior.class,
         FacesBehaviorRenderer.class,
         FacesComponent.class,
@@ -65,16 +54,9 @@ import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
         FacesDataModel.class,
         ListenerFor.class,
         ListenersFor.class,
-        ManagedBean.class,
-        ManagedProperty.class,
         NamedEvent.class,
-        NoneScoped.class,
-        ReferencedBean.class,
-        RequestScoped.class,
         ResourceDependencies.class,
         ResourceDependency.class,
-        SessionScoped.class,
-        ViewScoped.class,
         UIComponent.class,
         Converter.class,
         Renderer.class,

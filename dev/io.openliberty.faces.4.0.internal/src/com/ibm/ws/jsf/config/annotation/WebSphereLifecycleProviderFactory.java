@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 201, 2020 IBM Corporation and others.
+ * Copyright (c) 201, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ package com.ibm.ws.jsf.config.annotation;
 
 import java.util.HashMap;
 
-import javax.faces.context.ExternalContext;
+import jakarta.faces.context.ExternalContext;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

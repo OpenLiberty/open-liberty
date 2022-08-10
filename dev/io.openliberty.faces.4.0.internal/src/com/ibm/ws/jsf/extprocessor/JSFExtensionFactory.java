@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.faces.application.Application;
-import javax.servlet.ServletContextListener;
+import jakarta.faces.application.Application;
+import jakarta.servlet.ServletContextListener;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -46,7 +46,7 @@ public class JSFExtensionFactory implements ExtensionFactory {
     protected static final Logger log = Logger.getLogger("com.ibm.ws.jsf");
     private static final String CLASS_NAME = "com.ibm.ws.jsf.extprocessor.JSFExtensionFactory";
 
-    private static final String FACES_SERVLET_RESOURCE = "javax/faces/webapp/FacesServlet.class";
+    private static final String FACES_SERVLET_RESOURCE = "jakarta/faces/webapp/FacesServlet.class";
     private static final String SUN_CONFIGURE_LISTENER_CLASSNAME = "com.sun.faces.config.ConfigureListener";
     private static final String MYFACES_LIFECYCLE_LISTENER_CLASSNAME = "org.apache.myfaces.webapp.StartupServletContextListener";
     private static final String sunRIClassToSearch = "com/sun/faces/vendor/WebSphereInjectionProvider.class";
@@ -322,7 +322,7 @@ public class JSFExtensionFactory implements ExtensionFactory {
         // loaded by the classloader, which is always true).
         for (Iterator<IServletConfig> servletConfigs = config.getServletInfos(); servletConfigs.hasNext();) {
             String servletClass = servletConfigs.next().getClassName();
-            if ("javax.faces.webapp.FacesServlet".equals(servletClass)
+            if ("jakarta.faces.webapp.FacesServlet".equals(servletClass)
                     || "org.apache.myfaces.webapp.MyFacesServlet".equals(servletClass)) {
                 return true;
             }
