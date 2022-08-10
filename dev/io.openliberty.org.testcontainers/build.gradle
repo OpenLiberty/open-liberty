@@ -9,9 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-task collectTestContainerData {
-  doLast {
-  	//long start = System.currentTimeMillis()
+task assembleTestContainerData {
+  	long start = System.currentTimeMillis()
   	
   	//First create a list of projects that use testcontainers
   	File projectList = new File(project.getProjectDir(), 'cache/projects')
@@ -60,18 +59,17 @@ task collectTestContainerData {
     }//projectArr.each
     
     // Write lists to file
-    projectList << '# Updated on ' + new Date().format('dd/MM/yyyy') + '\n'
     projectArr.sort().forEach() { projectList << it << '\n' }
     
-    imageList << '# Updated on ' + new Date().format('dd/MM/yyyy') + '\n'
     imageArr.unique().sort()
     imageArr -= '\\'
     imageArr.forEach() { imageList << it << '\n' }
     
+    println 'Cached test container project and image data in ' + projectList + ' and ' + imageList
+    
     // Average execution time is 500 ms
-    //long end = System.currentTimeMillis()
-    //println 'Execution time in ms: ' + ( end - start )
-  }
+    long end = System.currentTimeMillis()
+    println 'Execution time in ms: ' + ( end - start )
 }
 
-build.dependsOn collectTestContainerData
+assemble.dependsOn assembleTestContainerData

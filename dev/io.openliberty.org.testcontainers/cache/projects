@@ -1,4 +1,3 @@
-# Updated on 04/08/2022
 build.example.testcontainers_fat
 com.ibm.ws.cloudant_fat
 com.ibm.ws.concurrent.persistent_fat

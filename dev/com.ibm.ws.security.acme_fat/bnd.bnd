@@ -23,6 +23,8 @@ tested.features: servlet-3.1, appsecurity-4.0, expressionlanguage-4.0, cdi-3.0
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
+fat.test.container.images: letsencrypt/pebble:latest
+
 -buildpath: \
     com.ibm.ws.security.acme;version=latest, \
     io.openliberty.org.testcontainers;version=latest,\
