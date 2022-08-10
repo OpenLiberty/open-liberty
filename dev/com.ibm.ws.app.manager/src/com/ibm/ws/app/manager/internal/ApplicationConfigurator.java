@@ -91,16 +91,11 @@ import com.ibm.wsspi.logging.Introspector;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
-/**
- *
- */
 @Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class, CheckpointHook.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = {
-                        Constants.SERVICE_VENDOR + "=" + "IBM",
-                        Constants.SERVICE_PID + "=" + AppManagerConstants.APPLICATIONS_PID
-           })
+           property = { Constants.SERVICE_VENDOR + "=" + "IBM",
+                        Constants.SERVICE_PID + "=" + AppManagerConstants.APPLICATIONS_PID })
 public class ApplicationConfigurator implements ManagedServiceFactory, Introspector, RuntimeUpdateListener, ApplicationRecycleCoordinator, CheckpointHook {
     private static final TraceComponent _tc = Tr.register(ApplicationConfigurator.class);
 
@@ -844,11 +839,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         _applicationManager = null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.osgi.service.cm.ManagedServiceFactory#getName()
-     */
     @Override
     public String getName() {
         return "ApplicationConfigurator";
@@ -906,31 +896,16 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.logging.Introspector#getIntrospectorName()
-     */
     @Override
     public String getIntrospectorName() {
         return "ApplicationConfigurator";
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.logging.Introspector#getIntrospectorDescription()
-     */
     @Override
     public String getIntrospectorDescription() {
         return "ApplicationConfigurator";
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.logging.Introspector#introspect(java.io.PrintWriter)
-     */
     @Override
     public void introspect(PrintWriter out) throws Exception {
         writeHeader("Applications", out);
@@ -1160,28 +1135,45 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
-    private boolean cleanCache(File cacheDir, Set<String> excludedPids) {
-        if (cacheDir == null || !cacheDir.isDirectory())
+    private boolean cleanCache(File appsRoot, Set<String> excludedCacheIds) {
+        if ((appsRoot == null) || !appsRoot.isDirectory()) {
             return false;
+        }
+
+        File[] appRoots = appsRoot.listFiles();
+        if ((appRoots == null) || (appRoots.length == 0)) {
+            return true;
+        }
 
         boolean result = true;
-        for (File pidDirectory : cacheDir.listFiles()) {
-            if (!excludedPids.contains(pidDirectory.getName())) {
-                result &= cleanCacheDirectory(pidDirectory);
+        for (File appRoot : appRoots) {
+            if (!excludedCacheIds.contains(appRoot.getName())) {
+                if (!recursivelyDelete(appRoot)) {
+                    result = false;
+                }
             }
         }
         return result;
     }
 
-    private boolean cleanCacheDirectory(File f) {
+    private boolean recursivelyDelete(File f) {
+        boolean result = true;
+
         if (f.isDirectory()) {
-            boolean result = true;
-            for (File child : f.listFiles()) {
-                result &= cleanCacheDirectory(child);
+            File[] children = f.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    if (!recursivelyDelete(child)) {
+                        result = false;
+                    }
+                }
             }
-            return result &= f.delete();
+        }
+
+        if (!f.delete()) {
+            return false;
         } else {
-            return f.delete();
+            return result;
         }
     }
 
@@ -1930,13 +1922,17 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     }
 
     public synchronized void readyForAppsToStop() {
+        Set<String> cacheIds = new HashSet<String>();
         Set<String> appPids = new HashSet<String>();
         _appsToShutdown = new HashSet<NamedApplication>();
         for (NamedApplication app : _appFromName.values()) {
-            ApplicationStateMachine asm = app.getStateMachine();
-            if (asm != null) {
+            if (app.getStateMachine() != null) {
                 ApplicationConfig appConfig = app.getConfig();
-                appPids.add(appConfig.getConfigPid());
+                String configId = (String) appConfig.getConfigProperty("id");
+                String configPid = appConfig.getConfigPid();
+                String cacheId = ((configId == null) ? configPid : configId);
+                cacheIds.add(cacheId);
+                appPids.add(configPid);
                 _appsToShutdown.add(app);
             }
         }
@@ -1945,9 +1941,9 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         _blockedConfigFromPid.clear();
         _blockedPidsFromName.clear();
 
-        cleanCache(getCacheAdaptDir(), appPids);
-        cleanCache(getCacheOverlayDir(), appPids);
-        cleanCache(getCacheDir(), appPids);
+        cleanCache(getCacheAdaptDir(), cacheIds);
+        cleanCache(getCacheOverlayDir(), cacheIds);
+        cleanCache(getCacheDir(), cacheIds);
 
         ApplicationStateCoordinator.setStoppingAppPids(appPids);
         for (NamedApplication app : _appsToShutdown) {
@@ -1956,11 +1952,11 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         _appsToShutdown.clear();
     }
 
-    private ApplicationDependency uninstallApp(final NamedApplication appFromPid) {
+    private ApplicationDependency uninstallApp(NamedApplication appFromPid) {
         return uninstallApp(appFromPid, false);
     }
 
-    private ApplicationDependency uninstallApp(final NamedApplication appFromPid, boolean cleanCache) {
+    private ApplicationDependency uninstallApp(NamedApplication appFromPid, boolean cleanCache) {
         final String oldAppName = appFromPid.getAppName();
         ApplicationDependency appRemoved = createDependency("resolves when app " + oldAppName + " is removed");
         // uninstall the currently running app with this pid
@@ -1975,8 +1971,11 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             @Override
             public void successfulCompletion(Future<Boolean> future, Boolean result) {
                 synchronized (ApplicationConfigurator.this) {
-                    final String removedAppPid = appFromPid.getConfigPid();
+                    String removedAppId = (String) appFromPid.getConfig().getConfigProperty("id");
+                    String removedAppPid = appFromPid.getConfigPid();
+
                     appFromPid.unregisterServices();
+
                     if (_appFromPid.containsKey(removedAppPid) && _appFromPid.get(removedAppPid).equals(appFromPid)) {
                         _appFromPid.remove(removedAppPid);
                     }
@@ -1986,34 +1985,31 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
                     ApplicationStateCoordinator.updateStartingAppStatus(removedAppPid, ApplicationStateCoordinator.AppStatus.REMOVED);
                     ApplicationStateCoordinator.updateStoppingAppStatus(removedAppPid, ApplicationStateCoordinator.AppStatus.REMOVED);
+
                     List<String> blockedPids = _blockedPidsFromName.get(oldAppName);
-                    if (blockedPids != null && !blockedPids.isEmpty()) {
+                    if ((blockedPids != null) && !blockedPids.isEmpty()) {
                         String blockedPid = blockedPids.remove(0);
                         ApplicationConfig blockedConfig = _blockedConfigFromPid.remove(blockedPid);
                         processUpdate(blockedPid, blockedConfig);
                     }
-                    if (cleanCache) {
-                        File f = new File(getCacheDir(), removedAppPid);
-                        cleanCacheDirectory(f);
-                        f = new File(getCacheAdaptDir(), removedAppPid);
-                        cleanCacheDirectory(f);
-                        f = new File(getCacheOverlayDir(), removedAppPid);
-                        cleanCacheDirectory(f);
-                    }
 
+                    if (cleanCache) {
+                        String cacheId = ((removedAppId == null) ? removedAppPid : removedAppId);
+                        recursivelyDelete(new File(getCacheDir(), cacheId));
+                        recursivelyDelete(new File(getCacheAdaptDir(), cacheId));
+                        recursivelyDelete(new File(getCacheOverlayDir(), cacheId));
+                    }
                 }
             }
 
             @Override
             public void failedCompletion(Future<Boolean> future, Throwable t) {
+                // EMPTY
             }
         });
         return appRemoved;
     }
 
-    /**
-     * @param appPid
-     */
     public void unblockAppStartDependencies(String appPid) {
         List<ApplicationDependency> deps = _startAfterDependencies.get(appPid);
         if (deps == null)
@@ -2025,8 +2021,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     }
 
     private class CycleException extends Exception {
-
-        /**  */
         private static final long serialVersionUID = 3260293053577638179L;
     }
 
@@ -2075,10 +2069,8 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 checkForCycles(dependency, existing);
 
                 existing.removeLast();
-
             }
         }
-
     }
 
     public void restoreMessage(Runnable message) {

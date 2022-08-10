@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -220,14 +220,12 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         String appName = appInfo.getName();
         String appPath = appInfo.getLocation();
 
-        Tr.info(_tc, "Create deployed application:" +
-                     " ID [ " + appId + " ]" +
-                     " PID [ " + appPid + " ]" +
-                     " Name [ " + appName + " ]" +
-                     " Location [ " + appPath + " ]");
+        Tr.debug(_tc, "Create deployed application:" +
+                      " ID [ " + appId + " ]" +
+                      " PID [ " + appPid + " ]" +
+                      " Name [ " + appName + " ]" +
+                      " Location [ " + appPath + " ]");
 
-        String cacheId = ( ( appId == null ) ? appPid : appId );
-        
         File appFile = new File(appPath);
 
         Container appContainer = appInfo.getContainer();
@@ -277,6 +275,7 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
                 // Tr.info(_tc, "Initial 'useJandex' [ " +
                 //     ((appContainerInfo == null) ? "unavailable" : appContainerInfo.getUseJandex()) + " ]");
 
+                String cacheId = ( (appId == null) ? appPid : appId );                
                 originalAppContainer = appContainer;
                 appContainer = deployedAppServices.setupContainer(cacheId, expandedFile);
 

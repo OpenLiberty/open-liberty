@@ -609,7 +609,6 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         @Override
         public Container setupContainer(String configId, String pid, File locationFile) {
             String cacheId = ( (configId == null) ? pid : configId );
-            Tr.event(_tc, asmLabel() + "Workarea cache ID {0}", cacheId);
             
             File cacheDir = new File(getCacheDir(), cacheId);
             if (!FileUtils.ensureDirExists(cacheDir)) {
