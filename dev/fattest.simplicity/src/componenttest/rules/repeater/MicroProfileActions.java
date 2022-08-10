@@ -10,14 +10,19 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatActions.EEVersion;
+import componenttest.topology.impl.JavaInfo;
 
-public class MicroProfileActions extends RepeatActions {
+public class MicroProfileActions {
 
     private static final String[] MP10_FEATURES_ARRAY = { "microProfile-1.0",
                                                           "cdi-1.2",
@@ -275,7 +280,7 @@ public class MicroProfileActions extends RepeatActions {
     //The FeatureSet for the latest MicrotProfile version
     public static final FeatureSet LATEST = MP41;
 
-    //All MicroProfile FeatureSets
+    //All MicroProfile FeatureSets, needs to be in order for repeat(String, TestMode, Set, FeatureSet, Set)
     private static final FeatureSet[] ALL_SETS_ARRAY = { MP10, MP12, MP13, MP14, MP20, MP21, MP22, MP30, MP32, MP33, MP40, MP41, MP50, MP60 };
     public static final Set<FeatureSet> ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_SETS_ARRAY)));
 
@@ -383,7 +388,46 @@ public class MicroProfileActions extends RepeatActions {
      * @return                          A RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSets);
+        Set<FeatureSet> otherFeatureSetsSet = new HashSet<>(Arrays.asList(otherFeatureSets));
+        return repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSetsSet);
+    }
+
+    /**
+     * As {@link RepeatActions#repeat(String, TestMode, Set, FeatureSet, Set)} except that if {@code firstFeatureSet} isn't compatible with the current Java version, we try to
+     * replace it with the newest set from {@code otherFeatureSets} that is compatible.
+     *
+     * @param  server                   The server to repeat on
+     * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param  allFeatureSets           All known FeatureSets. The features not in the current FeatureSet are removed from the repeat
+     * @param  firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
+     * @return                          A RepeatTests instance
+     */
+    private static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
+                                      Set<FeatureSet> otherFeatureSets) {
+
+        // If the firstFeatureSet requires a Java level higher than the one we're running, try to find a suitable replacement so we don't end up not running the test at all in LITE mode
+        int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();
+        if (currentJavaLevel < firstFeatureSet.getEEVersion().getMinJavaLevel()) {
+
+            List<FeatureSet> allSetsList = new ArrayList<>(Arrays.asList(ALL_SETS_ARRAY));
+            Collections.reverse(allSetsList); // Reverse list so newest MP version is first in list
+
+            Set<FeatureSet> candidateFeatureSets = otherFeatureSets;
+
+            // Find the newest MP feature set that's in otherFeatureSets and is compatible with the current java version
+            Optional<FeatureSet> newestSupportedSet = allSetsList.stream()
+                            .filter(s -> candidateFeatureSets.contains(s))
+                            .filter(s -> s.getEEVersion().getMinJavaLevel() <= currentJavaLevel)
+                            .findFirst();
+
+            if (newestSupportedSet.isPresent()) {
+                firstFeatureSet = newestSupportedSet.get();
+                otherFeatureSets = new HashSet<>(otherFeatureSets);
+                otherFeatureSets.remove(newestSupportedSet.get());
+            }
+        }
+        return RepeatActions.repeat(server, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, otherFeatureSets);
     }
 
 }
