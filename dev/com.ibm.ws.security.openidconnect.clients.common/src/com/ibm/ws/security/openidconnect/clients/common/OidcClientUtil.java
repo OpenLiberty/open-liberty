@@ -109,7 +109,6 @@ public class OidcClientUtil {
         }
 
         handleCustomParams(params, customParams); // custom token ep params
-
         Map<String, Object> postResponseMap = postToTokenEndpoint(tokenEnpoint, params, clientId, clientSecret, sslSocketFactory, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
 
         String tokenResponse;
