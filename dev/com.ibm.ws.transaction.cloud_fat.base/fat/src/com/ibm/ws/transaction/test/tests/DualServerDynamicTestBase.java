@@ -21,6 +21,7 @@ import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.test.FATSuite;
@@ -56,9 +57,8 @@ public class DualServerDynamicTestBase extends FATServletClient {
         DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
     }
 
-    //  @Override
     public void setUp(LibertyServer server) throws Exception {
-    	setupDriver(server);
+        setupDriver(server);
     }
 
     private SetupRunner runner = new SetupRunner() {
@@ -71,6 +71,8 @@ public class DualServerDynamicTestBase extends FATServletClient {
     public void dynamicTest(LibertyServer server1, LibertyServer server2, int test, int resourceCount) throws Exception {
         final String method = "dynamicTest";
         final String id = String.format("%03d", test);
+
+        Log.info(getClass(), method, "FATSuite.databaseContainerType: " + FATSuite.databaseContainerType);
 
         // Start Servers
         if (FATSuite.databaseContainerType != DatabaseContainerType.Derby) {
@@ -99,7 +101,6 @@ public class DualServerDynamicTestBase extends FATServletClient {
         assertNotNull(server2.getServerName() + " did not perform peer recovery",
                       server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, FATUtils.LOG_SEARCH_TIMEOUT));
 
-
         // flush the resource states - retry a few times if this fails
         FATUtils.runWithRetries(() -> runTestWithResponse(server2, servletName, "dumpState").toString());
 
@@ -119,11 +120,11 @@ public class DualServerDynamicTestBase extends FATServletClient {
         assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
     }
 
-	protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
+    protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
 
-    	FATUtils.stopServers(servers);
+        FATUtils.stopServers(servers);
 
-    	for (LibertyServer server : servers) {
+        for (LibertyServer server : servers) {
             try {
                 final RemoteFile rf = server.getFileFromLibertySharedDir(LastingXAResourceImpl.STATE_FILE_ROOT);
                 if (rf.exists()) {
@@ -134,12 +135,6 @@ public class DualServerDynamicTestBase extends FATServletClient {
             }
         }
     }
-
-    /**
-     * @param server
-     * @throws Exception
-     */
-//    protected abstract void setUp(LibertyServer server) throws Exception;
 
     /**
      * @param firstServer
