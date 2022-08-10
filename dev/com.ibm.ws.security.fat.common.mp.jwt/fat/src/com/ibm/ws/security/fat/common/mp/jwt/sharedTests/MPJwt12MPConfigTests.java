@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -206,6 +206,10 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      * @throws Exception
      */
     public static void setAlternateMP_ConfigProperties_envVars(LibertyServer server, MP12ConfigSettings mpConfigSettings) throws Exception {
+        setAlternateMP_ConfigProperties_envVars(new HashMap<String, String>(), server, mpConfigSettings);
+    }
+
+    public static void setAlternateMP_ConfigProperties_envVars(HashMap<String, String> envVars, LibertyServer server, MP12ConfigSettings mpConfigSettings) throws Exception {
 
         // some platforms do NOT support env vars with ".", so, we'll use
         // underscores "_" (our runtime allows either)
@@ -215,7 +219,6 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
         String AlgorithmName = "mp_jwt_verify_publickey_algorithm";
         String DecryptKeyName = "mp_jwt_decrypt_key_location";
 
-        HashMap<String, String> envVars = new HashMap<String, String>();
         Log.info(thisClass, "setAlternateMP_ConfigProperties_envVars", HeaderName + "=" + mpConfigSettings.getHeader());
         envVars.put(HeaderName, mpConfigSettings.getHeader());
         Log.info(thisClass, "setAlternateMP_ConfigProperties_envVars", CookieName + "=" + mpConfigSettings.getCookie());
