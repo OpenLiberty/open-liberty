@@ -49,7 +49,7 @@ public class OidcClientHttpUtil {
         httpUtils = new HttpUtils();
     }
 
-    public SSLSocketFactory getSSLSocketFactory(String sslConfigurationName, String clientId, SSLSupport sslSupport) throws com.ibm.websphere.ssl.SSLException, NoSSLSocketFactoryException {
+    public SSLSocketFactory getSSLSocketFactory(String sslConfigurationName, SSLSupport sslSupport) throws com.ibm.websphere.ssl.SSLException, NoSSLSocketFactoryException {
         SSLSocketFactory sslSocketFactory = null;
         try {
             sslSocketFactory = SecuritySSLUtils.getSSLSocketFactory(sslSupport, sslConfigurationName);

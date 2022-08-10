@@ -235,7 +235,7 @@ public class OIDCClientAuthenticatorUtil {
         boolean needHttps = clientConfig.getUserInfoEndpointUrl().toLowerCase().startsWith("https");
         SSLSocketFactory sslSocketFactory = null;
         try {
-            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), clientConfig.getClientId(), sslSupport);
+            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), sslSupport);
             if (sslSocketFactory == null && needHttps) {
                 Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientConfig.getClientId() });
             }

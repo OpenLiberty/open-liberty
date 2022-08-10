@@ -100,7 +100,7 @@ public class AuthorizationCodeHandler {
         SSLSocketFactory sslSocketFactory = null;
         try {
             boolean throwExc = clientConfig.getTokenEndpointUrl() != null && clientConfig.getTokenEndpointUrl().startsWith("https");
-            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), clientId, sslSupport);
+            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), sslSupport);
             if (sslSocketFactory == null && throwExc) {
                 String errorMessage = Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientId });
                 throw new SSLException(errorMessage);
