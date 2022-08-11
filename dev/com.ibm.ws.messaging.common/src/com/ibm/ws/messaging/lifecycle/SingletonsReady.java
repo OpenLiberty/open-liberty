@@ -55,7 +55,8 @@ import com.ibm.websphere.ras.TraceComponent;
         property = {
                 "service.vendor=IBM",
                 "singletons.cardinality.minimum=100000",
-                "singletons.target=(id=unbound)"})
+                "singletons.target=(id=unbound)",
+                "allSingletons.cardinality.minimum=100000"})
 public class SingletonsReady {
     private static final TraceComponent tc = Tr.register(SingletonsReady.class);
 
@@ -72,7 +73,7 @@ public class SingletonsReady {
             @Reference(name = "singletons") List<SingletonAgent> singletonAgents,
             // This @Reference is unfiltered and will receive every
             // available singleton whether it matches anything or not
-            @Reference List<Singleton> allSingletons,
+            @Reference(name = "allSingletons") List<Singleton> allSingletons, 
             Map<String, Object> properties) {
 
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "<init>", singletonAgents, allSingletons);

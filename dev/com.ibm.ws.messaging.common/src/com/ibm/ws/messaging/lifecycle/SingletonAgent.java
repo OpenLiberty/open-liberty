@@ -30,5 +30,5 @@ public final class SingletonAgent {
     }
     String getSingletonType() { return type; }
     Singleton getSingleton() { return singleton; }
-    public String toString() { return String.format("%s[%s]", super.toString().substring(PREFIX_LENGTH), singleton);}
+    public String toString() { return type; }
 }

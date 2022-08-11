@@ -18,13 +18,16 @@
             type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
             ibm:reference="com.ibm.ws.messaging.lifecycle.SingletonAgent"
             default="*" />
-        <!-- Config processing sets the number of singleton services to expect equal to the number declared (see AD above) -->
+        <!-- Config processing sets the minimum number of singleton services to expect equal to the number declared (see AD above) -->
         <AD id="singletons.cardinality.minimum" name="internal" description="internal use only"
+            type="String" ibm:final="true"
+            default="${count(singletonDeclarations)}" />
+        <AD id="allSingletons.cardinality.minimum" name="internal" description="internal use only"
             type="String" ibm:final="true"
             default="${count(singletonDeclarations)}" />
         <!-- Config processing will generate an LDAP filter to match only configured singletons -->
         <AD id="singletons.target" name="internal" description="internal use only"
-            type="String" cardinality="0" required="true"
+            type="String" ibm:final="true" cardinality="0"
             default="${servicePidOrFilter(singletonDeclarations)}" />
     </OCD>
     <Designate pid="com.ibm.ws.messaging.lifecycle.SingletonsReady"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonsReady" /></Designate>
