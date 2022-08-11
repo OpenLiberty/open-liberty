@@ -396,6 +396,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
 
     private void doDefaultLogging(Message message, Exception ex, String description) {
         FaultMode mode = (FaultMode) message.get(FaultMode.class);
+        //Liberty Change Start
         if (mode == FaultMode.CHECKED_APPLICATION_FAULT && this.isFineLogging) {
             Throwable t = ex;
             if (ex instanceof Fault && ex.getCause() != null) {
@@ -404,7 +405,7 @@ public class PhaseInterceptorChain implements InterceptorChain {
 
             LogUtils.log(LOG, Level.FINE, "Application " + description + "has thrown exception, unwinding now: "
                                           + t.getClass().getName() + ": " + ex.getMessage());
-        }
+        } //Liberty Change End
     }
 
     private boolean isOneWay(Message message) {
