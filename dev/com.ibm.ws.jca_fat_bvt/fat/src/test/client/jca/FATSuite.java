@@ -40,13 +40,10 @@ public class FATSuite {
         // If we are running on Java 8 have EE9 be the lite mode test to run.
         if (JavaInfo.JAVA_VERSION >= 11) {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                            // need widen option to handle jar file within a jar file.
                             .andWith(new JakartaEE9Action().fullFATOnly())
-                            // need widen option to handle jar file within a jar file.
                             .andWith(new JakartaEE10Action());
         } else {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                            // need widen option to handle jar file within a jar file.
                             .andWith(new JakartaEE9Action());
         }
 
