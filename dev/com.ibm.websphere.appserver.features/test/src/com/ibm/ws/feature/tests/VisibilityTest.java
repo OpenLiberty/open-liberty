@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -251,6 +251,9 @@ public class VisibilityTest {
     /**
      * Validates that features are in the right directory, public features in public
      * directory, protected in protected, auto in auto and others in private.
+     * 
+     * Also validates that public features are in their short name directory and that non public features do not 
+     * have a "short name" or "also known as" property set and that auto features do not set "disable on conflict".
      */
     @Test
     public void testVisibility2() {
@@ -284,6 +287,19 @@ public class VisibilityTest {
                     errorMessage.append("     AND/OR the feature short name " + featureInfo.getShortName() + " may not match the directory.\n");
                 }
             } else {
+            	// private features that start with com.ibm.websphere.appserver.adminCenter.tool use IBM-ShortName for logic in the admin center
+            	if (featureInfo.getShortName() != null && !featureName.startsWith("com.ibm.websphere.appserver.adminCenter.tool")) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorMessage.append("     Feature contains IBM-ShortName, but it not a public feature.\n");
+            	}
+            	if (featureInfo.isDisableOnConflictSet() && featureInfo.isAutoFeature()) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorMessage.append("     Feature contains WLP-DisableAllFeatures-OnConflict, but it is an auto feature.\n");
+            	}
+            	if (featureInfo.isAlsoKnownAsSet()) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorMessage.append("     Feature contains WLP-AlsoKnownAs, but it not a public feature.\n");
+            	}
             	String withoutFeatureDir = expectedPathName + (featureName + ".feature");
             	String withFeatureShortNameDir = expectedPathName + featureInfo.getShortName() + "/" + (featureName + ".feature");
             	if (!fileName.endsWith(withoutFeatureDir) && !fileName.endsWith(withFeatureShortNameDir)) {
