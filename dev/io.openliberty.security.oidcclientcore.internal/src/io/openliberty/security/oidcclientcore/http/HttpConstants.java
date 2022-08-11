@@ -13,6 +13,7 @@ package io.openliberty.security.oidcclientcore.http;
 public interface HttpConstants {
 
     public final static String AUTHORIZATION = "Authorization";
+    public final static String BASIC = "Basic ";
     public final static String BEARER = "Bearer ";
 
     public final static String METHOD_BASIC = "basic";

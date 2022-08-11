@@ -180,8 +180,8 @@ public class OidcClientHttpUtil {
             String authMethod) {
         if (authMethod.contains(HttpConstants.METHOD_BASIC)) { // social constant differs
             String userpass = baUsername + ":" + baPassword;
-            String basicAuth = "Basic " + Base64.getEncoder().encode(userpass.getBytes());
-            postMethod.setHeader(HttpConstants.AUTHORIZATION, basicAuth);
+            String encodedUserpass = Base64.getEncoder().encodeToString(userpass.getBytes());
+            postMethod.setHeader(HttpConstants.AUTHORIZATION, HttpConstants.BASIC + encodedUserpass);
         }
 
         if (accessToken != null) {
