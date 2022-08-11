@@ -427,7 +427,6 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
 
         Set<String> ee10FeaturesThatEnableSsl = new HashSet<>();
         ee10FeaturesThatEnableSsl.add("appSecurity-5.0");
-        ee10FeaturesThatEnableSsl.add("connectorsInboundSecurity-2.0");
         ee10FeaturesThatEnableSsl.add("messagingSecurity-3.0");
 
         for (String feature : compatibleFeatures) {
