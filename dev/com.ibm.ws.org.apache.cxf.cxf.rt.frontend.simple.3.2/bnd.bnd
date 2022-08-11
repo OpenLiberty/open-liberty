@@ -12,9 +12,17 @@
 
 -sub: *.bnd
 
-
-
 cxfVersion=3.4.3
+
+app-resources= \
+  META-INF/cxf/bus-extensions.txt
+
+Service-Component: \
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple_3_2.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-frontend-simple;${cxfVersion};EXACT}!/!*-INF/*, \

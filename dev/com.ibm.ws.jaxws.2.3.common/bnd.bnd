@@ -17,8 +17,6 @@ bVersion=1.0
 
 exportVer=2.3
 
-Bundle-Activator: org.apache.cxf.bus.osgi.CXFActivator
-
 # in cxf-rt-frontend-jaxws-3.2 bundle, we exposed:
 # META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl
 # so we need make com.ibm.ws.jaxws.client;thread-context=true

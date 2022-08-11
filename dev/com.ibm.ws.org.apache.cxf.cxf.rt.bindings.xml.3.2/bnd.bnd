@@ -12,9 +12,17 @@
 
 -sub: *.bnd
 
-
-
 instrument.classesIncludes: org/apache/cxf/*.class
+
+app-resources= \
+  META-INF/cxf/bus-extensions.txt
+
+Service-Component: \
+  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml_3_2.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
 
 cxfVersion=3.4.3
 

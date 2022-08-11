@@ -17,6 +17,16 @@ instrument.classesIncludes: org/cxf/apache/**/*.class
 instrument.ffdc: false
 cxfVersion=3.4.3
 
+app-resources= \
+  META-INF/cxf/bus-extensions.txt
+
+Service-Component: \
+  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl_3_2.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-wsdl;${cxfVersion};EXACT}!/!*-INF/*, \
    META-INF/cxf=resources/META-INF/cxf, \
