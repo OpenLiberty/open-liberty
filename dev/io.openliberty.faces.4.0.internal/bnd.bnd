@@ -15,8 +15,6 @@ Bundle-Name: Faces 4.0 Open Liberty Integration
 Bundle-SymbolicName: io.openliberty.faces.4.0.internal
 
 app-resources= \
-  META-INF/services/org.apache.myfaces.config.annotation.LifecycleProviderFactory | \
-  META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider | \
   META-INF/services/org.apache.myfaces.spi.AnnotationProvider | \
   META-INF/services/org.apache.myfaces.spi.InjectionProvider | \
   META-INF/services/org.apache.myfaces.spi.FaceletConfigResourceProvider | \

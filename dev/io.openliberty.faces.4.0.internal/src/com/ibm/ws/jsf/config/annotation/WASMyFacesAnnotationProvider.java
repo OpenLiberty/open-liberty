@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import jakarta.faces.context.ExternalContext;
 import jakarta.servlet.ServletContext;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 
 import com.ibm.ws.container.service.annotations.WebAnnotations;
@@ -114,8 +114,8 @@ public class WASMyFacesAnnotationProvider extends AnnotationProvider {
     }
 
     @Override
-    public Set<URL> getBaseUrls() throws IOException {
-        return defaultProvider.getBaseUrls();
+    public Set<URL> getBaseUrls(ExternalContext externalContext) throws IOException {
+        return defaultProvider.getBaseUrls(externalContext);
     }
 
     private static IServletContext unwrapServletContext(ServletContext context) {

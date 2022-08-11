@@ -7,7 +7,6 @@ IBM-App-ForceRestart: install, \
 IBM-API-Package: jakarta.faces; type="spec", \
  jakarta.faces.annotation; type="spec", \
  jakarta.faces.application; type="spec", \
- jakarta.faces.bean; type="spec", \
  jakarta.faces.component; type="spec", \
  jakarta.faces.component.behavior; type="spec", \
  jakarta.faces.component.html; type="spec", \
@@ -50,7 +49,7 @@ Subsystem-Name: Jakarta Server Faces 4.0
  com.ibm.ws.org.apache.commons.discovery.0.2, \
  io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.jsf.shared.jakarta, \
- io.openliberty.faces.internal.jakarta, \
+ io.openliberty.faces.4.0.internal, \
  com.ibm.ws.cdi.interfaces.jakarta, \
  com.ibm.ws.org.apache.commons.digester.1.8, \
  io.openliberty.jakarta.tags.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0", \

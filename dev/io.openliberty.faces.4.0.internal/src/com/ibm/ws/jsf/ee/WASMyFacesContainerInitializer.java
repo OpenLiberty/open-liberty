@@ -35,7 +35,7 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HandlesTypes;
 
-import org.apache.myfaces.ee.MyFacesContainerInitializer;
+import org.apache.myfaces.webapp.MyFacesContainerInitializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 
 import com.ibm.ws.jsf.shared.JSFConstants;

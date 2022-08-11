@@ -12,7 +12,7 @@ package com.ibm.ws.jsf.spi.impl;
 
 import jakarta.faces.context.ExternalContext;
 
-import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 
