@@ -14,12 +14,12 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest2;
+import com.ibm.ws.transaction.test.tests.FATSuiteBase;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
@@ -32,7 +32,12 @@ import componenttest.topology.database.container.PostgreSQLContainer;
 @SuiteClasses({
                 DualServerDynamicDBRotationTest2.class,
 })
-public class FATSuite {
+public class FATSuite extends FATSuiteBase {
+
+    static {
+        databaseContainerType = DatabaseContainerType.Postgres;
+    }
+
     private static final String POSTGRES_DB = "testdb";
     private static final String POSTGRES_USER = "postgresUser";
     private static final String POSTGRES_PASS = "superSecret";
@@ -42,9 +47,6 @@ public class FATSuite {
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
-
-    public static DatabaseContainerType type = DatabaseContainerType.Postgres;
-    public static JdbcDatabaseContainer<?> testContainer;
 
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
@@ -60,13 +62,8 @@ public class FATSuite {
                         .withPassword(POSTGRES_PASS)
                         .withSSL()
                         .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre-ssl"));
-        Log.info(FATSuite.class, "beforeSuite", "starting test container of type: " + type);
+        Log.info(FATSuite.class, "beforeSuite", "starting test container of type: " + databaseContainerType);
         testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).waitingFor(Wait.forLogMessage(".*database system is ready.*", 2)).start();
-        Log.info(FATSuite.class, "beforeSuite", "started test container of type: " + type);
-    }
-
-    public static void afterSuite() {
-        Log.info(FATSuite.class, "afterSuite", "stop test container");
-        testContainer.stop();
+        Log.info(FATSuite.class, "beforeSuite", "started test container of type: " + databaseContainerType);
     }
 }

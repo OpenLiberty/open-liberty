@@ -20,7 +20,7 @@ public class SkipIfSocialClient extends MySkipRule {
 
     @Override
     public Boolean callSpecificCheck() {
-        Log.info(thisClass, "callSpecificCheck", Boolean.toString(socialClient));
+        Log.info(thisClass, "callSpecificCheck", "Uses a Social Client: " + Boolean.toString(socialClient));
         return socialClient;
     }
 }

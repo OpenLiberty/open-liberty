@@ -14,7 +14,11 @@
 
 	<openidConnectProvider
 		id="OidcConfigSample_mainPath"
-		signatureAlgorithm="HS256"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keyStoreRef="key_allSigAlg"
+		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
+		allowPublicClients="true"
 		oauthProviderRef="OAuthConfigSample_mainPath" />
 
 	<oauthProvider
@@ -23,7 +27,9 @@
 		autoAuthorize="true"
 	>
 		<customStore storeId="mongoDbStore" />
-		<autoAuthorizeClient>bcl_mainPath</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_confClient</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_publicClient_withSecret</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_publicClient_withoutSecret</autoAuthorizeClient>
 		
 	</oauthProvider>
 
@@ -227,6 +233,7 @@
 		id="OAuthConfigSample_http_httpsRequired_false"
 		tokenFormat="${oidcTokenFormat}"
 		autoAuthorize="true"
+		httpsRequired="false"
 	>
 		<customStore storeId="mongoDbStore" />
 		<autoAuthorizeClient>bcl_http_confClient_httpsRequired_false</autoAuthorizeClient>

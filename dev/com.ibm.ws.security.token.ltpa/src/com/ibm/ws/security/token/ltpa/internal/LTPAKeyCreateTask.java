@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,12 +62,14 @@ class LTPAKeyCreateTask implements Runnable {
         LTPAPrivateKey ltpaPrivateKey = new LTPAPrivateKey(keyInfoManager.getPrivateKey(config.getKeyFile()));
         LTPAPublicKey ltpaPublicKey = new LTPAPublicKey(keyInfoManager.getPublicKey(config.getKeyFile()));
         byte[] sharedKey = keyInfoManager.getSecretKey(config.getKeyFile());
+        long expDiffAllowed = config.getExpirationDifferenceAllowed();
 
         Map<String, Object> tokenFactoryMap = new HashMap<String, Object>();
         tokenFactoryMap.put(LTPAConstants.EXPIRATION, config.getTokenExpiration());
         tokenFactoryMap.put(LTPAConstants.SECRET_KEY, sharedKey);
         tokenFactoryMap.put(LTPAConstants.PUBLIC_KEY, ltpaPublicKey);
         tokenFactoryMap.put(LTPAConstants.PRIVATE_KEY, ltpaPrivateKey);
+        tokenFactoryMap.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
         return tokenFactoryMap;
     }
 

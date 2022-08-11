@@ -75,11 +75,13 @@ public class LTPAToken2FactoryTest {
 
     private Map<String, Object> createTestTokenFactoryMap() {
         long expectedExpirationLimit = 120;
+        long expDiffAllowed = 0;
         Map<String, Object> tokenFactoryMap = new HashMap<String, Object>();
         tokenFactoryMap.put("expiration", expectedExpirationLimit);
         tokenFactoryMap.put("ltpa_shared_key", encodedSharedKey.getBytes());
         tokenFactoryMap.put("ltpa_public_key", ltpaPublicKey);
         tokenFactoryMap.put("ltpa_private_key", ltpaPrivateKey);
+        tokenFactoryMap.put("expirationDifferenceAllowed", expDiffAllowed);
 
         return tokenFactoryMap;
     }

@@ -10,10 +10,22 @@
  -->
 <server>
 
-	<authFilter id="bcl_mainPath_filter">
+	<authFilter id="bcl_mainPath_confClient_filter">
 		<requestUrl
 			matchType="contains" 
-			urlPattern="/simple/bcl_mainPath" />
+			urlPattern="/simple/bcl_mainPath_confClient" />
+	</authFilter>
+
+	<authFilter id="bcl_mainPath_publicClient_withSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_publicClient_withSecret" />
+	</authFilter>
+
+	<authFilter id="bcl_mainPath_publicClient_withoutSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_publicClient_withoutSecret" />
 	</authFilter>
 
 	<authFilter id="bcl_defaultBCLTimeout_filter">

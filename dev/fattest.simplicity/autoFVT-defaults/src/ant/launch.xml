@@ -294,7 +294,10 @@
 		<echo message="test.bucket.path including junit: ${toString:test.bucket.path}" />
 
 		<iff>
-			<istrue value="${is.windows.platform}" />
+			<or>
+				<istrue value="${is.windows.platform}" />
+				<istrue value="${is.zos.platform}" />
+			</or>
 			<then>
 				<echo>generating classpath jar file.</echo>
 				<property name="classpath.jar.name" value="${basedir}/build/lib/cp.jar" />

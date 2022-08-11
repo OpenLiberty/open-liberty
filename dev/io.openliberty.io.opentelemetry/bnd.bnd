@@ -19,6 +19,9 @@ Export-Package: \
   io.opentelemetry.api; version="1.14.0",\
   io.opentelemetry.api.baggage; version="1.14.0"
 
+Import-Package: \
+  *
+  
 -buildpath: \
   io.opentelemetry:opentelemetry-api;version=1.14.0
 
