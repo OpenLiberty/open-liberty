@@ -45,7 +45,7 @@ public class OLGH14192Test extends FATServletClient {
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         app.addPackage("olgh14192");
-        ShrinkHelper.exportAppToServer(server1, app);
+        ShrinkHelper.exportToServer(server1, "apps", app);
         server1.addInstalledAppForValidation(APP_NAME);
 
         server1.startServer();

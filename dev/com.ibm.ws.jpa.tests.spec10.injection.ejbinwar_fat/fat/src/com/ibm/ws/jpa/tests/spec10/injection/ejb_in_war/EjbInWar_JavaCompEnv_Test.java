@@ -37,6 +37,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.ejbinwar_javacomp.web.rrinejb1.JPAEjbInWarJavaCompRRInEJB1TestServlet;
 import com.ibm.ws.jpa.fvt.ejbinwar_javacomp.web.rrinejb2.JPAEjbInWarJavaCompRRInEJB2TestServlet;
 import com.ibm.ws.jpa.fvt.ejbinwar_javacomp.web.rrinwar.JPAEjbInWarJavaCompTestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

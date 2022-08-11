@@ -34,10 +34,10 @@ import com.ibm.ws.jpa.olgh19342.ejb.TestOLGH19342_EJB_SFEx_Servlet;
 import com.ibm.ws.jpa.olgh19342.ejb.TestOLGH19342_EJB_SF_Servlet;
 import com.ibm.ws.jpa.olgh19342.ejb.TestOLGH19342_EJB_SL_Servlet;
 import com.ibm.ws.jpa.tests.spec10.query.tests.AbstractFATSuite;
-import com.ibm.ws.jpa.tests.spec10.query.tests.JPAFATServletClient;
 import com.ibm.ws.jpa.tests.spec10.query.tests.SkipRule;
 import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

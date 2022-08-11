@@ -31,7 +31,7 @@ import com.ibm.ws.jpa.fvt.derivedidentity.tests.ejb.DerivedIdentityEJBSFEXTestSe
 import com.ibm.ws.jpa.fvt.derivedidentity.tests.ejb.DerivedIdentityEJBSFTestServlet;
 import com.ibm.ws.jpa.fvt.derivedidentity.tests.ejb.DerivedIdentityEJBSLTestServlet;
 import com.ibm.ws.jpa.tests.spec20.FATSuite;
-import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

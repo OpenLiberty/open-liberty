@@ -9,14 +9,14 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=2.11.2
+bVersion=2.12.7
 
 Bundle-Name: FasterXML Jackson Jr Objects
 Bundle-SymbolicName: io.openliberty.com.fasterxml.jackson.jr
 Bundle-Description: Provides Jackson Jr Objects as a bundle
 
 -includeresource: \
-  @${repo;com.fasterxml.jackson.jr:jackson-jr-objects:jar;2.11.2;EXACT}
+  @${repo;com.fasterxml.jackson.jr:jackson-jr-objects:jar;2.12.7;EXACT}
   
 Export-Package: \
-  com.fasterxml.jackson.jr.*;version=2.11.2
+  com.fasterxml.jackson.jr.*;version=2.12.7

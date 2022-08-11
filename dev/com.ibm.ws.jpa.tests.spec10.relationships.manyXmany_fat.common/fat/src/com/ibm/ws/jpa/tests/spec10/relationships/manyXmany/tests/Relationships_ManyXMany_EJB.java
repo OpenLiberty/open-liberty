@@ -39,6 +39,7 @@ import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXM
 import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyUnidirectional_EJB_SFEX_Servlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyUnidirectional_EJB_SF_Servlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb.TestManyXManyUnidirectional_EJB_SL_Servlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

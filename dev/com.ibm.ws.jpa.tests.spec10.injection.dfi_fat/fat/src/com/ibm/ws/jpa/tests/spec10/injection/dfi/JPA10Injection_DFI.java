@@ -82,8 +82,8 @@ import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.noinh.DFIPkgNoInhTestServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.noinh.DFIPriNoInhTestServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.noinh.DFIProNoInhTestServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.noinh.DFIPubNoInhTestServlet;
-import com.ibm.ws.jpa.tests.spec10.injection.common.JPAFATServletClient;
 import com.ibm.ws.jpa.tests.spec10.injection.common.RepeaterInfo;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

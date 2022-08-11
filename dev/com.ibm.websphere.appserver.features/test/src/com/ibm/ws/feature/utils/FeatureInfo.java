@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,8 @@ public class FeatureInfo {
 	private boolean isAutoFeature = false;
 	private boolean isParallelActivationEnabled = false;
 	private boolean isDisableOnConflictEnabled = true;
+	private boolean isDisableOnConflictSet = false;
+	private boolean isAlsoKnownAsSet = false;
 	private boolean isSingleton = false;
     private String visibility = "private";
     private String shortName;
@@ -87,6 +89,20 @@ public class FeatureInfo {
             populateInfo();
 
         return this.isDisableOnConflictEnabled;
+    }
+
+    public boolean isDisableOnConflictSet() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isDisableOnConflictSet;
+    }
+
+    public boolean isAlsoKnownAsSet() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isAlsoKnownAsSet;
     }
 
     public boolean isSingleton() {
@@ -177,7 +193,9 @@ public class FeatureInfo {
             String activationType = builder.getProperty("WLP-Activation-Type");
             this.isParallelActivationEnabled = activationType != null && "parallel".equals(activationType.trim());
             String disableOnConflict = builder.getProperty("WLP-DisableAllFeatures-OnConflict");
+            this.isDisableOnConflictSet = disableOnConflict != null;
             this.isDisableOnConflictEnabled = disableOnConflict == null || "true".equals(disableOnConflict);
+            this.isAlsoKnownAsSet = builder.getProperty("WLP-AlsoKnownAs") != null;
             String singleton = builder.getProperty("singleton");
             this.isSingleton = singleton != null && "true".equals(singleton.trim());
             String vis = builder.getProperty("visibility");

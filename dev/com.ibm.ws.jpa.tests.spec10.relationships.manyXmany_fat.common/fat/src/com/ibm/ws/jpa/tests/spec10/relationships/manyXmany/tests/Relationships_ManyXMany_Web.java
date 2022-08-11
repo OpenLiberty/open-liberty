@@ -31,6 +31,7 @@ import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web.TestManyXM
 import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web.TestManyXManyCollectionTypeServlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web.TestManyXManyCompoundPKServlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web.TestManyXManyUnidirectionalServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

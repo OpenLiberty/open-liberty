@@ -40,6 +40,7 @@ import com.ibm.ws.jpa.fvt.injectiondpu.web.earliblevel.jta.EarLibLevelJTADPUFiel
 import com.ibm.ws.jpa.fvt.injectiondpu.web.earliblevel.jta.EarLibLevelJTADPUMethodInjectionServlet;
 import com.ibm.ws.jpa.fvt.injectiondpu.web.earliblevel.rl.EarLibLevelRLDPUFieldInjectionServlet;
 import com.ibm.ws.jpa.fvt.injectiondpu.web.earliblevel.rl.EarLibLevelRLDPUMethodInjectionServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

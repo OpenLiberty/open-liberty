@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.ordercolumns.web.OrderColumnBiTestServlet;
 import com.ibm.ws.jpa.fvt.ordercolumns.web.OrderColumnElementTestServlet;
 import com.ibm.ws.jpa.fvt.ordercolumns.web.OrderColumnUniTestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

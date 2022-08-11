@@ -37,10 +37,10 @@ import com.ibm.ws.jpa.olgh17837.web.TestFunctionServlet;
 import com.ibm.ws.jpa.olgh17837.web.TestOrderingServlet;
 import com.ibm.ws.jpa.olgh17837.web.TestUpdateServlet;
 import com.ibm.ws.jpa.tests.eclipselink.query.tests.AbstractFATSuite;
-import com.ibm.ws.jpa.tests.eclipselink.query.tests.JPAFATServletClient;
 import com.ibm.ws.jpa.tests.eclipselink.query.tests.SkipRule;
 import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
