@@ -39,6 +39,7 @@ import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsExceptio
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
+import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class OidcAuthorizationRequest extends AuthorizationRequest {
@@ -96,6 +97,16 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
         return OidcStorageUtils.createStateStorageValue(state, clientConfig.getClientSecret());
     }
 
+    @Override
+    protected StorageProperties getStateStorageProperties() {
+        CookieStorageProperties props = new CookieStorageProperties();
+        props.setStorageLifetimeSeconds((int) clientConfig.getAuthenticationTimeLimitInSeconds());
+        if (shouldCookiesBeSecure()) {
+            props.setSecure(true);
+        }
+        return props;
+    }
+
     private boolean shouldCookiesBeSecure() {
         boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
         return (clientConfig.isHttpsRequired() && isHttpsRequest);
@@ -106,8 +117,10 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
         String cookieValue = getReqURL();
 
         CookieStorageProperties cookieProps = new CookieStorageProperties();
-        cookieProps.setMaxAge((int) clientConfig.getAuthenticationTimeLimitInSeconds());
-        cookieProps.setSecure(shouldCookiesBeSecure());
+        cookieProps.setStorageLifetimeSeconds((int) clientConfig.getAuthenticationTimeLimitInSeconds());
+        if (shouldCookiesBeSecure()) {
+            cookieProps.setSecure(true);
+        }
 
         storage.store(urlCookieName, cookieValue, cookieProps);
     }

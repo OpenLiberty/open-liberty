@@ -10,6 +10,24 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.storage;
 
-public abstract class StorageProperties {
+public class StorageProperties {
+
+    protected int storageLifetimeSeconds = -1;
+
+    public void setStorageLifetimeSeconds(int lifetime) {
+        storageLifetimeSeconds = lifetime;
+    }
+
+    public int getStorageLifetimeSeconds() {
+        return storageLifetimeSeconds;
+    }
+
+    @Override
+    public String toString() {
+        String result = "StorageProperties:{";
+        result += "storageLifetimeSeconds=" + storageLifetimeSeconds;
+        result += "}";
+        return result;
+    }
 
 }

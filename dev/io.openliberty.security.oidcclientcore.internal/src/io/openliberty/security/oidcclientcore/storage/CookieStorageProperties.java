@@ -12,23 +12,31 @@ package io.openliberty.security.oidcclientcore.storage;
 
 public class CookieStorageProperties extends StorageProperties {
 
-    private int maxAge = -1;
-    private boolean isSecure = false;
-
-    public void setMaxAge(int maxAge) {
-        this.maxAge = maxAge;
-    }
-
-    public int getMaxAge() {
-        return maxAge;
-    }
+    /**
+     * Defined as a Boolean type so that we can determine if this property is specifically set by a caller. If the property isn't
+     * specifically set, we can defer to any existing logic that determines whether the Secure flag should be set for the cookie.
+     */
+    private Boolean isSecure = null;
 
     public void setSecure(boolean isSecure) {
         this.isSecure = isSecure;
     }
 
+    public boolean isSecureSet() {
+        return isSecure != null;
+    }
+
     public boolean isSecure() {
         return isSecure;
+    }
+
+    @Override
+    public String toString() {
+        String result = "CookieStorageProperties:{";
+        result += "storageLifetimeSeconds=" + storageLifetimeSeconds + ", ";
+        result += "isSecure=" + isSecure;
+        result += "}";
+        return result;
     }
 
 }

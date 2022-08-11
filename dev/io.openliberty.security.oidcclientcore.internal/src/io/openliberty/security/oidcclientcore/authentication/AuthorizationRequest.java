@@ -20,6 +20,7 @@ import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.Storage;
+import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public abstract class AuthorizationRequest {
@@ -59,10 +60,17 @@ public abstract class AuthorizationRequest {
 
     protected abstract String createStateValueForStorage(String state);
 
+    protected StorageProperties getStateStorageProperties() {
+        StorageProperties props = new StorageProperties();
+        props.setStorageLifetimeSeconds(OidcClientStorageConstants.DEFAULT_STATE_STORAGE_LIFETIME_SECONDS);
+        return props;
+    }
+
     protected void storeStateValue(String state) {
         String storageName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
         String storageValue = createStateValueForStorage(state);
-        storage.store(storageName, storageValue);
+        StorageProperties stateStorageProperties = getStateStorageProperties();
+        storage.store(storageName, storageValue, stateStorageProperties);
     }
 
     void createSessionIfNecessary() {

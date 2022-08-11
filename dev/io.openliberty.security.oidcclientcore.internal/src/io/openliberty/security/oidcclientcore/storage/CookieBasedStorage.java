@@ -76,8 +76,10 @@ public class CookieBasedStorage implements Storage {
     }
 
     private void setAdditionalCookieProperties(Cookie cookie, CookieStorageProperties cookieProps) {
-        cookie.setSecure(cookieProps.isSecure());
-        cookie.setMaxAge(cookieProps.getMaxAge());
+        if (cookieProps.isSecureSet()) {
+            cookie.setSecure(cookieProps.isSecure());
+        }
+        cookie.setMaxAge(cookieProps.getStorageLifetimeSeconds());
     }
 
 }

@@ -14,4 +14,6 @@ public class OidcClientStorageConstants {
 
     public static final String WAS_OIDC_STATE_KEY = "WASOidcState";
 
+    public static final int DEFAULT_STATE_STORAGE_LIFETIME_SECONDS = 420;
+
 }
