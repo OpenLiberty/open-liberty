@@ -19,6 +19,11 @@ src: \
 
 fat.project: true
 
+# Define additional tested features that are NOT present in any XML files in this bucket.
+tested.features:\
+	connectors-2.0, mdb-4.0, servlet-5.0, messaging-3.0, xmlbinding-3.0, enterprisebeanslite-4.0,\
+	connectors-2.1, messaging-3.1, xmlbinding-4.0, servlet-6.0
+
 -buildpath: \
 	com.ibm.ws.config;version=latest,\
 	com.ibm.websphere.javaee.connector.1.6;version=latest,\

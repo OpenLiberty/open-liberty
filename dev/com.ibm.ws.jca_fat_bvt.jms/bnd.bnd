@@ -7,6 +7,11 @@ src: \
 
 fat.project: true
 
+# Define additional tested features that are NOT present in any XML files in this bucket.
+tested.features:\
+	connectors-2.0, mdb-4.0, messagingserver-3.0, servlet-5.0, concurrent-2.0, xmlbinding-3.0, messagingclient-3.0,\
+	concurrent-3.0, connectors-2.1, xmlbinding-4.0, servlet-6.0
+
 -buildpath: \
 	fattest.simplicity;version=latest,\
 	com.ibm.ws.componenttest,\

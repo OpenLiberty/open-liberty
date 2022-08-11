@@ -10,10 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.jca.fat.regr.cfg.prop;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import suite.r80.base.jca16.ann.ConfigPropertyMergeActionTest;
 import suite.r80.base.jca16.ann.ConfigPropertyValidatorTest;
 
@@ -23,4 +29,17 @@ import suite.r80.base.jca16.ann.ConfigPropertyValidatorTest;
                 ConfigPropertyValidatorTest.class,
 })
 public class FATSuite {
+    @ClassRule
+    public static RepeatTests repeat;
+
+    static {
+        // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
+        // If we are running on Java 8 have EE9 be the lite mode test to run.
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action().fullFATOnly()).andWith(new JakartaEE10Action());
+        } else {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action());
+        }
+
+    }
 }

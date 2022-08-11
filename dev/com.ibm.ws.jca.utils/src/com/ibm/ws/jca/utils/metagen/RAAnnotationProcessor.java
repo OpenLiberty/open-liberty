@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2021 IBM Corporation and others.
+ * Copyright (c) 2014,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,8 @@ import javax.resource.spi.AdministeredObject;
 import javax.resource.spi.AuthenticationMechanism;
 import javax.resource.spi.ConfigProperty;
 import javax.resource.spi.ConnectionDefinition;
-import javax.resource.spi.Connector;
 import javax.resource.spi.ConnectionDefinitions;
+import javax.resource.spi.Connector;
 import javax.resource.spi.ResourceAdapterInternalException;
 import javax.resource.spi.SecurityPermission;
 import javax.resource.spi.TransactionSupport;
@@ -588,10 +588,10 @@ public class RAAnnotationProcessor {
         }
 
         // Check for supported JCA versions
-        if ((!jcaVersion.equals("2.0")) && (!jcaVersion.equals("1.7")) && (!jcaVersion.equals("1.6"))
+        if ((!jcaVersion.equals("2.1")) && (!jcaVersion.equals("2.0")) && (!jcaVersion.equals("1.7")) && (!jcaVersion.equals("1.6"))
             && (!jcaVersion.equals("1.5") && (!jcaVersion.equals("1.0"))))
             throw new ResourceAdapterInternalException(Tr.formatMessage(tc, "J2CA9934.not.a.valid.option",
-                                                                        jcaVersion, "<version>, <spec-version>", "2.0, 1.7, 1.6, 1.5, 1.0"));
+                                                                        jcaVersion, "<version>, <spec-version>", "2.1, 2.0, 1.7, 1.6, 1.5, 1.0"));
 
         return jcaVersion;
     }
