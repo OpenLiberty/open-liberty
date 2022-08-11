@@ -16,7 +16,7 @@ tested.features: pages-3.0, servlet-5.0
 src: \
     fat/src    
 
-test.project: true
+fat.project: true
 
 -dependson: \
     build.changeDetector,\
@@ -71,5 +71,5 @@ test.project: true
 	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
 	javax.j2ee.jcdi;version=latest,\
 	org.eclipse.microprofile.jwt;version=latest,\
-	com.ibm.ws.common.encoder
+	com.ibm.ws.kernel.service
 	
