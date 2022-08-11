@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -40,5 +41,10 @@ public class DualServerDynamicFSTest2 extends DualServerDynamicCoreTest2 {
 
     @Override
     public void setUp(LibertyServer server) throws Exception {
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        tidyServersAfterTest(server1); // server2 is already stopped
     }
 }
