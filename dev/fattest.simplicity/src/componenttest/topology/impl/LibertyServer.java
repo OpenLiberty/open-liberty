@@ -3216,6 +3216,13 @@ public class LibertyServer implements LogMonitorClient {
                     continue;
                 }
             }
+            if (remoteDirectory.getName().equals("checkpoint")) {
+                if (l.equals("image")) {
+                    // skip the checkpoint image; it is too big
+                    Log.finest(c, method, "Skipping checkpoint/image element " + l);
+                    continue;
+                }
+            }
 
             if (remoteDirectory.getName().equals("messaging")) {
                 Log.finest(c, method, "Skipping message store element " + l);
