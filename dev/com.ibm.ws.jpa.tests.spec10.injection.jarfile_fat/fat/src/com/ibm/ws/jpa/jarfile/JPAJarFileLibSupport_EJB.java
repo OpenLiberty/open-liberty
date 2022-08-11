@@ -29,10 +29,10 @@ import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
-import com.ibm.ws.jpa.JPAFATServletClient;
 import com.ibm.ws.jpa.fvt.jarfile.tests.jarfilesupport.ejb.JarFileTestServletEJBSF;
 import com.ibm.ws.jpa.fvt.jarfile.tests.jarfilesupport.ejb.JarFileTestServletEJBSFEX;
 import com.ibm.ws.jpa.fvt.jarfile.tests.jarfilesupport.ejb.JarFileTestServletEJBSL;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

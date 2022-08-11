@@ -69,7 +69,7 @@ public class DSOverrideTest extends FATServletClient {
                         .addPackage("com.ibm.ws.jpa.fat.dsoverride.entity")//
                         .addPackage("com.ibm.ws.jpa.fat.dsoverride.web");//
         ShrinkHelper.addDirectory(app, "test-applications/" + APP_NAME + "/resources/");
-        ShrinkHelper.exportAppToServer(server, app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         server.addInstalledAppForValidation(APP_NAME);
         server.startServer();

@@ -77,14 +77,14 @@ public class JPAFATTest extends FATServletClient {
                         .addPackage("data")
                         .addPackage("web");
         ShrinkHelper.addDirectory(acmeApp, "test-applications/acme/resources/");
-        ShrinkHelper.exportAppToServer(server, acmeApp);
+        ShrinkHelper.exportToServer(server, "apps", acmeApp);
 
         WebArchive mgdManualEnhApp = ShrinkWrap.create(WebArchive.class, "managedmanualenhancement.war")//
                         .addPackage("acme")
                         .addPackage("data")
                         .addPackage("web");
         ShrinkHelper.addDirectory(mgdManualEnhApp, "test-applications/managedmanualenhancement/resources/");
-        ShrinkHelper.exportAppToServer(server, mgdManualEnhApp);
+        ShrinkHelper.exportToServer(server, "apps", mgdManualEnhApp);
 
         for (String appName : APP_NAMES)
             server.addInstalledAppForValidation(appName);

@@ -31,7 +31,7 @@ import com.ibm.ws.jpa.olgh10310.ejb.TestOLGH10310_EJB_SFEx_Servlet;
 import com.ibm.ws.jpa.olgh10310.ejb.TestOLGH10310_EJB_SF_Servlet;
 import com.ibm.ws.jpa.olgh10310.ejb.TestOLGH10310_EJB_SL_Servlet;
 import com.ibm.ws.jpa.spec10.embeddable.FATSuite;
-import com.ibm.ws.jpa.spec10.embeddable.tests.JPAFATServletClient;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

@@ -63,7 +63,7 @@ public class JPAContainerModifyConfigTest extends FATServletClient {
                         .addPackage("jpa.entity");//
 //                        .addAsWebInfResource(new File("test-applications/" + JEE_APP + "/resources/META-INF/persistence.xml"));
         ShrinkHelper.addDirectory(app, "test-applications/" + JEE_APP + "/resources/");
-        ShrinkHelper.exportAppToServer(server, app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         originalConfig = server.getServerConfiguration();
         server.addInstalledAppForValidation(JEE_APP);

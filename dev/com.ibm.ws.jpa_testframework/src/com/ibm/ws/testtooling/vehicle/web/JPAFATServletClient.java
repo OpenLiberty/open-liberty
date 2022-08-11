@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa;
+package com.ibm.ws.testtooling.vehicle.web;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -36,9 +36,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
-/**
- *
- */
 public class JPAFATServletClient extends FATServletClient {
     private static final String dbManagementResourcePath = "test-applications/helpers/DatabaseManagement/resources/";
 
@@ -74,6 +71,10 @@ public class JPAFATServletClient extends FATServletClient {
     }
 
     protected static ProgramOutput setupDatabaseApplication(LibertyServer server, String ddlPath) throws Exception {
+        return setupDatabaseApplication(server, new String[] { ddlPath });
+    }
+
+    protected static ProgramOutput setupDatabaseApplication(LibertyServer server, String[] ddlPaths) throws Exception {
         ProgramOutput progOut = null;
         if (!server.isStarted()) {
             server.startServer();
@@ -83,7 +84,9 @@ public class JPAFATServletClient extends FATServletClient {
         final WebArchive webApp = ShrinkWrap.create(WebArchive.class, "DatabaseManagement.war");
         webApp.addPackages(true, "jpahelper.databasemanagement");
         ShrinkHelper.addDirectory(webApp, dbManagementResourcePath + "/databasemanagement.war");
-        ShrinkHelper.addDirectory(webApp, ddlPath);
+        for (String ddlPath : ddlPaths) {
+            ShrinkHelper.addDirectory(webApp, ddlPath);
+        }
 
         final JavaArchive testApiJar = buildTestAPIJar();
         webApp.addAsLibrary(testApiJar);
@@ -152,8 +155,13 @@ public class JPAFATServletClient extends FATServletClient {
 
             dbVendor = DatabaseVendor.resolveDBProduct(dbProductName);
         } else {
-            System.out.println("Failed to acquire Database Metadata.");
+            System.out.println("Failed to acquire Database Metadata: " + rc);
         }
+
+        // If the dbVendor isn't set, no tests should be able to run
+        org.junit.Assert.assertNotNull("The DatabaseManagement application failed to set database vendor", getDbVendor());
+        org.junit.Assert.assertTrue("The DatabaseManagement application does not recognize the productName " + dbProductName,
+                                    !DatabaseVendor.UNKNOWN.equals(getDbVendor()));
 
         con.disconnect();
         dbMetaAcquired = true;
@@ -219,6 +227,7 @@ public class JPAFATServletClient extends FATServletClient {
     protected static final JavaArchive buildTestAPIJar() throws Exception {
         final JavaArchive testApiJar = ShrinkWrap.create(JavaArchive.class, "TestAPI.jar");
         testApiJar.addPackage("com.ibm.ws.testtooling.database");
+        testApiJar.addPackage("com.ibm.ws.testtooling.jpaprovider");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.jms");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.msc");

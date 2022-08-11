@@ -36,6 +36,7 @@ import com.ibm.ws.jpa.overridepersistencecontext.web.TestOverridePersistenceCont
 import com.ibm.ws.jpa.overridepersistencexml.web.TestOverridePersistenceXmlServlet;
 import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

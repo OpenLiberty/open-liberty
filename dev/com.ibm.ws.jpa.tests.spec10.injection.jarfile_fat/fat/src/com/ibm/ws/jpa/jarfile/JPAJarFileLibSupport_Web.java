@@ -29,9 +29,9 @@ import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
-import com.ibm.ws.jpa.JPAFATServletClient;
 import com.ibm.ws.jpa.fvt.jarfile.tests.jarfilesupport.web_classes.JarFileWebClassesTestServlet;
 import com.ibm.ws.jpa.fvt.jarfile.tests.jarfilesupport.web_lib.JarFileWebLibTestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
