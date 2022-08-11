@@ -2,8 +2,8 @@
 symbolicName=io.openliberty.persistenceContainer-3.1
 visibility=public
 singleton=true
-kind=noship
-edition=full
+kind=beta
+edition=core
 Subsystem-Name: Jakarta Persistence 3.1 Container
 IBM-ShortName: persistenceContainer-3.1
 WLP-AlsoKnownAs: jpaContainer-3.1
