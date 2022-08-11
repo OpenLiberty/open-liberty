@@ -37,19 +37,19 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
         // Priority 2: If registry was explicit set, do not substitute
         if (original.getRegistry() != null && !original.getRegistry().isEmpty()) {
-            return andVerifyImage(original);
+            return ImageVerifier.collectImage(original);
         }
 
         // Priority 3: Ask the docker strategy if we should substitute the image.
         // This takes into account local/remote docker and properties to force the use of Artifactory.
         if (!ExternalTestServiceDockerClientStrategy.USE_ARTIFACTORY_NAME_SUBSTITUTION) {
-            return andVerifyImage(original);
+            return ImageVerifier.collectImage(original);
         }
 
         // Need to substitute image name to use private registry
         String privateImage = getPrivateRegistry() + '/' + original.asCanonicalNameString();
         Log.info(c, "apply", "Swapping docker image name from " + original.asCanonicalNameString() + " --> " + privateImage);
-        return andVerifyImage(original, DockerImageName.parse(privateImage).asCompatibleSubstituteFor(original));
+        return ImageVerifier.collectImage(original, DockerImageName.parse(privateImage).asCompatibleSubstituteFor(original));
     }
 
     @Override
@@ -97,28 +97,4 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
             throw new RuntimeException(e);
         }
     }
-
-    /**
-     * Verifies image name has been documented to ensure we can generate an accurate list.
-     */
-    static DockerImageName andVerifyImage(DockerImageName original) {
-        return andVerifyImage(original, null);
-    }
-
-    static DockerImageName andVerifyImage(DockerImageName original, DockerImageName output) {
-
-        if (!ImageVerifier.hasImage(original)) {
-            RuntimeException e = new RuntimeException("Used testcontainer image " + original.asCanonicalNameString() +
-                                                      " was not defined in the autoFVT/fat.bnd.properties file! " +
-                                                      "To correct this, add " + original.asCanonicalNameString() + " to the '" + ImageVerifier.imageProperty + "' " +
-                                                      "property in the bnd.bnd or build-test.xml file for this FAT so that an testcontainer image " +
-                                                      "graph can be generated in the future.");
-
-            Log.error(c, "andVerifyImage", e);
-            throw e;
-        }
-
-        return output == null ? original : output;
-    }
-
 }

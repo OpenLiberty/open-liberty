@@ -137,7 +137,7 @@ public enum DatabaseContainerType {
     public static List<String> images() {
         ArrayList<String> images = new ArrayList<>();
         for (DatabaseContainerType elem : values()) {
-            if (!elem.getImageName().asCanonicalNameString().isEmpty()) {
+            if (!elem.getImageName().getUnversionedPart().isEmpty()) {
                 images.add(elem.getImageName().asCanonicalNameString());
             }
         }

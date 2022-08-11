@@ -31,8 +31,8 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -52,13 +52,7 @@ import componenttest.topology.utils.HttpUtils;
                 SessionCacheTwoServerTimeoutTest.class
 })
 
-public class FATSuite {
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
+public class FATSuite extends TestContainerSuite {
 
     @ClassRule
     public static RepeatTests repeat;
@@ -123,12 +117,12 @@ public class FATSuite {
                                     .build())
                     .withFileFromFile("/opt/infinispan_config/config.xml", new File("lib/LibertyFATTestFiles/infinispan/config.xml"))
                     .withFileFromFile("/opt/infinispan/server/conf/users.properties", new File("lib/LibertyFATTestFiles/infinispan/users.properties")))
-                                    .withCommand("./bin/server.sh -c /opt/infinispan_config/config.xml")
-                                    .withExposedPorts(11222)
-                                    .waitingFor(new LogMessageWaitStrategy()
-                                                    .withRegEx(".*ISPN080001: Infinispan Server.*")
-                                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15)))
-                                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Infinispan"));
+                    .withCommand("./bin/server.sh -c /opt/infinispan_config/config.xml")
+                    .withExposedPorts(11222)
+                    .waitingFor(new LogMessageWaitStrategy()
+                                    .withRegEx(".*ISPN080001: Infinispan Server.*")
+                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15)))
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Infinispan"));
 
     /**
      * Custom runner used by test classes.
