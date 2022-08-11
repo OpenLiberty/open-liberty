@@ -418,10 +418,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         ee9FeaturesThatEnableSsl.add("connectorsInboundSecurity-2.0");
         ee9FeaturesThatEnableSsl.add("messagingSecurity-3.0");
 
-        for (String feature : allFeatures) {
-            if (!compatibleFeatures.contains(feature)) {
-                continue;
-            }
+        for (String feature : compatibleFeatures) {
             Set<String> featuresToTest;
             if (ee9FeaturesThatEnableSsl.contains(feature)) {
                 featuresToTest = Collections.singleton(feature);
