@@ -12,7 +12,7 @@ WLP-AlsoKnownAs: jaspic-3.0
 IBM-SPI-Package: \
   com.ibm.wsspi.security.jaspi; type="ibm-spi"
 Subsystem-Name: Jakarta Authentication 3.0
--features=io.openliberty.xmlBinding-4.0, \
+-features=io.openliberty.xmlBinding.internal-4.0, \
   io.openliberty.appSecurity-5.0, \
   io.openliberty.jakarta.authentication-3.0, \
   com.ibm.websphere.appserver.servlet-6.0, \
