@@ -117,10 +117,9 @@ Include-Resource: \
 
 publish.wlp.jar.suffix: dev/api/third-party
 
-instrument.classesExcludes: \
-  org/eclipse/persistence/exceptions/i18n/*.class, \
-  org/eclipse/persistence/internal/localization/i18n/*.class, \
-  org/eclipse/persistence/internal/helper/*.class
+# Exclude this bundle from instrumentation (RAS & FFDC trace injection)
+instrument.disabled: true
+instrument.ffdc: false
 
 -buildpath: \
     org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion};strategy=exact,\
