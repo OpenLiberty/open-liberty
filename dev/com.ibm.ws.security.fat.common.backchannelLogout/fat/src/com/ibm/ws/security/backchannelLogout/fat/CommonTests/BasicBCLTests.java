@@ -888,9 +888,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
         invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
 
-        // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+        // Access and refresh tokens should not be cleaned up since the BCL endpoint is not considered valid
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
-        //states.setIsRefreshTokenValid(true);
+        if (!currentRepeatAction.contains(Constants.END_SESSION)) {
+            states.setIsRefreshTokenValid(true);
+        }
 
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
@@ -926,9 +928,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
         invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
 
-        // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+        // Access and refresh tokens should not be cleaned up since the BCL endpoint is not considered valid
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
-        //states.setIsRefreshTokenValid(true);
+        if (!currentRepeatAction.contains(Constants.END_SESSION)) {
+            states.setIsRefreshTokenValid(true);
+        }
 
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
@@ -989,9 +993,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
         invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
 
-        // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+        // Access and refresh tokens should not be cleaned up since the BCL endpoint is not considered valid
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
-        //states.setIsRefreshTokenValid(true);
+        if (!currentRepeatAction.contains(Constants.END_SESSION)) {
+            states.setIsRefreshTokenValid(true);
+        }
 
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
@@ -1026,9 +1032,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
         invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
 
-        // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+        // Access and refresh tokens should not be cleaned up since the BCL endpoint is not considered valid
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
-        //states.setIsRefreshTokenValid(true);
+        if (!currentRepeatAction.contains(Constants.END_SESSION)) {
+            states.setIsRefreshTokenValid(true);
+        }
 
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
