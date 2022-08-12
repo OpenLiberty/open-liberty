@@ -1292,21 +1292,19 @@ public class DataTestServlet extends FATServlet {
 
             @Override
             public void onComplete() {
-                results.add("DONE");
+                System.out.println(Long.toHexString(Thread.currentThread().getId()) + " onComplete");
             }
         });
 
         Set<Long> expected = new HashSet<Long>();
         expected.addAll(List.of(10030001L, 10030002L, 10030003L, 10030004L, 10030005L, 10030006L, 10030007L, 10030008L, 10030009L));
 
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 9; i++) {
             Object result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES);
             assertNotNull(result);
             System.out.println("Received " + result);
             if (result instanceof Throwable)
                 throw new AssertionError("onError notification received", (Throwable) result);
-            else if (result instanceof String)
-                assertEquals("DONE", result); // DONE notification
             else
                 assertEquals(result.toString() + " is not expected", true, expected.remove(((Reservation) result).meetingID));
         }
