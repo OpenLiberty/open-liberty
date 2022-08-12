@@ -300,7 +300,8 @@ public class JavaInfo {
             throw new Error(e);
         }
         // Not having OS specific file separator was causing issue on windows platform for java 8
-        ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + File.separator + "bin" + File.separator + "java", "-XX:+EnableCRIUSupport", //
+        StringBuilder sb = new StringBuilder(javaHome()).append(File.separator).append("bin").append(File.separator).append("java");
+        ProcessBuilder procBuilder = new ProcessBuilder(sb.toString(), "-XX:+EnableCRIUSupport", //
                         "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
         Process proc;
         try {
@@ -348,8 +349,8 @@ public class JavaInfo {
         // Service release (IBM JDK specific) = 3
         // Fixpack (IBM JDK specific) = 50
         // Vendor = IBM
-
-        ProcessBuilder pb = new ProcessBuilder(javaHome + File.separator + "bin" + File.separator + "java", "-version");
+        StringBuilder sb = new StringBuilder(javaHome).append(File.separator).append("bin").append(File.separator).append("java");
+        ProcessBuilder pb = new ProcessBuilder(sb.toString(), "-version");
         Process p = pb.start();
         try {
             p.waitFor();
