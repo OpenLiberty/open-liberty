@@ -564,8 +564,8 @@ org.hibernate.validator:hibernate-validator:6.1.7.Final
 org.hibernate.validator:hibernate-validator:7.0.4.Final
 org.hibernate:hibernate-core:5.2.17.Final
 org.hibernate:hibernate-search-engine:5.11.2.Final
-org.infinispan:infinispan-client-hotrod:12.1.7.Final
-org.infinispan:infinispan-commons:12.1.7.Final
+org.infinispan:infinispan-client-hotrod:13.0.10.Final
+org.infinispan:infinispan-commons:13.0.10.Final
 org.jacoco:org.jacoco.agent:0.7.9
 org.jacoco:org.jacoco.ant:0.7.9
 org.jacoco:org.jacoco.core:0.7.9

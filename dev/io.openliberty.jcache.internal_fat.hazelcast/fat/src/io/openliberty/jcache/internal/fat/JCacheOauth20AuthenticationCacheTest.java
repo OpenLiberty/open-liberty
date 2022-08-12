@@ -276,7 +276,7 @@ public class JCacheOauth20AuthenticationCacheTest extends BaseTestCase {
      * @throws Exception If there was an unforeseen error executing the login.
      */
     private Page performKeycloakLogin(WebClient webClient, Page startPage) throws Exception {
-        final String methodName = "performIdpLogin";
+        final String methodName = "performKeycloakLogin";
         Log.info(CLASS, methodName, "ENTERING " + webClient + ", " + startPage);
 
         HtmlForm form = ((HtmlPage) startPage).getForms().get(0);
