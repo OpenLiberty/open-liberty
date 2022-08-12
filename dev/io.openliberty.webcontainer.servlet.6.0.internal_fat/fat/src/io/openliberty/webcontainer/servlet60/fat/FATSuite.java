@@ -14,11 +14,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60GetRealPathTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeaderTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                Servlet60XPoweredByHeaderTest.class
+                Servlet60XPoweredByHeaderTest.class,
+                Servlet60GetRealPathTest.class
 })
 public class FATSuite {
 
