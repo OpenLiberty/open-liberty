@@ -11,6 +11,9 @@
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -69,14 +72,18 @@ public class DynamicJACCFeatureTest extends EJBAnnTestBase {
     @Test
     public void testDynamicFeatureUpdate_NoJACCFeature_Then_AddJaccFeature() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering Test: " + getName().getMethodName());
+        String waitForMessage = "CWWKT0016I.*/securityejbinwar/";
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(waitForMessage);
 
-        testHelper.reconfigureServer(Constants.JACC_FEATURE_NOT_ENABLED, getName().getMethodName(), Constants.RESTART_SERVER);
+        testHelper.reconfigureServer(Constants.JACC_FEATURE_NOT_ENABLED, getName().getMethodName(), msgs, Constants.RESTART_SERVER);
 
         String queryString = "/SimpleServlet?testInstance=ejb01&testMethod=denyAll";
         String response = generateResponseFromServlet(queryString, Constants.MANAGER_USER, Constants.MANAGER_PWD);
         verifyException(response, MessageConstants.EJB_ACCESS_EXCEPTION, MessageConstants.AUTH_DENIED_METHOD_EXPLICITLY_EXCLUDED);
         client.resetClientState();
-        testHelper.reconfigureServer(Constants.DEFAULT_CONFIG_FILE, getName().getMethodName(), Constants.DO_NOT_RESTART_SERVER);
+
+        testHelper.reconfigureServer(Constants.DEFAULT_CONFIG_FILE, getName().getMethodName(), msgs, Constants.DO_NOT_RESTART_SERVER);
         String queryString2 = "/SimpleServlet?testInstance=ejb01&testMethod=denyAll";
         String response2 = generateResponseFromServlet(queryString2, Constants.MANAGER_USER, Constants.MANAGER_PWD);
         verifyException(response2, MessageConstants.EJB_ACCESS_EXCEPTION, MessageConstants.JACC_AUTH_DENIED_USER_NOT_GRANTED_REQUIRED_ROLE);
