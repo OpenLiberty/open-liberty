@@ -9,9 +9,4 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-/* This dependency is only needed while the concurrent 2.0 api bundle is in lib and not in dev/api/spec */
-dependencies {
-  requiredLibs 'jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0-RC1'
-}
-
 addRequiredLibraries.dependsOn addDerby
