@@ -299,7 +299,8 @@ public class JavaInfo {
         } catch (URISyntaxException e) {
             throw new Error(e);
         }
-        ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + "/bin/java", "-XX:+EnableCRIUSupport", //
+        // Not having OS specific file separator was causing issue on windows platform for java 8
+        ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + File.separator + "bin" + File.separator + "java", "-XX:+EnableCRIUSupport", //
                         "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
         Process proc;
         try {
@@ -348,7 +349,7 @@ public class JavaInfo {
         // Fixpack (IBM JDK specific) = 50
         // Vendor = IBM
 
-        ProcessBuilder pb = new ProcessBuilder(javaHome + "/bin/java", "-version");
+        ProcessBuilder pb = new ProcessBuilder(javaHome + File.separator + "bin" + File.separator + "java", "-version");
         Process p = pb.start();
         try {
             p.waitFor();
