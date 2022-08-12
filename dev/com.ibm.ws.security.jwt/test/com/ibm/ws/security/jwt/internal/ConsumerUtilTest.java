@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,7 +68,8 @@ import test.common.SharedOutputManager;
 
 public class ConsumerUtilTest {
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.jwt.*=all:com.ibm.ws.security.common.*=all");
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance()
+            .trace("com.ibm.ws.security.jwt.*=all:com.ibm.ws.security.common.*=all");
 
     private static final String ENTRY1 = "entry1";
     private static final String ENTRY2 = "entry2";
@@ -132,7 +133,8 @@ public class ConsumerUtilTest {
     @SuppressWarnings("unchecked")
     private final AtomicServiceReference<KeyStoreService> kssRef = mockery.mock(AtomicServiceReference.class, "kssRef");
     @SuppressWarnings("unchecked")
-    private final AtomicServiceReference<SSLSupport> sslSupportRef = mockery.mock(AtomicServiceReference.class, "sslSupportRef");
+    private final AtomicServiceReference<SSLSupport> sslSupportRef = mockery.mock(AtomicServiceReference.class,
+            "sslSupportRef");
     private final KeyStoreService kss = mockery.mock(KeyStoreService.class);
     private final SSLSupport ssl = mockery.mock(SSLSupport.class);
     private final PublicKey publicKey = mockery.mock(PublicKey.class);
@@ -175,7 +177,8 @@ public class ConsumerUtilTest {
         }
 
         @Override
-        boolean validateIssuer(String consumerConfigId, String issuers, String tokenIssuer) throws InvalidClaimException {
+        boolean validateIssuer(String consumerConfigId, String issuers, String tokenIssuer)
+                throws InvalidClaimException {
             if (issuers.compareTo("issuerFromMap") == 0) {
                 throw new RuntimeException("it worked");
             }
@@ -184,7 +187,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * check that validateClaims reads the issuer from the properties map if supplied
+     * check that validateClaims reads the issuer from the properties map if
+     * supplied
      */
     @Test
     public void testValidateClaimsReadsConfigProperty() {
@@ -203,7 +207,9 @@ public class ConsumerUtilTest {
         assertTrue("expected property to be read from map but it was not", valid);
     }
 
-    /********************************************* getSigningKey *********************************************/
+    /*********************************************
+     * getSigningKey
+     *********************************************/
 
     /**
      * Method under test: {@link ConsumerUtil#getSigningKey(JwtConsumerConfig)}
@@ -295,7 +301,8 @@ public class ConsumerUtilTest {
                 {
                     allowing(jwtConfig).getSignatureAlgorithm();
                     will(returnValue(RS256));
-                    one(jwtConfig).getJwkEnabled(); // for jwksUri(jwkEndpointUrl
+                    one(jwtConfig).getJwkEnabled(); // for
+                                                    // jwksUri(jwkEndpointUrl
                     will(returnValue(false)); //
                     allowing(jwtConfig).getTrustedAlias();
                     will(returnValue(trustedAlias));
@@ -307,7 +314,8 @@ public class ConsumerUtilTest {
                 Key result = testConsumerUtil.getSigningKey(jwtConfig, jwtContext);
                 fail("Should have thrown Exception but did not. Got key: " + result);
             } catch (Exception e) {
-                validateException(e, MSG_JWT_ERROR_GETTING_PRIVATE_KEY + ".+\\[" + trustedAlias + "\\].+\\[" + trustStoreRef + "\\].+" + MSG_JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE);
+                validateException(e, MSG_JWT_ERROR_GETTING_PRIVATE_KEY + ".+\\[" + trustedAlias + "\\].+\\["
+                        + trustStoreRef + "\\].+" + MSG_JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -353,10 +361,13 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************* getSharedSecretKey *********************************************/
+    /*********************************************
+     * getSharedSecretKey
+     *********************************************/
 
     /**
-     * Method under test: {@link ConsumerUtil#getSharedSecretKey(JwtConsumerConfig)}
+     * Method under test:
+     * {@link ConsumerUtil#getSharedSecretKey(JwtConsumerConfig)}
      */
     @Test
     public void testGetSharedSecretKey_nullConfig() {
@@ -369,7 +380,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#getSharedSecretKey(JwtConsumerConfig)}
+     * Method under test:
+     * {@link ConsumerUtil#getSharedSecretKey(JwtConsumerConfig)}
      */
     @Test
     public void testGetSharedSecretKey_emptyOrNullKey() {
@@ -394,7 +406,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#getSharedSecretKey(JwtConsumerConfig)}
+     * Method under test:
+     * {@link ConsumerUtil#getSharedSecretKey(JwtConsumerConfig)}
      */
     @Test
     public void testGetSharedSecretKey_validKey() {
@@ -413,10 +426,13 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************* getPublicKey *********************************************/
+    /*********************************************
+     * getPublicKey
+     *********************************************/
 
     /**
-     * Method under test: {@link ConsumerUtil#getPublicKey(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#getPublicKey(String, String, String)}
      */
     @Test
     public void testGetPublicKey_missingKeyStoreService() {
@@ -428,7 +444,8 @@ public class ConsumerUtilTest {
                 Key result = testConsumerUtil.getPublicKey(trustedAlias, trustStoreRef, randomAlg);
                 fail("Should have thrown KeyStoreServiceException but did not. Got key: " + result);
             } catch (KeyException e) {
-                validateException(e, MSG_JWT_NULL_SIGNING_KEY_WITH_ERROR + ".+\\[" + randomAlg + "\\].+\\[" + Constants.SIGNING_KEY_X509 + "\\].+" + MSG_JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE);
+                validateException(e, MSG_JWT_NULL_SIGNING_KEY_WITH_ERROR + ".+\\[" + randomAlg + "\\].+\\["
+                        + Constants.SIGNING_KEY_X509 + "\\].+" + MSG_JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -436,7 +453,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#getPublicKey(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#getPublicKey(String, String, String)}
      */
     @Test
     public void testGetPublicKey_nullArgs() {
@@ -461,7 +479,9 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#getPublicKey(String, String, String)} - Exception thrown getting key from keystore
+     * Method under test:
+     * {@link ConsumerUtil#getPublicKey(String, String, String)} - Exception
+     * thrown getting key from keystore
      */
     @Test
     public void testGetPublicKey_throwsException() {
@@ -481,7 +501,8 @@ public class ConsumerUtilTest {
                 Key result = consumerUtil.getPublicKey(trustedAlias, trustStoreRef, randomAlg);
                 fail("Should have thrown KeyException but did not. Got key: " + result);
             } catch (KeyException e) {
-                validateException(e, MSG_JWT_NULL_SIGNING_KEY_WITH_ERROR + ".+\\[" + randomAlg + "\\].+\\[" + Constants.SIGNING_KEY_X509 + "\\].+" + errorMsg);
+                validateException(e, MSG_JWT_NULL_SIGNING_KEY_WITH_ERROR + ".+\\[" + randomAlg + "\\].+\\["
+                        + Constants.SIGNING_KEY_X509 + "\\].+" + errorMsg);
             }
 
         } catch (Throwable t) {
@@ -490,13 +511,15 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#getPublicKey(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#getPublicKey(String, String, String)}
      */
     @Test
     public void testGetPublicKey_notRSAPublicKey() {
         final String randomAlg = RandomUtils.getRandomSelection(null, RS256, HS256);
         try {
-            // Successfully get key from keystore, but it is not an instance of RSAPublicKey
+            // Successfully get key from keystore, but it is not an instance of
+            // RSAPublicKey
             mockery.checking(new Expectations() {
                 {
                     one(kssRef).getService();
@@ -516,7 +539,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#getPublicKey(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#getPublicKey(String, String, String)}
      */
     @Test
     public void testGetPublicKey_validKey() {
@@ -541,14 +565,19 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************* parseJwtWithValidation *********************************************/
+    /*********************************************
+     * parseJwtWithValidation
+     *********************************************/
 
     // TODO - parseJwtWithValidation
 
-    /********************************************* parseJwtWithoutValidation *********************************************/
+    /*********************************************
+     * parseJwtWithoutValidation
+     *********************************************/
 
     /**
-     * Method under test: {@link ConsumerUtil#parseJwtWithoutValidation(String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#parseJwtWithoutValidation(String, String)}
      */
     @Test
     public void testParseJwtWithoutValidation_nullOrEmptyTokenString() {
@@ -573,7 +602,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#parseJwtWithoutValidation(String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#parseJwtWithoutValidation(String, String)}
      */
     @Test
     public void testParseJwtWithoutValidation_singlePartTokenString() {
@@ -600,7 +630,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#parseJwtWithoutValidation(String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#parseJwtWithoutValidation(String, String)}
      */
     @Test
     public void testParseJwtWithoutValidation_twoPartTokenString() {
@@ -627,7 +658,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#parseJwtWithoutValidation(String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#parseJwtWithoutValidation(String, String)}
      */
     @Test
     public void testParseJwtWithoutValidation_threePartMalformedTokenString() {
@@ -654,9 +686,10 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#parseJwtWithoutValidation(String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#parseJwtWithoutValidation(String, String)}
      */
-    //@Test
+    // @Test
     public void testParseJwtWithoutValidation_emptyTokenParts() {
         try {
             final String tokenString = encodedEmptyJsonString + "." + encodedEmptyJsonString + ".test";
@@ -674,7 +707,9 @@ public class ConsumerUtilTest {
 
     // TODO - parseJwtWithoutValidation
 
-    /************************************* checkJwtFormatAgainstConfigRequirements *************************************/
+    /*************************************
+     * checkJwtFormatAgainstConfigRequirements
+     *************************************/
 
     @Test
     public void test_checkJwtFormatAgainstConfigRequirements_jwsRequired_jweString() {
@@ -754,7 +789,9 @@ public class ConsumerUtilTest {
         }
     }
 
-    /************************************* getJwtContextFromCache *************************************/
+    /*************************************
+     * getJwtContextFromCache
+     *************************************/
 
     @Test
     public void test_getJwtContextFromCache_nothingCached() {
@@ -821,10 +858,13 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************* validateIssuer *********************************************/
+    /*********************************************
+     * validateIssuer
+     *********************************************/
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_nullOrEmptyArgs() {
@@ -872,7 +912,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_whitespaceTrustedIssuers() {
@@ -883,7 +924,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for whitespace-only token issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -891,7 +933,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_commaTrustedIssuers() {
@@ -902,7 +945,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for comma-only trusted issuer and empty token issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -910,7 +954,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_singleTrustedIssuer_nullTokenIssuer() {
@@ -922,7 +967,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for null token issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -930,7 +976,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_singleTrustedIssuer_emptyTokenIssuer() {
@@ -942,7 +989,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for empty token issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -950,7 +998,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_singleTrustedIssuer_untrustedTokenIssuer() {
@@ -962,7 +1011,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for untrusted token issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -970,7 +1020,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_singleTrustedIssuer_tokenIssuerSubstringOfTrusted() {
@@ -982,7 +1033,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for untrusted token issuer that is substring of trusted issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -990,7 +1042,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_singleTrustedIssuer_tokenIssuerSuperStringWithComma() {
@@ -1002,7 +1055,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for untrusted token issuer using comma-separated value that is superstring of trusted issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1010,7 +1064,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_singleTrustedIssuer_tokenIssuerSuperStringWithSpace() {
@@ -1022,7 +1077,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for untrusted token issuer using space-separated value that is superstring of trusted issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1030,7 +1086,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_singleTrustedIssuer_emptyTokenIssuer_trailingCommaTrusted() {
@@ -1042,7 +1099,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for empty token issuer with trailing comma in trusted issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1050,7 +1108,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_singleTrustedIssuer_emptyTokenIssuer_leadingAndTrailingCommaTrusted() {
@@ -1062,7 +1121,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for empty token issuer with leading and trailing comma in trusted issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
 
         } catch (Throwable t) {
@@ -1071,22 +1131,28 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_singleTrustedIssuer() {
         try {
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, ENTRY1, ENTRY1));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, " \t" + ENTRY1 + " ", ENTRY1));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + ",", ENTRY1));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, " " + ENTRY1 + " ,", ENTRY1));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, ENTRY1, ENTRY1));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, " \t" + ENTRY1 + " ", ENTRY1));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + ",", ENTRY1));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, " " + ENTRY1 + " ,", ENTRY1));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_multipleTrustedIssuers_nullTokenIssuer() {
@@ -1098,7 +1164,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for null token issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1106,7 +1173,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_multipleTrustedIssuers_emptyTokenIssuer() {
@@ -1118,7 +1186,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for empty token issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1126,7 +1195,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_multipleTrustedIssuers_untrustedTokenIssuer() {
@@ -1138,7 +1208,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for untrusted token issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1146,7 +1217,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_multipleTrustedIssuers_tokenIssuerContainsTrustedIssuer() {
@@ -1158,7 +1230,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for untrusted token issuer that contains substring of a trusted issuer.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1166,7 +1239,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_multipleTrustedIssuers_tokenIssuerWithComma() {
@@ -1178,7 +1252,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateIssuer(consumerConfigId, trustedIssuers, tokenIssuer);
                 fail("Should have thrown InvalidClaimException for untrusted token issuer that matches full comma-separated trusted issuers string.");
             } catch (InvalidClaimException e) {
-                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId, trustedIssuers);
+                validateExceptionWithInserts(e, MSG_JWT_ISSUER_NOT_TRUSTED, tokenIssuer, consumerConfigId,
+                        trustedIssuers);
             }
 
         } catch (Throwable t) {
@@ -1187,31 +1262,42 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_multipleTrustedIssuers() {
         try {
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + "," + URL, ENTRY1));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + "," + URL, URL));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + "," + ENTRY1, ENTRY1));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + ", " + ENTRY2 + " ", ENTRY2));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + "," + URL, ENTRY1));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + "," + URL, URL));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + "," + ENTRY1, ENTRY1));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + ", " + ENTRY2 + " ", ENTRY2));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIssuer(String, String, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIssuer(String, String, String)}
      */
     @Test
     public void testValidateIssuer_trustAllIssuers() {
         try {
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, Constants.ALL_ISSUERS, null));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, Constants.ALL_ISSUERS, ""));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, Constants.ALL_ISSUERS, ENTRY1));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, Constants.ALL_ISSUERS, ENTRY2 + "," + ENTRY2));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + ", " + Constants.ALL_ISSUERS, ENTRY1));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, Constants.ALL_ISSUERS, null));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, Constants.ALL_ISSUERS, ""));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, Constants.ALL_ISSUERS, ENTRY1));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, Constants.ALL_ISSUERS, ENTRY2 + "," + ENTRY2));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateIssuer(consumerConfigId, ENTRY1 + ", " + Constants.ALL_ISSUERS, ENTRY1));
 
             String trustedIssuers = ENTRY1 + " " + Constants.ALL_ISSUERS;
             String tokenIssuer = ENTRY1;
@@ -1226,7 +1312,9 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************* validateAudience *********************************************/
+    /*********************************************
+     * validateAudience
+     *********************************************/
 
     @Test
     public void testValidateAudience_withConfig_noAudiencesConfigured_nullTokenAudiences_ignoreAudIfNotConfigured() {
@@ -1350,7 +1438,9 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************* validateAudience *********************************************/
+    /*********************************************
+     * validateAudience
+     *********************************************/
 
     /**
      * Method under test: {@link ConsumerUtil#validateAudience(List, List)}
@@ -1364,27 +1454,32 @@ public class ConsumerUtilTest {
 
             // Null/empty token and allowed audiences
             assertTrue("Validation should have succeeded.", consumerUtil.validateAudience((List<String>) null, null));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience((List<String>) null, emptyList));
+            assertTrue("Validation should have succeeded.",
+                    consumerUtil.validateAudience((List<String>) null, emptyList));
             assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, null));
             assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, emptyList));
 
             // ALL_AUDIENCES
             assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(allAudiencesList, null));
-            assertTrue("Validation should NOT have succeeded.", consumerUtil.validateAudience(allAudiencesList, emptyList));
+            assertTrue("Validation should NOT have succeeded.",
+                    consumerUtil.validateAudience(allAudiencesList, emptyList));
             List<String> tokenAud = new ArrayList<String>();
             tokenAud.add(ENTRY1);
             tokenAud.add(ENTRY2);
-            assertTrue("Validation should NOT have succeeded.", consumerUtil.validateAudience(allAudiencesList, tokenAud));
+            assertTrue("Validation should NOT have succeeded.",
+                    consumerUtil.validateAudience(allAudiencesList, tokenAud));
 
             // ALL_AUDIENCES substring
             List<String> allAudSubList = new ArrayList<String>();
             allAudSubList.add(Constants.ALL_AUDIENCES.substring(0, Constants.ALL_AUDIENCES.length() - 1));
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(allAudSubList, tokenAud));
+            assertFalse("Validation should NOT have succeeded.",
+                    consumerUtil.validateAudience(allAudSubList, tokenAud));
 
             // Null/empty allowed audiences, single aud in the token
             tokenAud = new ArrayList<String>();
             tokenAud.add(ENTRY1);
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience((List<String>) null, tokenAud));
+            assertFalse("Validation should NOT have succeeded.",
+                    consumerUtil.validateAudience((List<String>) null, tokenAud));
             assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, tokenAud));
 
             // Null/empty audiences in token, single aud in allowed audiences
@@ -1448,23 +1543,27 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************* validateIatAndExp *********************************************/
+    /*********************************************
+     * validateIatAndExp
+     *********************************************/
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)}
      */
     @Test
     public void testValidateIatAndExp_nullClaims() {
         try {
             // Nothing should happen
-            consumerUtil.validateIatAndExp(null, 0);
+            consumerUtil.validateIatAndExp(null, 0, 0);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)}
      */
     @Test
     public void testValidateIatAndExp_malformedIat() {
@@ -1477,7 +1576,7 @@ public class ConsumerUtilTest {
                 }
             });
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, 0);
+                consumerUtil.validateIatAndExp(jwtClaims, 0, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 validateException(e, MSG_JWT_CONSUMER_MALFORMED_CLAIM + ".+\\[" + Claims.ISSUED_AT + "\\].+" + eMsg);
@@ -1488,7 +1587,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)}
      */
     @Test
     public void testValidateIatAndExp_malformedExp() {
@@ -1504,7 +1604,7 @@ public class ConsumerUtilTest {
                 }
             });
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, 0);
+                consumerUtil.validateIatAndExp(jwtClaims, 0, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 validateException(e, MSG_JWT_CONSUMER_MALFORMED_CLAIM + ".+\\[" + Claims.EXPIRATION + "\\].+" + eMsg);
@@ -1515,7 +1615,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)}
      */
     @Test
     public void testValidateIatAndExp_nullIat() {
@@ -1523,14 +1624,15 @@ public class ConsumerUtilTest {
             final NumericDate expDate = createDate(FUTURE_OUTSIDE_CLOCK_SKEW);
             setIatAndExpClaimExpectations(null, expDate);
             // Null iat should have no ultimate effect here
-            consumerUtil.validateIatAndExp(jwtClaims, 0);
+            consumerUtil.validateIatAndExp(jwtClaims, 0, 0);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)}
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)}
      */
     @Test
     public void testValidateIatAndExp_nullExp() {
@@ -1538,7 +1640,7 @@ public class ConsumerUtilTest {
             final NumericDate iatDate = createDate(PAST_OUTSIDE_CLOCK_SKEW);
             setIatAndExpClaimExpectations(iatDate, null);
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, 0);
+                consumerUtil.validateIatAndExp(jwtClaims, 0, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 validateException(e, MSG_JWT_TOKEN_EXPIRED + ".+\\[" + null + "\\].+\\[" + 0 + "\\] sec");
@@ -1549,13 +1651,15 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline:
-     * iat -- exp -- [Clock skew start] -- Current time
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline: iat --
+     * exp -- [Clock skew start] -- Current time
      */
     @Test
     public void testValidateIatAndExp_iatPast_outsideClockSkew_expPast_outsideClockSkew() {
         try {
-            // Randomly select clock skew setting to make sure no clock skew and some small clock skew don't affect result
+            // Randomly select clock skew setting to make sure no clock skew and
+            // some small clock skew don't affect result
             long clockSkewMillis = getRandomClockSkew();
 
             final NumericDate iatDate = createDate(PAST_OUTSIDE_CLOCK_SKEW);
@@ -1563,11 +1667,12 @@ public class ConsumerUtilTest {
             setIatAndExpClaimExpectations(iatDate, expDate);
 
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String expString = convertDateToLiteralRegexString(expDate);
-                validateException(e, MSG_JWT_TOKEN_EXPIRED + ".+\\[" + expString + "\\].+\\[" + (clockSkewMillis / 1000) + "\\] sec");
+                validateException(e, MSG_JWT_TOKEN_EXPIRED + ".+\\[" + expString + "\\].+\\[" + (clockSkewMillis / 1000)
+                        + "\\] sec");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1575,13 +1680,15 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline:
-     * exp -- iat -- [Clock skew start] -- Current time
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline: exp --
+     * iat -- [Clock skew start] -- Current time
      */
     @Test
     public void testValidateIatAndExp_expPast_outsideClockSkew_iatPast_outsideClockSkew() {
         try {
-            // Randomly select clock skew setting to make sure no clock skew and some small clock skew don't affect result
+            // Randomly select clock skew setting to make sure no clock skew and
+            // some small clock skew don't affect result
             long clockSkewMillis = getRandomClockSkew();
 
             final NumericDate expDate = createDate(PAST_OUTSIDE_CLOCK_SKEW);
@@ -1589,7 +1696,7 @@ public class ConsumerUtilTest {
             setIatAndExpClaimExpectations(iatDate, expDate);
 
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String iatString = convertDateToLiteralRegexString(iatDate);
@@ -1602,8 +1709,9 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline:
-     * iat -- [Clock skew start] -- exp -- Current time
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline: iat --
+     * [Clock skew start] -- exp -- Current time
      */
     @Test
     public void testValidateIatAndExp_iatPast_outsideClockSkew_expPast_withinClockSkew() {
@@ -1614,15 +1722,16 @@ public class ConsumerUtilTest {
             final NumericDate expDate = createDate(PAST_WITHIN_CLOCK_SKEW);
             setIatAndExpClaimExpectations(iatDate, expDate);
 
-            consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+            consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline:
-     * exp -- [Clock skew start] -- iat -- Current time
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline: exp --
+     * [Clock skew start] -- iat -- Current time
      */
     @Test
     public void testValidateIatAndExp_expPast_outsideClockSkew_iatPast_withinClockSkew() {
@@ -1634,7 +1743,7 @@ public class ConsumerUtilTest {
             setIatAndExpClaimExpectations(iatDate, expDate);
 
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String iatString = convertDateToLiteralRegexString(iatDate);
@@ -1647,8 +1756,9 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline:
-     * [Clock skew start] -- iat -- exp -- Current time
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline: [Clock
+     * skew start] -- iat -- exp -- Current time
      */
     @Test
     public void testValidateIatAndExp_iatPast_withinClockSkew_expPast_withinClockSkew() {
@@ -1659,15 +1769,16 @@ public class ConsumerUtilTest {
             final NumericDate iatDate = createDate(expDate, -1 * ONE_MINUTE_MS);
             setIatAndExpClaimExpectations(iatDate, expDate);
 
-            consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+            consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline:
-     * [Clock skew start] -- exp -- iat -- Current time
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline: [Clock
+     * skew start] -- exp -- iat -- Current time
      */
     @Test
     public void testValidateIatAndExp_expPast_withinClockSkew_iatPast_withinClockSkew() {
@@ -1679,7 +1790,7 @@ public class ConsumerUtilTest {
             setIatAndExpClaimExpectations(iatDate, expDate);
 
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String iatString = convertDateToLiteralRegexString(iatDate);
@@ -1692,47 +1803,59 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline:
-     * iat -- Current time -- exp
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline: iat --
+     * Current time -- exp
      */
     @Test
     public void testValidateIatAndExp_iatPast_expFuture() {
         try {
-            // Randomly select clock skew setting to make sure no clock skew and some small clock skew don't affect result
+            // Randomly select clock skew setting to make sure no clock skew and
+            // some small clock skew don't affect result
             long clockSkewMillis = getRandomClockSkew();
 
-            // Past iat date doesn't matter whether or not it falls within the clock skew
-            final NumericDate iatDate = createDate(RandomUtils.getRandomSelection(PAST_OUTSIDE_CLOCK_SKEW, PAST_WITHIN_CLOCK_SKEW));
-            // Future exp date doesn't matter whether or not it falls within the clock skew
-            final NumericDate expDate = createDate(RandomUtils.getRandomSelection(FUTURE_WITHIN_CLOCK_SKEW, FUTURE_OUTSIDE_CLOCK_SKEW));
+            // Past iat date doesn't matter whether or not it falls within the
+            // clock skew
+            final NumericDate iatDate = createDate(
+                    RandomUtils.getRandomSelection(PAST_OUTSIDE_CLOCK_SKEW, PAST_WITHIN_CLOCK_SKEW));
+            // Future exp date doesn't matter whether or not it falls within the
+            // clock skew
+            final NumericDate expDate = createDate(
+                    RandomUtils.getRandomSelection(FUTURE_WITHIN_CLOCK_SKEW, FUTURE_OUTSIDE_CLOCK_SKEW));
             setIatAndExpClaimExpectations(iatDate, expDate);
 
-            consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+            consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} exp -- Current time -- [Clock skew end] -- iat
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} exp -- Current
+     * time -- [Clock skew end] -- iat
      */
     @Test
     public void testValidateIatAndExp_expPast_iatFuture_outsideClockSkew() {
         try {
-            // Randomly select clock skew setting to make sure no clock skew and some small clock skew don't affect result
+            // Randomly select clock skew setting to make sure no clock skew and
+            // some small clock skew don't affect result
             long clockSkewMillis = getRandomClockSkew();
 
             final NumericDate iatDate = createDate(FUTURE_OUTSIDE_CLOCK_SKEW);
-            // Past exp date doesn't matter whether or not it falls within the clock skew
-            final NumericDate expDate = createDate(RandomUtils.getRandomSelection(PAST_OUTSIDE_CLOCK_SKEW, PAST_WITHIN_CLOCK_SKEW));
+            // Past exp date doesn't matter whether or not it falls within the
+            // clock skew
+            final NumericDate expDate = createDate(
+                    RandomUtils.getRandomSelection(PAST_OUTSIDE_CLOCK_SKEW, PAST_WITHIN_CLOCK_SKEW));
             setIatAndExpClaimExpectations(iatDate, expDate);
 
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String iatString = convertDateToLiteralRegexString(iatDate);
-                validateException(e, MSG_JWT_IAT_AFTER_CURRENT_TIME + ".+" + Claims.ISSUED_AT + ".+\\[" + iatString + "\\].+\\[" + (clockSkewMillis / 1000) + "\\] seconds");
+                validateException(e, MSG_JWT_IAT_AFTER_CURRENT_TIME + ".+" + Claims.ISSUED_AT + ".+\\[" + iatString
+                        + "\\].+\\[" + (clockSkewMillis / 1000) + "\\] seconds");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1740,7 +1863,9 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} exp -- Current time -- iat -- [Clock skew end]
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} exp -- Current
+     * time -- iat -- [Clock skew end]
      */
     @Test
     public void testValidateIatAndExp_expPast_iatFuture_withinClockSkew() {
@@ -1748,12 +1873,14 @@ public class ConsumerUtilTest {
             long clockSkewMillis = STANDARD_CLOCK_SKEW_MS;
 
             final NumericDate iatDate = createDate(FUTURE_WITHIN_CLOCK_SKEW);
-            // Past exp date doesn't matter whether or not it falls within the clock skew
-            final NumericDate expDate = createDate(RandomUtils.getRandomSelection(PAST_OUTSIDE_CLOCK_SKEW, PAST_WITHIN_CLOCK_SKEW));
+            // Past exp date doesn't matter whether or not it falls within the
+            // clock skew
+            final NumericDate expDate = createDate(
+                    RandomUtils.getRandomSelection(PAST_OUTSIDE_CLOCK_SKEW, PAST_WITHIN_CLOCK_SKEW));
             setIatAndExpClaimExpectations(iatDate, expDate);
 
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String iatString = convertDateToLiteralRegexString(iatDate);
@@ -1766,12 +1893,15 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time -- [Clock skew end] -- iat -- exp
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time --
+     * [Clock skew end] -- iat -- exp
      */
     @Test
     public void testValidateIatAndExp_iatFuture_outsideClockSkew_expFuture_outsideClockSkew() {
         try {
-            // Randomly select clock skew setting to make sure no clock skew and some small clock skew don't affect result
+            // Randomly select clock skew setting to make sure no clock skew and
+            // some small clock skew don't affect result
             long clockSkewMillis = getRandomClockSkew();
 
             final NumericDate iatDate = createDate(FUTURE_OUTSIDE_CLOCK_SKEW);
@@ -1779,11 +1909,12 @@ public class ConsumerUtilTest {
             setIatAndExpClaimExpectations(iatDate, expDate);
 
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String iatString = convertDateToLiteralRegexString(iatDate);
-                validateException(e, MSG_JWT_IAT_AFTER_CURRENT_TIME + ".+" + Claims.ISSUED_AT + ".+\\[" + iatString + "\\].+\\[" + (clockSkewMillis / 1000) + "\\] seconds");
+                validateException(e, MSG_JWT_IAT_AFTER_CURRENT_TIME + ".+" + Claims.ISSUED_AT + ".+\\[" + iatString
+                        + "\\].+\\[" + (clockSkewMillis / 1000) + "\\] seconds");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1791,12 +1922,15 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time -- [Clock skew end] -- exp -- iat
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time --
+     * [Clock skew end] -- exp -- iat
      */
     @Test
     public void testValidateIatAndExp_expFuture_outsideClockSkew_iatFuture_outsideClockSkew() {
         try {
-            // Randomly select clock skew setting to make sure no clock skew and some small clock skew don't affect result
+            // Randomly select clock skew setting to make sure no clock skew and
+            // some small clock skew don't affect result
             long clockSkewMillis = getRandomClockSkew();
 
             final NumericDate expDate = createDate(FUTURE_OUTSIDE_CLOCK_SKEW);
@@ -1804,11 +1938,12 @@ public class ConsumerUtilTest {
             setIatAndExpClaimExpectations(iatDate, expDate);
 
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String iatString = convertDateToLiteralRegexString(iatDate);
-                validateException(e, MSG_JWT_IAT_AFTER_CURRENT_TIME + ".+" + Claims.ISSUED_AT + ".+\\[" + iatString + "\\].+\\[" + (clockSkewMillis / 1000) + "\\] seconds");
+                validateException(e, MSG_JWT_IAT_AFTER_CURRENT_TIME + ".+" + Claims.ISSUED_AT + ".+\\[" + iatString
+                        + "\\].+\\[" + (clockSkewMillis / 1000) + "\\] seconds");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1816,7 +1951,9 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time -- exp -- [Clock skew end] -- iat
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time --
+     * exp -- [Clock skew end] -- iat
      */
     @Test
     public void testValidateIatAndExp_expFuture_withinClockSkew_iatFuture_outsideClockSkew() {
@@ -1828,11 +1965,12 @@ public class ConsumerUtilTest {
             setIatAndExpClaimExpectations(iatDate, expDate);
 
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String iatString = convertDateToLiteralRegexString(iatDate);
-                validateException(e, MSG_JWT_IAT_AFTER_CURRENT_TIME + ".+" + Claims.ISSUED_AT + ".+\\[" + iatString + "\\].+\\[" + (clockSkewMillis / 1000) + "\\] seconds");
+                validateException(e, MSG_JWT_IAT_AFTER_CURRENT_TIME + ".+" + Claims.ISSUED_AT + ".+\\[" + iatString
+                        + "\\].+\\[" + (clockSkewMillis / 1000) + "\\] seconds");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1840,7 +1978,9 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time -- iat -- [Clock skew end] -- exp
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time --
+     * iat -- [Clock skew end] -- exp
      */
     @Test
     public void testValidateIatAndExp_iatFuture_withinClockSkew_expFuture_outsideClockSkew() {
@@ -1851,14 +1991,16 @@ public class ConsumerUtilTest {
             final NumericDate expDate = createDate(FUTURE_OUTSIDE_CLOCK_SKEW);
             setIatAndExpClaimExpectations(iatDate, expDate);
 
-            consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+            consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time -- iat -- exp -- [Clock skew end]
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time --
+     * iat -- exp -- [Clock skew end]
      */
     @Test
     public void testValidateIatAndExp_iatFuture_withinClockSkew_expFuture_withinClockSkew() {
@@ -1869,14 +2011,16 @@ public class ConsumerUtilTest {
             final NumericDate expDate = createDate(FUTURE_WITHIN_CLOCK_SKEW + ONE_MINUTE_MS);
             setIatAndExpClaimExpectations(iatDate, expDate);
 
-            consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+            consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time -- exp -- iat -- [Clock skew end]
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Current time --
+     * exp -- iat -- [Clock skew end]
      */
     @Test
     public void testValidateIatAndExp_expFuture_withinClockSkew_iatFuture_withinClockSkew() {
@@ -1888,7 +2032,7 @@ public class ConsumerUtilTest {
             setIatAndExpClaimExpectations(iatDate, expDate);
 
             try {
-                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis);
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 0);
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String iatString = convertDateToLiteralRegexString(iatDate);
@@ -1900,7 +2044,9 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************* validateNbf *********************************************/
+    /*********************************************
+     * validateNbf
+     *********************************************/
 
     /**
      * Method under test: {@link ConsumerUtil#validateNbf(JwtClaims, long)}
@@ -1958,7 +2104,8 @@ public class ConsumerUtilTest {
     @Test
     public void testValidateNbf_pastNbf_outsideClockSkew() {
         try {
-            // Randomly select clock skew setting to make sure no clock skew and some small clock skew don't affect result
+            // Randomly select clock skew setting to make sure no clock skew and
+            // some small clock skew don't affect result
             long clockSkewMillis = getRandomClockSkew();
 
             final NumericDate nbfDate = createDate(PAST_OUTSIDE_CLOCK_SKEW);
@@ -2010,7 +2157,8 @@ public class ConsumerUtilTest {
     @Test
     public void testValidateNbf_futureNbf_outsideClockSkew() {
         try {
-            // Randomly select clock skew setting to make sure no clock skew and some small clock skew don't affect result
+            // Randomly select clock skew setting to make sure no clock skew and
+            // some small clock skew don't affect result
             long clockSkewMillis = getRandomClockSkew();
 
             final NumericDate nbfDate = createDate(FUTURE_OUTSIDE_CLOCK_SKEW);
@@ -2020,17 +2168,21 @@ public class ConsumerUtilTest {
                 fail("Should have thrown InvalidClaimException but did not.");
             } catch (InvalidClaimException e) {
                 String expString = convertDateToLiteralRegexString(nbfDate);
-                validateException(e, MSG_JWT_TOKEN_BEFORE_NBF + ".+\\[" + expString + "\\].+\\[" + (clockSkewMillis / 1000) + "\\] sec");
+                validateException(e, MSG_JWT_TOKEN_BEFORE_NBF + ".+\\[" + expString + "\\].+\\["
+                        + (clockSkewMillis / 1000) + "\\] sec");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
-    /********************************************* getAlgorithmHeader *********************************************/
+    /*********************************************
+     * getAlgorithmHeader
+     *********************************************/
 
     /**
-     * Method under test: {@link ConsumerUtil#getAlgorithmFromJwtHeader(JwtContext)}
+     * Method under test:
+     * {@link ConsumerUtil#getAlgorithmFromJwtHeader(JwtContext)}
      */
     @Test
     public void testGetAlgorithmHeader_nullContext() {
@@ -2044,14 +2196,16 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#getAlgorithmFromJwtHeader(JwtContext)}
+     * Method under test:
+     * {@link ConsumerUtil#getAlgorithmFromJwtHeader(JwtContext)}
      */
     @Test
     public void testGetAlgorithmHeader_missingJsonWebStructures() {
         try {
             // Null or empty list of JWS within the JwtContext object
             @SuppressWarnings("unchecked")
-            final List<JsonWebStructure> emptyJsonStructures = RandomUtils.getRandomSelection(null, new ArrayList<JsonWebStructure>());
+            final List<JsonWebStructure> emptyJsonStructures = RandomUtils.getRandomSelection(null,
+                    new ArrayList<JsonWebStructure>());
             System.out.println("Chose list: " + emptyJsonStructures);
 
             mockery.checking(new Expectations() {
@@ -2068,7 +2222,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#getAlgorithmFromJwtHeader(JwtContext)}
+     * Method under test:
+     * {@link ConsumerUtil#getAlgorithmFromJwtHeader(JwtContext)}
      */
     @Test
     public void testGetAlgorithmHeader_validAlgorithmHeader() {
@@ -2095,10 +2250,13 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************* validateAlgorithm *********************************************/
+    /*********************************************
+     * validateAlgorithm
+     *********************************************/
 
     /**
-     * Method under test: {@link ConsumerUtil#validateAlgorithm(JwtContext, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateAlgorithm(JwtContext, String)}
      */
     @Test
     public void testValidateAlgorithm_nullArgs() {
@@ -2122,7 +2280,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateAlgorithm(JwtContext, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateAlgorithm(JwtContext, String)}
      */
     @Test
     public void testValidateAlgorithm_algMismatch() {
@@ -2145,7 +2304,8 @@ public class ConsumerUtilTest {
                 consumerUtil.validateAlgorithm(jwtContext, randomAlg);
                 fail("Should have thrown InvalidTokenException but did not.");
             } catch (InvalidTokenException e) {
-                validateException(e, MSG_JWT_ALGORITHM_MISMATCH + ".+\\[" + otherAlgorithm + "\\].+\\[" + randomAlg + "\\]");
+                validateException(e,
+                        MSG_JWT_ALGORITHM_MISMATCH + ".+\\[" + otherAlgorithm + "\\].+\\[" + randomAlg + "\\]");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -2153,7 +2313,8 @@ public class ConsumerUtilTest {
     }
 
     /**
-     * Method under test: {@link ConsumerUtil#validateAlgorithm(JwtContext, String)}
+     * Method under test:
+     * {@link ConsumerUtil#validateAlgorithm(JwtContext, String)}
      */
     @Test
     public void testValidateAlgorithm_algMatch() {
@@ -2178,7 +2339,9 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************* validateAMRClaim *********************************************/
+    /*********************************************
+     * validateAMRClaim
+     *********************************************/
 
     /**
      * Method under test: {@link ConsumerUtil#validateAMRClaim(List, List)}
@@ -2233,10 +2396,13 @@ public class ConsumerUtilTest {
         }
     }
 
-    /********************************************** Helper methods **********************************************/
+    /**********************************************
+     * Helper methods
+     **********************************************/
 
     /**
-     * Pick a random clock skew setting - either 0 or {@value #STANDARD_CLOCK_SKEW_MS} milliseconds.
+     * Pick a random clock skew setting - either 0 or
+     * {@value #STANDARD_CLOCK_SKEW_MS} milliseconds.
      *
      * @return
      */
@@ -2279,7 +2445,9 @@ public class ConsumerUtilTest {
         String fullPattern = regexBuilder.toString();
         Pattern pattern = Pattern.compile(fullPattern);
         Matcher m = pattern.matcher(errorMsg);
-        assertTrue("Exception message did not contain [" + fullPattern + "] as expected. Message was: [" + errorMsg + "]", m.find());
+        assertTrue(
+                "Exception message did not contain [" + fullPattern + "] as expected. Message was: [" + errorMsg + "]",
+                m.find());
     }
 
     private void validateException(Exception e, String... errorMsgRegexes) {
@@ -2291,10 +2459,13 @@ public class ConsumerUtilTest {
         String fullPattern = regexBuilder.toString();
         Pattern pattern = Pattern.compile(fullPattern);
         Matcher m = pattern.matcher(errorMsg);
-        assertTrue("Exception message did not contain [" + fullPattern + "] as expected. Message was: [" + errorMsg + "]", m.find());
+        assertTrue(
+                "Exception message did not contain [" + fullPattern + "] as expected. Message was: [" + errorMsg + "]",
+                m.find());
     }
 
-    private void setIatAndExpClaimExpectations(final NumericDate iatDate, final NumericDate expDate) throws MalformedClaimException {
+    private void setIatAndExpClaimExpectations(final NumericDate iatDate, final NumericDate expDate)
+            throws MalformedClaimException {
         mockery.checking(new Expectations() {
             {
                 one(jwtClaims).getIssuedAt();
