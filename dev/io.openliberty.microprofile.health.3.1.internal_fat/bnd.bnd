@@ -28,7 +28,12 @@ tested.features: \
   cdi-3.0,\
   mpConfig-3.0,\
   appsecurity-4.0,\
-  expressionlanguage-4.0
+  expressionlanguage-4.0,\
+  expressionlanguage-5.0,\
+  appsecurity-5.0,\
+  jsonp-2.1,\
+  cdi-4.0,\
+  servlet-6.0
 
 -buildpath: \
 	org.apache.commons:commons-compress;version=1.21, \
