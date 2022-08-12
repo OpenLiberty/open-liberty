@@ -36,7 +36,7 @@ public interface ProductRepo {
     @OrderBy("name")
     List<String> findByNameLike(String nameContains);
 
-    Product[] findByVersionGreaterThanEqualOrderById(long minVersion);
+    Product[] findByVersionGreaterThanEqualOrderByPrice(long minVersion);
 
     @Query("SELECT o FROM Product o WHERE o.id=:productId")
     Product findItem(@Param("productId") String id);
