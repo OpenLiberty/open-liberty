@@ -299,7 +299,7 @@ public class JavaInfo {
         } catch (URISyntaxException e) {
             throw new Error(e);
         }
-        // Not having OS specific file separator was causing issue on windows platform for java 8
+        // Not having OS specific file separator was causing issue on windows platform for java 8 Temurin
         StringBuilder sb = new StringBuilder(javaHome()).append(File.separator).append("bin").append(File.separator).append("java");
         ProcessBuilder procBuilder = new ProcessBuilder(sb.toString(), "-XX:+EnableCRIUSupport", //
                         "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
