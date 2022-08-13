@@ -45,9 +45,12 @@ public class TokenRequestorTest extends CommonTestClass {
     private static final String code = "abc123";
 
     private static final String accessToken = "qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw";
+    private static final String tokenType = "bearer";
+    private static final Long expiresIn = 3599L;
+    private static final String scope = "openid profile";
     private static final String refreshToken = "QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv";
     private static final String idToken = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk";
-    private static final String tokenResponseEntity = "{\"access_token\":\"qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw\",\"token_type\":\"bearer\",\"expires_in\":3599,\"scope\":\"openid profile\",\"refresh_token\":\"QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv\",\"id_token\":\"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk\"}";
+    private static final String tokenResponseEntity = "{\"access_token\":\"" + accessToken + "\",\"token_type\":\"" + tokenType + "\",\"expires_in\":" + expiresIn + ",\"scope\":\"" + scope + "\",\"refresh_token\":\"" + refreshToken + "\",\"id_token\":\"" + idToken + "\"}";
 
     private static final List<NameValuePair> commonHeaders;
     private static final Map<String, Object> postResponseMap;
@@ -58,9 +61,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         postResponseMap = new HashMap<String, Object>();
         postResponseMap.put(TokenConstants.ACCESS_TOKEN, accessToken);
-        postResponseMap.put(TokenConstants.TOKEN_TYPE, "bearer");
-        postResponseMap.put(TokenConstants.EXPIRES_IN, new Long(3599));
-        postResponseMap.put(TokenConstants.SCOPE, "openid profile");
+        postResponseMap.put(TokenConstants.TOKEN_TYPE, tokenType);
+        postResponseMap.put(TokenConstants.EXPIRES_IN, expiresIn);
+        postResponseMap.put(TokenConstants.SCOPE, scope);
         postResponseMap.put(TokenConstants.REFRESH_TOKEN, refreshToken);
         postResponseMap.put(TokenConstants.ID_TOKEN, idToken);
     }
@@ -79,7 +82,6 @@ public class TokenRequestorTest extends CommonTestClass {
     public void setUp() {
         params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair(TokenConstants.GRANT_TYPE, TokenConstants.AUTHORIZATION_CODE));
-        params.add(new BasicNameValuePair(TokenConstants.RESOURCE, ""));
         params.add(new BasicNameValuePair(TokenConstants.REDIRECT_URI, redirectUri));
         params.add(new BasicNameValuePair(TokenConstants.CODE, code));
     }
