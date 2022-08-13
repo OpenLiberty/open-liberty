@@ -55,7 +55,7 @@ public abstract class MicroProfileTelemetryTestBase {
     public static final String OTEL_TRACES_EXPORTER_JAEGER = "jaeger";
     public static final String ENV_OTEL_EXPORTER_JAEGER_ENDPOINT = "OTEL_EXPORTER_JAEGER_ENDPOINT";
 
-    public static final String JAEGER_QUERY_URL = "http://localhost:%s/api/traces";
+    public static final String JAEGER_QUERY_URL = "http://%s:%s/api/traces";
     public static final String JAEGER_QUERY_PARAMS = "?start=%d&limit=%d&service=%s";
     public static final int JAEGER_QUERY_LIMIT = 20;
 
@@ -99,7 +99,7 @@ public abstract class MicroProfileTelemetryTestBase {
 
     protected String getSpansFromJaeger() {
         String method = "getSpans";
-        String url = String.format(JAEGER_QUERY_URL, String.valueOf(jaegerContainer.getMappedPort(JAEGER_UI_PORT)));
+        String url = String.format(JAEGER_QUERY_URL, jaegerContainer.getHost(), String.valueOf(jaegerContainer.getMappedPort(JAEGER_UI_PORT)));
         String queryParams = String.format(JAEGER_QUERY_PARAMS, System.currentTimeMillis(), JAEGER_QUERY_LIMIT, OTEL_SERVICE_NAME_SYSTEM);
         Log.info(c, method, "---> Querying Jaeger with url : " + url + queryParams);
         try {
