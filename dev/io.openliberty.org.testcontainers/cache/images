@@ -15,7 +15,9 @@ kyleaure/oracle-18.4.0-expanded:1.0.full.krb5
 kyleaure/oracle-18.4.0-expanded:1.0.full.ssl
 kyleaure/oracle-18.4.0-expanded:1.0.slim
 kyleaure/postgres-krb5:1.0
+kyleaure/postgres-ssl:1.0
 kyleaure/postgres-test-table:3.0
+kyleaure/sqlserver-ssl:2019-CU10-ubuntu-16.04
 letsencrypt/pebble-challtestsrv:latest
 letsencrypt/pebble:latest
 mariadb:10.3
@@ -23,3 +25,4 @@ mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04
 postgres:14.1-alpine
 ryanesch/acme-boulder:1.2
 testcontainers/ryuk:0.3.3
+testcontainers/sshd:1.0.0
