@@ -118,6 +118,9 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
             }
         }
 
+        // Remove mpConfig-3.0 since it will work with either Jakarta EE 9.1/10
+        nonEE10MicroProfileFeatures.remove("mpConfig-3.0");
+
         // MP standalone features
         for (FeatureSet mpFeatureSet : MicroProfileActions.STANDALONE_ALL) {
             if (mpFeatureSet.getEEVersion() != EEVersion.EE10) {
@@ -142,9 +145,6 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         incompatibleValueAddFeatures.add("sipServlet-1.1"); // purposely not supporting EE 10
         incompatibleValueAddFeatures.add("springBoot-1.5"); // springBoot 3.0 will support EE 9 and possibly 10
         incompatibleValueAddFeatures.add("springBoot-2.0");
-
-        // temporarily add jwtSso-1.0 until mpJWT 2.1 is added or mpJWT 2.0 is designated as compatible with EE10.
-        incompatibleValueAddFeatures.add("jwtSso-1.0");
     }
 
     static Set<String> getAllCompatibleFeatures() {
