@@ -41,13 +41,10 @@ public final class ImageVerifier {
         //Add images from the fattest.simplicity project
         knownImages.addAll(DatabaseContainerType.images());
         //Add images from the testcontainers project
-        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.3.3"));
-
-        Log.info(c, "<init>", "KJA1017 knownImages: " + knownImages.toString());
+        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.3.3", "testcontainers/sshd:1.0.0"));
     }
 
     public static DockerImageName collectImage(DockerImageName image) {
-        Log.info(c, "collectImage", "KJA1017 image: " + image.asCanonicalNameString());
         return collectImage(image, null);
     }
 
