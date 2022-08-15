@@ -74,7 +74,6 @@ public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable
                     for (T result : results)
                         submit(result);
             }
-            close();
         } catch (Throwable x) {
             closeExceptionally(x);
         } finally {
