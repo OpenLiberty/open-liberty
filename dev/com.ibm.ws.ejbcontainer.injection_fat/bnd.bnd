@@ -55,7 +55,8 @@ tested.features: \
 	messagingServer-3.0,\
 	servlet-3.1,\
 	servlet-4.0,\
-	servlet-5.0  
+	servlet-5.0,\
+	servlet-6.0  
 
 -buildpath: \
 	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\

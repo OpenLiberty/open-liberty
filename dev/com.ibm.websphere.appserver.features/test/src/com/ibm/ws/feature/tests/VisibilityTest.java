@@ -383,4 +383,63 @@ public class VisibilityTest {
             Assert.fail("Found features whose localization files are missing or in the wrong package: " + '\n' + errorMessage.toString());
         }
     }
+
+    @Test
+    public void testMissingBetaFeatures() {
+    	Set<String> expectedFailures = new HashSet<>();
+    	// The following features are marked no ship, but are not ready for beta yet.
+    	// If they get marked beta, they should be removed from this list.
+		expectedFailures.add("io.openliberty.jakarta.faces-4.0");
+		expectedFailures.add("io.openliberty.jakarta.messaging-3.1");
+		expectedFailures.add("io.openliberty.jakarta.websocket-2.1");
+		expectedFailures.add("io.openliberty.jakarta.authentication-3.0");
+		expectedFailures.add("io.openliberty.jakarta.authorization-2.1");
+		expectedFailures.add("io.openliberty.jakarta.security.enterprise-3.0");
+		expectedFailures.add("io.openliberty.xmlws.common-4.0");
+		expectedFailures.add("io.openliberty.persistentExecutor.internal.ee-10.0");  // the persistentExecutor feature is no ship
+		expectedFailures.add("io.openliberty.mail-2.1");
+		expectedFailures.add("com.ibm.websphere.appserver.servlet-6.0");
+    	
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            String featureName = entry.getKey();
+            FeatureInfo featureInfo = entry.getValue();
+            if (!"noship".equals(featureInfo.getKind())) {
+            	if (expectedFailures.contains(featureName)) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorMessage.append("     The feature is no longer marked noship, it should be removed from the expected failure set\n");
+            	}
+            } else {
+            	if (!featureInfo.isAutoFeature()) {
+            		boolean containsNoShipFeature = false;
+            		boolean containsBetaFeature = false;
+            		for (String depFeatureName : featureInfo.getDependentFeatures()) {
+            			FeatureInfo depFeature = features.get(depFeatureName);
+            			if (depFeature == null) {
+            				continue;
+            			}
+            			if ("noship".equals(depFeature.getKind())) {
+            				containsNoShipFeature = true;
+            				break;
+            			}
+            			if ("beta".equals(depFeature.getKind())) {
+            				containsBetaFeature = true;
+            			}
+            		}
+
+            		if (!containsNoShipFeature && containsBetaFeature) {
+                    	if (!expectedFailures.contains(featureName)) {
+                            errorMessage.append("Found issues with " + featureName + '\n');
+                            errorMessage.append("     The feature is marked noship, but all dependencies are beta or ga\n");
+                    	}
+            		}
+            	}
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features that are marked noship, but contain only beta/ga features without a noship feature dependency: " + '\n' + 
+                        "If you recently marked a feature beta, you may need to add or remove from the expected failures list or have something to fix.\n" + 
+            		    errorMessage.toString());
+        }
+    }
 }
