@@ -34,14 +34,15 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.CouchDBContainer;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
@@ -55,23 +56,30 @@ public class ValidateCloudantTest extends FATServletClient {
     private static final Class<?> c = ValidateCloudantTest.class;
 
     private static final String CLOUDANT_DB_NAME = "testdb";
-    private static final String CLOUDANT_USER = "admin";
-    private static final String CLOUDANT_PASS = "pass";
+
+    private static String CLOUDANT_USER;
+    private static String CLOUDANT_PASS;
     private static String CLOUDANT_URL;
     private static String databaseURI;
 
-    @ClassRule //FIXME the cloudant-developer image is deprecated consider using CouchDB
-    public static GenericContainer<?> cloudant = new GenericContainer<>("kyleaure/cloudant-developer:1.0")
-                    .withExposedPorts(5984)
-                    .withLogConsumer(ValidateCloudantTest::log);
+    @ClassRule
+    public static CouchDBContainer cloudant = new CouchDBContainer(DockerImageName.parse("couchdb:3.2.2").asCompatibleSubstituteFor("kyleaure/couchdb-ssl:2.0"))
+                    .withDatabase(CLOUDANT_DB_NAME)
+                    .withLogConsumer(new SimpleLogConsumer(CouchDBContainer.class, "cloudant"));
 
     @BeforeClass
     public static void setUp() throws Exception {
+
         String host = cloudant.getHost();
-        String port = String.valueOf(cloudant.getMappedPort(5984));
-        Log.info(c, "setUp", "Using Cloudant properties: host=" + host + "  port=" + port);
-        CLOUDANT_URL = "http://" + host + ":" + port;
+        String port = String.valueOf(cloudant.getDatabasePort());
+
+        CLOUDANT_USER = cloudant.getUser();
+        CLOUDANT_PASS = cloudant.getPassword();
+        CLOUDANT_URL = cloudant.getURL(false);
         databaseURI = CLOUDANT_URL + "/" + CLOUDANT_DB_NAME;
+
+        Log.info(c, "setUp", "Using Cloudant properties: host=" + host + "  port=" + port);
+
         server.addEnvVar("CLOUDANT_HOST", host);
         server.addEnvVar("CLOUDANT_PORT", port);
         server.addEnvVar("CLOUDANT_DB_NAME", CLOUDANT_DB_NAME);
@@ -95,13 +103,6 @@ public class ValidateCloudantTest extends FATServletClient {
         server.stopServer("CWWKS1300E"); //Auth alias doesn't exist
     }
 
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(c, "cloudantdb", msg);
-    }
-
     /*
      * Test that a cloudant database where the username and password are supplied as properties
      * on the referenced cloudant element is able to successfully connect.
@@ -112,7 +113,7 @@ public class ValidateCloudantTest extends FATServletClient {
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
-        assertSuccess(json, "dbAuthProps", err);
+        assertSuccess(json, "dbAuthProps", databaseURI, err);
     }
 
     /*
@@ -173,7 +174,7 @@ public class ValidateCloudantTest extends FATServletClient {
 
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
-        assertSuccess(json, "dbCtrAuth", err);
+        assertSuccess(json, "dbCtrAuth", databaseURI, err);
     }
 
     /*
@@ -316,17 +317,7 @@ public class ValidateCloudantTest extends FATServletClient {
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
 
-        assertEquals(err, "dbCloudantOld", json.getString("uid"));
-        assertEquals(err, "dbCloudantOld", json.getString("id"));
-        assertEquals(err, "cloudant/dbCloudantOld", json.getString("jndiName"));
-        assertTrue(err, json.getBoolean("successful"));
-        assertNull(err, json.get("failure"));
-        assertNotNull(err, json = json.getJsonObject("info"));
-        assertEquals(err, databaseURI, json.getString("uri"));
-        assertEquals(err, "2.0.0", json.getString("serverVersion"));
-        assertNull(err, json.get("vendorName"));
-        assertNull(err, json.get("vendorVersion"));
-        assertNull(err, json.get("vendorVariant"));
+        assertSuccess(json, "dbCloudantOld", databaseURI, err);
     }
 
     /*
@@ -362,25 +353,15 @@ public class ValidateCloudantTest extends FATServletClient {
 
         // [0]: cloudantDatabase[dbAuthProps]
         JsonObject j = json.getJsonObject(0);
-        assertSuccess(j, "dbAuthProps", err);
+        assertSuccess(j, "dbAuthProps", databaseURI, err);
 
         // [1]: cloudantDatabase[dbCloudantOld]
         j = json.getJsonObject(1);
-        assertEquals(err, "dbCloudantOld", j.getString("uid"));
-        assertEquals(err, "dbCloudantOld", j.getString("id"));
-        assertEquals(err, "cloudant/dbCloudantOld", j.getString("jndiName"));
-        assertTrue(err, j.getBoolean("successful"));
-        assertNull(err, j.get("failure"));
-        assertNotNull(err, j = j.getJsonObject("info"));
-        assertEquals(err, databaseURI, j.getString("uri"));
-        assertEquals(err, "2.0.0", j.getString("serverVersion"));
-        assertNull(err, j.get("vendorName"));
-        assertNull(err, j.get("vendorVersion"));
-        assertNull(err, j.get("vendorVariant"));
+        assertSuccess(j, "dbCloudantOld", databaseURI, err);
 
         // [2]: cloudantDatabase[dbCtrAuth]
         j = json.getJsonObject(2);
-        assertSuccess(j, "dbCtrAuth", err);
+        assertSuccess(j, "dbCtrAuth", databaseURI, err);
 
         // [3]: cloudantDatabase[dbIncorrectName]
         j = json.getJsonObject(3);
@@ -431,7 +412,7 @@ public class ValidateCloudantTest extends FATServletClient {
         URLConnection con = url.openConnection();
         HttpURLConnection http = (HttpURLConnection) con;
         http.setRequestMethod("PUT");
-        http.setRequestProperty("Authorization", "Basic YWRtaW46cGFzcw=="); //Base64 encoded admin:pass
+        http.setRequestProperty("Authorization", cloudant.getEncodedAuthData()); //Base64 encoded username/password
         http.setDoOutput(true);
 
         try (OutputStreamWriter os = new OutputStreamWriter(http.getOutputStream())) {
@@ -445,7 +426,7 @@ public class ValidateCloudantTest extends FATServletClient {
         con = url.openConnection();
         http = (HttpURLConnection) con;
         http.setRequestMethod("PUT");
-        http.setRequestProperty("Authorization", "Basic YWRtaW46cGFzcw=="); //Base64 encoded admin:pass
+        http.setRequestProperty("Authorization", cloudant.getEncodedAuthData()); //Base64 encoded username/password
         http.setDoOutput(true);
 
         try (OutputStreamWriter os = new OutputStreamWriter(http.getOutputStream())) {
@@ -460,7 +441,7 @@ public class ValidateCloudantTest extends FATServletClient {
         http = (HttpURLConnection) con;
 
         http.setRequestMethod("PUT");
-        http.setRequestProperty("Authorization", "Basic YWRtaW46cGFzcw==");
+        http.setRequestProperty("Authorization", cloudant.getEncodedAuthData());
         assertEquals("Unexpected response received from cloudant: " + getResponse(http), 201, http.getResponseCode());
 
         //Add the user travis as a member of the testauthdb database
@@ -469,7 +450,7 @@ public class ValidateCloudantTest extends FATServletClient {
         http = (HttpURLConnection) con;
 
         http.setRequestMethod("PUT");
-        http.setRequestProperty("Authorization", "Basic YWRtaW46cGFzcw=="); //Base64 encoded admin:pass
+        http.setRequestProperty("Authorization", cloudant.getEncodedAuthData()); //Base64 encoded admin:pass
         http.setDoOutput(true);
 
         try (OutputStreamWriter os = new OutputStreamWriter(http.getOutputStream())) {
@@ -483,17 +464,7 @@ public class ValidateCloudantTest extends FATServletClient {
         JsonObject json = request.run(JsonObject.class);
 
         String err = "Unexpected json response: " + json.toString();
-        assertEquals(err, "dbTestAuth", json.getString("uid"));
-        assertEquals(err, "dbTestAuth", json.getString("id"));
-        assertEquals(err, "cloudant/dbTestAuth", json.getString("jndiName"));
-        assertTrue(err, json.getBoolean("successful"));
-        assertNull(err, json.get("failure"));
-        assertNotNull(err, json = json.getJsonObject("info"));
-        assertEquals(err, CLOUDANT_URL + "/testauthdb", json.getString("uri"));
-        assertEquals(err, "2.0.0", json.getString("serverVersion"));
-        assertEquals(err, "IBM Cloudant", json.getString("vendorName"));
-        assertEquals(err, "1.1.0", json.getString("vendorVersion"));
-        assertEquals(err, "local", json.getString("vendorVariant"));
+        assertSuccess(json, "dbTestAuth", CLOUDANT_URL + "/testauthdb", err);
 
         //Test that validation fails for kevin and testauthdb
         request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbTestAuth?auth=container&authAlias=kevinAuthData");
@@ -529,18 +500,21 @@ public class ValidateCloudantTest extends FATServletClient {
         return sb.toString();
     }
 
-    private static void assertSuccess(JsonObject json, String expectedID, String err) {
+    private static void assertSuccess(JsonObject json, String expectedID, String dbURI, String err) {
+        Log.info(c, "assertSuccess", "JSON Object: " + json.toString());
+
         assertEquals(err, expectedID, json.getString("uid"));
         assertEquals(err, expectedID, json.getString("id"));
         assertEquals(err, "cloudant/" + expectedID, json.getString("jndiName"));
         assertTrue(err, json.getBoolean("successful"));
         assertNull(err, json.get("failure"));
         assertNotNull(err, json = json.getJsonObject("info"));
-        assertEquals(err, databaseURI, json.getString("uri"));
-        assertEquals(err, "2.0.0", json.getString("serverVersion"));
-        assertEquals(err, "IBM Cloudant", json.getString("vendorName"));
-        assertEquals(err, "1.1.0", json.getString("vendorVersion"));
-        assertEquals(err, "local", json.getString("vendorVariant"));
+        assertEquals(err, dbURI, json.getString("uri"));
+        assertEquals(err, "3.2.2", json.getString("serverVersion"));
+        assertEquals(err, "The Apache Software Foundation", json.getString("vendorName"));
+        //The following properties are specific to cloudant and not couchDB
+//        assertEquals(err, "1.1.0", json.getString("vendorVersion"));
+//        assertEquals(err, "local", json.getString("vendorVariant"));
     }
 
 }

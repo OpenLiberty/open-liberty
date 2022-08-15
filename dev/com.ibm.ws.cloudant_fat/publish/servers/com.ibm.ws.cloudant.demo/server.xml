@@ -12,7 +12,7 @@
   <cloudant id="builder" jndiName="cloudant/builder" libraryRef="CloudantLib" url="${CLOUDANT_URL}" containerAuthDataRef="cadr" 
   username="${CLOUDANT_USER}" password="${CLOUDANT_PASS}"/>
 
-  <cloudantDatabase jndiName="cloudant/db" cloudantRef="builder" databaseName="${CLOUDANT_DBNAME}" create="false"/>
+  <cloudantDatabase jndiName="cloudant/db" cloudantRef="builder" databaseName="${CLOUDANT_DBNAME}" create="true"/>
   
   <library id="CloudantLib">
     <fileset dir="${shared.resource.dir}/cloudant-2.16"/>

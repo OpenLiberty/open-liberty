@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,8 +50,6 @@ public class CloudantTest extends FATServletClient {
         server.addEnvVar("cloudant_username", cloudant.getUser());
         server.addEnvVar("cloudant_password", cloudant.getPassword());
         server.addEnvVar("cloudant_databaseName", DB_NAME);
-
-        cloudant.createDb(DB_NAME);
 
         ShrinkHelper.defaultApp(server, JEE_APP, "cloudant.web");
         server.startServer();
