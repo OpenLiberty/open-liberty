@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package concurrent.mp.fat.v20.web;
+package concurrent.mp.fat.v13.ee10.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -57,7 +57,7 @@ import componenttest.app.FATServlet;
                            maxAsync = 2)
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/MPContextProp2_0_TestServlet")
-public class MPContextProp2_0_TestServlet extends FATServlet {
+public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
     /**
      * 2 minutes. Maximum number of nanoseconds to wait for a task or action to complete.
      */

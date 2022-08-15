@@ -8,42 +8,34 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package concurrent.mp.fat.v20.web;
+package concurrent.mp.fat.v13.ee10.web;
 
 import java.io.Serializable;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 @ApplicationScoped
-public class MPAppBean implements Serializable {
+@org.eclipse.microprofile.faulttolerance.Asynchronous
+public class MPFTBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Asynchronous(executor = "java:comp/eeExecutor")
-    CompletableFuture<Object> eeAsyncLookup(String name) {
-        try {
-            return Asynchronous.Result.complete(InitialContext.doLookup(name));
-        } catch (NamingException x) {
-            throw new CompletionException(x);
-        }
-    }
-
     @Asynchronous
-    @org.eclipse.microprofile.faulttolerance.Asynchronous
     CompletionStage<String> doublyAsync() {
-        return Asynchronous.Result.complete("Should not be able to combine different @Asynchronous annotations on a method");
+        return Asynchronous.Result.complete("Should not be able to combine Jakarta Concurrency @Asynchronous on a method " +
+                                            "with MicroProfile Fault Tolerance @Asynchronous on the class");
     }
 
-    @Asynchronous(executor = "java:module/env/defaultExecutorRef")
-    CompletableFuture<Object> mpAsyncLookup(String name) {
+    CompletionStage<Object> ftAsyncLookup(String name) {
         try {
-            return Asynchronous.Result.complete(InitialContext.doLookup(name));
+            ManagedExecutorService executor = (ManagedExecutorService) InitialContext.doLookup(name);
+            return executor.completedFuture(executor);
         } catch (NamingException x) {
             throw new CompletionException(x);
         }

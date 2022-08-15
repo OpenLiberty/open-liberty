@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package concurrent.mp.fat.v13.web;
+package concurrent.mp.fat.v13.ee9.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +41,7 @@ import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/MPContextProp1_3_TestServlet")
-public class MPContextProp1_3_TestServlet extends FATServlet {
+public class MPContextProp1_3_EE9_TestServlet extends FATServlet {
     // Create some exceptions here to keep the test method name out of the stack.
     // Tests can then check for the presence of their method name in the stack to verify
     // that the completable future is including the caller stack when raising exceptions.
