@@ -39,6 +39,7 @@ import com.ibm.ws.jpa.fvt.relationships.oneXone.tests.ejb.TestOneXOnePKJoin_EJB_
 import com.ibm.ws.jpa.fvt.relationships.oneXone.tests.ejb.TestOneXOneUnidirectional_EJB_SFEX_Servlet;
 import com.ibm.ws.jpa.fvt.relationships.oneXone.tests.ejb.TestOneXOneUnidirectional_EJB_SF_Servlet;
 import com.ibm.ws.jpa.fvt.relationships.oneXone.tests.ejb.TestOneXOneUnidirectional_EJB_SL_Servlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

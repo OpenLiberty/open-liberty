@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -31,6 +32,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test of duplicate configurations that try to use the same resource adapter name.
  */
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 11)
 public class DuplicateResourceAdaptersTest {
     private static final String RAR_NAME = "DuplicateRA";
     private static final String RAR_NAME_COPY = "DuplicateRA2";

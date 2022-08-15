@@ -75,7 +75,7 @@ public class JPADefaultDataSourceTest extends FATServletClient {
                         .addPackage("com.ibm.ws.jpa.fat.defaultds.entity")//
                         .addPackage("com.ibm.ws.jpa.fat.defaultds.web");//
         ShrinkHelper.addDirectory(app, "test-applications/" + APP_NAME + "/resources/");
-        ShrinkHelper.exportAppToServer(server, app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         server.addInstalledAppForValidation(APP_NAME);
         server.startServer();

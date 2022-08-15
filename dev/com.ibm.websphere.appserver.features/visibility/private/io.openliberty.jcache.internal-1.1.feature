@@ -3,7 +3,6 @@ symbolicName=io.openliberty.jcache.internal-1.1
 WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true
-IBM-ShortName: jcache-1.1
 Subsystem-Version: 1.1
 Subsystem-Name: Java Caching (JCache) 1.1
 IBM-SPI-Package: \

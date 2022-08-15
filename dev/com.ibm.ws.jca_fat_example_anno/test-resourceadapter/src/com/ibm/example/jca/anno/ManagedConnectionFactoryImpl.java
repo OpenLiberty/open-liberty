@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,18 +16,19 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.resource.ResourceException;
-import javax.resource.cci.Connection;
-import javax.resource.cci.ConnectionFactory;
-import javax.resource.spi.ConfigProperty;
-import javax.resource.spi.ConnectionDefinition;
-import javax.resource.spi.ConnectionManager;
-import javax.resource.spi.ConnectionRequestInfo;
-import javax.resource.spi.ManagedConnection;
-import javax.resource.spi.ManagedConnectionFactory;
-import javax.resource.spi.ResourceAdapter;
-import javax.resource.spi.ResourceAdapterAssociation;
 import javax.security.auth.Subject;
+
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.Connection;
+import jakarta.resource.cci.ConnectionFactory;
+import jakarta.resource.spi.ConfigProperty;
+import jakarta.resource.spi.ConnectionDefinition;
+import jakarta.resource.spi.ConnectionManager;
+import jakarta.resource.spi.ConnectionRequestInfo;
+import jakarta.resource.spi.ManagedConnection;
+import jakarta.resource.spi.ManagedConnectionFactory;
+import jakarta.resource.spi.ResourceAdapter;
+import jakarta.resource.spi.ResourceAdapterAssociation;
 
 /**
  * Example managed connection factory.
@@ -42,7 +43,7 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
     /**
      * This is the in-memory data store
      */
-    final static ConcurrentHashMap<String, ConcurrentLinkedQueue<Map<?, ?>>> tables = new ConcurrentHashMap<String, ConcurrentLinkedQueue<Map<?, ?>>>();
+    final static ConcurrentHashMap<String, ConcurrentLinkedQueue<Map<String, String>>> tables = new ConcurrentHashMap<String, ConcurrentLinkedQueue<Map<String, String>>>();
 
     ResourceAdapterImpl adapter;
 
@@ -87,7 +88,8 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
     }
 
     @Override
-    public void setLogWriter(PrintWriter logWriter) throws ResourceException {}
+    public void setLogWriter(PrintWriter logWriter) throws ResourceException {
+    }
 
     @Override
     public void setResourceAdapter(ResourceAdapter adapter) throws ResourceException {
@@ -96,6 +98,6 @@ public class ManagedConnectionFactoryImpl implements ManagedConnectionFactory, R
 
     public void setTableName(String tableName) {
         this.tableName = tableName;
-        tables.putIfAbsent(tableName, new ConcurrentLinkedQueue<Map<?, ?>>());
+        tables.putIfAbsent(tableName, new ConcurrentLinkedQueue<Map<String, String>>());
     }
 }

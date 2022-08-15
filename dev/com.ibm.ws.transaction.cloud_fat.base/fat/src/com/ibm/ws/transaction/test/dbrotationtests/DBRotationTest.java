@@ -293,7 +293,7 @@ public class DBRotationTest extends FATServletClient {
     @Test
     public void testLogFailure() throws Exception {
         final String method = "testLogFailure";
-        if (FATSuite.type != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
+        if (FATSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
             // First server will get loads of FFDCs
             longLeaseLogFailServer1.setFFDCChecking(false);
             server2.setHttpDefaultPort(cloud2ServerPort);
@@ -335,7 +335,7 @@ public class DBRotationTest extends FATServletClient {
     @Test
     public void testLogFailureNoShutdown() throws Exception {
         final String method = "testLogFailureNoShutdown";
-        if (FATSuite.type != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
+        if (FATSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
             // First server will get loads of FFDCs
             noShutdownServer1.setFFDCChecking(false);
             server2.setHttpDefaultPort(cloud2ServerPort);

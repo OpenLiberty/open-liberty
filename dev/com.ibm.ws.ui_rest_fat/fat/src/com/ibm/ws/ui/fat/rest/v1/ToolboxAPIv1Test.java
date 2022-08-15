@@ -1304,6 +1304,11 @@ public class ToolboxAPIv1Test extends CommonRESTTest implements APIConstants {
      * 3. Confirm Simple+Clock no longer exists in the Toolbox
      *
      * @throws Exception
+     *
+     * Note: if this test happens to be run as the first test in the testsuite, it would
+     * fail with 409 when doing the POST with reader credential. This is likely caused by
+     * some timing issue. To work around the problem, perform a get on both admin and reader
+     * credentials to force both toolboxes to be loaded.
      */
     @Test
     public void catalogRemoveCausesToolboxRemove_reader() throws Exception {
@@ -1317,7 +1322,14 @@ public class ToolboxAPIv1Test extends CommonRESTTest implements APIConstants {
         final String catalogURL = API_V1_CATALOG;
         final String toolURL = API_V1_TOOLBOX + "/toolEntries/" + bookmark.getId();
 
+        // make sure the toolboxes for admin and reader are loaded
+        get(toolURL, adminUser, adminPassword, 404);
+        get(toolURL, readerUser, readerPassword, 404);
+
         post(catalogURL + "/bookmarks", adminUser, adminPassword, bookmarkString, 201);
+        // confirm that the bookmark (New York Times) is not in either toolbox
+        get(toolURL, adminUser, adminPassword, 404);
+        get(toolURL, readerUser, readerPassword, 404);
 
         ToolEntry newToolEntry = new ToolEntry(bookmark.getId(), bookmark.getType());
         String newToolEntryString = newToolEntry.toString().substring(10);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 - 2020 IBM Corporation and others.
+ * Copyright (c) 2017 - 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,6 +108,9 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String CFG_KEY_CLOCK_SKEW = "clockSkew";
     private long clockSkewMilliSeconds;
 
+    public static final String CFG_KEY_TOKEN_AGE = "tokenAge";
+    private long tokenAgeMilliSeconds;
+
     public static final String CFG_KEY_IGNORE_APP_AUTH_METHOD = "ignoreApplicationAuthMethod";
     protected boolean ignoreApplicationAuthMethod = true;
 
@@ -183,6 +186,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
         this.authorizationHeaderScheme = configUtils.getConfigAttribute(props, KEY_authorizationHeaderScheme);
         this.clockSkewMilliSeconds = configUtils.getLongConfigAttribute(props, CFG_KEY_CLOCK_SKEW, clockSkewMilliSeconds);
+        this.tokenAgeMilliSeconds = configUtils.getLongConfigAttribute(props, CFG_KEY_TOKEN_AGE, tokenAgeMilliSeconds);
 
         this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
         this.sslRefInfo = null; // lazy init
@@ -562,6 +566,12 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @Override
     public long getClockSkew() {
         return clockSkewMilliSeconds;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public long getTokenAge() {
+        return tokenAgeMilliSeconds;
     }
 
     /** {@inheritDoc} */

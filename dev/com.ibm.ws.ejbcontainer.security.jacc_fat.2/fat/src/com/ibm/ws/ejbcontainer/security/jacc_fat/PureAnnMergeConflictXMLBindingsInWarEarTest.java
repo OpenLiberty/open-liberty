@@ -11,6 +11,9 @@
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -149,9 +152,12 @@ public class PureAnnMergeConflictXMLBindingsInWarEarTest extends EJBAnnTestBase 
     @Test
     public void testPureAnnMergeConflict_RunAsSpecified_AllowAccessDifferentRunAsUserInServerXml() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
+        String waitForMessage = "CWWKT0016I.*/securityejbXMLmerge/";
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(waitForMessage);
 
         try {
-            testHelper.reconfigureServer(Constants.MERGE_CONFLICT_RUNAS_SERVER_XML, getName().getMethodName(), Constants.DO_NOT_RESTART_SERVER);
+            testHelper.reconfigureServer(Constants.MERGE_CONFLICT_RUNAS_SERVER_XML, getName().getMethodName(), msgs, Constants.DO_NOT_RESTART_SERVER);
             String queryString = "/SimpleServlet?testInstance=ejb01&testMethod=runAsSpecified";
             String response = generateResponseFromServlet(queryString, Constants.MANAGER_USER, Constants.MANAGER_PWD);
             verifyResponseWithoutDeprecated(response, Constants.RUN_AS_USER2, Constants.IS_MANAGER_FALSE, Constants.IS_EMPLOYEE_TRUE);

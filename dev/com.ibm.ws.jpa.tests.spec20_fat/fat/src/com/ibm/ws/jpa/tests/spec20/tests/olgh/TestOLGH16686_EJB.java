@@ -31,7 +31,7 @@ import com.ibm.ws.jpa.olgh16686.ejb.TestOLGH16686_EJB_SFEx_Servlet;
 import com.ibm.ws.jpa.olgh16686.ejb.TestOLGH16686_EJB_SF_Servlet;
 import com.ibm.ws.jpa.olgh16686.ejb.TestOLGH16686_EJB_SL_Servlet;
 import com.ibm.ws.jpa.tests.spec20.FATSuite;
-import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

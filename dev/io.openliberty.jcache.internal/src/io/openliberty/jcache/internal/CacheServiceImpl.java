@@ -104,9 +104,20 @@ public class CacheServiceImpl implements CacheService {
 
     @Deactivate
     public void deactivate() {
+        /*
+         * Close the cache.
+         */
         if (cache != null) {
-            cache.close();
+            try {
+                cache.close();
+            } catch (Exception e) {
+                Tr.warning(tc, "CWLJC0012_CLOSE_CACHE_ERR", cacheName, e);
+            }
         }
+
+        /*
+         * Null out instance fields.
+         */
         cache = null;
         getCacheFuture = null;
         NOTSERIALIZABLE_CLASSES_LOGGED.clear();
@@ -200,7 +211,7 @@ public class CacheServiceImpl implements CacheService {
                      * Search for an existing cache.
                      */
                     CacheManager cacheManager = null;
-                    long loadTimeMs;
+                    long loadTimeMs = 0l;
                     try {
                         cacheManager = cacheManagerService.getCacheManager();
 
@@ -218,9 +229,11 @@ public class CacheServiceImpl implements CacheService {
                             cache = new CacheProxy(jCache, this);
                         }
                     } catch (Throwable e) {
-                        // Have seen classcastexception if hazelcast key / value types don't match in the configuration.
-                        Tr.error(tc, "CWLJC0011_GET_CACHE_ERR", cacheName, e);
-                        throw e;
+                        /*
+                         * If we failed and couldn't retrieve an existing cache, log an error and try to 
+                         * create one.
+                         */
+                        Tr.warning(tc, "CWLJC0011_GET_CACHE_ERR", cacheName, e);
                     }
 
                     /*

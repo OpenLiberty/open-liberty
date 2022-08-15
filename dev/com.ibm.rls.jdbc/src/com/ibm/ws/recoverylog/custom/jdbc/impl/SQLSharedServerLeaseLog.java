@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import com.ibm.ws.recoverylog.spi.PeerLeaseTable;
 import com.ibm.ws.recoverylog.spi.RecoveryFailedException;
 import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
 import com.ibm.ws.recoverylog.spi.TraceConstants;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  *
@@ -60,20 +61,18 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     /**
      * Flag whether the database type has ever been determined
      */
-    boolean _determineDBType = false;
+    boolean _determineDBType;
     /**
      * Which RDBMS are we working against?
      */
     volatile private boolean _isOracle;
     volatile private boolean _isPostgreSQL;
-    volatile private boolean _isDB2;
     volatile private boolean _isSQLServer;
-    volatile private boolean _isDerby;
     volatile private boolean _isNonStandard;
 
     volatile private boolean _leaseTableExists;
     private boolean _sqlTransientErrorHandlingEnabled = true;
-    private boolean _logRetriesEnabled = false;
+    private boolean _logRetriesEnabled;
     private int _leaseTimeout;
     private final String _leaseTableName = "WAS_LEASES_LOG";
 
@@ -100,23 +99,18 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
      */
     private static final Object _CreateTableLock = new Object();
 
-    /**
-     * Flag to indicate whether the server is stopping.
-     */
-    volatile private boolean _serverStopping;
-
-    private ResultSet _updatelockingRS = null;
-    private Statement _lockingStmt = null;
-    private Statement _deleteStmt = null;
-    private Statement _peerLockingStmt = null;
-    private ResultSet _peerLockingRS = null;
-    private Statement _claimPeerlockingStmt = null;
-    private PreparedStatement _claimPeerUpdateStmt = null;
-    private ResultSet _claimPeerLockingRS = null;
+    private ResultSet _updatelockingRS;
+    private Statement _lockingStmt;
+    private Statement _deleteStmt;
+    private Statement _peerLockingStmt;
+    private ResultSet _peerLockingRS;
+    private Statement _claimPeerlockingStmt;
+    private PreparedStatement _claimPeerUpdateStmt;
+    private ResultSet _claimPeerLockingRS;
 
     public SQLSharedServerLeaseLog(CustomLogProperties logProperties) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "SQLSharedServerStatusLog", new Object[] { logProperties, this });
+            Tr.entry(tc, "SQLSharedServerStatusLog", logProperties, this);
 
         // Cache the supplied information
         _customLogProperties = logProperties;
@@ -129,7 +123,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     @Override
     public synchronized void getLeasesForPeers(final PeerLeaseTable peerLeaseTable, String recoveryGroup) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getLeasesForPeers", new java.lang.Object[] { recoveryGroup, this });
+            Tr.entry(tc, "getLeasesForPeers", recoveryGroup, this);
 
         boolean getPeerSuccess = false;
         // For exception handling
@@ -137,7 +131,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         SQLException currentSqlEx = null;
 
         // if the server is stopping, we should simply return
-        if (_serverStopping) {
+        if (FrameworkState.isStopping()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "getLeasesForPeers", "server stopping");
             return;
@@ -170,7 +164,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The server is stopping, lease retrieval failed with exception: " + sqlex);
             } else {
@@ -180,7 +174,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             // Set the exception that will be reported
             currentSqlEx = sqlex;
         } catch (Throwable exc) {
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The server is stopping, lease retrieval failed with exception: " + exc);
             } else {
@@ -205,7 +199,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                     }
                 } catch (Throwable exc) {
                     // Report the exception
-                    if (_serverStopping) {
+                    if (FrameworkState.isStopping()) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "The server is stopping. Tidy up failed, after lease retrieval failure, with exception: " + exc);
                     } else {
@@ -215,7 +209,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                 }
 
                 // if the server is stopping, we should simply return without driving any retry logic
-                if (_serverStopping) {
+                if (FrameworkState.isStopping()) {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "getLeasesForPeers", "server stopping");
                     return;
@@ -268,7 +262,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
     private void getPeerLeasesFromTable(final PeerLeaseTable peerLeaseTable, String recoveryGroup, Connection conn) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getPeerLeasesFromTable", new java.lang.Object[] { recoveryGroup, conn, this });
+            Tr.entry(tc, "getPeerLeasesFromTable", recoveryGroup, conn, this);
 
         // reset the table
         peerLeaseTable.clear();
@@ -368,7 +362,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     @Override
     public synchronized void updateServerLease(String recoveryIdentity, String recoveryGroup, boolean isServerStartup) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "updateServerLease", new java.lang.Object[] { recoveryIdentity, recoveryGroup, isServerStartup, this });
+            Tr.entry(tc, "updateServerLease", recoveryIdentity, recoveryGroup, isServerStartup, this);
         boolean updateSuccess = false;
         Connection conn = null;
         _updatelockingRS = null;
@@ -377,7 +371,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         Throwable nonTransientException = null;
         SQLException currentSqlEx = null;
         // if the server is stopping, we should simply return
-        if (_serverStopping) {
+        if (FrameworkState.isStopping()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "updateServerLease", "server stopping");
             return;
@@ -396,7 +390,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
             // If we were unable to get a connection, throw an exception, but not if we're stopping
             if (conn == null) {
-                if (!_serverStopping) {
+                if (!FrameworkState.isStopping()) {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "updateServerLease", "Null connection InternalLogException");
                     throw new InternalLogException("Failed to get JDBC Connection", null);
@@ -414,7 +408,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             // We can go ahead and query the Database
             boolean newTable = queryLeaseTable(recoveryIdentity, conn, isServerStartup);
             // if the server is stopping, we should simply return
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "updateServerLease", this);
                 return;
@@ -426,7 +420,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
             // Either a new table or we couldn't find the row for our server. Insert it.
             if (needInsert) {
-                if (!_serverStopping) {
+                if (!FrameworkState.isStopping()) {
                     // Insert a new row into the lease table
                     insertNewLease(recoveryIdentity, recoveryGroup, conn);
                 } else { // server is stopping exit without insert
@@ -443,7 +437,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The server is stopping, lease update failed with exception: " + sqlex);
             } else {
@@ -453,7 +447,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             // Set the exception that will be reported
             currentSqlEx = sqlex;
         } catch (Throwable exc) {
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The server is stopping, lease update failed with exception: " + exc);
             } else {
@@ -478,7 +472,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                     }
                 } catch (Throwable exc) {
                     // Report the exception
-                    if (_serverStopping) {
+                    if (FrameworkState.isStopping()) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "The server is stopping. Tidy up failed, after lease update failure, with exception: " + exc);
                     } else {
@@ -488,7 +482,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                 }
 
                 // if the server is stopping, we should simply return without driving any retry logic
-                if (_serverStopping) {
+                if (FrameworkState.isStopping()) {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "updateServerLease", "server stopping");
                     return;
@@ -546,7 +540,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
     private boolean queryLeaseTable(String recoveryIdentity, Connection conn, boolean isServerStartup) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "queryLeaseTable", new java.lang.Object[] { recoveryIdentity, conn, _updatelockingRS, isServerStartup, this });
+            Tr.entry(tc, "queryLeaseTable", recoveryIdentity, conn, _updatelockingRS, isServerStartup, this);
         boolean newTable = true;
         Exception currentEx = null;
         _lockingStmt = conn.createStatement();
@@ -569,7 +563,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
 
         if (currentEx != null) {
-            if (!_serverStopping) {
+            if (!FrameworkState.isStopping()) {
                 // Perhaps we couldn't find the table. Attempt to create it if we are starting up and the table has not
                 // been touched already.
                 if (isServerStartup && !_leaseTableExists) {
@@ -616,7 +610,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     private boolean updateLeaseTable(String recoveryIdentity, String recoveryGroup, Connection conn,
                                      boolean isServerStartup) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "updateLeaseTable", new java.lang.Object[] { recoveryIdentity, recoveryGroup, conn, _updatelockingRS, isServerStartup, this });
+            Tr.entry(tc, "updateLeaseTable", recoveryIdentity, recoveryGroup, conn, _updatelockingRS, isServerStartup, this);
         boolean needInsert = true;
         PreparedStatement updateStmt = null;
         try {
@@ -871,8 +865,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "This is a PostgreSQL Database");
             } else if (dbName.toLowerCase().contains("db2")) {
-                // we are DB2
-                _isDB2 = true;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "This is a DB2 Database");
             } else if (dbName.toLowerCase().contains("microsoft sql")) {
@@ -882,8 +874,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "This is a Microsoft SQL Server Database with default isolation - " + tranIsolation);
             } else if (dbName.toLowerCase().contains("derby")) {
-                // we are Derby
-                _isDerby = true;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "This is a Derby Database");
             } else {
@@ -914,12 +904,12 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void createLeaseTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "createLeaseTable", new java.lang.Object[] { conn, this });
+            Tr.entry(tc, "createLeaseTable", conn, this);
 
         Statement createTableStmt = null;
 
@@ -991,7 +981,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     @Override
     public synchronized void deleteServerLease(String recoveryIdentity) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteServerLease", new java.lang.Object[] { recoveryIdentity, this });
+            Tr.entry(tc, "deleteServerLease", recoveryIdentity, this);
 
         Connection conn = null;
 
@@ -1001,7 +991,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         SQLException currentSqlEx = null;
 
         // if the server is stopping, we should simply return
-        if (_serverStopping) {
+        if (FrameworkState.isStopping()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "deleteServerLease", "server stopping");
             return;
@@ -1034,7 +1024,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The server is stopping, lease delete failed for server with identity: " + recoveryIdentity + ", exception: " + sqlex);
             } else {
@@ -1044,7 +1034,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             // Set the exception that will be reported
             currentSqlEx = sqlex;
         } catch (Throwable exc) {
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The server is stopping, lease delete failed for server with identity: " + recoveryIdentity + ", exception: " + exc);
             } else {
@@ -1067,7 +1057,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                     }
                 } catch (Throwable exc) {
                     // Report the exception
-                    if (_serverStopping) {
+                    if (FrameworkState.isStopping()) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "The server is stopping. Tidy up failed, after lease delete failure, with exception: " + exc);
                     } else {
@@ -1077,7 +1067,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                 }
 
                 // if the server is stopping, we should simply return without driving any retry logic
-                if (_serverStopping) {
+                if (FrameworkState.isStopping()) {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "deleteServerLease", "server stopping");
                     return;
@@ -1129,7 +1119,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
     private int deleteLeaseFromTable(String recoveryIdentity, Connection conn) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteLeaseFromTable", new java.lang.Object[] { recoveryIdentity, conn, this });
+            Tr.entry(tc, "deleteLeaseFromTable", recoveryIdentity, conn, this);
 
         _deleteStmt = conn.createStatement();
 
@@ -1158,7 +1148,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     @Override
     public synchronized boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "claimPeerLeaseForRecovery", new java.lang.Object[] { recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, this });
+            Tr.entry(tc, "claimPeerLeaseForRecovery", recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, this);
 
         boolean peerClaimed = false;
         boolean peerClaimSuccess = false;
@@ -1168,7 +1158,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         SQLException currentSqlEx = null;
 
         // if the server is stopping, we should simply return
-        if (_serverStopping) {
+        if (FrameworkState.isStopping()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "claimPeerLeaseForRecovery", "server stopping");
             return false;
@@ -1201,7 +1191,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The server is stopping, caught SQLException for server with recovery identity " + myRecoveryIdentity +
                                  " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover +
@@ -1215,7 +1205,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             // Set the exception that will be reported
             currentSqlEx = sqlex;
         } catch (Throwable exc) {
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The server is stopping, caught non-SQLException Throwable for server with recovery identity " + myRecoveryIdentity +
                                  " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover +
@@ -1246,7 +1236,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                     }
                 } catch (Throwable exc) {
                     // Report the exception
-                    if (_serverStopping) {
+                    if (FrameworkState.isStopping()) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "The server is stopping. Tidy up failed, after lease claim failure, with exception: " + exc);
                     } else {
@@ -1256,7 +1246,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
                 }
 
                 // if the server is stopping, we should simply return without driving any retry logic
-                if (_serverStopping) {
+                if (FrameworkState.isStopping()) {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "claimPeerLeaseForRecovery", "server stopping");
                     return false;
@@ -1314,7 +1304,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
     private boolean claimPeerLeaseFromTable(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo, Connection conn) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "claimPeerLeaseFromTable", new java.lang.Object[] { recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, conn, this });
+            Tr.entry(tc, "claimPeerLeaseFromTable", recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, conn, this);
 
         boolean peerClaimed = false;
 
@@ -1446,20 +1436,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     }
 
     /**
-     * Signals to the Lease Log that the server is stopping.
-     */
-    @Override
-    public void serverStopping() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "serverStopping ", new Object[] { this });
-
-        _serverStopping = true;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "serverStopping", this);
-    }
-
-    /**
      * This concrete class extends SQLRetry providing the lease update code to be retried.
      *
      */
@@ -1471,7 +1447,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
         public UpdateServerLeaseRetry(String recoveryIdentity, String recoveryGroup, boolean isServerStartup) {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "UpdateServerLeaseRetry", new Object[] { recoveryIdentity, recoveryGroup, isServerStartup, this });
+                Tr.entry(tc, "UpdateServerLeaseRetry", recoveryIdentity, recoveryGroup, isServerStartup, this);
 
             // Cache the supplied information
             _recoveryIdentity = recoveryIdentity;
@@ -1485,10 +1461,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "UpdateServerLeaseRetry.retryCode", new Object[] { conn });
+                Tr.entry(tc, "UpdateServerLeaseRetry.retryCode", conn);
 
             // If we were unable to get a connection, throw an exception, but not if we're stopping
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "UpdateServerLeaseRetry.retryCode", "server stopping");
                 return;
@@ -1507,7 +1483,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             // We can go ahead and query the Database
             boolean newTable = queryLeaseTable(_recoveryIdentity, conn, _isServerStartup);
             // if the server is stopping, we should simply return
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "UpdateServerLeaseRetry.retryCode", this);
                 return;
@@ -1519,7 +1495,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
             // Either a new table or we couldn't find the row for our server. Insert it.
             if (needInsert) {
-                if (!_serverStopping) {
+                if (!FrameworkState.isStopping()) {
                     // Insert a new row into the lease table
                     insertNewLease(_recoveryIdentity, _recoveryGroup, conn);
                 } else { // server is stopping exit without insert
@@ -1549,7 +1525,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
         public DeleteServerLeaseRetry(String recoveryIdentity) {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "DeleteServerLeaseRetry", new Object[] { recoveryIdentity, this });
+                Tr.entry(tc, "DeleteServerLeaseRetry", recoveryIdentity, this);
 
             // Cache the supplied information
             _recoveryIdentity = recoveryIdentity;
@@ -1561,10 +1537,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "DeleteServerLeaseRetry.retryCode", new Object[] { conn });
+                Tr.entry(tc, "DeleteServerLeaseRetry.retryCode", conn);
 
             // If we were unable to get a connection, throw an exception, but not if we're stopping
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "DeleteServerLeaseRetry.retryCode", "server stopping");
                 return;
@@ -1606,7 +1582,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
         public GetPeerLeaseRetry(final PeerLeaseTable peerLeaseTable, String recoveryGroup) {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "GetPeerLeaseRetry", new Object[] { recoveryGroup, this });
+                Tr.entry(tc, "GetPeerLeaseRetry", recoveryGroup, this);
 
             // Cache the supplied information
             _recoveryGroup = recoveryGroup;
@@ -1619,10 +1595,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "GetPeerLeaseRetry.retryCode", new Object[] { conn });
+                Tr.entry(tc, "GetPeerLeaseRetry.retryCode", conn);
 
             // If we were unable to get a connection, throw an exception, but not if we're stopping
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "GetPeerLeaseRetry.retryCode", "server stopping");
                 return;
@@ -1663,7 +1639,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
 
         public ClaimPeerLeaseRetry(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "ClaimPeerLeaseRetry", new Object[] { recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, this });
+                Tr.entry(tc, "ClaimPeerLeaseRetry", recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, this);
 
             // Cache the supplied information
             _recoveryIdentityToRecover = recoveryIdentityToRecover;
@@ -1677,10 +1653,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "ClaimPeerLeaseRetry.retryCode", new Object[] { conn });
+                Tr.entry(tc, "ClaimPeerLeaseRetry.retryCode", conn);
 
             // If we were unable to get a connection, throw an exception, but not if we're stopping
-            if (_serverStopping) {
+            if (FrameworkState.isStopping()) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "ClaimPeerLeaseRetry.retryCode", "server stopping");
                 return;
@@ -1732,5 +1708,4 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     public void closeConnectionAfterBatch(Connection conn, int initialIsolation) throws SQLException {
         // A no-op for this class
     }
-
 }

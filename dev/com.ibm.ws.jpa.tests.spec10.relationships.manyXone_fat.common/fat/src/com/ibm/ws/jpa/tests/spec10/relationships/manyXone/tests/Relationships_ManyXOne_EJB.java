@@ -36,6 +36,7 @@ import com.ibm.ws.jpa.fvt.relationships.manyXone.tests.ejb.TestManyXOneCompoundP
 import com.ibm.ws.jpa.fvt.relationships.manyXone.tests.ejb.TestManyXOneUnidirectional_EJB_SFEX_Servlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXone.tests.ejb.TestManyXOneUnidirectional_EJB_SF_Servlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXone.tests.ejb.TestManyXOneUnidirectional_EJB_SL_Servlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

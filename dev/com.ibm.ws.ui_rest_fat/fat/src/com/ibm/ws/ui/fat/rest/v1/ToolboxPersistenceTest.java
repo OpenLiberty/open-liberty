@@ -118,7 +118,17 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
      */
     @AfterClass
     public static void tearDownClass() throws Exception {
-        FATSuite.server.restartServer();
+        stopServerWithExpectedErrors();
+        FATSuite.server.startServer();
+    }
+
+    private static void stopServerWithExpectedErrors() throws Exception {
+        FATSuite.server.stopServer(
+            "CWWKX1010E:.*",
+            "CWWKX1031E:.*",
+            "CWWKX1009E:.*",
+            "CWWKX1030E:.*"
+        );
     }
 
     /**
@@ -184,12 +194,7 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
     @Override
     protected void stopServerAndValidate(LibertyServer server) throws Exception {
         Log.info(c, method.getMethodName(), "Using stopServerAndValidate with errors to ignore");
-        server.stopServer(
-            "CWWKX1010E:.*",
-            "CWWKX1031E:.*",
-            "CWWKX1009E:.*",
-            "CWWKX1030E:.*"
-        );
+        stopServerWithExpectedErrors();
         assertFalse("FAIL: Server is not stopped.",
                     server.isStarted());
     }

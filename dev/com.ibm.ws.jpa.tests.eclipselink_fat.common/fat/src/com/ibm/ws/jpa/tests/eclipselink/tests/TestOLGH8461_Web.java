@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.olgh8461.web.TestOLGH8461Servlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
