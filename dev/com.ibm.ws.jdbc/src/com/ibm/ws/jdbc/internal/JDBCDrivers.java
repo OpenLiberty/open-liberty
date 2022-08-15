@@ -85,7 +85,7 @@ public class JDBCDrivers {
         };
         classNamesByPID.put("com.ibm.ws.jdbc.dataSource.properties.db2.jcc", classes);
         classNamesByPID.put("com.ibm.ws.jdbc.dataSource.properties.informix.jcc", classes);
-        classNamesByKey.put("DB2JCC", classes);
+        classNamesByKey.put("JCC", classes); //drivers from IBM/Rocket are db2jcc.jar/db2jcc4.jar, but on maven central they are jcc-X.X.X.X.jar
 
         // Oracle Universal Connection Pooling
         classes = new String[] {
