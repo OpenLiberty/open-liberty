@@ -39,6 +39,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -49,6 +51,7 @@ import io.openliberty.microprofile.openapi20.fat.utils.OpenAPIConnection;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPITestUtil;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class MergeConfigTest {
 
     private static final String SERVER_NAME = "OpenAPIMergeTestServer";
@@ -72,6 +75,7 @@ public class MergeConfigTest {
         deployedApps.clear();
     }
 
+    @Mode(TestMode.LITE)
     @Test
     public void testFirstModuleOnly() throws Exception {
         // start server
@@ -137,6 +141,7 @@ public class MergeConfigTest {
                    hasSize(1));
     }
 
+    @Mode(TestMode.LITE)
     @Test
     public void testWarInclusion() throws Exception {
         setMergeConfig("test2, test3", null, null);
@@ -248,6 +253,7 @@ public class MergeConfigTest {
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test2");
     }
 
+    @Mode(TestMode.LITE)
     @Test
     public void testInfoConfigured() throws Exception {
         String info = "{"
