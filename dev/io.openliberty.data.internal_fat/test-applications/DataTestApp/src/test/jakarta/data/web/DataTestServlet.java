@@ -107,7 +107,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testAggregateFunctions() {
         // Remove data from previous test:
-        Product[] allProducts = products.findByVersionGreaterThanEqualOrderById(-1);
+        Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
         products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
 
         // Add data for this test to use:
@@ -1536,7 +1536,7 @@ public class DataTestServlet extends FATServlet {
         prod4.price = 20.00f;
         products.addOrModify(prod4);
 
-        Product[] p = products.findByVersionGreaterThanEqualOrderById(0);
+        Product[] p = products.findByVersionGreaterThanEqualOrderByPrice(0);
 
         // JPA knows to update the version even through the JPQL didn't explicitly tell it to
         assertEquals(3, products.putOnSale("TestUpdateMultiple-match", .20f));
