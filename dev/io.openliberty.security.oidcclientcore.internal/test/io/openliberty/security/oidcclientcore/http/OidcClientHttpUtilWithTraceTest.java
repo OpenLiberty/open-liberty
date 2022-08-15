@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.clients.common;
+package io.openliberty.security.oidcclientcore.http;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

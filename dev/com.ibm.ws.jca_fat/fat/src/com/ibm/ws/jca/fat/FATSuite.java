@@ -42,11 +42,6 @@ public class FATSuite {
     public static final String javaeeServer = "com.ibm.ws.jca.fat";
     public static final String jakartaeeServer = "com.ibm.ws.jca.fat.jakarta";
 
-    /*
-     * EE7 will run in full mode only.
-     * EE9 will run in full mode only.
-     * EE10 will run in full and lite mode.
-     */
     @ClassRule
     public static RepeatTests repeat;
 

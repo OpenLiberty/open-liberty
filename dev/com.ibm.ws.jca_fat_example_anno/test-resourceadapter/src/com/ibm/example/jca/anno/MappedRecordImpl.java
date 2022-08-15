@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,12 @@ package com.ibm.example.jca.anno;
 
 import java.util.TreeMap;
 
-import javax.resource.cci.MappedRecord;
+import jakarta.resource.cci.MappedRecord;
 
 /**
  * Example MappedRecord where entries are kept in a TreeMap.
  */
-@SuppressWarnings("rawtypes")
-public class MappedRecordImpl extends TreeMap implements MappedRecord {
+public class MappedRecordImpl<K, V> extends TreeMap<K, V> implements MappedRecord<K, V> {
     private static final long serialVersionUID = 5653529590057147554L;
 
     private String recordName;
@@ -43,4 +42,5 @@ public class MappedRecordImpl extends TreeMap implements MappedRecord {
     public void setRecordShortDescription(String recordShortDescription) {
         this.recordShortDescription = recordShortDescription;
     }
+
 }

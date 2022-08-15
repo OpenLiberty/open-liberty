@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,21 +11,22 @@
 package com.ibm.example.jca.anno;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.resource.NotSupportedException;
-import javax.resource.ResourceException;
-import javax.resource.cci.Connection;
-import javax.resource.cci.Interaction;
-import javax.resource.cci.InteractionSpec;
-import javax.resource.cci.MessageListener;
-import javax.resource.cci.Record;
-import javax.resource.cci.ResourceWarning;
-import javax.resource.spi.endpoint.MessageEndpoint;
-import javax.resource.spi.endpoint.MessageEndpointFactory;
+import jakarta.resource.NotSupportedException;
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.Connection;
+import jakarta.resource.cci.Interaction;
+import jakarta.resource.cci.InteractionSpec;
+import jakarta.resource.cci.MessageListener;
+import jakarta.resource.cci.Record;
+import jakarta.resource.cci.ResourceWarning;
+import jakarta.resource.spi.endpoint.MessageEndpoint;
+import jakarta.resource.spi.endpoint.MessageEndpointFactory;
 
 /**
  * Example interaction.
@@ -38,7 +39,8 @@ public class InteractionImpl implements Interaction {
     }
 
     @Override
-    public void clearWarnings() throws ResourceException {}
+    public void clearWarnings() throws ResourceException {
+    }
 
     @Override
     public void close() throws ResourceException {
@@ -61,28 +63,32 @@ public class InteractionImpl implements Interaction {
 
         Boolean readOnly = (Boolean) con.cri.get("readOnly");
         String tableName = (String) con.cri.get("tableName");
-        ConcurrentLinkedQueue<Map<?, ?>> table = ManagedConnectionFactoryImpl.tables.get(tableName);
+        ConcurrentLinkedQueue<Map<String, String>> table = ManagedConnectionFactoryImpl.tables.get(tableName);
 
         @SuppressWarnings("unchecked")
-        Map<Object, Object> inputMap = (Map<Object, Object>) input;
+        Map<String, String> inputMap = (Map<String, String>) input;
         @SuppressWarnings("unchecked")
-        Map<Object, Object> outputMap = (Map<Object, Object>) output;
+        List<String> outputMap = (List<String>) output;
 
         String function = ((InteractionSpecImpl) ispec).getFunctionName();
         if ("ADD".equalsIgnoreCase(function)) {
             if (readOnly)
                 throw new NotSupportedException("functionName=ADD for read only connection");
-            table.add(new TreeMap<Object, Object>(inputMap));
-            outputMap.putAll(inputMap);
+            table.add(new TreeMap<String, String>(inputMap));
+            for (String key : inputMap.keySet()) {
+                outputMap.add(key + "=" + inputMap.get(key));
+            }
             onMessage(function, output);
             return true;
         } else if ("FIND".equalsIgnoreCase(function)) {
-            for (Map<?, ?> map : table) {
+            for (Map<String, String> map : table) {
                 boolean match = true;
                 for (Map.Entry<?, ?> entry : inputMap.entrySet())
                     match &= entry.getValue().equals(map.get(entry.getKey()));
                 if (match) {
-                    outputMap.putAll(map);
+                    for (String key : map.keySet()) {
+                        outputMap.add(key + "=" + map.get(key));
+                    }
                     return true;
                 }
             }
@@ -90,14 +96,16 @@ public class InteractionImpl implements Interaction {
         } else if ("REMOVE".equalsIgnoreCase(function)) {
             if (readOnly)
                 throw new NotSupportedException("functionName=REMOVE for read only connection");
-            for (Iterator<Map<?, ?>> it = table.iterator(); it.hasNext();) {
-                Map<?, ?> map = it.next();
+            for (Iterator<Map<String, String>> it = table.iterator(); it.hasNext();) {
+                Map<String, String> map = it.next();
                 boolean match = true;
                 for (Map.Entry<?, ?> entry : inputMap.entrySet())
                     match &= entry.getValue().equals(map.get(entry.getKey()));
                 if (match) {
                     it.remove();
-                    outputMap.putAll(map);
+                    for (String key : map.keySet()) {
+                        outputMap.add(key + "=" + map.get(key));
+                    }
                     onMessage(function, output);
                     return true;
                 }

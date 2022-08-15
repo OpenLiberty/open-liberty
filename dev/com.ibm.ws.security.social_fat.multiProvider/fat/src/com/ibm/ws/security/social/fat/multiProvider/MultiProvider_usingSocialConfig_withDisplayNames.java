@@ -379,7 +379,7 @@ public class MultiProvider_usingSocialConfig_withDisplayNames extends SocialComm
      * the client secret is bad in the forth as the secret in that config is bad.
      * </OL>
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.BadPostRequestException" })
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.http.BadPostRequestException" })
     @Mode(TestMode.LITE)
     @Test
     public void MultiProvider_usingSocialConfig_withDisplayNames_SelectLibertyOP_oidc() throws Exception {

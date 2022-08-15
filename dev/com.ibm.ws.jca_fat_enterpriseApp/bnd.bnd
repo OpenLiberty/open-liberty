@@ -22,7 +22,9 @@ fat.project: true
 # In this case, Java EE 8 features are added programatically at runtime by the RepeatTests rule.
 tested.features:\
 	appsecurity-3.0, servlet-4.0, cdi-2.0, mdb-3.2, jdbc-4.2, connectors-2.0, messaging-3.0,\
-	appsecurity-4.0, servlet-5.0, expressionlanguage-4.0, cdi-3.0, pages-3.0, mdb-4.0
+	appsecurity-4.0, servlet-5.0, expressionlanguage-4.0, cdi-3.0, pages-3.0, mdb-4.0,\
+	expressionlanguage-5.0, connectors-2.1, appsecurity-5.0, jsonp-2.1, messaging-3.1,\
+	xmlbinding-4.0, pages-3.1, cdi-4.0, servlet-6.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)

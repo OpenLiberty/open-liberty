@@ -13,4 +13,8 @@ dependencies {
   //Not actually using this library at runtime. 
   requiredLibs 'org.apache.commons:commons-math:2.2'
 }
+
+addRequiredLibraries {
+  dependsOn addJakartaTransformer
+}
  
