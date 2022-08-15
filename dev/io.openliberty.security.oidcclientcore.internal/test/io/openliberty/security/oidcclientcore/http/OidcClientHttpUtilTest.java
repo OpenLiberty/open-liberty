@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.clients.common;
+package io.openliberty.security.oidcclientcore.http;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -52,7 +52,7 @@ import test.common.SharedOutputManager;
 
 public class OidcClientHttpUtilTest {
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
-    static final com.ibm.ws.security.openidconnect.clients.common.OidcClientHttpUtil defaultInstance = OidcClientHttpUtil.getInstance();
+    static final OidcClientHttpUtil defaultInstance = OidcClientHttpUtil.getInstance();
 
     private final Mockery mock = new JUnit4Mockery() {
         {
@@ -126,7 +126,7 @@ public class OidcClientHttpUtilTest {
         final String methodName = "testExtractTokensFromResponse";
         try {
             Map<String, Object> postResponseMap = new HashMap<String, Object>();
-            postResponseMap.put(ClientConstants.RESPONSEMAP_CODE, httpResponse);
+            postResponseMap.put(HttpConstants.RESPONSEMAP_CODE, httpResponse);
             mock.checking(new Expectations() {
                 {
                     one(httpResponse).getEntity();
@@ -140,7 +140,7 @@ public class OidcClientHttpUtilTest {
                 }
             });
             OidcClientHttpUtil oichu = new OidcClientHttpUtil();
-            String result = oichu.extractTokensFromResponse(postResponseMap);
+            String result = oichu.extractEntityFromTokenResponse(postResponseMap);
             assertNotNull("expect to get some tokens but not", result);
             assertEquals("expect to get strContent but get '" + result + "'", strContent, result);
         } catch (Throwable t) {
@@ -154,7 +154,7 @@ public class OidcClientHttpUtilTest {
         final String methodName = "testExtractTokensFromResponse_null";
         try {
             Map<String, Object> postResponseMap = new HashMap<String, Object>();
-            postResponseMap.put(ClientConstants.RESPONSEMAP_CODE, httpResponse);
+            postResponseMap.put(HttpConstants.RESPONSEMAP_CODE, httpResponse);
             mock.checking(new Expectations() {
                 {
                     one(httpResponse).getEntity();
@@ -163,7 +163,7 @@ public class OidcClientHttpUtilTest {
                 }
             });
             OidcClientHttpUtil oichu = new OidcClientHttpUtil();
-            String result = oichu.extractTokensFromResponse(postResponseMap);
+            String result = oichu.extractEntityFromTokenResponse(postResponseMap);
             assertNull("expect to get a Null back but not", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -198,7 +198,7 @@ public class OidcClientHttpUtilTest {
             mock.checking(new Expectations() {
                 {
                     one(httpPost).setHeader(with(any(String.class)), with(any(String.class)));
-                    one(httpPost).addHeader(ClientConstants.AUTHORIZATION, (ClientConstants.BEARER + accessToken));
+                    one(httpPost).addHeader(HttpConstants.AUTHORIZATION, (HttpConstants.BEARER + accessToken));
                 }
             });
             String baUsername = "testuser";
@@ -244,10 +244,10 @@ public class OidcClientHttpUtilTest {
             List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
 
             Map<String, Object> map = moichu.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, commonHeaders, false, authMethod, false);
-            HttpResponse myRes = (HttpResponse) map.get(ClientConstants.RESPONSEMAP_CODE);
+            HttpResponse myRes = (HttpResponse) map.get(HttpConstants.RESPONSEMAP_CODE);
             assertEquals("Did not get baclk HttepResponse " + httpResponse + " but " + myRes,
                     httpResponse, myRes);
-            Object httpPost = map.get(ClientConstants.RESPONSEMAP_METHOD);
+            Object httpPost = map.get(HttpConstants.RESPONSEMAP_METHOD);
             assertTrue("Did not get back a HttpPost class but " + httpPost.getClass().getName(), httpPost instanceof HttpPost);
 
         } catch (Throwable t) {
@@ -423,40 +423,6 @@ public class OidcClientHttpUtilTest {
         int port = 80;
         String url = "http://hostname/oidc/endpoint";
         assertEquals(port, OidcClientHttpUtil.getTokenEndPointPort(url));
-    }
-
-    @Test
-    public void testGetHTTPRequestAsString() {
-        String methodName = "testGetHTTPRequestAsString";
-        try {
-            HttpClientUtil util = new HttpClientUtil();
-
-            String jwkUrl = "http://example.com:8010/oidc/jwk";
-            mock.checking(new Expectations() {
-                {
-                    allowing(httpClient).execute(with(any(HttpGet.class)));
-                    will(returnValue(httpResponse));
-                    allowing(httpResponse).getStatusLine();
-                    will(returnValue(statusLine));
-                    allowing(statusLine).getStatusCode();
-                    will(returnValue(200));
-                    allowing(httpResponse).getEntity();
-                    will(returnValue(httpEntity));
-                    allowing(httpEntity).getContent();
-                    will(returnValue(inputStreamJwkResponse));
-                    allowing(httpEntity).getContentLength();
-                    will(returnValue((long) jwks.length()));
-                    allowing(httpEntity).getContentType();
-                    will(returnValue((Header) null));
-                }
-            });
-            String jsonString = util.getHTTPRequestAsString(httpClient, jwkUrl, null, null);
-            assertNotNull("expected to get response from jwk endpoint", jsonString);
-            assertEquals("expected = ", jwks, jsonString);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
     }
 
     class MockInputStream extends InputStream {

@@ -731,7 +731,7 @@ public class GenericOidcClientTests extends CommonTest {
      * </OL>
      */
     @Mode(TestMode.LITE)
-    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.BadPostRequestException" })
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.http.BadPostRequestException" })
     @Test
     public void OidcClientTestBadClientSecret() throws Exception {
 

@@ -51,6 +51,7 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
+import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
 
 @SuppressWarnings("restriction")
@@ -102,7 +103,6 @@ public class OidcClientUtil {
         }
         params.add(new BasicNameValuePair(ClientConstants.REDIRECT_URI, redirectUri));
         params.add(new BasicNameValuePair(Constants.CODE, code));
-        oidcHttpUtil.setClientId(clientId);
         if (authMethod.equals(ClientConstants.METHOD_POST) || authMethod.equals(ClientConstants.METHOD_CLIENT_SECRET_POST)) {
             params.add(new BasicNameValuePair(Constants.CLIENT_ID, clientId));
             params.add(new BasicNameValuePair(Constants.CLIENT_SECRET, clientSecret));
@@ -111,7 +111,20 @@ public class OidcClientUtil {
         handleCustomParams(params, customParams); // custom token ep params
         Map<String, Object> postResponseMap = postToTokenEndpoint(tokenEnpoint, params, clientId, clientSecret, sslSocketFactory, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
 
-        String tokenResponse = oidcHttpUtil.extractTokensFromResponse(postResponseMap);
+        String tokenResponse;
+        try {
+            tokenResponse = oidcHttpUtil.extractEntityFromTokenResponse(postResponseMap);
+        } catch (Exception e) {
+            // get/set the default error message (indicating we can't get tokens from a returned response)
+            String insertMsg = Tr.formatMessage(tc, "OIDC_CLIENT_INVALID_HTTP_RESPONSE_NO_MSG");
+            String eMsg = e.getMessage();
+            // if we got an usable error message in the exception, use it, otherwise, use the more generic error messages
+            if (eMsg != null && !eMsg.isEmpty()) {
+                insertMsg = eMsg;
+            }
+            Tr.error(tc, "OIDC_CLIENT_INVALID_HTTP_RESPONSE", new Object[] { insertMsg, clientId });
+            throw e;
+        }
 
         JSONObject jobject = JSONObject.parse(tokenResponse);
         // result.add(0, (String) jobject.get(Constants.ID_TOKEN));

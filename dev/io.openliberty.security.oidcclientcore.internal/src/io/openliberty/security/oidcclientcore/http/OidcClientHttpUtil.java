@@ -8,9 +8,10 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.clients.common;
+package io.openliberty.security.oidcclientcore.http;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import javax.net.ssl.SSLSocketFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -31,7 +33,6 @@ import org.apache.http.util.EntityUtils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
@@ -42,32 +43,18 @@ import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 public class OidcClientHttpUtil {
     private static final TraceComponent tc = Tr.register(OidcClientHttpUtil.class);
-    private String clientId;
     private final HttpUtils httpUtils;
 
-    protected OidcClientHttpUtil() {
+    public OidcClientHttpUtil() {
         httpUtils = new HttpUtils();
     }
 
-    public void setClientId(String id) {
-        this.clientId = id;
-    }
-
-    @FFDCIgnore(NoSSLSocketFactoryException.class)
-    public SSLSocketFactory getSSLSocketFactory(ConvergedClientConfig config, SSLSupport sslSupport,
-            boolean throwExceptionIfNull, boolean logErrorIfNull) throws com.ibm.websphere.ssl.SSLException {
+    public SSLSocketFactory getSSLSocketFactory(String sslConfigurationName, SSLSupport sslSupport) throws com.ibm.websphere.ssl.SSLException, NoSSLSocketFactoryException {
         SSLSocketFactory sslSocketFactory = null;
         try {
-            sslSocketFactory = SecuritySSLUtils.getSSLSocketFactory(sslSupport, config.getSSLConfigurationName());
+            sslSocketFactory = SecuritySSLUtils.getSSLSocketFactory(sslSupport, sslConfigurationName);
         } catch (javax.net.ssl.SSLException e) {
             throw new com.ibm.websphere.ssl.SSLException(e);
-        } catch (NoSSLSocketFactoryException e) {
-            if (throwExceptionIfNull) {
-                throw new com.ibm.websphere.ssl.SSLException(Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", config.getClientId() }));
-            }
-            if (logErrorIfNull) {
-                Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", config.getClientId() });
-            }
         }
         return sslSocketFactory;
     }
@@ -75,26 +62,16 @@ public class OidcClientHttpUtil {
     /**
      * @param postResponseMap
      * @return
+     * @throws ParseException
      * @throws IOException
      */
-    String extractTokensFromResponse(Map<String, Object> postResponseMap) throws Exception {
-        HttpResponse response = (HttpResponse) postResponseMap.get(ClientConstants.RESPONSEMAP_CODE);
+    public String extractEntityFromTokenResponse(Map<String, Object> postResponseMap) throws Exception {
+        HttpResponse response = (HttpResponse) postResponseMap.get(HttpConstants.RESPONSEMAP_CODE);
         HttpEntity entity = response.getEntity();
         if (entity == null)
             return null;
-        try {
-            return EntityUtils.toString(entity);
-        } catch (Exception ioe) {
-            // get/set the default error message (indicating we can't get tokens from a returned response)
-            String insertMsg = Tr.formatMessage(tc, "OIDC_CLIENT_INVALID_HTTP_RESPONSE_NO_MSG");
-            String eMsg = ioe.getMessage();
-            // if we got an usable error message in the exception, use it, otherwise, use the more generic error messages
-            if (eMsg != null && !eMsg.isEmpty()) {
-                insertMsg = eMsg;
-            }
-            Tr.error(tc, "OIDC_CLIENT_INVALID_HTTP_RESPONSE", new Object[] { insertMsg, this.clientId });
-            throw ioe;
-        }
+
+        return EntityUtils.toString(entity);
     }
 
     HttpPost setupPost(String url,
@@ -139,12 +116,12 @@ public class OidcClientHttpUtil {
 
     Map<String, Object> finishPost(HttpResponse response, HttpPost postMethod) {
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put(ClientConstants.RESPONSEMAP_CODE, response);
-        result.put(ClientConstants.RESPONSEMAP_METHOD, postMethod);
+        result.put(HttpConstants.RESPONSEMAP_CODE, response);
+        result.put(HttpConstants.RESPONSEMAP_METHOD, postMethod);
         return result;
     }
 
-    Map<String, Object> postToEndpoint(String url,
+    public Map<String, Object> postToEndpoint(String url,
             @Sensitive List<NameValuePair> params,
             String baUsername,
             @Sensitive String baPassword,
@@ -175,7 +152,7 @@ public class OidcClientHttpUtil {
         return finishPost(response, postMethod);
     }
 
-    Map<String, Object> postToIntrospectEndpoint(String url,
+    public Map<String, Object> postToIntrospectEndpoint(String url,
             @Sensitive List<NameValuePair> params,
             String baUsername,
             @Sensitive String baPassword,
@@ -197,22 +174,22 @@ public class OidcClientHttpUtil {
      * @param accessToken
      * @param postMethod
      */
-    void setAuthorizationHeaderForPostMethod(String baUsername,
+    public void setAuthorizationHeaderForPostMethod(String baUsername,
             @Sensitive String baPassword, String accessToken,
             HttpPost postMethod,
             String authMethod) {
-        if (authMethod.contains(ClientConstants.METHOD_BASIC)) { // social constant differs
+        if (authMethod.contains(HttpConstants.METHOD_BASIC)) { // social constant differs
             String userpass = baUsername + ":" + baPassword;
-            String basicAuth = "Basic " + Base64Coder.base64Encode(userpass);
-            postMethod.setHeader(ClientConstants.AUTHORIZATION, basicAuth);
+            String encodedUserpass = Base64.getEncoder().encodeToString(userpass.getBytes());
+            postMethod.setHeader(HttpConstants.AUTHORIZATION, HttpConstants.BASIC + encodedUserpass);
         }
 
         if (accessToken != null) {
-            postMethod.addHeader(ClientConstants.AUTHORIZATION, ClientConstants.BEARER + accessToken);
+            postMethod.addHeader(HttpConstants.AUTHORIZATION, HttpConstants.BEARER + accessToken);
         }
     }
 
-    static int getTokenEndPointPort(String url) {
+    public static int getTokenEndPointPort(String url) {
         int port = 0;
         int first = url.indexOf(":"); // https://hostname:8011/openidconnect
         int last = url.lastIndexOf(":"); // https://hostname:8011/openidconnect
