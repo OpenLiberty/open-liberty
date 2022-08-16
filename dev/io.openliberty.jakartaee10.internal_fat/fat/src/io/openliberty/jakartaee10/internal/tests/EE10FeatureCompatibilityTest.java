@@ -148,6 +148,7 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
 
         // TODO: We're working on getting MP60 to be EE10 compatible, so don't assert that it isn't
         incompatibleFeatures.removeAll(MicroProfileActions.MP60.getFeatures());
+        incompatibleFeatures.removeAll(MicroProfileActions.MP_STANDALONE10.getFeatures());
 
         // Test features may or may not be compatible, we don't want to assert either way
         incompatibleFeatures.removeAll(FeatureUtilities.allTestFeatures());
@@ -394,7 +395,7 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
             }
             boolean expectToConflict = incompatibleFeatures.contains(feature);
             Result result = resolver.resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(), false);
-            Log.info(c, "checkFeatures", "finished testing: " + feature);
+            Log.info(c, "checkFeatures", "finished testing: " + feature + ", conflict expected: " + expectToConflict + ", conflict found: " + !result.getConflicts().isEmpty());
             Map<String, Collection<Chain>> conflicts = result.getConflicts();
             if (expectToConflict) {
                 if (conflicts.isEmpty()) {
