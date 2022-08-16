@@ -38,6 +38,16 @@ Import-Package: \
   jakarta.mail.search;version=2.1.0, \
   jakarta.mail.util;version=2.1.0
 
+app-resources= \
+  META-INF/services/jakarta.mail.util.StreamProvider
+
+Service-Component: \
+  io.openliberty.org.eclipse.angus.mail_2_1_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:= "resources=${app-resources}"
+  
 -includeresource: \
   @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/maven/*
    
