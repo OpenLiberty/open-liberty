@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+Bundle-SymbolicName: io.openliberty.org.eclipse.angus.mail.2.1
+
+Implementation-Version: 1.0.0
+
+Export-Package: \
+  com.sun.mail.auth;version=1.0.0, \
+  com.sun.mail.handlers;version=1.0.0, \
+  com.sun.mail.iap;version=1.0.0, \
+  com.sun.mail.imap;version=1.0.0, \
+  com.sun.mail.imap.protocol;version=1.0.0, \
+  com.sun.mail.pop3;version=1.0.0, \
+  com.sun.mail.smtp;version=1.0.0, \
+  com.sun.mail.util;version=1.0.0, \
+  com.sun.mail.util.logging;version=1.0.0
+
+Import-Package: \
+  jakarta.mail;version=2.1.0, \
+  jakarta.mail.event;version=2.1.0, \
+  jakarta.mail.internet;version=2.1.0, \
+  jakarta.mail.search;version=2.1.0, \
+  jakarta.mail.util;version=2.1.0
+
+-includeresource: \
+  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/maven/*
+   
+-buildpath: \
+     org.eclipse.angus:angus-mail;version=${Implementation-Version};strategy=exact, \
+     io.openliberty.jakarta.mail.2.1
+     
