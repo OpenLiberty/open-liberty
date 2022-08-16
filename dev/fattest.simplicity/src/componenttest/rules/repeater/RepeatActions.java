@@ -11,6 +11,7 @@
 package componenttest.rules.repeater;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,7 +61,7 @@ public class RepeatActions {
      * @return                          A RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
-                                     Set<FeatureSet> otherFeatureSets) {
+                                     Collection<FeatureSet> otherFeatureSets) {
         RepeatTests r = RepeatTests.with(forFeatureSet(allFeatureSets, firstFeatureSet, server, TestMode.LITE));
         for (FeatureSet other : otherFeatureSets) {
             r = r.andWith(forFeatureSet(allFeatureSets, other, server, otherFeatureSetsTestMode));

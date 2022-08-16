@@ -12,6 +12,7 @@ package componenttest.rules.repeater;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -388,8 +389,7 @@ public class MicroProfileActions {
      * @return                          A RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        Set<FeatureSet> otherFeatureSetsSet = new HashSet<>(Arrays.asList(otherFeatureSets));
-        return repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSetsSet);
+        return repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets));
     }
 
     /**
@@ -404,7 +404,7 @@ public class MicroProfileActions {
      * @return                          A RepeatTests instance
      */
     private static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
-                                      Set<FeatureSet> otherFeatureSets) {
+                                      Collection<FeatureSet> otherFeatureSets) {
 
         // If the firstFeatureSet requires a Java level higher than the one we're running, try to find a suitable replacement so we don't end up not running the test at all in LITE mode
         int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();
@@ -413,7 +413,7 @@ public class MicroProfileActions {
             List<FeatureSet> allSetsList = new ArrayList<>(Arrays.asList(ALL_SETS_ARRAY));
             Collections.reverse(allSetsList); // Reverse list so newest MP version is first in list
 
-            Set<FeatureSet> candidateFeatureSets = otherFeatureSets;
+            Collection<FeatureSet> candidateFeatureSets = otherFeatureSets;
 
             // Find the newest MP feature set that's in otherFeatureSets and is compatible with the current java version
             Optional<FeatureSet> newestSupportedSet = allSetsList.stream()
@@ -423,7 +423,7 @@ public class MicroProfileActions {
 
             if (newestSupportedSet.isPresent()) {
                 firstFeatureSet = newestSupportedSet.get();
-                otherFeatureSets = new HashSet<>(otherFeatureSets);
+                otherFeatureSets = new ArrayList<>(otherFeatureSets);
                 otherFeatureSets.remove(newestSupportedSet.get());
             }
         }
