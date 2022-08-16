@@ -10,15 +10,23 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import com.ibm.json.java.JSONObject;
 
 public class TokenResponse {
 
+    private final JSONObject rawResponse;
     private final String idToken;
     private final String accessToken;
     private final String refreshToken;
 
-    public TokenResponse(String idToken, String accessToken, String refreshToken) {
+    private Map<String, String> responseAsMap = null;
+
+    public TokenResponse(JSONObject rawResponse, String idToken, String accessToken, String refreshToken) {
+        this.rawResponse = rawResponse;
         this.idToken = idToken;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
@@ -36,11 +44,21 @@ public class TokenResponse {
         return refreshToken;
     }
 
-    public String toJson() {
-        JSONObject json = new JSONObject();
-        json.put(TokenConstants.ID_TOKEN, idToken);
-        json.put(TokenConstants.ACCESS_TOKEN, accessToken);
-        json.put(TokenConstants.REFRESH_TOKEN, refreshToken);
-        return json.toString();
+    @SuppressWarnings("unchecked")
+    public Map<String, String> asMap() {
+        if (responseAsMap != null) {
+            return responseAsMap;
+        }
+        if (rawResponse == null) {
+            return null;
+        }
+        Map<String, String> map = new HashMap<>();
+        Set<String> keys = rawResponse.keySet();
+        for (String key : keys) {
+            map.put(key, rawResponse.get(key).toString());
+        }
+        responseAsMap = new HashMap<>(map);
+        return map;
     }
+
 }

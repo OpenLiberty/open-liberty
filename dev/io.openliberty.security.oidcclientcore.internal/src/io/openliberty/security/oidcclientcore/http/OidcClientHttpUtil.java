@@ -22,7 +22,6 @@ import javax.net.ssl.SSLSocketFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -59,12 +58,6 @@ public class OidcClientHttpUtil {
         return sslSocketFactory;
     }
 
-    /**
-     * @param postResponseMap
-     * @return
-     * @throws ParseException
-     * @throws IOException
-     */
     public String extractEntityFromTokenResponse(Map<String, Object> postResponseMap) throws Exception {
         HttpResponse response = (HttpResponse) postResponseMap.get(HttpConstants.RESPONSEMAP_CODE);
         HttpEntity entity = response.getEntity();
@@ -168,12 +161,6 @@ public class OidcClientHttpUtil {
         return finishPost(response, postMethod);
     }
 
-    /**
-     * @param baUsername
-     * @param baPassword
-     * @param accessToken
-     * @param postMethod
-     */
     public void setAuthorizationHeaderForPostMethod(String baUsername,
             @Sensitive String baPassword, String accessToken,
             HttpPost postMethod,

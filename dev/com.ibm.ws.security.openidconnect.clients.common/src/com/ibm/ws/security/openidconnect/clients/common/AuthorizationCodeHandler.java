@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -34,6 +33,9 @@ import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.security.oidcclientcore.http.BadPostRequestException;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
+import io.openliberty.security.oidcclientcore.token.TokenRequestor;
+import io.openliberty.security.oidcclientcore.token.TokenRequestor.Builder;
+import io.openliberty.security.oidcclientcore.token.TokenResponse;
 
 public class AuthorizationCodeHandler {
     private static final TraceComponent tc = Tr.register(AuthorizationCodeHandler.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
@@ -143,18 +145,18 @@ public class AuthorizationCodeHandler {
             String message = Tr.formatMessage(tc, "OIDC_CLIENT_NULL_TOKEN_ENDPOINT", clientId);
             throw new MalformedURLException(message);
         }
-        HashMap<String, String> tokens = oidcClientUtil.getTokensFromAuthzCode(url,
-                clientId,
-                clientConfig.getClientSecret(),
-                redirectUrl,
-                authzCode,
-                clientConfig.getGrantType(),
-                sslSocketFactory,
-                clientConfig.isHostNameVerificationEnabled(),
-                clientConfig.getTokenEndpointAuthMethod(),
-                OIDCClientAuthenticatorUtil.getResources(clientConfig),
-                clientConfig.getTokenRequestParams(),
-                clientConfig.getUseSystemPropertiesForHttpClientConnections());
+        Builder tokenRequestBuilder = new TokenRequestor.Builder(url, clientId, clientConfig.getClientSecret(), redirectUrl, authzCode);
+        tokenRequestBuilder.sslSocketFactory(sslSocketFactory);
+        tokenRequestBuilder.grantType(clientConfig.getGrantType());
+        tokenRequestBuilder.isHostnameVerification(clientConfig.isHostNameVerificationEnabled());
+        tokenRequestBuilder.authMethod(clientConfig.getTokenEndpointAuthMethod());
+        tokenRequestBuilder.resources(OIDCClientAuthenticatorUtil.getResources(clientConfig));
+        tokenRequestBuilder.customParams(clientConfig.getTokenRequestParams());
+        tokenRequestBuilder.useSystemPropertiesForHttpClientConnections(clientConfig.getUseSystemPropertiesForHttpClientConnections());
+        TokenRequestor tokenRequestor = tokenRequestBuilder.build();
+
+        TokenResponse tokenResponse = tokenRequestor.requestTokens();
+        Map<String, String> tokens = tokenResponse.asMap();
 
         oidcClientRequest.setTokenType(ClientConstants.TYPE_ID_TOKEN);
 

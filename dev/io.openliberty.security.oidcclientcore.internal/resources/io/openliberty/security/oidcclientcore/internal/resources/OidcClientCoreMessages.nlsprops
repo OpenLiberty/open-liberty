@@ -44,3 +44,7 @@ DISCOVERY_METADATA_MISSING_VALUE.useraction=Verify that the providerURI attribut
 ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL=CWWKS2406E: The {0} OpenID Connect client cannot redirect the user to the authorization endpoint because the client cannot determine the authorization endpoint URL. {1}
 ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.explanation=The authorization endpoint URL in the OpenID Connect client configuration might be malformed or missing, or the OpenID Connect client failed to obtain the authorization endpoint URL from the OpenID Connect provider.
 ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=See the error in the message for more information. Verify that the OpenID Connect client configuration is complete and accurate.
+
+AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: The {0} OpenID Connect client encountered the following error while verifying the authentication response from the OpenID Connect provider: {1}
+AUTHENTICATION_RESPONSE_ERROR.explanation=The response from the OpenID Connect provider might be missing information. There might be a problem with the code returned from the OpenID Connect provider.
+AUTHENTICATION_RESPONSE_ERROR.useraction=See the error in the message for more information.
