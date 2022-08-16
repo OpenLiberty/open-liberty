@@ -11,6 +11,7 @@
 package com.ibm.websphere.simplicity;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +55,30 @@ public class ShrinkHelper {
             exportedArchive.delete();
         }
         exportedArchives.clear();
+    }
+
+    public static void deleteExportedArchive(LibertyServer server, String appName) throws Exception {
+        String appArchiveName = appName.endsWith(".war") ? appName : appName + ".war";
+        File archive = new File(server.getPathToAutoFVTNamedServer() + "/apps/" + appArchiveName);
+        Log.info(ShrinkHelper.class, "deleteExportedArchive", "Deleting archive at: " + archive.getAbsolutePath());
+        exportedArchives.remove(archive);
+        archive.delete();
+    }
+
+    public static void deleteExportedArchive(String appName) throws FileNotFoundException {
+        String appArchiveName = appName.endsWith(".war") ? appName : appName + ".war";
+        boolean found = false;
+        for (File exportedArchive : exportedArchives) {
+            if (exportedArchive.getName().equals(appArchiveName)) {
+                found = true;
+                Log.info(ShrinkHelper.class, "deleteExportedArchive", "Deleting archive at: " + exportedArchive.getAbsolutePath());
+                exportedArchives.remove(exportedArchive);
+                exportedArchive.delete();
+            }
+        }
+        if (!found) {
+            throw new FileNotFoundException();
+        }
     }
 
     public static enum DeployOptions {
