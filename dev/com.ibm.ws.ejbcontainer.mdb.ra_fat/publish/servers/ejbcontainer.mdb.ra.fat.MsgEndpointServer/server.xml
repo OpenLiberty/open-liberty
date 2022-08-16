@@ -1,6 +1,7 @@
 <server>
     <featureManager>
-        <feature>threadingTestFeature-1.0</feature>
+       <!-- Comment out below until parts are needed    -->
+       <!-- <feature>threadingTestFeature-1.0</feature> -->
         <feature>servlet-3.1</feature>
         <feature>ejbLite-3.2</feature>
         <feature>mdb-3.2</feature>

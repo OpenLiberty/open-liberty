@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- *
+ * to do: Description from UFO for javadoc
  */
 public interface WorkContext extends Map<String, Serializable> {
     static final String WORK_TYPE_IIOP = "IIOP";
@@ -36,7 +36,8 @@ public interface WorkContext extends Map<String, Serializable> {
     static final String QUEUE_NAME = "com.ibm.wsspi.threading.work.queueName";
     static final String INBOUND_HOSTNAME = "com.ibm.wsspi.threading.work.inboundHostname";
     static final String INBOUND_PORT = "com.ibm.wsspi.threading.work.inboundPort";
-
+    static final String IIOP_OPERATION_NAME = "com.ibm.wsspi.threading.work.operationName";
+    static final String IIOP_REQUEST_ID = "com.ibm.wsspi.threading.work.requestId";
     /**
      * WorkContext objects with WORK_TYPE_IIOP_EJB will contain a value of either "local" or
      * "remote" for this key.
