@@ -17,7 +17,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -59,7 +58,7 @@ public class RepeatFaultTolerance {
      * @return a RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSets);
+        return MicroProfileActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSets);
     }
 
     /**
@@ -69,7 +68,7 @@ public class RepeatFaultTolerance {
      * @return the new action
      */
     public static FeatureReplacementAction ft11metrics20Features(String server) {
-        return RepeatActions.forFeatureSet(ALL, MP21_METRICS20, server, TestMode.LITE);
+        return MicroProfileActions.forFeatureSet(ALL, MP21_METRICS20, server, TestMode.LITE);
     }
 
     /**

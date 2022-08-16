@@ -19,17 +19,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class RepeatActions {
 
     public static enum EEVersion {
-        EE6(8), EE7(8), EE8(8), EE9(8), EE10(11);
-
-        private EEVersion(int minJavaLevel) {
-            this.minJavaLevel = minJavaLevel;
-        }
-
-        private final int minJavaLevel;
-
-        public int getMinJavaLevel() {
-            return minJavaLevel;
-        }
+        EE6, EE7, EE8, EE9, EE10
     }
 
     /**
