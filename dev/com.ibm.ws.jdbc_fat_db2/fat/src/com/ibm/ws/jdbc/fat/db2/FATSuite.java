@@ -20,8 +20,8 @@ import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(Suite.class)
@@ -29,13 +29,7 @@ import componenttest.custom.junit.runner.FATRunner;
                 DB2Test.class,
                 SQLJTest.class
 })
-public class FATSuite {
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
+public class FATSuite extends TestContainerSuite {
 
     // Updated docker image to use TLS1.2 for secure communication
     static final DockerImageName db2Image = DockerImageName.parse("kyleaure/db2-ssl:3.0")

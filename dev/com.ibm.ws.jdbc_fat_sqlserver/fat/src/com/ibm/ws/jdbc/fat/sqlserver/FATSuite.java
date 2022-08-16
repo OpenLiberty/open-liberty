@@ -21,23 +21,17 @@ import org.testcontainers.containers.MSSQLServerContainer;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 SQLServerTest.class,
                 SQLServerSSLTest.class
 })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     public static final String DB_NAME = "test";
     public static final String TABLE_NAME = "MYTABLE";
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
 
     /**
      * Create database and tables needed by test servlet.
@@ -68,7 +62,7 @@ public class FATSuite {
         //Create test table
         sqlserver.withUrlParam("databaseName", DB_NAME);
         Log.info(FATSuite.class, "setupDatabase", "Attempting to setup database table with name: " + TABLE_NAME + "."
-                                          + " With connection URL: " + sqlserver.getJdbcUrl());
+                                                  + " With connection URL: " + sqlserver.getJdbcUrl());
         try (Connection conn = sqlserver.createConnection(""); Statement stmt = conn.createStatement()) {
             // Create tables
             int version = conn.getMetaData().getDatabaseMajorVersion();

@@ -21,7 +21,7 @@ import com.ibm.ws.jdbc.fat.tests.ConfigTest;
 import com.ibm.ws.jdbc.fat.tests.DataSourceJaasTest;
 import com.ibm.ws.jdbc.fat.tests.DataSourceTest;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -29,13 +29,7 @@ import componenttest.containers.ExternalTestServiceDockerClientStrategy;
                 DataSourceTest.class,
                 DataSourceJaasTest.class
 })
-public class FATSuite {
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
+public class FATSuite extends TestContainerSuite {
 
     @BeforeClass
     public static void beforeSuite() throws Exception {

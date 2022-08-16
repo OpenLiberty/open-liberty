@@ -19,7 +19,7 @@ import com.ibm.ws.microprofile.health20.fat.DelayAppStartupHealthCheckTest;
 import com.ibm.ws.microprofile.health20.fat.DifferentApplicationNameHealthCheckTest;
 import com.ibm.ws.microprofile.health20.fat.MultipleHealthCheckTest;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -29,12 +29,5 @@ import componenttest.containers.ExternalTestServiceDockerClientStrategy;
                 DifferentApplicationNameHealthCheckTest.class
 })
 
-public class FATSuite {
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
-
+public class FATSuite extends TestContainerSuite {
 }
