@@ -226,6 +226,7 @@ public class ConcurrencyErrorTest extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, WebManagedExecutorDefError, DeployOptions.DISABLE_VALIDATION);
 
         assertNotNull(server.waitForStringInLogUsingMark("CWNEN0011E.*maxAsync=-10"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKT0017I.*WebManagedExecutorDefError")); // app removed
     }
 
     @AllowedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
@@ -236,5 +237,6 @@ public class ConcurrencyErrorTest extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, WebManagedScheduledExecutorDefError, DeployOptions.DISABLE_VALIDATION);
 
         assertNotNull(server.waitForStringInLogUsingMark("CWNEN0011E.*maxAsync=0"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKT0017I.*WebManagedScheduledExecutorDefError")); // app removed
     }
 }
