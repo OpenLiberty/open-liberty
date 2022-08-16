@@ -236,11 +236,8 @@ public class OidcClientAuthenticatorTest {
             OidcClientUtil.setReferrerURLCookieHandler(referrerURLCookieHandler);
             createReferrerUrlCookieExpectations(cookieName);
             oica.oidcClientUtil = oidcClientUtil;
-            AuthorizationCodeHandler ach = new AuthorizationCodeHandler(sslSupport);
-            ProviderAuthenticationResult result = ach.handleAuthorizationCode(req, res,
-                    AUTHZ_CODE, //"authorizaCodeAAA",
-                    originalState,
-                    convClientConfig);
+            AuthorizationCodeHandler ach = new AuthorizationCodeHandler(req, res, convClientConfig, sslSupport);
+            ProviderAuthenticationResult result = ach.handleAuthorizationCode(AUTHZ_CODE, originalState);
             assertNotNull("Ought to get a instance of ProviderAuthenticationResult", result);
             assertTrue("Expect to get an " + AuthResult.SEND_401 + " but a " + result.getStatus(),
                     AuthResult.SEND_401.equals(result.getStatus()));
@@ -294,11 +291,8 @@ public class OidcClientAuthenticatorTest {
             OidcClientUtil.setReferrerURLCookieHandler(referrerURLCookieHandler);
             createReferrerUrlCookieExpectations(cookieName);
             oica.oidcClientUtil = oidcClientUtil;
-            AuthorizationCodeHandler ach = new AuthorizationCodeHandler(sslSupport);
-            ProviderAuthenticationResult result = ach.handleAuthorizationCode(req, res,
-                    AUTHZ_CODE, //"authorizaCodeAAA",
-                    originalState,
-                    convClientConfig);
+            AuthorizationCodeHandler ach = new AuthorizationCodeHandler(req, res, convClientConfig, sslSupport);
+            ProviderAuthenticationResult result = ach.handleAuthorizationCode(AUTHZ_CODE, originalState);
             assertNotNull("Ought to get a instance of ProviderAuthenticationResult", result);
             assertTrue("Expect to get an " + AuthResult.SEND_401 + " but a " + result.getStatus(),
                     AuthResult.SEND_401.equals(result.getStatus()));
@@ -326,11 +320,8 @@ public class OidcClientAuthenticatorTest {
             OidcClientAuthenticator oica = new mockOidcClientAuthenticator();
             assertNotNull("Expected to get an instance of OidcClientAuthenticator but none", oica);
             oica.oidcClientUtil = oidcClientUtil;
-            AuthorizationCodeHandler ach = new AuthorizationCodeHandler(sslSupport);
-            ProviderAuthenticationResult result = ach.handleAuthorizationCode(req, res,
-                    AUTHZ_CODE, //"authorizaCodeAAA",
-                    "orignalState",
-                    convClientConfig);
+            AuthorizationCodeHandler ach = new AuthorizationCodeHandler(req, res, convClientConfig, sslSupport);
+            ProviderAuthenticationResult result = ach.handleAuthorizationCode(AUTHZ_CODE, "orignalState");
             assertNotNull("Ought to get a instance of ProviderAuthenticationResult", result);
             assertTrue("Expect to get an " + AuthResult.SEND_401 + " but a " + result.getStatus(),
                     AuthResult.SEND_401.equals(result.getStatus()));
@@ -366,8 +357,8 @@ public class OidcClientAuthenticatorTest {
         });
 
         createJwkRetrieverConstructorExpectations(clientConfig);
-        AuthorizationCodeHandler ach = new AuthorizationCodeHandler(sslSupport);
-        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(req, res, AUTHZ_CODE, "orignalState", convClientConfig);
+        AuthorizationCodeHandler ach = new AuthorizationCodeHandler(req, res, convClientConfig, sslSupport);
+        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(AUTHZ_CODE, "orignalState");
 
         checkForBadStatusExpectations(oidcResult);
     }
@@ -398,8 +389,8 @@ public class OidcClientAuthenticatorTest {
         });
 
         //OidcClientAuthenticator oica = new mockOidcClientAuthenticator(sslSupportRef, 2);
-        AuthorizationCodeHandler ach = new AuthorizationCodeHandler(sslSupport);
-        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(req, res, AUTHZ_CODE, "orignalState", convClientConfig);
+        AuthorizationCodeHandler ach = new AuthorizationCodeHandler(req, res, convClientConfig, sslSupport);
+        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(AUTHZ_CODE, "orignalState");
 
         checkForBadStatusExpectations(oidcResult);
     }
