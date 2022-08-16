@@ -293,33 +293,8 @@ def gaAndBetaAndNoShipPublicFeatures() {
     features
 }
 
-def webProfile8Features() {
-    String features = project.file('profiles/webProfile8/features.xml').readLines()
-    features
-}
-
-def webProfile9Features() {
-    String features = project.file('profiles/webProfile9/features.xml').readLines()
-    features
-}
-
-def javaee8Features() {
-    String features = project.file('profiles/javaee8/features.xml').readLines()
-    features
-}
-
-def jakartaee9Features() {
-    String features = project.file('profiles/jakartaee9/features.xml').readLines()
-    features
-}
-
-def microProfile4Features() {
-    String features = project.file('profiles/microProfile4/features.xml').readLines()
-    features
-}
-
-def microProfile5Features() {
-    String features = project.file('profiles/microProfile5/features.xml').readLines()
+def profileFeatures(profile) {
+    String features = project.file("profiles/"+profile+"/features.xml").readLines()
     features
 }
 
@@ -424,7 +399,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&webProfile8Features
+        withFeatures this.&profileFeatures("webProfile8")
         packageServerConflict = "true"
         outputTo packageDir
         doLast {
@@ -452,7 +427,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&javaee8Features
+        withFeatures this.&profileFeatures("javaee8")
         packageServerConflict = "true"
         outputTo packageDir
         doLast {
@@ -474,7 +449,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     task packageOpenLibertyWebProfile9(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&webProfile9Features
+        withFeatures this.&profileFeatures("webProfile9")
         packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
         outputTo packageDir
         doLast {
@@ -493,7 +468,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&jakartaee9Features
+        withFeatures this.&profileFeatures("jakartaee9")
         packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
         outputTo packageDir
         doLast {
@@ -517,7 +492,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&microProfile4Features
+        withFeatures this.&profileFeatures("microProfile4")
         packageServerConflict = "com.ibm.websphere.appserver.microProfile,com.ibm.websphere.appserver.mpHealth,com.ibm.websphere.appserver.org.eclipse.microprofile.health"
         outputTo packageDir
         doLast {
@@ -535,11 +510,25 @@ if (isAutomatedBuild && !isIFIXBuild) {
     task packageOpenLibertyMicroProfile5(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&microProfile5Features
+        withFeatures this.&profileFeatures("microProfile5")
         outputTo packageDir
         doLast {
             copy {
                 from "$packageDir/wlp/templates/servers/microProfile5/server.xml"
+                into "$packageDir/wlp/templates/servers/defaultServer"
+            }
+        }
+    }
+    
+    //GA ... but might want to change to beta, TBD
+    task packageOpenLibertyMicroProfile6(type: PackageLibertyWithFeatures) {
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&profileFeatures("microProfile6")
+        outputTo packageDir
+        doLast {
+            copy {
+                from "$packageDir/wlp/templates/servers/microProfile6/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
             }
         }
@@ -706,6 +695,21 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
     publish.dependsOn zipOpenLibertyMicroProfile5
+    
+    // GA: Includes only kind=ga features. (might want to switch to beta, TBD)
+    task zipOpenLibertyMicroProfile6(type: Zip) {
+        dependsOn packageOpenLibertyMicroProfile6
+        dependsOn genChecksums
+        baseName 'openliberty-microProfile6'
+        from packageDir
+        destinationDir distsDir
+        version releaseVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.microprofile6.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyMicroProfile6
 
     //BETA: Includes both kind=ga and kind=beta features.
     task zipOpenLibertyBeta(type: Zip) {
@@ -724,7 +728,18 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
     // Generate checksums
     task genZipChecksums() {
-        dependsOn zipOpenLibertyDev, zipOpenLibertyAll, zipOpenLiberty, zipOpenLibertyKernel, zipOpenLibertyWebProfile8, zipOpenLibertyJavaee8, zipOpenLibertyJakartaee9, zipOpenLibertyWebProfile9, zipOpenLibertyMicroProfile4, zipOpenLibertyMicroProfile5, zipOpenLibertyBeta
+        dependsOn zipOpenLibertyDev
+        dependsOn zipOpenLibertyAll
+        dependsOn zipOpenLiberty
+        dependsOn zipOpenLibertyKernel
+        dependsOn zipOpenLibertyWebProfile8
+        dependsOn zipOpenLibertyJavaee8
+        dependsOn zipOpenLibertyJakartaee9
+        dependsOn zipOpenLibertyWebProfile9
+        dependsOn zipOpenLibertyMicroProfile4
+        dependsOn zipOpenLibertyMicroProfile5
+        dependsOn zipOpenLibertyMicroProfile6
+        dependsOn zipOpenLibertyBeta
         doLast {
           generateZipChecksums(ant)
           ant.calcZipChecksums(installRoot:"${distsDir}") {}
