@@ -52,12 +52,12 @@ public class ApplicationScopedOnCheckpointBeanWithConfigObject {
 
     private void check(String expected) {
         //Get optional value
-        String optionalValue = config.getOptionalValue("test_key", String.class).orElse("annoValue");
+        String optionalValue = config.getOptionalValue("config_object_app_scope_key", String.class).orElse("annoValue");
         assertEquals("Wrong value for test key.", expected, optionalValue);
 
         if (!expected.equals("annoValue")) {
             // Get value
-            String value = config.getValue("test_key", String.class);
+            String value = config.getValue("config_object_app_scope_key", String.class);
             assertEquals("Wrong value for test key.", expected, value);
         }
     }

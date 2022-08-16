@@ -23,7 +23,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 public class ApplicationScopedOnCheckpointBean {
 
     @Inject
-    @ConfigProperty(name = "test_key", defaultValue = "annoValue")
+    @ConfigProperty(name = "early_access_app_scope_key", defaultValue = "annoValue")
     String testKey;
 
     public void applicationScopedValueTest() {

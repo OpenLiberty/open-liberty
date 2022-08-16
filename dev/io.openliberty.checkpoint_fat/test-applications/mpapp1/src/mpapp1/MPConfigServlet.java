@@ -38,6 +38,7 @@ public class MPConfigServlet extends FATServlet {
     @Inject
     ApplicationScopedOnCheckpointBeanWithConfigObjectProperties appScopeOnCheckpointWithConfigObjectProperties;
 
+    // MPConfigBean
     @Test
     public void defaultValueTest() {
         reqScopeBean.defaultValueTest();
@@ -63,6 +64,7 @@ public class MPConfigServlet extends FATServlet {
         reqScopeBean.annoValueTest();
     }
 
+    // MPconfigBeanWithApplicationScope
     @Test
     public void appScopeDefaultValueTest() {
         appScopeBean.appScopeDefaultValueTest();
@@ -88,6 +90,7 @@ public class MPConfigServlet extends FATServlet {
         appScopeBean.appScopeAnnoValueTest();
     }
 
+    // ApplicationScopedOnCheckpointBeanWithConfigObject
     @Test
     public void configObjectAppScopeDefaultValueTest() {
         appScopeOnCheckpointWithConfigObject.appScopeDefaultValueTest();
@@ -113,6 +116,7 @@ public class MPConfigServlet extends FATServlet {
         appScopeOnCheckpointWithConfigObject.appScopeAnnoValueTest();
     }
 
+    // ApplicationScopedOnCheckpointBeanWithConfigObjectProperties
     @Test
     public void configObjectPropertiesAppScopeDefaultValueTest() {
         appScopeOnCheckpointWithConfigObjectProperties.appScopeDefaultValueTest();
@@ -135,6 +139,7 @@ public class MPConfigServlet extends FATServlet {
         appScopeOnCheckpointWithConfigObjectProperties.appScopeServerValueTest();
     }
 
+    // ApplicationScopedOnCheckpointBean
     @Test
     public void applicationScopedValueTest() {
         appScopeOnCheckpointBean.applicationScopedValueTest();

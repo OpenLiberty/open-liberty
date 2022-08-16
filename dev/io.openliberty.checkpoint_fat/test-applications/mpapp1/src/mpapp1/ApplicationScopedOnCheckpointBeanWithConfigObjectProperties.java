@@ -54,7 +54,7 @@ public class ApplicationScopedOnCheckpointBeanWithConfigObjectProperties {
         Iterable<ConfigSource> configSources = config.getConfigSources();
         for (Iterator<ConfigSource> iSources = configSources.iterator(); iSources.hasNext();) {
             ConfigSource source = iSources.next();
-            String value = source.getProperties().get("test_key");
+            String value = source.getProperties().get("config_object_properties_app_scope_key");
             if (value != null) {
                 actual = value;
             }
