@@ -81,7 +81,16 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
      */
     @AfterClass
     public static void tearDownClass() throws Exception {
-        server.restartServer();
+        stopServerWithExpectedErrors();
+        server.startServer();
+    }
+
+    private static void stopServerWithExpectedErrors() throws Exception {
+        server.stopServer(
+            "CWWKX1002E:.*",
+            "CWWKX1003E:.*",
+            "CWWKX1009E:.*",
+            "CWWKX1010E:.*");
     }
 
     /**
@@ -109,10 +118,7 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
     }
 
     private void ignoreErrorAndStopServerWithValidate() throws Exception {
-        server.stopServer("CWWKX1010E:.*", 
-                            "CWWKX1003E:.*",
-                            "CWWKX1002E:.*",
-                            "CWWKX1009E:.*");
+        stopServerWithExpectedErrors();
         assertFalse("FAIL: Server is not stopped.",
                     server.isStarted());
     }
