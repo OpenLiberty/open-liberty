@@ -68,7 +68,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         /*
          * Stop the servers in the reverse order they were started.
          */
-        stopServer(server1, "CWWKG0033W", "CWLJC0004E", "CWWKE0701E", "CWLJC0011W", "CWWKG0058E", "CWLJC0006E", "CWLJC0012E");
+        stopServer(server1, "CWWKG0033W", "CWLJC0004E", "CWWKE0701E", "CWLJC0011W", "CWWKG0058E", "CWLJC0006E", "CWLJC0012W", "CWLJC0013W");
     }
 
     /**

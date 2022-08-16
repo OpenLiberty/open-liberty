@@ -58,7 +58,7 @@ public class InfinispanContainer extends GenericContainer<InfinispanContainer> {
      * The version should match that used in the build.gradle file.
      */
     private static final String IMAGE_NAME = "infinispan/server";
-    private static final String IMAGE_VERSION = "12.1.7.Final";
+    private static final String IMAGE_VERSION = "13.0.10.Final";
 
     private static final int INFINISPAN_PORT = 11222; // Hot Rod and REST
     public static final String ADMIN_USER = "admin";
