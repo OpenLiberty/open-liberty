@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,9 @@ public class PolicyExecutorTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer("CWWKE1205E:.*PolicyExecutorProvider-testStartTimeout.*"); // some tests intentionally exceed the startTimeout
+        server1.stopServer("CWWKE1205E:.*PolicyExecutorProvider-testExceptionNow.*",
+                           "CWWKE1205E:.*PolicyExecutorProvider-testResultNow.*",
+                           "CWWKE1205E:.*PolicyExecutorProvider-testStartTimeout.*"); // some tests intentionally exceed the startTimeout
         server1.deleteFileFromLibertyInstallRoot("lib/features/policyExecutorUser-1.0.mf");
         server1.deleteFileFromLibertyInstallRoot("lib/test.policyexecutor.bundle_fat.jar");
     }
