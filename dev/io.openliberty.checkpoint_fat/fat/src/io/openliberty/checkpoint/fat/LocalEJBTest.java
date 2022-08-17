@@ -20,8 +20,10 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +35,9 @@ import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -55,6 +60,9 @@ public class LocalEJBTest extends FATServletClient {
                     @TestServlet(servlet = ejbapp1.LocalEJBServlet.class, contextRoot = REMOTE_EJB_APP_NAME)
     })
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointEJB", TestMode.LITE, MicroProfileActions.MP41, MicroProfileActions.MP50);
 
     @Before
     public void setUp() throws Exception {
@@ -114,6 +122,11 @@ public class LocalEJBTest extends FATServletClient {
     @After
     public void stopServer() throws Exception {
         server.stopServer();
+    }
+
+    @AfterClass
+    public static void removeWebApp() throws Exception {
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     static enum TestMethod {
