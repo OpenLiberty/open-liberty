@@ -12,12 +12,10 @@ package io.openliberty.microprofile.health40.tck;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,8 +24,9 @@ import com.ibm.websphere.simplicity.PortType;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -37,7 +36,12 @@ import componenttest.topology.utils.MvnUtils;
 @RunWith(FATRunner.class)
 public class Health40TCKLauncher {
 
-    @Server("Health40TCKServer")
+    private static final String SERVER_NAME = "Health40TCKServer";
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP50);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
