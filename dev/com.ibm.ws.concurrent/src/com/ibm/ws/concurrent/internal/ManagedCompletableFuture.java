@@ -16,8 +16,6 @@ import java.lang.invoke.MethodType;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -911,6 +909,20 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         }
     }
 
+    // Java 19+
+    @FFDCIgnore({ CancellationException.class, CompletionException.class })
+    public Throwable exceptionNow() {
+        try {
+            getNow(null);
+            throw new IllegalStateException(toString());
+        } catch (CancellationException x) {
+            throw new IllegalStateException(toString(), x);
+        } catch (CompletionException x) {
+            Throwable cause = x.getCause();
+            return cause == null ? x : cause;
+        }
+    }
+
     /**
      * @see java.util.concurrent.CompletableFuture#get()
      */
@@ -1238,6 +1250,22 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             throw new IllegalArgumentException(ManagedTask.class.getName());
     }
 
+    // Java 19+
+    @FFDCIgnore({ CancellationException.class, CompletionException.class })
+    public T resultNow() {
+        try {
+            if (isDone())
+                return getNow(null);
+            else
+                throw new IllegalStateException(toString());
+        } catch (CancellationException x) {
+            throw new IllegalStateException(toString(), x);
+        } catch (CompletionException x) {
+            Throwable cause = x.getCause();
+            throw new IllegalStateException(toString(), cause == null ? x : cause);
+        }
+    }
+
     /**
      * @see java.util.concurrent.CompletionStage#runAfterBoth(java.util.concurrent.CompletionStage, java.lang.Runnable)
      */
@@ -1361,6 +1389,10 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             }
         }
     }
+
+    // TODO when we can compile against Java 19+, implement
+    // Future.State state()
+    // to use isCompletedExceptionally() as a much more efficient way of determining the state than invoking get()
 
     /**
      * Invokes cancel on the superclass,
