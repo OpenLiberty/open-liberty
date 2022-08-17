@@ -10,10 +10,24 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.storage;
 
-public class OidcClientStorageConstants {
+public class StorageProperties {
 
-    public static final String WAS_OIDC_STATE_KEY = "WASOidcState";
+    protected int storageLifetimeSeconds = -1;
 
-    public static final int DEFAULT_STATE_STORAGE_LIFETIME_SECONDS = 420;
+    public void setStorageLifetimeSeconds(int lifetime) {
+        storageLifetimeSeconds = lifetime;
+    }
+
+    public int getStorageLifetimeSeconds() {
+        return storageLifetimeSeconds;
+    }
+
+    @Override
+    public String toString() {
+        String result = "StorageProperties:{";
+        result += "storageLifetimeSeconds=" + storageLifetimeSeconds;
+        result += "}";
+        return result;
+    }
 
 }

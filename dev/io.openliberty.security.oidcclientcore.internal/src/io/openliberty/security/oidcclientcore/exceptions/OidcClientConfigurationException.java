@@ -8,12 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oidcclientcore.storage;
+package io.openliberty.security.oidcclientcore.exceptions;
 
-public class OidcClientStorageConstants {
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
-    public static final String WAS_OIDC_STATE_KEY = "WASOidcState";
+public class OidcClientConfigurationException extends Exception {
 
-    public static final int DEFAULT_STATE_STORAGE_LIFETIME_SECONDS = 420;
+    public static final TraceComponent tc = Tr.register(OidcUrlNotHttpsException.class);
+
+    private static final long serialVersionUID = 1L;
+
+    public OidcClientConfigurationException(String clientId, String nlsMessage) {
+        super(Tr.formatMessage(tc, "OIDC_CLIENT_CONFIGURATION_ERROR", clientId, nlsMessage));
+    }
 
 }

@@ -31,6 +31,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
@@ -63,6 +64,7 @@ public class OidcAuthorizationRequestTest {
     private final HttpServletResponse response = mock.mock(HttpServletResponse.class);
     private final WebAppSecurityConfig webAppSecConfig = mock.mock(WebAppSecurityConfig.class);
     private final ConvergedClientConfig convClientConfig = mock.mock(ConvergedClientConfig.class);
+    private final ReferrerURLCookieHandler referrerURLCookieHandler = mock.mock(ReferrerURLCookieHandler.class);
 
     private OidcAuthorizationRequest oidcAuthzReq;
 
@@ -74,6 +76,14 @@ public class OidcAuthorizationRequestTest {
     @Before
     public void setUp() {
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(webAppSecConfig);
+        mock.checking(new Expectations() {
+            {
+                one(convClientConfig).getClientId();
+                will(returnValue(clientId));
+                one(webAppSecConfig).createReferrerURLCookieHandler();
+                will(returnValue(referrerURLCookieHandler));
+            }
+        });
         oidcAuthzReq = new OidcAuthorizationRequest(request, response, convClientConfig);
     }
 

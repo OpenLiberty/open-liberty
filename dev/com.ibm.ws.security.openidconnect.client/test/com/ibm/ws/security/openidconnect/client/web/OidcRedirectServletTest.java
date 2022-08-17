@@ -540,45 +540,6 @@ public class OidcRedirectServletTest {
         }
     }
 
-    @Test
-    public void testCacheRequestParameter() {
-        OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
-        redirectServlet.activatedOidcClientImpl = oidcClientImpl;
-
-        final String OIDC_CLIENT_ID = "myId";
-
-        try {
-            final Map<String, String[]> map = new HashMap<String, String[]>();
-            map.put("requestUrl", new String[] { REQUEST_URL });
-            final Hashtable<String, String> table = new Hashtable<String, String>();
-            table.put("requestUrl", REQUEST_URL);
-
-            mockCreateCookie();
-            mock.checking(new Expectations() {
-                {
-                    allowing(req).getScheme();
-                    will(returnValue("https"));
-                    allowing(req).getParameterMap();
-                    will(returnValue(map));
-                    allowing(oidcClientImpl).getOidcClientConfig(req, OIDC_CLIENT_ID);
-                    will(returnValue(oidcClientConfigImpl));
-                    allowing(oidcClientConfigImpl).getClientSecret(); //
-                    will(returnValue("clientsecret")); //
-                    allowing(oidcClientConfigImpl).isHttpsRequired();
-                    will(returnValue(true));
-                    allowing(cache).put(OidcUtil.encode(OIDC_STATE), table);
-                    allowing(resp).addCookie(with(any(Cookie.class)));
-                    will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));//
-                }
-            });
-
-            redirectServlet.setCookieForRequestParameter(req, resp, OIDC_CLIENT_ID, OIDC_STATE, false); //, webAppSecurityConfig);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
     private void mockParamValue(final String name, final String value) {
         mock.checking(new Expectations() {
             {
@@ -610,21 +571,6 @@ public class OidcRedirectServletTest {
                 allowing(resp).setDateHeader(with(any(String.class)), with(any(Long.class)));
                 allowing(resp).setContentType(with(any(String.class)));
                 allowing(resp).getWriter();
-            }
-        });
-    }
-
-    private void mockCreateCookie() throws IOException {
-        mock.checking(new Expectations() {
-            {
-                allowing(webAppSecurityConfig).getHttpOnlyCookies();
-                will(returnValue(false));
-                allowing(webAppSecurityConfig).getSSORequiresSSL();
-                will(returnValue(false));
-                allowing(webAppSecurityConfig).createSSOCookieHelper();
-                will(returnValue(new SSOCookieHelperImpl(webAppSecurityConfig)));
-                allowing(webAppSecurityConfig).createReferrerURLCookieHandler();
-                will(returnValue(new ReferrerURLCookieHandler(webAppSecurityConfig)));
             }
         });
     }

@@ -26,6 +26,15 @@ public interface Storage {
     void store(String name, String value);
 
     /**
+     * Stores a name value pair in an underlying storage data structure. Values are either a cookie or HTTP session.
+     *
+     * @param name  - the name of the value being stored, used for access
+     * @param value - value to be stored
+     * @param properties - additional properties to set for this particular value in the storage medium
+     */
+    void store(String name, String value, StorageProperties properties);
+
+    /**
      * Returns the appropriate value given a name.
      *
      * @param name - name associated with the value to be returned

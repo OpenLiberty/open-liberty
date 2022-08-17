@@ -16,15 +16,15 @@ import com.ibm.ws.security.common.crypto.HashUtils;
 
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
-public class OidcCookieUtils {
+public class OidcStorageUtils {
 
     @Sensitive
     @Trivial
-    public static String createStateCookieValue(String clientSecret, String state) {
-        String timestamp = state.substring(0, Utils.TIMESTAMP_LENGTH);
+    public static String createStateStorageValue(String state, String clientSecret) {
         String newValue = state + clientSecret; // state already has a timestamp in it
-        String value = HashUtils.digest(newValue);
-        return timestamp + value;
+        String hashedStateValue = HashUtils.digest(newValue);
+        String timestamp = state.substring(0, Utils.TIMESTAMP_LENGTH);
+        return timestamp + hashedStateValue;
     }
 
     @Sensitive
@@ -34,6 +34,15 @@ public class OidcCookieUtils {
         String newName = Utils.getStrHashCode(newValue);
         return prefix + newName;
     }
+
+//    public void createAndAddCookie(String cookieName, String cookieValue, int cookieLifetime, boolean isHttpsRequired) {
+//        Cookie c = webSsoUtils.createCookie(cookieName, cookieValue, cookieLifetime, request);
+//        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
+//        if (isHttpsRequired && isHttpsRequest) {
+//            c.setSecure(true);
+//        }
+//        response.addCookie(c);
+//    }
 
 //    @Trivial
 //    public static void createNonceCookie(HttpServletRequest request, HttpServletResponse response, String nonceValue, String state, ConvergedClientConfig clientConfig) {

@@ -10,14 +10,19 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.exceptions;
 
-public class OidcUrlNotHttpsException extends Exception {
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
+public class OidcUrlNotHttpsException extends OidcClientConfigurationException {
+
+    public static final TraceComponent tc = Tr.register(OidcUrlNotHttpsException.class);
 
     private static final long serialVersionUID = 1L;
 
     private final String url;
 
-    public OidcUrlNotHttpsException(String url) {
-        super();
+    public OidcUrlNotHttpsException(String url, String clientId) {
+        super(clientId, Tr.formatMessage(tc, "URL_NOT_HTTPS", url, clientId));
         this.url = url;
     }
 

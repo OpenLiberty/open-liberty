@@ -17,34 +17,40 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
-import com.ibm.ws.webcontainer.security.SSOCookieHelper;
-import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
-import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
-import io.openliberty.security.oidcclientcore.JakartaOIDCConstants;
-
-/**
- *
- */
 public class CookieBasedStorage implements Storage {
 
     public static final TraceComponent tc = Tr.register(CookieBasedStorage.class);
 
     HttpServletRequest request;
     HttpServletResponse response;
+    WebSSOUtils webSsoUtils = new WebSSOUtils();
     ReferrerURLCookieHandler referrerURLCookieHandler;
 
-    public CookieBasedStorage(ReferrerURLCookieHandler referrerURLCookieHandler, HttpServletRequest request, HttpServletResponse response) {
-        this.referrerURLCookieHandler = referrerURLCookieHandler;
+    public CookieBasedStorage(HttpServletRequest request, HttpServletResponse response) {
+        this(request, response, null);
+    }
+
+    public CookieBasedStorage(HttpServletRequest request, HttpServletResponse response, ReferrerURLCookieHandler referrerURLCookieHandler) {
         this.request = request;
         this.response = response;
+        this.referrerURLCookieHandler = (referrerURLCookieHandler != null) ? referrerURLCookieHandler : webSsoUtils.getCookieHandler();
     }
 
     @Override
     public void store(String name, @Sensitive String value) {
-        String cookieName = JakartaOIDCConstants.COOKIE_NAME_OIDC_CLIENT_CORE_PREFIX + name;
-        addCookie(cookieName, value, false);
+        store(name, value, null);
+    }
+
+    @Override
+    public void store(String name, @Sensitive String value, StorageProperties properties) {
+        Cookie c = referrerURLCookieHandler.createCookie(name, value, request);
+        if (properties != null) {
+            setAdditionalCookieProperties(c, (CookieStorageProperties) properties);
+        }
+        response.addCookie(c);
     }
 
     @Override
@@ -66,43 +72,14 @@ public class CookieBasedStorage implements Storage {
             }
             return;
         }
-        Cookie c = createCookie(name, "", -1);
-        String domainName = getSsoDomain(request);
-        if (domainName != null && !domainName.isEmpty()) {
-            c.setDomain(domainName);
+        referrerURLCookieHandler.invalidateCookie(request, response, name, true);
+    }
+
+    private void setAdditionalCookieProperties(Cookie cookie, CookieStorageProperties cookieProps) {
+        if (cookieProps.isSecureSet()) {
+            cookie.setSecure(cookieProps.isSecure());
         }
-        c.setMaxAge(0);
-        response.addCookie(c);
-    }
-
-    public void addCookie(String cookieName, @Sensitive String cookieValue, boolean isSecure) {
-        Cookie c = createCookie(cookieName, cookieValue, -1);
-        if (isSecure) {
-            c.setSecure(true);
-        }
-        response.addCookie(c);
-    }
-
-    public Cookie createCookie(String cookieName, @Sensitive String cookieValue, int maxAge) {
-        Cookie cookie = referrerURLCookieHandler.createCookie(cookieName, cookieValue, request);
-        String domainName = getSsoDomain(request);
-        if (domainName != null && !domainName.isEmpty()) {
-            cookie.setDomain(domainName);
-        }
-        cookie.setMaxAge(maxAge);
-        return cookie;
-    }
-
-    public static String getSsoDomain(HttpServletRequest req) {
-        SSOCookieHelper ssoCookieHelper = getWebAppSecurityConfig().createSSOCookieHelper();
-        String domainName = ssoCookieHelper.getSSODomainName(req,
-                                                             getWebAppSecurityConfig().getSSODomainList(),
-                                                             getWebAppSecurityConfig().getSSOUseDomainFromURL());
-        return domainName;
-    }
-
-    public static WebAppSecurityConfig getWebAppSecurityConfig() {
-        return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        cookie.setMaxAge(cookieProps.getStorageLifetimeSeconds());
     }
 
 }
