@@ -50,7 +50,7 @@ public class Config12ConverterTests extends FATServletClient {
     public static final String APP_NAME = "converterApp";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP41, MicroProfileActions.MP13);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP41, MicroProfileActions.MP13);
 
     @Server(SERVER_NAME)
     @TestServlets({
