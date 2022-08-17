@@ -31,7 +31,10 @@ Export-Package: \
    org.apache.taglibs*;version=2.0
 
 -privatepackage: \
-  com.oracle.wls.shaded.*
+  !com.oracle.wls.shaded.org.apache.xalan.xsltc.*,\
+  com.oracle.wls.shaded.org.apache.xalan.*, \
+  com.oracle.wls.shaded.org.apache.xml.*, \
+  com.oracle.wls.shaded.org.apache.xpath.*
 
 -buildpath: \
   org.glassfish.web:jakarta.servlet.jsp.jstl;version=2.0, \
