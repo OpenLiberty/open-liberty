@@ -58,7 +58,7 @@ public class FATSuite {
      */
     public static String createSuiteXML(PROFILE profile) throws IOException {
         XmlSuite suite = new XmlSuite();
-        suite.setFileName("tck-suite-programmatic.xml");
+        suite.setFileName("tck-suite-programmatic-" + profile.value + ".xml");
         suite.setName("jakarta-concurrency");
         suite.setVerbose(2);
         suite.setConfigFailurePolicy(FailurePolicy.CONTINUE);

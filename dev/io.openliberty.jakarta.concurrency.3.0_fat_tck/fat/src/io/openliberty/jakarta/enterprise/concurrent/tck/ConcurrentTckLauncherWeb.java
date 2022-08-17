@@ -114,7 +114,7 @@ public class ConcurrentTckLauncherWeb {
 
         resultInfo.put("results_type", "Jakarta");
         resultInfo.put("feature_name", "Concurrency");
-        resultInfo.put("feature_version", "3.0-Web");
+        resultInfo.put("feature_version", "3.0-web");
         MvnUtils.preparePublicationFile(resultInfo);
         assertEquals(0, result);
     }
