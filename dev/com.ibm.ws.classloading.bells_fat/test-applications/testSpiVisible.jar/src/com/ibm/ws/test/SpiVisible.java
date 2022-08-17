@@ -18,10 +18,10 @@ import java.security.PrivilegedExceptionAction;
 import com.ibm.ws.classloading.exporting.test.TestInterface;
 
 /**
- * Class SpiTypeVisible is used to verify class visibility from within a
+ * Class SpiVisible is used to verify class visibility from within a
  * BELL service.
  */
-public class SpiTypeVisible implements TestInterface {
+public class SpiVisible implements TestInterface {
 
     @Override
     public String isThere(String name) {
@@ -32,7 +32,7 @@ public class SpiTypeVisible implements TestInterface {
         String loadOp = getSysPropPrivileged("loadOp", "loadClass");
 
         // attempt to load a class using the library classloader
-        System.out.println("SpiTypeVisible.isThere: loading class " + className + " using " + loadOp);
+        System.out.println("SpiVisible.isThere: loading class " + className + " using " + loadOp);
         Class<?> clazz = null;
         try {
             if ("loadClass".equals(loadOp)) {
