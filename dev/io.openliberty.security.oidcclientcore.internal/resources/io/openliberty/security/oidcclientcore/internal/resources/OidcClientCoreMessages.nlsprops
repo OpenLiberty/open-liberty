@@ -29,7 +29,7 @@ URL_NOT_HTTPS=CWWKS2402E: The {0} endpoint URL that is configured for the {1} Op
 URL_NOT_HTTPS.explanation=The endpoint URL must use the HTTPS protocol to ensure that requests are secure.
 URL_NOT_HTTPS.useraction=Update the endpoint URL to use the HTTPS protocol.
 
-DISCOVERY_EXCEPTION=CWWKS2403E: The {0} OpenID Connect client encountered an error while discovering metadata for the OpenID Connect provider from the [{1}] URL. {2}
+DISCOVERY_EXCEPTION=CWWKS2403E: The {0} OpenID Connect client encountered the following error during discovery of metadata for the OpenID Connect provider from the [{1}] URL: {2}
 DISCOVERY_EXCEPTION.explanation=The OpenID Connect client configuration might be missing information, or the client encountered an error while communicating with the OpenID Connect provider.
 DISCOVERY_EXCEPTION.useraction=See the error in the message for more information.
 
