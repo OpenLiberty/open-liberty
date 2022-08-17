@@ -36,7 +36,8 @@ public class SseTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
                                                              MicroProfileActions.MP40, //mpRestClient-2.0
-                                                             MicroProfileActions.MP50); // 3.0
+                                                             MicroProfileActions.MP50, // 3.0
+                                                             MicroProfileActions.MP60);// 3.0+EE10
     /*
      * We need two servers to clearly distinguish that the "client" server
      * only has the client features enabled - it includes mpRestClient-1.0
