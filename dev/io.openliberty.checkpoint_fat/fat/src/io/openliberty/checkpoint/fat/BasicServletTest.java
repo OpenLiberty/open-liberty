@@ -14,7 +14,6 @@ import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodName;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -23,6 +22,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import app1.TestServletA;
 import componenttest.annotation.Server;
@@ -53,7 +53,7 @@ public class BasicServletTest extends FATServletClient {
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "app1");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "app1");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 
@@ -72,11 +72,6 @@ public class BasicServletTest extends FATServletClient {
     @After
     public void tearDown() throws Exception {
         server.stopServer();
-    }
-
-    @AfterClass
-    public static void removeWebApp() throws Exception {
-        ShrinkHelper.cleanAllExportedArchives();
     }
 
 }

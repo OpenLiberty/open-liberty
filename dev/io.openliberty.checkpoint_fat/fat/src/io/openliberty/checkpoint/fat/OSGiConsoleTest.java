@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -23,6 +22,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
@@ -52,7 +52,7 @@ public class OSGiConsoleTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "app2");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "app2");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 
@@ -81,11 +81,6 @@ public class OSGiConsoleTest {
     @After
     public void tearDown() throws Exception {
         server.stopServer();
-    }
-
-    @AfterClass
-    public static void removeWebApp() throws Exception {
-        ShrinkHelper.cleanAllExportedArchives();
     }
 
 }
