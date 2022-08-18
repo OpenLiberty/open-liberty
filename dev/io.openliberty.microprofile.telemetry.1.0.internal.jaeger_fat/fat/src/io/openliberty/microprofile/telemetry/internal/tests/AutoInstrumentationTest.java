@@ -54,7 +54,7 @@ public class AutoInstrumentationTest extends MicroProfileTelemetryTestBase {
         Log.info(c, "setUp", "Jaeger container: host=" + jaegerHost + "  port=" + jaegerGrpcPort);
         server.addEnvVar(ENV_OTEL_SERVICE_NAME, OTEL_SERVICE_NAME_SYSTEM);
         server.addEnvVar(ENV_OTEL_TRACES_EXPORTER, OTEL_TRACES_EXPORTER_JAEGER);
-        server.addEnvVar(ENV_OTEL_EXPORTER_JAEGER_ENDPOINT, "http://localhost:" + jaegerGrpcPort);
+        server.addEnvVar(ENV_OTEL_EXPORTER_JAEGER_ENDPOINT, "http://" + jaegerHost + ":" + jaegerGrpcPort);
 
         // Construct the test application
         WebArchive system = ShrinkWrap.create(WebArchive.class, "system.war");

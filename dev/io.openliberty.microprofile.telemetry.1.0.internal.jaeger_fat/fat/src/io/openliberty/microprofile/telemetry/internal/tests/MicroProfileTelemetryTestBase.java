@@ -61,9 +61,6 @@ public abstract class MicroProfileTelemetryTestBase {
 
     protected abstract LibertyServer getServer();
 
-    protected String jaegerHost;
-    protected int jaegerPort;
-
     private static String APP_URL = null;
     private static String buffer;
     private static CopyOnWriteArrayList<String> containerOutput = new CopyOnWriteArrayList<String>();
