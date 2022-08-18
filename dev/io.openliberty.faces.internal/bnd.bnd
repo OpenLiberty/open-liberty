@@ -14,9 +14,6 @@
 
 bVersion=1.0
 
-Implementation-Version: 2.3.9
-
-
 app-resources= \
   META-INF/services/org.apache.myfaces.config.annotation.LifecycleProviderFactory | \
   META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider | \
@@ -66,7 +63,7 @@ Export-Package: \
   com.ibm.ws.jsf.extprocessor
 
 -buildpath: \
-  org.apache.myfaces.core.impl;strategy=exact;version=${Implementation-Version},\
+  com.ibm.ws.org.apache.myfaces.2.3;version=latest,\
   org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
   com.ibm.ws.jsf.shared;version=latest,\
   com.ibm.websphere.javaee.jsf.2.3;version=latest,\
