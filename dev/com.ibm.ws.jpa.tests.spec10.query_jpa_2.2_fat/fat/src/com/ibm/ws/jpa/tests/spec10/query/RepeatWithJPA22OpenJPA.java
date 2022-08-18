@@ -42,4 +42,13 @@ public class RepeatWithJPA22OpenJPA extends EE8FeatureReplacementAction {
     public String getID() {
         return ID;
     }
+
+    @Override
+    public boolean isEnabled() {
+        // Disable testing against OpenJPA for time constraints
+        if (!Boolean.getBoolean("jpa.enable.repeat.openjpa"))
+            return false;
+
+        return super.isEnabled();
+    }
 }
