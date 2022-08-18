@@ -604,6 +604,7 @@
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_http_publicClient_httpsRequired_true_withSecret,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_http_publicClient_httpsRequired_true_withSecret"
 				scope="ALL_SCOPES"
+				introspectTokens="true"
 				enabled="true"
 			>
 			</client>
@@ -615,6 +616,7 @@
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_http_publicClient_httpsRequired_true_withoutSecret,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_http_publicClient_httpsRequired_true_withoutSecret"
 				scope="ALL_SCOPES"
+				introspectTokens="true"
 				enabled="true"
 			>
 			</client>
@@ -661,6 +663,7 @@
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_http_publicClient_httpsRequired_false_withSecret,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_http_publicClient_httpsRequired_false_withSecret"
 				scope="ALL_SCOPES"
+				introspectTokens="true"
 				enabled="true"
 			>
 			</client>
@@ -672,6 +675,7 @@
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_http_publicClient_httpsRequired_false_withoutSecret,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_http_publicClient_httpsRequired_false_withoutSecret"
 				scope="ALL_SCOPES"
+				introspectTokens="true"
 				enabled="true"
 			>
 			</client>

@@ -556,6 +556,8 @@
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/token"
 		authFilterRef="bcl_httpPublicClient_httpsRequired_true_withSecret_filter"
+		validationMethod="introspect"
+		validationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/introspect"
 	>
 	</openidConnectClient>
 
@@ -573,6 +575,8 @@
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/token"
 		authFilterRef="bcl_httpPublicClient_httpsRequired_true_withoutSecret_filter"
+		validationMethod="introspect"
+		validationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_true/introspect"
 	>
 	</openidConnectClient>
 		
@@ -609,6 +613,8 @@
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/token"
 		authFilterRef="bcl_httpPublicClient_httpsRequired_false_withSecret_filter"
+		validationMethod="introspect"
+		validationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/introspect"
 	>
 	</openidConnectClient>
 
@@ -626,6 +632,8 @@
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/token"
 		authFilterRef="bcl_httpPublicClient_httpsRequired_false_withoutSecret_filter"
+		validationMethod="introspect"
+		validationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_http_httpsRequired_false/introspect"
 	>
 	</openidConnectClient>
 		
