@@ -37,7 +37,7 @@ import componenttest.topology.utils.HttpUtils;
  * Tests for {@link LibraryServiceExporter}.
  */
 @SuppressWarnings("serial")
-public class BellSpiTypeVisibilityTest {
+public class BellSpiVisibilityTest {
     private static final LibertyServer server = LibertyServerFactory.getLibertyServer("bell_spi_server");
 
     private static final String USER_BUNDLE_NAME = "exporting.metainf.services";
@@ -45,8 +45,8 @@ public class BellSpiTypeVisibilityTest {
 
     @BeforeClass
     public static void setup() throws Throwable {
-        buildAndExportBellLibrary(server, "testSpiTypeVisible.jar", "SpiTypeVisible", "SpiTypeVisible$1", "SpiTypeVisibleRESTHandlerImpl");
-        buildAndExportWebApp(server, !IS_DROPIN, "SpiTypeVisibility.war", "com.ibm.ws.classloading.bells");
+        buildAndExportBellLibrary(server, "testSpiVisible.jar", "SpiVisible", "SpiVisible$1", "SpiVisibleRESTHandlerImpl");
+        buildAndExportWebApp(server, !IS_DROPIN, "SpiVisibility.war", "com.ibm.ws.classloading.bells");
         server.installUserBundle(USER_BUNDLE_NAME);
         server.installUserFeature(USER_FEATURE_NAME);
     }
@@ -93,8 +93,8 @@ public class BellSpiTypeVisibilityTest {
 
         IBMSPI_CLASS_NAME = "com.ibm.wsspi.rest.handler.RESTHandler", // SPI type="ibm-spi" from restConnector-2.0
         SPI_CLASS_NAME = "com.ibm.wsspi.webcontainer",                // SPI from servlet-3.1
-        LIB_CLASS_NAME = "com.ibm.ws.test.SpiTypeVisible",
-        LIB_IBMSPI_IMPL_CLASS_NAME = "com.ibm.ws.test.SpiTypeVisibleRESTHandlerImpl",
+        LIB_CLASS_NAME = "com.ibm.ws.test.SpiVisible",
+        LIB_IBMSPI_IMPL_CLASS_NAME = "com.ibm.ws.test.SpiVisibleRESTHandlerImpl",
 
         // BELL service classloading parameters as jvm system properties
         // TODO: Reconfigure jvm options as BELL properties
@@ -146,27 +146,27 @@ public class BellSpiTypeVisibilityTest {
                 assertNotNull("The server should report BETA bell spi visibility has been invoked, but did not.",
                         server.waitForStringInLog(".*BETA: BELL SPI Visibility and BELL Properties "));
 
-                assertNotNull("The server should report bell spi visibility is enabled for library 'testSpiTypeVisible', but did not.",
-                        server.waitForStringInLog(".*CWWKL0059I: .*testSpiTypeVisible"));
+                assertNotNull("The server should report bell spi visibility is enabled for library 'testSpiVisible', but did not.",
+                        server.waitForStringInLog(".*CWWKL0059I: .*testSpiVisible"));
 
-                assertNotNull("The server should load the META-INF service in the 'testSpiTypeVisible' library referenced by the BELL, but did not.",
-                        server.waitForStringInLog(".*CWWKL0050I: .*testSpiTypeVisible.*SpiTypeVisible"));
+                assertNotNull("The server should load the META-INF service in the 'testSpiVisible' library referenced by the BELL, but did not.",
+                        server.waitForStringInLog(".*CWWKL0050I: .*testSpiVisible.*SpiVisible"));
 
                 assertNotNull("SPI should be visible to the BELL service when spi visibility is enabled, but is not",
                         server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader"));
 
                 assertNotNull("The server should instantiate a BELL service impl that implements/extends SPI when spi visibility is enabled, but did not",
-                        server.waitForStringInLog(".*" + "TestUser: addingService: impl is there, SPI impl class SpiTypeVisibilityRESTHandlerImpl"));
+                        server.waitForStringInLog(".*" + "TestUser: addingService: impl is there, SPI impl class SpiVisibilityRESTHandlerImpl"));
             }
             else {
                 assertNull("The server should not report bell spi visibility has been invoked in beta images, but did.",
                         server.waitForStringInLog(".*BETA: BELL SPI Visibility and BELL Properties has been invoked by class", TimeOut));
 
-                assertNull("The server should not report bell spi visibility is enabled for library 'testSpiTypeVisible', but did.",
-                        server.waitForStringInLog(".*CWWKL0059I: .*testSpiTypeVisible", TimeOut));
+                assertNull("The server should not report bell spi visibility is enabled for library 'testSpiVisible', but did.",
+                        server.waitForStringInLog(".*CWWKL0059I: .*testSpiVisible", TimeOut));
 
-                assertNotNull("The server should load the META-INF service in the 'testSpiTypeVisible' library referenced by the BELL, but did not.",
-                        server.waitForStringInLog(".*CWWKL0050I: .*testSpiTypeVisible.*SpiTypeVisible"));
+                assertNotNull("The server should load the META-INF service in the 'testSpiVisible' library referenced by the BELL, but did not.",
+                        server.waitForStringInLog(".*CWWKL0050I: .*testSpiVisible.*SpiVisible"));
 
                 assertNull("IBM-SPI packages should not be visible to the BELL service, but are.",
                         server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader", TimeOut));
@@ -208,11 +208,11 @@ public class BellSpiTypeVisibilityTest {
             setSysProps(server, props);
             server.startServer();
 
-            assertNull("The server should not report bell spi visibility is enabled for library 'testNoSpiTypeVisible', but did.",
-                    server.waitForStringInLog(".*CWWKL0059I: .*testNoSpiTypeVisible"));
+            assertNull("The server should not report bell spi visibility is enabled for library 'testNoSpiVisible', but did.",
+                    server.waitForStringInLog(".*CWWKL0059I: .*testNoSpiVisible"));
 
-            assertNotNull("The server should load the META-INF service in the 'testNoSpiTypeVisible' library, but did not.",
-                    server.waitForStringInLog(".*CWWKL0050I: .*testNoSpiTypeVisible.*SpiTypeVisible"));
+            assertNotNull("The server should load the META-INF service in the 'testNoSpiVisible' library, but did not.",
+                    server.waitForStringInLog(".*CWWKL0050I: .*testNoSpiVisible.*SpiVisible"));
 
             assertNotNull("IBM-SPI packages should not be visible to the BELL service, but are.",
                     server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is not visible to the BELL library classloader"));
@@ -263,22 +263,24 @@ public class BellSpiTypeVisibilityTest {
             setSysProps(server, props);
             server.startServer();
 
-            server.waitForStringInLog(".*CWWKT0016I: Web application available.*SpiTypeVisibility");
+            server.waitForStringInLog(".*CWWKT0016I: Web application available.*SpiVisibility");
 
             // Library classes should be visible to application, regardless of BELL SPI visibility
-            HttpUtils.findStringInUrl(server, "/SpiTypeVisibility/TestServlet?loadOp=" + loadOp + "&className=" + LIB_CLASS_NAME,
+            HttpUtils.findStringInUrl(server, "/SpiVisibility/TestServlet?loadOp=" + loadOp + "&className=" + LIB_CLASS_NAME,
                                       LIB_CLASS_NAME + " is visible to the application classloader");
 
             if (runAsBetaEdition) {
-                // NOT IMPLEMENTED: ASSERT SERVER WARNS THAT THE APPLICATION AND BELL REFERENCE THE SAME LIBRARY.
+                // The server need not warn that the application and BELL reference a common shared library,
+                // because neither will access the library using the same class loader instance.
+                // REMOVE MESSAGE "bell.spi.visible.share.common.libref=CWWKL0061W" AFTER BETA
             }
 
             // SPI should not be visible to the application, regardless of BELL SPI visibility
-            HttpUtils.findStringInUrl(server, "/SpiTypeVisibility/TestServlet?loadOp=" + loadOp + "&className=" + IBMSPI_CLASS_NAME,
+            HttpUtils.findStringInUrl(server, "/SpiVisibility/TestServlet?loadOp=" + loadOp + "&className=" + IBMSPI_CLASS_NAME,
                                       IBMSPI_CLASS_NAME + " is not visible to the application classloader");
 
             // Extra credit: A bell service impl that uses SPI should not be visible to the application
-            HttpUtils.findStringInUrl(server, "/SpiTypeVisibility/TestServlet?loadOp=" + loadOp + "&className=" + LIB_IBMSPI_IMPL_CLASS_NAME,
+            HttpUtils.findStringInUrl(server, "/SpiVisibility/TestServlet?loadOp=" + loadOp + "&className=" + LIB_IBMSPI_IMPL_CLASS_NAME,
                                       LIB_IBMSPI_IMPL_CLASS_NAME + " is not visible to the application classloader");
         } finally {
             stopServer();

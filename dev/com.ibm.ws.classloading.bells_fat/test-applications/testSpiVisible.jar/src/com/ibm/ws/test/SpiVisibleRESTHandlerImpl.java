@@ -17,22 +17,22 @@ import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
 
 /**
- * Class SpiTypeVisibleRESTHandlerImpl is used to verify the server can load
+ * Class SpiVisibleRESTHandlerImpl is used to verify the server can load
  * BELL service classes that implement SPI exported by features.
  */
-public class SpiTypeVisibleRESTHandlerImpl implements TestInterface2, RESTHandler {
+public class SpiVisibleRESTHandlerImpl implements TestInterface2, RESTHandler {
 
-    public SpiTypeVisibleRESTHandlerImpl() {
-        System.out.println("SpiTypeVisibilityRESTHandlerImpl.<ctor>: hello");
+    public SpiVisibleRESTHandlerImpl() {
+        System.out.println("SpiVisibilityRESTHandlerImpl.<ctor>: hello");
     }
 
     @Override
     public void handleRequest(RESTRequest request, RESTResponse response) {
-        System.out.println("SpiTypeVisibilityRESTHandlerImpl.handleRequest: hello");
+        System.out.println("SpiVisibilityRESTHandlerImpl.handleRequest: hello");
     }
 
     @Override
     public String isThere2(String name) {
-        return name + " is there, SPI impl class SpiTypeVisibilityRESTHandlerImpl";
+        return name + " is there, SPI impl class SpiVisibilityRESTHandlerImpl";
     }
 }
