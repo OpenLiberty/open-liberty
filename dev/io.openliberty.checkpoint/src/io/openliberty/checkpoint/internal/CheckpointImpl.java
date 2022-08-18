@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
@@ -51,9 +52,11 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
@@ -382,6 +385,15 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             debug(tc, () -> "criu dumped to " + imageDir + ", now in recovered process.");
         } catch (Exception e) {
             if (e instanceof CheckpointFailedException) {
+                if (!((CheckpointFailedException) e).isRestore()) {
+                    // TODO this should be handled by the hook in
+                    // com.ibm.ws.kernel.launch.internal.FrameworkManager.initFramework(BootstrapConfig, LogProvider)
+                    // that stops and restores the log provider.  There currently is no recovery notification
+                    // to hooks if they need to undo what they did in prepare.
+                    // Here we do this specifically to allow the logging to get re-enabled when an error occurs
+                    Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
+                    TrConfigurator.update(configMap);
+                }
                 throw (CheckpointFailedException) e;
             }
             throw new CheckpointFailedException(getUnknownType(), Tr.formatMessage(tc, "UKNOWN_FAILURE_CWWKC0455E", e.getMessage()), e);
