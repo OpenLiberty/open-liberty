@@ -34,7 +34,6 @@ public class WSPolicyConfigurationFactoryImpl extends PolicyConfigurationFactory
     }
 
     public PolicyConfiguration getPolicyConfiguration() {
-        System.out.println("in new getPolicyConfiguration");
 
         String contextID = null;
         SecurityManager sm = System.getSecurityManager();
