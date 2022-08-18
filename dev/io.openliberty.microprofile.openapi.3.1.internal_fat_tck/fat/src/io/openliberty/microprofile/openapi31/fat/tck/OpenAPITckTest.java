@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,6 +24,9 @@ import com.ibm.websphere.simplicity.PortType;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureSet;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -33,7 +37,17 @@ import componenttest.topology.utils.MvnUtils;
 @RunWith(FATRunner.class)
 public class OpenAPITckTest {
 
-    @Server("FATServer")
+    private static final String SERVER_NAME = "FATServer";
+
+    public static final FeatureSet MP50_OPENAPI_31 = MicroProfileActions.MP50.removeFeature("mpOpenAPI-3.0")
+                                                                             .addFeature("mpOpenAPI-3.1")
+                                                                             .build(MicroProfileActions.MP50_ID + "_mpOpenAPI-3.1");
+
+    // Run the TCK with EE9 features and EE10 features
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MP50_OPENAPI_31);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass

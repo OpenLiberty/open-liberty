@@ -122,6 +122,7 @@ public class ValidFeaturesTest {
             Set<String> features = config.getFeatureManager().getFeatures();
             features.addAll(testMethod.getFeatures());
             server.updateServerConfiguration(config);
+
             setCheckpoint(testMethod);
         } catch (Exception e) {
             throw new AssertionError("Unexpected error configuring test.", e);
@@ -137,9 +138,12 @@ public class ValidFeaturesTest {
 
     @After
     public void afterEachTest() throws Exception {
-        server.stopServer();
-        server.restoreServerConfiguration();
-        server.unsetCheckpoint();
+        try {
+            server.stopServer();
+        } finally {
+            server.unsetCheckpoint();
+            server.restoreServerConfiguration();
+        }
     }
 
     static enum TestMethod {

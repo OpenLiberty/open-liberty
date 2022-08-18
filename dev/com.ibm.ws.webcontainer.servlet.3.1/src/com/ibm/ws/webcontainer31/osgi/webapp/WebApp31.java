@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,7 +149,7 @@ public class WebApp31 extends com.ibm.ws.webcontainer.osgi.webapp.WebApp
     
     @Override
     public String getVirtualServerName() {
-        if (withinContextInitOfProgAddListener) {
+        if (withinContextInitOfProgAddListener && (WebContainer.getServletContainerSpecLevel() < WebContainer.SPEC_LEVEL_60)) {
             throw new UnsupportedOperationException(MessageFormat.format(
             		servlet31NLS.getString("Unsupported.op.from.servlet.context.listener.31"),
             		new Object[] {"getVirtualServerName", lastProgAddListenerInitialized, getApplicationName()}));  // 130165, PI41941            
@@ -182,7 +182,7 @@ public class WebApp31 extends com.ibm.ws.webcontainer.osgi.webapp.WebApp
      */
     @Override
     public ClassLoader getClassLoader() {
-        if (withinContextInitOfProgAddListener) {
+        if (withinContextInitOfProgAddListener && (WebContainer.getServletContainerSpecLevel() < WebContainer.SPEC_LEVEL_60)) {
             throw new UnsupportedOperationException(MessageFormat.format(
                     servlet31NLS.getString("Unsupported.op.from.servlet.context.listener.31"),
                     new Object[] {"getClassLoader", lastProgAddListenerInitialized, getApplicationName()}));  // 130165, PI41941
@@ -192,7 +192,7 @@ public class WebApp31 extends com.ibm.ws.webcontainer.osgi.webapp.WebApp
     
     @Override
     public int getEffectiveMajorVersion() throws UnsupportedOperationException {
-        if (withinContextInitOfProgAddListener) {
+        if (withinContextInitOfProgAddListener && (WebContainer.getServletContainerSpecLevel() < WebContainer.SPEC_LEVEL_60)) {
             throw new UnsupportedOperationException(MessageFormat.format(
                     servlet31NLS.getString("Unsupported.op.from.servlet.context.listener.31"),
                     new Object[] {"getEffectiveMajorVersion", lastProgAddListenerInitialized, getApplicationName()}));  // 130165, PI41941
@@ -202,7 +202,7 @@ public class WebApp31 extends com.ibm.ws.webcontainer.osgi.webapp.WebApp
 
     @Override
     public int getEffectiveMinorVersion() throws UnsupportedOperationException {
-        if (withinContextInitOfProgAddListener) {
+        if (withinContextInitOfProgAddListener && (WebContainer.getServletContainerSpecLevel() < WebContainer.SPEC_LEVEL_60)) {
             throw new UnsupportedOperationException(MessageFormat.format(
                     servlet31NLS.getString("Unsupported.op.from.servlet.context.listener.31"),
                     new Object[] {"getEffectiveMinorVersion", lastProgAddListenerInitialized, getApplicationName()}));  // 130165, PI41941

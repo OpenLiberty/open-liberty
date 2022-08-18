@@ -6,3 +6,4 @@ visibility=private
 -bundles=io.openliberty.org.jboss.resteasy.cdi
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
