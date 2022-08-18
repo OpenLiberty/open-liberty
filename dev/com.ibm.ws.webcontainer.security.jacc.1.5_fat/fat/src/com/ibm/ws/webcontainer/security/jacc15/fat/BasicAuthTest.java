@@ -66,13 +66,6 @@ public class BasicAuthTest extends CommonServletTestScenarios {
 
         testConfig.startServerClean(DEFAULT_CONFIG_FILE);
 
-        /*
-         * Max wait time based on Windows test failure sample: CWWKZ0001I: Application basicauth started in 290.026 seconds.
-         */
-        Log.info(myLogClass, "setup", "Waiting for loginmethod to start: CWWKZ0001I: Application basicauth started");
-        assertNotNull("The application basicauth did not report as started, if this is a Windows run, may need more time to complete",
-                      myServer.waitForStringInLog("CWWKZ0001I: Application basicauth started", 300000));
-
         if (myServer.getValidateApps()) { // If this build is Java 7 or above
             verifyServerStartedWithJaccFeature(myServer);
         }
