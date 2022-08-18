@@ -46,7 +46,7 @@ import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
 
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
+import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
 
@@ -73,7 +73,7 @@ public class OpenTelemetryProducer {
         
         SdkTracerProvider tracerProvider =
             SdkTracerProvider.builder()
-                .addSpanProcessor(SimpleSpanProcessor.create(exporter))
+                .addSpanProcessor(BatchSpanProcessor.builder(exporter).build())
                 .setResource(Resource.getDefault().merge(serviceNameResource))
                 .build();
 
