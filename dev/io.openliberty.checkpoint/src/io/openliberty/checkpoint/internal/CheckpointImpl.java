@@ -180,6 +180,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private static final String CHECKPOINT_CRIU_UNPRIVILEGED = "io.openliberty.checkpoint.criu.unprivileged";
     private static final String CHECKPOINT_ALLOWED_FEATURES = "io.openliberty.checkpoint.allowed.features";
     private static final String CHECKPOINT_ALLOWED_FEATURES_ALL = "ALL_FEATURES";
+    static final String CHECKPOINT_PAUSE_RESTORE = "io.openliberty.checkpoint.pause.restore";
+
     static final String HOOKS_REF_NAME_SINGLE_THREAD = "hooksSingleThread";
     static final String HOOKS_REF_NAME_MULTI_THREAD = "hooksMultiThread";
     private static final String DIR_CHECKPOINT = "checkpoint/";
@@ -202,6 +204,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final AtomicBoolean jvmRestore = new AtomicBoolean(false);
     private final AtomicReference<CountDownLatch> waitForConfig = new AtomicReference<>();
     private final ExecuteCRIU criu;
+    private final long pauseRestore;
 
     private static volatile CheckpointImpl INSTANCE = null;
 
@@ -235,6 +238,13 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
         this.locAdmin = locAdmin;
         this.checkpointAt = phase;
+
+        this.pauseRestore = getPauseTime(cc.getBundleContext().getProperty(CHECKPOINT_PAUSE_RESTORE));
+
+        // Keep assignment of static INSTANCE as last thing done.
+        // Technically we are escaping 'this' here but we can be confident that INSTANCE will not be used
+        // until the constructor exits here given that this is an immediate component and activated early,
+        // long before applications are started.
         if (this.checkpointAt == CheckpointPhase.DEPLOYMENT) {
             this.transformerReg = cc.getBundleContext().registerService(ClassFileTransformer.class, new CheckpointTransformer(),
                                                                         FrameworkUtil.asDictionary(Collections.singletonMap("io.openliberty.classloading.system.transformer",
@@ -243,6 +253,18 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         } else {
             this.transformerReg = null;
             INSTANCE = null;
+        }
+    }
+
+    private long getPauseTime(String pauseRestoreTime) {
+        if (pauseRestoreTime == null) {
+            return 0;
+        }
+        try {
+            long result = Long.parseLong(pauseRestoreTime);
+            return result < 0 ? 0 : result;
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 
@@ -399,6 +421,13 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             throw new CheckpointFailedException(getUnknownType(), Tr.formatMessage(tc, "UKNOWN_FAILURE_CWWKC0455E", e.getMessage()), e);
         }
 
+        if (pauseRestore > 0) {
+            try {
+                Thread.sleep(pauseRestore);
+            } catch (InterruptedException e) {
+                Thread.currentThread().isInterrupted();
+            }
+        }
         restore(multiThreadRestoreHooks);
         registerRunningCondition();
 
