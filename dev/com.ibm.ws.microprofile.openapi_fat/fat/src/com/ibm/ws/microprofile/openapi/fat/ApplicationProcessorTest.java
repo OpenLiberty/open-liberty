@@ -78,8 +78,8 @@ public class ApplicationProcessorTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = OpenApiActions.repeat(SERVER_NAME,
-        OpenApiActions.MP_OPENAPI_31, // mpOpenAPI-3.1, LITE
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
         MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
         MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
         MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
@@ -394,7 +394,9 @@ public class ApplicationProcessorTest extends FATServletClient {
 
     @Test
     @SkipForRepeat({
-        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID, OpenApiActions.MP_OPENAPI_31_ID
+        // Due to API incompatibilities, mpOpenAPI-2.0+ is tested in
+        // io.openliberty.microprofile.openapi.2.0.internal_fat
+        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID
     })
     public void testCompleteFlow() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_11);
