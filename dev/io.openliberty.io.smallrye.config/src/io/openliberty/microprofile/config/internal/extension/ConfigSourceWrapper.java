@@ -29,9 +29,18 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
+/**
+ * Wrapper to record which configuration properties are accessed during checkpoint.
+ * Additionally, to log a warning that if the value of the configuration key changes after the checkpoint action,
+ * the application might not use the updated value.
+ *
+ */
 public class ConfigSourceWrapper implements ConfigSource {
     private static final TraceComponent tc = Tr.register(ConfigSourceWrapper.class);
     private final ConfigSource source;
+    /**
+     * Reads and writes to the map must synchronize on the map.
+     */
     private final Map<String, String> propertiesAccessedOnCheckpoint;
     private final CheckpointPhase phase;
     private final AtomicBoolean hookAdded = new AtomicBoolean();
@@ -47,6 +56,10 @@ public class ConfigSourceWrapper implements ConfigSource {
         return source.getName();
     }
 
+    /**
+     * A Map entry used to record if something calls entry.get() to access the value in the map during checkpoint.
+     * This is needed to provide a wrapper around the entrySet of the wrapped map.
+     */
     @Trivial
     class RecordingConfigMapEntry extends SimpleEntry<String, String> {
         private static final long serialVersionUID = 1L;
@@ -63,6 +76,10 @@ public class ConfigSourceWrapper implements ConfigSource {
         }
     }
 
+    /**
+     * A Map used to record if something calls config source getProperties() to access the properties during checkpoint.
+     * This is needed to provide a wrapper around config source properties.
+     */
     @Trivial
     class RecordingConfigMap extends AbstractMap<String, String> {
         private final Map<String, String> properties;
@@ -77,11 +94,14 @@ public class ConfigSourceWrapper implements ConfigSource {
             Set<Entry<String, String>> original = properties.entrySet();
 
             for (Entry<String, String> entry : original) {
+                // Wrapping each entry from the entry set to record the values accessed when entry.getValue() is called during checkpoint.
                 entries.add(new RecordingConfigMapEntry(entry.getKey(), entry.getValue()));
             }
             return entries;
         }
 
+        // Overriding the Map.get for performance reasons instead of the default implementation of AbstractMap
+        // which always iterates over the complete entrySet.
         @Override
         public String get(Object key) {
             String value = properties.get(key);
@@ -116,31 +136,36 @@ public class ConfigSourceWrapper implements ConfigSource {
     }
 
     private void recordConfigRead(String propertyName, String propertyValue) {
+        // Check if recording is enabled at this time.
         if (OLSmallRyeConfigExtension.isRecording()) {
-            // Map gets filled only when a config property is accessed during the early startup of bean during checkpoint.
-            propertiesAccessedOnCheckpoint.putIfAbsent(propertyName, propertyValue);
+            // Map gets filled only when a configuration property is accessed during the early startup of bean during checkpoint.
+            synchronized (propertiesAccessedOnCheckpoint) {
+                propertiesAccessedOnCheckpoint.putIfAbsent(propertyName, propertyValue);
+            }
 
-            //register hook
+            // Register hook
             if (hookAdded.compareAndSet(false, true)) {
                 phase.addMultiThreadedHook(new CheckpointHook() {
                     @Override
                     public void restore() {
-                        debug(tc, () -> "Config Source: " + source.getName());
-                        debug(tc, () -> "Properties accessed on checkpoint: " + propertiesAccessedOnCheckpoint);
-                        // When a config property is accessed during the early startup of bean during checkpoint, it might not get updated on restore.
-                        // Throw a warning to let user know that the updated property might not be used.
-                        for (Map.Entry<String, String> entry : propertiesAccessedOnCheckpoint.entrySet()) {
-                            String propertyKey = entry.getKey();
-                            String propertyValue = entry.getValue();
-                            String currentPropertyValue = source.getValue(propertyKey);
+                        synchronized (propertiesAccessedOnCheckpoint) {
+                            debug(tc, () -> "Config Source: " + source.getName());
+                            debug(tc, () -> "Properties accessed on checkpoint: " + propertiesAccessedOnCheckpoint);
+                            // When a config property is accessed during the early startup of bean during checkpoint, it might not get updated on restore.
+                            // Log a warning to let user know that the updated property might not be used.
+                            for (Map.Entry<String, String> entry : propertiesAccessedOnCheckpoint.entrySet()) {
+                                String propertyKey = entry.getKey();
+                                String propertyValue = entry.getValue();
+                                String currentPropertyValue = source.getValue(propertyKey);
 
-                            if (!Objects.equals(propertyValue, currentPropertyValue)) {
-                                debug(tc, () -> "Configuration property " + propertyKey + " value at checkpoint = " + propertyValue + " and value at restore = "
-                                                + currentPropertyValue);
-                                Tr.warning(tc, "WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651", entry.getKey());
+                                if (!Objects.equals(propertyValue, currentPropertyValue)) {
+                                    debug(tc, () -> "Configuration property " + propertyKey + " value at checkpoint = " + propertyValue + " and value at restore = "
+                                                    + currentPropertyValue);
+                                    Tr.warning(tc, "WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651", entry.getKey());
+                                }
                             }
+                            propertiesAccessedOnCheckpoint.clear();
                         }
-                        propertiesAccessedOnCheckpoint.clear();
                     }
                 });
             }

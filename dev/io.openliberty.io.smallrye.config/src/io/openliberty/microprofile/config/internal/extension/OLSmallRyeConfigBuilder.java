@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.microprofile.config.internal.extension.OLSmallRyeConfigExtension.UnpauseRecording;
 import io.openliberty.microprofile.config.internal.serverxml.AppPropertyConfigSource;
 import io.openliberty.microprofile.config.internal.serverxml.ServerXMLDefaultVariableConfigSource;
 import io.openliberty.microprofile.config.internal.serverxml.ServerXMLVariableConfigSource;
@@ -56,6 +57,8 @@ public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
         defaultSources.add(new AppPropertyConfigSource());
         defaultSources.add(new ServerXMLVariableConfigSource());
         defaultSources.add(new ServerXMLDefaultVariableConfigSource());
+        // Getting the phase non null implies that the server did a checkpoint.
+        // Wrap all the config sources during the checkpoint to record the configuration values read during checkpoint by the application before doing a server restore.
         CheckpointPhase phase = CheckpointPhase.getPhase();
         if (phase != null && !phase.restored()) {
             for (ListIterator<ConfigSource> iSources = defaultSources.listIterator(); iSources.hasNext();) {
@@ -69,8 +72,9 @@ public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
     @Override
     @Trivial
     public SmallRyeConfig build() {
-        boolean stopped = OLSmallRyeConfigExtension.stopRecordingReads();
-        try {
+        // Do not record the configuration values read during the super.build(). Start recording the values read after this method.
+        // We want to record the configuration values only when the application reads it, therefore pausing it.
+        try (UnpauseRecording unpauseRecording = OLSmallRyeConfigExtension.pauseRecordingReads()) {
             SmallRyeConfig config = super.build();
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 // Note: SMALLRYE_PROFILE gets internally mapped to also pick up the standard Config.PROFILE
@@ -78,8 +82,6 @@ public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
                 Tr.event(this, tc, "Config created with profile: " + profileName, config);
             }
             return config;
-        } finally {
-            OLSmallRyeConfigExtension.startRecordingReads(stopped);
         }
     }
 }

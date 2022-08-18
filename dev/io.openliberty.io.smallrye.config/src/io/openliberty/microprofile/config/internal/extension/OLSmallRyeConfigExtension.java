@@ -26,43 +26,65 @@ import io.smallrye.config.inject.ConfigExtension;
 
 @Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
 public class OLSmallRyeConfigExtension extends ConfigExtension implements Extension, WebSphereCDIExtension {
-    static final CheckpointPhase phase = CheckpointPhase.getPhase();
-    static final ThreadLocal<AtomicBoolean> recordingStopped = new ThreadLocal<AtomicBoolean>() {
+    private static final CheckpointPhase phase = CheckpointPhase.getPhase();
+    private static final ThreadLocal<AtomicBoolean> recordingPaused = new ThreadLocal<AtomicBoolean>() {
         @Override
         protected AtomicBoolean initialValue() {
             return new AtomicBoolean();
         }
     };
 
+    /**
+     * An AutoCloseable to unpause recording of config reads.
+     */
+    static class UnpauseRecording implements AutoCloseable {
+        private final boolean doClose;
+
+        UnpauseRecording(boolean doClose) {
+            this.doClose = doClose;
+        }
+
+        @Override
+        public void close() {
+            if (doClose) {
+                recordingPaused.get().set(false);
+            }
+        }
+    }
+
+    private static final UnpauseRecording noOpCloseable = new UnpauseRecording(false);
+    private static final UnpauseRecording unpauseRecordingCloseable = new UnpauseRecording(true);
+
     @Override
     protected void validate(@Observes AfterDeploymentValidation adv) {
-        boolean stopped = stopRecordingReads();
-        try {
+        // Do not record the configuration values read during the super.validate(). Start recording the values read after this method.
+        // We want to record the configuration values only when the application reads it, therefore pausing it
+        try (UnpauseRecording unpauseRecording = pauseRecordingReads()) {
             super.validate(adv);
-        } finally {
-            startRecordingReads(stopped);
         }
     }
 
-    static void startRecordingReads(boolean stopped) {
-        if (!stopped || phase == null || phase.restored()) {
-            return;
+    /**
+     * Pauses the recording of configuration value reads.
+     *
+     * @return Returns a closeable that is used to unpause recording of reads.
+     */
+    static UnpauseRecording pauseRecordingReads() {
+        if (phase == null || phase.restored() || !recordingPaused.get().compareAndSet(false, true)) {
+            return noOpCloseable;
         }
-        recordingStopped.get().set(false);
+        return unpauseRecordingCloseable;
     }
 
-    static boolean stopRecordingReads() {
-        if (phase == null || phase.restored()) {
-            return false;
-        }
-        return recordingStopped.get().compareAndSet(false, true);
-    }
-
+    /**
+     *
+     * @return Returns true if recording of config reads is enabled, otherwise false.
+     */
     public static boolean isRecording() {
         if (phase == null || phase.restored()) {
             return false;
         }
-        return !recordingStopped.get().get();
+        return !recordingPaused.get().get();
     }
 
 }
