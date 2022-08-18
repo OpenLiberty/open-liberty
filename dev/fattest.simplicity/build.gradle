@@ -44,12 +44,12 @@ jar {
 
 configurations {
     arquillianFeature
-    arquillianJakartaFeature
+    arquillianJakartaFeature21
 }
 
 dependencies {
     arquillianFeature 'io.openliberty.arquillian:arquillian-liberty-support:1.0.5:feature@zip'
-    arquillianJakartaFeature 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.0.2:feature@zip'
+    arquillianJakartaFeature21 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.0:feature@zip'
 }
 
 task extractArquillianSupportFeature(type:Sync) {
@@ -65,18 +65,18 @@ task extractArquillianSupportFeature(type:Sync) {
     }
 }
 
-task extractArquillianSupportJakartaFeature(type:Sync) {
-    configurations.arquillianJakartaFeature.each {
+task extractArquillianSupportJakartaFeature21(type:Sync) {
+    configurations.arquillianJakartaFeature21.each {
         from(zipTree(it))
     }
     rename { String mfFile ->
-        mfFile.replace("arquillian-liberty-support.mf", "arquillian-liberty-support-jakarta.mf")
+        mfFile.replace("arquillian-liberty-support.mf", "arquillian-liberty-support-jakarta-2.1.mf")
     }
-    into('build/arquillian-jakarta-feature-extract')
+    into('build/arquillian-jakarta-feature-extract-2.1')
 
     doLast {
         // Update the feature manifest to mark it as a test feature
-        file('build/arquillian-jakarta-feature-extract/extension/lib/features/arquillian-liberty-support-jakarta.mf')
+        file('build/arquillian-jakarta-feature-extract-2.1/extension/lib/features/arquillian-liberty-support-jakarta-2.1.mf')
             .append('IBM-Test-Feature: true\n')
     }
 }
@@ -84,8 +84,8 @@ task extractArquillianSupportJakartaFeature(type:Sync) {
 task publishArquillianSupportFeature(type:Copy) {
     dependsOn extractArquillianSupportFeature
     from('build/arquillian-feature-extract/extension')
-    dependsOn extractArquillianSupportJakartaFeature
-    from('build/arquillian-jakarta-feature-extract/extension')
+    dependsOn extractArquillianSupportJakartaFeature21
+    from('build/arquillian-jakarta-feature-extract-2.1/extension')
 
     into(buildImage.file('wlp'))
 }
