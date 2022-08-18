@@ -2047,11 +2047,6 @@
       <version>1.0.0-M1</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.angus</groupId>
-      <artifactId>angus-mail</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.birt.runtime.3_7_1</groupId>
       <artifactId>org.apache.xml.serializer</artifactId>
       <version>2.7.1</version>
