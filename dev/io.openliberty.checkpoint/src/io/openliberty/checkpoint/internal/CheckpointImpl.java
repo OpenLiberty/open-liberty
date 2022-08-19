@@ -209,7 +209,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private static volatile CheckpointImpl INSTANCE = null;
 
     @Activate
-    public CheckpointImpl(ComponentContext cc, @Reference WsLocationAdmin locAdmin, @Reference CheckpointPhase phase) {
+    public CheckpointImpl(ComponentContext cc, @Reference WsLocationAdmin locAdmin,
+                          @Reference(target = CheckpointPhase.CHECKPOINT_ACTIVE_FILTER) CheckpointPhase phase) {
         this(cc, null, locAdmin, phase);
     }
 

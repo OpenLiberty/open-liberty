@@ -280,7 +280,7 @@ public class LaunchArguments {
             throw new RuntimeException(e);
         }
 
-        if (checkpointPhase != null && CheckpointPhase.getPhase() == null) {
+        if (CheckpointPhase.getPhase() == CheckpointPhase.INACTIVE && checkpointPhase != null) {
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhaseName"), checkpointPhase));
             System.out.println();
             return ReturnCode.BAD_ARGUMENT;

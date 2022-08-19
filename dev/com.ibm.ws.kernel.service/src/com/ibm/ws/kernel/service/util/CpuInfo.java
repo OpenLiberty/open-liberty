@@ -80,7 +80,7 @@ public class CpuInfo {
         executor.scheduleAtFixedRate(activeTask, INTERVAL, INTERVAL, TimeUnit.MINUTES);
         cpuCount = new CPUCount();
         CheckpointPhase phase = CheckpointPhase.getPhase();
-        if (phase != null) {
+        if (phase != CheckpointPhase.INACTIVE) {
             phase.addMultiThreadedHook(activeTask);
         }
         int runtimeAvailableProcessors = Runtime.getRuntime().availableProcessors();

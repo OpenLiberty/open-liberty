@@ -202,7 +202,7 @@ public class SRTServletRequestTest {
         Hashtable bundleHeaders = new Hashtable(1);
         bundleHeaders.put("IBM-Authorization-Roles", "com.ibm.ws.management");
         WebAppConfiguration webAppConfig = new WebAppConfiguration(null, "name");
-        WebApp webApp = new WebApp(webAppConfig, null, null, mds, jnf, null, null);
+        WebApp webApp = new WebApp(webAppConfig, null, null, mds, jnf, null);
         webAppConfig.setWebApp(webApp);
         webAppConfig.setBundleHeaders(bundleHeaders);
         webApp.setCollaboratorHelper(new CollaboratorHelperImpl(webApp, null));
@@ -258,7 +258,7 @@ public class SRTServletRequestTest {
         Hashtable bundleHeaders = new Hashtable(1);
         bundleHeaders.put("IBM-Authorization-Roles", "default");
         WebAppConfiguration webAppConfig = new WebAppConfiguration(null, "name");
-        WebApp webApp = new WebApp(webAppConfig, null, null, mds, jnf, null, null);
+        WebApp webApp = new WebApp(webAppConfig, null, null, mds, jnf, null);
         webAppConfig.setWebApp(webApp);
         webAppConfig.setBundleHeaders(bundleHeaders);
         webApp.setCollaboratorHelper(new CollaboratorHelperImpl(webApp, null));
@@ -311,7 +311,7 @@ public class SRTServletRequestTest {
         Hashtable bundleHeaders = new Hashtable(1);
         bundleHeaders.put("IBM-Authorization-Roles", "com.ibm.ws.management");
         WebAppConfiguration webAppConfig = new WebAppConfiguration(null, "name");
-        WebApp webApp = new WebApp(webAppConfig, null, null, mds, jnf, null, null);
+        WebApp webApp = new WebApp(webAppConfig, null, null, mds, jnf, null);
         webAppConfig.setWebApp(webApp);
         webAppConfig.setBundleHeaders(bundleHeaders);
         webApp.setCollaboratorHelper(new CollaboratorHelperImpl(webApp, null));

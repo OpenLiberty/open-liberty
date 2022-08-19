@@ -80,6 +80,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 abstract class ContainerClassLoader extends LibertyLoader implements Keyed<ClassLoaderIdentity> {
+    static final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
     static {
         ClassLoader.registerAsParallelCapable();
     }
@@ -612,8 +613,7 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
             this.container = container;
             this.isRoot = container.isRoot();
             // If we are doing checkpoint, process the manifest file when the container is created.
-            CheckpointPhase phase = CheckpointPhase.getPhase();
-            if (phase != null && !phase.restored()) {
+            if (!checkpointPhase.restored()) {
                 getManifestMainAttributes();
             }
         }
@@ -811,8 +811,7 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
             this.container = container;
             this.isRoot = container.isRoot();
             // If we are doing checkpoint, process the manifest file when the container is created.
-            CheckpointPhase phase = CheckpointPhase.getPhase();
-            if (phase != null && !phase.restored()) {
+            if (!checkpointPhase.restored()) {
                 getManifestMainAttributes();
             }
         }

@@ -296,8 +296,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      */
     private volatile boolean deactivated;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
-    private CheckpointPhase checkpointPhase;
+    private final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
 
     private volatile LibertyBootRuntime libertyBoot;
 
@@ -1921,7 +1920,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private void checkIfCheckpointFeatureMissing(Collection<String> features) {
 
         //TODO remove beta check on feature release.
-        if (checkpointPhase != null && ProductInfo.getBetaEdition()) {
+        if (checkpointPhase != CheckpointPhase.INACTIVE && ProductInfo.getBetaEdition()) {
             if (!features.contains("checkpoint-1.0")) {
                 Tr.error(tc, "CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING");
 

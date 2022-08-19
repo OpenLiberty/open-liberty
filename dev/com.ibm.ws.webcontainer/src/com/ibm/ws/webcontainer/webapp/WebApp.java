@@ -362,7 +362,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     
     private static Object[] OBJ_EMPTY = new Object[] {};
     private static Class<?>[] CLASS_EMPTY = new Class<?>[] {};
-    private final CheckpointPhase checkpointPhase;
+    private final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
     
     // PK37608 Start
     static {
@@ -387,10 +387,9 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
   public static final boolean DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR = WCCustomProperties.DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR;  //PI26908
   
     // PK37698 End
-    public WebApp(WebAppConfiguration webAppConfig, Container parent, CheckpointPhase checkpointPhase) {
+    public WebApp(WebAppConfiguration webAppConfig, Container parent) {
         super(webAppConfig.getId(), parent);
         this.config = webAppConfig;
-        this.checkpointPhase = checkpointPhase;
         // PK63920 Start
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
             logger.entering(CLASS_NAME, "<init> [ " + this + " ] with name -> [ " + name + " ] and parent [ " + parent + " ]");
