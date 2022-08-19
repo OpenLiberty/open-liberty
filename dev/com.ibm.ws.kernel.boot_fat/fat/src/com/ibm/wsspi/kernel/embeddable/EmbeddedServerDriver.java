@@ -35,7 +35,7 @@ import junit.framework.AssertionFailedError;
 
 public class EmbeddedServerDriver implements ServerEventListener {
 
-    private static final long SERVER_START_TIMEOUT = 30;
+    private static final long SERVER_START_TIMEOUT = 60;
     private static final TimeUnit SERVER_START_TIMEOUT_UNIT = TimeUnit.SECONDS;
 
     private static String bogusName = "bOgUsSeRvErNaMe";
@@ -237,7 +237,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
     /**
      * Determine if the input product extension exists in the input string.
      *
-     * @param inputString      string to search.
+     * @param inputString string to search.
      * @param productExtension product extension to search for.
      * @return true if input product extension is found in the input string.
      */
@@ -254,8 +254,8 @@ public class EmbeddedServerDriver implements ServerEventListener {
         int leftBracketIndex = msgString.indexOf("[");
         int rightBracketIndex = msgString.indexOf("]");
         if ((leftBracketIndex == -1) ||
-                        (rightBracketIndex == -1) ||
-                        (rightBracketIndex < leftBracketIndex)) {
+            (rightBracketIndex == -1) ||
+            (rightBracketIndex < leftBracketIndex)) {
             return false;
         }
 
