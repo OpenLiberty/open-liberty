@@ -1,3 +1,5 @@
+# NOTICE: This file was automatically updated to reflect changes made to test projects.
+# Please check these changes into GitHub
 build.example.testcontainers_fat
 com.ibm.ws.cloudant_fat
 com.ibm.ws.concurrent.persistent_fat

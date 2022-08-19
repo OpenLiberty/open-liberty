@@ -59,8 +59,12 @@ task assembleTestContainerData {
     }//projectArr.each
     
     // Write lists to file
+    projectList << '# NOTICE: This file was automatically updated to reflect changes made to test projects.' << '\n'
+    projectList	<< '# Please check these changes into GitHub' << '\n'
     projectArr.sort().forEach() { projectList << it << '\n' }
     
+    imageList   << '# NOTICE: This file was automatically updated to reflect changes made to test projects.' << '\n'
+    imageList	<< '# Please check these changes into GitHub.' << '\n'
     imageArr.unique().sort()
     imageArr -= '\\'
     imageArr.forEach() { imageList << it << '\n' }
