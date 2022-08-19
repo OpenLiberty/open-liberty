@@ -33,6 +33,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -46,6 +47,10 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
 public class DB2Test extends FATServletClient {
+
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
 
     // Updated docker image to use TLS1.2 for secure communication
     static final DockerImageName db2Image = DockerImageName.parse("kyleaure/db2-ssl:3.0")

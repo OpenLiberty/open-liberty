@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import componenttest.containers.TestContainerSuite;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -26,7 +26,13 @@ import componenttest.topology.database.container.DatabaseContainerType;
                 AlwaysPassesTest.class, //Needed because we skip when testing against oracle.
                 FailoverTimersTest.class
 })
-public class FATSuite extends TestContainerSuite {
+public class FATSuite {
+
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
 
     @ClassRule
     public static JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DatabaseContainerType.DerbyClient);

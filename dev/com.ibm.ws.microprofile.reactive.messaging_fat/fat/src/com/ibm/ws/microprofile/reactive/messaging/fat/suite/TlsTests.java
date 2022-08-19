@@ -24,8 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tls.KafkaTlsTest;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
-import componenttest.containers.TestContainerSuite;
 
 /**
  * Suite for tests which run against a TLS enabled kafka broker
@@ -33,7 +33,13 @@ import componenttest.containers.TestContainerSuite;
 @RunWith(Suite.class)
 @SuiteClasses({ KafkaTlsTest.class,
 })
-public class TlsTests extends TestContainerSuite {
+public class TlsTests {
+
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
 
     @ClassRule
     public static ExtendedKafkaContainer kafkaContainer = new ExtendedKafkaContainer()

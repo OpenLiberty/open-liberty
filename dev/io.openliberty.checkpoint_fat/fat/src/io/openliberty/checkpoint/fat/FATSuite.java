@@ -28,7 +28,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -50,7 +49,7 @@ import componenttest.topology.impl.LibertyServer;
                 RESTclientTest.class,
                 DB2Test.class
 })
-public class FATSuite extends TestContainerSuite {
+public class FATSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {
         RemoteFile appFile = server.getFileFromLibertyServerRoot("apps/" + appName + ".war");
         LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/dropins").mkdir();

@@ -16,7 +16,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
-import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -33,7 +32,7 @@ import componenttest.rules.repeater.RepeatTests;
 	AcmeURIConfigVariationsTest.class,
 	AcmeRevocationTest.class
 })
-public class FATSuite extends TestContainerSuite {
+public class FATSuite {
     /*
      * Repeat with EE9. Since most, if not all, servers don't have an EE feature enabled, we
      * will add servlet-5.0 for the EE9 repeats to test that the acmeCA-2.0 feature supports
@@ -44,4 +43,9 @@ public class FATSuite extends TestContainerSuite {
 	public static RepeatTests repeat = RepeatTests.with(new EmptyAction())
 			.andWith(new JakartaEE9Action().alwaysAddFeature("servlet-5.0"));
     
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
 }

@@ -30,7 +30,8 @@ import componenttest.topology.utils.FATServletClient;
 import web.generic.ContainersTestServlet;
 
 /**
- * Example test class showing how to setup a GenericContainer
+ * Example test class showing how to setup a regular predefined
+ * TestContainer for use to test against.
  */
 @RunWith(FATRunner.class)
 public class ContainersTest extends FATServletClient {
