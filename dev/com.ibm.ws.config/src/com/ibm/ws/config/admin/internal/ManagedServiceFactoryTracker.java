@@ -47,9 +47,9 @@ class ManagedServiceFactoryTracker extends ServiceTracker<ManagedServiceFactory,
 
     /**
      * Constructor for ManagedServiceFactoryTracker.
-     * 
+     *
      * @param bc
-     *            - bundle context
+     *               - bundle context
      */
     public ManagedServiceFactoryTracker(ConfigAdminServiceFactory casf, BundleContext bc) {
         super(bc, ManagedServiceFactory.class.getName(), null);
@@ -59,9 +59,9 @@ class ManagedServiceFactoryTracker extends ServiceTracker<ManagedServiceFactory,
     /**
      * Processes registered ManagedServiceFactory and updates each with their own
      * configuration properties.
-     * 
+     *
      * @param reference
-     *            - ServiceReference for MangedServiceFactory
+     *                      - ServiceReference for MangedServiceFactory
      */
     @Override
     public ManagedServiceFactory addingService(ServiceReference<ManagedServiceFactory> reference) {
@@ -124,7 +124,7 @@ class ManagedServiceFactoryTracker extends ServiceTracker<ManagedServiceFactory,
     /**
      * MangedServiceFactory service removed. Process removal and unget service
      * from its context.
-     * 
+     *
      * @param reference
      * @param service
      */
@@ -246,7 +246,7 @@ class ManagedServiceFactoryTracker extends ServiceTracker<ManagedServiceFactory,
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc,
                                  "asyncDelete(): Exception thrown while trying to update ManagedServiceFactory.  Exception = "
-                                                 + t.toString());
+                                     + t.toString());
                     }
                     FFDCFilter.processException(t, ME,
                                                 "asyncDelete()",
@@ -257,6 +257,9 @@ class ManagedServiceFactoryTracker extends ServiceTracker<ManagedServiceFactory,
     }
 
     private Future<?> asyncUpdated(final ManagedServiceFactory service, final String factoryPid, final String pid, final Dictionary<String, ?> properties) {
+        String message = "Updating factory PID [ " + factoryPid + " ] PID [ " + pid + " ]";
+        (new Throwable(message)).printStackTrace(System.out);
+
         return caFactory.updateQueue.add(factoryPid, new Runnable() {
             @Override
             public void run() {
@@ -269,7 +272,7 @@ class ManagedServiceFactoryTracker extends ServiceTracker<ManagedServiceFactory,
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc,
                                  "asyncUpdated(): Exception thrown while trying to update ManagedServiceFactory.  Exception = "
-                                                 + t.toString());
+                                     + t.toString());
                     }
                     FFDCFilter.processException(t, ME,
                                                 "asyncUpdated()",

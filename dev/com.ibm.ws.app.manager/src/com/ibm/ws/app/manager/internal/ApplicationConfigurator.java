@@ -440,7 +440,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             //Each call to joinEpisode is counted and the future completion reduces the count.  This initial call establishes the episde
             // and it is used by the appManagerReadyDependency, at the end of this method. This order prevents the episode from completing
             // before being completely set up.
-            final UpdateEpisodeState episode = joinEpisode();
+            UpdateEpisodeState episode = joinEpisode();
             if (episode == null) {
                 return;
             }
@@ -662,9 +662,9 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 Tr.event(_tc, "setAppRecycleContext: context " + appRecycleContext);
             }
 
-            final String appName = appRecycleContext.getAppName();
+            String appName = appRecycleContext.getAppName();
             synchronized (this) {
-                final NamedApplication app = appName != null ? _appFromName.get(appName) : null;
+                NamedApplication app = appName != null ? _appFromName.get(appName) : null;
                 if (app != null) {
                     app.setRecycleContext(appRecycleContext);
                 }
@@ -694,7 +694,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             }
 
             synchronized (this) {
-                final UpdateEpisodeState episode = joinEpisode();
+                UpdateEpisodeState episode = joinEpisode();
                 if (episode == null) {
                     return;
                 }
@@ -770,7 +770,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             Set<String> dependentApplications = appRecycleComponent.getDependentApplications();
 
             synchronized (this) {
-                final UpdateEpisodeState episode = joinEpisode();
+                UpdateEpisodeState episode = joinEpisode();
                 if (episode == null) {
                     return;
                 }
@@ -858,6 +858,11 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         try {
             synchronized (this) {
                 ApplicationConfig appConfig = new ApplicationConfig(pid, properties, _applicationManager);
+
+                (new Throwable("Update to PID [ " + pid + " ]" +
+                              " ID [ " + appConfig.getConfigProperty("id") + " ]" +
+                              " Name [ " + appConfig.getName() + " ]")).printStackTrace(System.out);
+                
                 if (appConfig.getLocation() == null) {
                     if (appConfig.getName() == null) {
                         Tr.audit(_tc, "APPLICATION_NO_LOCATION_NO_NAME");
@@ -935,7 +940,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
         if (RuntimeUpdateNotification.APP_FORCE_RESTART.equals(notification.getName())) {
             synchronized (this) {
-                final UpdateEpisodeState episode = joinEpisode();
+                UpdateEpisodeState episode = joinEpisode();
                 if (episode != null) {
                     episode.createAppForceRestartDependency(notification.getFuture(), updateManager.getNotification(RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED));
                 }
@@ -944,7 +949,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
         if (SIMPLE_INITIAL_UPDATE_NOTIFICATIONS.contains(notification.getName())) {
             synchronized (this) {
-                final UpdateEpisodeState episode = joinEpisode();
+                UpdateEpisodeState episode = joinEpisode();
                 if (episode != null) {
                     episode.createSimpleDependency(notification.getFuture());
                 }
@@ -971,7 +976,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 }
 
                 if (apps != null && !apps.isEmpty()) {
-                    final UpdateEpisodeState episode = joinEpisode();
+                    UpdateEpisodeState episode = joinEpisode();
                     if (episode != null) {
                         episode.recycleApps(apps);
                         episode.dropReference();
@@ -1011,7 +1016,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
-    private synchronized void registerAppHandler(final String appType, final ApplicationHandler<?> appHandler) {
+    private synchronized void registerAppHandler(String appType, ApplicationHandler<?> appHandler) {
         ApplicationTypeSupport typeSupport = _appTypeSupport.get(appType);
         if (typeSupport == null) {
             typeSupport = new ApplicationTypeSupport(false);
@@ -1020,7 +1025,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         typeSupport.setHandler(appHandler);
     }
 
-    private synchronized void unregisterAppHandler(final String appType, final ApplicationHandler<?> appHandler) {
+    private synchronized void unregisterAppHandler(String appType, ApplicationHandler<?> appHandler) {
         if (FrameworkState.isStopping()) {
             // we are stopping so bail out
             return;
@@ -1042,7 +1047,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             }
         }
         if (!appsUsingHandler.isEmpty()) {
-            final UpdateEpisodeState episode = joinEpisode();
+            UpdateEpisodeState episode = joinEpisode();
             if (episode != null) {
                 if (_tc.isDebugEnabled()) {
                     Tr.debug(_tc, "app type: ", appType);
@@ -1068,29 +1073,38 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     }
 
     // called only from synchronized methods
-    private void processUpdate(String pid, ApplicationConfig newAppConfig) {
+    private void processUpdate(String newPid, ApplicationConfig newAppConfig) {
         dumpApplications();
-        ApplicationStateCoordinator.updateConfiguredAppStatus(pid);
-        NamedApplication appFromPid = _appFromPid.get(pid);
-        String newAppName = newAppConfig.getName();
-        NamedApplication appFromName = _appFromName.get(newAppName);
-        final NamedApplication app;
-        final ApplicationStateMachine asm;
-        if (appFromPid != null) {
-            if (appFromName == null) {
-                // the last update we received for this pid had a different name,
-                // and there is no app associated with the new app name
-                processUpdateWithNameChange(pid, newAppConfig, appFromPid);
-                return;
-            } else if (appFromName != appFromPid) {
-                // the last update we received for this pid had a different name,
-                // and there is already an app associated with the new name
-                processUpdateWithNameConflict(pid, newAppConfig, appFromPid, appFromName);
-                return;
-            }
-            // the last update we received for this pid had the same name, so proceed with updating
 
-            app = appFromPid;
+        ApplicationStateCoordinator.updateConfiguredAppStatus(newPid);
+
+        String newAppName = newAppConfig.getName();
+
+        NamedApplication app;
+        ApplicationStateMachine asm;
+        
+        NamedApplication oldAppFromNewPid = _appFromPid.get(newPid);
+        NamedApplication oldAppFromNewName = _appFromName.get(newAppName);
+
+        if (oldAppFromNewPid != null) {
+            if (oldAppFromNewName == null) {
+                // Change to an unused name.
+                // Uninstall the application, then call back to process the update.
+                processUpdateWithNameChange(newPid, newAppConfig, oldAppFromNewPid);
+                return;
+            } else if (oldAppFromNewName != oldAppFromNewPid) {
+                // Change to an in-use name.
+                // Uninstall the application.  Do NOT proceed with the update.
+                processUpdateWithNameConflict(newPid, newAppConfig, oldAppFromNewPid, oldAppFromNewName);
+                return;
+            } else {
+                // Same name.
+                // TODO: What happens if the location changed but the name is the same?
+                //       That is possible if the location changed paths but kept the same
+                //       simple name, or if there is an explicit name in the configuration.
+            }
+
+            app = oldAppFromNewPid;
             app.setConfig(newAppConfig);
             if (app.getStateMachine() != null) {
                 asm = app.getStateMachine();
@@ -1098,20 +1112,20 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             } else {
                 asm = createStateMachine(app);
             }
+
         } else {
-            if (appFromName != null) {
-                // there isn't an app associated with this pid, but there is
-                // already an app associated with the app name
-                ApplicationTypeSupport typeSupport = _appTypeSupport.get(newAppConfig.getType());
-                AppMessageHelper.get(typeSupport != null ? typeSupport.getHandler() : null).error("DUPLICATE_APPLICATION_NAME", newAppName);
-                blockApplication(pid, newAppConfig, newAppName);
-                ApplicationStateCoordinator.updateStartingAppStatus(pid, ApplicationStateCoordinator.AppStatus.DUP_APP_NAME);
+            if (oldAppFromNewName != null) {
+                // New but with an existing name.
+                // Emit an error.  Do NOT proceed with the update.
+                processAddWithNameConflict(newPid, newAppConfig, oldAppFromNewName);
                 return;
+            } else {
+                // New with a new name.
             }
-            // this is the first update we received for this pid and the name is available
+
             app = new NamedApplication(newAppName, newAppConfig, _ctx, _executor);
             asm = createStateMachine(app);
-            _appFromPid.put(pid, app);
+            _appFromPid.put(newPid, app);
             _appFromName.put(newAppName, app);
         }
 
@@ -1128,7 +1142,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             typeSupport.addWaitingApp(app);
         }
 
-        final UpdateEpisodeState episode = joinEpisode();
+        UpdateEpisodeState episode = joinEpisode();
         if (episode != null) {
             episode.configureApp(app);
             episode.dropReference();
@@ -1180,7 +1194,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     // called only from synchronized methods
     private void processDeletion(String pid) {
         // find the running app for this pid
-        final NamedApplication appFromPid = _appFromPid.get(pid);
+        NamedApplication appFromPid = _appFromPid.get(pid);
         if (appFromPid == null) {
             // perhaps the config for this pid is blocked
             ApplicationConfig blockedConfig = _blockedConfigFromPid.remove(pid);
@@ -1220,8 +1234,18 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         return _locAdmin.getBundleFile(this, "cacheOverlay");
     }
 
-    private void processUpdateWithNameChange(final String pid, final ApplicationConfig newAppConfig, final NamedApplication appFromPid) {
-        final String oldAppName = appFromPid.getAppName();
+    /**
+     * An application configuration was updated with a change to a new, unused, application
+     * name.
+     * 
+     * Uninstall the application, then re-attempt the update.
+     * 
+     * @param pid The PID of the application.
+     * @param newAppConfig The new configuration for the application.
+     * @param appFromPid The application already present for the PID.
+     */
+    private void processUpdateWithNameChange(String pid, ApplicationConfig newAppConfig, NamedApplication appFromPid) {
+        String oldAppName = appFromPid.getAppName();
         ApplicationConfig oldAppConfig = appFromPid.getConfig();
         if (oldAppConfig == null) {
             // hmmm, our pid was previously associated with a different name,
@@ -1236,7 +1260,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         if (_tc.isEventEnabled()) {
             Tr.event(_tc, "processUpdateWithNameChange: pid=" + pid + ", oldAppName=" + oldAppName + ", newAppName=" + newAppConfig.getName());
         }
-        final UpdateEpisodeState episode = joinEpisode();
+        UpdateEpisodeState episode = joinEpisode();
         if (episode != null) {
             ApplicationDependency appRemoved = uninstallApp(appFromPid);
             appRemoved.onCompletion(new CompletionListener<Boolean>() {
@@ -1256,14 +1280,23 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
+    private void processAddWithNameConflict(String pid, ApplicationConfig newAppConfig, NamedApplication appFromName) {
+        String newAppName = newAppConfig.getName();
+        ApplicationTypeSupport typeSupport = _appTypeSupport.get(newAppConfig.getType());
+        ApplicationHandler<?> handler = ((typeSupport != null) ? typeSupport.getHandler() : null); 
+        AppMessageHelper.get(handler).error("DUPLICATE_APPLICATION_NAME", newAppName);
+        blockApplication(pid, newAppConfig, newAppName);
+        ApplicationStateCoordinator.updateStartingAppStatus(pid, ApplicationStateCoordinator.AppStatus.DUP_APP_NAME);        
+    }    
+    
     private void processUpdateWithNameConflict(String pid, ApplicationConfig newAppConfig,
-                                               final NamedApplication appFromPid, NamedApplication appFromName) {
+                                               NamedApplication appFromPid, NamedApplication appFromName) {
         String newAppName = newAppConfig.getName();
         String oldAppName = appFromPid.getAppName();
         if (_tc.isEventEnabled()) {
             Tr.event(_tc, "processUpdateWithNameConflict: pid=" + pid + ", oldAppName=" + oldAppName + ", newAppName=" + newAppName);
         }
-        final UpdateEpisodeState episode = joinEpisode();
+        UpdateEpisodeState episode = joinEpisode();
         if (episode != null) {
             ApplicationDependency appRemoved = uninstallApp(appFromPid);
             ApplicationTypeSupport typeSupport = _appTypeSupport.get(newAppConfig.getType());
@@ -1277,7 +1310,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                         episode.dropReference();
                     }
                 }
-
                 @Override
                 public void failedCompletion(Future<Boolean> future, Throwable t) {
                     episode.dropReference();
@@ -1930,7 +1962,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 ApplicationConfig appConfig = app.getConfig();
                 String configId = (String) appConfig.getConfigProperty("id");
                 String configPid = appConfig.getConfigPid();
-                String cacheId = ((configId == null) ? configPid : configId);
+                String cacheId = ApplicationUtils.getCacheId(configId, configPid);
                 cacheIds.add(cacheId);
                 appPids.add(configPid);
                 _appsToShutdown.add(app);
@@ -1994,7 +2026,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                     }
 
                     if (cleanCache) {
-                        String cacheId = ((removedAppId == null) ? removedAppPid : removedAppId);
+                        String cacheId = ApplicationUtils.getCacheId(removedAppId, removedAppPid);
                         recursivelyDelete(new File(getCacheDir(), cacheId));
                         recursivelyDelete(new File(getCacheAdaptDir(), cacheId));
                         recursivelyDelete(new File(getCacheOverlayDir(), cacheId));

@@ -23,6 +23,7 @@ import com.ibm.ws.app.manager.module.AbstractDeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppServices;
+import com.ibm.ws.app.manager.internal.ApplicationUtils;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -72,8 +73,7 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         return deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation() + appName + ".war/");
     }
 
-    protected void expand(
-                          String name, File collapsedFile,
+    protected void expand(String name, File collapsedFile,
                           WsResource expandedResource, File expandedFile) throws IOException {
 
         String collapsedPath = collapsedFile.getAbsolutePath();
@@ -93,7 +93,6 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         expandedResource.create();
 
         ZipUtils.unzip(collapsedFile, expandedFile, ZipUtils.IS_NOT_EAR, collapsedFile.lastModified()); // throws IOException
-
     }
 
     @Override
@@ -105,20 +104,19 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         String warPath = appInfo.getLocation();
 
         Tr.debug(tc, "Create deployed application:" +
-                     " ID [ " + warId + " ]" +
-                     " PID [ " + warPid + " ]" +
-                     " Name [ " + warName + " ]" +
-                     " Location [ " + warPath + " ]");
+                     " ID [ " + warId + " ]" + " PID [ " + warPid + " ]" +
+                     " Name [ " + warName + " ]" + " Location [ " + warPath + " ]");
 
         File warFile = new File(warPath);
 
         BinaryType appType = getApplicationType(warFile, warPath);
         if (appType == BinaryType.LOOSE) {
             Tr.info(tc, "info.loose.app", warName, warPath);
+
         } else if (appType == BinaryType.DIRECTORY) {
             Tr.info(tc, "info.directory.app", warName, warPath);
-        } else if (applicationManager.getExpandApps()) {
 
+        } else if (applicationManager.getExpandApps()) {
             try {
                 prepareExpansion(warName);
 
@@ -147,12 +145,10 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
 
                 // Part 1: Retrieve the container info from the initial container.
                 NonPersistentCache initialCache = appInfo.getContainer().adapt(NonPersistentCache.class);
-                ApplicationInfoForContainer appContainerInfo = (ApplicationInfoForContainer) initialCache.getFromCache(ApplicationInfoForContainer.class);
+                ApplicationInfoForContainer appContainerInfo = (ApplicationInfoForContainer)
+                    initialCache.getFromCache(ApplicationInfoForContainer.class);
 
-                // Tr.info(tc, "Initial 'useJandex' [ " +
-                //     ((appContainerInfo == null) ? "unavailable" : appContainerInfo.getUseJandex()) + " ]");
-
-                String cacheId = ( (warId == null) ? warPid : warId );                
+                String cacheId = ApplicationUtils.getCacheId(warId, warPid);
                 Container expandedContainer = deployedAppServices.setupContainer(cacheId, expandedFile);
                 appInfo.setContainer(expandedContainer);
 

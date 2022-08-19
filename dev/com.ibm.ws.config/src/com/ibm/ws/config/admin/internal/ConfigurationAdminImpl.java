@@ -28,9 +28,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 /**
  * Implementation of ConfigurationAdmin.
  * Provides APIs to managed Configurations such as providing APIs to create new
- * configuration
- * and get or list existing configurations.
- *
+ * configuration and get or list existing configurations.
  */
 class ConfigurationAdminImpl implements ConfigurationAdmin {
     private static final TraceComponent tc = Tr.register(ConfigurationAdminImpl.class, ConfigAdminConstants.TR_GROUP, ConfigAdminConstants.NLS_PROPS);

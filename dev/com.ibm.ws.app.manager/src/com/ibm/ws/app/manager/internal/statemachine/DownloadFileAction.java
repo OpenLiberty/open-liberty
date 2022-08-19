@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,7 +101,7 @@ class DownloadFileAction implements Runnable, Action {
             output = new BufferedOutputStream(new FileOutputStream(downloadedFile));
 
             input = urlConection.getInputStream();
-            buf = new byte[32 * 1024]; //you can change the 1024 to a different size value
+            buf = new byte[1024]; //you can change the 1024 to a different size value
             while (_active.get() && (byteRead = input.read(buf)) != -1) {
                 output.write(buf, 0, byteRead);
             }

@@ -17,10 +17,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 FATTest.class,
-                AutoExtractTest.class,
-                AppOrderTests.class,
-                DropinsTests.class,
-                AppPrereqTest.class
+                // AutoExtractTest.class,
+                // AppOrderTests.class,
+                // DropinsTests.class,
+                // AppPrereqTest.class
 })
 public class FATSuite {
 

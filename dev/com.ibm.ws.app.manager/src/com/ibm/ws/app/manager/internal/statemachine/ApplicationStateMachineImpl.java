@@ -42,6 +42,7 @@ import com.ibm.ws.app.manager.internal.ApplicationConfig;
 import com.ibm.ws.app.manager.internal.ApplicationConfigurator;
 import com.ibm.ws.app.manager.internal.ApplicationDependency;
 import com.ibm.ws.app.manager.internal.ApplicationInstallInfo;
+import com.ibm.ws.app.manager.internal.ApplicationUtils;
 import com.ibm.ws.app.manager.internal.FutureCollectionCompletionListener;
 import com.ibm.ws.app.manager.internal.monitor.ApplicationMonitor;
 import com.ibm.ws.app.manager.internal.monitor.ApplicationMonitorConfig;
@@ -601,15 +602,16 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             }
         }
 
+        @Deprecated
         @Override
         public Container setupContainer(String pid, File locationFile) {
             return setupContainer(null, pid, locationFile);
         }
-        
+
         @Override
         public Container setupContainer(String configId, String pid, File locationFile) {
-            String cacheId = ( (configId == null) ? pid : configId );
-            
+            String cacheId = ApplicationUtils.getCacheId(configId,  pid);
+
             File cacheDir = new File(getCacheDir(), cacheId);
             if (!FileUtils.ensureDirExists(cacheDir)) {
                 if (_tc.isEventEnabled()) {

@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.ApplicationManager;
+import com.ibm.ws.app.manager.internal.ApplicationUtils;
 import com.ibm.ws.app.manager.module.AbstractDeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
@@ -221,10 +222,8 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         String appPath = appInfo.getLocation();
 
         Tr.debug(_tc, "Create deployed application:" +
-                      " ID [ " + appId + " ]" +
-                      " PID [ " + appPid + " ]" +
-                      " Name [ " + appName + " ]" +
-                      " Location [ " + appPath + " ]");
+                      " ID [ " + appId + " ]" + " PID [ " + appPid + " ]" +
+                      " Name [ " + appName + " ]" + " Location [ " + appPath + " ]");
 
         File appFile = new File(appPath);
 
@@ -239,7 +238,6 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
             Tr.info(_tc, "info.directory.app", appName, appPath);
 
         } else if (applicationManager.getExpandApps()) {
-
             try {
                 prepareExpansion(appName);
 
@@ -272,10 +270,7 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
                 NonPersistentCache initialCache = appContainer.adapt(NonPersistentCache.class);
                 ApplicationInfoForContainer appContainerInfo = (ApplicationInfoForContainer) initialCache.getFromCache(ApplicationInfoForContainer.class);
 
-                // Tr.info(_tc, "Initial 'useJandex' [ " +
-                //     ((appContainerInfo == null) ? "unavailable" : appContainerInfo.getUseJandex()) + " ]");
-
-                String cacheId = ( (appId == null) ? appPid : appId );                
+                String cacheId = ApplicationUtils.getCacheId(appId, appPid);
                 originalAppContainer = appContainer;
                 appContainer = deployedAppServices.setupContainer(cacheId, expandedFile);
 

@@ -13,9 +13,10 @@ package com.ibm.ws.config.xml.internal;
 import java.io.IOException;
 import java.util.List;
 
+import javax.security.auth.login.Configuration;
+
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.websphere.config.ConfigRetrieverException;
@@ -28,9 +29,6 @@ import com.ibm.ws.config.admin.SystemConfigSupport;
 import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 
-/**
- *
- */
 class ConfigRetriever {
 
     private static final TraceComponent tc = Tr.register(ConfigRetriever.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
@@ -91,14 +89,14 @@ class ConfigRetriever {
 
                 config = (ExtendedConfiguration) getConfiguration(pid, factoryFilter);
                 config.setInOverridesFile(true);
-                // This really needs to move somewhere else. ConfigRetriever should not have a variable registry
+                // This really needs to move somewhere else.
+                // ConfigRetriever should not have a variable registry
                 for (String variable : config.getUniqueVariables()) {
                     variableRegistry.addVariableInUse(variable);
                 }
                 if (configId.getId() != null) {
                     caSupport.registerConfiguration(configId, config);
                 }
-
             }
             return config;
         } catch (ConfigRetrieverException ex) {
@@ -188,19 +186,10 @@ class ConfigRetriever {
         }
     }
 
-    /**
-     * @return
-     * @throws InvalidSyntaxException
-     */
     ExtendedConfiguration[] listAllConfigurations() throws InvalidSyntaxException, IOException {
         return (ExtendedConfiguration[]) configAdmin.listConfigurations(null);
     }
 
-    /**
-     * @param configElement
-     * @return
-     * @throws ConfigRetrieverException
-     */
     ExtendedConfiguration[] findConfigurations(ConfigID configID) throws ConfigRetrieverException {
         String filter = getConfigurationFilter(configID);
         try {
@@ -214,11 +203,6 @@ class ConfigRetriever {
         }
     }
 
-    /**
-     * @param configID
-     * @return
-     * @throws ConfigRetrieverException
-     */
     public ExtendedConfiguration[] findAllNestedConfigurations(ConfigID configID) throws ConfigRetrieverException {
         String filter = ("(| " +
                          "(" + XMLConfigConstants.CFG_CONFIG_INSTANCE_ID + "=*//" + configID.getPid() + "[*)" +
