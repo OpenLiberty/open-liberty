@@ -20,6 +20,8 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
+fat.test.container.images: jaegertracing/all-in-one:1.37
+
 -buildpath: \
     io.openliberty.jakarta.restfulWS.3.0;version=latest,\
     io.openliberty.jakarta.cdi.3.0;version=latest,\

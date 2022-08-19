@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import io.openliberty.microprofile.telemetry.internal.tests.AutoInstrumentationTest;
 
@@ -27,12 +27,5 @@ import io.openliberty.microprofile.telemetry.internal.tests.AutoInstrumentationT
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
-public class FATSuite {
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
-
+public class FATSuite extends TestContainerSuite {
 }
