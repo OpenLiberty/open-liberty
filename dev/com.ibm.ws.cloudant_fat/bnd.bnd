@@ -23,8 +23,6 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
-fat.test.container.images: kyleaure/couchdb-ssl:1.0
-
 -buildpath: \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.transaction.1.1;version=latest,\

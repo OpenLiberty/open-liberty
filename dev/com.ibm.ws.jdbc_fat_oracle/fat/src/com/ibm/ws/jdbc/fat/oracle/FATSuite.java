@@ -24,8 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
-import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import oracle.jdbc.pool.OracleDataSource;
 
@@ -36,7 +36,13 @@ import oracle.jdbc.pool.OracleDataSource;
                 OracleUCPTest.class,
                 OracleSSLTest.class
 })
-public class FATSuite extends TestContainerSuite {
+public class FATSuite {
+
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
 
     //TODO update this image to gvenzl/oracle-xe if this issue is ever resolved: https://github.com/gvenzl/oci-oracle-xe/issues/36
     private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("kyleaure/oracle-18.4.0-expanded:1.0.slim").asCompatibleSubstituteFor("gvenzl/oracle-xe");

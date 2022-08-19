@@ -22,7 +22,7 @@ import com.ibm.ws.logstash.collector.tests.LogstashSSLTest;
 import com.ibm.ws.logstash.collector.tests.MaxFieldLengthTest;
 import com.ibm.ws.logstash.collector.tests.ThrottleMaxEventsTest;
 
-import componenttest.containers.TestContainerSuite;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
@@ -40,5 +40,12 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
-public class FATSuite extends TestContainerSuite {
+public class FATSuite {
+
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
+
 }

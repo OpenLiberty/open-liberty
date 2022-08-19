@@ -11,8 +11,6 @@
 package componenttest.topology.database.container;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -132,16 +130,6 @@ public enum DatabaseContainerType {
             if (elem.getContainerClass() == cont.getClass())
                 return elem;
         throw new IllegalArgumentException("Unrecognized JdbcDatabaseContainer class: " + cont.getClass().getCanonicalName());
-    }
-
-    public static List<String> images() {
-        ArrayList<String> images = new ArrayList<>();
-        for (DatabaseContainerType elem : values()) {
-            if (!elem.getImageName().getUnversionedPart().isEmpty()) {
-                images.add(elem.getImageName().asCanonicalNameString());
-            }
-        }
-        return images;
     }
 
     //Private Method: used to setup logging for containers to this class.

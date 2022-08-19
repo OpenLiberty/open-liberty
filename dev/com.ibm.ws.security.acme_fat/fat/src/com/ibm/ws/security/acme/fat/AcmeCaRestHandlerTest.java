@@ -63,7 +63,6 @@ import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
-import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -72,7 +71,14 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
-public class AcmeCaRestHandlerTest extends TestContainerSuite {
+public class AcmeCaRestHandlerTest {
+	
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
+
 	@Server("com.ibm.ws.security.acme.fat.rest")
 	public static LibertyServer server;
 

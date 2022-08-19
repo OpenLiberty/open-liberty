@@ -16,19 +16,21 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.FATSuite;
 
-import componenttest.containers.TestContainerSuite;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 
 /**
  *
  */
-public class FATSuiteBase extends TestContainerSuite {
+public class FATSuiteBase {
 
     public static DatabaseContainerType databaseContainerType;
     public static JdbcDatabaseContainer<?> testContainer;
 
     public static void beforeSuite() throws Exception {
+        //Allows local tests to switch between using a local docker client, to using a remote docker client.
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         testContainer = DatabaseContainerFactory.createType(databaseContainerType);
         Log.info(FATSuite.class, "beforeSuite", "starting test container of type: " + databaseContainerType);
         testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).start();

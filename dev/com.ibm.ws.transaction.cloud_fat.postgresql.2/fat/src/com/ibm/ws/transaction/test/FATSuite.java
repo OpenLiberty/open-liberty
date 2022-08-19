@@ -21,6 +21,7 @@ import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest2;
 import com.ibm.ws.transaction.test.tests.FATSuiteBase;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -48,6 +49,8 @@ public class FATSuite extends FATSuiteBase {
                     .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
 
     public static void beforeSuite() throws Exception {
+        //Allows local tests to switch between using a local docker client, to using a remote docker client.
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         /*
          * The image here is generated using the Dockerfile in com.ibm.ws.jdbc_fat_postgresql/publish/files/postgresql-ssl
          * The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .
