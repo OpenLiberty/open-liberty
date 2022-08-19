@@ -106,7 +106,24 @@ task copySwidFixpackTagToBuildImage (type:Copy) {
            tokens: [PRODUCT_VERSION: bnd.libertyRelease])
 }
 
+task publishEmptyTemplatesFolders {
+  dependsOn jar
+  outputs.dirs(buildImage.file('wlp/templates/servers/defaultServer/apps'),
+               buildImage.file('wlp/templates/servers/defaultServer/dropins'))
+  doLast {
+    buildImage.mkdir('wlp/templates/servers/defaultServer/apps')
+    buildImage.mkdir('wlp/templates/servers/defaultServer/dropins')
+  }
+}
+
+task publishTemplates (type:Copy) {
+    dependsOn publishEmptyTemplatesFolders
+    from project.file('templates')
+    into project.file('wlp/templates')
+}
+
 assemble { 
+    dependsOn publishTemplates
     dependsOn copyPropertiesToBuildImage
     dependsOn addServiceFingerprint
     dependsOn copyReadmeToBuildImage
@@ -269,10 +286,7 @@ def gaPublicFeatures() {
 }
 
 def gaAndBetaPublicFeatures() {
-    String features = ""
-    gaFeatures(false).each {
-        features += '<feature>' + it + '</feature>\n'
-    }
+    String features = gaPublicFeatures
     betaFeatures().each {
         features += '<feature>' + it + '</feature>\n'
     }
@@ -280,13 +294,7 @@ def gaAndBetaPublicFeatures() {
 }
 
 def gaAndBetaAndNoShipPublicFeatures() {
-    String features = ""
-    gaFeatures(false).each {
-        features += '<feature>' + it + '</feature>\n'
-    }
-    betaFeatures().each {
-        features += '<feature>' + it + '</feature>\n'
-    }
+    String features = gaAndBetaPublicFeatures
     noShipFeatures().each {
         features += '<feature>' + it + '</feature>\n'
     }
@@ -484,6 +492,44 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     
     //GA
+    task packageOpenLibertyWebProfile10(type: PackageLibertyWithFeatures) {
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&profileFeatures("webProfile10")
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
+        outputTo packageDir
+        doLast {
+            copy {
+                from "$packageDir/wlp/templates/servers/webProfile10/server.xml"
+                into "$packageDir/wlp/templates/servers/defaultServer"
+            }
+            copy {
+                from "$packageDir/wlp/templates/clients/jakartaeeClient10/client.xml"
+                into "$packageDir/wlp/templates/clients/defaultClient"
+            }
+        }
+    }
+
+    //GA
+    task packageOpenLibertyJakartaee10(type: PackageLibertyWithFeatures) {
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&profileFeatures("jakartaee10")
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
+        outputTo packageDir
+        doLast {
+            copy {
+                from "$packageDir/wlp/templates/servers/jakartaee10/server.xml"
+                into "$packageDir/wlp/templates/servers/defaultServer"
+            }
+            copy {
+                from "$packageDir/wlp/templates/clients/jakartaeeClient10/client.xml"
+                into "$packageDir/wlp/templates/clients/defaultClient"
+            }
+        }
+    }
+    
+    //GA
     task packageOpenLibertyMicroProfile4(type: PackageLibertyWithFeatures) {
         doFirst {
             excludedEE7Features.each {
@@ -665,6 +711,36 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
     publish.dependsOn zipOpenLibertyJakartaee9
+    
+    // GA: Includes only kind=ga features.
+    task zipOpenLibertyWebProfile10(type: Zip) {
+        dependsOn packageOpenLibertyWebProfile10
+        dependsOn genChecksums
+        baseName 'openliberty-webProfile10'
+        from packageDir
+        destinationDir distsDir
+        version releaseVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.webprofile10.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyWebProfile10
+
+    // GA: Includes only kind=ga features.
+    task zipOpenLibertyJakartaee10(type: Zip) {
+        dependsOn packageOpenLibertyJakartaee10
+        dependsOn genChecksums
+        baseName 'openliberty-jakartaee10'
+        from packageDir
+        destinationDir distsDir
+        version releaseVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.jakartaee10.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyJakartaee10
 
     // GA: Includes only kind=ga features.
     task zipOpenLibertyMicroProfile4(type: Zip) {
@@ -736,6 +812,8 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn zipOpenLibertyJavaee8
         dependsOn zipOpenLibertyJakartaee9
         dependsOn zipOpenLibertyWebProfile9
+        dependsOn zipOpenLibertyJakartaee10
+        dependsOn zipOpenLibertyWebProfile10
         dependsOn zipOpenLibertyMicroProfile4
         dependsOn zipOpenLibertyMicroProfile5
         dependsOn zipOpenLibertyMicroProfile6
