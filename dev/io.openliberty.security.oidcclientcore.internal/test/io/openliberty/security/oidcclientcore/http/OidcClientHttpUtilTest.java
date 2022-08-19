@@ -37,6 +37,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -241,9 +242,8 @@ public class OidcClientHttpUtilTest {
             String baUsername = "testuser";
             String baPassword = "testuserpwd";
             String accessToken = "accesstokenstringabcdef";
-            List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
 
-            Map<String, Object> map = moichu.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, commonHeaders, false, authMethod, false);
+            Map<String, Object> map = moichu.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, false, authMethod, false);
             HttpResponse myRes = (HttpResponse) map.get(HttpConstants.RESPONSEMAP_CODE);
             assertEquals("Did not get baclk HttepResponse " + httpResponse + " but " + myRes,
                     httpResponse, myRes);
@@ -276,9 +276,8 @@ public class OidcClientHttpUtilTest {
             String baUsername = "testuser";
             String baPassword = "testuserpwd";
             String accessToken = "accesstokenstringabcdef";
-            List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
 
-            Map<String, Object> map = mockClientUtil.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, commonHeaders, false, authMethod, false);
+            Map<String, Object> map = mockClientUtil.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, false, authMethod, false);
             fail("Expected an IOException when executing the post, but no exception was thrown. Got map: " + map);
         } catch (IOException e) {
             String message = e.getMessage();
@@ -312,9 +311,8 @@ public class OidcClientHttpUtilTest {
             String baUsername = "testuser";
             String baPassword = "testuserpwd";
             String accessToken = "accesstokenstringabcdef";
-            List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
 
-            Map<String, Object> map = mockClientUtil.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, commonHeaders, false, authMethod, false);
+            Map<String, Object> map = mockClientUtil.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, false, authMethod, false);
             fail("Expected an IOException when executing the POST, but no exception was thrown. Got map: " + map);
         } catch (IOException e) {
             String message = e.getMessage();
@@ -351,9 +349,8 @@ public class OidcClientHttpUtilTest {
             String baUsername = "testuser";
             String baPassword = "testuserpwd";
             String accessToken = "accesstokenstringabcdef";
-            List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
 
-            Map<String, Object> map = mockClientUtil.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, commonHeaders, false, authMethod, false);
+            Map<String, Object> map = mockClientUtil.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, false, authMethod, false);
             fail("Expected to receive a response from the endpoint resulting in an IOException, but no exception was thrown. Got map: " + map);
         } catch (IOException e) {
             String message = e.getMessage();
@@ -392,9 +389,8 @@ public class OidcClientHttpUtilTest {
             String baUsername = "testuser";
             String baPassword = "testuserpwd";
             String accessToken = "accesstokenstringabcdef";
-            List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
 
-            Map<String, Object> map = mockClientUtil.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, commonHeaders, false, authMethod, false);
+            Map<String, Object> map = mockClientUtil.postToEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, false, authMethod, false);
             fail("Expected to receive an error response from the endpoint resulting in an IOException, but no exception was thrown. Got map: " + map);
         } catch (IOException e) {
             String message = e.getMessage();
@@ -423,6 +419,36 @@ public class OidcClientHttpUtilTest {
         int port = 80;
         String url = "http://hostname/oidc/endpoint";
         assertEquals(port, OidcClientHttpUtil.getTokenEndPointPort(url));
+    }
+
+    @Test
+    public void testGetFromEndpoint() {
+        final String methodName = "testGetFromEndpoint";
+        try {
+            String url = "http://localhost:8010/oidc/someEndPoint";
+            String baUsername = "baUsername";
+            String baPassword = "baPassword";
+            String accessToken = "qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw";
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+            mock.checking(new Expectations() {
+                {
+                    one(httpClient).execute(with(any(HttpUriRequest.class)));
+                    will(returnValue(httpResponse));
+                }
+            });
+
+            Map<String, Object> result = moichu.getFromEndpoint(url, params, baUsername, baPassword, accessToken, sslSocketFactory, false, false);
+
+            HttpResponse responseCode = (HttpResponse) result.get(HttpConstants.RESPONSEMAP_CODE);
+            assertNotNull("Expect to see valid response code", responseCode);
+
+            HttpGet getMethod = new HttpGet(url);
+            HttpGet getMethod2 = (HttpGet) result.get(HttpConstants.RESPONSEMAP_METHOD);
+            assertEquals("HttpGet method ", getMethod.getMethod(), getMethod2.getMethod());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
     }
 
     class MockInputStream extends InputStream {
@@ -470,6 +496,11 @@ public class OidcClientHttpUtilTest {
         @Override
         public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean b, String baUser, String baPassword, boolean useJvmProps) {
             //return new mockDefaultHttpClient();
+            return httpClient;
+        }
+
+        @Override
+        public HttpClient createHttpClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification, boolean useSystemPropertiesForHttpClientConnections, BasicCredentialsProvider credentialsProvider) {
             return httpClient;
         }
     }

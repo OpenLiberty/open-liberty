@@ -30,8 +30,6 @@ import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 
 public class TokenRequestor {
 
-    private static final List<NameValuePair> commonHeaders;
-
     private final String tokenEndpoint;
     private final String clientId;
     @Sensitive
@@ -49,11 +47,6 @@ public class TokenRequestor {
     private final boolean useSystemPropertiesForHttpClientConnections;
 
     OidcClientHttpUtil oidcClientHttpUtil = OidcClientHttpUtil.getInstance();
-
-    static {
-        commonHeaders = new ArrayList<NameValuePair>();
-        commonHeaders.add(new BasicNameValuePair(TokenConstants.ACCEPT, TokenConstants.APPLICATION_JSON));
-    }
 
     private TokenRequestor(Builder builder) {
         this.tokenEndpoint = builder.tokenEndpoint;
@@ -117,7 +110,6 @@ public class TokenRequestor {
                                                  clientSecret,
                                                  null,
                                                  sslSocketFactory,
-                                                 commonHeaders,
                                                  isHostnameVerification,
                                                  authMethod,
                                                  useSystemPropertiesForHttpClientConnections);
