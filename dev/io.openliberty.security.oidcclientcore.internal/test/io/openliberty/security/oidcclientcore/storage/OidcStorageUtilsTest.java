@@ -19,6 +19,7 @@ import org.junit.rules.TestName;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.random.RandomUtils;
 
+import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
 
@@ -29,12 +30,12 @@ public class OidcStorageUtilsTest {
     @Rule
     public TestName testName = new TestName();
 
-    String strRandom = RandomUtils.getRandomAlphaNumeric(9);
+    String strRandom = RandomUtils.getRandomAlphaNumeric(AuthorizationRequestUtils.STATE_LENGTH);
     String timestamp = Utils.getTimeStamp();
     String state = timestamp + strRandom;
 
     @Test
-    public void testCreateStateCookieValue() {
+    public void test_createStateStorageValue() {
         String cookieValue = OidcStorageUtils.createStateStorageValue(state, "secret");
         String timestamp = state.substring(0, Utils.TIMESTAMP_LENGTH);
         String newValue = state + "secret";
@@ -44,12 +45,12 @@ public class OidcStorageUtilsTest {
     }
 
     @Test
-    public void testGetCookieName() {
-        String cookieName = OidcStorageUtils.getCookieName("WASOidc", "client01", state);
+    public void test_getStorageKey() {
+        String storageKey = OidcStorageUtils.getStorageKey("WASOidc", "client01", state);
         String newValue = state + "client01";
         String newName = Utils.getStrHashCode(newValue);
-        String expectedCookieName = "WASOidc" + newName;
-        assertEquals(expectedCookieName, cookieName);
+        String expectedStorageKey = "WASOidc" + newName;
+        assertEquals(expectedStorageKey, storageKey);
     }
 
 }

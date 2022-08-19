@@ -29,10 +29,18 @@ URL_NOT_HTTPS=CWWKS2402E: The {0} endpoint URL that is configured for the {1} Op
 URL_NOT_HTTPS.explanation=The endpoint URL must use the HTTPS protocol to ensure that requests are secure.
 URL_NOT_HTTPS.useraction=Update the endpoint URL to use the HTTPS protocol.
 
-DISCOVERY_EXCEPTION=CWWKS2403E: The {0} OpenID Connect client encountered an error while discovering metadata for the OpenID Connect provider. {1}
+DISCOVERY_EXCEPTION=CWWKS2403E: The {0} OpenID Connect client encountered the following error during discovery of metadata for the OpenID Connect provider from the [{1}] URL: {2}
 DISCOVERY_EXCEPTION.explanation=The OpenID Connect client configuration might be missing information, or the client encountered an error while communicating with the OpenID Connect provider.
 DISCOVERY_EXCEPTION.useraction=See the error in the message for more information.
 
 OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: The providerURI attribute for the {0} OpenID Connect client is null or empty, and there is no metadata available for the OpenID Connect provider.
 OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=The OpenID Connect client must discover metadata for the OpenID Connect provider, but the client does not have a providerURI attribute or provider metadata configured.
 OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Specify a value for the providerURI attribute in the OpenID Connect client configuration, or specify OpenID Connect provider metadata in the client configuration.
+
+DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: The OpenID Connect provider metadata is missing the required [{0}] property.
+DISCOVERY_METADATA_MISSING_VALUE.explanation=The property that is specified in the message must be present in the OpenID Connect provider metadata, but it is missing.
+DISCOVERY_METADATA_MISSING_VALUE.useraction=Verify that the providerURI attribute for the OpenID Connect client is set to the correct discovery URL for the OpenID Connect provider.
+
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL=CWWKS2406E: The {0} OpenID Connect client cannot redirect the user to the authorization endpoint because the client cannot determine the authorization endpoint URL. {1}
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.explanation=The authorization endpoint URL in the OpenID Connect client configuration might be malformed or missing, or the OpenID Connect client failed to obtain the authorization endpoint URL from the OpenID Connect provider.
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=See the error in the message for more information. Verify that the OpenID Connect client configuration is complete and accurate.

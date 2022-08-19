@@ -18,42 +18,24 @@ import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class OidcStorageUtils {
 
-    @Sensitive
     @Trivial
-    public static String createStateStorageValue(String state, String clientSecret) {
+    public static String createStateStorageValue(String state, @Sensitive String clientSecret) {
         String newValue = state + clientSecret; // state already has a timestamp in it
         String hashedStateValue = HashUtils.digest(newValue);
         String timestamp = state.substring(0, Utils.TIMESTAMP_LENGTH);
         return timestamp + hashedStateValue;
     }
 
+    public static String createNonceStorageValue(String nonceValue, String state, @Sensitive String clientSecret) {
+        return HashUtils.digest(nonceValue + state + clientSecret);
+    }
+
     @Sensitive
     @Trivial
-    public static String getCookieName(String prefix, String configId, String state) {
+    public static String getStorageKey(String prefix, String configId, String state) {
         String newValue = state + configId;
         String newName = Utils.getStrHashCode(newValue);
         return prefix + newName;
     }
-
-//    public void createAndAddCookie(String cookieName, String cookieValue, int cookieLifetime, boolean isHttpsRequired) {
-//        Cookie c = webSsoUtils.createCookie(cookieName, cookieValue, cookieLifetime, request);
-//        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
-//        if (isHttpsRequired && isHttpsRequest) {
-//            c.setSecure(true);
-//        }
-//        response.addCookie(c);
-//    }
-
-//    @Trivial
-//    public static void createNonceCookie(HttpServletRequest request, HttpServletResponse response, String nonceValue, String state, ConvergedClientConfig clientConfig) {
-//        String cookieName = getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig, state);
-//        String cookieValue = createNonceCookieValue(nonceValue, state, clientConfig);
-//        Cookie cookie = OidcClientUtil.createCookie(cookieName, cookieValue, request);
-//        response.addCookie(cookie);
-//    }
-//
-//    public static String createNonceCookieValue(String nonceValue, String state, String clientSecret) {
-//        return HashUtils.digest(nonceValue + state + clientSecret);
-//    }
 
 }

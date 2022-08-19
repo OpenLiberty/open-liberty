@@ -19,8 +19,8 @@ public class OidcDiscoveryException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public OidcDiscoveryException(String clientId, String nlsMessage) {
-        super(Tr.formatMessage(tc, "DISCOVERY_EXCEPTION", clientId, nlsMessage));
+    public OidcDiscoveryException(String clientId, String discoveryUrl, String exceptionMessage) {
+        super(Tr.formatMessage(tc, "DISCOVERY_EXCEPTION", clientId, discoveryUrl, exceptionMessage));
     }
 
 }

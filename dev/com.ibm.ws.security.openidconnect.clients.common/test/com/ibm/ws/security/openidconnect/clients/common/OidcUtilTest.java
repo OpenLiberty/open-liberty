@@ -31,6 +31,7 @@ import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import test.common.SharedOutputManager;
 
@@ -112,41 +113,28 @@ public class OidcUtilTest {
         mock.checking(new Expectations() {
             {
                 allowing(convClientConfig).getId();
+                will(returnValue("myConfigId"));
+                one(convClientConfig).getClientId();
                 will(returnValue("client01"));
                 allowing(convClientConfig).getClientSecret();
-                will(returnValue("serect"));
+                will(returnValue("secret"));
             }
         });
-        final String expectedNonceCookieName = OidcStorageUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, "client01", state);
-        final String expectedNonceCookieValue = OidcUtil.createNonceCookieValue(nonceValue, state, convClientConfig);
+        final String expectedNonceCookieName = OidcStorageUtils.getStorageKey(OidcClientStorageConstants.WAS_OIDC_NONCE, "client01", state);
+        final String expectedNonceCookieValue = OidcStorageUtils.createNonceStorageValue(nonceValue, state, "secret");
 
         mock.checking(new Expectations() {
             {
                 allowing(convClientRequest).getRequest();
                 will(returnValue(request));
-                one(referCookieHandler).createCookie(with(any(String.class)), with(any(String.class)), with(any(HttpServletRequest.class)));
-                will(returnValue(cookie));
-                one(webAppSecConfig).createSSOCookieHelper();
-                one(webAppSecConfig).getSSODomainList();
-                one(webAppSecConfig).getSSOUseDomainFromURL();
-                one(cookie).setMaxAge(-1);
-                one(convClientRequest).getResponse();
+                allowing(convClientRequest).getResponse();
                 will(returnValue(response));
-                one(response).addCookie(cookie);
-            }
-        });
-        OidcUtil.createNonceCookie(convClientRequest, nonceValue, state, convClientConfig);
-
-        mock.checking(new Expectations() {
-            {
                 one(request).getCookies();
                 will(returnValue(new Cookie[] { cookie }));
                 one(cookie).getName();
                 will(returnValue(expectedNonceCookieName));
                 one(cookie).getValue();
                 will(returnValue(expectedNonceCookieValue));
-                one(convClientRequest).getResponse();
-                will(returnValue(response));
                 one(referCookieHandler).invalidateCookie(request, response, expectedNonceCookieName, true);
             }
         });
