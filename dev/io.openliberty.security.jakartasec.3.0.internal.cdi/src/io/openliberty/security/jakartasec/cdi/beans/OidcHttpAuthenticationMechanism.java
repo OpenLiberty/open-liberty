@@ -12,9 +12,10 @@ package io.openliberty.security.jakartasec.cdi.beans;
 
 import java.util.Properties;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
+import com.ibm.ws.webcontainer.security.AuthResult;
+import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
@@ -68,25 +69,68 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         }
     }
 
-    @Sensitive
-    public OidcHttpAuthenticationMechanism(@Sensitive OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition) {
-        this.oidcMechanismDefinitionWrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
-    }
-
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
                                                 HttpServletResponse response,
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
-        Client client = ClientManager.getClientFor(oidcMechanismDefinitionWrapper);
+        Client client = getClient();
 
-        // If isAuthenticationRequired
-        //   status = createAuthenticationRequest - client.startFlow();
+        boolean alreadyAuthenticated = isAlreadyAuthenticated(httpMessageContext);
+
+        if (isAuthenticationRequired(request, httpMessageContext, alreadyAuthenticated)) {
+            status = processStartFlowResult(client.startFlow(request, response), httpMessageContext);
+        }
+
         // Else if isCallbackRequest
         //   status = processCallback - client.continueFlow();
         // Else if isAuthenticationSessionEstablished
         //   status = processTokenExpirationIfNeeded - client.processExpiredToken() / logout();
+
+        return status;
+    }
+
+    // Protected to allow unit testing
+    protected Client getClient() {
+        return ClientManager.getClientFor(oidcMechanismDefinitionWrapper);
+    }
+
+    /**
+     * Authentication is required when "when the caller tries to access a protected resource without being authenticated,
+     * or when the caller explicitly initiates authentication, without being authenticated for the current request"
+     *
+     * @param alreadyAuthenticated
+     */
+    private boolean isAuthenticationRequired(HttpServletRequest request, HttpMessageContext httpMessageContext, boolean alreadyAuthenticated) {
+        return isProtectedResourceWithoutBeingAuthenticated(httpMessageContext, alreadyAuthenticated)
+               || isProgrammaticAuthenticationWithoutBeingAuthenticated(httpMessageContext, alreadyAuthenticated);
+    }
+
+    private boolean isProtectedResourceWithoutBeingAuthenticated(HttpMessageContext httpMessageContext, boolean alreadyAuthenticated) {
+        return httpMessageContext.isProtected() && !alreadyAuthenticated;
+    }
+
+    private boolean isProgrammaticAuthenticationWithoutBeingAuthenticated(HttpMessageContext httpMessageContext, boolean alreadyAuthenticated) {
+        return httpMessageContext.isAuthenticationRequest() && !alreadyAuthenticated;
+    }
+
+    private boolean isAlreadyAuthenticated(HttpMessageContext httpMessageContext) {
+        return httpMessageContext.getRequest().getUserPrincipal() != null;
+    }
+
+    private AuthenticationStatus processStartFlowResult(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext) {
+        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
+
+        if (providerAuthenticationResult != null) {
+            AuthResult authResult = providerAuthenticationResult.getStatus();
+
+            if (AuthResult.REDIRECT_TO_PROVIDER.equals(authResult)) {
+                status = httpMessageContext.redirect(providerAuthenticationResult.getRedirectUrl());
+            } else if (AuthResult.SEND_401.equals(authResult)) {
+                status = httpMessageContext.responseUnauthorized();
+            }
+        }
 
         return status;
     }
