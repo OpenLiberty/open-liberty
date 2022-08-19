@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,8 @@ package com.ibm.ws.logging.fat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,7 +35,9 @@ public class TestHideMessages {
 
     private static LibertyServer msgServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.hidemessage");
     private static final Class<?> logClass = TestHideMessages.class;
-    static String TWO_HIDDEDN_MESSAGE_SERVER = "server-twomessageids.xml";
+    static String TWO_HIDDEN_MESSAGE_SERVER = "server-twoMessageIds.xml";
+    static String HIDE_MSG_ATTRIBUTE_REMOVAL = "server-hideMsgAttrbRemoval.xml";
+    static String EMPTY_HIDE_MSG = "server-emptyHideMsg.xml";
 
     static long SMALL_TIMEOUT = 10000;
     @Rule
@@ -42,13 +45,20 @@ public class TestHideMessages {
 
     @BeforeClass
     public static void prepareTest() throws Exception {
+        msgServer.saveServerConfiguration();
+    }
+
+    @Before
+    public void setupTest() throws Exception {
+        msgServer.restoreServerConfiguration();
         msgServer.startServer();
     }
 
     @Test
-    // No need to wait for message CWWKZ0058I/TRAS3001I since that happens during server startup. So using findStringsInLogs
     public void testHiddenMsgIds() throws Exception {
+        Log.info(logClass, name.getMethodName(), "Entering test " + name.getMethodName());
 
+        // No need to wait for message CWWKZ0058I/TRAS3001I since that happens during server startup. So using findStringsInLogs
         assertTrue("Hidden Message CWWKZ0058I should not be seen in messages.log",
                    msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
         assertTrue("Hidden Message CWWKZ0058I should not be seen in console.log",
@@ -57,6 +67,7 @@ public class TestHideMessages {
         assertFalse("Info message about redirection to trace file should be logged",
                     msgServer.findStringsInLogs("TRAS3001I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
 
+        Log.info(logClass, name.getMethodName(), "Exiting test " + name.getMethodName());
     }
 
     @Test
@@ -67,7 +78,7 @@ public class TestHideMessages {
         int initial_console_size_CWWKF0012I = msgServer.findStringsInLogs("CWWKF0012I:", msgServer.getMatchingLogFile("console.log")).size();
         int initial_trace_size_CWWKF0012I = msgServer.findStringsInTrace("CWWKF0012I:").size();
 
-        msgServer.setServerConfigurationFile(TWO_HIDDEDN_MESSAGE_SERVER);
+        msgServer.setServerConfigurationFile(TWO_HIDDEN_MESSAGE_SERVER);
 
         assertTrue("Hidden Message CWWKZ0058I should not be seen in messages.log",
                    msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
@@ -87,8 +98,67 @@ public class TestHideMessages {
         Log.info(logClass, name.getMethodName(), "Exiting test " + name.getMethodName());
     }
 
-    @AfterClass
-    public static void completeTest() throws Exception {
+    /**
+     * Tests when the hideMessage attribute is removed from the server.xml, no messages should be hidden.
+     */
+    @Test
+    public void testRemovalHideMessageAttribute() throws Exception {
+        Log.info(logClass, name.getMethodName(), "Entering test " + name.getMethodName());
+
+        // Make sure the feature update message is set to be hidden.
+        msgServer.setServerConfigurationFile(TWO_HIDDEN_MESSAGE_SERVER);
+
+        // First, test if the set messageID prefixes are hidden after server startup.
+        assertTrue("Hidden Message CWWKF0012I should not be seen in messages.log",
+                   msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
+        assertTrue("Hidden Message CWWKF0012I should not be seen in console.log",
+                   msgServer.findStringsInLogs("CWWKZ0058I:", msgServer.getMatchingLogFile("console.log")).isEmpty());
+        assertFalse("Hidden Message CWWKF0012I should be seen in trace", msgServer.findStringsInTrace("CWWKZ0058I:").isEmpty());
+        assertFalse("Info message about hidden messageID prefixes should be logged",
+                    msgServer.findStringsInLogs("TRAS3001I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
+
+        msgServer.setServerConfigurationFile(HIDE_MSG_ATTRIBUTE_REMOVAL);
+
+        // This will wait for feature update completion message since we are adding a new feature. And CWWKF0012I should be seen before that
+        msgServer.waitForConfigUpdateInLogUsingMark(null);
+
+        // Ensure the mark is set here, so the find methods do not find the previous messages before the mark.
+        msgServer.setMarkToEndOfLog(msgServer.getMatchingLogFile("messages.log"));
+
+        // Second, test if the previously hidden messageID prefixes are showing up in message.log/console.log after server configuration update.
+        assertTrue("Hidden Message CWWKF0012I should be seen in messages.log",
+                   msgServer.findStringsInLogs("CWWKF0012I:", msgServer.getMatchingLogFile("messages.log")).size() > 0);
+        assertTrue("Hidden Message CWWKF0012I should be seen in console.log",
+                   msgServer.findStringsInLogs("CWWKF0012I:", msgServer.getMatchingLogFile("console.log")).size() > 0);
+        assertTrue("Info message about hidden messageID prefixes should not be logged",
+                   msgServer.findStringsInLogsUsingMark("TRAS3001I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
+
+        Log.info(logClass, name.getMethodName(), "Exiting test " + name.getMethodName());
+
+    }
+
+    /**
+     * Tests when the hideMessage attribute is set to an empty string from the server.xml, no messages should be hidden.
+     */
+    @Test
+    public void testEmptyHideMessageAttribute() throws Exception {
+        Log.info(logClass, name.getMethodName(), "Entering test " + name.getMethodName());
+
+        msgServer.setServerConfigurationFile(EMPTY_HIDE_MSG);
+
+        // Ensure the mark is set here, so the find methods do not find the previous messages before the mark.
+        msgServer.setMarkToEndOfLog(msgServer.getMatchingLogFile("messages.log"));
+
+        // The INFO message regarding if any messages are hidden should not be logged.
+        assertTrue("Info message about hidden messageID prefixes should not be logged",
+                   msgServer.findStringsInLogsUsingMark("TRAS3001I:", msgServer.getMatchingLogFile("messages.log")).isEmpty());
+
+        Log.info(logClass, name.getMethodName(), "Exiting test " + name.getMethodName());
+
+    }
+
+    @After
+    public void cleanupTest() throws Exception {
         msgServer.stopServer();
     }
 
