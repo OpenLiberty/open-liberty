@@ -16,7 +16,10 @@ src: \
 	
 fat.project: true
 
-tested.features: mpTelemetry-1.0
+tested.features:\
+  mpTelemetry-1.0,\
+  restfulws-3.0,\
+  servlet-6.0
 
 -buildpath: \
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
