@@ -82,7 +82,7 @@ public class AuthorizationCodeHandlerTest {
     private final MockOidcClientRequest oidcClientRequest = mock.mock(MockOidcClientRequest.class, "oidcClientRequest");
     private final ConvergedClientConfig convClientConfig = mock.mock(ConvergedClientConfig.class, "convClientConfig");
 
-    AuthorizationCodeHandler ach = new SimpleMockAuthorizationCodeHandler(sslSupport);
+    AuthorizationCodeHandler ach;
 
     @Before
     public void setUp() {
@@ -90,6 +90,8 @@ public class AuthorizationCodeHandlerTest {
 
         mock.checking(new Expectations() {
             {
+                one(convClientConfig).getClientId();
+                will(returnValue(CLIENTID));
                 allowing(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 allowing(webAppSecConfig).getHttpOnlyCookies();
@@ -170,7 +172,7 @@ public class AuthorizationCodeHandlerTest {
             });
 
             AuthorizationCodeHandler ach = new SimpleMockAuthorizationCodeHandler(sslSupport);
-            ProviderAuthenticationResult result = ach.handleAuthorizationCode(req, res, AUTHZ_CODE, originalState, convClientConfig);
+            ProviderAuthenticationResult result = ach.handleAuthorizationCode(AUTHZ_CODE, originalState);
             checkForBadStatusExpectations(result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -196,10 +198,7 @@ public class AuthorizationCodeHandlerTest {
             });
 
             AuthorizationCodeHandler ach = new SimpleMockAuthorizationCodeHandler(sslSupport);
-            ProviderAuthenticationResult result = ach.handleAuthorizationCode(req, res,
-                    AUTHZ_CODE, //"authorizaCodeAAA",
-                    originalState,
-                    convClientConfig);
+            ProviderAuthenticationResult result = ach.handleAuthorizationCode(AUTHZ_CODE, originalState);
             checkForBadStatusExpectations(result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -230,7 +229,7 @@ public class AuthorizationCodeHandlerTest {
         });
 
         AuthorizationCodeHandler ach = new SimpleMockAuthorizationCodeHandler(sslSupport);
-        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(req, res, AUTHZ_CODE, originalState, convClientConfig);
+        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(AUTHZ_CODE, originalState);
 
         checkForBadStatusExpectations(oidcResult);
     }
@@ -264,7 +263,7 @@ public class AuthorizationCodeHandlerTest {
         });
 
         AuthorizationCodeHandler ach = new SimpleMockAuthorizationCodeHandler(sslSupport);
-        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(req, res, AUTHZ_CODE, originalState, convClientConfig);
+        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(AUTHZ_CODE, originalState);
 
         checkForBadStatusExpectations(oidcResult);
     }
@@ -335,7 +334,7 @@ public class AuthorizationCodeHandlerTest {
 
     class SimpleMockAuthorizationCodeHandler extends AuthorizationCodeHandler {
         public SimpleMockAuthorizationCodeHandler(SSLSupport sslsupt) {
-            super(sslsupt);
+            super(req, res, convClientConfig, sslsupt);
         }
 
         @Override

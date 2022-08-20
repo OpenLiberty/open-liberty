@@ -182,7 +182,7 @@ public class OIDCClientAuthenticatorUtil {
 
     ProviderAuthenticationResult redirectToServerOrProcessAuthorizationCode(HttpServletRequest req, HttpServletResponse res, ConvergedClientConfig clientConfig, String authzCode, String responseState) {
         ProviderAuthenticationResult oidcResult;
-        AuthorizationCodeHandler authzCodeHandler = new AuthorizationCodeHandler(sslSupport);
+        AuthorizationCodeHandler authzCodeHandler = new AuthorizationCodeHandler(req, res, clientConfig, sslSupport);
 
         if (authzCodeHandler.isAuthCodeReused(authzCode)) {
             // somehow a previously used code has been re-submitted, along
@@ -195,7 +195,7 @@ public class OIDCClientAuthenticatorUtil {
             oidcResult = handleRedirectToServer(req, res, clientConfig);
         } else {
             // confirm the code and go get the tokens if it's good.
-            oidcResult = authzCodeHandler.handleAuthorizationCode(req, res, authzCode, responseState, clientConfig);
+            oidcResult = authzCodeHandler.handleAuthorizationCode(authzCode, responseState);
         }
         return oidcResult;
     }
