@@ -20,6 +20,7 @@ fat.project: true
 tested.features:\
   restfulwsclient-3.0,\
   restfulwsclient-3.1,\
+  restfulws-3.1,\
   jsonb-2.0,\
   jsonb-3.0,\
   jsonp-2.0,\

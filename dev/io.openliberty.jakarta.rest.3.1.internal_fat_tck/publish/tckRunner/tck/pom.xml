@@ -64,7 +64,7 @@
         <jakarta.ws.rs.version>3.1.0</jakarta.ws.rs.version>
 
         <!-- TODO: update Arquillian BOM -->
-        <arquillian-bom.version>1.7.0.Alpha10</arquillian-bom.version>
+        <arquillian-bom.version>1.7.0.Alpha12</arquillian-bom.version>
         <junit-jupiter.version>5.7.2</junit-jupiter.version>
 
         <!-- Test Utilities -->
@@ -77,7 +77,7 @@
         <!-- TODO: OpenLiberty server -->
         <liberty.runtime.version>21.0.0.12-beta</liberty.runtime.version>
         <liberty-maven-plugin.version>3.3.4</liberty-maven-plugin.version>
-        <arquillian-liberty-jakarta.version>2.0.2</arquillian-liberty-jakarta.version>
+        <arquillian-liberty-jakarta.version>2.1.0</arquillian-liberty-jakarta.version>
         <jersey.version>3.0.5</jersey.version>
 
         <!-- By default, skip tests -->

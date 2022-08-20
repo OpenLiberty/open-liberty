@@ -14,7 +14,7 @@
                 <feature>componentTest-2.0</feature>
                 <feature>mpConfig-3.0</feature>
                 <feature>localConnector-1.0</feature>
-                <feature>arquillian-support-jakarta-2.0</feature>
+                <feature>arquillian-support-jakarta-2.1</feature>
         </featureManager>
 
     <include location="../fatTestPorts.xml" />

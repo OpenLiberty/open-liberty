@@ -11,7 +11,7 @@
         <feature>mpOpenTracing-3.0</feature>
         <feature>usr:opentracingMock-3.0</feature>
         <feature>mpRestClient-3.0</feature>
-        <feature>arquillian-support-jakarta-2.0</feature>
+        <feature>arquillian-support-jakarta-2.1</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />

@@ -14,8 +14,8 @@
 
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
 
-        <arquillian.version>1.7.0.Alpha9</arquillian.version>
-        <arquillian-wlp.version>2.0.0</arquillian-wlp.version>
+        <arquillian.version>1.7.0.Alpha12</arquillian.version>
+        <arquillian-wlp.version>2.1.0</arquillian-wlp.version>
 
         <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
