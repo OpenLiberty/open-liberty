@@ -90,6 +90,7 @@ instrument.disabled: false
 Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-cdi;${resteasy-version};EXACT}, \
   io/openliberty=${bin}/io/openliberty, \
+  org/jboss/resteasy/cdi=${bin}/org/jboss/resteasy/cdi, \
   META-INF=resources/META-INF
 
 -buildpath: \
