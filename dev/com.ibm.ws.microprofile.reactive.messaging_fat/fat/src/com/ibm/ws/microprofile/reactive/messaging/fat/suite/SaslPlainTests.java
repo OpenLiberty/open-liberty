@@ -31,8 +31,8 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.specia
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.xor.LibertyLoginModuleXorTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sasl_plain.KafkaSaslPlainTest;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.containers.TestContainerSuite;
 
 /**
  * Suite for tests which run against a TLS enabled kafka broker
@@ -46,7 +46,7 @@ import componenttest.containers.SimpleLogConsumer;
                 LibertyLoginModuleInvalidTest.class,
                 LibertyLoginModuleSpecialCharsTest.class,
 })
-public class SaslPlainTests {
+public class SaslPlainTests extends TestContainerSuite {
 
     public static final String ADMIN_USER = "admin";
     public static final String ADMIN_SECRET = generateSecret(ADMIN_USER);
@@ -54,12 +54,6 @@ public class SaslPlainTests {
     public static final String TEST_SECRET = generateSecret(TEST_USER);
     public static final String SPECIAL_USER = "specialchars";
     public static final String SPECIAL_SECRET = generateSecret("{test}^&*+=-$(");
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
 
     @ClassRule
     public static ExtendedKafkaContainer kafkaContainer = new ExtendedKafkaContainer()

@@ -33,8 +33,8 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.KafkaCust
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sharedLib.KafkaSharedLibTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tck.ReactiveStreamsTckTest;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.containers.TestContainerSuite;
 
 /**
  * Tests which run against a plaintext Kafka broker
@@ -57,13 +57,7 @@ import componenttest.containers.SimpleLogConsumer;
                 UseConfiguredTopicTest.class,
                 UseProducerRecordTopicTest.class,
 })
-public class PlaintextTests {
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
+public class PlaintextTests extends TestContainerSuite {
 
     @ClassRule
     public static ExtendedKafkaContainer kafkaContainer = new ExtendedKafkaContainer()

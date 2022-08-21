@@ -40,6 +40,8 @@ fat.test.databases: true
 # In this case, servlet-5.0 is added programmatically at runtime by the RepeatTests rule.
 tested.features: \
 	servlet-5.0
+	
+fat.test.container.images: kyleaure/postgres-test-table:3.0
 
 # io.openliberty.org.testcontainers bundle should have all compile time
 # dependences you need for a testcontainer enabled fat project.

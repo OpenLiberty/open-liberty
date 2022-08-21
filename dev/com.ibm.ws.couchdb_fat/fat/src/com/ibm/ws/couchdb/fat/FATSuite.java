@@ -18,19 +18,12 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.couchdb.fat.tests.CouchDBContainer;
 import com.ibm.ws.couchdb.fat.tests.TestCouchDbWar;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestCouchDbWar.class })
-public class FATSuite {
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
-
+public class FATSuite extends TestContainerSuite {
     // The Dockerfile for 'kyleaure/couchdb-ssl:1.0' can be found/rebuilt in the cloudant_fat project
     @ClassRule
     public static CouchDBContainer couchdb = new CouchDBContainer("kyleaure/couchdb-ssl:1.0")
