@@ -29,7 +29,8 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.injection-2.0, \
   io.openliberty.jakarta.activation-2.1
 -bundles=\
-  io.openliberty.mail.2.0.internal, \
+  io.openliberty.mail.2.1.internal, \
+  io.openliberty.org.eclipse.angus.mail.2.1, \
   com.ibm.ws.javamail.config
 -jars=io.openliberty.mail.2.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="com.sun.mail:jakarta.mail:2.0.0"
 kind=noship
