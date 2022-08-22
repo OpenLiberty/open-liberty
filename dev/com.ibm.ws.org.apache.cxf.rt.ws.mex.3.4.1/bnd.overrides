@@ -9,20 +9,20 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
+
 bVersion=1.0
+cxfVersion=3.4.1
 
 Bundle-ActivationPolicy: lazy
 
-cxfVersion=3.4.1
 Export-Package: \
- org.apache.cxf.*;version=${cxfVersion}
+  org.apache.cxf.*;version=${cxfVersion}
 
 Import-Package: \
- javax.xml.bind.*, \
- javax.xml.ws.*, \
- !org.springframework.*;resolution:=optional, \
- !org.apache.aries.*, \
- !org.osgi.service.blueprint.*, \
- org.apache.cxf.*;version="[3.2.4,4.0)", \
- *
-
+  javax.xml.bind.*, \
+  javax.xml.ws.*, \
+  !org.springframework.*;resolution:=optional, \
+  !org.apache.aries.*, \
+  !org.osgi.service.blueprint.*, \
+  org.apache.cxf.*;version="[3.2.4,4.0)", \
+  *

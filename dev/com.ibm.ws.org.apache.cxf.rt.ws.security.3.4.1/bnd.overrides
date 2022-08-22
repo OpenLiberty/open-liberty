@@ -9,13 +9,13 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
+
 bVersion=1.0
+cxfVersion=3.4.1
 
 WS-TraceGroup: WSSECURITY
 
 Bundle-ActivationPolicy: lazy
-
-cxfVersion=3.4.1
 
 Export-Package: \
   org.apache.cxf.ws.security.sts.provider.operation;version=${cxfVersion}, \
@@ -39,7 +39,7 @@ Export-Package: \
   org.apache.cxf.ws.security.sts.provider.model.utility;version=${cxfVersion}, \
   org.apache.cxf.ws.security.wss4j;version=${cxfVersion}, \
   org.apache.cxf.ws.security.tokenstore;version=${cxfVersion}
-  
+
 Import-Package:  \
   !org.apache.cxf.ws.mex.*,\
   !com.ctc.wstx.*,\
@@ -56,6 +56,5 @@ Import-Package:  \
   *
 
 DynamicImport-Package: \
- org.apache.cxf.*, \
- com.ctc.wstx.*
-
+  org.apache.cxf.*, \
+  com.ctc.wstx.*

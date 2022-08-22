@@ -8,11 +8,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-bindings-xml;3.4.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=bnd.overrides
 
 -sub: *.bnd
-
-
 
 instrument.classesIncludes: org/apache/cxf/*.class
 
@@ -22,8 +20,8 @@ cxfVersion=3.4.3
    @${repo;org.apache.cxf:cxf-rt-bindings-xml;${cxfVersion};EXACT}!/!*-INF/*, \
    META-INF=resources/META-INF
 
--buildpath: org.apache.cxf:cxf-rt-bindings-xml;strategy=exact;version=${cxfVersion},\
+-buildpath: \
+  org.apache.cxf:cxf-rt-bindings-xml;strategy=exact;version=${cxfVersion},\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core
-

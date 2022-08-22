@@ -8,19 +8,18 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-core;3.4.3}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=bnd.overrides
 
 -sub: *.bnd
 
-
-
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-core;3.4.3;EXACT}!/!*-INF/*,\
-   org/apache/cxf=${bin}/org/apache/cxf,\
-   META-INF=resources/META-INF
+  @${repo;org.apache.cxf:cxf-core;3.4.3;EXACT}!/!*-INF/*,\
+  org/apache/cxf=${bin}/org/apache/cxf,\
+  META-INF=resources/META-INF
 
 instrument.ffdc: false
-instrument.classesExcludes: org/apache/cxf/common/jaxb/*.class, \
+instrument.classesExcludes: \
+  org/apache/cxf/common/jaxb/*.class, \
   org/apache/cxf/service/invoker/*.class, \
   org/apache/cxf/phase/*.class
 
@@ -35,5 +34,3 @@ instrument.classesExcludes: org/apache/cxf/common/jaxb/*.class, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.websphere.org.osgi.service.cm;version=latest,\
   com.ibm.wsspi.org.osgi.core
-
-  
