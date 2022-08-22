@@ -51,11 +51,14 @@ public class ApplicationScopedOnCheckpointBeanWithConfigObjectProperties {
 
     private void check(String expected) {
         String actual = "";
+        int highestOrdinal = 0;
+
         Iterable<ConfigSource> configSources = config.getConfigSources();
         for (Iterator<ConfigSource> iSources = configSources.iterator(); iSources.hasNext();) {
             ConfigSource source = iSources.next();
             String value = source.getProperties().get("config_object_properties_app_scope_key");
-            if (value != null) {
+            if (source.getOrdinal() > highestOrdinal && value != null) {
+                highestOrdinal = source.getOrdinal();
                 actual = value;
             }
         }

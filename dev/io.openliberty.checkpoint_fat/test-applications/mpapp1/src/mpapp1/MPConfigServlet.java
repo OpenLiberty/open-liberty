@@ -122,14 +122,12 @@ public class MPConfigServlet extends FATServlet {
         appScopeOnCheckpointWithConfigObjectProperties.appScopeDefaultValueTest();
     }
 
-    //@Test
-    //The test is failing to get the environment variable property value.
+    @Test
     public void configObjectPropertiesAppScopeEnvValueTest() {
         appScopeOnCheckpointWithConfigObjectProperties.appScopeEnvValueTest();
     }
 
-    //@Test
-    //The test is failing to get the environment variable property value.
+    @Test
     public void configObjectPropertiesAppScopeEnvValueChangeTest() {
         appScopeOnCheckpointWithConfigObjectProperties.appScopeEnvValueChangeTest();
     }
