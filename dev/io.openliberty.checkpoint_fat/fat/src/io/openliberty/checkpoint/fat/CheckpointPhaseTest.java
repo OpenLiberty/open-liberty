@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodName;
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -126,7 +126,7 @@ public class CheckpointPhaseTest {
 
     @Before
     public void setConsoleLogName() {
-        server.setConsoleLogName(getTestMethodName(testName));
+        server.setConsoleLogName(getTestMethodNameOnly(testName));
     }
 
     @After

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodName;
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -61,7 +61,7 @@ public class LogsVerificationTest {
     @Test
     public void testMessagesAndTraceLogsCreatedNewOnCheckpointRestore() throws Exception {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer(getTestMethodName(testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         server.checkpointRestore();
 
@@ -101,7 +101,7 @@ public class LogsVerificationTest {
         FATSuite.configureBootStrapProperties(server, properties);
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer(getTestMethodName(testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         server.checkpointRestore();
 
@@ -137,7 +137,7 @@ public class LogsVerificationTest {
     @Test
     public void testRestoreWorksAfterMessagesLogIsDeleted() throws Exception {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer(getTestMethodName(testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
         assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
 
         RemoteFile messagesLog = server.getDefaultLogFile();
@@ -154,7 +154,7 @@ public class LogsVerificationTest {
     @Test
     public void testVariableSourceDirUpdateDuringRestore() throws Exception {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer(getTestMethodName(testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         server.copyFileToLibertyServerRoot("varfiles/server.env");
 

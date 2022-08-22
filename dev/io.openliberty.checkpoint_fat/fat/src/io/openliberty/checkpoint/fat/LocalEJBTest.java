@@ -11,6 +11,7 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -96,7 +97,7 @@ public class LocalEJBTest extends FATServletClient {
                                      }
                                  }
                              });
-        server.startServer(getTestMethodSimpleName() + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
     }
 
     @Test
