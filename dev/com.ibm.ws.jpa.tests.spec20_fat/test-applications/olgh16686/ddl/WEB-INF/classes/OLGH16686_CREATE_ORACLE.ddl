@@ -1,3 +1,0 @@
-CREATE TABLE ${schemaname}.ElemCollEntityOLGH16686 (id NUMBER NOT NULL, PRIMARY KEY (id));
-CREATE TABLE ${schemaname}.EntMapDateTemporal (ELEMCOLLENTITYOLGH16686_ID NUMBER, mykey DATE NOT NULL, temporalValue DATE);
-CREATE INDEX ${schemaname}.I_NTMPPRL_ELEME_ID ON ${schemaname}.EntMapDateTemporal (ELEMCOLLENTITYOLGH16686_ID);
