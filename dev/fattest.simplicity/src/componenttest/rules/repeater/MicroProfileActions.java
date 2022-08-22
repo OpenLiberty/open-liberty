@@ -215,7 +215,7 @@ public class MicroProfileActions {
                                                           "mpOpenTracing-3.0",
                                                           "mpRestClient-3.0" };
 
-    private static final String[] MP60_FEATURES_ARRAY = { /* "microProfile-6.0", */
+    private static final String[] MP60_FEATURES_ARRAY = { "microProfile-6.0",
                                                           "servlet-6.0",
                                                           "cdi-4.0",
                                                           "restfulWS-3.1",
