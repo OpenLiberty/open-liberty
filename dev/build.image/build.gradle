@@ -106,7 +106,24 @@ task copySwidFixpackTagToBuildImage (type:Copy) {
            tokens: [PRODUCT_VERSION: bnd.libertyRelease])
 }
 
+task publishEmptyTemplatesFolders {
+  dependsOn jar
+  outputs.dirs(buildImage.file('wlp/templates/servers/defaultServer/apps'),
+               buildImage.file('wlp/templates/servers/defaultServer/dropins'))
+  doLast {
+    buildImage.mkdir('wlp/templates/servers/defaultServer/apps')
+    buildImage.mkdir('wlp/templates/servers/defaultServer/dropins')
+  }
+}
+
+task publishTemplates (type:Copy) {
+    dependsOn publishEmptyTemplatesFolders
+    from project.file('publish/wlp/templates')
+    into project.file('wlp/templates')
+}
+
 assemble { 
+    dependsOn publishTemplates
     dependsOn copyPropertiesToBuildImage
     dependsOn addServiceFingerprint
     dependsOn copyReadmeToBuildImage
@@ -269,10 +286,7 @@ def gaPublicFeatures() {
 }
 
 def gaAndBetaPublicFeatures() {
-    String features = ""
-    gaFeatures(false).each {
-        features += '<feature>' + it + '</feature>\n'
-    }
+    String features = gaPublicFeatures()
     betaFeatures().each {
         features += '<feature>' + it + '</feature>\n'
     }
@@ -280,48 +294,19 @@ def gaAndBetaPublicFeatures() {
 }
 
 def gaAndBetaAndNoShipPublicFeatures() {
-    String features = ""
-    gaFeatures(false).each {
-        features += '<feature>' + it + '</feature>\n'
-    }
-    betaFeatures().each {
-        features += '<feature>' + it + '</feature>\n'
-    }
+    String features = gaAndBetaPublicFeatures()
     noShipFeatures().each {
         features += '<feature>' + it + '</feature>\n'
     }
     features
 }
 
-def webProfile8Features() {
-    String features = project.file('profiles/webProfile8/features.xml').readLines()
-    features
-}
-
-def webProfile9Features() {
-    String features = project.file('profiles/webProfile9/features.xml').readLines()
-    features
-}
-
-def javaee8Features() {
-    String features = project.file('profiles/javaee8/features.xml').readLines()
-    features
-}
-
-def jakartaee9Features() {
-    String features = project.file('profiles/jakartaee9/features.xml').readLines()
-    features
-}
-
-def microProfile4Features() {
-    String features = project.file('profiles/microProfile4/features.xml').readLines()
-    features
-}
-
-def microProfile5Features() {
-    String features = project.file('profiles/microProfile5/features.xml').readLines()
-    features
-}
+def webProfile8Features() { project.file("profiles/webProfile8/features.xml").readLines() }
+def webProfile9Features() { project.file("profiles/webProfile9/features.xml").readLines() }
+def javaee8Features() { project.file("profiles/javaee8/features.xml").readLines() }
+def jakartaee9Features() { project.file("profiles/jakartaee9/features.xml").readLines() }
+def microProfile4Features() { project.file("profiles/microProfile4/features.xml").readLines() }
+def microProfile5Features() { project.file("profiles/microProfile5/features.xml").readLines() }
 
 def getFeaturePath(feature) {
     def file = getFeaturePath(feature, "")
@@ -724,7 +709,17 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
     // Generate checksums
     task genZipChecksums() {
-        dependsOn zipOpenLibertyDev, zipOpenLibertyAll, zipOpenLiberty, zipOpenLibertyKernel, zipOpenLibertyWebProfile8, zipOpenLibertyJavaee8, zipOpenLibertyJakartaee9, zipOpenLibertyWebProfile9, zipOpenLibertyMicroProfile4, zipOpenLibertyMicroProfile5, zipOpenLibertyBeta
+        dependsOn zipOpenLibertyDev
+        dependsOn zipOpenLibertyAll
+        dependsOn zipOpenLiberty
+        dependsOn zipOpenLibertyKernel
+        dependsOn zipOpenLibertyWebProfile8
+        dependsOn zipOpenLibertyJavaee8
+        dependsOn zipOpenLibertyJakartaee9
+        dependsOn zipOpenLibertyWebProfile9
+        dependsOn zipOpenLibertyMicroProfile4
+        dependsOn zipOpenLibertyMicroProfile5
+        dependsOn zipOpenLibertyBeta
         doLast {
           generateZipChecksums(ant)
           ant.calcZipChecksums(installRoot:"${distsDir}") {}
