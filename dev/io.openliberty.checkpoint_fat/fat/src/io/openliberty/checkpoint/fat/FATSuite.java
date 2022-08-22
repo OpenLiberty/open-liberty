@@ -48,7 +48,8 @@ import componenttest.topology.impl.LibertyServer;
                 MPFaultToleranceTimeoutTest.class,
                 ValidFeaturesTest.class,
                 RESTclientTest.class,
-                DB2Test.class
+                DB2Test.class,
+                JNDITest.class
 })
 public class FATSuite extends TestContainerSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {
