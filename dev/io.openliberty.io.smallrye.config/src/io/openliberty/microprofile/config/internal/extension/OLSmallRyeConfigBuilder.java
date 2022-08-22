@@ -22,6 +22,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.config.internal.extension.OLSmallRyeConfigExtension.UnpauseRecording;
@@ -71,17 +72,22 @@ public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
 
     @Override
     @Trivial
+    @FFDCIgnore(Throwable.class) // Ignoring Throwable because try-with-resources block adds implicit catch(Throwable) which we want to ignore.
     public SmallRyeConfig build() {
         // Do not record the configuration values read during the super.build(). Start recording the values read after this method.
         // We want to record the configuration values only when the application reads it, therefore pausing it.
         try (UnpauseRecording unpauseRecording = OLSmallRyeConfigExtension.pauseRecordingReads()) {
-            SmallRyeConfig config = super.build();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                // Note: SMALLRYE_PROFILE gets internally mapped to also pick up the standard Config.PROFILE
-                String profileName = config.getRawValue(SmallRyeConfig.SMALLRYE_CONFIG_PROFILE);
-                Tr.event(this, tc, "Config created with profile: " + profileName, config);
-            }
-            return config;
+            return doBuild();
         }
+    }
+
+    private SmallRyeConfig doBuild() {
+        SmallRyeConfig config = super.build();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            // Note: SMALLRYE_PROFILE gets internally mapped to also pick up the standard Config.PROFILE
+            String profileName = config.getRawValue(SmallRyeConfig.SMALLRYE_CONFIG_PROFILE);
+            Tr.event(this, tc, "Config created with profile: " + profileName, config);
+        }
+        return config;
     }
 }

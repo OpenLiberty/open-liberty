@@ -20,6 +20,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.smallrye.config.inject.ConfigExtension;
@@ -56,6 +57,7 @@ public class OLSmallRyeConfigExtension extends ConfigExtension implements Extens
     private static final UnpauseRecording unpauseRecordingCloseable = new UnpauseRecording(true);
 
     @Override
+    @FFDCIgnore(Throwable.class) // Ignoring Throwable because try-with-resources block adds implicit catch(Throwable) which we want to ignore
     protected void validate(@Observes AfterDeploymentValidation adv) {
         // Do not record the configuration values read during the super.validate(). Start recording the values read after this method.
         // We want to record the configuration values only when the application reads it, therefore pausing it
