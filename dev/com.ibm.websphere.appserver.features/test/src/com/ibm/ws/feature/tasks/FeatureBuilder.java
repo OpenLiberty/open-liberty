@@ -25,7 +25,6 @@ import aQute.bnd.osgi.Builder;
 
 public class FeatureBuilder extends Builder {
 
-
     public Parameters getSubsystemContent() {
         Parameters p = getParameters("Subsystem-Content");
         return p;
@@ -61,28 +60,28 @@ public class FeatureBuilder extends Builder {
     }
 
     public Set<String> getAutoFeatures() {
-    	Set<Entry<String, Attrs>> rawString = getContent(FeatureBnd.IBM_PROVISION_CAPABILITY);
-    	Set<String> processedAutoFeatures = new HashSet<String>();
-    	String OSGI_PREFIX = "osgi.identity=";
-    	Iterator<Entry<String, Attrs>> itr = rawString.iterator();
-    	String filterString = rawString.toString();
-		String[] messyAutoFeatures = filterString.split(OSGI_PREFIX);
-		for (String messyAutoFeature : messyAutoFeatures) {
-			if (!messyAutoFeature.startsWith("com") && !messyAutoFeature.startsWith("io.openliberty"))
-				continue;
+        Set<Entry<String, Attrs>> rawString = getContent(FeatureBnd.IBM_PROVISION_CAPABILITY);
+        Set<String> processedAutoFeatures = new HashSet<String>();
+        String OSGI_PREFIX = "osgi.identity=";
+        Iterator<Entry<String, Attrs>> itr = rawString.iterator();
+        String filterString = rawString.toString();
+        String[] messyAutoFeatures = filterString.split(OSGI_PREFIX);
+        for (String messyAutoFeature : messyAutoFeatures) {
+            if (!messyAutoFeature.startsWith("com") && !messyAutoFeature.startsWith("io.openliberty"))
+                continue;
 
-			processedAutoFeatures.add(trimAutofeatureString(messyAutoFeature));
-		}
+            processedAutoFeatures.add(trimAutofeatureString(messyAutoFeature));
+        }
 
-    	return processedAutoFeatures;
+        return processedAutoFeatures;
 
     }
 
     private String trimAutofeatureString(String autoFeature) {
-    	if (autoFeature.indexOf(")") > 0)
-    		return autoFeature.substring(0, autoFeature.indexOf(")"));
-    	else
-    		return autoFeature;
+        if (autoFeature.indexOf(")") > 0)
+            return autoFeature.substring(0, autoFeature.indexOf(")"));
+        else
+            return autoFeature;
 
     }
 

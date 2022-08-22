@@ -18,82 +18,81 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class FeatureFileList implements Iterable<File>{
+public class FeatureFileList implements Iterable<File> {
 
-	private String dirRoot;
-	private List<File> featureList = new ArrayList<File>();
-	private boolean isInit = false;
+    private final String dirRoot;
+    private final List<File> featureList = new ArrayList<File>();
+    private boolean isInit = false;
 
-	public FeatureFileList(String root) {
-		this.dirRoot = root;
+    public FeatureFileList(String root) {
+        this.dirRoot = root;
 
-	}
+    }
 
-	public synchronized void populateList() {
+    public synchronized void populateList() {
 
-		if (isInit)
-			return;
+        if (isInit)
+            return;
 
+        Queue<File> directories = new LinkedList<File>();
 
-		Queue<File> directories = new LinkedList<File>();
+        File root = new File(this.dirRoot);
 
-		File root = new File(this.dirRoot);
+        directories.add(root);
 
-		directories.add(root);
+        while (!directories.isEmpty()) {
 
-		while (!directories.isEmpty()) {
+            File nextDirectory = directories.poll();
+            //System.out.println("inspecting directory: " + nextDirectory.getName());
+            File[] nextDirectoryListing = nextDirectory.listFiles();
+            if (nextDirectoryListing == null)
+                continue;
 
-			File nextDirectory = directories.poll();
-			//System.out.println("inspecting directory: " + nextDirectory.getName());
-			File[] nextDirectoryListing = nextDirectory.listFiles();
-			if (nextDirectoryListing == null)
-				continue;
+            for (File file : nextDirectoryListing) {
+                if (file.isDirectory()) { //Going down just one step.
+                    for (File child : file.listFiles()) {
+                        if (child.getName().endsWith(".feature")) {
+                            this.featureList.add(child);
+                        }
+                    }
+                    directories.add(file); //use this if we want to search every directory and subdirectory
+                    //By adding the directories we find into the queue of all directories
 
-			for (File file : nextDirectoryListing) {
-				if (file.isDirectory()) { //Going down just one step.
-					for (File child : file.listFiles()) {
-						if (child.getName().endsWith(".feature")) {
-							this.featureList.add(child);
-						}
-					}
-					directories.add(file); //use this if we want to search every directory and subdirectory
-					//By adding the directories we find into the queue of all directories
+                }
+            }
+        }
 
-				}
-			}
-		}
+        isInit = true;
+    }
 
-		isInit = true;
-	}
+    @Override
+    public Iterator<File> iterator() {
+        Iterator<File> itr = new Iterator<File>() {
+            private int current = 0;
 
-	@Override
-	public Iterator<File> iterator() {
-		Iterator<File> itr = new Iterator<File>() {
-			private int current = 0;
+            @Override
+            public void remove() {
+                return;
+            }
 
-			@Override
-			public void remove() {
-				return;
-			}
+            @Override
+            public boolean hasNext() {
+                if (!isInit)
+                    populateList();
 
-			@Override
-			public boolean hasNext() {
-				if (!isInit)
-					populateList();
+                return ((current < featureList.size()) && !featureList.isEmpty());
+            }
 
-				return ((current < featureList.size()) && !featureList.isEmpty());
-			}
+            @Override
+            public File next() {
+                if (!isInit)
+                    populateList();
 
-			@Override
-			public File next() {
-				if (!isInit)
-					populateList();
+                return featureList.get(current++);
+            }
+        };
 
-				return featureList.get(current++);
-			}
-		};
+        return itr;
 
-		return itr;
-
-	}
+    }
 }
