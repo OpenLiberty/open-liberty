@@ -33,8 +33,7 @@ tested.features=\
   jsonb-2.0,\
   jsonb-3.0,\
   restfulws-3.1,\
-  restfulwsclient-3.1,\
-  servlet-6.0
+  restfulwsclient-3.1
 
 -buildpath: \
     com.ibm.ws.microprofile.openapi;version=latest, \

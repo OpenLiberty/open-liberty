@@ -12,6 +12,7 @@
         <feature>restfulWS-3.1</feature>
         <feature>localConnector-1.0</feature>
         <feature>mpOpenAPI-3.1</feature>
+        <feature>servlet-6.0</feature>
         <feature>arquillian-support-jakarta-2.1</feature>
     </featureManager>
     <javaPermission className="java.security.AllPermission"/>
