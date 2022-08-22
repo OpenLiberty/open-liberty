@@ -184,6 +184,19 @@ public class FATServletClient {
      * @return test method name without the RepeatTests suffix.
      */
     public String getTestMethodSimpleName() {
+        return getTestMethodSimpleName(testName);
+    }
+
+    /**
+     * Returns the test method name without the RepeatTests suffix.
+     *
+     * For example, when using RepeatTests with EE7_FEATURES, the suffix _EE7_FEATURES is added
+     * to provide unique test names for junit reporting purposes. The simple test method name
+     * dose not include the suffix.
+     *
+     * @return test method name without the RepeatTests suffix.
+     */
+    public static String getTestMethodSimpleName(TestName testName) {
         String testMethodName = testName.getMethodName();
         String currentAction = RepeatTestFilter.getRepeatActionsAsString();
         if (currentAction != null && testMethodName.endsWith(currentAction)) {
