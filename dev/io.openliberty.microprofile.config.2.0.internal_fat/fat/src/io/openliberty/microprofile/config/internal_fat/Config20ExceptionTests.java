@@ -37,7 +37,6 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInConstructorBean;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInMethodBean;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.BadConverter;
-import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.TypeWithBadConverter;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.TypeWithNoConverter;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.ValidConverter;
 
@@ -49,7 +48,7 @@ public class Config20ExceptionTests extends FATServletClient {
     public static final String SERVER_NAME = "Config20ExceptionServer";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST, MicroProfileActions.MP50);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP41, MicroProfileActions.MP50);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
