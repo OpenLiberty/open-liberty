@@ -274,6 +274,9 @@ public class CacheHashMap extends BackedHashMap {
     @FFDCIgnore(NoSuchElementException.class)
     private void doInvalidations() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+        
+        if (isCacheClosed(trace))
+            return;        
 
         try {
             long now = System.currentTimeMillis();
@@ -903,12 +906,9 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
-     * @see com.ibm.ws.session.store.common.BackedHashMap#performInvalidation()
-     */
-    @Override
-    protected void performInvalidation() {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-
+     * Checking new cache instance if is closed due to either shutting down or changing configuration
+     */   
+    protected boolean isCacheClosed(boolean trace) {
         // HTTP sessions code can end up checking an old instance that was closed due to a config update. If so, skip this method.
         boolean isClosed;
         if (trace && tc.isDebugEnabled())
@@ -918,7 +918,18 @@ public class CacheHashMap extends BackedHashMap {
 
         if (trace && tc.isDebugEnabled())
             tcReturn(tcSessionMetaCache, "isClosed", isClosed);
-        if (isClosed)
+
+        return isClosed;        
+    }
+    
+    /**
+     * @see com.ibm.ws.session.store.common.BackedHashMap#performInvalidation()
+     */
+    @Override
+    protected void performInvalidation() {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        if (isCacheClosed(trace))
             return;
 
         long now = System.currentTimeMillis();
@@ -1091,6 +1102,9 @@ public class CacheHashMap extends BackedHashMap {
     @FFDCIgnore(Exception.class) //manually logged or is NoSuchElementException which we want to ignore
     private void processInvalidListeners() {
         final boolean trace = com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled();
+        
+        if (isCacheClosed(trace))
+            return;
 
         String appName = getIStore().getId();
 
