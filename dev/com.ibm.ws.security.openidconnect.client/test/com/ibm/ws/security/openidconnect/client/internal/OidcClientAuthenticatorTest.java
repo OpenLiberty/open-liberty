@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +33,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.openidconnect.clients.common.AuthorizationCodeHandler;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
@@ -432,27 +430,6 @@ public class OidcClientAuthenticatorTest {
         public mockOidcClientUtil(HttpException e) {
             super();
             httpe = e;
-        }
-
-        //@Override
-        @Override
-        public HashMap<String, String> getTokensFromAuthzCode(String tokenEnpoint,
-                String clientId,
-                @Sensitive String clientSecret,
-                String redirectUri,
-                String code,
-                String grantType,
-                SSLSocketFactory sslSocketFactory,
-                boolean b,
-                String authMethod,
-                String resources, HashMap<String, String> customParams, boolean useJvmProps) throws HttpException, IOException {
-            if (ioe != null) {
-                throw ioe;
-            }
-            if (httpe != null) {
-                throw httpe;
-            }
-            return new HashMap<String, String>();
         }
 
     }

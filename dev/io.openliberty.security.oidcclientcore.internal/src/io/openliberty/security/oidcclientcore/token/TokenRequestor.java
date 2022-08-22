@@ -74,6 +74,7 @@ public class TokenRequestor {
         this.params = params;
     }
 
+    @Sensitive
     private List<NameValuePair> getBasicParams() {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair(TokenConstants.GRANT_TYPE, grantType));
@@ -104,13 +105,13 @@ public class TokenRequestor {
     public TokenResponse requestTokens() throws Exception {
         Map<String, Object> tokenEndpointResponse = postToTokenEndpoint();
         String tokenEndpointEntity = oidcClientHttpUtil.extractEntityFromTokenResponse(tokenEndpointResponse);
-        Map<String, String> tokens = getTokensFromJsonString(tokenEndpointEntity);
-        return new TokenResponse(tokens.get(TokenConstants.ID_TOKEN), tokens.get(TokenConstants.ACCESS_TOKEN), tokens.get(TokenConstants.REFRESH_TOKEN));
+        JSONObject json = JSONObject.parse(tokenEndpointEntity);
+        Map<String, String> tokens = getTokensFromJson(json);
+        return new TokenResponse(json, tokens.get(TokenConstants.ID_TOKEN), tokens.get(TokenConstants.ACCESS_TOKEN), tokens.get(TokenConstants.REFRESH_TOKEN));
     }
 
     private Map<String, Object> postToTokenEndpoint() throws Exception {
-        return oidcClientHttpUtil.postToEndpoint(
-                                                 tokenEndpoint,
+        return oidcClientHttpUtil.postToEndpoint(tokenEndpoint,
                                                  params,
                                                  clientId,
                                                  clientSecret,
@@ -122,11 +123,9 @@ public class TokenRequestor {
                                                  useSystemPropertiesForHttpClientConnections);
     }
 
-    private Map<String, String> getTokensFromJsonString(String jsonString) throws Exception {
+    private Map<String, String> getTokensFromJson(JSONObject json) throws Exception {
         Map<String, String> tokens = new HashMap<>();
         List<String> tokenTypes = Arrays.asList(TokenConstants.TOKEN_TYPES);
-
-        JSONObject json = JSONObject.parse(jsonString);
 
         @SuppressWarnings("unchecked")
         Iterator<String> iterator = json.keySet().iterator();
@@ -143,7 +142,7 @@ public class TokenRequestor {
 
     public static class Builder {
 
-        private final String grantType = TokenConstants.AUTHORIZATION_CODE;
+        private String grantType = TokenConstants.AUTHORIZATION_CODE;
 
         private final String tokenEndpoint;
         private final String clientId;
@@ -179,6 +178,11 @@ public class TokenRequestor {
 
         public Builder authMethod(String authMethod) {
             this.authMethod = authMethod;
+            return this;
+        }
+
+        public Builder grantType(String grantType) {
+            this.grantType = grantType;
             return this;
         }
 
