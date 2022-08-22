@@ -13,12 +13,31 @@
 bVersion=1.0
 bSymbolicName=io.openliberty.wsoc.1.0.internal
 
+# -dsannotations: io.openliberty.wsoc.servercontainer10.ServerContainerImplFactory10
+
 Bundle-Name: WebSocket
 Bundle-SymbolicName: io.openliberty.wsoc.1.0.internal
 Bundle-Description: WebSocket, version ${bVersion}
 
-Export-Package: \
- io.openliberty.wsoc.speclevel
+jakartaeeMe:true
 
--buildpath: \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+# Register a marker service to enable 1.1 WebSocket incompatibilities.
+Service-Component: \
+  io.openliberty.wsoc.servercontainer10; \
+    implementation:=cio.openliberty.wsoc.servercontainer10.ServerContainerImplFactory10; \
+    provide:=com.ibm.ws.wsoc.servercontainer.ServletContainerFactory; \
+    configuration-policy:=ignore;\
+    immediate:=true;\
+    properties:="service.vendor=IBM"
+
+Export-Package: \
+ io.openliberty.wsoc.speclevel,\
+ io.openliberty.wsoc.servercontainer10
+
+ -buildpath: \
+ 	com.ibm.ws.wsoc;version=latest,\
+ 	com.ibm.websphere.javaee.websocket.1.0;version=latest, \
+ 	com.ibm.ws.webcontainer;version=latest, \
+ 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+ 	com.ibm.wsspi.org.osgi.service.component.annotations, \
+ 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

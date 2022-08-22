@@ -36,7 +36,6 @@ public class EchoServerEP {
 
     @OnMessage
     public String echo(String input) {
-
         return input;
     }
 

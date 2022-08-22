@@ -37,6 +37,8 @@ import com.ibm.ws.wsoc.WebSocketVersionServiceManager;
 import com.ibm.ws.wsoc.WsocUpgradeHandler;
 import com.ibm.ws.wsoc.util.Utils;
 
+import com.ibm.ws.wsoc.servercontainer.ServerContainerExt;
+
 /**
  *
  */
@@ -79,7 +81,7 @@ public class WsocHandlerImpl implements WsocHandler {
     }
 
     private boolean isValidContainer(Object wsocContainer) {
-        if (wsocContainer instanceof com.ibm.ws.wsoc.external.ServerContainerExt) {
+        if (wsocContainer instanceof com.ibm.ws.wsoc.servercontainer.ServerContainerExt) {
             return true;
         } else {
             return false;

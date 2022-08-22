@@ -29,6 +29,7 @@ import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebBrowserFactory;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
+import basic.war.UpgradeServlet;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -39,6 +40,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 import io.openliberty.wsoc.tests.all.TimeOutTest;
+import io.openliberty.wsoc.tests.all.UpgradeTest;
 import io.openliberty.wsoc.tests.all.UserPropertiesTest;
 import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerControl;
@@ -47,7 +49,7 @@ import io.openliberty.wsoc.util.wsoc.WsocTest;
 
 
 /**
- *  WebSocket 2.1 Tests 
+ *  WebSocket 2.1 Tests
  */
 @RunWith(FATRunner.class)
 public class Basic21Test {
@@ -64,9 +66,10 @@ public class Basic21Test {
     private static WsocTest wt = null;
     private static TimeOutTest timeout = null;
     private static UserPropertiesTest userprop = null;
+    private static UpgradeTest upgrade = null;
 
     private static final Logger LOG = Logger.getLogger(Basic21Test.class.getName());
-    
+
     private static final String BASIC_WAR_NAME = "basic21";
 
     @BeforeClass
@@ -91,6 +94,7 @@ public class Basic21Test {
         wt = new WsocTest(LS, false);
         timeout = new TimeOutTest(wt);
         userprop = new UserPropertiesTest(wt);
+        upgrade = new UpgradeTest(wt);
         bwst.setUp();
     }
 
@@ -158,17 +162,10 @@ public class Basic21Test {
         return response;
     }
 
-    //
-    //
-    //  ANNOTATED TESTS
-    //
-    //
-
-
     /*
      * The four tests below are used to test negative and zero timeouts
-     * by confirming the "No timeout enabled" string is found in the logs. 
-     * Spec clarification as part of 2.1  
+     * by confirming the "No timeout enabled" string is found in the logs.
+     * Spec clarification as part of 2.1
      * https://github.com/jakartaee/websocket/issues/382
      * SKIPPED DUE TO Defect 291298
      * @Mode(TestMode.LITE)
@@ -228,5 +225,17 @@ public class Basic21Test {
     @Test
     public void testSSCUserPropertiesOnClient() throws Exception {
         this.runAsLSAndVerifyResponse("UserPropertiesTest", "testUserPropertiesOnClient");
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testUpgradeViaServletToWS() throws Exception {
+        upgrade.testUpgradeViaServletToWS();
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testSSCUpgrade() throws Exception {
+        this.runAsLSAndVerifyResponse("UpgradeTest", "testUpgradeViaServletToWS");
     }
 }

@@ -16,15 +16,18 @@
 bVersion=1.0
 bSymbolicName=com.ibm.ws.wsoc
 
+-dsannotations: com.ibm.ws.wsoc.ServiceManager
+
 app-resources= \
   META-INF/services/javax.websocket.server.ServerEndpointConfig$Configurator | \
   META-INF/services/javax.websocket.ContainerProvider
-  
+
 Export-Package: \
   com.ibm.ws.wsoc.external, \
   com.ibm.ws.wsoc.outbound, \
   com.ibm.ws.wsoc.injection, \
   com.ibm.ws.wsoc, \
+  com.ibm.ws.wsoc.servercontainer, \
   com.ibm.websphere.wsoc, \
   com.ibm.ws.wsoc.configurator.*;thread-context=true
 
@@ -33,13 +36,14 @@ Import-Package: \
   !com.ibm.ws.kernel.boot.cmdline, \
   io.openliberty.wsoc.speclevel, \
   *
-   
+
 Private-Package: \
   com.ibm.ws.wsoc, \
   com.ibm.ws.wsoc.impl, \
   com.ibm.ws.wsoc.util, \
-  com.ibm.ws.wsoc.internal.resources  
-    
+  com.ibm.ws.wsoc.internal.resources,\
+  com.ibm.ws.wsoc.servercontainer.v10;
+
 Service-Component: \
   com.ibm.ws.wsock.initializer; \
     implementation:=com.ibm.ws.wsoc.WebSocketServletContainerInitializer; \
@@ -64,8 +68,9 @@ Service-Component: \
     configuration-policy:=ignore;\
     immediate:=true;\
     websocketFactoryService='com.ibm.ws.wsoc.external.WebSocketFactory(service.vendor=IBM)'; \
-    dynamic:='websocketFactoryService'; \
-    optional:='websocketFactoryService'; \
+    servletContainerFactoryService='com.ibm.ws.wsoc.servercontainer.ServletContainerFactory(service.vendor=IBM)'; \
+    dynamic:='websocketFactoryService,servletContainerFactoryService'; \
+    optional:='websocketFactoryService,servletContainerFactoryService'; \
     properties:="service.vendor=IBM", \
   com.ibm.ws.wsoc.outbound.wsocOutbound;\
     implementation:=com.ibm.ws.wsoc.outbound.WsocOutboundChain;\
@@ -88,7 +93,7 @@ Service-Component: \
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \
   META-INF=resources/META-INF
-  
+
 
 instrument.classesExcludes: \
   com.ibm.ws.wsoc.Utils.class, \

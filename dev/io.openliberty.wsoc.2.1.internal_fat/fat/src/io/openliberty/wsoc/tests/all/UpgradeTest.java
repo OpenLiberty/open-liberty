@@ -28,33 +28,23 @@ import junit.framework.Assert;
  * Contains test details (such as client endpoint, server uri endpoint, input, and expected output).
  * These test are invoked by Basic21Test class. 
  */
-public class TimeOutTest {
+public class UpgradeTest {
 
     private WsocTest wsocTest = null;
 
-    public TimeOutTest(WsocTest test) {
+    public UpgradeTest(WsocTest test) {
         this.wsocTest = test;
     }
 
     /*
      * ServerEndpoint - @see AnnotatedServerEP - ByteBufferTest
-    public void testZeroTimeOut() throws Exception {
-
-        String[] input1 = { "Text1" };
-        String[] output1 = { "0" }; // "output" here is actually set in the onClose on the Client side
-        //server endpoint uri is /annotatedByteArray/{boolean-var}
-        String uri = "/basic21/zeroTimeout";
-        wsocTest.runEchoTest(new ClientHelper.BasicClientEP(input1), uri, output1);
-
-    }
      */
-    
-    public void testNegativeoTimeOut() throws Exception {
+    public void testUpgradeViaServletToWS() throws Exception {
 
-        String[] input1 = { "Text1" };
-        String[] output1 = { "-12" }; // "output" here is actually set in the onClose on the Client side
+        String[] input1 = { "echoValue" };
+        String[] output1 = { "echoValue" };
         //server endpoint uri is /annotatedByteArray/{boolean-var}
-        String uri = "/basic21/negativeTimeout";
+        String uri = "/basic21/upgradeEcho";
         wsocTest.runEchoTest(new ClientHelper.BasicClientEP(input1), uri, output1);
 
     }
