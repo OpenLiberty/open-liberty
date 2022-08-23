@@ -20,7 +20,7 @@
 
   <include location="../fatTestPorts.xml"/>
     
-  <application location="MPContextProp1_3_App.war"/>
+  <application location="MPContextProp1_3_EE9_App.war"/>
 
   <!-- For processing of custom thread context providers that are defined in META-INF/services -->
   <bell>
@@ -30,9 +30,9 @@
   </bell>
 
   <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
-  <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_3_App.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
-  <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_3_App.war" className="java.lang.RuntimePermission" name="modifyThread"/>
-  <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_3_App.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
-  <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_3_App.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+  <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_3_EE9_App.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_3_EE9_App.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+  <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_3_EE9_App.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+  <javaPermission codebase="${server.config.dir}/apps/MPContextProp1_3_EE9_App.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
 
 </server>
