@@ -72,7 +72,7 @@ public class OLSmallRyeConfigExtension extends ConfigExtension implements Extens
      * @return Returns a closeable that is used to unpause recording of reads.
      */
     static UnpauseRecording pauseRecordingReads() {
-        if (phase == null || phase.restored() || !recordingPaused.get().compareAndSet(false, true)) {
+        if (phase.restored() || !recordingPaused.get().compareAndSet(false, true)) {
             return noOpCloseable;
         }
         return unpauseRecordingCloseable;
@@ -83,7 +83,7 @@ public class OLSmallRyeConfigExtension extends ConfigExtension implements Extens
      * @return Returns true if recording of config reads is enabled, otherwise false.
      */
     public static boolean isRecording() {
-        if (phase == null || phase.restored()) {
+        if (phase.restored()) {
             return false;
         }
         return !recordingPaused.get().get();
