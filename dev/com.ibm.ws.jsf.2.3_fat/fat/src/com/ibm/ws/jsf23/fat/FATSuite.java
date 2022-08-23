@@ -17,34 +17,12 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
-import com.ibm.ws.jsf23.fat.tests.Faces30Tests;
-import com.ibm.ws.jsf23.fat.tests.JSF23CDIConfigByACPTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23CDIFacesInMetaInfTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23CDIFacesInWebXMLTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23CDIGeneralTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23CDIInjectionTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23ClassLevelBeanValidationTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23CommandScriptTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23ComponentSearchTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23EvalScriptsTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23ExternalContextStartupShutdownTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23FaceletVDLTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23FacesDataModelTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23GeneralTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23IterableSupportTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23JPA22Test;
-import com.ibm.ws.jsf23.fat.tests.JSF23MapSupportTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23SelectOneRadioGroupTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23UIRepeatConditionTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23UISelectManyTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23ViewParametersTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23ViewResourceTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23WebSocketTests;
-import com.ibm.ws.jsf23.fat.tests.JSFFeatureConflictTests;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 
 /**
  * JSF 2.3 Tests
@@ -64,30 +42,30 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                JSF23FaceletVDLTests.class,
-                JSF23CDIGeneralTests.class,
-                JSF23GeneralTests.class,
-                JSF23WebSocketTests.class,
-                JSF23MapSupportTests.class,
-                JSF23IterableSupportTests.class,
-                JSF23ComponentSearchTests.class,
-                JSF23UIRepeatConditionTests.class,
-                JSF23FacesDataModelTests.class,
-                JSF23ClassLevelBeanValidationTests.class,
-                JSF23ExternalContextStartupShutdownTests.class,
-                JSFFeatureConflictTests.class,
-                JSF23CommandScriptTests.class,
-                JSF23SelectOneRadioGroupTests.class,
-                JSF23JPA22Test.class,
-                JSF23EvalScriptsTests.class,
-                JSF23ViewParametersTests.class,
-                JSF23UISelectManyTests.class,
-                JSF23ViewResourceTests.class,
-                JSF23CDIInjectionTests.class,
-                JSF23CDIFacesInMetaInfTests.class,
-                JSF23CDIFacesInWebXMLTests.class,
-                JSF23CDIConfigByACPTests.class,
-                Faces30Tests.class
+                //JSF23FaceletVDLTests.class,
+                JSF23CDIGeneralTests.class//,
+                //JSF23GeneralTests.class,
+                //JSF23WebSocketTests.class,
+                //JSF23MapSupportTests.class,
+                //JSF23IterableSupportTests.class,
+                //JSF23ComponentSearchTests.class,
+                //JSF23UIRepeatConditionTests.class,
+                //JSF23FacesDataModelTests.class,
+                //JSF23ClassLevelBeanValidationTests.class,
+                //JSF23ExternalContextStartupShutdownTests.class,
+                //JSFFeatureConflictTests.class,
+                //JSF23CommandScriptTests.class,
+                //JSF23SelectOneRadioGroupTests.class,
+                //JSF23JPA22Test.class,
+                //JSF23EvalScriptsTests.class,
+                //JSF23ViewParametersTests.class,
+                //JSF23UISelectManyTests.class,
+                //JSF23ViewResourceTests.class,
+                //JSF23CDIInjectionTests.class,
+                //JSF23CDIFacesInMetaInfTests.class,
+                //JSF23CDIFacesInWebXMLTests.class,
+                //JSF23CDIConfigByACPTests.class,
+                //Faces30Tests.class
 })
 
 public class FATSuite {
@@ -101,7 +79,17 @@ public class FATSuite {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES());
+    public static RepeatTests repeat;
+
+    static {
+        // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
+        // If we are running on Java 8 have EE9 be the lite mode test to run.
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE10_FEATURES());
+        } else {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES());
+        }
+    }
 }

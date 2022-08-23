@@ -86,6 +86,7 @@ Export-Package: \
   org.apache.myfaces.flow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.flow.cdi;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.lifecycle;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.lifecycle.clientwindow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.push.cdi;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.renderkit;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.shared.context.flash;thread-context=true;version=${Implementation-Version}, \
@@ -140,6 +141,8 @@ Import-Package: \
   io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
   io.openliberty.jakarta.servlet.6.0;version=latest, \
   io.openliberty.jakarta.cdi.4.0;version=latest,\
+  io.openliberty.jakarta.websocket.2.1;version=latest,\
+  io.openliberty.jakarta.websocket.client.2.1;version=latest,\
   com.ibm.ws.logging.core,\
   com.ibm.websphere.appserver.spi.kernel.service,\
   com.ibm.websphere.org.osgi.core;version=latest,\

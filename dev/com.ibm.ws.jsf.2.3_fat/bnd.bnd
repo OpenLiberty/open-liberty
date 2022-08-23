@@ -21,7 +21,12 @@ tested.features: \
  beanvalidation-3.0,\
  xmlBinding-3.0,\
  jpacontainer-3.0,\
- persistence-3.0
+ persistence-3.0,\
+ expressionlanguage-5.0,\
+ pages-3.1,\
+ servlet-6.0,\
+ faces-4.0,\
+ cdi-4.0
 
 
 src: \

@@ -31,7 +31,6 @@ import jakarta.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.webapp.DelegatedFacesServlet;
-import org.apache.myfaces.webapp.webxml.ServletMapping;
 
 public class WebXml
 {

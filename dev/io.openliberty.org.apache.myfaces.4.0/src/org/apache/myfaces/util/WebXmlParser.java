@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jakarta.faces.FacesException;
 import jakarta.faces.context.ExternalContext;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,12 +36,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
+import org.apache.myfaces.util.MyFacesErrorHandler;
 import org.apache.myfaces.util.lang.ClassUtils;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 public class WebXmlParser
@@ -58,9 +60,171 @@ public class WebXmlParser
             + "(*[local-name() = 'exception-type'])]/*[local-name() = 'location']";
 
     private static final String KEY_ERROR_PAGES = WebXmlParser.class.getName() + ".errorpages";
+    private static final String WEB_XML_PATH = "/WEB-INF/web.xml";
+    private static final String WEB_APP_2_2_J2EE_SYSTEM_ID = "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd";
+    private static final String WEB_APP_2_2_SYSTEM_ID = "http://java.sun.com/dtd/web-app_2_2.dtd";
+    private static final String WEB_APP_2_2_RESOURCE  = "jakarta/servlet/resources/web-app_2_2.dtd";
+
+    private static final String WEB_APP_2_3_SYSTEM_ID = "http://java.sun.com/dtd/web-app_2_3.dtd";
+    private static final String WEB_APP_2_3_RESOURCE  = "jakarta/servlet/resources/web-app_2_3.dtd";
+    private ExternalContext _context;
+    private WebXml _webXml;
     
     private WebXmlParser()
     {
+    }
+
+    public WebXmlParser(ExternalContext context)
+    {
+        _context = context;
+    }
+
+    public WebXml parse()
+    {
+        _webXml = new WebXml();
+
+        try
+        {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setIgnoringElementContentWhitespace(true);
+            dbf.setIgnoringComments(true);
+            dbf.setNamespaceAware(true);
+            dbf.setValidating(false);
+//            dbf.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
+
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            db.setEntityResolver(new _EntityResolver());
+            db.setErrorHandler(new MyFacesErrorHandler(LOGGER));
+
+            InputSource is = createContextInputSource(null, WEB_XML_PATH);
+
+            if(is==null)
+            {
+                URL url = _context.getResource(WEB_XML_PATH);
+                LOGGER.fine("No web-xml found at : "+(url==null?" null ":url.toString()));
+                return _webXml;
+            }
+
+            Document document = db.parse(is);
+
+            Element webAppElem = document.getDocumentElement();
+            if (webAppElem == null ||
+                !webAppElem.getNodeName().equals("web-app"))
+            {
+                throw new FacesException("No valid web-app root element found!");
+            }
+
+            readWebApp(webAppElem);
+            
+            return _webXml;
+        }
+        catch (Exception e)
+        {
+            LOGGER.log(Level.SEVERE, "Unable to parse web.xml", e);
+            throw new FacesException(e);
+        }
+    }
+
+    public static long getWebXmlLastModified(ExternalContext context)
+    {
+        try
+        {
+            URL url = context.getResource(WEB_XML_PATH);
+            if (url != null)
+            {
+                return url.openConnection().getLastModified();
+            }
+        }
+        catch (IOException e)
+        {
+            LOGGER.log(Level.SEVERE, "Could not find web.xml in path " + WEB_XML_PATH);
+        }
+        return 0L;
+    }
+
+    private void readWebApp(Element webAppElem)
+    {
+        NodeList nodeList = webAppElem.getChildNodes();
+        for (int i = 0, len = nodeList.getLength(); i < len; i++)
+        {
+            Node n = nodeList.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE)
+            {
+                if (n.getNodeName().equals("servlet"))
+                {
+                    readServlet((Element)n);
+                }
+                if (n.getNodeName().equals("servlet-mapping"))
+                {
+                    readServletMapping((Element)n);
+                }
+                if (n.getNodeName().equals("filter"))
+                {
+                    readFilter((Element)n);
+                }
+                if (n.getNodeName().equals("filter-mapping"))
+                {
+                    readFilterMapping((Element)n);
+                }
+                if (n.getNodeName().equals("error-page"))
+                {
+                    _webXml.setErrorPagePresent(true);
+                }
+            }
+            else
+            {
+                if (LOGGER.isLoggable(Level.FINE))
+                {
+                    LOGGER.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                }
+            }
+        }
+    }
+
+    private class _EntityResolver implements EntityResolver
+    {
+        public InputSource resolveEntity(String publicId, String systemId) throws IOException
+        {
+            if (systemId == null)
+            {
+                throw new UnsupportedOperationException("systemId must not be null");
+            }
+
+            if (systemId.equals(WebXmlParser.WEB_APP_2_2_SYSTEM_ID) ||
+                systemId.equals(WebXmlParser.WEB_APP_2_2_J2EE_SYSTEM_ID))
+            {
+                //Load DTD from servlet.jar
+                return createClassloaderInputSource(publicId, WebXmlParser.WEB_APP_2_2_RESOURCE);
+            }
+            else if (systemId.equals(WebXmlParser.WEB_APP_2_3_SYSTEM_ID))
+            {
+                //Load DTD from servlet.jar
+                return createClassloaderInputSource(publicId, WebXmlParser.WEB_APP_2_3_RESOURCE);
+            }
+            else
+            {
+                //Load additional entities from web context
+                return createContextInputSource(publicId, systemId);
+            }
+        }
+
+    }
+
+    private InputSource createContextInputSource(String publicId, String systemId)
+    {
+        InputStream inStream = _context.getResourceAsStream(systemId);
+        if (inStream == null)
+        {
+            // there is no such entity
+            return null;
+        }
+        InputSource is = new InputSource(inStream);
+        is.setPublicId(publicId);
+        is.setSystemId(systemId);
+        //the next line was removed - encoding should be determined automatically out of the inputStream
+        //DEFAULT_ENCODING was ISO-8859-1
+        //is.setEncoding(DEFAULT_ENCODING);
+        return is;
     }
 
     /**
@@ -128,6 +292,190 @@ public class WebXmlParser
         }
 
         return null;
+    }
+
+    private void readServlet(Element servletElem)
+    {
+        String servletName = null;
+        String servletClass = null;
+        NodeList nodeList = servletElem.getChildNodes();
+        for (int i = 0, len = nodeList.getLength(); i < len; i++)
+        {
+            Node n = nodeList.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE)
+            {
+                if (n.getNodeName().equals("servlet-name"))
+                {
+                    servletName = XmlUtils.getElementText((Element)n);
+                }
+                else if (n.getNodeName().equals("servlet-class"))
+                {
+                    servletClass = XmlUtils.getElementText((Element)n).trim();
+                }
+                else if (n.getNodeName().equals("description") || n.getNodeName().equals("load-on-startup")
+                         || n.getNodeName().equals("init-param"))
+                {
+                    //ignore
+                }
+                else
+                {
+                    if (LOGGER.isLoggable(Level.FINE))
+                    {
+                        LOGGER.fine("Ignored element '" + n.getNodeName() + "' as child of '"
+                                 + servletElem.getNodeName() + "'.");
+                    }
+                }
+            }
+            else
+            {
+                if (LOGGER.isLoggable(Level.FINE))
+                {
+                    LOGGER.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                }
+            }
+        }
+        _webXml.addServlet(servletName, servletClass);
+    }
+
+    private void readServletMapping(Element servletMappingElem)
+    {
+        String servletName = null;
+        String urlPattern = null;
+        NodeList nodeList = servletMappingElem.getChildNodes();
+        for (int i = 0, len = nodeList.getLength(); i < len; i++)
+        {
+            Node n = nodeList.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE)
+            {
+                if (n.getNodeName().equals("servlet-name"))
+                {
+                    servletName = XmlUtils.getElementText((Element)n);
+                }
+                else if (n.getNodeName().equals("url-pattern"))
+                {
+                    urlPattern = XmlUtils.getElementText((Element)n).trim();
+                }
+                else
+                {
+                    if (LOGGER.isLoggable(Level.FINE))
+                    {
+                        LOGGER.fine("Ignored element '" + n.getNodeName() + "' as child of '"
+                                 + servletMappingElem.getNodeName() + "'.");
+                    }
+                }
+            }
+            else
+            {
+                if (LOGGER.isLoggable(Level.FINE))
+                {
+                    LOGGER.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                }
+            }
+        }
+        urlPattern = urlPattern.trim();
+        _webXml.addServletMapping(servletName, urlPattern);
+    }
+
+    private void readFilter(Element filterElem)
+    {
+        String filterName = null;
+        String filterClass = null;
+        NodeList nodeList = filterElem.getChildNodes();
+        for (int i = 0, len = nodeList.getLength(); i < len; i++)
+        {
+            Node n = nodeList.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE)
+            {
+                if (n.getNodeName().equals("filter-name"))
+                {
+                    filterName = XmlUtils.getElementText((Element)n).trim();
+                }
+                else if (n.getNodeName().equals("filter-class"))
+                {
+                    filterClass = XmlUtils.getElementText((Element)n).trim();
+                }
+                else if (n.getNodeName().equals("description") || n.getNodeName().equals("init-param"))
+                {
+                    //ignore
+                }
+                else
+                {
+                    if (LOGGER.isLoggable(Level.FINE))
+                    {
+                        LOGGER.fine("Ignored element '" + n.getNodeName() + "' as child of '"
+                                 + filterElem.getNodeName() + "'.");
+                    }
+                }
+            }
+            else
+            {
+                if (LOGGER.isLoggable(Level.FINE))
+                {
+                    LOGGER.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                }
+            }
+        }
+        _webXml.addFilter(filterName, filterClass);
+    }
+
+    private void readFilterMapping(Element filterMappingElem)
+    {
+        String filterName = null;
+        String urlPattern = null;
+        NodeList nodeList = filterMappingElem.getChildNodes();
+        for (int i = 0, len = nodeList.getLength(); i < len; i++)
+        {
+            Node n = nodeList.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE)
+            {
+                if (n.getNodeName().equals("filter-name"))
+                {
+                    filterName = XmlUtils.getElementText((Element)n).trim();
+                }
+                else if (n.getNodeName().equals("url-pattern"))
+                {
+                    urlPattern = XmlUtils.getElementText((Element)n).trim();
+                }
+                else if (n.getNodeName().equals("servlet-name"))
+                {
+                    // we are not interested in servlet-name based mapping - for now
+                }
+                else
+                {
+                    if (LOGGER.isLoggable(Level.FINE))
+                    {
+                        LOGGER.fine("Ignored element '" + n.getNodeName() + "' as child of '"
+                                 + filterMappingElem.getNodeName() + "'.");
+                    }
+                }
+            }
+            else
+            {
+                if (LOGGER.isLoggable(Level.FINE))
+                {
+                    LOGGER.fine("Ignored node '" + n.getNodeName() + "' of type " + n.getNodeType());
+                }
+            }
+        }
+        _webXml.addFilterMapping(filterName, urlPattern);
+    }
+
+    private InputSource createClassloaderInputSource(String publicId, String systemId)
+    {
+        InputStream inStream = ClassUtils.getResourceAsStream(systemId);
+        if (inStream == null)
+        {
+            // there is no such entity
+            return null;
+        }
+        InputSource is = new InputSource(inStream);
+        is.setPublicId(publicId);
+        is.setSystemId(systemId);
+        //the next line was removed - encoding should be determined automatically out of the inputStream
+        //encoding should be determined automatically out of the inputStream
+        //DEFAULT_ENCODING was ISO-8859-1
+        //is.setEncoding(DEFAULT_ENCODING);
+        return is;
     }
 
     private static Map<String, String> getWebFragmentXmlsErrorPages(ExternalContext context)

@@ -18,6 +18,10 @@
  */
 package org.apache.myfaces.spi;
 
+import java.util.List;
+
+import org.apache.myfaces.webapp.webxml.ServletMapping;
+
 import jakarta.faces.context.ExternalContext;
 
 /**
@@ -28,6 +32,25 @@ import jakarta.faces.context.ExternalContext;
  */
 public abstract class WebConfigProvider
 {
+
+    /**
+     * Return the mappings configured on web.xml related to JSF FacesServlet.
+     * <p>
+     * By default, the algorithm contemplate these three options:
+     * </p>
+     * <ol>
+     *   <li>Mappings related to registered servlet class javax.faces.webapp.FacesServlet.</li>
+     *   <li>Mappings related to registered servlet class implementing
+     *   org.apache.myfaces.shared.webapp.webxml.DelegatedFacesServlet interface.</li>
+     *   <li>Mappings related to registered servlet class registered
+     *   using org.apache.myfaces.DELEGATE_FACES_SERVLET web config param.</li>
+     * </ol>
+     * 
+     * @param externalContext
+     * @return
+     */
+    public abstract List<ServletMapping> getFacesServletMappings(ExternalContext externalContext);
+
     /**
      * Indicate if an error page is configured on web.xml file
      * 
