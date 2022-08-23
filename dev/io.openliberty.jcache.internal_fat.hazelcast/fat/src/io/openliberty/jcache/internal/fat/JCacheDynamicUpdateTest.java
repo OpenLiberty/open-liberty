@@ -26,6 +26,7 @@ import com.ibm.websphere.simplicity.config.cache.CacheManager;
 import com.ibm.websphere.simplicity.config.cache.CachingProvider;
 import com.ibm.websphere.simplicity.config.dsprops.Properties;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -67,7 +68,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         /*
          * Stop the servers in the reverse order they were started.
          */
-        stopServer(server1, "CWWKG0033W", "CWLJC0004E", "CWWKE0701E", "CWLJC0011E", "CWWKG0058E", "CWLJC0006E");
+        stopServer(server1, "CWWKG0033W", "CWLJC0004E", "CWWKE0701E", "CWLJC0011W", "CWWKG0058E", "CWLJC0006E", "CWLJC0012W", "CWLJC0013W");
     }
 
     /**
@@ -157,6 +158,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
     @Test
     @CheckForLeakedPasswords(USER1_PASSWORD)
     @ExpectedFFDC(value = { "javax.cache.CacheException", "java.lang.IllegalStateException" })
+    @AllowedFFDC("org.infinispan.client.hotrod.exceptions.HotRodClientException")
     public void dynamicUpdate() throws Exception {
 
         /*
@@ -261,7 +263,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          * Caused by: java.io.FileNotFoundException: /Users/eschr/libertyGit/open-liberty/dev/build.image/wlp/usr/shared/resources/infinispan/infinispan_hotrod_bad.props (No such
          * file or directory)
          */
-        error = "CWLJC0011E: Error encountered while retrieving the AuthCache JCache: javax.cache.CacheException: Could not load configuration";
+        error = "CWLJC0011W: Error encountered while retrieving the AuthCache JCache. Will attempt to create it instead. The error was: javax.cache.CacheException: Could not load configuration";
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
 
         /*

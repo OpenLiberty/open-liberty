@@ -17,29 +17,28 @@ import java.util.Map;
 
 public class FeatureMapFactory {
 
-	public static Map<String, FeatureInfo> getFeatureMapFromFile(String fileLoc) {
-		Map<String, FeatureInfo> features = new LinkedHashMap<String, FeatureInfo>();
+    public static Map<String, FeatureInfo> getFeatureMapFromFile(String fileLoc) {
+        Map<String, FeatureInfo> features = new LinkedHashMap<String, FeatureInfo>();
 
-		for (File featureFile : new FeatureFileList(fileLoc)) {
-			FeatureInfo feature = new FeatureInfo(featureFile);
-			features.put(feature.getName(), feature);
+        for (File featureFile : new FeatureFileList(fileLoc)) {
+            FeatureInfo feature = new FeatureInfo(featureFile);
+            features.put(feature.getName(), feature);
 
-		}
+        }
 
-		for (FeatureInfo feature : features.values()) {
-			for (String autoFeature : feature.getAutoFeatures()) {
-				if (features.containsKey(autoFeature)) {
-					features.get(autoFeature).addActivatingAutoFeature(feature.getName());
-				}
-			}
-		}
+        for (FeatureInfo feature : features.values()) {
+            for (String autoFeature : feature.getAutoFeatures()) {
+                if (features.containsKey(autoFeature)) {
+                    features.get(autoFeature).addActivatingAutoFeature(feature.getName());
+                }
+            }
+        }
 
-		for (FeatureInfo feature : features.values()) {
-			feature.lockActivatingAutoFeatures();
-		}
+        for (FeatureInfo feature : features.values()) {
+            feature.lockActivatingAutoFeatures();
+        }
 
-		return features;
-	}
-
+        return features;
+    }
 
 }

@@ -1,4 +1,3 @@
-DELETE FROM CDM_Entity00;
 DELETE FROM CDM_Entity0001;
 DELETE FROM CDM_Entity0002;
 DELETE FROM CDM_Entity0003;
@@ -37,5 +36,3 @@ DELETE FROM CDM_Entity0416;
 DELETE FROM CDM_Entity0417;
 DELETE FROM CDM_Entity0418;
 DELETE FROM CDM_Entity0419;
-
-                                                                     

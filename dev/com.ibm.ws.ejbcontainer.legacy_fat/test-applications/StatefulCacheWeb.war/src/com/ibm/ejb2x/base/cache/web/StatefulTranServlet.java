@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1061,9 +1061,9 @@ public class StatefulTranServlet extends FATServlet {
             // Print out the results of accessing the beans
             // -----------------------------------------------------------------
             if (iteration == 1) {
-                if (timeout >= System.currentTimeMillis()) { // d198535
-                    // All accesses completed prior to timeout - all successful
-                    assertTrue("5 ---> Did not access all beans successfully", (numActivateSuccessful == ivNumBeans));
+                if (timeout >= System.currentTimeMillis() + 100) {
+                    // All accesses completed prior to timeout (adjusting for currentTimeMillis inaccuracy) - all successful
+                    assertTrue("5 ---> Did not access all beans successfully, " + numActivateSuccessful + "/" + numActivateNoSuchObject, (numActivateSuccessful == ivNumBeans));
                     numActivateSuccessful--;
                 } else {
                     // Accesses not complete prior to timeout - some fail

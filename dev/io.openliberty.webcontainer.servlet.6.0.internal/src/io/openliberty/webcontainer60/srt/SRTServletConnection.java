@@ -13,10 +13,10 @@ package io.openliberty.webcontainer60.srt;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.servlet.ServletConnection;
-
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
+
+import jakarta.servlet.ServletConnection;
 
 /*
  * since: servlet 6.0
@@ -28,6 +28,8 @@ public class SRTServletConnection implements ServletConnection {
     protected static final Logger logger = LoggerFactory.getInstance().getLogger("io.openliberty.webcontainer60.srt");
     private static final String CLASS_NAME = SRTServletConnection.class.getName();
     private String connectionID = null;
+    private String protocol = null;
+    private boolean isSSL = false;
 
     public SRTServletConnection() {
         super();
@@ -45,13 +47,29 @@ public class SRTServletConnection implements ServletConnection {
         connectionID = id;
     }
 
+    protected void setConnectionSecure(boolean secure) {
+        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "setConnectionSecure", "this [" + this + "] , secure [" + secure + "]");
+        }
+
+        isSSL = secure;
+    }
+
+    protected void setProtocol(String prot) {
+        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "setProtocol", "this [" + this + "] , protocol [" + prot + "]");
+        }
+
+        protocol = prot;
+    }
+
     /*
      * https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/servletconnection#getConnectionId()
      */
     @Override
     public String getConnectionId() {
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-            logger.logp(Level.FINE, CLASS_NAME, "getConnectionId", "this [" + this + "]");
+            logger.logp(Level.FINE, CLASS_NAME, "getConnectionId", "this [" + this + "] , connection id [" + connectionID + "]");
         }
 
         return connectionID;
@@ -63,11 +81,13 @@ public class SRTServletConnection implements ServletConnection {
     @Override
     public String getProtocol() {
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-            logger.logp(Level.FINE, CLASS_NAME, "getProtocol", "this [" + this + "]");
+            logger.logp(Level.FINE, CLASS_NAME, "getProtocol", "this [" + this + "] , protocol [" + protocol + "]");
         }
 
-        //to be implemented
-        return null;
+        if (protocol == null || protocol.isBlank())
+            return "unknown";
+
+        return protocol;
     }
 
     /*
@@ -75,12 +95,13 @@ public class SRTServletConnection implements ServletConnection {
      */
     @Override
     public String getProtocolConnectionId() {
+        //Return empty string for most protocol connectionID. HTTP 3 is the only one should have an ID; however it is not supported yet
+        //Currently, this method always return an empty string
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-            logger.logp(Level.FINE, CLASS_NAME, "getProtocolConnectionId", "this [" + this + "]");
+            logger.logp(Level.FINE, CLASS_NAME, "getProtocolConnectionId", "this [" + this + "] , return empty string");
         }
 
-        //to be implemented
-        return null;
+        return "";
     }
 
     /*
@@ -89,10 +110,9 @@ public class SRTServletConnection implements ServletConnection {
     @Override
     public boolean isSecure() {
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-            logger.logp(Level.FINE, CLASS_NAME, "isSecure", "this [" + this + "]");
+            logger.logp(Level.FINE, CLASS_NAME, "isSecure", "this [" + this + "] , isSecure [" + isSSL + "]");
         }
 
-        //to be implemented
-        return false;
+        return isSSL;
     }
 }

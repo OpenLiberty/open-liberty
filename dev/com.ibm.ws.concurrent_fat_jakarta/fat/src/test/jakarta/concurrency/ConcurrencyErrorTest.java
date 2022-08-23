@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -222,9 +223,10 @@ public class ConcurrencyErrorTest extends FATServletClient {
     @Test
     public void testMaxAsyncNegativeAppFailsToInstall() throws Exception {
         server.setMarkToEndOfLog();
-        ShrinkHelper.exportDropinAppToServer(server, WebManagedExecutorDefError);
+        ShrinkHelper.exportDropinAppToServer(server, WebManagedExecutorDefError, DeployOptions.DISABLE_VALIDATION);
 
         assertNotNull(server.waitForStringInLogUsingMark("CWNEN0011E.*maxAsync=-10"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKT0017I.*WebManagedExecutorDefError")); // app removed
     }
 
     @AllowedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
@@ -232,8 +234,9 @@ public class ConcurrencyErrorTest extends FATServletClient {
     @Test
     public void testMaxAsyncZeroAppFailsToInstall() throws Exception {
         server.setMarkToEndOfLog();
-        ShrinkHelper.exportDropinAppToServer(server, WebManagedScheduledExecutorDefError);
+        ShrinkHelper.exportDropinAppToServer(server, WebManagedScheduledExecutorDefError, DeployOptions.DISABLE_VALIDATION);
 
         assertNotNull(server.waitForStringInLogUsingMark("CWNEN0011E.*maxAsync=0"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKT0017I.*WebManagedScheduledExecutorDefError")); // app removed
     }
 }

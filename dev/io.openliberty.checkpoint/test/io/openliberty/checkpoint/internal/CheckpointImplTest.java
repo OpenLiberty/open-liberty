@@ -28,10 +28,13 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -67,6 +70,7 @@ public class CheckpointImplTest {
         final AtomicReference<ClassFileTransformer> transformer = new AtomicReference<>();
         final AtomicReference<Condition> runningCondition = new AtomicReference<>();
         final Set<String> enabledFeatures;
+        final Map<String, String> contextProperties = new HashMap<>();;
 
         public Hooks(List<CheckpointHook> singleThreadedHooks, List<CheckpointHook> multiThreadedHooks) {
             this(singleThreadedHooks, multiThreadedHooks, Collections.emptySet());
@@ -77,6 +81,10 @@ public class CheckpointImplTest {
             this.singleThreadedHooks = singleThreadedHooks;
             this.multiThreadedHooks = multiThreadedHooks;
             this.enabledFeatures = enabledFeatures;
+        }
+
+        void putContextProperty(String key, String value) {
+            this.contextProperties.put(key, value);
         }
 
         @Override
@@ -92,7 +100,7 @@ public class CheckpointImplTest {
             if ("getBundleContext".equals(method.getName())) {
                 return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { BundleContext.class }, (p, m, a) -> {
                     if ("getProperty".equals(m.getName())) {
-                        return null;
+                        return contextProperties.get(a[0]);
                     }
                     if ("registerService".equals(m.getName())) {
                         if (Condition.class.equals(a[0]) || ClassFileTransformer.class.equals(a[0])) {
@@ -469,6 +477,39 @@ public class CheckpointImplTest {
             assertTrue(msg + " notSupported1", msg.contains("notSupported1"));
             assertTrue(msg + " notSupported2", msg.contains("notSupported2"));
         }
+    }
+
+    @Test
+    public void testPauseRestore() throws CheckpointFailedException {
+        TestCRIU criu = new TestCRIU();
+        Hooks hooks = new Hooks(emptyList(), emptyList());
+        hooks.putContextProperty(CheckpointImpl.CHECKPOINT_PAUSE_RESTORE, "5000");
+        WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
+
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        long startTime = System.nanoTime();
+        checkDirectory(checkpoint, criu, locAdmin);
+        long totalTime = System.nanoTime() - startTime;
+        // we just assume if it took more than 4 seconds then it paused.  We give 1 second buffer here
+        assertTrue("checkpoint did not take long enough: " + totalTime, TimeUnit.NANOSECONDS.toSeconds(totalTime) > 4);
+
+        // test non-number
+        hooks.putContextProperty(CheckpointImpl.CHECKPOINT_PAUSE_RESTORE, "badvalue");
+        // create new checkpoint object to force read of property again
+        checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        startTime = System.nanoTime();
+        checkDirectory(checkpoint, criu, locAdmin);
+        totalTime = System.nanoTime() - startTime;
+        assertTrue("checkpoint took too long: " + totalTime, TimeUnit.NANOSECONDS.toSeconds(totalTime) < 2);
+
+        // test negative number
+        hooks.putContextProperty(CheckpointImpl.CHECKPOINT_PAUSE_RESTORE, "-5000");
+        // create new checkpoint object to force read of property again
+        checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        startTime = System.nanoTime();
+        checkDirectory(checkpoint, criu, locAdmin);
+        totalTime = System.nanoTime() - startTime;
+        assertTrue("checkpoint took too long: " + totalTime, TimeUnit.NANOSECONDS.toSeconds(totalTime) < 2);
     }
 
     private CompletionListener<Boolean> getCompletionListener() {

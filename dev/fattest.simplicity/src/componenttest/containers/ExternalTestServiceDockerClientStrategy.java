@@ -64,7 +64,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     private DefaultDockerClientConfig config;
     private TransportConfig transportConfig;
 
-    private static boolean setupComplete = false;
+    static boolean setupComplete = false;
 
     /**
      * Used to specify if we plan on running against a remote docker host, or a local docker host.

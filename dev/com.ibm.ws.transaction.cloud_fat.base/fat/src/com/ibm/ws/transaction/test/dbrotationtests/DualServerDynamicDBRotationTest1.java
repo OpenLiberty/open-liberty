@@ -14,7 +14,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.ws.transaction.test.FATSuite;
 import com.ibm.ws.transaction.test.tests.DualServerDynamicCoreTest1;
@@ -39,13 +38,6 @@ public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1
     @Server("com.ibm.ws.transaction_ANYDBCLOUD002")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer secondServer;
-
-    public static JdbcDatabaseContainer<?> testContainer;
-
-    @Override
-    public void setUp(LibertyServer server) throws Exception {
-        setupDriver(server);
-    }
 
     @BeforeClass
     public static void setUp() throws Exception {

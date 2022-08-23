@@ -1134,8 +1134,7 @@ public final class JAXBUtils {
              || className.contains("eclipse"))) {
             //eclipse moxy accepts sun package CharacterEscapeHandler 
             return ".internal";
-        } else if (className.contains("com.sun.xml.bind")
-                   || className.startsWith("com.ibm.xml")) { //Liberty change) {
+        } else if (className.contains("com.sun.xml.bind")) {
             return "";
         }
         return null;
@@ -1193,6 +1192,10 @@ public final class JAXBUtils {
     private static Object createEscapeHandler(Class<?> cls, String simpleClassName) {
         try {
             //Liberty change begin
+            if (cls.getName().startsWith("com.ibm.xml")) {
+                // Do not use escape handlers with XLXP
+                return null;
+            }
             String packageName;
             //Jakarta EE 9
             if (isEE9OrHigher) {

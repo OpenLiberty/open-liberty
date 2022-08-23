@@ -35,6 +35,7 @@ import com.ibm.ws.jpa.olgh21204.ejb.TestOLGH21204_EJB_SF_Servlet;
 import com.ibm.ws.jpa.olgh21204.ejb.TestOLGH21204_EJB_SL_Servlet;
 import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

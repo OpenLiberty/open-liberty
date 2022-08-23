@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,7 +90,7 @@ public class LTPAConfigurationImplTest {
 
     @Before
     public void setUp() {
-        props = createProps(PATH_TO_FILE, PWD, 120L, 0L);
+        props = createProps(PATH_TO_FILE, PWD, 120L, 0L, 0L);
 
         mock.checking(new Expectations() {
             {
@@ -111,12 +111,13 @@ public class LTPAConfigurationImplTest {
         ltpaConfig = createActivatedLTPAConfigurationImpl();
     }
 
-    private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval) {
+    private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, long expDiffAllowed) {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, filePath);
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString(password.toCharArray()));
         props.put(LTPAConfiguration.CFG_KEY_TOKEN_EXPIRATION, expiration);
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_INTERVAL, monitorInterval);
+        props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
         return props;
     }
 

@@ -51,8 +51,6 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     private String instrumentationName = "io.openliberty.microprofile.telemetry";
 
-    private String instrumentationVersion = "1.0";
-
     @jakarta.ws.rs.core.Context
     ResourceInfo resourceInfo;
 
@@ -62,17 +60,17 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Inject
     public TelemetryContainerFilter(final OpenTelemetry openTelemetry) {
+        ServerAttributesExtractor serverAttributesExtractor = new ServerAttributesExtractor();
 
-                ServerAttributesExtractor serverAttributesExtractor = new ServerAttributesExtractor();
+        InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
+            openTelemetry,
+            instrumentationName,
+            HttpSpanNameExtractor.create(serverAttributesExtractor));
 
-                InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
-                    openTelemetry,
-                    instrumentationName,
-                    HttpSpanNameExtractor.create(serverAttributesExtractor)); 
-                this.instrumenter = builder
-                    .setSpanStatusExtractor(HttpSpanStatusExtractor.create(serverAttributesExtractor))
-                    .addAttributesExtractor(HttpServerAttributesExtractor.create(serverAttributesExtractor))
-                    .newServerInstrumenter(new ContainerRequestContextTextMapGetter());
+        this.instrumenter = builder
+            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(serverAttributesExtractor))
+            .addAttributesExtractor(HttpServerAttributesExtractor.create(serverAttributesExtractor))
+            .newServerInstrumenter(new ContainerRequestContextTextMapGetter());
     }
 
     @Override

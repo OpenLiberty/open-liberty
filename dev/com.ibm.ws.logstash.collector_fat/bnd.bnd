@@ -25,6 +25,8 @@ tested.features:\
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
+fat.test.container.images: elastic/logstash:7.16.3
+
 -buildpath: \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.ws.logging;version=latest,\

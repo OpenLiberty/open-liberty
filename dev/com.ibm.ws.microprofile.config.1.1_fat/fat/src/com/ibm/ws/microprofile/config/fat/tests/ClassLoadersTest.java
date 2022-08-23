@@ -47,7 +47,7 @@ public class ClassLoadersTest extends FATServletClient {
     public static final String APP_NAME = "classLoaders";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP14, MicroProfileActions.MP41);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP14, MicroProfileActions.MP41);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = ClassLoadersTestServlet.class, contextRoot = APP_NAME)

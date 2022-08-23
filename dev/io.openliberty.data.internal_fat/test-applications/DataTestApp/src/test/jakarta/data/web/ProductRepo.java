@@ -18,6 +18,7 @@ import io.openliberty.data.OrderBy;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
 import io.openliberty.data.Select;
+import io.openliberty.data.Select.Aggregate;
 import io.openliberty.data.Update;
 import io.openliberty.data.Where;
 
@@ -35,10 +36,19 @@ public interface ProductRepo {
     @OrderBy("name")
     List<String> findByNameLike(String nameContains);
 
-    Product[] findByVersionGreaterThanEqualOrderById(long minVersion);
+    Product[] findByVersionGreaterThanEqualOrderByPrice(long minVersion);
 
     @Query("SELECT o FROM Product o WHERE o.id=:productId")
     Product findItem(@Param("productId") String id);
+
+    @Select(function = Aggregate.MAXIMUM, value = "price")
+    float highestPrice();
+
+    @Select(function = Aggregate.MINIMUM, value = "price")
+    float lowestPrice();
+
+    @Select(function = Aggregate.AVERAGE, value = "price")
+    float meanPrice();
 
     @Query("UPDATE Product o SET o.price = o.price - (?2 * o.price) WHERE o.name LIKE CONCAT('%', ?1, '%')")
     long putOnSale(String nameContains, float discount);
@@ -46,4 +56,10 @@ public interface ProductRepo {
     @Update("o.price=?3")
     @Where("o.id=?1 AND o.version=?2")
     boolean setPrice(String id, long currentVersion, float newPrice);
+
+    @Select(function = Aggregate.COUNT, distinct = false, value = { "name", "description", "price" })
+    ProductCount stats();
+
+    @Select(function = Aggregate.SUM, distinct = true, value = "price")
+    float totalOfDistinctPrices();
 }

@@ -559,6 +559,9 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not land on the post back channel logout test app", null, logoutPage);
 
+        if (logoutMethodTested.equals(Constants.SAML)) {
+            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not land on the post back channel logout test app", null, "\"result\":  \"Success\"");
+        }
         return expectations;
     }
 
@@ -869,14 +872,6 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         validationLogger("Starting", thisMethod);
 
         states.printStates();
-
-        // TODO - remove this and set the appropriate checking for SAML
-        if (logoutMethodTested.equals(Constants.SAML)) {
-            Log.info(thisClass, "validateLogoutResult", "*************************************");
-            Log.info(thisClass, "validateLogoutResult", "* Skipping checks for SAML right now*");
-            Log.info(thisClass, "validateLogoutResult", "*************************************");
-            return;
-        }
 
         TokenKeeper currentTokenKeeper = new TokenKeeper(webClient);
 

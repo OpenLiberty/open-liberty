@@ -17,6 +17,8 @@ src: \
 
 fat.project: true
 
+fat.test.container.images: jonhawkes/postgresql-ssl:1.0
+
 tested.features:\
   cdi-3.0, cdi-4.0,\
   servlet-5.0, servlet-6.0

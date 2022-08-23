@@ -15,15 +15,20 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.testcontainers.containers.JdbcDatabaseContainer;
+
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
+import com.ibm.ws.transaction.test.FATSuite;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -32,7 +37,7 @@ import componenttest.topology.utils.FATServletClient;
  * Test plan is attached to RTC WI 213854
  */
 @Mode
-public abstract class DualServerDynamicTestBase extends FATServletClient {
+public class DualServerDynamicTestBase extends FATServletClient {
 
     protected static LibertyServer serverTemplate;
     public static final String APP_NAME = "transaction";
@@ -43,7 +48,18 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
     public static String servletName;
     public static String cloud1RecoveryIdentity;
 
-    private static DatabaseContainerType databaseContainerType;
+    public static void setupDriver(LibertyServer server) throws Exception {
+        JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+        //Get driver name
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+
+        //Setup server DataSource properties
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+    }
+
+    public void setUp(LibertyServer server) throws Exception {
+        setupDriver(server);
+    }
 
     private SetupRunner runner = new SetupRunner() {
         @Override
@@ -56,8 +72,10 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         final String method = "dynamicTest";
         final String id = String.format("%03d", test);
 
+        Log.info(getClass(), method, "FATSuite.databaseContainerType: " + FATSuite.databaseContainerType);
+
         // Start Servers
-        if (databaseContainerType != DatabaseContainerType.Derby) {
+        if (FATSuite.databaseContainerType != DatabaseContainerType.Derby) {
             FATUtils.startServers(runner, server1, server2);
         } else {
             FATUtils.startServers(runner, server1);
@@ -75,14 +93,13 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         server1.postStopServerArchive(); // must explicitly collect since crashed server
 
         // Now start server2
-        if (databaseContainerType == DatabaseContainerType.Derby) {
+        if (FATSuite.databaseContainerType == DatabaseContainerType.Derby) {
             FATUtils.startServers(runner, server2);
         }
 
         // wait for 2nd server to perform peer recovery
         assertNotNull(server2.getServerName() + " did not perform peer recovery",
                       server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, FATUtils.LOG_SEARCH_TIMEOUT));
-
 
         // flush the resource states - retry a few times if this fails
         FATUtils.runWithRetries(() -> runTestWithResponse(server2, servletName, "dumpState").toString());
@@ -103,11 +120,11 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
     }
 
-	protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
+    protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
 
-    	FATUtils.stopServers(servers);
+        FATUtils.stopServers(servers);
 
-    	for (LibertyServer server : servers) {
+        for (LibertyServer server : servers) {
             try {
                 final RemoteFile rf = server.getFileFromLibertySharedDir(LastingXAResourceImpl.STATE_FILE_ROOT);
                 if (rf.exists()) {
@@ -118,12 +135,6 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
             }
         }
     }
-
-    /**
-     * @param server
-     * @throws Exception
-     */
-    protected abstract void setUp(LibertyServer server) throws Exception;
 
     /**
      * @param firstServer
@@ -144,9 +155,5 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 
         server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
-    }
-
-    public static void setDBType(DatabaseContainerType type) {
-        databaseContainerType = type;
     }
 }

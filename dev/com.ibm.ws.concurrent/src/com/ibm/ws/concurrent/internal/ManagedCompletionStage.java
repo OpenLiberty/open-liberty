@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,8 +48,8 @@ class ManagedCompletionStage<T> extends ManagedCompletableFuture<T> {
      * than the natural completion of the stage.
      *
      * @param completedFuture completable future upon which this instance is backed.
-     * @param executor default asynchronous execution facility for this stage
-     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param executor        default asynchronous execution facility for this stage
+     * @param futureRef       reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
     ManagedCompletionStage(CompletableFuture<T> completableFuture, Executor executor, FutureRefExecutor futureRef) {
         super(completableFuture, executor, futureRef);
@@ -86,6 +86,11 @@ class ManagedCompletionStage<T> extends ManagedCompletableFuture<T> {
     }
 
     // copy is allowed because java.util.concurrent.CompletableFuture's minimalCompletionStage allows it
+
+    @Override
+    public Throwable exceptionNow() {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public T get() throws ExecutionException, InterruptedException {
@@ -143,8 +148,8 @@ class ManagedCompletionStage<T> extends ManagedCompletableFuture<T> {
      * newly created instances are ManagedCompletionStage.
      *
      * @param completableFuture underlying completable future upon which this instance is backed.
-     * @param managedExecutor managed executor service
-     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param managedExecutor   managed executor service
+     * @param futureRef         reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      * @return a new instance of this class.
      */
     @Override
@@ -168,6 +173,15 @@ class ManagedCompletionStage<T> extends ManagedCompletableFuture<T> {
     public CompletableFuture<T> orTimeout(long timeout, TimeUnit unit) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public T resultNow() {
+        throw new UnsupportedOperationException();
+    }
+
+    // TODO We ought to be overriding and rejecting Java 19's Future.state() here with UnsupportedOperationException,
+    // but we currently cannot compile against Java 19+. Hopefully Java's default implementation will end
+    // up invoking operations that indirectly lead to UnsupportedOperationException or at least some other error.
 
     @Override
     public CompletableFuture<T> toCompletableFuture() {

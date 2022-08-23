@@ -102,6 +102,58 @@ public class DataTestServlet extends FATServlet {
     private UserTransaction tran;
 
     /**
+     * Use repository methods with aggregate functions in the select clause.
+     */
+    @Test
+    public void testAggregateFunctions() {
+        // Remove data from previous test:
+        Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
+        if (allProducts.length > 0)
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+
+        // Add data for this test to use:
+        Product prod1 = new Product();
+        prod1.id = "AF-006E905-LE";
+        prod1.name = "TestAggregateFunctions Lite Edition";
+        prod1.price = 104.99f;
+        products.addOrModify(prod1);
+
+        Product prod2 = new Product();
+        prod2.id = "AF-006E005-RK";
+        prod2.name = "TestAggregateFunctions Repair Kit";
+        prod2.price = 104.99f;
+        products.addOrModify(prod2);
+
+        Product prod3 = new Product();
+        prod3.id = "AF-006E905-CE";
+        prod3.name = "TestAggregateFunctions Classic Edition";
+        prod3.price = 306.99f;
+        products.addOrModify(prod3);
+
+        Product prod4 = new Product();
+        prod4.id = "AF-006E205-CE";
+        prod4.name = "TestAggregateFunctions Classic Edition";
+        prod4.description = "discontinued";
+        prod4.price = 286.99f;
+        products.addOrModify(prod4);
+
+        assertEquals(306.99f, products.highestPrice(), 0.001f);
+
+        assertEquals(104.99f, products.lowestPrice(), 0.001f);
+
+        assertEquals(200.99f, products.meanPrice(), 0.001f);
+
+        assertEquals(698.97f, products.totalOfDistinctPrices(), 0.001f);
+
+        // EclipseLink says that multiple distinct attribute are not support at this time,
+        // so we are testing this with distinct=false
+        ProductCount stats = products.stats();
+        assertEquals(4, stats.totalNames);
+        assertEquals(1, stats.totalDescriptions);
+        assertEquals(4, stats.totalPrices);
+    }
+
+    /**
      * Use repository methods that are designated as asynchronous by the Concurrency Asynchronous annotation.
      */
     @Test
@@ -175,7 +227,7 @@ public class DataTestServlet extends FATServlet {
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
                                                                                  1002003003L, 1002003002L, 1002003001L))
                         .thenCompose(updateCount -> {
-                            assertEquals(Long.valueOf(6), updateCount);
+                            assertEquals(Integer.valueOf(6), updateCount);
 
                             return personnel.findByLastNameOrderByFirstName("Test-Asynchronous");
                         });
@@ -255,6 +307,8 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Long.valueOf(4), avgLengthOfBNames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
+        assertEquals(Boolean.TRUE, personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
         deleted = personnel.removeAll();
         assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
@@ -287,7 +341,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(2, added.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).size());
 
         CompletableFuture<Long> updated2Then1;
-        CompletableFuture<Long> updated2;
+        CompletableFuture<Boolean> updated2;
 
         tran.begin();
         try {
@@ -323,8 +377,8 @@ public class DataTestServlet extends FATServlet {
             updated2 = personnel.setSurnameAsync("TestAsyncPrevents-Deadlock", p2.ssn);
 
             try {
-                Long updateCount = updated2.get(1, TimeUnit.SECONDS);
-                fail("Third thread ought to be blocked by second thread. Instead, updated " + updateCount);
+                Boolean wasUpdated = updated2.get(1, TimeUnit.SECONDS);
+                fail("Third thread ought to be blocked by second thread. Instead, was updated? " + wasUpdated);
             } catch (TimeoutException x) {
                 // expected
             }
@@ -337,7 +391,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Long.valueOf(2), updated2Then1.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         // With the second thread completing, it releases both locks, allowing the third thread to obtain the lock on 2 and complete
-        assertEquals(Long.valueOf(1), updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Boolean.TRUE, updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**
@@ -1239,21 +1293,19 @@ public class DataTestServlet extends FATServlet {
 
             @Override
             public void onComplete() {
-                results.add("DONE");
+                System.out.println(Long.toHexString(Thread.currentThread().getId()) + " onComplete");
             }
         });
 
         Set<Long> expected = new HashSet<Long>();
         expected.addAll(List.of(10030001L, 10030002L, 10030003L, 10030004L, 10030005L, 10030006L, 10030007L, 10030008L, 10030009L));
 
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 9; i++) {
             Object result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES);
             assertNotNull(result);
             System.out.println("Received " + result);
             if (result instanceof Throwable)
                 throw new AssertionError("onError notification received", (Throwable) result);
-            else if (result instanceof String)
-                assertEquals("DONE", result); // DONE notification
             else
                 assertEquals(result.toString() + " is not expected", true, expected.remove(((Reservation) result).meetingID));
         }
@@ -1483,7 +1535,7 @@ public class DataTestServlet extends FATServlet {
         prod4.price = 20.00f;
         products.addOrModify(prod4);
 
-        Product[] p = products.findByVersionGreaterThanEqualOrderById(0);
+        Product[] p = products.findByVersionGreaterThanEqualOrderByPrice(0);
 
         // JPA knows to update the version even through the JPQL didn't explicitly tell it to
         assertEquals(3, products.putOnSale("TestUpdateMultiple-match", .20f));

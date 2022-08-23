@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
@@ -38,8 +39,9 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
+import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
-import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class OIDCClientAuthenticatorUtil {
@@ -47,8 +49,8 @@ public class OIDCClientAuthenticatorUtil {
     SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
     private static int badStateCount = 0;
-    public static final String[] OIDC_COOKIES = { OidcClientStorageConstants.WAS_OIDC_STATE_KEY, ClientConstants.WAS_REQ_URL_OIDC,
-            ClientConstants.WAS_OIDC_CODE, ClientConstants.WAS_OIDC_NONCE };
+    public static final String[] OIDC_COOKIES = { OidcClientStorageConstants.WAS_OIDC_STATE_KEY, OidcClientStorageConstants.WAS_REQ_URL_OIDC,
+            ClientConstants.WAS_OIDC_CODE, OidcClientStorageConstants.WAS_OIDC_NONCE };
 
     public OIDCClientAuthenticatorUtil() {
     }
@@ -180,7 +182,7 @@ public class OIDCClientAuthenticatorUtil {
 
     ProviderAuthenticationResult redirectToServerOrProcessAuthorizationCode(HttpServletRequest req, HttpServletResponse res, ConvergedClientConfig clientConfig, String authzCode, String responseState) {
         ProviderAuthenticationResult oidcResult;
-        AuthorizationCodeHandler authzCodeHandler = new AuthorizationCodeHandler(sslSupport);
+        AuthorizationCodeHandler authzCodeHandler = new AuthorizationCodeHandler(req, res, clientConfig, sslSupport);
 
         if (authzCodeHandler.isAuthCodeReused(authzCode)) {
             // somehow a previously used code has been re-submitted, along
@@ -193,7 +195,7 @@ public class OIDCClientAuthenticatorUtil {
             oidcResult = handleRedirectToServer(req, res, clientConfig);
         } else {
             // confirm the code and go get the tokens if it's good.
-            oidcResult = authzCodeHandler.handleAuthorizationCode(req, res, authzCode, responseState, clientConfig);
+            oidcResult = authzCodeHandler.handleAuthorizationCode(authzCode, responseState);
         }
         return oidcResult;
     }
@@ -233,9 +235,13 @@ public class OIDCClientAuthenticatorUtil {
         boolean needHttps = clientConfig.getUserInfoEndpointUrl().toLowerCase().startsWith("https");
         SSLSocketFactory sslSocketFactory = null;
         try {
-            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig, sslSupport, false, needHttps);
+            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), sslSupport);
         } catch (com.ibm.websphere.ssl.SSLException e) {
-            //ffdc
+            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, clientConfig.getClientId() });
+        } catch (NoSSLSocketFactoryException e) {
+            if (needHttps) {
+                Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientConfig.getClientId() });
+            }
         }
         new UserInfoHelper(clientConfig, sslSupport).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory, oidcClientRequest);
     }
@@ -439,7 +445,7 @@ public class OIDCClientAuthenticatorUtil {
         }
 
         String stateCookieValue = getStateCookieValue(req, res, responseState);
-        String expectedCookieValue = OidcCookieUtils.createStateCookieValue(clientConfig.getClientSecret(), responseState);
+        String expectedCookieValue = OidcStorageUtils.createStateStorageValue(responseState, clientConfig.getClientSecret());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "stateKey:'" + stateCookieValue + "' cookieValue:'" + expectedCookieValue + "'");

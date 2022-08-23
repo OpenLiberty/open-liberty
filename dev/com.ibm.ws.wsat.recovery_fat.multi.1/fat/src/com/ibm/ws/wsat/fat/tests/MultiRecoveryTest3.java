@@ -19,7 +19,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException" })
+@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "java.net.SocketException" })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MultiRecoveryTest3 extends MultiRecoveryTest{
@@ -98,7 +98,7 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest{
 	@Test
 	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException", "java.net.SocketException" })
+	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR012AFVT() throws Exception {
 		recoveryTest(server1, server2, "1201","server1");
 	}

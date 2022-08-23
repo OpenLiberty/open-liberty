@@ -14,9 +14,9 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.ws.transaction.test.tests.DupXidTest;
+import com.ibm.ws.transaction.test.tests.FATSuiteBase;
 import com.ibm.ws.transaction.test.tests.Simple2PCCloudTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -28,19 +28,15 @@ import componenttest.topology.database.container.DatabaseContainerType;
                 DupXidTest.class,
                 Simple2PCCloudTest.class,
 })
-public class FATSuite {
+public class FATSuite extends FATSuiteBase {
+
+    static {
+        databaseContainerType = DatabaseContainerType.Derby;
+    }
+
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
-
-    public static DatabaseContainerType type = DatabaseContainerType.Derby; // Default container type
-    public static JdbcDatabaseContainer<?> testContainer;
-
-    public static void beforeSuite() throws Exception {
-    }
-
-    public static void afterSuite() throws Exception {
-    }
 }

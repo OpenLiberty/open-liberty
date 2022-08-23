@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,20 +38,105 @@ public class MyProgrammaticServletContextListener implements ServletContextListe
      * (non-Javadoc)
      *
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
+     *
+     * Test the following methods:
+     *
+     * getEffectiveMajorVersion
+     * getEffectiveMinorVersion
+     * getDefaultSessionTrackingModes
+     * getEffectiveSessionTrackingModes
+     * getJspConfigDescriptor
+     * getClassLoader
+     * getVirtualServerName
+     *
+     * There are four methods that now throw an UnsupportedOperationException in servlet-3.1 that
+     * did not previously:
+     *
+     * getEffectiveMajorVersion
+     * getEffectiveMinorVersion
+     * getClassLoader
+     * getVirtualServerName
+     *
+     * The other methods we are testing just to be complete!
+     *
+     * The following methods are new to servlet-4.0 and will be tested in the Servlet 4.0 FAT bucket:
+     * getSessionTimeout
+     * getRequestCharacterEncoding
+     * getResponseCharacterEncoding
+     *
      */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        boolean getEffectiveMajorVersionExceptionThrown = false;
+        boolean getEffectiveMinorVersionExceptionThrown = false;
+        boolean getDefaultSessionTrackingModesExceptionThrown = false;
+        boolean getEffectiveSessionTrackingModesExceptionThrown = false;
+        boolean getJspConfigDescriptorExceptionThrown = false;
+        boolean getClassLoaderExceptionThrown = false;
+        boolean getVirtualServerNameExceptionThrown = false;
+
         ServletContext context = sce.getServletContext();
 
-        // Since this test is running in the context for servlet-3.1 + we expect an UnsupportedOperationException
-        // to be thrown for the follow method call. The exception is caught and logged.
         try {
-            String virtualServerName = context.getVirtualServerName();
-            context.log("VirtualServerName: " + virtualServerName);
-        } catch (Exception e) {
-            context.log(e.getMessage());
+            context.log("effectiveMajorVersion: " + context.getEffectiveMajorVersion());
+        } catch (UnsupportedOperationException uoe) {
+            getEffectiveMajorVersionExceptionThrown = true;
+            context.log(uoe.getMessage());
         }
 
-    }
+        try {
+            context.log("effectiveMinorVersion: " + context.getEffectiveMinorVersion());
+        } catch (UnsupportedOperationException uoe) {
+            getEffectiveMinorVersionExceptionThrown = true;
+            context.log(uoe.getMessage());
+        }
 
+        try {
+            context.log("defaultSessionTrackingModes: " + context.getDefaultSessionTrackingModes());
+        } catch (UnsupportedOperationException uoe) {
+            getDefaultSessionTrackingModesExceptionThrown = true;
+            context.log(uoe.getMessage());
+        }
+
+        try {
+            context.log("effectiveSessionTrackingModes: " + context.getEffectiveSessionTrackingModes());
+        } catch (UnsupportedOperationException uoe) {
+            getEffectiveSessionTrackingModesExceptionThrown = true;
+            context.log(uoe.getMessage());
+        }
+
+        try {
+            context.log("jspConfigDescriptor: " + context.getJspConfigDescriptor());
+        } catch (UnsupportedOperationException uoe) {
+            getJspConfigDescriptorExceptionThrown = true;
+            context.log(uoe.getMessage());
+        }
+
+        try {
+            context.log("getClassLoader: " + context.getClassLoader());
+        } catch (UnsupportedOperationException uoe) {
+            getClassLoaderExceptionThrown = true;
+            context.log(uoe.getMessage());
+        }
+
+        try {
+            context.log("getVirtualServerName: " + context.getVirtualServerName());
+        } catch (UnsupportedOperationException uoe) {
+            getVirtualServerNameExceptionThrown = true;
+            context.log(uoe.getMessage());
+        }
+
+        context.log("getEffectiveMajorVersionExceptionThrown: " + getEffectiveMajorVersionExceptionThrown + " getEffectiveMinorVersionExceptionThrown: "
+                    + getEffectiveMinorVersionExceptionThrown +
+                    " getDefaultSessionTrackingModesExceptionThrown: " + getDefaultSessionTrackingModesExceptionThrown + " getEffectiveSessionTrackingModesExceptionThrown: "
+                    + getEffectiveSessionTrackingModesExceptionThrown +
+                    " getJspConfigDescriptorExceptionThrown: " + getJspConfigDescriptorExceptionThrown + " getClassLoaderExceptionThrown: " + getClassLoaderExceptionThrown
+                    + " getVirtualServerNameExceptionThrown: " + getVirtualServerNameExceptionThrown);
+
+        if (!getEffectiveMajorVersionExceptionThrown && !getEffectiveMinorVersionExceptionThrown && !getDefaultSessionTrackingModesExceptionThrown &&
+            !getEffectiveSessionTrackingModesExceptionThrown && !getJspConfigDescriptorExceptionThrown && !getClassLoaderExceptionThrown &&
+            !getVirtualServerNameExceptionThrown) {
+            context.log("UnsupportedOperationException was not thrown.");
+        }
+    }
 }

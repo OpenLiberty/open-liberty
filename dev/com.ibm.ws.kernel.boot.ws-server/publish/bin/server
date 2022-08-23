@@ -853,6 +853,19 @@ readServerEnv()
   fi
 }
 
+## Set the environment varialbes needed by default for criu to work.
+## Mostly these are variables read by the OS libraries to ensure a portable process
+criuEnvDefaults() {
+  if [ -z "$GLIBC_TUNABLES" ]
+  then
+    GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC_Usable,-XSAVE_Usable,-AVX2_Usable,-ERMS,-AVX_Usable,-AVX_Fast_Unaligned_Load
+  else
+    GLIBC_TUNABLES=${GLIBC_TUNABLES}:glibc.cpu.hwcaps=-XSAVEC_Usable,-XSAVE_Usable,-AVX2_Usable,-ERMS,-AVX_Usable,-AVX_Fast_Unaligned_Load
+  fi
+  export GLIBC_TUNABLES
+  export LD_BIND_NOT=on
+}
+
 ##
 ## Detects the code page of the file and converts to EBCDIC,
 ## if necessary, before cat'ing.
@@ -978,6 +991,7 @@ javaCmd()
     if [ $DO_CRIU_UNPRIVILEGED = true ]; then
       JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -Dio.openliberty.checkpoint.criu.unprivileged=true"
     fi
+    criuEnvDefaults
   fi
   
 
@@ -1422,6 +1436,8 @@ restoreServer()
  
   # record the start of restoreTime
   echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
+
+  criuEnvDefaults
 
   # Store the current restored environment into a file that the JVM can read to restore the values.
   # The following are filtered out of the restore env because they could be different from the checkpoint

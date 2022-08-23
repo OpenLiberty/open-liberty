@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
  * @param <T> type of the result.
  */
 public interface PolicyTaskFuture<T> extends Future<T> {
+    // State name constants match the spelling from java.util.concurrent.Future.State
+
     /**
      * The await operation has timed out.
      */
@@ -47,12 +49,12 @@ public interface PolicyTaskFuture<T> extends Future<T> {
     /**
      * Tasks has begun a cancel request.
      */
-    public static final int CANCELING = 4;
+    public static final int CANCELLING = 4;
 
     /**
      * Task has been canceled.
      */
-    public static final int CANCELED = 5;
+    public static final int CANCELLED = 5;
 
     /**
      * Task has completed its execution with an error.
@@ -62,7 +64,7 @@ public interface PolicyTaskFuture<T> extends Future<T> {
     /**
      * Task has completed successfully.
      */
-    public static final int SUCCESSFUL = 7;
+    public static final int SUCCESS = 7;
 
     /**
      * Await completion of the future. Completion could be successful, exceptional, or by cancellation.

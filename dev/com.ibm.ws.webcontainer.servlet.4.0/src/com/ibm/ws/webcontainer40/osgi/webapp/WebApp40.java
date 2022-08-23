@@ -164,7 +164,7 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
      */
     @Override
     public int getSessionTimeout() {
-        if (withinContextInitOfProgAddListener) {
+        if (withinContextInitOfProgAddListener && (WebContainer.getServletContainerSpecLevel() < WebContainer.SPEC_LEVEL_60)) {
             throw new UnsupportedOperationException(MessageFormat.format(
                                                                          nls.getString("Unsupported.op.from.servlet.context.listener"),
                                                                          new Object[] { "getSessionTimeout", lastProgAddListenerInitialized, getApplicationName() })); // PI41941
@@ -226,7 +226,7 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
     @Override
     public String getRequestCharacterEncoding() {
 
-        if (withinContextInitOfProgAddListener) {
+        if (withinContextInitOfProgAddListener && (WebContainer.getServletContainerSpecLevel() < WebContainer.SPEC_LEVEL_60)) {
             throw new UnsupportedOperationException(MessageFormat.format(
                                                                          nls.getString("Unsupported.op.from.servlet.context.listener"),
                                                                          new Object[] { "getRequestCharacterEncoding", lastProgAddListenerInitialized, getApplicationName() }));
@@ -271,7 +271,7 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
      */
     @Override
     public String getResponseCharacterEncoding() {
-        if (withinContextInitOfProgAddListener) {
+        if (withinContextInitOfProgAddListener && (WebContainer.getServletContainerSpecLevel() < WebContainer.SPEC_LEVEL_60)) {
             throw new UnsupportedOperationException(MessageFormat.format(
                                                                          nls.getString("Unsupported.op.from.servlet.context.listener"),
                                                                          new Object[] { "getResponseCharacterEncoding", lastProgAddListenerInitialized, getApplicationName() }));

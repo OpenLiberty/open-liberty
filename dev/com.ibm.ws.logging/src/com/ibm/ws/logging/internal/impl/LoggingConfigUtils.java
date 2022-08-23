@@ -301,7 +301,7 @@ public class LoggingConfigUtils {
      */
     public static String getStringFromCollection(Collection<String> values) {
         StringBuilder builder = new StringBuilder();
-        if (values != null) {
+        if (values != null && !values.isEmpty()) {
             for (String value : values) {
                 builder.append(value).append(',');
             }

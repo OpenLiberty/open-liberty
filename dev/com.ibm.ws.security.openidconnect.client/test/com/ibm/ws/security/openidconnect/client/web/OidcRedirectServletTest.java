@@ -38,7 +38,6 @@ import com.ibm.oauth.core.api.error.oauth20.OAuth20Exception;
 import com.ibm.ws.security.openidconnect.client.Cache;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl;
-import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
@@ -47,6 +46,7 @@ import com.ibm.ws.webcontainer.security.SSOCookieHelperImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
 
@@ -469,7 +469,7 @@ public class OidcRedirectServletTest {
                     allowing(cache).put(OidcUtil.encode(OIDC_STATE), table);
                     will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));//
                     allowing(req).getCookies();
-                    will(returnValue(new Cookie[] { new Cookie(ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(OIDC_STATE), MODIFIED_REQUEST_URL) }));
+                    will(returnValue(new Cookie[] { new Cookie(OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(OIDC_STATE), MODIFIED_REQUEST_URL) }));
                     one(resp).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     allowing(webAppSecurityConfig).getWASReqURLRedirectDomainNames();
                     will(returnValue(wasReqURLRedirectDomainNames));
@@ -520,7 +520,7 @@ public class OidcRedirectServletTest {
                     will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));//
 
                     allowing(req).getCookies();
-                    will(returnValue(new Cookie[] { new Cookie(ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(OIDC_STATE_SHORT), REQUEST_URL) }));
+                    will(returnValue(new Cookie[] { new Cookie(OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(OIDC_STATE_SHORT), REQUEST_URL) }));
                     allowing(req).getRequestURI();
                     will(returnValue(REQUEST_URL));
                     allowing(resp).addCookie(with(any(Cookie.class)));
@@ -540,45 +540,6 @@ public class OidcRedirectServletTest {
         }
     }
 
-    @Test
-    public void testCacheRequestParameter() {
-        OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
-        redirectServlet.activatedOidcClientImpl = oidcClientImpl;
-
-        final String OIDC_CLIENT_ID = "myId";
-
-        try {
-            final Map<String, String[]> map = new HashMap<String, String[]>();
-            map.put("requestUrl", new String[] { REQUEST_URL });
-            final Hashtable<String, String> table = new Hashtable<String, String>();
-            table.put("requestUrl", REQUEST_URL);
-
-            mockCreateCookie();
-            mock.checking(new Expectations() {
-                {
-                    allowing(req).getScheme();
-                    will(returnValue("https"));
-                    allowing(req).getParameterMap();
-                    will(returnValue(map));
-                    allowing(oidcClientImpl).getOidcClientConfig(req, OIDC_CLIENT_ID);
-                    will(returnValue(oidcClientConfigImpl));
-                    allowing(oidcClientConfigImpl).getClientSecret(); //
-                    will(returnValue("clientsecret")); //
-                    allowing(oidcClientConfigImpl).isHttpsRequired();
-                    will(returnValue(true));
-                    allowing(cache).put(OidcUtil.encode(OIDC_STATE), table);
-                    allowing(resp).addCookie(with(any(Cookie.class)));
-                    will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));//
-                }
-            });
-
-            redirectServlet.setCookieForRequestParameter(req, resp, OIDC_CLIENT_ID, OIDC_STATE, false); //, webAppSecurityConfig);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
     private void mockParamValue(final String name, final String value) {
         mock.checking(new Expectations() {
             {
@@ -592,7 +553,7 @@ public class OidcRedirectServletTest {
         mock.checking(new Expectations() {
             {
                 allowing(req).getCookies();
-                will(returnValue(new Cookie[] { new Cookie(ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(OIDC_STATE), REQUEST_URL) }));
+                will(returnValue(new Cookie[] { new Cookie(OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(OIDC_STATE), REQUEST_URL) }));
             }
         });
     }
@@ -610,21 +571,6 @@ public class OidcRedirectServletTest {
                 allowing(resp).setDateHeader(with(any(String.class)), with(any(Long.class)));
                 allowing(resp).setContentType(with(any(String.class)));
                 allowing(resp).getWriter();
-            }
-        });
-    }
-
-    private void mockCreateCookie() throws IOException {
-        mock.checking(new Expectations() {
-            {
-                allowing(webAppSecurityConfig).getHttpOnlyCookies();
-                will(returnValue(false));
-                allowing(webAppSecurityConfig).getSSORequiresSSL();
-                will(returnValue(false));
-                allowing(webAppSecurityConfig).createSSOCookieHelper();
-                will(returnValue(new SSOCookieHelperImpl(webAppSecurityConfig)));
-                allowing(webAppSecurityConfig).createReferrerURLCookieHandler();
-                will(returnValue(new ReferrerURLCookieHandler(webAppSecurityConfig)));
             }
         });
     }

@@ -189,6 +189,7 @@ public class BatchJobOperatorApiWithAppSecurityTest {
 
         HttpURLConnection con = null;
 
+
         boolean abandonedTwice = false;
 
         try {

@@ -29,6 +29,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.olgh10240.ejb.TestOLGH10240_EJB_SFEx_Servlet;
 import com.ibm.ws.jpa.olgh10240.ejb.TestOLGH10240_EJB_SF_Servlet;
 import com.ibm.ws.jpa.olgh10240.ejb.TestOLGH10240_EJB_SL_Servlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

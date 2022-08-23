@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.beanvalidation20.web.TestBeanValidation20Servlet;
 import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

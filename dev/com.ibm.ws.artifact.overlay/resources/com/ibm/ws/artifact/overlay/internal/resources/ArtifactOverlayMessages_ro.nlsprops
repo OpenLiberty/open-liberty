@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.overlay/resources/com/ibm/ws/artifact/overlay/internal/resources/ArtifactOverlayMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# # A file path.
+overlay.does.not.exist=CWWKM0301E: Folderul de suprapuneri {0} nu exist\u0103.
+overlay.does.not.exist.explanation=Sistemul de fi\u0219iere Liberty nu este \u00een concordan\u021b\u0103 cu configura\u021bia de suprapunere.  Aceast\u0103 situa\u021bie poate ap\u0103rea deoarece serverul a fost repornit cu modific\u0103ri ale configura\u021biei de suprapunere.
+overlay.does.not.exist.useraction=Reporni\u021bi serverul cu op\u021biunea '--clean'.
+
+# # A file path.
+overlay.not.directory=CWWKM0302E: Folderul de suprapuneri {0} nu este un director.
+overlay.not.directory.explanation=Sistemul de fi\u0219iere Liberty nu este \u00een concordan\u021b\u0103 cu configura\u021bia de suprapunere.  Aceast\u0103 situa\u021bie poate ap\u0103rea deoarece serverul a fost repornit cu modific\u0103ri ale configura\u021biei de suprapunere.
+overlay.not.directory.useraction=Reporni\u021bi serverul cu op\u021biunea '--clean'.
+
+# # A file path.
+overlay.not.empty=CWWKM0303E: Folderul de suprapuneri {0} nu este gol.
+overlay.not.empty.explanation=Sistemul de fi\u0219iere Liberty nu este \u00een concordan\u021b\u0103 cu configura\u021bia de suprapunere.  Aceast\u0103 situa\u021bie poate ap\u0103rea deoarece serverul a fost repornit cu modific\u0103ri ale configura\u021biei de suprapunere.
+overlay.not.empty.useraction=Reporni\u021bi serverul cu op\u021biunea '--clean'.
+
+# # A file path.
+overlay.cache.does.not.exist=CWWKM0304E: Folderul de cache de suprapunere {0} nu exist\u0103.
+overlay.cache.does.not.exist.explanation=Sistemul de fi\u0219iere Liberty nu este \u00een concordan\u021b\u0103 cu configura\u021bia de suprapunere.  Aceast\u0103 situa\u021bie poate ap\u0103rea deoarece serverul a fost repornit cu modific\u0103ri ale configura\u021biei de suprapunere.
+overlay.cache.does.not.exist.useraction=Reporni\u021bi serverul cu op\u021biunea '--clean'.
+
+# # A file path.
+overlay.cache.not.directory=CWWKM0305E: Folderul de cache de suprapunere {0} nu este un director.
+overlay.cache.not.directory.explanation=Sistemul de fi\u0219iere Liberty nu este \u00een concordan\u021b\u0103 cu configura\u021bia de suprapunere.  Aceast\u0103 situa\u021bie poate ap\u0103rea deoarece serverul a fost repornit cu modific\u0103ri ale configura\u021biei de suprapunere.
+overlay.cache.not.directory.useraction=Reporni\u021bi serverul cu op\u021biunea '--clean'.
+
+# # A file path.
+overlay.exists.not.directory=CWWKM0306E: Fi\u0219ierul de suprapunere {0} exist\u0103, dar nu este un director.
+overlay.exists.not.directory.explanation=Sistemul de fi\u0219iere Liberty nu este \u00een concordan\u021b\u0103 cu configura\u021bia de suprapunere.  Aceast\u0103 situa\u021bie poate ap\u0103rea deoarece serverul a fost repornit cu modific\u0103ri ale configura\u021biei de suprapunere.
+overlay.exists.not.directory.useraction=Reporni\u021bi serverul cu op\u021biunea '--clean'.

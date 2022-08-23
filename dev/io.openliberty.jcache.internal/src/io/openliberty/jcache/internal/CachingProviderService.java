@@ -55,6 +55,9 @@ public class CachingProviderService {
     // Flag tells us if the message for a call to a beta method has been issued
     private static boolean issuedBetaMessage = false;
 
+    /** An object that the CachingProviderService, CacheManagerService and CacheService should sync on before closing. */
+    private Object closeSyncObject = null;
+
     /**
      * Activate this OSGi component.
      *
@@ -63,6 +66,8 @@ public class CachingProviderService {
      */
     @Activate
     public void activate(Map<String, Object> configProps) throws Exception {
+        closeSyncObject = new Object();
+
         /*
          * Don't run if not in beta.
          */
@@ -96,8 +101,21 @@ public class CachingProviderService {
 
     @Deactivate
     public void deactivate() {
+        /*
+         * Close the CachingProvider.
+         */
+        if (cachingProvider != null) {
+            synchronized (closeSyncObject) {
+                cachingProvider.close();
+            }
+        }
+
+        /*
+         * Null out any instance fields.
+         */
         cachingProvider = null;
         classLoader = null;
+        closeSyncObject = null;
     }
 
     /**
@@ -252,5 +270,14 @@ public class CachingProviderService {
     @Override
     public String toString() {
         return super.toString() + "{id=" + id + ", cachingProvider=" + cachingProvider + ", jCacheLibrary=" + jCacheLibrary + ", commonLibraries=" + commonLibraries + "}";
+    }
+
+    /**
+     * Get the synch object to be used when closing the CachingProvider, CacheManager or the Cache itself.
+     *
+     * @return The sync object.
+     */
+    Object getCloseSyncObject() {
+        return closeSyncObject;
     }
 }

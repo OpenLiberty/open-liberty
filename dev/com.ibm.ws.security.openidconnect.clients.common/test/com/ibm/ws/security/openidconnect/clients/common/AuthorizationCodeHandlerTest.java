@@ -16,9 +16,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 
-import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +32,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -82,7 +79,7 @@ public class AuthorizationCodeHandlerTest {
     private final MockOidcClientRequest oidcClientRequest = mock.mock(MockOidcClientRequest.class, "oidcClientRequest");
     private final ConvergedClientConfig convClientConfig = mock.mock(ConvergedClientConfig.class, "convClientConfig");
 
-    AuthorizationCodeHandler ach = new SimpleMockAuthorizationCodeHandler(sslSupport);
+    AuthorizationCodeHandler ach;
 
     @Before
     public void setUp() {
@@ -90,6 +87,8 @@ public class AuthorizationCodeHandlerTest {
 
         mock.checking(new Expectations() {
             {
+                one(convClientConfig).getClientId();
+                will(returnValue(CLIENTID));
                 allowing(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 allowing(webAppSecConfig).getHttpOnlyCookies();
@@ -170,7 +169,7 @@ public class AuthorizationCodeHandlerTest {
             });
 
             AuthorizationCodeHandler ach = new SimpleMockAuthorizationCodeHandler(sslSupport);
-            ProviderAuthenticationResult result = ach.handleAuthorizationCode(req, res, AUTHZ_CODE, originalState, convClientConfig);
+            ProviderAuthenticationResult result = ach.handleAuthorizationCode(AUTHZ_CODE, originalState);
             checkForBadStatusExpectations(result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -196,10 +195,7 @@ public class AuthorizationCodeHandlerTest {
             });
 
             AuthorizationCodeHandler ach = new SimpleMockAuthorizationCodeHandler(sslSupport);
-            ProviderAuthenticationResult result = ach.handleAuthorizationCode(req, res,
-                    AUTHZ_CODE, //"authorizaCodeAAA",
-                    originalState,
-                    convClientConfig);
+            ProviderAuthenticationResult result = ach.handleAuthorizationCode(AUTHZ_CODE, originalState);
             checkForBadStatusExpectations(result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -230,7 +226,7 @@ public class AuthorizationCodeHandlerTest {
         });
 
         AuthorizationCodeHandler ach = new SimpleMockAuthorizationCodeHandler(sslSupport);
-        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(req, res, AUTHZ_CODE, originalState, convClientConfig);
+        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(AUTHZ_CODE, originalState);
 
         checkForBadStatusExpectations(oidcResult);
     }
@@ -264,7 +260,7 @@ public class AuthorizationCodeHandlerTest {
         });
 
         AuthorizationCodeHandler ach = new SimpleMockAuthorizationCodeHandler(sslSupport);
-        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(req, res, AUTHZ_CODE, originalState, convClientConfig);
+        ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(AUTHZ_CODE, originalState);
 
         checkForBadStatusExpectations(oidcResult);
     }
@@ -308,34 +304,11 @@ public class AuthorizationCodeHandlerTest {
             super();
             httpe = e;
         }
-
-        @Override
-        public HashMap<String, String> getTokensFromAuthzCode(String tokenEnpoint,
-                String clientId,
-                @Sensitive String clientSecret,
-                String redirectUri,
-                String code,
-                String grantType,
-                SSLSocketFactory sslSocketFactory,
-                boolean b,
-                String authMethod,
-                String resources,
-                HashMap<String, String> customParams,
-                boolean useJvmProps) throws HttpException, IOException {
-            if (ioe != null) {
-                throw ioe;
-            }
-            if (httpe != null) {
-                throw httpe;
-            }
-            return new HashMap<String, String>();
-        }
-
     }
 
     class SimpleMockAuthorizationCodeHandler extends AuthorizationCodeHandler {
         public SimpleMockAuthorizationCodeHandler(SSLSupport sslsupt) {
-            super(sslsupt);
+            super(req, res, convClientConfig, sslsupt);
         }
 
         @Override
