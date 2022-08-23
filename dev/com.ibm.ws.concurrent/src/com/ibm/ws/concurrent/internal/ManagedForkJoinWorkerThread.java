@@ -88,6 +88,18 @@ class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements Manage
         return threadFactory.service.isShutdown.get() || getState() == Thread.State.TERMINATED;
     }
 
+    @Override
+    protected void onStart() {
+        // EE Concurrency 3.4.4: Threads that are created by a ManagedThreadFactory instance but are started after the
+        // ManagedThreadFactory has shut down [are] required to start with an interrupted status.
+        if (threadFactory.service.isShutdown.get())
+            interrupt();
+        else
+            ACTIVE_THREADS.put(this, threadFactory.threadGroup);
+
+        super.onStart();
+    }
+
     /**
      * @see java.lang.Thread#run()
      */
@@ -121,20 +133,7 @@ class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements Manage
             Tr.exit(this, tc, "run");
     }
 
-    /**
-     * @see java.lang.Thread#start()
-     */
-    @Override
-    public void start() {
-        // EE Concurrency 3.4.4: Threads that are created by a ManagedThreadFactory instance but are started after the
-        // ManagedThreadFactory has shut down [are] required to start with an interrupted status.
-        if (threadFactory.service.isShutdown.get())
-            interrupt();
-        else
-            ACTIVE_THREADS.put(this, threadFactory.threadGroup);
-
-        super.start();
-    }
+    // Do not override start() - it is not invoked in Java 19 and above
 
     /**
      * Include the instance information in trace:

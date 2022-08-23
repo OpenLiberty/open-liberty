@@ -37,7 +37,9 @@ public class CDICompletionStageTest extends FATServletClient {
     private static final String APP_NAME = "ftCompletionStage";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, MicroProfileActions.MP50, MicroProfileActions.MP41, MicroProfileActions.MP22);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, MicroProfileActions.MP60,
+                                                             MicroProfileActions.MP41,
+                                                             MicroProfileActions.MP22);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = CDICompletionStageServlet.class, contextRoot = APP_NAME)

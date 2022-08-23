@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -155,8 +155,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         ACTIVE(true), // task submit/start/run all possible
         ENQUEUE_STOPPING(true), // enqueue is being disabled, submit might be possible, start/run still possible
         ENQUEUE_STOPPED(true), // task submit disallowed, start/run still possible
-        TASKS_CANCELING(false), // task submit disallowed, start/run might be possible, queued and running tasks are being canceled
-        TASKS_CANCELED(false), // task submit/start disallowed, waiting for all tasks to end
+        TASKS_CANCELLING(false), // task submit disallowed, start/run might be possible, queued and running tasks are being canceled
+        TASKS_CANCELLED(false), // task submit/start disallowed, waiting for all tasks to end
         TERMINATED(false); // task submit/start/run all disallowed
 
         boolean canStartTask;
@@ -295,7 +295,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
         // Progress the state at least to ENQUEUE_STOPPED (possibly TASKS_CANCELED)
         switch (state.get()) {
-            case TASKS_CANCELING:
+            case TASKS_CANCELLING:
                 if (!shutdownNowLatch.await(timeout, unit))
                     return false;
                 break;
@@ -323,8 +323,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 case TERMINATED:
                     return true;
                 case ENQUEUE_STOPPED:
-                case TASKS_CANCELING:
-                case TASKS_CANCELED:
+                case TASKS_CANCELLING:
+                case TASKS_CANCELLED:
                     // Transition to TERMINATED state if there are no tasks in the queue and we have no tasks on the global executor.
                     if (queue.isEmpty()) {
                         if (remaining > 0 ? maxConcurrencyConstraint.tryAcquire(maxConcurrency, remaining < pollInterval ? remaining : pollInterval, TimeUnit.NANOSECONDS) //
@@ -961,8 +961,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             case TERMINATED:
                 return true;
             case ENQUEUE_STOPPED:
-            case TASKS_CANCELING:
-            case TASKS_CANCELED:
+            case TASKS_CANCELLING:
+            case TASKS_CANCELLED:
                 // Transition to TERMINATED state if there are no tasks in the queue and we have no tasks on the global executor
                 if (queue.isEmpty() && maxConcurrencyConstraint.tryAcquire(maxConcurrency)) {
                     State previous = state.getAndSet(State.TERMINATED);
@@ -1239,7 +1239,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
         LinkedList<Runnable> queuedTasks = new LinkedList<Runnable>();
 
-        if (state.compareAndSet(State.ENQUEUE_STOPPED, State.TASKS_CANCELING)) {
+        if (state.compareAndSet(State.ENQUEUE_STOPPED, State.TASKS_CANCELLING)) {
             if (trace && tc.isEventEnabled())
                 Tr.event(this, tc, "state: ENQUEUE_STOPPED --> TASKS_CANCELING");
 
@@ -1259,13 +1259,13 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             for (Iterator<PolicyTaskFutureImpl<?>> it = running.iterator(); it.hasNext();)
                 it.next().cancel(true);
 
-            if (state.compareAndSet(State.TASKS_CANCELING, State.TASKS_CANCELED))
+            if (state.compareAndSet(State.TASKS_CANCELLING, State.TASKS_CANCELLED))
                 if (trace && tc.isEventEnabled())
                     Tr.event(this, tc, "state: TASKS_CANCELING --> TASKS_CANCELED");
 
             shutdownNowLatch.countDown();
         } else
-            while (state.get() == State.TASKS_CANCELING)
+            while (state.get() == State.TASKS_CANCELLING)
                 try { // Await completion of other thread that concurrently invokes shutdownNow.
                     shutdownNowLatch.await();
                 } catch (InterruptedException x) {

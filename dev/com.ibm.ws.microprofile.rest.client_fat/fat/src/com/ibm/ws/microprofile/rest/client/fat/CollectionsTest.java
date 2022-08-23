@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
@@ -45,7 +46,8 @@ public class CollectionsTest extends FATServletClient {
                                                              MicroProfileActions.MP30, // 1.3
                                                              MicroProfileActions.MP33, // 1.4
                                                              MicroProfileActions.MP40, // 2.0
-                                                             MicroProfileActions.MP50); // 3.0
+                                                             MicroProfileActions.MP50, // 3.0
+                                                             MicroProfileActions.MP60);// 3.0+EE10
 
     private static final String appName = "collectionsApp";
     public static final String YASSON_IMPL = "publish/shared/resources/yasson/";
@@ -72,7 +74,7 @@ public class CollectionsTest extends FATServletClient {
         app.addAsLibraries(new File(YASSON_IMPL).listFiles());
         app.addAsLibraries(new File(JSONB_API).listFiles());
         ShrinkHelper.exportDropinAppToServer(remoteAppServer, app, new DeployOptions[] {DeployOptions.OVERWRITE});
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() | JakartaEE10Action.isActive()) {
             remoteAppServer.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-3.0", "ssl-1.0", "jsonb-2.0"));
         }
         remoteAppServer.startServer();
@@ -81,6 +83,8 @@ public class CollectionsTest extends FATServletClient {
         ShrinkHelper.defaultDropinApp(server, appName, "mpRestClient10.collections");
         if (JakartaEE9Action.isActive()) {
             server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "ssl-1.0", "jsonb-2.0"));
+        } else if (JakartaEE10Action.isActive()) {
+            server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "ssl-1.0", "jsonb-3.0", "servlet-6.0"));
         }
         server.startServer();
         server.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.

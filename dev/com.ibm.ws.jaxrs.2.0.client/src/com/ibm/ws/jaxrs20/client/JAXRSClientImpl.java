@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2021 IBM Corporation and others.
+ * Copyright (c) 2014,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -193,7 +193,7 @@ public final class JAXRSClientImpl extends ClientImpl {
                         clients.remove(clientRef);
                         if (clients.isEmpty()) {
                             for (String id : busCache.keySet()) {
-                                if (id.startsWith(clientRef.moduleName) || id.startsWith("unknown:")) {
+                                if (id.startsWith(clientRef.moduleName) || id.startsWith("unknown-")) {
                                     busCache.remove(id).shutdown(false);
                                 }
                             }
@@ -313,7 +313,7 @@ public final class JAXRSClientImpl extends ClientImpl {
                     }
                     if (clients.isEmpty()) {
                         for (String id : busCache.keySet()) {
-                            if (id.startsWith(moduleName) || id.startsWith("unknown:")) {
+                            if (id.startsWith(moduleName) || id.startsWith("unknown-")) {
                                 busCache.remove(id).shutdown(false);
                             }
                         }
@@ -340,7 +340,7 @@ public final class JAXRSClientImpl extends ClientImpl {
             }
             synchronized (clientsPerModule) {
                 for (String id : busCache.keySet()) {
-                    if (id.startsWith(moduleName) || id.startsWith("unknown:")) {
+                    if (id.startsWith(moduleName) || id.startsWith("unknown-")) {
                         busCache.remove(id).shutdown(false);
                     }
                 }
@@ -374,11 +374,11 @@ public final class JAXRSClientImpl extends ClientImpl {
                 return getModuleName(mmd);
             }
         }
-        return "unknown:";
+        return "unknown-";
     }
 
     private static String getModuleName(ModuleMetaData mmd) {
-        return mmd.getName() + ":";
+        return mmd.getName() + "-";
     }
 
     private void checkClosed() {

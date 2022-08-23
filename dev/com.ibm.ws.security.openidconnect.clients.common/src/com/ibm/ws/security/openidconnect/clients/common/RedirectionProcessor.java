@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -23,6 +23,7 @@ import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
 /**
@@ -135,7 +136,7 @@ public class RedirectionProcessor {
     }
 
     private String getOriginalRequestUrl(String state) {
-        String cookieName = ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
+        String cookieName = OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
         Cookie[] cookies = request.getCookies();
         String requestUrl = CookieHelper.getCookieValue(cookies, cookieName);
         OidcClientUtil.invalidateReferrerURLCookie(request, response, cookieName);
@@ -166,7 +167,7 @@ public class RedirectionProcessor {
             Tr.debug(tc, "Request info: state: " + state + " session_state: " + sessionState);
         }
         boolean isHttpsRequest = requestUrl.toLowerCase().startsWith("https");
-        new OidcClientUtil().setCookieForRequestParameter(request, response, clientId, state, isHttpsRequest, clientCfg);
+        OidcClientUtil.setCookieForRequestParameter(request, response, clientId, state, isHttpsRequest, clientCfg);
         if ((oidcClientId != null && !oidcClientId.isEmpty()) || id_token != null) {
             postToWASReqURLForImplicitFlow(requestUrl, oidcClientId);
         } else {

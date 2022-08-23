@@ -15,7 +15,7 @@
     <name>MicroProfile Metrics TCK Runner 4.0 TCK Module</name>
 
     <properties>
-        <arquillian.version>1.7.0.Alpha9</arquillian.version>
+        <arquillian.version>1.7.0.Alpha12</arquillian.version>
         <microprofile.metrics.version>4.0.1</microprofile.metrics.version>
 
         <!-- the below is used in arquillian.xml -->
@@ -95,7 +95,7 @@
         <dependency>
 		    <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>2.0.0</version>
+            <version>2.1.0</version>
             <scope>test</scope>
         </dependency>
         

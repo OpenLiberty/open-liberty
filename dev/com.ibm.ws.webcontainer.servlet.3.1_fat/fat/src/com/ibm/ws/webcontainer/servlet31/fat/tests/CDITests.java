@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -30,14 +29,10 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
-// TODO: https://github.com/OpenLiberty/open-liberty/issues/20641
-@SkipForRepeat(EE10_FEATURES)
 @RunWith(FATRunner.class)
 public class CDITests {
 
@@ -48,6 +43,7 @@ public class CDITests {
 
     private static final String CDI12_TEST_JAR_NAME = "CDI12Test";
     private static final String CDI12_TEST_APP_NAME = "CDI12Test";
+    private static final String CDI12_TEST_EE10_APP_NAME = "CDI12TestEE10";
 
     @BeforeClass
     public static void setupClass() throws Exception {
@@ -62,7 +58,26 @@ public class CDITests {
                                                                "com.ibm.ws.webcontainer.servlet_31_fat.cdi12test.war.interfaces",
                                                                "com.ibm.ws.webcontainer.servlet_31_fat.cdi12test.war.listeners",
                                                                "com.ibm.ws.webcontainer.servlet_31_fat.cdi12test.war.servlets");
-        cdi12TestApp = (WebArchive) ShrinkHelper.addDirectory(cdi12TestApp, "test-applications/CDI12Test.war/resources");
+        /*
+         * In CDI 4.0 (EE10) an empty beans.xml is treated as bean-discovery-mode="annotated"
+         * in previous CDI features it was treated as bean-discovery-mode="all".
+         *
+         * Adding the cdi emptyBeansXmlCDI3Compatibility configuration to the server.xml used for this test will give us
+         * the pre CDI 4.0 behavior. The configuration will be ignored in CDI features before CDI 4.0.
+         *
+         * We need to use the CDI12TestEE10.war during the EE10 repeat action because it contains an actual empty beans.xml.
+         *
+         * The existing test application contains a 1.0 beans.xml with no version set.
+         *
+         * The cdi emptyBeansXmlCDI3Compatibility configuration will only work for a completely empty beans.xml.
+         *
+         * Previous CDI specifications stated that a beans.xml with no version would have bean-discovery-mode="all".
+         */
+        if (JakartaEE10Action.isActive()) {
+            cdi12TestApp = (WebArchive) ShrinkHelper.addDirectory(cdi12TestApp, "test-applications/" + CDI12_TEST_EE10_APP_NAME + ".war/resources");
+        } else {
+            cdi12TestApp = (WebArchive) ShrinkHelper.addDirectory(cdi12TestApp, "test-applications/" + CDI12_TEST_APP_NAME + ".war/resources");
+        }
         cdi12TestApp = cdi12TestApp.addAsLibrary(cdi12TestJar);
 
         // Export the application.
@@ -81,7 +96,6 @@ public class CDITests {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testServletInjection() throws Exception {
         String[] expected = { "Test Exit", "ConstructorBean::Servlet", "MethodBean::Servlet", "ServletFieldBean", "ProducerInjected::Servlet", "postConstructCalled::Servlet" };
 
@@ -89,7 +103,6 @@ public class CDITests {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testServletIntercepor() throws Exception {
         String[] expected = { "Test Passed! InterceptedBean : ServiceMethodInterceptor was called.",
                               "Test Passed! CDIServletIntercepted : SendResponseInterceptor was called.",
@@ -99,7 +112,6 @@ public class CDITests {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testAsyncListeenerCDI() throws Exception {
         String[] expected = { "onStartAsync :class com.ibm.ws.webcontainer.servlet_31_fat.cdi12test.jar.cdi.beans.ConstructorBean:",
                               "onStartAsync :class com.ibm.ws.webcontainer.servlet_31_fat.cdi12test.jar.cdi.beans.MethodBean:",

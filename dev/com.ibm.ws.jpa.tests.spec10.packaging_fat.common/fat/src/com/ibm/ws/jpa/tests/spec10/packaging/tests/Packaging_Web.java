@@ -35,6 +35,7 @@ import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.annotationoverride.tests.web.
 import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.mappingfiledefaults.tests.web.TestMappingFileDefaultsServlet;
 import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.metadatacomplete.tests.web.TestMetadataCompleteServlet;
 import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.xmlmetadatacomplete.tests.web.TestXMLMetadataCompleteServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

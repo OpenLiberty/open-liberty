@@ -12,10 +12,12 @@ package io.openliberty.security.oidcclientcore.discovery;
 
 import javax.net.ssl.SSLSocketFactory;
 
-//import com.ibm.json.java.JSONObject;
+import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.http.HttpUtils;
+
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 
 public class DiscoveryHandler {
 
@@ -29,7 +31,16 @@ public class DiscoveryHandler {
         this.httpUtils = new HttpUtils();
     }
 
-    public String fetchDiscoveryData(String discoveryUrl, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws Exception {
+    public JSONObject fetchDiscoveryDataJson(String discoveryUri, String clientId) throws OidcDiscoveryException {
+        try {
+            String jsonString = fetchDiscoveryDataString(discoveryUri, true, false);
+            return JSONObject.parse(jsonString);
+        } catch (Exception e) {
+            throw new OidcDiscoveryException(clientId, discoveryUri, e.getMessage());
+        }
+    }
+
+    public String fetchDiscoveryDataString(String discoveryUrl, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws Exception {
         return httpUtils.getHttpJsonRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemProperties);
     }
 

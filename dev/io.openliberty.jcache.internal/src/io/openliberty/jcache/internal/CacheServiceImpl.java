@@ -77,6 +77,9 @@ public class CacheServiceImpl implements CacheService {
     /** Collection of classes that have had error messages emitted for NotSerializableExceptions. */
     private static final Set<String> NOTSERIALIZABLE_CLASSES_LOGGED = new HashSet<String>();
 
+    /** An object that the CachingProviderService, CacheManagerService and CacheService should sync on before closing. */
+    private Object closeSyncObject = null;
+
     @Activate
     public void activate(Map<String, Object> configProps) {
         /*
@@ -107,9 +110,11 @@ public class CacheServiceImpl implements CacheService {
         /*
          * Close the cache.
          */
-        if (cache != null) {
+        if (cache != null && !cache.isClosed()) {
             try {
-                cache.close();
+                synchronized (closeSyncObject) {
+                    cache.close();
+                }
             } catch (Exception e) {
                 Tr.warning(tc, "CWLJC0012_CLOSE_CACHE_ERR", cacheName, e);
             }
@@ -120,6 +125,7 @@ public class CacheServiceImpl implements CacheService {
          */
         cache = null;
         getCacheFuture = null;
+        closeSyncObject = null;
         NOTSERIALIZABLE_CLASSES_LOGGED.clear();
     }
 
@@ -183,99 +189,103 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public Cache<Object, Object> getCache() {
-        if (this.cache != null) {
-            return this.cache;
-        }
-
-        return AccessController.doPrivileged((PrivilegedAction<Cache<Object, Object>>) () -> {
-
+        if (this.cache == null) {
             /*
              * We will need to get the cache from the provider at this point.
              */
             synchronized (syncObject) {
-                if (cache == null) {
-                    /*
-                     * Configuration updates can occur while this task is either queued to run or while running.
-                     * If this occurs, the CachingProviderService could be unregistered. Make sure it is still
-                     * registered, if not, no-op this task.
-                     */
-                    if (cacheManagerService == null) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "It appears that perhaps the CacheManagerService was stopped after this task was started." +
-                                         " Perhaps a configuration change was processed?");
+                /*
+                 * Possibly set while we were waiting on the sync block.
+                 */
+                if (this.cache == null) {
+
+                    this.cache = AccessController.doPrivileged((PrivilegedAction<Cache<Object, Object>>) () -> {
+
+                        Cache<Object, Object> tCache = null;
+
+                        /*
+                         * Configuration updates can occur while this task is either queued to run or while running.
+                         * If this occurs, the CachingProviderService could be unregistered. Make sure it is still
+                         * registered, if not, no-op this task.
+                         */
+                        if (cacheManagerService == null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "It appears that perhaps the CacheManagerService was stopped after this task was started." +
+                                             " Perhaps a configuration change was processed?");
+                            }
+                            return null;
                         }
-                        return null;
-                    }
-
-                    /*
-                     * Search for an existing cache.
-                     */
-                    CacheManager cacheManager = null;
-                    long loadTimeMs = 0l;
-                    try {
-                        cacheManager = cacheManagerService.getCacheManager();
 
                         /*
-                         * The JCache specification says that any cache created outside of the JCache
-                         * APIs should have no types for the key or value. Some providers seem to respect
-                         * that and others don't. If we provide the types in the getCache call, we can
-                         * expect some providers to throw an exception, so don't.
+                         * Search for an existing cache.
                          */
-                        loadTimeMs = System.currentTimeMillis();
-                        Cache<Object, Object> jCache = (Cache<Object, Object>) cacheManager.getCache(cacheName);
-                        loadTimeMs = System.currentTimeMillis() - loadTimeMs;
+                        CacheManager cacheManager = null;
+                        long loadTimeMs = 0l;
+                        try {
+                            cacheManager = cacheManagerService.getCacheManager();
 
-                        if (jCache != null) {
-                            cache = new CacheProxy(jCache, this);
+                            /*
+                             * The JCache specification says that any cache created outside of the JCache
+                             * APIs should have no types for the key or value. Some providers seem to respect
+                             * that and others don't. If we provide the types in the getCache call, we can
+                             * expect some providers to throw an exception, so don't.
+                             */
+                            loadTimeMs = System.currentTimeMillis();
+                            Cache<Object, Object> jCache = (Cache<Object, Object>) cacheManager.getCache(cacheName);
+                            loadTimeMs = System.currentTimeMillis() - loadTimeMs;
+
+                            if (jCache != null) {
+                                tCache = new CacheProxy(jCache, this);
+                            }
+                        } catch (Throwable e) {
+                            /*
+                             * If we failed and couldn't retrieve an existing cache, log an error and try to
+                             * create one.
+                             */
+                            Tr.warning(tc, "CWLJC0011_GET_CACHE_ERR", cacheName, e);
                         }
-                    } catch (Throwable e) {
-                        /*
-                         * If we failed and couldn't retrieve an existing cache, log an error and try to 
-                         * create one.
-                         */
-                        Tr.warning(tc, "CWLJC0011_GET_CACHE_ERR", cacheName, e);
-                    }
-
-                    /*
-                     * Did we find a cache? If not, create it.
-                     */
-                    if (cache == null) {
-                        /*
-                         * Update the cache configuration.
-                         */
-                        MutableConfiguration<Object, Object> config = new MutableConfiguration<Object, Object>();
-                        config.setTypes(Object.class, Object.class);
 
                         /*
-                         * Finally, create the JCache instance.
+                         * Did we find a cache? If not, create it.
                          */
-                        loadTimeMs = System.currentTimeMillis();
-                        cache = new CacheProxy(cacheManager.createCache(cacheName, config), this);
-                        loadTimeMs = System.currentTimeMillis() - loadTimeMs;
+                        if (tCache == null) {
+                            /*
+                             * Update the cache configuration.
+                             */
+                            MutableConfiguration<Object, Object> config = new MutableConfiguration<Object, Object>();
+                            config.setTypes(Object.class, Object.class);
 
+                            /*
+                             * Finally, create the JCache instance.
+                             */
+                            loadTimeMs = System.currentTimeMillis();
+                            tCache = new CacheProxy(cacheManager.createCache(cacheName, config), this);
+                            loadTimeMs = System.currentTimeMillis() - loadTimeMs;
+
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
+                                Tr.info(tc, "CWLJC0001_CACHE_CREATED", cacheName, loadTimeMs);
+                            }
+                        } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
+                                Tr.info(tc, "CWLJC0002_CACHE_FOUND", cacheName, loadTimeMs);
+                            }
+                        }
+
+                        /*
+                         * Output trace to mark the caching provider class in use for this cache.
+                         */
                         if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
-                            Tr.info(tc, "CWLJC0001_CACHE_CREATED", cacheName, loadTimeMs);
+                            Tr.info(tc, "CWLJC0003_USING_PROVIDER", cacheName, cacheManagerService.getCachingProviderService()
+                                            .getCachingProvider()
+                                            .getClass()
+                                            .getName());
                         }
-                    } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
-                            Tr.info(tc, "CWLJC0002_CACHE_FOUND", cacheName, loadTimeMs);
-                        }
-                    }
-
-                    /*
-                     * Output trace to mark the caching provider class in use for this cache.
-                     */
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
-                        Tr.info(tc, "CWLJC0003_USING_PROVIDER", cacheName, cacheManagerService.getCachingProviderService()
-                                        .getCachingProvider()
-                                        .getClass()
-                                        .getName());
-                    }
+                        return tCache;
+                    });
                 }
-
-                return this.cache;
             }
-        });
+        }
+        return this.cache;
     }
 
     @Override
@@ -284,11 +294,12 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
-    public void setCachingProviderService(CacheManagerService service) {
+    public void setCacheManagerService(CacheManagerService service) {
         this.cacheManagerService = service;
+        this.closeSyncObject = ((CacheManagerServiceImpl) service).getCloseSyncObject();
     }
 
-    public void unsetCachingProviderService(CacheManagerService service) {
+    public void unsetCacheManagerService(CacheManagerService service) {
         /*
          * Wait for the getCacheFuture to complete if in progress.
          */

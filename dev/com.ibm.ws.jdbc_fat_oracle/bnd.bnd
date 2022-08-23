@@ -24,6 +24,8 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 # fat.test.use.remote.docker: true
 
+fat.test.container.images: kyleaure/oracle-18.4.0-expanded:1.0.slim, kyleaure/oracle-18.4.0-expanded:1.0.full.ssl
+
 -buildpath: \
     com.ibm.websphere.javaee.annotation.1.1,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\

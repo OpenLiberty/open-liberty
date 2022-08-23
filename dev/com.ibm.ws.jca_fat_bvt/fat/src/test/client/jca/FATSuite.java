@@ -12,11 +12,17 @@ package test.client.jca;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -26,6 +32,23 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JCABVTTest.class
 })
 public class FATSuite {
+    @ClassRule
+    public static RepeatTests repeat;
+
+    static {
+        // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
+        // If we are running on Java 8 have EE9 be the lite mode test to run.
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            .andWith(new JakartaEE9Action().fullFATOnly())
+                            .andWith(new JakartaEE10Action());
+        } else {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            .andWith(new JakartaEE9Action());
+        }
+
+    }
+
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.bvt");
 
     /**

@@ -13,13 +13,15 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/pathparam/src
+  test-applications/pathparam/src,\
+  test-applications/RegisterRestClient/src
 
 	
 fat.project: true
 
 
 -buildpath: \
+  com.ibm.websphere.org.eclipse.microprofile.rest.client.1.3;version=latest,\
   io.openliberty.jakarta.annotation.2.0;version=latest,\
   io.openliberty.jakarta.cdi.3.0;version=latest,\
   io.openliberty.jakarta.restfulWS.3.0;version=latest,\

@@ -42,7 +42,7 @@ public class JPADSErrorTest {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")//
                         .addPackage("com.ibm.ws.jpa.fat.dserror.web");
         ShrinkHelper.addDirectory(app, "test-applications/" + APP_NAME + "/resources/");
-        ShrinkHelper.exportAppToServer(server, app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         server.addInstalledAppForValidation(APP_NAME);
         server.startServer();

@@ -31,6 +31,7 @@ import com.ibm.ws.jpa.fvt.relationships.oneXone.tests.web.TestOneXOneBidirection
 import com.ibm.ws.jpa.fvt.relationships.oneXone.tests.web.TestOneXOneCompoundPKServlet;
 import com.ibm.ws.jpa.fvt.relationships.oneXone.tests.web.TestOneXOnePKJoinServlet;
 import com.ibm.ws.jpa.fvt.relationships.oneXone.tests.web.TestOneXOneUnidirectionalServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

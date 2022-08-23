@@ -7,8 +7,6 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.microprofile.openapi.fat.OpenApiActions;
-
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -29,8 +27,8 @@ public class OpenAPIValidationTestSix {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = OpenApiActions.repeat(SERVER_NAME,
-        OpenApiActions.MP_OPENAPI_31, // mpOpenAPI-3.1, LITE
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
         MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
         MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
         MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL

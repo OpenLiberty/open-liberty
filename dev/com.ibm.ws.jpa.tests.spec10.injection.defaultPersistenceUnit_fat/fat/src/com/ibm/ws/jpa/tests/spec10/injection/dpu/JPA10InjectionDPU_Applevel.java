@@ -40,6 +40,7 @@ import com.ibm.ws.jpa.fvt.injectiondpu.web.applevel.jta.AppLevelJTADPUMethodInje
 import com.ibm.ws.jpa.fvt.injectiondpu.web.applevel.jta.InjectionDPUServlet;
 import com.ibm.ws.jpa.fvt.injectiondpu.web.applevel.rl.AppLevelRLDPUFieldInjectionServlet;
 import com.ibm.ws.jpa.fvt.injectiondpu.web.applevel.rl.AppLevelRLDPUMethodInjectionServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

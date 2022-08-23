@@ -22,6 +22,8 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
+fat.test.container.images: confluentinc/cp-kafka:7.1.1
+
 -buildpath: \
 	com.ibm.websphere.org.eclipse.microprofile.reactive.messaging.1.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest,\

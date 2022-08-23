@@ -4,6 +4,7 @@
     <feature>mpRestClient-1.0</feature>
     <feature>mpConfig-1.1</feature>
     <feature>cdi-1.2</feature>
+    <feature>servlet-3.1</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>

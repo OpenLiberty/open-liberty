@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,18 +15,19 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-import javax.annotation.Resource;
-import javax.resource.cci.Connection;
-import javax.resource.cci.ConnectionFactory;
-import javax.resource.cci.ConnectionSpec;
-import javax.resource.cci.Interaction;
-import javax.resource.cci.InteractionSpec;
-import javax.resource.cci.MappedRecord;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
+import jakarta.resource.cci.Connection;
+import jakarta.resource.cci.ConnectionFactory;
+import jakarta.resource.cci.ConnectionSpec;
+import jakarta.resource.cci.IndexedRecord;
+import jakarta.resource.cci.Interaction;
+import jakarta.resource.cci.InteractionSpec;
+import jakarta.resource.cci.MappedRecord;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/*")
 public class RAExampleServlet extends HttpServlet {
@@ -48,7 +49,6 @@ public class RAExampleServlet extends HttpServlet {
     private InteractionSpec iSpec_REMOVE;
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String function = request.getParameter("functionName");
         if (function == null)
@@ -57,8 +57,8 @@ public class RAExampleServlet extends HttpServlet {
         System.out.println("Entering servlet. Query: " + request.getQueryString());
 
         try {
-            MappedRecord output = conFactory.getRecordFactory().createMappedRecord("output");
-            MappedRecord input = conFactory.getRecordFactory().createMappedRecord("input");
+            IndexedRecord<String> output = conFactory.getRecordFactory().createIndexedRecord("output");
+            MappedRecord<String, String> input = conFactory.getRecordFactory().createMappedRecord("input");
             for (Map.Entry<String, String[]> param : request.getParameterMap().entrySet())
                 if (!"functionName".equalsIgnoreCase(param.getKey()))
                     input.put(param.getKey(), param.getValue()[0]);

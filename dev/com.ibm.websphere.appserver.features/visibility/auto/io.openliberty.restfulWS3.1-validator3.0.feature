@@ -6,6 +6,6 @@ visibility=private
 -bundles=\
   io.openliberty.org.jboss.resteasy.validator.provider.ee10
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

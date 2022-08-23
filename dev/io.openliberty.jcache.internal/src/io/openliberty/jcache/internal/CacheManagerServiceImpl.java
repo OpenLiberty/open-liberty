@@ -69,6 +69,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     /** Flag tells us if the message for a call to a beta method has been issued. */
     private static boolean issuedBetaMessage = false;
 
+    /** An object that the CachingProviderService, CacheManagerService and CacheService should sync on before closing. */
+    private Object closeSyncObject = null;
+
     /**
      * Activate this OSGi component.
      *
@@ -140,9 +143,11 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         /*
          * Close and clear the CacheManager instance.
          */
-        if (cacheManager != null) {
+        if (cacheManager != null && !cacheManager.isClosed()) {
             try {
-                cacheManager.close();
+                synchronized (closeSyncObject) {
+                    cacheManager.close();
+                }
             } catch (Exception e) {
                 Tr.warning(tc, "CWLJC0013_CLOSE_CACHEMGR_ERR", ((id == null) ? "" : id), e);
             }
@@ -153,6 +158,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
          */
         cacheManager = null;
         getCacheManagerFuture = null;
+        closeSyncObject = null;
     }
 
     /**
@@ -258,6 +264,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
     public void setCachingProviderService(CachingProviderService service) {
         this.cachingProviderService = service;
+        this.closeSyncObject = service.getCloseSyncObject();
     }
 
     /**
@@ -330,5 +337,14 @@ public class CacheManagerServiceImpl implements CacheManagerService {
                 }
             }
         }
+    }
+
+    /**
+     * Get the synch object to be used when closing the CachingProvider, CacheManager or the Cache itself.
+     *
+     * @return The sync object.
+     */
+    Object getCloseSyncObject() {
+        return closeSyncObject;
     }
 }

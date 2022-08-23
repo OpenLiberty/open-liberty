@@ -10,6 +10,8 @@
  *******************************************************************************/
 package mpRestClientFT.timeout;
 
+import static componenttest.rules.repeater.MicroProfileActions.MP50_ID;
+import static componenttest.rules.repeater.MicroProfileActions.MP60_ID;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.Callable;
@@ -27,7 +29,6 @@ import org.junit.Test;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
-import componenttest.rules.repeater.JakartaEE9Action;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TimeoutTestServlet")
@@ -52,7 +53,7 @@ public class TimeoutTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(JakartaEE9Action.ID) // this is proper behavior - @Timeout not expected to stop blocking I/O operations
+    @SkipForRepeat({MP50_ID, MP60_ID})  // this is proper behavior - @Timeout not expected to stop blocking I/O operations
                                         // note that this works with previous MP Rest Client versions because we set the http
                                         // connect and read timeouts based on the value of the @Timeout annotation.
     public void testTimeoutOnSyncMethod(HttpServletRequest req, HttpServletResponse resp) throws Exception {

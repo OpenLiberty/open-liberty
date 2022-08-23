@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.JavaScriptUtils;
+import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
@@ -37,8 +37,10 @@ import io.openliberty.security.oidcclientcore.authentication.AuthorizationReques
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
-import io.openliberty.security.oidcclientcore.storage.OidcCookieUtils;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
+import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class OidcAuthorizationRequest extends AuthorizationRequest {
@@ -46,19 +48,24 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     public static final TraceComponent tc = Tr.register(OidcAuthorizationRequest.class);
 
     ConvergedClientConfig clientConfig;
+    WebSSOUtils webSsoUtils = new WebSSOUtils();
 
     public OidcAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ConvergedClientConfig clientConfig) {
-        super(request, response);
+        super(request, response, clientConfig.getClientId());
         this.clientConfig = clientConfig;
+        this.storage = new CookieBasedStorage(request, response);
     }
 
     @Override
-    @FFDCIgnore(OidcUrlNotHttpsException.class)
+    @FFDCIgnore({ OidcUrlNotHttpsException.class, Exception.class })
     public ProviderAuthenticationResult sendRequest() {
         try {
             return super.sendRequest();
         } catch (OidcUrlNotHttpsException e) {
             Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", e.getUrl());
+            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (Exception e) {
+            Tr.error(tc, "ERROR_SENDING_AUTHORIZATION_REQUEST", clientId, e.getMessage());
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
@@ -67,7 +74,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     protected String getAuthorizationEndpoint() throws OidcUrlNotHttpsException {
         String authorizationEndpoint = clientConfig.getAuthorizationEndpointUrl();
         if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, authorizationEndpoint)) {
-            throw new OidcUrlNotHttpsException(authorizationEndpoint);
+            throw new OidcUrlNotHttpsException(authorizationEndpoint, clientId);
         }
         return authorizationEndpoint;
     }
@@ -76,7 +83,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     protected String getRedirectUrl() throws OidcUrlNotHttpsException {
         String redirectUrl = OIDCClientAuthenticatorUtil.setRedirectUrlIfNotDefined(request, clientConfig);
         if (!OIDCClientAuthenticatorUtil.checkHttpsRequirement(clientConfig, redirectUrl)) {
-            throw new OidcUrlNotHttpsException(redirectUrl);
+            throw new OidcUrlNotHttpsException(redirectUrl, clientId);
         }
         return redirectUrl;
     }
@@ -87,30 +94,38 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     }
 
     @Override
-    protected void storeStateValue(String state) {
-        createAndAddStateCookie(state);
+    protected String createStateValueForStorage(String state) {
+        return OidcStorageUtils.createStateStorageValue(state, clientConfig.getClientSecret());
     }
 
-    void createAndAddStateCookie(String state) {
-        String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
-        String cookieValue = OidcCookieUtils.createStateCookieValue(clientConfig.getClientSecret(), state);
-        createAndAddCookie(cookieName, cookieValue);
+    @Override
+    protected String createNonceValueForStorage(String nonce, String state) {
+        return OidcStorageUtils.createNonceStorageValue(nonce, state, clientConfig.getClientSecret());
     }
 
-    void createAndAddWasReqUrlCookie(String state) {
-        String urlCookieName = ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
-        String cookieValue = getReqURL();
-        createAndAddCookie(urlCookieName, cookieValue);
-    }
-
-    void createAndAddCookie(String cookieName, String cookieValue) {
-        int cookieLifeTime = (int) clientConfig.getAuthenticationTimeLimitInSeconds();
-        Cookie c = OidcClientUtil.createCookie(cookieName, cookieValue, cookieLifeTime, request);
-        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
-        if (clientConfig.isHttpsRequired() && isHttpsRequest) {
-            c.setSecure(true);
+    @Override
+    protected StorageProperties getStateStorageProperties() {
+        CookieStorageProperties props = new CookieStorageProperties();
+        props.setStorageLifetimeSeconds((int) clientConfig.getAuthenticationTimeLimitInSeconds());
+        if (shouldCookiesBeSecure()) {
+            props.setSecure(true);
         }
-        response.addCookie(c);
+        return props;
+    }
+
+    @Override
+    protected StorageProperties getOriginalRequestUrlStorageProperties() {
+        CookieStorageProperties props = new CookieStorageProperties();
+        props.setStorageLifetimeSeconds((int) clientConfig.getAuthenticationTimeLimitInSeconds());
+        if (shouldCookiesBeSecure()) {
+            props.setSecure(true);
+        }
+        return props;
+    }
+
+    private boolean shouldCookiesBeSecure() {
+        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
+        return (clientConfig.isHttpsRequired() && isHttpsRequest);
     }
 
     @Override
@@ -132,17 +147,17 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             // If clientSideRedirect is true (default is true) then do the
             // redirect.  If the user agent doesn't support javascript then config can set this to false.
             if (clientConfig.isClientSideRedirect()) {
-                String domain = CookieBasedStorage.getSsoDomain(request);
+                String domain = webSsoUtils.getSsoDomain(request);
                 doClientSideRedirect(authzEndPointUrlWithQuery, state, domain);
             } else {
-                createAndAddWasReqUrlCookie(state);
+                storeOriginalRequestUrl(state);
             }
 
         } catch (UnsupportedEncodingException e) {
-            Tr.error(tc, "OIDC_CLIENT_AUTHORIZE_ERR", new Object[] { clientConfig.getClientId(), e.getLocalizedMessage(), ClientConstants.CHARSET });
+            Tr.error(tc, "OIDC_CLIENT_AUTHORIZE_ERR", new Object[] { clientId, e.getLocalizedMessage(), ClientConstants.CHARSET });
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         } catch (IOException ioe) {
-            Tr.error(tc, "OIDC_CLIENT_AUTHORIZE_ERR", new Object[] { clientConfig.getClientId(), ioe.getLocalizedMessage(), ClientConstants.CHARSET });
+            Tr.error(tc, "OIDC_CLIENT_AUTHORIZE_ERR", new Object[] { clientId, ioe.getLocalizedMessage(), ClientConstants.CHARSET });
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
 
         }
@@ -154,7 +169,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
         boolean scopeMissing = clientConfig.getScope() == null || clientConfig.getScope().length() == 0;
         if (openidScopeMissing || scopeMissing) {
             Tr.error(tc, "OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE",
-                    clientConfig.getClientId(), clientConfig.getScope()); // CWWKS1713E
+                    clientId, clientConfig.getScope()); // CWWKS1713E
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
         return null;
@@ -177,9 +192,9 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             isImplicit = true;
             strResponse_type = clientConfig.getResponseType();
         }
-        String clientId = clientConfig.getClientId() == null ? "" : clientConfig.getClientId();
+        String clientIdParam = clientId == null ? "" : clientId;
 
-        AuthorizationRequestParameters authzParameters = new AuthorizationRequestParameters(clientConfig.getAuthorizationEndpointUrl(), clientConfig.getScope(), strResponse_type, clientId, redirect_url, state);
+        AuthorizationRequestParameters authzParameters = new AuthorizationRequestParameters(clientConfig.getAuthorizationEndpointUrl(), clientConfig.getScope(), strResponse_type, clientIdParam, redirect_url, state);
 
         addOptionalParameters(authzParameters, oidcClientRequest, state, acr_values, isImplicit);
 
@@ -189,7 +204,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     void addOptionalParameters(AuthorizationRequestParameters authzParameters, OidcClientRequest oidcClientRequest, String state, String acr_values, boolean isImplicit) throws UnsupportedEncodingException {
         if (clientConfig.isNonceEnabled() || isImplicit) {
             String nonceValue = OidcUtil.generateRandom(Constants.STATE_LENGTH);
-            OidcUtil.createNonceCookie(oidcClientRequest, nonceValue, state, clientConfig);
+            storeNonceValue(nonceValue, state);
             authzParameters.addParameter("nonce", nonceValue);
         }
 
@@ -302,7 +317,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
 
     private String createJavaScriptForRedirect(String loginURL, String state, String domain) {
 
-        String cookieName = ClientConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
+        String cookieName = OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
         StringBuilder sb = new StringBuilder();
 
         String strDomain = "";
@@ -327,49 +342,6 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             Tr.debug(tc, "createJavaScriptForRedirect returns [" + js + "]");
         }
         return js;
-    }
-
-    String getReqURL() {
-        // due to some longstanding webcontainer strangeness, we have to do some extra things for certain behind-proxy cases to get the right port.
-        boolean rewritePort = false;
-        Integer realPort = null;
-        if (request.getScheme().toLowerCase().contains("https")) {
-            realPort = new com.ibm.ws.security.common.web.WebUtils().getRedirectPortFromRequest(request);
-        }
-        int port = request.getServerPort();
-        if (realPort != null && realPort.intValue() != port) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "serverport = " + port + "real port is " + realPort.toString() + ", url will be rewritten to use real port");
-            }
-            rewritePort = true;
-        }
-
-        StringBuffer requestURL = request.getRequestURL();
-        if (rewritePort) {
-            requestURL = rewritePortInRequestUrl(realPort);
-        }
-        requestURL = appendQueryString(requestURL);
-        return requestURL.toString();
-    }
-
-    StringBuffer rewritePortInRequestUrl(int realPort) {
-        StringBuffer requestURL = new StringBuffer();
-        requestURL.append(request.getScheme());
-        requestURL.append("://");
-        requestURL.append(request.getServerName());
-        requestURL.append(":");
-        requestURL.append(realPort);
-        requestURL.append(request.getRequestURI());
-        return requestURL;
-    }
-
-    StringBuffer appendQueryString(StringBuffer requestURL) {
-        String queryString = request.getQueryString();
-        if (queryString != null) {
-            requestURL.append("?");
-            requestURL.append(queryString);
-        }
-        return requestURL;
     }
 
 }

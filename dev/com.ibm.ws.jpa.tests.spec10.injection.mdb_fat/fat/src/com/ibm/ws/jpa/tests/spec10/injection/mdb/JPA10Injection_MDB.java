@@ -60,6 +60,7 @@ import com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.noovrd.DMIProNoInhMDBServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.noovrd.DMIPubNoInhMDBServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.mdb.jndi.AnnotatedJNDIMDBServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.mdb.jndi.DDJNDIMDBServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

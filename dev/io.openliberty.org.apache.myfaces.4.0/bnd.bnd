@@ -11,10 +11,13 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.org.apache.myfaces.4.0
-Bundle-Description:  Jakarta Server Faces, MyFaces 3.0 Implementation (4.0 Placeholder)
+javac.source: 11
+javac.target: 11
 
-Implementation-Version: 3.0.1
+Bundle-SymbolicName: io.openliberty.org.apache.myfaces.4.0
+Bundle-Description:  Jakarta Server Faces, MyFaces 4.0 Implementation
+
+Implementation-Version: 4.0.0
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
@@ -22,28 +25,30 @@ instrument.ffdc: false
 instrument.classesExcludes: \
   org/**/*.class
 
+# Use this format once we have an offical release and not an RC1
+# @${repo;org.apache.myfaces.core.impl;${Implementation-Version};EXACT}!/jakarta/faces, \
 Include-Resource: \
-  @${repo;org.apache.myfaces.core.impl;${Implementation-Version};EXACT}!/META-INF/**, \
-  @${repo;io.openliberty.jakarta.faces.3.0}!/META-INF/resources/**, \
-  @${repo;io.openliberty.jakarta.faces.3.0}!/META-INF/internal-resources/**, \
+  @${repo;org.apache.myfaces.core.impl;4.0.0.RC1;EXACT}!/META-INF/**, \
+  @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/resources/**, \
+  @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
 
 Service-Component: \
-  io.openliberty.faces_3_0.taglib; \
+  io.openliberty.faces_4_0.taglib; \
     implementation:=com.ibm.ws.faces.taglibconfig.FacesGlobalTagLibConfig; \
     provide:='com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig'; \
     properties:="service.vendor=IBM", \
-  io.openliberty.faces_3_0.cdiextension; \
+  io.openliberty.faces_4_0.cdiextension; \
     implementation:=com.ibm.ws.jsf.shared.ext.CdiExtension; \
     provide:='com.ibm.ws.cdi.extension.WebSphereCDIExtension'; \
     properties:="service.vendor=IBM,\
     bean.defining.annotations=jakarta.faces.flow.FlowScoped;jakarta.faces.view.ViewScoped,\
     api.classes=jakarta.faces.flow.builder.FlowDefinition;jakarta.faces.flow.builder.FlowBuilderParameter,\
     extension.classes.only=true",\
-  io.openliberty.faces_30.dd; \
+  io.openliberty.faces_40.dd; \
     implementation:=com.ibm.ws.javaee.version.FacesVersion; \
     provide:=com.ibm.ws.javaee.version.FacesVersion; \
-    properties:="version:Integer=30"
+    properties:="version:Integer=40"
 
 # Not used directly, so these packages needs to be dynamically imported
 DynamicImport-Package: \
@@ -100,9 +105,9 @@ Export-Package: \
   org.apache.myfaces.view.facelets.pool.impl;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view.facelets.tag;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view.facelets.tag.composite;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag.jsf;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag.jsf.core;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag.jsf.html;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag.faces;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag.faces.core;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag.faces.html;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view.facelets.tag.jstl.core;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view.facelets.tag.jstl.fn;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view.facelets.tag.ui;thread-context=true;version=${Implementation-Version}, \
@@ -119,8 +124,10 @@ Import-Package: \
   !org.apache.tomcat, \
   *
 
+# Use this once we have a non RC1 release
+# org.apache.myfaces.core:myfaces-impl;strategy=exact;version=${Implementation-Version},\
 -buildpath: \
-  org.apache.myfaces.core:myfaces-impl;version=${Implementation-Version},\
+  org.apache.myfaces.core:myfaces-impl;strategy=exact;version=4.0.0.RC1,\
   io.openliberty.jakarta.faces.4.0;version=latest,\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\
@@ -138,5 +145,4 @@ Import-Package: \
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
-  io.openliberty.faces.internal;version=latest
+  org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9

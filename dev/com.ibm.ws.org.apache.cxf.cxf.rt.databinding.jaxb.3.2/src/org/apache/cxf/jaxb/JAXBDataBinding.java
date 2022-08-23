@@ -953,7 +953,9 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
             m.setListener(marshallerListener);
             if (!noEscape) {
-                JAXBUtils.setEscapeHandler(m, escapeHandler);
+                if (escapeHandler != null) {
+                    JAXBUtils.setEscapeHandler(m, escapeHandler);
+                }
             } else if (noEscapeHandler != null) {
                 JAXBUtils.setEscapeHandler(m, noEscapeHandler);
             }

@@ -38,8 +38,7 @@ Service-Component: \
 Include-Resource: \
   META-INF=resources/META-INF
 
-Private-Package: \
-	io.openliberty.microprofile.config.internal.extension
+Private-Package: io.openliberty.microprofile.config.internal.extension,io.openliberty.io.smallrye.config.resources.*
 
 Export-Package: \
         io.smallrye.config.*;version="2.5.1"
@@ -61,4 +60,5 @@ Export-Package: \
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.jboss.logging;version=latest,\
   com.ibm.ws.logging;version=latest,\
-  com.ibm.ws.container.service;version=latest
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.kernel.boot.core;version=latest

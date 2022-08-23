@@ -52,7 +52,7 @@ public class DefaultSourcesTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP33, MicroProfileActions.MP41);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP33, MicroProfileActions.MP41);
 
     @BeforeClass
     public static void setUp() throws Exception {

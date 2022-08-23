@@ -128,4 +128,8 @@ public final class Module extends Jar implements Comparable<Module> {
     public String getModuleId() {
         return groupId + ":" + artifactId;
     }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 }

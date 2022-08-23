@@ -15,7 +15,7 @@ import org.eclipse.microprofile.faulttolerance.Retry;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 
 // Important: no annotation on the class
-// Empty beans.xml will make this a dependent bean
+// bean-discovery-mode=all will make this a dependent bean
 public class DisableEnableClient {
 
     private int failWithOneRetryCounter = 0;

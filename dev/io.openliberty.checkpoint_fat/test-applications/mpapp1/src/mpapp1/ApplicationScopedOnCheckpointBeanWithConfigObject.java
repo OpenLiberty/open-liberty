@@ -22,12 +22,13 @@ import org.eclipse.microprofile.config.Config;
 @ApplicationScoped
 public class ApplicationScopedOnCheckpointBeanWithConfigObject {
 
-    public void observeInit(@Observes @Initialized(ApplicationScoped.class) Object event) {
-        System.out.println(getClass() + ": " + "Initializing application context");
-    }
-
     @Inject
     Config config;
+
+    public void observeInit(@Observes @Initialized(ApplicationScoped.class) Object event) {
+        System.out.println(getClass() + ": " + "Initializing application context");
+        check("defaultValue");
+    }
 
     public void appScopeDefaultValueTest() {
         check("defaultValue");
@@ -50,7 +51,14 @@ public class ApplicationScopedOnCheckpointBeanWithConfigObject {
     }
 
     private void check(String expected) {
-        String actual = config.getOptionalValue("test_key", String.class).orElse("annoValue");
-        assertEquals("Wrong value for test key.", expected, actual);
+        //Get optional value
+        String optionalValue = config.getOptionalValue("config_object_app_scope_key", String.class).orElse("annoValue");
+        assertEquals("Wrong value for test key.", expected, optionalValue);
+
+        if (!expected.equals("annoValue")) {
+            // Get value
+            String value = config.getValue("config_object_app_scope_key", String.class);
+            assertEquals("Wrong value for test key.", expected, value);
+        }
     }
 }

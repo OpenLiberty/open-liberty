@@ -43,6 +43,7 @@ import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.metadatacomplete.tests.ejb.Te
 import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.xmlmetadatacomplete.tests.ejb.TestXMLMetadataCompleteEJBSFEXServlet;
 import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.xmlmetadatacomplete.tests.ejb.TestXMLMetadataCompleteEJBSFServlet;
 import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.xmlmetadatacomplete.tests.ejb.TestXMLMetadataCompleteEJBSLServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

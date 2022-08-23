@@ -29,6 +29,7 @@ import com.ibm.websphere.simplicity.config.FeatureManager;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.cdi.jpalib.ejb.web.JPACDIWithJPALibEJBServlet;
 import com.ibm.ws.jpa.fvt.cdi.simple.ejb.web.JPACDISimpleEJBServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

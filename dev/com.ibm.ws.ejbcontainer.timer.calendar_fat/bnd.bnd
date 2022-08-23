@@ -27,7 +27,8 @@ tested.features: \
 	enterpriseBeansPersistentTimer-4.0,\
 	servlet-3.1,\
 	servlet-4.0,\
-	servlet-5.0
+	servlet-5.0,\
+	servlet-6.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

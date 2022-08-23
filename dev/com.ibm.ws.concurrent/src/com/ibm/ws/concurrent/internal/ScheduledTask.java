@@ -832,6 +832,32 @@ public class ScheduledTask<T> implements Callable<T> {
             return result;
         }
 
+        // Java 19+
+        public Throwable exceptionNow() {
+            Result result = resultRef.get();
+            Status<T> status = result.getStatus();
+
+            switch (status.type) {
+                case DONE:
+                    if (status.failure == null)
+                        throw new IllegalStateException("SUCCESS"); // Future.State.SUCCESS in Java 19+
+                    else
+                        return status.failure;
+                case ABORTED:
+                    throw new IllegalStateException(new AbortedException(status.failure));
+                case CANCELED:
+                    throw new IllegalStateException(new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(), managedExecSvc.name)));
+                case NONE:
+                case SUBMITTED:
+                case STARTED:
+                    throw new IllegalStateException();
+                case SKIPPED:
+                    throw new IllegalStateException(new SkippedException(status.failure));
+                default: // should be unreachable
+                    throw new IllegalStateException(status.type.toString());
+            }
+        }
+
         /**
          * @see java.util.concurrent.FutureTask#get()
          */
@@ -999,6 +1025,32 @@ public class ScheduledTask<T> implements Callable<T> {
                    || status.type == Status.Type.DONE
                    || status.type == Status.Type.SKIPPED
                    || isCancelled();
+        }
+
+        // Java 19+
+        public T resultNow() {
+            Result result = resultRef.get();
+            Status<T> status = result.getStatus();
+
+            switch (status.type) {
+                case DONE:
+                    if (status.failure == null)
+                        return status.value;
+                    else
+                        throw new IllegalStateException(status.failure);
+                case ABORTED:
+                    throw new IllegalStateException(new AbortedException(status.failure));
+                case CANCELED:
+                    throw new IllegalStateException(new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(), managedExecSvc.name)));
+                case NONE:
+                case SUBMITTED:
+                case STARTED:
+                    throw new IllegalStateException();
+                case SKIPPED:
+                    throw new IllegalStateException(new SkippedException(status.failure));
+                default: // should be unreachable
+                    throw new IllegalStateException(status.type.toString());
+            }
         }
     }
 }
