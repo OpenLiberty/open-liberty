@@ -16,24 +16,24 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
 /**
- * This is a test class that runs the whole Fault Tolerance 3.0 TCK. The TCK results
+ * This is a test class that runs the whole Fault Tolerance TCK. The TCK results
  * are copied in the results/junit directory before the Simplicity FAT framework
  * generates the html report - so there is detailed information on individual
  * tests as if they were running as simplicity junit FAT tests in the standard
@@ -45,6 +45,9 @@ public class FaultToleranceTck40Launcher {
     private static final String SERVER_NAME = "FaultTolerance40TCKServer";
 
     private static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP50);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
