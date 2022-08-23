@@ -11,6 +11,12 @@
 -include= ~../cnf/resources/bnd/bundle.props
 
 bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Bundle-Name: Faces 4.0 Open Liberty Integration
 Bundle-SymbolicName: io.openliberty.faces.4.0.internal
 
