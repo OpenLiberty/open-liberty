@@ -41,6 +41,7 @@
         <AD id="authorizationHeaderScheme" name="%authorizationHeaderScheme" description="%authorizationHeaderScheme.desc" required="false" type="String" default="Bearer "/>
         <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc" required="false" type="String" default="5m" ibm:type="duration" />
         <AD id="tokenAge" name="internal" description="internal use only" required="false" type="String" default="0s" ibm:type="duration" />
+        <AD id="keyManagementKeyAlgorithm" name="internal" description="internal use only" required="false" type="String" default="RSA-OAEP" />
         <AD id="ignoreApplicationAuthMethod" name="%ignoreApplicationAuthMethod"  description="%ignoreApplicationAuthMethod.desc"
             required="false" type="Boolean"  default="true" />
             

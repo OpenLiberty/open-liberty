@@ -111,6 +111,9 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String CFG_KEY_TOKEN_AGE = "tokenAge";
     private long tokenAgeMilliSeconds;
 
+    public static final String CFG_KEY_DECRYPT_KEY_ALGORITHM = "keyManagementKeyAlgorithm";
+    private String keyManagementKeyAlgorithm = null;
+
     public static final String CFG_KEY_IGNORE_APP_AUTH_METHOD = "ignoreApplicationAuthMethod";
     protected boolean ignoreApplicationAuthMethod = true;
 
@@ -186,7 +189,6 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
         this.authorizationHeaderScheme = configUtils.getConfigAttribute(props, KEY_authorizationHeaderScheme);
         this.clockSkewMilliSeconds = configUtils.getLongConfigAttribute(props, CFG_KEY_CLOCK_SKEW, clockSkewMilliSeconds);
-        this.tokenAgeMilliSeconds = configUtils.getLongConfigAttribute(props, CFG_KEY_TOKEN_AGE, tokenAgeMilliSeconds);
 
         this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
         this.sslRefInfo = null; // lazy init
@@ -227,6 +229,13 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         // Ensure that for MP JWT 1.2 and above that "aud" claim is allowed in tokens even if audiences or
         // mp.jwt.verify.audiences are not configured
         ignoreAudClaimIfNotConfigured = true;
+
+        if (!isRuntimeVersionAtLeast(MpJwtRuntimeVersion.VERSION_2_1)) {
+            return;
+        }
+        this.tokenAgeMilliSeconds = configUtils.getLongConfigAttribute(props, CFG_KEY_TOKEN_AGE, tokenAgeMilliSeconds);
+        this.keyManagementKeyAlgorithm = configUtils.getConfigAttribute(props, CFG_KEY_DECRYPT_KEY_ALGORITHM);
+
     }
 
     boolean isRuntimeVersionAtLeast(Version minimumVersionRequired) {
@@ -572,6 +581,12 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @Override
     public long getTokenAge() {
         return tokenAgeMilliSeconds;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getKeyManagementKeyAlgorithm() {
+        return this.keyManagementKeyAlgorithm;
     }
 
     /** {@inheritDoc} */
