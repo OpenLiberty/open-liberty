@@ -36,6 +36,7 @@ Import-Package: \
   !org.apache.cxf.transport.https, \
   !org.osgi.service.blueprint.*, \
   !javax.xml.ws.*, \
+  com.ibm.wsspi.classloading, \
   org.apache.cxf.*, \
   org.osgi.*, \
   org.slf4j.*, \

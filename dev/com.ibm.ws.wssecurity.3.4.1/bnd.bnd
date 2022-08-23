@@ -11,9 +11,18 @@
 -include= ~../cnf/resources/bnd/bundle.props
 
 -sub: *.bnd
-
           
 bVersion=1.0
+
+app-resources= \
+  META-INF/cxf/bus-extensions.txt
+
+Service-Component: \
+  com.ibm.ws.wssecurity_3_4_1.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
 
 Bundle-ActivationPolicy: lazy
 

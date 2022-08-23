@@ -12,11 +12,20 @@
 
 -sub: *.bnd
 
-
 instrument.disabled: true
 instrument.ffdc: false
 
 cxfVersion=3.4.3
+
+app-resources= \
+  META-INF/cxf/bus-extensions.txt
+
+Service-Component: \
+  com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy_3_2.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/!*-INF/*, \
