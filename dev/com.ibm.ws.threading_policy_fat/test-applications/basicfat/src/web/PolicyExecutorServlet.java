@@ -1931,9 +1931,17 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(false, blocker.await(400, TimeUnit.MILLISECONDS));
 
         // Future.exceptionNow on task that times out and is aborted:
-        exception = (Throwable) exceptionNow.invoke(task4future);
-        if (!StartTimeoutException.class.equals(exception.getClass()))
-            throw exception;
+        try {
+            exception = (Throwable) exceptionNow.invoke(task4future);
+            if (exception == null)
+                throw new AssertionError("exceptionNow returned null for aborted task");
+            else
+                throw new AssertionError("exceptionNow returned value for aborted task").initCause(exception);
+        } catch (IllegalStateException x) {
+            if (!(x.getCause() instanceof StartTimeoutException))
+                throw x;
+            // pass
+        }
 
         // Future.exceptionNow on cancelled task:
         assertEquals(true, task3future.cancel(true));
