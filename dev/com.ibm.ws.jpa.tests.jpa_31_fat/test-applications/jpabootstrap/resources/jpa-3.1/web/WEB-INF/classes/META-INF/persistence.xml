@@ -5,7 +5,7 @@
     <persistence-unit name="JPAPU">
     	<properties>
 			<!-- EclipseLink should create the database schema automatically -->
-			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
 		</properties>
     </persistence-unit>
 </persistence>
