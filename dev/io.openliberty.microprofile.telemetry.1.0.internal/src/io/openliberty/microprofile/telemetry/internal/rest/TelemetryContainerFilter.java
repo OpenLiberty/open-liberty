@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
@@ -129,6 +130,9 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     private static class ServerAttributesExtractor
             implements HttpServerAttributesGetter<ContainerRequestContext, ContainerResponseContext> {
 
+
+        private static final ConcurrentHashMap<String, String> routes = new ConcurrentHashMap<>();
+
         @Override
         public String flavor(final ContainerRequestContext request) {
             return null;
@@ -139,17 +143,26 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
             Class<?> resourceClass = (Class<?>) request.getProperty(resourceString + "class");
             Method method = (Method) request.getProperty(resourceString + "method");
 
-            UriBuilder template = UriBuilder.fromResource(resourceClass);
-            String contextRoot = request.getUriInfo().getBaseUri().getPath();
-            if (contextRoot != null) {
-                template.path(contextRoot);
+            String key = resourceClass.getName() + "." + method.getName();
+            String route = routes.get(key);
+
+            if (route == null) {
+                UriBuilder template = UriBuilder.fromResource(resourceClass);
+
+                String contextRoot = request.getUriInfo().getBaseUri().getPath();
+                if (contextRoot != null) {
+                    template.path(contextRoot);
+                }
+
+                if (method.isAnnotationPresent(Path.class)) {
+                    template.path(method);
+                }
+
+                route = template.toTemplate();
+                routes.put(key, route);
             }
 
-            if (method.isAnnotationPresent(Path.class)) {
-                template.path(method);
-            }
-
-            return template.toTemplate();
+            return route;
         }
         //required
         @Override
