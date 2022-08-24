@@ -1,1 +1,2 @@
-com.ibm.ws.security.oidc.social_fat.claimPropagation
+com.ibm.ws.security.oidc.client_fat.claimPropagation
+com.ibm.ws.security.social_fat.LibertyOP.claimPropagation

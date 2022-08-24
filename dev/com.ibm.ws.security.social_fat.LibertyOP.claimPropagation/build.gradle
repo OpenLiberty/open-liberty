@@ -1,0 +1,64 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../com.ibm.ws.security.fat.common.claimPropagation/CommonClaimPropagation.gradle'
+
+addRequiredLibraries.dependsOn copyOPServers
+
+
+autoFVT.doLast {
+
+  /*
+   * Copy common artifacts to test servers.
+   */
+  def servers = [
+	'com.ibm.ws.security.claimPropagation_fat.social'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from new File(projectDir, 'publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include '*.xml'
+    }
+    
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+      into new File(autoFvtDir, 'publish/servers/' + server)
+      include 'commonBasicKeyStore.jks'
+      include 'commonTrustStore.jks'
+    }
+    
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'formlogin_1.xml'
+    }    
+
+    copy { 
+      from project(':com.ibm.ws.security.fat.common.claimPropagation').file('publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'goodSSLSettings.xml'
+      include 'rp_misc.xml'
+      include 'rp_fatTestPorts.xml'
+    }
+
+    copy {
+      from new File(project(":com.ibm.ws.security.fat.common.social").buildDir, "test-application/formlogin.war")
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+ 
+   }
+}
