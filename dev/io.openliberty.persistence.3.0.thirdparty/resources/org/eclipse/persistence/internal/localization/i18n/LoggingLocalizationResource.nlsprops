@@ -319,9 +319,9 @@ jpars_could_not_find_session_bean=A call is being made to a session bean with JN
 
 jta_cannot_be_disabled_in_cmp=When using Container Managed Persistence (CMP), JTA cannot be disabled. EclipseLink will act as if JTA is enabled.
 
-jta_duplicate_ctrl_property=JTA transaction controller class defined in both eclipselink.target-server and eclipselink.jta.controller properties. Using value from eclipselink.target-server.
+jta_duplicate_ctrl_property=JTA transaction controller class defined in both "eclipselink.target-server" and "eclipselink.jta.controller" properties. Using value from "eclipselink.target-server".
 
-jta_tsr_lookup_failure=Could not lookup TransactionSynchronizationRegistry instance: {0}
+jta_tsr_lookup_failure=Cannot look up TransactionSynchronizationRegistry instance: {0}
 
 key_identity_hash_code_object={0}Key: {1}{2}Identity Hash Code: {3}{2}Object: {4}
 
