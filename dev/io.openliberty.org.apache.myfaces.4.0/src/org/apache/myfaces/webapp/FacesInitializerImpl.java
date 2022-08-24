@@ -31,6 +31,8 @@ import org.apache.myfaces.cdi.util.BeanEntry;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
 import org.apache.myfaces.spi.InjectionProviderFactory;
+import org.apache.myfaces.spi.WebConfigProvider;
+import org.apache.myfaces.spi.WebConfigProviderFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
@@ -150,11 +152,42 @@ public class FacesInitializerImpl implements FacesInitializer
             if (!WebConfigParamUtils.getBooleanInitParameter(externalContext,
                     MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
             {
-                FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
-                        FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext);
-                if (facesServletRegistration == null
-                        || facesServletRegistration.getMappings() == null
-                        || facesServletRegistration.getMappings().length == 0)
+                boolean facesServletNotFound = false;
+                try
+                {
+                    FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
+                    FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext);
+
+                    if (facesServletRegistration == null
+                            || facesServletRegistration.getMappings() == null
+                            || facesServletRegistration.getMappings().length == 0)
+                    {
+                        facesServletNotFound = true;
+                    }
+                }
+                catch (UnsupportedOperationException use)
+                {
+                    if (log.isLoggable(Level.FINE))
+                    {
+                        log.fine("An UnsupportedOperationException was caught while getting the ServletRegistrations "
+                                + "from the ServletContext.");
+                        log.fine(use.getMessage());
+                        log.fine("Using the WebConfigProvider to look for the FacesServlet mappings.");
+                    }
+                    // If the StartupServletContextListener was added programmatically an UnsupportedOperationException
+                    // will be thrown by the ServletContext getServletRegistration method used by
+                    // FacesServletMappingUtils. If an UnsupportedOperationException occurs we should fallback and try
+                    // to read the web.xml directly by using the WebConfigProvider.
+                    WebConfigProvider webConfigProvider = WebConfigProviderFactory.getWebConfigProviderFactory(
+                            facesContext.getExternalContext()).getWebConfigProvider(facesContext.getExternalContext());
+
+                    if (webConfigProvider.getFacesServletMappings(facesContext.getExternalContext()).isEmpty())
+                    {
+                        facesServletNotFound = true;
+                    }
+                }
+
+                if (facesServletNotFound)
                 {
                     // check to see if the FacesServlet was found by MyFacesContainerInitializer
                     Boolean mappingAdded = (Boolean) servletContext.getAttribute(
