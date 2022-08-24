@@ -1,1 +1,3 @@
 io.openliberty.microprofile.telemetry_git_fat_tck
+io.openliberty.microprofile.telemetry.1.0.internal_fat
+io.openliberty.microprofile.telemetry.1.0.internal.jaeger_fat
