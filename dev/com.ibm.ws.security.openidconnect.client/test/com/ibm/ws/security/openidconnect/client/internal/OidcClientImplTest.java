@@ -33,7 +33,6 @@ import org.junit.rules.TestRule;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
@@ -142,7 +141,6 @@ public class OidcClientImplTest {
 
     @After
     public void tearDown() {
-        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         mock.assertIsSatisfied();
         outputMgr.resetStreams();
     }
@@ -417,7 +415,6 @@ public class OidcClientImplTest {
 
     @Test
     public void testGetProviderConfig_issuer1_noAuthFilter() {
-        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         final String methodName = "testGetProviderConfig_issuer1_noAuthFilter";
         final OidcClientImpl oidcClient = prepareOidcClientForIssuerAsSelectorTest(false, false, true, false, false, false);
 
@@ -430,7 +427,6 @@ public class OidcClientImplTest {
 
     @Test
     public void testGetProviderConfig_issuer2_noAuthFilter() {
-        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         final String methodName = "testGetProviderConfig_issuer2_noAuthFilter";
         final OidcClientImpl oidcClient = prepareOidcClientForIssuerAsSelectorTest(false, false, false, true, false, false);
 
@@ -443,7 +439,6 @@ public class OidcClientImplTest {
 
     @Test
     public void testGetProviderConfig_issuer1_authFilterA_selectByAuthFilter() {
-        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         final String methodName = "testGetProviderConfig_issuer1_authFilterA_selectByAuthFilter";
         final OidcClientImpl oidcClient = prepareOidcClientForIssuerAsSelectorTest(true, false, false, false, false, false);
 

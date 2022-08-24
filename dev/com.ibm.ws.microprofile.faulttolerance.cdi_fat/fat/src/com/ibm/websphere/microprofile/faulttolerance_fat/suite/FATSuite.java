@@ -13,7 +13,6 @@ package com.ibm.websphere.microprofile.faulttolerance_fat.suite;
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -37,8 +36,11 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement.Disabl
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.interceptors.InterceptorTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.jaxrs.JaxRsTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
+import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.CDIVersion;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 
 import componenttest.topology.impl.LibertyServer;
@@ -124,8 +126,8 @@ public class FATSuite {
 
         WebArchive EnableDisable_war = ShrinkWrap.create(WebArchive.class, ENABLE_DISABLE_APP_NAME + ".war")
                         .addClasses(DisableEnableServlet.class, DisableEnableClient.class, ConnectException.class)
-                        .addAsResource(new StringAsset(config.toString()), "META-INF/microprofile-config.properties")
-                        .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                        .addAsResource(new StringAsset(config.toString()), "META-INF/microprofile-config.properties");
+        CDIArchiveHelper.addBeansXML(EnableDisable_war, DiscoveryMode.ALL, CDIVersion.CDI11);
 
         ShrinkHelper.exportDropinAppToServer(server, EnableDisable_war, DeployOptions.SERVER_ONLY);
     }

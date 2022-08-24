@@ -596,15 +596,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
      * @return
      */
     protected String getProviderConfig(Iterator<OidcClientConfig> oidcClientConfigs, String reqProviderHint, HttpServletRequest req) {
-        String provider = null;
-
-        if (!ProductInfo.getBetaEdition()) {
-            provider = getProviderConfigCurrent(oidcClientConfigs, reqProviderHint, req);
-        } else {
-            provider = getProviderConfigBeta(reqProviderHint, req);
-        }
-
-        return provider;
+        return getProviderConfig(reqProviderHint, req);
     }
 
     protected String getProviderConfigCurrent(Iterator<OidcClientConfig> oidcClientConfigs,
@@ -635,7 +627,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         return null;
     }
 
-    protected String getProviderConfigBeta(String reqProviderHint, HttpServletRequest req) {
+    protected String getProviderConfig(String reqProviderHint, HttpServletRequest req) {
         String provider = null;
 
         if (reqProviderHint != null) {

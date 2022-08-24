@@ -227,7 +227,7 @@ public class MicroProfileActions {
                                                           "mpHealth-4.0",
                                                           /* "mpJwt-2.1", */
                                                           "mpOpenAPI-3.1",
-                                                          /* "mpMetrics-5.0", */
+                                                          "mpMetrics-5.0",
                                                           "mpTelemetry-1.0",
                                                           "mpRestClient-3.0" };
 
@@ -285,6 +285,8 @@ public class MicroProfileActions {
     private static final FeatureSet[] ALL_SETS_ARRAY = { MP10, MP12, MP13, MP14, MP20, MP21, MP22, MP30, MP32, MP33, MP40, MP41, MP50, MP60 };
     public static final Set<FeatureSet> ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_SETS_ARRAY)));
 
+    //TODO: These feature sets are only used by the EE Compatibility Tests and don't make sense in other contexts. We should move them to those tests.
+
     private static final String[] STANDALONE8_FEATURES_ARRAY = { "mpContextPropagation-1.0",
                                                                  "mpContextPropagation-1.2",
                                                                  "mpGraphQL-1.0",
@@ -296,17 +298,23 @@ public class MicroProfileActions {
     private static final String[] STANDALONE9_FEATURES_ARRAY = { "mpContextPropagation-1.3",
                                                                  "mpGraphQL-2.0" };
 
+    private static final String[] STANDALONE10_FEATURES_ARRAY = { "mpContextPropagation-1.3",
+                                                                  "mpGraphQL-2.0" };
+
     private static final Set<String> STANDALONE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE8_FEATURES_ARRAY)));
     private static final Set<String> STANDALONE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE9_FEATURES_ARRAY)));
+    private static final Set<String> STANDALONE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE10_FEATURES_ARRAY)));
 
     public static final String STANDALONE8_ID = EE8FeatureReplacementAction.ID + "_STANDALONE";
     public static final String STANDALONE9_ID = JakartaEE9Action.ID + "_STANDALONE";
+    public static final String STANDALONE10_ID = JakartaEE10Action.ID + "_STANDALONE";
 
     public static final FeatureSet MP_STANDALONE8 = new FeatureSet(STANDALONE8_ID, STANDALONE8_FEATURE_SET, EEVersion.EE8);
     public static final FeatureSet MP_STANDALONE9 = new FeatureSet(STANDALONE9_ID, STANDALONE9_FEATURE_SET, EEVersion.EE9);
+    public static final FeatureSet MP_STANDALONE10 = new FeatureSet(STANDALONE10_ID, STANDALONE10_FEATURE_SET, EEVersion.EE10);
 
     //All MicroProfile Standalone FeatureSets
-    private static final FeatureSet[] ALL_STANDALONE_SETS_ARRAY = { MP_STANDALONE8, MP_STANDALONE9 };
+    private static final FeatureSet[] ALL_STANDALONE_SETS_ARRAY = { MP_STANDALONE8, MP_STANDALONE9, MP_STANDALONE10 };
     public static final Set<FeatureSet> STANDALONE_ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_STANDALONE_SETS_ARRAY)));
 
     /**

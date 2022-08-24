@@ -578,9 +578,10 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         Throwable cause = null;
         if (isDone()) {
             int s = state.get();
-            if (s == ABORTED || s == FAILED) {
-                Throwable failure = (Throwable) result.get();
-                return failure;
+            if (s == FAILED) {
+                return (Throwable) result.get();
+            } else if (s == ABORTED) {
+                cause = (Throwable) result.get();
             } else if (s == CANCELLED || s == CANCELLING) {
                 cause = new CancellationException();
             }

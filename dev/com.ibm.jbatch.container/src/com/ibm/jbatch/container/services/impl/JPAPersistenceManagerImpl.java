@@ -1334,9 +1334,10 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     List<Long> result = null;
 
                     if (runningInstances.size() > 0) {
-                        TypedQuery<Long> query = em.createNamedQuery(JobExecutionEntity.GET_JOB_EXECUTIONIDS_BY_JOB_INST_ID,
+                        TypedQuery<Long> query = em.createNamedQuery(JobExecutionEntity.GET_JOB_EXECUTIONIDS_BY_JOB_INST_ID_AND_STATUSES,
                                                                      Long.class);
                         query.setParameter("instanceList", runningInstances);
+                        query.setParameter("status", RUNNING_STATUSES);
 
                         result = query.getResultList();
                     }
