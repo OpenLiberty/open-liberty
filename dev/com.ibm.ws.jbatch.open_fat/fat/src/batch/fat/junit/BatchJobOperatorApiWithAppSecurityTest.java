@@ -181,13 +181,16 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException",
                     "java.lang.Exception" })
     public void testAbandonAsSubmitterNotOwner() throws Exception {
-        
+
         Long jobinstance = submitJob(true);
         JsonObject jobExec = waitForFirstJobExecution(jobinstance);
         JsonObject completedJobExecution = waitForJobExecutionToFinish(jobExec);
         Long jobexecution = completedJobExecution.getJsonNumber("executionId").longValue();
 
         HttpURLConnection con = null;
+
+
+        boolean abandonedTwice = false;
 
         try {
             // Abandon the job...
@@ -203,19 +206,27 @@ public class BatchJobOperatorApiWithAppSecurityTest {
             //
             //The runtime is behaving as expected, preventing the 2nd abandon attempt so lets
             //not fail the test for that
-            if (con.getResponseMessage().contains("ABANDONED to ABANDONED")) {
+            if (assertionError.getMessage().contains("ABANDONED to ABANDONED")) {
                 //no-op here, but re-throw if its another (real) problem
+                abandonedTwice = true;
             } else {
                 throw assertionError;
             }
-	}
 
-        BufferedReader br = HttpUtils.getErrorStream(con);
-        String body = org.apache.commons.io.IOUtils.toString(br);
-        br.close();
+        }
 
-        Assert.assertTrue("Actual:" + body, body.contains(SUBMITTER2_NAME));
-        Assert.assertTrue("Actual:" + body, body.contains("not authorized"));
+        // due to the exception, won't have a con object to get output from,
+        // look in trace instead
+        if (abandonedTwice) {
+            Assert.assertTrue(!server.findStringsInTrace("CWWKY0302W").isEmpty());
+        } else {
+            BufferedReader br = HttpUtils.getErrorStream(con);
+            String body = org.apache.commons.io.IOUtils.toString(br);
+            br.close();
+
+            Assert.assertTrue("Actual:" + body, body.contains(SUBMITTER2_NAME));
+            Assert.assertTrue("Actual:" + body, body.contains("not authorized"));
+        }
     }
 
     @Test
