@@ -121,6 +121,9 @@ In order to avoid last minute blockers and significant disruptions to the featur
 ### **Translation** (Complete 1 week before Feature Complete Date)
 - [ ] PII updates are merged, or N/A. Note timing with translation shipments.
 
+### **Innovation** (Complete 1 week before Feature Complete Date)
+- [ ] Consider whether any aspects of the feature may be patentable. If any identified, disclosures have been submitted.
+
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Beta**
 
