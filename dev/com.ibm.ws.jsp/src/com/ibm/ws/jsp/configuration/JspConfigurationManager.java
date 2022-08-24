@@ -159,7 +159,7 @@ public class JspConfigurationManager {
 
                 if(PagesVersionHandler.isPages31OrHigherLoaded()){
                     if(propertyGroup.getErrorOnELNotFound()!=null)
-                    configuration.setErrorOnELNotFound(Boolean.valueOf(propertyGroup.getErrorOnELNotFound()));
+                        configuration.setErrorOnELNotFound(Boolean.valueOf(propertyGroup.getErrorOnELNotFound()));
                 }
 
                 /* Liberty: JspConfigProperty is not used in Liberty. All values are in JspConfigPropertyGroup.

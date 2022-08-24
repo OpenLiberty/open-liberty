@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsp23.translator.visitor.validator;
+package com.ibm.ws.pages31.translator.visitor.generator;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.ibm.ws.jsp.translator.visitor.validator.ElValidatorExt;
-import com.ibm.ws.jsp.translator.visitor.validator.ElValidatorExtFactory;
+import com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtilsExt;
+import com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtilsExtFactory;
 
 @Component(property = { "service.vendor=IBM" })
-public class ElValidatorExtFactoryImpl implements ElValidatorExtFactory {
+public class GeneratorUtilsExtFactoryImpl implements GeneratorUtilsExtFactory {
 
-    private static final ELValidatorExtImpl eve = new ELValidatorExtImpl();
+    private static final GeneratorUtilsExtImpl gue = new GeneratorUtilsExtImpl();
 
     @Override
-    public ElValidatorExt getELValidatorExt() {
-        return eve;
+    public GeneratorUtilsExt getGeneratorUtilsExt() {
+        return gue;
     }
 
 }

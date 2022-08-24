@@ -31,7 +31,7 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    // TagsTestsEE10.class,
+    TagsTestsEE10.class,
     UnknownELIdentifiersTest.class
 })
 public class FATSuite {

@@ -18,26 +18,28 @@ Bundle-Description: WAS Pages 3.1, version ${bVersion}
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
 
--dsannotations: com.ibm.ws.jsp23.webcontainerext.JspVersionFactoryImpl, \
-com.ibm.ws.jsp23.webcontainerext.ws.PrepareJspHelper23Factory, \
-com.ibm.ws.jsp23.translator.visitor.validator.ElValidatorExtFactoryImpl, \
-com.ibm.ws.jsp23.translator.visitor.generator.GeneratorUtilsExtFactoryImpl
+-dsannotations: com.ibm.ws.pages31.webcontainerext.JspVersionFactoryImpl, \
+com.ibm.ws.pages31.webcontainerext.ws.PrepareJspHelper23Factory, \
+com.ibm.ws.pages31.translator.visitor.validator.ElValidatorExtFactoryImpl, \
+com.ibm.ws.pages31.translator.visitor.generator.GeneratorUtilsExtFactoryImpl
+
+# Note these factories were copied from the com.ibm.ws.jsp.2.3 bundle
 
 Export-Package: \
 	com.ibm.ws.jsp.speclevel, \
-	com.ibm.ws.jsp23.webcontainerext;version="2.3", \
-	com.ibm.ws.jsp23.webcontainerext.ws;version="2.3", \
-	com.ibm.ws.jsp23.translator.visitor.validator;version="2.3", \
-	com.ibm.ws.jsp23.translator.visitor.generator;version="2.3", \
-	org.apache.jasper;version="2.3", \
-	org.apache.jasper.el;thread-context=true;version="2.3", \
-	org.apache.jasper.runtime;thread-context=true;version="2.3"
+	com.ibm.ws.pages31.webcontainerext;version="3.1", \
+	com.ibm.ws.pages31.webcontainerext.ws;version="3.1", \
+	com.ibm.ws.pages31.translator.visitor.validator;version="3.1", \
+	com.ibm.ws.pages31.translator.visitor.generator;version="3.1", \
+	org.apache.jasper;version="3.1", \
+	org.apache.jasper.el;thread-context=true;version="3.1", \
+	org.apache.jasper.runtime;thread-context=true;version="3.1"
 
 Import-Package: \
-   !com.ibm.ws.jsp23.translator.visitor.generator, \
-   !com.ibm.ws.jsp23.translator.visitor.validator, \
-   !com.ibm.ws.jsp23.webcontainerext, \
-   !com.ibm.ws.jsp23.webcontainerext.ws, \
+   !com.ibm.ws.pages31.translator.visitor.generator, \
+   !com.ibm.ws.pages31.translator.visitor.validator, \
+   !com.ibm.ws.pages31.webcontainerext, \
+   !com.ibm.ws.pages31.webcontainerext.ws, \
    org.apache.xml.*;resolution:=optional, \
    org.apache.xpath.*;resolution:=optional, \
    jakarta.el;version="[5.0,6)", \
@@ -84,7 +86,7 @@ Import-Package: \
 -includeresource: \
    org/apache/jasper/runtime/packageinfo=src/org/apache/jasper/runtime/packageinfo
 
-instrument.classesIncludes: com/ibm/ws/jsp23/**/*.class
+instrument.classesIncludes: com/ibm/ws/pages31/**/*.class
 instrument.classesExcludes: org/apache/**/*.class
 
 -buildpath: \

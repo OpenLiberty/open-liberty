@@ -20,14 +20,10 @@ import com.ibm.ws.javaee.dd.jsp.JSPPropertyGroup;
 import com.ibm.ws.jsp.configuration.JspConfigPropertyGroup;
 
 public class JspConfigPropertyGroupImpl implements JspPropertyGroupDescriptor, JspConfigPropertyGroup  {
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
+
     private static final long serialVersionUID = 3257289123571511350L;
     protected List<String> urlPatterns = new ArrayList<String>();
     private JSPPropertyGroup propertyGroup;
-
-    //private Collection<String> urlPatterns already exists
 
     public JspConfigPropertyGroupImpl(JSPPropertyGroup propertyGroup) {
         this.propertyGroup = propertyGroup;

@@ -24,7 +24,7 @@ public interface JspConfigPropertyGroup extends JspPropertyGroupDescriptor {
      * This method is under EE10's JspPropertyGroupDescriptor, but we are using the older servlet APIs to build 
      * this bundle. This method has been added under JspConfigPropertyGroup instead. 
      * It will only be used when Pages 3.1 is enabled. 
-     * Will the use of an unknown identifier in EL within a JSP page trigger an error for this group?
+     * Will the use of an unknown identifier in Expression Language within a Jakarta Server Pages page trigger an error for this group?
      * @return {@code true} if an error will be triggered, otherwise {@code false}
      * @since Servlet 6.0 / Pages 3.1
      */

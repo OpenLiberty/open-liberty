@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsp23.webcontainerext.ws;
+package com.ibm.ws.pages31.webcontainerext.ws;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

@@ -331,7 +331,7 @@ public abstract class JspVisitor {
                         visitJspPluginEnd(jspElement);
                     } else {
                         if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-                            logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping jsp:plugin.");
+                            logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping jsp:plugin element as it is a no-op for Pages 3.1+");
                         }
                     }
                 }

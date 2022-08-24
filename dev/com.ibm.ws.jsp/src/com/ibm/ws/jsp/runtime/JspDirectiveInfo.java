@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,10 @@
 package com.ibm.ws.jsp.runtime;
 
 /**
- * Interface for retrieving information about the classfile.
+ * Interface for retrieving page directive information.
  */
-
 public interface JspDirectiveInfo {
 
-    public boolean isErrorOnELNotFound();
+    boolean isErrorOnELNotFound();
 
 }

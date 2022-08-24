@@ -240,13 +240,17 @@ public class GenerateJspVisitor extends GenerateVisitor {
          *  For Page 3.1, the jsp service method is synchronized instead (performance hit)
          *  isThreadSafe is not recommended anymore. 
          */ 
-        if(PagesVersionHandler.isPages30OrLowerLoaded()){
-            boolean singleThreaded = validatorResult.isSingleThreaded();
 
-            if (singleThreaded)
+        boolean singleThreaded = validatorResult.isSingleThreaded();
+
+        if(PagesVersionHandler.isPages30OrLowerLoaded()) {
+            if (singleThreaded) { 
                 interfaces.add("SingleThreadModel");
+            }
         } else {
-            logger.logp(Level.WARNING, CLASS_NAME, "generateClassSection", "jsp.isthreadsafe.warning");
+            if (singleThreaded) { 
+                logger.logp(Level.WARNING, CLASS_NAME, "generateClassSection", "jsp.isthreadsafe.warning");
+            }
         }
 
         if (interfaces.size() != 0) {
@@ -321,12 +325,12 @@ public class GenerateJspVisitor extends GenerateVisitor {
         String sync = "";
         if(PagesVersionHandler.isPages31OrHigherLoaded()){
             if(validatorResult.isSingleThreaded()){
-                sync = "synchronized";
+                sync = " synchronized";
             }
         }
 
         writer.println(
-            "public " + sync + " void "
+            "public" + sync + " void "
                 + serviceMethodName
                 + "("
                 + "HttpServletRequest request, "
