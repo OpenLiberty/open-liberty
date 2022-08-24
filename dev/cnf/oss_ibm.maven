@@ -69,10 +69,10 @@ com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.10.WAS-370741
 com.ibm.ws.org.objenesis:objenesis:1.0
 com.ibm.ws:geronimo-validation:1.1
 com.ibm.ws:nekohtml:1.9.18
-io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core:4.0.0.202d992
-io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:4.0.0.202d992
-io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:4.0.0.202d992
-io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa:4.0.0.202d992
+io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core:4.0.0.3a0a517
+io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:4.0.0.3a0a517
+io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:4.0.0.3a0a517
+io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa:4.0.0.3a0a517
 net.sf.jtidy:jtidy:9.3.8
 org.apache.aries.blueprint:org.apache.aries.blueprint:1.3.0-ibm-s20170710-0926
 org.apache.cxf:cxf-rt-ws-mex:2.6.2-ibm-s20180529-1900

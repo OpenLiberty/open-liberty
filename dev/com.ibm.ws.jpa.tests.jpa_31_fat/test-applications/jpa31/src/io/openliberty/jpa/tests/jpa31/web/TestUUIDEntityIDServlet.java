@@ -25,6 +25,7 @@ import io.openliberty.jpa.tests.jpa31.models.UUIDIdClassEntity;
 import io.openliberty.jpa.tests.jpa31.models.UUIDUUIDGenEntity;
 import io.openliberty.jpa.tests.jpa31.models.UUID_IDClass;
 import io.openliberty.jpa.tests.jpa31.models.XMLEmbeddableUUID_ID;
+import io.openliberty.jpa.tests.jpa31.models.XMLUUIDAutoGenEntity;
 import io.openliberty.jpa.tests.jpa31.models.XMLUUIDEmbeddableIdEntity;
 import io.openliberty.jpa.tests.jpa31.models.XMLUUIDEntity;
 import io.openliberty.jpa.tests.jpa31.models.XMLUUIDUUIDGenEntity;
@@ -301,7 +302,7 @@ public class TestUUIDEntityIDServlet extends JPATestServlet {
     /**
      * Verify that an entity using a UUID type for its identity can use the AUTO generator for primary key generation.
      */
-//    @Test // Seems broken in eclipselink
+    @Test
     public void testBasicUUIDIdentity_AUTO_Generator_JTA() {
         EntityManager tem = null;
 
@@ -344,9 +345,54 @@ public class TestUUIDEntityIDServlet extends JPATestServlet {
     }
 
     /**
+     * Verify that an entity using a UUID type for its identity can use the AUTO generator for primary key generation.
+     */
+    @Test
+    public void testBasicUUIDIdentity_AUTO_Generator_JTA_XML() {
+        EntityManager tem = null;
+
+        try {
+            tem = emfJta.createEntityManager();
+            Assert.assertNotNull(tem);
+            Assert.assertTrue(tem.isOpen());
+
+            XMLUUIDAutoGenEntity entity = new XMLUUIDAutoGenEntity();
+            entity.setStrData("Some string data");
+
+            tx.begin();
+            tem.joinTransaction();
+            tem.persist(entity);
+            tx.commit();
+
+            System.out.println("Persisted entity " + entity);
+            UUID id = entity.getId();
+            Assert.assertNotNull(id);
+
+            tem.clear();
+            Assert.assertFalse(tem.contains(entity));
+
+            XMLUUIDAutoGenEntity findEntity = em.find(XMLUUIDAutoGenEntity.class, id);
+            Assert.assertNotNull(findEntity);
+            Assert.assertEquals(id, findEntity.getId());
+            Assert.assertNotSame(id, findEntity.getId());
+            Assert.assertNotSame(entity, findEntity);
+
+        } catch (AssertionError ae) {
+            throw ae;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new RuntimeException(t);
+        } finally {
+            if (tem != null && tem.isOpen()) {
+                tem.close();
+            }
+        }
+    }
+
+    /**
      * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation.
      */
-//  @Test // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1535
+    @Test
     public void testBasicUUIDIdentity_UUID_Generator_JTA() {
         EntityManager tem = null;
 
@@ -391,7 +437,7 @@ public class TestUUIDEntityIDServlet extends JPATestServlet {
     /**
      * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation. XML Variant.
      */
-//  @Test // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1535
+    @Test
     public void testBasicUUIDIdentity_UUID_Generator_JTA_XML() {
         EntityManager tem = null;
 

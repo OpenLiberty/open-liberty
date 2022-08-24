@@ -171,10 +171,6 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
 
     @Test
     public void testLocalTimeFunction_JPQL() throws Exception {
-        // TODO: Derby needs to switch from TIMESTAMP to TIME for this to work right; https://github.com/eclipse-ee4j/eclipselink/issues/1544
-        if (isDerby())
-            return;
-
         if (isDB2ForLUW()) {
             // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1575
             return;
@@ -602,13 +598,10 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
         }
 
         // Verify EXTRACT(SECOND) from a LocalDateTime field
-        if (!isSQLServer() && !isDB2ForLUW()) { // TODO, see https://github.com/eclipse-ee4j/eclipselink/issues/1573
-            q = em.createQuery("SELECT EXTRACT(SECOND FROM qdte.localDateTimeData) FROM QueryDateTimeEntity qdte WHERE qdte.id = 1");
-            result = q.getSingleResult();
-            Assert.assertNotNull(result);
-            Assert.assertEquals(0.0, result);
-        }
-
+        q = em.createQuery("SELECT EXTRACT(SECOND FROM qdte.localDateTimeData) FROM QueryDateTimeEntity qdte WHERE qdte.id = 1");
+        result = q.getSingleResult();
+        Assert.assertNotNull(result);
+        Assert.assertEquals(0.0d, result);
     }
 
     @Test
@@ -820,21 +813,23 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
         }
 
         // EXTRACT(MINUTE) with LocalDateTime field
-        {
-            tq = em.createQuery("SELECT qdte FROM QueryDateTimeEntity qdte WHERE EXTRACT(MINUTE FROM qdte.localDateTimeData) = 0", QueryDateTimeEntity.class);
-            tResList = tq.getResultList();
-            Assert.assertNotNull(tResList);
-            Assert.assertTrue(tResList.size() > 0);
+        if (!isDB2ForLUW())
+            https: //github.com/eclipse-ee4j/eclipselink/issues/1575
+            {
+                tq = em.createQuery("SELECT qdte FROM QueryDateTimeEntity qdte WHERE EXTRACT(MINUTE FROM qdte.localDateTimeData) = 0", QueryDateTimeEntity.class);
+                tResList = tq.getResultList();
+                Assert.assertNotNull(tResList);
+                Assert.assertTrue(tResList.size() > 0);
 
-            found = false;
-            for (QueryDateTimeEntity entity : tResList) {
-                if (entity.getId() == 1) {
-                    found = true;
-                    break;
+                found = false;
+                for (QueryDateTimeEntity entity : tResList) {
+                    if (entity.getId() == 1) {
+                        found = true;
+                        break;
+                    }
                 }
+                Assert.assertTrue(found);
             }
-            Assert.assertTrue(found);
-        }
 
         // EXTRACT(SECOND) with LocalTime field
         {
