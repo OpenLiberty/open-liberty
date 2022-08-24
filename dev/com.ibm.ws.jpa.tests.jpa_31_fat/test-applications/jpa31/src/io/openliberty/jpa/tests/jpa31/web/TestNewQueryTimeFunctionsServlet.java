@@ -171,10 +171,6 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
 
     @Test
     public void testLocalTimeFunction_JPQL() throws Exception {
-        // TODO: Derby needs to switch from TIMESTAMP to TIME for this to work right; https://github.com/eclipse-ee4j/eclipselink/issues/1544
-//        if (isDerby())
-//            return;
-//
         if (isDB2ForLUW()) {
             // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1575
             return;
@@ -602,13 +598,10 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
         }
 
         // Verify EXTRACT(SECOND) from a LocalDateTime field
-//        if (!isSQLServer() && !isDB2ForLUW()) { // TODO, see https://github.com/eclipse-ee4j/eclipselink/issues/1573
         q = em.createQuery("SELECT EXTRACT(SECOND FROM qdte.localDateTimeData) FROM QueryDateTimeEntity qdte WHERE qdte.id = 1");
         result = q.getSingleResult();
         Assert.assertNotNull(result);
         Assert.assertEquals(0.0d, result);
-//        }
-
     }
 
     @Test
