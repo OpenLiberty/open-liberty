@@ -41,7 +41,7 @@ public class Constants {
     private static final String testBuildDir = System.getProperty("test.buildDir", "generated").replace("\\", "/");
     public static final String BOOTSTRAP_LIB_DIR = testBuildDir.replace("/com.ibm.ws.kernel.boot_test/", "/com.ibm.ws.kernel.boot/");
 
-    public static final String BOOTSTRAP_PUBLISH_DIR = "../com.ibm.ws.kernel.boot/publish/";
+    public static final String BOOTSTRAP_PUBLISH_DIR = "../build.image/publish/wlp/";
 
     public static final String MOCK_FRAMEWORK_LAUNCH = "MOCK_FRAMEWORK_LAUNCH";
 }
