@@ -23,4 +23,6 @@ fat.project: true
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
 	fattest.simplicity;version=latest,\
 	org.postgresql:postgresql;version=42.2.5,\
+	com.ibm.ws.jca.cm;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	io.openliberty.org.testcontainers;version=latest

@@ -19,7 +19,8 @@ import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 @RunWith(Suite.class)
 @SuiteClasses({
                 PostgreSQLTest.class,
-                PostgreSQLSSLTest.class
+                PostgreSQLSSLTest.class,
+//                ThreadLocalConnectionTest.class
 })
 public class FATSuite {
 
