@@ -235,12 +235,18 @@ public class GenerateJspVisitor extends GenerateVisitor {
         if(PagesVersionHandler.isPages31OrHigherLoaded()){
             interfaces.add("com.ibm.ws.jsp.runtime.JspDirectiveInfo");
         }
-        //SingleThread was removed in Servlet 6.0 (Pages 3.1)
+
+        /*  SingleThreadModel was removed in Servlet 6.0 (Pages 3.1)
+         *  For Page 3.1, the jsp service method is synchronized instead (performance hit)
+         *  isThreadSafe is not recommended anymore. 
+         */ 
         if(PagesVersionHandler.isPages30OrLowerLoaded()){
             boolean singleThreaded = validatorResult.isSingleThreaded();
 
             if (singleThreaded)
                 interfaces.add("SingleThreadModel");
+        } else {
+            logger.logp(Level.WARNING, CLASS_NAME, "generateClassSection", "jsp.isthreadsafe.warning");
         }
 
         if (interfaces.size() != 0) {
@@ -307,8 +313,20 @@ public class GenerateJspVisitor extends GenerateVisitor {
 
     protected void generateServiceInitSection(ValidateJspResult validatorResult, boolean genSessionVariable) {
         writer.println();
+
+        /*
+         *  Mark recommened using synchonized, but with a performance caveat
+         *  https://github.com/jakartaee/pages/issues/206#issuecomment-934272204
+         */
+        String sync = "";
+        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+            if(validatorResult.isSingleThreaded()){
+                sync = "synchronized";
+            }
+        }
+
         writer.println(
-            "public void "
+            "public " + sync + " void "
                 + serviceMethodName
                 + "("
                 + "HttpServletRequest request, "
