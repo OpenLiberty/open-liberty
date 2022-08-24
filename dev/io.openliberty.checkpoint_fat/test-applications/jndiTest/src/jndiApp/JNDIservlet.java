@@ -25,23 +25,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns="/servlet")
+@WebServlet(urlPatterns = "/servlet")
 public class JNDIservlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
-    
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	String JNDIdest = "jndi/value";
-    	try {
-			String jndiResp = InitialContext.doLookup(JNDIdest);
-			response.getWriter().append(jndiResp);
-		} catch (NamingException e) {
-			e.printStackTrace();
-			response.getWriter().append("error");
-		}
-    }    
-    
+        String JNDIdest = "jndi/value";
+        try {
+            String jndiResp = InitialContext.doLookup(JNDIdest);
+            response.getWriter().append(jndiResp);
+        } catch (NamingException e) {
+            e.printStackTrace();
+            response.getWriter().append("error");
+        }
+    }
 }
