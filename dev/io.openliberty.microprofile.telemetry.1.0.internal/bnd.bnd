@@ -41,7 +41,10 @@ Service-Component: \
         configuration-policy:=optional; \
 	properties:="resources=${app-resources}" 
 
+# Tolerate CDI 3.0 + 4.0
 Import-Package: \
+	jakarta.enterprise.context;version="[3.0.0,5.0.0)", \
+	jakarta.enterprise.inject;version="[3.0.0,5.0.0)", \
 	*
 
 Export-Package: \
@@ -61,6 +64,7 @@ Private-Package: \
     com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
     com.ibm.ws.injection;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.ws.logging;version=latest, \
     io.openliberty.io.opentelemetry.internal;version=latest, \
     io.openliberty.io.opentelemetry;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.3.0

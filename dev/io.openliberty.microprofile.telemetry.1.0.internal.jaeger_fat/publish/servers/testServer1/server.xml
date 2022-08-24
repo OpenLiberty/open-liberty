@@ -5,6 +5,7 @@
     <featureManager>
         <feature>mpTelemetry-1.0</feature>
         <feature>timedexit-1.0</feature>
+        <feature>restfulWS-3.0</feature> <!-- need an EE feature to repeat on EE9 and EE10 -->
     </featureManager>
 
     <include location="../fatTestPorts.xml" />
