@@ -142,6 +142,8 @@ Import-Package: \
   io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
   io.openliberty.jakarta.servlet.6.0;version=latest, \
   io.openliberty.jakarta.cdi.4.0;version=latest,\
+  io.openliberty.jakarta.websocket.2.1;version=latest,\
+  io.openliberty.jakarta.websocket.client.2.1;version=latest,\
   com.ibm.ws.logging.core,\
   com.ibm.websphere.appserver.spi.kernel.service,\
   com.ibm.websphere.org.osgi.core;version=latest,\
