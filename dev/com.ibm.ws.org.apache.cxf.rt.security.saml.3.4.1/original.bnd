@@ -12,4 +12,3 @@
 Bundle-Name: com.ibm.ws.org.apache.cxf.rt.security.saml
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.security.saml.3.4.1
 Bundle-Description: cxf rt saml security, version 3.4.1
-

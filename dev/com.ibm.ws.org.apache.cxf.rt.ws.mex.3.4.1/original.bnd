@@ -12,4 +12,3 @@
 Bundle-Name: Apache CXF Runtime WS MetadataExchange
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.ws.mex.3.4.1
 Bundle-Description: Apache CXF Runtime WS MetadataExchange, version 3.4.1
-

@@ -8,11 +8,17 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include=bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
 -sub: *.bnd
 
+bVersion=1.0
 cxfVersion=3.4.3
+
+Import-Package:
+
+Export-Package: \
+  org.apache.cxf.tools.validator;version=${cxfVersion}
 
 -includeresource: \
   @${repo;org.apache.cxf:cxf-tools-validator;${cxfVersion};EXACT}!/!META-INF/*
