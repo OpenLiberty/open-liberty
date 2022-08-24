@@ -134,10 +134,9 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                 ReferenceContext referenceContext,
                 MetaDataService metaDataService,
                 J2EENameFactory j2eeNameFactory,
-                ManagedObjectService managedObjectService,
-                CheckpointPhase checkpointPhase)
+                ManagedObjectService managedObjectService)
   {
-    super(webAppConfig, null, checkpointPhase);
+    super(webAppConfig, null);
     this.webAppConfig = webAppConfig;
     this.moduleLoader = moduleLoader;
     this.referenceContext = referenceContext;

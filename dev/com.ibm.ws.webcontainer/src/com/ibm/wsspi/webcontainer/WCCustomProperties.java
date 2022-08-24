@@ -698,7 +698,7 @@ public class WCCustomProperties {
         //End 8.0.0.4
         
         //Start Liberty
-        DEFER_SERVLET_LOAD = CheckpointPhase.getPhase() == null && Boolean.valueOf(customProps.getProperty("deferservletload")); //Liberty to override delayed load/init
+        DEFER_SERVLET_LOAD = CheckpointPhase.getPhase() == CheckpointPhase.INACTIVE && Boolean.valueOf(customProps.getProperty("deferservletload")); //Liberty to override delayed load/init
 
         
         

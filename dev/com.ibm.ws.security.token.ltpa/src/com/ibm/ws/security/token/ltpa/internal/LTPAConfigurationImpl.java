@@ -194,17 +194,21 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     private void submitTaskToCreateLTPAKeys() {
         CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
-        // conditionally create hook if checkpoint phase is present
-        CheckpointHook hook = checkpointPhase == null ? null : new CheckpointHook() {
-            @Override
-            public void restore() {
-                executorService.getService().execute(createTask);
+        if (checkpointPhase != CheckpointPhase.INACTIVE) {
+            // conditionally create hook if checkpoint phase is active
+            CheckpointHook hook = new CheckpointHook() {
+                @Override
+                public void restore() {
+                    executorService.getService().execute(createTask);
+                }
+            };
+            if (checkpointPhase.addMultiThreadedHook(hook)) {
+                // will run createTask later, upon restore
+                return;
             }
-        };
-        // if no checkpoint phase or we could not add our hook then submit task now
-        if (checkpointPhase == null || !checkpointPhase.addMultiThreadedHook(hook)) {
-            executorService.getService().execute(createTask);
         }
+        // run the create task now, not in a checkpoint
+        executorService.getService().execute(createTask);
     }
 
     /**

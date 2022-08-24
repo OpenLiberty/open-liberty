@@ -38,8 +38,6 @@ import com.ibm.wsspi.webcontainer.RequestProcessor;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.util.EncodingUtils;
 
-import io.openliberty.checkpoint.spi.CheckpointPhase;
-
 public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 implements ServletContext {
     private final static TraceComponent tc = Tr.register(WebApp40.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
     protected static final TraceNLS servlet40NLS = TraceNLS.getTraceNLS(WebApp40.class, "com.ibm.ws.webcontainer40.resources.Messages");
@@ -63,9 +61,8 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
                     ReferenceContext referenceContext,
                     MetaDataService metaDataService,
                     J2EENameFactory j2eeNameFactory,
-                    ManagedObjectService managedObjectService,
-                    CheckpointPhase checkpointPhase) {
-        super(webAppConfig, moduleLoader, referenceContext, metaDataService, j2eeNameFactory, managedObjectService, checkpointPhase);
+                    ManagedObjectService managedObjectService) {
+        super(webAppConfig, moduleLoader, referenceContext, metaDataService, j2eeNameFactory, managedObjectService);
     }
 
     /*

@@ -61,7 +61,7 @@ public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
         // Getting the phase non null implies that the server did a checkpoint.
         // Wrap all the config sources during the checkpoint to record the configuration values read during checkpoint by the application before doing a server restore.
         CheckpointPhase phase = CheckpointPhase.getPhase();
-        if (phase != null && !phase.restored()) {
+        if (!phase.restored()) {
             for (ListIterator<ConfigSource> iSources = defaultSources.listIterator(); iSources.hasNext();) {
                 ConfigSource source = iSources.next();
                 iSources.set(new ConfigSourceWrapper(source, phase));
