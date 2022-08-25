@@ -13,9 +13,8 @@ Subsystem-Name: MicroProfile Health 4.0
  io.openliberty.cdi-3.0; ibm.tolerates:="4.0",\
  com.ibm.websphere.appserver.jndi-1.0,\
  com.ibm.websphere.appserver.json-1.0,\
- com.ibm.websphere.appserver.servlet-5.0; ibm.tolerates:="6.0",\
  io.openliberty.mpConfig-3.0,\
- com.ibm.wsspi.appserver.webBundle-1.0,\
+ io.openliberty.webBundle.internal.servlet-5.0; ibm.tolerates:="6.0",\
  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0"
 -bundles=com.ibm.websphere.jsonsupport, \
  io.openliberty.microprofile.health.3.1.internal.jakarta; apiJar=false; location:="lib/", \

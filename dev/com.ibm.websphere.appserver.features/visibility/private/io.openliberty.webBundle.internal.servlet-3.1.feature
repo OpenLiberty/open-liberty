@@ -5,10 +5,13 @@ singleton=true
 WLP-DisableAllFeatures-OnConflict: false
 visibility = private
 
+Subsystem-Name: OSGi Application
+
 -features=io.openliberty.servlet.api-3.1, \
   com.ibm.websphere.appserver.servlet-3.1
 
--bundles= com.ibm.ws.app.manager.wab; start-phase:=APPLICATION_EARLY
+-bundles= com.ibm.ws.app.manager.wab; start-phase:=APPLICATION_EARLY, \
+  com.ibm.ws.eba.wab.integrator
 
 -jars= \
  com.ibm.websphere.appserver.spi.wab.configure; location:=dev/spi/ibm/

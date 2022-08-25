@@ -10,7 +10,7 @@
         <featureManager>
                 <feature>osgiconsole-1.0</feature>
                 <feature>cdi-3.0</feature>
-                <feature>servlet-5.0</feature>
+                <feature>restfulWS-3.0</feature>
                 <feature>componentTest-2.0</feature>
                 <feature>mpConfig-3.0</feature>
                 <feature>localConnector-1.0</feature>
@@ -18,6 +18,8 @@
         </featureManager>
 
     <include location="../fatTestPorts.xml" />
+
+    <cdi emptyBeansXmlCDI3Compatibility="true"/>
 
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
