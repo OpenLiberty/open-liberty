@@ -114,6 +114,12 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     }
 
     @Override
+    protected StorageProperties getNonceStorageProperties() {
+        CookieStorageProperties props = new CookieStorageProperties();
+        return props;
+    }
+
+    @Override
     protected StorageProperties getOriginalRequestUrlStorageProperties() {
         CookieStorageProperties props = new CookieStorageProperties();
         props.setStorageLifetimeSeconds((int) clientConfig.getAuthenticationTimeLimitInSeconds());

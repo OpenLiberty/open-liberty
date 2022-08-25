@@ -70,6 +70,11 @@ public abstract class AuthorizationRequest {
         return props;
     }
 
+    protected StorageProperties getNonceStorageProperties() {
+        StorageProperties props = new StorageProperties();
+        return props;
+    }
+
     protected StorageProperties getOriginalRequestUrlStorageProperties() {
         StorageProperties props = new StorageProperties();
         props.setStorageLifetimeSeconds(OidcClientStorageConstants.DEFAULT_REQ_URL_STORAGE_LIFETIME_SECONDS);
@@ -86,7 +91,8 @@ public abstract class AuthorizationRequest {
     protected void storeNonceValue(String nonce, String state) {
         String storageName = OidcStorageUtils.getStorageKey(OidcClientStorageConstants.WAS_OIDC_NONCE, clientId, state);
         String storageValue = createNonceValueForStorage(nonce, state);
-        storage.store(storageName, storageValue);
+        StorageProperties nonceStorageProperties = getNonceStorageProperties();
+        storage.store(storageName, storageValue, nonceStorageProperties);
     }
 
     protected void storeOriginalRequestUrl(String state) {
