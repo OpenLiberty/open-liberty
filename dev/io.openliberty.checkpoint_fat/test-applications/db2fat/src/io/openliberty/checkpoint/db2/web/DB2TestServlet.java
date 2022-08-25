@@ -81,7 +81,7 @@ public class DB2TestServlet extends FATServlet {
     // be set on the connection, but that it is downgraded such that a result set is not usable after xa.commit,
     // but the statement remains usable.
     @ExpectedFFDC("com.ibm.db2.jcc.am.SqlException")
-    @Test
+    //@Test
     public void testDowngradeHoldCursorsUnderXa() throws Exception {
         Connection con = ds.getConnection();
         try {
