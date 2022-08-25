@@ -1205,7 +1205,7 @@ public class ConcurrencyTestServlet extends FATServlet {
                 // pass
             }
 
-            // Future.resultNow on cancelled task:
+            // Future.exceptionNow on cancelled task:
             assertEquals(true, task3future.cancel(true));
             try {
                 exception = (Throwable) exceptionNow.invoke(task3future);

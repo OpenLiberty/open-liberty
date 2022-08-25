@@ -3877,6 +3877,18 @@ public class EEConcurrencyTestServlet extends FATServlet {
         }
 
         try {
+            xsvcDefaultLookup.getClass().getMethod("close").invoke(xsvcDefaultLookup);
+            throw new Exception("close must raise IllegalStateException");
+        } catch (InvocationTargetException x) {
+            if (!(x.getCause() instanceof IllegalStateException)
+                || !(x.getCause().getCause() instanceof UnsupportedOperationException))
+                throw x;
+        } catch (IllegalStateException x) {
+            if (!(x.getCause() instanceof UnsupportedOperationException))
+                throw x;
+        }
+
+        try {
             schedxsvcDefault.isShutdown();
             throw new Exception("isShutdown must raise IllegalStateException");
         } catch (IllegalStateException x) {

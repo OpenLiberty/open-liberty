@@ -15,15 +15,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.Closeable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
@@ -137,6 +142,62 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
     public void testAsyncMethodUsesResourceRefToManagedExecutor() throws Exception {
         CompletableFuture<Object> result = appBean.mpAsyncLookup("java:module/env/defaultExecutorRef");
         assertNotNull(result.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Use ExecutorService.close to shut down a MicroProfile ManagedExecutor and await completion of running tasks, if on Java 19 or above.
+     * Otherwise, use shutdown and awaitCompletion.
+     */
+    @Test
+    public void testClose() throws Exception {
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .maxAsync(2)
+                        .build();
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch twoTasksStarted = new CountDownLatch(2);
+
+        Callable<Boolean> task1and2 = () -> {
+            twoTasksStarted.countDown();
+            return blocker.await(2, TimeUnit.SECONDS);
+        };
+
+        // Use up max concurrency by submitting 2 identical tasks
+        Future<Boolean> task1future = executor.submit(task1and2);
+        Future<Boolean> task2future = executor.submit(task1and2);
+
+        assertEquals(true, twoTasksStarted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Third task should remain in the queue for 2 seconds or so
+        Future<Integer> task3future = executor.submit(() -> 3);
+
+        if (executor instanceof Closeable) {
+            // Java 19+
+            ((Closeable) executor).close();
+        } else {
+            // Java 18-
+            executor.shutdown();
+            assertEquals(true, executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        }
+
+        assertEquals(true, task1future.isDone());
+        assertEquals(true, task2future.isDone());
+        assertEquals(true, task3future.isDone());
+
+        assertEquals(false, task1future.isCancelled());
+        assertEquals(false, task2future.isCancelled());
+        assertEquals(false, task3future.isCancelled());
+
+        assertEquals(Boolean.FALSE, task1future.get(1, TimeUnit.MILLISECONDS));
+        assertEquals(Boolean.FALSE, task2future.get(1, TimeUnit.MILLISECONDS));
+        assertEquals(Integer.valueOf(3), task3future.get(1, TimeUnit.MILLISECONDS));
+
+        try {
+            Future<Integer> task4future = executor.submit(() -> 4);
+            fail("Should not be able to submit task after closing or shutting down the executor: " + task4future);
+        } catch (RejectedExecutionException x) {
+            // pass - the executor was closed or shut down.
+        }
     }
 
     /**
