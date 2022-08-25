@@ -9,5 +9,5 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
+Bundle-Name: Apache CXF Runtime SOAP Binding
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2
-
