@@ -19,4 +19,8 @@ public class JakartaSec30Constants extends JavaEESecConstants {
 
     public static final String OIDC_ANNOTATION = "oidc_annotation";
 
+    public static final String BASE_URL_VARIABLE = "baseURL";
+
+    public static final String BASE_URL_DEFAULT = "${" + BASE_URL_VARIABLE + "}/Callback";
+
 }

@@ -82,6 +82,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
                                                                  OpenIdConstant.EMAIL_SCOPE,
                                                                  OpenIdConstant.PROFILE_SCOPE };
 
+    private static final String constructedBaseURL = "https:/localhost:9443/myServlet/";
     private Map<String, Object> overrides;
 
     SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
@@ -96,7 +97,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetProviderURI() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(EMPTY_DEFAULT, wrapper.getProviderURI());
     }
@@ -113,7 +114,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetClientId() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(EMPTY_DEFAULT, wrapper.getClientId());
     }
@@ -128,7 +129,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetClientSecret() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(EMPTY_DEFAULT, String.valueOf(wrapper.getClientSecret().getChars()));
     }
@@ -143,7 +144,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetClaimsMappingConfig() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         ClaimsMappingConfig claimsMappingConfig = wrapper.getClaimsMappingConfig();
         assertNotNull(claimsMappingConfig);
@@ -152,7 +153,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetLogoutConfig() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         LogoutConfig logoutConfig = wrapper.getLogoutConfig();
         assertNotNull(logoutConfig);
@@ -163,22 +164,81 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(REDIRECT_URI, "localhost");
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals("localhost", wrapper.getRedirectURI());
     }
 
+    /**
+     * Test with a sample EL expression in a composite expression. The evaluated expression should be added to the non expression String
+     */
     @Test
     public void testGetRedirectURI_EL() {
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = createWrapperWithSimpleELExpressionForAttribute(REDIRECT_URI);
+        overrides.put(REDIRECT_URI, STRING_EL_EXPRESSION + "/Callback");
 
-        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getRedirectURI());
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT + "/Callback", wrapper.getRedirectURI());
+    }
+
+    /**
+     * Test with the baseURL variable and another EL expression in a concatenated singled expression. Both should be evaluated and put together.
+     */
+    @Test
+    public void testGetRedirectURI_EL_plus() {
+        overrides.put(REDIRECT_URI, "#{" + JakartaSec30Constants.BASE_URL_VARIABLE + " += 'blah'.concat('blah')}");
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals(constructedBaseURL + EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getRedirectURI());
+    }
+
+    /**
+     * Test with a composite expression using the baseURL variable which should be replaced with a constructed baseURL.
+     */
+    @Test
+    public void testGetRedirectURI_EL_default() {
+        overrides.put(REDIRECT_URI, JakartaSec30Constants.BASE_URL_DEFAULT);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals(constructedBaseURL + "/Callback", wrapper.getRedirectURI());
+    }
+
+    /**
+     * Test with an extra closing bracket. The first closing bracket should be used to evaluate the
+     * expression and the extra bracket left in the rest of the provided string.
+     */
+    @Test
+    public void testGetRedirectURI_EL_extraBracket() {
+        overrides.put(REDIRECT_URI, STRING_EL_EXPRESSION + "/Callback}back");
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals(REDIRECT_URI, EVALUATED_EL_EXPRESSION_STRING_RESULT + "/Callback}back", wrapper.getRedirectURI());
+    }
+
+    /**
+     * Test with a missing closing bracket, the same expression passed in should be returned without changes.
+     */
+    @Test
+    public void testGetRedirectURI_EL_missingBracket() {
+        overrides.put(REDIRECT_URI, "#{'blah'.concat('blah')" + "/Callback");
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals(REDIRECT_URI, "#{'blah'.concat('blah')" + "/Callback", wrapper.getRedirectURI());
     }
 
     @Test
     public void testIsRedirectToOriginalResource() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(false, wrapper.isRedirectToOriginalResource());
     }
@@ -188,7 +248,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(REDIRECT_TO_ORIGINAL_RESOURCE_EXPRESSION, TRUE_EL_EXPRESSION);
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(true, wrapper.isRedirectToOriginalResource());
     }
@@ -196,7 +256,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetScope() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertTrue(wrapper.getScope().contains(OpenIdConstant.OPENID_SCOPE));
         assertTrue(wrapper.getScope().contains(OpenIdConstant.EMAIL_SCOPE));
@@ -210,7 +270,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(SCOPE_EXPRESSION, "['phone', 'offline_access'].stream().toArray()");
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertTrue(wrapper.getScope().contains(OpenIdConstant.PHONE_SCOPE));
         assertTrue(wrapper.getScope().contains(OpenIdConstant.OFFLINE_ACCESS_SCOPE));
@@ -219,7 +279,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetResponseType() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(OpenIdConstant.CODE, wrapper.getResponseType());
     }
@@ -234,7 +294,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetResponseMode() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(EMPTY_DEFAULT, wrapper.getResponseMode());
     }
@@ -249,7 +309,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetPromptParameter() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(EMPTY_DEFAULT, wrapper.getPromptParameter());
     }
@@ -259,7 +319,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetDisplayParameter() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals("page", wrapper.getDisplayParameter());
     }
@@ -270,7 +330,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(DISPLAY_EXPRESSION, "DisplayType.POPUP");
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals("popup", wrapper.getDisplayParameter());
     }
@@ -278,7 +338,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testIsUseNonce() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(true, wrapper.isUseNonce());
     }
@@ -288,7 +348,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(USE_NONCE_EXPRESSION, FALSE_EL_EXPRESSION);
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(false, wrapper.isUseNonce());
     }
@@ -296,7 +356,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testIsUseSession() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(true, wrapper.isUseSession());
     }
@@ -306,7 +366,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(USE_SESSION_EXPRESSION, FALSE_EL_EXPRESSION);
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(false, wrapper.isUseSession());
     }
@@ -318,7 +378,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetJwksConnectTimeout() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(TIMEOUT_DEFAULT, wrapper.getJwksConnectTimeout());
     }
@@ -328,7 +388,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(JWKS_CONNECT_TIMEOUT_EXPRESSION, INTEGER_EL_EXPRESSION);
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(INTEGER_EL_EXPRESSION_RESULT, wrapper.getJwksConnectTimeout());
     }
@@ -336,7 +396,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetJwksReadTimeout() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(TIMEOUT_DEFAULT, wrapper.getJwksReadTimeout());
     }
@@ -346,7 +406,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(JWKS_READ_TIMEOUT_EXPRESSION, INTEGER_EL_EXPRESSION);
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(INTEGER_EL_EXPRESSION_RESULT, wrapper.getJwksReadTimeout());
     }
@@ -354,7 +414,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testIsTokenAutoRefresh() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(false, wrapper.isTokenAutoRefresh());
     }
@@ -364,7 +424,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(TOKEN_AUTO_REFRESH_EXPRESSION, TRUE_EL_EXPRESSION);
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(true, wrapper.isTokenAutoRefresh());
     }
@@ -372,7 +432,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     @Test
     public void testGetTokenMinValidity() {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(TOKEN_MIN_VALIDITY_DEFAULT, wrapper.getTokenMinValidity());
     }
@@ -382,7 +442,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(TOKEN_MIN_VALIDITY_EXPRESSION, INTEGER_EL_EXPRESSION);
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
         assertEquals(INTEGER_EL_EXPRESSION_RESULT, wrapper.getTokenMinValidity());
     }
@@ -391,7 +451,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         overrides.put(attributeName, STRING_EL_EXPRESSION);
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
-        return new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition);
+        return new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
     }
 
     private OpenIdAuthenticationMechanismDefinition getInstanceofAnnotation(final Map<String, Object> overrides) {
