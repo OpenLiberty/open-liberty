@@ -38,7 +38,7 @@ public final class ScheduledExecutorImpl extends ScheduledThreadPoolExecutor {
     }
 
     public ScheduledExecutorImpl() {
-        super(1, new ThreadFactoryImpl("Scheduled Executor", threadGroupName));
+        super(1, ThreadFactoryBuilder.create("Scheduled Executor", threadGroupName, false));
     }
 
     @Override

@@ -5,11 +5,11 @@
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
@@ -17,11 +17,12 @@
         <AD name="%name"         description="%name.desc"         id="name"        required="false" type="String"  default="Default Executor" />
         <AD name="%max.threads"  description="%max.threads.desc"  id="maxThreads"  required="false" type="Integer" default="-1" />
         <AD name="%core.threads" description="%core.threads.desc" id="coreThreads" required="false" type="Integer" default="-1" />
+        <AD name="%virtual"      description="%virtual.desc"      id="virtual"     required="false" type="Boolean" default="false" ibm:beta="true"/>
     </OCD>
 
     <!-- Designate pid="com.ibm.ws.threading" --> <!-- factoryPid="com.ibm.ws.threading" -->
     <Designate pid="com.ibm.ws.threading">
         <Object ocdref="com.ibm.ws.threading.metatype" />
     </Designate>
-  
+
 </metatype:MetaData>

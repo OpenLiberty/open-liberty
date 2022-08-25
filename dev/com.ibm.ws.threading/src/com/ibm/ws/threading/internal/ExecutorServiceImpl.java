@@ -43,6 +43,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
 import com.ibm.ws.kernel.service.util.CpuInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 import com.ibm.wsspi.threading.WSExecutorService;
@@ -216,7 +217,10 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         if (threadPool != null) {
             ((BoundedBuffer<Runnable>) threadPool.getQueue()).removeFromAvailableProcessors();
         }
-        threadPool = new ThreadPoolExecutor(coreThreads, maxThreads, 0, TimeUnit.MILLISECONDS, workQueue, threadFactory != null ? threadFactory : new ThreadFactoryImpl(poolName, threadGroupName), rejectedExecutionHandler);
+
+        boolean virtual = ProductInfo.getBetaEdition() && (Boolean)componentConfig.get("virtual");
+
+        threadPool = new ThreadPoolExecutor(coreThreads, maxThreads, 0, TimeUnit.MILLISECONDS, workQueue, threadFactory != null ? threadFactory : ThreadFactoryBuilder.create(poolName, threadGroupName, virtual), rejectedExecutionHandler);
 
         threadPoolController = new ThreadPoolController(this, threadPool);
 
