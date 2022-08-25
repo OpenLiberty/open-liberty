@@ -1,5 +1,5 @@
 <%--
-    Copyright (c) 2014 IBM Corporation and others.
+    Copyright (c) 2014, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -34,16 +34,7 @@
     response.setHeader("X-Content-Type-Options", "nosniff");	
     response.setHeader("X-Frame-Options", "SAMEORIGIN");
    
-    // TODO: In newer browsers, the lang could have a variant which is not handled by dojo. ex. zh-hant-tw
-    // So, construct a "normal" lang-country from the locale
-    // TODO: for some reason, getVariant() is returning the country so for now ...
-    String userLocale = request.getLocale().getLanguage().toLowerCase();
-    if (request.getLocale().getVariant().length() > 0) {
-        userLocale += "-" + request.getLocale().getVariant().toLowerCase();
-    } else if (request.getLocale().getCountry().length() > 0) {
-        userLocale += "-" + request.getLocale().getCountry().toLowerCase();
-    }
-    String dojoConfigString = "locale: '" + userLocale + "'";
+    String dojoConfigString = "";
     
     String localAddress = request.getLocalAddr();
     // ipv6 addresses must be enclosed with square brackets in URLs
@@ -107,10 +98,6 @@
 <%                
             }
         }
-        if (hasBidi.length() > 0){
-            dojoConfigString = dojoConfigString + ", " + hasBidi;
-        }
-                    
     } catch (MalformedURLException e) {
         // just default to no bidi
         //e.printStackTrace();
