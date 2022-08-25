@@ -17,8 +17,6 @@
 bVersion=1.0
 bSymbolicName=com.ibm.ws.wsoc11
 
-
-
 Private-Package: \
   com.ibm.ws.wsoc.external.v11
 
@@ -32,5 +30,7 @@ Service-Component: \
     properties:="service.vendor=IBM"
 
 -buildpath: \
-	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
-	com.ibm.ws.wsoc;version=latest
+  com.ibm.websphere.javaee.websocket.1.1;version=latest, \
+  com.ibm.ws.wsoc;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

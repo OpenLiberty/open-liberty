@@ -39,46 +39,35 @@ import io.openliberty.wsoc.util.wsoc.WsocTestContext;
 import io.openliberty.wsoc.common.Constants;
 
 import io.openliberty.wsoc.common.Utils;
+import io.openliberty.wsoc.tests.all.TimeOutTest;
 
 /**
- * Used to test negative and zero timeouts.
- * Spec clarification as part of 2.1  
- * https://github.com/jakartaee/websocket/issues/382
- * 
- * This is the client endpoint for server endpoints
- * NegativeTimeOutServerEP & ZeroTimeOutServerEP
+
  */
-public class TimeOutClientEP implements TestHelper {
+public class ServerUserPropertiesClientEP implements TestHelper {
 
     public WsocTestContext _wtr = null;
-    private static final Logger LOG = Logger.getLogger(TimeOutClientEP.class.getName());
+    private static final Logger LOG = Logger.getLogger(ServerUserPropertiesClientEP.class.getName());
 
     @ClientEndpoint
-    public static class TimeOutTest extends TimeOutClientEP {
-
-        public String[] _data = {};
-
-        public TimeOutTest(String[] data) {
-            _data = data;
-        }
+    public static class UserPropertiesTest extends ServerUserPropertiesClientEP {
 
         @OnOpen
         public void onOpen(Session sess) {
             try {
-                sess.getBasicRemote().sendText(_data[0]);
+                // Make onMessage call on server.
+                sess.getBasicRemote().sendText("test");
             } catch (Exception e) {
-                //TODO: handle exception
+ 
             }
         }
 
         @OnMessage
-        public String echoText(String data) {
-    
-            // data should return the correct getMaxIdleTimeout from the servers
+        public String onMessage(String data) {
             _wtr.addMessage(data);
-    
-            _wtr.terminateClient();
-    
+            if(_wtr.limitReached()){
+                _wtr.terminateClient();
+            }
             return null;
         }
     }
@@ -100,3 +89,4 @@ public class TimeOutClientEP implements TestHelper {
     }
 
 }
+

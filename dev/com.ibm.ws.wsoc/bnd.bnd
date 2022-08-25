@@ -16,8 +16,6 @@
 bVersion=1.0
 bSymbolicName=com.ibm.ws.wsoc
 
-
-
 app-resources= \
   META-INF/services/javax.websocket.server.ServerEndpointConfig$Configurator | \
   META-INF/services/javax.websocket.ContainerProvider
@@ -33,6 +31,7 @@ Export-Package: \
 Import-Package: \
   !*.internal.*, \
   !com.ibm.ws.kernel.boot.cmdline, \
+  io.openliberty.wsoc.speclevel, \
   *
    
 Private-Package: \

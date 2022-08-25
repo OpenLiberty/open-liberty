@@ -8,8 +8,17 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/transform.props
+-include= ~../cnf/resources/bnd/bundle.props,
 
-Bundle-Name: WebSocket Jakarta
-Bundle-SymbolicName: com.ibm.ws.wsoc.1.1.jakarta; singleton:=true
-Bundle-Description: WebSocket, version ${bVersion}; Jakarta Enabled
+bVersion=1.0
+bSymbolicName=io.openliberty.wsoc.1.0.internal
+
+Bundle-Name: WebSocket
+Bundle-SymbolicName: io.openliberty.wsoc.1.0.internal
+Bundle-Description: WebSocket, version ${bVersion}
+
+Export-Package: \
+ io.openliberty.wsoc.speclevel
+
+-buildpath: \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest
