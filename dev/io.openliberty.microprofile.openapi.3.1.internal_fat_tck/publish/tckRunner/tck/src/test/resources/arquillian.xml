@@ -25,6 +25,7 @@
             <property name="failSafeUndeployment">${tck_failSafeUndeployment}</property>
             <property name="appDeployTimeout">${tck_appDeployTimeout}</property>
             <property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
+            <property name="testProtocol">rest</property>
         </configuration>
     </container>
 </arquillian>

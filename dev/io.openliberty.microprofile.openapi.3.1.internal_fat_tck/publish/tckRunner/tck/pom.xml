@@ -10,7 +10,7 @@
     <name>MicroProfile OpenAPI TCK Runner</name>
 
     <properties>
-        <microprofile.openapi.version>3.1-RC2</microprofile.openapi.version>
+        <microprofile.openapi.version>3.1-RC3</microprofile.openapi.version>
 
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
 
