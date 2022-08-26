@@ -40,7 +40,7 @@ public class Config14Tests extends FATServletClient {
     public static final String SERVER_NAME = "Config14Server";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP33, MicroProfileActions.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP33, MicroProfileActions.MP41);
 
     @Server(SERVER_NAME)
     @TestServlets({

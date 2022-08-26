@@ -2625,8 +2625,8 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    public ProgramOutput stopServer(String... expectedFailuresRegExps) throws Exception {
-        return this.stopServer(true, expectedFailuresRegExps);
+    public ProgramOutput stopServer(String... ignoredFailuresRegExps) throws Exception {
+        return this.stopServer(true, ignoredFailuresRegExps);
     }
 
     public static void stopMultipleServers(Collection<LibertyServer> servers) throws Exception {
@@ -2650,8 +2650,8 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    public ProgramOutput stopServer(boolean postStopServerArchive, String... expectedFailuresRegExps) throws Exception {
-        return this.stopServer(postStopServerArchive, false, expectedFailuresRegExps);
+    public ProgramOutput stopServer(boolean postStopServerArchive, String... ignoredFailuresRegExps) throws Exception {
+        return this.stopServer(postStopServerArchive, false, ignoredFailuresRegExps);
     }
 
     public ScheduledFuture<?> dumpServerOnSchedule(final String destination,
@@ -2732,34 +2732,34 @@ public class LibertyServer implements LogMonitorClient {
      * Stops the server and checks for any warnings or errors that appeared in logs.
      * If warnings/errors are found, an exception will be thrown after the server stops.
      *
-     * @param  postStopServerArchive true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
-     *                                   would be redundant)
-     * @param  forceStop             Force the server to stop, skipping the quiesce (default/usual value should be false)
-     * @param  regIgnore             A list of reg expressions corresponding to warnings or errors that should be ignored.
-     *                                   If regIgnore is null, logs will not be checked for warnings/errors
-     * @return                       the output of the stop command
-     * @throws Exception             if the stop operation fails or there are warnings/errors found in server
-     *                                   logs that were not in the list of ignored warnings/errors.
+     * @param  postStopServerArchive  true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
+     *                                    would be redundant)
+     * @param  forceStop              Force the server to stop, skipping the quiesce (default/usual value should be false)
+     * @param  ignoredFailuresRegExps A list of reg expressions corresponding to warnings or errors that should be ignored.
+     *                                    If regIgnore is null, logs will not be checked for warnings/errors
+     * @return                        the output of the stop command
+     * @throws Exception              if the stop operation fails or there are warnings/errors found in server
+     *                                    logs that were not in the list of ignored warnings/errors.
      */
-    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, String... expectedFailuresRegExps) throws Exception {
-        return stopServer(postStopServerArchive, forceStop, true, expectedFailuresRegExps);
+    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, String... ignoredFailuresRegExps) throws Exception {
+        return stopServer(postStopServerArchive, forceStop, true, ignoredFailuresRegExps);
     }
 
     /**
      * Stops the server and checks for any warnings or errors that appeared in logs.
      * If warnings/errors are found, an exception will be thrown after the server stops.
      *
-     * @param  postStopServerArchive true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
-     *                                   would be redundant)
-     * @param  forceStop             Force the server to stop, skipping the quiesce (default/usual value should be false)
-     * @param  skipArchives          Skip postStopServer collection of archives (WARs, EARs, JARs, etc.) - only used if postStopServerArchive is true
-     * @param  regIgnore             A list of reg expressions corresponding to warnings or errors that should be ignored.
-     *                                   If regIgnore is null, logs will not be checked for warnings/errors
-     * @return                       the output of the stop command
-     * @throws Exception             if the stop operation fails or there are warnings/errors found in server
-     *                                   logs that were not in the list of ignored warnings/errors.
+     * @param  postStopServerArchive  true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
+     *                                    would be redundant)
+     * @param  forceStop              Force the server to stop, skipping the quiesce (default/usual value should be false)
+     * @param  skipArchives           Skip postStopServer collection of archives (WARs, EARs, JARs, etc.) - only used if postStopServerArchive is true
+     * @param  ignoredFailuresRegExps A list of reg expressions corresponding to warnings or errors that should be ignored.
+     *                                    If ignoredFailuresRegExps is null, logs will not be checked for warnings/errors
+     * @return                        the output of the stop command
+     * @throws Exception              if the stop operation fails or there are warnings/errors found in server
+     *                                    logs that were not in the list of ignored warnings/errors.
      */
-    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, String... expectedFailuresRegExps) throws Exception {
+    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, String... ignoredFailuresRegExps) throws Exception {
         ProgramOutput output = null;
         boolean commandPortEnabled = true;
         final String method = "stopServer";
@@ -2859,7 +2859,7 @@ public class LibertyServer implements LogMonitorClient {
 
             this.isTidy = true;
 
-            checkLogsForErrorsAndWarnings(expectedFailuresRegExps);
+            checkLogsForErrorsAndWarnings(ignoredFailuresRegExps);
         } finally {
             // Issue 4363: If !newLogsOnStart, no longer reset the log offsets because if the
             // server starts again, logs will roll into the existing logs. We also don't clear
@@ -2894,11 +2894,11 @@ public class LibertyServer implements LogMonitorClient {
      * Checks server logs for any lines containing errors or warnings that
      * do not match any regular expressions provided in regIgnore.
      *
-     * @param  regIgnore A list of regex strings for errors/warnings that
-     *                       may be safely ignored.
-     * @return           A list of lines containing errors/warnings from server logs
+     * @param  ignoredFailuresRegExps A list of regex strings for errors/warnings that
+     *                                    may be safely ignored.
+     * @return                        A list of lines containing errors/warnings from server logs
      */
-    protected void checkLogsForErrorsAndWarnings(String... regIgnore) throws Exception {
+    protected void checkLogsForErrorsAndWarnings(String... ignoredFailuresRegExps) throws Exception {
         final String method = "checkLogsForErrorsAndWarnings";
 
         // Get all warnings and errors in logs - default to an empty list
@@ -2926,8 +2926,8 @@ public class LibertyServer implements LogMonitorClient {
 
         // Compile set of regex's using input list and universal ignore list
         List<Pattern> ignorePatterns = new ArrayList<Pattern>();
-        if (regIgnore != null && regIgnore.length != 0) {
-            for (String ignoreRegEx : regIgnore) {
+        if (ignoredFailuresRegExps != null && ignoredFailuresRegExps.length != 0) {
+            for (String ignoreRegEx : ignoredFailuresRegExps) {
                 ignorePatterns.add(Pattern.compile(ignoreRegEx));
             }
         }

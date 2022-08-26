@@ -278,9 +278,6 @@ public class MicroProfileActions {
     public static final FeatureSet MP50 = new FeatureSet(MP50_ID, MP50_FEATURE_SET, EEVersion.EE9);
     public static final FeatureSet MP60 = new FeatureSet(MP60_ID, MP60_FEATURE_SET, EEVersion.EE10);
 
-    //The FeatureSet for the latest MicrotProfile version
-    public static final FeatureSet LATEST = MP41;
-
     //All MicroProfile FeatureSets, needs to be in order for repeat(String, TestMode, Set, FeatureSet, Set)
     private static final FeatureSet[] ALL_SETS_ARRAY = { MP10, MP12, MP13, MP14, MP20, MP21, MP22, MP30, MP32, MP33, MP40, MP41, MP50, MP60 };
     public static final Set<FeatureSet> ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_SETS_ARRAY)));
@@ -316,33 +313,6 @@ public class MicroProfileActions {
     //All MicroProfile Standalone FeatureSets
     private static final FeatureSet[] ALL_STANDALONE_SETS_ARRAY = { MP_STANDALONE8, MP_STANDALONE9, MP_STANDALONE10 };
     public static final Set<FeatureSet> STANDALONE_ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_STANDALONE_SETS_ARRAY)));
-
-    /**
-     * Get a RepeatTests instance for all MP versions. The LATEST will be run in LITE mode. The others will be run in FULL.
-     *
-     * @param  server The server to repeat on
-     * @return        a RepeatTests instance
-     */
-    public static RepeatTests repeatAll(String server) {
-        Set<FeatureSet> others = new HashSet<>(ALL);
-        others.remove(LATEST);
-        others.remove(MP60); //Not yet ready
-        return repeat(server, TestMode.FULL, ALL, LATEST, others);
-    }
-
-    /**
-     * Get a RepeatTests instance for all MP versions that have mpConfig. The LATEST will be run in LITE mode. The others will be run in FULL.
-     *
-     * @param  server The server to repeat on
-     * @return        a RepeatTests instance
-     */
-    public static RepeatTests repeatAllWithConfig(String server) {
-        Set<FeatureSet> others = new HashSet<>(ALL);
-        others.remove(LATEST);
-        others.remove(MP10); //Does not contain mpConfig
-        others.remove(MP60); //Not yet ready
-        return repeat(server, TestMode.FULL, ALL, LATEST, others);
-    }
 
     /**
      * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in FULL.
