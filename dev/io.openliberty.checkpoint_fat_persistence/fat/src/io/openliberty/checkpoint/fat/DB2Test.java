@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
+import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -72,10 +73,7 @@ public class DB2Test extends FATServletClient {
     @TestServlet(servlet = DB2TestServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.checkpoint.db2.web");
-
+    static private void initDB() throws Exception {
         Connection con = db2.createConnection("");
 
         try {
@@ -92,9 +90,14 @@ public class DB2Test extends FATServletClient {
         } finally {
             con.close();
         }
+    }
 
-        // at this point the server no longer has the env set; we set them just before restore
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, checkpointServer -> {
+    @BeforeClass
+    public static void setUp() throws Exception {
+        ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.checkpoint.db2.web");
+
+        initDB();
+        Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
             File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
             try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                 serverEnvWriter.println("DB2_DBNAME=" + db2.getDatabaseName());
@@ -106,7 +109,10 @@ public class DB2Test extends FATServletClient {
             } catch (FileNotFoundException e) {
                 throw new UncheckedIOException(e);
             }
-        });
+        };
+
+        // at this point the server no longer has the env set; we set them just before restore
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, preRestoreLogic);
 
         // Launch servlet with embedded junit tests,
         server.startServer();
