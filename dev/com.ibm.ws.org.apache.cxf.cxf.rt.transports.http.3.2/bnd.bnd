@@ -8,23 +8,52 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-transports-http;3.4.3}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
 -sub: *.bnd
 
+bVersion=1.0
+cxfVersion=3.4.3
 
+Export-Package: \
+  org.apache.cxf.transport.http;version=${cxfVersion}, \
+  org.apache.cxf.transport.http.auth;version=${cxfVersion}, \
+  org.apache.cxf.transport.http.osgi;version=${cxfVersion}, \
+  org.apache.cxf.transport.https;version=${cxfVersion}, \
+  org.apache.cxf.transport.servlet;version=${cxfVersion}, \
+  org.apache.cxf.transports.http;version=${cxfVersion}, \
+  org.apache.cxf.transports.http.configuration;version=${cxfVersion}, \
+  com.ibm.ws.cxf.exceptions;version=${cxfVersion}
+
+Import-Package: \
+  !java.*, \
+  !org.apache.aries.*, \
+  !org.springframework.*, \
+  javax.wsdl.*;resolution:=optional, \
+  org.apache.cxf.ws.policy.*;resolution:=optional, \
+  org.apache.cxf.wsdl;resolution:=optional, \
+  !org.osgi.service.blueprint.*, \
+  javax.servlet.*;resolution:=optional;version="[2.6.0,3.0.0)", \
+  com.ibm.ws.cxf.jaxrs21.client.*;version="[3.2,4)", \
+  *
+
+Service-Component: \
+  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=META-INF/cxf/bus-extensions.txt"
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-transports-http;3.4.3;EXACT}!/!META-INF/*,\
-   org/apache/cxf=${bin}/org/apache/cxf, \
-   META-INF=resources/META-INF
+  @${repo;org.apache.cxf:cxf-rt-transports-http;${cxfVersion};EXACT}!/!META-INF/*, \
+  org/apache/cxf=${bin}/org/apache/cxf, \
+  META-INF=resources/META-INF
 
 -buildpath: \
-  javax.activation:activation;version=1.1,\
-  org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=3.4.3,\
-  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-  com.ibm.ws.logging.core,\
-  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.wsspi.org.osgi.core
-
+  org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=${cxfVersion}, \
+  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
+  com.ibm.websphere.javaee.servlet.4.0;version=latest, \
+  com.ibm.ws.logging.core, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.wsspi.org.osgi.core, \
+  javax.activation:activation;version=1.1

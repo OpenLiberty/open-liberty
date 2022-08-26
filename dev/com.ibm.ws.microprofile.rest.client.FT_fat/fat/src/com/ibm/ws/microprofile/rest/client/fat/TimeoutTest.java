@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -39,12 +40,13 @@ public class TimeoutTest extends FATServletClient {
     final static String SERVER_NAME = "mpRestClientFT.timeout";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("1.2", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("1.3", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("1.4", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("2.0", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("3.0", SERVER_NAME));
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP22, // 1.2
+                                                             MicroProfileActions.MP30, // 1.3
+                                                             MicroProfileActions.MP33, // 1.4
+                                                             MicroProfileActions.MP40, // 2.0
+                                                             MicroProfileActions.MP50, // 3.0 + EE9
+                                                             MicroProfileActions.MP60);// 3.0 + EE10
 
     private static final String appName = "timeoutApp";
 

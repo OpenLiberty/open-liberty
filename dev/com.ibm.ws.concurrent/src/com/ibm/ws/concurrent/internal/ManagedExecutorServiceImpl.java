@@ -325,6 +325,19 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         return threadContext;
     }
 
+    @Trivial
+    public void close() throws Exception {
+        if (allowLifeCycleMethods) {
+            PolicyExecutor executor = getNormalPolicyExecutor();
+            if (executor instanceof AutoCloseable) // Java 19+
+                ((AutoCloseable) executor).close();
+            else // Java 18 or earlier
+                throw new UnsupportedOperationException("close");
+        } else { // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
+            throw new IllegalStateException(new UnsupportedOperationException("close"));
+        }
+    }
+
     @Override
     public <U> CompletableFuture<U> completedFuture(U value) {
         return ManagedCompletableFuture.completedFuture(value, this);

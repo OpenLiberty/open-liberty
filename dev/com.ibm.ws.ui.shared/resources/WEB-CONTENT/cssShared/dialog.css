@@ -181,6 +181,7 @@ svg.yesNoDescriptionIcon {
 .confirmDescriptionText {
     display: inline-block;
     box-sizing: border-box; 
+    word-break: break-word;
 }
 
 .confirmOkButton {

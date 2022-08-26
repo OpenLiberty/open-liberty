@@ -65,7 +65,7 @@ public class BasicHealthTest {
     private static final String MESSAGE = BasicHelloWorldBean.MESSAGE;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST, MicroProfileActions.MP50);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP41, MicroProfileActions.MP50);
 
     @BeforeClass
     public static void setUp() throws Exception {

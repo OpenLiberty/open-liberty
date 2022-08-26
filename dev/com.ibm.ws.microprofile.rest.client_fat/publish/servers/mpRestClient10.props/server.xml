@@ -3,6 +3,7 @@
     <feature>componenttest-1.0</feature>
     <feature>mpRestClient-1.0</feature>
     <feature>jaxrs-2.0</feature>
+    <feature>servlet-3.1</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>

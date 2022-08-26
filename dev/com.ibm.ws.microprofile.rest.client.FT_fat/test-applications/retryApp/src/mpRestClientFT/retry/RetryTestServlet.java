@@ -26,6 +26,7 @@ import componenttest.app.FATServlet;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.MicroProfileActions;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/RetryTestServlet")
@@ -65,7 +66,7 @@ public class RetryTestServlet extends FATServlet {
     }
     
     @Test
-    @SkipForRepeat({EmptyAction.ID, "mpRestClient-1.2", "mpRestClient-1.3", "mpRestClient-1.4", "mpRestClient-2.0"})
+    @SkipForRepeat({MicroProfileActions.MP22_ID, MicroProfileActions.MP30_ID, MicroProfileActions.MP33_ID, MicroProfileActions.MP40_ID})
     public void testRetryOnceOnFailThenSucceed_classLevel() {
         RetryRemoteResource.failThenSucceed.set(1);
         String success = classClient.failThenSucceed();

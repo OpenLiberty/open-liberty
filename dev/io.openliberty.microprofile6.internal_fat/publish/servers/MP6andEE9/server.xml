@@ -1,0 +1,13 @@
+<server description="Server for testing microProfile">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <!-- This should never work -->
+        <feature>microProfile-6.0</feature>
+        <feature>jakartaee-9.1</feature>
+    </featureManager>
+    
+    <keyStore id="defaultKeyStore" password="openliberty"/>
+    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
+</server>

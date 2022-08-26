@@ -8,16 +8,31 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-security-saml;3.4.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
 -sub: *.bnd
 
+bVersion=1.0
+cxfVersion=3.4.1
+
+WS-TraceGroup: WSSECURITY
+
+Bundle-ActivationPolicy: lazy
+
+Export-Package: \
+  org.apache.cxf.rt.security.saml.*;version=${cxfVersion}
+
+Import-Package:  \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  *
 
 -includeresource: \
-    @${repo;org.apache.cxf:cxf-rt-security-saml;3.4.1;EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF|META-INF/cxf/*
+  @${repo;org.apache.cxf:cxf-rt-security-saml;${cxfVersion};EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF|META-INF/cxf/*
 
 globalize: false
 instrument.ffdc: true
 
 -buildpath: \
-	org.apache.cxf:cxf-rt-security-saml;strategy=exact;version=3.4.1
+  org.apache.cxf:cxf-rt-security-saml;strategy=exact;version=${cxfVersion}

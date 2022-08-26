@@ -14,13 +14,14 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/MPContextProp1_3_App/src,\
-	test-applications/MPContextProp2_0_App/src,\
+	test-applications/MPContextProp1_3_EE9_App/src,\
+	test-applications/MPContextProp1_3_EE10_App/src,\
 	test-contextproviders/threadprioritycontext/src
 
 fat.project: true
 
-tested.features: mpConfig-2.0
+tested.features:\
+  mpConfig-2.0
 
 -buildpath: \
 	com.ibm.tx.jta;version=latest,\

@@ -12,11 +12,11 @@ IBM-API-Package: \
   io.opentelemetry.api;type="stable",\
   io.opentelemetry.api.trace;type="stable"
 -features=\
-  io.openliberty.jakarta.annotation-2.0, \
-  io.openliberty.restfulWS-3.0, \
+  io.openliberty.jakarta.annotation-2.1; ibm.tolerates:="2.0", \
+  io.openliberty.restfulWS-3.1; ibm.tolerates:="3.0", \
   io.openliberty.mpConfig-3.0, \
-  io.openliberty.cdi-3.0, \
-  io.openliberty.mpCompatible-5.0,\
+  io.openliberty.cdi-4.0; ibm.tolerates:="3.0", \
+  io.openliberty.mpCompatible-6.0; ibm.tolerates:="5.0",\
   com.ibm.websphere.appserver.injection-2.0, \
   io.openliberty.org.eclipse.microprofile.telemetry-1.0
 -bundles=\

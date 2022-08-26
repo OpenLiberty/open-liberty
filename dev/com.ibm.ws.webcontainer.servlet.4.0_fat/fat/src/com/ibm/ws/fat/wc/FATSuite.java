@@ -38,6 +38,7 @@ import com.ibm.ws.fat.wc.tests.WCServerTest;
 import com.ibm.ws.fat.wc.tests.WCServletClarificationTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerFilterServletNameMappingTest;
+import com.ibm.ws.fat.wc.tests.WCServletContextUnsupportedOperationExceptionTest;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
 import com.ibm.ws.fat.wc.tests.WCTestEncodedX590;
@@ -91,7 +92,8 @@ import componenttest.topology.impl.JavaInfo;
                 WCResponseHeadersTest.class,
                 WCServerMiscTest.class,
                 WCServerPropertyTest.class,
-                WCTestEncodedX590.class
+                WCTestEncodedX590.class,
+                WCServletContextUnsupportedOperationExceptionTest.class
 })
 
 public class FATSuite {

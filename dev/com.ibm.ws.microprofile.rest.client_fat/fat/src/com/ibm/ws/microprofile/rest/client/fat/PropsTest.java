@@ -39,7 +39,8 @@ public class PropsTest extends FATServletClient {
                                                              MicroProfileActions.MP30, // 1.3
                                                              MicroProfileActions.MP33, // 1.4
                                                              MicroProfileActions.MP40, // 2.0
-                                                             MicroProfileActions.MP50); // 3.0
+                                                             MicroProfileActions.MP50, // 3.0
+                                                             MicroProfileActions.MP60);// 3.0+EE10
 
     private static final String appName = "propsApp";
 

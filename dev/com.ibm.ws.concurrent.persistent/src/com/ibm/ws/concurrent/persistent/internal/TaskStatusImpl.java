@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2019 IBM Corporation and others.
+ * Copyright (c) 2014,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -174,6 +174,14 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
                    && Arrays.equals(resultBytes, other.resultBytes);
         }
         return false;
+    }
+
+    /**
+     * Unimplemented because persistent executor futures (TaskStatus) are only usable by persistent EJB timers
+     * and not directly by applications.
+     */
+    Throwable exceptionNow() {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -371,6 +379,14 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
             throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1550.status.unavailable.until.ended", "isDone"));
         else
             return true;
+    }
+
+    /**
+     * Unimplemented because persistent executor futures (TaskStatus) are only usable by persistent EJB timers
+     * and not directly by applications.
+     */
+    T resultNow() {
+        throw new UnsupportedOperationException();
     }
 
     /**

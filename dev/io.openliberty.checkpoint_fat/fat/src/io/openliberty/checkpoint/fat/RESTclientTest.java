@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
@@ -70,7 +71,7 @@ public class RESTclientTest {
                         .addClass(ServerApp.class)
                         .addClass(ServerEndpoint.class);
 
-        ShrinkHelper.exportAppToServer(server, webappWar);
+        ShrinkHelper.exportAppToServer(server, webappWar, DeployOptions.OVERWRITE);
     }
 
     @Test

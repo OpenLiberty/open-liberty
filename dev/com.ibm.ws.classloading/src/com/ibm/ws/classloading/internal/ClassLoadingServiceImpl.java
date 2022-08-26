@@ -436,7 +436,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
      * The resulting library SPI classloader instance is unique from that obtained using
      * {@link getSharedLibraryClassloader()}.  Both instances see the same binaries and API, and
      * both are managed similarly regarding library updates; only the SPI loader can see SPI packages.
-     * The library SPI loader must not be a delegate of an application or resource classloader.
+     * The library SPI loader must not be a delegate of an application classloader.
      *
      * @param lib the shared library to create an SPI class loader for
      * @param ownerId a non-empty string used to create a purposeful class loader identity.
@@ -448,54 +448,14 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         if (!!!betaFenceCheck()) {
             return null; // no-op
         }
+
         if (ownerId == null || "".equals(ownerId)) {
             throw new IllegalArgumentException("Argument ownerId cannot be null or empty");
         }
-
-        final boolean spiVisibility = true;
-        final String spiLibId = lib.id() + ":" + ownerId;
-
-        ClassLoaderIdentity clId = createIdentity(SPI_SHARED_LIBRARY_DOMAIN, spiLibId);
-
-        AppClassLoader loader = aclStore.retrieve(clId);
-        if (loader != null)
-            return loader;
-        EnumSet<ApiType> apiTypeVisibility = lib.getApiTypeVisibility();
-
-        ClassLoaderConfiguration clsCfg = createClassLoaderConfiguration()
-                        .setId(clId)
-                        .setSharedLibraries(lib.id()); // Configure lib binaries
-
-
-        Collection<Fileset> filesets = lib.getFilesets();
-        if (filesets != null && filesets.isEmpty() == false) {
-            for (Fileset fileset : filesets) {
-                setProtectionDomain(fileset.getFileset(), clsCfg);
-            }
-        } else {
-            Collection<File> files = lib.getFiles();
-            if (files != null && files.isEmpty() == false) {
-                setProtectionDomain(files, clsCfg);
-            }
-        }
-
-        GatewayConfiguration gwConfig = createGatewayConfiguration().setApplicationName(SPI_SHARED_LIBRARY_DOMAIN + ": " + spiLibId)
-                        .setDynamicImportPackage("*")
-                        .setApiTypeVisibility(apiTypeVisibility);
-        ((GatewayConfigurationImpl) gwConfig).setSpiVisibility(spiVisibility);
-
-        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
-                        .configure(gwConfig)
-                        .configure(clsCfg)
-                        .onCreate(listenForLibraryChanges(lib.id())) // Listen for updates to lib
-                        .getCanonical();
-
-        this.rememberBundle(result.getBundle());
-        return result;
+        return getSharedLibraryClassLoader(lib, true, ownerId);
     }
 
     private static boolean issuedBetaMessage = false;
-
     private boolean betaFenceCheck() {
         boolean isBeta = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
         if (!issuedBetaMessage) {
@@ -512,14 +472,36 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     @Override
     public AppClassLoader getSharedLibraryClassLoader(Library lib) {
 
-        ClassLoaderIdentity clId = createIdentity(SHARED_LIBRARY_DOMAIN, lib.id());
+        return getSharedLibraryClassLoader(lib, false, null);
+    }
+
+    /**
+     * Helper method to create or retrieve the class loader for a shared library.
+     * 
+     * @see #getSharedLibraryClassLoader(Library)
+     * @see #getSharedLibrarySpiClassLoader(Library,boolean,String)
+     */
+    private AppClassLoader getSharedLibraryClassLoader(Library lib, boolean spiVisibility, String ownerId) {
+
+        final String libId;
+        final String libDomain;
+        if (spiVisibility) {
+            libId = lib.id() + ":" + ownerId;
+            libDomain = SPI_SHARED_LIBRARY_DOMAIN;
+        } else {
+            libId = lib.id();
+            libDomain = SHARED_LIBRARY_DOMAIN;
+        }
+        ClassLoaderIdentity clId = createIdentity(libDomain, libId);
 
         AppClassLoader loader = aclStore.retrieve(clId);
         if (loader != null)
             return loader;
         EnumSet<ApiType> apiTypeVisibility = lib.getApiTypeVisibility();
 
-        ClassLoaderConfiguration clsCfg = createClassLoaderConfiguration().setId(clId).setSharedLibraries(lib.id());
+        ClassLoaderConfiguration clsCfg = createClassLoaderConfiguration()
+                        .setId(clId)
+                        .setSharedLibraries(lib.id()); // Configure lib binaries
 
         Collection<Fileset> filesets = lib.getFilesets();
         if (filesets != null && filesets.isEmpty() == false) {
@@ -533,12 +515,15 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
             }
         }
 
+        GatewayConfiguration gwConfig = createGatewayConfiguration().setApplicationName(libDomain + ": " + libId)
+                        .setDynamicImportPackage("*")
+                        .setApiTypeVisibility(apiTypeVisibility);
+        ((GatewayConfigurationImpl) gwConfig).setSpiVisibility(spiVisibility);
+
         AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
-                        .configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN + ": " + lib.id())
-                                        .setDynamicImportPackage("*")
-                                        .setApiTypeVisibility(apiTypeVisibility))
+                        .configure(gwConfig)
                         .configure(clsCfg)
-                        .onCreate(listenForLibraryChanges(lib.id()))
+                        .onCreate(listenForLibraryChanges(lib.id())) // Listen for updates to lib
                         .getCanonical();
 
         this.rememberBundle(result.getBundle());

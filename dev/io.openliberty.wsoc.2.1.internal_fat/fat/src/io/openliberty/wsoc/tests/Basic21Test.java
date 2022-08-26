@@ -39,7 +39,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 import io.openliberty.wsoc.tests.all.TimeOutTest;
-
+import io.openliberty.wsoc.tests.all.UserPropertiesTest;
 import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerControl;
 import io.openliberty.wsoc.util.WebServerSetup;
@@ -63,6 +63,7 @@ public class Basic21Test {
 
     private static WsocTest wt = null;
     private static TimeOutTest timeout = null;
+    private static UserPropertiesTest userprop = null;
 
     private static final Logger LOG = Logger.getLogger(Basic21Test.class.getName());
     
@@ -89,6 +90,7 @@ public class Basic21Test {
         bwst = new WebServerSetup(LS);
         wt = new WsocTest(LS, false);
         timeout = new TimeOutTest(wt);
+        userprop = new UserPropertiesTest(wt);
         bwst.setUp();
     }
 
@@ -206,4 +208,21 @@ public class Basic21Test {
         assertNotNull("Timeout message not found!", result);
     }
 
+    @Mode(TestMode.LITE)
+    @Test
+    public void testUserPropertiesOnServer() throws Exception {
+        userprop.testUserPropertiesOnServer();
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testSSCUserPropertiesOnServer() throws Exception {
+        this.runAsLSAndVerifyResponse("UserPropertiesTest", "testUserPropertiesOnServer");
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testSSCUserPropertiesOnClient() throws Exception {
+        this.runAsLSAndVerifyResponse("UserPropertiesTest", "testUserPropertiesOnClient");
+    }
 }

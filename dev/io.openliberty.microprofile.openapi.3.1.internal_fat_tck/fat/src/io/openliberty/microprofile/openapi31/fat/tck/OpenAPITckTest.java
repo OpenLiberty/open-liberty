@@ -33,7 +33,9 @@ import componenttest.topology.utils.MvnUtils;
 @RunWith(FATRunner.class)
 public class OpenAPITckTest {
 
-    @Server("FATServer")
+    private static final String SERVER_NAME = "FATServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass

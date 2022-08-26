@@ -31,7 +31,6 @@ import org.junit.runner.RunWith;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.openapi.fat.OpenApiActions;
 import com.ibm.ws.microprofile.openapi.fat.annotations.NonPublicFieldVisibilityApplication.NonPublicFieldVisibilityDataObject;
 import com.ibm.ws.microprofile.openapi.fat.annotations.PrivateFieldVisibilityApplication.PrivateFieldVisibilityDataObject;
 import com.ibm.ws.microprofile.openapi.fat.annotations.RequiredCustomNameApplication.RequiredCustomNameDataObject;
@@ -57,8 +56,8 @@ public class AnnotationProcessingTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = OpenApiActions.repeat(SERVER_NAME,
-        OpenApiActions.MP_OPENAPI_31, // mpOpenAPI-3.1, LITE
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
         MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
         MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
         MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL

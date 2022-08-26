@@ -32,6 +32,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.wsoc.AnnotatedEndpoint;
 import com.ibm.ws.wsoc.EndpointHelper;
 import com.ibm.ws.wsoc.ParametersOfInterest;
+import com.ibm.ws.wsoc.ClientEndpointConfigCopyPerSession;
 import com.ibm.ws.wsoc.SessionImpl;
 import com.ibm.ws.wsoc.WebSocketVersionServiceManager;
 import com.ibm.ws.wsoc.external.SessionExt;
@@ -68,6 +69,11 @@ public class ClientConnector {
         endpointAddress.validateURI();
 
         ParametersOfInterest things = new ParametersOfInterest();
+
+        if(WebSocketVersionServiceManager.isWsoc21rHigher()){
+            config  = new ClientEndpointConfigCopyPerSession(config);
+            things.setUserProperties(config.getUserProperties());
+        }
 
         HttpRequestor requestor = new HttpRequestor(endpointAddress, config, things);
         WsByteBuffer remainingBuf = null;

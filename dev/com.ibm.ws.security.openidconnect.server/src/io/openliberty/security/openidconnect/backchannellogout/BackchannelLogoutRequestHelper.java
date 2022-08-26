@@ -29,13 +29,11 @@ import org.apache.http.util.EntityUtils;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
 
-import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
-import com.ibm.ws.security.oauth20.plugins.OidcBaseClientValidator;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
@@ -107,33 +105,12 @@ public class BackchannelLogoutRequestHelper {
         List<BackchannelLogoutRequest> requests = new ArrayList<>();
         for (Entry<OidcBaseClient, Set<String>> entry : clientsAndLogoutTokens.entrySet()) {
             OidcBaseClient client = entry.getKey();
-            if (!isValidClientForBackchannelLogout(client)) {
-                continue;
-            }
             for (String logoutToken : entry.getValue()) {
                 BackchannelLogoutRequest request = new BackchannelLogoutRequest(oidcServerConfig, client.getBackchannelLogoutUri(), logoutToken);
                 requests.add(request);
             }
         }
         return requests;
-    }
-
-    @FFDCIgnore(OidcServerException.class)
-    boolean isValidClientForBackchannelLogout(OidcBaseClient client) {
-        String logoutUri = client.getBackchannelLogoutUri();
-        if (logoutUri == null) {
-            return false;
-        }
-        try {
-            OidcBaseClientValidator.validateBackchannelLogoutUri(client, logoutUri);
-        } catch (OidcServerException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "The {0} OAuth client cannot be used for back-channel logout because its back-channel logout URI ({1}) is not valid: {2}",
-                         client.getClientId(), logoutUri, e.getErrorDescription());
-            }
-            return false;
-        }
-        return true;
     }
 
     void sendAllBackchannelLogoutRequests(List<BackchannelLogoutRequest> requests) {

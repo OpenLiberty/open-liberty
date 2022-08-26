@@ -86,7 +86,8 @@ public class JPABootstrapTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer("CWWJP9991W");
+        server1.stopServer("CWWJP9991W",
+                           "Missing PostgreSQL10JsonPlatform"); // Generated with postgres db, since we don't include the postgres plugin);
     }
 
     @Test

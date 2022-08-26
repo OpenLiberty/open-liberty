@@ -1,0 +1,70 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+Bundle-SymbolicName: io.openliberty.org.eclipse.angus.mail.2.1
+
+Implementation-Version: 1.0.0
+Export-Version: 2.1.0
+
+Export-Package: \
+  com.sun.mail.auth; version=${Export-Version}; thread-context=true, \
+  com.sun.mail.handlers; version=${Export-Version}; thread-context=true, \
+  com.sun.mail.iap; version=${Export-Version}; thread-context=true, \
+  com.sun.mail.imap; version=${Export-Version}; thread-context=true, \
+  com.sun.mail.imap.protocol; version=${Export-Version}; thread-context=true, \
+  com.sun.mail.pop3; version=${Export-Version}; thread-context=true, \
+  com.sun.mail.smtp; version=${Export-Version}; thread-context=true, \
+  com.sun.mail.util; version=${Export-Version}; thread-context=true, \
+  com.sun.mail.util.logging; version=${Export-Version}; thread-context=true
+
+Import-Package: \
+  com.ibm.wsspi.classloading, \
+  jakarta.mail;version="2.1.0", \
+  jakarta.mail.event;version="2.1.0", \
+  jakarta.mail.internet;version="2.1.0", \
+  jakarta.mail.search;version="2.1.0", \
+  jakarta.mail.util;version="2.1.0", \
+  *
+
+app-resources= \
+  META-INF/services/jakarta.mail.util.StreamProvider | \
+  META-INF/services/jakarta.mail.Provider | \
+  META-INF/javamail.default.address.map | \
+  META-INF/javamail.default.providers | \
+  META-INF/javamail.charset.map | \
+  META-INF/mailcap
+
+Service-Component: \
+  io.openliberty.org.eclipse.angus.mail_2_1_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:= "resources=${app-resources}"
+  
+-includeresource: \
+  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/maven/*, \
+  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/mailcap, \
+  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/gfprobe-provider.xml, \
+  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/javamail.charset.map, \
+  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/javamail.default.address.map, \
+  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/javamail.default.providers
+   
+-buildpath: \
+  org.eclipse.angus:angus-mail;version=${Implementation-Version};strategy=exact, \
+  io.openliberty.jakarta.mail.2.1;version=latest
+     

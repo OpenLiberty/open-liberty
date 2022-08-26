@@ -35,6 +35,10 @@ public class MPConfigServlet extends FATServlet {
     @Inject
     ApplicationScopedOnCheckpointBeanWithConfigObject appScopeOnCheckpointWithConfigObject;
 
+    @Inject
+    ApplicationScopedOnCheckpointBeanWithConfigObjectProperties appScopeOnCheckpointWithConfigObjectProperties;
+
+    // MPConfigBean
     @Test
     public void defaultValueTest() {
         reqScopeBean.defaultValueTest();
@@ -60,6 +64,7 @@ public class MPConfigServlet extends FATServlet {
         reqScopeBean.annoValueTest();
     }
 
+    // MPconfigBeanWithApplicationScope
     @Test
     public void appScopeDefaultValueTest() {
         appScopeBean.appScopeDefaultValueTest();
@@ -85,6 +90,7 @@ public class MPConfigServlet extends FATServlet {
         appScopeBean.appScopeAnnoValueTest();
     }
 
+    // ApplicationScopedOnCheckpointBeanWithConfigObject
     @Test
     public void configObjectAppScopeDefaultValueTest() {
         appScopeOnCheckpointWithConfigObject.appScopeDefaultValueTest();
@@ -110,10 +116,29 @@ public class MPConfigServlet extends FATServlet {
         appScopeOnCheckpointWithConfigObject.appScopeAnnoValueTest();
     }
 
-    //@Test
-    //Commenting this test temporarily because this test fails when config is updated during restore
-    //since the instance of config object is created during the checkpoint side during the initialization of application context
-    //and it fails to update itself with the latest config on restore.
+    // ApplicationScopedOnCheckpointBeanWithConfigObjectProperties
+    @Test
+    public void configObjectPropertiesAppScopeDefaultValueTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeDefaultValueTest();
+    }
+
+    @Test
+    public void configObjectPropertiesAppScopeEnvValueTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeEnvValueTest();
+    }
+
+    @Test
+    public void configObjectPropertiesAppScopeEnvValueChangeTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeEnvValueChangeTest();
+    }
+
+    @Test
+    public void configObjectPropertiesAppScopeServerValueTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeServerValueTest();
+    }
+
+    // ApplicationScopedOnCheckpointBean
+    @Test
     public void applicationScopedValueTest() {
         appScopeOnCheckpointBean.applicationScopedValueTest();
     }

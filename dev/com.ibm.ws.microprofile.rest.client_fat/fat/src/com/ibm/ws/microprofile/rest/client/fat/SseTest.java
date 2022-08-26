@@ -20,6 +20,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -37,6 +38,8 @@ public class SseTest extends FATServletClient {
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
                                                              MicroProfileActions.MP40, //mpRestClient-2.0
                                                              MicroProfileActions.MP50); // 3.0
+                                                             // TODO: MP60 currently causes Java 2 security errors
+                                                             // MicroProfileActions.MP60);// 3.0+EE10
     /*
      * We need two servers to clearly distinguish that the "client" server
      * only has the client features enabled - it includes mpRestClient-1.0

@@ -888,9 +888,17 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
         invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
 
-        // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+        // Access and refresh tokens should not be cleaned up since the BCL endpoint is not considered valid
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
-        //states.setIsRefreshTokenValid(true);
+        if (!currentRepeatAction.contains(Constants.END_SESSION)) {
+            // The end_session flow, however, will still clean up the refresh token
+            states.setIsRefreshTokenValid(true);
+        }
+        if (!currentRepeatAction.contains("Social")) {
+            // oidcLogin clients for the social login feature don't support token propagation, so access tokens will not be considered valid by those clients.
+            // All other clients should still consider the access token valid.
+            states.setIsAccessTokenValid(true);
+        }
 
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
@@ -926,9 +934,17 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
         invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
 
-        // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+        // Access and refresh tokens should not be cleaned up since the BCL endpoint is not considered valid
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
-        //states.setIsRefreshTokenValid(true);
+        if (!currentRepeatAction.contains(Constants.END_SESSION)) {
+            // The end_session flow, however, will still clean up the refresh token
+            states.setIsRefreshTokenValid(true);
+        }
+        if (!currentRepeatAction.contains("Social")) {
+            // oidcLogin clients for the social login feature don't support token propagation, so access tokens will not be considered valid by those clients.
+            // All other clients should still consider the access token valid.
+            states.setIsAccessTokenValid(true);
+        }
 
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
@@ -989,9 +1005,17 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
         invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
 
-        // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+        // Access and refresh tokens should not be cleaned up since the BCL endpoint is not considered valid
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
-        //states.setIsRefreshTokenValid(true);
+        if (!currentRepeatAction.contains(Constants.END_SESSION)) {
+            // The end_session flow, however, will still clean up the refresh token
+            states.setIsRefreshTokenValid(true);
+        }
+        if (!currentRepeatAction.contains("Social")) {
+            // oidcLogin clients for the social login feature don't support token propagation, so access tokens will not be considered valid by those clients.
+            // All other clients should still consider the access token valid.
+            states.setIsAccessTokenValid(true);
+        }
 
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
@@ -1026,9 +1050,17 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // logout expectations - just make sure we landed on the end_session/logout page - always with a good status code
         invokeLogout(webClient, updatedTestSettings, initLogoutWithHttpFailureExpectations(finalAppWithoutPostRedirect, client), response);
 
-        // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+        // Access and refresh tokens should not be cleaned up since the BCL endpoint is not considered valid
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
-        //states.setIsRefreshTokenValid(true);
+        if (!currentRepeatAction.contains(Constants.END_SESSION)) {
+            // The end_session flow, however, will still clean up the refresh token
+            states.setIsRefreshTokenValid(true);
+        }
+        if (!currentRepeatAction.contains("Social")) {
+            // oidcLogin clients for the social login feature don't support token propagation, so access tokens will not be considered valid by those clients.
+            // All other clients should still consider the access token valid.
+            states.setIsAccessTokenValid(true);
+        }
 
         // Make sure that all cookies and tokens have been cleaned up
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);

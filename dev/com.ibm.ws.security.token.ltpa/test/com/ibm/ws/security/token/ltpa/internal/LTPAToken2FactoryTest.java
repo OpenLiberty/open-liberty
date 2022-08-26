@@ -167,11 +167,12 @@ public class LTPAToken2FactoryTest {
         byte[] tokenBytes = token.getBytes();
         Token validatedToken = tokenFactory.validateTokenBytes(tokenBytes);
         assertNotNull("There must be a validated token.", validatedToken);
+        assertTrue("Token is invalid.", validatedToken.isValid());
     }
 
     private Map<String, Object> createBasicLTPA2TokenData() {
         Map<String, Object> tokenData = new HashMap<String, Object>();
-        tokenData.put("unique_id", "user:BasicRealm/user1");
+        tokenData.put("unique_id", "user:BasicRealm/u\\ser |1$");
         return tokenData;
     }
 }

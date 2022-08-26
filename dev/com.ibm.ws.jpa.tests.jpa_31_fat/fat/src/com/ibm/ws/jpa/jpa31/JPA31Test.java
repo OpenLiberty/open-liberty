@@ -186,7 +186,8 @@ public class JPA31Test extends JPAFATServletClient {
             }
 
             server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+                              "WTRN0074E: Exception caught from before_completion synchronization operation", // RuntimeException test, expected
+                              "Missing PostgreSQL10JsonPlatform" // Generated with postgres db, since we don't include the postgres plugin
             );
         } finally {
             try {

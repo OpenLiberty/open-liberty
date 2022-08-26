@@ -27,33 +27,33 @@ import com.ibm.ws.feature.utils.FeatureVerifier;
 
 public class VisibilityTest {
 
-  private static Map<String, FeatureInfo> features = null; 
+    private static Map<String, FeatureInfo> features = null;
 
-	@BeforeClass
-	public static void setUpClass() {
-		features = FeatureMapFactory.getFeatureMapFromFile("./visibility/");
-	}
+    @BeforeClass
+    public static void setUpClass() {
+        features = FeatureMapFactory.getFeatureMapFromFile("./visibility/");
+    }
 
     /**
      * Tests to see if a feature has a dependency on an auto feature.
      */
-	@Test
-	public void testDependingOnAutoFeature() {
-	    StringBuilder errorMessage = new StringBuilder();
-	    for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+    @Test
+    public void testDependingOnAutoFeature() {
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
             String featureName = entry.getKey();
-	        FeatureInfo featureInfo = entry.getValue();
+            FeatureInfo featureInfo = entry.getValue();
 
-	        Set<String> dependentAutoFeatures = null;
-	        for (String dependentFeature : featureInfo.getDependentFeatures()) {
-	            FeatureInfo depFeatureInfo = features.get(dependentFeature);
-	            if (depFeatureInfo != null && depFeatureInfo.isAutoFeature()) {
-	                if (dependentAutoFeatures == null) {
-	                    dependentAutoFeatures = new HashSet<>();
-	                }
-	                dependentAutoFeatures.add(dependentFeature);
-	            }
-	        }
+            Set<String> dependentAutoFeatures = null;
+            for (String dependentFeature : featureInfo.getDependentFeatures()) {
+                FeatureInfo depFeatureInfo = features.get(dependentFeature);
+                if (depFeatureInfo != null && depFeatureInfo.isAutoFeature()) {
+                    if (dependentAutoFeatures == null) {
+                        dependentAutoFeatures = new HashSet<>();
+                    }
+                    dependentAutoFeatures.add(dependentFeature);
+                }
+            }
 
             if (dependentAutoFeatures != null) {
                 errorMessage.append("Found issues with " + featureName + '\n');
@@ -63,16 +63,16 @@ public class VisibilityTest {
                     errorMessage.append("     " + autoFeature + '\n');
                 }
             }
-	    }
+        }
 
-	    if (errorMessage.length() != 0) {
-	        Assert.fail("Found features that depend on auto features: " + '\n' + errorMessage.toString());
-	    }
-	}
-	
-	// commented out for now.  Security function doesn't work well with parallel activation
-	// currently, but can re-enable at times to see how things are looking and find places
-	// where new features were added and parallel activation should match.
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features that depend on auto features: " + '\n' + errorMessage.toString());
+        }
+    }
+
+    // commented out for now.  Security function doesn't work well with parallel activation
+    // currently, but can re-enable at times to see how things are looking and find places
+    // where new features were added and parallel activation should match.
     //@Test
     public void testParallelActivation() {
         StringBuilder errorMessage = new StringBuilder();
@@ -110,7 +110,7 @@ public class VisibilityTest {
     }
 
     /**
-     * Confirms if disable all feature on conflict is not enabled, dependent 
+     * Confirms if disable all feature on conflict is not enabled, dependent
      * features also have the same settings.
      */
     @Test
@@ -151,7 +151,7 @@ public class VisibilityTest {
 
     /**
      * Features that are marked ga or beta should be in core or base edition in open liberty.
-     * Features that are marked noship should be in full edition.  This test validates
+     * Features that are marked noship should be in full edition. This test validates
      * that the edition is marked correctly.
      */
     @Test
@@ -194,7 +194,7 @@ public class VisibilityTest {
                 }
                 errorMessage.append("     Edition is not a recognized value " + edition + '\n');
             }
-            
+
             if (!possibleKinds.contains(kind)) {
                 if (!errorFound) {
                     errorMessage.append("Found issues with " + featureName + '\n');
@@ -202,7 +202,7 @@ public class VisibilityTest {
                 }
                 errorMessage.append("     Kind is not a recognized value " + kind + '\n');
             }
-            
+
             if (!errorFound) {
                 if ("full".equals(edition)) {
                     if (!"noship".equals(kind)) {
@@ -221,38 +221,37 @@ public class VisibilityTest {
             Assert.fail("Found features that have edition set incorrectly: " + '\n' + errorMessage.toString());
         }
     }
-    
+
     @Test
-	public void testVisibility() {
+    public void testVisibility() {
         FeatureVerifier verifier = new FeatureVerifier(features);
-		Map<String, Set<String>> violations = verifier.verifyAllFeatures();
+        Map<String, Set<String>> violations = verifier.verifyAllFeatures();
 
-		boolean failed = false;
-		StringBuilder errorMessage = new StringBuilder();
+        boolean failed = false;
+        StringBuilder errorMessage = new StringBuilder();
 
+        for (String feature : violations.keySet()) {
+            if (!violations.get(feature).isEmpty()) {
+                failed = true;
 
-		for (String feature : violations.keySet()) {
-			if (!violations.get(feature).isEmpty()) {
-				failed = true;
+                errorMessage.append("Found issues with " + verifier.printFeature(feature) + '\n');
+                errorMessage.append("     It provisions less visible features: " + '\n');
 
-				errorMessage.append("Found issues with " + verifier.printFeature(feature) + '\n');
-				errorMessage.append("     It provisions less visible features: " + '\n');
+                for (String featureKindViolators : violations.get(feature)) {
+                    errorMessage.append("     " + verifier.printFeature(featureKindViolators) + '\n');
+                }
+            }
+        }
 
-				for (String featureKindViolators : violations.get(feature)) {
-					errorMessage.append("     " + verifier.printFeature(featureKindViolators) + '\n');
-				}
-			}
-		}
+        Assert.assertFalse("Found features violating visibility conditions: " + '\n' + errorMessage.toString(), failed);
 
-		Assert.assertFalse("Found features violating visibility conditions: " + '\n' + errorMessage.toString(), failed);
-
-	}
+    }
 
     /**
      * Validates that features are in the right directory, public features in public
      * directory, protected in protected, auto in auto and others in private.
-     * 
-     * Also validates that public features are in their short name directory and that non public features do not 
+     *
+     * Also validates that public features are in their short name directory and that non public features do not
      * have a "short name" or "also known as" property set and that auto features do not set "disable on conflict".
      */
     @Test
@@ -279,7 +278,7 @@ public class VisibilityTest {
             String expectedPathName = "/visibility/" + visibility + "/";
             if ("public".equals(visibility)) {
                 expectedPathName += (featureInfo.getShortName() + '/') + (featureName + ".feature");
-    
+
                 if (!fileName.endsWith(expectedPathName)) {
                     errorMessage.append("Found issues with " + featureName + '\n');
                     errorMessage.append("     Feature is not in the expected directory " + expectedPathName + ".\n");
@@ -287,28 +286,28 @@ public class VisibilityTest {
                     errorMessage.append("     AND/OR the feature short name " + featureInfo.getShortName() + " may not match the directory.\n");
                 }
             } else {
-            	// private features that start with com.ibm.websphere.appserver.adminCenter.tool use IBM-ShortName for logic in the admin center
-            	if (featureInfo.getShortName() != null && !featureName.startsWith("com.ibm.websphere.appserver.adminCenter.tool")) {
+                // private features that start with com.ibm.websphere.appserver.adminCenter.tool use IBM-ShortName for logic in the admin center
+                if (featureInfo.getShortName() != null && !featureName.startsWith("com.ibm.websphere.appserver.adminCenter.tool")) {
                     errorMessage.append("Found issues with " + featureName + '\n');
                     errorMessage.append("     Feature contains IBM-ShortName, but it not a public feature.\n");
-            	}
-            	if (featureInfo.isDisableOnConflictSet() && featureInfo.isAutoFeature()) {
+                }
+                if (featureInfo.isDisableOnConflictSet() && featureInfo.isAutoFeature()) {
                     errorMessage.append("Found issues with " + featureName + '\n');
                     errorMessage.append("     Feature contains WLP-DisableAllFeatures-OnConflict, but it is an auto feature.\n");
-            	}
-            	if (featureInfo.isAlsoKnownAsSet()) {
+                }
+                if (featureInfo.isAlsoKnownAsSet()) {
                     errorMessage.append("Found issues with " + featureName + '\n');
                     errorMessage.append("     Feature contains WLP-AlsoKnownAs, but it not a public feature.\n");
-            	}
-            	String withoutFeatureDir = expectedPathName + (featureName + ".feature");
-            	String withFeatureShortNameDir = expectedPathName + featureInfo.getShortName() + "/" + (featureName + ".feature");
-            	if (!fileName.endsWith(withoutFeatureDir) && !fileName.endsWith(withFeatureShortNameDir)) {
+                }
+                String withoutFeatureDir = expectedPathName + (featureName + ".feature");
+                String withFeatureShortNameDir = expectedPathName + featureInfo.getShortName() + "/" + (featureName + ".feature");
+                if (!fileName.endsWith(withoutFeatureDir) && !fileName.endsWith(withFeatureShortNameDir)) {
                     errorMessage.append("Found issues with " + featureName + '\n');
-                    errorMessage.append("     Feature is not in the expected directory " + withoutFeatureDir +" or "+ withFeatureShortNameDir + ".\n");
+                    errorMessage.append("     Feature is not in the expected directory " + withoutFeatureDir + " or " + withFeatureShortNameDir + ".\n");
                     errorMessage.append("     The feature's visibility " + visibility + " may not match the directory.\n");
                 }
             }
-            
+
         }
         if (errorMessage.length() != 0) {
             Assert.fail("Found features that appear to be in the wrong directory based off of their settings: " + '\n' + errorMessage.toString());
@@ -348,8 +347,8 @@ public class VisibilityTest {
 
     /**
      * This test makes sure that public features have properties files that match the long
-     * feature name.  When moving features to the io.openliberty prefix from com.ibm.websphere.appserver
-     * and vice versa, the properties file renames were missed a few times.  This unit test
+     * feature name. When moving features to the io.openliberty prefix from com.ibm.websphere.appserver
+     * and vice versa, the properties file renames were missed a few times. This unit test
      * makes sure that it is found in the build instead of having to be detected by hand.
      */
     @Test
@@ -369,18 +368,77 @@ public class VisibilityTest {
             String fileName = featureFile.getAbsolutePath();
             fileName = fileName.replace('\\', '/');
 
-            int lastSlash = fileName.lastIndexOf('/'); 
+            int lastSlash = fileName.lastIndexOf('/');
             String expectedFileName = fileName.substring(0, lastSlash + 1) + "/resources/l10n/" + featureName + ".properties";
-            
+
             if (!new File(expectedFileName).exists()) {
-                String expectedPropertiesFileRelPath = shortName + "/resources/l10n/" + featureName + ".properties"; 
+                String expectedPropertiesFileRelPath = shortName + "/resources/l10n/" + featureName + ".properties";
                 errorMessage.append("Found issues with " + featureName + '\n');
                 errorMessage.append("     Expected to find file " + expectedPropertiesFileRelPath + '\n');
             }
         }
-        
+
         if (errorMessage.length() != 0) {
             Assert.fail("Found features whose localization files are missing or in the wrong package: " + '\n' + errorMessage.toString());
+        }
+    }
+
+    @Test
+    public void testMissingBetaFeatures() {
+        Set<String> expectedFailures = new HashSet<>();
+        // The following features are marked no ship, but are not ready for beta yet.
+        // If they get marked beta, they should be removed from this list.
+        expectedFailures.add("io.openliberty.jakarta.faces-4.0");
+        expectedFailures.add("io.openliberty.jakarta.messaging-3.1");
+        expectedFailures.add("io.openliberty.jakarta.websocket-2.1");
+        expectedFailures.add("io.openliberty.jakarta.authentication-3.0");
+        expectedFailures.add("io.openliberty.jakarta.authorization-2.1");
+        expectedFailures.add("io.openliberty.jakarta.security.enterprise-3.0");
+        expectedFailures.add("io.openliberty.xmlws.common-4.0");
+        expectedFailures.add("io.openliberty.persistentExecutor.internal.ee-10.0"); // the persistentExecutor feature is no ship
+        expectedFailures.add("io.openliberty.mail-2.1");
+        expectedFailures.add("com.ibm.websphere.appserver.servlet-6.0");
+
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            String featureName = entry.getKey();
+            FeatureInfo featureInfo = entry.getValue();
+            if (!"noship".equals(featureInfo.getKind())) {
+                if (expectedFailures.contains(featureName)) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorMessage.append("     The feature is no longer marked noship, it should be removed from the expected failure set\n");
+                }
+            } else {
+                if (!featureInfo.isAutoFeature()) {
+                    boolean containsNoShipFeature = false;
+                    boolean containsBetaFeature = false;
+                    for (String depFeatureName : featureInfo.getDependentFeatures()) {
+                        FeatureInfo depFeature = features.get(depFeatureName);
+                        if (depFeature == null) {
+                            continue;
+                        }
+                        if ("noship".equals(depFeature.getKind())) {
+                            containsNoShipFeature = true;
+                            break;
+                        }
+                        if ("beta".equals(depFeature.getKind())) {
+                            containsBetaFeature = true;
+                        }
+                    }
+
+                    if (!containsNoShipFeature && containsBetaFeature) {
+                        if (!expectedFailures.contains(featureName)) {
+                            errorMessage.append("Found issues with " + featureName + '\n');
+                            errorMessage.append("     The feature is marked noship, but all dependencies are beta or ga\n");
+                        }
+                    }
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features that are marked noship, but contain only beta/ga features without a noship feature dependency: " + '\n' +
+                        "If you recently marked a feature beta, you may need to add or remove from the expected failures list or have something to fix.\n" +
+                        errorMessage.toString());
         }
     }
 }

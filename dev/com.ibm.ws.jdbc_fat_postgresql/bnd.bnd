@@ -18,9 +18,13 @@ src: \
 
 fat.project: true
 
+fat.test.container.images: kyleaure/postgres-ssl:1.0
+
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
 	fattest.simplicity;version=latest,\
 	org.postgresql:postgresql;version=42.4.2,\
+	com.ibm.ws.jca.cm;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	io.openliberty.org.testcontainers;version=latest

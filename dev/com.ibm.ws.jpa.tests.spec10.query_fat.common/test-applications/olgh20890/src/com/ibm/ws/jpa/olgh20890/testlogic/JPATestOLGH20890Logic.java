@@ -63,8 +63,8 @@ public class JPATestOLGH20890Logic extends AbstractTestLogic {
         }
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
-        //TODO: Disable test until EclipseLink 2.2, 3.0, or 3.1 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
+        //TODO: Disable test until EclipseLink 3.0 or 3.1 is updated to include the fix
+        if ((isUsingJPA30Feature() || isUsingJPA31Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
 

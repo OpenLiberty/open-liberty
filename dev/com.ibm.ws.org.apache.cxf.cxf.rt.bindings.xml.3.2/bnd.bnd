@@ -8,22 +8,44 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-bindings-xml;3.4.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
 -sub: *.bnd
 
-
-
-instrument.classesIncludes: org/apache/cxf/*.class
-
+bVersion=1.0
 cxfVersion=3.4.3
 
+Import-Package: \
+  !com.ctc.wstx.*, \
+  !org.codehaus.stax2.*, \
+  !com.sun.msv.*, \
+  !com.sun.xml.bind.marshaller, \
+  !com.sun.xml.fastinfoset.stax.*, \
+  !org.apache.log4j.*, \
+  !net.sf.cglib.proxy.*, \
+  !org.springframework.*, \
+  !javax.validation.*, \
+  !org.apache.aries.*, \
+  !org.apache.cxf.transport.https, \
+  !org.osgi.service.blueprint.*, \
+  javax.xml.bind;version=!, \
+  javax.xml.bind.annotation;version=!, \
+  javax.xml.bind.annotation.adapters;version=!, \
+  javax.xml.bind.attachment;version=!, \
+  *
+
+Export-Package: \
+  org.apache.cxf.binding.xml.*;version=${cxfVersion}
+
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-bindings-xml;${cxfVersion};EXACT}!/!*-INF/*, \
-   META-INF=resources/META-INF
+  @${repo;org.apache.cxf:cxf-rt-bindings-xml;${cxfVersion};EXACT}!/!*-INF/*, \
+  META-INF=resources/META-INF
 
--buildpath: org.apache.cxf:cxf-rt-bindings-xml;strategy=exact;version=${cxfVersion},\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+instrument.classesIncludes: \
+  org/apache/cxf/*.class
+
+-buildpath: \
+  org.apache.cxf:cxf-rt-bindings-xml;strategy=exact;version=${cxfVersion}, \
+  com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.ws.logging.core
-

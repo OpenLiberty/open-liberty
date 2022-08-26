@@ -1,2 +1,3 @@
 com.ibm.ws.security.registry.basic_fat
 com.ibm.ws.security.wim.adapter.file_fat
+io.openliberty.security.jakartasec.3.0.internal_fat

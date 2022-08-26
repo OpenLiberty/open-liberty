@@ -108,7 +108,8 @@ public class DataTestServlet extends FATServlet {
     public void testAggregateFunctions() {
         // Remove data from previous test:
         Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
-        products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+        if (allProducts.length > 0)
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
 
         // Add data for this test to use:
         Product prod1 = new Product();

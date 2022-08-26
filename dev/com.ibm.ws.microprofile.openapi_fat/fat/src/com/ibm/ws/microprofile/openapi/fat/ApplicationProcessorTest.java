@@ -62,7 +62,6 @@ public class ApplicationProcessorTest extends FATServletClient {
     private static final Class<?> c = ApplicationProcessorTest.class;
     private static final String APP_NAME_1 = "appWithAnnotations";
     private static final String APP_NAME_2 = "appWithStaticDoc";
-    private static final String APP_NAME_3 = "simpleServlet";
     private static final String APP_NAME_4 = "staticDocWithServerObject";
     private static final String APP_NAME_5 = "staticDocWithoutServerObject";
     private static final String APP_NAME_6 = "openAPIEarWithServer";
@@ -78,8 +77,8 @@ public class ApplicationProcessorTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = OpenApiActions.repeat(SERVER_NAME,
-        OpenApiActions.MP_OPENAPI_31, // mpOpenAPI-3.1, LITE
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+        MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
         MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
         MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
         MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
@@ -94,7 +93,6 @@ public class ApplicationProcessorTest extends FATServletClient {
         };
         ShrinkHelper.defaultApp(server, APP_NAME_1, opts, "app.web.airlines.*");
         ShrinkHelper.defaultApp(server, APP_NAME_2, opts);
-        ShrinkHelper.defaultApp(server, APP_NAME_3, opts, "app.web.servlet");
         ShrinkHelper.defaultApp(server, APP_NAME_10, opts, "app.web.pure.jaxrs");
         ShrinkHelper.defaultApp(server, APP_NAME_11, opts, "app.web.complete.flow.*");
 
@@ -181,14 +179,6 @@ public class ApplicationProcessorTest extends FATServletClient {
         OpenAPITestUtil.checkServer(openapiNode,
             OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort()));
         OpenAPITestUtil.checkPaths(openapiNode, 0);
-
-        // Add an empty servlet app is deployed and ensure the default empty OpenAPI
-        // documentation is created
-        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
-        OpenAPITestUtil.addApplication(server, APP_NAME_3);
-        openapi = OpenAPIConnection.openAPIDocsConnection(server, false).download();
-        assertEquals("FAIL: Server with a single empty app should not change the default OpenAPI document.", emptyDoc,
-            openapi);
 
         // Now add an app with OpenAPI artifacts and ensure it shows up
         OpenAPITestUtil.setMarkToEndOfAllLogs(server);
@@ -394,7 +384,9 @@ public class ApplicationProcessorTest extends FATServletClient {
 
     @Test
     @SkipForRepeat({
-        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID, OpenApiActions.MP_OPENAPI_31_ID
+        // Due to API incompatibilities, mpOpenAPI-2.0+ is tested in
+        // io.openliberty.microprofile.openapi.2.0.internal_fat
+        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID
     })
     public void testCompleteFlow() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_11);

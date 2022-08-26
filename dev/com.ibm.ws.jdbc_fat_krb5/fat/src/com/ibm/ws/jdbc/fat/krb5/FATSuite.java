@@ -21,7 +21,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
@@ -32,16 +32,10 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 OracleKerberosTest.class,
                 ErrorPathTest.class
 })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     public static Network network;
     public static KerberosContainer krb5;
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
 
     static {
         // Needed for IBM JDK 8 support.

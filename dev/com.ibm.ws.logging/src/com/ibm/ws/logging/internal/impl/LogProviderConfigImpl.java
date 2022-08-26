@@ -264,7 +264,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         messageFileName = InitConfgAttribute.MSG_FILE_NAME.getStringValue(c, messageFileName, isInit);
         logDirectory = InitConfgAttribute.LOG_LOCATION.getLogDirectory(c, logDirectory, isInit);
 
-        hideMessageIds = InitConfgAttribute.HIDE_MESSAGES.getStringCollectionValue("hideMessage", c, hideMessageIds, isInit);
+        hideMessageIds = InitConfgAttribute.HIDE_MESSAGES.getStringCollectionValueAndSaveInit("hideMessage", c, hideMessageIds, isInit);
 
         messageSource = InitConfgAttribute.MESSAGE_SOURCE.getStringCollectionValueAndSaveInit("messageSource", c, messageSource, isInit);
         messageFormat = InitConfgAttribute.MESSAGE_FORMAT.getStringValueAndSaveInit(c, messageFormat, isInit);

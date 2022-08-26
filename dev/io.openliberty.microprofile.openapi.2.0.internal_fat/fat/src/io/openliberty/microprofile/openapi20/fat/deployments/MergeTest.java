@@ -48,7 +48,6 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
-import io.openliberty.microprofile.openapi20.fat.OpenApiActions;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestResource;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPIConnection;
@@ -68,10 +67,10 @@ public class MergeTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = OpenApiActions.repeat(SERVER_NAME,
-                                                        OpenApiActions.MP_OPENAPI_31, // mpOpenAPI-3.1, LITE
-                                                        MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
-                                                        MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
+                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
+                                                             MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
 
     private final List<String> deployedApps = new ArrayList<>();
 
@@ -197,47 +196,6 @@ public class MergeTest {
         OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test2/test");
         OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
         assertServerContextRoot(openapiNode, null);
-    }
-
-    @Test
-    public void testNonJaxrsEarModule() throws Exception {
-        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
-
-        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-                                    .addClasses(TestServlet.class);
-
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-                                          .addAsModules(war1, war2);
-
-        deployApp(ear);
-
-        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
-        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
-        OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
-        assertServerContextRoot(openapiNode, "test1");
-    }
-
-    @Test
-    public void testNonJaxrsAppNotMerged() throws Exception {
-        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
-
-        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-                                    .addClasses(TestServlet.class);
-
-        deployApp(war1);
-        deployApp(war2);
-
-        assertRest("/test1/test");
-        assertRest("/test2/test");
-
-        // Check that war1 is documented and no merging is done, (no context root
-        // prepended to path)
-        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
-        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
-        OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
-        assertServerContextRoot(openapiNode, "test1");
     }
 
     @Test

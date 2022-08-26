@@ -418,17 +418,12 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     private volatile ScheduledExecutorService _scheduledExecutor;
     private volatile AppMonitorConfigurator _appMonitorConfigurator;
     private volatile ApplicationManager _applicationManager;
-    private final CheckpointPhase _checkpointPhase;
+    private final CheckpointPhase _checkpointPhase = CheckpointPhase.getPhase();
     private final List<Runnable> _restoreMessages = new CopyOnWriteArrayList<Runnable>();
 
     private static final Collection<String> SIMPLE_INITIAL_UPDATE_NOTIFICATIONS = Arrays.asList(new String[] { RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED,
                                                                                                                RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED,
                                                                                                                RuntimeUpdateNotification.ORB_STARTED });
-
-    @Activate
-    public ApplicationConfigurator(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
-        this._checkpointPhase = checkpointPhase;
-    }
 
     @Activate
     protected void activate(ComponentContext ctx) {
@@ -2082,7 +2077,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     }
 
     public void restoreMessage(Runnable message) {
-        if (_checkpointPhase != null) {
+        if (_checkpointPhase != CheckpointPhase.INACTIVE) {
             _restoreMessages.add(message);
         }
     }

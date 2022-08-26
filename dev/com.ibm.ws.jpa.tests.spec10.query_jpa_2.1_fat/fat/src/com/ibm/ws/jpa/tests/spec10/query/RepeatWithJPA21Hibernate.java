@@ -45,6 +45,7 @@ public class RepeatWithJPA21Hibernate extends EE7FeatureReplacementAction {
 
     @Override
     public boolean isEnabled() {
+        // Disable testing against Hibernate for time constraints
         if (!Boolean.getBoolean("jpa.enable.repeat.hibernate"))
             return false;
 
