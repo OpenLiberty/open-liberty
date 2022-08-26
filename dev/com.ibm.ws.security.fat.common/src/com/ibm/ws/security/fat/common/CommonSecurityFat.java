@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,13 +22,17 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.Description;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.FatWatcher;
+import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.servers.ServerTracker;
+import com.ibm.ws.security.fat.common.utils.WebClientTracker;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LibertyServerUtils;
@@ -41,8 +45,10 @@ public class CommonSecurityFat {
 
     @Rule
     public final TestName testName = new TestName();
+    private final TestActions testActions = new TestActions();
 
     protected static ServerTracker serverTracker = new ServerTracker();
+    protected WebClientTracker webClientTracker = new WebClientTracker();
     protected static ServerTracker skipRestoreServerTracker = new ServerTracker();
 
     protected CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
@@ -66,6 +72,14 @@ public class CommonSecurityFat {
     @After
     public void commonAfterTest() {
         restoreTestServers();
+        try {
+
+            // clean up webClients
+            webClientTracker.closeAllWebClients();
+
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
         loggingUtils.printMethodName("ENDING TEST CASE: " + _testName);
         logTestCaseInServerLogs("ENDING");
     }
@@ -163,7 +177,7 @@ public class CommonSecurityFat {
         }
     };
 
-    private static void transformAppsInDefaultDirs(LibertyServer server, String appDirName) {
+    public static void transformAppsInDefaultDirs(LibertyServer server, String appDirName, String version) throws Exception {
 
         Machine machine = server.getMachine();
 
@@ -180,7 +194,15 @@ public class CommonSecurityFat {
         }
         if (list != null) {
             for (RemoteFile app : list) {
-                JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+                if (version.contains(JakartaEE9Action.ID)) {
+                    JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+                } else {
+                    if (version.contains(JakartaEE10Action.ID)) {
+                        JakartaEE10Action.transformApp(Paths.get(app.getAbsolutePath()));
+                    } else {
+                        throw new Exception("Unknown Jakarta version: " + version);
+                    }
+                }
             }
         }
     }
@@ -191,14 +213,29 @@ public class CommonSecurityFat {
      * @param serverName
      *            The server to transform the applications on.
      */
-    public static void transformApps(LibertyServer server) {
-        if (JakartaEE9Action.isActive()) {
+    public static void transformApps(LibertyServer server) throws Exception {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
 
-            transformAppsInDefaultDirs(server, "dropins");
-            transformAppsInDefaultDirs(server, "apps");
-            transformAppsInDefaultDirs(server, "test-apps");
+            transformAppsInDefaultDirs(server, "dropins", JakartaEE9Action.ID);
+            transformAppsInDefaultDirs(server, "apps", JakartaEE9Action.ID);
+            transformAppsInDefaultDirs(server, "test-apps", JakartaEE9Action.ID);
 
         }
+    }
+
+    public static void transformApps(LibertyServer server, String version) throws Exception {
+
+        transformAppsInDefaultDirs(server, "dropins", version);
+        transformAppsInDefaultDirs(server, "apps", version);
+        transformAppsInDefaultDirs(server, "test-apps", version);
+
+    }
+
+    public WebClient getAndSaveWebClient() throws Exception {
+
+        WebClient webClient = testActions.createWebClient();
+        webClientTracker.addWebClient(webClient);
+        return webClient;
     }
 
 }
