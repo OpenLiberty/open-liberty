@@ -42,7 +42,8 @@ public class IResponseImplTest {
     public void addCookie() {
         mock.checking(new Expectations() {
             {
-                one(mockCookie).getName();
+                //one(mockCookie).getName();
+                allowing(mockCookie).getName();
                 one(mockCookie).getValue();
                 one(mockCookie).getPath();
                 one(mockCookie).getVersion();
