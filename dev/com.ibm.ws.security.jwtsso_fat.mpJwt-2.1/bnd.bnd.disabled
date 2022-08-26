@@ -1,0 +1,49 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+    fat/src
+
+fat.project: true
+
+-dependson: \
+    build.changeDetector,\
+    com.ibm.ws.security.fat.common,\
+    com.ibm.ws.security.fat.common.jwt,\
+    com.ibm.ws.security.jwtsso_fat.commonTest
+    
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
+# For all project names that match the pattern "*_fat*", dependencies for junit,
+# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	com.ibm.ws.security.fat.common;version=latest,\
+	com.ibm.ws.security.fat.common.jwt;version=latest,\
+	com.ibm.ws.security.jwtsso_fat.commonTest;version=latest,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
+	net.sourceforge.htmlunit:webdriver;version=2.6,\
+	org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
+	org.brotli:dec;version=0.1.2,\
+	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.security.jwt;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	org.eclipse.microprofile.jwt;version=latest,\
+	com.ibm.websphere.appserver.api.webcontainer.security.app;version=latest,\
+	javax.json-api

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -162,6 +162,18 @@ public class CommonSecurityFat {
             super.succeeded(description);
         }
     };
+
+    protected static void testSkipped() {
+
+        String methodName = "testSkipped";
+        Log.info(thisClass, methodName, "");
+        Log.info(thisClass, methodName, "TTTTT EEEEE  SSSS TTTTT   SSSS K   K IIIII PPPP  PPPP  EEEEE DDDD");
+        Log.info(thisClass, methodName, "  T   E     S       T    S     K  K    I   P   P P   P E     D   D");
+        Log.info(thisClass, methodName, "  T   EEE    SSS    T     SSS  KKK     I   PPPP  PPPP  EEE   D   D");
+        Log.info(thisClass, methodName, "  T   E         S   T        S K  K    I   P     P     E     D   D");
+        Log.info(thisClass, methodName, "  T   EEEEE SSSS    T    SSSS  K   K IIIII P     P     EEEEE DDDD");
+        Log.info(thisClass, methodName, "");
+    }
 
     private static void transformAppsInDefaultDirs(LibertyServer server, String appDirName) {
 

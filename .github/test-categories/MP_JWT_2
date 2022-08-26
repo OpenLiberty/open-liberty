@@ -1,6 +1,2 @@
-com.ibm.ws.security.jwtsso_fat.mpJwt-1.1
-com.ibm.ws.security.jwtsso_fat.mpJwt-1.2
-com.ibm.ws.security.jwtsso_fat.mpJwt-2.0
-com.ibm.ws.security.jwtsso_fat.noMpJwt
 com.ibm.ws.security.mp.jwt_fat_tck
 io.openliberty.microprofile.jwt.2.0.internal_fat_tck
