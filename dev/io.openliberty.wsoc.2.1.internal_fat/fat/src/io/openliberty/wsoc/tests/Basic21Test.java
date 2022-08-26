@@ -38,7 +38,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
-
+import io.openliberty.wsoc.tests.all.MiscTest;
 import io.openliberty.wsoc.tests.all.TimeOutTest;
 import io.openliberty.wsoc.tests.all.UpgradeTest;
 import io.openliberty.wsoc.tests.all.UserPropertiesTest;
@@ -67,6 +67,7 @@ public class Basic21Test {
     private static TimeOutTest timeout = null;
     private static UserPropertiesTest userprop = null;
     private static UpgradeTest upgrade = null;
+    private static MiscTest misc = null;
 
     private static final Logger LOG = Logger.getLogger(Basic21Test.class.getName());
 
@@ -95,6 +96,7 @@ public class Basic21Test {
         timeout = new TimeOutTest(wt);
         userprop = new UserPropertiesTest(wt);
         upgrade = new UpgradeTest(wt);
+        misc = new MiscTest(wt);
         bwst.setUp();
     }
 
@@ -237,5 +239,17 @@ public class Basic21Test {
     @Test
     public void testSSCUpgrade() throws Exception {
         this.runAsLSAndVerifyResponse("UpgradeTest", "testUpgradeViaServletToWS");
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testFullURIReturned() throws Exception {
+        misc.testGetRequestURIReturnsFullURI();
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testSSCFullURIReturned() throws Exception {
+        this.runAsLSAndVerifyResponse("MiscTest", "testGetRequestURIReturnsFullURI");
     }
 }

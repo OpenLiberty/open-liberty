@@ -11,7 +11,9 @@
 package com.ibm.ws.wsoc;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,13 +130,13 @@ public class HandshakeProcessor {
                 parameterMap.put(key, Arrays.asList(extraParamMap.get(key)));
             }
         }
-        
-        if(WebSocketVersionServiceManager.isWsoc21rHigher()){
+
+        if (WebSocketVersionServiceManager.isWsoc21rHigher()) {
             requestURI = buildFullURI(httpRequest);
         } else {
             requestURI = new URI(httpRequest.getRequestURI());
         }
-        
+
         things.setParameterMap(parameterMap);
         things.setQueryString(httpRequest.getQueryString());
         things.setURI(requestURI);
@@ -480,32 +482,34 @@ public class HandshakeProcessor {
         return extensions;
     }
 
-    private URI buildFullURI(HttpServletRequest req) throws Exception {
-            StringBuilder builder = new StringBuilder();
+    private URI buildFullURI(HttpServletRequest req) throws MalformedURLException, URISyntaxException {
+        StringBuilder builder = new StringBuilder();
 
-            String url = req.getRequestURL().toString();
-            String https = "https";
-            String http = "http";
+        String url = req.getRequestURL().toString();
+        String https = "https";
+        String http = "http";
 
-            if(url.startsWith(https)){
-                url = "wss" + url.substring(https.length(), url.length());
-            } else if(url.startsWith(http)){
-                url = "ws" + url.substring(http.length(), url.length());
-            }
+        if (url.startsWith(https)) {
+            url = "wss" + url.substring(https.length(), url.length());
+        } else if (url.startsWith(http)) {
+            url = "ws" + url.substring(http.length(), url.length());
+        }
 
-            if( !(url.startsWith("ws:") || url.startsWith("wss:")) ){
-                throw new Exception("Scheme is not of type ws or wss.");
-            }
+        if (!(url.startsWith("ws:") || url.startsWith("wss:"))) {
+            String msg = Tr.formatMessage(tc, "scheme.incorrect.error", url);
+            Tr.error(tc, "scheme.incorrect.error", url);
+            throw new MalformedURLException(msg);
+        }
 
-            builder.append(url);
-           
-           if(req.getQueryString() != null){
-                builder.append("?");
-                builder.append(req.getQueryString());
-           }
-        
-            return  new URI(builder.toString());
-          
+        builder.append(url);
+
+        if (req.getQueryString() != null) {
+            builder.append("?");
+            builder.append(req.getQueryString());
+        }
+
+        return new URI(builder.toString());
+
     }
 
 }

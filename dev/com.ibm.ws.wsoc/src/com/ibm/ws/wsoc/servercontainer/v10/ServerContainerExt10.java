@@ -16,17 +16,11 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import javax.websocket.DeploymentException;
 import javax.websocket.server.ServerEndpointConfig;
 
 import com.ibm.websphere.wsoc.WsWsocServerContainer;
 import com.ibm.ws.wsoc.servercontainer.ServerContainerExt;
-
-import javax.websocket.server.ServerContainer;
-
-import javax.websocket.*;
-
-import com.ibm.ws.webcontainer.servlet.WsocHandler;
 
 public class ServerContainerExt10 extends ServerContainerExt implements WsWsocServerContainer {
 
@@ -37,7 +31,8 @@ public class ServerContainerExt10 extends ServerContainerExt implements WsWsocSe
      * java.lang.String)
      */
     @Override
-    public void doUpgrade(HttpServletRequest request, HttpServletResponse response, ServerEndpointConfig endpointConfig, Map<String, String> pathParams) throws ServletException, IOException {
+    public void doUpgrade(HttpServletRequest request, HttpServletResponse response, ServerEndpointConfig endpointConfig,
+                          Map<String, String> pathParams) throws ServletException, IOException {
 
         wsocUpgradeHandler.handleRequest(request, response, endpointConfig, pathParams, true);
         if (!response.isCommitted()) {

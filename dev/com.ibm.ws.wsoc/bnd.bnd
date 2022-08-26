@@ -16,8 +16,6 @@
 bVersion=1.0
 bSymbolicName=com.ibm.ws.wsoc
 
--dsannotations: com.ibm.ws.wsoc.ServiceManager
-
 app-resources= \
   META-INF/services/javax.websocket.server.ServerEndpointConfig$Configurator | \
   META-INF/services/javax.websocket.ContainerProvider

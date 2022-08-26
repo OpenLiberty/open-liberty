@@ -31,12 +31,12 @@ Export-Package: \
  Private-Package: \
   io.openliberty.wsoc.servercontainer21
 
- -buildpath: \
+-buildpath: \
  	com.ibm.ws.wsoc.jakarta;version=latest,\
  	io.openliberty.jakarta.websocket.client.2.1;version=latest,\
  	io.openliberty.jakarta.websocket.2.1;version=latest,\
  	io.openliberty.jakarta.servlet.6.0;version=latest,\
  	com.ibm.ws.webcontainer;version=latest, \
+ 	com.ibm.ws.logging;version=latest,\
  	com.ibm.wsspi.org.osgi.service.component.annotations, \
  	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-

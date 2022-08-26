@@ -13,51 +13,35 @@ package io.openliberty.wsoc.servercontainer21;
 import java.io.IOException;
 import java.util.Map;
 
-import java.lang.UnsupportedOperationException;
-import java.lang.IllegalStateException;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.wsoc.WsWsocServerContainer;
+import com.ibm.ws.wsoc.servercontainer.ServerContainerExt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.server.ServerContainer;
 import jakarta.websocket.server.ServerEndpointConfig;
 
-import com.ibm.websphere.wsoc.WsWsocServerContainer;
-import com.ibm.ws.wsoc.servercontainer.ServerContainerExt;
-
-import org.osgi.service.component.annotations.Component;
-
-import com.ibm.ws.webcontainer.servlet.WsocHandler;
-
-import jakarta.websocket.server.ServerContainer;
-
-import jakarta.websocket.*;
-
-import jakarta.websocket.DeploymentException;
-import org.osgi.service.component.annotations.Component;
-
-
 public class ServerContainerExt21 extends ServerContainerExt implements ServerContainer, WsWsocServerContainer {
+
+    private static final TraceComponent tc = Tr.register(ServerContainerExt.class);
 
     /*
      * Since Websocket 2.1
      */
     @Override
     public void upgradeHttpToWebSocket(Object httpServletRequest, Object httpServletResponse, ServerEndpointConfig sec,
-            Map<String, String> pathParameters) throws IOException, DeploymentException {
-
-        if(!(httpServletRequest instanceof HttpServletResponse)){
-            throw new DeploymentException("httpServletRequest not of type HttpServletResponse");
-        }
-
-        if(!(httpServletResponse instanceof HttpServletResponse)){
-            throw new DeploymentException("httpServletResponse not of type HttpServletResponse");
-        }
+                                       Map<String, String> pathParameters) throws IOException, DeploymentException {
 
         try {
-            doUpgrade((HttpServletRequest) httpServletRequest,(HttpServletResponse) httpServletResponse, sec, pathParameters);
-        } catch (ServletException ex){
-          throw new DeploymentException(ex.getCause().toString());
+            doUpgrade((HttpServletRequest) httpServletRequest, (HttpServletResponse) httpServletResponse, sec, pathParameters);
+        } catch (ServletException ex) {
+            String msg = Tr.formatMessage(tc, "upgradeHttpToWebSocket.failed", ex.getMessage());
+            Tr.error(tc, "upgradeHttpToWebSocket.failed");
+            throw new DeploymentException(msg, ex);
         }
 
     }
@@ -71,7 +55,8 @@ public class ServerContainerExt21 extends ServerContainerExt implements ServerCo
      */
     @Deprecated
     @Override
-    public void doUpgrade(HttpServletRequest request, HttpServletResponse response, ServerEndpointConfig endpointConfig, Map<String, String> pathParams) throws ServletException, IOException {
+    public void doUpgrade(HttpServletRequest request, HttpServletResponse response, ServerEndpointConfig endpointConfig,
+                          Map<String, String> pathParams) throws ServletException, IOException {
 
         wsocUpgradeHandler.handleRequest(request, response, endpointConfig, pathParams, true);
         if (!response.isCommitted()) {
