@@ -80,7 +80,9 @@ public class FATSuite extends TestContainerSuite {
     static public <T extends Enum<T>> T getTestMethod(Class<T> type, TestName testName) {
         String simpleName = getTestMethodNameOnly(testName);
         try {
-            return Enum.valueOf(type, simpleName);
+            T t = Enum.valueOf(type, simpleName);
+            Log.info(FATSuite.class, testName.getMethodName(), "got test method: " + t);
+            return t;
         } catch (IllegalArgumentException e) {
             Log.info(type, simpleName, "No configuration enum: " + testName);
             fail("Unknown test name: " + testName);

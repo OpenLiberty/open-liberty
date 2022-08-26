@@ -76,6 +76,7 @@ public class MPConfigTest extends FATServletClient {
     }
 
     private void configureBeforeCheckpoint() throws Exception {
+        Log.info(getClass(), testName.getMethodName(), "configureBeforeCheckpoint: " + testMethod);
         switch (testMethod) {
             case envValueChangeTest:
                 configureEnvVariable("req_scope_key", "envValue");
@@ -208,73 +209,76 @@ public class MPConfigTest extends FATServletClient {
     }
 
     private void checkForLogsAndStopServer() throws Exception {
-        switch (testMethod) {
-            // MPConfigBean bean
-            case envValueTest:
-            case serverValueTest:
-            case annoValueTest:
-            case envValueChangeTest:
-                assertNull("CWWKC0651W message not expected in logs", server
-                                .waitForStringInLog("CWWKC0651W:.*"));
+        Log.info(getClass(), testName.getMethodName(), "checkForLogsAndStopServer: " + testMethod);
+        String expectedWarning = null;
+        try {
+            switch (testMethod) {
+                // MPConfigBean bean
+                case envValueTest:
+                case serverValueTest:
+                case annoValueTest:
+                case envValueChangeTest:
+                    assertNull("CWWKC0651W message not expected in logs", server.waitForStringInLog("CWWKC0651W:.*", 100));
+                    break;
+
+                // MPConfigBeanWithApplicationScope bean
+                case appScopeEnvValueTest:
+                case appScopeServerValueTest:
+                case appScopeAnnoValueTest:
+                case appScopeEnvValueChangeTest:
+                    assertNull("CWWKC0651W message not expected in logs", server.waitForStringInLog("CWWKC0651W:.*", 100));
+                    break;
+
+                //ApplicationScopedOnCheckpointBeanWithConfigObject bean
+                case configObjectAppScopeEnvValueTest:
+                case configObjectAppScopeServerValueTest:
+                case configObjectAppScopeAnnoValueTest:
+                case configObjectAppScopeEnvValueChangeTest:
+                    assertNotNull("CWWKC0651W message expected in logs", server.waitForStringInLog("CWWKC0651W:.*config_object_app_scope_key*", 100));
+                    expectedWarning = "CWWKC0651W";
+                    break;
+
+                // ApplicationScopedOnCheckpointBeanWithConfigObjectProperties bean
+                case configObjectPropertiesAppScopeEnvValueTest:
+                case configObjectPropertiesAppScopeServerValueTest:
+                case configObjectPropertiesAppScopeEnvValueChangeTest:
+                    assertNotNull("CWWKC0651W message expected in logs", server.waitForStringInLog("CWWKC0651W:.*config_object_properties_app_scope_key*", 100));
+                    expectedWarning = "CWWKC0651W";
+                    break;
+
+                // ApplicationScopedOnCheckpointBean bean
+                case applicationScopedValueTest:
+                    assertNotNull("CWWKC0651W message expected in logs", server.waitForStringInLog("CWWKC0651W:.*early_access_app_scope_key*", 100));
+                    expectedWarning = "CWWKC0651W";
+                    break;
+
+                // Default tests in all beans
+                case defaultValueTest:
+                case appScopeDefaultValueTest:
+                case configObjectAppScopeDefaultValueTest:
+                case configObjectPropertiesAppScopeDefaultValueTest:
+                    assertNull("CWWKC0651W message not expected in logs", server.waitForStringInLog("CWWKC0651W:.*", 100));
+                    break;
+                default:
+                    break;
+            }
+        } finally {
+            if (expectedWarning != null) {
+                server.stopServer(expectedWarning);
+            } else {
                 server.stopServer();
-                break;
-
-            // MPConfigBeanWithApplicationScope bean
-            case appScopeEnvValueTest:
-            case appScopeServerValueTest:
-            case appScopeAnnoValueTest:
-            case appScopeEnvValueChangeTest:
-                assertNull("CWWKC0651W message not expected in logs", server
-                                .waitForStringInLog("CWWKC0651W:.*"));
-                server.stopServer();
-                break;
-
-            //ApplicationScopedOnCheckpointBeanWithConfigObject bean
-            case configObjectAppScopeEnvValueTest:
-            case configObjectAppScopeServerValueTest:
-            case configObjectAppScopeAnnoValueTest:
-            case configObjectAppScopeEnvValueChangeTest:
-                assertNotNull("CWWKC0651W message expected in logs", server
-                                .waitForStringInLog("CWWKC0651W:.*config_object_app_scope_key*"));
-                server.stopServer("CWWKC0651W");
-                break;
-
-            // ApplicationScopedOnCheckpointBeanWithConfigObjectProperties bean
-            case configObjectPropertiesAppScopeEnvValueTest:
-            case configObjectPropertiesAppScopeServerValueTest:
-            case configObjectPropertiesAppScopeEnvValueChangeTest:
-                assertNotNull("CWWKC0651W message expected in logs", server
-                                .waitForStringInLog("CWWKC0651W:.*config_object_properties_app_scope_key*"));
-                server.stopServer("CWWKC0651W");
-                break;
-
-            // ApplicationScopedOnCheckpointBean bean
-            case applicationScopedValueTest:
-                assertNotNull("CWWKC0651W message expected in logs", server
-                                .waitForStringInLog("CWWKC0651W:.*early_access_app_scope_key*"));
-                server.stopServer("CWWKC0651W");
-                break;
-
-            // Default tests in all beans
-            case defaultValueTest:
-            case appScopeDefaultValueTest:
-            case configObjectAppScopeDefaultValueTest:
-            case configObjectPropertiesAppScopeDefaultValueTest:
-                assertNull("CWWKC0651W message not expected in logs", server
-                                .waitForStringInLog("CWWKC0651W:.*"));
-                server.stopServer();
-                break;
-            default:
-                server.stopServer();
-                break;
+            }
         }
     }
 
     @After
     public void tearDown() throws Exception {
-        checkForLogsAndStopServer();
-        server.restoreServerConfiguration();
-        configureEnvVariable(null, null);
+        try {
+            checkForLogsAndStopServer();
+        } finally {
+            server.restoreServerConfiguration();
+            configureEnvVariable(null, null);
+        }
     }
 
     static enum TestMethod {
