@@ -13,31 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
+
 package jndiApp;
 
 import java.io.IOException;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "/servlet")
-public class JNDIservlet extends HttpServlet {
+@WebServlet(urlPatterns="/resource")
+public class JNDIResourceServlet extends HttpServlet {
+	
     private static final long serialVersionUID = 1L;
-
-    @Override
+	@Resource(lookup = "jndi/value")
+    private String resourceValue;
+    
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String JNDIdest = "jndi/value";
-        try {
-            String jndiResp = InitialContext.doLookup(JNDIdest);
-            response.getWriter().append(jndiResp);
-        } catch (NamingException e) {
-            e.printStackTrace();
-            response.getWriter().append("error");
-        }
+    	response.getWriter().append(resourceValue);
     }
+
 }
+

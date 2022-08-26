@@ -1,12 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * (c) Copyright IBM Corporation 2022.
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
@@ -29,6 +34,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import jndiApp.JNDIservlet;
+import jndiApp.JNDIResourceServlet;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
@@ -42,7 +48,9 @@ public class JNDITest {
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
         server.deleteAllDropinApplications();
-        WebArchive webappWar = ShrinkWrap.create(WebArchive.class, "JNDIApplication.war").addClass(JNDIservlet.class);
+        WebArchive webappWar = ShrinkWrap.create(WebArchive.class, "JNDIApplication.war")
+        		.addClass(JNDIservlet.class)
+        		.addClass(JNDIResourceServlet.class);
         ShrinkHelper.exportAppToServer(server, webappWar, DeployOptions.OVERWRITE);
     }
 
@@ -51,6 +59,7 @@ public class JNDITest {
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS);
         server.startServer();
+        server.stopServer();
 
         ServerConfiguration config = server.getServerConfiguration();
         JNDIEntry defaultEntry = new JNDIEntry();
@@ -59,16 +68,16 @@ public class JNDITest {
         config.getJndiEntryElements().add(defaultEntry);
         server.updateServerConfiguration(config);
 
-        server.stopServer();
-
         server.checkpointRestore();
 
         HttpUtils.findStringInUrl(server, "jndiApp/servlet", "default value");
+        HttpUtils.findStringInUrl(server, "jndiApp/resource", "default value");
+        
     }
-
+    
     @Test
     public void testJNDIlookup() throws Exception {
-
+    	
         ServerConfiguration preConfig = server.getServerConfiguration();
         JNDIEntry defaultEntry = new JNDIEntry();
         defaultEntry.setJndiName("jndi/value");
@@ -76,31 +85,33 @@ public class JNDITest {
         defaultEntry.setId("jndiEntry");
         preConfig.getJndiEntryElements().add(defaultEntry);
         server.updateServerConfiguration(preConfig);
-
+        
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer();
-        HttpUtils.findStringInUrl(server, "jndiApp/servlet", "default value");
+        
+        server.checkpointRestore();
+        HttpUtils.findStringInUrl(server, "jndiApp/servlet", "default value");   
+        HttpUtils.findStringInUrl(server, "jndiApp/resource", "default value");      
         server.stopServer();
 
         ServerConfiguration config = server.getServerConfiguration();
         config.getJndiEntryElements().getById("jndiEntry").setValue("alternate value");
         server.updateServerConfiguration(config);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer();
-
         server.checkpointRestore();
 
         HttpUtils.findStringInUrl(server, "jndiApp/servlet", "alternate value");
-
+        HttpUtils.findStringInUrl(server, "jndiApp/resource", "alternate value");   
+    
     }
 
     @After
     public void stopServer() throws Exception {
+        server.stopServer();
         ServerConfiguration config = server.getServerConfiguration();
         config.getJndiEntryElements()
                         .removeIf((JNDIEntry entry) -> entry.getJndiName().equals("jndi/value"));
         server.updateServerConfiguration(config);
-        server.stopServer();
     }
 
 }
