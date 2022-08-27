@@ -609,6 +609,12 @@ public class FrameworkManager {
                         @Override
                         public void prepare() {
                             try {
+                                if (System.getProperty("io.openliberty.checkpoint.dump.threads") != null) {
+                                    // If the sys property is set then dump the threads while in single threaded mode.
+                                    // This is useful when trying to determine if unexpected async work is going on
+                                    // before the checkpoint happens.
+                                    dumpJava(Collections.singleton(JavaDumpAction.THREAD));
+                                }
                                 restoredField = CheckpointPhase.class.getDeclaredField("restored");
                                 restoredField.setAccessible(true);
                             } catch (Exception e) {
