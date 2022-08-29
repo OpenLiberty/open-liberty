@@ -985,7 +985,10 @@ javaCmd()
       X_WLP_IMMUTABLE_VARS="$X_WLP_IMMUTABLE_VARS,$WLP_IMMUTABLE_VARS"
     fi
 
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
+    # syslog is disabled for checkpoint to allow jvm dumps before a checkpoint.
+    # We expect an enhancement to OpenJ9 to allow syslog to be enabled on restore.
+    # When that becomes available we can remove the -Xsyslog:none option
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode -Xsyslog:none $X_WLP_IMMUTABLE_VARS"
 
     checkCriuUnprivileged
     if [ $DO_CRIU_UNPRIVILEGED = true ]; then
@@ -1442,19 +1445,17 @@ restoreServer()
   # Store the current restored environment into a file that the JVM can read to restore the values.
   # The following are filtered out of the restore env because they could be different from the checkpoint
   # values.  The JVM only allows new values to be set into the restored environment:
-  # - INVOKED - this gets set to the path used to launch the server script, we don't care if this changes
-  saveIFS=$IFS
-  IFS=$newline
-  for line in `env | grep -Ev "^INVOKED="`; do
-    value=${line#*=};
-    key=${line%%=*};
-    if [ "$value" != "$key" ]; then
-      envContent="$envContent$key=$value$newline"
-    fi
-  done
-  IFS=$saveIFS
+  # - INVOKED - this gets set to the path used to launch the server script;
+  # It is not used for restore and we don't care if this changes.
+  # Unsetting it is faster than filtering it out
+  unset INVOKED
+  # REGEX explanation
+  # ^[...] is to negate the match for a specific char
+  # [^\=] matches an '=' at the beginning of the line
+  # *.= matches any '=' in the rest of the line.
+  # We need to filter out lines that start with '=' in case a multi-line output starts with '='
+  env | grep -E "^[^\=]*.=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
 
-  safeEcho "$envContent" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
   rm -f ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreFailedMarker
   
   criuRestore $BACKGROUND_RESTORE

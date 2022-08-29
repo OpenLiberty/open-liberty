@@ -16,6 +16,7 @@ import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,6 +41,8 @@ public class TestServlet extends HttpServlet {
         sos.println("Hello from the TestServlet!!");
 
         displayRequest60APIs(request);
+
+        testSessionAPIs(request, response);
     }
 
     private void displayRequest60APIs(HttpServletRequest request) {
@@ -64,6 +67,34 @@ public class TestServlet extends HttpServlet {
         sBuilder.append(addDivider());
 
         LOG(sBuilder.toString());
+    }
+
+    private void testSessionAPIs(HttpServletRequest request, HttpServletResponse response) {
+        LOG(" Test Session APIs");
+        LOG(addDivider());
+
+        Cookie wcCookie = new Cookie("WebContainerCookieName", "WCCookieValue");
+        wcCookie.setPath("/WebContainerPath");
+        wcCookie.setDomain("WCDomain");
+        wcCookie.setHttpOnly(true);
+        wcCookie.setSecure(true);
+
+        response.addCookie(wcCookie);
+
+        Cookie wcCookieAtt = new Cookie("WebContainerCookieViaSetAttribute", "WCCookieValueViaSetAttribute");
+        wcCookieAtt.setPath("/Path_viaSetPath");
+        wcCookieAtt.setDomain("Domain_viaSetDomain");
+        wcCookieAtt.setHttpOnly(true);
+        wcCookieAtt.setAttribute("WCATT_myAtt", "myATTValue_viasetAttribute");
+        wcCookieAtt.setAttribute("Domain", "Domain_viaSetAttribute");
+        wcCookieAtt.setAttribute("Path", "Path_viaSetAttribute");
+
+        wcCookieAtt.setDomain("Domain_viaSetDomain2ndCall");
+
+        wcCookieAtt.setAttribute("SameSite", "SuperLax");
+
+        response.addCookie(wcCookieAtt);
+
     }
 
     public static void LOG(String s) {

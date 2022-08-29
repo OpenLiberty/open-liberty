@@ -116,8 +116,8 @@ public class OidcHttpAuthenticationMechanismTest {
                 will(returnValue(mppi));
                 one(mppi).get();
                 will(returnValue(mpp));
-                one(mpp).getAuthMechProperties(OidcHttpAuthenticationMechanism.class);
-                will(returnValue(props));
+//                one(mpp).getAuthMechProperties(OidcHttpAuthenticationMechanism.class);
+//                will(returnValue(props));
             }
         });
     }
@@ -182,7 +182,7 @@ public class OidcHttpAuthenticationMechanismTest {
         }
 
         @Override
-        protected Client getClient() {
+        protected Client getClient(HttpServletRequest request) {
             return client;
         }
 

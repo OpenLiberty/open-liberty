@@ -9,5 +9,5 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
+Bundle-Name: Apache CXF Command Line Tools Validator
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2
-

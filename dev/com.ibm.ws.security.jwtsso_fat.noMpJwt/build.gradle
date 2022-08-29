@@ -8,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../wlp-gradle/subprojects/fat.gradle'
 
 dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common'),

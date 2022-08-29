@@ -8,20 +8,46 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-frontend-simple;3.4.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
 -sub: *.bnd
 
-
-
+bVersion=1.0
 cxfVersion=3.4.3
 
+Import-Package: \
+  org.apache.cxf.binding.soap.interceptor, \
+  !java.*, \
+  !com.ctc.wstx.*, \
+  !org.codehaus.stax2.*, \
+  !com.sun.msv.*, \
+  !com.sun.xml.bind.marshaller, \
+  !com.sun.xml.fastinfoset.stax.*, \
+  !org.apache.log4j.*, \
+  !net.sf.cglib.proxy.*, \
+  !org.springframework.*, \
+  !javax.validation.*, \
+  !org.apache.aries.*, \
+  !org.apache.cxf.transport.https, \
+  !org.osgi.service.blueprint.*, \
+  org.apache.cxf.*;version="[3.2,4.0)", \
+  !com.sun.tools.xjc.*, \
+  *
+
+DynamicImport-Package: \
+  javax.servlet.*;version="[0.0,4)"
+
+Export-Package: \
+  org.apache.cxf.frontend.*;version=${cxfVersion}, \
+  org.apache.cxf.endpoint.dynamic.*;version=${cxfVersion}, \
+  org.apache.cxf.simple.*;version=${cxfVersion}
+
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-frontend-simple;${cxfVersion};EXACT}!/!*-INF/*, \
-   META-INF=resources/META-INF
+  @${repo;org.apache.cxf:cxf-rt-frontend-simple;${cxfVersion};EXACT}!/!*-INF/*, \
+  META-INF=resources/META-INF
 
--buildpath: org.apache.cxf:cxf-rt-frontend-simple;strategy=exact;version=${cxfVersion},\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+-buildpath: \
+  org.apache.cxf:cxf-rt-frontend-simple;strategy=exact;version=${cxfVersion}, \
+  com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.ws.logging.core
-

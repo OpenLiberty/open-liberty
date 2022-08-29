@@ -13,6 +13,7 @@ package web;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -71,6 +72,9 @@ public class SQLServerTestServlet extends FATServlet {
 
     @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled", shareable = false)
     private DataSource unsharable_ds_xa_tightly_coupled;
+
+    @Resource(lookup = "jdbc/ntlm")
+    private DataSource ds_ntlm;
 
     @Resource
     private ExecutorService executor;
@@ -431,6 +435,33 @@ public class SQLServerTestServlet extends FATServlet {
         } finally {
             // TODO switch to commit once Microsoft bug is fixed
             tran.rollback();
+        }
+    }
+
+    //Verify that the NTLM authentication scheme can be configured on the DataSource.
+    //This is not supported by the Database because we cannot run Active Directory in a container.
+    //Just ensure that the setting was passed to the driver for now.
+    //Without integratedSecurity=true this setting will be ignored and normal UN/PW will be used for authentication
+    public void testAuthenticationSchemeNTLM() throws Exception {
+        //Try to use NTLM datasource to create a connection, and insert data into database
+        tran.begin();
+        try (Connection con = ds_ntlm.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+                ps.setInt(1, 40);
+                ps.setNString(2, "fourty");
+                assertEquals(1, ps.executeUpdate());
+            }
+            tran.commit();
+        } catch (SQLException e) {
+            tran.rollback();
+            fail("Update should have been committed, but wasn't because of an Exception: " + e.getMessage());
+        }
+
+        //Query database using a different datasoruce to ensure the data was committed.
+        try (Connection con = ds.getConnection(); Statement stmt = con.createStatement();) {
+            ResultSet result = stmt.executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=40");
+            assertTrue("Query should have returned a result", result.next());
+            assertEquals("Unexpected value returned", "fourty", result.getString(1));
         }
     }
 }

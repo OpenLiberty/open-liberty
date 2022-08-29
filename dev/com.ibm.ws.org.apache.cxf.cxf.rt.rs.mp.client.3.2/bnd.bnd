@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -8,23 +8,92 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.6}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
+bVersion=1.0
+cxfVersion=3.2.6
+
+Bundle-Name: Apache CXF MicroProfile Client
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2
+
+Import-Package: \
+  javax.annotation;version="[1.2,2)", \
+  javax.enterprise.context;version="[1.1,2.1)", \
+  javax.enterprise.context.spi;version="[1.1,2.1)", \
+  javax.enterprise.event;version="[1.1,2.1)", \
+  javax.enterprise.inject;version="[1.1,2.1)", \
+  javax.enterprise.inject.spi;version="[1.1,2.1)", \
+  javax.enterprise.util;version="[1.1,2.1)", \
+  javax.ws.rs;version="[2.0,3)", \
+  javax.ws.rs.client;version="[2.0,3)", \
+  javax.ws.rs.core;version="[2.0,3)", \
+  javax.ws.rs.ext;version="[2.0,3)", \
+  org.apache.cxf;version="[3.1,4)", \
+  org.apache.cxf.common.classloader;version="[3.1,4)", \
+  org.apache.cxf.common.i18n;version="[3.1,4)", \
+  org.apache.cxf.common.logging;version="[3.1,4)", \
+  org.apache.cxf.common.util;version="[3.1,4)", \
+  org.apache.cxf.endpoint;version="[3.1,4)", \
+  org.apache.cxf.interceptor;version="[3.1,4)", \
+  org.apache.cxf.jaxrs.client;version="[3.1,4)", \
+  org.apache.cxf.jaxrs.client.blueprint;version="[3.1,4)", \
+  org.apache.cxf.jaxrs.impl;version="[3.1,4)", \
+  org.apache.cxf.jaxrs.model;version="[3.1,4)", \
+  org.apache.cxf.jaxrs.provider;version="[3.1,4)", \
+  org.apache.cxf.jaxrs.utils;version="[3.1,4)", \
+  org.apache.cxf.message;version="[3.1,4)", \
+  org.apache.cxf.phase;version="[3.1,4)", \
+  org.eclipse.microprofile.config;version="[1.0,2)";resolution:=optional, \
+  org.eclipse.microprofile.rest.client;version="[1.0,2)", \
+  org.eclipse.microprofile.rest.client.annotation;version="[1.0,2)", \
+  org.eclipse.microprofile.rest.client.ext;version="[1.0,2)", \
+  org.eclipse.microprofile.rest.client.inject;version="[1.0,2)", \
+  org.eclipse.microprofile.rest.client.spi;version="[1.0,2)", \
+  org.reactivestreams, \
+  com.ibm.websphere.ras, \
+  com.ibm.wsspi.classloading, \
+  com.ibm.ws.cdi.extension;resolution:=optional, \
+  com.ibm.ws.jaxrs20.client.configuration
+#  org.apache.cxf.jaxrs.provider.jsrjsonp;version="[3.1,4)"
+
+Export-Package: \
+  com.ibm.ws.microprofile.rest.client.component, \
+  org.apache.cxf.microprofile.client.cdi;version=${cxfVersion}, \
+  org.apache.cxf.microprofile.client;version=${cxfVersion}, \
+  org.apache.cxf.microprofile.client.cdi;version=${cxfVersion}, \
+  org.apache.cxf.microprofile.client.config;version=${cxfVersion}, \
+  org.apache.cxf.microprofile.client.proxy;version=${cxfVersion}, \
+  org.apache.cxf.microprofile.client.spi;thread-context=true;version=${cxfVersion}
+
+DynmaicImport-Package: \
+  org.apache.cxf.jaxrs.ext;version="[3.1,4)"
+
+-dsannotations: com.ibm.ws.microprofile.rest.client.component.*
+
+app-resources= \
+  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver
+
+Service-Component: \
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.6;EXACT}!/!META-INF/MANIFEST.MF,\
+  @${repo;org.apache.cxf:cxf-rt-rs-mp-client;${cxfVersion};EXACT}!/!META-INF/MANIFEST.MF, \
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-rs-mp-client;strategy=exact;version=3.2.6,\
-  com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
-  com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-  com.ibm.websphere.javaee.annotation.1.3;version=latest,\
-  com.ibm.websphere.org.eclipse.microprofile.rest.client.1.1;version=latest,\
-  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-  com.ibm.ws.jaxrs.2.0.common;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.jaxrs.2.0.client;version=latest,\
+  org.apache.cxf:cxf-rt-rs-mp-client;strategy=exact;version=${cxfVersion}, \
+  com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
+  com.ibm.websphere.javaee.cdi.1.2;version=latest, \
+  com.ibm.websphere.javaee.annotation.1.3;version=latest, \
+  com.ibm.websphere.org.eclipse.microprofile.rest.client.1.1;version=latest, \
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+  com.ibm.ws.jaxrs.2.0.common;version=latest, \
+  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.ws.jaxrs.2.0.client;version=latest, \
   com.ibm.ws.logging.core;version=latest

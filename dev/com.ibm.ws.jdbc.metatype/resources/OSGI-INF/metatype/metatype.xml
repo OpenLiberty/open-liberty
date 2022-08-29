@@ -1212,6 +1212,7 @@
   <AD id="authenticationScheme"               ibmui:group="Advanced" required="false" type="String"  name="%authenticationScheme" description="%authenticationScheme.desc">
    <Option value="JavaKerberos"         label="JavaKerberos"/>
    <Option value="NativeAuthentication" label="NativeAuthentication"/>
+   <Option value="NTLM"                 label="NTLM"/>
   </AD>
   <AD id="columnEncryptionSetting"            ibmui:group="Advanced" required="false" type="String"  name="%columnEncryptionSetting" description="%columnEncryptionSetting.desc">
    <Option value="Disabled" label="Disabled"/>

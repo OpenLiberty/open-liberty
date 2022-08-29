@@ -149,7 +149,7 @@ public class BellSpiVisibilityTest {
                 assertNotNull("The server should report bell spi visibility is enabled for library 'testSpiVisible', but did not.",
                         server.waitForStringInLog(".*CWWKL0059I: .*testSpiVisible"));
 
-                assertNotNull("The server should load the META-INF service in the 'testSpiVisible' library referenced by the BELL, but did not.",
+                assertNotNull("The server should register the META-INF service in the 'testSpiVisible' library referenced by the BELL, but did not.",
                         server.waitForStringInLog(".*CWWKL0050I: .*testSpiVisible.*SpiVisible"));
 
                 assertNotNull("SPI should be visible to the BELL service when spi visibility is enabled, but is not",
@@ -165,7 +165,7 @@ public class BellSpiVisibilityTest {
                 assertNull("The server should not report bell spi visibility is enabled for library 'testSpiVisible', but did.",
                         server.waitForStringInLog(".*CWWKL0059I: .*testSpiVisible", TimeOut));
 
-                assertNotNull("The server should load the META-INF service in the 'testSpiVisible' library referenced by the BELL, but did not.",
+                assertNotNull("The server should register the META-INF service in the 'testSpiVisible' library referenced by the BELL, but did not.",
                         server.waitForStringInLog(".*CWWKL0050I: .*testSpiVisible.*SpiVisible"));
 
                 assertNull("IBM-SPI packages should not be visible to the BELL service, but are.",
@@ -211,7 +211,7 @@ public class BellSpiVisibilityTest {
             assertNull("The server should not report bell spi visibility is enabled for library 'testNoSpiVisible', but did.",
                     server.waitForStringInLog(".*CWWKL0059I: .*testNoSpiVisible"));
 
-            assertNotNull("The server should load the META-INF service in the 'testNoSpiVisible' library, but did not.",
+            assertNotNull("The server should register the META-INF service in the 'testNoSpiVisible' library, but did not.",
                     server.waitForStringInLog(".*CWWKL0050I: .*testNoSpiVisible.*SpiVisible"));
 
             assertNotNull("IBM-SPI packages should not be visible to the BELL service, but are.",
@@ -319,10 +319,10 @@ public class BellSpiVisibilityTest {
 
             if (runAsBetaEdition) {
                 assertNotNull("The server should disable bell spi visibility for the global shared library, but did not",
-                        server.waitForStringInLog(".*CWWKL0060W: .*global "));
+                        server.waitForStringInLog(".*CWWKL0060E: .*global "));
             } else {
                 assertNull("The server should not disable bell spi visibility for the global shared library, but did",
-                        server.waitForStringInLog(".*CWWKL0060W: .*global", 10));
+                        server.waitForStringInLog(".*CWWKL0060E: .*global", 10));
 
                 assertNull("The server should not enable bell spi visibility for any shared library, but did",
                            server.waitForStringInLog(".*CWWKL0059I: ", 10));

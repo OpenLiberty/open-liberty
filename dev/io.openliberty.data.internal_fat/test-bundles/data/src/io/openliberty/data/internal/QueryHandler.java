@@ -70,7 +70,7 @@ public class QueryHandler<T> implements InvocationHandler {
         EQUALS("=", 0),
         GREATER_THAN(">", 11),
         GREATER_THAN_EQUAL(">=", 16),
-        IN("IN ", 2),
+        IN(" IN ", 2),
         LESS_THAN("<", 8),
         LESS_THAN_EQUAL("<=", 13),
         LIKE(null, 4),
@@ -153,67 +153,29 @@ public class QueryHandler<T> implements InvocationHandler {
 
     private String generateRepositoryQuery(EntityInfo entityInfo, Method method) {
         String methodName = method.getName();
-        int start = methodName.startsWith("findBy") ? 6 //
-                        : methodName.startsWith("deleteBy") ? 8 //
-                                        : -1;
-        if (start > 0) {
-            StringBuilder q = new StringBuilder(200);
-            if (start == 6) { // findBy
-                generateSelect(entityInfo, q, method);
-            } else {
-                q.append("DELETE FROM ").append(entityInfo.name).append(" o");
-            }
-
+        StringBuilder q;
+        if (methodName.startsWith("findBy")) {
             int orderBy = methodName.indexOf("OrderBy");
-            if (orderBy > start || orderBy == -1 && methodName.length() > start) {
-                q.append(" WHERE ");
-                String s = orderBy > 0 ? methodName.substring(start, orderBy) : methodName.substring(start);
-                for (int paramCount = 0, and = 0, or = 0, iNext, i = 0; i >= 0; i = iNext) {
-                    and = and == -1 || and > i ? and : s.indexOf("And", i);
-                    or = or == -1 || or > i ? or : s.indexOf("Or", i);
-                    iNext = Math.min(and, or);
-                    if (iNext < 0)
-                        iNext = Math.max(and, or);
-                    String condition = iNext < 0 ? s.substring(i) : s.substring(i, iNext);
-                    paramCount = generateRepositoryQueryCondition(entityInfo.type, condition, q, paramCount);
-                    if (iNext > 0) {
-                        q.append(iNext == and ? " AND " : " OR ");
-                        iNext += (iNext == and ? 3 : 2);
-                    }
-                }
+            generateSelect(entityInfo, q = new StringBuilder(200), method);
+            if (orderBy > 6 || orderBy == -1 && methodName.length() > 6) {
+                String s = orderBy > 0 ? methodName.substring(6, orderBy) : methodName.substring(6);
+                generateRepositoryQueryConditions(entityInfo, s, q);
             }
-
-            if (orderBy > 0) {
-                q.append(" ORDER BY ");
-                do {
-                    int i = orderBy + 7;
-                    orderBy = methodName.indexOf("OrderBy", i);
-                    int stopAt = orderBy == -1 ? methodName.length() : orderBy;
-                    boolean desc = false;
-                    if (methodName.charAt(stopAt - 1) == 'c' && methodName.charAt(stopAt - 2) == 's')
-                        if (methodName.charAt(stopAt - 3) == 'A') {
-                            stopAt -= 3;
-                        } else if (methodName.charAt(stopAt - 3) == 'e' && methodName.charAt(stopAt - 4) == 'D') {
-                            stopAt -= 4;
-                            desc = true;
-                        }
-
-                    String attribute = methodName.substring(i, stopAt);
-                    String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
-                    q.append("o.").append(name == null ? attribute : name);
-
-                    if (desc)
-                        q.append(" DESC");
-                    if (orderBy > 0)
-                        q.append(", ");
-                } while (orderBy > 0);
-            }
-
-            System.out.println("Generated query for Repository method " + methodName);
-            System.out.println("  " + q);
-            return q.toString();
+            if (orderBy >= 6)
+                generateRepositoryQueryOrderBy(entityInfo, methodName, orderBy, q);
+        } else if (methodName.startsWith("deleteBy")) {
+            q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(" o");
+            if (methodName.length() > 8)
+                generateRepositoryQueryConditions(entityInfo, methodName.substring(8), q);
+        } else if (methodName.startsWith("updateBy")) {
+            q = generateRepositoryUpdateQuery(entityInfo, methodName);
+        } else {
+            return null;
         }
-        return null;
+
+        System.out.println("Generated query for Repository method " + methodName);
+        System.out.println("  " + q);
+        return q.toString();
     }
 
     /**
@@ -314,10 +276,131 @@ public class QueryHandler<T> implements InvocationHandler {
                 q.append(" ?").append(++paramCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
                 break;
             default:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append(condition.operator).append('?').append(++paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator).append('?').append(++paramCount);
         }
 
         return paramCount;
+    }
+
+    /**
+     * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[Not?]Like
+     */
+    private int generateRepositoryQueryConditions(EntityInfo entityInfo, String conditions, StringBuilder q) {
+        int paramCount = 0;
+        q.append(" WHERE ");
+        for (int and = 0, or = 0, iNext, i = 0; i >= 0; i = iNext) {
+            and = and == -1 || and > i ? and : conditions.indexOf("And", i);
+            or = or == -1 || or > i ? or : conditions.indexOf("Or", i);
+            iNext = Math.min(and, or);
+            if (iNext < 0)
+                iNext = Math.max(and, or);
+            String condition = iNext < 0 ? conditions.substring(i) : conditions.substring(i, iNext);
+            paramCount = generateRepositoryQueryCondition(entityInfo.type, condition, q, paramCount);
+            if (iNext > 0) {
+                q.append(iNext == and ? " AND " : " OR ");
+                iNext += (iNext == and ? 3 : 2);
+            }
+        }
+        return paramCount;
+    }
+
+    /**
+     * Generates the JPQL ORDER BY clause for a repository findBy method such as findByLastNameLikeOrderByLastNameOrderByFirstName
+     */
+    private void generateRepositoryQueryOrderBy(EntityInfo entityInfo, String methodName, int orderBy, StringBuilder q) {
+        q.append(" ORDER BY ");
+        do {
+            int i = orderBy + 7;
+            orderBy = methodName.indexOf("OrderBy", i);
+            int stopAt = orderBy == -1 ? methodName.length() : orderBy;
+            boolean desc = false;
+            if (methodName.charAt(stopAt - 1) == 'c' && methodName.charAt(stopAt - 2) == 's')
+                if (methodName.charAt(stopAt - 3) == 'A') {
+                    stopAt -= 3;
+                } else if (methodName.charAt(stopAt - 3) == 'e' && methodName.charAt(stopAt - 4) == 'D') {
+                    stopAt -= 4;
+                    desc = true;
+                }
+
+            String attribute = methodName.substring(i, stopAt);
+            String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
+            q.append("o.").append(name == null ? attribute : name);
+
+            if (desc)
+                q.append(" DESC");
+            if (orderBy > 0)
+                q.append(", ");
+        } while (orderBy > 0);
+    }
+
+    /**
+     * Generates JPQL for a repository updateBy method such as updateByProductIdSetProductNameMultiplyPrice
+     */
+    private StringBuilder generateRepositoryUpdateQuery(EntityInfo entityInfo, String methodName) {
+        int set = methodName.indexOf("Set", 8);
+        int add = methodName.indexOf("Add", 8);
+        int mul = methodName.indexOf("Multiply", 8);
+        int div = methodName.indexOf("Divide", 8);
+        int uFirst = Integer.MAX_VALUE;
+        if (set > 0 && set < uFirst)
+            uFirst = set;
+        if (add > 0 && add < uFirst)
+            uFirst = add;
+        if (mul > 0 && mul < uFirst)
+            uFirst = mul;
+        if (div > 0 && div < uFirst)
+            uFirst = div;
+        if (uFirst == Integer.MAX_VALUE)
+            throw new IllegalArgumentException(methodName); // updateBy that lacks updates
+
+        // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
+        StringBuilder where = new StringBuilder(150);
+        int paramCount = generateRepositoryQueryConditions(entityInfo, methodName.substring(8, uFirst), where);
+
+        StringBuilder q = new StringBuilder(250);
+        q.append("UPDATE ").append(entityInfo.name).append(" o SET");
+
+        for (int u = uFirst; u > 0;) {
+            boolean first = u == uFirst;
+            String op;
+            if (u == set) {
+                op = null;
+                set = methodName.indexOf("Set", u += 3);
+            } else if (u == add) {
+                op = "+";
+                add = methodName.indexOf("Add", u += 3);
+            } else if (u == div) {
+                op = "/";
+                div = methodName.indexOf("Divide", u += 6);
+            } else if (u == mul) {
+                op = "*";
+                mul = methodName.indexOf("Multiply", u += 8);
+            } else {
+                throw new IllegalStateException(methodName); // internal error
+            }
+
+            int next = Integer.MAX_VALUE;
+            if (set > u && set < next)
+                next = set;
+            if (add > u && add < next)
+                next = add;
+            if (mul > u && mul < next)
+                next = mul;
+            if (div > u && div < next)
+                next = div;
+
+            String attribute = next == Integer.MAX_VALUE ? methodName.substring(u) : methodName.substring(u, next);
+            String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
+            q.append(first ? " o." : ", o.").append(name == null ? attribute : name).append("=");
+
+            if (op != null)
+                q.append("o.").append(name == null ? attribute : name).append(op);
+            q.append('?').append(++paramCount);
+
+            u = next == Integer.MAX_VALUE ? -1 : next;
+        }
+
+        return q.append(where);
     }
 
     private void generateSelect(EntityInfo entityInfo, StringBuilder q, Method method) {

@@ -177,6 +177,18 @@ public class CommonSecurityFat {
         }
     };
 
+    protected static void testSkipped() {
+
+        String methodName = "testSkipped";
+        Log.info(thisClass, methodName, "");
+        Log.info(thisClass, methodName, "TTTTT EEEEE  SSSS TTTTT   SSSS K   K IIIII PPPP  PPPP  EEEEE DDDD");
+        Log.info(thisClass, methodName, "  T   E     S       T    S     K  K    I   P   P P   P E     D   D");
+        Log.info(thisClass, methodName, "  T   EEE    SSS    T     SSS  KKK     I   PPPP  PPPP  EEE   D   D");
+        Log.info(thisClass, methodName, "  T   E         S   T        S K  K    I   P     P     E     D   D");
+        Log.info(thisClass, methodName, "  T   EEEEE SSSS    T    SSSS  K   K IIIII P     P     EEEEE DDDD");
+        Log.info(thisClass, methodName, "");
+    }
+
     public static void transformAppsInDefaultDirs(LibertyServer server, String appDirName, String version) throws Exception {
 
         Machine machine = server.getMachine();
@@ -195,7 +207,7 @@ public class CommonSecurityFat {
         if (list != null) {
             for (RemoteFile app : list) {
                 if (version.contains(JakartaEE9Action.ID)) {
-                    JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+                JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
                 } else {
                     if (version.contains(JakartaEE10Action.ID)) {
                         JakartaEE10Action.transformApp(Paths.get(app.getAbsolutePath()));

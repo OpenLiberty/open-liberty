@@ -11,6 +11,7 @@
 package io.openliberty.security.openidconnect.backchannellogout;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -800,6 +801,65 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         // Should find the ID tokens that matched
         List<OAuth20Token> cachedIdTokensForClient1 = clientsToCachedIdTokens.get(client1);
         verifyCachedIdTokensForClient(cachedIdTokensForClient1, idToken1, tmpIdToken1, tmpIdToken2);
+    }
+
+    @Test
+    public void test_isValidClientForBackchannelLogout_noLogoutUri() {
+        mockery.checking(new Expectations() {
+            {
+                one(client1).getBackchannelLogoutUri();
+                will(returnValue(null));
+            }
+        });
+        assertFalse("Client without a back-channel logout URI should not be considered valid for BCL.", builder.isValidClientForBackchannelLogout(client1));
+    }
+
+    @Test
+    public void test_isValidClientForBackchannelLogout_logoutUriNotHttp() {
+        mockery.checking(new Expectations() {
+            {
+                one(client1).getBackchannelLogoutUri();
+                will(returnValue("scp://localhost"));
+            }
+        });
+        assertFalse("Client with non-HTTP back-channel logout URI should not be considered valid for BCL.", builder.isValidClientForBackchannelLogout(client1));
+    }
+
+    @Test
+    public void test_isValidClientForBackchannelLogout_httpPublicClient() {
+        mockery.checking(new Expectations() {
+            {
+                one(client1).getBackchannelLogoutUri();
+                will(returnValue("http://localhost"));
+                one(client1).isPublicClient();
+                will(returnValue(true));
+            }
+        });
+        assertFalse("Public client with HTTP back-channel logout URI should not be considered valid for BCL.", builder.isValidClientForBackchannelLogout(client1));
+    }
+
+    @Test
+    public void test_isValidClientForBackchannelLogout_httpConfidentialClient() {
+        mockery.checking(new Expectations() {
+            {
+                one(client1).getBackchannelLogoutUri();
+                will(returnValue("http://localhost"));
+                one(client1).isPublicClient();
+                will(returnValue(false));
+            }
+        });
+        assertTrue("Confidential client with HTTP back-channel logout URI should be considered valid for BCL.", builder.isValidClientForBackchannelLogout(client1));
+    }
+
+    @Test
+    public void test_isValidClientForBackchannelLogout_httpsUri() {
+        mockery.checking(new Expectations() {
+            {
+                one(client1).getBackchannelLogoutUri();
+                will(returnValue("https://localhost"));
+            }
+        });
+        assertTrue("HTTPS back-channel logout URI should be considered valid for BCL.", builder.isValidClientForBackchannelLogout(client1));
     }
 
     @Test

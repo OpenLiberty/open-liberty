@@ -29,6 +29,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Export-Package: \
     io.openliberty.webcontainer60.session.impl*;provide:=true,\
     io.openliberty.webcontainer60.osgi.request*;provide:=true,\
+    io.openliberty.webcontainer60.osgi.response*;provide:=true,\
     io.openliberty.webcontainer60.osgi.srt*;provide:=true,\
     io.openliberty.webcontainer60.srt*;provide:=true,\
     io.openliberty.websphere.servlet60*;provide:=true

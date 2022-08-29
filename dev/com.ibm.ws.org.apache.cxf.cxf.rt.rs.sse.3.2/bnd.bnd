@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -8,19 +8,37 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-sse;3.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
+bVersion=1.0
+cxfVersion=3.3.0
+
+Bundle-Name: Apache CXF JAX-RS Server-Side Events Support
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2
+
+Import-Package: \
+  !org.atmosphere.*, \
+  !org.apache.cxf.cdi.extension, \
+  *
+
+Export-Package: \
+  org.apache.cxf.transport.sse;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.sse;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.sse.cdi;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.sse.client;version=${cxfVersion};thread-context=true
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-rs-sse;3.3.0}!/!META-INF/*,\
-   org/apache/cxf=${bin}/org/apache/cxf
-   
-instrument.classesExcludes: org/apache/cxf/jaxrs/sse/client/SseEventSourceImpl$InboundSseEventListenerImpl.class
+  @${repo;org.apache.cxf:cxf-rt-rs-sse;${cxfVersion}}!/!META-INF/*, \
+  org/apache/cxf=${bin}/org/apache/cxf
 
--buildpath: org.apache.cxf:cxf-rt-rs-sse;version=3.3.0,\
-  com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
-  com.ibm.ws.logging.core;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+instrument.classesExcludes: \
+  org/apache/cxf/jaxrs/sse/client/SseEventSourceImpl$InboundSseEventListenerImpl.class
+
+-buildpath: \
+  org.apache.cxf:cxf-rt-rs-sse;version=${cxfVersion}, \
+  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2;version=latest, \
+  com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
+  com.ibm.ws.logging.core;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest

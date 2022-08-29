@@ -23,7 +23,8 @@ src: \
 	test-bundles/test.checkpoint.config.bundle/src,\
 	test-applications/timeoutTest/src,\
 	test-applications/restClient/src,\
-	test-applications/db2fat/src
+	test-applications/db2fat/src,\
+	test-applications/jndiTest/src
 
 fat.project: true
 

@@ -88,20 +88,24 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
 
     private final ELHelper elHelper;
 
+    private final String constructedBaseURL;
+
     /**
      * Create a new instance of an {@link OpenIdAuthenticationMechanismDefinitionWrapper} that will provide
      * convenience methods to access configuration from the {@link OpenIdAuthenticationMechanismDefinition}
      * instance.
      *
      * @param oidcMechanismDefinition The {@link OpenIdAuthenticationMechanismDefinition} to wrap.
+     * @param baseURL                 The baseURL is an optional variable for the redirectURL and is constructed using information the incoming HTTP request.
      */
     @Sensitive
-    public OpenIdAuthenticationMechanismDefinitionWrapper(OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition) {
+    public OpenIdAuthenticationMechanismDefinitionWrapper(OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition, String baseURL) {
         if (oidcMechanismDefinition == null) {
             throw new IllegalArgumentException("The OpenIdAuthenticationMechanismDefinition cannot be null.");
         }
         this.oidcMechanismDefinition = oidcMechanismDefinition;
         this.elHelper = new ELHelper();
+        this.constructedBaseURL = baseURL;
 
         /*
          * Evaluate the configuration. The values will be non-null if the setting is NOT
@@ -165,8 +169,20 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
         return (result == null) ? null : new ProtectedString(result.toCharArray());
     }
 
+    /**
+     * Evaluate the redirectURI which may include the special baseURL variable. The baseURL is
+     * constructed using information the incoming HTTP request.
+     *
+     * @param immediateOnly
+     * @return
+     */
     private String evaluateRedirectURI(boolean immediateOnly) {
-        return evaluateStringAttribute("redirectURI", oidcMechanismDefinition.redirectURI(), "${baseURL}/Callback", immediateOnly);
+        try {
+            elHelper.addValue(JakartaSec30Constants.BASE_URL_VARIABLE, constructedBaseURL, false);
+            return evaluateStringAttribute("redirectURI", oidcMechanismDefinition.redirectURI(), JakartaSec30Constants.BASE_URL_DEFAULT, immediateOnly);
+        } finally {
+            elHelper.removeValue(JakartaSec30Constants.BASE_URL_VARIABLE);
+        }
     }
 
     private Boolean evaluateRedirectToOriginalResource(boolean immediateOnly) {

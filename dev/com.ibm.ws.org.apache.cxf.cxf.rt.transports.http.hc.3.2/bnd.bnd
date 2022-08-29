@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018,2020 IBM Corporation and others.
+# Copyright (c) 2018, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -8,15 +8,32 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-transports-http-hc;3.4.3}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
+bVersion=1.0
+cxfVersion=3.4.3
+
+Bundle-Name: Apache CXF Runtime HTTP Async Transport
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2
+
+# not 100% sure this is needed
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.apache.cxf.transport.http.asyncclient.Activator
+
+Import-Package: \
+  com.ibm.ws.cxf.jaxrs21.client.*;version="[3.2,4)", \
+  *
+
+Export-Package: \
+  org.apache.cxf.transport.http.asyncclient;version=${cxfVersion}
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-transports-http-hc;3.4.3}!/!*-INF/*,\
-   org/apache/cxf=${bin}/org/apache/cxf
+  @${repo;org.apache.cxf:cxf-rt-transports-http-hc;${cxfVersion}}!/!*-INF/*, \
+  org/apache/cxf=${bin}/org/apache/cxf
 
--buildpath: org.apache.cxf:cxf-rt-transports-http-hc;version=3.4.3,\
- com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
- com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
- com.ibm.ws.org.apache.httpcomponents;version=latest,\
- com.ibm.ws.logging.core;version=latest
+-buildpath: \
+  org.apache.cxf:cxf-rt-transports-http-hc;version=${cxfVersion}, \
+  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest, \
+  com.ibm.ws.org.apache.httpcomponents;version=latest, \
+  com.ibm.ws.logging.core;version=latest

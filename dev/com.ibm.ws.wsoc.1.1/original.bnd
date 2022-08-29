@@ -13,3 +13,9 @@ Bundle-Name: WebSocket
 Bundle-SymbolicName: com.ibm.ws.wsoc.1.1; singleton:=true
 Bundle-Description: WebSocket, version ${bVersion}
 
+Export-Package: \
+ io.openliberty.wsoc.speclevel
+ 
+-includeresource: \
+  io/openliberty/wsoc/speclevel=resources/11
+

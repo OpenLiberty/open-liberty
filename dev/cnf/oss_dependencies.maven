@@ -3,7 +3,6 @@ biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0
 biz.aQute.bnd:biz.aQute.bnd:6.3.0
 cglib:cglib-nodep:3.3.0
 ch.qos.logback:logback-classic:1.2.3
-ch.qos.logback:logback-core:1.2.3
 com.beust:jcommander:1.72
 com.cloudant:cloudant-client:2.16.0
 com.cloudant:cloudant-client:2.8.0
@@ -704,6 +703,7 @@ org.ow2.asm:asm-tree:9.3
 org.ow2.asm:asm-util:9.3
 org.ow2.asm:asm:9.3
 org.postgresql:postgresql:42.2.5
+org.postgresql:postgresql:42.4.2
 org.powermock:powermock-core:1.5
 org.quartz-scheduler:quartz:2.3.2
 org.reactivestreams:reactive-streams-examples:1.0.3

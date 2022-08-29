@@ -8,13 +8,45 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-tools-common;3.4.3}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
 -sub: *.bnd
 
+bVersion=1.0
+cxfVersion=3.4.3
+
+Import-Package: \
+  !com.ctc.wstx.*, \
+  !org.codehaus.stax2.*, \
+  !com.sun.msv.*, \
+  !com.sun.xml.bind.marshaller, \
+  !com.sun.xml.fastinfoset.stax.*, \
+  !org.apache.log4j.*, \
+  !net.sf.cglib.proxy.*, \
+  !org.springframework.*, \
+  !javax.validation.*, \
+  !org.apache.aries.*, \
+  !org.apache.cxf.transport.https, \
+  !org.osgi.service.blueprint.*, \
+  !javax.wsdl, \
+  !org.apache.velocity.*, \
+  !org.junit.*, \
+  org.apache.cxf;version="[3.0.0,4)", \
+  *
+
+Export-Package: \
+  org.apache.cxf.tools.common;version=${cxfVersion}, \
+  org.apache.cxf.tools.common.dom;version=${cxfVersion}, \
+  org.apache.cxf.tools.common.model;version=${cxfVersion}, \
+  org.apache.cxf.tools.common.toolspec;version=${cxfVersion}, \
+  org.apache.cxf.tools.common.toolspec.parser;version=${cxfVersion}, \
+  org.apache.cxf.tools.util;version=${cxfVersion}
+
+Private-Package: \
+  org.apache.cxf.tools.common.jaxb
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-tools-common;3.4.3}!/!META-INF/*
+  @${repo;org.apache.cxf:cxf-tools-common;${cxfVersion}}!/!META-INF/*
 
-
--buildpath: org.apache.cxf:cxf-tools-common;version=3.4.3
+-buildpath: \
+  org.apache.cxf:cxf-tools-common;version=${cxfVersion}
