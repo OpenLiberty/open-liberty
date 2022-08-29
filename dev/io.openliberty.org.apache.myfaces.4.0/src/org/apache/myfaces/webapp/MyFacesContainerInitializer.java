@@ -60,8 +60,8 @@ import org.apache.myfaces.util.lang.ClassUtils;
 
 /**
  * This class is called by any Java EE 6 complaint container at startup.
- * It checks if the current webapp is a JSF-webapp by checking if some of 
- * the JSF related annotations are specified in the webapp classpath or if
+ * It checks if the current webapp is a Faces-webapp by checking if some of
+ * the Faces related annotations are specified in the webapp classpath or if
  * the faces-config.xml file is present. If so, the listener checks if 
  * the FacesServlet has already been defined in web.xml and if not, it adds
  * the FacesServlet with the mappings (/faces/*, *.jsf, *.faces) dynamically.
@@ -132,6 +132,9 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
             return;
         }
 
+        // Check for a FacesServlet and store the result so it can be used by the FacesInitializer.
+        boolean isFacesServletPresent = checkForFacesServlet(servletContext);
+
         // Check for one or more of this conditions:
         // 1. A faces-config.xml file is found in WEB-INF
         // 2. A faces-config.xml file is found in the META-INF directory of a jar in the application's classpath.
@@ -142,45 +145,42 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         //    implementation is not empty.
         if ((clazzes != null && !clazzes.isEmpty()) || isFacesConfigPresent(servletContext))
         {
-            // look for the FacesServlet
-            Map<String, ? extends ServletRegistration> servlets = servletContext.getServletRegistrations();
-            for (Map.Entry<String, ? extends ServletRegistration> servletEntry : servlets.entrySet())
+            /*
+             * If we get into this code block the application contains some Faces artifacts, either a faces-config.xml
+             * or one ore more classes from @HandlesTypes. However if classes from @HandlesTypes or a faces-config.xml
+             * is available a FacesServlet definition might not be defined.
+             *
+             * If a FacesServet definition was not found then add it dynamically.
+             */
+            if(!isFacesServletPresent)
             {
-                String className = servletEntry.getValue().getClassName();
-                if (FACES_SERVLET_CLASS.getName().equals(className) || isDelegatedFacesServlet(className))
+                // the FacesServlet is not installed yet - install it
+                ServletRegistration.Dynamic servlet =
+                        servletContext.addServlet(FACES_SERVLET_NAME, FACES_SERVLET_CLASS);
+
+                //try to add typical Faces mappings
+                String[] mappings = isAutomaticXhtmlMappingDisabled(servletContext) ?
+                            FACES_SERVLET_MAPPINGS : FACES_SERVLET_FULL_MAPPINGS;
+                Set<String> conflictMappings = servlet.addMapping(mappings);
+                if (conflictMappings != null && !conflictMappings.isEmpty())
                 {
-                    // we found a FacesServlet; set an attribute for use during initialization
-                    servletContext.setAttribute(FACES_SERVLET_FOUND, Boolean.TRUE);                    
-                    return;
+                    //at least one of the attempted mappings is in use, remove and try again
+                    Set<String> newMappings = new HashSet<>(Arrays.asList(mappings));
+                    newMappings.removeAll(conflictMappings);
+                    mappings = newMappings.toArray(new String[newMappings.size()]);
+                    servlet.addMapping(mappings);
                 }
-            }
 
-            // the FacesServlet is not installed yet - install it
-            ServletRegistration.Dynamic servlet = servletContext.addServlet(FACES_SERVLET_NAME, FACES_SERVLET_CLASS);
+                if (mappings != null && mappings.length > 0)
+                {
+                    // at least one mapping was added 
+                    // now we have to set a field in the ServletContext to indicate that we have
+                    // added the mapping dynamically.
+                    servletContext.setAttribute(FACES_SERVLET_ADDED_ATTRIBUTE, Boolean.TRUE);
 
-            //try to add typical JSF mappings
-            String[] mappings = isAutomaticXhtmlMappingDisabled(servletContext) ? 
-                        FACES_SERVLET_MAPPINGS : FACES_SERVLET_FULL_MAPPINGS;
-            Set<String> conflictMappings = servlet.addMapping(mappings);
-            if (conflictMappings != null && !conflictMappings.isEmpty())
-            {
-                //at least one of the attempted mappings is in use, remove and try again
-                Set<String> newMappings = new HashSet<>(Arrays.asList(mappings));
-                newMappings.removeAll(conflictMappings);
-                mappings = newMappings.toArray(new String[newMappings.size()]);
-                servlet.addMapping(mappings);
-            }
-
-            if (mappings != null && mappings.length > 0)
-            {
-                // at least one mapping was added 
-                // now we have to set a field in the ServletContext to indicate that we have
-                // added the mapping dynamically, because MyFaces just parsed the web.xml to
-                // find mappings and thus it would abort initializing
-                servletContext.setAttribute(FACES_SERVLET_ADDED_ATTRIBUTE, Boolean.TRUE);
-
-                // add a log message
-                log.log(Level.INFO, "Added FacesServlet with mappings=" + Arrays.toString(mappings));
+                    // add a log message
+                    log.log(Level.INFO, "Added FacesServlet with mappings=" + Arrays.toString(mappings));
+                }
             }
         }
     }
@@ -302,6 +302,28 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
         {
             return false;
         }
+    }
+
+    /*
+     * Checks if a FacesServlet has been mapped.
+     */
+    private boolean checkForFacesServlet(ServletContext servletContext)
+    {
+        // look for the FacesServlet
+        Map<String, ? extends ServletRegistration> servlets = servletContext.getServletRegistrations();
+        boolean isFacesServletPresent = false;
+
+        for (Map.Entry<String, ? extends ServletRegistration> servletEntry : servlets.entrySet())
+        {
+            String className = servletEntry.getValue().getClassName();
+            if (FACES_SERVLET_CLASS.getName().equals(className) || isDelegatedFacesServlet(className))
+            {
+                // we found a FacesServlet; set an attribute for use during initialization
+                servletContext.setAttribute(FACES_SERVLET_FOUND, Boolean.TRUE);
+                isFacesServletPresent = true;
+            }
+        }
+        return isFacesServletPresent;
     }
 
     /**

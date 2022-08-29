@@ -85,21 +85,21 @@ public class FacesInitializerImpl implements FacesInitializer
     private static final Logger log = Logger.getLogger(FacesInitializerImpl.class.getName());
 
     public static final String CDI_BEAN_MANAGER_INSTANCE = "oam.cdi.BEAN_MANAGER_INSTANCE";
-    
+
     private static final String CDI_SERVLET_CONTEXT_BEAN_MANAGER_ATTRIBUTE = 
         "jakarta.enterprise.inject.spi.BeanManager";
 
     public static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
 
     public static final String INITIALIZED = "org.apache.myfaces.INITIALIZED";
-    
+
     private static final byte FACES_INIT_PHASE_PREINIT = 0;
     private static final byte FACES_INIT_PHASE_POSTINIT = 1;
     private static final byte FACES_INIT_PHASE_PREDESTROY = 2;
     private static final byte FACES_INIT_PHASE_POSTDESTROY = 3;
-    
+
     /**
-     * Performs all necessary initialization tasks like configuring this JSF
+     * Performs all necessary initialization tasks like configuring this Faces
      * application.
      * 
      * @param servletContext The current {@link ServletContext}
@@ -115,21 +115,21 @@ public class FacesInitializerImpl implements FacesInitializer
             }
             return;
         }
-        
+
         try
         {
             if (log.isLoggable(Level.FINEST))
             {
                 log.finest("Initializing MyFaces");
             }
-            
+
             long start = System.currentTimeMillis();
 
             // Some parts of the following configuration tasks have been implemented 
             // by using an ExternalContext. However, that's no problem as long as no 
             // one tries to call methods depending on either the ServletRequest or 
             // the ServletResponse.
-            // JSF 2.0: FacesInitializer now has some new methods to
+            // Faces 2.0: FacesInitializer now has some new methods to
             // use proper startup FacesContext and ExternalContext instances.
             FacesContext facesContext = initStartupFacesContext(servletContext);
             ExternalContext externalContext = facesContext.getExternalContext();
@@ -144,43 +144,34 @@ public class FacesInitializerImpl implements FacesInitializer
             {
                 spf.initKnownServiceProviderMapInfo(externalContext, spfConfig);
             }
-            
-            // Parse and validate the web.xml configuration file
-            
+
             if (!WebConfigParamUtils.getBooleanInitParameter(externalContext,
                     MyfacesConfig.INITIALIZE_ALWAYS_STANDALONE, false))
             {
-                FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
-                        FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext);
-                if (facesServletRegistration == null
-                        || facesServletRegistration.getMappings() == null
-                        || facesServletRegistration.getMappings().length == 0)
+                // check to see if the FacesServlet was found by MyFacesContainerInitializer
+                Boolean mappingAdded = (Boolean) servletContext.getAttribute(
+                    MyFacesContainerInitializer.FACES_SERVLET_FOUND);
+
+                if (mappingAdded == null || !mappingAdded)
                 {
-                    // check to see if the FacesServlet was found by MyFacesContainerInitializer
-                    Boolean mappingAdded = (Boolean) servletContext.getAttribute(
-                        MyFacesContainerInitializer.FACES_SERVLET_FOUND);
+                    // check if the FacesServlet has been added dynamically
+                    // in a Servlet 3.0 environment by MyFacesContainerInitializer
+                    mappingAdded = (Boolean) servletContext.getAttribute(
+                        MyFacesContainerInitializer.FACES_SERVLET_ADDED_ATTRIBUTE);
 
                     if (mappingAdded == null || !mappingAdded)
                     {
-                        // check if the FacesServlet has been added dynamically
-                        // in a Servlet 3.0 environment by MyFacesContainerInitializer
-                        mappingAdded = (Boolean) servletContext.getAttribute(
-                            MyFacesContainerInitializer.FACES_SERVLET_ADDED_ATTRIBUTE);
-
-                        if (mappingAdded == null || !mappingAdded)
+                        if (log.isLoggable(Level.WARNING))
                         {
-                            if (log.isLoggable(Level.WARNING))
-                            {
-                                log.warning("No mappings of FacesServlet found. Abort initializing MyFaces.");
-                            }
-                            return;
+                            log.warning("No mappings of FacesServlet found. Abort initializing MyFaces.");
                         }
+                        return;
                     }
                 }
             }
-            
+
             initCDIIntegration(servletContext, externalContext);
-            
+
             initContainerIntegration(servletContext, externalContext);
 
             // log environment integrations
@@ -205,10 +196,10 @@ public class FacesInitializerImpl implements FacesInitializer
             initWebsocketIntegration(servletContext, externalContext);
 
             WebConfigParamsLogger.logWebContextParams(facesContext);
-            
+
             //Start ViewPoolProcessor if necessary
             ViewPoolProcessor.initialize(facesContext);
-            
+
             MyfacesConfig config = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
             if (config.isAutomaticExtensionlessMapping())
             {
@@ -222,7 +213,7 @@ public class FacesInitializerImpl implements FacesInitializer
                 facesContext.getExternalContext().getApplicationMap().put(
                         MyfacesConfig.RESOURCE_BUNDLE_CONTROL, resourceBundleControl);
             }
- 
+
             // print out a very prominent log message if the project stage is != Production
             if (!facesContext.isProjectStage(ProjectStage.Production)
                     && !facesContext.isProjectStage(ProjectStage.UnitTest))
@@ -369,7 +360,7 @@ public class FacesInitializerImpl implements FacesInitializer
     }
 
     /**
-     * Configures this JSF application. It's required that every
+     * Configures this Faces application. It's required that every
      * FacesInitializer (i.e. every subclass) calls this method during
      * initialization.
      *
@@ -476,33 +467,33 @@ public class FacesInitializerImpl implements FacesInitializer
         // before Application and RenderKit factories, so we should use different object. 
         return _createFacesContext(servletContext, true);
     }
-        
+
     @Override
     public void destroyStartupFacesContext(FacesContext facesContext)
     {
         _releaseFacesContext(facesContext);
     }
-    
+
     @Override
     public FacesContext initShutdownFacesContext(ServletContext servletContext)
     {
         return _createFacesContext(servletContext, false);
     }
-    
-    @Override    
+
+    @Override
     public void destroyShutdownFacesContext(FacesContext facesContext)
     {
         _releaseFacesContext(facesContext);
     }
-    
+
     private FacesContext _createFacesContext(ServletContext servletContext, boolean startup)
     {
         ExternalContext externalContext = new StartupServletExternalContextImpl(servletContext, startup);
         ExceptionHandler exceptionHandler = new ExceptionHandlerImpl();
-        FacesContext facesContext = new StartupFacesContextImpl(externalContext, 
+        FacesContext facesContext = new StartupFacesContextImpl(externalContext,
                 externalContext, exceptionHandler, startup);
-        
-        // If getViewRoot() is called during application startup or shutdown, 
+
+        // If getViewRoot() is called during application startup or shutdown,
         // it should return a new UIViewRoot with its locale set to Locale.getDefault().
         UIViewRoot startupViewRoot = new UIViewRoot();
         startupViewRoot.setLocale(Locale.getDefault());
@@ -510,7 +501,7 @@ public class FacesInitializerImpl implements FacesInitializer
         
         return facesContext;
     }
-    
+
     private void _releaseFacesContext(FacesContext facesContext)
     {        
         // make sure that the facesContext gets released.
@@ -518,7 +509,7 @@ public class FacesInitializerImpl implements FacesInitializer
         if (facesContext != null)
         {
             facesContext.release();
-        }        
+        }
     }
 
     /**
@@ -819,7 +810,7 @@ public class FacesInitializerImpl implements FacesInitializer
      * @return false if there are not plugins defined via ServiceLoader.
      */
     private boolean loadFacesInitPluginsViaServiceLoader(ServletContext servletContext)
-    {   
+    {
         ServiceLoader<StartupListener> loader = ServiceLoader.load(StartupListener.class,
                 ClassUtils.getContextClassLoader());
 
