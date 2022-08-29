@@ -113,4 +113,8 @@ public interface Reservations extends Repository<Reservation, Long> {
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
     CopyOnWriteArrayList<Reservation> findByUpperHostEndsWith(String hostPostfix);
+
+    int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
+
+    boolean updateByMeetingIDSetHost(long meetingID, String newHost);
 }

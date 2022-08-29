@@ -38,16 +38,19 @@ import jakarta.servlet.http.HttpServletResponse;
 public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private ModulePropertiesProvider mpp = null;
-    private OpenIdAuthenticationMechanismDefinitionWrapper oidcMechanismDefinitionWrapper;
 
     public OidcHttpAuthenticationMechanism() {
-        setOpenIdAuthenticationMechanismDefinition();
+        mpp = getModulePropertiesProvider();
     }
 
-    private void setOpenIdAuthenticationMechanismDefinition() {
-        mpp = getModulePropertiesProvider();
+    private OpenIdAuthenticationMechanismDefinitionWrapper getOpenIdAuthenticationMechanismDefinition(HttpServletRequest request) {
         Properties props = mpp.getAuthMechProperties(OidcHttpAuthenticationMechanism.class);
-        this.oidcMechanismDefinitionWrapper = new OpenIdAuthenticationMechanismDefinitionWrapper((OpenIdAuthenticationMechanismDefinition) props.get(JakartaSec30Constants.OIDC_ANNOTATION));
+        /*
+         * Build the baseURL from the incoming HttpRequest as the redirectURL may contain baseURL variable, such as ${baseURL}/Callback
+         */
+        // TODO: Should the request.getRequestURL instead do the same thing as AuthorizationRequestUtils.getRequestUrl (does some port double checking, etc)
+        String baseURL = request.getRequestURL() + request.getContextPath();
+        return new OpenIdAuthenticationMechanismDefinitionWrapper((OpenIdAuthenticationMechanismDefinition) props.get(JakartaSec30Constants.OIDC_ANNOTATION), baseURL);
     }
 
     @SuppressWarnings("unchecked")
@@ -75,7 +78,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
-        Client client = getClient();
+        Client client = getClient(request);
 
         boolean alreadyAuthenticated = isAlreadyAuthenticated(httpMessageContext);
 
@@ -92,8 +95,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     // Protected to allow unit testing
-    protected Client getClient() {
-        return ClientManager.getClientFor(oidcMechanismDefinitionWrapper);
+    protected Client getClient(HttpServletRequest request) {
+        return ClientManager.getClientFor(getOpenIdAuthenticationMechanismDefinition(request));
     }
 
     /**

@@ -8,19 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.jakartasec;
-
-import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+package test.jakarta.data.web;
 
 /**
- * Constants for Java EE Security
+ *
  */
-public class JakartaSec30Constants extends JavaEESecConstants {
+public class Package {
 
-    public static final String OIDC_ANNOTATION = "oidc_annotation";
+    public String description;
 
-    public static final String BASE_URL_VARIABLE = "baseURL";
+    public int id;
 
-    public static final String BASE_URL_DEFAULT = "${" + BASE_URL_VARIABLE + "}/Callback";
+    public float length, width, height;
 
+    @Override
+    public String toString() {
+        return "Package type=" + id + "; L=" + length + "; W=" + width + " H=" + height + " " + description;
+    }
 }

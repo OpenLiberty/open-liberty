@@ -15,10 +15,13 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.el.ELException;
+import javax.el.ELProcessor;
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
@@ -32,11 +35,18 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.CDIHelper;
 
 /**
- * Class to help with evaulating EL expressions for identity stores.
+ * Class to help with evaluating EL expressions for identity stores.
  */
 public class ELHelper {
     private static final String OBFUSCATED_STRING = "******";
     private static final TraceComponent tc = Tr.register(ELHelper.class);
+
+    private static final ThreadLocal<Map<String, String>> valuesMap = new ThreadLocal<Map<String, String>>() {
+        @Override
+        protected Map<String, String> initialValue() {
+            return new HashMap<String, String>(1);
+        }
+    };
 
     /**
      * Evaluate a possible EL expression.
@@ -91,7 +101,22 @@ public class ELHelper {
         @Trivial
         @Override
         public Object run() {
-            return CDIHelper.getELProcessor().eval(removeBrackets(expression, mask));
+            ELProcessor elProc = CDIHelper.getELProcessor();
+            String[] expressionStrings = checkAndSplitBeforeEvaluation(expression, mask);
+            if (!valuesMap.get().isEmpty()) {
+                Map<String, String> variables = valuesMap.get();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "EvalPrivilegedAction", "Found threadLocal values to set on the ELProcessor: " + (mask ? OBFUSCATED_STRING : variables));
+                }
+                for (Map.Entry<String, String> variable : variables.entrySet()) {
+                    elProc.setValue(variable.getKey(), variable.getValue());
+                }
+            }
+            if (expressionStrings == null) {
+                return elProc.eval(removeBrackets(expression, mask));
+            } else {
+                return elProc.eval(expressionStrings[0]) + expressionStrings[1];
+            }
         }
 
     }
@@ -606,5 +631,66 @@ public class ELHelper {
             Tr.exit(tc, methodName, (expression == null) ? null : mask ? OBFUSCATED_STRING : expression);
         }
         return expression;
+    }
+
+    /**
+     * Check if the closing bracket is mid expression and return a split string if it is. If the expression is
+     * a single expression and can be evaluated as a whole, return null.
+     *
+     * @param expression
+     * @param mask
+     * @return A 2 length String array if the expression needed to be split, otherwise null.
+     */
+    @Trivial
+    static String[] checkAndSplitBeforeEvaluation(String expression, boolean mask) {
+        final String methodName = "checkAndSplitBeforeEvaluation";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, methodName, new Object[] { (expression == null) ? null : mask ? OBFUSCATED_STRING : expression, mask });
+        }
+        String[] expressionStrings = null;
+        if ((expression.startsWith("${") || expression.startsWith("#{")) && !expression.endsWith("}")) {
+            String prep = expression.substring(2, expression.length());
+            expressionStrings = prep.split("}", 2);
+
+            if (expressionStrings.length != 2) {
+                expressionStrings = null;
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName,
+                             "Unable to split expression as expected, revert to evaluating whole expression string. Expression: " + (mask ? OBFUSCATED_STRING : expression)
+                                             + ", attempted split: " + (mask ? OBFUSCATED_STRING : Arrays.toString(expressionStrings)));
+                }
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, methodName, (expressionStrings == null) ? null : mask ? OBFUSCATED_STRING : Arrays.toString(expressionStrings));
+        }
+        return expressionStrings;
+    }
+
+    /**
+     * Add an expression and value that will be used when doing an EL evaluation. Added as
+     * a Threadlocal and will be picked up during EvalPrivilegedAction.
+     *
+     * @param expression
+     * @param value
+     */
+    @Trivial
+    public void addValue(String expression, String value, boolean mask) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "addValue", expression + ":" +
+                                     (mask ? OBFUSCATED_STRING : value));
+        }
+        valuesMap.get().put(expression, value);
+    }
+
+    /**
+     * Removes an expression and value from the ThrealLocal map
+     *
+     * @param expression
+     */
+    public void removeValue(String expression) {
+        valuesMap.get().remove(expression);
     }
 }
