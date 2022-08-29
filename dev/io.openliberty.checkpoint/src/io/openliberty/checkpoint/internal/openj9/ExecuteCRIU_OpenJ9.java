@@ -44,6 +44,7 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
         criuSupport.setWorkDir(workDir.toPath());
         criuSupport.setTCPEstablished(true);
         criuSupport.registerRestoreEnvFile(envProps.toPath());
+        setCheckpointLogLevel(criuSupport);
         if (unprivileged) {
             try {
                 criuSupport.setUnprivileged(true);
@@ -64,6 +65,17 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
             throw new CheckpointFailedException(checkpointImpl.getUnknownType(), e.getMessage(), e);
         } catch (RuntimeException e) {
             throw new CheckpointFailedException(checkpointImpl.getUnknownType(), e.getMessage(), e);
+        }
+    }
+
+    /**
+     * @param criuSupport
+     */
+    private void setCheckpointLogLevel(CRIUSupport criuSupport) {
+        String logLevelProp = System.getProperty("io.openliberty.checkpoint.criu.loglevel");
+        if (logLevelProp != null) {
+            int logLevel = Integer.valueOf(logLevelProp);
+            criuSupport.setLogLevel(logLevel);
         }
     }
 
