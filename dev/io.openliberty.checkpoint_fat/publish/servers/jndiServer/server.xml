@@ -1,0 +1,23 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="JNDI test server">
+	<applicationManager startTimeout="90s"/>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>checkpoint-1.0</feature>
+    </featureManager>
+    
+    <webApplication id="JNDIApplication" location="JNDIApplication.war" name="JNDIApplication" contextRoot="jndiApp"/>
+	<include location="../fatTestPorts.xml"/>
+    <applicationManager autoExpand="true"/>
+
+</server>	
