@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ public class WSPolicyConfigurationFactoryImpl extends PolicyConfigurationFactory
         }
     }
 
-    public PolicyConfiguration getPolicyConfiguration() {
+    public PolicyConfiguration getPolicyConfiguration() throws PolicyContextException {
 
         String contextID = null;
         SecurityManager sm = System.getSecurityManager();
@@ -42,37 +42,12 @@ public class WSPolicyConfigurationFactoryImpl extends PolicyConfigurationFactory
         }
 
         contextID = PolicyContext.getContextID();
-        if (contextID == null) {
-            return null;
-        } else {
-            return getPolicyConfiguration(contextID);
-        }
+        return getPolicyConfiguration(contextID, false);
 
     }
 
-    public PolicyConfiguration getPolicyConfiguration(String contextID) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(new SecurityPermission("setPolicy"));
-        }
-
-        WSPolicyConfigurationImpl policyConfig = allConfigs.getPolicyConfig(contextID);
-        if (policyConfig == null) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "hashMap does not contain the contextID: " + contextID);
-            try {
-                policyConfig = new WSPolicyConfigurationImpl(contextID);
-            } catch (PolicyContextException e) {
-            }
-            allConfigs.setPolicyConfig(contextID, policyConfig);
-        }
-        try {
-            policyConfig.setState(ContextState.STATE_OPEN);
-        } catch (PolicyContextException e) {
-        }
-
-        return policyConfig;
-
+    public PolicyConfiguration getPolicyConfiguration(String contextID) throws PolicyContextException {
+        return getPolicyConfiguration(contextID, false);
     }
 
     @Override

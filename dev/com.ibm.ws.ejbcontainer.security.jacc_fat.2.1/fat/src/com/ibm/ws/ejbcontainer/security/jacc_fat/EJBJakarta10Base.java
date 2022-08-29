@@ -11,33 +11,26 @@
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
 
-import org.junit.Test;
-import org.junit.rules.TestName;
-
-import com.ibm.websphere.simplicity.log.Log;
-
-import org.junit.Rule;
-import org.junit.rules.TestName;
-
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
-
-
-import java.security.PermissionCollection;
 import java.security.Permission;
+import java.security.PermissionCollection;
 import java.security.Permissions;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Map;
 
-import jakarta.security.jacc.PolicyContext;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
-import jakarta.security.jacc.PolicyConfiguration;
-import jakarta.security.jacc.PolicyConfigurationFactory;
-import jakarta.security.jacc.EJBMethodPermission;
-
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.authorization.jacc.provider.WSPolicyConfigurationFactoryImpl;
 import com.ibm.ws.security.authorization.jacc.provider.WSPolicyConfigurationImpl;
+
+import componenttest.annotation.SkipForRepeat;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import jakarta.security.jacc.EJBMethodPermission;
+import jakarta.security.jacc.PolicyConfiguration;
+import jakarta.security.jacc.PolicyContext;
 
 /**
  * Base class for EJBJakarta10Test. This class is extended for EJB in WAR testing.
@@ -47,7 +40,6 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
     protected static Class<?> logClass = EJBJakarta10Base.class;
 
     protected abstract TestName getName();
-
 
     /**
      * Verify the following:
@@ -63,6 +55,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @Test
     public void testGetExcludedPermissionsMethod() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
@@ -72,7 +65,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         WSPolicyConfigurationImpl policyConfig = new WSPolicyConfigurationImpl(contextID);
         String cId = policyConfig.getContextID();
         Log.info(logClass, getName().getMethodName(), "context id = " + cId);
-	if (!cId.equals(contextID)) {
+        if (!cId.equals(contextID)) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
         }
 
@@ -90,18 +83,17 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         Log.info(logClass, getName().getMethodName(), "outputPermCollection = " + outputPermCollection.toString());
         Log.info(logClass, getName().getMethodName(), "inputPermCollection = " + inputPermCollection.toString());
 
-
         int numberOfInputPerms = 0;
         ArrayList<Permission> inputs = new ArrayList();
         for (Enumeration<Permission> enumInput = inputPermCollection.elements(); enumInput.hasMoreElements();) {
-            numberOfInputPerms++; 
+            numberOfInputPerms++;
             inputs.add(enumInput.nextElement());
         }
 
         int numberOfOutputPerms = 0;
         ArrayList<Permission> outputs = new ArrayList();
         for (Enumeration<Permission> enumOutput = outputPermCollection.elements(); enumOutput.hasMoreElements();) {
-            numberOfOutputPerms++; 
+            numberOfOutputPerms++;
             outputs.add(enumOutput.nextElement());
         }
 
@@ -109,14 +101,11 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
         }
 
-
         Log.info(logClass, getName().getMethodName(), "inputs = " + inputs.toString());
         Log.info(logClass, getName().getMethodName(), "outputs = " + outputs.toString());
 
-
         Log.info(logClass, getName().getMethodName(), "**Exiting " + getName().getMethodName());
     }
-
 
     /**
      * Verify the following:
@@ -132,6 +121,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @Test
     public void testGetUncheckedPermissionsMethod() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
@@ -141,7 +131,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         WSPolicyConfigurationImpl policyConfig = new WSPolicyConfigurationImpl(contextID);
         String cId = policyConfig.getContextID();
         Log.info(logClass, getName().getMethodName(), "context id = " + cId);
-	if (!cId.equals(contextID)) {
+        if (!cId.equals(contextID)) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
         }
 
@@ -154,7 +144,6 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         inputPermCollection.add(ejbMethodPerm2);
         policyConfig.addToUncheckedPolicy(inputPermCollection);
         policyConfig.commit();
-
 
         if (!verifyPolicyConfig(inputPermCollection, policyConfig)) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
@@ -177,6 +166,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @Test
     public void testGetPerRoleMethod() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
@@ -186,7 +176,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         WSPolicyConfigurationImpl policyConfig = new WSPolicyConfigurationImpl(contextID);
         String cId = policyConfig.getContextID();
         Log.info(logClass, getName().getMethodName(), "context id = " + cId);
-	if (!cId.equals(contextID)) {
+        if (!cId.equals(contextID)) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
         }
 
@@ -208,8 +198,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
 
         Map<String, PermissionCollection> perRolePermissions = policyConfig.getPerRolePermissions();
 
-
-        for (Map.Entry<String,PermissionCollection> entry : perRolePermissions.entrySet()) {
+        for (Map.Entry<String, PermissionCollection> entry : perRolePermissions.entrySet()) {
 
             ArrayList<Permission> inputs = new ArrayList();
             if (entry.getKey().equals("Manager")) {
@@ -223,40 +212,36 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
                 if (!inputs.get(0).getName().equals("PolicyTestEJBUnchecked") || !inputs.get(0).getActions().equals("denyAll,Local,java.lang.String")) {
                     throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
                 }
-            } else 
-                if (entry.getKey().equals("Employee")) {
+            } else if (entry.getKey().equals("Employee")) {
 
-                    for (Enumeration<Permission> enumInput = entry.getValue().elements(); enumInput.hasMoreElements();) {
-                        inputs.add(enumInput.nextElement());
-                    }
-                    if (inputs.size() != 1) {
-                        throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
-                    }
-                    if (!inputs.get(0).getName().equals("PolicyTestEJBUnchecked") || !inputs.get(0).getActions().equals("denyAll,Local,java.lang.String")) {
-                        throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
-                    }
-                }  else 
-                    if (entry.getKey().equals("StarPlayer")) {
+                for (Enumeration<Permission> enumInput = entry.getValue().elements(); enumInput.hasMoreElements();) {
+                    inputs.add(enumInput.nextElement());
+                }
+                if (inputs.size() != 1) {
+                    throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
+                }
+                if (!inputs.get(0).getName().equals("PolicyTestEJBUnchecked") || !inputs.get(0).getActions().equals("denyAll,Local,java.lang.String")) {
+                    throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
+                }
+            } else if (entry.getKey().equals("StarPlayer")) {
 
-                        for (Enumeration<Permission> enumInput = entry.getValue().elements(); enumInput.hasMoreElements();) {
-                            inputs.add(enumInput.nextElement());
-                        }
-                        if (inputs.size() != 1) {
-                            throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
-                        }
-                        if (!inputs.get(0).getName().equals("PolicyTestEJBUnchecked") || !inputs.get(0).getActions().equals("Manager,denyAll,ServiceEndPoint,java.lang.String")) {
-                            throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
-                        }
-                    }
+                for (Enumeration<Permission> enumInput = entry.getValue().elements(); enumInput.hasMoreElements();) {
+                    inputs.add(enumInput.nextElement());
+                }
+                if (inputs.size() != 1) {
+                    throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
+                }
+                if (!inputs.get(0).getName().equals("PolicyTestEJBUnchecked") || !inputs.get(0).getActions().equals("Manager,denyAll,ServiceEndPoint,java.lang.String")) {
+                    throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
+                }
+            }
         }
-        
-
 
         Log.info(logClass, getName().getMethodName(), "**Exiting " + getName().getMethodName());
     }
 
-
     @Mode(TestMode.LITE)
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @Test
     public void testGetPolicyConfigWithNoContextId() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
@@ -266,9 +251,9 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         WSPolicyConfigurationImpl policyConfig = new WSPolicyConfigurationImpl(contextID);
         String cId = policyConfig.getContextID();
         Log.info(logClass, getName().getMethodName(), "context id = " + cId);
-	if (!cId.equals(contextID)) {
+        if (!cId.equals(contextID)) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
-        } 
+        }
 
         EJBMethodPermission ejbMethodPerm1 = new EJBMethodPermission("PolicyTestEJBUnchecked", "denyAll,Local,java.lang.String");
         EJBMethodPermission ejbMethodPerm2 = new EJBMethodPermission("PolicyTestEJBUnchecked", "denyAll,ServiceEndPoint,java.lang.String");
@@ -278,7 +263,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         policyConfig.addToUncheckedPolicy(inputPermCollection);
         policyConfig.commit();
 
-        PolicyContext.setContextID(contextID); 
+        PolicyContext.setContextID(contextID);
 
         PolicyConfiguration policyConfigNoContextID = pcf.getPolicyConfiguration();
         if (policyConfigNoContextID == null) {
@@ -288,13 +273,13 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         if (!verifyPolicyConfig(inputPermCollection, policyConfig)) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
         }
-        
+
         Log.info(logClass, getName().getMethodName(), "**Exiting " + getName().getMethodName());
 
     }
 
-
     @Mode(TestMode.LITE)
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @Test
     public void testGetPolicyConfigWithOnlyContextId() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
@@ -304,10 +289,9 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         WSPolicyConfigurationImpl policyConfig = new WSPolicyConfigurationImpl(contextID);
         String cId = policyConfig.getContextID();
         Log.info(logClass, getName().getMethodName(), "context id = " + cId);
-	if (!cId.equals(contextID)) {
+        if (!cId.equals(contextID)) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
-        }   
-
+        }
 
         EJBMethodPermission ejbMethodPerm1 = new EJBMethodPermission("PolicyTestEJBUnchecked", "denyAll,Local,java.lang.String");
         EJBMethodPermission ejbMethodPerm2 = new EJBMethodPermission("PolicyTestEJBUnchecked", "denyAll,ServiceEndPoint,java.lang.String");
@@ -317,19 +301,17 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         policyConfig.addToUncheckedPolicy(inputPermCollection);
         policyConfig.commit();
 
-        PolicyContext.setContextID(contextID); 
-
+        PolicyContext.setContextID(contextID);
 
         PolicyConfiguration policyConfigOnlyContextID = pcf.getPolicyConfiguration(contextID);
         if (policyConfigOnlyContextID.getContextID() != contextID) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
         }
 
-
         if (!verifyPolicyConfig(inputPermCollection, policyConfig)) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
         }
-        
+
         Log.info(logClass, getName().getMethodName(), "**Exiting " + getName().getMethodName());
 
     }
@@ -340,28 +322,26 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         Log.info(logClass, getName().getMethodName(), "outputPermCollection = " + outputPermCollection.toString());
         Log.info(logClass, getName().getMethodName(), "inputPermCollection = " + inputPermCollection.toString());
 
-
         int numberOfInputPerms = 0;
         ArrayList<Permission> inputs = new ArrayList();
         for (Enumeration<Permission> enumInput = inputPermCollection.elements(); enumInput.hasMoreElements();) {
-            numberOfInputPerms++; 
+            numberOfInputPerms++;
             inputs.add(enumInput.nextElement());
         }
 
         int numberOfOutputPerms = 0;
         ArrayList<Permission> outputs = new ArrayList();
         for (Enumeration<Permission> enumOutput = outputPermCollection.elements(); enumOutput.hasMoreElements();) {
-            numberOfOutputPerms++; 
+            numberOfOutputPerms++;
             outputs.add(enumOutput.nextElement());
         }
 
         if (inputs.size() != 2 || outputs.size() != 2) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
         }
- 
+
         Log.info(logClass, getName().getMethodName(), "inputs = " + inputs.toString());
         Log.info(logClass, getName().getMethodName(), "outputs = " + outputs.toString());
-        
 
         if (!inputs.equals(outputs)) {
             throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);

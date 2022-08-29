@@ -370,6 +370,9 @@ task securityejbjarInWarEarM07XMLmerge_EAR(type: Zip) {
 }
 
 
+
+
+
 /*
  * The 'assemble' task should build all these applications.
  */
@@ -390,7 +393,6 @@ assemble {
   dependsOn securityejbjarInWarEarM07_EAR
   dependsOn securityejbjarInWarEarM07XMLmerge_EAR
 }
-
 
 /******************************************************************
  ******************************************************************
@@ -434,7 +436,8 @@ autoFVT.doLast {
    * Copy securityejb.ear into test servers.
    */
   def servers = [
-    'com.ibm.ws.ejbcontainer.security.jacc_fat'
+    'com.ibm.ws.ejbcontainer.security.jacc_fat',
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.audit'
   ]
   servers.each { server ->
     copy { 
@@ -448,7 +451,9 @@ autoFVT.doLast {
    * Copy securityejbinwar.ear into test servers.
    */
   servers = [
-    'com.ibm.ws.ejbcontainer.security.jacc_fat'
+    'com.ibm.ws.ejbcontainer.security.jacc_fat',
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.audit',
+    'com.ibm.ws.security.authorization.jacc.dynamic_fat'
   ]
   servers.each { server ->
     copy { 
@@ -462,7 +467,8 @@ autoFVT.doLast {
    * Copy ejbinstandalone.war into test servers.
    */
   servers = [
-    'com.ibm.ws.ejbcontainer.security.jacc_fat'
+    'com.ibm.ws.ejbcontainer.security.jacc_fat',
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.audit'
   ]
   servers.each { server ->
     copy { 
@@ -639,8 +645,9 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }
+  
 
-   /*
+  /*
    * Copy ejbjarinstandaloneMC06.war into test servers.
    */
   servers = [
@@ -694,4 +701,4 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }  
-}
+} 

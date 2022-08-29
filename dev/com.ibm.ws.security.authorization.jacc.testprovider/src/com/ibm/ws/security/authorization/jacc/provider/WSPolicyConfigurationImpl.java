@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,6 @@ import java.util.Map;
 
 import javax.security.jacc.PolicyConfiguration;
 import javax.security.jacc.PolicyContextException;
-
-//import jakarta.security.jacc.PolicyConfiguration;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -302,53 +300,41 @@ public class WSPolicyConfigurationImpl implements PolicyConfiguration {
     }
 
     public PermissionCollection getExcludedPermissions() {
-        Permissions permList = new Permissions();
-        if (state != ContextState.STATE_IN_SERVICE) {
-            throw new java.lang.UnsupportedOperationException("getExcludedPermissions called when the PolicyConfiguration is not in the in_service state. The current state is = "
-                                                              + getStateString(state));
-        }
+        Permissions permissions = new Permissions();
         List<Permission> excludedPermissionList = getExcludedList();
         for (Permission p : excludedPermissionList) {
-            permList.add(p);
+            permissions.add(p);
         }
-        return permList;
+        return permissions;
     }
 
     public PermissionCollection getUncheckedPermissions() {
-        Permissions permList = new Permissions();
-        if (state != ContextState.STATE_IN_SERVICE) {
-            throw new java.lang.UnsupportedOperationException("getUncheckedPermissions called when the PolicyConfiguration is not in the in_service state. The current state is = "
-                                                              + getStateString(state));
-        }
+        Permissions permissions = new Permissions();
         List<Permission> uncheckedPermissionList = getUncheckedList();
         for (Permission p : uncheckedPermissionList) {
-            permList.add(p);
+            permissions.add(p);
         }
-        return permList;
+        return permissions;
     }
 
     public Map<String, PermissionCollection> getPerRolePermissions() {
-        Map<String, PermissionCollection> permList = new HashMap<String, PermissionCollection>();
-        PermissionCollection newPermList = null;
-        if (state != ContextState.STATE_IN_SERVICE) {
-            throw new java.lang.UnsupportedOperationException("getPerRolePermissions called when the PolicyConfiguration is not in the in_service state. The current state is = "
-                                                              + getStateString(state));
-        }
+        Map<String, PermissionCollection> permissionsMap = new HashMap<String, PermissionCollection>();
+        PermissionCollection permissions = null;
 
         Map<String, List<Permission>> roleToPermMap = getRoleToPermMap();
         if (roleToPermMap != null) {
             for (Map.Entry<String, List<Permission>> entry : roleToPermMap.entrySet()) {
-                newPermList = new Permissions();
+                permissions = new Permissions();
                 List<Permission> pList = roleToPermMap.get(entry.getValue());
                 if (pList != null) {
                     for (Permission p : pList) {
-                        newPermList.add(p);
+                        permissions.add(p);
                     }
-                    permList.put(entry.getKey(), newPermList);
+                    permissionsMap.put(entry.getKey(), permissions);
                 }
             }
         }
-        return permList;
+        return permissionsMap;
     }
 
     private String getStateString(ContextState state) {
