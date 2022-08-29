@@ -36,14 +36,11 @@ import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.db2.web.DB2TestServlet;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
 public class DB2Test extends FATServletClient {
