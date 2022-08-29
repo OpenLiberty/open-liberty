@@ -61,6 +61,7 @@ public class SSLTest {
     private static final Class<?> c = SSLTest.class;
     private final String APP_NAME = "app2";
     private final String KEYSTORE_GENERATED = "CWPKI0803A";
+    private final String TCP_CHANNEL_STARTED = "CWWKO0219I:.*defaultHttpEndpoint-ssl";
 
     @Before
     public void beforeEach() throws Exception {
@@ -81,7 +82,7 @@ public class SSLTest {
         assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
         server.checkpointRestore();
         assertEquals("Expected restore message not found", 1, server.findStringsInLogs("CWWKC0452I", server.getDefaultLogFile()).size());
-        server.waitForStringInLog(KEYSTORE_GENERATED);
+        assertNotNull("Expected CWPKI0803A message not found", server.waitForStringInLog(KEYSTORE_GENERATED));
         validateGeneratedKeyStore(server, "liberty");
 
         RemoteFile ksRemoteFile = server.getFileFromLibertyServerRoot("resources/security/key.p12");
@@ -89,6 +90,8 @@ public class SSLTest {
         final String ksPassword = "liberty";
         final String tsPath = null;
         final String tsPassword = null;
+
+        assertNotNull("Ecpected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
 
         String result = sendHttpsGet("app2/request", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);
@@ -102,7 +105,7 @@ public class SSLTest {
         assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
         server.checkpointRestore();
         assertEquals("Expected restore message not found", 1, server.findStringsInLogs("CWWKC0452I", server.getDefaultLogFile()).size());
-        server.waitForStringInLog(KEYSTORE_GENERATED);
+        assertNotNull("Expected CWPKI0803A message not found", server.waitForStringInLog(KEYSTORE_GENERATED));
         validateGeneratedKeyStore(server, server.getServerEnv().getProperty("keystore_password"));
 
         RemoteFile ksRemoteFile = server.getFileFromLibertyServerRoot("resources/security/key.p12");
@@ -110,6 +113,8 @@ public class SSLTest {
         final String ksPassword = server.getServerEnv().getProperty("keystore_password");
         final String tsPath = null;
         final String tsPassword = null;
+
+        assertNotNull("Ecpected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
 
         String result = sendHttpsGet("app2/request", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);
@@ -125,7 +130,7 @@ public class SSLTest {
         server.copyFileToLibertyServerRoot("sslKeystore/server.env");
         server.checkpointRestore();
         assertEquals("Expected restore message not found", 1, server.findStringsInLogs("CWWKC0452I", server.getDefaultLogFile()).size());
-        server.waitForStringInLog(KEYSTORE_GENERATED);
+        assertNotNull("Expected CWPKI0803A message not found", server.waitForStringInLog(KEYSTORE_GENERATED));
         validateGeneratedKeyStore(server, server.getServerEnv().getProperty("keystore_password"));
 
         RemoteFile ksRemoteFile = server.getFileFromLibertyServerRoot("resources/security/key.p12");
@@ -133,6 +138,8 @@ public class SSLTest {
         final String ksPassword = server.getServerEnv().getProperty("keystore_password");
         final String tsPath = null;
         final String tsPassword = null;
+
+        assertNotNull("Ecpected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
 
         String result = sendHttpsGet("app2/request", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);
@@ -154,6 +161,8 @@ public class SSLTest {
 
         final String ksPassword = "secret";
         final String tsPassword = "secret";
+
+        assertNotNull("Ecpected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
 
         String result = sendHttpsGet("app2/request", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);
