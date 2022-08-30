@@ -225,7 +225,7 @@ public class MicroProfileActions {
                                                           "mpConfig-3.0",
                                                           "mpFaultTolerance-4.0",
                                                           "mpHealth-4.0",
-                                                          /* "mpJwt-2.1", */
+                                                          "mpJwt-2.1",
                                                           "mpOpenAPI-3.1",
                                                           "mpMetrics-5.0",
                                                           "mpTelemetry-1.0",

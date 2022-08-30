@@ -395,6 +395,7 @@ public class VisibilityTest {
         expectedFailures.add("io.openliberty.jakarta.authorization-2.1");
         expectedFailures.add("io.openliberty.jakarta.security.enterprise-3.0");
         expectedFailures.add("io.openliberty.xmlws.common-4.0");
+        expectedFailures.add("io.openliberty.org.eclipse.microprofile.jwt-2.1");
         expectedFailures.add("io.openliberty.persistentExecutor.internal.ee-10.0"); // the persistentExecutor feature is no ship
         expectedFailures.add("io.openliberty.mail-2.1");
         expectedFailures.add("com.ibm.websphere.appserver.servlet-6.0");

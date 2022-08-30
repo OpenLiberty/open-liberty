@@ -114,7 +114,9 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         // MP features are only compatible if they're in MP versions which work with EE10
         compatibleFeatures.removeAll(FeatureUtilities.allMpFeatures());
         // Add only the MP 6.0 features which we've made compatible
-        compatibleFeatures.add("mpConfig-3.0");
+
+        compatibleFeatures.addAll(MicroProfileActions.MP60.getFeatures());
+        compatibleFeatures.add("mpContextPropagation-1.3");
         // TODO: switch to adding all of them when ready
         //compatibleFeatures.addAll(FeatureUtilities.compatibleMpFeatures(EEVersion.EE10));
 
@@ -130,9 +132,6 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.remove("springBoot-1.5"); // springBoot 3.0 will support EE 9 and maybe EE10
         compatibleFeatures.remove("springBoot-2.0");
 
-        // temporarily add jwtSso-1.0 until mpJWT 2.1 is added or mpJWT 2.0 is designated as compatible with EE10.
-        compatibleFeatures.remove("jwtSso-1.0");
-
         // Test features may or may not be compatible, we don't want to assert either way
         compatibleFeatures.removeAll(FeatureUtilities.allTestFeatures());
 
@@ -146,9 +145,8 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         incompatibleFeatures.addAll(allFeatures);
         incompatibleFeatures.removeAll(compatibleFeatures);
 
-        // TODO: We're working on getting MP60 to be EE10 compatible, so don't assert that it isn't
-        incompatibleFeatures.removeAll(MicroProfileActions.MP60.getFeatures());
-        incompatibleFeatures.removeAll(MicroProfileActions.MP_STANDALONE10.getFeatures());
+        // TODO: We're working on getting mpGraphQL-2.0 to be EE10 compatible, so don't assert that it isn't
+        incompatibleFeatures.remove("mpGraphQL-2.0");
 
         // Test features may or may not be compatible, we don't want to assert either way
         incompatibleFeatures.removeAll(FeatureUtilities.allTestFeatures());
