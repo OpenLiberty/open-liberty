@@ -94,7 +94,7 @@ public abstract class MicroProfileTelemetryTestBase {
         return APP_URL;
     }
 
-    protected String getSpansFromJaeger() {
+    protected String queryJaeger() {
         String method = "getSpans";
         String url = String.format(JAEGER_QUERY_URL, jaegerContainer.getHost(), String.valueOf(jaegerContainer.getMappedPort(JAEGER_UI_PORT)));
         String queryParams = String.format(JAEGER_QUERY_PARAMS, System.currentTimeMillis(), JAEGER_QUERY_LIMIT, OTEL_SERVICE_NAME_SYSTEM);
