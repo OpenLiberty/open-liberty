@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
@@ -36,6 +37,7 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(null, TestMode.FULL,
+                                                             MicroProfileActions.MP60, // EE10
                                                              MicroProfileActions.MP50, // EE9
                                                              MicroProfileActions.MP40); // EE8
 
@@ -47,7 +49,7 @@ public class FATSuite {
     }
 
     public static void setupServerSideAnnotations(LibertyServer server) {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             server.addEnvVar("CONNECTION_FACTORY", "jakarta.resource.cci.ConnectionFactory");
             server.addEnvVar("QUEUE_FACTORY", "jakarta.jms.QueueConnectionFactory");
             server.addEnvVar("TOPIC_FACTORY", "jakarta.jms.TopicConnectionFactory");
