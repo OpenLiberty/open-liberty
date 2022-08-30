@@ -34,6 +34,12 @@ public abstract class AuthorizationRequest {
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
     protected OidcStorageUtils storageUtils = new OidcStorageUtils();
 
+    /**
+     * Do not use; only for OSGi initialization
+     */
+    public AuthorizationRequest() {
+    }
+
     public AuthorizationRequest(HttpServletRequest request, HttpServletResponse response, String clientId) {
         this.request = request;
         this.response = response;

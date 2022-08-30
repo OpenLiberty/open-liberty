@@ -33,6 +33,9 @@ Export-Package: \
 	io.openliberty.security.oidcclientcore.http, \
 	io.openliberty.security.oidcclientcore.token
 
+-dsannotations: \
+	io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest
+
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.common;version=latest,\
@@ -48,7 +51,9 @@ Export-Package: \
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.common.encoder;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.websphere.org.osgi.core;version=latest
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.ssl;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
