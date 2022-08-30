@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,9 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     // Using the RepeatTests @ClassRule in FATSuite will cause all tests in the FAT to be run twice.
     // First without any modifications, then again with all features in all server.xml's upgraded to their EE8/EE9 equivalents.
+    // Some corner case tests are skipped for repeating, as its not necessary to repeat these tests using the newer features, since
+    // some basic functionality test cases that use common code are already being repeated.
+    // Ensure, the corner case scenario test cases are skipped for repeat, when adding another RepeatAction below, to save build and test time.
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly());
 }
