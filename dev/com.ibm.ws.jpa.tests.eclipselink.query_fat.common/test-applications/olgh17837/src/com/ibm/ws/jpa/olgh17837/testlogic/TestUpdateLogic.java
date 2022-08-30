@@ -297,10 +297,18 @@ public class TestUpdateLogic extends AbstractTestLogic {
 
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LCASE(?))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LCASE(?))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LOWER(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LOWER(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LCASE('HELLO'))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LOWER(?))", sql.remove(0));
+                }
             }
 
             System.out.println("Rolling back transaction...");
