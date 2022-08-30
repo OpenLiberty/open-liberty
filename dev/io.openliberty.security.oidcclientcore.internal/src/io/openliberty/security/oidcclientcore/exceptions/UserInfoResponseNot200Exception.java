@@ -37,7 +37,7 @@ public class UserInfoResponseNot200Exception extends Exception {
         return statusCode;
     }
 
-    public String responseStr() {
+    public String getResponseStr() {
         return responseStr;
     }
 

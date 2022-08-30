@@ -288,7 +288,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
     }
 
     private void verifyUserInfoResponse(UserInfoResponse userInfoResponse) {
-        Map<String, String> claims = userInfoResponse.asMap();
+        Map<String, Object> claims = userInfoResponse.asMap();
         assertEquals("Expected sub claim to be " + claims.get("sub") + ", but was " + sub + ".", claims.get("sub"), sub);
         assertEquals("Expected iss claim to be " + claims.get("iss") + ", but was " + iss + ".", claims.get("iss"), iss);
         assertEquals("Expected name claim to be " + claims.get("name") + ", but was " + name + ".", claims.get("name"), name);

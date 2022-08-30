@@ -20,24 +20,24 @@ import com.ibm.json.java.JSONObject;
 public class UserInfoResponse {
 
     private final JSONObject rawResponse;
-    private Map<String, String> responseAsMap;
+    private Map<String, Object> responseAsMap;
 
     public UserInfoResponse(JSONObject responseStr) {
         rawResponse = responseStr;
     }
 
     @SuppressWarnings("unchecked")
-    public Map<String, String> asMap() {
+    public Map<String, Object> asMap() {
         if (responseAsMap != null) {
             return responseAsMap;
         }
         if (rawResponse == null) {
             return null;
         }
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         Set<String> keys = rawResponse.keySet();
         for (String key : keys) {
-            map.put(key, rawResponse.get(key).toString());
+            map.put(key, rawResponse.get(key));
         }
         responseAsMap = new HashMap<>(map);
         return map;
