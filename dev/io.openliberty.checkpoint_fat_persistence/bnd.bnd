@@ -28,7 +28,8 @@ fat.test.container.images: kyleaure/db2-ssl:3.0
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
-        com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.db2.jcc;version=1.4.0,\
-	io.openliberty.org.testcontainers;version=latest
+    com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.3;version=latest,\
+    com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+    com.ibm.db2.jcc;version=1.4.0,\
+    io.openliberty.org.testcontainers;version=latest
