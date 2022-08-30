@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
- var editorTree = (function() {
+var editorTree = (function() {
     "use strict";
 
     // Used to generate unique identifier
