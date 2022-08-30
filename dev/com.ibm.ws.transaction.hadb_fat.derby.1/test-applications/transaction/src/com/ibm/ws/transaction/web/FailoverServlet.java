@@ -445,6 +445,37 @@ public class FailoverServlet extends FATServlet {
         }
     }
 
+    public void deleteStaleLease(HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
+
+        Connection con = getConnection();
+        con.setAutoCommit(false);
+        DatabaseMetaData mdata = con.getMetaData();
+        String dbName = mdata.getDatabaseProductName();
+
+        // Access the Database
+        boolean isSQLServer = false;
+        if (dbName.toLowerCase().contains("microsoft sql")) {
+            // we are MS SQL Server
+            isSQLServer = true;
+            System.out.println("deleteStaleLease: This is an MS SQL Server Database");
+        }
+
+        Statement deleteStmt = con.createStatement();
+
+        try {
+            String deleteString = "DELETE FROM WAS_LEASES_LOG" +
+                                  (isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                  " WHERE SERVER_IDENTITY='cloudstale'";
+            System.out.println("deleteStaleLease: Attempt to delete the row using - " + deleteString);
+            int ret = deleteStmt.executeUpdate(deleteString);
+            System.out.println("deleteStaleLease: return was - " + ret);
+        } catch (Exception e) {
+            System.out.println("deleteStaleLease: Delete failed with exception: " + e);
+        } // eof Exception e block
+
+    }
+
     public static String toHexString(byte[] byteSource, int bytes) {
         StringBuffer result = null;
         boolean truncated = false;
