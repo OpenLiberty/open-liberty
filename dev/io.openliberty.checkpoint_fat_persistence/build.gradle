@@ -28,31 +28,21 @@ addRequiredLibraries {
 	dependsOn copyBundles
 }
 
+addRequiredLibraries.dependsOn copyTestContainers
+
 
 configurations {
-    jaegerClient
-    requiredLibs.extendsFrom jaegerClient
+  db2
 }
 
 dependencies {
-  requiredLibs 'org.glassfish:javax.json:1.1'
-  jaegerClient 'io.opentracing:opentracing-util:0.33.0'
-  jaegerClient 'io.opentracing:opentracing-noop:0.33.0'
-  jaegerClient 'io.jaegertracing:jaeger-core:1.6.0'
-  jaegerClient 'io.jaegertracing:jaeger-thrift:1.6.0'
-  jaegerClient 'io.jaegertracing:jaeger-client:1.6.0'
-  jaegerClient 'io.jaegertracing:jaeger-tracerresolver:1.6.0'
-  jaegerClient 'org.apache.thrift:libthrift:0.14.1'
-  jaegerClient project(':com.ibm.ws.org.slf4j.api')
-  jaegerClient project(':com.ibm.ws.org.slf4j.simple')
-  jaegerClient project(':io.openliberty.com.google.gson')
+  db2 'com.ibm.db2:jcc:11.1.4.4'
 }
 
-autoFVT {
-  doLast {
-    // Manually clear out JSON-P 1.0 (automatically added to all FATs) because we want to use JSON-P 1.1
-    delete new File(buildDir, 'autoFVT/lib/com.ibm.ws.org.glassfish.json.1.0.jar')
-  }
+task copyDB2(type: Copy) {
+  shouldRunAfter jar
+  from configurations.db2
+  into new File(autoFvtDir, 'publish/shared/resources/db2')
 }
 
-apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+addRequiredLibraries.dependsOn copyDB2
