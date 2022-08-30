@@ -176,11 +176,15 @@ final class LTPACrypto {
 
 	/**
 	 * Sign the data.
-	 * 
-	 * @param key  The key used to sign the data
-	 * @param data The byte representation of the data
-	 * @param off  The offset of the data
-	 * @param len  The length of the data
+	 *
+	 * @param key
+	 *            The key used to sign the data
+	 * @param data
+	 *            The byte representation of the data
+	 * @param off
+	 *            The offset of the data
+	 * @param len
+	 *            The length of the data
 	 * @return The signature of the data
 	 */
 	protected static final byte[] signISO9796(byte[][] key, byte[] data, int off, int len) throws Exception {
@@ -214,7 +218,8 @@ final class LTPACrypto {
 						}
 					}
 				} catch (Exception e) {
-					// do nothing. since this code is used for the command line utility, no log is
+					// do nothing. since this code is used for the command line
+					// utility, no log is
 					// taken.
 				}
 
@@ -451,14 +456,21 @@ final class LTPACrypto {
 
 	/**
 	 * Verify if the signature of the data is correct.
-	 * 
-	 * @param key  The key used to verify the data
-	 * @param data The byte representation of the data
-	 * @param off  The offset of the data
-	 * @param len  The length of the data
-	 * @param sig  The signature of the data
-	 * @param off  The offset of the signature
-	 * @param len  The length of the signature
+	 *
+	 * @param key
+	 *            The key used to verify the data
+	 * @param data
+	 *            The byte representation of the data
+	 * @param off
+	 *            The offset of the data
+	 * @param len
+	 *            The length of the data
+	 * @param sig
+	 *            The signature of the data
+	 * @param off
+	 *            The offset of the signature
+	 * @param len
+	 *            The length of the signature
 	 * @return True if the signature of the data is correct
 	 */
 	protected static final boolean verifyISO9796(byte[][] key, byte[] data, int off, int len, byte[] sig, int sigOff,
@@ -526,8 +538,9 @@ final class LTPACrypto {
 
 	/**
 	 * Set the key for RSA algorithms.
-	 * 
-	 * @param key The key
+	 *
+	 * @param key
+	 *            The key
 	 */
 	protected static final void setRSAKey(byte[][] key) {
 		BigInteger[] k = new BigInteger[8];
@@ -636,10 +649,13 @@ final class LTPACrypto {
 
 	/**
 	 * Encrypt the data.
-	 * 
-	 * @param data   The byte representation of the data
-	 * @param key    The key used to encrypt the data
-	 * @param cipher The cipher algorithm
+	 *
+	 * @param data
+	 *            The byte representation of the data
+	 * @param key
+	 *            The key used to encrypt the data
+	 * @param cipher
+	 *            The cipher algorithm
 	 * @return The encrypted data (ciphertext)
 	 */
 	protected static final byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
@@ -650,10 +666,13 @@ final class LTPACrypto {
 
 	/**
 	 * Decrypt the specified msg.
-	 * 
-	 * @param msg    The byte representation of the data
-	 * @param key    The key used to decrypt the data
-	 * @param cipher The cipher algorithm
+	 *
+	 * @param msg
+	 *            The byte representation of the data
+	 * @param key
+	 *            The key used to decrypt the data
+	 * @param cipher
+	 *            The cipher algorithm
 	 * @return The decrypted data (plaintext)
 	 */
 	protected static final byte[] decrypt(byte[] msg, byte[] key, String cipher) throws Exception {
@@ -664,7 +683,7 @@ final class LTPACrypto {
 
 	/*
 	 * Set the maximam size of the cache. It is used only for the junit tests.
-	 * 
+	 *
 	 * @param maxCache The maximam size of the cache
 	 */
 	protected static void setMaxCache(int maxCache) {
@@ -673,7 +692,7 @@ final class LTPACrypto {
 
 	/*
 	 * Set the 8-byte initialization vector.
-	 * 
+	 *
 	 * @param key The key
 	 */
 	private static final synchronized void setIVS8(byte[] key) {
@@ -688,7 +707,7 @@ final class LTPACrypto {
 
 	/*
 	 * Set the 16-byte initialization vector.
-	 * 
+	 *
 	 * @param key The key
 	 */
 
@@ -1018,110 +1037,47 @@ final class LTPACrypto {
 	}
 
 	static final byte[][] rsaKey(int len, boolean crt, boolean f4) {
-		return rsaKey(len, crt, f4, false);
-	}
-
-	static final byte[][] rsaKey(int len, boolean crt, boolean f4, boolean useJCE) {
 		byte[][] key = new byte[crt ? 8 : 3][];
-		if (useJCE) {
-			KeyPair pair = null;
-			KeyPairGenerator keyGen = null;
-			try {
+		KeyPair pair = null;
+		KeyPairGenerator keyGen = null;
+		try {
 
-				if (LTPAKeyUtil.isIBMJCEAvailable()) {
-					// IBMJCE_NAME needed for hardware crypto
-					keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
-				} else {
-					keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM);
-				}
-				keyGen.initialize(len * 8, new SecureRandom());
-				pair = keyGen.generateKeyPair();
-				RSAPublicKey rsaPubKey = (RSAPublicKey) pair.getPublic();
-				RSAPrivateCrtKey rsaPrivKey = (RSAPrivateCrtKey) pair.getPrivate();
-
-				BigInteger e = rsaPubKey.getPublicExponent();
-				BigInteger n = rsaPubKey.getModulus();
-				BigInteger pe = rsaPrivKey.getPrivateExponent();
-				key[0] = n.toByteArray();
-				key[1] = crt ? null : pe.toByteArray();
-				key[2] = e.toByteArray();
-
-				if (crt) {
-					BigInteger p = rsaPrivKey.getPrimeP();
-					BigInteger q = rsaPrivKey.getPrimeQ();
-					BigInteger ep = rsaPrivKey.getPrimeExponentP();
-					BigInteger eq = rsaPrivKey.getPrimeExponentQ();
-					BigInteger c = rsaPrivKey.getCrtCoefficient();
-					key[3] = p.toByteArray();
-					key[4] = q.toByteArray();
-					key[5] = ep.toByteArray();
-					key[6] = eq.toByteArray();
-					key[7] = c.toByteArray();
-				}
-			} catch (java.security.NoSuchAlgorithmException e) {
-				// instrumented ffdc
-			} catch (java.security.NoSuchProviderException e) {
-				// instrumented ffdc
+			if (LTPAKeyUtil.isIBMJCEAvailable()) {
+				// IBMJCE_NAME needed for hardware crypto
+				keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
+			} else {
+				keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM);
 			}
-		} else {
-			BigInteger p, q, n, d;
-			BigInteger e = BigInteger.valueOf(f4 ? 0x10001 : 3);
-			BigInteger one = BigInteger.valueOf(1), two = BigInteger.valueOf(2);
-			byte[] b = new byte[(len /= 2) + 1];
+			keyGen.initialize(len * 8, new SecureRandom());
+			pair = keyGen.generateKeyPair();
+			RSAPublicKey rsaPubKey = (RSAPublicKey) pair.getPublic();
+			RSAPrivateCrtKey rsaPrivKey = (RSAPrivateCrtKey) pair.getPrivate();
 
-			for (p = null;;) {
-				for (q = null;;) {
-					if (q == null) {
-						random(b, 1, len);
-						b[1] |= 0xC0;
-						b[len] |= 1;
-						q = new BigInteger(b);
-					} else {
-						q = q.add(two);
-						if (q.bitLength() > len * 8) {
-							q = null;
-							continue;
-						}
-					}
-
-					if (q.isProbablePrime(32) && e.gcd(q.subtract(one)).equals(one))
-						break;
-				}
-
-				if (p == null)
-					p = q;
-				else {
-					n = p.multiply(q);
-					if (n.bitLength() == len * 2 * 8) {
-
-						d = e.modInverse((p.subtract(one)).multiply(q.subtract(one)));
-
-						if (((p.modPow(e, n)).modPow(d, n)).equals(p))
-							break;
-					}
-					p = null;
-				}
-			}
-
-			key[0] = n.toByteArray(); // modulus
-			key[1] = crt ? null : d.toByteArray(); // private exponent if a CRT key
-			key[2] = e.toByteArray(); // public exponent
+			BigInteger e = rsaPubKey.getPublicExponent();
+			BigInteger n = rsaPubKey.getModulus();
+			BigInteger pe = rsaPrivKey.getPrivateExponent();
+			key[0] = n.toByteArray();
+			key[1] = crt ? null : pe.toByteArray();
+			key[2] = e.toByteArray();
 
 			if (crt) {
-				if (p.compareTo(q) < 0) {
-					e = p;
-					p = q;
-					q = e;
-				}
-				key[3] = p.toByteArray(); // PrimeP
-				key[4] = q.toByteArray(); // PrimeQ
-				key[5] = d.remainder(p.subtract(one)).toByteArray(); // PrimeExponentP \
-				key[6] = d.remainder(q.subtract(one)).toByteArray(); // PrimeExponentQ - looks like JCE sets these to
-																		// zero. You could calculate these if you want
-																		// to.
-				key[7] = q.modInverse(p).toByteArray(); // getCrtCoefficient /
+				BigInteger p = rsaPrivKey.getPrimeP();
+				BigInteger q = rsaPrivKey.getPrimeQ();
+				BigInteger ep = rsaPrivKey.getPrimeExponentP();
+				BigInteger eq = rsaPrivKey.getPrimeExponentQ();
+				BigInteger c = rsaPrivKey.getCrtCoefficient();
+				key[3] = p.toByteArray();
+				key[4] = q.toByteArray();
+				key[5] = ep.toByteArray();
+				key[6] = eq.toByteArray();
+				key[7] = c.toByteArray();
 			}
+		} catch (java.security.NoSuchAlgorithmException e) {
+			// instrumented ffdc
+		} catch (java.security.NoSuchProviderException e) {
+			// instrumented ffdc
 		}
+
 		return key;
 	}
 }
