@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE10RepeatAction;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
 import com.ibm.ws.security.mp.jwt12.fat.configInAppTests.MPJwt12MPConfigInApp_Tests;
 import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_Algorithm;
@@ -93,9 +93,9 @@ public class FATSuite {
      * copy/use the proper version of some config files.
      */
     /**
-     * mpJwt-2.1 needs EE9 enabled
+     * mpJwt-2.1 needs EE10 enabled
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE9RepeatAction(MPJwt11FatConstants.MP_JWT_21).forServerConfigPaths("publish/servers", "publish/shared/config"));
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE10RepeatAction(MPJwt11FatConstants.MP_JWT_21).forServerConfigPaths("publish/servers", "publish/shared/config"));
 
 }
