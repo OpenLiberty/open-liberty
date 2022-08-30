@@ -12450,45 +12450,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
 
             // -----------------------
 
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery = cb.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root = cquery.from(OLGH17837Entity.class);
-//            cquery.multiselect(root.get(OLGH17837Entity_.intVal1));
-//
-//            ParameterExpression<Integer> checkParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> checkParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam3 = cb.parameter(Integer.class);
-//
-//            Expression<Object> selectCase = cb.selectCase(root.get(OLGH17837Entity_.intVal2))
-//                .when(checkParam1, resultParam1)
-//                .when(checkParam2, resultParam2)
-//                .otherwise(resultParam3);
-//
-//            Predicate pred = cb.equal(root.get(OLGH17837Entity_.intVal1), selectCase);
-//            cquery.where(pred);
-//
-//            query = em.createQuery(cquery);
-//            query.setParameter(checkParam1, 5);
-//            query.setParameter(resultParam1, 6);
-//            query.setParameter(checkParam2, 15);
-//            query.setParameter(resultParam2, 16);
-//            query.setParameter(resultParam3, 26);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            if(isDB2Z || isDB2 || isDerby) {
-//                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END)", sql.remove(0));
-//            } else {
-//                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END)", sql.remove(0));
-//            }
-
             CriteriaBuilder cb2 = em.getCriteriaBuilder();
             CriteriaQuery<Object[]> cquery2 = cb2.createQuery(Object[].class);
             Root<OLGH17837Entity> root2 = cquery2.from(OLGH17837Entity.class);
@@ -12511,39 +12472,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
             } else {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END)", sql.remove(0));
             }
-
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb3 = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery3 = cb3.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root3 = cquery3.from(OLGH17837Entity.class);
-//            cquery3.multiselect(root3.get(OLGH17837Entity_.intVal1));
-//
-//            ParameterExpression<Integer> checkParam3 = cb3.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam4 = cb3.parameter(Integer.class);
-//
-//            Expression<Object> selectCase3 = cb3.selectCase(root3.get(OLGH17837Entity_.intVal2))
-//                .when(5, resultParam4)
-//                .when(checkParam3, 16)
-//                .otherwise(26);
-//
-//            Predicate pred3 = cb3.equal(root3.get(OLGH17837Entity_.intVal1), selectCase3);
-//            cquery3.where(pred3);
-//
-//            query = em.createQuery(cquery3);
-//            query.setParameter(resultParam4, 6);
-//            query.setParameter(checkParam3, 15);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            if(isDB2Z || isDB2 || isDerby) {
-//                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN 6 WHEN 15 THEN 16 ELSE 26 END)", sql.remove(0));
-//            } else {
-//                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END)", sql.remove(0));
-//            }
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
@@ -12629,45 +12557,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
 
             // -----------------------
 
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery = cb.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root = cquery.from(OLGH17837Entity.class);
-//            cquery.multiselect(root.get(OLGH17837Entity_.intVal1));
-//
-//            ParameterExpression<Integer> checkParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> checkParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam3 = cb.parameter(Integer.class);
-//
-//            Expression<Object> selectCase = cb.selectCase(root.get(OLGH17837Entity_.intVal2))
-//                .when(checkParam1, resultParam1)
-//                .when(checkParam2, resultParam2)
-//                .otherwise(resultParam3);
-//
-//            Predicate pred = cb.equal(root.get(OLGH17837Entity_.intVal1), selectCase);
-//            cquery.where(pred);
-//
-//            query = em.createQuery(cquery);
-//            query.setParameter(checkParam1, 5);
-//            query.setParameter(resultParam1, 6);
-//            query.setParameter(checkParam2, 15);
-//            query.setParameter(resultParam2, 16);
-//            query.setParameter(resultParam3, 26);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            if(isDB2Z || isDB2 || isDerby) {
-//                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END)", sql.remove(0));
-//            } else {
-//                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END)", sql.remove(0));
-//            }
-
             CriteriaBuilder cb2 = em.getCriteriaBuilder();
             CriteriaQuery<Object[]> cquery2 = cb2.createQuery(Object[].class);
             Root<OLGH17837Entity> root2 = cquery2.from(OLGH17837Entity.class);
@@ -12690,35 +12579,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
             } else {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END)", sql.remove(0));
             }
-
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb3 = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery3 = cb3.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root3 = cquery3.from(OLGH17837Entity.class);
-//            cquery3.multiselect(root3.get(OLGH17837Entity_.intVal1));
-//
-//            ParameterExpression<Integer> checkParam3 = cb3.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam4 = cb3.parameter(Integer.class);
-//
-//            Expression<Object> selectCase3 = cb3.selectCase(root3.get(OLGH17837Entity_.intVal2))
-//                .when(5, resultParam4)
-//                .when(checkParam3, 16)
-//                .otherwise(26);
-//
-//            Predicate pred3 = cb3.equal(root3.get(OLGH17837Entity_.intVal1), selectCase3);
-//            cquery3.where(pred3);
-//
-//            query = em.createQuery(cquery3);
-//            query.setParameter(resultParam4, 6);
-//            query.setParameter(checkParam3, 15);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN ? WHEN 15 THEN 16 ELSE 26 END)", sql.remove(0));
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
@@ -12804,45 +12664,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
 
             // -----------------------
 
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery = cb.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root = cquery.from(OLGH17837Entity.class);
-//            cquery.multiselect(root.get(OLGH17837Entity_.intVal1));
-//
-//            ParameterExpression<Integer> checkParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> checkParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam3 = cb.parameter(Integer.class);
-//
-//            Expression<Object> selectCase = cb.selectCase(root.get(OLGH17837Entity_.intVal2))
-//                .when(checkParam1, resultParam1)
-//                .when(checkParam2, resultParam2)
-//                .otherwise(resultParam3);
-//
-//            Predicate pred = cb.equal(root.get(OLGH17837Entity_.intVal1), selectCase);
-//            cquery.where(pred);
-//
-//            query = em.createQuery(cquery);
-//            query.setParameter(checkParam1, 5);
-//            query.setParameter(resultParam1, 6);
-//            query.setParameter(checkParam2, 15);
-//            query.setParameter(resultParam2, 16);
-//            query.setParameter(resultParam3, 26);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            if(isDB2Z || isDB2 || isDerby) {
-//                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END)", sql.remove(0));
-//            } else {
-//                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END)", sql.remove(0));
-//            }
-
             CriteriaBuilder cb2 = em.getCriteriaBuilder();
             CriteriaQuery<Object[]> cquery2 = cb2.createQuery(Object[].class);
             Root<OLGH17837Entity> root2 = cquery2.from(OLGH17837Entity.class);
@@ -12865,39 +12686,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
             } else {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END)", sql.remove(0));
             }
-
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb3 = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery3 = cb3.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root3 = cquery3.from(OLGH17837Entity.class);
-//            cquery3.multiselect(root3.get(OLGH17837Entity_.intVal1));
-//
-//            ParameterExpression<Integer> checkParam3 = cb3.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam4 = cb3.parameter(Integer.class);
-//
-//            Expression<Object> selectCase3 = cb3.selectCase(root3.get(OLGH17837Entity_.intVal2))
-//                .when(5, resultParam4)
-//                .when(checkParam3, 16)
-//                .otherwise(26);
-//
-//            Predicate pred3 = cb3.equal(root3.get(OLGH17837Entity_.intVal1), selectCase3);
-//            cquery3.where(pred3);
-//
-//            query = em.createQuery(cquery3);
-//            query.setParameter(resultParam4, 6);
-//            query.setParameter(checkParam3, 15);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            if(isDB2Z || isDB2 || isDerby) {
-//                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END)", sql.remove(0));
-//            } else {
-//                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END)", sql.remove(0));
-//            }
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
@@ -13510,46 +13298,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
 
             // -----------------------
 
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery = cb.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root = cquery.from(OLGH17837Entity.class);
-//
-//            ParameterExpression<Integer> checkParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> checkParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam3 = cb.parameter(Integer.class);
-//
-//            Expression<Object> selectCase = cb.selectCase(root.get(OLGH17837Entity_.intVal2))
-//                .when(checkParam1, resultParam1)
-//                .when(checkParam2, resultParam2)
-//                .otherwise(resultParam3);
-//            cquery.multiselect(selectCase);
-//
-//            ParameterExpression<Integer> checkParam3 = cb.parameter(Integer.class);
-//            cquery.where(cb.equal(root.get(OLGH17837Entity_.intVal1), checkParam3));
-//
-//            query = em.createQuery(cquery);
-//            query.setParameter(checkParam1, 5);
-//            query.setParameter(resultParam1, 6);
-//            query.setParameter(checkParam2, 15);
-//            query.setParameter(resultParam2, 16);
-//            query.setParameter(resultParam3, 26);
-//            query.setParameter(checkParam3, 99);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            if(isDB2Z || isDB2 || isDerby) {
-//                Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
-//            } else {
-//                Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
-//            }
-
             CriteriaBuilder cb2 = em.getCriteriaBuilder();
             CriteriaQuery<Object[]> cquery2 = cb2.createQuery(Object[].class);
             Root<OLGH17837Entity> root2 = cquery2.from(OLGH17837Entity.class);
@@ -13571,36 +13319,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
             } else {
                 Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
             }
-
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb3 = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery3 = cb3.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root3 = cquery3.from(OLGH17837Entity.class);
-//
-//            ParameterExpression<Integer> checkParam4 = cb3.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam4 = cb3.parameter(Integer.class);
-//
-//            Expression<Object> selectCase3 = cb3.selectCase(root3.get(OLGH17837Entity_.intVal2))
-//                .when(5, resultParam4)
-//                .when(checkParam4, 16)
-//                .otherwise(26);
-//            cquery3.multiselect(selectCase3);
-//
-//            ParameterExpression<Integer> checkParam5 = cb3.parameter(Integer.class);
-//            cquery3.where(cb3.equal(root3.get(OLGH17837Entity_.intVal1), checkParam5));
-//
-//            query = em.createQuery(cquery3);
-//            query.setParameter(resultParam4, 6);
-//            query.setParameter(checkParam4, 15);
-//            query.setParameter(checkParam5, 99);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN ? WHEN 15 THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
@@ -13688,46 +13406,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
 
             // -----------------------
 
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery = cb.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root = cquery.from(OLGH17837Entity.class);
-//
-//            ParameterExpression<Integer> checkParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> checkParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam3 = cb.parameter(Integer.class);
-//
-//            Expression<Object> selectCase = cb.selectCase(root.get(OLGH17837Entity_.intVal2))
-//                .when(checkParam1, resultParam1)
-//                .when(checkParam2, resultParam2)
-//                .otherwise(resultParam3);
-//            cquery.multiselect(selectCase);
-//
-//            ParameterExpression<Integer> checkParam3 = cb.parameter(Integer.class);
-//            cquery.where(cb.equal(root.get(OLGH17837Entity_.intVal1), checkParam3));
-//
-//            query = em.createQuery(cquery);
-//            query.setParameter(checkParam1, 5);
-//            query.setParameter(resultParam1, 6);
-//            query.setParameter(checkParam2, 15);
-//            query.setParameter(resultParam2, 16);
-//            query.setParameter(resultParam3, 26);
-//            query.setParameter(checkParam3, 99);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            if(isDB2Z || isDB2 || isDerby) {
-//                Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
-//            } else {
-//                Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
-//            }
-
             CriteriaBuilder cb2 = em.getCriteriaBuilder();
             CriteriaQuery<Object[]> cquery2 = cb2.createQuery(Object[].class);
             Root<OLGH17837Entity> root2 = cquery2.from(OLGH17837Entity.class);
@@ -13749,36 +13427,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
             } else {
                 Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
             }
-
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb3 = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery3 = cb3.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root3 = cquery3.from(OLGH17837Entity.class);
-//
-//            ParameterExpression<Integer> checkParam4 = cb3.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam4 = cb3.parameter(Integer.class);
-//
-//            Expression<Object> selectCase3 = cb3.selectCase(root3.get(OLGH17837Entity_.intVal2))
-//                .when(5, resultParam4)
-//                .when(checkParam4, 16)
-//                .otherwise(26);
-//            cquery3.multiselect(selectCase3);
-//
-//            ParameterExpression<Integer> checkParam5 = cb3.parameter(Integer.class);
-//            cquery3.where(cb3.equal(root3.get(OLGH17837Entity_.intVal1), checkParam5));
-//
-//            query = em.createQuery(cquery3);
-//            query.setParameter(resultParam4, 6);
-//            query.setParameter(checkParam4, 15);
-//            query.setParameter(checkParam5, 99);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN ? WHEN 15 THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
@@ -13866,46 +13514,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
 
             // -----------------------
 
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery = cb.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root = cquery.from(OLGH17837Entity.class);
-//
-//            ParameterExpression<Integer> checkParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> checkParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam3 = cb.parameter(Integer.class);
-//
-//            Expression<Object> selectCase = cb.selectCase(root.get(OLGH17837Entity_.intVal2))
-//                .when(checkParam1, resultParam1)
-//                .when(checkParam2, resultParam2)
-//                .otherwise(resultParam3);
-//            cquery.multiselect(selectCase);
-//
-//            ParameterExpression<Integer> checkParam3 = cb.parameter(Integer.class);
-//            cquery.where(cb.equal(root.get(OLGH17837Entity_.intVal1), checkParam3));
-//
-//            query = em.createQuery(cquery);
-//            query.setParameter(checkParam1, 5);
-//            query.setParameter(resultParam1, 6);
-//            query.setParameter(checkParam2, 15);
-//            query.setParameter(resultParam2, 16);
-//            query.setParameter(resultParam3, 26);
-//            query.setParameter(checkParam3, 99);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            if(isDB2Z || isDB2 || isDerby) {
-//                Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
-//            } else {
-//                Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
-//            }
-
             CriteriaBuilder cb2 = em.getCriteriaBuilder();
             CriteriaQuery<Object[]> cquery2 = cb2.createQuery(Object[].class);
             Root<OLGH17837Entity> root2 = cquery2.from(OLGH17837Entity.class);
@@ -13927,40 +13535,6 @@ public class TestComparisonLogic extends AbstractTestLogic {
             } else {
                 Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
             }
-
-            /*
-             * JPA 3.1 Criteria API includes support setting parameters in the CASE select WHEN condition
-             * TODO: https://github.com/eclipse-ee4j/jpa-api/issues/315
-             */
-
-//            CriteriaBuilder cb3 = em.getCriteriaBuilder();
-//            CriteriaQuery<Object[]> cquery3 = cb3.createQuery(Object[].class);
-//            Root<OLGH17837Entity> root3 = cquery3.from(OLGH17837Entity.class);
-//
-//            ParameterExpression<Integer> checkParam4 = cb3.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam4 = cb3.parameter(Integer.class);
-//
-//            Expression<Object> selectCase3 = cb3.selectCase(root3.get(OLGH17837Entity_.intVal2))
-//                .when(5, resultParam4)
-//                .when(checkParam4, 16)
-//                .otherwise(26);
-//            cquery3.multiselect(selectCase3);
-//
-//            ParameterExpression<Integer> checkParam5 = cb3.parameter(Integer.class);
-//            cquery3.where(cb3.equal(root3.get(OLGH17837Entity_.intVal1), checkParam5));
-//
-//            query = em.createQuery(cquery3);
-//            query.setParameter(resultParam4, 6);
-//            query.setParameter(checkParam4, 15);
-//            query.setParameter(checkParam5, 99);
-//            query.getResultList();
-//            sql = SQLCallListener.getAndClearCallList();
-//            Assert.assertEquals(1, sql.size());
-//            if(isDB2Z || isDB2 || isDerby) {
-//                Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
-//            } else {
-//                Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN ? WHEN ? THEN ? ELSE ? END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
-//            }
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
