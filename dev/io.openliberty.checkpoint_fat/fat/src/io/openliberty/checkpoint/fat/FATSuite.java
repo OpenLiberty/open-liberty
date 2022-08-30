@@ -102,4 +102,13 @@ public class FATSuite {
             bootStrapProperties.store(out, "");
         }
     }
+
+    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        Properties serverEnvProperties = new Properties();
+        serverEnvProperties.putAll(newEnv);
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
+            serverEnvProperties.store(out, "");
+        }
+    }
 }
