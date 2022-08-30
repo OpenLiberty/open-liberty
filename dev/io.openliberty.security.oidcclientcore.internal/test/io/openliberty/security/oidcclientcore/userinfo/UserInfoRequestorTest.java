@@ -271,7 +271,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
         UserInfoResponse userInfoResponse = userInfoRequestor.requestUserInfo();
 
-        assertNull(userInfoResponse.asMap());
+        assertNull("Expected UserInfoResponse map to be null since we don't know how to process the content type.", userInfoResponse.asMap());
     }
 
     private BasicHttpEntity createBasicHttpEntity(String string, String contentType) {
