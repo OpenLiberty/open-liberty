@@ -20,27 +20,38 @@ src: \
 fat.project: true
 
 tested.features: mpOpenApi-2.0,\
-                 mpOpenApi-3.0,\
+				 mpOpenApi-3.0,\
+                 mpopenapi-3.1,\
                  servlet-4.0,\
                  servlet-5.0,\
+                 servlet-6.0,\
                  concurrent-2.0,\
                  mpConfig-2.0,\
                  mpConfig-3.0,\
                  jsonp-1.1,\
                  jsonp-2.0,\
+                 jsonp-2.1,\
                  jaxrsclient-2.1,\
                  jaxrs-2.1,\
                  restfulws-3.0,\
+                 restfulws-3.1,\
                  componenttest-2.0,\
                  appSecurity-4.0,\
                  messaging-3.0,\
+                 messaging-3.1,\
                  messagingserver-3.0,\
                  messagingclient-3.0,\
                  connectors-2.0,\
+                 connectors-2.1,\
                  appsecurity-3.0,\
+                 appsecurity-5.0,\
                  cdi-2.0,\
-                 el-3.0
-
+                 cdi-4.0,\
+                 el-3.0,\
+                 xmlbinding-4.0,\
+                 restfulwsclient-3.1,\
+                 expressionlanguage-5.0
+                 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.connector.1.7;version=latest,\
@@ -57,3 +68,4 @@ tested.features: mpOpenApi-2.0,\
 	com.ibm.ws.security.jaas.common;version=latest,\
 	com.ibm.ws.microprofile.openapi;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest
+	

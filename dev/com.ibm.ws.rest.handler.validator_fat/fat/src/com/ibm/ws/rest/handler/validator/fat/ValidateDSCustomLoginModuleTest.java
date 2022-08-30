@@ -40,6 +40,7 @@ import com.ibm.ws.rest.handler.validator.loginmodule.TestLoginModule;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -69,11 +70,15 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
 
         FATSuite.setupServerSideAnnotations(server);
 
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             //Transforming the java permission
             final String serverXml = "validatorCustomLoginModuleServer.xml";
             Path serverXmlFile = Paths.get("lib/LibertyFATTestFiles", serverXml);
-            JakartaEE9Action.transformApp(serverXmlFile);
+            if (JakartaEE9Action.isActive()) {
+                JakartaEE9Action.transformApp(serverXmlFile);
+            } else if (JakartaEE10Action.isActive()) {
+                JakartaEE10Action.transformApp(serverXmlFile);
+            }
             Log.info(c, "setUp", "TRANSFORMED SERVER XML: " + serverXmlFile);
             server.setServerConfigurationFile(serverXml);
         }
