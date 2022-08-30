@@ -103,7 +103,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         if (providerMetadata != null) {
             // Provider metadata overrides properties discovered via providerUri
             String authzEndpoint = providerMetadata.getAuthorizationEndpoint();
-            if (authzEndpoint != null) {
+            if (authzEndpoint != null && !authzEndpoint.isEmpty()) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Authorization endpoint found in the provider metadata: [" + authzEndpoint + "]");
                 }
