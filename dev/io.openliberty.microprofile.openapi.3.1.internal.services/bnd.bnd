@@ -17,6 +17,11 @@ Bundle-Description: MicroProfile OpenAPI 3.1 services, version ${bVersion}
 
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Import-Package: \
     *
 
