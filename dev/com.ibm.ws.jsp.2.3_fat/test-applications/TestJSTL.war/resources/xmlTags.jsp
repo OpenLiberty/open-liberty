@@ -39,6 +39,20 @@
 
     <x:parse xml="${stocks}" var="results"/>  
 
+    <h2>List of Stocks:</h2>
+
+    <ul>
+        <x:forEach select = "$results/list/stock/name" var = "stockName">
+            <li>Stock Name: <x:out select = "$stockName" /></li>
+        </x:forEach>
+    </ul>
+
+
+
+    <x:set var="stock1name" select="$results/list/stock[1]/name"/>
+    <p>Using x:set, we identify <x:out select="$stock1name"/> as the first stock.</p>
+    
+
     <x:if select="$results/list/stock[2]/price > 100">  
         <p><x:out select="$results/list/stock[2]/name"/> is trading above 100<p> 
     </x:if>  
