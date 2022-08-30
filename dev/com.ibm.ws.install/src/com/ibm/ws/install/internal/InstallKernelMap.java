@@ -715,6 +715,18 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+        } else if (ACTION_ERROR_MESSAGE.equals(key)) {
+            if (value instanceof String) {
+                data.put(ACTION_ERROR_MESSAGE, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (ACTION_EXCEPTION_STACKTRACE.equals(key)) {
+            if (value instanceof String) {
+                data.put(ACTION_EXCEPTION_STACKTRACE, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
         } else if (key.equals("debug")) {
             if (value instanceof Level) {
                 data.put("debug", value);
@@ -1758,10 +1770,12 @@ public class InstallKernelMap implements Map {
             this.put(DOWNLOAD_ARTIFACT_LIST, jsonCoord);
 
             Object downloaded = this.get(DOWNLOAD_RESULT);
-            if (this.get("action.error.message") != null) {
-                fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
-                String exceptionMessage = (String) this.get("action.error.message");
-                throw new InstallException(exceptionMessage);
+            String exceptionMessage = (String) this.get("action.error.message");
+            if (exceptionMessage != null) {
+                if (!exceptionMessage.contains("CWWKF1285E")) { //ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.. will throw json not found error below.
+                    fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
+                    throw new InstallException(exceptionMessage);
+                }
             }
             if (downloaded == null) {
                 fine("Could not download this json with maven coordinate: " + jsonCoord);
