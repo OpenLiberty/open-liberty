@@ -180,13 +180,17 @@ public class Basic21Test {
      * }
      */
 
-    @Mode(TestMode.LITE)
-    @Test
-    public void testNegativeoTimeOut() throws Exception {
-        timeout.testNegativeoTimeOut();
-        String result  = LS.waitForStringInTraceUsingMark("Session timeout -12 is less than 1. No timeout enabled");
-        assertNotNull("Timeout message not found!", result);
-    }
+     /*
+      * ALSO SKIPPED DUE TO Defect 291298
+      * @Mode(TestMode.LITE)
+      * @Test
+      * public void testNegativeoTimeOut() throws Exception {
+      *  timeout.testNegativeoTimeOut();
+      *  String result  = LS.waitForStringInTraceUsingMark("Session timeout -12 is less than 1. No timeout enabled");
+      *  assertNotNull("Timeout message not found!", result);
+      * }
+      */
+
 
     /*
      * testSSC means liberty wsoc impl is the client and server
