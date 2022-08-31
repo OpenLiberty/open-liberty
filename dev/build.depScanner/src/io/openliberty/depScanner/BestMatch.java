@@ -11,8 +11,11 @@
 package io.openliberty.depScanner;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
 import org.apache.maven.model.Dependency;
@@ -104,8 +109,68 @@ public class BestMatch {
                             }
 
                         });
-
+        manageWSJars(matched);
         writePom(matched, outputDir);
+
+    }
+
+    /**
+     * @param matched
+     * @param path
+     */
+    private static void manageWSJars(Set<Module> matched) {
+
+        matched.forEach(library -> {
+            if (wsLibraries(library)) {
+                manageLibrary(library);
+            }
+        });
+    }
+
+    /**
+     * @param library
+     * @param path
+     */
+    private static void manageLibrary(Module library) {
+
+        // If the proper group name can be detected in the rebundled ibm ws jar, then we will use it for scanning purposes
+
+        String fileName = library.getArtifactId() + "-" + library.getVersion() + ".jar";
+
+        InputStream is = null;
+        JarInputStream jarStream = null;
+        try {
+            is = new FileInputStream(library.getOriginalFile());
+            jarStream = new JarInputStream(is);
+            Manifest mf = jarStream.getManifest();
+            if (mf != null) {
+                Set<String> entries = mf.getEntries().keySet();
+                // Searching the jar manifest for the original jar groupid embedded in the attributes
+                for (String key : entries) {
+                    if (key.endsWith("/")) {
+                        String newGroup = key.replace("/", ".");
+                        newGroup = newGroup.substring(0, newGroup.length() - 1);
+                        library.setGroupId(newGroup);
+                        break;
+                    }
+                } ;
+
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+                jarStream.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -115,7 +180,7 @@ public class BestMatch {
     private static void writePom(Set<Module> matched, String path) {
 
         matched.forEach(library -> {
-            if (!library.getGroupId().equals("com.ibm.ws")) {
+            if (!filteredLibraries(library)) {
                 List<String> versions = depVersionMap.computeIfAbsent((library.getGroupId() + library.getArtifactId()), k -> new ArrayList<>());
                 versions.add(library.getVersion());
                 if (versions.size() > pomFiles)
@@ -133,7 +198,7 @@ public class BestMatch {
             new File(path + "/proj_" + count.intValue()).mkdirs(); //Make sure directory is created first
 
             matched.forEach(library -> {
-                if (!library.getGroupId().equals("com.ibm.ws")) {
+                if (!(filteredLibraries(library) || wsLibraries(library))) {
                     List<String> versions = depVersionMap.get((library.getGroupId() + library.getArtifactId()));
                     if (versions.size() > count.intValue()) {
 
@@ -186,6 +251,22 @@ public class BestMatch {
             }
         }
 
+    }
+
+    /**
+     * @param library
+     * @return
+     */
+    private static boolean filteredLibraries(Module library) {
+        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces")));
+    }
+
+    /**
+     * @param library
+     * @return
+     */
+    private static boolean wsLibraries(Module library) {
+        return library.getGroupId().equals("com.ibm.ws");
     }
 
     private static String toMavenCoords(String coords) {

@@ -29,7 +29,8 @@ tested.features: microProfile-1.0, \
                  microProfile-3.3, \
                  microProfile-4.0, \
                  microProfile-4.1, \
-                 microProfile-5.0
+                 microProfile-5.0, \
+                 microProfile-6.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\

@@ -44,8 +44,8 @@ import com.ibm.ws.jpa.fvt.injection.tests.web.jndi.AnnotatedJNDIServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.web.jndi.AnnotatedJNDIWebLibServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.web.jndi.DeploymentDescriptorJNDIServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.web.jndi.DeploymentDescriptorJNDIWebLibServlet;
-import com.ibm.ws.jpa.tests.spec10.injection.common.JPAFATServletClient;
 import com.ibm.ws.jpa.tests.spec10.injection.common.RepeaterInfo;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

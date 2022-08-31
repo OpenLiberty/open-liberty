@@ -75,20 +75,17 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
 
     private final transient ConcurrentServiceReferenceMap<String, AdapterActivatorOp> map = new ConcurrentServiceReferenceMap<>(KEY);
     
-    private CheckpointPhase checkpointPhase = null;
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
-    protected void setCheckpoint(CheckpointPhase checkpointPhase) {
-    	this.checkpointPhase = checkpointPhase;
-    }
+    private final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
+
     
     @Activate
     protected void activate(Map<String, Object> properties, ComponentContext cc) throws Exception {
         map.activate(cc);
         super.activate(properties, cc.getBundleContext());
         try {
-        	if (checkpointPhase != null) {
-        		Util.createValueHandler().getRunTimeCodeBase();
-        	}
+            if (checkpointPhase != CheckpointPhase.INACTIVE) {
+                Util.createValueHandler().getRunTimeCodeBase();
+            }
         } catch (Exception e) {
         }
         try {

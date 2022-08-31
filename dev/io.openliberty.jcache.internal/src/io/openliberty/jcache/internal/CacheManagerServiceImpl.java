@@ -18,8 +18,11 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.cache.CacheManager;
+import javax.cache.spi.CachingProvider;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
@@ -56,6 +59,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
     private CachingProviderService cachingProviderService = null;
     private ScheduledExecutorService scheduledExecutorService = null;
+    private ScheduledFuture<?> getCacheManagerFuture = null;
 
     private Object syncObject = new Object();
     private String id = null;
@@ -64,6 +68,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
     /** Flag tells us if the message for a call to a beta method has been issued. */
     private static boolean issuedBetaMessage = false;
+
+    /** An object that the CachingProviderService, CacheManagerService and CacheService should sync on before closing. */
+    private Object closeSyncObject = null;
 
     /**
      * Activate this OSGi component.
@@ -120,12 +127,12 @@ public class CacheManagerServiceImpl implements CacheManagerService {
          * alleviate delays on the first request to any caches that use this
          * CacheManager.
          */
-        scheduledExecutorService.execute(new Runnable() {
+        getCacheManagerFuture = scheduledExecutorService.schedule(new Runnable() {
             @Override
             public void run() {
                 getCacheManager();
             }
-        });
+        }, 0, TimeUnit.SECONDS);
     }
 
     /**
@@ -136,10 +143,22 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         /*
          * Close and clear the CacheManager instance.
          */
-        if (cacheManager != null) {
-            cacheManager.close();
+        if (cacheManager != null && !cacheManager.isClosed()) {
+            try {
+                synchronized (closeSyncObject) {
+                    cacheManager.close();
+                }
+            } catch (Exception e) {
+                Tr.warning(tc, "CWLJC0013_CLOSE_CACHEMGR_ERR", ((id == null) ? "" : id), e);
+            }
         }
+
+        /*
+         * Null out any instance fields.
+         */
         cacheManager = null;
+        getCacheManagerFuture = null;
+        closeSyncObject = null;
     }
 
     /**
@@ -172,12 +191,26 @@ public class CacheManagerServiceImpl implements CacheManagerService {
             synchronized (syncObject) {
                 if (cacheManager == null) {
                     try {
+
+                        /*
+                         * Configuration updates can occur while this task is either queue to run or while running.
+                         * If this occurs, the CachingProviderService could be unregistered. Make sure it is still
+                         * registered, if not, no-op this task.
+                         */
+                        if (cachingProviderService == null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "It appears that perhaps the CachingProviderService was unset after this task was started." +
+                                             " Perhaps a configuration change was processed?");
+                            }
+                            return null;
+                        }
+                        CachingProvider cachingProvider = cachingProviderService.getCachingProvider();
+
                         /*
                          * Perform some custom configuration updates for the CacheManager.
                          */
                         cacheConfigUtil = new CacheConfigUtil();
-                        URI uri = cacheConfigUtil.preConfigureCacheManager(configuredUri,
-                                                                           cachingProviderService.getCachingProvider(), properties);
+                        URI uri = cacheConfigUtil.preConfigureCacheManager(configuredUri, cachingProvider, properties);
 
                         /*
                          * Get the CacheManager instance. We don't provide the ClassLoader to the
@@ -197,9 +230,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
                          * the cache scope will now be different based on the new ClassLoader.
                          */
                         long loadTimeMs = System.currentTimeMillis();
-                        cacheManager = cachingProviderService.getCachingProvider()
-                                        .getCacheManager(uri, null,
-                                                         properties);
+                        cacheManager = cachingProvider.getCacheManager(uri, null, properties);
                         loadTimeMs = System.currentTimeMillis() - loadTimeMs;
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
@@ -233,6 +264,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
     public void setCachingProviderService(CachingProviderService service) {
         this.cachingProviderService = service;
+        this.closeSyncObject = service.getCloseSyncObject();
     }
 
     /**
@@ -241,7 +273,24 @@ public class CacheManagerServiceImpl implements CacheManagerService {
      * @param service The {@link CachingProviderService}.
      */
     public void unsetCachingProviderService(CachingProviderService service) {
+        /*
+         * Wait for the getCacheManagerFuture to complete if in progress.
+         */
+        waitForBackgroundTask();
+
+        /*
+         * Close the CacheManager.
+         */
+        if (this.cacheManager != null) {
+            this.cacheManager.close();
+        }
+
+        /*
+         * Null out any of the instance fields derived from the CachingProviderService.
+         */
+        this.getCacheManagerFuture = null;
         this.cachingProviderService = null;
+        this.cacheManager = null;
     }
 
     /**
@@ -266,5 +315,36 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     @Override
     public String toString() {
         return super.toString() + "{id=" + id + ", configuredUri=" + configuredUri + ", cacheManager=" + cacheManager + "}";
+    }
+
+    /**
+     * Wait for the {@link #getCacheManagerFuture} task to finish.
+     */
+    private void waitForBackgroundTask() {
+        if (this.getCacheManagerFuture != null && !this.getCacheManagerFuture.isDone()) {
+            boolean shouldTrace = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+            try {
+                if (shouldTrace) {
+                    Tr.debug(tc, "Started waiting for background task to finish.");
+                }
+                this.getCacheManagerFuture.get(60, TimeUnit.SECONDS);
+                if (shouldTrace) {
+                    Tr.debug(tc, "Finished waiting for background task to finish.");
+                }
+            } catch (Exception e) {
+                if (shouldTrace) {
+                    Tr.debug(tc, "Caught the following exception while waiting for background task to finish: " + e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Get the synch object to be used when closing the CachingProvider, CacheManager or the Cache itself.
+     *
+     * @return The sync object.
+     */
+    Object getCloseSyncObject() {
+        return closeSyncObject;
     }
 }

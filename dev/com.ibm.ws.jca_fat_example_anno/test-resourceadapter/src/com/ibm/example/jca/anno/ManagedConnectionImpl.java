@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,17 +13,18 @@ package com.ibm.example.jca.anno;
 import java.io.PrintWriter;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.resource.NotSupportedException;
-import javax.resource.ResourceException;
-import javax.resource.spi.ConnectionEventListener;
-import javax.resource.spi.ConnectionRequestInfo;
-import javax.resource.spi.LocalTransaction;
-import javax.resource.spi.ManagedConnection;
-import javax.resource.spi.ManagedConnectionMetaData;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
 import com.ibm.example.jca.anno.ConnectionSpecImpl.ConnectionRequestInfoImpl;
+
+import jakarta.resource.NotSupportedException;
+import jakarta.resource.ResourceException;
+import jakarta.resource.spi.ConnectionEventListener;
+import jakarta.resource.spi.ConnectionRequestInfo;
+import jakarta.resource.spi.LocalTransaction;
+import jakarta.resource.spi.ManagedConnection;
+import jakarta.resource.spi.ManagedConnectionMetaData;
 
 /**
  * Example managed connection.
@@ -42,10 +43,12 @@ public class ManagedConnectionImpl implements ManagedConnection {
     }
 
     @Override
-    public void cleanup() throws ResourceException {}
+    public void cleanup() throws ResourceException {
+    }
 
     @Override
-    public void destroy() throws ResourceException {}
+    public void destroy() throws ResourceException {
+    }
 
     @Override
     public Object getConnection(Subject subject, ConnectionRequestInfo cri) throws ResourceException {
@@ -78,5 +81,6 @@ public class ManagedConnectionImpl implements ManagedConnection {
     }
 
     @Override
-    public void setLogWriter(PrintWriter logWriter) throws ResourceException {}
+    public void setLogWriter(PrintWriter logWriter) throws ResourceException {
+    }
 }

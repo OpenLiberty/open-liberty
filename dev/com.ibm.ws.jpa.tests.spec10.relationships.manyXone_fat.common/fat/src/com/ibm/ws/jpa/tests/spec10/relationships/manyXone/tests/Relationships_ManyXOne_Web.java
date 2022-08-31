@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.relationships.manyXone.tests.web.TestManyXOneBidirectionalServlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXone.tests.web.TestManyXOneCompoundPKServlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXone.tests.web.TestManyXOneUnidirectionalServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

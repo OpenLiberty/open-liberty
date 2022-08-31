@@ -33,6 +33,7 @@ import io.openliberty.data.Limit;
 import io.openliberty.data.Page;
 import io.openliberty.data.Pagination;
 import io.openliberty.data.Repository;
+import io.openliberty.data.Result;
 import io.openliberty.data.Select;
 import io.openliberty.data.Sort;
 import io.openliberty.data.Sorts;
@@ -86,7 +87,8 @@ public interface Reservations extends Repository<Reservation, Long> {
     LongStream findByStopOrStartOrStartOrStart(OffsetDateTime stop, OffsetDateTime start1, OffsetDateTime start2, OffsetDateTime start3);
 
     // Use a stream of record as the return type
-    @Select(type = ReservedTimeSlot.class, value = { "start", "stop" })
+    @Result(ReservedTimeSlot.class)
+    @Select({ "start", "stop" })
     Stream<ReservedTimeSlot> findByStopOrStopOrStop(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
 
     // Possibly better way of doing the above?
@@ -111,4 +113,8 @@ public interface Reservations extends Repository<Reservation, Long> {
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
     CopyOnWriteArrayList<Reservation> findByUpperHostEndsWith(String hostPostfix);
+
+    int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
+
+    boolean updateByMeetingIDSetHost(long meetingID, String newHost);
 }

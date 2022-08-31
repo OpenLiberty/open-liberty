@@ -460,8 +460,8 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 if (isDerby || isDB2) {
                     String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = ?) AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = ?)))";
 
-                    //TODO: Alter test until EclipseLink 2.7, & 3.0 are updated to include the fix
-                    if (isUsingJPA22Feature() || isUsingJPA30Feature()) {
+                    //TODO: Alter test until EclipseLink 3.0 are updated to include the fix
+                    if (isUsingJPA30Feature()) {
                         expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = ?) AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = ?)) )";
                     }
                     Assert.assertEquals(expected, sql.get(0));
@@ -488,8 +488,8 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 if (isDerby || isDB2) {
                     String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = 'Test') AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = 33)))";
 
-                    //TODO: Alter test until EclipseLink 2.7 & 3.0 are updated to include the fix
-                    if (isUsingJPA22Feature() || isUsingJPA30Feature()) {
+                    //TODO: Alter test until EclipseLink 3.0 are updated to include the fix
+                    if (isUsingJPA30Feature()) {
                         expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = 'Test') AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = 33)) )";
                     } else if (isUsingJPA31Feature()) {
                         // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid

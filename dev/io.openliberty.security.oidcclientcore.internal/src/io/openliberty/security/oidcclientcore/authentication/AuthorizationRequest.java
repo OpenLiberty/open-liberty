@@ -15,21 +15,32 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
-import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
+import io.openliberty.security.oidcclientcore.storage.Storage;
+import io.openliberty.security.oidcclientcore.storage.StorageProperties;
+import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public abstract class AuthorizationRequest {
 
     protected HttpServletRequest request;
     protected HttpServletResponse response;
+    protected String clientId;
+
+    protected Storage storage;
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
+    protected OidcStorageUtils storageUtils = new OidcStorageUtils();
 
-    public AuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
+    public AuthorizationRequest(HttpServletRequest request, HttpServletResponse response, String clientId) {
         this.request = request;
         this.response = response;
+        this.clientId = clientId;
     }
 
-    public ProviderAuthenticationResult sendRequest() throws OidcUrlNotHttpsException {
+    public ProviderAuthenticationResult sendRequest() throws OidcClientConfigurationException, OidcDiscoveryException {
         getAuthorizationEndpoint();
 
         createSessionIfNecessary();
@@ -41,13 +52,55 @@ public abstract class AuthorizationRequest {
         return redirectToAuthorizationEndpoint(state, redirectUrl);
     }
 
-    protected abstract String getAuthorizationEndpoint() throws OidcUrlNotHttpsException;
+    protected abstract String getAuthorizationEndpoint() throws OidcClientConfigurationException, OidcDiscoveryException;
 
-    protected abstract String getRedirectUrl() throws OidcUrlNotHttpsException;
+    protected abstract String getRedirectUrl() throws OidcClientConfigurationException;
 
     protected abstract boolean shouldCreateSession();
 
-    protected abstract void storeStateValue(String state);
+    protected abstract String createStateValueForStorage(String state);
+
+    protected abstract String createNonceValueForStorage(String nonce, String state);
+
+    protected abstract ProviderAuthenticationResult redirectToAuthorizationEndpoint(String state, String redirectUrl);
+
+    protected StorageProperties getStateStorageProperties() {
+        StorageProperties props = new StorageProperties();
+        props.setStorageLifetimeSeconds(OidcClientStorageConstants.DEFAULT_STATE_STORAGE_LIFETIME_SECONDS);
+        return props;
+    }
+
+    protected StorageProperties getNonceStorageProperties() {
+        StorageProperties props = new StorageProperties();
+        return props;
+    }
+
+    protected StorageProperties getOriginalRequestUrlStorageProperties() {
+        StorageProperties props = new StorageProperties();
+        props.setStorageLifetimeSeconds(OidcClientStorageConstants.DEFAULT_REQ_URL_STORAGE_LIFETIME_SECONDS);
+        return props;
+    }
+
+    protected void storeStateValue(String state) {
+        String storageName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
+        String storageValue = createStateValueForStorage(state);
+        StorageProperties stateStorageProperties = getStateStorageProperties();
+        storage.store(storageName, storageValue, stateStorageProperties);
+    }
+
+    protected void storeNonceValue(String nonce, String state) {
+        String storageName = OidcStorageUtils.getStorageKey(OidcClientStorageConstants.WAS_OIDC_NONCE, clientId, state);
+        String storageValue = createNonceValueForStorage(nonce, state);
+        StorageProperties nonceStorageProperties = getNonceStorageProperties();
+        storage.store(storageName, storageValue, nonceStorageProperties);
+    }
+
+    protected void storeOriginalRequestUrl(String state) {
+        String storageName = OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
+        String storageValue = requestUtils.getRequestUrl(request);
+        StorageProperties reqUrlStorageProperties = getOriginalRequestUrlStorageProperties();
+        storage.store(storageName, storageValue, reqUrlStorageProperties);
+    }
 
     void createSessionIfNecessary() {
         if (shouldCreateSession()) {
@@ -57,51 +110,6 @@ public abstract class AuthorizationRequest {
                 // ignore it. Session exists
             }
         }
-    }
-
-//    void createAndAddStateCookie(String state) {
-//        String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
-    // TODO
-//        String cookieValue = OidcCookieUtils.createStateCookieValue(clientConfig.getClientSecret(), state);
-//        createAndAddCookie(cookieName, cookieValue);
-//    }
-
-//    void createAndAddCookie(String cookieName, String cookieValue) {
-//        int cookieLifeTime = (int) clientConfig.getAuthenticationTimeLimitInSeconds();
-//        Cookie c = OidcClientUtil.createCookie(cookieName, cookieValue, cookieLifeTime, request);
-//        boolean isHttpsRequest = request.getScheme().toLowerCase().contains("https");
-//        if (clientConfig.isHttpsRequired() && isHttpsRequest) {
-//            c.setSecure(true);
-//        }
-//        response.addCookie(c);
-//    }
-
-    protected ProviderAuthenticationResult redirectToAuthorizationEndpoint(String state, String redirectUrl) {
-        // TODO
-        return null;
-//        String authzEndPointUrlWithQuery = null;
-//        try {
-//            authzEndPointUrlWithQuery = buildAuthorizationUrlWithQuery((OidcClientRequest) request.getAttribute(ClientConstants.ATTRIB_OIDC_CLIENT_REQUEST), state, redirectUrl,
-//                                                                       acr_values);
-//
-//            savePostParameters();
-//
-//            // Redirect to OP
-//            // If clientSideRedirect is true (default is true) then do the
-//            // redirect.  If the user agent doesn't support javascript then config can set this to false.
-//            if (clientConfig.isClientSideRedirect()) {
-//                String domain = OidcClientUtil.getSsoDomain(request);
-//                doClientSideRedirect(authzEndPointUrlWithQuery, state, domain);
-//            } else {
-//                createAndAddWasReqUrlCookie(state);
-//            }
-//
-//        } catch (Exception ioe) {
-//            // TODO - NLS
-//            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
-//
-//        }
-//        return new ProviderAuthenticationResult(AuthResult.REDIRECT_TO_PROVIDER, HttpServletResponse.SC_OK, null, null, null, authzEndPointUrlWithQuery);
     }
 
 }

@@ -96,7 +96,7 @@ public class AfterLogoutStates {
             Log.info(thisClass, "AfterLogoutStates", "flowType: " + flowType + " (in Social path)");
             isUsingOidcNotSocial = false;
         }
-        if (logoutMethod.equals(Constants.END_SESSION)) {
+        if (logoutMethod.equals(Constants.END_SESSION) || logoutMethod.equals(Constants.SAML)) {
             isUsingEndSessionNotHttpLogout = true;
         } else {
             if (logoutMethod.equals(Constants.LOGOUT_ENDPOINT)) {

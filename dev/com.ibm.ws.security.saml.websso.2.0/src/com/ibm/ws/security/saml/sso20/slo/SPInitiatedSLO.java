@@ -11,6 +11,8 @@
 package com.ibm.ws.security.saml.sso20.slo;
 
 import java.io.UnsupportedEncodingException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
 import javax.security.auth.Subject;
@@ -412,7 +414,7 @@ public class SPInitiatedSLO {
 
             signature.setSigningCredential(signingCredential);
             signableMessage.setSignature(signature);
-            final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+            ClassLoader originalClassLoader = null, cl = null;
             try {
                 Marshaller marshaller = XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(signableMessage);//v3
                 if (marshaller == null) {
@@ -421,14 +423,55 @@ public class SPInitiatedSLO {
                                     null, new Object[] {});
                 }
                 marshaller.marshall(signableMessage);
-                Thread.currentThread().setContextClassLoader(SignerProvider.class.getClassLoader());
+                if (privileged()) {
+                    originalClassLoader = getTCCLPrivAction();
+                    cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                        @Override
+                        public ClassLoader run() {
+                            return SignerProvider.class.getClassLoader();
+                        }
+                    });
+                    setTCCLPrivAction(cl);                   
+                } else {
+                    originalClassLoader = Thread.currentThread().getContextClassLoader();
+                    cl = SignerProvider.class.getClassLoader();
+                    Thread.currentThread().setContextClassLoader(cl);
+                }              
                 Signer.signObject(signature);
             } catch (Exception e) {
                 throw new SamlException(e, true); // Let SamlException handles opensaml Exception
             } finally {
-                Thread.currentThread().setContextClassLoader(originalClassLoader); 
+                if (privileged()) {
+                    setTCCLPrivAction(originalClassLoader);
+                } else {
+                    Thread.currentThread().setContextClassLoader(originalClassLoader);
+                }
             }
         }
+    }
+    
+    boolean privileged() {
+        return (System.getSecurityManager() != null);
+    }
+    
+    ClassLoader getTCCLPrivAction() {      
+        ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
+        return cl;
+    }
+    
+    void setTCCLPrivAction(ClassLoader cl) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(cl);
+                return null;
+            }
+        });
     }
 
     String getLogoutRequestString(LogoutRequest logoutRequest) throws SamlException {

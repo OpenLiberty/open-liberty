@@ -16,6 +16,11 @@ src: \
 
 fat.project: true
 
-tested.features: mpTelemetry-1.0
+tested.features:\
+  concurrent-2.0,\
+  jsonp-2.0,\
+  mpTelemetry-1.0,\
+  restfulws-3.0,\
+  restfulwsclient-3.0
 
 -buildpath: \

@@ -47,7 +47,7 @@ public class EMLockingTest extends FATServletClient {
                         .addPackage("com.ibm.ws.jpa.fat.emlocking.web");//
 //                        .addAsWebInfResource(new File("test-applications/" + JEE_APP + "/resources/META-INF/persistence.xml"));
         ShrinkHelper.addDirectory(app, "test-applications/" + APP_NAME + "/resources/");
-        ShrinkHelper.exportAppToServer(server, app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
 //        server.configureForAnyDatabase();
 //        setJPALevel(server, JPA_21);

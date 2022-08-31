@@ -42,7 +42,6 @@ import org.testcontainers.utility.ImageNameSubstitutor;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -59,10 +58,6 @@ public class ContainersTestBase extends FATServletClient {
     // Prebuilt image containing openJ9 and criu binaries. Based on the Docker file checked in at
     //   publish/files/Dockerfile
     final static String CONTAINER_FAT_BASE_DOCKER_IMAGE = "sambratton/liberty-checkpoint-fat:220401";
-
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
 
     static Path wlpDir;
     @Server("checkpoint.fat.container")

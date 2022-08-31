@@ -265,7 +265,7 @@ metamodel_class_null_type_instance_for_null_key=No [{0}] was found for the null 
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=The expected single @Id attribute for the identifiable type [{0}] is part of an unexpected @IdClass.
 
-metamodel_identifiable_id_attribute_type_incorrect=Expected id attribute type [{2}] on the existing id attribute [{0}] on the identifiable type [{1}] but found attribute type [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=Expected id attribute type [{2}] in the existing id attributes [{0}] on the identifiable type [{1}] but found attribute types [{3}].
 
 metamodel_identifiable_no_id_attribute_present=No @Id attribute exists on the identifiable type [{0}].
 

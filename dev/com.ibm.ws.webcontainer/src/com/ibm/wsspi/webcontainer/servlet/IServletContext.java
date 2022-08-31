@@ -33,7 +33,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 public interface IServletContext extends com.ibm.websphere.servlet.context.IBMServletContext {
    
 	/**
-	 * Adds a lifecycle event listener to this context. The listner can be any
+	 * Adds a lifecycle event listener to this context. The listener can be any
 	 * of the standard listeners mandated by the Servlet 2.4 specification.
 	 * 
 	 * @param eventListener

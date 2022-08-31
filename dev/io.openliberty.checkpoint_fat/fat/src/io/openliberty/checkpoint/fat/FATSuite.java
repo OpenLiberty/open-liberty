@@ -10,6 +10,9 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static componenttest.topology.utils.FATServletClient.getTestMethodSimpleName;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,7 +49,9 @@ import componenttest.topology.impl.LibertyServer;
                 MPOpenTracingJaegerTraceTest.class,
                 MPFaultToleranceTimeoutTest.class,
                 ValidFeaturesTest.class,
-                RESTclientTest.class
+                RESTclientTest.class,
+                JNDITest.class,
+                CRIULogLevelTest.class
 })
 public class FATSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {
@@ -55,8 +60,16 @@ public class FATSuite {
         appFile.copyToDest(server.getFileFromLibertyServerRoot("dropins"));
     }
 
-    static String getTestMethodName(TestName testName) {
-        String testMethodSimpleName = testName.getMethodName();
+    /**
+     * Gets only the test method of the TestName without the class name
+     * and without the repeating rule name.
+     *
+     * @param testName
+     * @return the test method only
+     */
+    static String getTestMethodNameOnly(TestName testName) {
+        String testMethodSimpleName = getTestMethodSimpleName(testName);
+        // Sometimes the method name includes the class name; remove the class name.
         int dot = testMethodSimpleName.indexOf('.');
         if (dot != -1) {
             testMethodSimpleName = testMethodSimpleName.substring(dot + 1);
@@ -65,12 +78,15 @@ public class FATSuite {
     }
 
     static public <T extends Enum<T>> T getTestMethod(Class<T> type, TestName testName) {
-        String testMethodSimpleName = getTestMethodName(testName);
+        String simpleName = getTestMethodNameOnly(testName);
         try {
-            return Enum.valueOf(type, testMethodSimpleName);
+            T t = Enum.valueOf(type, simpleName);
+            Log.info(FATSuite.class, testName.getMethodName(), "got test method: " + t);
+            return t;
         } catch (IllegalArgumentException e) {
-            Log.info(type, testName.getMethodName(), "No configuration enum: " + testName.getMethodName());
-            return Enum.valueOf(type, "unknown");
+            Log.info(type, simpleName, "No configuration enum: " + testName);
+            fail("Unknown test name: " + testName);
+            return null;
         }
     }
 
@@ -85,6 +101,15 @@ public class FATSuite {
         bootStrapProperties.putAll(properties);
         try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
             bootStrapProperties.store(out, "");
+        }
+    }
+
+    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        Properties serverEnvProperties = new Properties();
+        serverEnvProperties.putAll(newEnv);
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
+            serverEnvProperties.store(out, "");
         }
     }
 }

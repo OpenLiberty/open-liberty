@@ -1,5 +1,4 @@
-lib/bootstrap/bootstrap-3.4.1.jar
-lib/bootstrap/bootstrap-3.4.1/
+lib/bootstrap/bootstrap-*
 lib/buildtasks/*.jar
 lib/closure/*.jar
 lib/closure/closureExterns/

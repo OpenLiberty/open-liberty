@@ -31,8 +31,11 @@
 		</group>
 		<user name="user6" password="user6pwd" /> 
 		<user name="user98" password="user98pwd" /> 
-		<user name="user99" password="user99pwd" />              		
+		<user name="user99" password="user99pwd" />       
+		<user name="user\ |1$" password="specialCharUserPwd" />       		
 	</basicRegistry>
+	
+	<authentication id="Basic" cacheEnabled="false" />
 	
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 
@@ -41,6 +44,7 @@
 			<security-role name="Employee">
 				<group name="group1" />
 			    <user name="user99" />
+				<user name="user\ |1$" />
 				<run-as userid="user99"/>
 			</security-role>	
 			<security-role name="Manager">

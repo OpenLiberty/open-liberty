@@ -592,23 +592,29 @@ public class FrameworkManager {
             if (fwk == null)
                 return null;
             fwk.init();
+            final CheckpointPhase phase = CheckpointPhase.getPhase();
+
+            // register the checkpoint phase as early as possible
+            final BundleContext fwkContext = fwk.getBundleContext();
+            final Dictionary<String, Object> phaseRegProps = new Hashtable<>();
+            phaseRegProps.put(CHECKPOINT_RESTORED_PROPERTY, Boolean.valueOf(phase.restored()));
+            phaseRegProps.put(CHECKPOINT_PROPERTY, phase);
+            final ServiceRegistration<CheckpointPhase> phaseReg = fwkContext.registerService(CheckpointPhase.class, phase, phaseRegProps);
             if (LaunchArguments.isBetaEdition()) {
-
-                final CheckpointPhase phase = CheckpointPhase.getPhase();
-                if (phase != null) {
-                    // register the checkpoint phase as early as possible
-                    final BundleContext fwkContext = fwk.getBundleContext();
-                    final Dictionary<String, Object> phaseRegProps = new Hashtable<>();
-                    phaseRegProps.put(CHECKPOINT_RESTORED_PROPERTY, Boolean.FALSE);
-                    phaseRegProps.put(CHECKPOINT_PROPERTY, phase);
-                    final ServiceRegistration<CheckpointPhase> phaseReg = fwkContext.registerService(CheckpointPhase.class, phase, phaseRegProps);
-
+                // only register the hooks if we are not the INACTIVE phase
+                if (phase != CheckpointPhase.INACTIVE) {
                     fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
                         Field restoredField = null;
 
                         @Override
                         public void prepare() {
                             try {
+                                if (System.getProperty("io.openliberty.checkpoint.dump.threads") != null) {
+                                    // If the sys property is set then dump the threads while in single threaded mode.
+                                    // This is useful when trying to determine if unexpected async work is going on
+                                    // before the checkpoint happens.
+                                    dumpJava(Collections.singleton(JavaDumpAction.THREAD));
+                                }
                                 restoredField = CheckpointPhase.class.getDeclaredField("restored");
                                 restoredField.setAccessible(true);
                             } catch (Exception e) {
@@ -620,6 +626,11 @@ public class FrameworkManager {
                         @Override
                         public void restore() {
                             try {
+                                // We use reflection here to set the restored state because we need this done
+                                // first and this hook is registered first and with the min ranking which
+                                // means it will be the first hook called on restore (and the last one called on checkpoint).
+                                // It is tempting to put this as a hook directly in the static hooks of the phase itself
+                                // but that would not be run as early as this hook on restore.
                                 restoredField.set(phase, Boolean.TRUE);
                             } catch (IllegalArgumentException | IllegalAccessException e) {
                                 throw new RuntimeException(e);
@@ -645,7 +656,7 @@ public class FrameworkManager {
                     // register the hooks from the CheckpointPhase that may be statically added
                     registerCheckpointPhaseStaticHooks(phase, fwkContext);
                 } else {
-                    // not a checkpoint launch; register the running condition now
+                    // not an active checkpoint launch; register the running condition now
                     registerRunningCondition(fwk);
                 }
             } else {

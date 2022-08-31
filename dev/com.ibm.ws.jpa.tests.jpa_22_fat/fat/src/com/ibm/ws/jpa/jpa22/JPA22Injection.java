@@ -51,7 +51,7 @@ public class JPA22Injection extends FATServletClient {
         app.addPackage("jpa22injection.web");
         app.addPackage("jpa22injection.entity");
         ShrinkHelper.addDirectory(app, resPath);
-        ShrinkHelper.exportAppToServer(server1, app);
+        ShrinkHelper.exportToServer(server1, "apps", app);
         server1.addInstalledAppForValidation(APP_NAME);
 
         server1.startServer();

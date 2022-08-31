@@ -10,19 +10,13 @@
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
-import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
@@ -34,7 +28,6 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
 
     private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     private final OidcServerConfig oidcServerConfig = mockery.mock(OidcServerConfig.class);
-    private final OidcBaseClient client = mockery.mock(OidcBaseClient.class);
 
     private BackchannelLogoutRequestHelper helper;
 
@@ -59,69 +52,6 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
     public static void tearDownAfterClass() throws Exception {
         outputMgr.dumpStreams();
         outputMgr.restoreStreams();
-    }
-
-    @Test
-    public void test_isValidClientForBackchannelLogout_noLogoutUri() {
-        mockery.checking(new Expectations() {
-            {
-                one(client).getBackchannelLogoutUri();
-                will(returnValue(null));
-            }
-        });
-        assertFalse("Client without a back-channel logout URI should not be considered valid for BCL.", helper.isValidClientForBackchannelLogout(client));
-    }
-
-    @Test
-    public void test_isValidClientForBackchannelLogout_logoutUriNotHttp() {
-        mockery.checking(new Expectations() {
-            {
-                one(client).getBackchannelLogoutUri();
-                will(returnValue("scp://localhost"));
-                allowing(client).getClientId();
-                will(returnValue("myOidcClient"));
-            }
-        });
-        assertFalse("Client with non-HTTP back-channel logout URI should not be considered valid for BCL.", helper.isValidClientForBackchannelLogout(client));
-    }
-
-    @Test
-    public void test_isValidClientForBackchannelLogout_httpPublicClient() {
-        mockery.checking(new Expectations() {
-            {
-                one(client).getBackchannelLogoutUri();
-                will(returnValue("http://localhost"));
-                one(client).isPublicClient();
-                will(returnValue(true));
-                allowing(client).getClientId();
-                will(returnValue("myOidcClient"));
-            }
-        });
-        assertFalse("Public client with HTTP back-channel logout URI should not be considered valid for BCL.", helper.isValidClientForBackchannelLogout(client));
-    }
-
-    @Test
-    public void test_isValidClientForBackchannelLogout_httpConfidentialClient() {
-        mockery.checking(new Expectations() {
-            {
-                one(client).getBackchannelLogoutUri();
-                will(returnValue("http://localhost"));
-                one(client).isPublicClient();
-                will(returnValue(false));
-            }
-        });
-        assertTrue("Confidential client with HTTP back-channel logout URI should be considered valid for BCL.", helper.isValidClientForBackchannelLogout(client));
-    }
-
-    @Test
-    public void test_isValidClientForBackchannelLogout_httpsUri() {
-        mockery.checking(new Expectations() {
-            {
-                one(client).getBackchannelLogoutUri();
-                will(returnValue("https://localhost"));
-            }
-        });
-        assertTrue("HTTPS back-channel logout URI should be considered valid for BCL.", helper.isValidClientForBackchannelLogout(client));
     }
 
 }

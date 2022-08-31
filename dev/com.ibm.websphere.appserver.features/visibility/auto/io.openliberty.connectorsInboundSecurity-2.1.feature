@@ -2,8 +2,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.connectorsInboundSecurity-2.1
 visibility=private
-IBM-ShortName: connectorsInboundSecurity-2.1
-WLP-AlsoKnownAs: jcaInboundSecurity-2.1
 Subsystem-Name: Jakarta Connectors 2.1 Inbound Security
 IBM-Provision-Capability:\
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.connectors-2.1))",\

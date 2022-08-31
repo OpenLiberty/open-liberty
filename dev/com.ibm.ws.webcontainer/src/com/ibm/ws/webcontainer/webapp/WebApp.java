@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -362,7 +362,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     
     private static Object[] OBJ_EMPTY = new Object[] {};
     private static Class<?>[] CLASS_EMPTY = new Class<?>[] {};
-    private final CheckpointPhase checkpointPhase;
+    private final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
     
     // PK37608 Start
     static {
@@ -387,10 +387,9 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
   public static final boolean DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR = WCCustomProperties.DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR;  //PI26908
   
     // PK37698 End
-    public WebApp(WebAppConfiguration webAppConfig, Container parent, CheckpointPhase checkpointPhase) {
+    public WebApp(WebAppConfiguration webAppConfig, Container parent) {
         super(webAppConfig.getId(), parent);
         this.config = webAppConfig;
-        this.checkpointPhase = checkpointPhase;
         // PK63920 Start
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
             logger.entering(CLASS_NAME, "<init> [ " + this + " ] with name -> [ " + name + " ] and parent [ " + parent + " ]");
@@ -6317,7 +6316,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
     @Override
     public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
-        if (withinContextInitOfProgAddListener) {
+        if (withinContextInitOfProgAddListener && (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() < com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60)) {
             throw new UnsupportedOperationException(MessageFormat.format(
                     nls.getString("Unsupported.op.from.servlet.context.listener"),
                     new Object[] {"getDefaultSessionTrackingModes", lastProgAddListenerInitialized, getApplicationName()}));  // PI41941
@@ -6327,7 +6326,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
     @Override
     public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
-        if (withinContextInitOfProgAddListener) {
+        if (withinContextInitOfProgAddListener && (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() < com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60)) {
             throw new UnsupportedOperationException(MessageFormat.format(
                     nls.getString("Unsupported.op.from.servlet.context.listener"),
                     new Object[] {"getEffectiveSessionTrackingModes", lastProgAddListenerInitialized, getApplicationName()}));  // PI41941
@@ -6620,7 +6619,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
     @Override
     public JspConfigDescriptor getJspConfigDescriptor() {
-        if (withinContextInitOfProgAddListener) {
+        if (withinContextInitOfProgAddListener && (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() < com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60)) {
             throw new UnsupportedOperationException(MessageFormat.format(
                     nls.getString("Unsupported.op.from.servlet.context.listener"),
                     new Object[] {"getJspConfigDescriptor", lastProgAddListenerInitialized, getApplicationName()}));  // PI41941

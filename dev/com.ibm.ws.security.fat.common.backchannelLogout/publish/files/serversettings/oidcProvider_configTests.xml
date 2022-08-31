@@ -14,7 +14,11 @@
 
 	<openidConnectProvider
 		id="OidcConfigSample_mainPath"
-		signatureAlgorithm="HS256"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keyStoreRef="key_allSigAlg"
+		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
+		allowPublicClients="true"
 		oauthProviderRef="OAuthConfigSample_mainPath" />
 
 	<oauthProvider
@@ -22,15 +26,39 @@
 		tokenFormat="${oidcTokenFormat}"
 		autoAuthorize="true"
 	>
-		<autoAuthorizeClient>bcl_mainPath</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_confClient</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_publicClient_withSecret</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_publicClient_withoutSecret</autoAuthorizeClient>
 		
 		<localStore>
 			<client
-				name="bcl_mainPath"
+				name="bcl_mainPath_confClient"
 				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
-				backchannelLogoutUri="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/${bclRoot}/bcl_mainPath"
-				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_mainPath,
-					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_mainPath"
+				backchannelLogoutUri="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/${bclRoot}/bcl_mainPath_confClient"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_mainPath_confClient,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_mainPath_confClient"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="bcl_mainPath_publicClient_withSecret"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				publicClient="true"
+				backchannelLogoutUri="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/${bclRoot}/bcl_mainPath_publicClient_withSecret"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_mainPath_publicClient_withSecret,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_mainPath_publicClient_withSecret"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="bcl_mainPath_publicClient_withoutSecret"
+				publicClient="true"
+				tokenEndpointAuthMethod="none"
+				backchannelLogoutUri="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/${bclRoot}/bcl_mainPath_publicClient_withoutSecret"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_mainPath_publicClient_withoutSecret,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_mainPath_publicClient_withoutSecret"
 				scope="ALL_SCOPES"
 				enabled="true"
 			>
@@ -550,7 +578,6 @@
 		id="OAuthConfigSample_http_httpsRequired_true"
 		tokenFormat="${oidcTokenFormat}"
 		autoAuthorize="true"
-		httpsRequired="true"
 	>
 		<autoAuthorizeClient>bcl_http_confClient_httpsRequired_true</autoAuthorizeClient>
 		<autoAuthorizeClient>bcl_http_publicClient_httpsRequired_true_withSecret</autoAuthorizeClient>
@@ -577,6 +604,7 @@
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_http_publicClient_httpsRequired_true_withSecret,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_http_publicClient_httpsRequired_true_withSecret"
 				scope="ALL_SCOPES"
+				introspectTokens="true"
 				enabled="true"
 			>
 			</client>
@@ -588,6 +616,7 @@
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_http_publicClient_httpsRequired_true_withoutSecret,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_http_publicClient_httpsRequired_true_withoutSecret"
 				scope="ALL_SCOPES"
+				introspectTokens="true"
 				enabled="true"
 			>
 			</client>
@@ -634,6 +663,7 @@
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_http_publicClient_httpsRequired_false_withSecret,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_http_publicClient_httpsRequired_false_withSecret"
 				scope="ALL_SCOPES"
+				introspectTokens="true"
 				enabled="true"
 			>
 			</client>
@@ -645,6 +675,7 @@
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/bcl_http_publicClient_httpsRequired_false_withoutSecret,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/bcl_http_publicClient_httpsRequired_false_withoutSecret"
 				scope="ALL_SCOPES"
+				introspectTokens="true"
 				enabled="true"
 			>
 			</client>

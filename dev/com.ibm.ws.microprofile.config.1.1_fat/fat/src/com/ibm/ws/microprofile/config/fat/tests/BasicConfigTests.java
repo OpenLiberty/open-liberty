@@ -34,6 +34,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -76,9 +77,14 @@ public class BasicConfigTests extends FATServletClient {
     public static final String CUSTOM_SOURCES_APP_NAME = "customSources";
     public static final String TYPES_APP_NAME = "types";
 
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50, MicroProfileActions.MP12, MicroProfileActions.MP13, MicroProfileActions.MP14,
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60,
+                                                             MicroProfileActions.MP12,
+                                                             MicroProfileActions.MP13,
+                                                             MicroProfileActions.MP14,
                                                              MicroProfileActions.MP33,
-                                                             MicroProfileActions.MP41);
+                                                             MicroProfileActions.MP41,
+                                                             MicroProfileActions.MP50);
 
     @Server(SERVER_NAME)
     @TestServlets({

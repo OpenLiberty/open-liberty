@@ -23,7 +23,7 @@
     <keyStore password="passw0rd" id="myDefaultTrustStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/truststore.jks"></keyStore>
     <ssl id="defaultSSLConfig" keyStoreRef="myDefaultKeyStore" trustStoreRef="myDefaultTrustStore" />
 
-    <mongo id="mongo-no-sslRef" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true"/>
+    <mongo id="mongo-no-sslRef" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true" connectTimeout="20000"/>
     <mongoDB jndiName="mongo/testdb-no-sslRef" mongoRef="mongo-no-sslRef" databaseName="default" />
     
     <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.net.SocketPermission" name="*" actions="connect,resolve"/>

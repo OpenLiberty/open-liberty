@@ -22,6 +22,11 @@ WS-TraceGroup: rest.validation
 Private-Package:\
   io.openliberty.rest.handler.validator.openapi20.*
 
+Import-Package: \
+  io.smallrye.openapi.runtime;version='[2.0.0,4.0.0)',\
+  io.smallrye.openapi.runtime.io;version='[2.0.0,4.0.0)',\
+  *
+
 DynamicImport-Package:\
   javax.jms
 

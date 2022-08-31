@@ -20,7 +20,7 @@
         <feature>servlet-5.0</feature>
         <feature>componentTest-1.0</feature>
         <feature>localConnector-1.0</feature>
-        <feature>arquillian-support-jakarta-2.0</feature>
+        <feature>arquillian-support-jakarta-2.1</feature>
         <feature>timedexit-1.0</feature>
    </featureManager>
 

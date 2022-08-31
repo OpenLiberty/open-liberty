@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,13 @@
  *******************************************************************************/
 package com.ibm.example.jca.anno;
 
-import javax.resource.ResourceException;
-import javax.resource.cci.MessageListener;
-import javax.resource.spi.Activation;
-import javax.resource.spi.ActivationSpec;
-import javax.resource.spi.ConfigProperty;
-import javax.resource.spi.InvalidPropertyException;
-import javax.resource.spi.ResourceAdapter;
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.MessageListener;
+import jakarta.resource.spi.Activation;
+import jakarta.resource.spi.ActivationSpec;
+import jakarta.resource.spi.ConfigProperty;
+import jakarta.resource.spi.InvalidPropertyException;
+import jakarta.resource.spi.ResourceAdapter;
 
 /**
  * Example activation spec.

@@ -11,11 +11,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-
 src: \
     fat/src    
 
-test.project: true
+fat.project: true
 
 -dependson: \
     build.changeDetector,\

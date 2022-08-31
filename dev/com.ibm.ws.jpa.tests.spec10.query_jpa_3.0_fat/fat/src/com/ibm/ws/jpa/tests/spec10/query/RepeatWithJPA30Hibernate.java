@@ -44,4 +44,13 @@ public class RepeatWithJPA30Hibernate extends JakartaEE9Action {
 //    public String getID() {
 //        return ID;
 //    }
+
+    @Override
+    public boolean isEnabled() {
+        // Disable testing against Hibernate for time constraints
+        if (!Boolean.getBoolean("jpa.enable.repeat.hibernate"))
+            return false;
+
+        return super.isEnabled();
+    }
 }

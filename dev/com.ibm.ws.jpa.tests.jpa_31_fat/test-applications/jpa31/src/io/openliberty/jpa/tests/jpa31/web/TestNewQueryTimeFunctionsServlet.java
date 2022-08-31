@@ -97,16 +97,6 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
 
     @Test
     public void testLocalDateFunction_JPQL() throws Exception {
-        if (isDB2ForLUW()) {
-            // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1575
-            return;
-        }
-
-        if (isOracle()) {
-            // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1539
-            return;
-        }
-
         // Verify that the LOCAL DATE operation can be used in the WHERE clause in a comparator operation
         try {
             tx.begin();
@@ -171,20 +161,6 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
 
     @Test
     public void testLocalTimeFunction_JPQL() throws Exception {
-        // TODO: Derby needs to switch from TIMESTAMP to TIME for this to work right; https://github.com/eclipse-ee4j/eclipselink/issues/1544
-        if (isDerby())
-            return;
-
-        if (isDB2ForLUW()) {
-            // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1575
-            return;
-        }
-
-        if (isOracle()) {
-            // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1572
-            return;
-        }
-
         em.clear();
 
         // Verify that the LOCAL TIME operation can be used in the WHERE clause in a comparator operation
@@ -290,16 +266,6 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
 
     @Test
     public void testLocalDateTimeFunction_JPQL() throws Exception {
-        if (isDB2ForLUW()) {
-            // TODO: Fails with https://github.com/eclipse-ee4j/eclipselink/issues/1575
-            return;
-        }
-
-        if (isOracle()) {
-            // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1572
-            return;
-        }
-
         em.clear();
 
         // Verify that the LOCAL DATETIME operation can be used in the WHERE clause in a comparator operation
@@ -354,16 +320,6 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void testLocalDateFunction_Criteria() throws Exception {
-        if (isDB2ForLUW()) {
-            // TODO: Fails with https://github.com/eclipse-ee4j/eclipselink/issues/1575
-            return;
-        }
-
-        if (isOracle()) {
-            // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1539
-            return;
-        }
-
         em.clear();
 
         // Verify that the localDate() operation can be used in the WHERE clause in a < comparator operation
@@ -480,17 +436,9 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
 
     @Test
     public void testEXTRACTFunction_OnQueryResults_JPQL() throws Exception {
-        if (isOracle()) {
-            // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1540
-            return;
-        }
-
         Query q = null;
         Object result = null;
 
-        if (isPostgres()) { // TODO: See https://github.com/eclipse-ee4j/eclipselink/issues/1574
-            return;
-        }
         // Verify EXTRACT(YEAR) from a LocalDate field
         q = em.createQuery("SELECT EXTRACT(YEAR FROM qdte.localDateData) FROM QueryDateTimeEntity qdte WHERE qdte.id = 1");
         result = q.getSingleResult();
@@ -593,36 +541,19 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
 
         // Verify EXTRACT(SECOND) from a LocalTime field
         // SECOND means the second of the minute, numbered from 0 to 59, including a fractional part representing fractions of a second.
-        if (!isDerby() && !isDB2ForLUW() && !isSQLServer()) {
-            // TODO: Is mapping to int instead of float with Derby, DB2, and SQLServer, see https://github.com/eclipse-ee4j/eclipselink/issues/1573
-            q = em.createQuery("SELECT EXTRACT(SECOND FROM qdte.localTimeData) FROM QueryDateTimeEntity qdte WHERE qdte.id = 1");
-            result = q.getSingleResult();
-            Assert.assertNotNull(result);
-            Assert.assertEquals(0.0, (float) result);
-        }
+        q = em.createQuery("SELECT EXTRACT(SECOND FROM qdte.localTimeData) FROM QueryDateTimeEntity qdte WHERE qdte.id = 1");
+        result = q.getSingleResult();
+        Assert.assertNotNull(result);
 
         // Verify EXTRACT(SECOND) from a LocalDateTime field
-        if (!isSQLServer() && !isDB2ForLUW()) { // TODO, see https://github.com/eclipse-ee4j/eclipselink/issues/1573
-            q = em.createQuery("SELECT EXTRACT(SECOND FROM qdte.localDateTimeData) FROM QueryDateTimeEntity qdte WHERE qdte.id = 1");
-            result = q.getSingleResult();
-            Assert.assertNotNull(result);
-            Assert.assertEquals(0.0, result);
-        }
-
+        q = em.createQuery("SELECT EXTRACT(SECOND FROM qdte.localDateTimeData) FROM QueryDateTimeEntity qdte WHERE qdte.id = 1");
+        result = q.getSingleResult();
+        Assert.assertNotNull(result);
+        Assert.assertEquals(0.0d, result);
     }
 
     @Test
     public void testEXTRACTFunction_InWhereClause_JPQL() throws Exception {
-        if (isDB2ForLUW()) {
-            // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1575
-            return;
-        }
-
-        if (isOracle()) {
-            // TODO: https://github.com/eclipse-ee4j/eclipselink/issues/1540
-            return;
-        }
-
         Query q = null;
         TypedQuery<QueryDateTimeEntity> tq = null;
 
@@ -820,21 +751,23 @@ public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
         }
 
         // EXTRACT(MINUTE) with LocalDateTime field
-        {
-            tq = em.createQuery("SELECT qdte FROM QueryDateTimeEntity qdte WHERE EXTRACT(MINUTE FROM qdte.localDateTimeData) = 0", QueryDateTimeEntity.class);
-            tResList = tq.getResultList();
-            Assert.assertNotNull(tResList);
-            Assert.assertTrue(tResList.size() > 0);
+        if (!isDB2ForLUW())
+            https: //github.com/eclipse-ee4j/eclipselink/issues/1575
+            {
+                tq = em.createQuery("SELECT qdte FROM QueryDateTimeEntity qdte WHERE EXTRACT(MINUTE FROM qdte.localDateTimeData) = 0", QueryDateTimeEntity.class);
+                tResList = tq.getResultList();
+                Assert.assertNotNull(tResList);
+                Assert.assertTrue(tResList.size() > 0);
 
-            found = false;
-            for (QueryDateTimeEntity entity : tResList) {
-                if (entity.getId() == 1) {
-                    found = true;
-                    break;
+                found = false;
+                for (QueryDateTimeEntity entity : tResList) {
+                    if (entity.getId() == 1) {
+                        found = true;
+                        break;
+                    }
                 }
+                Assert.assertTrue(found);
             }
-            Assert.assertTrue(found);
-        }
 
         // EXTRACT(SECOND) with LocalTime field
         {

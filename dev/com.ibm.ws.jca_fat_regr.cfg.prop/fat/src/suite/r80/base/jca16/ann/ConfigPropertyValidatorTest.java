@@ -131,9 +131,6 @@ public class ConfigPropertyValidatorTest implements RarTests {
         ShrinkHelper.exportToServer(server, "connectors", TRA_jca16_ann_ConfigPropertyValidator_NoPermittedAnnNoDDEntryNoIntf);
 
 //      Package TRA_jca16_ann_ConfigPropertyValidator_AnnNoSetGetFieldLevelConfigProperty TRA_jca16_ann_ConfigPropertyValidator_AnnNoSetGetFieldLevelConfigProperty.rar
-//        JavaArchive resourceAdapterEjs_jar = ShrinkWrap.create(JavaArchive.class, "ResourceAdapter.jar");
-//        resourceAdapterEjs_jar.addPackages(true, "com.ibm.ejs.ras");
-//        resourceAdapterEjs_jar.addPackages(true, packageFilter, "com.ibm.tra");
         JavaArchive resourceAdapterEjs_jar = TestSetupUtils.getTraAnnEjsResourceAdapter_jar();
 
         JavaArchive configProperty_AnnNoSetGetFieldLevel_jar = ShrinkWrap.create(JavaArchive.class, "ConfigProperty_AnnNoSetGetFieldLevel.jar");

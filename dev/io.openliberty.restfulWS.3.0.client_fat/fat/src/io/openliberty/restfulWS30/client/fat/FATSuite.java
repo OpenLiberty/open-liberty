@@ -23,7 +23,8 @@ import io.openliberty.restfulWS30.client.fat.test.PathParamTest;
 @SuiteClasses({
                 ClientFeatureTest.class,
                 SslTest.class,
-                PathParamTest.class
+                PathParamTest.class,
+                RegisterRestClientTest.class
 })
 public class FATSuite { 
     @ClassRule

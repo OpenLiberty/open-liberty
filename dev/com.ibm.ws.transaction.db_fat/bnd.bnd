@@ -17,6 +17,8 @@ src: \
 
 fat.project: true
 
+fat.test.container.images: jonhawkes/postgresql-ssl:1.0
+
 tested.features:\
   cdi-3.0, cdi-4.0,\
   servlet-5.0, servlet-6.0
@@ -26,7 +28,7 @@ tested.features:\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
 	fattest.simplicity;version=latest,\
-	org.postgresql:postgresql;version=42.2.5,\
+	org.postgresql:postgresql;version=42.4.2,\
 	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.ws.transaction.fat.util;version=latest,\
 	com.ibm.ws.transaction.test.util;version=latest

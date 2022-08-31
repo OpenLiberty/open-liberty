@@ -14,7 +14,7 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 /*
  * The Infinispan version should match that in InfinispanContainer.
  */
-def infinispanVersion = '12.1.7.Final'      
+def infinispanVersion = '13.0.10.Final'      
 
 /* 
  * This is where all application JARs will be built.
@@ -221,7 +221,7 @@ autoFVT.doLast {
 
   /*
    * htmlunit-2.44.0 is packaged automatically, we need to remove it so we can use
-   # htmlunit-2.59.0 as it contains a fix for "SameSite" cookies.
+   * htmlunit-2.59.0 as it contains a fix for "SameSite" cookies.
    */
   delete new File(autoFvtDir, 'lib/htmlunit-2.44.0.jar')
   delete new File(autoFvtDir, 'lib/com.ibm.ws.org.apache.commons.lang3.jar')

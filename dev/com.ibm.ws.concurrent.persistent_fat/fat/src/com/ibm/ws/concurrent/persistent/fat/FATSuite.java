@@ -23,6 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -32,13 +33,7 @@ import componenttest.topology.impl.LibertyServerFactory;
     PersistentExecutorTest.class,
     PersistentExecutorWithFailoverEnabledTest.class,
     })
-public class FATSuite {
-    
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
+public class FATSuite extends TestContainerSuite {
     
     static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat");
 

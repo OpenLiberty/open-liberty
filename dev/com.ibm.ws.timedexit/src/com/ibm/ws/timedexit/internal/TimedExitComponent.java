@@ -38,7 +38,7 @@ public class TimedExitComponent implements org.osgi.framework.BundleActivator {
         try {
             Tr.audit(tc, "TE9900.timedexit.enabled");
 
-            if (context.getServiceReference(CheckpointPhase.class) != null) {
+            if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
                 context.registerService(CheckpointHook.class, new CheckpointHook() {
                     @Override
                     public void restore() {

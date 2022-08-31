@@ -10,24 +10,22 @@
  *******************************************************************************/
 package io.openliberty.microprofile.config.internal_fat_tck;
 
+import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -38,10 +36,12 @@ import componenttest.topology.utils.MvnUtils;
 @Mode(TestMode.LITE)
 public class Config30TCKLauncher {
 
-//    @ClassRule
-//    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES());
+    private static final String SERVER_NAME = "Config30TCKServer";
 
-    @Server("Config30TCKServer")
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP50);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -52,7 +52,7 @@ public class Config30TCKLauncher {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
+        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E", "CWOWB1018W");
     }
 
     @Test

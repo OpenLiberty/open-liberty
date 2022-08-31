@@ -19,7 +19,7 @@ dependencies {
 }
 
 dependencies {
-  postgres 'org.postgresql:postgresql:42.2.5'
+  postgres 'org.postgresql:postgresql:42.4.2'
 }
 
 task copySharedPostgres(type: Copy) {

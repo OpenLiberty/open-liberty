@@ -39,7 +39,6 @@ import io.openliberty.wsoc.util.wsoc.WsocTestContext;
 import io.openliberty.wsoc.common.Constants;
 
 import io.openliberty.wsoc.common.Utils;
-import io.openliberty.wsoc.tests.all.TimeOutTest;
 
 /**
  * Used to test negative and zero timeouts.
@@ -82,9 +81,6 @@ public class TimeOutClientEP implements TestHelper {
     
             return null;
         }
-
-
-
     }
 
     @OnError

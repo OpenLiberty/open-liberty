@@ -40,6 +40,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
+import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
@@ -275,22 +277,14 @@ public class AccessTokenAuthenticator {
         return sslContext;
     }
 
+    @FFDCIgnore(NoSSLSocketFactoryException.class)
     protected SSLSocketFactory getSSLSocketFactory(String tokenUrl, String sslConfigurationName, String clientId) throws SSLException {
         SSLSocketFactory sslSocketFactory = null;
-        if (sslSupport != null) {
-            try {
-                sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
-            } catch (javax.net.ssl.SSLException e) {
-                throw new SSLException(e);
-            }
-
-            if (sslSocketFactory != null)
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);
-                }
-        }
-
-        if (sslSocketFactory == null) {
+        try {
+            sslSocketFactory = SecuritySSLUtils.getSSLSocketFactory(sslSupport, sslConfigurationName);
+        } catch (javax.net.ssl.SSLException e) {
+            throw new SSLException(e);
+        } catch (NoSSLSocketFactoryException e) {
             if (tokenUrl != null && tokenUrl.startsWith("https")) {
                 throw new SSLException(Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientId }));
             }

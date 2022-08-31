@@ -64,7 +64,7 @@
     <dataSource jndiName="jdbc/postgres/readOnly">
       <jdbcDriver libraryRef="PostgresLib" />
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
-                             readOnly="true"/>
+                             readOnly="true" readOnlyMode="always"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/defaultAutoCommit" type="javax.sql.ConnectionPoolDataSource">

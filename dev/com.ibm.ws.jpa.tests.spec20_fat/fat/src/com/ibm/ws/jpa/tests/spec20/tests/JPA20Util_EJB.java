@@ -30,7 +30,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.util.tests.ejb.UtilEJBSFTestServlet;
 import com.ibm.ws.jpa.fvt.util.tests.ejb.UtilEJBSLTestServlet;
 import com.ibm.ws.jpa.tests.spec20.FATSuite;
-import com.ibm.ws.jpa.tests.spec20.JPAFATServletClient;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

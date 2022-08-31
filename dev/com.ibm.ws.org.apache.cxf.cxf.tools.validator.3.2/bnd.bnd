@@ -8,18 +8,20 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-tools-validator;3.4.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
 -sub: *.bnd
 
-
-
+bVersion=1.0
 cxfVersion=3.4.3
 
+Import-Package:
+
+Export-Package: \
+  org.apache.cxf.tools.validator;version=${cxfVersion}
+
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-tools-validator;${cxfVersion};EXACT}!/!META-INF/*
+  @${repo;org.apache.cxf:cxf-tools-validator;${cxfVersion};EXACT}!/!META-INF/*
 
--buildpath: org.apache.cxf:cxf-tools-validator;strategy=exact;version=${cxfVersion},\
-  com.ibm.ws.org.apache.cxf.cxf.core.3.2
-
-  
+-buildpath: \
+  org.apache.cxf:cxf-tools-validator;strategy=exact;version=${cxfVersion}

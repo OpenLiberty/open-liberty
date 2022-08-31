@@ -10,10 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.osgi.webapp.factory;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.csi.J2EENameFactory;
 import com.ibm.ws.container.service.metadata.MetaDataService;
@@ -24,20 +21,11 @@ import com.ibm.ws.webcontainer.osgi.webapp.WebAppFactory;
 import com.ibm.ws.webcontainer40.osgi.webapp.WebApp40;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
-import io.openliberty.checkpoint.spi.CheckpointPhase;
-
 /**
 *
 */
 @Component(service = WebAppFactory.class, property = { "service.vendor=IBM" })
 public class WebAppFactory40Impl implements WebAppFactory {
-    private final CheckpointPhase checkpointPhase;
-
-    @Activate
-    public WebAppFactory40Impl(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
-        this.checkpointPhase = checkpointPhase;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -47,6 +35,6 @@ public class WebAppFactory40Impl implements WebAppFactory {
     @Override
     public WebApp createWebApp(WebAppConfiguration webAppConfig, ClassLoader moduleLoader, ReferenceContext referenceContext, MetaDataService metaDataService,
                                J2EENameFactory j2eeNameFactory, ManagedObjectService managedObjectService) {
-        return new WebApp40(webAppConfig, moduleLoader, referenceContext, metaDataService, j2eeNameFactory, managedObjectService, checkpointPhase);
+        return new WebApp40(webAppConfig, moduleLoader, referenceContext, metaDataService, j2eeNameFactory, managedObjectService);
     }
 }

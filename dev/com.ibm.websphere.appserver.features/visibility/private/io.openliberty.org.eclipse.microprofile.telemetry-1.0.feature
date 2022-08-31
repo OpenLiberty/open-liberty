@@ -2,8 +2,8 @@
 symbolicName=io.openliberty.org.eclipse.microprofile.telemetry-1.0
 visibility=private
 singleton=true
--features=io.openliberty.mpCompatible-5.0
+-features=io.openliberty.mpCompatible-6.0; ibm.tolerates:="5.0"
 -bundles=io.openliberty.io.opentelemetry; location:="dev/api/stable/,lib/"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

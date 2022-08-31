@@ -21,7 +21,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 public class MPConfigBean {
 
     @Inject
-    @ConfigProperty(name = "test_key", defaultValue = "annoValue")
+    @ConfigProperty(name = "req_scope_key", defaultValue = "annoValue")
     String testKey;
 
     public void defaultValueTest() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -1199,7 +1200,8 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(stack.get(1));
         assertNotNull(stack.get(2));
         assertNotNull(err, cause = failure.getJsonObject("cause"));
-        assertEquals(err, JakartaEE9Action.isActive() ? "jakarta.resource.ResourceException" : "javax.resource.ResourceException", cause.getString("class"));
+        assertEquals(err, JakartaEE9Action.isActive() || JakartaEE10Action.isActive() ? "jakarta.resource.ResourceException" : "javax.resource.ResourceException",
+                     cause.getString("class"));
         assertNotNull(err, message = cause.getString("message"));
         assertTrue(err, message.startsWith("J2CA8011E") && message.contains("1:05:30"));
         assertNotNull(err, stack = cause.getJsonArray("stack"));
@@ -1321,7 +1323,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("info"));
         assertEquals(err, "IBM", j.getString("jmsProviderName"));
         assertEquals(err, "1.0", j.getString("jmsProviderVersion"));
-        assertEquals(err, JakartaEE9Action.isActive() ? "3.0" : "2.0", j.getString("jmsProviderSpecVersion"));
+        assertEquals(err, getExpectedJmsProviderSpecVersion(), j.getString("jmsProviderSpecVersion"));
         assertEquals(err, "clientID", j.getString("clientID"));
     }
 
@@ -1342,7 +1344,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("info"));
         assertEquals(err, "IBM", j.getString("jmsProviderName"));
         assertEquals(err, "1.0", j.getString("jmsProviderVersion"));
-        assertEquals(err, JakartaEE9Action.isActive() ? "3.0" : "2.0", j.getString("jmsProviderSpecVersion"));
+        assertEquals(err, getExpectedJmsProviderSpecVersion(), j.getString("jmsProviderSpecVersion"));
     }
 
     /**
@@ -1367,5 +1369,15 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "88.105.137", j.getString("jmsProviderVersion"));
         assertEquals(err, "2.0", j.getString("jmsProviderSpecVersion"));
         assertEquals(err, "AppDefinedClientId", j.getString("clientID"));
+    }
+
+    private String getExpectedJmsProviderSpecVersion() {
+        if (JakartaEE10Action.isActive()) {
+            return "3.1";
+        } else if (JakartaEE9Action.isActive()) {
+            return "3.0";
+        } else {
+            return "2.0";
+        }
     }
 }

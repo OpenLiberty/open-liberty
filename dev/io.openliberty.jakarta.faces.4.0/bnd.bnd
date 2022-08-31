@@ -11,11 +11,17 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.jakarta.faces.4.0; singleton:=true
-Bundle-Description:  Jakarta Server Faces, MyFaces 3.0 API (4.0 Placeholder)
-Implementation-Version: 3.0.1
+javac.source: 11
+javac.target: 11
 
-Export-Package: jakarta.faces.*; version=${Implementation-Version}
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+Bundle-SymbolicName: io.openliberty.jakarta.faces.4.0; singleton:=true
+Bundle-Description:  Jakarta Server Faces, MyFaces 4.0 API
+Implementation-Version: 4.0.0
+
+Export-Package: jakarta.faces.*; version=${Implementation-Version}, \
+  org.apache.myfaces.core.api.shared.*; version=${Implementation-Version}
 
 
 DynamicImport-Package: \
@@ -24,22 +30,20 @@ DynamicImport-Package: \
   org.apache.myfaces.cdi.util, \
   org.apache.myfaces.spi
 
+# Use this format once we have an offical release and not an RC1
+# @${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/jakarta/faces, \
+# @${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/META-INF/**
+# Determine if we need the jakarta/faces entry here.
+# Determine if org.apache.myfaces.core:myfaces-api should be used instead.
 Include-Resource: \
-	@${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/jakarta/faces, \
-	@${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/META-INF/**
+	@${repo;org.apache.myfaces.core.api;4.0.0.RC1;EXACT}!/jakarta/faces, \
+	@${repo;org.apache.myfaces.core.api;4.0.0.RC1;EXACT}!/META-INF/**
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
+# Use this once we have a non RC1 release
+# org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
 -buildpath: \
-	org.apache.myfaces.core:myfaces-api;version=${Implementation-Version},\
-	io.openliberty.jakarta.cdi.4.0;version=latest,\
-	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
-	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
-	io.openliberty.jakarta.validation.3.0;version=latest,\
-	io.openliberty.jakarta.tags.3.0;version=latest,\
-	io.openliberty.jakarta.pages.3.1;version=latest,\
-	io.openliberty.jakarta.servlet.6.0;version=latest, \
-	io.openliberty.jakarta.websocket.2.1;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.0.0.RC1

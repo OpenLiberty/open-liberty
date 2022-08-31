@@ -153,7 +153,7 @@ public class SecurityContextEJBTest extends JavaEESecTestBase {
 
         String queryString = "/securitycontextejbinwar/SimpleEJBInServlet?testInstance=ejb02&testMethod=employee";
 
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user99", "user99pwd",
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user\\ |1$", "specialCharUserPwd",
                                                           HttpServletResponse.SC_OK);
         verifySecurityContextResponse(response, "getCallerPrincipal()=" + "user", "isCallerInRole(Employee)=true");
 

@@ -10,13 +10,12 @@ IBM-API-Package: \
 IBM-ShortName: mpHealth-4.0
 Subsystem-Name: MicroProfile Health 4.0
 -features=io.openliberty.org.eclipse.microprofile.health-4.0,\
- io.openliberty.cdi-3.0,\
+ io.openliberty.cdi-3.0; ibm.tolerates:="4.0",\
  com.ibm.websphere.appserver.jndi-1.0,\
  com.ibm.websphere.appserver.json-1.0,\
- com.ibm.websphere.appserver.servlet-5.0,\
  io.openliberty.mpConfig-3.0,\
- com.ibm.wsspi.appserver.webBundle-1.0,\
- io.openliberty.mpCompatible-5.0
+ io.openliberty.webBundle.internal.servlet-5.0; ibm.tolerates:="6.0",\
+ io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0"
 -bundles=com.ibm.websphere.jsonsupport, \
  io.openliberty.microprofile.health.3.1.internal.jakarta; apiJar=false; location:="lib/", \
  com.ibm.ws.org.joda.time.1.6.2

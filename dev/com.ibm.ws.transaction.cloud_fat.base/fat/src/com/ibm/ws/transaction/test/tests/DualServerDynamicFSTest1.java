@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -18,10 +19,8 @@ import com.ibm.ws.transaction.web.SimpleFS2PCCloudServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 
-@Mode
 @RunWith(FATRunner.class)
 public class DualServerDynamicFSTest1 extends DualServerDynamicCoreTest1 {
     @Server("com.ibm.ws.transaction_FSCLOUD001")
@@ -38,6 +37,11 @@ public class DualServerDynamicFSTest1 extends DualServerDynamicCoreTest1 {
     }
 
     @Override
-    protected void setUp(LibertyServer server) throws Exception {
+    public void setUp(LibertyServer server) throws Exception {
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        tidyServersAfterTest(server1); // server2 is already stopped
     }
 }

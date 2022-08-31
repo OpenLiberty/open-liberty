@@ -44,7 +44,7 @@ public class FailoverTimersTestServlet extends FATServlet {
     /**
      * Maximum number of nanoseconds to wait for a task to finish.
      */
-    private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+    private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(4);
 
     /**
      * List of timers that will intentionally fail on this server.

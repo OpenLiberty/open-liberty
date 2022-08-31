@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.utils.HttpUtils;
@@ -25,13 +25,7 @@ import componenttest.topology.utils.HttpUtils;
 @SuiteClasses({
                 ValidateCloudantTest.class
 })
-public class FATSuite {
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
+public class FATSuite extends TestContainerSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is (e.g. EE8 features)

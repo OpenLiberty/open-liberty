@@ -134,7 +134,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
      *
      * @throws Exception
      */
-    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "com.ibm.ws.security.openidconnect.clients.common.BadPostRequestException" })
+    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "io.openliberty.security.oidcclientcore.http.BadPostRequestException" })
     @Test
     public void Social_BasicDiscoveryConfigTests_blankClientSecret() throws Exception {
         

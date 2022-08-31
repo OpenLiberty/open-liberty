@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="testServer1">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>mpTelemetry-1.0</feature>
+        <feature>timedexit-1.0</feature>
+        <feature>restfulWS-3.0</feature> <!-- need an EE feature to repeat on EE9 and EE10 -->
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+    
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true" />
+
+    <keyStore id="defaultKeyStore" password="testServer1" />
+
+    <webApplication id="system" location="system.war" contextRoot="/"></webApplication>
+    
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read" />
+    
+</server>

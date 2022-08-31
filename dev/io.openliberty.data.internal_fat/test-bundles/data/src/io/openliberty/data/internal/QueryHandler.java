@@ -53,7 +53,9 @@ import io.openliberty.data.Pagination;
 import io.openliberty.data.Param;
 import io.openliberty.data.Query;
 import io.openliberty.data.Repository;
+import io.openliberty.data.Result;
 import io.openliberty.data.Select;
+import io.openliberty.data.Select.Aggregate;
 import io.openliberty.data.Sort;
 import io.openliberty.data.SortType;
 import io.openliberty.data.Sorts;
@@ -68,7 +70,7 @@ public class QueryHandler<T> implements InvocationHandler {
         EQUALS("=", 0),
         GREATER_THAN(">", 11),
         GREATER_THAN_EQUAL(">=", 16),
-        IN("IN ", 2),
+        IN(" IN ", 2),
         LESS_THAN("<", 8),
         LESS_THAN_EQUAL("<=", 13),
         LIKE(null, 4),
@@ -151,67 +153,29 @@ public class QueryHandler<T> implements InvocationHandler {
 
     private String generateRepositoryQuery(EntityInfo entityInfo, Method method) {
         String methodName = method.getName();
-        int start = methodName.startsWith("findBy") ? 6 //
-                        : methodName.startsWith("deleteBy") ? 8 //
-                                        : -1;
-        if (start > 0) {
-            StringBuilder q = new StringBuilder(200);
-            if (start == 6) { // findBy
-                generateSelect(entityInfo, q, method);
-            } else {
-                q.append("DELETE FROM ").append(entityInfo.name).append(" o");
-            }
-
+        StringBuilder q;
+        if (methodName.startsWith("findBy")) {
             int orderBy = methodName.indexOf("OrderBy");
-            if (orderBy > start || orderBy == -1 && methodName.length() > start) {
-                q.append(" WHERE ");
-                String s = orderBy > 0 ? methodName.substring(start, orderBy) : methodName.substring(start);
-                for (int paramCount = 0, and = 0, or = 0, iNext, i = 0; i >= 0; i = iNext) {
-                    and = and == -1 || and > i ? and : s.indexOf("And", i);
-                    or = or == -1 || or > i ? or : s.indexOf("Or", i);
-                    iNext = Math.min(and, or);
-                    if (iNext < 0)
-                        iNext = Math.max(and, or);
-                    String condition = iNext < 0 ? s.substring(i) : s.substring(i, iNext);
-                    paramCount = generateRepositoryQueryCondition(entityInfo.type, condition, q, paramCount);
-                    if (iNext > 0) {
-                        q.append(iNext == and ? " AND " : " OR ");
-                        iNext += (iNext == and ? 3 : 2);
-                    }
-                }
+            generateSelect(entityInfo, q = new StringBuilder(200), method);
+            if (orderBy > 6 || orderBy == -1 && methodName.length() > 6) {
+                String s = orderBy > 0 ? methodName.substring(6, orderBy) : methodName.substring(6);
+                generateRepositoryQueryConditions(entityInfo, s, q);
             }
-
-            if (orderBy > 0) {
-                q.append(" ORDER BY ");
-                do {
-                    int i = orderBy + 7;
-                    orderBy = methodName.indexOf("OrderBy", i);
-                    int stopAt = orderBy == -1 ? methodName.length() : orderBy;
-                    boolean desc = false;
-                    if (methodName.charAt(stopAt - 1) == 'c' && methodName.charAt(stopAt - 2) == 's')
-                        if (methodName.charAt(stopAt - 3) == 'A') {
-                            stopAt -= 3;
-                        } else if (methodName.charAt(stopAt - 3) == 'e' && methodName.charAt(stopAt - 4) == 'D') {
-                            stopAt -= 4;
-                            desc = true;
-                        }
-
-                    String attribute = methodName.substring(i, stopAt);
-                    String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
-                    q.append("o.").append(name == null ? attribute : name);
-
-                    if (desc)
-                        q.append(" DESC");
-                    if (orderBy > 0)
-                        q.append(", ");
-                } while (orderBy > 0);
-            }
-
-            System.out.println("Generated query for Repository method " + methodName);
-            System.out.println("  " + q);
-            return q.toString();
+            if (orderBy >= 6)
+                generateRepositoryQueryOrderBy(entityInfo, methodName, orderBy, q);
+        } else if (methodName.startsWith("deleteBy")) {
+            q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(" o");
+            if (methodName.length() > 8)
+                generateRepositoryQueryConditions(entityInfo, methodName.substring(8), q);
+        } else if (methodName.startsWith("updateBy")) {
+            q = generateRepositoryUpdateQuery(entityInfo, methodName);
+        } else {
+            return null;
         }
-        return null;
+
+        System.out.println("Generated query for Repository method " + methodName);
+        System.out.println("  " + q);
+        return q.toString();
     }
 
     /**
@@ -312,19 +276,143 @@ public class QueryHandler<T> implements InvocationHandler {
                 q.append(" ?").append(++paramCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
                 break;
             default:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append(condition.operator).append('?').append(++paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator).append('?').append(++paramCount);
         }
 
         return paramCount;
     }
 
+    /**
+     * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[Not?]Like
+     */
+    private int generateRepositoryQueryConditions(EntityInfo entityInfo, String conditions, StringBuilder q) {
+        int paramCount = 0;
+        q.append(" WHERE ");
+        for (int and = 0, or = 0, iNext, i = 0; i >= 0; i = iNext) {
+            and = and == -1 || and > i ? and : conditions.indexOf("And", i);
+            or = or == -1 || or > i ? or : conditions.indexOf("Or", i);
+            iNext = Math.min(and, or);
+            if (iNext < 0)
+                iNext = Math.max(and, or);
+            String condition = iNext < 0 ? conditions.substring(i) : conditions.substring(i, iNext);
+            paramCount = generateRepositoryQueryCondition(entityInfo.type, condition, q, paramCount);
+            if (iNext > 0) {
+                q.append(iNext == and ? " AND " : " OR ");
+                iNext += (iNext == and ? 3 : 2);
+            }
+        }
+        return paramCount;
+    }
+
+    /**
+     * Generates the JPQL ORDER BY clause for a repository findBy method such as findByLastNameLikeOrderByLastNameOrderByFirstName
+     */
+    private void generateRepositoryQueryOrderBy(EntityInfo entityInfo, String methodName, int orderBy, StringBuilder q) {
+        q.append(" ORDER BY ");
+        do {
+            int i = orderBy + 7;
+            orderBy = methodName.indexOf("OrderBy", i);
+            int stopAt = orderBy == -1 ? methodName.length() : orderBy;
+            boolean desc = false;
+            if (methodName.charAt(stopAt - 1) == 'c' && methodName.charAt(stopAt - 2) == 's')
+                if (methodName.charAt(stopAt - 3) == 'A') {
+                    stopAt -= 3;
+                } else if (methodName.charAt(stopAt - 3) == 'e' && methodName.charAt(stopAt - 4) == 'D') {
+                    stopAt -= 4;
+                    desc = true;
+                }
+
+            String attribute = methodName.substring(i, stopAt);
+            String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
+            q.append("o.").append(name == null ? attribute : name);
+
+            if (desc)
+                q.append(" DESC");
+            if (orderBy > 0)
+                q.append(", ");
+        } while (orderBy > 0);
+    }
+
+    /**
+     * Generates JPQL for a repository updateBy method such as updateByProductIdSetProductNameMultiplyPrice
+     */
+    private StringBuilder generateRepositoryUpdateQuery(EntityInfo entityInfo, String methodName) {
+        int set = methodName.indexOf("Set", 8);
+        int add = methodName.indexOf("Add", 8);
+        int mul = methodName.indexOf("Multiply", 8);
+        int div = methodName.indexOf("Divide", 8);
+        int uFirst = Integer.MAX_VALUE;
+        if (set > 0 && set < uFirst)
+            uFirst = set;
+        if (add > 0 && add < uFirst)
+            uFirst = add;
+        if (mul > 0 && mul < uFirst)
+            uFirst = mul;
+        if (div > 0 && div < uFirst)
+            uFirst = div;
+        if (uFirst == Integer.MAX_VALUE)
+            throw new IllegalArgumentException(methodName); // updateBy that lacks updates
+
+        // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
+        StringBuilder where = new StringBuilder(150);
+        int paramCount = generateRepositoryQueryConditions(entityInfo, methodName.substring(8, uFirst), where);
+
+        StringBuilder q = new StringBuilder(250);
+        q.append("UPDATE ").append(entityInfo.name).append(" o SET");
+
+        for (int u = uFirst; u > 0;) {
+            boolean first = u == uFirst;
+            String op;
+            if (u == set) {
+                op = null;
+                set = methodName.indexOf("Set", u += 3);
+            } else if (u == add) {
+                op = "+";
+                add = methodName.indexOf("Add", u += 3);
+            } else if (u == div) {
+                op = "/";
+                div = methodName.indexOf("Divide", u += 6);
+            } else if (u == mul) {
+                op = "*";
+                mul = methodName.indexOf("Multiply", u += 8);
+            } else {
+                throw new IllegalStateException(methodName); // internal error
+            }
+
+            int next = Integer.MAX_VALUE;
+            if (set > u && set < next)
+                next = set;
+            if (add > u && add < next)
+                next = add;
+            if (mul > u && mul < next)
+                next = mul;
+            if (div > u && div < next)
+                next = div;
+
+            String attribute = next == Integer.MAX_VALUE ? methodName.substring(u) : methodName.substring(u, next);
+            String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
+            q.append(first ? " o." : ", o.").append(name == null ? attribute : name).append("=");
+
+            if (op != null)
+                q.append("o.").append(name == null ? attribute : name).append(op);
+            q.append('?').append(++paramCount);
+
+            u = next == Integer.MAX_VALUE ? -1 : next;
+        }
+
+        return q.append(where);
+    }
+
     private void generateSelect(EntityInfo entityInfo, StringBuilder q, Method method) {
         // TODO entityClass now includes inheritance subtypes and much of the following was already computed.
+        Result result = method.getAnnotation(Result.class);
         Select select = method.getAnnotation(Select.class);
-        Class<?> type = select == null ? null : select.type();
+        Class<?> type = result == null ? null : result.value();
         String[] cols = select == null ? null : select.value();
         boolean distinct = select != null && select.distinct();
-        if (type == null || Select.AutoDetect.class.equals(type)) {
+        String function = select == null ? null : toFunctionName(select.function());
+
+        if (type == null) {
             Class<?> returnType = method.getReturnType();
             if (!Iterable.class.isAssignableFrom(returnType)) {
                 Class<?> arrayType = returnType.getComponentType();
@@ -337,36 +425,44 @@ public class QueryHandler<T> implements InvocationHandler {
             }
         }
 
-        q.append("SELECT");
+        q.append("SELECT ");
 
-        if (distinct)
-            q.append(" DISTINCT");
-
-        if (type == null || Select.AutoDetect.class.equals(type) ||
+        if (type == null ||
             inheritance && entityInfo.type.isAssignableFrom(type))
             if (cols == null || cols.length == 0) {
-                q.append(" o FROM ");
+                q.append(distinct ? "DISTINCT o" : "o");
             } else {
-                for (int i = 0; i < cols.length; i++)
-                    q.append(i == 0 ? " o." : ", o.").append(cols[i]);
-                q.append(" FROM ");
+                for (int i = 0; i < cols.length; i++) {
+                    generateSelectExpression(q, i == 0, function, distinct, cols[i]);
+                }
             }
         else {
-            q.append(" NEW ").append(type.getName());
+            q.append("NEW ").append(type.getName()).append('(');
             boolean first = true;
             if (cols == null || cols.length == 0)
                 for (String name : persistence.getAttributeNames(entityInfo.type, data.provider())) {
-                    q.append(first ? "(o." : ", o.").append(name);
+                    generateSelectExpression(q, first, function, distinct, name);
                     first = false;
                 }
             else
                 for (int i = 0; i < cols.length; i++) {
                     String name = persistence.getAttributeName(cols[i], entityInfo.type, data.provider());
-                    q.append(i == 0 ? "(o." : ", o.").append(name == null ? cols[i] : name);
+                    generateSelectExpression(q, i == 0, function, distinct, name == null ? cols[i] : name);
                 }
-            q.append(") FROM ");
+            q.append(')');
         }
-        q.append(entityInfo.name).append(" o");
+        q.append(" FROM ").append(entityInfo.name).append(" o");
+    }
+
+    private void generateSelectExpression(StringBuilder q, boolean isFirst, String function, boolean distinct, String attributeName) {
+        if (!isFirst)
+            q.append(", ");
+        if (function != null)
+            q.append(function).append('(');
+        q.append(distinct ? "DISTINCT o." : "o.");
+        q.append(attributeName);
+        if (function != null)
+            q.append(')');
     }
 
     @Override
@@ -392,12 +488,12 @@ public class QueryHandler<T> implements InvocationHandler {
         Class<?> returnType = method.getReturnType();
         Class<?> returnArrayType = returnType.getComponentType();
 
-        Select select = method.getAnnotation(Select.class);
-        Class<?> selectType = select == null ? null : select.type();
+        Result resultAnno = method.getAnnotation(Result.class);
+        Class<?> resultType = resultAnno == null ? null : resultAnno.value();
 
-        Class<?> entityClass = selectType == null || Select.AutoDetect.class.equals(selectType) //
+        Class<?> entityClass = resultType == null //
                         ? returnArrayType == null ? returnType : returnArrayType // computed from return type
-                        : selectType;
+                        : resultType;
         if (!inheritance || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
             entityClass = defaultEntityClass;
 
@@ -449,6 +545,16 @@ public class QueryHandler<T> implements InvocationHandler {
         // Repository method name pattern queries
         if (jpql == null)
             jpql = generateRepositoryQuery(entityInfo, method);
+
+        // @Select annotation only
+        if (jpql == null) {
+            Select select = method.getAnnotation(Select.class);
+            if (select != null) {
+                StringBuilder q = new StringBuilder(100);
+                generateSelect(entityInfo, q, method);
+                jpql = q.toString();
+            }
+        }
 
         // Jakarta NoSQL allows the last 3 parameter positions to be used for Pagination, Sorts, and Consumer
         // Collector is added here for experimentation.
@@ -667,8 +773,28 @@ public class QueryHandler<T> implements InvocationHandler {
                             returnValue = CompletableFuture.completedFuture(results.isEmpty() ? null : results.get(0));
                         else // multiple
                             returnValue = CompletableFuture.completedFuture(results);
+                    } else if (results.isEmpty()) {
+                        returnValue = null;
+                    } else if (results.size() == 1) {
+                        // single result
+                        returnValue = results.get(0);
+                        if (returnValue != null && !returnType.isAssignableFrom(returnValue.getClass())) {
+                            // TODO these conversions are not all safe
+                            if (double.class.equals(returnType) || Double.class.equals(returnType))
+                                returnValue = ((Number) returnValue).doubleValue();
+                            else if (float.class.equals(returnType) || Float.class.equals(returnType))
+                                returnValue = ((Number) returnValue).floatValue();
+                            else if (long.class.equals(returnType) || Long.class.equals(returnType))
+                                returnValue = ((Number) returnValue).longValue();
+                            else if (int.class.equals(returnType) || Integer.class.equals(returnType))
+                                returnValue = ((Number) returnValue).intValue();
+                            else if (short.class.equals(returnType) || Short.class.equals(returnType))
+                                returnValue = ((Number) returnValue).shortValue();
+                            else if (byte.class.equals(returnType) || Byte.class.equals(returnType))
+                                returnValue = ((Number) returnValue).byteValue();
+                        }
                     } else { // TODO convert other return types?
-                        returnValue = results.isEmpty() ? null : results.get(0);
+                        returnValue = results;
                     }
                     break;
                 case UPDATE:
@@ -687,7 +813,7 @@ public class QueryHandler<T> implements InvocationHandler {
 
                     int updateCount = update.executeUpdate();
 
-                    returnValue = toReturnValue(updateCount, returnType);
+                    returnValue = toReturnValue(updateCount, resultType, returnType);
                     break;
                 default:
                     throw new UnsupportedOperationException(queryType.name());
@@ -839,18 +965,44 @@ public class QueryHandler<T> implements InvocationHandler {
         return void.class.equals(returnType) ? null : CompletableFuture.completedFuture(null);
     }
 
-    private static final Object toReturnValue(int i, Class<?> returnType) {
-        if (int.class.equals(returnType) || Integer.class.equals(returnType) || Number.class.equals(returnType))
-            return i;
-        else if (long.class.equals(returnType) || Long.class.equals(returnType))
-            return Long.valueOf(i);
-        else if (boolean.class.equals(returnType) || Boolean.class.equals(returnType))
-            return i != 0;
-        else if (void.class.equals(returnType) || Void.class.equals(returnType))
-            return null;
-        else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
-            return CompletableFuture.completedFuture(Long.valueOf(i)); // TODO would need something like @Result(Integer.class) to identify the type
+    private static final String toFunctionName(Aggregate function) {
+        switch (function) {
+            case UNSPECIFIED:
+                return null;
+            case AVERAGE:
+                return "AVG";
+            case MAXIMUM:
+                return "MAX";
+            case MINIMUM:
+                return "MIN";
+            default: // COUNT, SUM
+                return function.name();
+        }
+    }
+
+    private static final Object toReturnValue(int i, Class<?> resultType, Class<?> returnType) {
+        if (resultType == null)
+            resultType = returnType;
+
+        boolean returnsCompletionStage = CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType);
+
+        Object result;
+        if (int.class.equals(resultType) || Integer.class.equals(resultType) || Number.class.equals(resultType))
+            result = i;
+        else if (long.class.equals(resultType) || Long.class.equals(resultType))
+            result = Long.valueOf(i);
+        else if (boolean.class.equals(resultType) || Boolean.class.equals(resultType))
+            result = i != 0;
+        else if (void.class.equals(resultType) || Void.class.equals(resultType))
+            result = null;
+        else if (returnsCompletionStage && resultType.equals(returnType))
+            result = Long.valueOf(i); // default for completion stages that do not specify @Result
         else
             throw new UnsupportedOperationException("Return update count as " + returnType);
+
+        if (returnsCompletionStage)
+            result = CompletableFuture.completedFuture(result);
+
+        return result;
     }
 }

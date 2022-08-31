@@ -54,3 +54,5 @@ autoFVT {
     delete new File(buildDir, 'autoFVT/lib/com.ibm.ws.org.glassfish.json.1.0.jar')
   }
 }
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'

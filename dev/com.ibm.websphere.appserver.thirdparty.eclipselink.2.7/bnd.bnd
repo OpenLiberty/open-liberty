@@ -12,8 +12,8 @@
 bVersion=1.0
 
 # Eclipselink version info
-eclVersion=2.7.10
-eclHash=fe64cd3
+eclVersion=2.7.11
+eclHash=52dea2a
 eclFullVersion=${eclVersion}
 eclPackageVersion=2.0.16
 asmFullVersion=9.3.0
@@ -116,8 +116,7 @@ Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper,\
-  org/eclipse/persistence/descriptors=${bin}/org/eclipse/persistence/descriptors
+  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 
 
 publish.wlp.jar.suffix: dev/api/third-party

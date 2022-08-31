@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Server for test disableXPoweredBy configuration.r">
+<server description="Server for testing disableXPoweredBy configuration.">
 
     <include location="../fatTestPorts.xml"/>
 

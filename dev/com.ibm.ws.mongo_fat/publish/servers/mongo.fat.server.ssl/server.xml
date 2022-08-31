@@ -25,23 +25,23 @@
     <ssl id="mySSLConfig" keyStoreRef="myTrustStore" />
     
     <mongoDB jndiName="mongo/testdb" databaseName="default" >
-        <mongo libraryRef="mongo-lib" hostNames="mongo-encrypted" ports="0" sslEnabled="true" sslRef="mySSLConfig"/>
+        <mongo libraryRef="mongo-lib" hostNames="mongo-encrypted" ports="0" sslEnabled="true" sslRef="mySSLConfig" connectTimeout="20000"/>
     </mongoDB>
 
-    <mongo id="mongo-encrypted" libraryRef="mongo-lib" hostNames="mongo-encrypted" ports="0" sslEnabled="true" sslRef="mySSLConfig"/>
+    <mongo id="mongo-encrypted" libraryRef="mongo-lib" hostNames="mongo-encrypted" ports="0" sslEnabled="true" sslRef="mySSLConfig" connectTimeout="20000"/>
     <mongoDB jndiName="mongo/testdb-jndi" mongoRef="mongo-encrypted" databaseName="default" />
     <mongoDB jndiName="mongo/testdb-jndi-resource-env-ref" mongoRef="mongo-encrypted" databaseName="default" />
 
-    <mongo id="mongo-auth-encrypted" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true" sslRef="mySSLConfig"/>
+    <mongo id="mongo-auth-encrypted" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true" sslRef="mySSLConfig" connectTimeout="20000"/>
     <mongoDB jndiName="mongo/testdb-auth" mongoRef="mongo-auth-encrypted" databaseName="default" />
     <mongoDB jndiName="mongo/testdb-auth-jndi" mongoRef="mongo-auth-encrypted" databaseName="default" />
   
-    <mongo id="mongo-nested-ssl" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true">
+    <mongo id="mongo-nested-ssl" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true" connectTimeout="20000">
         <ssl keyStoreRef="myTrustStore" />
     </mongo>
     <mongoDB jndiName="mongo/testdb-nested-ssl" mongoRef="mongo-nested-ssl" databaseName="default" />
   
-    <mongo id="mongo-sslEnabled-false" libraryRef="mongo-lib" hostNames="mongo-auth" ports="0" user="user" password="password" sslEnabled="false"/>
+    <mongo id="mongo-sslEnabled-false" libraryRef="mongo-lib" hostNames="mongo-auth" ports="0" user="user" password="password" sslEnabled="false" connectTimeout="20000"/>
     <mongoDB jndiName="mongo/testdb-sslEnabled-false" mongoRef="mongo-sslEnabled-false" databaseName="default" />
     
     <mongo id="mongo-sslEnabled-false-sslref" libraryRef="mongo-lib" hostNames="mongo-auth" ports="0" user="user" password="password" sslEnabled="false" sslRef="mySSLConfig"/>
@@ -49,7 +49,7 @@
     
     <keyStore password="passw0rd" id="differentTrustStore" location="${server.output.dir}/resources/mongo-different-ssl/security/truststore.jks"></keyStore>
     <ssl id="differentSSLConfig" keyStoreRef="differentTrustStore" />
-    <mongo id="mongo-different-sslref" libraryRef="mongo-lib" hostNames="mongo-different-ssl" ports="0" user="user" password="password" sslEnabled="true" sslRef="differentSSLConfig"/>
+    <mongo id="mongo-different-sslref" libraryRef="mongo-lib" hostNames="mongo-different-ssl" ports="0" user="user" password="password" sslEnabled="true" sslRef="differentSSLConfig" connectTimeout="20000"/>
     <mongoDB jndiName="mongo/testdb-different-sslref" mongoRef="mongo-different-sslref" databaseName="default" />
 
     <ssl id="noTruststoreSSLConfig" keyStoreRef="defaultTrustStore" />
@@ -71,10 +71,10 @@
     <ssl id="validCertAuthNoAliasButOneReqd" keyStoreRef="validCertAuthMultiKeyKeyStore" trustStoreRef="validCertAuthTrustStore"></ssl>
     <ssl id="validCertInvalidTrustore" keyStoreRef="validCertAuthMultiKeyKeyStore" trustStoreRef="invalidCertAuthTrustStore" clientKeyAlias="client_good"></ssl>
     
-    <mongo id="mongo-valid-certificate-no-alias-reqd" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthNoAliasReqd" useCertificateAuthentication="true"/>
+    <mongo id="mongo-valid-certificate-no-alias-reqd" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthNoAliasReqd" useCertificateAuthentication="true" connectTimeout="20000"/>
     <mongoDB jndiName="mongo/testdb-valid-certificate-no-alias-reqd" mongoRef="mongo-valid-certificate-no-alias-reqd" databaseName="default" />
     
-    <mongo id="mongo-valid-certificate-valid-alias" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthValidAlias" useCertificateAuthentication="true"/>
+    <mongo id="mongo-valid-certificate-valid-alias" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthValidAlias" useCertificateAuthentication="true" connectTimeout="20000"/>
     <mongoDB jndiName="mongo/testdb-valid-certificate-valid-alias" mongoRef="mongo-valid-certificate-valid-alias" databaseName="default" />
 
     <mongo id="mongo-valid-certificate-invalid-alias" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthInvalidAlias" useCertificateAuthentication="true"/>

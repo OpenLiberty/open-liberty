@@ -62,7 +62,7 @@ public class JPACDIIntegrationTest {
             ShrinkHelper.addDirectory(app, "test-applications/jpa22/" + APP_NAME + "/resources.cdiEGT4/");
         }
 
-        ShrinkHelper.exportAppToServer(server1, app);
+        ShrinkHelper.exportToServer(server1, "apps", app);
         server1.addInstalledAppForValidation(APP_NAME);
 
         server1.startServer();

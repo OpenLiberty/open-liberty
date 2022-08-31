@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.overlay/resources/com/ibm/ws/artifact/overlay/internal/resources/ArtifactOverlayMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# # A file path.
+overlay.does.not.exist=CWWKM0301E: {0} \u5957\u7248\u8cc7\u6599\u593e\u4e0d\u5b58\u5728\u3002
+overlay.does.not.exist.explanation=Liberty \u6a94\u6848\u7cfb\u7d71\u8207\u5957\u7248\u914d\u7f6e\u4e0d\u4e00\u81f4\u3002  \u9019\u53ef\u80fd\u662f\u56e0\u70ba\u4f3a\u670d\u5668\u5c0d\u5957\u7248\u914d\u7f6e\u9032\u884c\u4e86\u8b8a\u66f4\u5f8c\u5df2\u91cd\u65b0\u555f\u52d5\u3002
+overlay.does.not.exist.useraction=\u8acb\u4f7f\u7528 '--clean' \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+# # A file path.
+overlay.not.directory=CWWKM0302E: {0} \u5957\u7248\u8cc7\u6599\u593e\u4e0d\u662f\u76ee\u9304\u3002
+overlay.not.directory.explanation=Liberty \u6a94\u6848\u7cfb\u7d71\u8207\u5957\u7248\u914d\u7f6e\u4e0d\u4e00\u81f4\u3002  \u9019\u53ef\u80fd\u662f\u56e0\u70ba\u4f3a\u670d\u5668\u5c0d\u5957\u7248\u914d\u7f6e\u9032\u884c\u4e86\u8b8a\u66f4\u5f8c\u5df2\u91cd\u65b0\u555f\u52d5\u3002
+overlay.not.directory.useraction=\u8acb\u4f7f\u7528 '--clean' \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+# # A file path.
+overlay.not.empty=CWWKM0303E: {0} \u5957\u7248\u8cc7\u6599\u593e\u4e0d\u70ba\u7a7a\u3002
+overlay.not.empty.explanation=Liberty \u6a94\u6848\u7cfb\u7d71\u8207\u5957\u7248\u914d\u7f6e\u4e0d\u4e00\u81f4\u3002  \u9019\u53ef\u80fd\u662f\u56e0\u70ba\u4f3a\u670d\u5668\u5c0d\u5957\u7248\u914d\u7f6e\u9032\u884c\u4e86\u8b8a\u66f4\u5f8c\u5df2\u91cd\u65b0\u555f\u52d5\u3002
+overlay.not.empty.useraction=\u8acb\u4f7f\u7528 '--clean' \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+# # A file path.
+overlay.cache.does.not.exist=CWWKM0304E: {0} \u5957\u7248\u5feb\u53d6\u8cc7\u6599\u593e\u4e0d\u5b58\u5728\u3002
+overlay.cache.does.not.exist.explanation=Liberty \u6a94\u6848\u7cfb\u7d71\u8207\u5957\u7248\u914d\u7f6e\u4e0d\u4e00\u81f4\u3002  \u9019\u53ef\u80fd\u662f\u56e0\u70ba\u4f3a\u670d\u5668\u5c0d\u5957\u7248\u914d\u7f6e\u9032\u884c\u4e86\u8b8a\u66f4\u5f8c\u5df2\u91cd\u65b0\u555f\u52d5\u3002
+overlay.cache.does.not.exist.useraction=\u8acb\u4f7f\u7528 '--clean' \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+# # A file path.
+overlay.cache.not.directory=CWWKM0305E: {0} \u5957\u7248\u5feb\u53d6\u8cc7\u6599\u593e\u4e0d\u662f\u76ee\u9304\u3002
+overlay.cache.not.directory.explanation=Liberty \u6a94\u6848\u7cfb\u7d71\u8207\u5957\u7248\u914d\u7f6e\u4e0d\u4e00\u81f4\u3002  \u9019\u53ef\u80fd\u662f\u56e0\u70ba\u4f3a\u670d\u5668\u5c0d\u5957\u7248\u914d\u7f6e\u9032\u884c\u4e86\u8b8a\u66f4\u5f8c\u5df2\u91cd\u65b0\u555f\u52d5\u3002
+overlay.cache.not.directory.useraction=\u8acb\u4f7f\u7528 '--clean' \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+# # A file path.
+overlay.exists.not.directory=CWWKM0306E: {0} \u5957\u7248\u6a94\u6848\u5df2\u5b58\u5728\uff0c\u4f46\u4e0d\u662f\u76ee\u9304\u3002
+overlay.exists.not.directory.explanation=Liberty \u6a94\u6848\u7cfb\u7d71\u8207\u5957\u7248\u914d\u7f6e\u4e0d\u4e00\u81f4\u3002  \u9019\u53ef\u80fd\u662f\u56e0\u70ba\u4f3a\u670d\u5668\u5c0d\u5957\u7248\u914d\u7f6e\u9032\u884c\u4e86\u8b8a\u66f4\u5f8c\u5df2\u91cd\u65b0\u555f\u52d5\u3002
+overlay.exists.not.directory.useraction=\u8acb\u4f7f\u7528 '--clean' \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002

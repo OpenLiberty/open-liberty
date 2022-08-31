@@ -58,7 +58,7 @@ public class BasicAuthTest extends CommonServletTestScenarios {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        myServer.addInstalledAppForValidation(appName);
+        //myServer.addInstalledAppForValidation(appName);
         //LDAPUtils.addLDAPVariables(myServer);
 
         JACCFatUtils.installJaccUserFeature(myServer);

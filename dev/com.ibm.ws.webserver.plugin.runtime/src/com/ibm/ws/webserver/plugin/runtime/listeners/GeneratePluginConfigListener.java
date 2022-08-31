@@ -289,7 +289,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
             };
 
             final CheckpointPhase checkpoint = CheckpointPhase.getPhase();
-            if (checkpoint != null) {
+            if (checkpoint != CheckpointPhase.INACTIVE) {
                 CheckpointHook restoreHook = new CheckpointHook() {
                     @Override
                     public void restore() {

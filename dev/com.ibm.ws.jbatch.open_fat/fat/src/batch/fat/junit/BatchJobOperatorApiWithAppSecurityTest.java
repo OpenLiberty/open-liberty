@@ -181,36 +181,16 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException",
                     "java.lang.Exception" })
     public void testAbandonAsSubmitterNotOwner() throws Exception {
-        
-        //Add some additional trace for debug to look at in the future
-        String newTraceSpec = "*=info=enabled"
-                              + ":test=all=enabled"
-                              + ":com.ibm.jbatch.*=finer"
-                              + ":com.ibm.jbatch.*=all=enabled"
-                              + ":jsr352.test.servlet.*=all=enabled"
-                              + ":com.ibm.ws.jbatch.*=all=enabled"
-                              + ":BonusPayout=all=enabled"
-                              + ":com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all:HTTPDispatcher=all"
-                              + ":batch.security.*=all=enabled"
-                              + ":batch.fat.*=all=enabled";
-        
-        
+
         Long jobinstance = submitJob(true);
         JsonObject jobExec = waitForFirstJobExecution(jobinstance);
         JsonObject completedJobExecution = waitForJobExecutionToFinish(jobExec);
         Long jobexecution = completedJobExecution.getJsonNumber("executionId").longValue();
 
-        // Abandon the job...
         HttpURLConnection con = null;
 
-        //Update config with new trace spec here, save config for restore after abandon command
-        server.saveServerConfiguration();
-        ServerConfiguration serverConfiguration = server.getServerConfiguration();
-        serverConfiguration.getLogging().setTraceSpecification(newTraceSpec);
-        server.updateServerConfiguration(serverConfiguration);
 
-        // Check that configuration updated successfully
-        assertNotNull(server.waitForStringInLogUsingMark("CWWKG0017I"));
+        boolean abandonedTwice = false;
 
         try {
             // Abandon the job...
@@ -222,25 +202,31 @@ public class BatchJobOperatorApiWithAppSecurityTest {
         } catch (AssertionError assertionError) { //just to log something we can search for
 
             //Rarely, the job is abandoned as expected, but for a yet-to-be-determined reason,
-            //the abandon call by our job servlet (part of the test app) is done twice
+            //the abandon call by our job servlet (part of the test app) is issued twice
             //
             //The runtime is behaving as expected, preventing the 2nd abandon attempt so lets
             //not fail the test for that
-            if (con.getResponseMessage().contains("ABANDONED to ABANDONED"))
-                logError("testAbandonAsSubmitterNotOwner", "Job abandoned twice", assertionError);
+            if (assertionError.getMessage().contains("ABANDONED to ABANDONED")) {
+                //no-op here, but re-throw if its another (real) problem
+                abandonedTwice = true;
+            } else {
+                throw assertionError;
+            }
 
-            throw assertionError;
-        } finally {
-            //restore to original config before the trace spec change
-            server.restoreServerConfiguration();
         }
 
-        BufferedReader br = HttpUtils.getErrorStream(con);
-        String body = org.apache.commons.io.IOUtils.toString(br);
-        br.close();
+        // due to the exception, won't have a con object to get output from,
+        // look in trace instead
+        if (abandonedTwice) {
+            Assert.assertTrue(!server.findStringsInTrace("CWWKY0302W").isEmpty());
+        } else {
+            BufferedReader br = HttpUtils.getErrorStream(con);
+            String body = org.apache.commons.io.IOUtils.toString(br);
+            br.close();
 
-        Assert.assertTrue("Actual:" + body, body.contains(SUBMITTER2_NAME));
-        Assert.assertTrue("Actual:" + body, body.contains("not authorized"));
+            Assert.assertTrue("Actual:" + body, body.contains(SUBMITTER2_NAME));
+            Assert.assertTrue("Actual:" + body, body.contains("not authorized"));
+        }
     }
 
     @Test

@@ -68,6 +68,14 @@ CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Error configuring JCache CacheManager: 
 CWLJC0010_MANAGER_CONFIG_ERR.explanation=The JCache CacheManager could not be configured due to the specified error.
 CWLJC0010_MANAGER_CONFIG_ERR.useraction=Address the error included in the message and retry.
 
-CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Error encountered while retrieving the {0} JCache: {1}.
+CWLJC0011_GET_CACHE_ERR=CWLJC0011W: Error encountered while retrieving the {0} JCache. Will attempt to create it instead. The error was: {1}.
 CWLJC0011_GET_CACHE_ERR.explanation=The cache was not retrievable due to the specified error.
 CWLJC0011_GET_CACHE_ERR.useraction=Address the error included in the message and retry.
+
+CWLJC0012_CLOSE_CACHE_ERR=CWLJC0012W: The following error occurred when the server tried to close the {0} JCache: {1}.
+CWLJC0012_CLOSE_CACHE_ERR.explanation=Failed to close the JCache due to the specified error.
+CWLJC0012_CLOSE_CACHE_ERR.useraction=If this occurs repeatedly during runtime, it may result in leaked cache resources.
+
+CWLJC0013_CLOSE_CACHEMGR_ERR=CWLJC0013W: The following error occurred when the server tried to close the {0} JCache CacheManager: {1}.
+CWLJC0013_CLOSE_CACHEMGR_ERR.explanation=Failed to close the JCache CacheManager due to the specified error.
+CWLJC0013_CLOSE_CACHEMGR_ERR.useraction=If this occurs repeatedly during runtime, it may result in leaked cache resources.

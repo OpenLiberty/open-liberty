@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.request.timing.hung.fat;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -44,6 +46,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -137,6 +140,7 @@ public class HungRequestTiming {
     }
 
     @Test
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testHungRequestIntrospector() throws Exception {
         final String METHOD_NAME = "testHungRequestIntrospector";
 
@@ -339,6 +343,7 @@ public class HungRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testHungRequestDynamicDisable() throws Exception {
         // Disabling thread dumps, so server stops gracefully, instead of waiting for all thread dumps to be generated.
         CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s, with thread dumps disabled");
@@ -401,6 +406,7 @@ public class HungRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testSequentialHungMultipleRequests() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
         server.setServerConfigurationFile("server_hungRequestThreshold2.xml");

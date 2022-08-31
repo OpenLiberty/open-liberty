@@ -75,6 +75,9 @@ public class DataTestServlet extends FATServlet {
     OrderRepo orders;
 
     @Inject
+    Packages packages;
+
+    @Inject
     PersonRepo people;
 
     @Inject
@@ -100,6 +103,58 @@ public class DataTestServlet extends FATServlet {
 
     @Resource
     private UserTransaction tran;
+
+    /**
+     * Use repository methods with aggregate functions in the select clause.
+     */
+    @Test
+    public void testAggregateFunctions() {
+        // Remove data from previous test:
+        Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
+        if (allProducts.length > 0)
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+
+        // Add data for this test to use:
+        Product prod1 = new Product();
+        prod1.id = "AF-006E905-LE";
+        prod1.name = "TestAggregateFunctions Lite Edition";
+        prod1.price = 104.99f;
+        products.addOrModify(prod1);
+
+        Product prod2 = new Product();
+        prod2.id = "AF-006E005-RK";
+        prod2.name = "TestAggregateFunctions Repair Kit";
+        prod2.price = 104.99f;
+        products.addOrModify(prod2);
+
+        Product prod3 = new Product();
+        prod3.id = "AF-006E905-CE";
+        prod3.name = "TestAggregateFunctions Classic Edition";
+        prod3.price = 306.99f;
+        products.addOrModify(prod3);
+
+        Product prod4 = new Product();
+        prod4.id = "AF-006E205-CE";
+        prod4.name = "TestAggregateFunctions Classic Edition";
+        prod4.description = "discontinued";
+        prod4.price = 286.99f;
+        products.addOrModify(prod4);
+
+        assertEquals(306.99f, products.highestPrice(), 0.001f);
+
+        assertEquals(104.99f, products.lowestPrice(), 0.001f);
+
+        assertEquals(200.99f, products.meanPrice(), 0.001f);
+
+        assertEquals(698.97f, products.totalOfDistinctPrices(), 0.001f);
+
+        // EclipseLink says that multiple distinct attribute are not support at this time,
+        // so we are testing this with distinct=false
+        ProductCount stats = products.stats();
+        assertEquals(4, stats.totalNames);
+        assertEquals(1, stats.totalDescriptions);
+        assertEquals(4, stats.totalPrices);
+    }
 
     /**
      * Use repository methods that are designated as asynchronous by the Concurrency Asynchronous annotation.
@@ -175,7 +230,7 @@ public class DataTestServlet extends FATServlet {
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
                                                                                  1002003003L, 1002003002L, 1002003001L))
                         .thenCompose(updateCount -> {
-                            assertEquals(Long.valueOf(6), updateCount);
+                            assertEquals(Integer.valueOf(6), updateCount);
 
                             return personnel.findByLastNameOrderByFirstName("Test-Asynchronous");
                         });
@@ -255,6 +310,8 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Long.valueOf(4), avgLengthOfBNames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
+        assertEquals(Boolean.TRUE, personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
         deleted = personnel.removeAll();
         assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
@@ -287,7 +344,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(2, added.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).size());
 
         CompletableFuture<Long> updated2Then1;
-        CompletableFuture<Long> updated2;
+        CompletableFuture<Boolean> updated2;
 
         tran.begin();
         try {
@@ -323,8 +380,8 @@ public class DataTestServlet extends FATServlet {
             updated2 = personnel.setSurnameAsync("TestAsyncPrevents-Deadlock", p2.ssn);
 
             try {
-                Long updateCount = updated2.get(1, TimeUnit.SECONDS);
-                fail("Third thread ought to be blocked by second thread. Instead, updated " + updateCount);
+                Boolean wasUpdated = updated2.get(1, TimeUnit.SECONDS);
+                fail("Third thread ought to be blocked by second thread. Instead, was updated? " + wasUpdated);
             } catch (TimeoutException x) {
                 // expected
             }
@@ -337,7 +394,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Long.valueOf(2), updated2Then1.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         // With the second thread completing, it releases both locks, allowing the third thread to obtain the lock on 2 and complete
-        assertEquals(Long.valueOf(1), updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Boolean.TRUE, updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**
@@ -1239,21 +1296,19 @@ public class DataTestServlet extends FATServlet {
 
             @Override
             public void onComplete() {
-                results.add("DONE");
+                System.out.println(Long.toHexString(Thread.currentThread().getId()) + " onComplete");
             }
         });
 
         Set<Long> expected = new HashSet<Long>();
         expected.addAll(List.of(10030001L, 10030002L, 10030003L, 10030004L, 10030005L, 10030006L, 10030007L, 10030008L, 10030009L));
 
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 9; i++) {
             Object result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES);
             assertNotNull(result);
             System.out.println("Received " + result);
             if (result instanceof Throwable)
                 throw new AssertionError("onError notification received", (Throwable) result);
-            else if (result instanceof String)
-                assertEquals("DONE", result); // DONE notification
             else
                 assertEquals(result.toString() + " is not expected", true, expected.remove(((Reservation) result).meetingID));
         }
@@ -1356,6 +1411,157 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .sorted()
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use repository updateBy methods.
+     */
+    @Test
+    public void testRepositoryUpdateMethods() {
+        ZoneOffset CDT = ZoneOffset.ofHours(-5);
+
+        // remove data that other tests previously inserted to the same table
+        reservations.deleteByHostNot("unused@example.org");
+
+        Reservation r1 = new Reservation();
+        r1.host = "testRepositoryUpdateMethods-host1@example.org";
+        r1.invitees = Set.of("testRepositoryUpdateMethods-1a@example.org");
+        r1.location = "050-2 A101";
+        r1.meetingID = 1012001;
+        r1.start = OffsetDateTime.of(2022, 8, 25, 8, 0, 0, 0, CDT);
+        r1.stop = OffsetDateTime.of(2022, 8, 25, 9, 30, 0, 0, CDT);
+
+        Reservation r2 = new Reservation();
+        r2.host = "testRepositoryUpdateMethods-host1@example.org";
+        r2.invitees = Set.of("testRepositoryUpdateMethods-2a@example.org", "testRepositoryUpdateMethods-2b@example.org");
+        r2.location = "050-2 B120";
+        r2.meetingID = 1012002;
+        r2.start = OffsetDateTime.of(2022, 8, 25, 9, 0, 0, 0, CDT);
+        r2.stop = OffsetDateTime.of(2022, 8, 25, 10, 0, 0, 0, CDT);
+
+        Reservation r3 = new Reservation();
+        r3.host = "testRepositoryUpdateMethods-host1@example.org";
+        r3.invitees = Set.of("testRepositoryUpdateMethods-3a@example.org", "testRepositoryUpdateMethods-3b@example.org", "testRepositoryUpdateMethods-3c@example.org");
+        r3.location = "050-2 A101";
+        r3.meetingID = 1012003;
+        r3.start = OffsetDateTime.of(2022, 8, 25, 10, 0, 0, 0, CDT);
+        r3.stop = OffsetDateTime.of(2022, 8, 25, 11, 0, 0, 0, CDT);
+
+        Reservation r4 = new Reservation();
+        r4.host = "testRepositoryUpdateMethods-host4@example.org";
+        r4.invitees = Set.of("testRepositoryUpdateMethods-1a@example.org");
+        r4.location = "050-2 A101";
+        r4.meetingID = 1012004;
+        r4.start = OffsetDateTime.of(2022, 8, 25, 13, 0, 0, 0, CDT);
+        r4.stop = OffsetDateTime.of(2022, 8, 25, 14, 30, 0, 0, CDT);
+
+        reservations.save(List.of(r1, r2, r3, r4));
+
+        // Update by primary key
+        assertEquals(true, reservations.updateByMeetingIDSetHost(1012004, "testRepositoryUpdateMethods-host2@example.org"));
+
+        // See if the updated entry is found
+        List<Long> found = new ArrayList<>();
+        reservations.findByHost("testRepositoryUpdateMethods-host2@example.org").forEach(r -> found.add(r.meetingID));
+        assertIterableEquals(List.of(1012004L), found);
+
+        // Update multiple by various conditions
+        assertEquals(2, reservations.updateByHostAndLocationSetLocation("testRepositoryUpdateMethods-host1@example.org",
+                                                                        "050-2 A101",
+                                                                        "050-2 H115"));
+        assertIterableEquals(List.of(1012001L, 1012003L),
+                             reservations.findByLocationLikeOrderByMeetingID("H115")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+
+        reservations.deleteByHostNot("unused@example.org");
+
+        ;
+    }
+
+    /**
+     * Use repository updateBy methods with multiplication and division,
+     */
+    @Test
+    public void testRepositoryUpdateMethodsMultiplyAndDivide() {
+        Package p1 = new Package();
+        p1.description = "Cereal Box";
+        p1.length = 7.0f;
+        p1.width = 19.1f;
+        p1.height = 28.2f;
+        p1.id = 990001;
+
+        Package p2 = new Package();
+        p2.description = "Pasta Noodle Box";
+        p2.length = 7.0f;
+        p2.width = 10.0f;
+        p2.height = 18.5f;
+        p2.id = 990002;
+
+        Package p3 = new Package();
+        p3.description = "Tissue box";
+        p3.length = 12.0f;
+        p3.width = 23.73f;
+        p3.height = 9.2f;
+        p3.id = 990003;
+
+        Package p4 = new Package();
+        p4.description = "Large Cereal Box";
+        p4.length = 8.2f;
+        p4.width = 21.0f;
+        p4.height = 29.5f;
+        p4.id = 990004;
+
+        Package p5 = new Package();
+        p5.description = "Small Cereal Box";
+        p5.length = 4.8f;
+        p5.width = 18.4f;
+        p5.height = 27.3f;
+        p5.id = 990005;
+
+        Package p6 = new Package();
+        p6.description = "Crackers Box";
+        p6.length = 6.0f;
+        p6.width = 11.5f;
+        p6.height = 19.2f;
+        p6.id = 990006;
+
+        packages.save(List.of(p1, p2, p3, p4, p5, p6));
+
+        // multiply, divide, and add within same update
+        assertEquals(true, packages.updateByIdAddHeightMultiplyLengthDivideWidth(990003, 1.0f, 0.95f, 1.05f));
+
+        Package p = packages.findById(990003).get();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(22.6f, p.width, 0.01f);
+        assertEquals(10.2f, p.height, 0.01f);
+
+        // perform same type of update to multiple columns
+        packages.updateByIdDivideLengthDivideWidthDivideHeight(990005, 1.2f, 1.15f, 1.1375f);
+
+        p = packages.findById(990005).get();
+        assertEquals(4.0f, p.length, 0.01f);
+        assertEquals(16.0f, p.width, 0.01f);
+        assertEquals(24.0f, p.height, 0.01f);
+
+        // multiple conditions and multiple updates
+        assertEquals(2L, packages.updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(7.1f, 18.4f, 19.4f, 1.1f, 1.2f, 19.5f));
+
+        List<Package> results = packages.findByHeightBetween(19.4999f, 19.5001f);
+        assertEquals(results.toString(), 2, results.size());
+
+        p = packages.findById(990002).get();
+        assertEquals(7.7f, p.length, 0.01f);
+        assertEquals(12.0f, p.width, 0.01f);
+        assertEquals(19.5f, p.height, 0.01f);
+
+        p = packages.findById(990006).get();
+        assertEquals(6.6f, p.length, 0.01f);
+        assertEquals(13.8f, p.width, 0.01f);
+        assertEquals(19.5f, p.height, 0.01f);
+
+        packages.deleteById(List.of(990001, 990002, 990003, 990004, 990005, 990006));
     }
 
     /**
@@ -1483,7 +1689,7 @@ public class DataTestServlet extends FATServlet {
         prod4.price = 20.00f;
         products.addOrModify(prod4);
 
-        Product[] p = products.findByVersionGreaterThanEqualOrderById(0);
+        Product[] p = products.findByVersionGreaterThanEqualOrderByPrice(0);
 
         // JPA knows to update the version even through the JPQL didn't explicitly tell it to
         assertEquals(3, products.putOnSale("TestUpdateMultiple-match", .20f));

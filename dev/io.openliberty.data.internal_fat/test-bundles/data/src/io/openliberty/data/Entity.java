@@ -15,15 +15,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.enterprise.inject.Stereotype;
-
 /**
  * Copied from jakarta.nosql.mapping.Entity to investigate how well the
  * JNoSQL repository-related annotations work for relational database access.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Stereotype
 public @interface Entity {
     String value() default "";
 }

@@ -186,6 +186,10 @@ public class ConcurrentTckLauncher {
             specExcludes.add("ee.jakarta.tck.concurrent.spec.signature");
         }
 
+        //FIXME This test class fails because of the following issue: https://github.com/jakartaee/concurrency/issues/261
+        //      This test is fixed in service release 3.0.2 and can be re-enabled when released
+        specExcludes.add("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi.InheritedAPITests");
+
         apiPackage.setExclude(new ArrayList<String>(apiExcludes));
         specPackage.setExclude(new ArrayList<String>(specExcludes));
 
