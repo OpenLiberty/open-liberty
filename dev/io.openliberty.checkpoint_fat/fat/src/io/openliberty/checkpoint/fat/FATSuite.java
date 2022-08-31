@@ -50,7 +50,8 @@ import componenttest.topology.impl.LibertyServer;
                 MPFaultToleranceTimeoutTest.class,
                 ValidFeaturesTest.class,
                 RESTclientTest.class,
-                JNDITest.class
+                JNDITest.class,
+                CRIULogLevelTest.class
 })
 public class FATSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {
@@ -100,6 +101,15 @@ public class FATSuite {
         bootStrapProperties.putAll(properties);
         try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
             bootStrapProperties.store(out, "");
+        }
+    }
+
+    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        Properties serverEnvProperties = new Properties();
+        serverEnvProperties.putAll(newEnv);
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
+            serverEnvProperties.store(out, "");
         }
     }
 }
