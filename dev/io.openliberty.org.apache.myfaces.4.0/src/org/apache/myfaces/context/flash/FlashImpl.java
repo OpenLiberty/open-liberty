@@ -1187,13 +1187,17 @@ public class FlashImpl extends Flash implements ReleasableFlash
         cookie.setSecure(externalContext.isSecure());
         cookie.setHttpOnly(true);
         Object context = externalContext.getContext();
-        String sameSite = null;
+
+        // Remove this until Open Liberty Servlet 6.0 supports getAttribute on SessionCookieConfig
+        /*String sameSite = null;
         if (context instanceof ServletContext)
         {
             ServletContext servletContext = (ServletContext)context;
             sameSite = servletContext.getSessionCookieConfig().getAttribute("SameSite");
         }
         cookie.setAttribute("SameSite", Objects.toString(sameSite, "Strict"));
+        */
+
         return cookie;
     }
 
