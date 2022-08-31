@@ -21,7 +21,6 @@ import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
-import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public abstract class AuthorizationRequest {
 
@@ -88,21 +87,21 @@ public abstract class AuthorizationRequest {
     }
 
     protected void storeStateValue(String state) {
-        String storageName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
+        String storageName = OidcStorageUtils.getStateStorageKey(state);
         String storageValue = createStateValueForStorage(state);
         StorageProperties stateStorageProperties = getStateStorageProperties();
         storage.store(storageName, storageValue, stateStorageProperties);
     }
 
     protected void storeNonceValue(String nonce, String state) {
-        String storageName = OidcStorageUtils.getStorageKey(OidcClientStorageConstants.WAS_OIDC_NONCE, clientId, state);
+        String storageName = OidcStorageUtils.getNonceStorageKey(clientId, state);
         String storageValue = createNonceValueForStorage(nonce, state);
         StorageProperties nonceStorageProperties = getNonceStorageProperties();
         storage.store(storageName, storageValue, nonceStorageProperties);
     }
 
     protected void storeOriginalRequestUrl(String state) {
-        String storageName = OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
+        String storageName = OidcStorageUtils.getOriginalReqUrlStorageKey(state);
         String storageValue = requestUtils.getRequestUrl(request);
         StorageProperties reqUrlStorageProperties = getOriginalRequestUrlStorageProperties();
         storage.store(storageName, storageValue, reqUrlStorageProperties);

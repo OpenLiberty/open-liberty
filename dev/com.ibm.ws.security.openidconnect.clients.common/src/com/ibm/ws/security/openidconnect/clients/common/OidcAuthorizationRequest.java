@@ -38,10 +38,8 @@ import io.openliberty.security.oidcclientcore.authentication.AuthorizationReques
 import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
-import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
-import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class OidcAuthorizationRequest extends AuthorizationRequest {
 
@@ -323,7 +321,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
 
     private String createJavaScriptForRedirect(String loginURL, String state, String domain) {
 
-        String cookieName = OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
+        String cookieName = OidcStorageUtils.getOriginalReqUrlStorageKey(state);
         StringBuilder sb = new StringBuilder();
 
         String strDomain = "";

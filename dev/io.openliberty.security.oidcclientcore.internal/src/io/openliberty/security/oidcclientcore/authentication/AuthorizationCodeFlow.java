@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
@@ -45,18 +43,11 @@ public class AuthorizationCodeFlow extends AbstractFlow {
      * 7. Client receives a response that contains an ID Token and Access Token in the response body.
      * 8. (Not done for Jakarta Security 3.0) Client validates the ID token and retrieves the End-User's Subject Identifier.
      */
-    @FFDCIgnore(AuthenticationResponseException.class)
     @Override
     public ProviderAuthenticationResult continueFlow(HttpServletRequest request, HttpServletResponse response) throws AuthenticationResponseException {
         JakartaOidcAuthenticationResponseValidator responseValidator = new JakartaOidcAuthenticationResponseValidator(request, response, oidcClientConfig);
-        try {
-            responseValidator.validateResponse();
-            // TODO: Clear stored state value
-        } catch (AuthenticationResponseException e) {
-            Tr.error(tc, e.getMessage());
-            return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
-        }
-        // TODO
+        responseValidator.validateResponse();
+        // TODO: Clear stored state value
         return null;
     }
 

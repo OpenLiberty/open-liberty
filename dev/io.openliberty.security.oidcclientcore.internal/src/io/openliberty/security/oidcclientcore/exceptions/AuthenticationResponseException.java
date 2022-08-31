@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.exceptions;
 
+import javax.security.enterprise.identitystore.CredentialValidationResult;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -19,8 +21,23 @@ public class AuthenticationResponseException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public AuthenticationResponseException(String clientId, String nlsMessage) {
-        super(Tr.formatMessage(tc, "AUTHENTICATION_RESPONSE_ERROR", clientId, nlsMessage));
+    private final CredentialValidationResult result;
+    private final String clientId;
+    private final String nlsMessage;
+
+    public AuthenticationResponseException(CredentialValidationResult result, String clientId, String nlsMessage) {
+        this.result = result;
+        this.clientId = clientId;
+        this.nlsMessage = nlsMessage;
+    }
+
+    public CredentialValidationResult getCredentialValidationResult() {
+        return result;
+    }
+
+    @Override
+    public String getMessage() {
+        return Tr.formatMessage(tc, "AUTHENTICATION_RESPONSE_ERROR", clientId, nlsMessage);
     }
 
 }

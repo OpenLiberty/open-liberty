@@ -20,14 +20,21 @@ public class OidcUrlNotHttpsException extends OidcClientConfigurationException {
     private static final long serialVersionUID = 1L;
 
     private final String url;
+    private final String clientId;
 
     public OidcUrlNotHttpsException(String url, String clientId) {
         super(clientId, Tr.formatMessage(tc, "URL_NOT_HTTPS", url, clientId));
         this.url = url;
+        this.clientId = clientId;
     }
 
     public String getUrl() {
         return url;
+    }
+
+    @Override
+    public String getMessage() {
+        return Tr.formatMessage(tc, "URL_NOT_HTTPS", url, clientId);
     }
 
 }

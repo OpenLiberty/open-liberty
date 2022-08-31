@@ -25,11 +25,7 @@ import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.ClientManager;
-import io.openliberty.security.oidcclientcore.exceptions.AuthenticationErrorResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
-import io.openliberty.security.oidcclientcore.exceptions.NoStateValueStoredException;
-import io.openliberty.security.oidcclientcore.exceptions.RequestDoesNotMatchExpectedUrlException;
-import io.openliberty.security.oidcclientcore.exceptions.RequestStateDoesNotMatchStoredStateException;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
@@ -178,12 +174,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext);
-        } catch (RequestDoesNotMatchExpectedUrlException | NoStateValueStoredException e) {
-            status = httpMessageContext.notifyContainerAboutLogin(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        } catch (RequestStateDoesNotMatchStoredStateException | AuthenticationErrorResponseException e) {
-            status = httpMessageContext.notifyContainerAboutLogin(CredentialValidationResult.INVALID_RESULT);
         } catch (AuthenticationResponseException e) {
-            // Something else beyond spec. defined errors
+            status = httpMessageContext.notifyContainerAboutLogin(e.getCredentialValidationResult());
         }
 
         return status;
