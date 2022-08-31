@@ -19,11 +19,15 @@
 package org.apache.myfaces.util.lang;
 
 import jakarta.faces.FacesException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.myfaces.core.api.shared.lang.Assert;
+
 
 
 public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.ClassUtils
@@ -185,6 +189,99 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
         return current;
     }
 
+    /**
+     * Tries a Class.loadClass with the context class loader of the current thread first and automatically falls back to
+     * the ClassUtils class loader (i.e. the loader of the myfaces.jar lib) if necessary.
+     *
+     * @param type
+     *            fully qualified name of a non-primitive non-array class
+     * @return the corresponding Class
+     * @throws NullPointerException
+     *             if type is null
+     * @throws ClassNotFoundException
+     */
+    public static <T> Class<T> classForName(String type) throws ClassNotFoundException
+    {
+        Assert.notNull(type, "type");
+
+        try
+        {
+            // Try WebApp ClassLoader first
+            return (Class<T>) Class.forName(type,
+                    false, // do not initialize for faster startup
+                    getContextClassLoader());
+        }
+        catch (ClassNotFoundException ignore)
+        {
+            // fallback: Try ClassLoader for ClassUtils (i.e. the myfaces.jar lib)
+            return (Class<T>) Class.forName(type,
+                    false, // do not initialize for faster startup
+                    ClassUtils.class.getClassLoader());
+        }
+    }
+
+    /**
+     * Same as {@link #classForName(String)}, but throws a RuntimeException (FacesException) instead of a
+     * ClassNotFoundException.
+     *
+     * @return the corresponding Class
+     * @throws NullPointerException
+     *             if type is null
+     * @throws FacesException
+     *             if class not found
+     */
+    public static Class simpleClassForName(String type)
+    {
+        return simpleClassForName(type, true);
+    }
+
+    /**
+     * Same as {link {@link #simpleClassForName(String)}, but will only
+     * log the exception and rethrow a RunTimeException if logException is true.
+     *
+     * @param type
+     * @param logException - true to log/throw FacesException, false to avoid logging/throwing FacesException
+     * @return the corresponding Class
+     * @throws FacesException if class not found and logException is true
+     */
+    public static Class simpleClassForName(String type, boolean logException)
+    {
+        Class returnClass = null;
+        try
+        {
+            returnClass = classForName(type);
+        }
+        catch (ClassNotFoundException e)
+        {
+            if (logException)
+            {
+                log.log(Level.SEVERE, "Class " + type + " not found", e);
+                throw new FacesException(e);
+            }
+        }
+        return returnClass;
+    }
+
+    public static URL getResource(String resource)
+    {
+        URL url = getContextClassLoader().getResource(resource);
+        if (url == null)
+        {
+            url = ClassUtils.class.getClassLoader().getResource(resource);
+        }
+        return url;
+    }
+
+    public static InputStream getResourceAsStream(String resource)
+    {
+        InputStream stream = getContextClassLoader().getResourceAsStream(resource);
+        if (stream == null)
+        {
+            // fallback
+            stream = ClassUtils.class.getClassLoader().getResourceAsStream(resource);
+        }
+        return stream;
+    }
 
     protected static final String paramString(Class<?>... types)
     {
@@ -206,5 +303,5 @@ public final class ClassUtils extends org.apache.myfaces.core.api.shared.lang.Cl
         
         return null;
     }
-    
+
 }
