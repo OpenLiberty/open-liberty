@@ -21,7 +21,7 @@ fat.minimum.java.level: 11
 	
 fat.project: true
 
-tested.features: microProfile-6.0
+tested.features: microProfile-6.0, localconnector-1.0
 
 -buildpath: \
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
