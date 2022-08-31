@@ -13,11 +13,13 @@ package com.ibm.ws.security.backchannelLogout.fat.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.TestHelpers;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonMessageTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTestHelpers;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTestTools;
@@ -42,6 +44,7 @@ public class BackChannelLogout_RegisterClients {
     protected static CommonMessageTools msgUtils = new CommonMessageTools();
     protected static CommonTestHelpers helpers = new CommonTestHelpers();
     protected static CommonValidationTools validationTools = new CommonValidationTools();
+    protected static TestHelpers testHelpers = new TestHelpers();
 
     protected static String registrationUri;
 
@@ -57,7 +60,7 @@ public class BackChannelLogout_RegisterClients {
         testOPServer = OP;
         clientServer = client1;
         clientServer2 = client2;
-        Log.info(thisClass, "constructor", "Finished siving servers");
+        Log.info(thisClass, "constructor", "Finished saving servers");
 
     }
 
@@ -201,13 +204,63 @@ public class BackChannelLogout_RegisterClients {
         Log.info(thisClass, "registerClient", "registrationEndpoint: " + registrationEndpoint);
         Log.info(thisClass, "registerClient", "Client registration body values: " + prefix.toString());
 
+        waitTillMongoDbReady(provider);
+
         helpers.invokeEndpointWithBody("testSetup", webClient, registrationEndpoint,
                 Constants.POSTMETHOD,
                 Constants.INVOKE_REGISTRATION_ENDPOINT, null, headers,
                 expectations, prefix.toString());
     }
 
-    public void showClients(String provider, List<validationData> expectations) throws Exception {
+    class Looper {
+
+        int currentRetry = 1;
+        boolean retry = true;
+
+    }
+
+    public void waitTillMongoDbReady(String provider) throws Exception {
+
+        String thisMethod = "waitTillMongoDbReady";
+        // use showClients to determine if mongo is ready
+        int maxRetries = 10;
+
+        Looper looper = new Looper();
+
+        while (looper.retry) {
+            try {
+                // don't use the normal validation tools to check the status code - it'll terminate processing if it's not what's expected
+                Page response = showClients(provider, null);
+                int statusCode = AutomationTools.getResponseStatusCode(response);
+                if (statusCode == Constants.OK_STATUS) {
+                    looper.retry = false;
+                } else {
+                    updateRetry(looper, maxRetries);
+                }
+            } catch (Exception e) {
+                Log.error(thisClass, thisMethod, e);
+                updateRetry(looper, maxRetries);
+            }
+
+        }
+        Log.info(thisClass, thisMethod, "Tried to show registered clients " + Integer.toString(looper.currentRetry) + " times.");
+
+    }
+
+    public void updateRetry(Looper looper, int maxRetries) throws Exception {
+
+        if (looper.currentRetry <= maxRetries) {
+            looper.currentRetry += 1;
+            looper.retry = true;
+            testHelpers.testSleep(5);
+        } else {
+            Log.info(thisClass, "waitTillMongoDbReady", "Max attempts to use Mongo made - we may see issues trying to register the test clients");
+            looper.retry = false;
+        }
+
+    }
+
+    public Page showClients(String provider, List<validationData> expectations) throws Exception {
 
         String thisMethod = "showClients";
         msgUtils.printMethodName(thisMethod);
@@ -219,10 +272,13 @@ public class BackChannelLogout_RegisterClients {
         String registrationEndpoint = testOPServer.getServerHttpsString() + "/oidc/endpoint/" + provider + "/registration";
         Log.info(thisClass, "showClients", "registrationEndpoint: " + registrationEndpoint);
 
-        helpers.invokeEndpointWithBody("testSetup", webClient, registrationEndpoint,
+        Page response = helpers.invokeEndpointWithBody("testSetup", webClient, registrationEndpoint,
                 Constants.GETMETHOD,
                 Constants.INVOKE_REGISTRATION_ENDPOINT, null, headers,
                 expectations, null);
+
+        msgUtils.printMethodName("End: " + thisMethod);
+        return response;
     }
 
     public void registerClientsForBasicBCLTests() throws Exception {
