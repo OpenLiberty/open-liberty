@@ -88,6 +88,7 @@ Export-Package: \
   org.apache.myfaces.flow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.flow.cdi;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.lifecycle;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.lifecycle.clientwindow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.push.cdi;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.renderkit;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.shared.context.flash;thread-context=true;version=${Implementation-Version}, \
