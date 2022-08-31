@@ -49,7 +49,7 @@ public class FATSuite {
         // If we are running on Java 8 have EE9 be the lite mode test to run.
         if (JavaInfo.JAVA_VERSION >= 11) {
             r1 = MicroProfileActions.repeat(null, TestMode.FULL,
-//                                            MicroProfileActions.MP60, // EE10
+                                            MicroProfileActions.MP60, // EE10
                                             MicroProfileActions.MP50, // EE9
                                             MicroProfileActions.MP40, // EE8
                                             MicroProfileActions.MP30,
