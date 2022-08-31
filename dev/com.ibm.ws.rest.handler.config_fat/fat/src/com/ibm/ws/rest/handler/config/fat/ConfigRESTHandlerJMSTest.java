@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -96,7 +97,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         JsonObject props;
         assertNotNull(err, props = aspec.getJsonObject("properties.jmsra"));
         assertEquals(props.toString(), 2, props.size()); // increase this if we ever add additional configured values or default values
-        assertEquals(err, JakartaEE9Action.isActive() ? "jakarta.jms.Topic" : "javax.jms.Topic", props.getString("destinationType"));
+        assertEquals(err, JakartaEE9Action.isActive() || JakartaEE10Action.isActive() ? "jakarta.jms.Topic" : "javax.jms.Topic", props.getString("destinationType"));
 
         // jmsDestination
         JsonObject dest;
@@ -141,7 +142,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         JsonObject props;
         assertNotNull(err, props = aspec.getJsonObject("properties.jmsra"));
         assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
-        assertEquals(err, JakartaEE9Action.isActive() ? "jakarta.jms.Topic" : "javax.jms.Topic", props.getString("destinationType"));
+        assertEquals(err, JakartaEE9Action.isActive() || JakartaEE10Action.isActive() ? "jakarta.jms.Topic" : "javax.jms.Topic", props.getString("destinationType"));
 
         // jmsTopic
         JsonObject dest;

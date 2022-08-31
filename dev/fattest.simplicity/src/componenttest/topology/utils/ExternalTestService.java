@@ -119,8 +119,8 @@ public class ExternalTestService {
                 if (!propertyObject.containsKey("Value")) {
                     throw new Exception("Property " + propertyName + " was found but contained no value. Full JSON is: " + propertyObject);
                 }
-                String base64Value = propertyObject.getString("Value");
-                return new String(Base64.getDecoder().decode(base64Value));
+                ServiceProperty prop = new ServiceProperty("", propertyName, propertyObject.getString("Value"));
+                return prop.getStringValue();
             } catch (Exception e) {
                 if (firstEx == null)
                     firstEx = e;

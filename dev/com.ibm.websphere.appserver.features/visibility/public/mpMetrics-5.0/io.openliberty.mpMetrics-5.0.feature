@@ -8,10 +8,10 @@ IBM-ShortName: mpMetrics-5.0
 Subsystem-Name: MicroProfile Metrics 5.0
 -features=com.ibm.websphere.appserver.restHandler-1.0, \
   io.openliberty.mpConfig-3.0, \
-  io.openliberty.jakarta.annotation-2.1; ibm.tolerates:="2.0", \
-  com.ibm.websphere.appserver.servlet-6.0; ibm.tolerates:="5.0", \
+  io.openliberty.jakarta.annotation-2.1,\
+  com.ibm.websphere.appserver.servlet-6.0, \
   io.openliberty.mpCompatible-6.0, \
-  io.openliberty.cdi-4.0; ibm.tolerates:="3.0", \
+  io.openliberty.cdi-4.0, \
   io.openliberty.org.eclipse.microprofile.metrics-5.0, \
   com.ibm.websphere.appserver.anno-2.0, \
   com.ibm.websphere.appserver.monitor-1.0
