@@ -407,7 +407,7 @@ autoFVT.doLast {
 
   
    /* Copy the JACC test provider feature. */
- /*  
+  
   copy {
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jar") 
      into new File(autoFvtDir, 'publish/bundles')
@@ -418,7 +418,7 @@ autoFVT.doLast {
      into new File(autoFvtDir, 'publish/bundles')
      rename 'com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_2.0.jar'
   }
- */
+
   copy {
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar") 
      into new File(autoFvtDir, 'publish/bundles')
