@@ -17,6 +17,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
+
+import io.openliberty.pages31.fat.tests.MiscTests;
 import io.openliberty.pages31.fat.tests.TagsTestsEE10;
 import io.openliberty.pages31.fat.tests.UnknownELIdentifiersTest;
 
@@ -32,7 +34,8 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
     TagsTestsEE10.class,
-    UnknownELIdentifiersTest.class
+    UnknownELIdentifiersTest.class,
+    MiscTests.class
 })
 public class FATSuite {
 
