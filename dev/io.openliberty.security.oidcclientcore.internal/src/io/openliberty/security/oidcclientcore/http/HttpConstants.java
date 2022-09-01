@@ -12,9 +12,18 @@ package io.openliberty.security.oidcclientcore.http;
 
 public interface HttpConstants {
 
+    public final static String HTTP_SCHEME = "http:";
+    public final static String HTTPS_SCHEME = "https:";
+
     public final static String AUTHORIZATION = "Authorization";
     public final static String BASIC = "Basic ";
     public final static String BEARER = "Bearer ";
+
+    public final static String UTF_8 = "UTF-8";
+
+    public static final String ACCEPT = "Accept";
+    public static final String APPLICATION_JSON = "application/json";
+    public static final String APPLICATION_JWT = "application/jwt";
 
     public final static String METHOD_BASIC = "basic";
     public final static String METHOD_POST = "post";

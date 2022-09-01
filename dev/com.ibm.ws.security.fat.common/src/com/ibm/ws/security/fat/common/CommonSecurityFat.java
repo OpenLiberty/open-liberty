@@ -32,6 +32,7 @@ import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.servers.ServerTracker;
 import com.ibm.ws.security.fat.common.utils.WebClientTracker;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
@@ -189,7 +190,7 @@ public class CommonSecurityFat {
         Log.info(thisClass, methodName, "");
     }
 
-    public static void transformAppsInDefaultDirs(LibertyServer server, String appDirName, String version) throws Exception {
+    private static void transformAppsInDefaultDirs(LibertyServer server, String appDirName) {
 
         Machine machine = server.getMachine();
 
@@ -206,14 +207,10 @@ public class CommonSecurityFat {
         }
         if (list != null) {
             for (RemoteFile app : list) {
-                if (version.contains(JakartaEE9Action.ID)) {
+                if (JakartaEE9Action.isActive()) {
                 JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
-                } else {
-                    if (version.contains(JakartaEE10Action.ID)) {
+                } else if (JakartaEE10Action.isActive()) {
                         JakartaEE10Action.transformApp(Paths.get(app.getAbsolutePath()));
-                    } else {
-                        throw new Exception("Unknown Jakarta version: " + version);
-                    }
                 }
             }
         }
@@ -225,22 +222,14 @@ public class CommonSecurityFat {
      * @param serverName
      *            The server to transform the applications on.
      */
-    public static void transformApps(LibertyServer server) throws Exception {
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+    public static void transformApps(LibertyServer server) {
+        if (RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID)) {
 
-            transformAppsInDefaultDirs(server, "dropins", JakartaEE9Action.ID);
-            transformAppsInDefaultDirs(server, "apps", JakartaEE9Action.ID);
-            transformAppsInDefaultDirs(server, "test-apps", JakartaEE9Action.ID);
+            transformAppsInDefaultDirs(server, "dropins");
+            transformAppsInDefaultDirs(server, "apps");
+            transformAppsInDefaultDirs(server, "test-apps");
 
         }
-    }
-
-    public static void transformApps(LibertyServer server, String version) throws Exception {
-
-        transformAppsInDefaultDirs(server, "dropins", version);
-        transformAppsInDefaultDirs(server, "apps", version);
-        transformAppsInDefaultDirs(server, "test-apps", version);
-
     }
 
     public WebClient getAndSaveWebClient() throws Exception {

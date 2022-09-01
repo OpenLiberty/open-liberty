@@ -11,6 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Bundle-Name: WAS Security MP JWT 2.1 config
 Bundle-SymbolicName: io.openliberty.security.mp.jwt.2.1.config
 Bundle-Description: WAS security jwt authentication mpConfig proxy for microprofile, version=${bVersion}

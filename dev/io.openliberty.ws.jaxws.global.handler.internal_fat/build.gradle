@@ -27,10 +27,10 @@ dependencies {
     project(':com.ibm.ws.jaxb.tools'),
     project(':com.ibm.ws.jaxws.tools'),
     project(':com.ibm.ws.com.sun.xml.messaging.saaj'),
-    project(':com.ibm.ws.jaxws.common'),
+    project(':com.ibm.ws.jaxws.2.3.common'),
     project(':com.ibm.ws.org.apache.httpcomponents'),
-    project(':com.ibm.ws.org.apache.cxf.cxf.api.2.6.2'),
-    project(':com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2'),
+    project(':com.ibm.ws.org.apache.cxf.cxf.core.3.2'),
+    project(':com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2'),
     project(':com.ibm.ws.org.apache.ws.xmlschema.core'),
     project(':io.openliberty.org.apache.commons.logging')
 }

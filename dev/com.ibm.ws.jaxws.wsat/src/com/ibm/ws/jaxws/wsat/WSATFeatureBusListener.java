@@ -24,8 +24,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusListener;
-import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
-import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.wsat.policy.WSATAssertionBuilder;
 import com.ibm.ws.wsat.policy.WSATAssertionPolicyProvider;
 import com.ibm.ws.wsat.policy.WSATPolicyAwareInterceptor;
@@ -90,7 +88,7 @@ public class WSATFeatureBusListener implements LibertyApplicationBusListener {
             regIPR.register(_policyProvider);
         }
 
-	if (addGzipInterceptor)  {
+        if (addGzipInterceptor)  {
            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
               Tr.debug(tc, "Adding GZIPInInterceptor...");
            }
@@ -101,14 +99,6 @@ public class WSATFeatureBusListener implements LibertyApplicationBusListener {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "initComplete",
                      "If we've got here, then the interceptors should be inserted");
-            // Prettyprint the SOAP if we're debugging
-            final LibertyLoggingInInterceptor in = new LibertyLoggingInInterceptor();
-            in.setPrettyLogging(true);
-            bus.getInInterceptors().add(in);
-
-            final LibertyLoggingOutInterceptor out = new LibertyLoggingOutInterceptor();
-            out.setPrettyLogging(true);
-            bus.getOutInterceptors().add(out);
         }
 
         bus.getInInterceptors().add(new WSATPolicyAwareInterceptor(Phase.PRE_PROTOCOL, false));

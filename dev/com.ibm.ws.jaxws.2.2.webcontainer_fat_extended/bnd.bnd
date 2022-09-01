@@ -57,18 +57,17 @@ tested.features: jaxws-2.3, \
 	com.ibm.websphere.javaee.jaxws.2.2,\
 	com.ibm.websphere.javaee.servlet.3.1,\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
-	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.jaxws.webcontainer,\
 	com.ibm.ws.webcontainer;version=latest,\
-	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20190122-2227,\
-	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
-	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
-	org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20180914-1510,\
-	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-management;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180821-1653,\
-	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20190515-1254,\
+	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=3.4.3,\
+	org.apache.cxf.cxf-core;strategy=exact;version=3.4.3,\
+	org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version=3.4.3,\
+	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=3.4.3,\
+	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=3.4.3,\
+	org.apache.cxf.cxf-rt-management;strategy=exact;version=3.4.3,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.4.3,\
+	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=3.4.3,\
 	org.apache.cxf.xjcplugins:cxf-xjc-boolean;version=2.6.0,\
 	org.apache.cxf.xjcplugins:cxf-xjc-bug671;version=2.6.0,\
 	org.apache.cxf.xjcplugins:cxf-xjc-dv;version=2.6.0,\
