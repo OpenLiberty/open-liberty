@@ -59,7 +59,7 @@ public class MiscTests {
     public static void testCleanup() throws Exception {
         // Stop the server
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWJS0003W");
         }
     }
 
@@ -81,8 +81,8 @@ public class MiscTests {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        // CWWJS0003: Per the Pages 3.1 specification, pages developers are strongly advised not to use the deprecated page directive isThreadSafe. 
-        assertNotNull("CWWJS0003 Warning not found!", server.waitForStringInLogUsingMark("CWWJS0003"));
+        // CWWJS0003W: Per the Pages 3.1 specification, pages developers are strongly advised not to use the deprecated page directive isThreadSafe. 
+        assertNotNull("CWWJS0003W Warning not found!", server.waitForStringInLogUsingMark("CWWJS0003W"));
 
         server.resetLogMarks();
     }
