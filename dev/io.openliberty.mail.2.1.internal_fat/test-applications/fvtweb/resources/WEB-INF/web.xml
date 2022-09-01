@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- web-app version="3.1"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_1.xsd"
+    id="WebApp_ID" -->
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         id="WebApp_ID"
+         version="3.1">
+
+  <display-name>JavamailFATWeb</display-name>
+
+<mail-session>
+    <name>javamail/jm1Def</name>
+	<user>jm1test</user>
+	<password>testPass</password>
+</mail-session>
+<resource-ref>
+    <res-ref-name>javamail/jm1</res-ref-name>  <!-- Note: implicit java:comp/env/ prefix -->
+    <res-type>jakarta.mail.Session</res-type>
+    <lookup-name>java:comp/env/javamail/jm1Def</lookup-name>  <!-- Note: no implicit prefix -->
+</resource-ref>
+
+<mail-session>
+    <name>javamail/mergeDef</name>
+	<host>mergeHost</host>
+    <from>mergeFrom</from>
+    <description>mergeDescription</description>
+    <store-protocol>mergeStoreProtocol</store-protocol>
+    <transport-protocol>mergeTransportProtocol</transport-protocol>
+    <!--  Bug in javamail implementation does not process these class names -->
+    <store-protocol-class>mergeStoreProtocolClassName</store-protocol-class>
+    <transport-protocol-class>mergeTransportProtocolClassName</transport-protocol-class>
+    <!-- Set user via Annotation, instead of here  -->
+    <!--  user></user -->
+   	<password>mergePassword</password>
+</mail-session>
+<resource-ref>
+    <res-ref-name>javamail/mergeMS</res-ref-name>  <!-- Note: implicit java:comp/env/ prefix -->
+    <res-type>jakarta.mail.Session</res-type>
+    <lookup-name>java:comp/env/javamail/mergeDef</lookup-name>  <!-- Note: no implicit prefix -->
+</resource-ref>
+
+</web-app>
