@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
  * JNoSQL repository-related annotations work for relational database access.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 public @interface Column {
     String value() default "";
 }
