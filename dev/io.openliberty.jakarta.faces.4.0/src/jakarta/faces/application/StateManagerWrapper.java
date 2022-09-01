@@ -30,11 +30,6 @@ public abstract class StateManagerWrapper extends StateManager implements FacesW
 {
     private StateManager delegate;
 
-    @Deprecated
-    public StateManagerWrapper()
-    {
-    }
-
     public StateManagerWrapper(StateManager delegate)
     {
         this.delegate = delegate;
