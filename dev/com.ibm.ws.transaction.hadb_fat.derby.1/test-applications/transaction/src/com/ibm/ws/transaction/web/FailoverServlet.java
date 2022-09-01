@@ -390,29 +390,39 @@ public class FailoverServlet extends FATServlet {
         // see if we acquired the row
         if (!rowNotFound && claimPeerLockingRS.next()) {
             // We found an existing lease row
-            long storedLease = claimPeerLockingRS.getLong(1);
-            System.out.println("insertStaleLease: Acquired server row, stored lease value is: " + storedLease);
+            PreparedStatement claimPeerUpdateStmt = null;
+            try {
+                long storedLease = claimPeerLockingRS.getLong(1);
+                System.out.println("insertStaleLease: Acquired server row, stored lease value is: " + storedLease);
 
-            // Construct the UPDATE string
-            String updateString = "UPDATE WAS_LEASES_LOG" +
-                                  " SET LEASE_OWNER = ?, LEASE_TIME = ?" +
-                                  " WHERE SERVER_IDENTITY='cloudstale'";
+                // Construct the UPDATE string
+                String updateString = "UPDATE WAS_LEASES_LOG" +
+                                      " SET LEASE_OWNER = ?, LEASE_TIME = ?" +
+                                      " WHERE SERVER_IDENTITY='cloudstale'";
 
-            System.out.println("insertStaleLease: update lease for cloudstale");
+                System.out.println("insertStaleLease: update lease for cloudstale");
 
-            PreparedStatement claimPeerUpdateStmt = con.prepareStatement(updateString);
+                claimPeerUpdateStmt = con.prepareStatement(updateString);
 
-            // Set the Lease_time
-            long fir1 = System.currentTimeMillis() - (1000 * 300);
-            claimPeerUpdateStmt.setString(1, "cloudstale");
-            claimPeerUpdateStmt.setLong(2, fir1);
+                // Set the Lease_time
+                long fir1 = System.currentTimeMillis() - (1000 * 300);
+                claimPeerUpdateStmt.setString(1, "cloudstale");
+                claimPeerUpdateStmt.setLong(2, fir1);
 
-            System.out.println("insertStaleLease: Ready to UPDATE using string - " + updateString + " and time: " + fir1);
+                System.out.println("insertStaleLease: Ready to UPDATE using string - " + updateString + " and time: " + fir1);
 
-            int ret = claimPeerUpdateStmt.executeUpdate();
+                int ret = claimPeerUpdateStmt.executeUpdate();
 
-            System.out.println("insertStaleLease: Have updated server row with return: " + ret);
-            con.commit();
+                System.out.println("insertStaleLease: Have updated server row with return: " + ret);
+                con.commit();
+            } catch (Exception ex) {
+                System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
+                // attempt rollback
+                con.rollback();
+            } finally {
+                if (claimPeerUpdateStmt != null && !claimPeerUpdateStmt.isClosed())
+                    claimPeerUpdateStmt.close();
+            }
         } else {
             // We didn't find the row in the table
             System.out.println("insertStaleLease: Could not find row");
@@ -438,6 +448,8 @@ public class FailoverServlet extends FATServlet {
                 con.commit();
             } catch (Exception ex) {
                 System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
+                // attempt rollback
+                con.rollback();
             } finally {
                 if (specStatement != null && !specStatement.isClosed())
                     specStatement.close();
@@ -470,9 +482,15 @@ public class FailoverServlet extends FATServlet {
             System.out.println("deleteStaleLease: Attempt to delete the row using - " + deleteString);
             int ret = deleteStmt.executeUpdate(deleteString);
             System.out.println("deleteStaleLease: return was - " + ret);
+            con.commit();
         } catch (Exception e) {
             System.out.println("deleteStaleLease: Delete failed with exception: " + e);
-        } // eof Exception e block
+            // attempt rollback
+            con.rollback();
+        } finally {
+            if (deleteStmt != null && !deleteStmt.isClosed())
+                deleteStmt.close();
+        }
 
     }
 
