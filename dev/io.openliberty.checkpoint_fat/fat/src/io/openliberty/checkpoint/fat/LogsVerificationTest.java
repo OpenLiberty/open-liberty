@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -32,9 +31,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -46,11 +42,8 @@ public class LogsVerificationTest {
     public TestName testName = new TestName();
     public static final String APP_NAME = "app2";
 
-    @Server("checkpointFATServer")
+    @Server("checkpointfat.log.verification.test")
     public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointFATServer", TestMode.LITE, MicroProfileActions.MP41, MicroProfileActions.MP50);
 
     @BeforeClass
     public static void setUpClass() throws Exception {
