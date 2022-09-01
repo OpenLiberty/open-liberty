@@ -25,7 +25,7 @@ dependencies {
     'org.glassfish.gmbal:gmbal-api-only:3.1.0-b001',
     project(':com.ibm.ws.com.sun.xml.messaging.saaj'),
     project(':com.ibm.ws.org.apache.httpcomponents'),
-    project(':com.ibm.ws.org.apache.cxf.cxf.api.2.6.2'),
+    project(':com.ibm.ws.org.apache.cxf.cxf.core.3.2'),
     project(':com.ibm.ws.org.apache.ws.xmlschema.core'),
     project(':io.openliberty.org.apache.commons.logging')
 }

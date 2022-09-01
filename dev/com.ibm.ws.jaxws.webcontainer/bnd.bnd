@@ -78,7 +78,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/webcontainer/internal/resources/*.c
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
-	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.ws.webcontainer;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
