@@ -47,10 +47,11 @@ public class AuthorizationCodeFlow extends AbstractFlow {
      */
     @FFDCIgnore(AuthenticationResponseException.class)
     @Override
-    public ProviderAuthenticationResult continueFlow(HttpServletRequest request, HttpServletResponse response) {
+    public ProviderAuthenticationResult continueFlow(HttpServletRequest request, HttpServletResponse response) throws AuthenticationResponseException {
         JakartaOidcAuthenticationResponseValidator responseValidator = new JakartaOidcAuthenticationResponseValidator(request, response, oidcClientConfig);
         try {
             responseValidator.validateResponse();
+            // TODO: Clear stored state value
         } catch (AuthenticationResponseException e) {
             Tr.error(tc, e.getMessage());
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
