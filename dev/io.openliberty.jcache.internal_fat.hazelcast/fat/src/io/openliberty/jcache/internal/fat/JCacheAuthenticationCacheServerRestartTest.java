@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,6 +26,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.ServletClient;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -34,6 +36,7 @@ import componenttest.topology.impl.LibertyServer;
  * Contains distributed JCache authentication cache tests for server restart.
  */
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+@SkipIfSysProp("skip.tests=true")
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -43,6 +46,11 @@ public class JCacheAuthenticationCacheServerRestartTest extends BaseTestCase {
 
     @Server("io.openliberty.jcache.internal.fat.auth.cache.restart.1")
     public static LibertyServer server1;
+
+    @BeforeClass
+    public static void beforeClass() {
+        assumeShouldNotSkipTests();
+    }
 
     @Before
     public void before() throws Exception {

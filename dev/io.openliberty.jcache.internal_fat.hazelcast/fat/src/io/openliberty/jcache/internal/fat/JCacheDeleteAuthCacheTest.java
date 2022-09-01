@@ -28,6 +28,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.ServletClient;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -37,6 +38,7 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Contains distributed JCache authentication cache tests for the DeleteAuthCache Mbean.
  */
+@SkipIfSysProp("skip.tests=true")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class JCacheDeleteAuthCacheTest extends BaseTestCase {
@@ -53,6 +55,8 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() {
+        assumeShouldNotSkipTests();
+
         /*
          * Transform apps for EE9+.
          */

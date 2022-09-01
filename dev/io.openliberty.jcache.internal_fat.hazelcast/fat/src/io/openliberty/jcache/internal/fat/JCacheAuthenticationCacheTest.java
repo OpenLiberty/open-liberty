@@ -26,6 +26,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.ServletClient;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -36,6 +37,7 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 /**
  * Contains distributed JCache authentication cache tests for LTPA and basic authentication.
  */
+@SkipIfSysProp("skip.tests=true")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class JCacheAuthenticationCacheTest extends BaseTestCase {
@@ -52,6 +54,8 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() {
+        assumeShouldNotSkipTests();
+
         /*
          * Transform apps for EE9+.
          */

@@ -20,6 +20,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,6 +32,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -42,14 +44,20 @@ import componenttest.topology.impl.LibertyServer;
  * This doesn't necessarily mean the JCache provider is using JCache, just that the provider
  * can load and is not regressed by our JCache feature.
  */
+@SkipIfSysProp("skip.tests=true")
+@SkipForRepeat(JakartaEE9Action.ID) // No value gained
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@SkipForRepeat(JakartaEE9Action.ID) // No value gained
 public class JCacheProviderInAppTest extends BaseTestCase {
     private final Class<?> CLASS = JCacheProviderInAppTest.class;
 
     @Server("io.openliberty.jcache.internal.fat.provider.in.app.1")
     public static LibertyServer server1;
+
+    @BeforeClass
+    public static void beforeClass() {
+        assumeShouldNotSkipTests();
+    }
 
     @Before
     public void before() throws Exception {

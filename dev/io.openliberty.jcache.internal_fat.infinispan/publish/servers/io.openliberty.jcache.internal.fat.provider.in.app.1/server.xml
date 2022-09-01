@@ -39,7 +39,7 @@
           -->
 	<cache id="AuthCache" name="AuthCache" cacheManagerRef="CacheManager" />
 	<cacheManager id="CacheManager"
-		uri="file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props">
+		uri="file:///${shared.resource.dir}/infinispan/${infinispan.hotrod.file}">
 
 		<properties
 			infinispan.client.hotrod.uri="${infinispan.client.hotrod.uri}" />
