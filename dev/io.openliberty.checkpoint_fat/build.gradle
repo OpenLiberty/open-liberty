@@ -28,7 +28,6 @@ addRequiredLibraries {
 	dependsOn copyBundles
 }
 
-addRequiredLibraries.dependsOn copyTestContainers
 
 configurations {
     jaegerClient
@@ -57,19 +56,3 @@ autoFVT {
 }
 
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
-
-configurations {
-  db2
-}
-
-dependencies {
-  db2 'com.ibm.db2:jcc:11.1.4.4'
-}
-
-task copyDB2(type: Copy) {
-  shouldRunAfter jar
-  from configurations.db2
-  into new File(autoFvtDir, 'publish/shared/resources/db2')
-}
-
-addRequiredLibraries.dependsOn copyDB2

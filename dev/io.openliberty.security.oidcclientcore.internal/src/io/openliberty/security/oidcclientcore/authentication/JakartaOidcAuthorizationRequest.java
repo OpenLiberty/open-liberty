@@ -32,8 +32,10 @@ import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 
 public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
@@ -42,8 +44,14 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     // TODO Discovery metadata will be cleared from the cache after 5 minutes
     private static SingleTableCache cachedDiscoveryMetadata = new SingleTableCache(1000 * 60 * 5);
 
+    private enum StorageType {
+        COOKIE, SESSION
+    }
+
     private final OidcClientConfig config;
     private final OidcProviderMetadata providerMetadata;
+
+    private StorageType storageType;
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
 
@@ -57,8 +65,10 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     private void instantiateStorage(OidcClientConfig config) {
         if (config.isUseSession()) {
             this.storage = new SessionBasedStorage();
+            this.storageType = StorageType.SESSION;
         } else {
             this.storage = new CookieBasedStorage(request, response);
+            this.storageType = StorageType.COOKIE;
         }
     }
 
@@ -163,7 +173,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     @Override
     protected boolean shouldCreateSession() {
-        return config.isUseSession();
+        return storageType == StorageType.SESSION;
     }
 
     @Override
@@ -187,6 +197,34 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     }
 
     @Override
+    protected StorageProperties getStateStorageProperties() {
+        if (storageType == StorageType.COOKIE) {
+            // Per https://jakarta.ee/specifications/security/3.0/jakarta-security-spec-3.0.html#authentication-dialog,
+            // "In the case of storage through a Cookie, the Cookie must be defined as HTTPonly and must have the Secure flag set."
+            CookieStorageProperties props = (CookieStorageProperties) super.getStateStorageProperties();
+            props.setHttpOnly(true);
+            props.setSecure(true);
+            return props;
+        } else {
+            return super.getStateStorageProperties();
+        }
+    }
+
+    @Override
+    protected StorageProperties getNonceStorageProperties() {
+        if (storageType == StorageType.COOKIE) {
+            // Per https://jakarta.ee/specifications/security/3.0/jakarta-security-spec-3.0.html#authentication-dialog,
+            // "In the case of storage through a Cookie, the Cookie must be defined as HTTPonly and must have the Secure flag set."
+            CookieStorageProperties props = (CookieStorageProperties) super.getNonceStorageProperties();
+            props.setHttpOnly(true);
+            props.setSecure(true);
+            return props;
+        } else {
+            return super.getNonceStorageProperties();
+        }
+    }
+
+    @Override
     @FFDCIgnore(Exception.class)
     protected ProviderAuthenticationResult redirectToAuthorizationEndpoint(String state, String redirectUrl) {
         String authzEndPointUrlWithQuery = null;
@@ -198,6 +236,9 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
         }
         storeOriginalRequestUrl(state);
+        if (shouldFullRequestBeStored()) {
+            storeFullRequest();
+        }
         return new ProviderAuthenticationResult(AuthResult.REDIRECT_TO_PROVIDER, HttpServletResponse.SC_OK, null, null, null, authzEndPointUrlWithQuery);
     }
 
@@ -258,6 +299,25 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
             }
             authzParameters.addParameter(key, value);
         }
+    }
+
+    boolean shouldFullRequestBeStored() {
+        // Per https://jakarta.ee/specifications/security/3.0/jakarta-security-spec-3.0.html#authentication-dialog:
+        // Additionally, if OpenIdAuthenticationMechanismDefinition.redirectToOriginalResource is set to 'true' and the
+        // authentication flow is container-initiated (as opposed to caller-initiated authentication) the authentication mechanism
+        // must store the full request as well. The full request here means all data that makes up the HttpServletRequest so that
+        // the container can restore this request later on in a similar way to how the "LoginToContinue Annotation" behaves.
+        return (config.isRedirectToOriginalResource() && isContainerInitiatedFlow());
+    }
+
+    boolean isContainerInitiatedFlow() {
+        // TODO
+        return false;
+    }
+
+    void storeFullRequest() {
+        // TODO
+
     }
 
 }

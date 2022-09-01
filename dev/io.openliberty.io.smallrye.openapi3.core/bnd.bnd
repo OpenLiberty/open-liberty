@@ -18,6 +18,11 @@ WS-TraceGroup: MPOPENAPI
 
 src: src
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 -dsannotations-inherit: true
 
 Import-Package: \

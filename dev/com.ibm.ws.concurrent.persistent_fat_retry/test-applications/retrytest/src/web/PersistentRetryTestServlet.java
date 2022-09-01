@@ -55,7 +55,7 @@ public class PersistentRetryTestServlet extends HttpServlet {
     /**
      * Maximum number of nanoseconds to wait for a task to finish.
      */
-    private static final long TIMEOUT_NS = TimeUnit.SECONDS.toNanos(90);
+    private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(3);
 
     @Resource(name = "java:comp/env/concurrent/mySchedulerRef", lookup = "concurrent/myScheduler")
     private PersistentExecutor scheduler;

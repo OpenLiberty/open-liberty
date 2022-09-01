@@ -132,8 +132,8 @@ com.ibm.ws.transaction.hadb_fat.sqlserver.1
 com.ibm.ws.transaction.hadb_fat.sqlserver.2
 com.ibm.ws.transaction.hadb_fat.sqlserver.lease
 fattest.simplicity
-io.openliberty.checkpoint_fat
 io.openliberty.checkpoint_fat_container
+io.openliberty.checkpoint_fat_persistence
 io.openliberty.jcache.internal_fat.hazelcast
 io.openliberty.jcache.internal_fat.infinispan
 io.openliberty.microprofile.telemetry.1.0.internal.jaeger_fat

@@ -41,6 +41,7 @@ public class AutoInstrumentationTest extends MicroProfileTelemetryTestBase {
 
     private static Class<?> c = AutoInstrumentationTest.class;
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("testServer1");
+    private static final int NUM_OF_CALLS = 3;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -99,12 +100,12 @@ public class AutoInstrumentationTest extends MicroProfileTelemetryTestBase {
     }
 
     @Test
-    public void systemSpanTest() throws JSONException {
-        int retries = 3;
+    public void systemSpanTest() throws JSONException, InterruptedException {
+        int count = NUM_OF_CALLS;
         String result = null;
-        while (retries > 0) {
+        while (count > 0) {
             result = runApp(getAppUrl("system/properties"));
-            retries--;
+            count--;
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
@@ -113,37 +114,43 @@ public class AutoInstrumentationTest extends MicroProfileTelemetryTestBase {
         Log.info(c, "systemSpanTest", "system = " + result);
         assertNotNull("result is null", result);
         // Query Jaeger for spans
-        String json = getSpansFromJaeger();
-        Log.info(c, "systemSpanTest", "Jaeger json = " + json);
-        assertNotNull("Jaeger returned empty json", json);
-        //
-        // The normal return JSON structure will be like this:
-        // {
-        //   "data":[
-        //     {
-        //       "traceID":"...",
-        //       "spans":[...],
-        //       "processes": { },
-        //       "warnings":"..."
-        //     }
-        //     {
-        //       "traceID":"...",
-        //       "spans":[...],
-        //       "processes": { },
-        //       "warnings":"..."
-        //     }
-        //   ],
-        //  "total":0,
-        //  "limit":0,
-        //  "offest":0,
-        //  "errors":"null"
-        // }
-        JSONObject jobj = new JSONObject(json);
-        // Make sure erorrs is null
-        assertTrue("errors is not null", jobj.getString("errors").equals("null"));
-        // Make sure data contains the same number of spans as the number of JAX-RS calls
-        JSONArray dataArray = jobj.getJSONArray("data");
-        assertEquals("data does not contain the expected number of spans", 3, dataArray.length());
+        int retries = 10;
+        JSONArray dataArray = null;
+        do {
+            Thread.sleep(1000); // Delay for 1 second
+            String json = queryJaeger();
+            Log.info(c, "systemSpanTest", "Jaeger json = " + json);
+            assertNotNull("Jaeger returned empty json", json);
+            //
+            // The normal return JSON structure will be like this:
+            // {
+            //   "data":[
+            //     {
+            //       "traceID":"...",
+            //       "spans":[...],
+            //       "processes": { },
+            //       "warnings":"..."
+            //     }
+            //     {
+            //       "traceID":"...",
+            //       "spans":[...],
+            //       "processes": { },
+            //       "warnings":"..."
+            //     }
+            //   ],
+            //  "total":0,
+            //  "limit":0,
+            //  "offest":0,
+            //  "errors":"null"
+            // }
+            JSONObject jobj = new JSONObject(json);
+            // Make sure erorrs is null
+            assertTrue("errors is not null", jobj.getString("errors").equals("null"));
+            // Make sure data contains the same number of spans as the number of JAX-RS calls
+            dataArray = jobj.getJSONArray("data");
+            retries--;
+        } while ((retries > 0) && ((dataArray == null) || (dataArray.length() < NUM_OF_CALLS)));
+        assertEquals("data does not contain the expected number of spans", NUM_OF_CALLS, dataArray.length());
     }
 
 }

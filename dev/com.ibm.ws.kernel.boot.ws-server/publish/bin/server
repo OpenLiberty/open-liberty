@@ -26,8 +26,7 @@
 #              background via the start action. 
 #              The default value is console.log
 #
-# CRIU_LOG_LEVEL - Set the log level of criu restore operation.
-#TODO need to reflect this to criu checkpoint
+# CRIU_LOG_LEVEL - Set the log level of criu checkpoint and restore operations.
 #                  Set to 1-4 with 4 being max verbosity. Two "2" is the default.
 #
 # CRIU_UNPRIVILEGED - If true, True, TRUE, or 1 the --unprivileged option is 
@@ -993,6 +992,13 @@ javaCmd()
     checkCriuUnprivileged
     if [ $DO_CRIU_UNPRIVILEGED = true ]; then
       JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -Dio.openliberty.checkpoint.criu.unprivileged=true"
+    fi
+    if [ -n "$CRIU_LOG_LEVEL" ]; then
+      # A system property is used here to avoid having to read env on the 
+      # checkpoint side. If reading the env from the Java checkpoint side we need
+      # to make the env an immuntable value but we don't want to force the
+      # same CRIU_LOG_LEVEL on both the checkpoint and restore side here.
+      JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -Dio.openliberty.checkpoint.criu.loglevel=$CRIU_LOG_LEVEL"
     fi
     criuEnvDefaults
   fi

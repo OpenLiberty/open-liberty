@@ -17,4 +17,6 @@
 
     <webApplication id="system" location="system.war" contextRoot="/"></webApplication>
     
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read" />
+    
 </server>

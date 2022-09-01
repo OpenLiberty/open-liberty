@@ -23,7 +23,7 @@ javac.target: 11
 fat.minimum.java.level: 11
 fat.project: true
 
-tested.features: contextProviderSPI-1.0
+tested.features: contextProviderSPI-1.0, servlet-5.0, concurrent-2.0
 
 -sub: *.bnd
 
