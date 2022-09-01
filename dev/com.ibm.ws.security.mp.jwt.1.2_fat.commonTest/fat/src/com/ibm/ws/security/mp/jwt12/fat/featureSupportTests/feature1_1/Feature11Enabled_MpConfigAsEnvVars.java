@@ -36,7 +36,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES + "_" + MPJwt12FatConstants.MP_JWT_20 }) // tests purposely skipped as we want the server.xml using 1.1 to prove that the function isn't accidentally allowed.
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES + "_" + MPJwt12FatConstants.MP_JWT_20, SkipForRepeat.EE10_FEATURES + "_" + MPJwt12FatConstants.MP_JWT_21 }) // tests purposely skipped as we want the server.xml using 1.1 to prove that the function isn't accidentally allowed.
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class Feature11Enabled_MpConfigAsEnvVars extends Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests {

@@ -29,6 +29,8 @@ import com.ibm.ws.fat.util.FatWatcher;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.servers.ServerTracker;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LibertyServerUtils;
@@ -192,7 +194,11 @@ public class CommonSecurityFat {
         }
         if (list != null) {
             for (RemoteFile app : list) {
-                JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+                if (JakartaEE9Action.isActive()) {
+                    JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+                } else if (JakartaEE10Action.isActive()) {
+                    JakartaEE10Action.transformApp(Paths.get(app.getAbsolutePath()));
+                }
             }
         }
     }
@@ -204,7 +210,7 @@ public class CommonSecurityFat {
      *            The server to transform the applications on.
      */
     public static void transformApps(LibertyServer server) {
-        if (JakartaEE9Action.isActive()) {
+        if (RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID)) {
 
             transformAppsInDefaultDirs(server, "dropins");
             transformAppsInDefaultDirs(server, "apps");

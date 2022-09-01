@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.ws.security.fat.common.utils.ServerFileUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -58,12 +59,18 @@ public class JwtFatUtils extends ServerFileUtils {
     public void updateFeatureFileForEE9(LibertyServer server) throws Exception {
 
         String version = RepeatTestFilter.getMostRecentRepeatAction();
-        // try to replace the EE9 noMpJwt repeat instance name with noMpJwt_ee9 - if this is a different repeat action this will do nothing
+        // try to replace the EE9 or EE10 noMpJwt repeat instance name with noMpJwt_ee9 or noMpJwt_ee9 respectively 
+        // if this is a different repeat action this will do nothing
         version = version.replace(JakartaEE9Action.ID + "_" + JwtFatConstants.NO_MPJWT, JwtFatConstants.NO_MPJWT_EE9);
-        // if the EE9 repeat instance is still in the the action, remove it
-        updateFeatureFile(server, "jwtSsoFeatures", version.replace(JakartaEE9Action.ID + "_", ""));
+        version = version.replace(JakartaEE10Action.ID + "_" + JwtFatConstants.NO_MPJWT, JwtFatConstants.NO_MPJWT_EE10);
+        // if the EE9 or EE10 repeat instance is still in the the action, remove it
+        version = version.replace(JakartaEE9Action.ID + "_", "");
+        version = version.replace(JakartaEE10Action.ID + "_", "");
+        updateFeatureFile(server, "jwtSsoFeatures", version);
         if (JakartaEE9Action.isActive()) {
             updateFeatureFile(server, "featuresWithoutJwtSso", "ee9");
+        } else if (JakartaEE10Action.isActive()) {
+            updateFeatureFile(server, "featuresWithoutJwtSso", "ee10");
         }
 
     }
