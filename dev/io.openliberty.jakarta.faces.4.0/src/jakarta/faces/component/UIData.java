@@ -473,7 +473,7 @@ public class UIData extends UIComponentBase implements NamingContainer, UniqueId
         return returnValue;
     }
 
-    protected Pattern getSubIdPattern(FacesContext context, char separator)
+    private Pattern getSubIdPattern(FacesContext context, char separator)
     {
         Pattern pattern = (Pattern) context.getAttributes().get(SUB_ID_PATTERN);
         if (pattern == null)
