@@ -31,7 +31,8 @@ Export-Package: \
 	io.openliberty.security.oidcclientcore.storage, \
 	io.openliberty.security.oidcclientcore.utils, \
 	io.openliberty.security.oidcclientcore.http, \
-	io.openliberty.security.oidcclientcore.token
+	io.openliberty.security.oidcclientcore.token, \
+	io.openliberty.security.oidcclientcore.userinfo
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
