@@ -23,7 +23,8 @@ src: \
 	test-bundles/test.checkpoint.config.bundle/src,\
 	test-applications/timeoutTest/src,\
 	test-applications/restClient/src,\
-	test-applications/jndiTest/src
+	test-applications/jndiTest/src,\
+	test-applications/appsecurity/src
 
 fat.project: true
 
@@ -38,7 +39,7 @@ tested.features:\
 	microProfile-5.0, \
 	webProfile-8.0, \
 	webProfile-9.1, \
-	ejb-2.3
+	ejb-2.3	
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
@@ -88,9 +89,13 @@ tested.features:\
 	jakarta.ws.rs-api,\
 	io.openliberty.jakarta.cdi.3.0,\
 	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.4,\
-  com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.db2.jcc;version=1.4.0,\
-	io.openliberty.org.testcontainers;version=latest
+	com.ibm.db2.jcc;version='1.4.0',\
+	io.openliberty.org.testcontainers;version=latest,\
+	com.ibm.websphere.javaee.security.1.0;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	commons-httpclient:commons-httpclient;version=3.1,\
+  	com.ibm.ws.org.apache.httpcomponents;version=latest
 
 -sub: *.bnd

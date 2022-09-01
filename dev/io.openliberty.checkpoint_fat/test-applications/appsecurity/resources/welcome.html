@@ -1,0 +1,31 @@
+<html>
+    <title>Securing Web Application</title>
+    <body>
+      <h2>Welcome to Sample Application</h2>
+      This is a protected application. Login to continue.
+      <FORM METHOD=POST ACTION="j_security_check">
+        <p>
+          <BR>
+          Username
+          <input type="text" size="20" name="j_username">
+        </p>
+        <p>
+          Password
+          <input type="password" size="20" name="j_password" autocomplete="off">
+          <BR>
+          <BR>
+          <input type="submit" name="Go" value="Go">
+        </p>
+      </form>
+      <script type="text/javascript">
+        // Force safari to refresh the page
+        // if a cached copy was loaded
+        // from the browser back-forward cache.
+        window.onpageshow = function(e) {
+          if (e.persisted) {
+            window.location.reload();
+          }
+        }
+      </script>
+    </body>
+</html>
