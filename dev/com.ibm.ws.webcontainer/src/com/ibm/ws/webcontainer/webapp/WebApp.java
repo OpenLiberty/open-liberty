@@ -6516,7 +6516,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
         // LIBERTY: cope with session not being present
         // this.config.getSessionCookieConfig().setContextInitialized();
-        SessionCookieConfigImpl scci = this.config.getSessionCookieConfig();
+        SessionCookieConfigImpl scci = (SessionCookieConfigImpl) this.config.getSessionCookieConfig();
         if (scci != null)
             scci.setContextInitialized();
     }

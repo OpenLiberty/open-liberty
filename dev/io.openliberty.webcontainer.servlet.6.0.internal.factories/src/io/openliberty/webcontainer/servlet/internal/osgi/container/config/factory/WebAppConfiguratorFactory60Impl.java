@@ -18,7 +18,8 @@ import com.ibm.ws.container.service.config.ServletConfigurator;
 import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.webcontainer.osgi.container.config.WebAppConfiguratorHelper;
 import com.ibm.ws.webcontainer.osgi.container.config.WebAppConfiguratorHelperFactory;
-import com.ibm.ws.webcontainer40.osgi.container.config.WebAppConfiguratorHelper40;
+
+import io.openliberty.webcontainer60.osgi.container.config.WebAppConfiguratorHelper60;
 
 /**
  *
@@ -29,6 +30,6 @@ public class WebAppConfiguratorFactory60Impl implements WebAppConfiguratorHelper
     @Override
     public WebAppConfiguratorHelper createWebAppConfiguratorHelper(ServletConfigurator configurator,
                                                                    ResourceRefConfigFactory resourceRefConfigFactory, List<Class<?>> listenerInterfaces) {
-        return new WebAppConfiguratorHelper40(configurator, resourceRefConfigFactory, listenerInterfaces);
+        return new WebAppConfiguratorHelper60(configurator, resourceRefConfigFactory, listenerInterfaces);
     }
 }

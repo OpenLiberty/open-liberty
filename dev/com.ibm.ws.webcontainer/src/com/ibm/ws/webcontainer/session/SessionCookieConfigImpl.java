@@ -10,11 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.session;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.SessionCookieConfig;
 
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 
 public class SessionCookieConfigImpl implements SessionCookieConfig, Cloneable {
+    private static final String CLASS_NAME = SessionCookieConfigImpl.class.getName();
+    private static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer.session");
 
     private String comment=null;
     private String domain=null;
@@ -43,6 +49,15 @@ public class SessionCookieConfigImpl implements SessionCookieConfig, Cloneable {
         this.maxAge=maxAge;
         this.httpOnly=httpOnly;
         this.secure=secure;
+       
+        /*
+         * This class seems to be moved to session area (see session's same class name)
+         * Add trace here in case we need to debug it.
+         */
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+        {
+            logger.log(Level.FINE, CLASS_NAME,  " Constructor ");
+        }
     }
     
     @Override

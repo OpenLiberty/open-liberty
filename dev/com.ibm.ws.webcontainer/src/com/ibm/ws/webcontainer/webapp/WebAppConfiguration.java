@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import javax.servlet.FilterRegistration;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.ServletRegistration.Dynamic;
+import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 
 import com.ibm.ejs.ras.TraceNLS;
@@ -87,7 +88,7 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
     // it's not been set in the web.xml
     private boolean moduleSessionTimeoutSet = false;
     private boolean moduleSessionTrackingModeSet = false;
-    private SessionCookieConfigImpl sessionCookieConfig;
+    private SessionCookieConfig sessionCookieConfig;        //Servlet 6.0 - change to interface
     private boolean hasProgrammaticCookieConfig = false;
     private EnumSet<SessionTrackingMode> sessionDefaultTrackingModeSet;
     private SessionManagerConfig sessionManagerConfig;
@@ -1117,22 +1118,25 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
         this.sessionManagerConfig = smcBase;
     }
 
-    public SessionCookieConfigImpl getSessionCookieConfig() {
+    /*
+     * Servlet 6.0 - Updated to use SessionCookieConfig
+     */
+    public SessionCookieConfig getSessionCookieConfig() {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
         {
-            logger.logp(Level.FINE, CLASS_NAME, "getSessionCookieConfigurator", "scc = " + this.sessionCookieConfig  + " for application: "
-                            + this.getApplicationName());
+            logger.logp(Level.FINE, CLASS_NAME, "getSessionCookieConfig", " returns [" + this.sessionCookieConfig  + "] for application [" + this.getApplicationName() + "] , this -> " + this);
         }
         return this.sessionCookieConfig;
     }
 
-    public void setSessionCookieConfig(SessionCookieConfigImpl scc) {
+    /*
+     * Servlet 6.0 - Updated to SessionCookieConfig
+     */
+    public void setSessionCookieConfig(SessionCookieConfig scc) {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
         {
-            logger.logp(Level.FINE, CLASS_NAME, "setSessionCookieConfig", "scc = " + scc + " for application: "
-                            + this.getApplicationName());
+            logger.logp(Level.FINE, CLASS_NAME, "setSessionCookieConfig", " scc [" + scc + "] for application [" + this.getApplicationName() + "] , this -> " + this);
         }
-
         this.sessionCookieConfig = scc;
     }
 
@@ -1143,7 +1147,8 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
                 logger.logp(Level.FINE, CLASS_NAME, "setSessionCookieConfigInitialized", "scc = " +  this.sessionCookieConfig + " for application: "
                                 + this.getApplicationName());
             }
-            this.sessionCookieConfig.setContextInitialized();
+
+            ((SessionCookieConfigImpl) this.sessionCookieConfig).setContextInitialized();
         }
     }
 
