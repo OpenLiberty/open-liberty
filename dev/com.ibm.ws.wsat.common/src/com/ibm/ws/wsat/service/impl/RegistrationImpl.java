@@ -13,6 +13,7 @@ package com.ibm.ws.wsat.service.impl;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
+import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
 
 import com.ibm.websphere.ras.Tr;
@@ -22,7 +23,6 @@ import com.ibm.ws.wsat.common.impl.WSATCoordinator;
 import com.ibm.ws.wsat.common.impl.WSATCoordinatorTran;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
-import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 import com.ibm.ws.wsat.service.WSATContext;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WSATFault;
@@ -72,7 +72,7 @@ public class RegistrationImpl {
             }
         }
 
-        EndpointReferenceType epr = WSATCXFUtils.duplicate(registrationEndpoint);
+        EndpointReferenceType epr = EndpointReferenceUtils.duplicate(registrationEndpoint);
         ReferenceParametersType refs = new ReferenceParametersType();
 
         refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, global));

@@ -65,7 +65,6 @@ instrument.classesExcludes: com/ibm/ws/wsat/resources/*.class
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.wsat.cxf.utils.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\

@@ -21,9 +21,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
+import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 
 /**
  * Assorted debug helpers
@@ -33,7 +33,7 @@ public class DebugUtils {
 
     // Convert an EPR to readable XML
     public static String printEPR(EndpointReferenceType epr) {
-        return printXML(WSATCXFUtils.convertToXML(epr));
+        return printXML(EndpointReferenceUtils.convertToXML(epr));
     }
 
     private static String printXML(Source source) {

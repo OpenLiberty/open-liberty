@@ -68,7 +68,6 @@ Service-Component: \
 	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
-	com.ibm.ws.wsat.cxf.utils.3.2;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
