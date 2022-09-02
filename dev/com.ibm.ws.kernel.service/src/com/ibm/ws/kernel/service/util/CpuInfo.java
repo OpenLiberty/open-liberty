@@ -20,6 +20,7 @@ import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -463,15 +464,18 @@ public class CpuInfo {
         }
 
         public void notifyListeners(int processors) {
-            synchronized (listeners) {
-                for (AvailableProcessorsListener listener : listeners) {
-                    try {
-                        listener.setAvailableProcessors(processors);
-                    } catch (Throwable t) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Caught exception: " + t.getMessage() + ".");
-                        FFDCFilter.processException(t, getClass().getName(), "notifyListeners");
-                    }
+            // copy the set of listeners to call.
+            // 1 We don't want to hold a lock while calling the listeners
+            // 2 We need to avoid iterating over listeners collection while calling the listeners because they
+            //   may get removed as part of calling them, causing a ConcurrentModificationException
+            Collection<AvailableProcessorsListener> listenersCopy = new ArrayList<>(listeners);
+            for (AvailableProcessorsListener listener : listenersCopy) {
+                try {
+                    listener.setAvailableProcessors(processors);
+                } catch (Throwable t) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Caught exception: " + t.getMessage() + ".");
+                    FFDCFilter.processException(t, getClass().getName(), "notifyListeners");
                 }
             }
         }
