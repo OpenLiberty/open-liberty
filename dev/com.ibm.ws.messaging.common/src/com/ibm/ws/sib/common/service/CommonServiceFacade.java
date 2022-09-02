@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.sib.common.service;
 
-import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.util.Map;
 
@@ -39,20 +39,15 @@ import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
 
-@Component(configurationPolicy = REQUIRE, property = "service.vendor=IBM")
+@Component(configurationPolicy = IGNORE, property = {"type=com.ibm.ws.sib.common.service", "service.vendor=IBM"})
 public class CommonServiceFacade implements Singleton {
-
     /** RAS trace variable */
     private static final TraceComponent tc = SibTr.register(
                                                             CommonServiceFacade.class, JsConstants.MSG_GROUP,
                                                             JsConstants.MSG_BUNDLE);
     private static final String CLASS_NAME = "com.ibm.ws.sib.common.service.CommonServiceFacade";
 
-    /**
-     * JsAdminService service
-     */
-    private static final AtomicServiceReference<JsAdminService> jsAdminServiceref = new AtomicServiceReference<JsAdminService>(
-                    "JsAdminService");
+    private static final AtomicServiceReference<JsAdminService> jsAdminServiceref = new AtomicServiceReference<JsAdminService>("JsAdminService");
 
     //obtain CommsClientServiceFacade reference
     //TODO: CommsClientServiceFacade has to be loaded on demand.
@@ -61,7 +56,8 @@ public class CommonServiceFacade implements Singleton {
     //TODO Should this be an AtomicServiceReference? and should runtimeSecurityService be activated??????????????????
     //TODO Should really be assigned as final in a constructor.
     private static RuntimeSecurityService runtimeSecurityService;
-
+    
+    
     @Activate
     protected void activate(ComponentContext context,
                             Map<String, Object> properties) {
