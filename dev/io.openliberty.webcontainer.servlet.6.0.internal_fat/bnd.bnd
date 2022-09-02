@@ -15,8 +15,9 @@ src: \
     fat/src,\
     test-applications/SimpleTest.war/src,\
     test-applications/GetRealPathTest.war/src,\
-    test-applications/CookieSetAttributeTest.war/src
-    
+    test-applications/CookieSetAttributeTest.war/src,\
+    test-applications/RequestConnectionTest.war/src
+
 fat.project: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
