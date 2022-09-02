@@ -45,6 +45,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -60,6 +61,8 @@ import appsecurity.AppsecurityServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -76,6 +79,10 @@ public class AppsecurityTest extends FATServletClient {
     private static final String TCP_CHANNEL_STARTED = "CWWKO0219I:.*defaultHttpEndpoint-ssl";
 
     private TestMethod testMethod;
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new JakartaEE9Action().fullFATOnly());
 
     @BeforeClass
     public static void createAppAndExportToServer() throws Exception {
@@ -277,8 +284,11 @@ public class AppsecurityTest extends FATServletClient {
 
     @After
     public void tearDown() throws Exception {
-        server.stopServer();
-        server.restoreServerConfiguration();
+        try {
+            server.stopServer();
+        } finally {
+            server.restoreServerConfiguration();
+        }
     }
 
     static enum TestMethod {
