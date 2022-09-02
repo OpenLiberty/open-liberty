@@ -198,7 +198,7 @@ public class BestMatch {
             new File(path + "/proj_" + count.intValue()).mkdirs(); //Make sure directory is created first
 
             matched.forEach(library -> {
-                if (!(filteredLibraries(library) || wsLibraries(library))) {
+                if (!(filteredLibraries(library))) {
                     List<String> versions = depVersionMap.get((library.getGroupId() + library.getArtifactId()));
                     if (versions.size() > count.intValue()) {
 
