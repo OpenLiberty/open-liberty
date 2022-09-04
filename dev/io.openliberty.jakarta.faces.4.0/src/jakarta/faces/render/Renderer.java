@@ -112,7 +112,7 @@ public abstract class Renderer<T extends UIComponent>
         return false;
     }
 
-    public Object getConvertedValue(FacesContext context, T component, Object submittedValue)
+    public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue)
             throws ConverterException
     {
         Assert.notNull(context, "context");
