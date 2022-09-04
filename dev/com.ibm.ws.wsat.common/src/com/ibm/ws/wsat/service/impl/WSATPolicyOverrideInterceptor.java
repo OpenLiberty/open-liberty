@@ -28,7 +28,6 @@ import org.apache.cxf.ws.policy.EffectivePolicyImpl;
 import org.apache.cxf.ws.policy.EndpointPolicyImpl;
 import org.apache.cxf.ws.policy.PolicyBuilder;
 import org.apache.cxf.ws.policy.PolicyEngine;
-import org.apache.cxf.ws.policy.PolicyEngineImpl;
 import org.apache.cxf.ws.policy.PolicyOutInterceptor;
 import org.apache.neethi.Assertion;
 import org.apache.neethi.Policy;
@@ -37,7 +36,6 @@ import org.w3c.dom.Element;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
-import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 
 /**
  *
@@ -110,7 +108,7 @@ public class WSATPolicyOverrideInterceptor extends AbstractPhaseInterceptor<Mess
 
         EndpointPolicyImpl endpi = new EndpointPolicyImpl(p);
         EffectivePolicyImpl effectivePolicy = new EffectivePolicyImpl();
-        WSATCXFUtils.initializeEffectivePolicy(effectivePolicy, endpi, (PolicyEngineImpl) pe, false, msg);
+        effectivePolicy.initialise(endpi, pe, false, msg);
 
         Collection<Assertion> assertions = new ArrayList<Assertion>();
         assertions.addAll(effectivePolicy.getChosenAlternative());

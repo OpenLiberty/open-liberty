@@ -79,8 +79,7 @@ dependencies {
                   project(':com.ibm.ws.com.unboundid'),
                   project(':com.ibm.ws.com.meterware.httpunit.1.7'),
 //                  project(':com.ibm.ws.org.apache.commons.lang'),   NOT IN OPEN LIBERTY
-                  project(':com.ibm.ws.org.joda.time'),
-                  project(':com.ibm.ws.org.opensaml.xmltooling')
+                  project(':com.ibm.ws.org.joda.time')
 }
 
 /*

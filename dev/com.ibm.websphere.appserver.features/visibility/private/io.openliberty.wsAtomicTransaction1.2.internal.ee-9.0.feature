@@ -7,7 +7,6 @@ visibility = private
   com.ibm.websphere.appserver.servlet-5.0
 -bundles=\
   com.ibm.ws.wsat.common.jakarta; start-phase:=CONTAINER_LATE, \
-  com.ibm.ws.wsat.cxf.utils.3.2.jakarta, \
   com.ibm.ws.wsat.webclient.jakarta, \
   com.ibm.ws.wsat.webservice.jakarta
 kind=ga

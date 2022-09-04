@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
+import java.util.Base64;
 import java.util.Iterator;
 
 import javax.security.auth.Subject;
@@ -27,8 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.saml2.Saml20Token;
 import com.ibm.ws.security.saml.Constants;
-
-import org.opensaml.xml.util.Base64;
 
 /**
  * Base servlet which all of our test servlets extend.
@@ -50,35 +49,31 @@ public class ProtectedServlet extends HttpServlet {
     }
 
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException {
+    protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         req.getSession().setAttribute("service_class_name", this.getClass().getName());
         super.service(req, res);
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         handleRequest(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         handleRequest(req, resp);
     }
 
     /**
      * Common logic to handle any of the various requests this servlet supports.
      * The actual business logic can be customized by overriding performTask.
-     * 
+     *
      * @param req
      * @param resp
      * @throws ServletException
      * @throws IOException
      */
-    protected void handleRequest(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void handleRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Saml20Token token = getSaml20TokenFromSubject();
         String tokenStr = "null";
         if (token != null) {
@@ -96,9 +91,9 @@ public class ProtectedServlet extends HttpServlet {
     }
 
     public void redirectRequest(HttpServletRequest req,
-            HttpServletResponse resp,
-            String headerName,
-            String headerContent) throws Exception {
+                                HttpServletResponse resp,
+                                String headerName,
+                                String headerContent) throws Exception {
 
         StringBuffer sb = new StringBuffer();
         try {
@@ -128,8 +123,8 @@ public class ProtectedServlet extends HttpServlet {
              * </html>
              */
             String requestUrl = "https://" + req.getServerName() +
-                    ":" + req.getServerPort() +
-                    req.getContextPath() + "/rsSaml.jsp";
+                                ":" + req.getServerPort() +
+                                req.getContextPath() + "/rsSaml.jsp";
             String httpMethod = reqGetParameter(req, "http_method", "GET");
             String jaxrsUrl = reqGetParameter(req, "jaxrs_url", "SimpleServlet");
             headerName = reqGetParameter(req, "header_name", headerName);
@@ -153,7 +148,7 @@ public class ProtectedServlet extends HttpServlet {
             sb.append("<tr><td>jaxrsUrl</td><td><input type=\"text\" name=\"jaxrs_url\" value=\"" + jaxrsUrl + "\" /></td></tr>");
             sb.append("<tr><td>headerName</td><td><input type=\"text\" name=\"header_name\" value=\"" + headerName + "\" /></td></tr>");
             byte[] bytes = headerContent.getBytes("UTF-8");
-            String encodedHeaderContent = Base64.encodeBytes(bytes);
+            String encodedHeaderContent = Base64.getEncoder().encodeToString(bytes);
             String urlContent = URLEncoder.encode(encodedHeaderContent, "UTF-8");
             System.out.println("headerContent:\n" + headerContent);
             System.out.println("encodedHeaderContent:\n" + encodedHeaderContent);
@@ -176,9 +171,9 @@ public class ProtectedServlet extends HttpServlet {
 
         // HTTP 1.1.
         resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private, max-age=0");
-        // HTTP 1.0. 
+        // HTTP 1.0.
         resp.setHeader("Pragma", "no-cache");
-        // Proxies. 
+        // Proxies.
         resp.setDateHeader("Expires", 0);
         resp.setContentType("text/html");
         System.out.println("\n" + sb.toString());
@@ -193,8 +188,8 @@ public class ProtectedServlet extends HttpServlet {
     }
 
     String reqGetParameter(HttpServletRequest req,
-            String parameterName,
-            String defaultValue) {
+                           String parameterName,
+                           String defaultValue) {
         String value = req.getParameter(parameterName);
         if (value == null || value.length() == 0) {
             value = defaultValue;
@@ -226,18 +221,17 @@ public class ProtectedServlet extends HttpServlet {
             final Subject subject = WSSubject.getRunAsSubject();
 
             samlToken = (Saml20Token) AccessController.doPrivileged(
-                    new PrivilegedExceptionAction() {
-                        @Override
-                        public Object run() throws Exception
-                        {
-                            final Iterator authIterator = subject.getPrivateCredentials(Saml20Token.class).iterator();
-                            if (authIterator.hasNext()) {
-                                final Saml20Token token = (Saml20Token) authIterator.next();
-                                return token;
-                            }
-                            return null;
-                        }
-                    });
+                                                                    new PrivilegedExceptionAction() {
+                                                                        @Override
+                                                                        public Object run() throws Exception {
+                                                                            final Iterator authIterator = subject.getPrivateCredentials(Saml20Token.class).iterator();
+                                                                            if (authIterator.hasNext()) {
+                                                                                final Saml20Token token = (Saml20Token) authIterator.next();
+                                                                                return token;
+                                                                            }
+                                                                            return null;
+                                                                        }
+                                                                    });
         } catch (Exception e) {
             System.out.println("Exception while getting SAML token from subject:" + e.getCause());
         }

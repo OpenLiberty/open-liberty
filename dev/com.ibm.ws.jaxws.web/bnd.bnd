@@ -54,7 +54,7 @@ Import-Package: \
 Private-Package:\
    com.ibm.ws.jaxws.web.*
 
-instrument.classesExcludes: com/ibm/ws/jaxws23/web/internal/resources/*.class
+instrument.classesExcludes: com/ibm/ws/jaxws/web/internal/resources/*.class
 
 -buildpath: \
 	com.ibm.ws.jaxws.2.3.common;version=latest,\

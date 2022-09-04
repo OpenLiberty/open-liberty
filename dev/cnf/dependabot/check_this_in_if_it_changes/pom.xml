@@ -318,18 +318,8 @@
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-jxc</artifactId>
-      <version>2.3.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
       <version>2.2.10</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-      <version>2.3.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.fastinfoset</groupId>
@@ -1192,11 +1182,6 @@
       <version>2.3.0</version>
     </dependency>
     <dependency>
-      <groupId>javax.xml.ws</groupId>
-      <artifactId>jaxws-api</artifactId>
-      <version>2.3.0</version>
-    </dependency>
-    <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
       <version>7.0</version>
@@ -1393,11 +1378,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-api</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-core</artifactId>
       <version>3.1.18</version>
     </dependency>
@@ -1410,11 +1390,6 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-soap</artifactId>
       <version>3.4.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-bindings-xml</artifactId>
-      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1444,22 +1419,12 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxws</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-jaxws</artifactId>
       <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-simple</artifactId>
       <version>3.4.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-management</artifactId>
-      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1519,11 +1484,6 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-transports-http</artifactId>
       <version>3.1.18</version>
     </dependency>
     <dependency>
@@ -1545,11 +1505,6 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-policy</artifactId>
       <version>3.4.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-ws-security</artifactId>
-      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -3864,11 +3819,6 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.2.4</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
       <version>2.9.0</version>
     </dependency>
     <dependency>
@@ -4203,26 +4153,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-bindings-soap</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-core</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-databinding-jaxb</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-simple</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-rs-mp-client</artifactId>
       <version>3.2.6</version>
     </dependency>
@@ -4240,16 +4170,6 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-hc</artifactId>
       <version>3.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-ws-addr</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-ws-policy</artifactId>
-      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -4405,11 +4325,6 @@
       <groupId>org.jvnet.mimepull</groupId>
       <artifactId>mimepull</artifactId>
       <version>1.9.7</version>
-    </dependency>
-    <dependency>
-      <groupId>org.opensaml</groupId>
-      <artifactId>xmltooling</artifactId>
-      <version>1.4.4</version>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>

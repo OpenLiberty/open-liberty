@@ -24,12 +24,13 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.ws.EndpointReference;
 
+import org.apache.cxf.ws.addressing.ContextJAXBUtils;
 import org.apache.cxf.ws.addressing.ContextUtils;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
+import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 
 /**
@@ -75,7 +76,7 @@ public abstract class WSATEndpoint implements Serializable {
                     ClassLoader localLoader = tranService.getThreadClassLoader(WSATEndpoint.class);
                     try {
                         Thread.currentThread().setContextClassLoader(localLoader);
-                        return EndpointReference.readFrom(WSATCXFUtils.convertToXML(endpointRef));
+                        return EndpointReference.readFrom(EndpointReferenceUtils.convertToXML(endpointRef));
                     } finally {
                         Thread.currentThread().setContextClassLoader(saveLoader);
                         tranService.destroyThreadClassLoader(localLoader);
@@ -110,7 +111,7 @@ public abstract class WSATEndpoint implements Serializable {
             String xml = null;
             if (endpointRef != null) {
                 StringWriter xmlWriter = new StringWriter();
-                JAXBContext jbCtx = WSATCXFUtils.getJAXBContext();
+                JAXBContext jbCtx = ContextJAXBUtils.getJAXBContext();
                 JAXBElement<EndpointReferenceType> jbEpr = ContextUtils.WSA_OBJECT_FACTORY.createEndpointReference(endpointRef);
                 jbCtx.createMarshaller().marshal(jbEpr, xmlWriter);
                 xml = xmlWriter.toString();
@@ -128,7 +129,7 @@ public abstract class WSATEndpoint implements Serializable {
             String xml = (String) stream.readObject();
             if (xml != null) {
                 StringReader xmlReader = new StringReader(xml);
-                JAXBContext jbCtx = WSATCXFUtils.getJAXBContext();
+                JAXBContext jbCtx = ContextJAXBUtils.getJAXBContext();
                 Object jbEpr = jbCtx.createUnmarshaller().unmarshal(xmlReader);
                 epr = ((JAXBElement<EndpointReferenceType>) jbEpr).getValue();
             }

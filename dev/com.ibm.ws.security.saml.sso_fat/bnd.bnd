@@ -32,6 +32,6 @@ tested.features: servlet-4.0, jsp-2.3, jdbc-4.1, el-3.0,\
     com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest, \
     com.ibm.ws.org.joda.time.1.6.2;version=latest, \
     com.ibm.ws.webcontainer.security;version=latest, \
-    com.ibm.ws.security.saml.sso.2.0;version=latest, \
+    com.ibm.ws.security.saml.websso.2.0;version=latest, \
     net.sourceforge.htmlunit:htmlunit;version=2.44.0, \
     com.ibm.ws.org.apache.directory.server;version=latest

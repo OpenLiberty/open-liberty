@@ -21,6 +21,7 @@ import javax.xml.ws.soap.AddressingFeature;
 
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.JAXWSAConstants;
 
@@ -28,7 +29,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.WSATEndpoint;
-import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WebClient;
 import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
@@ -241,8 +241,9 @@ public class WebClientImpl extends WebClient {
             // indicate the sender and the wsa:replyTo should be http://www.w3.org/2005/08/addressing/none.
             // However, tWAS seems to expect the replyTo to be set (and it uses it when sending protocol
             // responses), so we had better set replyTo, as inter-op with tWAS is our prime use-case.
+            AddressingProperties wsAddr = new AddressingProperties();
+            wsAddr.setReplyTo(fromEpr.getEndpointReference());
 
-            Object wsAddr = WSATCXFUtils.createAddressingProperties(fromEpr.getEndpointReference());
             //wsAddr.setFrom(fromEpr.getEndpointReference());
             //wsAddr.setReplyTo(fromEpr.getEndpointReference());
             ((BindingProvider) port).getRequestContext().put(JAXWSAConstants.CLIENT_ADDRESSING_PROPERTIES, wsAddr);

@@ -47,7 +47,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.Constants.AssertionStatus;
-import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 import com.ibm.ws.wsat.service.WSATContext;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.webservice.client.wscoor.CoordinationContext;
@@ -207,11 +206,11 @@ public class WSCoorUtil {
         if (isServer) {
             setupBindingOperationInfo((SoapMessage) msg);
             BindingOperationInfo boi = ex.getBindingOperationInfo();
-            ep = WSATCXFUtils.getEffectiveServerRequestPolicy(pe, ei, boi, msg);
+            ep = pe.getEffectiveServerRequestPolicy(ei, boi, msg);
         } else {
             Conduit conduit = ex.getConduit(msg);
             BindingOperationInfo boi = ex.getBindingOperationInfo();
-            ep = WSATCXFUtils.getEffectiveClientRequestPolicy(pe, ei, boi, conduit, msg);
+            ep = pe.getEffectiveClientRequestPolicy(ei, boi, conduit, msg);
         }
         if (ep != null) {
             List<PolicyComponent> pList = ep.getPolicy().getPolicyComponents();

@@ -13,6 +13,7 @@ package com.ibm.ws.wsat.service.impl;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
+import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
 
 import com.ibm.tx.remote.Vote;
@@ -25,7 +26,6 @@ import com.ibm.ws.wsat.common.impl.WSATCoordinatorTran;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATParticipantState;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
-import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WebClient;
 import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
@@ -98,7 +98,7 @@ public class ProtocolImpl {
     }
 
     private EndpointReferenceType getEndpoint(EndpointReferenceType epr, String ctxId) {
-        EndpointReferenceType eprCopy = WSATCXFUtils.duplicate(epr);
+        EndpointReferenceType eprCopy = EndpointReferenceUtils.duplicate(epr);
         ReferenceParametersType refs = new ReferenceParametersType();
 
         refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, ctxId));

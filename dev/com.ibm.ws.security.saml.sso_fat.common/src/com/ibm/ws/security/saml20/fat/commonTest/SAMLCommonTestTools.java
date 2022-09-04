@@ -18,6 +18,7 @@ import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.joda.time.DateTime;
-import org.opensaml.xml.util.Base64;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -362,7 +362,7 @@ public class SAMLCommonTestTools {
     //				Log.info(thisClass,  "foo", "");
     //
     //
-    //				byte[] base64DecodedResponse = Base64.decode(samlResponse); // SamlResponse xml content
+    //				byte[] base64DecodedResponse = Base64.getDecoder().decode(samlResponse); // SamlResponse xml content
     //				Log.info(thisClass, "foo", "decoded: " + base64DecodedResponse.toString());
     //
     //				String xml1 = new String(base64DecodedResponse);
@@ -492,14 +492,14 @@ public class SAMLCommonTestTools {
     //				// Mess it up here
     //
     //
-    //				String newSamlResponse= Base64.encodeBytes(base64DecodedResponse, Base64.DONT_BREAK_LINES);
+    //				String newSamlResponse= Base64.getEncoder().encodeToString(base64DecodedResponse);
     //				Log.info(thisClass,  "foo", "new encoded:\n" + newSamlResponse);
     //				Log.info(thisClass,  "foo", "" );
     //
     //				Log.info(thisClass,  "foo", "Old equals new? " + newSamlResponse.equals( samlResponse));
     //
     //				byte[] newBase64DecodedResponse = xml2.getBytes();
-    //				String newerSamlResponse = Base64.encodeBytes(newBase64DecodedResponse, Base64.DONT_BREAK_LINES) ;
+    //				String newerSamlResponse = Base64.getEncoder().encodeToString(newBase64DecodedResponse) ;
     //				Log.info(thisClass,  "foo", "newer encoded:\n" + newerSamlResponse);
     //				Log.info(thisClass,  "foo", "" );
     //
@@ -542,7 +542,7 @@ public class SAMLCommonTestTools {
         Log.info(thisClass, thisMethod, "encoded:\n" + samlResponse);
         //			Log.info(thisClass,  thisMethod, "");
 
-        byte[] base64DecodedResponse = Base64.decode(samlResponse);
+        byte[] base64DecodedResponse = Base64.getDecoder().decode(samlResponse);
         //			Log.info(thisClass, thisMethod, "decoded: " + base64DecodedResponse.toString());
 
         String xml1 = new String(base64DecodedResponse);
@@ -630,7 +630,7 @@ public class SAMLCommonTestTools {
         //          Log.info(thisClass,  thisMethod, "");
         Log.info(thisClass, thisMethod, "Tag to be removed: " + tagToBeRemoved);
 
-        byte[] base64DecodedResponse = Base64.decode(samlResponse);
+        byte[] base64DecodedResponse = Base64.getDecoder().decode(samlResponse);
         //          Log.info(thisClass, thisMethod, "decoded: " + base64DecodedResponse.toString());
 
         String xml1 = new String(base64DecodedResponse);
@@ -641,7 +641,7 @@ public class SAMLCommonTestTools {
         }
 
         byte[] newBase64DecodedResponse = xml1.getBytes();
-        String updatedResponse = Base64.encodeBytes(newBase64DecodedResponse, Base64.DONT_BREAK_LINES);
+        String updatedResponse = Base64.getEncoder().encodeToString(newBase64DecodedResponse);
         Log.info(thisClass, thisMethod, "newer encoded:\n" + updatedResponse);
         //          Log.info(thisClass,  thisMethod, "" );
 
@@ -744,7 +744,7 @@ public class SAMLCommonTestTools {
             Log.info(thisClass, thisMethod, "encoded:\n" + samlResponse);
             //			Log.info(thisClass,  thisMethod, "");
 
-            byte[] base64DecodedResponse = Base64.decode(samlResponse);
+            byte[] base64DecodedResponse = Base64.getDecoder().decode(samlResponse);
             //			Log.info(thisClass, thisMethod, "decoded: " + base64DecodedResponse.toString());
 
             String removeAttribAll = settings.getRemoveAttribAll();
@@ -762,7 +762,7 @@ public class SAMLCommonTestTools {
 
             Log.info(thisClass, thisMethod, "xml After : " + xml1);
             byte[] newBase64DecodedResponse = xml1.getBytes();
-            String updatedResponse = Base64.encodeBytes(newBase64DecodedResponse, Base64.DONT_BREAK_LINES);
+            String updatedResponse = Base64.getEncoder().encodeToString(newBase64DecodedResponse);
             Log.info(thisClass, thisMethod, "newer encoded:\n" + updatedResponse);
             //			Log.info(thisClass,  thisMethod, "" );
 
@@ -844,7 +844,7 @@ public class SAMLCommonTestTools {
             //			Log.info(thisClass,  thisMethod, "encoded:\n" + samlResponse);
             //			//			Log.info(thisClass,  thisMethod, "");
             //
-            //			byte[] base64DecodedResponse = Base64.decode(samlResponse);
+            //			byte[] base64DecodedResponse = Base64.getDecoder().decode(samlResponse);
             //			//			Log.info(thisClass, thisMethod, "decoded: " + base64DecodedResponse.toString());
             //
             //			String xml1 = new String(base64DecodedResponse);
@@ -1498,7 +1498,7 @@ public class SAMLCommonTestTools {
         //		//			Log.info(thisClass,  thisMethod, "");
         //
         //
-        //		byte[] base64DecodedResponse = Base64.decode(samlResponse); // SamlResponse xml content
+        //		byte[] base64DecodedResponse = Base64.getDecoder().decode(samlResponse); // SamlResponse xml content
         //		Log.info(thisClass, thisMethod, "decoded: " + base64DecodedResponse.toString());
         //
         //		String xml1 = new String(base64DecodedResponse);
@@ -1551,7 +1551,7 @@ public class SAMLCommonTestTools {
         String assertionStart = "<saml2:" + (isEncryptedAssertion ? "Encrypted" : "") + "Assertion";
         String assertionEnd = "</saml2:" + (isEncryptedAssertion ? "Encrypted" : "") + "Assertion>";
 
-        String samlResponse = new String(Base64.decode(extractSAMLReponse(getRequestWithSamlToken(thePage, settings))));
+        String samlResponse = new String(Base64.getDecoder().decode(extractSAMLReponse(getRequestWithSamlToken(thePage, settings))));
         if (fullTextToken) {
             return samlResponse;
         }
@@ -1637,7 +1637,7 @@ public class SAMLCommonTestTools {
     //SC added
     public String decodeSamlResponseString(String res) throws Exception {
         String thisMethod = "decodeSamlResponseString";
-        byte[] base64DecodedResponse = Base64.decode(res); // SamlResponse xml content
+        byte[] base64DecodedResponse = Base64.getDecoder().decode(res); // SamlResponse xml content
         //Log.info(thisClass, thisMethod, "decoded: " + base64DecodedResponse.toString());
 
         String decoded = new String(base64DecodedResponse);
@@ -1655,7 +1655,7 @@ public class SAMLCommonTestTools {
         Log.info(thisClass, thisMethod, "encoded:\n" + samlResponse);
         //			Log.info(thisClass,  thisMethod, "");
 
-        byte[] base64DecodedResponse = Base64.decode(samlResponse); // SamlResponse xml content
+        byte[] base64DecodedResponse = Base64.getDecoder().decode(samlResponse); // SamlResponse xml content
         Log.info(thisClass, thisMethod, "decoded: " + base64DecodedResponse.toString());
 
         String xml1 = new String(base64DecodedResponse);
@@ -1700,10 +1700,10 @@ public class SAMLCommonTestTools {
         if (samlResponseFormat.equals(SAMLConstants.ASSERTION_COMPRESSED_ENCODED)) {
             Log.info(thisClass, thisMethod, "Compress and Encode");
             byte[] compressedResponse = compressString(newBase64DecodedResponse);
-            updatedResponse = Base64.encodeBytes(compressedResponse, Base64.DONT_BREAK_LINES);
+            updatedResponse = Base64.getEncoder().encodeToString(compressedResponse);
         } else {
             Log.info(thisClass, thisMethod, "Compress Only");
-            updatedResponse = Base64.encodeBytes(newBase64DecodedResponse, Base64.DONT_BREAK_LINES);
+            updatedResponse = Base64.getEncoder().encodeToString(newBase64DecodedResponse);
         }
         Log.info(thisClass, thisMethod, "newer encoded:\n" + updatedResponse);
 

@@ -20,13 +20,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
-
-import org.opensaml.xml.util.Base64;
 
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.HttpMethod;
@@ -167,7 +166,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
             return null;
         }
         byte[] bytes = rawString.getBytes("UTF-8");
-        String encodedHeaderContent = Base64.encodeBytes(bytes);
+        String encodedHeaderContent = Base64.getEncoder().encodeToString(bytes);
         String encodedValue = URLEncoder.encode(encodedHeaderContent, "UTF-8");
         return encodedValue;
     }
@@ -1767,7 +1766,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
      * server exceptions for this particular server.
      *
      * @param theServer
-     *            - the server to register the allowed excpetion to.
+     *                           - the server to register the allowed excpetion to.
      * @param expected
      * @param step
      * @param log
@@ -1866,6 +1865,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
     }
 
+    @Override
     public boolean pingExternalServer(String testcase, String serverUrl, String expectedTitle, int waitTime) throws Exception {
 
         String thisMethod = "pingExternalServer";
