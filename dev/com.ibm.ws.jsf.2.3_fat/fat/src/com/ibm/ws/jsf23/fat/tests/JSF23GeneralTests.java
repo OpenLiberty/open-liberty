@@ -41,6 +41,7 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -52,6 +53,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 public class JSF23GeneralTests {
 
     protected static final Class<?> c = JSF23GeneralTests.class;

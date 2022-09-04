@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -42,6 +43,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 public class JSF23SelectOneRadioGroupTests {
 
     protected static final Class<?> c = JSF23SelectOneRadioGroupTests.class;

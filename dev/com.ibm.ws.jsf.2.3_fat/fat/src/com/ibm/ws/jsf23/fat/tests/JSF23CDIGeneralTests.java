@@ -48,6 +48,7 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -59,6 +60,7 @@ import junit.framework.Assert;
  * General JSF 2.3 test cases the also require CDI.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 public class JSF23CDIGeneralTests {
 
     protected static final Class<?> c = JSF23CDIGeneralTests.class;
