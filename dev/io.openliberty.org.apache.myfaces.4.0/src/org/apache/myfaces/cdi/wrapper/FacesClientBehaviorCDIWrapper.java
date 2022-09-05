@@ -26,6 +26,7 @@ import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHint;
+import jakarta.faces.component.behavior.FacesBehavior;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.BehaviorEvent;
 import org.apache.myfaces.cdi.util.CDIUtils;
@@ -77,7 +78,7 @@ public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, Client
         if (delegate == null)
         {
             delegate = (ClientBehavior) CDIUtils.get(CDIUtils.getBeanManager(FacesContext.getCurrentInstance()), 
-                    ClientBehavior.class, true, new FacesBehaviorAnnotationLiteral(behaviorId));
+                    ClientBehavior.class, true, FacesBehavior.Literal.of(behaviorId, true));
         }
         return delegate;
     }
@@ -87,7 +88,7 @@ public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, Client
     {
         if (!initialStateMarked())
         {
-            Object values[] = new Object[1];
+            Object[] values = new Object[1];
             values[0] = behaviorId;
             return values;
         }
@@ -99,7 +100,7 @@ public class FacesClientBehaviorCDIWrapper implements PartialStateHolder, Client
     {
         if (state != null)
         {
-            Object values[] = (Object[])state;
+            Object[] values = (Object[])state;
             behaviorId = (String)values[0];
         }
     }

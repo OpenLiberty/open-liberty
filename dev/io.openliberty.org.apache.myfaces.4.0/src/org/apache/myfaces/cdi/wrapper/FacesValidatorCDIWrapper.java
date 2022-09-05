@@ -26,6 +26,7 @@ import jakarta.faces.FacesWrapper;
 import jakarta.faces.component.PartialStateHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 import org.apache.myfaces.cdi.util.CDIUtils;
@@ -64,9 +65,9 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
         if (delegate == null)
         {
             BeanManager bm = CDIUtils.getBeanManager(FacesContext.getCurrentInstance());
-            FacesValidatorAnnotationLiteral literal = new FacesValidatorAnnotationLiteral(validatorId);
+            FacesValidator.Literal literal = FacesValidator.Literal.of(validatorId, false, true);
             delegate = (Validator) CDIUtils.get(bm, VALIDATOR_TYPE, true, literal);
-            
+
             if (delegate == null)
             {
                 delegate = (Validator) CDIUtils.get(bm, Validator.class, true, literal);
@@ -80,7 +81,7 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
     {
         if (!initialStateMarked())
         {
-            Object values[] = new Object[1];
+            Object[] values = new Object[1];
             values[0] = validatorId;
             return values;
         }
@@ -92,7 +93,7 @@ public class FacesValidatorCDIWrapper implements PartialStateHolder, Validator, 
     {
         if (state != null)
         {
-            Object values[] = (Object[])state;
+            Object[] values = (Object[])state;
             validatorId = (String)values[0];
         }
     }
