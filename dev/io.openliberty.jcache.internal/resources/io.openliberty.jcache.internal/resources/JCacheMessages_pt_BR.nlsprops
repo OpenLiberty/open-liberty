@@ -48,9 +48,9 @@ CWLJC0005_MANAGER_LOADED=CWLJC0005I: O JCache CacheManager {0} levou {1} ms para
 CWLJC0005_MANAGER_LOADED.explanation=O JCache CacheManager foi carregado com sucesso.
 CWLJC0005_MANAGER_LOADED.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.
 
-#
-# CWLJC0006 IS AVAILABLE.
-#
+CWLJC0006_MULTI_REF_LIB=CWLJC0006E: O provedor de armazenamento em cache {0} referenciou a biblioteca {1} a partir de ambos jCacheLibaryRef e commonLibraryRef. Esse processo n\u00e3o \u00e9 suportado. 
+CWLJC0006_MULTI_REF_LIB.explanation=Referenciar a mesma biblioteca do commonLibraryRef e do jCacheLibraryRef pode levar a um comportamento indefinido devido a problemas de carregamento de classes. 
+CWLJC0006_MULTI_REF_LIB.useraction=A commonLibraryRef n\u00e3o pode referenciar a mesma biblioteca que a jCacheLibraryRef.
 
 CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Sintaxe inv\u00e1lida no URI do cacheManager.  O motivo \u00e9 {0}.
 CWLJC0007_URI_INVALID_SYNTAX.explanation=A sintaxe do URI de configura\u00e7\u00e3o do JCache especificado \u00e9 inv\u00e1lida.
@@ -68,6 +68,14 @@ CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Erro ao configurar o JCache CacheManage
 CWLJC0010_MANAGER_CONFIG_ERR.explanation=O JCache CacheManager n\u00e3o p\u00f4de ser configurado devido ao erro especificado.
 CWLJC0010_MANAGER_CONFIG_ERR.useraction=Resolva o erro inclu\u00eddo na mensagem e tente novamente.
 
-CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Erro encontrado ao recuperar o JCache {0}: {1}.
+CWLJC0011_GET_CACHE_ERR=CWLJC0011W: Erro encontrado ao recuperar o JCache {0}. Em vez disso, tentar\u00e1 cri\u00e1-lo. O erro foi: {1}.
 CWLJC0011_GET_CACHE_ERR.explanation=O cache n\u00e3o foi recuperado devido ao erro especificado.
 CWLJC0011_GET_CACHE_ERR.useraction=Resolva o erro inclu\u00eddo na mensagem e tente novamente.
+
+CWLJC0012_CLOSE_CACHE_ERR=CWLJC0012W: O erro a seguir ocorreu quando o servidor tentou fechar o JCache {0}: {1}.
+CWLJC0012_CLOSE_CACHE_ERR.explanation=Falha ao fechar o JCache devido ao erro especificado.
+CWLJC0012_CLOSE_CACHE_ERR.useraction=Se isso ocorrer repetidamente durante o tempo de execu\u00e7\u00e3o, pode resultar em vazamento de recursos de cache.
+
+CWLJC0013_CLOSE_CACHEMGR_ERR=CWLJC0013W: O erro a seguir ocorreu quando o servidor tentou fechar o JCache CacheManager {0}: {1}.
+CWLJC0013_CLOSE_CACHEMGR_ERR.explanation=Falha ao fechar o JCache CacheManager devido ao erro especificado.
+CWLJC0013_CLOSE_CACHEMGR_ERR.useraction=Se isso ocorrer repetidamente durante o tempo de execu\u00e7\u00e3o, pode resultar em vazamento de recursos de cache.

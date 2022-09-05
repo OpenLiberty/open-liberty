@@ -16,3 +16,35 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2400 - CWWKS2499
+
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS2400E: Se ha producido un error en el cliente de OpenID Connect {0} al enviar una solicitud de autorizaci\u00f3n al proveedor de OpenID Connect. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Puede que falte informaci\u00f3n en la configuraci\u00f3n del cliente de OpenID Connect o que se haya producido un error en el cliente al comunicarse con el proveedor de OpenID Connect.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.
+
+OIDC_CLIENT_CONFIGURATION_ERROR=CWWKS2401E: La configuraci\u00f3n del cliente de OpenID Connect {0} no es v\u00e1lida o faltan datos. {1}
+OIDC_CLIENT_CONFIGURATION_ERROR.explanation=A la configuraci\u00f3n del cliente de OpenID Connect le falta informaci\u00f3n necesaria.
+OIDC_CLIENT_CONFIGURATION_ERROR.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n. Compruebe que la configuraci\u00f3n del cliente de OpenID Connect est\u00e9 completa y sea precisa.
+
+URL_NOT_HTTPS=CWWKS2402E: El URL de punto final {0} configurado para el cliente de OpenID Connect {1} no utiliza el protocolo HTTPS, pero HTTPS es obligatorio.
+URL_NOT_HTTPS.explanation=El URL de punto final tiene que utilizar el protocolo HTTPS para garantizar la seguridad de las peticiones.
+URL_NOT_HTTPS.useraction=Actualice el URL del punto final para que se use el protocolo HTTPS.
+
+DISCOVERY_EXCEPTION=CWWKS2403E: El cliente de OpenID Connect {0} ha encontrado el siguiente error durante el descubrimiento de los metadatos del proveedor de OpenID Connect desde el URL [{1}]: {2}
+DISCOVERY_EXCEPTION.explanation=Puede que falte informaci\u00f3n en la configuraci\u00f3n del cliente de OpenID Connect o que se haya producido un error en el cliente al comunicarse con el proveedor de OpenID Connect.
+DISCOVERY_EXCEPTION.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.
+
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: El atributo providerURI del cliente de OpenID Connect {0} es nulo o est\u00e1 vac\u00edo y no hay metadatos disponibles para el proveedor de OpenID Connect.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=El cliente de OpenID Connect tiene que descubrir los metadatos del proveedor de OpenID Connect, pero el cliente no tiene configurados un atributo providerURI ni metadatos de proveedor.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Especifique un valor en el atributo providerURI de la configuraci\u00f3n del cliente de OpenID Connect o especifique los metadatos del proveedor de OpenID Connect en la configuraci\u00f3n del cliente.
+
+DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: A los metadatos del proveedor de OpenID Connect les falta la propiedad obligatoria [{0}].
+DISCOVERY_METADATA_MISSING_VALUE.explanation=La propiedad especificada en el mensaje tiene que estar presente en los metadatos del proveedor de OpenID Connect, pero falta.
+DISCOVERY_METADATA_MISSING_VALUE.useraction=Compruebe que el atributo providerURI del cliente de OpenID Connect est\u00e9 establecido al URL de descubrimiento correcto para el proveedor de OpenID Connect.
+
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL=CWWKS2406E: El cliente de OpenID Connect {0} no puede redirigir al usuario al punto final de autorizaci\u00f3n porque el cliente no puede determinar el URL del punto final de autorizaci\u00f3n. {1}
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.explanation=Puede que el URL del punto final de autorizaci\u00f3n en la configuraci\u00f3n de cliente de OpenID Connect est\u00e9 mal formado o falte, o que el cliente de OpenID Connect no haya podido obtener el URL del punto final de autorizaci\u00f3n del proveedor de OpenID Connect.
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n. Compruebe que la configuraci\u00f3n del cliente de OpenID Connect est\u00e9 completa y sea precisa.
+
+AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: El cliente de OpenID Connect {0} ha encontrado el siguiente error al verificar la respuesta de autenticaci\u00f3n del proveedor de OpenID Connect: {1}
+AUTHENTICATION_RESPONSE_ERROR.explanation=Puede que falte informaci\u00f3n en la respuesta del proveedor de OpenID Connect. Puede haber un problema con el c\u00f3digo devuelto por el proveedor de OpenID Connect.
+AUTHENTICATION_RESPONSE_ERROR.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.

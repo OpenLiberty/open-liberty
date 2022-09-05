@@ -44,7 +44,7 @@ JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1104W: LoginModuleRef {0} 
 JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=Autentificarea nu a avut succes deoarece nu exist\u0103 niciun modul de logare pentru referin\u0163a modulului de logare.
 JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Asigura\u0163i-v\u0103 c\u0103 elementul loginModuleRef are un element jaasLoginModule configurat.
 
-JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: Nu poate \u00eenc\u0103rca modulul de logare JAAS din biblioteca partajat\u0103.  O excep\u0163ie intern\u0103 a survenit.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: Nu se poate \u00eenc\u0103rca modulul de logare JAAS din biblioteca partajat\u0103.  O excep\u0163ie intern\u0103 a survenit.
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=S-a produs o eroare intern\u0103.
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
@@ -83,3 +83,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nu este necesar\u0103 nicio 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: Cache-ul de autentificare a cur\u0103\u021bat toate intr\u0103rile din cache-ul JCache {0}. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=Cache-ul de autentificare cur\u0103\u021b\u0103 toate intr\u0103rile din cache-ul JCache de suport atunci c\u00e2nd este modificat\u0103 configura\u021bia de securitate sau atunci c\u00e2nd este apelat Mbean-ul DeleteAuthCache. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: Inserarea intr\u0103rii pentru cheia {0} \u00een cache-ul de autentificare JCache {1} a e\u0219uat din cauza unei erori de serializare. \u00cen schimb, intrarea va fi introdus\u0103 \u00een cache-ul de autentificare \u00een memorie. Excep\u021bia este: {2}
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=Con\u021binutul intr\u0103rii nu a fost serializat, prin urmare acesta nu a fost stocat \u00een cache-ul de autentificare JCache.
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Investiga\u021bi excep\u021bia inclus\u0103 \u00een mesaj \u0219i remedia\u021bi cauza erorii.  

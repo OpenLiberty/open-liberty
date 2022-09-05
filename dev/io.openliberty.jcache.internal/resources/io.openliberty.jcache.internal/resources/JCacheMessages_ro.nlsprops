@@ -48,9 +48,9 @@ CWLJC0005_MANAGER_LOADED=CWLJC0005I: CacheManager JCache {0} s-a \u00eenc\u0103r
 CWLJC0005_MANAGER_LOADED.explanation=CacheManager JCache a fost \u00eenc\u0103rcat cu succes.
 CWLJC0005_MANAGER_LOADED.useraction=Nu este necesar\u0103 nicio ac\u021biune a utilizatorului.
 
-#
-# CWLJC0006 IS AVAILABLE.
-#
+CWLJC0006_MULTI_REF_LIB=CWLJC0006E: Furnizorul de memorare \u00een cache {0} a f\u0103cut trimitere la biblioteca {1} at\u00e2t din jCacheLibaryRef, c\u00e2t \u0219i din commonLibraryRef. Acest lucru nu este suportat. 
+CWLJC0006_MULTI_REF_LIB.explanation=Trimiterea la aceea\u0219i bibliotec\u0103 din commonLibraryRef \u0219i jCacheLibraryRef poate duce la un comportament nedefinit din cauza problemelor de \u00eenc\u0103rcare a clasei. 
+CWLJC0006_MULTI_REF_LIB.useraction=commonLibraryRef nu poate face trimitere la aceea\u0219i bibliotec\u0103 cu jCacheLibraryRef.
 
 CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Sintaxa invalid\u0103 \u00een URI cacheManager.  Cauza este {0}.
 CWLJC0007_URI_INVALID_SYNTAX.explanation=Sintaxa URI-ului de configura\u021bie JCache este invalid\u0103.
@@ -68,6 +68,14 @@ CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Eroare la configurarea CacheManager JCa
 CWLJC0010_MANAGER_CONFIG_ERR.explanation=CacheManager JCache nu a putut fi configurat din cauza erorii specificate.
 CWLJC0010_MANAGER_CONFIG_ERR.useraction=Examina\u021bi \u0219i corecta\u021bi eroarea inclus\u0103 \u00een mesaj \u0219i apoi re\u00eencerca\u021bi.
 
-CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Eroare \u00eent\u00e2lnit\u0103 \u00een timpul extragerii {0} JCache: {1}.
+CWLJC0011_GET_CACHE_ERR=CWLJC0011W: Eroare \u00eent\u00e2lnit\u0103 \u00een timpul extragerii JCache {0}. \u00cen schimb, va \u00eencerca s\u0103 creeze. Eroarea a fost: {1}.
 CWLJC0011_GET_CACHE_ERR.explanation=Cache-ul nu a fost extras din cauza erorii specificate.
 CWLJC0011_GET_CACHE_ERR.useraction=Examina\u021bi \u0219i corecta\u021bi eroarea inclus\u0103 \u00een mesaj \u0219i apoi re\u00eencerca\u021bi.
+
+CWLJC0012_CLOSE_CACHE_ERR=CWLJC0012W: Urm\u0103toarea eroare a avut loc atunci c\u00e2nd serverul a \u00eencercat s\u0103 \u00eenchid\u0103 JCache {0}: {1}.
+CWLJC0012_CLOSE_CACHE_ERR.explanation=Nu s-a reu\u0219it \u00eenchiderea JCache din cauza erorii specificate.
+CWLJC0012_CLOSE_CACHE_ERR.useraction=Dac\u0103 aceasta se repet\u0103 \u00een timpul rul\u0103rii, poate duce la scurgeri de resurse cache.
+
+CWLJC0013_CLOSE_CACHEMGR_ERR=CWLJC0013W: A ap\u0103rut urm\u0103toarea eroare atunci c\u00e2nd serverul a \u00eencercat s\u0103 \u00eenchid\u0103 CacheManager JCache {0}: {1}.
+CWLJC0013_CLOSE_CACHEMGR_ERR.explanation=Nu s-a reu\u0219it \u00eenchiderea CacheManager JCache din cauza erorii specificate.
+CWLJC0013_CLOSE_CACHEMGR_ERR.useraction=Dac\u0103 aceasta se repet\u0103 \u00een timpul rul\u0103rii, poate duce la scurgeri de resurse cache.

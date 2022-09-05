@@ -265,7 +265,7 @@ metamodel_class_null_type_instance_for_null_key=[{0}] wurde nicht f\u00fcr den S
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=Das erwartete Einzelattribut @Id f\u00fcr den identifizierbaren Typ [{0}] ist Teil einer nicht erwarteten @IdClass.
 
-metamodel_identifiable_id_attribute_type_incorrect=Es wurde der ID-Attributtyp [{2}] f\u00fcr das vorhandene ID-Attribut [{0}] f\u00fcr den identifizierbaren Typ [{1}] erwartet, gefunden wurde aber der Attributtyp [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=Erwartet wurde der ID-Attributtyp [{2}] in den vorhandenen ID-Attributen [{0}] im identifizierbaren Typ [{1}], gefunden wurden jedoch Attributtypen [{3}].
 
 metamodel_identifiable_no_id_attribute_present=F\u00fcr den identifizierbaren Typ [{0}] ist kein Attribut vom Typ @Id vorhanden.
 

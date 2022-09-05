@@ -265,7 +265,7 @@ metamodel_class_null_type_instance_for_null_key=N\u00e3o [{0}] foi localizado pa
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=O atributo @Id \u00fanico esperado para o tipo identific\u00e1vel [{0}] faz parte de um @IdClass inesperado.
 
-metamodel_identifiable_id_attribute_type_incorrect=Tipo de atributo id esperado [{2}] no atributo id existente [{0}] no tipo identific\u00e1vel [{1}], mas localizou o tipo de atributo [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=Tipo de atributo id esperado [{2}] nos atributos de id existentes [{0}] sobre o tipo identific\u00e1vel [{1}] mas foram localizados tipos de atributo [{3}].
 
 metamodel_identifiable_no_id_attribute_present=Nenhum atributo @Id existe no tipo identific\u00e1vel [{0}].
 
