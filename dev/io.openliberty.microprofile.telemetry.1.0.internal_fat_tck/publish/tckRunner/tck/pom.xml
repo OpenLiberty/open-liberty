@@ -55,17 +55,11 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.microprofile.telemetry.tracing</groupId>
             <artifactId>microprofile-telemetry-tracing-tck</artifactId>
-            <version>1.0-RC2</version>
+            <version>1.0-RC3</version>
         </dependency>
-
-        <!--<type>test-jar</type>
-            <scope>system</scope>
-            <systemPath>/Users/yasmin/Documents/open-liberty/dev/io.openliberty.microprofile.telemetry.1.0.internal_fat_tck/publish/tckRunner/tck/src/main/resources/microprofile-telemetry-tracing-tck-1.0\-SNAPSHOT.jar</systemPath>
-            -->
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-api</artifactId>
