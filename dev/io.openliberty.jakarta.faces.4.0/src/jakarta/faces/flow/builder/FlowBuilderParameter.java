@@ -18,6 +18,7 @@
  */
 package jakarta.faces.flow.builder;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -35,5 +36,13 @@ import jakarta.inject.Qualifier;
 @Documented
 public @interface FlowBuilderParameter
 {
-    
+    /**
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FlowBuilderParameter> implements FlowBuilderParameter
+    {
+        private static final long serialVersionUID = 1L;
+
+        public static final Literal INSTANCE = new Literal();
+    }
 }

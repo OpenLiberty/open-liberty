@@ -19,6 +19,7 @@
 
 package jakarta.faces.model;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -36,4 +37,32 @@ import jakarta.inject.Qualifier;
 public @interface FacesDataModel
 {
     public java.lang.Class<?> forClass() default Object.class;
+
+    /**
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FacesDataModel> implements FacesDataModel
+    {
+        private static final long serialVersionUID = 1L;
+
+        public static final Literal INSTANCE = of(Object.class);
+
+        private final Class<?> forClass;
+
+        public static Literal of(Class<?> forClass)
+        {
+            return new Literal(forClass);
+        }
+
+        private Literal(Class<?> forClass)
+        {
+            this.forClass = forClass;
+        }
+
+        @Override
+        public Class<?> forClass()
+        {
+            return forClass;
+        }
+    }
 }

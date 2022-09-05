@@ -18,6 +18,7 @@
  */
 package jakarta.faces.event;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import java.io.Serializable;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -109,6 +110,18 @@ public final class WebsocketEvent implements Serializable
     @Documented
     public static @interface Opened 
     {
+        /*
+         * @since 4.0
+         */
+        public static final class Literal extends AnnotationLiteral<Opened> implements Opened
+        {
+            private static final long serialVersionUID = 1L;
+
+            /**
+             * Instance of the {@link Opened} qualifier.
+             */
+            public static final Literal INSTANCE = new Literal();
+        }
     }
 
     @Qualifier
@@ -117,5 +130,17 @@ public final class WebsocketEvent implements Serializable
     @Documented
     public static @interface Closed 
     {
+        /**
+         * @since 4.0
+         */
+        public static final class Literal extends AnnotationLiteral<Closed> implements Closed
+        {
+            private static final long serialVersionUID = 1L;
+
+            /**
+             * Instance of the {@link Closed} qualifier.
+             */
+            public static final Literal INSTANCE = new Literal();
+        }
     }
 }

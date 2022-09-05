@@ -18,12 +18,14 @@
  */
 package jakarta.faces.component.behavior;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import jakarta.inject.Qualifier;
+import java.util.Objects;
 
 /**
  * @since 2.0
@@ -37,4 +39,73 @@ public @interface FacesBehavior
     public String value();
     
     public boolean managed() default false;
+
+    /*
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<FacesBehavior> implements FacesBehavior
+    {
+        private static final long serialVersionUID = 1L;
+
+        public static final Literal INSTANCE = of("", false);
+
+        private final String value;
+        private final boolean managed;
+
+        public static Literal of(String value, boolean managed)
+        {
+            return new Literal(value, managed);
+        }
+
+        private Literal(String value, boolean managed)
+        {
+            this.value = value;
+            this.managed = managed;
+        }
+
+        @Override
+        public String value()
+        {
+            return value;
+        }
+        
+        @Override
+        public boolean managed()
+        {
+            return managed;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int hash = 3;
+            hash = 13 * hash + Objects.hashCode(this.value);
+            hash = 13 * hash + (this.managed ? 1 : 0);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+            {
+                return true;
+            }
+            if (obj == null)
+            {
+                return false;
+            }
+            if (getClass() != obj.getClass())
+            {
+                return false;
+            }
+            final Literal other = (Literal) obj;
+            if (this.managed != other.managed)
+            {
+                return false;
+            }
+            return Objects.equals(this.value, other.value);
+        }
+       
+    }
 }

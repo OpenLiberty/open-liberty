@@ -18,6 +18,7 @@
  */
 package jakarta.faces.push;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -34,4 +35,32 @@ import jakarta.inject.Qualifier;
 public @interface Push
 {
     public @Nonbinding String channel() default "";
+    
+    /*
+     * @since 4.0
+     */
+    public static final class Literal extends AnnotationLiteral<Push> implements Push
+    {
+        private static final long serialVersionUID = 1L;
+
+        public static final Literal INSTANCE = of("");
+
+        private final String channel;
+
+        public static Literal of(String channel)
+        {
+            return new Literal(channel);
+        }
+
+        private Literal(String channel)
+        {
+            this.channel = channel;
+        }
+
+        @Override
+        public String channel()
+        {
+            return channel;
+        }
+    }
 }
