@@ -54,8 +54,7 @@ Export-Package: \
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.ssl;version=latest,\
-	com.ibm.websphere.javaee.security.1.0;version=latest
+	com.ibm.ws.ssl;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\

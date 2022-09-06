@@ -12,7 +12,6 @@ package io.openliberty.security.oidcclientcore.authentication;
 
 import java.util.Date;
 
-import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,6 +21,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
+import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException.ValidationResult;
 import io.openliberty.security.oidcclientcore.exceptions.StateTimestampException;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.Storage;
@@ -51,7 +51,7 @@ public abstract class AuthenticationResponseValidator {
                             long authenticationTimeLimitInSeconds) throws AuthenticationResponseException {
         if (stateParameter.length() < STORED_STATE_VALUE_LENGTH) {
             String nlsMessage = Tr.formatMessage(tc, "STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH", stateParameter, STORED_STATE_VALUE_LENGTH);
-            throw new AuthenticationResponseException(CredentialValidationResult.INVALID_RESULT, clientId, nlsMessage);
+            throw new AuthenticationResponseException(ValidationResult.INVALID_RESULT, clientId, nlsMessage);
         }
 
         String storedStateValue = getStoredStateValue(stateParameter);
@@ -64,11 +64,11 @@ public abstract class AuthenticationResponseValidator {
             try {
                 verifyStateTimestampWithinClockSkew(stateParameter, clockSkewInSeconds, authenticationTimeLimitInSeconds);
             } catch (StateTimestampException e) {
-                throw new AuthenticationResponseException(CredentialValidationResult.INVALID_RESULT, clientId, e.getMessage());
+                throw new AuthenticationResponseException(ValidationResult.INVALID_RESULT, clientId, e.getMessage());
             }
         } else {
             String nlsMessage = Tr.formatMessage(tc, "STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE", stateParameter, storedStateValue);
-            throw new AuthenticationResponseException(CredentialValidationResult.INVALID_RESULT, clientId, nlsMessage);
+            throw new AuthenticationResponseException(ValidationResult.INVALID_RESULT, clientId, nlsMessage);
         }
     }
 

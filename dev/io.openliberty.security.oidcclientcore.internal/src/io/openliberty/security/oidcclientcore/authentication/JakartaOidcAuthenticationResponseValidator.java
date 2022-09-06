@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
-import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +19,7 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
+import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException.ValidationResult;
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
@@ -75,7 +75,7 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
         String stateParameter = request.getParameter(AuthorizationRequestParameters.STATE);
         if (stateParameter == null || stateParameter.isEmpty()) {
             String nlsMessage = Tr.formatMessage(tc, "CALLBACK_MISSING_STATE_PARAMETER");
-            throw new AuthenticationResponseException(CredentialValidationResult.INVALID_RESULT, oidcClientConfig.getClientId(), nlsMessage);
+            throw new AuthenticationResponseException(ValidationResult.INVALID_RESULT, oidcClientConfig.getClientId(), nlsMessage);
         }
         String clientSecret = null;
         ProtectedString clientSecretProtectedString = oidcClientConfig.getClientSecret();
@@ -93,7 +93,7 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
         String storedState = storage.get(stateStorageName);
         if (storedState == null) {
             String nlsMessage = Tr.formatMessage(tc, "STATE_VALUE_IN_CALLBACK_NOT_STORED", stateParameter);
-            throw new AuthenticationResponseException(CredentialValidationResult.NOT_VALIDATED_RESULT, oidcClientConfig.getClientId(), nlsMessage);
+            throw new AuthenticationResponseException(ValidationResult.NOT_VALIDATED_RESULT, oidcClientConfig.getClientId(), nlsMessage);
         }
         return storedState;
     }
@@ -120,7 +120,7 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
 
     void throwExceptionForRedirectUriDoesNotMatch(String requestUrl, String expectedUrl) throws AuthenticationResponseException {
         String nlsMessage = Tr.formatMessage(tc, "CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI", requestUrl, expectedUrl, oidcClientConfig.getClientId());
-        throw new AuthenticationResponseException(CredentialValidationResult.NOT_VALIDATED_RESULT, oidcClientConfig.getClientId(), nlsMessage);
+        throw new AuthenticationResponseException(ValidationResult.NOT_VALIDATED_RESULT, oidcClientConfig.getClientId(), nlsMessage);
     }
 
     /**
@@ -130,7 +130,7 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
         String errorParameter = request.getParameter("error");
         if (errorParameter != null) {
             String nlsMessage = Tr.formatMessage(tc, "CALLBACK_URL_INCLUDES_ERROR_PARAMETER", errorParameter);
-            throw new AuthenticationResponseException(CredentialValidationResult.INVALID_RESULT, oidcClientConfig.getClientId(), nlsMessage);
+            throw new AuthenticationResponseException(ValidationResult.INVALID_RESULT, oidcClientConfig.getClientId(), nlsMessage);
         }
     }
 

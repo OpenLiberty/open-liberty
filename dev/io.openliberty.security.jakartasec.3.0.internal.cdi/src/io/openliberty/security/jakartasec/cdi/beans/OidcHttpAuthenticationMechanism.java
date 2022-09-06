@@ -175,10 +175,18 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext);
         } catch (AuthenticationResponseException e) {
-            status = httpMessageContext.notifyContainerAboutLogin(e.getCredentialValidationResult());
+            status = httpMessageContext.notifyContainerAboutLogin(getCredentialValidationResultFromException(e));
         }
 
         return status;
+    }
+
+    private CredentialValidationResult getCredentialValidationResultFromException(AuthenticationResponseException exception) {
+        if (AuthenticationResponseException.ValidationResult.NOT_VALIDATED_RESULT == exception.getValidationResult()) {
+            return CredentialValidationResult.NOT_VALIDATED_RESULT;
+        } else {
+            return CredentialValidationResult.INVALID_RESULT;
+        }
     }
 
     private AuthenticationStatus processContinueFlowResult(ProviderAuthenticationResult providerAuthenticationResult,
