@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.vetoandextend;
+package com.ibm.ws.cdi12.fat.apps.nonContextualInjectionPointWar;
 
-//This class intentionally left blank.
-public class ServletExtension extends MyServlet {}
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+
+public class Foo {
+
+    @Inject
+    private InjectionPoint injectionPoint;
+
+    public InjectionPoint getInjectionPoint() {
+        return injectionPoint;
+    }
+
+}

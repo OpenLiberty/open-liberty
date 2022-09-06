@@ -8,14 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.vetoandextend;
+package com.ibm.ws.cdi12.fat.apps.vetoAndExtendWar;
 
-import javax.enterprise.context.RequestScoped;
-
-@RequestScoped
-public class MyBean {
-
-    public String getMsg() {
-        return "test passed";
-    }
-}
+//This class intentionally left blank.
+public class ServletExtension extends VetoAndExtendTestServlet {}
