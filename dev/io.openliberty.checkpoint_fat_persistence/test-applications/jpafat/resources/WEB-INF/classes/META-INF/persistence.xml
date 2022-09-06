@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2"
+    xmlns="http://xmlns.jcp.org/xml/ns/persistence" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence 
+                        http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+    <!-- tag::persistence-unit[] -->
+    <!-- tag::transaction-type[] -->
+    <persistence-unit name="jpa-unit" transaction-type="JTA">
+    <!-- end::transaction-type[] -->
+        <!-- tag::jta-data[] -->
+        <jta-data-source>jdbc/eventjpadatasource</jta-data-source>
+        <!-- end::jta-data[] -->
+        <properties>
+        <!-- tag::schema-generation[] -->
+            <property name="jakarta.persistence.schema-generation.database.action"
+                      value="create"/>
+            <property name="jakarta.persistence.schema-generation.scripts.action"
+                      value="create"/>
+            <property name="jakarta.persistence.schema-generation.scripts.create-target"
+                      value="createDDL.ddl"/>
+        <!-- end::schema-generation[] -->
+        </properties>
+    </persistence-unit>
+    <!-- end::persistence-unit[] -->
+</persistence>

@@ -20,7 +20,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                DB2Test.class
+                DB2Test.class,
+                JPATest.class
 })
 
 public class FATSuite extends TestContainerSuite {
