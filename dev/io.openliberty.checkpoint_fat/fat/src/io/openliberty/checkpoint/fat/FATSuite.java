@@ -52,7 +52,8 @@ import componenttest.topology.impl.LibertyServer;
                 RESTclientTest.class,
                 JNDITest.class,
                 CRIULogLevelTest.class,
-                AppsecurityTest.class
+                AppsecurityTest.class,
+                WebSocketTest.class
 })
 public class FATSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {
