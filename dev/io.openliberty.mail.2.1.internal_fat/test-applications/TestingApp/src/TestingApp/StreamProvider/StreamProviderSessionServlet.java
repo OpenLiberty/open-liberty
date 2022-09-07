@@ -59,56 +59,51 @@ public class StreamProviderSessionServlet extends HttpServlet {
         OutputStream encoderOutputStream = null;
         InputStream decoderInputStream = null;
 
-        switch (param) {
-            case "testNewStreamProvider":
-                try {
-                    streamProvider = session.getStreamProvider();
-                    out.print("getStreamProvider method successfully invoked");
-                } catch (NoSuchMethodError e) {
-                    // Do nothing, not printing anything on PrintWriter causes assertion fail
-                }
-                break;
-            case "testBase64":
-                streamProvider = session.getStreamProvider();
-                encoderOutputStream = streamProvider.outputBase64(outputStream);
-                decoderInputStream = streamProvider.inputBase64(inputStream);
-                out.print("Base64 encoderOutputStream:" + encoderOutputStream.toString() + ", Base64 decoderInputStream:" + decoderInputStream.toString());
-                break;
-            case "testBinary":
-                streamProvider = session.getStreamProvider();
-                encoderOutputStream = streamProvider.outputBinary(outputStream);
-                decoderInputStream = streamProvider.inputBinary(inputStream);
-                out.print("Binary encoderOutputStream:" + encoderOutputStream.toString() + ", Binary decoderInputStream:" + decoderInputStream.toString());
-                break;
-            case "testQ":
-                streamProvider = session.getStreamProvider();
-                encoderOutputStream = streamProvider.outputQ(outputStream, false);
-                decoderInputStream = streamProvider.inputQ(inputStream);
-                out.print("Q encoderOutputStream:" + encoderOutputStream.toString() + ", Q decoderInputStream:" + decoderInputStream.toString());
-                break;
-            case "testQP":
-                streamProvider = session.getStreamProvider();
-                encoderOutputStream = streamProvider.outputQP(outputStream);
-                decoderInputStream = streamProvider.inputQP(inputStream);
-                out.print("QP encoderOutputStream:" + encoderOutputStream.toString() + ", QP decoderInputStream:" + decoderInputStream.toString());
-                break;
-            case "testUU":
-                streamProvider = session.getStreamProvider();
-                encoderOutputStream = streamProvider.outputUU(outputStream, null);
-                decoderInputStream = streamProvider.inputUU(inputStream);
-                out.print("UU encoderOutputStream:" + encoderOutputStream.toString() + ", UU decoderInputStream:" + decoderInputStream.toString());
-                break;
+        try {
+            switch (param) {
+                case "testBase64":
+                    streamProvider = session.getStreamProvider();;
+                    encoderOutputStream = streamProvider.outputBase64(outputStream);
+                    decoderInputStream = streamProvider.inputBase64(inputStream);
+                    out.print("Base64 encoderOutputStream:" + encoderOutputStream.toString() + ", Base64 decoderInputStream:" + decoderInputStream.toString());
+                    break;
+                case "testBinary":
+                    streamProvider = session.getStreamProvider();;
+                    encoderOutputStream = streamProvider.outputBinary(outputStream);
+                    decoderInputStream = streamProvider.inputBinary(inputStream);
+                    out.print("Binary encoderOutputStream:" + encoderOutputStream.toString() + ", Binary decoderInputStream:" + decoderInputStream.toString());
+                    break;
+                case "testQ":
+                    streamProvider = session.getStreamProvider();;
+                    encoderOutputStream = streamProvider.outputQ(outputStream, false);
+                    decoderInputStream = streamProvider.inputQ(inputStream);
+                    out.print("Q encoderOutputStream:" + encoderOutputStream.toString() + ", Q decoderInputStream:" + decoderInputStream.toString());
+                    break;
+                case "testQP":
+                    streamProvider = session.getStreamProvider();;
+                    encoderOutputStream = streamProvider.outputQP(outputStream);
+                    decoderInputStream = streamProvider.inputQP(inputStream);
+                    out.print("QP encoderOutputStream:" + encoderOutputStream.toString() + ", QP decoderInputStream:" + decoderInputStream.toString());
+                    break;
+                case "testUU":
+                    streamProvider = session.getStreamProvider();;
+                    encoderOutputStream = streamProvider.outputUU(outputStream, null);
+                    decoderInputStream = streamProvider.inputUU(inputStream);
+                    out.print("UU encoderOutputStream:" + encoderOutputStream.toString() + ", UU decoderInputStream:" + decoderInputStream.toString());
+                    break;
+            }
+        } catch (NoSuchMethodError e) {
+            // Do nothing, not printing anything on PrintWriter causes assertion fail for not getting stream provider
+        } finally {
+            //Clean up
+            outputStream.close();
+            inputStream.close();
+            if (null != encoderOutputStream)
+                encoderOutputStream.close();
+            if (null != decoderInputStream)
+                decoderInputStream.close();
         }
 
-        //Clean up
-        outputStream.close();
-        inputStream.close();
-
-        if (null != encoderOutputStream)
-            encoderOutputStream.close();
-
-        if (null != decoderInputStream)
-            decoderInputStream.close();
     }
 
     /**
@@ -118,5 +113,4 @@ public class StreamProviderSessionServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
-
 }

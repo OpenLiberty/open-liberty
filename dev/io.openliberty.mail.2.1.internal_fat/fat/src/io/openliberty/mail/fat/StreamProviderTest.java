@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.mail.fat;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -41,7 +40,7 @@ public class StreamProviderTest {
     private final Class<?> c = StreamProviderTest.class;
 
     private static String stringURL = null;
-    private static boolean streamProviderTestPassed = false;
+    private static boolean streamProviderTestPassed = true;
     private static final String STREAM_PROVIDER_ERROR_MESSAGE = "Failed to get stream provider from session. This test won't get executed.";
 
     @BeforeClass
@@ -52,6 +51,7 @@ public class StreamProviderTest {
             server.waitForStringInLog("port " + server.getHttpDefaultPort());
         }
         stringURL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/StreamProviderSessionServlet";
+
     }
 
     @AfterClass
@@ -64,35 +64,16 @@ public class StreamProviderTest {
     /**
      * TestDescription:
      *
-     * Tests newly added StreamProvider class to Jakarta Mail 2.1 by invoking getStreamProvider method
-     * from Session class in StreamProviderSessionServlet servlet.
-     *
-     * This test is essential for all other tests to run.
-     */
-    @Test
-    public void testNewStreamProvider() throws Exception {
-
-        String ret = connectAndReturn("testNewStreamProvider");
-
-        assertNotNull("FAIL: getStreamProvider method of Session class failed to be invoked", ret);
-
-        if (null != ret)
-            streamProviderTestPassed = true;
-
-    }
-
-    /**
-     * TestDescription:
-     *
      * Tests newly added StreamProvider class to Jakarta Mail 2.1 by testing Base64 Encoder method
      * from StreamProvider class in StreamProviderSessionServlet servlet.
      */
     @Test
     public void testBase64() throws Exception {
-        // When we can't get stream provider, none of these test could run
-        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
         String ret = connectAndReturn("testBase64");
+
+        // When we can't get stream provider, none of these test could run
+        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
         assertTrue("BASE64EncoderStream couldn't get created by session.getStreamProvider().outputBase64(outputStream) in StreamProviderSessionServlet",
                    ret.contains("BASE64EncoderStream"));
@@ -108,10 +89,11 @@ public class StreamProviderTest {
      */
     @Test
     public void testBinary() throws Exception {
-        // When we can't get stream provider, none of these test could run
-        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
         String ret = connectAndReturn("testBinary");
+
+        // When we can't get stream provider, none of these test could run
+        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
         // session.getStreamProvider().outputBinary(outputStream) creates the exact text entered no test required
         assertTrue("ByteArrayInputStream couldn't get created by session.getStreamProvider().inputBinary(inputStream) in StreamProviderSessionServlet",
@@ -126,10 +108,11 @@ public class StreamProviderTest {
      */
     @Test
     public void testQ() throws Exception {
-        // When we can't get stream provider, none of these test could run
-        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
         String ret = connectAndReturn("testQ");
+
+        // When we can't get stream provider, none of these test could run
+        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
         assertTrue("QEncoderStream couldn't get created by session.getStreamProvider().outputQ(outputStream) in StreamProviderSessionServlet",
                    ret.contains("QEncoderStream"));
@@ -145,10 +128,11 @@ public class StreamProviderTest {
      */
     @Test
     public void testQP() throws Exception {
-        // When we can't get stream provider, none of these test could run
-        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
         String ret = connectAndReturn("testQP");
+
+        // When we can't get stream provider, none of these test could run
+        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
         assertTrue("QPEncoderStream couldn't get created by session.getStreamProvider().outputQP(outputStream) in StreamProviderSessionServlet",
                    ret.contains("QPEncoderStream"));
@@ -164,10 +148,11 @@ public class StreamProviderTest {
      */
     @Test
     public void testUU() throws Exception {
-        // When we can't get stream provider, none of these test could run
-        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
         String ret = connectAndReturn("testUU");
+
+        // When we can't get stream provider, none of these test could run
+        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
         assertTrue("UUEncoderStream couldn't get created by session.getStreamProvider().outputUU(outputStream) in StreamProviderSessionServlet",
                    ret.contains("UUEncoderStream"));
@@ -183,17 +168,26 @@ public class StreamProviderTest {
      * @return output from the servlet
      */
     private String connectAndReturn(String testName) throws IOException {
-        URL url = new URL(stringURL + "?testName=" + testName);
-        Log.info(c, testName,
-                 "Calling MailSession Application with URL=" + url.toString());
-        HttpURLConnection con = getHttpConnection(url);
-        BufferedReader br = getConnectionStream(con);
 
-        String line = br.readLine();
+        if (true == streamProviderTestPassed) { // Do not run test code since one of the tests failed to get stream provider
+            URL url = new URL(stringURL + "?testName=" + testName);
+            Log.info(c, testName,
+                     "Calling MailSession Application with URL=" + url.toString());
+            HttpURLConnection con = getHttpConnection(url);
+            BufferedReader br = getConnectionStream(con);
 
-        Log.info(c, testName, "return String=" + line);
+            String line = br.readLine();
 
-        return line;
+            Log.info(c, testName, "return String=" + line);
+
+            // We can't invoke getStreamProvider from Session class, setting this flag to stop execution of other tests
+            if (line == null)
+                streamProviderTestPassed = false;
+
+            return line;
+        } else {
+            return "";
+        }
     }
 
     /**
