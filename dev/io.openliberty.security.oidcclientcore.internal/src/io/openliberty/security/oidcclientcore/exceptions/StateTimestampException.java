@@ -25,12 +25,14 @@ public class StateTimestampException extends Exception {
 
     private final String state;
     private final long timestampFromStateValue;
+    private final long now;
     private final long minDate;
     private final long maxDate;
 
-    public StateTimestampException(String state, long minDate, long maxDate) {
+    public StateTimestampException(String state, long now, long minDate, long maxDate) {
         this.state = state;
         this.timestampFromStateValue = Utils.convertNormalizedTimeStampToLong(state);
+        this.now = now;
         this.minDate = minDate;
         this.maxDate = maxDate;
     }
@@ -41,7 +43,8 @@ public class StateTimestampException extends Exception {
 
     @Override
     public String getMessage() {
-        return Tr.formatMessage(tc, "STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME", state, getDateString(timestampFromStateValue), getDateString(minDate), getDateString(maxDate));
+        return Tr.formatMessage(tc, "STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME", state, getDateString(timestampFromStateValue), getDateString(minDate),
+                                getDateString(maxDate), getDateString(now));
     }
 
 }

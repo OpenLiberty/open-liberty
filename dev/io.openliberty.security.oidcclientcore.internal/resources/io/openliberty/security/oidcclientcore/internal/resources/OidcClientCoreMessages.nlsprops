@@ -61,11 +61,11 @@ STATE_VALUE_IN_CALLBACK_NOT_STORED=CWWKS2410E: The OpenID Connect client cannot 
 STATE_VALUE_IN_CALLBACK_NOT_STORED.explanation=The state parameter might be from an old authorization request, or the value for the state parameter is incorrect.
 STATE_VALUE_IN_CALLBACK_NOT_STORED.useraction=Verify that the state parameter in the callback request matches a state value for a recent OpenID Connect request.
 
-STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE=CWWKS2411E: The [{0}] state parameter that is included in the callback request does not match the [{1}] state value that is stored by the OpenID Connect client.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE=CWWKS2411E: The [{0}] state parameter that is included in the callback request does not match the state value that is stored by the OpenID Connect client.
 STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.explanation=The state parameter might be from an old authorization request, or the value for the state parameter is incorrect.
 STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.useraction=Verify that the state parameter in the callback request matches a state value for a recent OpenID Connect request.
 
-STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME=CWWKS2412E: The [{0}] state parameter that is included in the callback request is outside of its valid time frame. The state value was created at {1} and is valid from {2} to {3}.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME=CWWKS2412E: The [{0}] state parameter that is included in the callback request is outside of its valid time frame. The state value was created at {1} and is valid from {2} to {3}. The current time is {4}.
 STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.explanation=The OpenID Connect provider took too long to respond, or the user took too long to authenticate with the OpenID Connect provider.
 STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.useraction=Ensure that the user does not take too much time to authenticate with the OpenID Connect provider.
 

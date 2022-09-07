@@ -67,7 +67,7 @@ public abstract class AuthenticationResponseValidator {
                 throw new AuthenticationResponseException(ValidationResult.INVALID_RESULT, clientId, e.getMessage());
             }
         } else {
-            String nlsMessage = Tr.formatMessage(tc, "STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE", stateParameter, storedStateValue);
+            String nlsMessage = Tr.formatMessage(tc, "STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE", stateParameter);
             throw new AuthenticationResponseException(ValidationResult.INVALID_RESULT, clientId, nlsMessage);
         }
     }
@@ -85,7 +85,7 @@ public abstract class AuthenticationResponseValidator {
                 Tr.debug(tc, "error current: " + currentTime + "  ran at:" + timestampFromStateValue);
                 Tr.debug(tc, "current time must be between " + minDate + " and " + maxDate);
             }
-            throw new StateTimestampException(responseState, minDate, maxDate);
+            throw new StateTimestampException(responseState, currentTime, minDate, maxDate);
         }
     }
 
