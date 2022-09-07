@@ -162,6 +162,7 @@ IBM-API-Package: org.eclipse.persistence.descriptors.changetracking; type="inter
  org.eclipse.persistence.jpa.jpql.utility; type="third-party", \
  org.eclipse.persistence.jpa.jpql; type="third-party", \
  org.eclipse.persistence.jpa.metadata; type="third-party", \
+ org.eclipse.persistence.json; type="internal", \
  org.eclipse.persistence.logging; type="third-party", \
  org.eclipse.persistence.mappings.converters; type="third-party", \
  org.eclipse.persistence.mappings.foundation; type="third-party", \

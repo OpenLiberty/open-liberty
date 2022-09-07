@@ -42,44 +42,34 @@ import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
-import io.openliberty.jpa.tests.jpa31.web.TestAutoClosableServlet;
-import io.openliberty.jpa.tests.jpa31.web.TestCaseConditionExpressionServlet;
-import io.openliberty.jpa.tests.jpa31.web.TestNewQueryMathFunctionsServlet;
-import io.openliberty.jpa.tests.jpa31.web.TestNewQueryTimeFunctionsServlet;
-import io.openliberty.jpa.tests.jpa31.web.TestUUIDEntityIDServlet;
+import io.openliberty.jpa.tests.jpa31.json.web.JPAJSONTestServlet;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 11)
-public class JPA31Test extends JPAFATServletClient {
-    private final static String CONTEXT_ROOT = "JPA31";
-    private final static String RESOURCE_ROOT = "test-applications/jpa31/";
+public class JPAJSONTest extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "jpajson";
+    private final static String RESOURCE_ROOT = "test-applications/json/";
     private final static String appFolder = "web";
-    private final static String appName = "jpa31";
+    private final static String appName = "jpajson";
     private final static String appNameEar = appName + ".ear";
 
-    private final static String PKG_ROOT = "io.openliberty.jpa.tests.jpa31";
+    private final static String PKG_ROOT = "io.openliberty.jpa.tests.jpa31.json";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
-    private final static Set<String> populateSet = new HashSet<String>();
     private static long timestart = 0;
 
     public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     static {
-        dropSet.add("JPA31_DROP_${dbvendor}.ddl");
-        createSet.add("JPA31_CREATE_${dbvendor}.ddl");
-        populateSet.add("JPA31_POPULATE_${dbvendor}.ddl");
+//        dropSet.add("JPAJSON_DROP_${dbvendor}.ddl");
+//        createSet.add("JPAJSON_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPA31Server")
+    @Server("JPAJSONServer")
     @TestServlets({
-                    @TestServlet(servlet = TestAutoClosableServlet.class, path = CONTEXT_ROOT + "/" + "TestAutoClosableServlet"),
-                    @TestServlet(servlet = TestCaseConditionExpressionServlet.class, path = CONTEXT_ROOT + "/" + "TestCaseConditionExpressionServlet"),
-                    @TestServlet(servlet = TestUUIDEntityIDServlet.class, path = CONTEXT_ROOT + "/" + "TestUUIDEntityIDServlet"),
-                    @TestServlet(servlet = TestNewQueryMathFunctionsServlet.class, path = CONTEXT_ROOT + "/" + "TestNewQueryMathFunctionsServlet"),
-                    @TestServlet(servlet = TestNewQueryTimeFunctionsServlet.class, path = CONTEXT_ROOT + "/" + "TestNewQueryTimeFunctionsServlet"),
+                    @TestServlet(servlet = JPAJSONTestServlet.class, path = CONTEXT_ROOT + "/" + "JPAJSONTestServlet")
 
     })
     public static LibertyServer server;
@@ -87,7 +77,7 @@ public class JPA31Test extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(JPA31Test.class);
+        bannerStart(JPAJSONTest.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -112,7 +102,7 @@ public class JPA31Test extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
-        System.out.println(JPA31Test.class.getName() + " Setting up database tables...");
+        System.out.println(JPAJSONTest.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
@@ -122,12 +112,6 @@ public class JPA31Test extends JPAFATServletClient {
 
         ddlSet.clear();
         for (String ddlName : createSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
-        }
-        executeDDL(server, ddlSet, false);
-
-        ddlSet.clear();
-        for (String ddlName : populateSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
         executeDDL(server, ddlSet, false);
@@ -211,7 +195,7 @@ public class JPA31Test extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(JPA31Test.class, timestart);
+            bannerEnd(JPAJSONTest.class, timestart);
         }
     }
 }
