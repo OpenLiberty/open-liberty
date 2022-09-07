@@ -27,7 +27,7 @@ import org.json.simple.parser.ParseException;
  */
 public class CheckRepoAndProductPOMs {
 
-    private static List<Dependency> masterPomDepList;
+    private static List<Dependency> primaryPomDepList;
 
     private static List<Gav> lost;
     private static List<Gav> shippedAndFound;
@@ -39,8 +39,8 @@ public class CheckRepoAndProductPOMs {
      * @param args
      */
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        masterPomDepList = new ArrayList();
+
+        primaryPomDepList = new ArrayList();
         shippedAndFound = new ArrayList();
         lost = new ArrayList();
         calc = new M2GavCalculator();
@@ -57,7 +57,7 @@ public class CheckRepoAndProductPOMs {
      *
      */
     private static void removeNotShippedFromLost() {
-        for (Dependency dep : masterPomDepList) {
+        for (Dependency dep : primaryPomDepList) {
             for (Gav gav : lost) {
                 if (dep.getGroupId().equals(gav.getGroupId()) &&
                     dep.getArtifactId().equals(gav.getArtifactId()) &&
@@ -135,11 +135,11 @@ public class CheckRepoAndProductPOMs {
                 e.printStackTrace();
             }
             List<Dependency> list = model.getDependencies();
-            masterPomDepList.addAll(list);
+            primaryPomDepList.addAll(list);
 
         }
 //        int i = 1;
-//        for (Dependency o : masterPomDepList) {
+//        for (Dependency o : primaryPomDepList) {
 //
 //            System.out.println(i + " " + o);
 //            i++;

@@ -16,7 +16,7 @@ bVersion=1.0
 Bundle-Name: Dependency scanner
 Bundle-SymbolicName: build.depScanner
 Bundle-Description: Dependency scanner; version=${bVersion}
-Main-Class: io.openliberty.depScanner.CheckRepoAndProductPOMs
+Main-Class: io.openliberty.depScanner.BestMatch
 
 Conditional-Package: \
 			org.apache.maven.*, \
