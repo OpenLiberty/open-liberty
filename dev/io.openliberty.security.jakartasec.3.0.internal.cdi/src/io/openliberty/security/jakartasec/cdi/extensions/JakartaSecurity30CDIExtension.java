@@ -76,7 +76,7 @@ public class JakartaSecurity30CDIExtension implements Extension {
         Annotation oidcAnnotation = annotatedType.getAnnotation(OpenIdAuthenticationMechanismDefinition.class);
         Class<?> annotatedClass = annotatedType.getJavaClass();
         addOidcHttpAuthenticationMechanismBean(oidcAnnotation, annotatedClass);
-        addOidcIdentityStore();
+        addOidcIdentityStore(beanManager);
     }
 
     private void addOidcHttpAuthenticationMechanismBean(Annotation annotation, Class<?> annotatedClass) {
@@ -85,8 +85,9 @@ public class JakartaSecurity30CDIExtension implements Extension {
         primarySecurityCDIExtension.addAuthMech(applicationName, annotatedClass, OidcHttpAuthenticationMechanism.class, props);
     }
 
-    private void addOidcIdentityStore() {
-        // TODO: Register the bean for the the OidcIdentityStore
+    private void addOidcIdentityStore(BeanManager beanManager) {
+        // TODO: Check for duplicates
+        beansToAdd.add(new OidcIdentityStoreBean(beanManager));
     }
 
     public void processOidcHttpAuthMechNeeded(@Observes ProcessBeanAttributes<OidcHttpAuthenticationMechanism> processBeanAttributes, BeanManager beanManager) {
