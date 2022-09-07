@@ -39,6 +39,6 @@ Subsystem-Category: JakartaEE10Application
 -jars=io.openliberty.servlet; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.servlet_1.1-javadoc.zip
 Subsystem-Name: Jakarta Servlet 6.0
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

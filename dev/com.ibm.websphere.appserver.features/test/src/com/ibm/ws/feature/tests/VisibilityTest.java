@@ -397,7 +397,9 @@ public class VisibilityTest {
         expectedFailures.add("io.openliberty.xmlws.common-4.0");
         expectedFailures.add("io.openliberty.org.eclipse.microprofile.jwt-2.1");
         expectedFailures.add("io.openliberty.persistentExecutor.internal.ee-10.0"); // the persistentExecutor feature is no ship
-        expectedFailures.add("com.ibm.websphere.appserver.servlet-6.0");
+        expectedFailures.add("io.openliberty.socialLogin1.0.internal.ee-10.0");
+        expectedFailures.add("io.openliberty.pages-3.1");
+        expectedFailures.add("io.openliberty.batch-2.1");
 
         StringBuilder errorMessage = new StringBuilder();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
