@@ -9,18 +9,11 @@
 		<feature>jms-2.0</feature>
         <feature>jmsMdb-3.2</feature>
         <feature>ejbLite-3.2</feature>
-        <feature>jcaInboundSecurity-1.0</feature>
         <feature>beanvalidation-1.1</feature>
     </featureManager>
 
     <application type="ear" location="fvtapp.ear" id="fvtapp">
       <classloader commonLibraryRef="derbyLib" />
-      <application-bnd>
-        <security-role name="administrator">
-          <user name="Joseph" />
-        </security-role>
-      </application-bnd> 
-      <resourceAdapter id="adapter_jca16_insec_AnnotatedInboundSecurity" autoStart="true"/>
     </application>
 
     <application type="ear" location="gwcapp.ear" id="gwcapp">
@@ -29,31 +22,9 @@
     
     <include optional="true" location="../fatTestPorts.xml"/>
 
-    <basicRegistry id="basic" realm="customRealm">
-      <user name="Joseph" password="p@ssw0rd" />
-      <user name="Nitya" password="pa$$w0rd" />
-      <user name="Susan" password="bistro" />
-      <group name="students">
-        <member name="Joseph" />
-        <member name="Nitya" />
-      </group>
-    </basicRegistry>
-
     <library id="derbyLib">
         <fileset dir="${shared.resource.dir}/derby" includes="*.jar" scanInterval="5s" />
     </library>
-    
-    <adminObject id="InsecAdminObject" jndiName="jms/InsecAdminObject">
-        <properties.fvtapp.adapter_jca16_insec_AnnotatedInboundSecurity/>
-    </adminObject>
-    
-    <jmsActivationSpec id="fvtapp/fvtweb/SampleMdb">
-         <properties.fvtapp.adapter_jca16_insec_AnnotatedInboundSecurity name="InsecEndPoint"/>
-    </jmsActivationSpec>
-
-    <connectionFactory id="InsecTestDataSource" jndiName="eis/InsecTestDataSource">
-        <properties.fvtapp.adapter_jca16_insec_AnnotatedInboundSecurity dataSourceClass="org.apache.derby.jdbc.EmbeddedXADataSource" databaseName="memory:InsecTestDB" createDatabase="create"/>
-    </connectionFactory>
     
     <adminObject id="com.ibm.ws.jca.adminObject" jndiName="fvtProvider">
         <properties.gwcapp.adapter_jca16_gwc_GenericWorkContextTestRAR.FVTMessageProvider/>
