@@ -427,7 +427,9 @@ autoFVT.doLast {
   
    
   copy {
-     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.1.mf") 
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-1.0.mf")  
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.0.mf")  
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.1.mf")  
      into new File(autoFvtDir, 'publish/features')
   }
 
