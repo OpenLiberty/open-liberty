@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.credential;
 
+import io.openliberty.security.oidcclientcore.client.Client;
+import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.security.enterprise.credential.Credential;
 
@@ -19,13 +21,20 @@ import jakarta.security.enterprise.credential.Credential;
 public class OidcTokensCredential implements Credential {
     
     TokenResponse tokenResponse;
+    Client client;
+    OidcClientConfig oidcClientConfig;
     
-    public OidcTokensCredential(TokenResponse tokenResponse) {
+    public OidcTokensCredential(TokenResponse tokenResponse, Client client) {
         this.tokenResponse = tokenResponse;
+        this.client = client;
     }
     
     public TokenResponse getTokenResponse() {
         return this.tokenResponse;
+    }
+    
+    public Client getClient() {
+        return this.client;
     }
 
 }

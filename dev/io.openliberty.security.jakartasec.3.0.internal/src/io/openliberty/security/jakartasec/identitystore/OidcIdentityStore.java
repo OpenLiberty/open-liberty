@@ -21,22 +21,26 @@ import jakarta.security.enterprise.identitystore.IdentityStore;
  */
 public class OidcIdentityStore implements IdentityStore {
 
-    Client client;
-    public OidcIdentityStore(Client client) {
-        this.client = client;
+    public OidcIdentityStore() {
+
     }
+
     @Override
     public CredentialValidationResult validate(Credential credential) {
         // Use OidcTokensCredential to validate
         if (!(credential instanceof OidcTokensCredential)) {
             return CredentialValidationResult.NOT_VALIDATED_RESULT;
-        } else if (credential.isValid()){
-            if (((OidcTokensCredential)credential).getTokenResponse() != null) {
-                if (client.validate(((OidcTokensCredential)credential).getTokenResponse())) {
+        } else if (credential.isValid()) {
+            if (((OidcTokensCredential) credential).getTokenResponse() != null && ((OidcTokensCredential) credential).getClient() != null) {
+                Client client = ((OidcTokensCredential) credential).getClient();
+                try {
+
+                    client.validate(((OidcTokensCredential) credential).getTokenResponse());
                     // TODO : have the client validation result to have access to the caller and group etc.. ?
-                    // String caller = 
-                    // Set <String> groups = 
+                    // String caller =
+                    // Set <String> groups =
                     // return (new CredentialValidationResult(id, caller, null, caller, groups));
+                } catch (Exception e) {
                     return CredentialValidationResult.INVALID_RESULT;
                 }
             }
