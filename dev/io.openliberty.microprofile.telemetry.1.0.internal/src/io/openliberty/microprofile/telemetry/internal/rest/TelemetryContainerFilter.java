@@ -131,7 +131,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
             implements HttpServerAttributesGetter<ContainerRequestContext, ContainerResponseContext> {
 
 
-        private static final ConcurrentHashMap<String, String> routes = new ConcurrentHashMap<>();
+        private static final String ROUTE = "route";
 
         @Override
         public String flavor(final ContainerRequestContext request) {
@@ -140,18 +140,21 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
         @Override
         public String route(final ContainerRequestContext request) {
-            Class<?> resourceClass = (Class<?>) request.getProperty(resourceString + "class");
-            Method method = (Method) request.getProperty(resourceString + "method");
 
-            String key = resourceClass.getName() + "." + method.getName();
-            String route = routes.get(key);
+            String route = (String) request.getProperty(ROUTE);
 
             if (route == null) {
-                UriBuilder template = UriBuilder.fromResource(resourceClass);
+                Class<?> resourceClass = (Class<?>) request.getProperty(resourceString + "class");
+                Method method = (Method) request.getProperty(resourceString + "method");
 
+                UriBuilder template = null;
                 String contextRoot = request.getUriInfo().getBaseUri().getPath();
+
                 if (contextRoot != null) {
-                    template.path(contextRoot);
+                    template = UriBuilder.fromPath(contextRoot);
+                    template.path(resourceClass);
+                } else {
+                    template = UriBuilder.fromResource(resourceClass);
                 }
 
                 if (method.isAnnotationPresent(Path.class)) {
@@ -159,7 +162,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
                 }
 
                 route = template.toTemplate();
-                routes.put(key, route);
+                request.setProperty(ROUTE, route);
             }
 
             return route;
