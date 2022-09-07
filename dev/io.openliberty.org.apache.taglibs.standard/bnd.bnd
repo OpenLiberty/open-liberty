@@ -20,6 +20,10 @@ Import-Package: \
    !com.oracle.wls.shaded.org.apache.xml.serialize,\
    !com.oracle.wls.shaded.org.apache.xml.serializer,\
    !org.apache.xerces*, \
+   !jline.*, \
+   !com.thaiopensource.*, \
+   !org.apache.hc.*, \
+   !org.slf4j*,\
    jakarta.servlet.jsp.jstl.*;version="[2.0,4.0)", \
    jakarta.servlet.jsp.*;version="[3.0,4.0)", \
    jakarta.servlet.*;version="[5.0,7.0)", \
@@ -28,16 +32,21 @@ Import-Package: \
 Export-Package: \
    org.apache.taglibs.standard.tlv;thread-context=true;version=2.0, \
    org.apache.taglibs.standard.tei;thread-context=true;version=2.0, \
-   org.apache.taglibs*;version=2.0
+   org.apache.taglibs*;version=2.0, \
 
 -privatepackage: \
   !com.oracle.wls.shaded.org.apache.xalan.xsltc.*,\
   com.oracle.wls.shaded.org.apache.xalan.*, \
   com.oracle.wls.shaded.org.apache.xml.*, \
-  com.oracle.wls.shaded.org.apache.xpath.*
+  com.oracle.wls.shaded.org.apache.xpath.*, \
+  com.oracle.wls.shaded.net.sf.saxon.*, \
+
+-includeresource: \
+   @lib/xmlresolver-4.4.3.jar!/!META-INF/*
+
 
 -buildpath: \
-  org.glassfish.web:jakarta.servlet.jsp.jstl;version=2.0, \
+  ./jakarta.servlet.jsp.jstl-2.0.0.jar;version=file, \
   io.openliberty.jakarta.servlet.5.0;version=latest,\
   io.openliberty.jakarta.pages.3.0;version=latest
 
