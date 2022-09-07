@@ -54,6 +54,7 @@
       <url-pattern>/login/*</url-pattern>
       <url-pattern>/login.jsp</url-pattern>
       <url-pattern>/fonts/IBMPlexSans-Regular.woff</url-pattern>
+      <url-pattern>/404/404.js</url-pattern>
       <http-method>GET</http-method>
     </web-resource-collection>
     <user-data-constraint id="UserDataConstraint_AdminCenter">

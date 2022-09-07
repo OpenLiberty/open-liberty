@@ -37,6 +37,7 @@
 	        <fileset dir="${basedir}/../com.ibm.ws.ui.shared/resources/WEB-CONTENT/jsShared/utils">
 	            <include name="toolData.js" />
 	            <include name="userConfig.js" />
+				<include name="globalization.js" />
 	        </fileset>
 	    </copy>
       <copy-font-files font-name="IBMPlexSans" font-target-dir="lib/fonts" />
