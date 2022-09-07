@@ -618,7 +618,7 @@ public class DataTestServlet extends FATServlet {
                              products.findByNameLike("2% TestFindLike"));
 
         // Escape characters are not possible for the repository Like keyword, however,
-        // consider using JPQL escape characters and ESCAPE '\' clause for StartsWith, EndsWith (and possibly Contains)
+        // consider using JPQL escape characters and ESCAPE '\' clause for StartsWith, EndsWith, and Contains
     }
 
     /**
@@ -1211,7 +1211,7 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
-                             reservations.findByLocationLikeOrderByMeetingID("%-2 B1%")
+                             reservations.findByLocationContainsOrderByMeetingID("-2 B1")
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
@@ -1375,9 +1375,9 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Some results are missing", Collections.EMPTY_SET, expected);
 
         // Paging where the final page includes less than the maximum page size,
-        Page<Reservation> page1 = reservations.findByHostLike("testRepositoryCustom-host%",
-                                                              Pagination.page(1).size(4),
-                                                              Sort.desc("meetingID"));
+        Page<Reservation> page1 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                                    Pagination.page(1).size(4),
+                                                                    Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030009L, 10030008L, 10030007L, 10030006L),
                              page1
                                              .getContent()
@@ -1398,9 +1398,9 @@ public class DataTestServlet extends FATServlet {
         assertEquals(null, page3.next());
 
         // Paging that comes out even:
-        page2 = reservations.findByHostLike("testRepositoryCustom-host%",
-                                            Pagination.page(2).size(3),
-                                            Sort.desc("meetingID"));
+        page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                  Pagination.page(2).size(3),
+                                                  Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
                              page2
                                              .getContent()
@@ -1529,7 +1529,7 @@ public class DataTestServlet extends FATServlet {
                                                                         "050-2 A101",
                                                                         "050-2 H115"));
         assertIterableEquals(List.of(1012001L, 1012003L),
-                             reservations.findByLocationLikeOrderByMeetingID("% H115")
+                             reservations.findByLocationContainsOrderByMeetingID("H115")
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));

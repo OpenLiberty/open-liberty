@@ -51,7 +51,7 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     Iterable<Reservation> findByHost(String host);
 
-    Collection<Reservation> findByLocationLikeOrderByMeetingID(String locationSubstring);
+    Collection<Reservation> findByLocationContainsOrderByMeetingID(String locationSubstring);
 
     List<Reservation> findByMeetingIDOrLocationLikeAndStartAndStopOrHost(long meetingID,
                                                                          String location,
@@ -96,9 +96,9 @@ public interface Reservations extends Repository<Reservation, Long> {
     // @Select({ "start", "stop" })
     // Stream<ReservedTimeSlot> findByStopOrStopOrStart(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
 
-    Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostSubstring);
+    Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostMatcher);
 
-    Page<Reservation> findByHostLike(String hostSubstring, Pagination pagination, Sort sort);
+    Page<Reservation> findByHostStartsWith(String hostPrefix, Pagination pagination, Sort sort);
 
     LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
 
