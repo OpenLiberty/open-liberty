@@ -460,7 +460,14 @@ public class ConsumerUtil {
                     keyManagementKeyAlgorithm = value;
                 }
             }
-            validateKeyManagementKeyAlgorithm(keyManagementKeyAlgorithm, tokenAlg);
+            /**
+             * If keyManagementKeyAlgorithm is not null, do the following check
+             * if keyManagementKeyAlgorithm is null (i.e. MP JWT < 2.1) skip the
+             * check
+             */
+            if (keyManagementKeyAlgorithm != null) {
+                validateKeyManagementKeyAlgorithm(keyManagementKeyAlgorithm, tokenAlg);
+            }
         }
     }
 
