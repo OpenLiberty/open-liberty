@@ -23,6 +23,7 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
+import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.ClientManager;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationErrorResponseException;
@@ -57,10 +58,12 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
     private ModulePropertiesProvider mpp = null;
     private final Utils utils;
+    private final AuthorizationRequestUtils requestUtils;
 
     public OidcHttpAuthenticationMechanism() {
         mpp = getModulePropertiesProvider();
         utils = getUtils();
+        requestUtils = getRequestUtils();
     }
 
     private OpenIdAuthenticationMechanismDefinitionWrapper getOpenIdAuthenticationMechanismDefinition(HttpServletRequest request) {
@@ -68,8 +71,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         /*
          * Build the baseURL from the incoming HttpRequest as the redirectURL may contain baseURL variable, such as ${baseURL}/Callback
          */
-        // TODO: Should the request.getRequestURL instead do the same thing as AuthorizationRequestUtils.getRequestUrl (does some port double checking, etc)
-        String baseURL = request.getRequestURL() + request.getContextPath();
+        String baseURL = requestUtils.getBaseURL(request);
         return new OpenIdAuthenticationMechanismDefinitionWrapper((OpenIdAuthenticationMechanismDefinition) props.get(JakartaSec30Constants.OIDC_ANNOTATION), baseURL);
     }
 
@@ -85,6 +87,10 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     // Protected to allow unit testing
     protected Utils getUtils() {
         return new Utils();
+    }
+
+    protected AuthorizationRequestUtils getRequestUtils() {
+        return new AuthorizationRequestUtils();
     }
 
     @SuppressWarnings("rawtypes")
