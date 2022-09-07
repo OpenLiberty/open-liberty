@@ -13,12 +13,12 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/fvtweb/src, \
   test-applications/TestingApp/src
-  
-#-include= jar:${fileuri;${repo;com.ibm.ws.com.icegreen:greenmail;2.0.0.fd826131f671b0d3230b0d0e1638d8c4;EXACT}}
 
 fat.project: true
+
+javac.source: 11
+javac.target: 11
 
 -buildpath: \
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
@@ -30,5 +30,4 @@ fat.project: true
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.ws.org.slf4j.jdk14;version=latest,\
-	com.ibm.ws.com.icegreen:greenmail;strategy=exact;version='2.0.0.fd826131f671b0d3230b0d0e1638d8c4',\
 	io.openliberty.org.apache.commons.codec;version=latest

@@ -11,6 +11,7 @@
 package io.openliberty.mail.fat;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,6 +40,10 @@ public class StreamProviderTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("mailSessionTestServer");
     private final Class<?> c = StreamProviderTest.class;
 
+    private static String stringURL = null;
+    private static boolean streamProviderTestPassed = false;
+    private static final String STREAM_PROVIDER_ERROR_MESSAGE = "Failed to get stream provider from session. This test won't get executed.";
+
     @BeforeClass
     public static void setup() throws Exception {
         if (server.isStarted() != true) {
@@ -46,6 +51,7 @@ public class StreamProviderTest {
             // Pause for application to start properly and server to say it's listening on ports
             server.waitForStringInLog("port " + server.getHttpDefaultPort());
         }
+        stringURL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/StreamProviderSessionServlet";
     }
 
     @AfterClass
@@ -60,20 +66,19 @@ public class StreamProviderTest {
      *
      * Tests newly added StreamProvider class to Jakarta Mail 2.1 by invoking getStreamProvider method
      * from Session class in StreamProviderSessionServlet servlet.
+     *
+     * This test is essential for all other tests to run.
      */
     @Test
     public void testNewStreamProvider() throws Exception {
 
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/StreamProviderSessionServlet");
-        Log.info(c, "testNewStreamProvider",
-                 "Calling MailSession Application with URL=" + url.toString());
-        HttpURLConnection con = getHttpConnection(url);
-        BufferedReader br = getConnectionStream(con);
+        String ret = connectAndReturn("testNewStreamProvider");
 
-        String line = br.readLine();
+        assertNotNull("FAIL: getStreamProvider method of Session class failed to be invoked", ret);
 
-        // Assert that the message has been received by the smtpServer
-        assertNotNull("FAIL: getStreamProvider method of Session class failed to be invoked", line);
+        if (null != ret)
+            streamProviderTestPassed = true;
+
     }
 
     /**
@@ -83,8 +88,16 @@ public class StreamProviderTest {
      * from StreamProvider class in StreamProviderSessionServlet servlet.
      */
     @Test
-    public void testBase64Encoder() throws Exception {
+    public void testBase64() throws Exception {
+        // When we can't get stream provider, none of these test could run
+        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
+        String ret = connectAndReturn("testBase64");
+
+        assertTrue("BASE64EncoderStream couldn't get created by session.getStreamProvider().outputBase64(outputStream) in StreamProviderSessionServlet",
+                   ret.contains("BASE64EncoderStream"));
+        assertTrue("BASE64DecoderStream couldn't get created by session.getStreamProvider().inputBase64(inputStream) in StreamProviderSessionServlet",
+                   ret.contains("BASE64DecoderStream"));
     }
 
     /**
@@ -94,8 +107,15 @@ public class StreamProviderTest {
      * from StreamProvider class in StreamProviderSessionServlet servlet.
      */
     @Test
-    public void testBinaryEncoder() throws Exception {
+    public void testBinary() throws Exception {
+        // When we can't get stream provider, none of these test could run
+        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
+        String ret = connectAndReturn("testBinary");
+
+        // session.getStreamProvider().outputBinary(outputStream) creates the exact text entered no test required
+        assertTrue("ByteArrayInputStream couldn't get created by session.getStreamProvider().inputBinary(inputStream) in StreamProviderSessionServlet",
+                   ret.contains("ByteArrayInputStream"));
     }
 
     /**
@@ -105,8 +125,16 @@ public class StreamProviderTest {
      * from StreamProvider class in StreamProviderSessionServlet servlet.
      */
     @Test
-    public void testQEncoder() throws Exception {
+    public void testQ() throws Exception {
+        // When we can't get stream provider, none of these test could run
+        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
+        String ret = connectAndReturn("testQ");
+
+        assertTrue("QEncoderStream couldn't get created by session.getStreamProvider().outputQ(outputStream) in StreamProviderSessionServlet",
+                   ret.contains("QEncoderStream"));
+        assertTrue("QDecoderStream couldn't get created by session.getStreamProvider().inputQ(inputStream) in StreamProviderSessionServlet",
+                   ret.contains("QDecoderStream"));
     }
 
     /**
@@ -116,8 +144,16 @@ public class StreamProviderTest {
      * from StreamProvider class in StreamProviderSessionServlet servlet.
      */
     @Test
-    public void testQPEncoder() throws Exception {
+    public void testQP() throws Exception {
+        // When we can't get stream provider, none of these test could run
+        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
+        String ret = connectAndReturn("testQP");
+
+        assertTrue("QPEncoderStream couldn't get created by session.getStreamProvider().outputQP(outputStream) in StreamProviderSessionServlet",
+                   ret.contains("QPEncoderStream"));
+        assertTrue("QPDecoderStream couldn't get created by session.getStreamProvider().inputQP(inputStream) in StreamProviderSessionServlet",
+                   ret.contains("QPDecoderStream"));
     }
 
     /**
@@ -127,8 +163,37 @@ public class StreamProviderTest {
      * from StreamProvider class in StreamProviderSessionServlet servlet.
      */
     @Test
-    public void testUUEncoder() throws Exception {
+    public void testUU() throws Exception {
+        // When we can't get stream provider, none of these test could run
+        assertTrue(STREAM_PROVIDER_ERROR_MESSAGE, streamProviderTestPassed);
 
+        String ret = connectAndReturn("testUU");
+
+        assertTrue("UUEncoderStream couldn't get created by session.getStreamProvider().outputUU(outputStream) in StreamProviderSessionServlet",
+                   ret.contains("UUEncoderStream"));
+        assertTrue("BASE64DecoderStream couldn't get created by session.getStreamProvider().inputUU(inputStream) in StreamProviderSessionServlet",
+                   ret.contains("UUDecoderStream"));
+    }
+
+    /**
+     * This method is used to create a URL with request parameter, connect
+     * get connection stream and provide output from the servlet as String
+     *
+     * @param name of the test code to be run on the servlet
+     * @return output from the servlet
+     */
+    private String connectAndReturn(String testName) throws IOException {
+        URL url = new URL(stringURL + "?testName=" + testName);
+        Log.info(c, testName,
+                 "Calling MailSession Application with URL=" + url.toString());
+        HttpURLConnection con = getHttpConnection(url);
+        BufferedReader br = getConnectionStream(con);
+
+        String line = br.readLine();
+
+        Log.info(c, testName, "return String=" + line);
+
+        return line;
     }
 
     /**
@@ -157,7 +222,7 @@ public class StreamProviderTest {
         con.setDoInput(true);
         con.setDoOutput(true);
         con.setUseCaches(false);
-        con.setRequestMethod("GET");
+        con.setRequestMethod("POST");
         return con;
     }
 }

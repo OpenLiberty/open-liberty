@@ -22,10 +22,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-//                IMAPTest.class,
-//                POP3Test.class,
-//                SMTPTest.class,
-//                MailSessionInjectionTest.class,
                 StreamProviderTest.class
 })
 public class FATSuite {
