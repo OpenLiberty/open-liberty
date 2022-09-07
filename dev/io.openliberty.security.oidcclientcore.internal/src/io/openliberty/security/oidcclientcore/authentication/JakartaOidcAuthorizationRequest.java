@@ -63,11 +63,14 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     private StorageType storageType;
 
+    protected JSONObject discoveryData = new JSONObject();
+
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
 
     /**
      * Do not use; needed for this to be a valid @Component object.
      */
+    @Deprecated
     public JakartaOidcAuthorizationRequest() {
         // Only for OSGi initialization
     }
@@ -102,6 +105,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     @FFDCIgnore(Exception.class)
     public ProviderAuthenticationResult sendRequest() {
         try {
+            discoveryData = getProviderMetadata();
             return super.sendRequest();
         } catch (Exception e) {
             Tr.error(tc, "ERROR_SENDING_AUTHORIZATION_REQUEST", clientId, e.getMessage());
@@ -116,7 +120,6 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
             return authzEndpoint;
         }
         // Provider metadata is empty or authz endpoint is not in it, so perform discovery
-        JSONObject discoveryData = getProviderMetadata();
         authzEndpoint = (String) discoveryData.get(OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
         if (authzEndpoint == null) {
             String nlsMessage = Tr.formatMessage(tc, "DISCOVERY_METADATA_MISSING_VALUE", OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
