@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,18 +44,16 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
     /**
      * Verify the following:
      * <OL>
-     * <LI> Attempt to access an EJB method injected into a servlet where the denyAll
-     * <LI> method is specified in the exclude-list in the ejb-jar.xml deployment descriptor.
-     * <LI> This test covers invoking the EJB method denyAll with no parameters.
+     * <LI> Add excluded permissions to the Policy
+     * <LI> Extract those exclded permissions by invoking the new method getExcludedPermissions
      * </OL>
      * <P> Expected Results:
      * <OL>
-     * <LI> Authorization failed exception for valid userId in Manager role since method is in the exclude-list.
+     * <LI> The input and output excluded permissions should be the same
      * <LI>
      * </OL>
      */
     @Mode(TestMode.LITE)
-    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @Test
     public void testGetExcludedPermissionsMethod() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
@@ -110,18 +108,16 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
     /**
      * Verify the following:
      * <OL>
-     * <LI> Attempt to access an EJB method injected into a servlet where the denyAll
-     * <LI> method is specified in the exclude-list in the ejb-jar.xml deployment descriptor.
-     * <LI> This test covers invoking the EJB method denyAll with no parameters.
+     * <LI> Add unchecked permissions to the Policy
+     * <LI> Extract those unchecked permissions by invoking the new method getUncheckedPermissions
      * </OL>
      * <P> Expected Results:
      * <OL>
-     * <LI> Authorization failed exception for valid userId in Manager role since method is in the exclude-list.
+     * <LI> The input and output unchecked permissions should be the same
      * <LI>
      * </OL>
      */
     @Mode(TestMode.LITE)
-    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @Test
     public void testGetUncheckedPermissionsMethod() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
@@ -155,18 +151,16 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
     /**
      * Verify the following:
      * <OL>
-     * <LI> Attempt to access an EJB method injected into a servlet where the denyAll
-     * <LI> method is specified in the exclude-list in the ejb-jar.xml deployment descriptor.
-     * <LI> This test covers invoking the EJB method denyAll with no parameters.
+     * <LI> Add permissions to several roles permissions to the Policy
+     * <LI> Extract those permissions by invoking the new method getPerRolePermissions
      * </OL>
      * <P> Expected Results:
      * <OL>
-     * <LI> Authorization failed exception for valid userId in Manager role since method is in the exclude-list.
+     * <LI> The input and output unchecked permissions per roleshould be the same
      * <LI>
      * </OL>
      */
     @Mode(TestMode.LITE)
-    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @Test
     public void testGetPerRoleMethod() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
@@ -241,7 +235,6 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
     }
 
     @Mode(TestMode.LITE)
-    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @Test
     public void testGetPolicyConfigWithNoContextId() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
@@ -279,7 +272,6 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
     }
 
     @Mode(TestMode.LITE)
-    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @Test
     public void testGetPolicyConfigWithOnlyContextId() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());

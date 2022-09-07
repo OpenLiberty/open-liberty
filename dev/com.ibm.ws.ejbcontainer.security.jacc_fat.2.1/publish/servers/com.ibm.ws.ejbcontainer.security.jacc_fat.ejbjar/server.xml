@@ -11,9 +11,9 @@
 <server description="EJB security FAT configuration">
 
 	<featureManager>
-		<feature>servlet-3.1</feature>
-        	<feature>ejbLite-3.2</feature>
-		<feature>appSecurity-2.0</feature>
+		<feature>servlet-6.0</feature>
+		<feature>enterpriseBeansLite-4.0</feature>
+		<feature>appSecurity-5.0</feature>
                 <feature>usr:jaccTestProvider-2.1</feature>		 
 	</featureManager>
 	
