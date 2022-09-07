@@ -62,6 +62,7 @@ com.sun.xml.bind:jaxb-jxc:2.2.10
 com.sun.xml.bind:jaxb-xjc:2.2.10
 com.sun.xml.fastinfoset:FastInfoset:1.2.16
 com.sun.xml.messaging.saaj:saaj-impl:2.0.0
+com.sun.xml.messaging.saaj:saaj-impl:3.0.0
 com.sun.xml.ws:jaxws-rt:2.2.10
 com.sun.xml.ws:jaxws-rt:3.0.0
 com.sun.xml.ws:jaxws-tools:2.2.10
