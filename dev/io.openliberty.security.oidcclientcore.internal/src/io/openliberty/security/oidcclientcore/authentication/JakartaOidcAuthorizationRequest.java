@@ -16,6 +16,11 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
+
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
@@ -24,6 +29,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
+import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
@@ -37,6 +43,7 @@ import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 
+@Component(service = JakartaOidcAuthorizationRequest.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     public static final TraceComponent tc = Tr.register(JakartaOidcAuthorizationRequest.class);
@@ -44,16 +51,26 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     // TODO Discovery metadata will be cleared from the cache after 5 minutes
     private static SingleTableCache cachedDiscoveryMetadata = new SingleTableCache(1000 * 60 * 5);
 
+    private static final String KEY_SSL_SUPPORT = "sslSupport";
+    private static volatile SSLSupport sslSupport;
+
     private enum StorageType {
         COOKIE, SESSION
     }
 
-    private final OidcClientConfig config;
-    private final OidcProviderMetadata providerMetadata;
+    private OidcClientConfig config = null;
+    private OidcProviderMetadata providerMetadata = null;
 
     private StorageType storageType;
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
+
+    /**
+     * Do not use; needed for this to be a valid @Component object.
+     */
+    public JakartaOidcAuthorizationRequest() {
+        // Only for OSGi initialization
+    }
 
     public JakartaOidcAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, OidcClientConfig config) {
         super(request, response, config.getClientId());
@@ -70,6 +87,15 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
             this.storage = new CookieBasedStorage(request, response);
             this.storageType = StorageType.COOKIE;
         }
+    }
+
+    @Reference(name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC)
+    protected void setSslSupport(SSLSupport sslSupportSvc) {
+        sslSupport = sslSupportSvc;
+    }
+
+    protected void unsetSslSupport(SSLSupport sslSupportSvc) {
+        sslSupport = null;
     }
 
     @Override
@@ -103,7 +129,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         if (providerMetadata != null) {
             // Provider metadata overrides properties discovered via providerUri
             String authzEndpoint = providerMetadata.getAuthorizationEndpoint();
-            if (authzEndpoint != null) {
+            if (authzEndpoint != null && !authzEndpoint.isEmpty()) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Authorization endpoint found in the provider metadata: [" + authzEndpoint + "]");
                 }
@@ -162,7 +188,9 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     }
 
     SSLSocketFactory getSSLSocketFactory() {
-        // TODO
+        if (sslSupport != null) {
+            return sslSupport.getSSLSocketFactory();
+        }
         return null;
     }
 
