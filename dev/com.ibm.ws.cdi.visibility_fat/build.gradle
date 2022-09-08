@@ -21,7 +21,7 @@ dependencies {
 
 task addjaxrsValidator(type: Copy) {
   from configurations.jaxrsValidator
-  into new File(autoFvtDir, 'test-applications/TestValidatorInJar.war/resources/WEB-INF/lib')
+  into new File(autoFvtDir, 'lib/jaxrsvalidator')
 }
 
 addRequiredLibraries {
