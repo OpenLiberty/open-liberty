@@ -64,14 +64,14 @@ task downloadHibernateSearchLibs(type: Copy) {
   rename 'hibernate-core-.*.jar', 'hibernate-core.jar'
 }
 
-task addToDeltaspikeWar(type: Copy) {
+task addDeltaspikeLibs(type: Copy) {
   from configurations.deltaspikeWarLibs
-  into new File(autoFvtDir, 'test-applications/deltaspikeTest.war/resources/WEB-INF/lib')
+  into new File(autoFvtDir, 'lib/deltaspike')
 }
 
 addRequiredLibraries {
   dependsOn addDerby
-  dependsOn addToDeltaspikeWar
+  dependsOn addDeltaspikeLibs
   dependsOn downloadHibernateSearchLibs	
   dependsOn addJakartaTransformer
 }

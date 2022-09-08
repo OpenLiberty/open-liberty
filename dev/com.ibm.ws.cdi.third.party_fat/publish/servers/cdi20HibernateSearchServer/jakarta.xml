@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <server description="Liberty server">
 
-  <include location="../fatTestPorts.xml"/>
+    <include location="../fatTestPorts.xml" />
 
-  <featureManager>
-    <feature>componenttest-2.0</feature>
-    <feature>servlet-5.0</feature>
-    <feature>enterpriseBeansLite-4.0</feature>
-    <feature>persistenceContainer-3.0</feature>
-    <feature>localconnector-1.0</feature>
-    <feature>cdi-3.0</feature>
-  </featureManager>
+    <featureManager>
+        <feature>componenttest-2.0</feature>
+        <feature>servlet-5.0</feature>
+        <feature>enterpriseBeansLite-4.0</feature>
+        <feature>persistenceContainer-3.0</feature>
+        <feature>localconnector-1.0</feature>
+        <feature>cdi-3.0</feature>
+        <feature>xmlBinding-3.0</feature>
+    </featureManager>
 
-  <jpa defaultPersistenceProvider="org.hibernate.jpa.HibernatePersistenceProvider" />
- 
-  <library id="derbyJDBCLib">
-      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
-  </library>
+    <jpa defaultPersistenceProvider="org.hibernate.jpa.HibernatePersistenceProvider" />
 
-  <library id="JbossLib">
-      <fileset dir="${shared.resource.dir}/hibernatejakarta" includes="*.jar"/>
-  </library>
+    <library id="derbyJDBCLib">
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar" />
+    </library>
 
-  <application location="hibernateSearchTest.war">
-      <classloader commonLibraryRef="JbossLib"/>
-  </application>
+    <library id="JbossLib">
+        <fileset dir="${shared.resource.dir}/hibernatejakarta" includes="*.jar" />
+    </library>
 
-  <dataSource jndiName="jdbc/jpaDataSource" id="jpaDataSource">
-      <jdbcDriver libraryRef="derbyJDBCLib" />
-      <properties.derby.embedded databaseName="memory:TestDB" createDatabase="create"/>
-  </dataSource> 
+    <application location="hibernateSearchTest.war">
+        <classloader commonLibraryRef="JbossLib" />
+    </application>
 
-    <SSLDefault/>
-    <javaPermission codebase="${server.config.dir}/apps/hibernateSearchTest.war" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}/hibernatejakarta/jboss-logging.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}/hibernatejakarta/hibernate-core.jar" className="java.security.AllPermission"/>
+    <dataSource jndiName="jdbc/jpaDataSource" id="jpaDataSource">
+        <jdbcDriver libraryRef="derbyJDBCLib" />
+        <properties.derby.embedded databaseName="memory:TestDB" createDatabase="create" />
+    </dataSource>
+
+    <SSLDefault />
+    <javaPermission codebase="${server.config.dir}/apps/hibernateSearchTest.war" className="java.security.AllPermission" />
+    <javaPermission codebase="${shared.resource.dir}/hibernatejakarta/jboss-logging.jar" className="java.security.AllPermission" />
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission" />
+    <javaPermission codebase="${shared.resource.dir}/hibernatejakarta/hibernate-core.jar" className="java.security.AllPermission" />
 </server>
