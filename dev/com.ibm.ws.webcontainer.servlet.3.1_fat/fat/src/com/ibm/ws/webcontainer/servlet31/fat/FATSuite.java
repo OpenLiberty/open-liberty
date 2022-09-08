@@ -70,7 +70,7 @@ import componenttest.topology.impl.JavaInfo;
                 CDIServletFilterListenerTest.class,
                 FormLoginReadListenerTest.class,
                 NBMultiReadTest.class,
-                WCServletContextUnsupportedOperationExceptionTest.class
+                WCServletContextUnsupportedOperationExceptionTest.class,
                 PrivateHeaderTest.class
 })
 public class FATSuite {
