@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -249,9 +249,10 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         // amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
-//    @Test TODO: intermittent test bug "Socket output is already shutdown"
-    @MinimumJavaLevel(javaLevel = 11) // TODO: https://github.com/OpenLiberty/open-liberty/issues/18849
-    @SkipForRepeat("EE9_FEATURES") // RESTEasy only supports properties set on ClientBuilder
+ // TODO: https://github.com/OpenLiberty/open-liberty/issues/18849
+    @Test
+    @MinimumJavaLevel(javaLevel = 11)
+    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPSEndpoint_Client() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
@@ -314,7 +315,7 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // RESTEasy only supports properties set on ClientBuilder
+    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPEndpointTimeout_Client() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
@@ -354,8 +355,8 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         // amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
-//    @Test TODO: intermittent test bug "Socket output is already shutdown"
-    @SkipForRepeat("EE9_FEATURES") // RESTEasy only supports properties set on ClientBuilder
+    @Test
+    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPSEndpoint_WebTarget() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
@@ -417,7 +418,7 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // RESTEasy only supports properties set on ClientBuilder
+    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPEndpointTimeout_WebTarget() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@ package com.ibm.ws.jaxrs20.fat;
 import static com.ibm.ws.jaxrs20.fat.TestUtils.getBaseTestUri;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import java.util.logging.Logger;
 
 import org.apache.wink.client.ClientConfig;
 import org.apache.wink.client.ClientResponse;
@@ -35,17 +33,13 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // this test uses a CXF-specific property that is not applicable in RESTEasy (EE9)
+@SkipForRepeat({"EE9_FEATURES", "EE10_FEATURES"}) // this test uses a CXF-specific property that is not applicable in RESTEasy (EE9)
 public class ServiceScopeTest {
 
     @Server("com.ibm.ws.jaxrs.fat.service.scope")
     public static LibertyServer server;
 
     private static final String war = "servicescope";
-    private static final String clz = ServiceScopeTest.class.getName();
-    private static final Logger LOG = Logger.getLogger(clz);
-    private static String INITIAL_TEST_URI = getBaseTestUri(war, "app1/resource/initial");
-    private static String VERIFY_TEST_URI = getBaseTestUri(war, "app1/resource/verify");
     private RestClient client;
 
 

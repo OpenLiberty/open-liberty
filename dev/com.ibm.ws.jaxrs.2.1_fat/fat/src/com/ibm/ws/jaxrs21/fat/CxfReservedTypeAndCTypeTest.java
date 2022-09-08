@@ -23,12 +23,12 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTestAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-
 import typeAndCType.ClientTestServlet;
 
 /**
@@ -44,7 +44,7 @@ import typeAndCType.ClientTestServlet;
  * system property.
  * 
  */
-@SkipForRepeat(JakartaEE9Action.ID) // only applies to CXF, not RESTEasy
+@SkipForRepeat({JakartaEE9Action.ID, JakartaEE10Action.ID}) // only applies to CXF, not RESTEasy
 @RunWith(FATRunner.class)
 public class CxfReservedTypeAndCTypeTest extends FATServletClient {
 

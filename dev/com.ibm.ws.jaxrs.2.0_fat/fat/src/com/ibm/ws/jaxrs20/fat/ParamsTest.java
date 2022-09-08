@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -1337,7 +1338,7 @@ public class ParamsTest {
      * Tests the constructor query parameter is processed.
      */
     @Test
-    @SkipForRepeat("EE9_FEATURES") // query params in constructors are not allowed in EE9, since they are a CDI bean
+    @SkipForRepeat({"EE9_FEATURES", "EE10_FEATURES"}) // query params in constructors are not allowed in EE9, since they are a CDI bean
     public void testConstructorQueryParam() throws Exception {
         assertEquals("deleteConstructorQueryID:HelloWorld",
                      sendGoodRequestAndGetResponse("query?queryid=HelloWorld", HttpDelete.class));
@@ -1424,7 +1425,7 @@ public class ParamsTest {
      */
     @Test
     public void testMultipleQueryParam() throws Exception {
-        String ctorVal = JakartaEE9Action.isActive() ? "notvalid-exceptInEE9" : "somequeryid";
+        String ctorVal = ((JakartaEE9Action.isActive()) || (JakartaEE10Action.isActive())) ? "notvalid-exceptInEE9" : "somequeryid";
         assertEquals("getMultiQueryParameter:" + ctorVal + ";hi;789;1moreparam2go",
                      sendGoodRequestAndGetResponse("query/multiple?queryid=somequeryid&multiParam1=hi&123Param=789&1MOREParam=1moreparam2go",
                                                    HttpGet.class));
