@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,28 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.non.contextual;
+package com.ibm.ws.cdi12.fat.apps.vetoAndExtendWar;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+import static org.junit.Assert.assertEquals;
+
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
-public class Foo {
+import org.junit.Test;
+
+import componenttest.app.FATServlet;
+
+@SuppressWarnings("serial")
+@Vetoed
+@WebServlet("/")
+public class VetoAndExtendTestServlet extends FATServlet {
 
     @Inject
-    private InjectionPoint injectionPoint;
+    MyBean bean;
 
-    public InjectionPoint getInjectionPoint() {
-        return injectionPoint;
+    @Test
+    public void testVetoAndExtend() {
+        assertEquals("test passed", bean.getMsg());
     }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,40 +8,33 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package cdi12.noncontextual.test;
+package com.ibm.ws.cdi12.fat.apps.nonContextualWar;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import static org.junit.Assert.assertEquals;
 
 import javax.enterprise.inject.spi.Unmanaged;
 import javax.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import cdi12.noncontextual.test.NonContextualBean;
+import org.junit.Test;
 
+import componenttest.app.FATServlet;
+
+@SuppressWarnings("serial")
 @WebServlet("/")
-public class Servlet extends HttpServlet {
+public class NonContextualTestServlet extends FATServlet {
 
-    private static final long serialVersionUID = 8549700799591343964L;
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        PrintWriter pw = response.getWriter();
-
+    @Test
+    public void testNonContextualBean() {
         Unmanaged<NonContextualBean> unmanagedBean = new Unmanaged<NonContextualBean>(NonContextualBean.class);
         UnmanagedInstance<NonContextualBean> beanInstance = unmanagedBean.newInstance();
         NonContextualBean bean = beanInstance.produce().inject().postConstruct().get();
 
-        pw.append(bean.hello());
-
-        beanInstance.preDestroy().dispose();
-
-        pw.flush();
-        pw.close();
+        try {
+            assertEquals("42!", bean.hello());
+        } finally {
+            beanInstance.preDestroy().dispose();
+        }
     }
 
 }
