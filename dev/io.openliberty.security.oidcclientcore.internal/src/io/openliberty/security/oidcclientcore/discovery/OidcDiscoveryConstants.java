@@ -13,6 +13,7 @@ package io.openliberty.security.oidcclientcore.discovery;
 public class OidcDiscoveryConstants {
 
     public static final String METADATA_KEY_AUTHORIZATION_ENDPOINT = "authorization_endpoint";
+    public static final String METADATA_KEY_TOKEN_ENDPOINT = "token_endpoint";
 
     public static final String WELL_KNOWN_SUFFIX = ".well-known/openid-configuration";
 

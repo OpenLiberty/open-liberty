@@ -18,10 +18,10 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import io.openliberty.security.oidcclientcore.authentication.AbstractFlow;
 import io.openliberty.security.oidcclientcore.authentication.Flow;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
+import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import io.openliberty.security.oidcclientcore.token.TokenResponseValidator;
 import io.openliberty.security.oidcclientcore.token.TokenValidationException;
-
 
 public class Client {
 
@@ -36,7 +36,7 @@ public class Client {
         return flow.startFlow(request, response);
     }
 
-    public ProviderAuthenticationResult continueFlow(HttpServletRequest request, HttpServletResponse response) throws AuthenticationResponseException {
+    public ProviderAuthenticationResult continueFlow(HttpServletRequest request, HttpServletResponse response) throws AuthenticationResponseException, TokenRequestException {
         Flow flow = AbstractFlow.getInstance(oidcClientConfig);
         return flow.continueFlow(request, response);
     }

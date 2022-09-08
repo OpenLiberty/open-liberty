@@ -35,7 +35,8 @@ Export-Package: \
 	io.openliberty.security.oidcclientcore.userinfo
 
 -dsannotations: \
-	io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest
+	io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest,\
+	io.openliberty.security.oidcclientcore.authentication.AuthorizationCodeFlow
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
