@@ -17,6 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60CookieSetAttributeTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60GetRealPathTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60RequestConnectionTest;
+import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60SessionCookieConfigSCITest;
+import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60SessionCookieConfigXMLTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeaderTest;
 
 @RunWith(Suite.class)
@@ -24,7 +26,9 @@ import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeader
                 Servlet60XPoweredByHeaderTest.class,
                 Servlet60GetRealPathTest.class,
                 Servlet60CookieSetAttributeTest.class,
-                Servlet60RequestConnectionTest.class
+                Servlet60RequestConnectionTest.class,
+                Servlet60SessionCookieConfigXMLTest.class,
+                Servlet60SessionCookieConfigSCITest.class
 })
 public class FATSuite {
 
