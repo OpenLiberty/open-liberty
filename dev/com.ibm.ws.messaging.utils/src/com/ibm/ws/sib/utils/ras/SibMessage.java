@@ -173,27 +173,18 @@ public class SibMessage extends java.util.ListResourceBundle
        return resources;
    }
 
-   private static Object[] format (String me, TraceComponent tc, String msgKey, Object objs) {
+   private static Object[] format (String me, TraceComponent tc, String msgKey, Object... objs) {
 
      String resourceBundle = tc.getResourceBundleName();
      TraceNLS nls = TraceNLS.getTraceNLS(resourceBundle);
 
-     Object[] objs1 = new Object[] {null};
-
-     if (objs != null) {
-
-       if (objs.getClass().isArray()) objs1 = (Object[])objs;
-       else                           objs1 = new Object[] {objs};
-
-     }
-
      // Get the formatted version of the original message from WAS TraceNLS. 
-     String formattedMsg = nls.getFormattedMessage(msgKey, objs1, null);
+     String formattedMsg = nls.getFormattedMessage(msgKey, objs, null);
      
      if (formattedMsg.equalsIgnoreCase(msgKey)) {
         //Some problem. Most probably TraceNLS could not load Resource bundle. 
         // Try to load the resource bundle using SibStackFinder.
-        return getFormattedMessage(me,resourceBundle,msgKey, objs1,tc);
+        return getFormattedMessage(me,resourceBundle,msgKey, objs,tc);
      }
 
      return new Object[]{me, formattedMsg};
@@ -282,51 +273,51 @@ public class SibMessage extends java.util.ListResourceBundle
 
    // Entry points from SibTr
 
-   static void audit (String me, TraceComponent tc, String msgKey, Object objs) {
+   static void audit (String me, TraceComponent tc, String msgKey, Object... objs) {
      Object[] formattedMessage = format(me, tc, msgKey, objs);
      for(Listener l : listeners)
        l.message(Listener.MessageType.AUDIT, me, tc, msgKey, objs, formattedMessage);
    }
 
-   static void error (String me, TraceComponent tc, String msgKey, Object objs) {
+   static void error (String me, TraceComponent tc, String msgKey, Object... objs) {
      Object[] formattedMessage = format(me, tc, msgKey, objs);
      for(Listener l : listeners)
        l.message(Listener.MessageType.ERROR, me, tc, msgKey, objs, formattedMessage);
    }
 
-   static void fatal (String me, TraceComponent tc, String msgKey, Object objs) {
+   static void fatal (String me, TraceComponent tc, String msgKey, Object... objs) {
      Object[] formattedMessage = format(me, tc, msgKey, objs);
      for(Listener l : listeners)
        l.message(Listener.MessageType.FATAL, me, tc, msgKey, objs, formattedMessage);
    }
 
-   static void info (String me, TraceComponent tc, String msgKey, Object objs) {
+   static void info (String me, TraceComponent tc, String msgKey, Object... objs) {
      Object[] formattedMessage = format(me, tc, msgKey, objs);
      for(Listener l : listeners)
        l.message(Listener.MessageType.INFO, me, tc, msgKey, objs, formattedMessage);
    }
 
-   static void service (String me, TraceComponent tc, String msgKey, Object objs) {
+   static void service (String me, TraceComponent tc, String msgKey, Object... objs) {
      Object[] formattedMessage = format(me, tc, msgKey, objs);
      for(Listener l : listeners)
        l.message(Listener.MessageType.SERVICE, me, tc, msgKey, objs, formattedMessage);
    }
 
-   static void warning (String me, TraceComponent tc, String msgKey, Object objs) {
+   static void warning (String me, TraceComponent tc, String msgKey, Object... objs) {
      Object[] formattedMessage = format(me, tc, msgKey, objs);
      for(Listener l : listeners)
        l.message(Listener.MessageType.WARNING, me, tc, msgKey, objs, formattedMessage);
    }
 
-   static void SuppressableError(SibTr.Suppressor s,String me, TraceComponent tc, String msgKey, Object objs) {
+   static void SuppressableError(SibTr.Suppressor s,String me, TraceComponent tc, String msgKey, Object... objs) {
      suppressableOperation(s, me, tc, msgKey, objs, Listener.MessageType.ERROR);
    }
 
-   static void SuppressableInfo(SibTr.Suppressor s,String me, TraceComponent tc, String msgKey, Object objs) {
+   static void SuppressableInfo(SibTr.Suppressor s,String me, TraceComponent tc, String msgKey, Object... objs) {
      suppressableOperation(s, me, tc, msgKey, objs, Listener.MessageType.INFO);
    }
 
-   static void SuppressableWarning(SibTr.Suppressor s,String me, TraceComponent tc, String msgKey, Object objs) {
+   static void SuppressableWarning(SibTr.Suppressor s,String me, TraceComponent tc, String msgKey, Object... objs) {
      suppressableOperation(s, me, tc, msgKey, objs, Listener.MessageType.WARNING);
    }
 
