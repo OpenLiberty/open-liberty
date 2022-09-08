@@ -63,11 +63,6 @@ public class UIWebsocket extends jakarta.faces.component.UIComponentBase
         super.setValueExpression(name, binding);
     }
 
-    public java.util.Collection getEventNames()
-    {
-        return EVERY_EVENT;
-    }
-
 
     //END CODE COPIED FROM jakarta.faces.component._UIWebsocket
 
@@ -83,6 +78,14 @@ public class UIWebsocket extends jakarta.faces.component.UIComponentBase
     }
 
 
+
+    // Start UIWebsocket getEventNames template
+    @Override
+    public java.util.Collection<String> getEventNames()
+    {
+        return EVERY_EVENT;
+    }
+    // End UIWebsocket getEventNames template
 
 
 
