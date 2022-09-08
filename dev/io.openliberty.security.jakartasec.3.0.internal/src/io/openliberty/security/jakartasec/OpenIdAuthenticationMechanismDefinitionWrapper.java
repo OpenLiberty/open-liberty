@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -41,8 +43,6 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptTy
 public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClientConfig {
 
     private static final TraceComponent tc = Tr.register(OpenIdAuthenticationMechanismDefinitionWrapper.class);
-
-    private static final String EMPTY_DEFAULT = "";
 
     private final OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition;
 
@@ -162,7 +162,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
                 return null;
             }
 
-            issueWarningMessage("clientSecret", EMPTY_DEFAULT);
+            issueWarningMessage("clientSecret", ELHelper.OBFUSCATED_STRING, EMPTY_DEFAULT);
 
             result = EMPTY_DEFAULT; /* Default value from spec. */
         }
@@ -204,7 +204,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
                 return null;
             }
 
-            issueWarningMessage("scopeExpression", EMPTY_DEFAULT);
+            issueWarningMessage("scopeExpression", scopeExpression, EMPTY_DEFAULT);
 
             return new String[] { OpenIdConstant.OPENID_SCOPE, OpenIdConstant.EMAIL_SCOPE, OpenIdConstant.PROFILE_SCOPE }; /* Default value from spec. */
         }
@@ -233,7 +233,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
                 return null;
             }
 
-            issueWarningMessage("promptExpression", EMPTY_DEFAULT);
+            issueWarningMessage("promptExpression", promptExpression, EMPTY_DEFAULT);
 
             return new PromptType[] {}; /* Default value from spec. */
         }
@@ -254,7 +254,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
                 return null;
             }
 
-            issueWarningMessage("displayExpression", EMPTY_DEFAULT);
+            issueWarningMessage("displayExpression", displayExpression, EMPTY_DEFAULT);
 
             return DisplayType.PAGE; /* Default value from spec. */
         }
@@ -324,7 +324,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
                 return null;
             }
 
-            issueWarningMessage(attributeName, attributeDefault);
+            issueWarningMessage(attributeName, attribute, attributeDefault);
 
             return attributeDefault;
         }
@@ -343,7 +343,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
                 return null;
             }
 
-            issueWarningMessage(attributeName, attributeDefault);
+            issueWarningMessage(attributeName, attributeExpression == null ? attribute : attributeExpression, attributeDefault);
 
             return attributeDefault;
         }
@@ -362,15 +362,15 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
                 return null;
             }
 
-            issueWarningMessage(attributeName, attributeDefault);
+            issueWarningMessage(attributeName, attributeExpression == null ? attribute : attributeExpression, attributeDefault);
 
             return attributeDefault;
         }
     }
 
-    private void issueWarningMessage(String attributeName, Object attributeDefault) {
+    private void issueWarningMessage(String attributeName, Object valueProvided, Object attributeDefault) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-            Tr.warning(tc, "JAKARTASEC_WARNING_OIDC_MECH_CONFIG", new Object[] { attributeName, attributeDefault });
+            Tr.warning(tc, "JAKARTASEC_WARNING_OIDC_MECH_CONFIG", new Object[] { attributeName, valueProvided, attributeDefault });
         }
     }
 

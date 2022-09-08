@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.3.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity30Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2500-2519
+
+#Note to translator, do not translate EL or OpenID
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG=CWWKS2500W: The Expression Language (EL) expression for the {0} attribute of the OpenID authentication mechanism definition annotation cannot be resolved to a valid value. The value provided was ''{1}''. Ensure that the EL expression and the result are valid and ensure that any referenced beans that are used in the expression are resolvable. The default attribute value of ''{2}'' is used.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.explanation=The attribute cannot be resolved as an expression. The EL result and the expected attribute value type might be mismatched. For example, if the expected attribute type is String, then the EL result must be a String.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. Ensure that the EL expressions are valid, that any referenced beans in the expression are resolvable, and that the type of the result corresponds with the attribute.
+
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG=CWWKS2501W: The Expression Language (EL) expression for the {0} attribute of the claims definition annotation cannot be resolved to a valid value. The value provided was ''{1}''. Ensure that the EL expression and the result are valid and ensure that any referenced beans that are used in the expression are resolvable. The default attribute value of ''{2}'' is used.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.explanation=The attribute cannot be resolved as an expression. The EL result and the expected attribute value type might be mismatched. For example, if the expected attribute type is String, then the EL result must be a String.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. Ensure that the EL expressions are valid, that any referenced beans in the expression are resolvable, and that the type of the result corresponds with the attribute.
+
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG=CWWKS2502W: The Expression Language (EL) expression for the {0} attribute of the logout definition annotation cannot be resolved to a valid value. The value provided was ''{1}''. Ensure that the EL expression and the result are valid and ensure that any referenced beans that are used in the expression are resolvable. The default attribute value of ''{2}'' is used.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.explanation=The attribute cannot be resolved as an expression. The EL result and the expected attribute value type might be mismatched. For example, if the expected attribute type is String, then the EL result must be a String.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. Ensure that the EL expressions are valid, that any referenced beans in the expression are resolvable, and that the type of the result corresponds with the attribute.
+
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG=CWWKS2502W: The Expression Language (EL) expression for the {0} attribute of the OpenID provider metadata annotation cannot be resolved to a valid value. The value provided was ''{1}''. Ensure that the EL expression and the result are valid and ensure that any referenced beans that are used in the expression are resolvable. The default attribute value of ''{2}'' is used.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.explanation=The attribute cannot be resolved as an expression. The EL result and the expected attribute value type might be mismatched. For example, if the expected attribute type is String, then the EL result must be a String.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. Ensure that the EL expressions are valid, that any referenced beans in the expression are resolvable, and that the type of the result corresponds with the attribute.

@@ -20,6 +20,11 @@ Bundle-Name: Jakarta Security 3.0
 Bundle-SymbolicName: io.openliberty.security.jakartasec.3.0.internal
 Bundle-Description: Jakarta Security 3.0; version=${bVersion}
 
+WS-TraceGroup: \
+	OPENIDCONNECT
+
+Private-Package: io.openliberty.security.jakartasec.internal.resources.*
+
 Export-Package: \
     io.openliberty.security.jakartasec,\
     io.openliberty.security.jakartasec.identitystore
@@ -27,6 +32,8 @@ Export-Package: \
 Import-Package: \
     !io.openliberty.security.jakartasec.*,\
     *
+
+instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resources/resources/*.class
 
 -buildpath: \
     com.ibm.ws.kernel.boot;version=latest,\
