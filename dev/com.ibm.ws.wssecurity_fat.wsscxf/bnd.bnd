@@ -8,7 +8,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
- 
+
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
@@ -38,11 +38,11 @@ src: \
   test-applications/wsstemplatesclientwithep/src,\
   test-applications/wsstemplateswithep/src
 
-  
+
 -sub: *.bnd
 
 fat.project: true
-	
+
 tested.features:\
   jaxws-2.3, \
   xmlWS-3.0, \
@@ -57,9 +57,17 @@ tested.features:\
   cdi-2.0, \
   cdi-3.0, \
   el-3.0, \
-  expressionlanguage-4.0	
-	
-	
+  expressionlanguage-4.0, \
+  expressionlanguage-5.0, \
+  appsecurity-5.0, \
+  xmlws-4.0, \
+  jsonp-2.1, \
+  xmlbinding-4.0, \
+  pages-3.1, \
+  cdi-4.0, \
+  servlet-6.0	
+
+
 -buildpath: \
 	com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
 	com.ibm.ws.security.fat.common;version=latest,\
