@@ -20,7 +20,7 @@ src: \
 fat.project: true
 
 tested.features: \
-	jacc-1.5, expressionLanguage-4.0, appsecurity-5.0, servlet-6.0, cdi-3.0, enterpriseBeansLite-4.0, appAuthorization-2.1
+	appsecurity-5.0, servlet-6.0, enterpriseBeansLite-4.0, appAuthorization-2.1
 
 -buildpath: \
 	com.ibm.json4j;version=latest,\
