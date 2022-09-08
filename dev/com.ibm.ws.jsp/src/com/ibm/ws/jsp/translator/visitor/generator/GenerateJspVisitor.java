@@ -86,6 +86,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 generateClassSection(validatorResult);
                 if(PagesVersionHandler.isPages31Loaded()){
                     generateIsErrorOnELFoundMethod(jspConfiguration.errorOnELNotFound());
+                    generateImportGetters();
                 }
                 break;
             }
@@ -212,6 +213,17 @@ public class GenerateJspVisitor extends GenerateVisitor {
         writer.println("}");
     }
 
+    private void generateImportGetters() {
+
+        writer.println(" public java.util.List<String> getImportClassList() {");
+        writer.println("return importClassList;");
+        writer.println("}");
+        writer.println();
+        writer.println(" public java.util.List<String> getImportPackageList() {");
+        writer.println("return importPackageList;");
+        writer.println("}");
+    }
+
     protected void generateImportSection(ValidateJspResult validatorResult) {
         String servletPackageName = jspPackageName;
 
@@ -234,6 +246,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
         interfaces.add("com.ibm.ws.jsp.runtime.JspClassInformation");
         if(PagesVersionHandler.isPages31OrHigherLoaded()){
             interfaces.add("com.ibm.ws.jsp.runtime.JspDirectiveInfo");
+            interfaces.add("com.ibm.ws.jsp.runtime.JspImportInfo");
         }
 
         /*  SingleThreadModel was removed in Servlet 6.0 (Pages 3.1)
@@ -287,6 +300,13 @@ public class GenerateJspVisitor extends GenerateVisitor {
 		writer.println();
 		writer.println("private boolean _jspx_isJspInited = false;");
 		writer.println();
+
+        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+            writer.println();
+            writer.println("private static java.util.List<String> importPackageList = new java.util.ArrayList<String>();");
+            writer.println("private static java.util.List<String> importClassList = new java.util.ArrayList<String>();");
+            writer.println();
+        }
 
         // PK81147 end
         if (validatorResult.getInfo() != null) {

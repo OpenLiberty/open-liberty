@@ -228,6 +228,13 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         writer.println(" {");
         GeneratorUtils.generateFactoryInitialization(writer, jspConfiguration.getConfigManager().isJCDIEnabled());
 		writer.println();
+
+        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+            writer.println();
+            writer.println("private static java.util.List<String> importPackageList = new java.util.ArrayList<String>();");
+            writer.println("private static java.util.List<String> importClassList = new java.util.ArrayList<String>();");
+            writer.println();
+        }
     }
 
     protected void generateStaticSection() {

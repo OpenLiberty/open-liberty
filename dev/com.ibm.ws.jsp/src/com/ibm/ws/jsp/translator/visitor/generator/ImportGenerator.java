@@ -16,6 +16,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.ibm.ws.jsp.JspCoreException;
+import com.ibm.ws.jsp.PagesVersionHandler;
 
 public class ImportGenerator extends CodeGeneratorBase {
 
@@ -38,6 +39,33 @@ public class ImportGenerator extends CodeGeneratorBase {
 					}
 				}
 			}
+		} else if (section == CodeGenerationPhase.STATIC_SECTION && PagesVersionHandler.isPages31OrHigherLoaded()) {
+			NamedNodeMap attributes = element.getAttributes();
+			if (attributes != null) {
+				for (int i = 0; i < attributes.getLength(); i++) {
+					Node attribute = attributes.item(i);
+					String directiveName = attribute.getNodeName();
+					String directiveValue = attribute.getNodeValue();
+					if (directiveName.equals("import")) {
+						StringTokenizer tokenizer = new StringTokenizer(directiveValue, ",");
+						writeDebugStartBegin(writer);
+						while (tokenizer.hasMoreTokens()) {
+							String singleImport = ((String) tokenizer.nextToken()).trim();
+							if(singleImport.endsWith(".*")){
+								writer.println("importPackageList.add(\"" + singleImport.replace(".*", "") + "\");");
+							} else {
+								writer.println("importClassList.add(\"" + singleImport + "\");");
+							}
+
+						}
+						writeDebugStartEnd(writer);
+					}
+				}
+			}
+			// Pages 1.10 Directive Packages java.lang.*, jakarta.servlet.*, jakarta.servlet.jsp.*, and jakarta.servlet.http.* are imported implicitly by the JSP container.
+			writer.println("importPackageList.add(\"jakarta.servlet\");");
+			writer.println("importPackageList.add(\"jakarta.servlet.jsp\");");
+			writer.println("importPackageList.add(\"jakarta.servlet.http\");");
 		}
 	}
 
