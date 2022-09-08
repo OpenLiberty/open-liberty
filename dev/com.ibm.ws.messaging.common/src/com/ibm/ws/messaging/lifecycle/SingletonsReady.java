@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,6 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 
 /**
  * Component services that declare a mandatory, static reference to {@link SingletonsReady}
@@ -57,7 +59,7 @@ import com.ibm.websphere.ras.TraceComponent;
                 "singletons.cardinality.minimum=100000",
                 "singletons.target=(id=unbound)",
                 "allSingletons.cardinality.minimum=100000"})
-public class SingletonsReady {
+public final class SingletonsReady {
     private static final TraceComponent tc = Tr.register(SingletonsReady.class);
 
     private enum AMBIGUOUS_ENTRY implements Singleton {INSTANCE};
@@ -149,6 +151,13 @@ public class SingletonsReady {
         debug(this, tc, "Messaging singletons are no longer available: ", singletonMap.keySet(), result ? "unset succeeded" : "unset failed");
     }
 
+    /**
+     * Retrieve a service that should be present.
+     * @param <T> the service class
+     * @param type the service class
+     * @return the singleton instance of the specified class
+     * @throws LifecycleError if zero or multiple instances are available
+     */
     public static <T extends Singleton> T requireService(Class<T> type) {
         SingletonsReady current = CURRENT.get();
         if (current == null)
@@ -159,6 +168,23 @@ public class SingletonsReady {
         if (value == AMBIGUOUS_ENTRY.INSTANCE)
             throw new LifecycleError("More than one singleton found of type: " + type);
         return type.cast(value);
+    }
+
+    /**
+     * Retrieve a service that should be present.
+     * If no instance is available, the error is captured using FFDC and
+     * {@link Optional#empty()} is returned.
+     * @param <T> the service class
+     * @param type the service class
+     * @return an Optional containing the singleton instance of the specified class, if available.
+     */
+    public static <T extends Singleton> Optional<T> findService(Class<T> type) {
+        try {
+            return Optional.of(requireService(type));
+        } catch (LifecycleError e) {
+            FFDCFilter.processException(e, SingletonsReady.class.getName(), "findService-LifecycleError", new Object[] {type});
+            return Optional.empty();
+        }
     }
 
     private static Set<Class<?>> singletonClassesOf(Singleton singleton) {
