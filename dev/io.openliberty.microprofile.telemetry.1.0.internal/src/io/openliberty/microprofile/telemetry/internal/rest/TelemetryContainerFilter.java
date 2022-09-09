@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
@@ -45,12 +44,17 @@ import org.eclipse.microprofile.config.Config;
 @Provider
 public class TelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
+    private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
+
+    private static final String REST_RESOURCE_CLASS = "rest.resource.class";
+    private static final String REST_RESOURCE_METHOD = "rest.resource.method";
+    private static final String REST_RESOURCE_ROUTE = "rest.resource.route";
+
+    private static final String SPAN_CONTEXT = "otel.span.server.context";
+    private static final String SPAN_PARENT_CONTEXT = "otel.span.server.parentContext";
+    private static final String SPAN_SCOPE = "otel.span.server.scope";
+
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> instrumenter;
-
-    private String configString = "otel.span.server.";
-    private static String resourceString = "rest.resource.";
-
-    private String instrumentationName = "io.openliberty.microprofile.telemetry";
 
     @jakarta.ws.rs.core.Context
     ResourceInfo resourceInfo;
@@ -65,7 +69,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
         InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
             openTelemetry,
-            instrumentationName,
+            INSTRUMENTATION_NAME,
             HttpSpanNameExtractor.create(serverAttributesExtractor));
 
         this.instrumenter = builder
@@ -78,35 +82,35 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     public void filter(final ContainerRequestContext request) {
         Context parentContext = Context.current();
         if (instrumenter.shouldStart(parentContext, request)) {
-            request.setProperty(resourceString + "class", resourceInfo.getResourceClass());
-            request.setProperty(resourceString + "method", resourceInfo.getResourceMethod());
+            request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
+            request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 
             Context spanContext = instrumenter.start(parentContext, request);
             Scope scope = spanContext.makeCurrent();
-            request.setProperty(configString + "context", spanContext);
-            request.setProperty(configString + "parentContext", parentContext);
-            request.setProperty(configString + "scope", scope);
+            request.setProperty(SPAN_CONTEXT, spanContext);
+            request.setProperty(SPAN_PARENT_CONTEXT, parentContext);
+            request.setProperty(SPAN_SCOPE, scope);
         }
     }
 
     @Override
     public void filter(final ContainerRequestContext request, final ContainerResponseContext response) {
-        Scope scope = (Scope) request.getProperty(configString + "scope");
+        Scope scope = (Scope) request.getProperty(SPAN_SCOPE);
         if (scope == null) {
             return;
         }
 
-        Context spanContext = (Context) request.getProperty(configString + "context");
+        Context spanContext = (Context) request.getProperty(SPAN_CONTEXT);
         try {
             instrumenter.end(spanContext, request, response, null);
         } finally {
             scope.close();
 
-            request.removeProperty(resourceString + "class");
-            request.removeProperty(resourceString + "method");
-            request.removeProperty(configString + "context");
-            request.removeProperty(configString + "parentContext");
-            request.removeProperty(configString + "scope");
+            request.removeProperty(REST_RESOURCE_CLASS);
+            request.removeProperty(REST_RESOURCE_METHOD);
+            request.removeProperty(SPAN_CONTEXT);
+            request.removeProperty(SPAN_PARENT_CONTEXT);
+            request.removeProperty(SPAN_SCOPE);
         }
     }
 
@@ -130,9 +134,6 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     private static class ServerAttributesExtractor
             implements HttpServerAttributesGetter<ContainerRequestContext, ContainerResponseContext> {
 
-
-        private static final String ROUTE = "route";
-
         @Override
         public String flavor(final ContainerRequestContext request) {
             return null;
@@ -141,28 +142,23 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         @Override
         public String route(final ContainerRequestContext request) {
 
-            String route = (String) request.getProperty(ROUTE);
+            String route = (String) request.getProperty(REST_RESOURCE_ROUTE);
 
             if (route == null) {
-                Class<?> resourceClass = (Class<?>) request.getProperty(resourceString + "class");
-                Method method = (Method) request.getProperty(resourceString + "method");
+                Class<?> resourceClass = (Class<?>) request.getProperty(REST_RESOURCE_CLASS);
+                Method method = (Method) request.getProperty(REST_RESOURCE_METHOD);
 
-                UriBuilder template = null;
                 String contextRoot = request.getUriInfo().getBaseUri().getPath();
+                UriBuilder template = UriBuilder.fromPath(contextRoot);
 
-                if (contextRoot != null) {
-                    template = UriBuilder.fromPath(contextRoot);
-                    template.path(resourceClass);
-                } else {
-                    template = UriBuilder.fromResource(resourceClass);
-                }
+                template.path(resourceClass);
 
                 if (method.isAnnotationPresent(Path.class)) {
                     template.path(method);
                 }
 
                 route = template.toTemplate();
-                request.setProperty(ROUTE, route);
+                request.setProperty(REST_RESOURCE_ROUTE, route);
             }
 
             return route;
