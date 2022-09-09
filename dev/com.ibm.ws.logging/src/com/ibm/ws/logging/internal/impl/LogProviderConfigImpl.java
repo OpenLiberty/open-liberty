@@ -159,39 +159,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
                                                                     FFDCSummaryPolicy.DEFAULT);
 
         // Check ENV to see if the sources and formats are set
-        messageSource = LoggingConfigUtils.parseStringCollection("messageSource",
-                                                                 LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_SOURCE),
-                                                                 messageSource);
-
-        messageFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_FORMAT),
-                                                          messageFormat);
-
-        jsonFields = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_JSON_FIELD_MAPPINGS),
-                                                       jsonFields);
-
-        jsonAccessLogFields = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_JSON_ACCESS_LOG_FIELDS),
-                                                                jsonAccessLogFields);
-
-        consoleSource = LoggingConfigUtils.parseStringCollection("consoleSource",
-                                                                 LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_SOURCE),
-                                                                 consoleSource);
-
-        consoleFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_FORMAT),
-                                                          consoleFormat);
-
-        consoleLogLevel = LoggingConfigUtils.getLogLevel(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_LOGLEVEL),
-                                                         consoleLogLevel);
-
-        appsWriteJson = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_APPS_WRITE_JSON),
-                                                           appsWriteJson);
-
-        rolloverStartTime = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_ROLLOVER_START_TIME), rolloverStartTime);
-
-        rolloverInterval = LoggingConfigUtils.getLongDurationValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_ROLLOVER_INTERVAL), rolloverInterval,
-                                                                   TimeUnit.MINUTES);
-
-        stackTraceSingleEntry = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_STACK_TRACE_SINGLE_ENTRY),
-                                                                   stackTraceSingleEntry);
+        setPropertiesFromEnv();
 
         doCommonInit(config, true);
 
@@ -226,6 +194,45 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     }
 
     /**
+     * Check ENV to set sources and formats.
+     */
+    private void setPropertiesFromEnv() {
+        messageSource = LoggingConfigUtils.parseStringCollection("messageSource",
+                                                                 LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_SOURCE),
+                                                                 messageSource);
+
+        messageFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_FORMAT),
+                                                          messageFormat);
+
+        jsonFields = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_JSON_FIELD_MAPPINGS),
+                                                       jsonFields);
+
+        jsonAccessLogFields = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_JSON_ACCESS_LOG_FIELDS),
+                                                                jsonAccessLogFields);
+
+        consoleSource = LoggingConfigUtils.parseStringCollection("consoleSource",
+                                                                 LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_SOURCE),
+                                                                 consoleSource);
+
+        consoleFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_FORMAT),
+                                                          consoleFormat);
+
+        consoleLogLevel = LoggingConfigUtils.getLogLevel(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_LOGLEVEL),
+                                                         consoleLogLevel);
+
+        appsWriteJson = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_APPS_WRITE_JSON),
+                                                           appsWriteJson);
+
+        rolloverStartTime = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_ROLLOVER_START_TIME), rolloverStartTime);
+
+        rolloverInterval = LoggingConfigUtils.getLongDurationValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_ROLLOVER_INTERVAL), rolloverInterval,
+                                                                   TimeUnit.MINUTES);
+
+        stackTraceSingleEntry = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_STACK_TRACE_SINGLE_ENTRY),
+                                                                   stackTraceSingleEntry);
+    }
+
+    /**
      * Update RAS/Tr configuration based on properties read/parsed/processed at runtime.
      * See metatype.xml
      */
@@ -233,6 +240,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     public synchronized void update(Map<String, Object> config) {
         if (config.get(LoggingConstants.RESTORE_ENABLED) != null) {
             restore = LoggingConfigUtils.getBooleanValue(config.get(LoggingConstants.RESTORE_ENABLED), restore);
+            setPropertiesFromEnv();
         } else {
             doCommonInit(config, false);
         }
