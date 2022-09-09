@@ -25,9 +25,9 @@ task copyBundles {
 
 addRequiredLibraries {
     dependsOn addJakartaTransformer
-	dependsOn copyBundles
+    dependsOn addDerby
+    dependsOn copyBundles
 }
-
 
 configurations {
     jaegerClient
