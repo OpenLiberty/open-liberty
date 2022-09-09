@@ -76,12 +76,6 @@
 ### Search on "TBD" for messages that need information from other components ###
  
 # -------------------------------------------------------------------------------------------------
-# {0} Messaging engine name
-ME_INITIALIZING_SIAS0001=CWSID0001I: Il motore di messaggistica {0} \u00e8 in fase di inizializzazione.
-ME_INITIALIZING_SIAS0001.explanation=Inizializzazione motore di messaggistica specificato in fase di avvio.
-ME_INITIALIZING_SIAS0001.useraction=Non \u00e8 richiesta alcuna azione.
- 
-# -------------------------------------------------------------------------------------------------
 # {0} Internal reason string
 INTERNAL_ERROR_SIAS0003=CWSID0003E: Si \u00e8 verificato un errore interno; causa: {0}
 INTERNAL_ERROR_SIAS0003.explanation=Si \u00e8 verificato un errore interno non previsto durante un'operazione di sistema.
@@ -252,7 +246,7 @@ NO_ID_PROVIDED_SIAS0102.explanation=L'ID non \u00e8 specificato per la destinazi
 NO_ID_PROVIDED_SIAS0102.useraction=Fornire l'ID per la destinazione.
 
 # -------------------------------------------------------------------------------------------------
-NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  Il tag fileStore non \u00e8 stato definito nel file di configurazione del server, pertanto verranno utilizzati i valori predefiniti.
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I: \ Il tag fileStore non \u00e8 stato definito nel file di configurazione del server, pertanto verranno utilizzati i valori predefiniti.
 NO_FILESTOR_DEFINED_SIAS0104.explanation=Il tag fileStore non \u00e8 stato fornito, quindi durante la creazione dell'archivio file verranno utilizzati i valori predefiniti.   
 NO_FILESTOR_DEFINED_SIAS0104.useraction=Non \u00e8 richiesta alcuna azione.
 

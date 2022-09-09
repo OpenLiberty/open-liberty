@@ -83,3 +83,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nenhuma a\u00e7\u00e3o neces
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: O cache de autentica\u00e7\u00e3o limpou todas as entradas no cache do JCache {0}. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=O cache de autentica\u00e7\u00e3o limpa todas as entradas no cache do JCache de apoio quando a configura\u00e7\u00e3o de seguran\u00e7a ou de registro do usu\u00e1rio \u00e9 modificada ou quando o MBean DeleteAuthCache \u00e9 chamado. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: Falha na inser\u00e7\u00e3o de entrada para a chave {0} no cache de autentica\u00e7\u00e3o do {1} JCache devido a um erro de serializa\u00e7\u00e3o. Em vez disso, a entrada ser\u00e1 inserida no cache de autentica\u00e7\u00e3o na mem\u00f3ria. A exce\u00e7\u00e3o \u00e9: {2}
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=Os conte\u00fados de entrada n\u00e3o foram serializados para que n\u00e3o fossem armazenados no cache de autentica\u00e7\u00e3o JCache.
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Investigue a exce\u00e7\u00e3o inclu\u00edda na mensagem e corrija a causa do erro.  

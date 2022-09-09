@@ -265,7 +265,7 @@ metamodel_class_null_type_instance_for_null_key=Aucun \u00e9l\u00e9ment [{0}] n'
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=L''attribut @Id unique attendu pour le type identifiable [{0}] fait partie d''un attribut @IdClass attendu.
 
-metamodel_identifiable_id_attribute_type_incorrect=Type d''attribut d''ID attendu [{2}] sur l''attribut d''ID existant [{0}] du type identifiable [{1}] mais type d''attribut [{3}] d\u00e9tect\u00e9.
+metamodel_identifiable_id_attribute_type_incorrect=Type d''attribut d''ID attendu [{2}] dans les attributs d''ID existants [{0}] sur le type identifiable [{1}], mais les types d''attribut suivants ont \u00e9t\u00e9 trouv\u00e9s [{3}].
 
 metamodel_identifiable_no_id_attribute_present=Aucun attribut @Id n''existe sur le type identifiable [{0}].
 

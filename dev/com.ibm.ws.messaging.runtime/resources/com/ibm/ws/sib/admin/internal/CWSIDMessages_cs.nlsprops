@@ -76,12 +76,6 @@
 ### Search on "TBD" for messages that need information from other components ###
  
 # -------------------------------------------------------------------------------------------------
-# {0} Messaging engine name
-ME_INITIALIZING_SIAS0001=CWSID0001I: Prob\u00edh\u00e1 inicializace stroje syst\u00e9mu zpr\u00e1v {0}.
-ME_INITIALIZING_SIAS0001.explanation=Byla spu\u0161t\u011bna inicializace ur\u010den\u00e9ho stroje syst\u00e9mu zpr\u00e1v.
-ME_INITIALIZING_SIAS0001.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
- 
-# -------------------------------------------------------------------------------------------------
 # {0} Internal reason string
 INTERNAL_ERROR_SIAS0003=CWSID0003E: Do\u0161lo k intern\u00ed chyb\u011b; p\u0159\u00ed\u010dina: {0}
 INTERNAL_ERROR_SIAS0003.explanation=P\u0159i \u010dinnosti syst\u00e9mu do\u0161lo k intern\u00ed chyb\u011b.
@@ -252,7 +246,7 @@ NO_ID_PROVIDED_SIAS0102.explanation=Nen\u00ed zad\u00e1no ID c\u00edle, c\u00edl
 NO_ID_PROVIDED_SIAS0102.useraction=Zadejte ID c\u00edle.
 
 # -------------------------------------------------------------------------------------------------
-NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  V konfigura\u010dn\u00edm souboru serveru nen\u00ed definov\u00e1na zna\u010dka fileStore, proto budou pou\u017eity v\u00fdchoz\u00ed hodnoty.
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I: \ V konfigura\u010dn\u00edm souboru serveru nen\u00ed definov\u00e1na zna\u010dka fileStore, proto budou pou\u017eity v\u00fdchoz\u00ed hodnoty.
 NO_FILESTOR_DEFINED_SIAS0104.explanation=Nebyla poskytnuta zna\u010dka fileStore, tak\u017ee budou p\u0159i vytv\u00e1\u0159en\u00ed \u00falo\u017ei\u0161t\u011b soubor\u016f pou\u017eity v\u00fdchoz\u00ed hodnoty. 
 NO_FILESTOR_DEFINED_SIAS0104.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 

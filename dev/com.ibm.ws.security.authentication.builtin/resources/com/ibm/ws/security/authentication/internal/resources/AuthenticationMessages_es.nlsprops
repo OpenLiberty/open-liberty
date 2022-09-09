@@ -83,3 +83,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=No se requiere ninguna acci\
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: La memoria cach\u00e9 de autenticaci\u00f3n ha borrado todas las entradas de la memoria cach\u00e9 JCache de {0}. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=La memoria cach\u00e9 de autenticaci\u00f3n borra todas las entradas de la memoria cach\u00e9 JCache de respaldo cuando se modifica la configuraci\u00f3n de seguridad o registro de usuarios, o cuando se llama al MBean DeleteAuthCache. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=No se requiere ninguna acci\u00f3n.
+
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: La inserci\u00f3n de la entrada para la clave {0} en la cach\u00e9 de autenticaci\u00f3n JCache {1} ha fallado debido a un error de serializaci\u00f3n. En vez de ello, se insertar\u00e1 la entrada en la cach\u00e9 de autenticaci\u00f3n residente en memoria. La excepci\u00f3n es: {2}
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=El contenido de la entrada no se ha serializado, por lo que no se ha almacenado en la cach\u00e9 de autenticaci\u00f3n JCache.
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Investigue la excepci\u00f3n incluida en el mensaje y subsane la causa del error.  

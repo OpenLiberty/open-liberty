@@ -265,7 +265,7 @@ metamodel_class_null_type_instance_for_null_key=W metamodelu nie znaleziono wart
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=Oczekiwany pojedynczy atrybut @Id dla identyfikowalnego typu [{0}] jest cz\u0119\u015bci\u0105 nieoczekiwanej adnotacji @IdClass.
 
-metamodel_identifiable_id_attribute_type_incorrect=Oczekiwano typu atrybutu identyfikatora [{2}] istniej\u0105cego atrybutu identyfikatora [{0}] w identyfikowalnym typie [{1}], ale znaleziono typ atrybutu [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=Oczekiwano typu atrybutu identyfikatora [{2}] w istniej\u0105cych atrybutach identyfikatora [{0}] w identyfikowalnym typie [{1}], ale znaleziono typy atrybut\u00f3w [{3}].
 
 metamodel_identifiable_no_id_attribute_present=Brak atrybutu @Id w identyfikowalnym typie [{0}].
 

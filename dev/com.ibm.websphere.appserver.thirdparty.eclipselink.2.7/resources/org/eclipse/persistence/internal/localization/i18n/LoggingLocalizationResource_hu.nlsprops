@@ -727,6 +727,9 @@ toplink_severe=[EL Severe]:
 
 toplink_warning=[EL Warning]: 
 
+unit_of_work_thread_info=A(z) ({0}) munkamenet aktu\u00e1lis egys\u00e9g\u00e9t egy, az aktu\u00e1list\u00f3l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) elt\u00e9r\u0151 sz\u00e1l hozta l\u00e9tre (azonos\u00edt\u00f3: {1} n\u00e9v: {2}).
+
+unit_of_work_thread_info_thread_dump=Sz\u00e1l l\u00e9trehoz\u00e1sa (azonos\u00edt\u00f3: {0} n\u00e9v: {1}) veremnyomk\u00f6vet\u00e9s: {2} Aktu\u00e1lis sz\u00e1l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) veremnyomk\u00f6vet\u00e9s:{5}\n
 unitofwork_identity_hashcode={0}UnitOfWork azonoss\u00e1g kivonatk\u00f3d: {1}
 
 update_all_fields_not_supported=Az Oc4j "update-all-fields" nat\u00edv CMP funkci\u00f3j\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.

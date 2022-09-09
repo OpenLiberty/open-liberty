@@ -304,5 +304,9 @@ NO_RECENT_SESSIONS_WITH_CLAIMS=CWWKS1552E: Klient [{0}] protokolu OpenID Connect
 NO_RECENT_SESSIONS_WITH_CLAIMS.explanation=Klient protokolu OpenID Connect nem\u00e1 ned\u00e1vnou relaci k poskytovateli protokolu OpenID Connect, kter\u00e1 odpov\u00edd\u00e1 v\u0161em n\u00e1rok\u016fm uveden\u00fdm ve zpr\u00e1v\u011b. N\u00e1roky, kter\u00e9 jsou uvedeny ve zpr\u00e1v\u011b, mus\u00ed m\u00edt hodnoty v tokenu odhl\u00e1\u0161en\u00ed, kter\u00e9 odpov\u00eddaj\u00ed stejn\u00fdm n\u00e1rok\u016fm tokenu ID, kter\u00fd byl ned\u00e1vno p\u0159ijat.
 NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Ujist\u011bte se, \u017ee n\u00e1roky uveden\u00e9 ve zpr\u00e1v\u011b odpov\u00eddaj\u00ed tokenu ID, kter\u00fd byl ned\u00e1vno z\u00edsk\u00e1n od poskytovatele protokolu OpenID Connect.
 
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Klient protokolu OpenID Connect {0} zjistil chybu p\u0159i odes\u00edl\u00e1n\u00ed po\u017eadavku na autorizaci poskytovateli protokolu OpenID Connect. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Konfigurace klienta protokolu OpenID Connect m\u016f\u017ee postr\u00e1dat informace, nebo klient zjistil chybu p\u0159i komunikaci s poskytovatelem protokolu OpenID Connect.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

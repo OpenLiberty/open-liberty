@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -260,7 +261,7 @@
 
 6134=Le nom d''attribut ou l''expression transmis comme premier param\u00e8tre \u00e0 la m\u00e9thode addUpdate ne d\u00e9finit pas de zone. {1}Nom d''attribut ou expression : [{2}]{1}Descripteur : [{0}]
 
-6135=Le nom d''attribut ou l''expression transmis comme premier param\u00e8tre \u00e0 la m\u00e9thode addUpdate d\u00e9finit une zone d''une table qui n''est pas mapp\u00e9e au descripteur de requ\u00eate. {1}Nom d''attribut ou expression : [{2}]{1}Zone erron\u00e9e : [{3}]{1}Descripteur : [{0}]
+6135=Le nom d''attribut ou l''expression transmis en tant que premier param\u00e8tre \u00e0 la m\u00e9thode addUpdate d\u00e9finit une zone d''une table qui n''est pas mapp\u00e9e au descripteur de requ\u00eate. {1}Nom d''attribut ou expression : [{2}]{1}Zone incorrecte : [{3}]{1}Descripteur : [{0}]
 
 6136=Les classes mapp\u00e9es \u00e0 un h\u00e9ritage  plusieurs tables ne peuvent pas \u00eatre des \u00e9l\u00e9ments ReportQuery. El\u00e9ment : {0}, Expression : {1}.
 

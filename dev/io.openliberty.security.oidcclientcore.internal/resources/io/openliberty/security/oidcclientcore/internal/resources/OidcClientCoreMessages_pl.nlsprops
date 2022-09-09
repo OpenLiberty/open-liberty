@@ -16,3 +16,35 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2400 - CWWKS2499
+
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS2400E: Klient OpenID Connect o nazwie {0} napotka\u0142 b\u0142\u0105d podczas wysy\u0142ania \u017c\u0105dania autoryzacji do dostawcy OpenID Connect. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Konfiguracja klienta OpenID Connect mo\u017ce nie zawiera\u0107 potrzebnych informacji lub klient napotka\u0142 b\u0142\u0105d podczas komunikowania si\u0119 z dostawc\u0105 OpenID Connect.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie.
+
+OIDC_CLIENT_CONFIGURATION_ERROR=CWWKS2401E: Konfiguracja dla klienta OpenID Connect {0} jest niepoprawna lub brakuje danych. {1}
+OIDC_CLIENT_CONFIGURATION_ERROR.explanation=W konfiguracji klienta OpenID Connect brakuje informacji, kt\u00f3re s\u0105 potrzebne.
+OIDC_CLIENT_CONFIGURATION_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie. Sprawd\u017a, czy konfiguracja klienta OpenID Connect jest kompletna i dok\u0142adna.
+
+URL_NOT_HTTPS=CWWKS2402E: Adres URL punktu ko\u0144cowego {0}, kt\u00f3ry jest skonfigurowany dla klienta OpenID Connect {1}, nie u\u017cywa protoko\u0142u HTTPS, ale wymagany jest protok\u00f3\u0142 HTTPS.
+URL_NOT_HTTPS.explanation=Adres URL punktu ko\u0144cowego musi u\u017cywa\u0107 protoko\u0142u HTTPS, aby zapewni\u0107, \u017ce \u017c\u0105dania s\u0105 chronione.
+URL_NOT_HTTPS.useraction=Zaktualizuj adres URL punktu ko\u0144cowego tak, aby u\u017cywany by\u0142 protok\u00f3\u0142 HTTPS.
+
+DISCOVERY_EXCEPTION=CWWKS2403E: Klient OpenID Connect {0} napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas wykrywania metadanych dla dostawcy OpenID Connect z [{1}] adresu URL: {2}
+DISCOVERY_EXCEPTION.explanation=Konfiguracja klienta OpenID Connect mo\u017ce nie zawiera\u0107 potrzebnych informacji lub klient napotka\u0142 b\u0142\u0105d podczas komunikowania si\u0119 z dostawc\u0105 OpenID Connect.
+DISCOVERY_EXCEPTION.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie.
+
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: Atrybut providerURI dla klienta OpenID Connect {0} ma warto\u015b\u0107 NULL lub jest pusty, a dla dostawcy OpenID Connect nie s\u0105 dost\u0119pne \u017cadne metadane.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=Klient OpenID Connect musi wykrywa\u0107 metadane dla dostawcy OpenID Connect, ale klient nie ma skonfigurowanego atrybutu providerURI lub skonfigurowanych metadanych dostawcy.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Okre\u015bl warto\u015b\u0107 atrybutu providerURI w konfiguracji klienta OpenID Connect lub okre\u015bl metadane dostawcy OpenID Connect w konfiguracji klienta.
+
+DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: Metadane dostawcy OpenID Connect nie maj\u0105 wymaganej w\u0142a\u015bciwo\u015bci [{0}].
+DISCOVERY_METADATA_MISSING_VALUE.explanation=W\u0142a\u015bciwo\u015b\u0107 okre\u015blona w komunikacie musi znajdowa\u0107 si\u0119 w metadanych dostawcy OpenID Connect, ale brakuje jej.
+DISCOVERY_METADATA_MISSING_VALUE.useraction=Upewnij si\u0119, \u017ce atrybut providerURI dla klienta OpenID Connect jest ustawiony na poprawny adres URL wykrywania dla dostawcy OpenID Connect.
+
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL=CWWKS2406E: Klient OpenID Connect {0} nie mo\u017ce przekierowa\u0107 u\u017cytkownika do punktu ko\u0144cowego autoryzacji, poniewa\u017c klient nie mo\u017ce okre\u015bli\u0107 adresu URL punktu ko\u0144cowego autoryzacji. {1}
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.explanation=Adres URL punktu ko\u0144cowego autoryzacji w konfiguracji klienta OpenID Connect mo\u017ce by\u0107 zniekszta\u0142cony lub mo\u017ce nie istnie\u0107 albo klient OpenID Connect nie m\u00f3g\u0142 uzyska\u0107 adresu URL punktu ko\u0144cowego autoryzacji od dostawcy OpenID Connect.
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie. Sprawd\u017a, czy konfiguracja klienta OpenID Connect jest kompletna i dok\u0142adna.
+
+AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: Klient OpenID Connect {0} napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas weryfikowania odpowiedzi uwierzytelniania od dostawcy OpenID Connect: {1}
+AUTHENTICATION_RESPONSE_ERROR.explanation=W odpowiedzi od dostawcy OpenID Connect mo\u017ce brakowa\u0107 informacji. By\u0107 mo\u017ce wyst\u0105pi\u0142 problem z kodem zwr\u00f3conym przez dostawc\u0119 OpenID Connect.
+AUTHENTICATION_RESPONSE_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie.

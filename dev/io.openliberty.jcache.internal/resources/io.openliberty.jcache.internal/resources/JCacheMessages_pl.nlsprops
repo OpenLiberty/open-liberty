@@ -48,9 +48,9 @@ CWLJC0005_MANAGER_LOADED=CWLJC0005I: Za\u0142adowanie mened\u017cera pami\u0119c
 CWLJC0005_MANAGER_LOADED.explanation=Pomy\u015blnie za\u0142adowano mened\u017cera pami\u0119ci podr\u0119cznej JCache.
 CWLJC0005_MANAGER_LOADED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
 
-#
-# CWLJC0006 IS AVAILABLE.
-#
+CWLJC0006_MULTI_REF_LIB=CWLJC0006E: Dostawca pami\u0119ci podr\u0119cznej {0} odwo\u0142uje si\u0119 do biblioteki {1} z elementu jCacheLibaryRef i commonLibraryRef. Taka operacja nie jest obs\u0142ugiwana. 
+CWLJC0006_MULTI_REF_LIB.explanation=Odwo\u0142anie do tej samej biblioteki z elementu commonLibraryRef i jCacheLibraryRef mo\u017ce prowadzi\u0107 do niezdefiniowanego zachowania ze wzgl\u0119du na problemy z \u0142adowaniem klas. 
+CWLJC0006_MULTI_REF_LIB.useraction=Element commonLibraryRef nie mo\u017ce odwo\u0142ywa\u0107 si\u0119 do tej samej biblioteki, co element jCacheLibraryRef.
 
 CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Niepoprawna sk\u0142adnia w identyfikatorze URI mened\u017cera pami\u0119ci podr\u0119cznej (cacheManager).  Przyczyna: {0}.
 CWLJC0007_URI_INVALID_SYNTAX.explanation=Sk\u0142adnia podanego identyfikatora URI konfiguracji pami\u0119ci podr\u0119cznej JCache jest niepoprawna.
@@ -68,6 +68,14 @@ CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Wyst\u0105pi\u0142 b\u0142\u0105d podcz
 CWLJC0010_MANAGER_CONFIG_ERR.explanation=Nie mo\u017cna by\u0142o skonfigurowa\u0107 mened\u017cera pami\u0119ci podr\u0119cznej JCache ze wzgl\u0119du na wyst\u0105pienie podanego b\u0142\u0119du.
 CWLJC0010_MANAGER_CONFIG_ERR.useraction=Usu\u0144 b\u0142\u0105d wskazany w komunikacie i pon\u00f3w pr\u00f3b\u0119.
 
-CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania pami\u0119ci podr\u0119cznej JCache {0}: {1}.
+CWLJC0011_GET_CACHE_ERR=CWLJC0011W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania elementu JCache {0}. Zostanie podj\u0119ta pr\u00f3ba utworzenia go. B\u0142\u0105d: {1}.
 CWLJC0011_GET_CACHE_ERR.explanation=Pami\u0119\u0107 podr\u0119czna nie zosta\u0142a wczytana z powodu wyst\u0105pienia podanego b\u0142\u0119du.
 CWLJC0011_GET_CACHE_ERR.useraction=Usu\u0144 b\u0142\u0105d wskazany w komunikacie i pon\u00f3w pr\u00f3b\u0119.
+
+CWLJC0012_CLOSE_CACHE_ERR=CWLJC0012W: Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d, gdy serwer pr\u00f3bowa\u0142 zamkn\u0105\u0107 element {0} JCache: {1}.
+CWLJC0012_CLOSE_CACHE_ERR.explanation=Zamkni\u0119cie elementu JCache nie powiod\u0142o si\u0119 z powodu okre\u015blonego b\u0142\u0119du.
+CWLJC0012_CLOSE_CACHE_ERR.useraction=Je\u015bli ta sytuacja wyst\u0105pi wielokrotnie w czasie wykonywania, mo\u017ce to spowodowa\u0107 wyciek zasob\u00f3w pami\u0119ci podr\u0119cznej.
+
+CWLJC0013_CLOSE_CACHEMGR_ERR=CWLJC0013W: Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d, gdy serwer pr\u00f3bowa\u0142 zamkn\u0105\u0107 element {0} JCache CacheManager: {1}.
+CWLJC0013_CLOSE_CACHEMGR_ERR.explanation=Zamkni\u0119cie elementu JCache CacheManager nie powiod\u0142o si\u0119 z powodu wyst\u0105pienia okre\u015blonego b\u0142\u0119du.
+CWLJC0013_CLOSE_CACHEMGR_ERR.useraction=Je\u015bli ta sytuacja wyst\u0105pi wielokrotnie w czasie wykonywania, mo\u017ce to spowodowa\u0107 wyciek zasob\u00f3w pami\u0119ci podr\u0119cznej.

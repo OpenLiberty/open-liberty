@@ -727,6 +727,9 @@ toplink_severe=[EL Grave]:
 
 toplink_warning=[EL Avvertenza]: 
 
+unit_of_work_thread_info=L''unit\u00e0 di lavoro corrente nella sessione ({0}) \u00e8 stata creata da un altro thread (id: {1} nome: {2}), rispetto al thread corrente (id: {3} nome: {4})
+
+unit_of_work_thread_info_thread_dump=Thread di creazione (id: {0} nome: {1}) traccia stack: {2}Thread corrente (id: {3} nome: {4}) traccia stack:{5}\n
 unitofwork_identity_hashcode={0}Codice hash identit\u00e0 UnitOfWork: {1}
 
 update_all_fields_not_supported=La funzione CMP nativa Oc4j "update-all-fields" sull''entit\u00e0\u00a0({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.

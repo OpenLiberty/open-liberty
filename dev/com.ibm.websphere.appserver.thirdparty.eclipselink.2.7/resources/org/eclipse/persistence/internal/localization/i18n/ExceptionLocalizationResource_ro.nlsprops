@@ -265,7 +265,7 @@ metamodel_class_null_type_instance_for_null_key=Nu s-a g\u0103sit niciun [{0}] p
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=Atributul unic a\u015fteptat @Id pentru tipul identificabil [{0}] face parte dintr-un @IdClass nea\u015fteptat.
 
-metamodel_identifiable_id_attribute_type_incorrect=Se a\u015ftepta tipul de atribut ID [{2}] pe atributul ID existent [{0}] pe tipul identificabil [{1}] dar s-a g\u0103sit tipul de atribut [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=Tip atribut id a\u0219teptat [{2}] \u00een atributele id existente [{0}] la tipul identificabil [{1}] dar s-au g\u0103sit tipuri de atribut [{3}].
 
 metamodel_identifiable_no_id_attribute_present=Nu exist\u0103 niciun atribut @Id pe tipul identificabil [{0}].
 
