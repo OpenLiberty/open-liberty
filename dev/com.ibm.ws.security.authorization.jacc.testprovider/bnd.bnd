@@ -59,5 +59,4 @@ Include-Resource: \
   com.ibm.ws.logging;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.security.authorization;version=latest,\
-  io.openliberty.jakarta.authorization.2.1,\
   com.ibm.ws.security.authorization.jacc;version=latest
