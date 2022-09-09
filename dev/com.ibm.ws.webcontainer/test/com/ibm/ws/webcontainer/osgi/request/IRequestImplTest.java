@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -140,7 +140,7 @@ public class IRequestImplTest {
                 one(conn).getTrustedHeader("$WSIS");
                 will(returnValue("true"));
                 one(conn).getTrustedHeader("X-Forwarded-Proto");
-                will(returnValue("XFP_scheme"));
+                will(returnValue("XFP-scheme"));
                 one(request).getScheme();
                 will(returnValue("http"));
             }
@@ -173,7 +173,7 @@ public class IRequestImplTest {
                 one(conn).getTrustedHeader("$WSIS");
                 will(returnValue("true"));
                 one(conn).getTrustedHeader("X-Forwarded-Proto");
-                will(returnValue("XFP_scheme"));
+                will(returnValue("XFP-scheme"));
                 one(request).getScheme();
                 will(returnValue("http"));
             }
@@ -206,7 +206,7 @@ public class IRequestImplTest {
                 one(conn).getTrustedHeader("$WSIS");
                 will(returnValue(null));
                 one(conn).getTrustedHeader("X-Forwarded-Proto");
-                will(returnValue("XFP_scheme"));
+                will(returnValue("XFP-scheme"));
                 one(request).getScheme();
                 will(returnValue("http"));
             }
@@ -219,7 +219,7 @@ public class IRequestImplTest {
         IRequestImpl iRequestImpl = new IRequestImpl(conn);
         String scheme = iRequestImpl.getScheme();
 
-        assertEquals("XFP_scheme", scheme);
+        assertEquals("XFP-scheme", scheme);
     }
 
     @Test
@@ -239,7 +239,7 @@ public class IRequestImplTest {
                 one(conn).getTrustedHeader("$WSIS");
                 will(returnValue("true"));
                 one(conn).getTrustedHeader("X-Forwarded-Proto");
-                will(returnValue("XFP_scheme"));
+                will(returnValue("XFP-scheme"));
                 one(request).getScheme();
                 will(returnValue("http"));
             }
@@ -342,7 +342,7 @@ public class IRequestImplTest {
                 one(conn).getTrustedHeader("$WSIS");
                 will(returnValue("true"));
                 one(conn).getTrustedHeader("X-Forwarded-Proto");
-                will(returnValue("XFP_scheme"));
+                will(returnValue("XFP-scheme"));
                 one(conn).getSSLContext();
                 will(returnValue(null));
             }

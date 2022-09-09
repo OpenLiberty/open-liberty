@@ -40,8 +40,10 @@ import com.ibm.wsspi.http.HttpInboundConnection;
 import com.ibm.wsspi.http.HttpRequest;
 import com.ibm.wsspi.http.SSLContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
+import com.ibm.wsspi.http.HttpInboundConnection; 
 
 
 /**
@@ -494,13 +496,31 @@ public class IRequestImpl implements IRequestExtended
   {
       String protocol = this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSPR.getName());
       if ( protocol != null ) {
-          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-              Tr.debug(tc, "getProtocol isTrusted --> true, protocol --> " + protocol);
-      } else {
-          protocol = this.request.getVersion();
-          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-              Tr.debug(tc, "getProtocol protocol --> " + protocol);
+          try {
+              // Check to make sure it's a valid protocol
+              VersionValues value = VersionValues.match(protocol, 0, protocol.length());
+              if (value != null) {                  
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                      Tr.debug(tc, "getProtocol isTrusted --> true, $WSPR protocol --> " + protocol);
+                  }
+                  return protocol;
+              }
+              else {
+                  // If the value is null, move along to check the next possible input
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                      Tr.debug(tc, "getProtocol isTrusted --> true, invalid $WSPR protocol --> " + protocol);
+                  }
+              }
+          } catch (IllegalArgumentException e) {
+              // no FFDC required, just move on to next input
+              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                  Tr.debug(tc, "getProtocol isTrusted --> true, invalid $WSPR protocol --> " + protocol);
+          }
       }
+      
+      protocol = this.request.getVersion();
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+          Tr.debug(tc, "getProtocol protocol --> " + protocol);
 
       return protocol;
   }
@@ -636,11 +656,16 @@ public class IRequestImpl implements IRequestExtended
               // Private WAS header set by WAS Plugin (and other proxies if configured) to contain original scheme
               String WSSC_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSSC.getName());
               if (WSSC_header != null) {
-                  //321485(tWAS)
-                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                      Tr.debug(tc, " isTrusted --> true, containsHeader --> $WSSC, scheme --> " + WSSC_header);
-                  this.scheme = WSSC_header;
-                  return this.scheme;
+                  if (validateProto(WSSC_header)) {
+                      //321485(tWAS)
+                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                          Tr.debug(tc, " isTrusted --> true, containsHeader --> $WSSC, scheme --> " + WSSC_header);
+                      this.scheme = WSSC_header;
+                      return this.scheme;
+                  } else {
+                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                          Tr.debug(tc, " isTrusted --> true, containsHeader --> $WSSC, invalid scheme --> " + WSSC_header);
+                  }
               }
 
               // Private WAS header set by WAS Plugin (and other proxies if configured) to state that secure protocal was used
@@ -678,6 +703,44 @@ public class IRequestImpl implements IRequestExtended
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
           Tr.debug(tc, "scheme --> " + this.scheme);
       return this.scheme;
+  }
+  
+  /*
+   * A valid proto may start with an alpha followed by any number of chars that are
+   * - alpha
+   * - numeric
+   * - "+" or "-" or "."
+   */
+
+  private boolean validateProto(String forwardedProto) {
+      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+          Tr.entry(tc, "validateProto");
+      }
+      char[] a = forwardedProto.toCharArray();
+      boolean valid = true;
+      char c = a[0];
+      valid = ((c >= 'a') && (c <= 'z')) ||
+              ((c >= 'A') && (c <= 'Z'));
+      if (valid) {
+
+          for (int i = 1; i < a.length; i++) {
+              c = a[i];
+              valid = ((c >= 'a') && (c <= 'z')) ||
+                      ((c >= 'A') && (c <= 'Z')) ||
+                      ((c >= '0') && (c <= '9')) ||
+                      (c == '+') || (c == '-') || (c == '.');
+              if (!valid) {
+                  break;
+              }
+          }
+
+      }
+      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+          Tr.debug(tc, "ValidateProto value is valid: " + valid);
+          Tr.exit(tc, "validateProto");
+      }
+      return valid;
+
   }
 
   public String getServerName()

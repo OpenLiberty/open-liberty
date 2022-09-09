@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -264,8 +264,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * options.
      *
      * @param useDirect -- use direct ByteBuffers or indirect
-     * @param outSize -- size of buffers to use while marshalling headers
-     * @param inSize -- size of buffers to use while parsing headers
+     * @param outSize   -- size of buffers to use while marshalling headers
+     * @param inSize    -- size of buffers to use while parsing headers
      * @param cacheSize -- byte cache size of optimized parsing
      */
     protected void init(boolean useDirect, int outSize, int inSize, int cacheSize) {
@@ -3133,8 +3133,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * (extended) when the cache was flushed.
      *
      * @param data
-     * @param offset (into data to start at)
-     * @param length (to copy from the offset into data)
+     * @param offset    (into data to start at)
+     * @param length    (to copy from the offset into data)
      * @param inBuffers
      * @return WsByteBuffer[]
      */
@@ -3609,7 +3609,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Returns either the TOKEN_RC_DELIM or the TOKEN_RC_MOREDATA return codes.
      *
      * @param buff
-     * @param log - whether to debug log contents or not
+     * @param log  - whether to debug log contents or not
      * @return TokenCodes
      * @throws MalformedMessageException
      */
@@ -3875,7 +3875,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * @param buff
      * @param bDelimiter
      * @param bApproveCRLF
-     * @param log - control how much of the token to debug log
+     * @param log          - control how much of the token to debug log
      * @return TokenCodes
      * @throws MalformedMessageException
      */
@@ -3965,10 +3965,10 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Sets the temporary parse token from the input buffer.
      *
-     * @param buff The current WsByteBuffer being parsed
+     * @param buff  The current WsByteBuffer being parsed
      * @param start The start position of the token
      * @param delim Did we stop on the delimiter or not?
-     * @param log Whether to log the contents or not
+     * @param log   Whether to log the contents or not
      */
     private void saveParsedToken(WsByteBuffer buff, int start, boolean delim, int log) {
 
@@ -4288,12 +4288,18 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             processXForwardedAddressExtract(header.getDebugValue(), forwardedByList);
         } else if (X_FORWARDED_PROTO.equalsIgnoreCase(header.getName())) {
             forwardedProto = header.getDebugValue();
+            if (!validateProto(forwardedProto)) {
+                forwardedProto = null;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.debug(tc, "X-Forwarded-Proto value is invalid: " + header.getDebugValue());
+                }
+            }
+
         } else if (X_FORWARDED_PORT.equalsIgnoreCase(header.getName())) {
             forwardedPort = header.getDebugValue();
         } else if (X_FORWARDED_HOST.equalsIgnoreCase(header.getName())) {
             forwardedHost = header.getDebugValue();
         }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "processXForwardedHeader");
         }
@@ -4358,8 +4364,30 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
                 } else if (node.toLowerCase().startsWith(PROTO)) {
                     forwardedProto = nodeExtract;
+                    boolean validProto = validateProto(forwardedProto);
+                    if (!validProto) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                            Tr.debug(tc, "Forwarded header proto value was malformed: " + forwardedProto);
+                        }
+                        processForwardedErrorState();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                            Tr.exit(tc, "processSpecForwardedHeader");
+                        }
+                        return;
+                    }
                 } else if (node.toLowerCase().startsWith(HOST)) {
                     forwardedHost = nodeExtract;
+                    forwardedHost = validateForwardedHost(forwardedHost);
+                    if (forwardedHost == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                            Tr.debug(tc, "Forwarded header host value was malformed: " + nodeExtract);
+                        }
+                        processForwardedErrorState();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                            Tr.exit(tc, "processSpecForwardedHeader");
+                        }
+                        return;
+                    }
                 }
                 //Unrecognized parameter
                 else {
@@ -4495,6 +4523,69 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             Tr.exit(tc, "processForwardedHeader");
         }
         list.add(nodeName);
+    }
+
+    /*
+     * A valid proto may start with an alpha followed by any number of chars that are
+     * - alpha
+     * - numeric
+     * - "+" or "-" or "."
+     */
+
+    private boolean validateProto(String forwardedProto) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validateProto");
+        }
+        char[] a = forwardedProto.toCharArray();
+        boolean valid = true;
+        char c = a[0];
+        valid = ((c >= 'a') && (c <= 'z')) ||
+                ((c >= 'A') && (c <= 'Z'));
+        if (valid) {
+
+            for (int i = 1; i < a.length; i++) {
+                c = a[i];
+                valid = ((c >= 'a') && (c <= 'z')) ||
+                        ((c >= 'A') && (c <= 'Z')) ||
+                        ((c >= '0') && (c <= '9')) ||
+                        (c == '+') || (c == '-') || (c == '.');
+                if (!valid) {
+                    break;
+                }
+            }
+
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.debug(tc, "ValidateProto value is valid: " + valid);
+            Tr.exit(tc, "validateProto");
+        }
+        return valid;
+
+    }
+
+    /*
+     * Valid hostname can be a bracketed ipv6 address, or
+     * any other string.
+     * Validate the ipv6 address has opening and closing brackets.
+     */
+
+    private String validateForwardedHost(String forwardedHost) {
+        int openBracket = forwardedHost.indexOf("[");
+        int closedBracket = forwardedHost.indexOf("]");
+        String nodename = forwardedHost;
+
+        if (openBracket > -1) {
+            //This is an IPv6address
+            //The nodename is enclosed in "[ ]", get it now
+
+            //If the first character isn't the open bracket or if close bracket
+            //is missing, this is a badly formed header
+            if (openBracket != 0 || !(closedBracket > -1)) {
+                nodename = null;
+            }
+        }
+        return nodename;
+
     }
 
     private void processForwardedErrorState() {
