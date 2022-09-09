@@ -17,8 +17,6 @@ import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.sun.mail.smtp.SMTPMessage;
-
 import jakarta.mail.Address;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
@@ -81,7 +79,7 @@ public class SMTPInlineServlet extends HttpServlet {
         });
 
         session.setDebug(true);
-        SMTPMessage smtpMessage = new SMTPMessage(session);
+        MimeMessage smtpMessage = new MimeMessage(session);
         MimeMessage message = new MimeMessage(session);
 
         try {
