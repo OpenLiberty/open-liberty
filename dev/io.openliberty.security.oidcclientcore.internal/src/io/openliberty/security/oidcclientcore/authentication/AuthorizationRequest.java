@@ -17,12 +17,13 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
+import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 
-public abstract class AuthorizationRequest {
+public abstract class AuthorizationRequest extends EndpointRequest {
 
     protected HttpServletRequest request;
     protected HttpServletResponse response;
@@ -32,13 +33,6 @@ public abstract class AuthorizationRequest {
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
     protected OidcStorageUtils storageUtils = new OidcStorageUtils();
-
-    /**
-     * Do not use; only for OSGi initialization
-     */
-    @Deprecated
-    public AuthorizationRequest() {
-    }
 
     public AuthorizationRequest(HttpServletRequest request, HttpServletResponse response, String clientId) {
         this.request = request;

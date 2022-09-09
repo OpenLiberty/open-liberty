@@ -12,28 +12,19 @@ package io.openliberty.security.oidcclientcore.authentication;
 
 import java.util.Set;
 
-import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
-import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
-import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
@@ -43,16 +34,9 @@ import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 
-@Component(service = JakartaOidcAuthorizationRequest.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     public static final TraceComponent tc = Tr.register(JakartaOidcAuthorizationRequest.class);
-
-    // TODO Discovery metadata will be cleared from the cache after 5 minutes
-    private static SingleTableCache cachedDiscoveryMetadata = new SingleTableCache(1000 * 60 * 5);
-
-    private static final String KEY_SSL_SUPPORT = "sslSupport";
-    private static volatile SSLSupport sslSupport;
 
     private enum StorageType {
         COOKIE, SESSION
@@ -63,17 +47,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     private StorageType storageType;
 
-    protected JSONObject discoveryData = new JSONObject();
-
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
-
-    /**
-     * Do not use; needed for this to be a valid @Component object.
-     */
-    @Deprecated
-    public JakartaOidcAuthorizationRequest() {
-        // Only for OSGi initialization
-    }
 
     public JakartaOidcAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, OidcClientConfig config) {
         super(request, response, config.getClientId());
@@ -92,20 +66,10 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         }
     }
 
-    @Reference(name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC)
-    protected void setSslSupport(SSLSupport sslSupportSvc) {
-        sslSupport = sslSupportSvc;
-    }
-
-    protected void unsetSslSupport(SSLSupport sslSupportSvc) {
-        sslSupport = null;
-    }
-
     @Override
     @FFDCIgnore(Exception.class)
     public ProviderAuthenticationResult sendRequest() {
         try {
-            discoveryData = getProviderMetadata();
             return super.sendRequest();
         } catch (Exception e) {
             Tr.error(tc, "ERROR_SENDING_AUTHORIZATION_REQUEST", clientId, e.getMessage());
@@ -119,13 +83,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         if (authzEndpoint != null) {
             return authzEndpoint;
         }
-        // Provider metadata is empty or authz endpoint is not in it, so perform discovery
-        authzEndpoint = (String) discoveryData.get(OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
-        if (authzEndpoint == null) {
-            String nlsMessage = Tr.formatMessage(tc, "DISCOVERY_METADATA_MISSING_VALUE", OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
-            throw new OidcDiscoveryException(clientId, config.getProviderURI(), nlsMessage);
-        }
-        return authzEndpoint;
+        return getAuthorizationEndpointFromDiscoveryMetadata();
     }
 
     String getAuthorizationEndpointFromProviderMetadata() {
@@ -142,59 +100,17 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         return null;
     }
 
-    JSONObject getProviderMetadata() throws OidcClientConfigurationException, OidcDiscoveryException {
-        String discoveryrUri = config.getProviderURI();
-        if (discoveryrUri == null || discoveryrUri.isEmpty()) {
-            String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_MISSING_PROVIDER_URI", clientId);
-            throw new OidcClientConfigurationException(clientId, nlsMessage);
-        }
-        discoveryrUri = addWellKnownSuffixIfNeeded(discoveryrUri);
-
-        // See if we already have cached metadata for this endpoint to avoid sending discovery requests too frequently
-        JSONObject discoveryData = (JSONObject) cachedDiscoveryMetadata.get(discoveryrUri);
+    String getAuthorizationEndpointFromDiscoveryMetadata() throws OidcDiscoveryException {
+        String authzEndpoint = null;
+        JSONObject discoveryData = getProviderDiscoveryMetadata(config);
         if (discoveryData != null) {
-            return discoveryData;
+            authzEndpoint = (String) discoveryData.get(OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
         }
-        discoveryData = fetchProviderMetadataFromDiscoveryUrl(discoveryrUri);
-
-        cachedDiscoveryMetadata.put(discoveryrUri, discoveryData);
-
-        return discoveryData;
-    }
-
-    /**
-     * Per https://github.com/jakartaee/security/blob/master/spec/src/main/asciidoc/authenticationMechanism.adoc#metadata-configuration,
-     * the providerURI "defines the base URL of the OpenID Connect Provider where the /.well-known/openid-configuration is
-     * appended to (or used as-is when it is the well known configuration URL itself)."
-     *
-     * @param providerUri
-     * @return
-     */
-    String addWellKnownSuffixIfNeeded(String providerUri) {
-        if (!providerUri.endsWith(OidcDiscoveryConstants.WELL_KNOWN_SUFFIX)) {
-            if (!providerUri.endsWith("/")) {
-                providerUri += "/";
-            }
-            providerUri += OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
+        if (authzEndpoint == null) {
+            String nlsMessage = Tr.formatMessage(tc, "DISCOVERY_METADATA_MISSING_VALUE", OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
+            throw new OidcDiscoveryException(clientId, config.getProviderURI(), nlsMessage);
         }
-        return providerUri;
-    }
-
-    JSONObject fetchProviderMetadataFromDiscoveryUrl(String discoveryrUri) throws OidcDiscoveryException {
-        DiscoveryHandler discoveryHandler = getDiscoveryHandler();
-        return discoveryHandler.fetchDiscoveryDataJson(discoveryrUri, clientId);
-    }
-
-    DiscoveryHandler getDiscoveryHandler() {
-        SSLSocketFactory sslSocketFactory = getSSLSocketFactory();
-        return new DiscoveryHandler(sslSocketFactory);
-    }
-
-    SSLSocketFactory getSSLSocketFactory() {
-        if (sslSupport != null) {
-            return sslSupport.getSSLSocketFactory();
-        }
-        return null;
+        return authzEndpoint;
     }
 
     @Override

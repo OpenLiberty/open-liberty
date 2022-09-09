@@ -31,6 +31,7 @@ import io.openliberty.security.oidcclientcore.authentication.AuthorizationCodeFl
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.token.JakartaOidcTokenRequest;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
@@ -264,7 +265,7 @@ public class OidcHttpAuthenticationMechanismTest {
 
     private ProviderAuthenticationResult createSuccessfulProviderAuthenticationResult() {
         Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
-        customProperties.put(AuthorizationCodeFlow.AUTH_RESULT_CUSTOM_PROP_TOKEN_RESPONSE, tokenResponse);
+        customProperties.put(JakartaOidcTokenRequest.AUTH_RESULT_CUSTOM_PROP_TOKEN_RESPONSE, tokenResponse);
         return new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, null, null, customProperties, null);
     }
 
