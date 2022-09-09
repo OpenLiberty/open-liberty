@@ -46,6 +46,9 @@ publish.wlp.jar.suffix: dev/api/spec
 # Use this once we have a non RC1 release
 # org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
 -buildpath: \
+    io.openliberty.jakarta.cdi.4.0;version=latest, \
     io.openliberty.jakarta.expressionLanguage.5.0;version=latest, \
-    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.0.0.RC1, \
-    org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9
+    io.openliberty.jakarta.websocket.client.2.1;version=latest, \
+    org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9, \
+    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.0.0.RC1
+

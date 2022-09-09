@@ -1044,6 +1044,10 @@ javaCmd()
     trap "killIfRunning $TAIL_PID" EXIT
     "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1 < /dev/null
     rc=$?
+    if [ $rc -eq 20 ]; then
+      # bad checkpoint arg; sleep to allow the message to go to tail
+      sleep 2
+    fi
     kill $TAIL_PID
     # Above JAVA_CMD should terminate after a criu dump and SIGKILL. 
     # Check for expected return code of 137 from the KILL.

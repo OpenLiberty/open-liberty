@@ -13,6 +13,7 @@ package com.ibm.ws.jca.fat;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -32,6 +33,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.exception.TopologyException;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -102,6 +104,14 @@ public class JCA17Test extends FATServletClient {
         assertNotNull(server.waitForStringInLog("J2CA7001I.*HELLOWORLD1"));
         assertNotNull(server.waitForStringInLog("J2CA7001I.*HELLOWORLD2"));
         assertNotNull(server.waitForStringInLog("J2CA7001I.*ZRA"));
+
+        //Ensure we don't introduce a regression that results in FFDCs during RA installation.
+        try {
+            List<String> ffdcs = server.listFFDCFiles("");
+            throw new AssertionError("Unexpected number of FFDCs after installing resource adapaters found: " + ffdcs.size() + " expected: 0");
+        } catch (TopologyException e) {
+            //pass - no FFDC files were found
+        }
     }
 
     @AfterClass

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -313,8 +313,6 @@ define(['dojo/dom','dojo/request/xhr','dojo/i18n!./nls/loginMessages', './hashCo
   }
 
   function initPage() {
-    // 1. Set page locale and override the English text accordingly.
-    document.documentElement.setAttribute("lang", kernel.locale);
     setLoginButtonText(dom);
     setTitleText(dom);
     setPlaceholders(dom);

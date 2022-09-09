@@ -59,6 +59,7 @@
         	<include name="apiMsgUtils.js" />
         	<include name="toolData.js" />
         	<include name="userConfig.js" />
+          <include name="globalization.js" />
         </fileset>
     </copy>
     <copy-one-font-file font-file="IBMPlexSans/IBMPlexSans-Bold.woff" font-target-dir="lib/fonts" />

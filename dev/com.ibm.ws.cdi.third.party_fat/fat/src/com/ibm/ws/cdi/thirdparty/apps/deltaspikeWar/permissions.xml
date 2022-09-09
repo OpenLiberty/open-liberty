@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+        http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd" version="7">
+    <!-- Deltaspike and quartz read config from system properties -->
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>*</name>
+        <actions>read,write</actions>
+    </permission>
+    <!-- Deltaspike attempts to load extensions using classloader -->
+    <permission>
+        <class-name>java.lang.RuntimePermission</class-name>
+        <name>getClassLoader</name>
+    </permission>
+    <!-- Quartz tries to read config from files -->
+    <permission>
+        <class-name>java.io.FilePermission</class-name>
+        <name>*</name>
+        <actions>read</actions>
+    </permission>
+    <!-- Deltaspike tries to read config from environment variables -->
+    <permission>
+        <class-name>java.lang.RuntimePermission</class-name>
+        <name>getenv.*</name>
+    </permission>
+    <!-- Quartz sets the context class loader around running a scheduled job -->
+    <permission>
+        <class-name>java.lang.RuntimePermission</class-name>
+        <name>setContextClassLoader</name>
+    </permission>
+    <!-- Quartz can set up an MBean and tries to check and remove it on shutdown -->
+    <permission>
+        <class-name>javax.management.MBeanServerPermission</class-name>
+        <name>createMBeanServer</name>
+    </permission>
+</permissions>

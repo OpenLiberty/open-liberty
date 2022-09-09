@@ -49,6 +49,8 @@ public enum ReturnCode implements ExitCode {
     ERROR_BAD_JAVA_BITMODE(ExitCode.ERROR_BAD_JAVA_BITMODE), // 31
     // Used by the server scripts when jvm.options has an invalid line.
     ERROR_BAD_JVM_OPTION(32),
+    // Repository connection failed
+    CONNECTION_FAILED(33),
     ERROR_COMMUNICATE_SERVER(34),
     // Used by ClientRunner when an exception occurs during executing client application's main().
     CLIENT_RUNNER_EXCEPTION(35),

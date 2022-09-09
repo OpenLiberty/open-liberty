@@ -72,6 +72,7 @@ public class FeatureUtility {
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private final static String WEBSPHERE_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
     private final static String BETA_EDITION = "EARLY_ACCESS";
+    private final static String CONNECTION_FAILED_ERROR = "CWWKF1390E";
     private static String to;
     private boolean isInstallServerFeature = false;
 
@@ -482,7 +483,7 @@ public class FeatureUtility {
         try {
 
             for (File esaFile : artifacts) {
-				double increment = ((progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
+		double increment = ((progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
             	String featureName = extractFeature(esaFile.getName());
                 fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING", featureName));
                 map.put("license.accept", true);
@@ -590,6 +591,9 @@ public class FeatureUtility {
         if (map.get("action.error.message") != null) {
             fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
             String exceptionMessage = (String) map.get("action.error.message");
+	    if (exceptionMessage.contains(CONNECTION_FAILED_ERROR)) {
+		throw new InstallException(exceptionMessage, InstallException.CONNECTION_FAILED);
+	    }
             throw new InstallException(exceptionMessage);
         }
         return result;
