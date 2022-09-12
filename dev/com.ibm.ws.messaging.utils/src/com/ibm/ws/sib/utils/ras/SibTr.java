@@ -455,7 +455,7 @@ public class SibTr {
    *        passed must equal the number of substitution parameters the message
    *        expects. Null is tolerated.
    */
-  public static final void audit(TraceComponent tc, String msgKey, Object objs) {
+  public static final void audit(TraceComponent tc, String msgKey, Object... objs) {
     SibMessage.audit(getMEName(null), tc, msgKey, objs);
   }
 
@@ -488,7 +488,7 @@ public class SibTr {
    *        toString() is called on each object and the results are appended to
    *        the message.
    */
-  public static final void debug(TraceComponent tc, String msg, Object objs) {
+  public static final void debug(TraceComponent tc, String msg, Object... objs) {
     debug(null, tc, msg, objs);
   }
 
@@ -523,7 +523,7 @@ public class SibTr {
    *        toString() is called on each object and the results are appended to
    *        the message.
    */
-  public static final void debug(Object o, TraceComponent tc, String msg, Object objs) {
+  public static final void debug(Object o, TraceComponent tc, String msg, Object... objs) {
     Tr.debug(tc, getFullClassName(tc)+" "+getMEName(o) + " " + msg, objs);
   }
 
@@ -556,7 +556,7 @@ public class SibTr {
    *        toString() is called on each object and the results are appended to
    *        the message.
    */
-  public static final void dump(TraceComponent tc, String msg, Object objs) {
+  public static final void dump(TraceComponent tc, String msg, Object... objs) {
     dump(null, tc, msg, objs);
   }
 
@@ -591,7 +591,7 @@ public class SibTr {
    *        toString() is called on each object and the results are appended to
    *        the message.
    */
-  public static final void dump(Object o, TraceComponent tc, String msg, Object objs) {
+  public static final void dump(Object o, TraceComponent tc, String msg, Object... objs) {
     Tr.dump(tc, getFullClassName(tc)+" "+getMEName(o) + " " + msg, objs);
   }
 
@@ -628,7 +628,7 @@ public class SibTr {
    *        passed must equal the number of substitution parameters the message
    *        expects.
    */
-  public static final void error(TraceComponent tc, String msgKey, Object objs) {
+  public static final void error(TraceComponent tc, String msgKey, Object... objs) {
     SibMessage.error(getMEName(null), tc, msgKey, objs);
   }
 
@@ -670,7 +670,7 @@ public class SibTr {
    *        passed must equal the number of substitution parameters the message
    *        expects.
    */
-  public static final void error(TraceComponent tc, Suppressor s, String msgKey, Object objs) {
+  public static final void error(TraceComponent tc, Suppressor s, String msgKey, Object... objs) {
       SibMessage.SuppressableError(s,getMEName(null), tc, msgKey, objs);
   }
 
@@ -703,7 +703,7 @@ public class SibTr {
    *        toString() is called on each object and the results are appended to
    *        the message.
    */
-  public static final void event(TraceComponent tc, String msg, Object objs) {
+  public static final void event(TraceComponent tc, String msg, Object... objs) {
     event(null, tc, msg, objs);
   }
 
@@ -738,7 +738,7 @@ public class SibTr {
    *        toString() is called on each object and the results are appended to
    *        the message.
    */
-  public static final void event(Object o, TraceComponent tc, String msg, Object objs) {
+  public static final void event(Object o, TraceComponent tc, String msg, Object... objs) {
     Tr.event(tc, getFullClassName(tc)+" "+getMEName(o) + " " + msg, objs);
   }
 
@@ -769,7 +769,7 @@ public class SibTr {
    *        toString() is called on each object and the results are appended to
    *        the methodName.
    */
-  public static final void entry(TraceComponent tc, String methodName, Object obj) {
+  public static final void entry(TraceComponent tc, String methodName, Object... obj) {
     entry(null, tc, methodName, obj);
   }
 
@@ -802,7 +802,7 @@ public class SibTr {
    *        toString() is called on each object and the results are appended to
    *        the methodName.
    */
-  public static final void entry(Object o, TraceComponent tc, String methodName, Object obj) {
+  public static final void entry(Object o, TraceComponent tc, String methodName, Object... obj) {
     Tr.entry(tc, methodName + " " + getFullClassName(tc)+" "+getMEName(o), obj);
   }
 
@@ -833,7 +833,7 @@ public class SibTr {
    *        toString() is called on each object and the results are appended to
    *        the methodName.
    */
-  public static final void exit(TraceComponent tc, String methodName, Object objs) {
+  public static final void exit(TraceComponent tc, String methodName, Object... objs) {
     exit(null, tc, methodName, objs);
   }
 
@@ -866,7 +866,7 @@ public class SibTr {
    *        toString() is called on each object and the results are appended to
    *        the methodName.
    */
-  public static final void exit(Object o, TraceComponent tc, String methodName, Object objs) {
+  public static final void exit(Object o, TraceComponent tc, String methodName, Object... objs) {
     Tr.exit(tc, methodName + " " + getFullClassName(tc)+" "+getMEName(o), objs);
   }
 
@@ -920,7 +920,7 @@ public class SibTr {
    *        passed must equal the number of substitution parameters the message
    *        expects.
    */
-  public static final void fatal(TraceComponent tc, String msgKey, Object objs) {
+  public static final void fatal(TraceComponent tc, String msgKey, Object... objs) {
     SibMessage.fatal(getMEName(null), tc, msgKey, objs);
   }
 
@@ -956,7 +956,7 @@ public class SibTr {
    *        passed must equal the number of substitution parameters the message]
    *        expects.
    */
-  public static final void info(TraceComponent tc, String msgKey, Object objs) {
+  public static final void info(TraceComponent tc, String msgKey, Object... objs) {
     SibMessage.info(getMEName(null), tc, msgKey, objs);
   }
 
@@ -998,7 +998,7 @@ public class SibTr {
    *        passed must equal the number of substitution parameters the message]
    *        expects.
    */
-  public static final void info(TraceComponent tc, Suppressor s, String msgKey, Object objs) {
+  public static final void info(TraceComponent tc, Suppressor s, String msgKey, Object... objs) {
       SibMessage.SuppressableInfo(s,getMEName(null), tc, msgKey, objs);
   }
 
@@ -1034,7 +1034,7 @@ public class SibTr {
    *        passed must equal the number of substitution parameters the message
    *        expects. Null is tolerated.
    */
-  public static final void service(TraceComponent tc, String msgKey, Object objs) {
+  public static final void service(TraceComponent tc, String msgKey, Object... objs) {
     SibMessage.service(getMEName(null), tc, msgKey, objs);
   }
 
@@ -1070,7 +1070,7 @@ public class SibTr {
    *        passed must equal the number of substitution parameters the message
    *        expects.
    */
-  public static final void warning(TraceComponent tc, String msgKey, Object objs) {
+  public static final void warning(TraceComponent tc, String msgKey, Object... objs) {
     SibMessage.warning(getMEName(null), tc, msgKey, objs);
   }
 
@@ -1112,7 +1112,7 @@ public class SibTr {
    *        passed must equal the number of substitution parameters the message
    *        expects.
    */
-  public static final void warning(TraceComponent tc, Suppressor s, String msgKey, Object objs) {
+  public static final void warning(TraceComponent tc, Suppressor s, String msgKey, Object... objs) {
       SibMessage.SuppressableWarning(s,getMEName(null), tc, msgKey, objs);
  }
 
