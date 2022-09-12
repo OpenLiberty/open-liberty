@@ -56,4 +56,9 @@ public class Utils {
 
     }
 
+    public static long convertNormalizedTimeStampToLong(String input) {
+        String timeStamp = input.substring(0, TIMESTAMP_LENGTH);
+        return Long.parseLong(timeStamp);
+    }
+
 }

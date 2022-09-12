@@ -18,6 +18,18 @@ import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class OidcStorageUtils {
 
+    public static String getStateStorageKey(String state) {
+        return OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode(state);
+    }
+
+    public static String getNonceStorageKey(String clientId, String state) {
+        return getStorageKey(OidcClientStorageConstants.WAS_OIDC_NONCE, clientId, state);
+    }
+
+    public static String getOriginalReqUrlStorageKey(String state) {
+        return OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
+    }
+
     @Trivial
     public static String createStateStorageValue(String state, @Sensitive String clientSecret) {
         String newValue = state + clientSecret; // state already has a timestamp in it

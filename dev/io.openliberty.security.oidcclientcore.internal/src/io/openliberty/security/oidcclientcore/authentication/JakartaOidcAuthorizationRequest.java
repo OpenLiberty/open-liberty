@@ -226,29 +226,45 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     @Override
     protected StorageProperties getStateStorageProperties() {
+        StorageProperties superProps = super.getStateStorageProperties();
         if (storageType == StorageType.COOKIE) {
             // Per https://jakarta.ee/specifications/security/3.0/jakarta-security-spec-3.0.html#authentication-dialog,
             // "In the case of storage through a Cookie, the Cookie must be defined as HTTPonly and must have the Secure flag set."
-            CookieStorageProperties props = (CookieStorageProperties) super.getStateStorageProperties();
+            CookieStorageProperties props = new CookieStorageProperties();
+            props.setStorageLifetimeSeconds(superProps.getStorageLifetimeSeconds());
             props.setHttpOnly(true);
             props.setSecure(true);
             return props;
         } else {
-            return super.getStateStorageProperties();
+            return superProps;
         }
     }
 
     @Override
     protected StorageProperties getNonceStorageProperties() {
+        StorageProperties superProps = super.getNonceStorageProperties();
         if (storageType == StorageType.COOKIE) {
             // Per https://jakarta.ee/specifications/security/3.0/jakarta-security-spec-3.0.html#authentication-dialog,
             // "In the case of storage through a Cookie, the Cookie must be defined as HTTPonly and must have the Secure flag set."
-            CookieStorageProperties props = (CookieStorageProperties) super.getNonceStorageProperties();
+            CookieStorageProperties props = new CookieStorageProperties();
+            props.setStorageLifetimeSeconds(superProps.getStorageLifetimeSeconds());
             props.setHttpOnly(true);
             props.setSecure(true);
             return props;
         } else {
-            return super.getNonceStorageProperties();
+            return superProps;
+        }
+    }
+
+    @Override
+    protected StorageProperties getOriginalRequestUrlStorageProperties() {
+        StorageProperties superProps = super.getOriginalRequestUrlStorageProperties();
+        if (storageType == StorageType.COOKIE) {
+            CookieStorageProperties props = new CookieStorageProperties();
+            props.setStorageLifetimeSeconds(superProps.getStorageLifetimeSeconds());
+            return props;
+        } else {
+            return superProps;
         }
     }
 
