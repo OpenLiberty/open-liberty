@@ -474,7 +474,7 @@ public class DataTestServlet extends FATServlet {
         prod6.price = 7.49f;
         products.addOrModify(prod6);
 
-        List<String> uniqueProductNames = products.findByNameLike("TestDistinctAttribute");
+        List<String> uniqueProductNames = products.findByNameLike("TestDistinctAttribute %");
 
         // only 4 of the 6 names are unique
         assertIterableEquals(List.of("TestDistinctAttribute T-Shirt Size Extra Small",
@@ -560,6 +560,65 @@ public class DataTestServlet extends FATServlet {
         assertEquals(prod.name, p.name);
         assertEquals(prod.price, p.price, 0.001f);
         assertEquals(prod.description, p.description);
+    }
+
+    /**
+     * Use the % and _ characters, which are wildcards in JPQL, within query parameters.
+     */
+    @Test
+    public void testFindLike() throws Exception {
+        // Remove data from previous tests:
+        Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
+        if (allProducts.length > 0)
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+
+        Product p1 = new Product();
+        p1.id = "TFL-1";
+        p1.name = "TestFindLike_1";
+        p1.price = 1.00f;
+        products.addOrModify(p1);
+
+        Product p2 = new Product();
+        p2.id = "TFL-2";
+        p2.name = "2% TestFindLike";
+        p2.price = 2.00f;
+        products.addOrModify(p2);
+
+        Product p10 = new Product();
+        p10.id = "TFL-10";
+        p10.name = "TestFindLike 1";
+        p10.price = 10.00f;
+        products.addOrModify(p10);
+
+        Product p100 = new Product();
+        p100.id = "TFL-100";
+        p100.name = "TestFindLike  1";
+        p100.price = 100.00f;
+        products.addOrModify(p100);
+
+        Product p200 = new Product();
+        p200.id = "TFL-200";
+        p200.name = "200 TestFindLike";
+        p200.price = 200.00f;
+        products.addOrModify(p200);
+
+        assertIterableEquals(List.of("2% TestFindLike",
+                                     "200 TestFindLike",
+                                     "TestFindLike  1",
+                                     "TestFindLike 1",
+                                     "TestFindLike_1"),
+                             products.findByNameLike("%TestFindLike%"));
+
+        // _ wildcard matches any single character
+        assertIterableEquals(List.of("TestFindLike 1", "TestFindLike_1"),
+                             products.findByNameLike("TestFindLike_1"));
+
+        // % wildcard matches 0 or more characters
+        assertIterableEquals(List.of("2% TestFindLike", "200 TestFindLike"),
+                             products.findByNameLike("2% TestFindLike"));
+
+        // Escape characters are not possible for the repository Like keyword, however,
+        // consider using JPQL escape characters and ESCAPE '\' clause for StartsWith, EndsWith, and Contains
     }
 
     /**
@@ -1152,14 +1211,14 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
-                             reservations.findByLocationLikeOrderByMeetingID("-2 B1")
+                             reservations.findByLocationContainsOrderByMeetingID("-2 B1")
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030001L, 10030002L, 10030004L, 10030006L, 10030008L),
                              reservations.findByMeetingIDOrLocationLikeAndStartAndStopOrHost(10030006,
-                                                                                             "050-2",
+                                                                                             "050-2 %",
                                                                                              OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT),
                                                                                              OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT),
                                                                                              "testRepositoryCustom-host4@example.org")
@@ -1268,7 +1327,7 @@ public class DataTestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        Publisher<Reservation> publisher = reservations.findByHostLikeOrderByMeetingID("testRepositoryCustom-host");
+        Publisher<Reservation> publisher = reservations.findByHostLikeOrderByMeetingID("testRepositoryCustom-host%");
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         publisher.subscribe(new Subscriber<Reservation>() {
             final int REQUEST_SIZE = 3;
@@ -1316,9 +1375,9 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Some results are missing", Collections.EMPTY_SET, expected);
 
         // Paging where the final page includes less than the maximum page size,
-        Page<Reservation> page1 = reservations.findByHostLike("testRepositoryCustom-host",
-                                                              Pagination.page(1).size(4),
-                                                              Sort.desc("meetingID"));
+        Page<Reservation> page1 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                                    Pagination.page(1).size(4),
+                                                                    Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030009L, 10030008L, 10030007L, 10030006L),
                              page1
                                              .getContent()
@@ -1339,9 +1398,9 @@ public class DataTestServlet extends FATServlet {
         assertEquals(null, page3.next());
 
         // Paging that comes out even:
-        page2 = reservations.findByHostLike("testRepositoryCustom-host",
-                                            Pagination.page(2).size(3),
-                                            Sort.desc("meetingID"));
+        page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                  Pagination.page(2).size(3),
+                                                  Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
                              page2
                                              .getContent()
@@ -1470,7 +1529,7 @@ public class DataTestServlet extends FATServlet {
                                                                         "050-2 A101",
                                                                         "050-2 H115"));
         assertIterableEquals(List.of(1012001L, 1012003L),
-                             reservations.findByLocationLikeOrderByMeetingID("H115")
+                             reservations.findByLocationContainsOrderByMeetingID("H115")
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));

@@ -181,7 +181,7 @@ public class QueryHandler<T> implements InvocationHandler {
     /**
      * Generates JPQL for a findBy or deleteBy condition such as MyColumn[Not?]Like
      */
-    private int generateRepositoryQueryCondition(Class<?> entityClass, String expression, StringBuilder q, int paramCount) {
+    private int generateRepositoryQueryCondition(EntityInfo entityInfo, String expression, StringBuilder q, int paramCount) {
         int length = expression.length();
 
         Condition condition = Condition.EQUALS;
@@ -251,8 +251,8 @@ public class QueryHandler<T> implements InvocationHandler {
         else
             a.append("o.");
 
-        String name = persistence.getAttributeName(attribute, entityClass, data.provider());
-        a.append(name == null ? attribute : name);
+        String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
+        a.append(name = name == null ? attribute : name);
 
         if (upper || lower)
             a.append(")");
@@ -267,13 +267,16 @@ public class QueryHandler<T> implements InvocationHandler {
                 q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(")");
                 break;
             case LIKE:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(", '%')");
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE ?").append(++paramCount);
                 break;
             case BETWEEN:
                 q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ?").append(++paramCount).append(" AND ?").append(++paramCount);
                 break;
             case CONTAINS:
-                q.append(" ?").append(++paramCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
+                if (entityInfo.collectionAttributeNames.contains(name))
+                    q.append(" ?").append(++paramCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
+                else
+                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++paramCount).append(", '%')");
                 break;
             default:
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator).append('?').append(++paramCount);
@@ -295,7 +298,7 @@ public class QueryHandler<T> implements InvocationHandler {
             if (iNext < 0)
                 iNext = Math.max(and, or);
             String condition = iNext < 0 ? conditions.substring(i) : conditions.substring(i, iNext);
-            paramCount = generateRepositoryQueryCondition(entityInfo.type, condition, q, paramCount);
+            paramCount = generateRepositoryQueryCondition(entityInfo, condition, q, paramCount);
             if (iNext > 0) {
                 q.append(iNext == and ? " AND " : " OR ");
                 iNext += (iNext == and ? 3 : 2);

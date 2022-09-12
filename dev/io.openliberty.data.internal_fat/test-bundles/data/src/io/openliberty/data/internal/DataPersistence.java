@@ -15,9 +15,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -234,9 +236,12 @@ public class DataPersistence {
             for (EntityType<?> entityType : model.getEntities()) {
                 entityType.getName();//TODO
                 LinkedHashMap<String, String> attributeNames = new LinkedHashMap<>();
+                Set<String> collectionAttributeNames = new HashSet<String>();
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
-                    if (PersistentAttributeType.EMBEDDED.equals(attr.getPersistentAttributeType())) {
+                    PersistentAttributeType attributeType = attr.getPersistentAttributeType();
+
+                    if (PersistentAttributeType.EMBEDDED.equals(attributeType)) {
                         // TODO this only covers one level of embedded attributes, which is fine for now because this isn't a real implementation
                         EmbeddableType<?> embeddable = model.embeddable(attr.getJavaType());
                         for (Attribute<?, ?> embAttr : embeddable.getAttributes()) {
@@ -246,6 +251,8 @@ public class DataPersistence {
                         }
                     } else {
                         attributeNames.put(attributeName.toUpperCase(), attributeName);
+                        if (PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType))
+                            collectionAttributeNames.add(attributeName);
                     }
                 }
 
@@ -263,6 +270,7 @@ public class DataPersistence {
                 EntityInfo entityInfo = new EntityInfo(entityType.getName(), //
                                 entityClass, //
                                 attributeNames, //
+                                collectionAttributeNames, //
                                 keyAttributeNames.get(entityClass), //
                                 punit);
 

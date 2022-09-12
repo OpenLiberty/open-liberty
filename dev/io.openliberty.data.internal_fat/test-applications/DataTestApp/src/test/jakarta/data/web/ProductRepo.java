@@ -34,7 +34,7 @@ public interface ProductRepo {
 
     @Select(value = "name", distinct = true)
     @OrderBy("name")
-    List<String> findByNameLike(String nameContains);
+    List<String> findByNameLike(String namePattern);
 
     Product[] findByVersionGreaterThanEqualOrderByPrice(long minVersion);
 
