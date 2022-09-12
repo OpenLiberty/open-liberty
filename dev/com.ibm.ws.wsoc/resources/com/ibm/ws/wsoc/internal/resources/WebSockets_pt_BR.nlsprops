@@ -27,43 +27,43 @@ missing.annotation.explanation=A classe Annotated ServerEndpoint ser\u00e1 inv\u
 missing.annotation.useraction=Corrija a classe Annotated ServerEndpoint incluindo @OnOpen e/ou @OnMessage. Depois de resolver o problema, implemente o aplicativo novamente.
 
 morethanonepong.annotation=CWWKH0003E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque mais de um m\u00e9todo @OnMessage com o tipo de mensagem pong est\u00e1 definido na classe Annotated Endpoint {0}.
-morethanonepong.annotation.explanation=Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnMessage com o tipo de mensagem pong est\u00e1 definido na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+morethanonepong.annotation.explanation=Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnMessage\ncom o tipo de mensagem pong est\u00e1 definido na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 morethanonepong.annotation.useraction=Corrija a classe Annotated ServerEndpoint definindo apenas um m\u00e9todo @OnMessage de tipo de mensagem pong. Depois de resolver o problema, implemente o aplicativo novamente.
 
 morethanonebinary.annotation=CWWKH0004E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque mais de um m\u00e9todo @OnMessage com o tipo de mensagem bin\u00e1ria est\u00e1 definido na classe Annotated Endpoint {0}.
-morethanonebinary.annotation.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnMessage com o tipo de mensagem bin\u00e1ria est\u00e1 definido na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+morethanonebinary.annotation.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo\n@OnMessage\ncom o tipo de mensagem bin\u00e1ria est\u00e1 definido na classe Annotated\nEndpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 morethanonebinary.annotation.useraction=Corrija a classe Annotated ServerEndpoint definindo apenas o m\u00e9todo @OnMessage de tipo de mensagem bin\u00e1ria. Depois de resolver o problema, implemente o aplicativo novamente.
 
 missing.msgtype.param=CWWKH0005E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnMessage na classe Annotated Endpoint {0} n\u00e3o possui um par\u00e2metro de tipo de mensagem bin\u00e1ria, pong ou de texto.
-missing.msgtype.param.explanation=Annotated ServerEndpoint \u00e9 inv\u00e1lido porque o m\u00e9todo @OnMessage n\u00e3o tem par\u00e2metro de tipo de mensagem pong, bin\u00e1ria ou de texto. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+missing.msgtype.param.explanation=Annotated ServerEndpoint \u00e9 inv\u00e1lido porque o m\u00e9todo @OnMessage n\u00e3o tem\npar\u00e2metro de tipo de mensagem pong, bin\u00e1ria ou de texto. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 missing.msgtype.param.useraction=Corrija a classe Annotated ServerEndpoint, declarando o m\u00e9todo @OnMessage com o par\u00e2metro de tipo de mensagem de texto ou bin\u00e1ria ou pong. Depois de resolver o problema, implemente o aplicativo novamente.
 
 morethanonetext.annotation=CWWKH0006E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque mais de um m\u00e9todo @OnMessage com o tipo de mensagem de texto foi definido na classe Annotated Endpoint {0}.
-morethanonetext.annotation.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnMessage com o tipo de mensagem de texto foi definido na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+morethanonetext.annotation.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnMessage com o tipo de mensagem de texto foi definido na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 morethanonetext.annotation.useraction=Corrija a classe Annotated ServerEndpoint definindo somente um m\u00e9todo @OnMessage do tipo de mensagem de texto. Depois de resolver o problema, implemente o aplicativo novamente.
 
 invalid.onopen.annotation=CWWKH0007E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnOpen {0} na classe Annotated Endpoint {1} possui par\u00e2metros diferentes que os par\u00e2metros Session, EndpointConfig ou @PathParam.
-invalid.onopen.annotation.explanation=Tipo de par\u00e2metro inv\u00e1lido encontrado no m\u00e9todo @OnOpen. O m\u00e9todo @OnOpen pode ter apenas par\u00e2metros EndpointConfig, Session e @PathParam opcionais 
+invalid.onopen.annotation.explanation=Tipo de par\u00e2metro inv\u00e1lido localizado no m\u00e9todo @OnOpen. O m\u00e9todo @OnOpen pode ter apenas Sess\u00e3o opcional, EndpointConfig opcional e par\u00e2metros @PathParam opcionais
 invalid.onopen.annotation.useraction=Corrija a classe Annotated ServerEndpoint removendo o tipo de par\u00e2metro inv\u00e1lido no m\u00e9todo @OnOpen. Depois de resolver o problema, implemente o aplicativo novamente.
 
 morethanoneclose.annotation=CWWKH0008E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque mais de um m\u00e9todo @OnClose est\u00e1 definido na classe Annotated ServerEndpoint {0}. Os m\u00e9todos @OnClose s\u00e3o {1} e {2}.
-morethanoneclose.annotation.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnClose s\u00e3o definidos na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+morethanoneclose.annotation.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnClose\ns\u00e3o definidos na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 morethanoneclose.annotation.useraction=Corrija a classe Annotated ServerEndpoint definindo apenas um m\u00e9todo @OnClose. Depois de resolver o problema, implemente o aplicativo novamente.
 
 invalid.onclose.annotation=CWWKH0009E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnClose {0} na classe Annotated Endpoint {1} possui par\u00e2metros diferentes dos par\u00e2metros Session, CloseReason ou @PathParam.
-invalid.onclose.annotation.explanation=Tipo de par\u00e2metro inv\u00e1lido encontrado no m\u00e9todo @OnClose. O m\u00e9todo @OnClose pode ter apenas par\u00e2metros Session, CloseReason e @PathParam opcionais. 
+invalid.onclose.annotation.explanation=Tipo de par\u00e2metro inv\u00e1lido localizado no m\u00e9todo @OnClose. O m\u00e9todo @OnClose pode ter apenas Sess\u00e3o opcional, CloseReason opcional e par\u00e2metros @PathParam opcionais.
 invalid.onclose.annotation.useraction=Corrija a classe Annotated ServerEndpoint removendo tipo de par\u00e2metro inv\u00e1lido no m\u00e9todo @OnClose. Depois de resolver o problema, implemente o aplicativo novamente.
 
 morethanoneerror.annotation=CWWKH0010E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o de aplicativo WebSocket porque mais de um m\u00e9todo @OnError est\u00e1 definido na classe Annotated Endpoint {0}. Os m\u00e9todos @OnError s\u00e3o {1} e {2}.
-morethanoneerror.annotation.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnError est\u00e1 definido na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+morethanoneerror.annotation.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnError\nest\u00e1 definido na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 morethanoneerror.annotation.useraction=Corrija a classe Annotated ServerEndpoint definindo apenas um m\u00e9todo @OnError. Depois de resolver o problema, implemente o aplicativo novamente.
 
 invalid.onerror.annotation=CWWKH0011E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnError {0} na classe Annotated Endpoint {1} possui par\u00e2metros diferentes dos par\u00e2metros Throwable, Session ou @PathParam.
-invalid.onerror.annotation.explanation=Tipo de par\u00e2metro inv\u00e1lido localizado no m\u00e9todo @OnError. O m\u00e9todo @OnError pode ter apenas os par\u00e2metros Throwable obrigat\u00f3rios, Session opcionais e @PathParam opcionais. 
+invalid.onerror.annotation.explanation=Tipo de par\u00e2metro inv\u00e1lido localizado no m\u00e9todo @OnError. O m\u00e9todo @OnError pode ter apenas par\u00e2metros obrigat\u00f3rios Throwable, Sess\u00e3o opcional e par\u00e2metros @PathParam opcionais.
 invalid.onerror.annotation.useraction=Corrija a classe Annotated ServerEndpoint removendo o tipo de par\u00e2metro inv\u00e1lido no m\u00e9todo @OnError. Depois de resolver o problema, implemente o aplicativo novamente.
 
 missing.throwable=CWWKH0012E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnError {0} na classe Annotated Endpoint {1} est\u00e1 sem o par\u00e2metro obrigat\u00f3rio do tipo Throwable.
-missing.throwable.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque o m\u00e9todo @OnError est\u00e1 sem um par\u00e2metro obrigat\u00f3rio do tipo Throwable. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+missing.throwable.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque o m\u00e9todo @OnError est\u00e1\nsem um par\u00e2metro obrigat\u00f3rio do tipo Throwable. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 missing.throwable.useraction=Corrija a classe Annotated ServerEndpoint incluindo o par\u00e2metro obrigat\u00f3rio do tipo Throwable no m\u00e9todo @OnError. Depois de resolver o problema, implemente o aplicativo novamente.
 
 invalid.pong.annotation=CWWKH0013E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnMessage {0} na classe Annotated endpoint {1} possui um par\u00e2metro inv\u00e1lido {2}.
@@ -71,7 +71,7 @@ invalid.pong.annotation.explanation=O tipo de par\u00e2metro inv\u00e1lido encon
 invalid.pong.annotation.useraction=Corrija a classe Annotated ServerEndpoint removendo o tipo de par\u00e2metro inv\u00e1lido no m\u00e9todo @OnMessage. Depois de resolver o problema, implemente o aplicativo novamente.
 
 morethanone.binary.param=CWWKH0014E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnMessage {0} na classe Annotated Endpoint {1} possui mais de um par\u00e2metro de tipo de mensagem bin\u00e1ria.
-morethanone.binary.param.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque o m\u00e9todo @OnMessage possui mais de um par\u00e2metro de tipo de mensagem bin\u00e1ria. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+morethanone.binary.param.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque o m\u00e9todo @OnMessage possui\nmais de um par\u00e2metro de tipo de mensagem bin\u00e1ria. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 morethanone.binary.param.useraction=Corrija a classe Annotated ServerEndpoint definindo apenas um par\u00e2metro para o tipo de mensagem bin\u00e1ria. Depois de resolver o problema, implemente o aplicativo novamente.
 
 invalid.decoderclass=CWWKH0015E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque a classe de decodificador {0} usada no m\u00e9todo @OnMessage {1} da classe Annotated Endpoint {2} \u00e9 concreta, n\u00e3o p\u00fablica ou n\u00e3o possui um construtor p\u00fablico sem argumentos.
@@ -79,7 +79,7 @@ invalid.decoderclass.explanation=A classe de decodificador usada na classe Annot
 invalid.decoderclass.useraction=Corrija a classe de decodificador para ser p\u00fablica, concreta e ter um construtor p\u00fablico sem argumentos. Depois de resolver o problema, implemente o aplicativo novamente.
 
 morethanone.message.param=CWWKH0016E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnMessage {0} na classe Annotated Endpoint {1} possui mais de um par\u00e2metro de tipo de mensagem {2}.
-morethanone.message.param.explanation=Annotated ServerEndpoint \u00e9 inv\u00e1lido porque o m\u00e9todo @OnMessage possui mais de um par\u00e2metro de tipo de mensagem. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+morethanone.message.param.explanation=Annotated ServerEndpoint \u00e9 inv\u00e1lido porque o m\u00e9todo @OnMessage possui\nmais de um par\u00e2metro de tipo de mensagem. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 morethanone.message.param.useraction=Corrija o m\u00e9todo @OnMessage definindo apenas um par\u00e2metro de tipo de mensagem como por documenta\u00e7\u00e3o da API javax.websocket.OnMessage. Depois de resolver o problema, implemente o aplicativo novamente.
 
 invalid.binary.param=CWWKH0017E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnMessage {0} na classe Annotated endpoint {1} possui um par\u00e2metro inv\u00e1lido {2}.
@@ -87,7 +87,7 @@ invalid.binary.param.explanation=Tipo de par\u00e2metro inv\u00e1lido encontrado
 invalid.binary.param.useraction=Corrija o m\u00e9todo @OnMessage removendo o tipo de par\u00e2metro inv\u00e1lido de acordo com a documenta\u00e7\u00e3o da API javax.websocket.OnMessage. Depois de resolver o problema, implemente o aplicativo novamente.
 
 morethanone.text.param=CWWKH0018E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnMessage {0} na classe Annotated Endpoint {1} possui mais de um par\u00e2metro de tipo de mensagem de texto {2}.
-morethanone.text.param.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque o m\u00e9todo @OnMessage possui mais de um par\u00e2metro de tipo de mensagem de texto. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+morethanone.text.param.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque o m\u00e9todo @OnMessage possui\nmais de um par\u00e2metro de tipo de mensagem de texto. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 morethanone.text.param.useraction=Corrija o m\u00e9todo @OnMessage definindo apenas um par\u00e2metro de tipo de mensagem de texto de acordo com a documenta\u00e7\u00e3o da API javax.websocket.OnMessage. Depois de resolver o problema, implemente o aplicativo novamente.
 
 invalid.text.param=CWWKH0019E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque o m\u00e9todo @OnMessage {0} na classe Annotated endpoint {1} possui um par\u00e2metro inv\u00e1lido {2}.
@@ -95,7 +95,7 @@ invalid.text.param.explanation=O tipo de par\u00e2metro inv\u00e1lido encontrado
 invalid.text.param.useraction=Corrija o m\u00e9todo @OnMessage removendo o tipo de par\u00e2metro inv\u00e1lido de acordo com a documenta\u00e7\u00e3o da API javax.websocket.OnMessage. Depois de resolver o problema, implemente o aplicativo novamente.
 
 missing.path.segment=CWWKH0020E: Ocorreu uma exce\u00e7\u00e3o ao chamar o endpoint do servidor WebSocket. O par\u00e2metro @PathParam {0} definido no m\u00e9todo {1} n\u00e3o tem um segmento do caminho correspondente no @ServerEndpoint URI na classe Annotated Endpoint {2}.
-missing.path.segment.explanation=O par\u00e2metro @PathParam n\u00e3o tem segmento do caminho correspondente em @ServerEndpoint URI. 
+missing.path.segment.explanation=O par\u00e2metro\n@PathParam n\u00e3o tem segmento do caminho correspondente em\n@ServerEndpoint URI.
 missing.path.segment.useraction=Corrija o nome do par\u00e2metro @PathParam para corresponder a um dos segmentos do caminho em @ServerEndpoint URI. Depois de resolver o problema, implemente o aplicativo novamente.
 
 missing.pathparam.value=CWWKH0021E: Uma exce\u00e7\u00e3o ocorreu durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque a anota\u00e7\u00e3o @PathParam {0} definida no m\u00e9todo {1} est\u00e1 ausente no valor da anota\u00e7\u00e3o na classe Annotated Endpoint {2}.
@@ -119,7 +119,7 @@ onmessage.notdefined.explanation=N\u00e3o \u00e9 poss\u00edvel executar a solici
 onmessage.notdefined.useraction=Notifique o cliente ou inclua o m\u00e9todo @OnMessage a Annotated Server Endpoint, ou inclua um MessageHandler, para ser capaz de atender \u00e0 solicita\u00e7\u00e3o do cliente e implementar o aplicativo novamente.
 
 decoder.ioexception=CWWKH0026E: N\u00e3o \u00e9 poss\u00edvel executar a solicita\u00e7\u00e3o do cliente WebSocket porque ocorreu uma IOException chamando onMessage na classe {0} ao descodificar {1} os dados da mensagem. A mensagem de exce\u00e7\u00e3o \u00e9 {2}
-decoder.ioexception.explanation=N\u00e3o \u00e9 poss\u00edvel executar a solicita\u00e7\u00e3o do cliente WebSocket porque ocorreu um IOException chamando onMessage durante a decodifica\u00e7\u00e3o de dados da mensagem. 
+decoder.ioexception.explanation=N\u00e3o \u00e9\nposs\u00edvel executar a solicita\u00e7\u00e3o do cliente WebSocket porque ocorreu um\nIOException chamando onMessage durante a decodifica\u00e7\u00e3o de dados da mensagem.
 decoder.ioexception.useraction=Verifique dados da mensagem recebida e o decodificador.
 
 decoder.create.exception=CWWKH0027E: N\u00e3o \u00e9 poss\u00edvel executar a solicita\u00e7\u00e3o WebSocket devido a um problema ao criar uma nova inst\u00e2ncia de classe do decodificador {0}. A exce\u00e7\u00e3o \u00e9 {1}
@@ -129,7 +129,7 @@ decoder.create.exception.useraction=Verifique a classe de decodificador.
 fin1.processing.error=CWWKH0028E: Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem WebSocket recebida na classe ServerEndpoint {0} devido a um erro de processamento do valor FIN de 1.
 fin1.processing.error.explanation=Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem WebSocket recebida devido a um erro de processamento do valor FIN de 1.
 fin1.processing.error.useraction=Verifique os dados de quadro de mensagem do WebSocket recebidos para exatid\u00e3o.
- 
+
 fin0.processing.error=CWWKH0029E: Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem WebSocket recebida na classe ServerEndpoint {0} devido a um erro de processamento de valor FIN de 0.
 fin0.processing.error.explanation=Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem de WebSocket recebida devido a um erro de processamento do valor FIN de 0.
 fin0.processing.error.useraction=Verifique os dados de quadro de mensagem do WebSocket recebidos para exatid\u00e3o.
@@ -140,18 +140,18 @@ invalid.opcode.useraction=Verifique os dados de quadro de mensagem do WebSocket 
 
 invalid.continue.opcode=CWWKH0031E: Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem do WebSocket recebida na classe ServerEndpoint {0} devido a um c\u00f3digo de opera\u00e7\u00e3o cont\u00ednuo inv\u00e1lido com a mensagem n\u00e3o fragmentada.
 invalid.continue.opcode.explanation=Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem WebSocket recebida devido a um c\u00f3digo de opera\u00e7\u00e3o cont\u00ednuo inv\u00e1lido com a mensagem n\u00e3o fragmentada.
-invalid.continue.opcode.useraction=Verifique os dados de quadro de mensagem do WebSocket recebidos para exatid\u00e3o.  
+invalid.continue.opcode.useraction=Verifique os dados de quadro de mensagem do WebSocket recebidos para exatid\u00e3o.
 
 incorrect.maskflag=CWWKH0032E: Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem do WebSocket recebida na classe ServerEndpoint {0} porque o sinalizador de m\u00e1scara n\u00e3o est\u00e1 configurado corretamente no quadro de mensagens.
 incorrect.maskflag.explanation=Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem de WebSocket recebida porque o sinalizador de m\u00e1scara n\u00e3o est\u00e1 configurado corretamente no quadro de mensagens.
-incorrect.maskflag.useraction=Verifique os dados de quadro de mensagem do WebSocket recebidos para exatid\u00e3o. 
+incorrect.maskflag.useraction=Verifique os dados de quadro de mensagem do WebSocket recebidos para exatid\u00e3o.
 
 invalid.maskflag.value=CWWKH0033E: Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem WebSocket recebida na classe ServerEndpoint {0} porque o Sinalizador de M\u00e1scara n\u00e3o est\u00e1 configurado para um valor correto.
 invalid.maskflag.value.explanation=Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem de WebSocket recebida porque o Sinalizador de M\u00e1scara n\u00e3o est\u00e1 configurado para um valor correto no quadro de mensagens.
 invalid.maskflag.value.useraction=Verifique os dados de quadro de mensagem do WebSocket recebidos para exatid\u00e3o.
 
 duplicate.uri=CWWKH0034E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque mais de um endpoint do servidor possui o mesmo URI {0}.
-duplicate.uri.explanation=Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um endpoint do servidor possui o mesmo URI. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+duplicate.uri.explanation=Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um endpoint do\nservidor possui o mesmo URI. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 duplicate.uri.useraction=Defina URIs ServerEndpoint exclusivos no aplicativo WebSocket. Depois de resolver o problema, implemente o aplicativo novamente.
 
 invalid.nonzero.opcode=CWWKH0035E: Ocorreu uma exce\u00e7\u00e3o ao ler uma mensagem WebSocket recebida na classe ServerEndpoint {0} devido a um c\u00f3digo de opera\u00e7\u00e3o inv\u00e1lido diferente de zero do quadro que n\u00e3o era o primeiro.
@@ -159,7 +159,7 @@ invalid.nonzero.opcode.explanation=Ocorreu uma exce\u00e7\u00e3o ao ler uma mens
 invalid.nonzero.opcode.useraction=Verifique os dados de quadro de mensagem do WebSocket recebidos para exatid\u00e3o.
 
 morethanoneonopen.annotation=CWWKH0036E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o do aplicativo WebSocket porque mais de um m\u00e9todo @OnOpen estava definido na classe Annotated Endpoint {0}.
-morethanoneonopen.annotation.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnOpen est\u00e1 definido na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso. 
+morethanoneonopen.annotation.explanation=O Annotated ServerEndpoint \u00e9 inv\u00e1lido porque mais de um m\u00e9todo @OnOpen\nest\u00e1 definido na classe Annotated Endpoint. O aplicativo WebSocket n\u00e3o foi implementado com sucesso.
 morethanoneonopen.annotation.useraction=Corrija a classe Annotated ServerEndpoint definindo apenas um m\u00e9todo @OnOpen. Depois de resolver o problema, implemente o aplicativo novamente.
 
 invalid.message.toobig=CWWKH0037E: Mensagem do WebSocket recebida inv\u00e1lida na classe ServerEndpoint {0}. O tamanho da mensagem recebida \u00e9 {1} que \u00e9 maior do que o maxMessageSize {2} definido no m\u00e9todo de anota\u00e7\u00e3o @OnMessage {3}.
@@ -172,24 +172,24 @@ maxidletimeout.closesession.useraction=Verifique por que o cliente n\u00e3o est\
 
 client.invalid.returncode=CWWKH0039E: Quando uma solicita\u00e7\u00e3o WebSocket realizada foi enviada ao terminal {1} no servidor de destino, uma resposta {0} foi retornada em vez de uma resposta 101.
 client.invalid.returncode.explanation=As opera\u00e7\u00f5es WebSocket de sa\u00edda requerem um c\u00f3digo de resposta 101 para opera\u00e7\u00f5es WebSocket.
-client.invalid.returncode.useraction=Use o c\u00f3digo de resposta inv\u00e1lido para determinar se o terminal de destino \u00e9 um terminal WebSocket v\u00e1lido e em execu\u00e7\u00e3o e para determinar a causa da falha na solicita\u00e7\u00e3o WebSocket realizada. 
+client.invalid.returncode.useraction=Use o c\u00f3digo de resposta inv\u00e1lido para determinar se o terminal de destino \u00e9 um terminal WebSocket v\u00e1lido e em execu\u00e7\u00e3o e para determinar a causa da falha na solicita\u00e7\u00e3o WebSocket realizada.
 
-client.invalid.acceptkey=CWWKH0040E: O servidor de destino respondeu com uma chave de aceita\u00e7\u00e3o WebSocket inv\u00e1lida ao enviar uma solicita\u00e7\u00e3o WebSocket realizada ao terminal {1}.  
+client.invalid.acceptkey=CWWKH0040E: O servidor de destino respondeu com uma chave de aceita\u00e7\u00e3o WebSocket inv\u00e1lida ao enviar uma solicita\u00e7\u00e3o WebSocket realizada ao terminal {1}.
 client.invalid.acceptkey.explanation=As opera\u00e7\u00f5es WebSocket de sa\u00edda requerem que o servidor de destino retorne uma chave de aceita\u00e7\u00e3o WebSocket v\u00e1lida para opera\u00e7\u00f5es WebSocket.
 client.invalid.acceptkey.useraction=Verifique se o servidor de destino est\u00e1 em conformidade com o protocolo WebSocket.
 
 client.invalid.endpoint=CWWKH0041E: O terminal {0} inv\u00e1lido foi especificado durante uma solicita\u00e7\u00e3o WebSocket realizada.
 client.invalid.endpoint.explanation=Um terminal v\u00e1lido \u00e9 necess\u00e1rio para uma solicita\u00e7\u00e3o WebSocket realizada.
-client.invalid.endpoint.useraction=Verifique se o par\u00e2metro ClientEndpoint usado no m\u00e9todo connectToServer da chamada API do WebSocket \u00e9 um terminal de cliente anotado. 
+client.invalid.endpoint.useraction=Verifique se o par\u00e2metro ClientEndpoint usado no m\u00e9todo connectToServer da chamada API do WebSocket \u00e9 um terminal de cliente anotado.
 
 client.invalid.scheme=CWWKH0042E: Um esquema {0} inv\u00e1lido foi usado para a conex\u00e3o do cliente de sa\u00edda. Esquemas v\u00e1lidos para o protocolo WebSocket s\u00e3o ws ou wss.
 client.invalid.scheme.explanation=Esquemas WebSocket v\u00e1lidos s\u00e3o ws ou wss.
 client.invalid.scheme.useraction=Use um esquema v\u00e1lido durante uma solicita\u00e7\u00e3o WebSocket realizada.
 
-client.invalid.configurator=CWWKH0043E: A classe Configurator {0} n\u00e3o foi criada durante uma solicita\u00e7\u00e3o realizada. A exce\u00e7\u00e3o \u00e9 {1}. 
+client.invalid.configurator=CWWKH0043E: A classe Configurator {0} n\u00e3o foi criada durante uma solicita\u00e7\u00e3o realizada. A exce\u00e7\u00e3o \u00e9 {1}.
 client.invalid.configurator.explanation=A classe Configuration n\u00e3o foi criada durante uma solicita\u00e7\u00e3o realizada, possivelmente porque o construtor de argumento zero p\u00fablico da classe Configurator n\u00e3o existia ou n\u00e3o estava acess\u00edvel.
 client.invalid.configurator.useraction=Verifique a exatid\u00e3o da classe do configurador e se a classe possui um construtor de argumento zero p\u00fablico acess\u00edvel.
- 
+
 client.connection.error=CWWKH0044E: O terminal {0} n\u00e3o p\u00f4de ser processado durante uma solicita\u00e7\u00e3o WebSocket realizada.  A exce\u00e7\u00e3o \u00e9 {1}.
 client.connection.error.explanation=A exce\u00e7\u00e3o ocorreu quando o terminal tentou se conectar ao servidor de destino durante uma solicita\u00e7\u00e3o WebSocket realizada.
 client.connection.error.useraction=Use detalhes da exce\u00e7\u00e3o para determinar a causa e corrija o problema.
@@ -200,7 +200,7 @@ client.invalid.endpointclass.useraction=Verifique se o par\u00e2metro Endpoint u
 
 adding.endpoint=CWWKH0046I: Incluindo um WebSocket ServerEndpoint com o seguinte URI: {0}
 adding.endpoint.explanation=O WebSocket ServerEndpoint com o URI especificado est\u00e1 dispon\u00edvel para uso do cliente do WebSocket.
-adding.endpoint.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria. 
+adding.endpoint.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 invalid.endpoint.context=CWWKH0047E: Os WebSocket ServerEndpoints com o caminho do contexto {0} n\u00e3o est\u00e3o dispon\u00edveis para o cliente.
 invalid.endpoint.context.explanation=Os WebSocket ServerEndpoints com o caminho do contexto especificado est\u00e3o indispon\u00edveis para atender o cliente do WebSocket.
@@ -222,9 +222,10 @@ endpoint.instance.error=CWWKH0051E: O servidor n\u00e3o pode acessar a classe do
 endpoint.instance.error.explanation=Quando o servidor tentou acessar a classe de terminal especificada, ocorreu um erro.
 endpoint.instance.error.useraction=Revise os detalhes da exce\u00e7\u00e3o para determinar por que a classe de terminal n\u00e3o poder ser acessada e corrija o problema.
 
-missingslashornull.uri=CWWKH0052E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o/in\u00edcio do terminal do servidor: {0} com o uri: "{1}". Endpoint URI \u00e9 nulo ou n\u00e3o inicia com /.
-missingslashornull.uri.explanation=ServerEndpoint \u00e9 inv\u00e1lido porque o Endpoint URI \u00e9 nulo ou n\u00e3o come\u00e7a com / na classe de terminal. O aplicativo WebSocket n\u00e3o est\u00e1 dispon\u00edvel para solicita\u00e7\u00f5es. 
+missingslashornull.uri=CWWKH0052E: Ocorreu uma exce\u00e7\u00e3o durante a implementa\u00e7\u00e3o / in\u00edcio do Terminal do servidor: {0} com uri: {1}. Endpoint URI \u00e9 nulo ou n\u00e3o inicia com /.
+missingslashornull.uri.explanation=ServerEndpoint \u00e9 inv\u00e1lido porque o Endpoint URI \u00e9 nulo ou n\u00e3o come\u00e7a com / na classe de terminal. O aplicativo WebSocket n\u00e3o est\u00e1 dispon\u00edvel para solicita\u00e7\u00f5es.
 missingslashornull.uri.useraction=Definir Endpoint URI n\u00e3o nulo iniciando com /. Depois de resolver o problema, implemente o aplicativo novamente.
 
-
-
+wsoc.feature.not.loaded.correctly=CWWKH0053E: O recurso Websocket n\u00e3o foi carregado com uma vers\u00e3o aceit\u00e1vel.
+wsoc.feature.not.loaded.correctly.explanation=O recurso Websocket est\u00e1 carregado com uma vers\u00e3o que corresponde \u00e0 especifica\u00e7\u00e3o Java [Jakarta] EE desse recurso Websocket. O recurso foi carregado sem uma vers\u00e3o definida.
+wsoc.feature.not.loaded.correctly.useraction=Verifique o arquivo server.xml para a exist\u00eancia de diversos recursos Websocket. Apenas um deve ser especificado.

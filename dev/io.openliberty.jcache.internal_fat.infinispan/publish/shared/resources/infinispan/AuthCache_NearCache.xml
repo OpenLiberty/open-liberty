@@ -1,0 +1,38 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!--
+    For testing we use a local cache to avoid errors / warnings since we run
+    the Infinispan server in a remote Docker container. These issues result
+    in a 6-7x performance degradation in the test (even though they still passed).
+    
+    A customer would probably want to use a distributed, replicated or scattered cache.
+ -->
+<local-cache name="AuthCache" statistics="true">
+	<!-- 
+		Set the maximum cache size that corresponds to authCache->maxSize.
+	-->
+	<memory max-count="25000" when-full="REMOVE" />
+	
+	<!-- 
+		Set expiry policy that corresponds to authCache->timeout.
+		
+		NOTE: Using max-idle with near-cache is unsupported, 
+		      so set lifespan instead.
+	-->
+	<expiration max-idle="-1" lifespan="600000" />
+	
+	<!-- 
+		Set encoding for keys / values.
+	 -->
+	<encoding media-type="application/x-java-serialized-object" />
+</local-cache>
+ 

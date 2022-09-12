@@ -76,12 +76,6 @@
 ### Search on "TBD" for messages that need information from other components ###
  
 # -------------------------------------------------------------------------------------------------
-# {0} Messaging engine name
-ME_INITIALIZING_SIAS0001=CWSID0001I: {0} \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \ucd08\uae30\ud654\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
-ME_INITIALIZING_SIAS0001.explanation=\uc9c0\uc815\ub41c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \ucd08\uae30\ud654\ub97c \uc2dc\uc791 \uc911\uc785\ub2c8\ub2e4.
-ME_INITIALIZING_SIAS0001.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
- 
-# -------------------------------------------------------------------------------------------------
 # {0} Internal reason string
 INTERNAL_ERROR_SIAS0003=CWSID0003E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc774\uc720: {0}
 INTERNAL_ERROR_SIAS0003.explanation=\uc2dc\uc2a4\ud15c \uc870\uc791 \uc911\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
@@ -252,7 +246,7 @@ NO_ID_PROVIDED_SIAS0102.explanation=\ub300\uc0c1\uc5d0 \ub300\ud55c ID\uac00 \uc
 NO_ID_PROVIDED_SIAS0102.useraction=\ub300\uc0c1\uc5d0 \ub300\ud55c ID\ub97c \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
 
 # -------------------------------------------------------------------------------------------------
-NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  fileStore \ud0dc\uadf8\uac00 \uc11c\ubc84 \uad6c\uc131 \ud30c\uc77c\uc5d0\uc11c \uc815\uc758\ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c \uae30\ubcf8\uac12\uc774 \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I: \ fileStore \ud0dc\uadf8\uac00 \uc11c\ubc84 \uad6c\uc131 \ud30c\uc77c\uc5d0\uc11c \uc815\uc758\ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c \uae30\ubcf8\uac12\uc774 \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 NO_FILESTOR_DEFINED_SIAS0104.explanation=fileStore \ud0dc\uadf8\uac00 \uc81c\uacf5\ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c \ud30c\uc77c \uc800\uc7a5\uc18c\ub97c \uc791\uc131\ud558\ub294 \ub3d9\uc548 \uae30\ubcf8\uac12\uc774 \uc0ac\uc6a9\ub429\ub2c8\ub2e4.   
 NO_FILESTOR_DEFINED_SIAS0104.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
 

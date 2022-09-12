@@ -14,9 +14,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jca.fat.regr.app.InboundSecurityTest;
-import com.ibm.ws.jca.fat.regr.app.InboundSecurityTestRapid;
-
 import suite.r80.base.jca16.ann.ActivationMergeActionTest;
 import suite.r80.base.jca16.ann.AdministeredObjectMergeActionTest;
 import suite.r80.base.jca16.ann.AdministeredObjectValidatorTest;
@@ -33,8 +30,6 @@ import suite.r80.base.jca16.tranlvl.TranLvlTest;
 @SuiteClasses({
                 GenericWorkContextTest.class,
                 ConnectorMergeActionTest.class,
-                InboundSecurityTestRapid.class,
-                InboundSecurityTest.class,
                 TranLvlTest.class,
                 ActivationMergeActionTest.class,
                 AdministeredObjectMergeActionTest.class,

@@ -31,6 +31,7 @@ import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -40,6 +41,7 @@ import componenttest.topology.impl.LibertyServer;
  * Contains distributed JCache test dynamic server.xml changes
  */
 @SuppressWarnings("restriction")
+@SkipIfSysProp("skip.tests=true")
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -54,6 +56,8 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
 
     @BeforeClass
     public static void setup() throws Exception {
+        assumeShouldNotSkipTests();
+
         String groupName = UUID.randomUUID().toString();
         /*
          * Start server 1.
@@ -107,7 +111,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
     public void addAndRemoveCaches() throws Exception {
         // Create a working cache configuration
         updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props");
+                            "file:///${shared.resource.dir}/infinispan/${infinispan.hotrod.file}");
         ServerConfiguration current = server1.getServerConfiguration();
 
         // Add second and third cache
@@ -274,7 +278,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          * ***********************************************************************
          */
         updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props");
+                            "file:///${shared.resource.dir}/infinispan/${infinispan.hotrod.file}");
 
         /*
          * All issues have been fixed, so wait for the auth cache to start.

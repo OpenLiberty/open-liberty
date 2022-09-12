@@ -11,7 +11,6 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -65,8 +64,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
-import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
-import io.openliberty.security.oidcclientcore.utils.Utils;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import test.common.SharedOutputManager;
 
 public class OIDCClientAuthenticatorUtilTest {
@@ -498,12 +496,12 @@ public class OIDCClientAuthenticatorUtilTest {
                 one(req).getCookies();
                 will(returnValue(cookies));
                 one(cookie1).getName();
-                will(returnValue(OidcClientStorageConstants.WAS_OIDC_STATE_KEY + cookieState.hashCode()));
+                will(returnValue(OidcStorageUtils.getStateStorageKey(cookieState)));
                 one(cookie1).getValue();
                 will(returnValue(currentState));
             }
         });
-        createReferrerUrlCookieExpectations(OidcClientStorageConstants.WAS_OIDC_STATE_KEY + cookieState.hashCode());
+        createReferrerUrlCookieExpectations(OidcStorageUtils.getStateStorageKey(cookieState));
     }
 
     private void createCreateResultExpectations(String idToken) {
@@ -930,15 +928,19 @@ public class OIDCClientAuthenticatorUtilTest {
     public void testVerifyResponseStateFailure() {
         try {
             final String originalState = TEST_ORIGINAL_STATE;
-            final String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY + Utils.getStrHashCode("notA" + originalState);
+            final String cookieName = OidcStorageUtils.getStateStorageKey("notA" + originalState);
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getClientId();
+                    allowing(convClientConfig).getClientId();
                     will(returnValue(CLIENT01));
                     one(req).getCookies();
                     will(returnValue(cookies));
                     one(convClientConfig).getClientSecret();
                     will(returnValue("clientsecret"));
+                    one(convClientConfig).getClockSkewInSeconds();
+                    will(returnValue(TEST_CLOCK_SKEW_IN_SECONDS));
+                    one(convClientConfig).getAuthenticationTimeLimitInSeconds();
+                    will(returnValue(420L));
                     one(referrerURLCookieHandler).invalidateCookie(req, res, cookieName, true);
                 }
             });
@@ -1006,98 +1008,6 @@ public class OIDCClientAuthenticatorUtilTest {
         ProviderAuthenticationResult oidcResult = oidcCAUtil.verifyResponseState(req, res, null, convClientConfig);
 
         checkForBadStatusExpectations(oidcResult);
-    }
-
-    @Test
-    public void testVerifyState_stateStringTooShort() {
-        String responseState = "short";
-
-        boolean result = oidcCAUtil.verifyState(req, res, responseState, convClientConfig);
-        assertFalse("State [" + responseState + "] should not have been considered value.", result);
-    }
-
-    @Test
-    public void testIsStateTimestampWithinClockSkew_responseStateFromPast_withinAllowableTime() {
-        long clockSkewMillSeconds = 0;
-        long allowHandleTimeMillSeconds = 10 * 1000;
-
-        long now = System.currentTimeMillis();
-        long responseStateTime = now - (2 * 1000);
-
-        mock.checking(new Expectations() {
-            {
-                one(convClientConfig).getClockSkewInSeconds();
-                will(returnValue(clockSkewMillSeconds / 1000));
-                one(convClientConfig).getAuthenticationTimeLimitInSeconds();
-                will(returnValue(allowHandleTimeMillSeconds / 1000));
-            }
-        });
-
-        String responseState = "00" + responseStateTime + "stateValue";
-        boolean result = oidcCAUtil.isStateTimestampWithinClockSkew(responseState, convClientConfig);
-        assertTrue("Response state [" + responseStateTime + "] should have been considered within the allowable upper limit [" + allowHandleTimeMillSeconds + "] of current(ish) time [" + System.currentTimeMillis() + "]. Clock skew was [" + clockSkewMillSeconds + "].", result);
-    }
-
-    @Test
-    public void testIsStateTimestampWithinClockSkew_responseStateFromPast_outsideAllowableTime() {
-        long clockSkewMillSeconds = 0;
-        long allowHandleTimeMillSeconds = 2 * 1000;
-
-        long now = System.currentTimeMillis();
-        long responseStateTime = now - (10 * 1000);
-
-        mock.checking(new Expectations() {
-            {
-                one(convClientConfig).getClockSkewInSeconds();
-                will(returnValue(clockSkewMillSeconds / 1000));
-                one(convClientConfig).getAuthenticationTimeLimitInSeconds();
-                will(returnValue(allowHandleTimeMillSeconds / 1000));
-            }
-        });
-
-        String responseState = "00" + responseStateTime + "stateValue";
-        boolean result = oidcCAUtil.isStateTimestampWithinClockSkew(responseState, convClientConfig);
-        assertFalse("Response state [" + responseStateTime + "] should have been considered outside the allowable upper limit [" + allowHandleTimeMillSeconds + "] of current(ish) time [" + System.currentTimeMillis() + "]. Clock skew was [" + clockSkewMillSeconds + "].", result);
-    }
-
-    @Test
-    public void testIsStateTimestampWithinClockSkew_responseStateFromFuture_withinClockSkew() {
-        long clockSkewMillSeconds = 10 * 1000;
-        long allowHandleTimeMillSeconds = 0;
-
-        long now = System.currentTimeMillis();
-        long responseStateTime = now + (2 * 1000);
-
-        mock.checking(new Expectations() {
-            {
-                one(convClientConfig).getClockSkewInSeconds();
-                will(returnValue(clockSkewMillSeconds / 1000));
-            }
-        });
-
-        String responseState = "00" + responseStateTime + "stateValue";
-        boolean result = oidcCAUtil.isStateTimestampWithinClockSkew(responseState, convClientConfig);
-        assertTrue("Response state [" + responseStateTime + "] should have been considered within the clock skew [" + clockSkewMillSeconds + "] of current(ish) time [" + System.currentTimeMillis() + "]. Allowable upper limit was [" + allowHandleTimeMillSeconds + "].", result);
-    }
-
-    @Test
-    public void testIsStateTimestampWithinClockSkew_responseStateFromFuture_outsideClockSkew() {
-        long clockSkewMillSeconds = 2 * 1000;
-        long allowHandleTimeMillSeconds = 0;
-
-        long now = System.currentTimeMillis();
-        long responseStateTime = now + (10 * 1000);
-
-        mock.checking(new Expectations() {
-            {
-                one(convClientConfig).getClockSkewInSeconds();
-                will(returnValue(clockSkewMillSeconds / 1000));
-            }
-        });
-
-        String responseState = "00" + responseStateTime + "stateValue";
-        boolean result = oidcCAUtil.isStateTimestampWithinClockSkew(responseState, convClientConfig);
-        assertFalse("Response state [" + responseStateTime + "] should have been considered outside the clock skew [" + clockSkewMillSeconds + "] of current(ish) time [" + System.currentTimeMillis() + "]. Allowable upper limit was [" + allowHandleTimeMillSeconds + "].", result);
     }
 
     private void checkForBadStatusExpectations(ProviderAuthenticationResult oidcResult) {

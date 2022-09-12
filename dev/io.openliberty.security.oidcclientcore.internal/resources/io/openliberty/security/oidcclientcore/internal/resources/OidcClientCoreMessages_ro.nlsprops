@@ -16,3 +16,35 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2400 - CWWKS2499
+
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS2400E: Clientul OpenID Connect {0} a \u00eent\u00e2mpinat o eroare \u00een timpul trimiterii unei solicit\u0103ri de autorizare c\u0103tre furnizorul OpenID Connect. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Ar putea lipsi de informa\u021bii din configura\u021bia client OpenID Connect sau clientul a \u00eent\u00e2lnit o eroare \u00een timpul comunic\u0103rii cu furnizorul OpenID Connect.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare.
+
+OIDC_CLIENT_CONFIGURATION_ERROR=CWWKS2401E: Configura\u021bia pentru clientul OpenID Connect {0} nu este valid\u0103 sau are date lips\u0103. {1}
+OIDC_CLIENT_CONFIGURATION_ERROR.explanation=Lipsesc informa\u021bii care sunt necesare din configura\u021bia clientului OpenID Connect.
+OIDC_CLIENT_CONFIGURATION_ERROR.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u021bi dac\u0103 configura\u021bia clientului OpenID Connect este complet\u0103 \u0219i precis\u0103.
+
+URL_NOT_HTTPS=CWWKS2402E: URL-ul punctului final {0} care este configurat pentru clientul OpenID Connect {1} nu utilizeaz\u0103 protocolul HTTPS, dar HTTPS este necesar.
+URL_NOT_HTTPS.explanation=URL-ul punctului final trebuie s\u0103 utilizeze protocolul HTTPS pentru a se asigura c\u0103 solicit\u0103rile sunt sigure.
+URL_NOT_HTTPS.useraction=Actualiza\u021bi URL-ul punctului final pentru a utiliza protocolul HTTPS.
+
+DISCOVERY_EXCEPTION=CWWKS2403E: Clientul OpenID Connect {0} a \u00eent\u00e2mpinat urm\u0103toarea eroare \u00een timpul descoperirii metadatelor pentru furnizorul OpenID Connect din URL-ul [{1}]: {2}
+DISCOVERY_EXCEPTION.explanation=Ar putea lipsi de informa\u021bii din configura\u021bia client OpenID Connect sau clientul a \u00eent\u00e2lnit o eroare \u00een timpul comunic\u0103rii cu furnizorul OpenID Connect.
+DISCOVERY_EXCEPTION.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare.
+
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: Atributul providerURI pentru clientul {0} OpenID Connect este nul sau gol \u0219i nu exist\u0103 metadate disponibile pentru furnizorul OpenID Connect.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=Clientul OpenID Connect trebuie s\u0103 descopere metadate pentru furnizorul OpenID Connect, dar clientul nu are un atribut providerURI sau metadate de furnizor configurate.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Specifica\u021bi o valoare pentru atributul providerURI \u00een configura\u021bia clientului OpenID Connect sau specifica\u021bi metadatele furnizorului OpenID Connect \u00een configura\u021bia clientului.
+
+DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: Din metadatele furnizorului OpenID Connect lipse\u0219te proprietatea [{0}] necesar\u0103.
+DISCOVERY_METADATA_MISSING_VALUE.explanation=Proprietatea care este specificat\u0103 \u00een mesaj trebuie s\u0103 fie prezent\u0103 \u00een metadatele furnizorului OpenID Connect, dar lipse\u0219te.
+DISCOVERY_METADATA_MISSING_VALUE.useraction=Verifica\u021bi dac\u0103 atributul providerURI pentru clientul OpenID Connect este setat la URL-ul de descoperire corect pentru furnizorul OpenID Connect.
+
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL=CWWKS2406E: Clientul OpenID Connect {0} poate redirec\u021biona utilizatorul c\u0103tre punctul final de autorizare, deoarece clientul nu poate determina URL-ul punctului final de autorizare. {1}
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.explanation=URL-ul punctului final de autorizare \u00een configura\u021bia clientului OpenID Connect ar putea fi format gre\u0219it sau lips\u0103, sau clientul OpenID Connect nu a reu\u0219it s\u0103 ob\u021bin\u0103 URL-ul punctului final de autorizare de la furnizorul OpenID Connect.
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u021bi dac\u0103 configura\u021bia clientului OpenID Connect este complet\u0103 \u0219i precis\u0103.
+
+AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: Clientul OpenID Connect {0} a \u00eent\u00e2mpinat urm\u0103toarea eroare \u00een timp ce verifica r\u0103spunsul de autentificare de la furnizorul OpenID Connect: {1}
+AUTHENTICATION_RESPONSE_ERROR.explanation=Ar putea lipsi informa\u021bii din r\u0103spunsul de la furnizorul OpenID Connect. S-ar putea s\u0103 existe o problem\u0103 cu codul returnat de la furnizorul OpenID Connect.
+AUTHENTICATION_RESPONSE_ERROR.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare.

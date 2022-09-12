@@ -26,7 +26,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.json.java.JSONObject;
+import com.ibm.websphere.ras.Tr;
 import com.ibm.ws.security.test.common.CommonTestClass;
+import com.ibm.ws.webcontainer.security.AuthResult;
+import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
@@ -96,6 +99,17 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
         });
         return new JakartaOidcAuthorizationRequest(request, response, config) {
             @Override
+            public ProviderAuthenticationResult sendRequest() {
+                try {
+                    discoveryData = getProviderMetadata();
+                    return null;
+                } catch (Exception e) {
+                    Tr.error(tc, "ERROR_SENDING_AUTHORIZATION_REQUEST", clientId, e.getMessage());
+                    return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+                }
+            }
+
+            @Override
             DiscoveryHandler getDiscoveryHandler() {
                 return discoveryHandler;
             }
@@ -159,6 +173,9 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
                     will(returnValue(discoveryData));
                 }
             });
+            // Have to call sendRequest() to populate the discovery data
+            authzRequest.sendRequest();
+
             String result = authzRequest.getAuthorizationEndpoint();
             assertEquals(authorizationEndpointUrl, result);
         } catch (Exception e) {

@@ -16,3 +16,35 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2400 - CWWKS2499
+
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS2400E: Il client OpenID Connect {0} ha rilevato un errore durante l''invio di una richiesta di autorizzazione al provider OpenID Connect. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=La configurazione del client OpenID Connect potrebbe avere un'informazione mancante oppure il client ha rilevato un errore durante la comunicazione con il provider OpenID Connect.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.
+
+OIDC_CLIENT_CONFIGURATION_ERROR=CWWKS2401E: La configurazione per il client {0} OpenID Connect non \u00e8 valida o mancano dati. {1}
+OIDC_CLIENT_CONFIGURATION_ERROR.explanation=Alla configurazione del client OpenID Connect mancano le informazioni richieste.
+OIDC_CLIENT_CONFIGURATION_ERROR.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio. Verificare che la configurazione del client OpenID Connect sia completa e precisa.
+
+URL_NOT_HTTPS=CWWKS2402E: L''URL dell''endpoint {0} configurato per il client OpenID Connect {1} non utilizza il protocollo HTTPS, ma HTTPS \u00e8 richiesto.
+URL_NOT_HTTPS.explanation=L'URL dell'endpoint deve utilizzare il protocollo HTTPS per garantire che le richieste siano sicure.
+URL_NOT_HTTPS.useraction=Aggiornare l'URL dell'endpoint per utilizzare il protocollo HTTPS.
+
+DISCOVERY_EXCEPTION=CWWKS2403E: Il client OpenID Connect {0} ha riscontrato il seguente errore durante la rilevazione dei metadati per il provider OpenID Connect dall''URL [{1}]: {2}
+DISCOVERY_EXCEPTION.explanation=La configurazione del client OpenID Connect potrebbe avere un'informazione mancante oppure il client ha rilevato un errore durante la comunicazione con il provider OpenID Connect.
+DISCOVERY_EXCEPTION.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.
+
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: L''attributo providerURI per il client OpenID Connect {0} \u00e8 null o vuoto e non sono disponibili metadati per il provider OpenID Connect.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=Il client OpenID Connect deve rilevare i metadati per il provider OpenID Connect, ma il client non dispone di un attributo providerURI o di metadati del provider configurati.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Specificare un valore per l'attributo providerURI nella configurazione del client OpenID Connect oppure specificare i metadati del provider OpenID Connect nella configurazione del client.
+
+DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: Ai metadati del provider OpenID Connect manca la propriet\u00e0 obbligatoria [{0}].
+DISCOVERY_METADATA_MISSING_VALUE.explanation=La propriet\u00e0 specificata nel messaggio deve essere presente nei metadati del provider OpenID Connect, ma \u00e8 mancante.
+DISCOVERY_METADATA_MISSING_VALUE.useraction=Verificare che l'attributo providerURI per il client OpenID Connect sia impostato sull'URL di rilevamento corretto per il provider OpenID Connect.
+
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL=CWWKS2406E: Il client OpenID Connect {0} non pu\u00f2 reindirizzare l''utente all''endpoint di autorizzazione perch\u00e9 il client non pu\u00f2 determinare l''URL dell''endpoint di autorizzazione. {1}
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.explanation=L'URL dell'endpoint di autorizzazione nella configurazione del client OpenID Connect potrebbe avere un formato errato o essere mancante, oppure il client OpenID Connect non \u00e8 riuscito ad ottenere l'URL dell'endpoint di autorizzazione dal provider OpenID Connect.
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio. Verificare che la configurazione del client OpenID Connect sia completa e precisa.
+
+AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: Il client OpenID Connect {0} ha rilevato il seguente errore durante la verifica della risposta di autenticazione dal provider OpenID Connect: {1}
+AUTHENTICATION_RESPONSE_ERROR.explanation=Alla risposta del provider OpenID Connect potrebbero mancare delle informazioni. Potrebbe esserci un problema con il codice restituito dal provider OpenID Connect.
+AUTHENTICATION_RESPONSE_ERROR.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.

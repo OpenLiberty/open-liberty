@@ -31,7 +31,6 @@ import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
-import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import test.common.SharedOutputManager;
 
@@ -120,7 +119,7 @@ public class OidcUtilTest {
                 will(returnValue("secret"));
             }
         });
-        final String expectedNonceCookieName = OidcStorageUtils.getStorageKey(OidcClientStorageConstants.WAS_OIDC_NONCE, "client01", state);
+        final String expectedNonceCookieName = OidcStorageUtils.getNonceStorageKey("client01", state);
         final String expectedNonceCookieValue = OidcStorageUtils.createNonceStorageValue(nonceValue, state, "secret");
 
         mock.checking(new Expectations() {

@@ -304,5 +304,9 @@ NO_RECENT_SESSIONS_WITH_CLAIMS=CWWKS1552E: Clientul OpenID Connect [{0}] nu poat
 NO_RECENT_SESSIONS_WITH_CLAIMS.explanation=Clientul OpenID Connect nu are o sesiune recent\u0103 cu un furnizor OpenID Connect care s\u0103 se potriveasc\u0103 cu toate revendic\u0103rile care sunt specificate \u00een mesaj. Revendic\u0103rile specificate \u00een mesaj trebuie s\u0103 aib\u0103 \u00een jetonul de delogare valori care s\u0103 corespund\u0103 acelora\u0219i revendic\u0103ri ale unui jeton de ID care a fost primit recent.
 NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Asigura\u021bi-v\u0103 c\u0103 revendic\u0103rile specificate \u00een mesaj se potrivesc cu un jeton de ID care a fost ob\u021binut recent de la un furnizor OpenID Connect.
 
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Clientul OpenID Connect {0} a \u00eent\u00e2mpinat o eroare \u00een timpul trimiterii unei solicit\u0103ri de autorizare c\u0103tre furnizorul OpenID Connect. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Ar putea lipsi de informa\u021bii din configura\u021bia client OpenID Connect sau clientul a \u00eent\u00e2lnit o eroare \u00een timpul comunic\u0103rii cu furnizorul OpenID Connect.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

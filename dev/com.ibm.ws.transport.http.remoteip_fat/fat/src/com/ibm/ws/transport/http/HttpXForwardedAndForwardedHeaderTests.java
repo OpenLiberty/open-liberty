@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1848,6 +1848,113 @@ public class HttpXForwardedAndForwardedHeaderTests {
     }
 
     /**
+     * Test x-forwarded header with an invalid X-Forwarded-Proto header.
+     *
+     * The remote client address should not be verified.
+     *
+     * @throws Exception
+     *
+     *                       In this test, the x-forwarded-proto header is invalid, use the other
+     *                       x-forwarded headers but discard the proto
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testTrustedXForwardedIPv4WithInvalidProto() throws Exception {
+        String variation = "defaultRemoteIP";
+        String testName = "testTrustedXForwardedIPv4WithInvalidProto";
+        String servletName = "EndpointInformationServlet";
+        startServer(variation);
+
+        // Note that the proto contains invalid characters.
+        List<BasicHeader> headerList = new ArrayList<BasicHeader>();
+        headerList.addAll(Arrays.asList(new BasicHeader("X-Forwarded-For", "192.100.0.299,192.168.0.101,192.168.2.322,172.31.255.188"),
+                                        new BasicHeader("X-Forwarded-Host", "clienttest.com"),
+                                        new BasicHeader("X-Forwarded-Proto", "https://evil.com/#")));
+
+        HttpResponse httpResponse = execute(APP_NAME, servletName, headerList, testName);
+        String response = getResponseAsString(httpResponse);
+
+        Log.info(ME, testName, "Response: " + response);
+
+        assertTrue("Response does not contain Endpoint Information Servlet Test message", response.contains("Endpoint Information Servlet Test"));
+        assertTrue("Response does contain the expected Remote Address", response.contains("Remote Address: 192.100.0.299"));
+        assertTrue("Response does not contain valid Scheme", !response.contains("Scheme: https://evil.com/#"));
+        assertTrue("Response does not contain valid Scheme", response.contains("Scheme: http"));
+    }
+
+    /**
+     * Test Forward header with an invalid proto parameter.
+     *
+     * The remote client address should not be verified.
+     *
+     * In this test, one of the parms of the forwarded header is invalid - proto.
+     * Throw out all the parms for the whole header.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testTrustedForwardedIPv4WithInvalidProto() throws Exception {
+        String variation = "defaultRemoteIP";
+        String testName = "testTrustedForwardedIPv4WithInvalidProto";
+        String servletName = "EndpointInformationServlet";
+        startServer(variation);
+
+        List<BasicHeader> headerList = new ArrayList<BasicHeader>();
+        // Note that the proto contains invalid characters.
+        headerList.addAll(Arrays
+                        .asList(new BasicHeader("Forwarded", "for=192.100.0.299,for=192.168.0.101,for=192.168.2.322,for=172.31.255.188;"
+                                                             + "host=clienttest.com;"
+                                                             + "proto=https://evil.com/#")));
+
+        HttpResponse httpResponse = execute(APP_NAME, servletName, headerList, testName);
+        String response = getResponseAsString(httpResponse);
+
+        Log.info(ME, testName, "Response: " + response);
+
+        assertTrue("Response does not contain Endpoint Information Servlet Test message", response.contains("Endpoint Information Servlet Test"));
+        assertTrue("Response does contain the expected Remote Address", response.contains("Remote Address: 127.0.0.1"));
+        assertTrue("Response does not contain expected Remote Host", response.contains("Remote Host: localhost"));
+        assertTrue("Response does not contain valid Scheme", !response.contains("Scheme: https://evil.com/#"));
+        assertTrue("Response does not contain valid Scheme", response.contains("Scheme: http"));
+    }
+
+    /**
+     * Test Forward header with an invalid host parameter.
+     * The only invalid host would be an ipv6 address with mismatched [] or
+     * a [ bracket not in the first position.
+     *
+     * The remote client address should not be verified.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testTrustedForwardedIPv4WithInvalidHost() throws Exception {
+        String variation = "defaultRemoteIP";
+        String testName = "testTrustedForwardedIPv4WithInvalidHost";
+        String servletName = "EndpointInformationServlet";
+        startServer(variation);
+
+        List<BasicHeader> headerList = new ArrayList<BasicHeader>();
+        // Note that the host contains invalid characters.
+        headerList.addAll(Arrays
+                        .asList(new BasicHeader("Forwarded", "for=192.100.0.299,for=192.168.0.101,for=192.168.2.322,for=172.31.255.188;"
+                                                             + "host=a[a];"
+                                                             + "proto=https")));
+
+        HttpResponse httpResponse = execute(APP_NAME, servletName, headerList, testName);
+        String response = getResponseAsString(httpResponse);
+
+        Log.info(ME, testName, "Response: " + response);
+
+        assertTrue("Response does not contain Endpoint Information Servlet Test message", response.contains("Endpoint Information Servlet Test"));
+        assertTrue("Response does contain the expected Remote Address", response.contains("Remote Address: 127.0.0.1"));
+        assertTrue("Response does not contain valid Remote Host", !response.contains("Remote Host: []"));
+        assertTrue("Response does not contain valid Scheme", response.contains("Scheme: http"));
+    }
+
+    /**
      * Private method to start a server.
      *
      * Please look at publish/files/remoteIPConfig directory for the different server names.
@@ -1865,10 +1972,10 @@ public class HttpXForwardedAndForwardedHeaderTests {
     /**
      * Private method to execute/drive an HTTP request and obtain an HTTP response
      *
-     * @param app The app name or context root
-     * @param path The specific path to drive the request
+     * @param app        The app name or context root
+     * @param path       The specific path to drive the request
      * @param headerList A list of headers to be added in the request
-     * @param variation The name of the server for logging purposes
+     * @param variation  The name of the server for logging purposes
      * @return The HTTP response for the request
      * @throws Exception
      */

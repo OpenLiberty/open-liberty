@@ -48,7 +48,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
-import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import test.common.SharedOutputManager;
 
 public class OidcClientAuthenticatorTest {
@@ -99,9 +99,9 @@ public class OidcClientAuthenticatorTest {
                 will(returnValue(true));
                 allowing(webAppSecConfig).getHttpOnlyCookies();
                 will(returnValue(true));
-                allowing(webAppSecConfig).getSSODomainList();//
-                will(returnValue(null)); //
-                allowing(webAppSecConfig).getSSOUseDomainFromURL();//
+                allowing(webAppSecConfig).getSSODomainList();
+                will(returnValue(null));
+                allowing(webAppSecConfig).getSSOUseDomainFromURL();
                 will(returnValue(false));
                 allowing(webAppSecConfig).createSSOCookieHelper();
                 will(returnValue(new SSOCookieHelperImpl(webAppSecConfig)));
@@ -192,21 +192,22 @@ public class OidcClientAuthenticatorTest {
             final Cookie[] cookies = new Cookie[] {
                     cookie1
             };
-            final String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY +
-                    TEST_ORIGINAL_STATE.hashCode();
+            final String cookieName = OidcStorageUtils.getStateStorageKey(TEST_ORIGINAL_STATE);
             final String originalState = TEST_ORIGINAL_STATE;
 
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getClientId(); //oidcClientConfig
+                    allowing(convClientConfig).getClientId();
                     will(returnValue(CLIENT01));
-                    one(convClientConfig).getClockSkewInSeconds();//
+                    allowing(convClientConfig).getClockSkewInSeconds();
                     will(returnValue(300L));
-                    one(convClientConfig).getId();//
+                    allowing(convClientConfig).getAuthenticationTimeLimitInSeconds();
+                    will(returnValue(420L));
+                    one(convClientConfig).getId();
                     will(returnValue(CLIENT01));
-                    one(convClientConfig).getClientSecret();//
+                    one(convClientConfig).getClientSecret();
                     will(returnValue("clientsecret"));
-                    one(referrerURLCookieHandler).invalidateReferrerURLCookie(req, res, "WASOidcStateKey"); //
+                    one(referrerURLCookieHandler).invalidateReferrerURLCookie(req, res, "WASOidcStateKey");
                     one(req).getCookies();
                     will(returnValue(cookies));
                     one(cookie1).getName();
@@ -259,20 +260,21 @@ public class OidcClientAuthenticatorTest {
             final Cookie[] cookies = new Cookie[] {
                     cookie1
             };
-            final String cookieName = OidcClientStorageConstants.WAS_OIDC_STATE_KEY +
-                    TEST_ORIGINAL_STATE.hashCode();
+            final String cookieName = OidcStorageUtils.getStateStorageKey(TEST_ORIGINAL_STATE);
             final String originalState = TEST_ORIGINAL_STATE;
             mock.checking(new Expectations() {
                 {
-                    one(convClientConfig).getClientId(); //
+                    allowing(convClientConfig).getClientId();
                     will(returnValue(CLIENT01));
-                    one(convClientConfig).getClockSkewInSeconds();//
+                    allowing(convClientConfig).getClockSkewInSeconds();
                     will(returnValue(300L));
-                    one(convClientConfig).getId();//
+                    allowing(convClientConfig).getAuthenticationTimeLimitInSeconds();
+                    will(returnValue(420L));
+                    one(convClientConfig).getId();
                     will(returnValue(CLIENT01));
-                    one(convClientConfig).getClientSecret();//
+                    one(convClientConfig).getClientSecret();
                     will(returnValue("clientsecret"));
-                    one(referrerURLCookieHandler).invalidateReferrerURLCookie(req, res, "WASOidcStateKey"); //
+                    one(referrerURLCookieHandler).invalidateReferrerURLCookie(req, res, "WASOidcStateKey");
                     one(req).getCookies();
                     will(returnValue(cookies));
                     one(cookie1).getName();
@@ -307,6 +309,12 @@ public class OidcClientAuthenticatorTest {
                 {
                     allowing(convClientConfig).getClientId();
                     will(returnValue(CLIENT01));
+                    one(convClientConfig).getClientSecret();
+                    will(returnValue("clientsecret"));
+                    allowing(convClientConfig).getClockSkewInSeconds();
+                    will(returnValue(300L));
+                    allowing(convClientConfig).getAuthenticationTimeLimitInSeconds();
+                    will(returnValue(420L));
                     one(convClientConfig).getTokenEndpointUrl();
                     will(returnValue(tokenUrl));
                     one(convClientConfig).isHttpsRequired();
@@ -334,13 +342,15 @@ public class OidcClientAuthenticatorTest {
             {
                 exactly(3).of(convClientConfig).getClientId();
                 will(returnValue(CLIENTID));
-                one(convClientConfig).getClockSkewInSeconds();//
+                allowing(convClientConfig).getClockSkewInSeconds();
                 will(returnValue(300L));
-                one(convClientConfig).getId();//
+                allowing(convClientConfig).getAuthenticationTimeLimitInSeconds();
+                will(returnValue(420L));
+                one(convClientConfig).getId();
                 will(returnValue(CLIENT01));
-                one(convClientConfig).getClientSecret();//
+                one(convClientConfig).getClientSecret();
                 will(returnValue("clientsecret"));
-                one(referrerURLCookieHandler).invalidateReferrerURLCookie(req, res, "WASOidcStateKey"); //
+                one(referrerURLCookieHandler).invalidateReferrerURLCookie(req, res, "WASOidcStateKey");
                 one(convClientConfig).getTokenEndpointUrl();
                 will(returnValue(TEST_URL));
                 one(convClientConfig).isHttpsRequired();
@@ -365,8 +375,14 @@ public class OidcClientAuthenticatorTest {
     public void testHandleAuthorizationCode_CatchSSLException() throws javax.net.ssl.SSLException {
         mock.checking(new Expectations() {
             {
-                exactly(3).of(convClientConfig).getClientId(); // 2->3
+                exactly(3).of(convClientConfig).getClientId();
                 will(returnValue(CLIENTID));
+                one(convClientConfig).getClientSecret();
+                will(returnValue("clientsecret"));
+                allowing(convClientConfig).getClockSkewInSeconds();
+                will(returnValue(300L));
+                allowing(convClientConfig).getAuthenticationTimeLimitInSeconds();
+                will(returnValue(420L));
                 one(convClientConfig).getTokenEndpointUrl();
                 will(returnValue(TEST_URL));
                 one(convClientConfig).isHttpsRequired();
@@ -386,7 +402,6 @@ public class OidcClientAuthenticatorTest {
             }
         });
 
-        //OidcClientAuthenticator oica = new mockOidcClientAuthenticator(sslSupportRef, 2);
         AuthorizationCodeHandler ach = new AuthorizationCodeHandler(req, res, convClientConfig, sslSupport);
         ProviderAuthenticationResult oidcResult = ach.handleAuthorizationCode(AUTHZ_CODE, "orignalState");
 

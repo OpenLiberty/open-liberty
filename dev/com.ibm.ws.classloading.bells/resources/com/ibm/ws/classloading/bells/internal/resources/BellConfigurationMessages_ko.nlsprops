@@ -87,16 +87,9 @@ bell.spi.visibility.enabled.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub
 bell.spi.visibility.enabled.useraction=BELL\uc774 \ub3d9\uc77c\ud55c \ub77c\uc774\ube0c\ub7ec\ub9ac\ub97c \ucc38\uc870\ud558\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uacfc \uacf5\uc720\ub418\ub294 \ud074\ub798\uc2a4 \ub85c\ub354\ub97c \ud1b5\ud574 \ub77c\uc774\ube0c\ub7ec\ub9ac\ub97c \ucc38\uc870\ud574\uc57c \ud560 \ub54c\ub9c8\ub2e4 BELL \uad6c\uc131\uc5d0\uc11c SPI \uac00\uc2dc\uc131\uc744 \uc0ac\uc6a9 \uc548\ud568\uc73c\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624. \uadf8\ub807\uc9c0 \uc54a\uc73c\uba74 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 
 # BETA
-bell.spi.visibility.disabled.libref.global=CWWKL0060W: BELL SPI \uac00\uc2dc\uc131\uc740 Liberty \uae00\ub85c\ubc8c \uacf5\uc720 \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0 \ub300\ud574 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
-bell.spi.visibility.disabled.libref.global.explanation=BELL SPI \uac00\uc2dc\uc131\uc740 Liberty \uae00\ub85c\ubc8c \uacf5\uc720 \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0 \ub300\ud574 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+bell.spi.visibility.disabled.libref.global=CWWKL0060E: BELL SPI \uac00\uc2dc\uc131\uc740 Liberty \uae00\ub85c\ubc8c \uacf5\uc720 \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0 \ub300\ud574 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+bell.spi.visibility.disabled.libref.global.explanation=Liberty \uae00\ub85c\ubc8c \uacf5\uc720 \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0\ub294 BELL SPI \uac00\uc2dc\uc131\uc744 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 bell.spi.visibility.disabled.libref.global.useraction=Liberty \uae00\ub85c\ubc8c \uacf5\uc720 \ub77c\uc774\ube0c\ub7ec\ub9ac \uc774\uc678\uc758 \ub77c\uc774\ube0c\ub7ec\ub9ac\ub97c \ucc38\uc870\ud558\ub3c4\ub85d BELL \uad6c\uc131\uc744 \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
-
-# BETA: NOT IMPLEMENTED
-# {0} - application identifier
-# {1} - library identifier
-#bell.spi.visible.share.common.libref=CWWKL0061W: The {0} application and BELL share a common library reference, but do not reference the {1} library through a common class loader because the BELL is enabled for SPI visibility.
-#bell.spi.visible.share.common.libref.explanation=To prevent applications and resources from seeing SPI packages, the BELL references the library through a unique class loader that is not shared with the application.
-#bell.spi.visible.share.common.libref.useraction=Disable SPI visibility in the BELL configuration whenever the application and BELL must share a common library class loader. Otherwise, no action is required.
 
 # BETA
 # {0} - the name of the implementation class

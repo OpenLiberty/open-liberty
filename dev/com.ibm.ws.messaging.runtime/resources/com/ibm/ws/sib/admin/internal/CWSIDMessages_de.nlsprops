@@ -76,38 +76,37 @@
 ### Search on "TBD" for messages that need information from other components ###
  
 # -------------------------------------------------------------------------------------------------
-# {0} Messaging engine name
-ME_INITIALIZING_SIAS0001=CWSID0001I: Die Messaging-Engine {0} wird initialisiert.
-ME_INITIALIZING_SIAS0001.explanation=Die Initialisierung der angegebenen Messaging-Engine beginnt.
-ME_INITIALIZING_SIAS0001.useraction=Es ist keine Aktion erforderlich.
- 
-# -------------------------------------------------------------------------------------------------
 # {0} Internal reason string
 INTERNAL_ERROR_SIAS0003=CWSID0003E: Es ist ein interner Fehler aufgetreten. Ursache: {0}
 INTERNAL_ERROR_SIAS0003.explanation=W\u00e4hrend einer Systemoperation ist ein unerwarteter Fehler aufgetreten.
 INTERNAL_ERROR_SIAS0003.useraction=CMSG0002                                                    
+ 
 # -------------------------------------------------------------------------------------------------
 # {0} SIBDestination name
 CREATE_DESTINATION_FAILED_SIAS0009=CWSID0009E: Das Ziel {0} kann nicht erstellt werden.
 CREATE_DESTINATION_FAILED_SIAS0009.explanation=Das angegebene Ziel konnte nicht erstellt werden. Falls zum Erstellen der Konfiguration JACL-Scripts oder benutzerdefinierte JMX-Programme verwendet wurden, \u00fcberpr\u00fcfen Sie diese auf Fehler.
 CREATE_DESTINATION_FAILED_SIAS0009.useraction=CMSG0002                                                    
+ 
 # -------------------------------------------------------------------------------------------------
 # {0} JMX MBean type
 # {1} JMX MBean name
 MBEAN_ACTIVATION_FAILED_SIAS0011=CWSID0011W: Die JMX-MBean mit dem Typ {0} und dem Namen {1} kann nicht aktiviert werden.
 MBEAN_ACTIVATION_FAILED_SIAS0011.explanation=Die JMX-MBean mit dem angegebenen Typ und dem angegebenen Namen konnte nicht aktiviert werden. Dieser Fehler verhindert zwar nicht das Starten des Messaging-Servers, aber m\u00f6glicherweise f\u00fchrt er dazu, dass Administrationsfunktionen, die das Vorhandensein dieser MBean voraussetzen, nicht ordnungsgem\u00e4\u00df ausgef\u00fchrt werden.
 MBEAN_ACTIVATION_FAILED_SIAS0011.useraction=CMSG0002                                                    
+ 
 # -------------------------------------------------------------------------------------------------
 # {0} JMX MBean type
 # {1} JMX MBean name
 MBEAN_DEACTIVATION_FAILED_SIAS0012=CWSID0012W: Die JMX-MBean mit dem Typ {0} und dem Namen {1} kann nicht inaktiviert werden.
 MBEAN_DEACTIVATION_FAILED_SIAS0012.explanation=Die angegebene JMX-MBean konnte nicht inaktiviert werden.
 MBEAN_DEACTIVATION_FAILED_SIAS0012.useraction=CMSG0002                                                    
+ 
 # -------------------------------------------------------------------------------------------------
 # {0} Java package and class
 CLASS_LOAD_FAILURE_SIAS0013=CWSID0013W: Die Klasse {0} kann nicht geladen werden.
 CLASS_LOAD_FAILURE_SIAS0013.explanation=Die angegebene Klasse konnte nicht geladen werden.
 CLASS_LOAD_FAILURE_SIAS0013.useraction=CMSG0002                                                    
+ 
 # -------------------------------------------------------------------------------------------------
 
 # {0} Messaging engine name
@@ -180,6 +179,7 @@ ME_EXCEPTION_CAUGHT_SIAS0037.useraction=Bestimmen Sie den Fehler anhand der Prot
 MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043=CWSID0043W: Es ist nicht m\u00f6glich, eine Ereignisbenachrichtigung von einer MBean des JMX-Typs {0} mit dem Namen {1} zu senden.
 MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.explanation=Es konnte keine Ereignisbenachrichtigung von der JMS-MBean mit dem abgegebenen Typ und dem angegebenen Namen gesendet werden. Die Ausf\u00fchrung des Messaging-Servers kann trotz dieses Fehlers fortgesetzt werden, aber die MBean kann keine Listener \u00fcber wichtige Ereignisse im Messaging-System benachrichtigen.
 MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.useraction=CMSG0002                                                    
+ 
 # -------------------------------------------------------------------------------------------------
 # {0} Messaging engine name
 # {1} messaging engine UUID
@@ -226,6 +226,7 @@ NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.useraction=Es ist keine Aktion erforde
 NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052=CWSID0052I: Die Messaging-Engine {0} mit der UUID {1} konnte nicht gestoppt werden.
 NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.explanation=Die Messaging-Engine konnte nicht gestoppt werden.
 NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.useraction=CMSG0002                                                   
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the text of the message
 TEMPORARY_SIAS9999=CWSID9999E: {0}

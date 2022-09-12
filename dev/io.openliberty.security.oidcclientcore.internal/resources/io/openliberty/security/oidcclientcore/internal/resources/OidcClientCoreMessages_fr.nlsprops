@@ -16,3 +16,35 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2400 - CWWKS2499
+
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS2400E: Le client {0} OpenID Connect a rencontr\u00e9 une erreur lors de l''envoi d''une demande d''autorisation au fournisseur OpenID Connect. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Il se peut que des informations soient manquantes dans la configuration du client OpenID Connect ou que le client ait rencontr\u00e9 une erreur lors de la communication avec le fournisseur OpenID Connect.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Pour plus d'informations, reportez-vous au message d'erreur.
+
+OIDC_CLIENT_CONFIGURATION_ERROR=CWWKS2401E: La configuration du client OpenID Connect {0} n''est pas valide ou il manque des donn\u00e9es. {1}
+OIDC_CLIENT_CONFIGURATION_ERROR.explanation=La configuration du client OpenID Connect ne contient pas les informations n\u00e9cessaires.
+OIDC_CLIENT_CONFIGURATION_ERROR.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que la configuration du client OpenID Connect est compl\u00e8te et pr\u00e9cise.
+
+URL_NOT_HTTPS=CWWKS2402E: L''URL de noeud final {0} configur\u00e9e pour le client OpenID Connect {1} n''utilise pas le protocole HTTPS, mais HTTPS est requis.
+URL_NOT_HTTPS.explanation=L'URL de noeud final doit utiliser le protocole HTTPS pour garantir la s\u00e9curit\u00e9 des demandes.
+URL_NOT_HTTPS.useraction=Mettez \u00e0 jour l'URL de noeud final pour utiliser le protocole HTTPS.
+
+DISCOVERY_EXCEPTION=CWWKS2403E: Le client {0} OpenID Connect a rencontr\u00e9 l''erreur suivante lors de la reconnaissance des m\u00e9tadonn\u00e9es pour le fournisseur OpenID Connect \u00e0 partir de l''URL [{1}] : {2}
+DISCOVERY_EXCEPTION.explanation=Il se peut que des informations soient manquantes dans la configuration du client OpenID Connect ou que le client ait rencontr\u00e9 une erreur lors de la communication avec le fournisseur OpenID Connect.
+DISCOVERY_EXCEPTION.useraction=Pour plus d'informations, reportez-vous au message d'erreur.
+
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: L''attribut providerURI du client OpenID Connect {0} a la valeur null ou est vide et aucune m\u00e9tadonn\u00e9e n''est disponible pour le fournisseur OpenID Connect.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=Le client OpenID Connect doit reconna\u00eetre les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect, mais le client n'a pas d'attribut providerURI ni de m\u00e9tadonn\u00e9es de fournisseur configur\u00e9es.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Sp\u00e9cifiez une valeur pour l'attribut providerURI dans la configuration du client OpenID Connect ou sp\u00e9cifiez les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect dans la configuration du client.
+
+DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: La propri\u00e9t\u00e9 [{0}] requise est manquante dans les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect.
+DISCOVERY_METADATA_MISSING_VALUE.explanation=La propri\u00e9t\u00e9 sp\u00e9cifi\u00e9e dans le message doit \u00eatre pr\u00e9sente dans les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect, mais elle est manquante.
+DISCOVERY_METADATA_MISSING_VALUE.useraction=V\u00e9rifiez que l'attribut providerURI du client OpenID Connect est d\u00e9fini sur l'URL de reconnaissance correcte pour le fournisseur OpenID Connect.
+
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL=CWWKS2406E: Le client {0} OpenID Connect ne peut pas rediriger l''utilisateur vers le noeud final d''autorisation car le client ne peut pas d\u00e9terminer l''URL du noeud final d''autorisation. {1}
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.explanation=L'URL du noeud final d'autorisation dans la configuration du client OpenID Connect peut \u00eatre incorrectement form\u00e9e ou manquante, ou le client OpenID Connect n'a pas pu obtenir l'URL du noeud final d'autorisation aupr\u00e8s du fournisseur OpenID Connect.
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que la configuration du client OpenID Connect est compl\u00e8te et pr\u00e9cise.
+
+AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: Le client {0} OpenID Connect a rencontr\u00e9 l''erreur suivante lors de la v\u00e9rification de la r\u00e9ponse d''authentification du fournisseur OpenID Connect : {1}
+AUTHENTICATION_RESPONSE_ERROR.explanation=Il se peut que des informations soient manquantes dans la r\u00e9ponse du fournisseur OpenID Connect. Il peut y avoir un probl\u00e8me avec le code renvoy\u00e9 par le fournisseur OpenID Connect.
+AUTHENTICATION_RESPONSE_ERROR.useraction=Pour plus d'informations, reportez-vous au message d'erreur.

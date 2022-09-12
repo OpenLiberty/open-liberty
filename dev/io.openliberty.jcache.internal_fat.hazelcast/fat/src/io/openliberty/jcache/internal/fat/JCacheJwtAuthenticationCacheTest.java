@@ -26,6 +26,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.SSLBasicAuthClient;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -37,6 +38,7 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  * Contains distributed JCache authentication cache tests for JWT SSO.
  */
 // TODO JtiNonceCache (both of them) for Oidc and mpJwt...
+@SkipIfSysProp("skip.tests=true")
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
@@ -53,6 +55,8 @@ public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() {
+        assumeShouldNotSkipTests();
+
         /*
          * Transform apps for EE9+.
          */

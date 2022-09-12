@@ -76,12 +76,6 @@
 ### Search on "TBD" for messages that need information from other components ###
  
 # -------------------------------------------------------------------------------------------------
-# {0} Messaging engine name
-ME_INITIALIZING_SIAS0001=CWSID0001I: A(z) {0} \u00fczenetkezel\u00e9si alrendszer inicializ\u00e1l\u00e1s alatt \u00e1ll.
-ME_INITIALIZING_SIAS0001.explanation=A megadott \u00fczenetkezel\u00e9si alrendszer elkezdte az inicializ\u00e1l\u00e1st.
-ME_INITIALIZING_SIAS0001.useraction=Semmit sem kell tennie.
- 
-# -------------------------------------------------------------------------------------------------
 # {0} Internal reason string
 INTERNAL_ERROR_SIAS0003=CWSID0003E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Ok: {0}
 INTERNAL_ERROR_SIAS0003.explanation=V\u00e1ratlan bels\u0151 hiba t\u00f6rt\u00e9nt egy rendszerm\u0171velet sor\u00e1n.
@@ -252,7 +246,7 @@ NO_ID_PROVIDED_SIAS0102.explanation=Nincs megadva azonos\u00edt\u00f3 a c\u00e9l
 NO_ID_PROVIDED_SIAS0102.useraction=Adja meg a c\u00e9l azonos\u00edt\u00f3j\u00e1t.
 
 # -------------------------------------------------------------------------------------------------
-NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  Nem lett meghat\u00e1rozva fileStore c\u00edmke a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban, ez\u00e9rt az alap\u00e9rtelmezett \u00e9rt\u00e9keket haszn\u00e1lja a rendszer.
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I: \ Nem lett meghat\u00e1rozva fileStore c\u00edmke a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban, ez\u00e9rt az alap\u00e9rtelmezett \u00e9rt\u00e9keket haszn\u00e1lja a rendszer.
 NO_FILESTOR_DEFINED_SIAS0104.explanation=A fileStore nem lett megadva, \u00edgy a f\u00e1jlt\u00e1rol\u00f3 az alap\u00e9rtelmezett \u00e9rt\u00e9kek felhaszn\u00e1l\u00e1s\u00e1val ker\u00fcl l\u00e9trehoz\u00e1sa.   
 NO_FILESTOR_DEFINED_SIAS0104.useraction=Semmit sem kell tennie.
 

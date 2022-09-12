@@ -727,6 +727,9 @@ toplink_severe=[EL \u2013 powa\u017cne]:
 
 toplink_warning=[EL \u2013 ostrze\u017cenia]: 
 
+unit_of_work_thread_info=Bie\u017c\u0105ca jednostka pracy w sesji ({0}) zosta\u0142a utworzona przez inny w\u0105tek (identyfikator: {1}, nazwa: {2}), ni\u017c bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4})
+
+unit_of_work_thread_info_thread_dump=W\u0105tek tworzenia (identyfikator: {0}, nazwa: {1}), stos wywo\u0142a\u0144: {2}Bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4}), stos wywo\u0142a\u0144:{5}\n
 unitofwork_identity_hashcode={0} Kod mieszaj\u0105cy to\u017csamo\u015bci jednostki pracy: {1}
 
 update_all_fields_not_supported=Sk\u0142adnik komponentu CMP rodzimy dla produktu Oc4j update-all-fields dotycz\u0105cy jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwany w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.

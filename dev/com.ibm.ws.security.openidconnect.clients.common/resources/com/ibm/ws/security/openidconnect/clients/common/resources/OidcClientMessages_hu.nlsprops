@@ -304,5 +304,9 @@ NO_RECENT_SESSIONS_WITH_CLAIMS=CWWKS1552E: A(z) [{0}] OpenID Connect \u00fcgyf\u
 NO_RECENT_SESSIONS_WITH_CLAIMS.explanation=Az OpenID Connect \u00fcgyf\u00e9l nem rendelkezik az \u00fczenetben megadott \u00f6sszes \u00e1ll\u00edt\u00e1snak megfelel\u0151 OpenID Connect szolg\u00e1ltat\u00f3t tartalmaz\u00f3 friss munkamenettel. Az \u00fczenetben megadott \u00e1ll\u00edt\u00e1soknak a kijelentkez\u00e9si tokenben olyan \u00e9rt\u00e9kkel kell rendelkezni\u00fck, amely megfelel a frissen \u00e9rkezett azonos\u00edt\u00f3 token azonos \u00e1ll\u00edt\u00e1sainak.
 NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben megadott \u00e1ll\u00edt\u00e1sok megfelelnek-e az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l nemr\u00e9g lek\u00e9rt azonos\u00edt\u00f3 tokennek.
 
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy jogosults\u00e1gk\u00e9r\u00e9s elk\u00fcld\u00e9sekor az OpenID Connect szolg\u00e1ltat\u00f3nak. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Lehet, hogy hi\u00e1nyoznak az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3 inform\u00e1ci\u00f3k, vagy az \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OpenID Connect szolg\u00e1ltat\u00f3val folytatott kommunik\u00e1ci\u00f3 sor\u00e1n.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

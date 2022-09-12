@@ -28,6 +28,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.SSLFormLoginClient;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -38,6 +39,7 @@ import componenttest.topology.impl.LibertyServer;
  * Contains distributed JCache logged out cookie cache tests for JWT SSO.
  */
 // TODO TAIJwtUtils, LoggedOutJwtSsoCookieCache
+@SkipIfSysProp("skip.tests=true")
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JCacheJwtLoggedOutCookieCacheTest extends BaseTestCase {
@@ -53,6 +55,8 @@ public class JCacheJwtLoggedOutCookieCacheTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() {
+        assumeShouldNotSkipTests();
+
         /*
          * Transform apps for EE9+.
          */

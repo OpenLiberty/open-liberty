@@ -96,7 +96,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
      * instance.
      *
      * @param oidcMechanismDefinition The {@link OpenIdAuthenticationMechanismDefinition} to wrap.
-     * @param baseURL                 The baseURL is an optional variable for the redirectURL and is constructed using information the incoming HTTP request.
+     * @param baseURL The baseURL is an optional variable for the redirectURL and is constructed using information the incoming HTTP request.
      */
     @Sensitive
     public OpenIdAuthenticationMechanismDefinitionWrapper(OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition, String baseURL) {
@@ -148,6 +148,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     }
 
     @SuppressWarnings("static-access")
+    @Sensitive
     @FFDCIgnore(IllegalArgumentException.class)
     private ProtectedString evaluateClientSecret(boolean immediateOnly) {
         String result;
@@ -389,6 +390,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
         return (clientId != null) ? clientId : evaluateClientId(false);
     }
 
+    @Sensitive
     @Override
     public ProtectedString getClientSecret() {
         return (clientSecret != null) ? clientSecret : evaluateClientSecret(false);

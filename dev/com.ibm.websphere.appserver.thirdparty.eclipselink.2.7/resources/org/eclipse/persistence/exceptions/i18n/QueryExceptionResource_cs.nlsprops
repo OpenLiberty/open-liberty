@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -192,7 +193,8 @@
 
 6100=Bylo zji\u0161t\u011bno v\u00edce hodnot pro dotaz na \u010dten\u00ed jednoho objektu.
 
-6101=Proveden\u00ed tohoto dotazu by mohlo naru\u0161it integritu mezipam\u011bti glob\u00e1ln\u00ed relace, kter\u00e1 mus\u00ed obsahovat pouze nejnov\u011bj\u0161\u00ed verze objekt\u016f. Chcete-li prov\u00e9st dotaz, kter\u00fd vr\u00e1t\u00ed objekty ve stavu k \u010dasov\u00e9mu okam\u017eiku v minulosti, zkuste jeden z n\u00e1sleduj\u00edc\u00edch postup\u016f: Pou\u017eijte metodu HistoricalSession (acquireSessionAsOf), v\u0161echny na\u010dten\u00e9 objekty budou ulo\u017eeny do mezipam\u011bti a automaticky na\u010dteny ve stavu ke stejn\u00e9mu \u010dasov\u00e9mu okam\u017eiku. To bude platit i pro spou\u0161t\u011bn\u00ed vztah\u016f objekt\u016f. Prom\u011bnnou shouldMaintainCache nastavte na hodnotu false. Ve stavu k \u010dasov\u00e9mu okam\u017eiku v minulosti m\u016f\u017eete vytvo\u0159it v\u00fdraz libovoln\u00e9ho objektu, pokud nen\u00ed \u017e\u00e1dn\u00e9 z jeho pol\u00ed reprezentov\u00e1no v sad\u011b v\u00fdsledk\u016f (tj. pou\u017e\u00edv\u00e1 se pouze v klauzuli Where).
+6101=Proveden\u00ed tohoto dotazu by mohlo naru\u0161it integritu mezipam\u011bti glob\u00e1ln\u00ed relace, kter\u00e1 mus\u00ed obsahovat pouze nejnov\u011bj\u0161\u00ed verze objekt\u016f. Chcete-li prov\u00e9st dotaz, kter\u00fd vr\u00e1t\u00ed objekty ve stavu k \u010dasov\u00e9mu okam\u017eiku v minulosti, zkuste jeden z n\u00e1sleduj\u00edc\u00edch postup\u016f: Pou\u017eijte metodu HistoricalSession (acquireSessionAsOf), v\u0161echny na\u010dten\u00e9 objekty budou ulo\u017eeny do mezipam\u011bti a automaticky na\u010dteny ve stavu ke stejn\u00e9mu \u010dasov\u00e9mu okam\u017eiku. To bude platit i pro spou\u0161t\u011bn\u00ed vztah\u016f objekt\u016f. Prom\u011bnnou shouldMaintainCache nastavte na hodnotu false. Ve stavu k \u010dasov\u00e9mu okam\u017eiku v minulosti m\u016f\u017eete vytvo\u0159it v\u00fdraz libovoln\u00e9ho objektu, pokud nen\u00ed \u017e\u00e1dn\u00e9 z jeho pol\u00ed reprezentov\u00e1no v sad\u011b v\u00fdsledk\u016f (tj. pou\u017e\u00edv\u00e1 se pouze v \
+    klauzuli Where).
 
 6102=V sou\u010dasn\u00e9 dob\u011b funguj\u00ed historick\u00e9 dotazy pouze s datab\u00e1zemi Oracle 9R2 nebo nov\u011bj\u0161\u00edmi, proto\u017ee pou\u017e\u00edvaj\u00ed funkci Flashback spole\u010dnosti Oracle.
 
@@ -260,7 +262,7 @@
 
 6134=N\u00e1zev atributu nebo v\u00fdraz p\u0159edan\u00fd jako prvn\u00ed parametr metod\u011b addUpdate nedefinuje pole. {1}N\u00e1zev atributu nebo v\u00fdraz: [{2}]{1} Deskriptor: [{0}]
 
-6135=N\u00e1zev atributu nebo v\u00fdraz p\u0159edan\u00fd jako prvn\u00ed parametr metod\u011b addUpdate definuje pole z tabulky, kter\u00e1 nen\u00ed mapov\u00e1na na deskriptor dotazu. {1}N\u00e1zev atributu nebo v\u00fdraz: [{2}]{1}Chybn\u00e9 pole: [{3}]{1} Deskriptor: [{0}]
+6135=N\u00e1zev atributu nebo v\u00fdraz p\u0159edan\u00fd jako prvn\u00ed parametr do metody addUpdate definuje pole z tabulky, kter\u00e9 nen\u00ed mapov\u00e1no na deskriptor dotazu. {1} N\u00e1zev atributu nebo v\u00fdraz: [{2}]{1} Chybn\u00e9 pole: [{3}]{1}Deskriptor: [{0}]
 
 6136=T\u0159\u00eddy mapovan\u00e9 s v\u00edcetabulkovou d\u011bdi\u010dnost\u00ed nemohou b\u00fdt polo\u017ekami ReportQuery. Polo\u017eka: {0}, v\u00fdraz: {1}.
 

@@ -920,14 +920,54 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (remoteAddr == null) {
             remoteAddr = getTrustedHeader(HttpHeaderKeys.HDR_$WSRA.getName());
             if (remoteAddr != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "getRemoteHostAddress isTrusted --> true, addr --> " + remoteAddr);
-            } else {
-                remoteAddr = contextRemoteHostAddress();
+                if (!validateRemoteAddress(remoteAddr)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "getRemoteHostAddress isTrusted --> true, invalid addr --> " + remoteAddr);
+                    remoteAddr = null;
+                }
             }
+        }
+        if (remoteAddr == null) {
+            remoteAddr = contextRemoteHostAddress();
         }
 
         return remoteAddr;
+    }
+
+    /*
+     * Validate the remote address
+     */
+    boolean validateRemoteAddress(String address) {
+        //The node identifier is defined by the ABNF syntax as
+        //        node     = nodename [ ":" node-port ]
+        //                   nodename = IPv4address / "[" IPv6address "]" /
+        //                             "unknown" / obfnode
+        //As such, to make it equivalent to the de-facto headers, remove the quotations
+        //and possible port
+        String extract = address.replaceAll("\"", "").trim();
+        String nodeName = null;
+
+        //obfnodes are only allowed to contain ALPHA / DIGIT / "." / "_" / "-"
+        //so if the token contains "[", it is an IPv6 address
+        int openBracket = extract.indexOf("[");
+        int closedBracket = extract.indexOf("]");
+
+        if (openBracket > -1) {
+            //This is an IPv6address
+            //The nodename is enclosed in "[ ]", get it now
+
+            //If the first character isn't the open bracket or if a close bracket
+            //is not provided, this is a badly formed header
+            if (openBracket != 0 || !(closedBracket > -1)) {
+                //badly formated header
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.debug(tc, "$WSRA IPv6 address was malformed: " + address);
+                }
+                return false;
+            }
+
+        }
+        return true;
     }
 
     /**
