@@ -35,7 +35,7 @@
         Configure the CachingProvider and CacheManager.
      -->
 	<cachingProvider id="CachingProvider"
-		jCacheLibraryRef="HazelcastClientLib" commonLibraryRef="CustomLoginLib" />
+		jCacheLibraryRef="HazelcastLib" commonLibraryRef="CustomLoginLib" />
 	<cacheManager id="CacheManager"
 		cachingProviderRef="CachingProvider">
 

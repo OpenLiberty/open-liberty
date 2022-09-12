@@ -187,6 +187,7 @@ public class JCacheDeleteAuthCacheTest extends BaseTestCase {
         /*
          * Hazelcast seems to need time to allow to clear remotely. Seems this shouldn't be the case.
          */
+        Log.info(getClass(), "deleteAuthCache_mbean", "SLEEPING...");
         Thread.sleep(10000);
 
         /*
