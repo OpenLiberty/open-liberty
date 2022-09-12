@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,9 @@ dependencies {
   requiredLibs project(':io.openliberty.org.apache.commons.codec'),
                project(':io.openliberty.org.apache.commons.logging'),
                project(':com.ibm.ws.ejbcontainer.security.jacc_fat'),
-               project(':com.ibm.ws.webcontainer.security_test.servlets')
+               project(':com.ibm.ws.ejbcontainer.security_test.servlets'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets'),
+	       project(':com.ibm.ws.security.authorization.jacc.testprovider')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
@@ -368,6 +370,9 @@ task securityejbjarInWarEarM07XMLmerge_EAR(type: Zip) {
 }
 
 
+
+
+
 /*
  * The 'assemble' task should build all these applications.
  */
@@ -389,7 +394,6 @@ assemble {
   dependsOn securityejbjarInWarEarM07XMLmerge_EAR
 }
 
-
 /******************************************************************
  ******************************************************************
  **
@@ -401,9 +405,9 @@ autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble
 autoFVT.dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 autoFVT.doLast {
 
-  /*
-   * Copy the JACC test provider feature.
-   */
+  
+   /* Copy the JACC test provider feature. */
+  
   copy {
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jar") 
      into new File(autoFvtDir, 'publish/bundles')
@@ -414,12 +418,14 @@ autoFVT.doLast {
      into new File(autoFvtDir, 'publish/bundles')
      rename 'com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_2.0.jar'
   }
+
   copy {
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar") 
      into new File(autoFvtDir, 'publish/bundles')
      rename 'com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_2.1.jar'
-  }
+  } 
   
+   
   copy {
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-1.0.mf")  
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.0.mf")  
@@ -697,4 +703,4 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }  
-}
+} 
