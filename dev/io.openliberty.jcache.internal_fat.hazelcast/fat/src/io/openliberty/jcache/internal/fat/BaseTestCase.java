@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
@@ -498,5 +499,12 @@ public abstract class BaseTestCase {
         sb.append(response.getContentAsString());
 
         Log.info(CLASS, methodName, "Got page response: " + sb.toString());
+    }
+
+    /**
+     * Assume that we should not skip tests based on the boolean system property <code>skip.tests</code>.
+     */
+    protected static void assumeShouldNotSkipTests() {
+        Assume.assumeTrue(!Boolean.getBoolean("skip.tests"));
     }
 }

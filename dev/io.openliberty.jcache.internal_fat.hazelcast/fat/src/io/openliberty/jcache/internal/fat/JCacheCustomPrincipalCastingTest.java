@@ -28,6 +28,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -44,6 +45,7 @@ import componenttest.topology.impl.LibertyServer;
  * expectation is that when the JCache, the application, and the login module that inserts
  * the credentials all use the same library, that there should be no issues with casting.
  */
+@SkipIfSysProp("skip.tests=true")
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
@@ -66,6 +68,8 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() {
+        assumeShouldNotSkipTests();
+
         /*
          * Backup the original / starting configurations for each server.
          */
