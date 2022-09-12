@@ -20,7 +20,8 @@ Private-Package: com.ibm.ws.app.manager.wab*
 
 -dsannotations: \
   com.ibm.ws.app.manager.wab.internal.WABInstaller, \
-  com.ibm.ws.app.manager.wab.internal.WABExtensionFactory
+  com.ibm.ws.app.manager.wab.internal.WABExtensionFactory, \
+  com.ibm.ws.app.manager.wab.internal.WABCheckpointHook
 
 
 Export-Package: com.ibm.wsspi.wab.configure, \
