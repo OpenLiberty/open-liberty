@@ -74,6 +74,20 @@ public class SessionBasedStorageTest extends CommonTestClass {
     }
 
     @Test
+    public void test_store_withStorageProperties() {
+        // should be identical to test_store(), since properties can't be set in http session attributes
+        mockery.checking(new Expectations() {
+            {
+                one(request).getSession();
+                will(returnValue(session));
+                one(session).setAttribute(testAttributeName, testAttributeValue);
+            }
+        });
+
+        storage.store(testAttributeName, testAttributeValue, new StorageProperties());
+    }
+
+    @Test
     public void test_get() {
         mockery.checking(new Expectations() {
             {

@@ -33,6 +33,8 @@ public class SessionBasedStorage implements Storage {
 
     @Override
     public void store(String name, String value, StorageProperties properties) {
+        // ignore storage properties, since http session attributes
+        // can't set properties (e.g., expiration time) like cookies can
         HttpSession session = request.getSession();
         session.setAttribute(name, value);
     }
