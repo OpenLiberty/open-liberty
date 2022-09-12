@@ -36,6 +36,7 @@ public abstract class AuthorizationRequest {
     /**
      * Do not use; only for OSGi initialization
      */
+    @Deprecated
     public AuthorizationRequest() {
     }
 
