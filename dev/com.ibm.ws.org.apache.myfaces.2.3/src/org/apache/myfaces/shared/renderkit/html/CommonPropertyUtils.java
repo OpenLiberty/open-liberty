@@ -531,11 +531,7 @@ public final class CommonPropertyUtils
             long commonPropertiesMarked, UIComponent component) 
     throws IOException
     {
-        if ((commonPropertiesMarked & CommonPropertyConstants.ACCESSKEY_PROP) != 0)
-        {
-            HtmlRendererUtils.renderHTMLStringAttribute(writer, component,
-                    HTML.ACCESSKEY_ATTR, HTML.ACCESSKEY_ATTR);
-        }
+        renderAccesskeyTabindexProperties(writer, commonPropertiesMarked, component);
         renderCommonPassthroughPropertiesWithoutEvents(writer, commonPropertiesMarked, component);
     }
     
