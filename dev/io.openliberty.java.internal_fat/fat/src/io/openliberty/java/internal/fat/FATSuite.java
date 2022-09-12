@@ -23,6 +23,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 Java18Test.class,
                 Java18CDITest.class,
                 Java18TestJava2SecurityDisabled.class,
+                Java19Test.class,
                 AlwaysPassesTest.class
 })
 public class FATSuite {
