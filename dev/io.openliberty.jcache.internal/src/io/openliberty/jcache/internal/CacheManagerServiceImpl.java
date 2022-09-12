@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.jcache.CacheManagerService;
@@ -139,6 +140,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
      * Deactivate this OSGi component.
      */
     @Deactivate
+    @FFDCIgnore({ Exception.class })
     public void deactivate() {
         /*
          * Close and clear the CacheManager instance.
@@ -146,7 +148,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         if (cacheManager != null && !cacheManager.isClosed()) {
             try {
                 synchronized (closeSyncObject) {
-                    cacheManager.close();
+                    if (!cacheManager.isClosed()) {
+                        cacheManager.close();
+                    }
                 }
             } catch (Exception e) {
                 Tr.warning(tc, "CWLJC0013_CLOSE_CACHEMGR_ERR", ((id == null) ? "" : id), e);

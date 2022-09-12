@@ -43,6 +43,16 @@ public class InfinispanTestPlugin implements TestPlugin {
                                            "-Dauthcache.entry.ttl=" + (1000 * authCacheTtlSecs),
                                            "-Dinfinispan.client.hotrod.uri=" + FATSuite.infinispan.getHotRodUri(),
                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when GA'd
+
+        /*
+         * Sometimes, Infinispan will throw exceptions saying the cache is not amongst the configured
+         * caches when attempting to close the cache (even though we were talking just fine to it up
+         * until we tried to close it) through the CachingProviderService, the CacheManagerService or
+         * the CacheService.
+         */
+        server.addIgnoredErrors(Arrays.asList("CWLJC0012W", // CacheServiceImpl.deactivate
+                                              "CWLJC0013W", // CacheManagerServiceImpl.deactivate
+                                              "CWLJC0014W")); // CachingProviderService.deactivate
     }
 
     @Override
@@ -53,6 +63,16 @@ public class InfinispanTestPlugin implements TestPlugin {
         server.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + clusterName,
                                            "-Dinfinispan.client.hotrod.uri=" + FATSuite.infinispan.getHotRodUri(),
                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when GA'd
+
+        /*
+         * Sometimes, Infinispan will throw exceptions saying the cache is not amongst the configured
+         * caches when attempting to close the cache (even though we were talking just fine to it up
+         * until we tried to close it) through the CachingProviderService, the CacheManagerService or
+         * the CacheService.
+         */
+        server.addIgnoredErrors(Arrays.asList("CWLJC0012W", // CacheServiceImpl.deactivate
+                                              "CWLJC0013W", // CacheManagerServiceImpl.deactivate
+                                              "CWLJC0014W")); // CachingProviderService.deactivate
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.library.spi.SpiLibrary;
 import com.ibm.wsspi.classloading.ClassLoadingService;
@@ -100,13 +101,18 @@ public class CachingProviderService {
     }
 
     @Deactivate
+    @FFDCIgnore({ Exception.class })
     public void deactivate() {
         /*
          * Close the CachingProvider.
          */
         if (cachingProvider != null) {
             synchronized (closeSyncObject) {
-                cachingProvider.close();
+                try {
+                    cachingProvider.close();
+                } catch (Exception e) {
+                    Tr.warning(tc, "CWLJC0014_CLOSE_CACHINGPRVDR_ERR", ((id == null) ? "" : id), e);
+                }
             }
         }
 
