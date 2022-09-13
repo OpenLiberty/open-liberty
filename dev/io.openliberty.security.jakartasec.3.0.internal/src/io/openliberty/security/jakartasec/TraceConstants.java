@@ -8,11 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.0.0
- */
-@org.osgi.annotation.versioning.Version("1.0.0")
-@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
 package io.openliberty.security.jakartasec;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+/**
+ *
+ */
+public class TraceConstants {
+
+    public static final String TRACE_GROUP = "OpenIdConnect";
+    public static final String MESSAGE_BUNDLE = "io.openliberty.security.jakartasec.internal.resources.JakartaSecurity30Messages";
+
+}

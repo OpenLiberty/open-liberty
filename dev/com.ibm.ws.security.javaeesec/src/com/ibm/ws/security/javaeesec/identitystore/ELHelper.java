@@ -38,7 +38,7 @@ import com.ibm.ws.security.javaeesec.CDIHelper;
  * Class to help with evaluating EL expressions for identity stores.
  */
 public class ELHelper {
-    private static final String OBFUSCATED_STRING = "******";
+    public static final String OBFUSCATED_STRING = "******";
     private static final TraceComponent tc = Tr.register(ELHelper.class);
 
     private static final ThreadLocal<Map<String, String>> valuesMap = new ThreadLocal<Map<String, String>>() {

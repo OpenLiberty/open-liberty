@@ -23,4 +23,6 @@ public class JakartaSec30Constants extends JavaEESecConstants {
 
     public static final String BASE_URL_DEFAULT = "${" + BASE_URL_VARIABLE + "}/Callback";
 
+    public static final String EMPTY_DEFAULT = "";
+
 }

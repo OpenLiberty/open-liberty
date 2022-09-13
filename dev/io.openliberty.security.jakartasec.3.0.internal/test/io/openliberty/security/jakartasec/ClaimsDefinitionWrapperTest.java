@@ -10,8 +10,12 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDefinition;
@@ -21,6 +25,16 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDe
  * retrieving and evaluating both EL expressions and literal settings as called for in Jakarta Security 3.0.
  */
 public class ClaimsDefinitionWrapperTest {
+
+    private Map<String, Object> overrides;
+
+    private static final String STRING_EL_EXPRESSION = "#{'blah'.concat('blah')}";
+    private static final String EVALUATED_EL_EXPRESSION_STRING_RESULT = "blahblah";
+
+    @Before
+    public void setUp() {
+        overrides = new HashMap<String, Object>();
+    }
 
     @Test
     public void testGetCallerNameClaim() {
@@ -36,6 +50,26 @@ public class ClaimsDefinitionWrapperTest {
         ClaimsDefinitionWrapper wrapper = new ClaimsDefinitionWrapper(claimsDefinition);
 
         assertEquals(TestClaimsDefinition.CALLER_GROUPS_CLAIM_DEFAULT, wrapper.getCallerGroupsClaim());
+    }
+
+    @Test
+    public void testGetCallerNameClaim_EL() {
+        overrides.put(TestClaimsDefinition.CALLER_NAME_CLAIM, STRING_EL_EXPRESSION);
+
+        ClaimsDefinition claimsDefinition = TestClaimsDefinition.getInstanceofAnnotation(overrides);
+        ClaimsDefinitionWrapper wrapper = new ClaimsDefinitionWrapper(claimsDefinition);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getCallerNameClaim());
+    }
+
+    @Test
+    public void testGetCallerGroupsClaim_EL() {
+        overrides.put(TestClaimsDefinition.CALLER_GROUPS_CLAIM, STRING_EL_EXPRESSION);
+
+        ClaimsDefinition claimsDefinition = TestClaimsDefinition.getInstanceofAnnotation(overrides);
+        ClaimsDefinitionWrapper wrapper = new ClaimsDefinitionWrapper(claimsDefinition);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getCallerGroupsClaim());
     }
 
 }
