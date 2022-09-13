@@ -29,6 +29,7 @@ import com.ibm.ws.jsf23.fat.CDITestBase;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
@@ -40,6 +41,7 @@ import junit.framework.Assert;
  * We're extending CDITestBase, which has common test code.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 public class JSF23CDIInjectionTests extends CDITestBase {
     private static final Logger LOG = Logger.getLogger(JSF23CDIInjectionTests.class.getName());
 
