@@ -27,7 +27,8 @@ Import-Package: \
   zipkin2.reporter.okhttp3,\
   io.opentelemetry.api.trace,\
   io.opentelemetry.api,\
-  io.opentelemetry.api.baggage
+  io.opentelemetry.api.baggage,\
+  io.opentelemetry.context
 
 Export-Package: \
   io.opentelemetry.api.baggage.propagation; version=${openTelemetryVersion},\

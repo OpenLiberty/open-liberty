@@ -59,7 +59,7 @@ Private-Package: \
     io.openliberty.jakarta.restfulWS.3.0;version=latest,\
     io.openliberty.jakarta.annotation.2.0;version=latest,\
     io.openliberty.jakarta.interceptor.2.0;version=latest,\
-    io.openliberty.jakarta.cdi.3.0;version=latest,\
+    io.openliberty.jakarta.cdi.4.0;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
     com.ibm.ws.injection;version=latest,\
