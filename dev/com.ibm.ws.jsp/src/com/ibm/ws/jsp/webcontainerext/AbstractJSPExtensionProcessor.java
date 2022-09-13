@@ -339,7 +339,6 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
     }
 
     @Override
-    @FFDCIgnore(value = { JspCoreException.class })
     public IServletWrapper getServletWrapper(ServletRequest req,
                                              ServletResponse resp) throws Exception {
         final boolean isAnyTraceEnabled = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
@@ -366,7 +365,9 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
                     }
                 }
             } catch (JspCoreException e) {
-
+                // OLGH 22363
+                com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor.getServletWrapper", "369", this);
+                
                 int code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
                 if (e.getCause() != null && e.getCause() instanceof java.io.FileNotFoundException) {
                     code = HttpServletResponse.SC_NOT_FOUND;
