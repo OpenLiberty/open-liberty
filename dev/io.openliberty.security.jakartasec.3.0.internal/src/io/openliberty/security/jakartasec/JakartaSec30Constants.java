@@ -12,6 +12,8 @@ package io.openliberty.security.jakartasec;
 
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 
+import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
+
 /**
  * Constants for Java EE Security
  */
@@ -24,5 +26,14 @@ public class JakartaSec30Constants extends JavaEESecConstants {
     public static final String BASE_URL_DEFAULT = "${" + BASE_URL_VARIABLE + "}/Callback";
 
     public static final String EMPTY_DEFAULT = "";
+
+    public static final String SUBJECT_TYPE_SUPPORTED_DEFAULT = "public";
+
+    public static final String RESPONSE_TYPE_CODE = "code";
+
+    public static final String RESPONSE_TYPE_TOKEN = "token";
+
+    public static final String RESPONSE_TYPE_SUPPORTED_DEFAULT = RESPONSE_TYPE_CODE + "," + OpenIdConstant.IDENTITY_TOKEN + "," + RESPONSE_TYPE_TOKEN + " "
+                                                                 + OpenIdConstant.IDENTITY_TOKEN; //  "code,id_token,token id_token"
 
 }

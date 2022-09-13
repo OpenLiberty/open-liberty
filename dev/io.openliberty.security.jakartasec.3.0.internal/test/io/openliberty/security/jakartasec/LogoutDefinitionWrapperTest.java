@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
@@ -69,7 +70,7 @@ public class LogoutDefinitionWrapperTest {
         LogoutDefinition logoutDefinition = TestLogoutDefinition.getInstanceofAnnotation(null);
         LogoutDefinitionWrapper wrapper = new LogoutDefinitionWrapper(logoutDefinition);
 
-        assertEquals(TestLogoutDefinition.EMPTY_DEFAULT, wrapper.getRedirectURI());
+        assertEquals(EMPTY_DEFAULT, wrapper.getRedirectURI());
     }
 
     /**

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
@@ -69,7 +70,6 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     private static final String TOKEN_AUTO_REFRESH_EXPRESSION = "tokenAutoRefreshExpression";
     private static final String TOKEN_MIN_VALIDITY = "tokenMinValidity";
     private static final String TOKEN_MIN_VALIDITY_EXPRESSION = "tokenMinValidityExpression";
-    private static final String EMPTY_DEFAULT = "";
     private static final String STRING_EL_EXPRESSION = "#{'blah'.concat('blah')}";
     private static final String EVALUATED_EL_EXPRESSION_STRING_RESULT = "blahblah";
     private static final String TRUE_EL_EXPRESSION = "#{true}";
@@ -469,8 +469,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
 
             @Override
             public OpenIdProviderMetadata providerMetadata() {
-                // TODO Auto-generated method stub
-                return null;
+                return TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
             }
 
             @Override
