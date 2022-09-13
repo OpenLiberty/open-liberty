@@ -712,7 +712,12 @@ serverEnvAndJVMOptions()
 
   # Avoids HeadlessException on all platforms and Liberty JVMs appearing as applications and stealing focus on Mac.
   # Declare allowAttachSelf=true so that the VM will permit a late self attach if localConnector-1.0 is enabled
-  JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true"
+  # need -Dcom.ibm.tools.attach.enable=yes for java 11 on z/OS
+  if [ "${uname}" = OS/390 ]; then
+    JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true -Dcom.ibm.tools.attach.enable=yes"
+  else
+    JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true"
+  fi
   SERVER_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
 
   rc=0
