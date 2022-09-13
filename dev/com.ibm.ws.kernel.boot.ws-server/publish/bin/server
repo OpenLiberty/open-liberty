@@ -992,7 +992,9 @@ javaCmd()
     # syslog is disabled for checkpoint to allow jvm dumps before a checkpoint.
     # We expect an enhancement to OpenJ9 to allow syslog to be enabled on restore.
     # When that becomes available we can remove the -Xsyslog:none option
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode -Xsyslog:none $X_WLP_IMMUTABLE_VARS"
+    # -Djdk.nativeEC=false disabled nativeEC until some issues are resolved around portability
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode -Xsyslog:none -Djdk.nativeEC=false $X_WLP_IMMUTABLE_VARS"
+
 
     checkCriuUnprivileged
     if [ $DO_CRIU_UNPRIVILEGED = true ]; then
