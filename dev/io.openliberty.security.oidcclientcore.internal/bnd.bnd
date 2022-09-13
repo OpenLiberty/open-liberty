@@ -75,5 +75,6 @@ Export-Package: \
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
-	com.ibm.ws.org.slf4j.api;version=latest
+	com.ibm.ws.org.slf4j.api;version=latest,\
+	com.ibm.websphere.security;version=latest
 	
