@@ -165,10 +165,11 @@ public class FeatureUtility {
         
         updateProgress(progressBar.getMethodIncrement("fetchJsons"));
         fine("Finished finding jsons");
-
+	progressBar.manuallyUpdate();
         initializeMap(jsonPaths);
         updateProgress(progressBar.getMethodIncrement("initializeMap"));
         fine("Initialized install kernel map");
+	progressBar.manuallyUpdate();
     }
     
     public void setFeatureToExt(Map<String, String> featureToExt) {
@@ -472,10 +473,8 @@ public class FeatureUtility {
         	
         }
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
-
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
         Collection<File> artifacts = fromDir != null ? downloadFeaturesFrom(resolvedFeatures, fromDir) : downloadFeatureEsas((List<String>) resolvedFeatures);
-        updateProgress(progressBar.getMethodIncrement("downloadArtifacts")); // expect this to be 0 after download all features
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
         Collection<String> actionReturnResult = new ArrayList<String>();
