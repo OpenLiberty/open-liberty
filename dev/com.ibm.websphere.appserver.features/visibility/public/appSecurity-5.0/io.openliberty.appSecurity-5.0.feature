@@ -29,6 +29,7 @@ Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
   com.ibm.ws.org.apache.commons.lang3, \
   com.ibm.ws.org.apache.httpcomponents, \
   com.ibm.ws.org.jose4j, \
+  com.ibm.ws.security.common.jsonwebkey, \
   io.openliberty.org.apache.commons.codec, \
   io.openliberty.org.apache.commons.logging, \
   io.openliberty.security.common.internal, \

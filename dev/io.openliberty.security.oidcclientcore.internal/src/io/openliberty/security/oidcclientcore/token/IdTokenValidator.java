@@ -38,7 +38,7 @@ public class IdTokenValidator extends TokenValidator {
         
     }
     void validateNonce() throws TokenValidationException {
-        // TODO : 
+        // TODO : need access to Storage and state param value to compute nonce
     }
 
 }

@@ -22,10 +22,10 @@ Bundle-Description: Jakarta Security 3.0; version=${bVersion}
 
 Export-Package: \
     io.openliberty.security.jakartasec,\
-    io.openliberty.security.jakartasec.identitystore
+    io.openliberty.security.jakartasec.identitystore,\
+    io.openliberty.security.jakartasec.credential
 
 Import-Package: \
-    !io.openliberty.security.jakartasec.*,\
     *
 
 -buildpath: \
