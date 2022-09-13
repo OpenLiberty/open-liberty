@@ -77,3 +77,8 @@ CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.useraction=Check the OpenID Connect cli
 CALLBACK_URL_INCLUDES_ERROR_PARAMETER=CWWKS2414E: The callback request from the OpenID Connect provider contains the following error parameter value: [{0}]
 CALLBACK_URL_INCLUDES_ERROR_PARAMETER.explanation=The OpenID Connect provider encountered an error when it tried to process the authentication request.
 CALLBACK_URL_INCLUDES_ERROR_PARAMETER.useraction=See the value that is in the message for more information. Error codes are defined by RFC 6749.
+
+TOKEN_VALIDATION_EXCEPTION=CWWKS2415E: The {0} OpenID Connect client encountered the following error during validation of the token that was received from the OpenID Connect provider: {1}
+TOKEN_VALIDATION_EXCEPTION.explanation=A problem might exist with the issuer, azp, iat, or exp claim validation, or with the token signature validation.
+TOKEN_VALIDATION_EXCEPTION.useraction=For more information, see the error in the message.
+
