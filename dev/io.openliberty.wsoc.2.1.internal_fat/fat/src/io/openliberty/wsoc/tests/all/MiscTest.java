@@ -25,30 +25,24 @@ import io.openliberty.wsoc.util.wsoc.WsocTest;
 import junit.framework.Assert;
 
 /**
- * Contains test details (such as client endpoint, server uri endpoint, input, and expected output).
- * These test are invoked by Basic21Test class. 
+ *  Miscellaneous tests 
  */
-public class TimeOutTest {
+public class MiscTest {
 
     private WsocTest wsocTest = null;
 
-    public TimeOutTest(WsocTest test) {
+    public MiscTest(WsocTest test) {
         this.wsocTest = test;
     }
 
-    public void testZeroTimeOut() throws Exception {
-        String[] input1 = { "Text1" };
-        String[] output1 = { "0" }; // timeout value 
+    public void testGetRequestURIReturnsFullURI() throws Exception {
+        String uri = "/basic21/GetRequestURI";
+        String expectedURI = wsocTest.getServerUrl(uri);
 
-        String uri = "/basic21/zeroTimeout";
-        wsocTest.runEchoTest(new ClientHelper.BasicClientEP(input1), uri, output1);
-    }
-    
-    public void testNegativeoTimeOut() throws Exception {
-        String[] input1 = { "Text1" };
-        String[] output1 = { "-12" };  // timeout value 
+        String[] input = { "anyValue" }; // timeout value 
+        String[] output1 = { expectedURI }; // timeout value 
 
-        String uri = "/basic21/negativeTimeout";
-        wsocTest.runEchoTest(new ClientHelper.BasicClientEP(input1), uri, output1);
+        wsocTest.runEchoTest(new ClientHelper.BasicClientEP(input), uri, output1);
     }
+
 }

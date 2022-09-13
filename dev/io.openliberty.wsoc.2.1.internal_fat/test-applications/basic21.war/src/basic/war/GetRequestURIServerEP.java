@@ -26,17 +26,18 @@ import io.openliberty.wsoc.common.Utils;
 /*
  * Echos messages sent to this endpoint.
  */
-@ServerEndpoint(value = "/echo")
-public class EchoServerEP {
+@ServerEndpoint(value = "/GetRequestURI")
+public class GetRequestURIServerEP {
 
+    Session session = null;
     @OnOpen
     public void onOpen(final Session session) {
-
+        this.session = session;
     }
 
     @OnMessage
     public String echo(String input) {
-        return input;
+        return session.getRequestURI().toString();
     }
 
 }

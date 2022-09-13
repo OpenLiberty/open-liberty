@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsoc.external;
+package com.ibm.ws.wsoc.servercontainer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,8 +32,10 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.wsoc.AnnotatedEndpoint;
 import com.ibm.ws.wsoc.EndpointHelper;
 import com.ibm.ws.wsoc.EndpointManager;
+import com.ibm.ws.wsoc.external.WebSocketContainerExt;
+import com.ibm.ws.wsoc.external.WsocHandlerImpl;
 
-public class ServerContainerExt extends WebSocketContainerExt implements WsWsocServerContainer {
+public abstract class ServerContainerExt extends WebSocketContainerExt {
 
     private static final TraceComponent tc = Tr.register(ServerContainerExt.class);
 
@@ -41,11 +43,10 @@ public class ServerContainerExt extends WebSocketContainerExt implements WsWsocS
 
     private boolean noMoreAdds = false;
 
-    private final WsocHandlerImpl wsocUpgradeHandler = new WsocHandlerImpl();
+    protected final WsocHandlerImpl wsocUpgradeHandler = new WsocHandlerImpl();
 
     public void initialize() {}
 
-    @Override
     public void addEndpoint(Class<?> endpointClass) throws DeploymentException {
 
         if (noMoreAdds) {
@@ -91,7 +92,6 @@ public class ServerContainerExt extends WebSocketContainerExt implements WsWsocS
         }
     }
 
-    @Override
     public void addEndpoint(ServerEndpointConfig serverConfig) throws DeploymentException {
 
         if (noMoreAdds) {
@@ -284,22 +284,6 @@ public class ServerContainerExt extends WebSocketContainerExt implements WsWsocS
             endpointManager.addAnnotatedEndpoint(annotatedEP);
         }
         return annotatedEP;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.websphere.wsoc.WsWsocServerContainer#upgrade(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, javax.websocket.EndpointConfig,
-     * java.lang.String)
-     */
-    @Override
-    public void doUpgrade(HttpServletRequest request, HttpServletResponse response, ServerEndpointConfig endpointConfig, Map<String, String> pathParams) throws ServletException, IOException {
-
-        wsocUpgradeHandler.handleRequest(request, response, endpointConfig, pathParams, true);
-        if (!response.isCommitted()) {
-            response.getOutputStream().close();
-        }
-
     }
 
 }

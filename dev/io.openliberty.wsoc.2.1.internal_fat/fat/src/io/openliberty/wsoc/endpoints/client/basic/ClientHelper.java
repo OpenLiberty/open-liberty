@@ -41,24 +41,19 @@ import io.openliberty.wsoc.common.Constants;
 import io.openliberty.wsoc.common.Utils;
 
 /**
- * Used to test negative and zero timeouts.
- * Spec clarification as part of 2.1  
- * https://github.com/jakartaee/websocket/issues/382
- * 
- * This is the client endpoint for server endpoints
- * NegativeTimeOutServerEP & ZeroTimeOutServerEP
+ * Creates variosu Client Endpoints used within this FAT
  */
-public class TimeOutClientEP implements TestHelper {
+public class ClientHelper implements TestHelper {
 
     public WsocTestContext _wtr = null;
-    private static final Logger LOG = Logger.getLogger(TimeOutClientEP.class.getName());
+    private static final Logger LOG = Logger.getLogger(ClientHelper.class.getName());
 
     @ClientEndpoint
-    public static class TimeOutTest extends TimeOutClientEP {
+    public static class BasicClientEP extends ClientHelper {
 
         public String[] _data = {};
 
-        public TimeOutTest(String[] data) {
+        public BasicClientEP(String[] data) {
             _data = data;
         }
 
@@ -72,9 +67,8 @@ public class TimeOutClientEP implements TestHelper {
         }
 
         @OnMessage
-        public String echoText(String data) {
+        public String onMessage(String data) {
     
-            // data should return the correct getMaxIdleTimeout from the servers
             _wtr.addMessage(data);
     
             _wtr.terminateClient();

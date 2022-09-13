@@ -26,8 +26,12 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import com.ibm.ws.wsoc.servercontainer.ServletContainerFactory;
+import com.ibm.ws.wsoc.servercontainer.ServerContainerExt;
+import com.ibm.ws.wsoc.servercontainer.v10.ServerContainerImplFactory10;
+
 /**
- *
+ * Provides various services for differnet features.
  */
 public class WebSocketVersionServiceManager {
 
@@ -40,7 +44,11 @@ public class WebSocketVersionServiceManager {
     private static final AtomicServiceReference<WebSocketFactory> websocketFactoryServiceRef =
                     new AtomicServiceReference<WebSocketFactory>("websocketFactoryService");
 
+    private static final AtomicServiceReference<ServletContainerFactory> servletContainerFactorySRRef = new AtomicServiceReference<ServletContainerFactory>("servletContainerFactoryService");
+
     private static final WebSocketFactory DEFAULT_WEBSOCKET_FACTORY = new WebSocketFactoryImpl();
+
+    private static final ServletContainerFactory DEFAULT_SERVLET_CONTAINER_FACTORY = new ServerContainerImplFactory10();
 
     public static String LOADED_SPEC_LEVEL = loadWsocVersion();
 
@@ -48,27 +56,30 @@ public class WebSocketVersionServiceManager {
 
     /**
      * DS method for activating this component.
-     * 
+     *
      * @param context
      */
     protected synchronized void activate(ComponentContext context) {
         cfwBundleRef.activate(context);
         websocketFactoryServiceRef.activate(context);
+        servletContainerFactorySRRef.activate(context);
+
     }
 
     /**
      * DS method for deactivating this component.
-     * 
+     *
      * @param context
      */
     protected synchronized void deactivate(ComponentContext context) {
         cfwBundleRef.deactivate(context);
         websocketFactoryServiceRef.deactivate(context);
+        servletContainerFactorySRRef.deactivate(context);
     }
 
     /**
      * DS method for setting the event reference.
-     * 
+     *
      * @param service
      */
     protected void setChfwBundle(ServiceReference<CHFWBundle> service) {
@@ -77,7 +88,7 @@ public class WebSocketVersionServiceManager {
 
     /**
      * DS method for removing the event reference.
-     * 
+     *
      * @param service
      */
     protected void unsetChfwBundle(ServiceReference<CHFWBundle> service) {
@@ -93,7 +104,7 @@ public class WebSocketVersionServiceManager {
 
     /**
      * Access the current reference to the bytebuffer pool manager from channel frame work.
-     * 
+     *
      * @return WsByteBufferPoolManager
      */
     public static WsByteBufferPoolManager getBufferPoolManager() {
@@ -110,7 +121,25 @@ public class WebSocketVersionServiceManager {
         if (webSocketFactory == null) {
             return DEFAULT_WEBSOCKET_FACTORY;
         }
+
         return webSocketFactory;
+    }
+
+    protected static ServletContainerFactory getServerContainerExtFactory() {
+
+        ServletContainerFactory servletContainerFactory = servletContainerFactorySRRef.getService();
+        if (servletContainerFactory != null) {
+            return servletContainerFactory;
+        }
+        return DEFAULT_SERVLET_CONTAINER_FACTORY;
+    }
+
+    protected void setServletContainerFactoryService(ServiceReference<ServletContainerFactory> service) {
+        servletContainerFactorySRRef.setReference(service);
+    }
+
+    protected void unsetServletContainerFactoryService(ServiceReference<ServletContainerFactory> service) {
+        servletContainerFactorySRRef.unsetReference(service);
     }
 
     protected void setWebsocketFactoryService(ServiceReference<WebSocketFactory> ref) {
