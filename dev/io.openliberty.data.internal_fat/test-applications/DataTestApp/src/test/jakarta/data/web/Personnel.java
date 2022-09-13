@@ -33,7 +33,7 @@ import io.openliberty.data.Where;
  * and experimenting with how generated repository method implementations
  * fit with asynchronous methods.
  */
-@Data(Person.class) // TODO infer the entity class?
+@Data
 public interface Personnel {
     @Asynchronous
     @Result(Integer.class)

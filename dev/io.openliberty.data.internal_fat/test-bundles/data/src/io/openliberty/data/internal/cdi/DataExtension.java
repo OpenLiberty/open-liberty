@@ -11,6 +11,8 @@
 package io.openliberty.data.internal.cdi;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +36,7 @@ import org.osgi.framework.FrameworkUtil;
 
 import io.openliberty.data.Data;
 import io.openliberty.data.Entities;
+import io.openliberty.data.Repository;
 import io.openliberty.data.internal.DataPersistence;
 
 public class DataExtension implements Extension {
@@ -74,25 +77,39 @@ public class DataExtension implements Extension {
             if (entityClasses == null)
                 entitiesMap.put(entityGroupKey, entityClasses = new ArrayList<>());
 
-            Class<?> entityClass = data.value();
-            if (void.class.equals(entityClass)) {
-                entityClass = null;
+            Class<?> entityClass = null;
+            for (Type interfaceType : repositoryInterface.getGenericInterfaces()) {
+                if (interfaceType instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
+                    if (parameterizedType.getRawType().getTypeName().equals(Repository.class.getName())) {
+                        Type paramTypes[] = parameterizedType.getActualTypeArguments();
+                        if (paramTypes.length == 2 && paramTypes[0] instanceof Class) {
+                            System.out.println("    entity type for " + repositoryInterface.getName() + " is " + paramTypes[0].getTypeName());
+                            entityClass = (Class<?>) paramTypes[0];
+                        }
+                    }
+                }
+            }
+            if (entityClass == null) {
                 // infer from single-parameter methods that accept an entity class
                 for (Method method : repositoryInterface.getMethods())
                     if (method.getParameterCount() == 1) {
                         // TODO there should be better ways to determine entity classes, but this is close enough for experimentation,
                         Class<?> paramType = method.getParameterTypes()[0];
+                        if (paramType.isArray())
+                            paramType = paramType.getComponentType();
                         String packageName = paramType.getPackageName();
                         if (!paramType.isPrimitive() &&
                             !paramType.isInterface() &&
-                            !paramType.isArray() &&
                             !packageName.startsWith("java") &&
                             !packageName.startsWith("jakarta")) {
                             if ("save".equals(method.getName())) {
                                 entityClass = paramType;
+                                System.out.println("    entity type from " + repositoryInterface.getName() + "." + method.getName() + " is " + entityClass);
                                 break;
                             } else if (entityClass == null || paramType.getName().compareTo(entityClass.getName()) < 0) {
                                 entityClass = paramType;
+                                System.out.println("    entity type from " + repositoryInterface.getName() + "." + method.getName() + " is " + entityClass);
                             }
                         }
                     }

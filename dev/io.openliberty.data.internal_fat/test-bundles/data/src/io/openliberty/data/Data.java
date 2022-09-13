@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * For example,
  *
  * <pre>
- * &#64;Data(Product.class)
+ * &#64;Data
  * public interface Products {
  *     Product[] findByProductNameLikeOrderByPrice(String nameContains);
  *
@@ -40,11 +40,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Data {
-    /**
-     * Entity class. By default, detect automatically.
-     */
-    Class<?> value() default void.class;
-
     /**
      * Returns the name of the provider of backend data access for
      * the entity.

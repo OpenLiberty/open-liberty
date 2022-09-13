@@ -18,7 +18,7 @@ import io.openliberty.data.Repository;
 /**
  * Experiments with auto-generated keys.
  */
-@Data(Order.class)
+@Data
 public interface OrderRepo extends Repository<Order, Long> {
 
     @Query("UPDATE Order o SET o.total = o.total * :rate + :shipping WHERE o.id = :id")
