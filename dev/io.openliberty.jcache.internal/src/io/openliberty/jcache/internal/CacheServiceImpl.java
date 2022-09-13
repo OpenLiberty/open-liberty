@@ -41,6 +41,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.serialization.SerializationService;
 
@@ -106,6 +107,7 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Deactivate
+    @FFDCIgnore({ Exception.class })
     public void deactivate() {
         /*
          * Close the cache.
@@ -113,7 +115,9 @@ public class CacheServiceImpl implements CacheService {
         if (cache != null && !cache.isClosed()) {
             try {
                 synchronized (closeSyncObject) {
-                    cache.close();
+                    if (!cache.isClosed()) {
+                        cache.close();
+                    }
                 }
             } catch (Exception e) {
                 Tr.warning(tc, "CWLJC0012_CLOSE_CACHE_ERR", cacheName, e);
