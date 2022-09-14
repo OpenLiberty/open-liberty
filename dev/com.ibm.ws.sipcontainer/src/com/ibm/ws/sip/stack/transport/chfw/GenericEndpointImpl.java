@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.sip.stack.transport.chfw;
 
-import java.net.*;
+import java.net.InetAddress;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
