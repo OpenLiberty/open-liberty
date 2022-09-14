@@ -131,19 +131,12 @@ public class RegisterRequestInterceptor {
         if (interceptPoint.equals(RequestInterceptor.INTERCEPT_POINT_AFTER_FILTERS)) {
             if (!_AfterFilterInterceptors.isEmpty()) { 
                 
-                Iterator<RequestInterceptor> afps = _AfterFilterInterceptors.getServices();
+                Iterator<RequestInterceptor> afps = _AfterFilterInterceptors.getServicesAscending();
                 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "RegisterRequestInterceptor.notifyRequestInterceptors() afps.hasNext() : " + afps.hasNext());
                 }            
-                ArrayList<RequestInterceptor> reverseAfps = new ArrayList<RequestInterceptor>();
                 
-                // reverse the order so highest ranked goes last
-                while (afps.hasNext()) {
-                   reverseAfps.add(0,afps.next());
-                }
-                afps = reverseAfps.iterator();
-                  
                 while (afps.hasNext() && !result) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                        Tr.debug(tc, "RegisterRequestInterceptor.notifyRequestInterceptors() notify after filter interceptor.");
