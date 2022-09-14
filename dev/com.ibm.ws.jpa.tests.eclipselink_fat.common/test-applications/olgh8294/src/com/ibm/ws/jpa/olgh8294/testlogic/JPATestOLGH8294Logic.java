@@ -337,10 +337,17 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isDerby || isDB2) {
-                        String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_STRING1 = TRIM(VARCHAR(? || '-'))) AND (ITEM_STRING1 = TRIM(VARCHAR(? || '-'))))";
-                        Assert.assertEquals(expected, sql.get(0));
-                    } // TODO: other databases
+                    if (isUsingJPA31Feature()) {
+                        if (isDerby || isDB2) {
+                            String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_STRING1 = TRIM(VARCHAR(? || ?))) AND (ITEM_STRING1 = TRIM(VARCHAR(? || ?))))";
+                            Assert.assertEquals(expected, sql.get(0));
+                        } // TODO: other databases
+                    } else {
+                        if (isDerby || isDB2) {
+                            String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_STRING1 = TRIM(VARCHAR(? || '-'))) AND (ITEM_STRING1 = TRIM(VARCHAR(? || '-'))))";
+                            Assert.assertEquals(expected, sql.get(0));
+                        } // TODO: other databases
+                    }
                 } catch (Throwable t) {
                     if (isDerby || isDB2ZOS) {
                         // This is expected to fail
@@ -753,10 +760,17 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isDB2) {
-                        String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (?, 'b', 'c'))";
-                        Assert.assertEquals(expected, sql.get(0));
-                    } // TODO: other databases
+                    if (isUsingJPA31Feature()) {
+                        if (isDB2) {
+                            String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (?, ?, ?))";
+                            Assert.assertEquals(expected, sql.get(0));
+                        } // TODO: other databases
+                    } else {
+                        if (isDB2) {
+                            String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (?, 'b', 'c'))";
+                            Assert.assertEquals(expected, sql.get(0));
+                        } // TODO: other databases
+                    }
                 } catch (Throwable t) {
                     if (isDerby || isDB2ZOS) {
                         // This is expected to fail
@@ -795,10 +809,17 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isDB2) {
-                        String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (5, ?, 6))";
-                        Assert.assertEquals(expected, sql.get(0));
-                    } // TODO: other databases
+                    if (isUsingJPA31Feature()) {
+                        if (isDB2) {
+                            String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (?, ?, ?))";
+                            Assert.assertEquals(expected, sql.get(0));
+                        } // TODO: other databases
+                    } else {
+                        if (isDB2) {
+                            String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (5, ?, 6))";
+                            Assert.assertEquals(expected, sql.get(0));
+                        } // TODO: other databases
+                    }
                 } catch (Throwable t) {
                     if (isDerby || isDB2ZOS) {
                         // This is expected to fail
@@ -837,10 +858,17 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isDB2) {
-                        String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_STRING1 IN (?, 'b', ?))";
-                        Assert.assertEquals(expected, sql.get(0));
-                    } // TODO: other databases
+                    if (isUsingJPA31Feature()) {
+                        if (isDB2) {
+                            String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_STRING1 IN (?, ?, ?))";
+                            Assert.assertEquals(expected, sql.get(0));
+                        } // TODO: other databases
+                    } else {
+                        if (isDB2) {
+                            String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_STRING1 IN (?, 'b', ?))";
+                            Assert.assertEquals(expected, sql.get(0));
+                        } // TODO: other databases
+                    }
                 } catch (Throwable t) {
                     if (isDerby || isDB2ZOS) {
                         // This is expected to fail

@@ -333,9 +333,9 @@ public class VersioningTestLogic extends AbstractTestLogic {
             return;
         }
 
-        //TODO: Disable test until EclipseLink 2.1 OR 3.0 are updated to include the fix
+        //TODO: Disable test until EclipseLink 3.0 are updated to include the fix
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
-        if ((isUsingJPA30Feature() || isUsingJPA31Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
+        if ((isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
 
@@ -604,9 +604,9 @@ public class VersioningTestLogic extends AbstractTestLogic {
             return;
         }
 
-        //TODO: Disable test until EclipseLink 2.1 OR 3.0 are updated to include the fix
+        //TODO: Disable test until EclipseLink 3.0 are updated to include the fix
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
-        if ((isUsingJPA30Feature() || isUsingJPA31Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
+        if ((isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
 
