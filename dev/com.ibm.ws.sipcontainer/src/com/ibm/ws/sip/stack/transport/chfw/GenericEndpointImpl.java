@@ -473,20 +473,23 @@ public class GenericEndpointImpl {
 		}
 		else{
 			try {
-			InetAddress ipAddress = InetAddress.getByName(topicHost);
-			if (ipAddress instanceof Inet6Address) {
-			    // Remove colon from ipv6 address before constructing topicString
-			    topicHost = topicHost.replace(":", "_");
+				InetAddress ipAddress = InetAddress.getByName(topicHost);
+				if (ipAddress instanceof Inet6Address) {
+					// Remove colon from ipv6 address before constructing topicString
+					topicHost = topicHost.replace(":", "_");
 
-			} else if (ipAddress instanceof Inet4Address) {
-			    // Remove dots from ipv4 address before constructing topicString
-			    topicHost = topicHost.replace(".", "_");
-			}
+				} 
+				else if (ipAddress instanceof Inet4Address) {
+					// Remove dots from ipv4 address before constructing topicString
+					topicHost = topicHost.replace(".", "_");
+				}
+
 			} catch (UnknownHostException e) {
+				if (c_logger.isTraceDebugEnabled()){
+					c_logger.traceDebug("Error: GenericEndpointImpl applyNewConfiguration: " + e);
+					}
 				
 			}
-		
-
 
 			//topicHost = topicHost.replace(".", "_");
 		}
