@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sample;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +40,7 @@ import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfBspTests {
@@ -112,7 +113,7 @@ public class CxfBspTests {
         Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
 
         //RTC 290711
-        //RTC 291296 handles the case with java runtime OSX_12_MONTEREY_IBMJDK8 which is hybrid jdk where 
+        //RTC 291296 handles the case with java runtime OSX_12_MONTEREY_IBMJDK8 which is hybrid jdk where
         //Security, ORB and XML components are IBM Java and JVM, JIT, most class libraries are Oracle Java
         if ((JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) & (vendorName.contains("IBM"))) {
             Log.info(thisClass, thisMethod, "Using an IBM JDK");

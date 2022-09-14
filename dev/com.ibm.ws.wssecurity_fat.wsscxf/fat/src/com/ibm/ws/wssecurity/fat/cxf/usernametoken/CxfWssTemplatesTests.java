@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
@@ -20,14 +21,12 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfWssTemplatesTests extends CommonTests {

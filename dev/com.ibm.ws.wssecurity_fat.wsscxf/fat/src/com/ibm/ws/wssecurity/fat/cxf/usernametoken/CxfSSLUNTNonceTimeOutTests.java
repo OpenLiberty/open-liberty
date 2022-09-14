@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
@@ -30,12 +31,11 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
@@ -53,21 +53,23 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
 
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        /*if (features.contains("jaxws-2.2")) {
-            copyFromFile = System.getProperty("user.dir") +
-                           File.separator +
-                           server.getPathToAutoFVTNamedServer() +
-                           "server_customize.xml";
-        } else if (features.contains("jaxws-2.3")) {
-            copyFromFile = System.getProperty("user.dir") +
-                           File.separator +
-                           server.getPathToAutoFVTNamedServer() +
-                           "server_customize_ee8.xml";
-        }*/
+        /*
+         * if (features.contains("jaxws-2.2")) {
+         * copyFromFile = System.getProperty("user.dir") +
+         * File.separator +
+         * server.getPathToAutoFVTNamedServer() +
+         * "server_customize.xml";
+         * } else if (features.contains("jaxws-2.3")) {
+         * copyFromFile = System.getProperty("user.dir") +
+         * File.separator +
+         * server.getPathToAutoFVTNamedServer() +
+         * "server_customize_ee8.xml";
+         * }
+         */
         copyFromFile = System.getProperty("user.dir") +
-                        File.separator +
-                        server.getPathToAutoFVTNamedServer() +
-                        "server_customize.xml";
+                       File.separator +
+                       server.getPathToAutoFVTNamedServer() +
+                       "server_customize.xml";
 
         ShrinkHelper.defaultDropinApp(server, "untsslclient", "com.ibm.ws.wssecurity.fat.untsslclient", "fats.cxf.basicssl.wssec", "fats.cxf.basicssl.wssec.types");
         ShrinkHelper.defaultDropinApp(server, "untoken", "com.ibm.ws.wssecurity.fat.untoken");
