@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,9 +67,17 @@ public class CustomELResolver extends ELResolver {
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
         System.out.println("CustomELResolver:getValue() base = " + base + ", property = " + property);
+
+        boolean className40Found = false;
         String outcome = null;
+        String className = "com.ibm.ws.jsf23.fat.cdi.common.beans.TestCustomBean";
+        String classNameFaces40 = "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40.TestCustomBean";
+
         if (base != null) {
-            if (base != null && base.getClass().getName().equals("com.ibm.ws.jsf23.fat.cdi.common.beans.TestCustomBean")) {
+            String baseClassName = base.getClass().getName();
+            className40Found = baseClassName.equals(classNameFaces40);
+
+            if (baseClassName.equals(className) || className40Found) {
                 //System.out.println("CustomELResolver:getValue() match found");
 
                 outcome = ":CustomELResolver:";
@@ -80,14 +88,23 @@ public class CustomELResolver extends ELResolver {
                     outcome += ":FieldInjectionFailed:";
                 }
 
-                if (_methodBean == null)
+                if (_methodBean == null) {
                     outcome += ":MethodInjectionFailed:";
-                else
+                } else {
                     outcome += _methodBean.getData();
+                }
 
-                ((TestCustomBean) base).setData(outcome);
+                if (className40Found) {
+                    ((com.ibm.ws.jsf23.fat.cdi.common.beans.faces40.TestCustomBean) base).setData(outcome);
+                } else {
+                    ((TestCustomBean) base).setData(outcome);
+                }
 
-                outcome = ((TestCustomBean) base).getData();
+                if (className40Found) {
+                    outcome = ((com.ibm.ws.jsf23.fat.cdi.common.beans.faces40.TestCustomBean) base).getData();
+                } else {
+                    outcome = ((TestCustomBean) base).getData();
+                }
 
                 context.setPropertyResolved(true);
             }
