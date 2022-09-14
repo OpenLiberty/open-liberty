@@ -319,6 +319,7 @@ public class MvnUtils {
         stringArrayList.add(mvn);
         stringArrayList.add(MVN_CLEAN); //TODO do we always want to clean?
         stringArrayList.add(MVN_TEST);
+        stringArrayList.add("-DtrimStackTrace=false"); //According to the mvn docs this should default to false, but we needed to set this to get full stacks.
         stringArrayList.add("-Dwlp=" + getWLPInstallRoot());
         stringArrayList.add("-Dtck_server=" + getServerName());
         stringArrayList.add("-Dtck_hostname=" + getServerHostName());

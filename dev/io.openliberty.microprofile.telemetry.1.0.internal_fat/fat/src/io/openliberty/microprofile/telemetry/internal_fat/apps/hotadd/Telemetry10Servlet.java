@@ -21,6 +21,7 @@ import jakarta.servlet.annotation.WebServlet;
 import org.junit.Test;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Context;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;

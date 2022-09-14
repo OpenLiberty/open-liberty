@@ -10,7 +10,8 @@ Subsystem-Name: MicroProfile Telemetry 1.0
 IBM-API-Package: \
   io.opentelemetry.api.baggage;type="stable",\
   io.opentelemetry.api;type="stable",\
-  io.opentelemetry.api.trace;type="stable"
+  io.opentelemetry.api.trace;type="stable",\
+  io.opentelemetry.context;type="stable"
 -features=\
   io.openliberty.jakarta.annotation-2.1; ibm.tolerates:="2.0", \
   io.openliberty.restfulWS-3.1; ibm.tolerates:="3.0", \
