@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,9 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.FieldBean;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.MethodBean;
@@ -24,8 +24,11 @@ import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.TestBeanType;
 
 /**
  * Bean that tests field and method injection. No constructor injection.
+ *
+ * This @Named bean is only used during the EE10 Repeat. The jakarta.faces.bean
+ * package was removed in Faces 4.0.
  */
-@ManagedBean(name = "testBean")
+@Named("testBean")
 @SessionScoped
 public class TestBean implements Serializable {
 

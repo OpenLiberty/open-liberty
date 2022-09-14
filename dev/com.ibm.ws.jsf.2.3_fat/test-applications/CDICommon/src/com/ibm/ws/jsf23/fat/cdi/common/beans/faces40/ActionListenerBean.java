@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,14 @@ package com.ibm.ws.jsf23.fat.cdi.common.beans.faces40;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 /**
- *
+ * This @Named bean is only used during the EE10 Repeat. The jakarta.faces.bean
+ * package was removed in Faces 4.0.
  */
-@ManagedBean(name = "actionListenerBean")
+@Named("actionListenerBean")
 @SessionScoped
 public class ActionListenerBean implements Serializable {
 
