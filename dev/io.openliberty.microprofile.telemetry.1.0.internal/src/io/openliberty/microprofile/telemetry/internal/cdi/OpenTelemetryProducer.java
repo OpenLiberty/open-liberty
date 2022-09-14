@@ -59,7 +59,8 @@ public class OpenTelemetryProducer {
     private static final String CONFIG_TRACE_EXPORTER_PROPERTY = "otel.traces.exporter";
     private static final String ENV_JAEGER_TIMEOUT_PROPERTY = "JAEGER_TIMEOUT";
     private static final String CONFIG_JAEGER_TIMEOUT_PROPERTY = "jaeger.timeout";
-
+    private static final String ENV_ENABLE_PROPERTY = "OTEL_EXPERIMENTAL_SDK_ENABLED";
+    private static final String CONFIG_ENABLE_PROPERTY = "otel.experimental.sdk.enabled";
     @Inject
     Config config;
 
@@ -67,23 +68,31 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetry getOpenTelemetry() {
-        HashMap<String,String> telemetryProperties = getTelemetryProperties();
-        SpanExporter exporter = getSpanExporter(telemetryProperties);
-        Resource serviceNameResource = getServiceName(telemetryProperties);
         
-        SdkTracerProvider tracerProvider =
-            SdkTracerProvider.builder()
-                .addSpanProcessor(BatchSpanProcessor.builder(exporter).build())
-                .setResource(Resource.getDefault().merge(serviceNameResource))
+        HashMap<String,String> telemetryProperties = getTelemetryProperties();
+        //Builds tracer provider if user has enabled tracing aspects with config properties
+        if(checkEnabled(telemetryProperties)){
+            SpanExporter exporter = getSpanExporter(telemetryProperties);
+            Resource serviceNameResource = getServiceName(telemetryProperties);
+            
+            SdkTracerProvider tracerProvider =
+                SdkTracerProvider.builder()
+                    .addSpanProcessor(BatchSpanProcessor.builder(exporter).build())
+                    .setResource(Resource.getDefault().merge(serviceNameResource))
+                    .build();
+
+            OpenTelemetrySdk openTelemetry = OpenTelemetrySdk.builder()
+                .setTracerProvider(tracerProvider)
+                .setPropagators(ContextPropagators.create(W3CTraceContextPropagator.getInstance()))
                 .build();
 
-        OpenTelemetrySdk openTelemetry = OpenTelemetrySdk.builder()
-            .setTracerProvider(tracerProvider)
-            .setPropagators(ContextPropagators.create(W3CTraceContextPropagator.getInstance()))
-            .build();
-
-        Runtime.getRuntime().addShutdownHook(new Thread(tracerProvider::close));
-        return openTelemetry;
+            Runtime.getRuntime().addShutdownHook(new Thread(tracerProvider::close));
+            return openTelemetry;
+        }
+        //By default, MicroProfile Telemetry tracing is off.
+        //The absence of an installed SDK is a “no-op” API
+        //Operations on a Tracer, or on Spans have no side effects and do nothing
+        return OpenTelemetry.noop();
     }
 
     private Resource getServiceName(Map<String,String> oTelConfigs){
@@ -155,6 +164,22 @@ public class OpenTelemetryProducer {
                             .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
                             .build();
     }
+
+    private boolean checkEnabled(Map<String,String> oTelConfigs){
+        //In order to enable any of the tracing aspects, the configuration otel.experimental.sdk.enabled=true must be specified in any of the config sources available via MicroProfile Config
+        if(oTelConfigs.get(ENV_ENABLE_PROPERTY) != null){
+            if(oTelConfigs.get(ENV_ENABLE_PROPERTY).equals("true")){
+                return true;
+            }
+        }
+        else if(oTelConfigs.get(CONFIG_ENABLE_PROPERTY) != null){
+            if(oTelConfigs.get(CONFIG_ENABLE_PROPERTY).equals("true")){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private HashMap<String,String> getTelemetryProperties(){
         HashMap<String,String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
