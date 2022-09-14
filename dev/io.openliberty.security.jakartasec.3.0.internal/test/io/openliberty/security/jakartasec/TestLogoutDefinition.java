@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
+
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
@@ -17,7 +19,6 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.LogoutDe
 
 public class TestLogoutDefinition {
 
-    protected static String EMPTY_DEFAULT = "";
     protected static String NOTIFY_PROVIDER = "notifyProvider";
     protected static String NOTIFY_PROVIDER_EXPRESSION = "notifyProviderExpression";
     protected static String REDIRECT_URI = "redirectURI";
