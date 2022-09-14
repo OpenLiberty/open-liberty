@@ -39,7 +39,7 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
 
     private void instantiateStorage(OidcClientConfig config) {
         if (oidcClientConfig.isUseSession()) {
-            this.storage = new SessionBasedStorage();
+            this.storage = new SessionBasedStorage(request);
         } else {
             this.storage = new CookieBasedStorage(request, response);
         }

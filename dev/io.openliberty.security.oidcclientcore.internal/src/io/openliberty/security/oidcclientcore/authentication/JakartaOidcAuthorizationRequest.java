@@ -84,7 +84,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     private void instantiateStorage(OidcClientConfig config) {
         if (config.isUseSession()) {
-            this.storage = new SessionBasedStorage();
+            this.storage = new SessionBasedStorage(request);
             this.storageType = StorageType.SESSION;
         } else {
             this.storage = new CookieBasedStorage(request, response);
