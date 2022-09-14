@@ -11,10 +11,10 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -22,25 +22,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfX509EncTests extends CommonTests {
@@ -421,29 +418,31 @@ public class CxfX509EncTests extends CommonTests {
                         "An error was discovered processing the <wsse:Security> header",
                         // msg to issue if do NOT get the expected result
                         "The test expected a succesful message from the server.");
-            /*genericTest(
-                        // test name for logging
-                        thisMethod,
-                        // Svc Client Url that generic test code should use
-                        clientHttpUrl,
-                        // Port that svc client code should use
-                        "",
-                        // user that svc client code should use
-                        "user1",
-                        // pw that svc client code should use
-                        "security",
-                        // wsdl sevice that svc client code should use
-                        "X509XmlEncService7",
-                        // wsdl that the svc client code should use
-                        newClientWsdl,
-                        // wsdl port that svc client code should use
-                        "UrnX509Enc7",
-                        // msg to send from svc client to server
-                        "",
-                        // expected response from server
-                        "AsymmetricBinding: The Key transport method does not match the requirement",
-                        // msg to issue if do NOT get the expected result
-                        "The test expected a succesful message from the server.");*/
+            /*
+             * genericTest(
+             * // test name for logging
+             * thisMethod,
+             * // Svc Client Url that generic test code should use
+             * clientHttpUrl,
+             * // Port that svc client code should use
+             * "",
+             * // user that svc client code should use
+             * "user1",
+             * // pw that svc client code should use
+             * "security",
+             * // wsdl sevice that svc client code should use
+             * "X509XmlEncService7",
+             * // wsdl that the svc client code should use
+             * newClientWsdl,
+             * // wsdl port that svc client code should use
+             * "UrnX509Enc7",
+             * // msg to send from svc client to server
+             * "",
+             * // expected response from server
+             * "AsymmetricBinding: The Key transport method does not match the requirement",
+             * // msg to issue if do NOT get the expected result
+             * "The test expected a succesful message from the server.");
+             */
 
         } else if (featureVersion.equals("EE8")) {
             genericTest(
@@ -521,29 +520,30 @@ public class CxfX509EncTests extends CommonTests {
                         // msg to issue if do NOT get the expected result
                         "The test expected a succesful message from the server.");
             /*
-            genericTest(
-                        // test name for logging
-                        "testCXFClientWrongDataEncAlgorithm",
-                        // Svc Client Url that generic test code should use
-                        clientHttpUrl,
-                        // Port that svc client code should use
-                        "",
-                        // user that svc client code should use
-                        "user1",
-                        // pw that svc client code should use
-                        "security",
-                        // wsdl sevice that svc client code should use
-                        "X509XmlEncService8",
-                        // wsdl that the svc client code should use
-                        newClientWsdl,
-                        // wsdl port that svc client code should use
-                        "UrnX509Enc8",
-                        // msg to send from svc client to server
-                        "",
-                        // expected response from server
-                        "AsymmetricBinding: The encryption algorithm does not match the requirement",
-                        // msg to issue if do NOT get the expected result
-                        "The test expected a succesful message from the server.");*/
+             * genericTest(
+             * // test name for logging
+             * "testCXFClientWrongDataEncAlgorithm",
+             * // Svc Client Url that generic test code should use
+             * clientHttpUrl,
+             * // Port that svc client code should use
+             * "",
+             * // user that svc client code should use
+             * "user1",
+             * // pw that svc client code should use
+             * "security",
+             * // wsdl sevice that svc client code should use
+             * "X509XmlEncService8",
+             * // wsdl that the svc client code should use
+             * newClientWsdl,
+             * // wsdl port that svc client code should use
+             * "UrnX509Enc8",
+             * // msg to send from svc client to server
+             * "",
+             * // expected response from server
+             * "AsymmetricBinding: The encryption algorithm does not match the requirement",
+             * // msg to issue if do NOT get the expected result
+             * "The test expected a succesful message from the server.");
+             */
 
         } else if (featureVersion.equals("EE8")) {
             genericTest(
@@ -618,29 +618,30 @@ public class CxfX509EncTests extends CommonTests {
                         // msg to issue if do NOT get the expected result
                         "The test expected an exception from the server.");
             /*
-            genericTest(
-                        // test name for logging
-                        thisMethod,
-                        // Svc Client Url that generic test code should use
-                        clientHttpUrl,
-                        // Port that svc client code should use
-                        "",
-                        // user that svc client code should use
-                        "user1",
-                        // pw that svc client code should use
-                        "security",
-                        // wsdl sevice that svc client code should use
-                        "X509XmlEncService9",
-                        // wsdl that the svc client code should use
-                        "",
-                        // wsdl port that svc client code should use
-                        "UrnX509Enc9",
-                        // msg to send from svc client to server
-                        "",
-                        // expected response from server
-                        "The signature or decryption was invalid",
-                        // msg to issue if do NOT get the expected result
-                        "The test expected an exception from the server.");*/
+             * genericTest(
+             * // test name for logging
+             * thisMethod,
+             * // Svc Client Url that generic test code should use
+             * clientHttpUrl,
+             * // Port that svc client code should use
+             * "",
+             * // user that svc client code should use
+             * "user1",
+             * // pw that svc client code should use
+             * "security",
+             * // wsdl sevice that svc client code should use
+             * "X509XmlEncService9",
+             * // wsdl that the svc client code should use
+             * "",
+             * // wsdl port that svc client code should use
+             * "UrnX509Enc9",
+             * // msg to send from svc client to server
+             * "",
+             * // expected response from server
+             * "The signature or decryption was invalid",
+             * // msg to issue if do NOT get the expected result
+             * "The test expected an exception from the server.");
+             */
 
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
