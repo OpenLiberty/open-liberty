@@ -5,7 +5,7 @@ singleton=true
 IBM-ShortName: nosqlUnused-1.0
 Subsystem-Name: Unused feature to satisfy FeatureListValidator 1.0
 # TODO remove this unused feature once we no longer need to transform the Jakarta NoSQL spec from javax packages that the FeatureListValidator expects to see used by a feature
--bundles=io.openliberty.javax.nosql-1.0
+-bundles=io.openliberty.javax.nosql.1.0; location:="dev/api/spec/,lib/"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

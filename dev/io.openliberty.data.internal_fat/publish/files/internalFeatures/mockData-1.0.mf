@@ -1,4 +1,4 @@
-IBM-ShortName: data-1.0
+IBM-ShortName: mockData-1.0
 IBM-API-Package: io.openliberty.data; type="spec"
 IBM-Feature-Version: 2
 IBM-Test-Feature: true
@@ -10,6 +10,6 @@ Subsystem-Content: test.jakarta.data; version="[1,1.0.100)",
  io.openliberty.cdi-4.0; type="osgi.subsystem.feature",
  io.openliberty.persistenceService-2.0; type="osgi.subsystem.feature"
 Subsystem-ManifestVersion: 1
-Subsystem-SymbolicName: io.openliberty.data-1.0; visibility:=public
+Subsystem-SymbolicName: io.openliberty.mockData-1.0; visibility:=public
 Subsystem-Type: osgi.subsystem.feature
 Subsystem-Version: 1.0.0

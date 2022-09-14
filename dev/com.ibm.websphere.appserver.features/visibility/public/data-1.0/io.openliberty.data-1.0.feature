@@ -1,0 +1,16 @@
+-include= ~${workspace}/cnf/resources/bnd/feature.props
+symbolicName=io.openliberty.data-1.0
+visibility=public
+singleton=true
+IBM-ShortName: data-1.0
+IBM-API-Package: \
+  jakarta.data; type="spec",\
+  jakarta.data.repository; type="spec"
+Subsystem-Name: Jakarta Data 1.0
+#TODO com.ibm.websphere.appserver.eeCompatible-11.0
+#TODO io.openliberty.jakartaeePlatform-11.0
+-features=\
+  io.openliberty.jakarta.data-1.0
+kind=noship
+edition=full
+WLP-Activation-Type: parallel

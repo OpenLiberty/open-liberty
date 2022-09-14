@@ -962,6 +962,51 @@
       <version>2.1.0</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-column</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-core</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-document</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-key-value</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-query</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-column</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-core</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-document</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-key-value</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
       <version>3.0.0</version>
