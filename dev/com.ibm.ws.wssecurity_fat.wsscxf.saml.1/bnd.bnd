@@ -36,7 +36,15 @@ tested.features:\
   cdi-2.0, \
   cdi-3.0, \
   el-3.0, \
-  expressionlanguage-4.0
+  expressionlanguage-4.0, \
+  expressionlanguage-5.0, \
+  pages-3.1, \
+  servlet-6.0, \
+  appsecurity-5.0, \
+  xmlws-4.0, \
+  jsonp-2.1, \
+  xmlbinding-4.0, \
+  cdi-4.0
   
   
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)

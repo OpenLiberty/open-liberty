@@ -28,8 +28,10 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 
 
 /**
@@ -82,7 +84,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
  
     @Mode(TestMode.LITE)
     //@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     @Test
     public void testSAMLCxfSvcClient_TransportEnabled() throws Exception {
     	
@@ -119,7 +121,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      */
     
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE9_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
     public void testSAMLCxfSvcClient_TransportEnabled_httpFromClient() throws Exception {
 
@@ -169,7 +171,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
  
     @Mode(TestMode.LITE)
     //@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     @Test
     public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClient() throws Exception {
   
