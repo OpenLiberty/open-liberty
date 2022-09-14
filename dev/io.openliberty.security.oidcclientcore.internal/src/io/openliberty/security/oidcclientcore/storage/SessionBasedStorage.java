@@ -49,6 +49,7 @@ public class SessionBasedStorage implements Storage {
         return (String) value;
     }
 
+    @Override
     public void remove(String name) {
         HttpSession session = request.getSession();
         session.removeAttribute(name);

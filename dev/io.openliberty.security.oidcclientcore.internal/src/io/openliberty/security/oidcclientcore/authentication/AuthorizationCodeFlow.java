@@ -19,6 +19,8 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
+import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.token.JakartaOidcTokenRequest;
 
 public class AuthorizationCodeFlow extends AbstractFlow {
 
@@ -44,11 +46,12 @@ public class AuthorizationCodeFlow extends AbstractFlow {
      * 8. (Not done for Jakarta Security 3.0) Client validates the ID token and retrieves the End-User's Subject Identifier.
      */
     @Override
-    public ProviderAuthenticationResult continueFlow(HttpServletRequest request, HttpServletResponse response) throws AuthenticationResponseException {
+    public ProviderAuthenticationResult continueFlow(HttpServletRequest request, HttpServletResponse response) throws AuthenticationResponseException, TokenRequestException {
         JakartaOidcAuthenticationResponseValidator responseValidator = new JakartaOidcAuthenticationResponseValidator(request, response, oidcClientConfig);
         responseValidator.validateResponse();
-        // TODO: Clear stored state value
-        return null;
+
+        JakartaOidcTokenRequest tokenRequest = new JakartaOidcTokenRequest(oidcClientConfig, request);
+        return tokenRequest.sendRequest();
     }
 
 }

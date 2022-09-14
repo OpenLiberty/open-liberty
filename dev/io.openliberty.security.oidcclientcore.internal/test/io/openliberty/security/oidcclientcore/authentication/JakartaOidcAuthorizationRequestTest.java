@@ -13,8 +13,6 @@ package io.openliberty.security.oidcclientcore.authentication;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.regex.Pattern;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,16 +24,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.json.java.JSONObject;
-import com.ibm.websphere.ras.Tr;
 import com.ibm.ws.security.test.common.CommonTestClass;
-import com.ibm.ws.webcontainer.security.AuthResult;
-import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
-import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import test.common.SharedOutputManager;
 
@@ -50,9 +44,7 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
     private final DiscoveryHandler discoveryHandler = mockery.mock(DiscoveryHandler.class);
     private final AuthorizationRequestParameters authzParameters = mockery.mock(AuthorizationRequestParameters.class);
 
-    private final String CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR = "CWWKS2401E";
     private final String CWWKS2403E_DISCOVERY_EXCEPTION = "CWWKS2403E";
-    private final String CWWKS2404E_OIDC_CLIENT_MISSING_PROVIDER_URI = "CWWKS2404E";
     private final String CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE = "CWWKS2405E";
 
     private final String clientId = "myOidcClientId";
@@ -89,7 +81,7 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
     private JakartaOidcAuthorizationRequest createJakartaOidcAuthorizationRequest(OidcProviderMetadata providerMetadata) {
         mockery.checking(new Expectations() {
             {
-                one(config).getClientId();
+                allowing(config).getClientId();
                 will(returnValue(clientId));
                 one(config).getProviderMetadata();
                 will(returnValue(providerMetadata));
@@ -99,18 +91,7 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
         });
         return new JakartaOidcAuthorizationRequest(request, response, config) {
             @Override
-            public ProviderAuthenticationResult sendRequest() {
-                try {
-                    discoveryData = getProviderMetadata();
-                    return null;
-                } catch (Exception e) {
-                    Tr.error(tc, "ERROR_SENDING_AUTHORIZATION_REQUEST", clientId, e.getMessage());
-                    return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
-                }
-            }
-
-            @Override
-            DiscoveryHandler getDiscoveryHandler() {
+            public DiscoveryHandler getDiscoveryHandler() {
                 return discoveryHandler;
             }
         };
@@ -173,128 +154,11 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
                     will(returnValue(discoveryData));
                 }
             });
-            // Have to call sendRequest() to populate the discovery data
-            authzRequest.sendRequest();
-
             String result = authzRequest.getAuthorizationEndpoint();
             assertEquals(authorizationEndpointUrl, result);
         } catch (Exception e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
         }
-    }
-
-    @Test
-    public void test_getProviderMetadata_missingProviderUri() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(config).getProviderURI();
-                    will(returnValue(null));
-                }
-            });
-            JSONObject result = authzRequest.getProviderMetadata();
-            fail("Should have thrown an exception but didn't. Got: " + result);
-        } catch (OidcClientConfigurationException e) {
-            verifyException(e, CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR + ".+" + CWWKS2404E_OIDC_CLIENT_MISSING_PROVIDER_URI);
-        } catch (Exception e) {
-            outputMgr.failWithThrowable(testName.getMethodName(), e);
-        }
-    }
-
-    @Test
-    public void test_getProviderMetadata_providerURIMissingWellKnownSuffix() throws OidcDiscoveryException {
-        final String expectedDiscoveryUrl = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        final JSONObject discoveryData = new JSONObject();
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(config).getProviderURI();
-                    will(returnValue(providerUrl));
-                    one(discoveryHandler).fetchDiscoveryDataJson(expectedDiscoveryUrl, clientId);
-                    will(returnValue(discoveryData));
-                }
-            });
-            JSONObject result = authzRequest.getProviderMetadata();
-            assertEquals(discoveryData, result);
-        } catch (Exception e) {
-            outputMgr.failWithThrowable(testName.getMethodName(), e);
-        }
-    }
-
-    @Test
-    public void test_getProviderMetadata_discoveryThrowsException() throws OidcDiscoveryException {
-        providerUrl = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(config).getProviderURI();
-                    will(returnValue(providerUrl));
-                    one(discoveryHandler).fetchDiscoveryDataJson(providerUrl, clientId);
-                    will(throwException(new OidcDiscoveryException(clientId, providerUrl, defaultExceptionMsg)));
-                }
-            });
-            JSONObject result = authzRequest.getProviderMetadata();
-            fail("Should have thrown an exception but didn't. Got: " + result);
-        } catch (OidcDiscoveryException e) {
-            verifyException(e, CWWKS2403E_DISCOVERY_EXCEPTION + ".+" + Pattern.quote(defaultExceptionMsg));
-        } catch (Exception e) {
-            outputMgr.failWithThrowable(testName.getMethodName(), e);
-        }
-    }
-
-    @Test
-    public void test_getProviderMetadata_goldenPath() throws OidcDiscoveryException {
-        providerUrl = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        final JSONObject discoveryData = new JSONObject();
-        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT, authorizationEndpointUrl);
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    allowing(config).getProviderURI();
-                    will(returnValue(providerUrl));
-                    one(discoveryHandler).fetchDiscoveryDataJson(providerUrl, clientId);
-                    will(returnValue(discoveryData));
-                }
-            });
-            JSONObject result = authzRequest.getProviderMetadata();
-            assertEquals(discoveryData, result);
-
-            // Should get metadata from the cache, so shouldn't need another discoveryHandler call
-            JSONObject result2 = authzRequest.getProviderMetadata();
-            assertEquals(discoveryData, result2);
-        } catch (Exception e) {
-            outputMgr.failWithThrowable(testName.getMethodName(), e);
-        }
-    }
-
-    @Test
-    public void test_addWellKnownSuffixIfNeeded_noSuffix_noTrailingSlash() throws OidcDiscoveryException {
-        String input = providerUrl;
-        String result = authzRequest.addWellKnownSuffixIfNeeded(input);
-        String expectedValue = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        assertEquals(expectedValue, result);
-    }
-
-    @Test
-    public void test_addWellKnownSuffixIfNeeded_noSuffix_withTrailingSlash() throws OidcDiscoveryException {
-        String input = providerUrl + "/";
-        String result = authzRequest.addWellKnownSuffixIfNeeded(input);
-        String expectedValue = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        assertEquals(expectedValue, result);
-    }
-
-    @Test
-    public void test_addWellKnownSuffixIfNeeded_includesSuffix_notAsSeparatePath() throws OidcDiscoveryException {
-        String input = providerUrl + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        String result = authzRequest.addWellKnownSuffixIfNeeded(input);
-        assertEquals(input, result);
-    }
-
-    @Test
-    public void test_addWellKnownSuffixIfNeeded_includesSuffix() throws OidcDiscoveryException {
-        String input = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        String result = authzRequest.addWellKnownSuffixIfNeeded(input);
-        assertEquals(input, result);
     }
 
     @Test

@@ -82,3 +82,12 @@ TOKEN_VALIDATION_EXCEPTION=CWWKS2415E: The {0} OpenID Connect client encountered
 TOKEN_VALIDATION_EXCEPTION.explanation=A problem might exist with the issuer, azp, iat, or exp claim validation, or with the token signature validation.
 TOKEN_VALIDATION_EXCEPTION.useraction=For more information, see the error in the message.
 
+TOKEN_REQUEST_ERROR=CWWKS2416E: The {0} OpenID Connect client encountered the following error while sending a request to the token endpoint of the OpenID Connect provider: {1}
+TOKEN_REQUEST_ERROR.explanation=The OpenID Connect client might be missing information, the request to the token endpoint failed, or another error occurred while processing the token endpoint response.
+TOKEN_REQUEST_ERROR.useraction=See the error in the message for more information. Verify that the OpenID Connect provider returned a code in the authentication response.
+
+# Do not translate "token_endpoint"
+TOKEN_ENDPOINT_MISSING=CWWKS2417E: The {0} OpenID Connect client cannot find a value for the token endpoint for the OpenID Connect provider.
+TOKEN_ENDPOINT_MISSING.explanation=The token endpoint URL is missing from the OpenID Connect provider metadata and the OpenID Connect client configuration.
+TOKEN_ENDPOINT_MISSING.useraction=Verify that the OpenID Connect provider metadata contains a token_endpoint value. A token endpoint can also be specified in the OpenID Connect client configuration.
+

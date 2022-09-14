@@ -42,4 +42,9 @@ public interface Storage {
      */
     String get(String name);
 
+    /**
+     * Removes the value associated with the provided name from storage.
+     */
+    void remove(String name);
+
 }

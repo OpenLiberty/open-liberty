@@ -58,13 +58,16 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
      * <li>If the request contains a parameter error, reply with CredentialValidationResult.INVALID_RESULT.</li>
      * </ul>
      * If none of the above listed additional conditions apply, the request is taken to be a valid callback and the authentication
-     * between the end-user (caller) and the OpenID Connect Provider is considered to have been successful.
+     * between the end-user (caller) and the OpenID Connect Provider is considered to have been successful. The authentication
+     * mechanism must now move to [the next step of the OpenID Connect flow] and mark this internally by clearing the stored State
+     * value (remove it from the HTTP session or Cookie).
      */
     @Override
     public void validateResponse() throws AuthenticationResponseException {
         String state = getAndVerifyStateValue();
         checkRequestAgainstRedirectUri(state);
         checkForErrorParameter();
+        clearStoredState(state);
     }
 
     /**
@@ -132,6 +135,11 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
             String nlsMessage = Tr.formatMessage(tc, "CALLBACK_URL_INCLUDES_ERROR_PARAMETER", errorParameter);
             throw new AuthenticationResponseException(ValidationResult.INVALID_RESULT, oidcClientConfig.getClientId(), nlsMessage);
         }
+    }
+
+    void clearStoredState(String state) {
+        String storageKey = OidcStorageUtils.getStateStorageKey(state);
+        storage.remove(storageKey);
     }
 
 }
