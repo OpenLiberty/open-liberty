@@ -12,6 +12,8 @@ package com.ibm.ws.transaction.test.tests;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -239,7 +241,15 @@ public class FailoverTestLease extends FATServletClient {
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
-        assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when deleting server lease"));
+        List<String> recoveredAlready = retriableCloudServer.findStringsInLogs("Have recovered from SQLException when deleting server lease");
+        // if not yet recovered, then wait for message
+        if (recoveredAlready == null || !recoveredAlready.isEmpty()) {
+            assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when deleting server lease"));
+        }
+
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
+
+        Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
     }
 
     /**
@@ -273,7 +283,15 @@ public class FailoverTestLease extends FATServletClient {
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
-        assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException for server with recovery identity"));
+        List<String> recoveredAlready = retriableCloudServer.findStringsInLogs("Have recovered from SQLException for server with recovery identity");
+        // if not yet recovered, then wait for message
+        if (recoveredAlready == null || !recoveredAlready.isEmpty()) {
+            assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException for server with recovery identity"));
+        }
+
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
+
+        Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
     }
 
     /**
@@ -307,6 +325,14 @@ public class FailoverTestLease extends FATServletClient {
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
-        assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when retrieving server leases"));
+        List<String> recoveredAlready = retriableCloudServer.findStringsInLogs("Have recovered from SQLException when retrieving server leases");
+        // if not yet recovered, then wait for message
+        if (recoveredAlready == null || !recoveredAlready.isEmpty()) {
+            assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when retrieving server leases"));
+        }
+
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
+
+        Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
     }
 }

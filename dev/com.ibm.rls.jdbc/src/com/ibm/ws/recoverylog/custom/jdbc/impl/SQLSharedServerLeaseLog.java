@@ -1361,12 +1361,11 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         } else {
             // We didn't find the row in the table
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Could not find row");
-            throw new InternalLogException("Could not find lease", null);
+                Tr.debug(tc, "Could not find lease in table");
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "claimPeerLeaseForRecovery");
+            Tr.exit(tc, "claimPeerLeaseFromTable");
         return peerClaimed;
     }
 
