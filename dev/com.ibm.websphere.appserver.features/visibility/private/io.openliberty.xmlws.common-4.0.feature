@@ -53,7 +53,7 @@ IBM-API-Package:\
  com.ibm.ws.javaee.ddmodel.wsbnd, \
  com.ibm.ws.org.jvnet.mimepull, \
  io.openliberty.xmlWS.3.0.internal.tools, \
- io.openliberty.com.sun.xml.messaging.saaj
+ io.openliberty.com.sun.xml.messaging.saaj.3.0
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
