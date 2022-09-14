@@ -292,6 +292,7 @@ task updateIdp_4_1_x_WAR(type: Zip, dependsOn: copy_41x_IDP) {
 
   from (zipTree(originalWar)) {
   		exclude("WEB-INF/web.xml") // fix <auth-constraint/> - looks likr 4.1 isn't fixed yet
+  		exclude("WEB-INF/jsp/status.jsp")
   }
  
   from (downloadDir) {
