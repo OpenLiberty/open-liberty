@@ -27,10 +27,10 @@ Private-Package: io.openliberty.security.jakartasec.internal.resources.*
 
 Export-Package: \
     io.openliberty.security.jakartasec,\
-    io.openliberty.security.jakartasec.identitystore
+    io.openliberty.security.jakartasec.identitystore,\
+    io.openliberty.security.jakartasec.credential
 
 Import-Package: \
-    !io.openliberty.security.jakartasec.*,\
     *
 
 instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resources/resources/*.class

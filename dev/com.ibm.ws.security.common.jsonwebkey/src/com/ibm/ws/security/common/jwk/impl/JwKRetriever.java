@@ -89,6 +89,7 @@ public class JwKRetriever {
 
     String configId = null;
     String sslConfigurationName = null;
+    boolean defaultSSLConfig = false;
     String jwkEndpointUrl = null; // jwksUri
 
     String sigAlg = null;
@@ -153,7 +154,15 @@ public class JwKRetriever {
         this.keyLocation = keyLocation;
         this.httpUtils = new HttpUtils();
     }
-
+    
+    public void defaultssl() {
+        this.defaultSSLConfig = true;
+    }
+    
+    public boolean isdefaultssl() {
+        return this.defaultSSLConfig;
+    }
+    
     public void setSignatureAlgorithm(String signatureAlgorithm) {
         this.sigAlg = signatureAlgorithm;
     }
@@ -800,7 +809,11 @@ public class JwKRetriever {
             SSLSupport sslSupport) throws SSLException {
         SSLSocketFactory sslSocketFactory = null;
         try {
-            sslSocketFactory = SecuritySSLUtils.getSSLSocketFactory(sslSupport, sslConfigurationName);
+            if (isdefaultssl()) {
+                sslSocketFactory = SecuritySSLUtils.getSSLSocketFactory(sslSupport);
+            } else {
+                sslSocketFactory = SecuritySSLUtils.getSSLSocketFactory(sslSupport, sslConfigurationName);
+            }
         } catch (javax.net.ssl.SSLException e) {
             throw new SSLException(e);
         } catch (NoSSLSocketFactoryException e) {

@@ -27,5 +27,15 @@ public class SecuritySSLUtils {
         }
         return sslSocketFactory;
     }
-
+    
+    public static SSLSocketFactory getSSLSocketFactory(SSLSupport sslSupport) throws SSLException, NoSSLSocketFactoryException {
+        SSLSocketFactory sslSocketFactory = null;
+        if (sslSupport != null) {
+            sslSocketFactory = sslSupport.getSSLSocketFactory();
+        }
+        if (sslSocketFactory == null) {
+            throw new NoSSLSocketFactoryException();
+        }
+        return sslSocketFactory;
+    }
 }
