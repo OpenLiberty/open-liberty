@@ -11,12 +11,13 @@
 package io.openliberty.depScanner;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -27,8 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.jar.JarInputStream;
-import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
 import org.apache.maven.model.Dependency;
@@ -109,67 +108,45 @@ public class BestMatch {
                             }
 
                         });
-        manageWSJars(matched);
+        manageWSJars(matched, outputDir);
         writePom(matched, outputDir);
 
     }
 
     /**
      * @param matched
+     * @param outputDir
      * @param path
      */
-    private static void manageWSJars(Set<Module> matched) {
+    private static void manageWSJars(Set<Module> matched, String outputDir) {
 
+        new File(outputDir + "/wsJars").mkdirs();
         matched.forEach(library -> {
             if (wsLibraries(library)) {
-                manageLibrary(library);
+                manageLibrary(library, outputDir);
             }
         });
     }
 
     /**
      * @param library
+     * @param outputDir
      * @param path
      */
-    private static void manageLibrary(Module library) {
+    private static void manageLibrary(Module library, String outputDir) {
 
         // If the proper group name can be detected in the rebundled ibm ws jar, then we will use it for scanning purposes
 
         String fileName = library.getArtifactId() + "-" + library.getVersion() + ".jar";
+        System.out.println(library);
 
-        InputStream is = null;
-        JarInputStream jarStream = null;
+        Path copied = Paths.get(outputDir + "/wsJars/" + fileName);
+        Path originalPath = library.getOriginalFile().toPath();
         try {
-            is = new FileInputStream(library.getOriginalFile());
-            jarStream = new JarInputStream(is);
-            Manifest mf = jarStream.getManifest();
-            if (mf != null) {
-                Set<String> entries = mf.getEntries().keySet();
-                // Searching the jar manifest for the original jar groupid embedded in the attributes
-                for (String key : entries) {
-                    if (key.endsWith("/")) {
-                        String newGroup = key.replace("/", ".");
-                        newGroup = newGroup.substring(0, newGroup.length() - 1);
-                        library.setGroupId(newGroup);
-                        break;
-                    }
-                } ;
-
-            }
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-                jarStream.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
 
     }
@@ -181,7 +158,7 @@ public class BestMatch {
 
         matched.forEach(library -> {
             if (!filteredLibraries(library)) {
-                List<String> versions = depVersionMap.computeIfAbsent((library.getGroupId() + library.getArtifactId()), k -> new ArrayList<>());
+                List<String> versions = depVersionMap.computeIfAbsent(library.getModuleId(), k -> new ArrayList<>());
                 versions.add(library.getVersion());
                 if (versions.size() > pomFiles)
                     pomFiles = versions.size();
@@ -198,8 +175,8 @@ public class BestMatch {
             new File(path + "/proj_" + count.intValue()).mkdirs(); //Make sure directory is created first
 
             matched.forEach(library -> {
-                if (!(filteredLibraries(library) || wsLibraries(library))) {
-                    List<String> versions = depVersionMap.get((library.getGroupId() + library.getArtifactId()));
+                if (!(filteredLibraries(library))) {
+                    List<String> versions = depVersionMap.get(library.getModuleId());
                     if (versions.size() > count.intValue()) {
 
                         class ComparedDependency extends Dependency {
@@ -266,7 +243,7 @@ public class BestMatch {
      * @return
      */
     private static boolean wsLibraries(Module library) {
-        return library.getGroupId().equals("com.ibm.ws");
+        return library.getGroupId().startsWith("com.ibm.ws");
     }
 
     private static String toMavenCoords(String coords) {
