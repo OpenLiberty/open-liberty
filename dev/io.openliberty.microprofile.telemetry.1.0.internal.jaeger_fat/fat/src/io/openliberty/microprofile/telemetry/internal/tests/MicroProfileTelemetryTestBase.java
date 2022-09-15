@@ -49,12 +49,14 @@ public abstract class MicroProfileTelemetryTestBase {
     public static final int JAEGER_GRPC_PORT = 14250;
     public static final Duration CONTAINER_STARTUP_TIMEOUT = Duration.ofSeconds(240);
 
+
+    public static final String ENV_OTEL_SDK_ENABLED = "OTEL_EXPERIMENTAL_SDK_ENABLED";
+    public static final String OTEL_SDK_ENABLED = "true";
     public static final String ENV_OTEL_SERVICE_NAME = "OTEL_SERVICE_NAME";
     public static final String OTEL_SERVICE_NAME_SYSTEM = "system";
     public static final String ENV_OTEL_TRACES_EXPORTER = "OTEL_TRACES_EXPORTER";
     public static final String OTEL_TRACES_EXPORTER_JAEGER = "jaeger";
     public static final String ENV_OTEL_EXPORTER_JAEGER_ENDPOINT = "OTEL_EXPORTER_JAEGER_ENDPOINT";
-
     public static final String JAEGER_QUERY_URL = "http://%s:%s/api/traces";
     public static final String JAEGER_QUERY_PARAMS = "?start=%d&limit=%d&service=%s";
     public static final int JAEGER_QUERY_LIMIT = 20;
