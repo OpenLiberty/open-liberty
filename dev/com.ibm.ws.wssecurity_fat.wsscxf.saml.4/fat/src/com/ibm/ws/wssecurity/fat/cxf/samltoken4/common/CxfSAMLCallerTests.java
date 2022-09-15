@@ -27,6 +27,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 
 
@@ -46,7 +47,7 @@ import componenttest.rules.repeater.EE8FeatureReplacementAction;
  * 2.0 token in the HTTP POST request.
  */
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @LibertyServerWrapper
 @RunWith(FATRunner.class)
