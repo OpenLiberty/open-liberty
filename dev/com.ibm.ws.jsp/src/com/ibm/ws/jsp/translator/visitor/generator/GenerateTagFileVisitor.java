@@ -26,6 +26,7 @@ import org.w3c.dom.Element;
 
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JspCoreException;
+import com.ibm.ws.jsp.PagesVersionHandler;
 import com.ibm.ws.jsp.configuration.JspConfiguration;
 import com.ibm.ws.jsp.taglib.TagFileTagInfo;
 import com.ibm.ws.jsp.taglib.TagLibraryInfoImpl;
@@ -214,6 +215,9 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
     protected void generateClassSection(ValidateTagFileResult validatorResult) {
         writer.println();
         writer.print("public class " + tagFileFiles.getClassName() + " extends javax.servlet.jsp.tagext.SimpleTagSupport");
+        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+            writer.print(" implements com.ibm.ws.jsp.runtime.JspDirectiveInfo");
+        }
         TagFileInfo tfi = (TagFileInfo)inputMap.get("TagFileInfo");
         TagInfo ti = tfi.getTagInfo();
         if (ti.hasDynamicAttributes()) {
@@ -288,18 +292,31 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
             writer.print(");");
             writer.println();     
         }
-        if (aliasSeen) {
-            writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, _jspx_nested, _jspx_at_begin, _jspx_at_end, aliasMap);");
-        } 
-        else {
-            writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, _jspx_nested, _jspx_at_begin, _jspx_at_end, null);");
+        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+            if (aliasSeen) {
+                writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, this, _jspx_nested, _jspx_at_begin, _jspx_at_end, aliasMap);");
+            } 
+            else {
+                writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, this, _jspx_nested, _jspx_at_begin, _jspx_at_end, null);");
+            }
+        } else {
+            if (aliasSeen) {
+                writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, _jspx_nested, _jspx_at_begin, _jspx_at_end, aliasMap);");
+            } 
+            else {
+                writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, _jspx_nested, _jspx_at_begin, _jspx_at_end, null);");
+            }
         }
+
         writer.println("}");
         writer.println();
         writer.println("public JspContext getJspContext() {");
         writer.println("return this.jspContext;");
         writer.println("}");
         
+        writer.println(" public boolean isErrorOnELNotFound() {");
+        writer.println("return "+ validatorResult.isErrorOnELNotFound()  + ";");
+        writer.println("}");
 
         if (ti.hasDynamicAttributes()) {
             writer.println("private java.util.HashMap _jspx_dynamic_attrs = new java.util.HashMap();");

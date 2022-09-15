@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,6 +107,16 @@ public class JSPPropertyGroupType extends DescriptionGroup implements JSPPropert
     }
 
     @Override
+    public boolean isSetErrorOnELNotFound() {
+        return AnySimpleType.isSet(error_on_el_not_found);
+    }
+
+    @Override
+    public boolean isErrorOnELNotFound() {
+        return error_on_el_not_found != null && error_on_el_not_found.getBooleanValue();
+    }
+
+    @Override
     public String getPageEncoding() {
         return page_encoding != null ? page_encoding.getValue() : null;
     }
@@ -193,6 +203,7 @@ public class JSPPropertyGroupType extends DescriptionGroup implements JSPPropert
     // DescriptionGroup fields appear here in sequence
     StringType.ListType url_pattern = new StringType.ListType();
     XSDBooleanType el_ignored;
+    XSDBooleanType error_on_el_not_found;
     XSDTokenType page_encoding;
     XSDBooleanType scripting_invalid;
     XSDBooleanType is_xml;
@@ -224,6 +235,12 @@ public class JSPPropertyGroupType extends DescriptionGroup implements JSPPropert
             XSDBooleanType el_ignored = new XSDBooleanType();
             parser.parse(el_ignored);
             this.el_ignored = el_ignored;
+            return true;
+        }
+        if ("error-on-el-not-found".equals(localName)) {
+            XSDBooleanType error_on_el_not_found = new XSDBooleanType();
+            parser.parse(error_on_el_not_found);
+            this.error_on_el_not_found = error_on_el_not_found;
             return true;
         }
         if ("page-encoding".equals(localName)) {
@@ -308,6 +325,7 @@ public class JSPPropertyGroupType extends DescriptionGroup implements JSPPropert
         super.describe(diag);
         diag.describe("url-pattern", url_pattern);
         diag.describeIfSet("el-ignored", el_ignored);
+        diag.describeIfSet("error-on-el-not-found", error_on_el_not_found);
         diag.describeIfSet("page-encoding", page_encoding);
         diag.describeIfSet("scripting-invalid", scripting_invalid);
         diag.describeIfSet("is-xml", is_xml);

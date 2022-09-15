@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.ibm.ws.jsp.JspCoreException;
+import com.ibm.ws.jsp.PagesVersionHandler;
 import com.ibm.ws.jsp.configuration.JspConfiguration;
 import com.ibm.ws.jsp.taglib.TagFileTagInfo;
 import com.ibm.ws.jsp.translator.JspTranslationException;
@@ -31,13 +32,13 @@ import com.ibm.ws.jsp.translator.visitor.configuration.JspVisitorUsage;
 import com.ibm.wsspi.jsp.context.JspCoreContext;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 
-public class ValidateTagFileVisitor extends ValidateVisitor {  
+public class ValidateTagFileVisitor extends ValidateVisitor {
 
     private static final String[] invokeAttrNames = { "fragment", "var", "varReader", "scope" };
     private static final String[] doBodyAttrNames = { "var", "varReader", "scope" };
 
     private static final String[] tagDirectiveAttrNames =
-        { "display-name", "body-content", "dynamic-attributes", "small-icon", "large-icon", "description", "example", "language", "import", "pageEncoding", "isELIgnored", "trimDirectiveWhitespaces", "deferredSyntaxAllowedAsLiteral" };  //jsp2.1work jsp2.1ELwork
+        { "display-name", "body-content", "dynamic-attributes", "small-icon", "large-icon", "description", "example", "language", "import", "pageEncoding", "isELIgnored", "trimDirectiveWhitespaces", "deferredSyntaxAllowedAsLiteral", "errorOnELNotFound" };  //jsp2.1work jsp2.1ELwork
     private static final String[] attributeDirectiveAttrNames = { "name", "required", "fragment", "rtexprvalue", "type", "description" };
     private static final String[] attributeDirectiveAttrNames21 = { "name", "required", "fragment", "rtexprvalue", "type", "description","deferredValue","deferredValueType","deferredMethod","deferredMethodSignature"};
     private static final String[] variableDirectiveAttrNames = { "name-given", "name-from-attribute", "alias", "variable-class", "declare", "scope", "description" };
@@ -49,15 +50,15 @@ public class ValidateTagFileVisitor extends ValidateVisitor {
 
     private HashMap userDefinedDirectives = new HashMap();
 
-    public ValidateTagFileVisitor(JspVisitorUsage visitorUsage, 
-                                  JspConfiguration jspConfiguration, 
-                                  JspCoreContext context, 
-                                  HashMap resultMap, 
+    public ValidateTagFileVisitor(JspVisitorUsage visitorUsage,
+                                  JspConfiguration jspConfiguration,
+                                  JspCoreContext context,
+                                  HashMap resultMap,
                                   JspVisitorInputMap inputMap)
         throws JspCoreException {
         super(visitorUsage, jspConfiguration, context, resultMap, inputMap);
         result = new ValidateTagFileResult(visitorUsage.getJspVisitorDefinition().getId());
-        
+
         //PM08060
         if(WCCustomProperties.ENABLE_DEFAULT_IS_EL_IGNORED_IN_TAG){
         	result.setIsELIgnored(false);
@@ -72,7 +73,7 @@ public class ValidateTagFileVisitor extends ValidateVisitor {
 
     protected void visitTagDirectiveStart(Element jspElement) throws JspCoreException {
         validateAttributes(jspElement, tagDirectiveAttrNames);
-
+        
         ValidateTagFileResult tagFileResult = (ValidateTagFileResult) result;
         NamedNodeMap attributes = jspElement.getAttributes();
         if (attributes != null) {
@@ -85,7 +86,7 @@ public class ValidateTagFileVisitor extends ValidateVisitor {
                 if (oldDirectiveValue != null
                     && (directiveName.equals("import") == false) // import can appear more than once in translation unit.
                     && (directiveName.equals("jsp:id") == false)) {
-                    if (oldDirectiveValue.equals(directiveValue) == false) {                            
+                    if (oldDirectiveValue.equals(directiveValue) == false) {
                         throw new JspTranslationException(jspElement, "jsp.error.multiple.occurrences.tag.directive", new Object[] { directiveName, oldDirectiveValue, directiveValue });
                     }
                 }
@@ -172,7 +173,7 @@ public class ValidateTagFileVisitor extends ValidateVisitor {
 	                    }
                     }
                     else if (!jspConfiguration.getTrimDirectiveWhitespaces().equals(directiveValue)) {
-                    	 throw new JspTranslationException(jspElement, "jsp.error.page.conflict.trimdirectivewhitespaces", new Object[] {jspConfiguration.getTrimDirectiveWhitespaces(), directiveName });                    
+                    	 throw new JspTranslationException(jspElement, "jsp.error.page.conflict.trimdirectivewhitespaces", new Object[] {jspConfiguration.getTrimDirectiveWhitespaces(), directiveName });
                     }
                 }
                 // jsp2.1ELwork
@@ -194,6 +195,22 @@ public class ValidateTagFileVisitor extends ValidateVisitor {
                     else if (!jspConfiguration.getDeferredSyntaxAllowedAsLiteral().equals(directiveValue)) {
 	                        throw new JspTranslationException(jspElement, "jsp.error.page.conflict.deferredsyntaxallowedasliteral");
                     }
+                }
+                if(PagesVersionHandler.isPages31OrHigherLoaded()){
+                  if (directiveName.equals("errorOnELNotFound")) {
+                      valid = true;
+                      if (directiveValue.equalsIgnoreCase("true")) {
+                          result.setErrorOnELNotFound(true);
+                          jspConfiguration.setErrorOnELNotFound(true);
+                          jspConfiguration.setElIgnoredSetTrueInPage(true);
+                      }
+                      else if (directiveValue.equalsIgnoreCase("false")) {
+                          result.setErrorOnELNotFound(false);
+                          jspConfiguration.setErrorOnELNotFound(false);
+                      }
+                      else
+                          throw new JspTranslationException(jspElement, "jsp.error.page.invalid.erroronelnotfound");
+                  }
                 }
                 if (valid == false) {
                     throw new JspTranslationException(jspElement, "jsp.error.page.directive.unknown", new Object[] { directiveName });
@@ -217,18 +234,18 @@ public class ValidateTagFileVisitor extends ValidateVisitor {
         if (jspElement.hasAttribute("var") && jspElement.hasAttribute("varReader")) {
             throw new JspTranslationException(jspElement, "jsp.error.tagfile.invoke.var_varreader");
         }
-        
+
         if (jspElement.hasAttribute("scope")) {
             if (jspElement.hasAttribute("var") == false && jspElement.hasAttribute("varReader") == false) {
                 throw new JspTranslationException(jspElement, "jsp.error.tagfile.invoke.scope_var_varreader");
             }
         }
-        
+
         Attr scopeAttr = jspElement.getAttributeNode("scope");
-        
+
         if (scopeAttr != null) {
             boolean valid = false;
-            
+
             if (scopeAttr.getValue().equals("page")) {
                 valid = true;
             }
@@ -262,12 +279,12 @@ public class ValidateTagFileVisitor extends ValidateVisitor {
                 throw new JspTranslationException(jspElement, "jsp.error.tagfile.dobody.scope_var_varreader");
             }
         }
-        
+
         Attr scopeAttr = jspElement.getAttributeNode("scope");
-        
+
         if (scopeAttr != null) {
             boolean valid = false;
-            
+
             if (scopeAttr.getValue().equals("page")) {
                 valid = true;
             }
@@ -289,14 +306,14 @@ public class ValidateTagFileVisitor extends ValidateVisitor {
     protected void visitAttributeDirectiveStart(Element jspElement) throws JspCoreException {
         List specifiedStandardActionAttrs = getAttributeList(jspElement);
         validateRequiredAttributes(jspElement, specifiedStandardActionAttrs, attributeDirectiveRequiredAttrs);
-        
-        //if JSP 2.1 or later include deferred value and method attributes as valid. 
+
+        //if JSP 2.1 or later include deferred value and method attributes as valid.
         if( Float.valueOf(jspConfiguration.getJspVersion()) >= JspConfiguration.twoPointOne){
         	validateAttributes(specifiedStandardActionAttrs, jspElement, attributeDirectiveAttrNames21);
         }else{	//JSP 2.0 or 1.2 thus deferred value and method attributes are not valid
         	validateAttributes(specifiedStandardActionAttrs, jspElement, attributeDirectiveAttrNames);
         }
-        
+
         Attr nameAttr = jspElement.getAttributeNode("name");
         if (nameAttr != null) {
             TagFileInfo tfi = (TagFileInfo) inputMap.get("TagFileInfo");

@@ -9,8 +9,8 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
-#COMPONENTPREFIX JSPG
-#COMPONENTNAMEFOR JSPG jsp
+#COMPONENTPREFIX JSPG CWWJS
+#COMPONENTNAMEFOR JSPG CWWJS jsp
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
@@ -1261,4 +1261,12 @@ system.java.compiler.not.found.useraction=Ensure that the Java SDK jar file, too
 
 jsp.feature.not.loaded.correctly=CWWJS0001: The JSP [Pages] feature did not load with an acceptable version.
 jsp.feature.not.loaded.correctly.explanation=The JSP [Pages] feature is loaded with a version that corresponds to the Java [Jakarta] EE specification of that JSP [Pages] feature. The feature was loaded with no version defined.
-jsp.feature.not.loaded.correctly.useraction=Check the server.xml file for existence of either a JSP [Pages] feature. Only one should be specified.
+jsp.feature.not.loaded.correctly.useraction=Check the server.xml file for the existence of multiple JSP [Pages] features. The file must specify no more than one Pages feature.
+
+jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Invalid value for errorOnELNotFound attribute
+jsp.error.page.invalid.erroronelnotfound.explanation=
+jsp.error.page.invalid.erroronelnotfound.useraction=
+
+jsp.isthreadsafe.warning=CWWJS0003W: The Pages 3.1 specification strongly advises Pages developers not to use the deprecated page directive isThreadSafe.
+jsp.isthreadsafe.warning.explanation=SingleThreadModel was removed from Servlet 6.0. Pages 3.1 deprecated isThreadSafe with plans to remove it in a future Pages update.
+jsp.isthreadsafe.warning.useraction=Remove the isThreadSafe directive from all pages.

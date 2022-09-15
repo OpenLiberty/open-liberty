@@ -814,6 +814,7 @@ public class PageContextImpl extends PageContext {
 		if (this.elContext == null) {
 			this.elContext = this.applicationContext.createELContext(this);
 		}
+        
 		return this.elContext;
 	}
     //LIDB4147-9 End
