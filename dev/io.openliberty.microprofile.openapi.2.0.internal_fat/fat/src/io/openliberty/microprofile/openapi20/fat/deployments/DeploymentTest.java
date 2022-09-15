@@ -135,11 +135,14 @@ public class DeploymentTest {
 
         assertRest();
         assertOpenApiDoc();
-        // Slightly odd behaviour - the app manager expands the .ear so the .war file is
-        // available on disk
-        // However, when the .ear is redeployed, the .ear is re-expanded and the
-        // location is different
-        assertCache(ear, CacheUsed.CACHE_NOT_USED, CacheWritten.CACHE_WRITTEN);
+        // Changed by issue 22058, pull request 22025.
+        // Previously, the cache location would incorrectly change between
+        // server restarts, even when the application did not change between
+        // restarts.
+        // See also the comment on 'getConfig', in this class.  The cache
+        // location is stable because the ID is assigned within the application
+        // configuration.
+        assertCache(ear, CacheUsed.CACHE_USED, CacheWritten.CACHE_NOT_WRITTEN);
     }
 
     @Test
@@ -264,6 +267,10 @@ public class DeploymentTest {
     private Application getConfig(Archive<?> archive) {
         Application appConfig = new Application();
         appConfig.setLocation(archive.getName());
+        // This ID assignment is necessary for the workarea cache
+        // location for the application to be stable between server
+        // restarts.  See method 'testEar' within this class for
+        // more information.
         appConfig.setId(getName(archive));
         if (archive instanceof WebArchive) {
             appConfig.setType("war");

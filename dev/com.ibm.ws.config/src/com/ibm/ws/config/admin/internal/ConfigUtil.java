@@ -21,7 +21,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 class ConfigUtil {
-
     private static final TraceComponent tc = Tr.register(ConfigUtil.class, ConfigAdminConstants.TR_GROUP, ConfigAdminConstants.NLS_PROPS);
 
     @FFDCIgnore(Throwable.class)
@@ -31,6 +30,7 @@ class ConfigUtil {
         try {
             c.close();
         } catch (Throwable t) {
+            // Ignore
         }
     }
 
