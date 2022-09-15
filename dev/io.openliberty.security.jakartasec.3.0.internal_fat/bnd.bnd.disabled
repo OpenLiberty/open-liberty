@@ -35,5 +35,6 @@ javac.target: 11
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
-	jakarta.inject.jakarta.inject-api;version=latest
+	jakarta.inject.jakarta.inject-api;version=latest, \
+	io.openliberty.security.jakartasec.3.0.internal
 

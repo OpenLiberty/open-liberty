@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdProviderMetadata;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
@@ -34,6 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
                                          clientId = "client_1",
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
                                          redirectURI = "https://localhost:8940/SimplestAnnotated/Callback",
+                                         claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub"),
                                          providerMetadata = @OpenIdProviderMetadata(
                                                                                     authorizationEndpoint = "https://localhost:8920/oidc/endpoint/OP1/authorize",
                                                                                     tokenEndpoint = "https://localhost:8920/oidc/endpoint/OP1/token"))
