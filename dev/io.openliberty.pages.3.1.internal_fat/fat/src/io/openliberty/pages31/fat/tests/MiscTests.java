@@ -38,8 +38,12 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 
 
 /**
- *  
+ *  Tests new changes added in Pages 3.1 that don't really need a a standalone test class. 
+ *  - IsThreadSafe is depcrecated, so we check for a warning 
+ *  - Verify jsp:plugin is skipped 
+ *  - Verify imports are available in Expression Language (not just scriplets), i.e. ${ }
  */
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MiscTests {
     private static final String APP_NAME = "Misc";
@@ -50,8 +54,9 @@ public class MiscTests {
     public static LibertyServer server;
 
     @BeforeClass
-    public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war");
+    public static void setup() throws Exception {;
+
+        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "io.openliberty.pages31.fat.misc", "io.openliberty.pages31.fat.misc.other");
         server.startServer();
     }
 
@@ -87,7 +92,7 @@ public class MiscTests {
         server.resetLogMarks();
     }
 
-        /**
+    /**
      *
      * @throws Exception if something goes horribly wrong
      */
@@ -105,9 +110,32 @@ public class MiscTests {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
+        assertTrue("jsp:plugin may have been generated!",  response.getText().contains("Nothing should be generated  in between.") ); 
+
         assertNotNull("jsp:plugin skip message not found!", server.waitForStringInTrace("Skipping the jsp:plugin element as it is a no operation for Pages 3.1+"));
 
         server.resetLogMarks();
 
+    }
+
+    /**
+     *
+     * @throws Exception if something goes horribly wrong
+     */
+    @Test
+    public void testImportsAreAvailableViaExpressionLanguage() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        String url = JSPUtils.createHttpUrlString(server, APP_NAME, "imports.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Servlet response : " + response.getText());
+
+        assertTrue("Imports not found in Expression Language Environment", response.getText().contains("LIGHT"));
+        assertTrue("Imports not found in Expression Language Environment", response.getText().contains("CAFFE NERO"));
+        assertTrue("Imports not found in Expression Language Environment", response.getText().contains("CANE SUGAR"));
     }
 }
