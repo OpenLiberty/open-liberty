@@ -392,7 +392,9 @@ public class WebAppTest extends WebAppTestBase {
         Assert.assertNotNull(cookieConfig);
         List<AttributeValue> attributes = cookieConfig.getAttributes();
         AttributeValue attribute = attributes.get(0);
+
         Assert.assertEquals(attribute.getAttributeName(), "color");
+        Assert.assertEquals(attribute.getAttributeValue(), "blue");
     }
 
     @Test
@@ -472,6 +474,7 @@ public class WebAppTest extends WebAppTestBase {
         Assert.assertEquals(description.getLang(), "fr");
         Assert.assertEquals(description.getValue(), "Couleur de cheveux");
 
+        Assert.assertEquals(attribute.getAttributeName(), "color");
         Assert.assertEquals(attribute.getAttributeValue(), "blue");
     }
 
@@ -525,6 +528,9 @@ public class WebAppTest extends WebAppTestBase {
         Assert.assertEquals(description.getLang(), "fr");
         Assert.assertEquals(description.getValue(), "Couleur de cheveux");
 
+        Assert.assertEquals(attribute.getAttributeName(), "color");
+        Assert.assertEquals(attribute.getAttributeValue(), "blue");
+
         // Second Attribute
         attribute = attributes.get(1);
         descriptions = attribute.getDescriptions();
@@ -538,5 +544,8 @@ public class WebAppTest extends WebAppTestBase {
         description = descriptions.get(1);
         Assert.assertEquals(description.getLang(), "fr");
         Assert.assertEquals(description.getValue(), "Complexión facial");
+
+        Assert.assertEquals(attribute.getAttributeName(), "complexion");
+        Assert.assertEquals(attribute.getAttributeValue(), "rough");
     }
 }
