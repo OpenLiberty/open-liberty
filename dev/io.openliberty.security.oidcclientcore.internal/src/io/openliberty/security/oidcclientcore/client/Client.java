@@ -31,6 +31,10 @@ public class Client {
         this.oidcClientConfig = oidcClientConfig;
     }
 
+    public OidcClientConfig getOidcClientConfig() {
+        return oidcClientConfig;
+    }
+
     public ProviderAuthenticationResult startFlow(HttpServletRequest request, HttpServletResponse response) {
         Flow flow = AbstractFlow.getInstance(oidcClientConfig);
         return flow.startFlow(request, response);
@@ -40,7 +44,7 @@ public class Client {
         Flow flow = AbstractFlow.getInstance(oidcClientConfig);
         return flow.continueFlow(request, response);
     }
-    
+
     public void validate(TokenResponse tokenResponse) throws TokenValidationException {
         TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
         tokenResponseValidator.validate(tokenResponse);
