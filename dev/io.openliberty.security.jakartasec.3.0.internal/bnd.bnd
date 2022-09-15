@@ -28,7 +28,8 @@ Private-Package: io.openliberty.security.jakartasec.internal.resources.*
 Export-Package: \
     io.openliberty.security.jakartasec,\
     io.openliberty.security.jakartasec.identitystore,\
-    io.openliberty.security.jakartasec.credential
+    io.openliberty.security.jakartasec.credential,\
+    io.openliberty.security.jakartasec.tokens
 
 Import-Package: \
     *
@@ -47,6 +48,7 @@ instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resource
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+    com.ibm.ws.org.jose4j;version=latest,\
     com.ibm.ws.junit.extensions;version=latest,\
     com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.kernel.boot;version=latest,\

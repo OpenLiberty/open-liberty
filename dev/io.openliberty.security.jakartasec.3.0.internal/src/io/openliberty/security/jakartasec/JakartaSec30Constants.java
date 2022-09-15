@@ -36,4 +36,10 @@ public class JakartaSec30Constants extends JavaEESecConstants {
     public static final String RESPONSE_TYPE_SUPPORTED_DEFAULT = RESPONSE_TYPE_CODE + "," + OpenIdConstant.IDENTITY_TOKEN + "," + RESPONSE_TYPE_TOKEN + " "
                                                                  + OpenIdConstant.IDENTITY_TOKEN; //  "code,id_token,token id_token"
 
+    public static final String NOT_BEFORE_IDENTIFIER = "nbf";
+
+    public static final String ISSUED_AT_IDENTIFIER = "iat";
+
+    public static final String JWT_ID_IDENTIFIER = "jti";
+
 }
