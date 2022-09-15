@@ -12,6 +12,7 @@ package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -966,6 +967,11 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         // looking for two headers.
         // connection header with a value of "upgrade"
         // upgrade header with a value of "h2c"
+
+        if (headers == Collections.EMPTY_MAP) {
+            return false; // no headers passed in
+        }
+
         boolean connection_upgrade = false;
         boolean upgrade_h2c = false;
         String headerValue = null;
