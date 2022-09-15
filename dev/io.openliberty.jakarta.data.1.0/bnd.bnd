@@ -21,7 +21,8 @@ Bundle-SymbolicName: io.openliberty.jakarta.data.1.0
 Bundle-Description: Copied Jakarta Data API classes and some proposed or experimental ones; version=${bVersion}
 
 Export-Package: \
-  jakarta.data;version="1.0.0"
+  jakarta.data;version="1.0.0",\
+  jakarta.data.repository;version="1.0.0"
 
 instrument.classesExcludes: jakarta/data/*.class
 
