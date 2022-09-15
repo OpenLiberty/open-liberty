@@ -41,10 +41,9 @@ public class Client {
         return flow.continueFlow(request, response);
     }
     
-    public boolean validate(TokenResponse tokenResponse) throws TokenValidationException {
+    public void validate(TokenResponse tokenResponse) throws TokenValidationException {
         TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
         tokenResponseValidator.validate(tokenResponse);
-        return false;
     }
 
     public void logout() {
