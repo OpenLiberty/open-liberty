@@ -310,8 +310,8 @@ public class HttpMessageContextImpl implements HttpMessageContext {
     @Override
     public AuthenticationStatus redirect(String location) {
         try {
-            response.sendRedirect(response.encodeURL(location));
             response.setStatus(HttpServletResponse.SC_FOUND);
+            response.sendRedirect(response.encodeURL(location));
         } catch (IOException e) {
             // TODO: Determine if this needs a serviceability message
         }
