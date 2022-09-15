@@ -36,7 +36,9 @@ Import-Package: \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.security.javaeesec.1.0,\
     io.openliberty.jakarta.security.3.0,\
-    io.openliberty.security.oidcclientcore.internal.jakarta
+    io.openliberty.security.oidcclientcore.internal.jakarta,\
+    io.openliberty.jakarta.jsonp.2.1,\
+	io.openliberty.jakarta.servlet.6.0
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
