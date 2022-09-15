@@ -41,7 +41,7 @@ import io.openliberty.data.Sorts;
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
  */
-@Data(Reservation.class)
+@Data
 public interface Reservations extends Repository<Reservation, Long> {
     boolean deleteByHostIn(List<String> hosts);
 

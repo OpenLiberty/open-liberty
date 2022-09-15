@@ -18,7 +18,7 @@ import io.openliberty.data.Repository;
 /**
  *
  */
-@Data(Package.class)
+@Data
 public interface Packages extends Repository<Package, Integer> {
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 
