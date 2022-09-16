@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +23,7 @@ public class TokenResponse {
     private final String idToken;
     private final String accessToken;
     private final String refreshToken;
+    private final Instant responseGenerationTime;
 
     private Map<String, String> responseAsMap = null;
 
@@ -30,6 +32,7 @@ public class TokenResponse {
         this.idToken = idToken;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.responseGenerationTime = Instant.now();
     }
 
     public String getIdToken() {
@@ -59,6 +62,10 @@ public class TokenResponse {
         }
         responseAsMap = new HashMap<>(map);
         return map;
+    }
+
+    public Instant getResponseGenerationTime() {
+        return responseGenerationTime;
     }
 
 }
