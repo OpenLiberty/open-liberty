@@ -43,7 +43,6 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 public class JSF23SelectOneRadioGroupTests {
 
     protected static final Class<?> c = JSF23SelectOneRadioGroupTests.class;
@@ -80,6 +79,7 @@ public class JSF23SelectOneRadioGroupTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSelectOneRadioGroup_AjaxRequest() throws Exception {
         try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
             // Use a synchronizing ajax controller to allow proper ajax updating

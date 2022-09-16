@@ -60,7 +60,6 @@ import junit.framework.Assert;
  * General JSF 2.3 test cases the also require CDI.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 public class JSF23CDIGeneralTests {
 
     protected static final Class<?> c = JSF23CDIGeneralTests.class;
@@ -275,6 +274,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testInjectableELImplicitObjects() throws Exception {
         try (WebClient webClient = new WebClient()) {
             checkInjectableELImplicitObjects(webClient);
@@ -888,6 +888,7 @@ public class JSF23CDIGeneralTests {
      */
     @Mode(TestMode.FULL)
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSpecIssue790Test1() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Use a synchronizing ajax controller to allow proper ajax updating
@@ -1200,6 +1201,7 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSpecIssue1404And1423_JSF23NewAPIMethods() throws Exception {
         try (WebClient webClient = new WebClient()) {
 

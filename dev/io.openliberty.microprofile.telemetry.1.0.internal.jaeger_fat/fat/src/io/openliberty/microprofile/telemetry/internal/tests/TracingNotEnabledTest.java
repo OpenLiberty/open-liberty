@@ -37,7 +37,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-public class AutoInstrumentationTest extends MicroProfileTelemetryTestBase {
+public class TracingNotEnabledTest extends MicroProfileTelemetryTestBase {
 
     private static Class<?> c = AutoInstrumentationTest.class;
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("testServer1");
@@ -56,8 +56,7 @@ public class AutoInstrumentationTest extends MicroProfileTelemetryTestBase {
         server.addEnvVar(ENV_OTEL_SERVICE_NAME, OTEL_SERVICE_NAME_SYSTEM);
         server.addEnvVar(ENV_OTEL_TRACES_EXPORTER, OTEL_TRACES_EXPORTER_JAEGER);
         server.addEnvVar(ENV_OTEL_EXPORTER_JAEGER_ENDPOINT, "http://" + jaegerHost + ":" + jaegerGrpcPort);
-        server.addEnvVar(ENV_OTEL_SDK_ENABLED, OTEL_SDK_ENABLED); //Enable tracing
-
+        //server.addEnvVar(ENV_OTEL_SDK_ENABLED, OTEL_SDK_ENABLED); tracing not enabled
         // Construct the test application
         WebArchive system = ShrinkWrap.create(WebArchive.class, "system.war");
         system.addPackages(true, "io.openliberty.guides.system");
@@ -99,9 +98,8 @@ public class AutoInstrumentationTest extends MicroProfileTelemetryTestBase {
     protected LibertyServer getServer() {
         return server;
     }
-
     @Test
-    public void systemSpanTest() throws JSONException, InterruptedException {
+    public void notEnabledTest() throws JSONException, InterruptedException {
         int count = NUM_OF_CALLS;
         String result = null;
         while (count > 0) {
@@ -151,7 +149,7 @@ public class AutoInstrumentationTest extends MicroProfileTelemetryTestBase {
             dataArray = jobj.getJSONArray("data");
             retries--;
         } while ((retries > 0) && ((dataArray == null) || (dataArray.length() < NUM_OF_CALLS)));
-        assertEquals("data does not contain the expected number of spans", NUM_OF_CALLS, dataArray.length());
+        assertEquals("data contains spans but tracing is not enabled", 0, dataArray.length());
     }
 
 }

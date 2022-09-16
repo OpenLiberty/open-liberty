@@ -21,11 +21,13 @@ import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal.tests.AutoInstrumentationTest;
+import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, // Must keep this test to run something in the Java 6 builds.
-                AutoInstrumentationTest.class
+                AutoInstrumentationTest.class,
+                TracingNotEnabledTest.class
 })
 
 /**
