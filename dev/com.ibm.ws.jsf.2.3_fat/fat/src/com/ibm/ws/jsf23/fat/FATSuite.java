@@ -112,7 +112,8 @@ public class FATSuite {
                             .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE10_FEATURES());
         } else {
-            repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES());
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE9_FEATURES());
         }
     }
 }

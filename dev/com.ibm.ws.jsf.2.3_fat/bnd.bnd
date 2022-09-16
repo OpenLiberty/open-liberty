@@ -26,7 +26,9 @@ tested.features: \
  pages-3.1,\
  servlet-6.0,\
  faces-4.0,\
- cdi-4.0
+ cdi-4.0,\
+ persistence-3.1,\
+ persistencecontainer-3.1
 
 
 src: \
