@@ -17,8 +17,6 @@ cxfVersion=3.4.3
 
 Import-Package: \
   !java.*, \
-  !com.ctc.wstx.*, \
-  !org.codehaus.stax2.*, \
   !com.sun.msv.*, \
   !com.sun.xml.bind.marshaller, \
   !com.sun.xml.fastinfoset.stax.*, \
@@ -36,6 +34,10 @@ Import-Package: \
   com.ibm.ws.ffdc, \
   *
 
+DynamicImport-Package: \
+  com.ctc.wstx.*, \
+  org.codehaus.stax2.*
+  
 Export-Package: \
   !schemas, \
   !schemas.blueprint, \

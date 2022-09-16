@@ -21,7 +21,6 @@ Bundle-Description: cxf rt security, version 3.4.1
 Bundle-ActivationPolicy: lazy
 
 Import-Package:  \
-  !com.ctc.wstx.*, \
   !net.sf.ehcache.*, \
   org.apache.cxf.*; version="[3.2.4,4.0.0)", \
   com.ibm.websphere.ras, \
@@ -29,6 +28,10 @@ Import-Package:  \
   com.ibm.ws.ffdc, \
   *
 
+DynamicImport-Package: \
+  com.ctc.wstx.*, \
+  org.codehaus.stax2.*
+  
 Export-Package: \
   org.apache.cxf.rt.security.*;version=${cxfVersion}
 

@@ -17,7 +17,6 @@ Bundle-Name: Apache CXF JAX-RS Client
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2
 
 Import-Package: \
-  !com.ctc.wstx.*, \
   !org.apache.aries.*, \
   !org.apache.cxf.jaxrs.blueprint, \
   !org.apache.cxf.jaxrs.spring, \
@@ -26,6 +25,10 @@ Import-Package: \
   !org.osgi.service.blueprint.*, \
   *
 
+DynamicImport-Package: \
+  com.ctc.wstx.*, \
+  org.codehaus.stax2.*
+  
 Export-Package: \
   com.ibm.ws.jaxrs21.clientconfig, \
   org.apache.cxf.jaxrs.client;version=${cxfVersion}, \

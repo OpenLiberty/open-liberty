@@ -89,11 +89,11 @@ com.ibm.ws.jpa.tests.spec10.relationships.oneXone_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec10.relationships.oneXone_jpa_2.2_fat
 com.ibm.ws.jpa.tests.spec10.relationships.oneXone_jpa_3.0_fat
 com.ibm.ws.jpa.tests.spec10.relationships.oneXone_jpa_3.1_fat
-com.ibm.ws.jpa.tests.spec20.entitymanager_fat
-com.ibm.ws.jpa.tests.spec20.lock_fat
-com.ibm.ws.jpa.tests.spec20.ordercolumn_fat
-com.ibm.ws.jpa.tests.spec20.querylockmode_fat
-com.ibm.ws.jpa.tests.spec20_fat
+com.ibm.ws.jpa.tests.spec20_jpa_2.0_fat
+com.ibm.ws.jpa.tests.spec20_jpa_2.1_fat
+com.ibm.ws.jpa.tests.spec20_jpa_2.2_fat
+com.ibm.ws.jpa.tests.spec20_jpa_3.0_fat
+com.ibm.ws.jpa.tests.spec20_jpa_3.1_fat
 com.ibm.ws.logstash.collector_fat
 com.ibm.ws.microprofile.health.2.0_fat
 com.ibm.ws.microprofile.reactive.messaging_fat

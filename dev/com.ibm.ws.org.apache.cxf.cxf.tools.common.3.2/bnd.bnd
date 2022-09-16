@@ -16,8 +16,6 @@ bVersion=1.0
 cxfVersion=3.4.3
 
 Import-Package: \
-  !com.ctc.wstx.*, \
-  !org.codehaus.stax2.*, \
   !com.sun.msv.*, \
   !com.sun.xml.bind.marshaller, \
   !com.sun.xml.fastinfoset.stax.*, \
@@ -34,6 +32,10 @@ Import-Package: \
   org.apache.cxf;version="[3.0.0,4)", \
   *
 
+DynamicImport-Package: \
+  com.ctc.wstx.*, \
+  org.codehaus.stax2.*
+  
 Export-Package: \
   org.apache.cxf.tools.common;version=${cxfVersion}, \
   org.apache.cxf.tools.common.dom;version=${cxfVersion}, \

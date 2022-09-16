@@ -1,4 +1,4 @@
- #*******************************************************************************
+#*******************************************************************************
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -16,35 +16,27 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-Bundle-SymbolicName: io.openliberty.jakarta.xmlBinding.4.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.com.fasterxml.woodstox.6.2
 
-Export-Package: jakarta.xml.bind.*;thread-context=true;version="4.0"
+woodstox-version: 6.2.4
+stax2-version: 4.2
+
+Export-Package: \
+  org.codehaus.stax2.*;version=${stax2-version};thread-context=true, \
+  com.ctc.wstx.*;version=${woodstox-version};thread-context=true
+
+app-resources= \
+  META-INF/services/javax.xml.stream.XMLEventFactory | \
+  META-INF/services/javax.xml.stream.XMLInputFactory | \
+  META-INF/services/javax.xml.stream.XMLOutputFactory
 
 Service-Component: \
-  io.openliberty.jakarta.xmlBinding._4_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
+  io.openliberty.com.fasterxml.woodstox.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \
     properties:= "resources=${app-resources}"
-
-Import-Package: \
-  jakarta.activation, \
-  javax.xml.namespace, \
-  javax.xml.stream, \
-  org.glassfish.hk2.osgiresourcelocator, \
-  *
-
-DynamicImport-Package: \
-  org.glassfish.jaxb.*
-
-Include-Resource:\
-  @${repo;jakarta.xml.bind:jakarta.xml.bind-api;4.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
-
-instrument.disabled: true
-
-publish.wlp.jar.suffix: dev/api/spec
-
+  
 -buildpath: \
-	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version='4.0.0',\
-	io.openliberty.org.glassfish.hk2.osgi-resource-locator,\
-	com.ibm.ws.logging	
+  com.fasterxml.woodstox:woodstox-core;version=${woodstox-version};strategy=exact, \
+  org.codehaus.woodstox:stax2-api;version=${stax2-version};strategy=exact

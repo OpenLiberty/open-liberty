@@ -17,7 +17,6 @@ cxfVersion=3.4.3
 
 Import-Package: \
   !org.apache.cxf.ws.addressing.wsdl, \
-  !com.ctc.wstx.*, \
   !org.codehaus.stax2.*, \
   !com.sun.msv.*, \
   !com.sun.xml.bind.marshaller, \
@@ -36,6 +35,10 @@ Import-Package: \
   org.apache.cxf.binding.xml, \
   org.apache.cxf.binding.xml.wsdl11, \
   *
+
+DynamicImport-Package: \
+  com.ctc.wstx.*, \
+  org.codehaus.stax2.*
 
 Export-Package: \
   org.apache.cxf.jaxb.*;version=${cxfVersion}

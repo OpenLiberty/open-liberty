@@ -16,7 +16,6 @@ bVersion=1.0
 cxfVersion=3.4.3
 
 Import-Package: \
-  !com.ctc.wstx.*, \
   !org.codehaus.stax2.*, \
   !com.sun.msv.*, \
   !com.sun.xml.bind.marshaller, \
@@ -33,6 +32,10 @@ Import-Package: \
   javax.xml.bind.annotation.adapters;version=!, \
   javax.xml.bind.attachment;version=!, \
   *
+
+DynamicImport-Package: \
+  com.ctc.wstx.*, \
+  org.codehaus.stax2.*
 
 Export-Package: \
   org.apache.cxf.binding.xml.*;version=${cxfVersion}

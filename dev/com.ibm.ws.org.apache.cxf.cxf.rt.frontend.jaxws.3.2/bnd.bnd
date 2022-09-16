@@ -20,8 +20,6 @@ Import-Package: \
   !java.*, \
   javax.wsdl.*, \
   com.ibm.wsspi.classloading, \
-  !com.ctc.wstx.*, \
-  !org.codehaus.stax2.*, \
   !com.sun.msv.*, \
   !com.sun.xml.bind.marshaller, \
   !com.sun.xml.fastinfoset.stax.*, \
@@ -38,12 +36,15 @@ Import-Package: \
   com.ibm.ws.ffdc, \
   *
 
+DynamicImport-Package: \
+  com.ibm.ws.jaxws.client, \
+  com.ctc.wstx.*, \
+  org.codehaus.stax2.*
+  
 Export-Package: \
   org.apache.cxf.jaxws.*;version=${cxfVersion};-split-package:=merge-last, \
   org.apache.cxf.jaxws22.*;version=${cxfVersion};-split-package:=merge-last, \
   org.apache.cxf.jaxws30.*;version=${cxfVersion}
-
-DynamicImport-Package: com.ibm.ws.jaxws.client
 
 app-resources= \
   META-INF/services/javax.xml.ws.spi.Provider

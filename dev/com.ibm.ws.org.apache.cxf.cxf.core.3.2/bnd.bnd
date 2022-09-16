@@ -41,7 +41,6 @@ Import-Package: \
   !org.glassfish.jaxb.runtime.api, \
   !org.apache.karaf.jaas.boot.principal, \
   !sun.misc, \
-  !com.ctc.wstx.*, \
   !com.sun.xml.fastinfoset.*;resolution:=optional, \
   !org.codehaus.stax2.*, \
   !com.sun.msv.*, \
@@ -143,6 +142,7 @@ Export-Package: \
 
 DynamicImport-Package: \
   com.ctc.wstx.*, \
+  org.codehaus.stax2.*, \
   com.sun.xml.messaging.saaj.*, \
   com.sun.xml.bind.*, \
   org.glassfish.jaxb.*, \
@@ -163,6 +163,7 @@ Private-Package: \
   META-INF=resources/META-INF
 
 instrument.ffdc: false
+
 instrument.classesExcludes: \
   org/apache/cxf/common/jaxb/*.class, \
   org/apache/cxf/service/invoker/*.class, \

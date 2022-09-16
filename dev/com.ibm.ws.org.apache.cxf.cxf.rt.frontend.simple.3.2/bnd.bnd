@@ -18,8 +18,6 @@ cxfVersion=3.4.3
 Import-Package: \
   org.apache.cxf.binding.soap.interceptor, \
   !java.*, \
-  !com.ctc.wstx.*, \
-  !org.codehaus.stax2.*, \
   !com.sun.msv.*, \
   !com.sun.xml.bind.marshaller, \
   !com.sun.xml.fastinfoset.stax.*, \
@@ -35,7 +33,9 @@ Import-Package: \
   *
 
 DynamicImport-Package: \
-  javax.servlet.*;version="[0.0,4)"
+  javax.servlet.*;version="[0.0,4)", \
+  com.ctc.wstx.*, \
+  org.codehaus.stax2.*
 
 Export-Package: \
   org.apache.cxf.frontend.*;version=${cxfVersion}, \

@@ -21,8 +21,6 @@ Bundle-ActivationPolicy: lazy
 
 Import-Package:  \
   !org.apache.cxf.ws.mex.*, \
-  !com.ctc.wstx.*, \
-  !org.codehaus.stax2.*, \
   !net.sf.ehcache.*, \
   org.apache.neethi, \
   org.apache.neethi.builders, \
@@ -34,6 +32,11 @@ Import-Package:  \
   javax.servlet.*;version="[0.0.0,3.0.0)", \
   *
 
+DynamicImport-Package: \
+  org.apache.cxf.*, \
+  com.ctc.wstx.*, \
+  org.codehaus.stax2.*
+  
 Export-Package: \
   org.apache.cxf.ws.security.sts.provider.operation;version=${cxfVersion}, \
   org.apache.cxf.ws.security.wss4j.policyvalidators;version=${cxfVersion}, \
@@ -56,10 +59,6 @@ Export-Package: \
   org.apache.cxf.ws.security.sts.provider.model.utility;version=${cxfVersion}, \
   org.apache.cxf.ws.security.wss4j;version=${cxfVersion}, \
   org.apache.cxf.ws.security.tokenstore;version=${cxfVersion}
-
-DynamicImport-Package: \
-  org.apache.cxf.*, \
-  com.ctc.wstx.*
 
 -includeresource: \
   @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/!META-INF/maven/*, \
