@@ -18,7 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -42,6 +44,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 
@@ -189,7 +193,8 @@ public class InfinispanContainer extends GenericContainer<InfinispanContainer> {
             }
         }
 
-        Log.info(getClass(), METHOD_NAME, "Existing caches: " + caches);
+        Log.info(getClass(), METHOD_NAME, "Existing caches (REST): " + caches);
+        printCachesJavaView(); // TODO REMOVE
         return caches;
     }
 
@@ -230,6 +235,29 @@ public class InfinispanContainer extends GenericContainer<InfinispanContainer> {
                            response.getStatusLine().getStatusCode(), anyOf(is(200), is(404)));
             }
         }
+    }
+
+    private void printCachesJavaView() {
+        final String METHOD_NAME = "test()";
+
+        /*
+         * Connect to the remote Infinispan server and insert a value into the cache.
+         */
+        ConfigurationBuilder builder = new ConfigurationBuilder();
+        builder.uri(getHotRodUri()).security().authentication().realm("default").saslMechanism("DIGEST-MD5");
+        RemoteCacheManager cacheManager = new RemoteCacheManager(builder.build(), true);
+        Set<String> caches = cacheManager.getCacheNames();
+        cacheManager.close();
+
+        /* Skip internal caches. */
+        Set<String> filtered = new HashSet<String>();
+        for (String c : caches) {
+            if (!c.startsWith("___")) {
+                filtered.add(c);
+            }
+        }
+
+        Log.info(getClass(), METHOD_NAME, "Existing caches (JAVA): " + filtered);
     }
 
     /**
