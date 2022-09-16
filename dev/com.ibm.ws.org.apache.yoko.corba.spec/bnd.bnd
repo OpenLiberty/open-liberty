@@ -13,5 +13,4 @@
 
 -includeresource: @${repo;com.ibm.ws.org.apache.yoko:yoko-spec-corba;1.5.0.48b8f2f105}!/!META-INF/maven/*
 
--buildpath: com.ibm.ws.org.apache.yoko:yoko-spec-corba;version=1.5.0.48b8f2f105, \
-  com.ibm.ws.internal.prereq.java:java.ibmorbapi;strategy=exact;version=1.8.0
+-buildpath: com.ibm.ws.org.apache.yoko:yoko-spec-corba;version=1.5.0.48b8f2f105
