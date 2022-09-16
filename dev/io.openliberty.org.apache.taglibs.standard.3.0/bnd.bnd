@@ -33,7 +33,10 @@ Export-Package: \
    org.apache.taglibs*;version=3.0
 
 -privatepackage: \
-  org.eclipse.tags.shaded.*
+  !org.eclipse.tags.shaded.org.apache.xalan.xsltc.*,\
+  org.eclipse.tags.shaded.org.apache.xalan.*, \
+  org.eclipse.tags.shaded.org.apache.xml.*, \
+  org.eclipse.tags.shaded.org.apache.xpath.*
 
 -buildpath: \
   org.glassfish.web:jakarta.servlet.jsp.jstl;version=3.0, \
