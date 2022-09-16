@@ -197,8 +197,6 @@ public class GenerateJspVisitor extends GenerateVisitor {
 
 				writer.println("*/");
 
-
-
 			}
 
         }
@@ -207,19 +205,18 @@ public class GenerateJspVisitor extends GenerateVisitor {
 
     // Added for Pages 3.1's errorOnELNotFound option
     private void generateIsErrorOnELFoundMethod(boolean flag) {
-
-        writer.println(" public boolean isErrorOnELNotFound() {");
+        writer.println("public boolean isErrorOnELNotFound() {");
         writer.println("return "+ flag  + ";");
         writer.println("}");
     }
 
+    // Added for Pages 3.1, Spec Issue 44 
     private void generateImportGetters() {
-
-        writer.println(" public java.util.List<String> getImportClassList() {");
+        writer.println("public java.util.List<String> getImportClassList() {");
         writer.println("return importClassList;");
         writer.println("}");
         writer.println();
-        writer.println(" public java.util.List<String> getImportPackageList() {");
+        writer.println("public java.util.List<String> getImportPackageList() {");
         writer.println("return importPackageList;");
         writer.println("}");
     }
@@ -306,6 +303,15 @@ public class GenerateJspVisitor extends GenerateVisitor {
             writer.println("private static java.util.List<String> importPackageList = new java.util.ArrayList<String>();");
             writer.println("private static java.util.List<String> importClassList = new java.util.ArrayList<String>();");
             writer.println();
+            
+            // Cannot place this in the ImportGenerator since that is only run when the import directive is included in the page
+            // the imports below are required for all pages 
+            writer.println("static {");
+            // Pages 1.10 Directive Packages java.lang.*, jakarta.servlet.*, jakarta.servlet.jsp.*, and jakarta.servlet.http.* are imported implicitly by the JSP container.
+			writer.println("importPackageList.add(\"jakarta.servlet\");");
+			writer.println("importPackageList.add(\"jakarta.servlet.jsp\");");
+			writer.println("importPackageList.add(\"jakarta.servlet.http\");");
+            writer.println("}");
         }
 
         // PK81147 end

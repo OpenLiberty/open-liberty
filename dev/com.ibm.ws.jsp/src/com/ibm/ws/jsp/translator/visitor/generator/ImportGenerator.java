@@ -62,10 +62,6 @@ public class ImportGenerator extends CodeGeneratorBase {
 					}
 				}
 			}
-			// Pages 1.10 Directive Packages java.lang.*, jakarta.servlet.*, jakarta.servlet.jsp.*, and jakarta.servlet.http.* are imported implicitly by the JSP container.
-			writer.println("importPackageList.add(\"jakarta.servlet\");");
-			writer.println("importPackageList.add(\"jakarta.servlet.jsp\");");
-			writer.println("importPackageList.add(\"jakarta.servlet.http\");");
 		}
 	}
 
