@@ -116,6 +116,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             status = processStartFlowResult(client.startFlow(request, response), httpMessageContext);
         } else if (isCallbackRequest(request)) {
             status = processCallback(client, request, response, httpMessageContext);
+        } else if (alreadyAuthenticated) {
+            status = processExpiredTokenResult(client.processExpiredToken(request, response), httpMessageContext);
         }
 
         // Else if isAuthenticationSessionEstablished
@@ -254,6 +256,22 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         }
 
         httpMessageContext.getResponse().setStatus(rspStatus);
+
+        return status;
+    }
+
+    private AuthenticationStatus processExpiredTokenResult(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext) {
+        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
+
+        if (providerAuthenticationResult != null) {
+            AuthResult authResult = providerAuthenticationResult.getStatus();
+
+            if (AuthResult.REDIRECT_TO_PROVIDER.equals(authResult)) {
+                status = httpMessageContext.redirect(providerAuthenticationResult.getRedirectUrl());
+            } else if (AuthResult.SUCCESS.equals(authResult)) {
+                status = AuthenticationStatus.SUCCESS;
+            }
+        }
 
         return status;
     }

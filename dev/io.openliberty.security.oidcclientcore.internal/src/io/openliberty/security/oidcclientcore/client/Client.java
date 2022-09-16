@@ -13,12 +13,14 @@ package io.openliberty.security.oidcclientcore.client;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.authentication.AbstractFlow;
 import io.openliberty.security.oidcclientcore.authentication.Flow;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.token.TokenRefresher;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import io.openliberty.security.oidcclientcore.token.TokenResponseValidator;
 import io.openliberty.security.oidcclientcore.token.TokenValidationException;
@@ -50,8 +52,39 @@ public class Client {
         tokenResponseValidator.validate(tokenResponse);
     }
 
-    public void logout() {
+    public ProviderAuthenticationResult processExpiredToken(HttpServletRequest request, HttpServletResponse response) {
+        //TODO: pass in OpenIdContextImpl to TokenRefresher
+        TokenRefresher tokenRefresher = new TokenRefresher(request, oidcClientConfig);
+        LogoutConfig logoutConfig = oidcClientConfig.getLogoutConfig();
+
+        if (tokenRefresher.isTokenExpired()) {
+            if (oidcClientConfig.isTokenAutoRefresh()) {
+                // when there is no previously stored refresh_token field of the Token Response, a logout should be initiated
+                if (tokenRefresher.getRefreshToken() == null) {
+                    return logout(request, response, logoutConfig);
+                }
+                ProviderAuthenticationResult providerAuthResult = tokenRefresher.refreshToken();
+                if (AuthResult.SUCCESS.equals(providerAuthResult.getStatus())) {
+                    return providerAuthResult;
+                }
+                // When the call is not successful, ... a logout should be initiated.
+                return logout(request, response, logoutConfig);
+            } else {
+                if ((logoutConfig.isAccessTokenExpiry() && tokenRefresher.isAccessTokenExpired()) ||
+                    (logoutConfig.isIdentityTokenExpiry() && tokenRefresher.isIdTokenExpired())) {
+                    return logout(request, response, logoutConfig);
+                }
+            }
+        }
+        // The token expiration is ignored when none of the above conditions hold
+        // TODO: is this the correct auth result return here?
+        return new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
+    }
+
+    public ProviderAuthenticationResult logout(HttpServletRequest request, HttpServletResponse response,
+                                               LogoutConfig logoutConfig) {
         // TODO
+        return null;
     }
 
 }
