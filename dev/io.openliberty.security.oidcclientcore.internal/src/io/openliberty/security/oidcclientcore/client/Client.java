@@ -13,6 +13,8 @@ package io.openliberty.security.oidcclientcore.client;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jose4j.jwt.JwtClaims;
+
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.authentication.AbstractFlow;
@@ -45,9 +47,9 @@ public class Client {
         return flow.continueFlow(request, response);
     }
 
-    public void validate(TokenResponse tokenResponse) throws TokenValidationException {
+    public JwtClaims validate(TokenResponse tokenResponse) throws TokenValidationException {
         TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
-        tokenResponseValidator.validate(tokenResponse);
+        return tokenResponseValidator.validate(tokenResponse);
     }
 
     public void logout() {

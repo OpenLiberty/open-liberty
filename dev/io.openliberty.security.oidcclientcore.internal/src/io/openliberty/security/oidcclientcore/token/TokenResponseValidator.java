@@ -53,7 +53,7 @@ public class TokenResponseValidator {
         this.clientConfig = oidcClientConfig;
 
     }
-    
+
     @Reference(name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC)
     protected void setSslSupport(SSLSupport sslSupportSvc) {
         sslSupport = sslSupportSvc;
@@ -75,11 +75,11 @@ public class TokenResponseValidator {
     /**
      * @param tokenResponse
      */
-    public void validate(TokenResponse tokenResponse) throws TokenValidationException {
+    public JwtClaims validate(TokenResponse tokenResponse) throws TokenValidationException {
         String idtoken = null;
 
         if (tokenResponse != null) {
-            idtoken = tokenResponse.getIdToken();
+            idtoken = tokenResponse.getIdTokenString();
         }
 
         JwtContext jwtcontext = null;
@@ -115,27 +115,24 @@ public class TokenResponseValidator {
             }
 
         }
-        
+
         try {
             JsonWebStructure jsonStruct = jose4jutil.getJsonWebStructureFromJwtContext(jwtcontext);
             if (jsonStruct == null || !(jsonStruct instanceof JsonWebSignature)) {
-                throw new TokenValidationException(this.clientConfig.getClientId(),"jsonwebsignature error");
+                throw new TokenValidationException(this.clientConfig.getClientId(), "jsonwebsignature error");
             }
             TokenSignatureValidationBuilder tokenSignatureValidationBuilder = jose4jutil.signaturevalidationbuilder();
-                 
-            tokenSignatureValidationBuilder.signature(jsonStruct)
-                                           .sslsupport(sslSupport)
-                                           .issuer(TokenValidator.getIssuer(clientConfig))
-                                           .jwkuri(clientConfig.getProviderMetadata().getJwksURI()) //TODO : use discover data if needed
-                                           .clientid(clientConfig.getClientId());
+
+            tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(sslSupport).issuer(TokenValidator.getIssuer(clientConfig)).jwkuri(clientConfig.getProviderMetadata().getJwksURI()) //TODO : use discover data if needed
+                            .clientid(clientConfig.getClientId());
             String clientSecret = null;
             ProtectedString clientSecretProtectedString = clientConfig.getClientSecret();
             if (clientSecretProtectedString != null) {
                 clientSecret = new String(clientSecretProtectedString.getChars());
             }
             tokenSignatureValidationBuilder.clientsecret(clientSecret);
-            tokenSignatureValidationBuilder.parseJwtWithValidation(idtoken);
-        }catch (Exception e) {
+            return tokenSignatureValidationBuilder.parseJwtWithValidation(idtoken);
+        } catch (Exception e) {
             throw new TokenValidationException(this.clientConfig.getClientId(), e.getMessage());
         }
     }
