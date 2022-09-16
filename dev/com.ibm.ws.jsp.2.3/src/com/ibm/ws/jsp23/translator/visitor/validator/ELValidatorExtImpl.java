@@ -17,6 +17,7 @@ import org.apache.jasper.compiler.ELNode.Nodes;
 import org.apache.jasper.el.ELContextImpl;
 import org.w3c.dom.Element;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jsp.JspCoreException;
 import com.ibm.ws.jsp.configuration.JspConfiguration;
 import com.ibm.ws.jsp.translator.JspTranslationException;
@@ -28,6 +29,7 @@ public class ELValidatorExtImpl implements ElValidatorExt {
 
     public ELValidatorExtImpl() {}
 
+    @FFDCIgnore(ELException.class)
     @Override
     public void validateElFunction(Nodes el, Element jspElement, String expr,
                                    ValidateResult result, ClassLoader loader, JspConfiguration jspConfiguration) throws JspCoreException {
