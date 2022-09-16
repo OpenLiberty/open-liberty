@@ -19,6 +19,7 @@ Subsystem-Name: MicroProfile 6.0
   io.openliberty.mpHealth-4.0, \
   io.openliberty.mpOpenAPI-3.1, \
   io.openliberty.mpFaultTolerance-4.0, \
+  io.openliberty.mpJwt-2.1, \
   io.openliberty.mpMetrics-5.0, \
   io.openliberty.mpRestClient-3.0, \
   io.openliberty.mpTelemetry-1.0

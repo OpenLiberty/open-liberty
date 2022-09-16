@@ -23,7 +23,6 @@
     <featureManager>        
         <feature>componentTest-2.0</feature>
         <feature>restfulWS-3.1</feature>
-        <feature>appSecurity-5.0</feature>
         <feature>mpJwt-2.1</feature>
         <feature>localConnector-1.0</feature>
         <feature>arquillian-support-jakarta-2.1</feature>

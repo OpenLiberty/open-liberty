@@ -281,7 +281,7 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
         Set<String> currentFeatureSet = _featureProvisioner.getService().getInstalledFeatures();
         if (currentFeatureSet.contains("appSecurity-2.0") || currentFeatureSet.contains("appSecurity-1.0")
                 || currentFeatureSet.contains("appSecurity-3.0") || currentFeatureSet.contains("appSecurity-4.0")
-                || currentFeatureSet.contains("appSecurity-5.0")) {
+                || currentFeatureSet.contains("appSecurity-5.0") || currentFeatureSet.contains("mpJwt-2.1")) {
             useSecurity = true;
             return;
         }
