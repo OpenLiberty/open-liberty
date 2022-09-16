@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -67,11 +66,6 @@ public class BellPropertiesTest {
         } catch (final Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Before
-    public void beforeTest() throws Throwable {
-        // nada
     }
 
     @After
@@ -226,7 +220,6 @@ public class BellPropertiesTest {
             }
         }
         finally {
-            stopServer();
             removeSysProps(server, sysProps);
         }
     }
@@ -268,7 +261,6 @@ public class BellPropertiesTest {
             assertBellProps("EmptyProperties", Inject_Op.SingleArgCtor, expectedProps);
         }
         finally {
-            stopServer();
             removeSysProps(server, sysProps);
         }
     }
@@ -317,7 +309,6 @@ public class BellPropertiesTest {
                     server.waitForStringInLog(".*CWWKL0053W: .*ImplClassNotConstructible"));
         }
         finally {
-            stopServer();
             removeSysProps(server, sysProps);
         }
     }
@@ -372,12 +363,12 @@ public class BellPropertiesTest {
                        propsInvalidServer.waitForStringInLog(".*CWWKL0050I: .*testInvalidPropertiesLib.*MultipleValidServices1", TimeOut));
         }
         finally {
+            removeSysProps(propsInvalidServer, sysProps);
             if (propsInvalidServer.isStarted()) {
                 propsInvalidServer.stopServer(
                         "CWWKG0014E: .*TIP_P0", // xml parse error on malformed property TIP_P0
                         "CWWKF0009W");          // no features installed
             }
-            removeSysProps(propsInvalidServer, sysProps);
          }
     }
 
@@ -421,7 +412,6 @@ public class BellPropertiesTest {
             assertBellProps("PropertiesResolveLibertyVars", Inject_Op.SingleArgCtor, expectedProps);
         }
         finally {
-            stopServer();
             removeSysProps(server, sysProps);
         }
     }
