@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sha2sig;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
@@ -34,7 +35,7 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfSha2SigTests extends CommonTests {
@@ -317,32 +318,32 @@ public class CxfSha2SigTests extends CommonTests {
                         // msg to issue if do NOT get the expected result
                         "The test did not receive the expected exception from the server.");
             /*
-            genericTest(
-                        // test name for logging
-                        thisMethod,
-                        // Svc Client Url that generic test code should use
-                        clientHttpUrl,
-                        // Port that svc client code should use
-                        "",
-                        // user that svc client code should use
-                        "user1",
-                        // pw that svc client code should use
-                        "security",
-                        // wsdl sevice that svc client code should use
-                        "Sha2SigService5",
-                        // wsdl that the svc client code should use
-                        // newClientWsdl,
-                        "",
-                        // wsdl port that svc client code should use
-                        "UrnSha2Sig5",
-                        // msg to send from svc client to server
-                        "",
-                        "Response: javax.xml.ws.soap.SOAPFaultException",
-                        // expected response from server
-                        "The signature method does not match the requirement",
-                        // msg to issue if do NOT get the expected result
-                        "The test did not receive the expected exception from the server.");
-              */
+             * genericTest(
+             * // test name for logging
+             * thisMethod,
+             * // Svc Client Url that generic test code should use
+             * clientHttpUrl,
+             * // Port that svc client code should use
+             * "",
+             * // user that svc client code should use
+             * "user1",
+             * // pw that svc client code should use
+             * "security",
+             * // wsdl sevice that svc client code should use
+             * "Sha2SigService5",
+             * // wsdl that the svc client code should use
+             * // newClientWsdl,
+             * "",
+             * // wsdl port that svc client code should use
+             * "UrnSha2Sig5",
+             * // msg to send from svc client to server
+             * "",
+             * "Response: javax.xml.ws.soap.SOAPFaultException",
+             * // expected response from server
+             * "The signature method does not match the requirement",
+             * // msg to issue if do NOT get the expected result
+             * "The test did not receive the expected exception from the server.");
+             */
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
         } else if (featureVersion.equals("EE8")) {
