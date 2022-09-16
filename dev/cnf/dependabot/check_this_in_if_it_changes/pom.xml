@@ -3799,7 +3799,7 @@
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
-      <version>1.27</version>
+      <version>1.31</version>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>
