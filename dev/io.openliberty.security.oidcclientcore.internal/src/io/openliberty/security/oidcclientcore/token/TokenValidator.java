@@ -154,7 +154,7 @@ public class TokenValidator {
      */
     protected void validateAZP() throws TokenValidationException {
         if (this.azp != null) {
-            if (!(oidcConfig.getClientId().equalsIgnoreCase(this.azp))) {
+            if (!(oidcConfig.getClientId().equals(this.azp))) {
                 throw new TokenValidationException(oidcConfig.getClientId(), "azp is [ " + this.azp + " ], expecting  [ " + oidcConfig.getClientId() + " ]");
             }
         } 
@@ -168,7 +168,7 @@ public class TokenValidator {
         if (this.audiences != null && !(this.audiences.isEmpty())) {
             if (this.audiences.size() == 1) {
                 // validate aud claim against client id
-                if (!(oidcConfig.getClientId().equalsIgnoreCase(this.audiences.get(0)))) {
+                if (!(oidcConfig.getClientId().equals(this.audiences.get(0)))) {
                     throw new TokenValidationException(oidcConfig.getClientId(), "audience is [ " + this.audiences.get(0) + " ], expecting [ " + oidcConfig.getClientId() + " ]");
                 }
             } else if (this.azp == null) {
@@ -190,16 +190,46 @@ public class TokenValidator {
         }      
     }
 
+
     /**
      * @throws TokenValidationException 
      * 
      */
     protected void validateIssuer() throws TokenValidationException {
-        if (!(oidcConfig.getProviderMetadata().getIssuer().equalsIgnoreCase(this.issuer))) {
-            
+        String iss = getIssuer(oidcConfig);//oidcConfig.getProviderMetadata().getIssuer();        
+        if (!iss.equals(this.issuer)) {           
             throw new TokenValidationException(oidcConfig.getClientId(), "issuer is [ " + this.issuer + " ], expecting  [ " + oidcConfig.getProviderMetadata().getIssuer() + " ]");
+        }       
+    }
+    
+    public static String getIssuer(OidcClientConfig clientConfig) {
+        String issuer = null;
+        issuer = clientConfig.getProviderMetadata().getIssuer();
+        if (issuer == null || issuer.isEmpty()) {
+            issuer = getIssuerFromTokenEndpoint(clientConfig);
+            if (issuer != null) {
+                return issuer;
+            }
         }
-        
+        //TODO : try discovery data?       
+        return issuer;
+    }
+
+    static String getIssuerFromTokenEndpoint(OidcClientConfig clientConfig) {
+        String issuer = null;
+        String tokenEndpoint = clientConfig.getProviderMetadata().getTokenEndpoint();
+        if (tokenEndpoint != null) {
+            int endOfSchemeIndex = tokenEndpoint.indexOf("//");
+            int lastSlashIndex = tokenEndpoint.lastIndexOf("/");
+            boolean urlContainsScheme = endOfSchemeIndex > -1;
+            boolean urlContainsSlash = lastSlashIndex > -1;
+            if ((!urlContainsScheme && !urlContainsSlash) || (urlContainsScheme && (lastSlashIndex == (endOfSchemeIndex + 1)))) {
+                issuer = tokenEndpoint;
+            } else {
+                issuer = tokenEndpoint.substring(0, lastSlashIndex);
+            }
+        }       
+        return issuer;
     }
 
 }
