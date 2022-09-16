@@ -1,0 +1,17 @@
+<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+
+    <session-config>
+          <cookie-config>
+            <name>CookieConfigName_viaWebXML</name>
+            <domain>CookieConfigDomain_viaWebXML</domain>
+            <path>CookieConfigPath_viaWebXML</path>
+            <max-age>2021</max-age>
+            <http-only>true</http-only>
+            <secure>true</secure>
+          </cookie-config>
+      </session-config>
+
+</web-app>
+

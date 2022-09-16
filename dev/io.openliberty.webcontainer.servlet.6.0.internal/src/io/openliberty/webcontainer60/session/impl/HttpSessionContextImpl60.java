@@ -21,8 +21,10 @@ import com.ibm.ws.webcontainer31.session.impl.HttpSessionContext31Impl;
 import com.ibm.wsspi.session.ISession;
 import com.ibm.wsspi.session.SessionAffinityContext;
 
+import io.openliberty.session.impl.SessionCookieConfigImpl60;
 import io.openliberty.session.impl.http.HttpSessionImpl60;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.SessionCookieConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -43,8 +45,13 @@ public class HttpSessionContextImpl60 extends HttpSessionContext31Impl {
         super(smc, sap, sessionStoreService);
 
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + "Constructor");
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " Constructor");
         }
+
+        SessionCookieConfig scc = smc.getSessionCookieConfig();
+
+        //override the default sccimpl with version 6 sccimpl
+        smc.setClonedCookieConfig(new SessionCookieConfigImpl60(scc.getName(), scc.getDomain(), scc.getPath(), scc.getComment(), scc.getMaxAge(), scc.isHttpOnly(), scc.isSecure()));
     }
 
     /**

@@ -15,9 +15,14 @@ import java.util.EnumSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.session.utils.LoggingUtil;
+
 public class SessionManagerConfig implements Cloneable {
+    private static final String methodClassName = "SessionManagerConfig";
 
     // Tells us if we are using the Server Level Session Manager
     private boolean usingWebContainerSM = true;
@@ -150,7 +155,9 @@ public class SessionManagerConfig implements Cloneable {
     private final String privateSessionCookiePath = "/";
     private final boolean privateSessionCookieSecure = false;
     private final boolean privateSessionCookieHttpOnly = true;
-    protected SessionCookieConfigImpl cookieConfig = new SessionCookieConfigImpl(privateSessionCookieName, privateSessionCookieDomain, privateSessionCookiePath,
+    
+    //Servlet 6.0 - override this cookieConfig in HttpSessionContextImpl60
+    protected SessionCookieConfig cookieConfig = new SessionCookieConfigImpl(privateSessionCookieName, privateSessionCookieDomain, privateSessionCookiePath,
                     privateSessionCookieComment, privateSessionCookieMaxAge, privateSessionCookieHttpOnly, privateSessionCookieSecure);
 
     //TODO Lierty Anat: Do we need to read those properties from metatype ??
@@ -160,11 +167,15 @@ public class SessionManagerConfig implements Cloneable {
     private String SIPConvergedHostName = "localhost";
     //end of JSR289 SIP converged app custom properties
     
-    protected String getDefaultSessionCookieName() {
+    public String getDefaultSessionCookieName() {
         return privateSessionCookieName;
     }
 
-    public final SessionCookieConfigImpl getSessionCookieConfig() {
+    public final SessionCookieConfig getSessionCookieConfig() {
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " getSessionCookieConfig returns [" + cookieConfig + "] , this -> " + this);
+        }
+        
         return cookieConfig;
     }
 
@@ -252,7 +263,12 @@ public class SessionManagerConfig implements Cloneable {
     }
 
     // constructor
-    public SessionManagerConfig() {}
+    public SessionManagerConfig() {
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " Constructor , this -> " + this);
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " SessionCookieConfig -> " + getSessionCookieConfig());
+        }
+    }
 
     // usingWebContainerSM
     public final boolean isUsingWebContainerSM() {
@@ -367,7 +383,7 @@ public class SessionManagerConfig implements Cloneable {
 
     public final void setSessionCookieName(String s) {
         final boolean externalCall = false;
-        cookieConfig.setName(s, externalCall);
+        ((SessionCookieConfigImpl) cookieConfig).setName(s, externalCall);
     }
 
     // sessionCookieComment
@@ -377,7 +393,7 @@ public class SessionManagerConfig implements Cloneable {
 
     public final void setSessionCookieComment(String s) {
         final boolean externalCall = false;
-        cookieConfig.setComment(s, externalCall);
+        ((SessionCookieConfigImpl) cookieConfig).setComment(s, externalCall);
     }
 
     // sessionCookieDomain
@@ -387,7 +403,7 @@ public class SessionManagerConfig implements Cloneable {
 
     public final void setSessionCookieDomain(String s) {
         final boolean externalCall = false;
-        cookieConfig.setDomain(s, externalCall);
+        ((SessionCookieConfigImpl) cookieConfig).setDomain(s, externalCall);
     }
 
     // sessionCookieMaxAge
@@ -397,7 +413,7 @@ public class SessionManagerConfig implements Cloneable {
 
     public final void setSessionCookieMaxAge(int i) {
         final boolean externalCall = false;
-        cookieConfig.setMaxAge(i, externalCall);
+        ((SessionCookieConfigImpl) cookieConfig).setMaxAge(i, externalCall);
     }
 
     // sessionCookiePath
@@ -407,7 +423,7 @@ public class SessionManagerConfig implements Cloneable {
 
     public final void setSessionCookiePath(String s) {
         final boolean externalCall = false;
-        cookieConfig.setPath(s, externalCall);
+        ((SessionCookieConfigImpl) cookieConfig).setPath(s, externalCall);
     }
 
     // sessionCookieSecure
@@ -417,7 +433,7 @@ public class SessionManagerConfig implements Cloneable {
 
     public final void setSessionCookieSecure(boolean b) {
         final boolean externalCall = false;
-        cookieConfig.setSecure(b, externalCall);
+        ((SessionCookieConfigImpl) cookieConfig).setSecure(b, externalCall);
     }
 
     // sipSessionCookieName
@@ -1099,8 +1115,12 @@ public class SessionManagerConfig implements Cloneable {
 
     @Override
     public SessionManagerConfig clone() throws CloneNotSupportedException {
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " clone() , this -> " + this);
+        }
+        
         SessionManagerConfig tempSMC = (SessionManagerConfig) super.clone();
-        tempSMC.setClonedCookieConfig(this.cookieConfig.clone());
+        tempSMC.setClonedCookieConfig(((SessionCookieConfigImpl) this.cookieConfig).clone());
         tempSMC.setClonedTrackingModes(this.trackingModes);
         //I don't think we need to clone the drsSettings since this can 
         //not be set by the application and if it has been configured differently
@@ -1111,7 +1131,11 @@ public class SessionManagerConfig implements Cloneable {
         return tempSMC;
     }
 
-    public void setClonedCookieConfig(SessionCookieConfigImpl scci) {
+    public void setClonedCookieConfig(SessionCookieConfig scci) {
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " setClonedCookieConfig [" + scci + "] , this -> " + this);
+        }
+        
         this.cookieConfig = scci;
     }
 
@@ -1128,7 +1152,7 @@ public class SessionManagerConfig implements Cloneable {
 
     public final void setSessionCookieHttpOnly(boolean b) {
         final boolean externalCall = false;
-        cookieConfig.setHttpOnly(b, externalCall);
+        ((SessionCookieConfigImpl) cookieConfig).setHttpOnly(b, externalCall);
     }
     
     //sessionSameSite
@@ -1141,15 +1165,18 @@ public class SessionManagerConfig implements Cloneable {
     }
     
 
-    public void updateCookieInfo(SessionCookieConfigImpl scc) {
+    //Servlet 6.0 - updated to use interface
+    public void updateCookieInfo(SessionCookieConfig scc) {
         if (scc != null) {
+            SessionCookieConfigImpl sccImpl = (SessionCookieConfigImpl) scc;
+            
             if (scc.getComment() != null) {
                 this.setSessionCookieComment(scc.getComment());
             }
             if (scc.getDomain() != null) {
                 this.setSessionCookieDomain(scc.getDomain());
             }
-            if (scc.isMaxAgeSet()) {
+            if (sccImpl.isMaxAgeSet()) {
                 this.setSessionCookieMaxAge(scc.getMaxAge());
             }
             if (scc.getName() != null) {
@@ -1158,10 +1185,10 @@ public class SessionManagerConfig implements Cloneable {
             if (scc.getPath() != null) {
                 this.setSessionCookiePath(scc.getPath());
             }
-            if (scc.isHttpOnlySet()) {
+            if (sccImpl.isHttpOnlySet()) {
                 this.setSessionCookieHttpOnly(scc.isHttpOnly());
             }
-            if (scc.isSecureSet()) {
+            if (sccImpl.isSecureSet()) {
                 this.setSessionCookieSecure(scc.isSecure());
             }
         }
