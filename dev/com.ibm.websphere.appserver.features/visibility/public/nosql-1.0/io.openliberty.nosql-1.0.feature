@@ -17,6 +17,7 @@ Subsystem-Name: Jakarta NoSQL 1.0
 #TODO com.ibm.websphere.appserver.eeCompatible-11.0
 #TODO io.openliberty.jakartaeePlatform-11.0
 -features=\
+  com.ibm.websphere.appserver.eeCompatible-10.0,\
   io.openliberty.jakarta.nosql-1.0
 kind=noship
 edition=full
