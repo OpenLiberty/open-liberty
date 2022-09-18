@@ -816,12 +816,20 @@ public class PageContextImpl extends PageContext {
 		}
 
         // For Pages 3.1
-				if(servlet instanceof com.ibm.ws.jsp.runtime.JspDirectiveInfo && ((com.ibm.ws.jsp.runtime.JspDirectiveInfo)servlet).isErrorOnELNotFound() ){
-						this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
-				}
-        // if( ((com.ibm.ws.jsp.runtime.HttpJspBase) servlet).getPropertyInfo().get("errorOnELNotFound") == true ){
-        //     this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
-        // }
+		if(servlet instanceof com.ibm.ws.jsp.runtime.JspDirectiveInfo && ((com.ibm.ws.jsp.runtime.JspDirectiveInfo)servlet).isErrorOnELNotFound() ){
+			this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
+		}
+
+        if(servlet instanceof com.ibm.ws.jsp.runtime.JspImportInfo){
+            for(String _package : ((com.ibm.ws.jsp.runtime.JspImportInfo)servlet).getImportPackageList()){
+                this.elContext.getImportHandler().importPackage(_package);
+            }
+            for(String _class : ((com.ibm.ws.jsp.runtime.JspImportInfo)servlet).getImportClassList()){
+                this.elContext.getImportHandler().importClass(_class);
+            }
+            // not sure about importing static fields/methods? spec doesn't seem to mention it?
+            // Follow up Liberty Issue 22507 to see if there's anything to be done here with static imports
+        }
 
 		return this.elContext;
 	}

@@ -8,6 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
+ <%@ page import = "io.openliberty.pages31.fat.misc.Coffee,io.openliberty.pages31.fat.misc.Cafe,io.openliberty.pages31.fat.misc.other.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -16,9 +17,16 @@
 </head>
 <body>
 
-    <p> Verify jsp:plugin logging occurs in trace </p>
+    <p> Verify imports are seen via Expression Language, otherwise an empty string is rendered</p>
 
-     Nothing should be generated <jsp:plugin /> in between. 
+    Coffee Roast:
+    ${Coffee.ROAST}
+    <br/>
+    Coffee Shop:
+    ${Cafe.NAME}
+    <br/>
+    Sugar:
+    ${Sugar.TYPE}
     
 </body>
 </html>
