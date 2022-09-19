@@ -560,6 +560,12 @@ public class DDTestBase implements PlatformVersion {
     public static final String[] XML_ERROR_MESSAGES =
             { "CWWKC2272E" };
 
+    public static final String XML_ERROR_ALT_UNEXPECTED_CHILD =
+            "unexpected.child.element";
+    
+    public static final String[] XML_ERROR_UNEXPECTED_CHILD =
+            { "CWWKC2259E" };
+    
     //
 
     public static void verifySuccess(String altMessage, String... requiredMessages) {
