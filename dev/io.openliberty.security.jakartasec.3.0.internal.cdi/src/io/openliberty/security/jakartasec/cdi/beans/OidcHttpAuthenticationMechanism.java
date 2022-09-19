@@ -23,7 +23,7 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
-import io.openliberty.security.oidcclientcore.authentication.AuthorizationCodeFlow;
+import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.ClientManager;
@@ -182,7 +182,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
-            status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext);
+            status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, client);
         } catch (AuthenticationResponseException e) {
             status = httpMessageContext.notifyContainerAboutLogin(getCredentialValidationResultFromException(e));
         } catch (TokenRequestException e) {
@@ -201,38 +201,35 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     private AuthenticationStatus processContinueFlowResult(ProviderAuthenticationResult providerAuthenticationResult,
-                                                           HttpMessageContext httpMessageContext) throws AuthenticationException {
+                                                           HttpMessageContext httpMessageContext, Client client) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
         if (providerAuthenticationResult != null) {
             AuthResult authResult = providerAuthenticationResult.getStatus();
 
             if (AuthResult.SUCCESS.equals(authResult)) {
-                status = handleOidcLogin(providerAuthenticationResult, httpMessageContext);
+                status = handleOidcLogin(providerAuthenticationResult, httpMessageContext, client);
             }
         }
 
         return status;
     }
 
-    private AuthenticationStatus handleOidcLogin(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext) throws AuthenticationException {
-        Credential credential = createOidcTokensCredential(providerAuthenticationResult);
+    private AuthenticationStatus handleOidcLogin(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext,
+                                                 Client client) throws AuthenticationException {
+        Credential credential = createOidcTokensCredential(providerAuthenticationResult, client);
         // TODO: "When available in the "Token Response", the optional fields "refresh_token" and "expires_in" must be stored internally." Store full credential in the subject.
         return validateCredentials(credential, httpMessageContext);
     }
 
-    private Credential createOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult) {
+    private Credential createOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult, Client client) {
         Credential credential = null;
 
         Hashtable<String, Object> customProperties = providerAuthenticationResult.getCustomProperties();
         if (customProperties != null) {
             TokenResponse tokenResponse = (TokenResponse) customProperties.get(JakartaOidcTokenRequest.AUTH_RESULT_CUSTOM_PROP_TOKEN_RESPONSE);
             if (tokenResponse != null) {
-                // TODO: credential = new OidcTokensCredential(client, tokenResponse, userinfoResponse);
-                credential = new Credential() {
-                    {
-                    }
-                };
+                credential = new OidcTokensCredential(tokenResponse, client);
             }
         }
 

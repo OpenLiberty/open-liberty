@@ -10,8 +10,14 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.identitystore;
 
+import java.util.Collections;
+import java.util.Set;
+
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
+import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.Client;
+import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.security.enterprise.credential.Credential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.identitystore.IdentityStore;
@@ -31,21 +37,60 @@ public class OidcIdentityStore implements IdentityStore {
         if (!(credential instanceof OidcTokensCredential)) {
             return CredentialValidationResult.NOT_VALIDATED_RESULT;
         } else if (credential.isValid()) {
-            if (((OidcTokensCredential) credential).getTokenResponse() != null && ((OidcTokensCredential) credential).getClient() != null) {
-                Client client = ((OidcTokensCredential) credential).getClient();
+            OidcTokensCredential castCredential = (OidcTokensCredential) credential;
+            TokenResponse tokenResponse = castCredential.getTokenResponse();
+            Client client = castCredential.getClient();
+            if (tokenResponse != null && client != null) {
                 try {
-
-                    client.validate(((OidcTokensCredential) credential).getTokenResponse());
-                    // TODO : have the client validation result to have access to the caller and group etc.. ?
-                    // String caller =
-                    // Set <String> groups =
-                    // return (new CredentialValidationResult(id, caller, null, caller, groups));
+                    client.validate(tokenResponse);
+                    return createSuccessfulCredentialValidationResult(client.getOidcClientConfig(), tokenResponse);
                 } catch (Exception e) {
                     return CredentialValidationResult.INVALID_RESULT;
                 }
             }
         }
         return CredentialValidationResult.INVALID_RESULT;
+    }
+
+    CredentialValidationResult createSuccessfulCredentialValidationResult(OidcClientConfig clientConfig, TokenResponse tokenResponse) {
+        String storeId = clientConfig.getClientId();
+        String caller = getCallerName(clientConfig, tokenResponse);
+        Set<String> groups = getCallerGroups(clientConfig, tokenResponse);
+        return new CredentialValidationResult(storeId, caller, null, caller, groups);
+    }
+
+    String getCallerName(OidcClientConfig clientConfig, TokenResponse tokenResponse) {
+        String callerNameClaim = getCallerNameClaim(clientConfig);
+        if (callerNameClaim == null || callerNameClaim.isEmpty()) {
+            return null;
+        }
+        // TODO
+        return null;
+    }
+
+    Set<String> getCallerGroups(OidcClientConfig clientConfig, TokenResponse tokenResponse) {
+        String callerGroupClaim = getCallerGroupsClaim(clientConfig);
+        if (callerGroupClaim == null || callerGroupClaim.isEmpty()) {
+            return null;
+        }
+        // TODO
+        return Collections.emptySet();
+    }
+
+    String getCallerNameClaim(OidcClientConfig clientConfig) {
+        ClaimsMappingConfig claimsMappingConfig = clientConfig.getClaimsMappingConfig();
+        if (claimsMappingConfig != null) {
+            return claimsMappingConfig.getCallerNameClaim();
+        }
+        return null;
+    }
+
+    String getCallerGroupsClaim(OidcClientConfig clientConfig) {
+        ClaimsMappingConfig claimsMappingConfig = clientConfig.getClaimsMappingConfig();
+        if (claimsMappingConfig != null) {
+            return claimsMappingConfig.getCallerGroupsClaim();
+        }
+        return null;
     }
 
 }
