@@ -11,14 +11,14 @@
 package io.openliberty.org.apache.jasper.expressionLanguage50.fat;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50DefaultMethodsTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
+import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50DefaultMethodsTest;
+import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50MethodReferenceTest;
 
 /**
  * Expresssion Language 5.0 Tests
@@ -37,7 +37,8 @@ import com.ibm.ws.fat.util.FatLogHandler;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    EL50DefaultMethodsTest.class
+                EL50DefaultMethodsTest.class,
+                EL50MethodReferenceTest.class
 })
 public class FATSuite {
 

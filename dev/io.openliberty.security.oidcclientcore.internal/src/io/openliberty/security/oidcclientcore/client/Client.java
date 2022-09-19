@@ -10,9 +10,48 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.client;
 
-/**
- *
- */
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
+
+import io.openliberty.security.oidcclientcore.authentication.AbstractFlow;
+import io.openliberty.security.oidcclientcore.authentication.Flow;
+import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
+import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.token.TokenResponse;
+import io.openliberty.security.oidcclientcore.token.TokenResponseValidator;
+import io.openliberty.security.oidcclientcore.token.TokenValidationException;
+
 public class Client {
+
+    private final OidcClientConfig oidcClientConfig;
+
+    public Client(OidcClientConfig oidcClientConfig) {
+        this.oidcClientConfig = oidcClientConfig;
+    }
+
+    public OidcClientConfig getOidcClientConfig() {
+        return oidcClientConfig;
+    }
+
+    public ProviderAuthenticationResult startFlow(HttpServletRequest request, HttpServletResponse response) {
+        Flow flow = AbstractFlow.getInstance(oidcClientConfig);
+        return flow.startFlow(request, response);
+    }
+
+    public ProviderAuthenticationResult continueFlow(HttpServletRequest request, HttpServletResponse response) throws AuthenticationResponseException, TokenRequestException {
+        Flow flow = AbstractFlow.getInstance(oidcClientConfig);
+        return flow.continueFlow(request, response);
+    }
+
+    public void validate(TokenResponse tokenResponse) throws TokenValidationException {
+        TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
+        tokenResponseValidator.validate(tokenResponse);
+    }
+
+    public void logout() {
+        // TODO
+    }
 
 }

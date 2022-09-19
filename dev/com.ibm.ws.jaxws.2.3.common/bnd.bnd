@@ -44,8 +44,8 @@ Export-Package: \
     com.ibm.wsspi.jaxws;version=${exportVer}
 
 Import-Package: \
-   javax.xml.bind.*;version="[2.3,3)", \
-   javax.xml.ws.*;version="[2.3,3)", \
+   javax.xml.bind.*;version="[2.2,3)", \
+   javax.xml.ws.*;version="[2.2,3)", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
    !com.sun.tools.ws.wscompile.*;version=!, \
    !org.apache.tools.ant;version=!, \
@@ -177,8 +177,8 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	javax.jws:jsr181-api;version=latest,\
 	javax.xml.soap:javax.xml.soap-api;version=1.4.0,\
-	com.ibm.websphere.javaee.jaxb.2.3;version=latest,\
-	com.ibm.websphere.javaee.jaxws.2.3;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.api.kernel.service;version=latest,\

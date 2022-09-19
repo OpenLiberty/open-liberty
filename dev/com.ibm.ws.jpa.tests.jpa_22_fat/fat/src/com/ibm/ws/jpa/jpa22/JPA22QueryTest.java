@@ -51,7 +51,7 @@ public class JPA22QueryTest extends FATServletClient {
         app.addPackage("jpa22query.web");
         app.addPackage("jpa22query.entity");
         ShrinkHelper.addDirectory(app, resPath);
-        ShrinkHelper.exportAppToServer(server1, app);
+        ShrinkHelper.exportToServer(server1, "apps", app);
         server1.addInstalledAppForValidation(APP_NAME);
 
         server1.startServer();

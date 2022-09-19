@@ -65,9 +65,10 @@ public class ApplicationRegistry {
     // Thread safety: access to these fields must be synchronized on this
     private final Map<String, ApplicationRecord> applications = new LinkedHashMap<>(); // Linked map retains order in which applications were added
 
-    private final ModuleSelectionConfig moduleSelectionConfig = ModuleSelectionConfig.fromConfig(ConfigProvider.getConfig(ApplicationRegistry.class.getClassLoader()));
-
     private OpenAPIProvider cachedProvider = null;
+
+    // Lazily initialized, use getModuleSelectionConfig() instead
+    private ModuleSelectionConfig moduleSelectionConfig = null;
 
     /**
      * The addApplication method is invoked by the {@link ApplicationListener} when it is notified that an application
@@ -89,13 +90,13 @@ public class ApplicationRegistry {
 
             OpenAPIProvider firstProvider = getFirstProvider();
 
-            if (moduleSelectionConfig.useFirstModuleOnly() && firstProvider != null) {
+            if (getModuleSelectionConfig().useFirstModuleOnly() && firstProvider != null) {
                 if (LoggingUtils.isEventEnabled(tc)) {
                     Tr.event(this, tc, "Application Processor: useFirstModuleOnly is configured and we already have a module. Not processing. appInfo=" + newAppInfo);
                 }
                 mergeDisabledAlerter.setUsingMultiModulesWithoutConfig(firstProvider);
             } else {
-                Collection<OpenAPIProvider> openApiProviders = applicationProcessor.processApplication(newAppInfo, moduleSelectionConfig);
+                Collection<OpenAPIProvider> openApiProviders = applicationProcessor.processApplication(newAppInfo, getModuleSelectionConfig());
 
                 if (!openApiProviders.isEmpty()) {
                     // If the new application has any providers, invalidate the model cache
@@ -132,7 +133,7 @@ public class ApplicationRegistry {
                 // If the removed application had any providers, invalidate the provider cache
                 cachedProvider = null;
 
-                if (moduleSelectionConfig.useFirstModuleOnly() && !FrameworkState.isStopping()) {
+                if (getModuleSelectionConfig().useFirstModuleOnly() && !FrameworkState.isStopping()) {
                     if (LoggingUtils.isEventEnabled(tc)) {
                         Tr.event(this, tc, "Application Processor: Current OpenAPI application removed, looking for another application to document.");
                     }
@@ -140,7 +141,7 @@ public class ApplicationRegistry {
                     // We just removed the module used for the OpenAPI document and the server is not shutting down.
                     // We need to find a new module to use if there is one
                     for (ApplicationRecord app : applications.values()) {
-                        Collection<OpenAPIProvider> providers = applicationProcessor.processApplication(app.info, moduleSelectionConfig);
+                        Collection<OpenAPIProvider> providers = applicationProcessor.processApplication(app.info, getModuleSelectionConfig());
                         if (!providers.isEmpty()) {
                             app.providers.addAll(providers);
                             break;
@@ -185,7 +186,7 @@ public class ApplicationRegistry {
                     // Couldn't read this application for some reason, but that means we can't have been able to include modules from it anyway.
                 }
             }
-            for (String unmatchedInclude : moduleSelectionConfig.findIncludesNotMatchingAnything(modules)) {
+            for (String unmatchedInclude : getModuleSelectionConfig().findIncludesNotMatchingAnything(modules)) {
                 Tr.warning(tc, MessageConstants.OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W, Constants.MERGE_INCLUDE_CONFIG, unmatchedInclude);
             }
         }
@@ -244,6 +245,19 @@ public class ApplicationRegistry {
                                .flatMap(r -> r.providers.stream())
                                .collect(toList());
         }
+    }
+
+    /**
+     * Thread safety: Caller must hold lock on {@code this}
+     *
+     * @return the module selection config
+     */
+    private ModuleSelectionConfig getModuleSelectionConfig() {
+        if (moduleSelectionConfig == null) {
+            // Lazy initialization to avoid calling getConfig() before Config is ready
+            moduleSelectionConfig = ModuleSelectionConfig.fromConfig(ConfigProvider.getConfig(ApplicationRegistry.class.getClassLoader()));
+        }
+        return moduleSelectionConfig;
     }
 
     /**

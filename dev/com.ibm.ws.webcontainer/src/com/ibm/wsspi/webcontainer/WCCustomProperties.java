@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -698,7 +698,7 @@ public class WCCustomProperties {
         //End 8.0.0.4
         
         //Start Liberty
-        DEFER_SERVLET_LOAD = CheckpointPhase.getPhase() == null && Boolean.valueOf(customProps.getProperty("deferservletload")); //Liberty to override delayed load/init
+        DEFER_SERVLET_LOAD = CheckpointPhase.getPhase() == CheckpointPhase.INACTIVE && Boolean.valueOf(customProps.getProperty("deferservletload")); //Liberty to override delayed load/init
 
         
         
@@ -809,7 +809,13 @@ public class WCCustomProperties {
 
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
-            DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
+            if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60) {
+                // If Servlet 6.0 or later don't allow DISABLE_X_POWERED_BY to be configured. It will always be disabled regardless of what anyone configures in
+                // the server.xml.
+                DISABLE_X_POWERED_BY = true;
+            } else {
+                DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
+            }
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "true")).booleanValue();
             DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "false")).booleanValue(); 
             ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "true")).booleanValue();

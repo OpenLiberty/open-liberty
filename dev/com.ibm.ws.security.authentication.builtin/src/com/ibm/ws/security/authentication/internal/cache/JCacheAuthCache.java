@@ -48,6 +48,9 @@ public class JCacheAuthCache implements AuthCache {
 
     private static final Set<String> NOT_SERIALIZABLE_CREDS = new HashSet<String>();
 
+    /** Collection of classes that have had error messages emitted for NotSerializableExceptions. */
+    private final Set<String> notSerializableClassesLogged = new HashSet<String>();
+
     static {
         /*
          * Configure the set of common private credentials that we know are not Serializable.
@@ -186,9 +189,23 @@ public class JCacheAuthCache implements AuthCache {
             } catch (SerializationException e) {
                 /*
                  * If we could not serialize the object, we should store it in the local cache.
+                 *
+                 * We will always log a warning if the cause was NOT a NotSerializableException. If the cause was
+                 * a NotSerializableException, we will only log it once for the class listed in the exception. This
+                 * will stop these messages from overwhelming the logs when the user is OK with the issue.
+                 * 
+                 * If debug is enabled, we will log all instances where the the warning is not emitted.
                  */
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Failed to insert value for key " + key + " into JCache due to SerializationException. Inserting into in-memory cache instead.", e);
+                String notSerializableClass = e.getNotSerializableClass();
+                if (notSerializableClass == null || !notSerializableClassesLogged.contains(notSerializableClass)) {
+                    if (notSerializableClass != null) {
+                        notSerializableClassesLogged.add(notSerializableClass);
+                    }
+                    Tr.warning(tc, "JCACHE_AUTH_CACHE_SERIALIZATION_FAILED", key, getJCache().getName(), e.getMessage());
+                } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Insertion of entry for the " + key + " key into the " + getJCache().getName()
+                                 + " JCache failed due to a serialization error. The entry will be inserted into the in-memory cache instead.",
+                             e);
                 }
                 inMemoryCache.insert(key, value);
             }
@@ -197,7 +214,8 @@ public class JCacheAuthCache implements AuthCache {
              * We didn't attempt to serialize the object. Put it in the local cache.
              */
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Refused to insert value for key " + key + " into JCache due to known limitation. Inserting into in-memory cache instead.");
+                Tr.debug(tc, "Refused to insert value for key " + key + " into " + getJCache().getName()
+                             + "JCache due to known limitation. Inserting into in-memory cache instead.");
             }
             inMemoryCache.insert(key, value);
         }

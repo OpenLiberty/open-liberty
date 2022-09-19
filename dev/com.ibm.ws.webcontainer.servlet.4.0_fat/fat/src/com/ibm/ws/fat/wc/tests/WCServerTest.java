@@ -171,8 +171,6 @@ public class WCServerTest {
      *
      * This test is skipped for NO_MODIFICATION(servlet-4.0 feature).
      *
-     * TODO: Review this test for Jakarta EE10: https://github.com/OpenLiberty/open-liberty/issues/20419
-     *
      * @throws Exception
      *                       if something goes horribly wrong
      */
@@ -251,7 +249,6 @@ public class WCServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)
     public void testServletContextSetAndGetSessionTimeout() throws Exception {
         // The first url.
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/SessionTimeoutServlet?TestSessionTimeout=new";
@@ -259,9 +256,16 @@ public class WCServerTest {
 
         // First request will get a new session and will verify that the
         // getSessionTimeout method returns the correct timeout.
-        String[] expectedResponseStrings = new String[] { "Session Timeout: 1", "Session object: # HttpSessionImpl #",
-                                                          "max inactive interval : 60", "valid session : true",
-                                                          "new session : true" };
+        String[] expectedResponseStrings;
+        if (JakartaEE10Action.isActive()) {
+            expectedResponseStrings = new String[] { "Session Timeout: 1", "Session object: # HttpSessionImpl60 #",
+                                                     "max inactive interval : 60", "valid session : true",
+                                                     "new session : true" };
+        } else {
+            expectedResponseStrings = new String[] { "Session Timeout: 1", "Session object: # HttpSessionImpl #",
+                                                     "max inactive interval : 60", "valid session : true",
+                                                     "new session : true" };
+        }
         HttpGet getMethod = new HttpGet(url);
         try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
             try (final CloseableHttpResponse response = client.execute(getMethod)) {
@@ -279,8 +283,13 @@ public class WCServerTest {
             // The second url.
             url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/SessionTimeoutServlet?TestSessionTimeout=current";
             LOG.info("url: " + url);
-            expectedResponseStrings = new String[] { "Session object: # HttpSessionImpl #", "max inactive interval : 60",
-                                                     "valid session : true", "new session : false" };
+            if (JakartaEE10Action.isActive()) {
+                expectedResponseStrings = new String[] { "Session object: # HttpSessionImpl60 #", "max inactive interval : 60",
+                                                         "valid session : true", "new session : false" };
+            } else {
+                expectedResponseStrings = new String[] { "Session object: # HttpSessionImpl #", "max inactive interval : 60",
+                                                         "valid session : true", "new session : false" };
+            }
             getMethod = new HttpGet(url);
             try (final CloseableHttpResponse response = client.execute(getMethod)) {
                 String responseText = EntityUtils.toString(response.getEntity());

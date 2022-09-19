@@ -17,10 +17,12 @@ src: \
 
 fat.project: true
 tested.features: appsecurity-4.0, expressionlanguage-4.0, servlet-5.0, cdi-3.0, pages-3.0, jsonp-2.0, \
-                 restfulwsclient-3.0, concurrent-2.0, restfulws-3.0
+                 restfulwsclient-3.0, concurrent-2.0, restfulws-3.0, sessioncache-1.0
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
+
+fat.test.container.images: infinispan/server:13.0.10.Final, jboss/keycloak:16.1.1
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
@@ -31,6 +33,6 @@ tested.features: appsecurity-4.0, expressionlanguage-4.0, servlet-5.0, cdi-3.0, 
     io.openliberty.jcache.internal_fat.hazelcast;version=latest,\
     io.openliberty.org.testcontainers;version=latest,\
     com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
-    org.infinispan:infinispan-client-hotrod;version=12.1.7.Final,\
-    org.infinispan:infinispan-commons;version=12.1.7.Final
+    org.infinispan:infinispan-client-hotrod;version=13.0.10.Final,\
+    org.infinispan:infinispan-commons;version=13.0.10.Final
     

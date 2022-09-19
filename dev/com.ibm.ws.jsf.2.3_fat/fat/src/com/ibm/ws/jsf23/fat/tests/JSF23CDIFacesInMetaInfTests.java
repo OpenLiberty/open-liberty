@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf23.fat.CDITestBase;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -39,13 +41,25 @@ public class JSF23CDIFacesInMetaInfTests extends CDITestBase {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, "CDIFacesInMetaInf.war",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+        if (JakartaEE10Action.isActive()) {
+            // Include @Named beans.
+            ShrinkHelper.defaultDropinApp(server, "CDIFacesInMetaInf.war",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.managed",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+        } else {
+            // Include @ManagedBean beans.
+            ShrinkHelper.defaultDropinApp(server, "CDIFacesInMetaInf.war",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.beans",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.managed",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
+                                          "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+        }
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(JSF23CDIFacesInMetaInfTests.class.getSimpleName() + ".log");
@@ -69,6 +83,7 @@ public class JSF23CDIFacesInMetaInfTests extends CDITestBase {
      *
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testNavigationHandlerInjection_CDIFacesInMetaInf() throws Exception {
         testNavigationHandlerInjectionByApp("CDIFacesInMetaInf", server);
     }

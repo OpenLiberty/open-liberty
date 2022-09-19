@@ -12,7 +12,7 @@ package com.ibm.wsspi.webcontainer.servlet;
 
 /**
  *
- * A listner that is associated with a single instance of a ServletWrapper (and
+ * A listener that is associated with a single instance of a ServletWrapper (and
  * hence a servlet), and listens for invalidation events.
  * 
  * @ibm-private-in-use

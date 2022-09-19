@@ -30,7 +30,7 @@ infinispan.client.hotrod.sasl_mechanism=DIGEST-MD5
 # Cache specific configuration.
 #
 infinispan.client.hotrod.cache.[AuthCache].configuration_uri=file:///${shared.resource.dir}/infinispan/AuthCache.xml
-infinispan.client.hotrod.cache.[AuthCache].near_cache.mode=INVALIDATED
+infinispan.client.hotrod.cache.[AuthCache].near_cache.mode=DISABLED
 
 infinispan.client.hotrod.cache.[LoggedOutCookieCache].configuration_uri=file:///${shared.resource.dir}/infinispan/LoggedOutCookieCache.xml
-infinispan.client.hotrod.cache.[LoggedOutCookieCache].near_cache.mode=INVALIDATED
+infinispan.client.hotrod.cache.[LoggedOutCookieCache].near_cache.mode=DISABLED

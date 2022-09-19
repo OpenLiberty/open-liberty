@@ -24,13 +24,59 @@ Import-Package: \
     *
 
 Export-Package: \
+	io.openliberty.security.oidcclientcore.authentication, \
 	io.openliberty.security.oidcclientcore.discovery, \
-	io.openliberty.security.oidcclientcore.client
+	io.openliberty.security.oidcclientcore.client, \
+	io.openliberty.security.oidcclientcore.exceptions, \
+	io.openliberty.security.oidcclientcore.storage, \
+	io.openliberty.security.oidcclientcore.utils, \
+	io.openliberty.security.oidcclientcore.http, \
+	io.openliberty.security.oidcclientcore.token, \
+	io.openliberty.security.oidcclientcore.userinfo
+
+-dsannotations: \
+	io.openliberty.security.oidcclientcore.http.EndpointRequest,\
+	io.openliberty.security.oidcclientcore.token.TokenResponseValidator
 
 -buildpath: \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.ws.security.common;version=latest, \
-	com.ibm.ws.org.apache.httpcomponents;version=latest, \
-	com.ibm.websphere.appserver.spi.logging;version=latest, \
-	com.ibm.websphere.appserver.api.json;version=latest, \
-	com.ibm.ws.logging.core;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.security.common;version=latest,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.api.json;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	com.ibm.ws.security.common.jsonwebkey;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+	com.ibm.ws.junit.extensions;version=latest,\
+	org.jmock:jmock-legacy;version=2.5.0,\
+	cglib:cglib-nodep;version=3.3.0,\
+	org.hamcrest:hamcrest-all;version=1.3,\
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
+	org.jmock:jmock;strategy=exact;version=2.5.1,\
+	com.ibm.ws.org.objenesis:objenesis;version=1.0,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	fattest.simplicity;version=latest,\
+	com.ibm.ws.security.registry;version=latest,\
+	com.ibm.ws.security.test.common;version=latest,\
+	com.ibm.json4j;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
+	com.ibm.ws.org.slf4j.api;version=latest,\
+	com.ibm.websphere.security;version=latest
+	

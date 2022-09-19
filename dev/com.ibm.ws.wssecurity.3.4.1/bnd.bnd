@@ -37,6 +37,10 @@ Private-Package:\
  com.ibm.ws.wssecurity.token.*,\
  com.ibm.ws.wssecurity.resources.*
  
+Import-Package: \
+  javax.servlet.*;resolution:=optional;version="[2.6.0,3.0.0)",\
+  *
+ 
  -dsannotations:com.ibm.ws.wssecurity.internal.WSSecurityClientConfiguration
  
 Service-Component: \
@@ -80,8 +84,8 @@ instrument.classesExcludes: com/ibm/ws/wssecurity/resources/*.class
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
-	com.ibm.websphere.javaee.jaxb.2.3;version=latest,\
-	com.ibm.websphere.javaee.jaxws.2.3;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\

@@ -14,18 +14,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 PostgreSQLTest.class,
-                PostgreSQLSSLTest.class
+                PostgreSQLSSLTest.class,
+//                ThreadLocalConnectionTest.class
 })
-public class FATSuite {
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
+public class FATSuite extends TestContainerSuite {
 }

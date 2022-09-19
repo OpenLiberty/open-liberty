@@ -36,6 +36,7 @@ import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.ejb.TestOneXManyCompoundP
 import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.ejb.TestOneXManyUnidirectional_EJB_SFEX_Servlet;
 import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.ejb.TestOneXManyUnidirectional_EJB_SF_Servlet;
 import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.ejb.TestOneXManyUnidirectional_EJB_SL_Servlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2021 IBM Corporation and others.
+    Copyright (c) 2021, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -11,19 +11,11 @@
 <server>
 
 	<!-- 
-		Library to use when running Hazelcast as a member.
+		Library to use when running Hazelcast as a member or as a client.
 	 -->
 	<library id="HazelcastLib">
 		<fileset dir="${shared.resource.dir}/hazelcast"
 			includes="hazelcast.jar" />
-	</library>
-
-	<!-- 
-		Library to use when running Hazelcast as a client.
-	 -->
-	<library id="HazelcastClientLib">
-		<fileset dir="${shared.resource.dir}/hazelcast"
-			includes="hazelcast-client.jar,hazelcast.jar" />
 	</library>
 
 	<!-- 

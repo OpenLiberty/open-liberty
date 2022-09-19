@@ -1,0 +1,9 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+    
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+	
+    <variable name="onError" value="FAIL"/>
+</server>

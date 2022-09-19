@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# For Hotrod properties for 12.1.x please see the following link:
+#
+#    https://docs.jboss.org/infinispan/12.1/apidocs/org/infinispan/client/hotrod/configuration/package-summary.html
+#
+
+#
+# Common client configuration.
+#
+# NOTE: The infinispan.client.hotrod.uri property is set dynamically in the server.xml.
+#
+infinispan.client.hotrod.auth_realm=default
+infinispan.client.hotrod.auth_server_name=infinispan
+infinispan.client.hotrod.java_serial_allowlist=.*
+infinispan.client.hotrod.marshaller=org.infinispan.commons.marshall.JavaSerializationMarshaller
+infinispan.client.hotrod.sasl_mechanism=DIGEST-MD5
+#infinispan.client.hotrod.uri=hotrod://admin:password@localhost:11222
+
+#
+# Cache specific configuration.
+#
+infinispan.client.hotrod.cache.[AuthCache].configuration_uri=file:///${shared.resource.dir}/infinispan/AuthCache_NearCache.xml
+infinispan.client.hotrod.cache.[AuthCache].near_cache.mode=INVALIDATED
+
+infinispan.client.hotrod.cache.[LoggedOutCookieCache].configuration_uri=file:///${shared.resource.dir}/infinispan/LoggedOutCookieCache.xml
+infinispan.client.hotrod.cache.[LoggedOutCookieCache].near_cache.mode=INVALIDATED

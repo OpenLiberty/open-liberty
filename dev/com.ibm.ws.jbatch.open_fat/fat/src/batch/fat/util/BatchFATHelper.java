@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,6 +34,8 @@ import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
+import com.ibm.websphere.simplicity.ProgramOutput;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.jbatch.test.dbservlet.DbServletClient;
@@ -330,38 +333,54 @@ public abstract class BatchFATHelper {
     }
 
     public String getBatchDDL(LibertyServer server) throws Exception {
-        ProcessBuilder processBuilder = getProcessBuilder(server);
-        Process process = processBuilder.start();
-        int returnCode = process.waitFor();
 
-        if (returnCode != 0)
-            throw new Exception("Expected return code 0, actual return code " + returnCode);
+        String methodName = "getBatchDDL";
 
-        ProcessOutput processOutput = new ProcessOutput(process);
-        processOutput.printOutput();
+        ProgramOutput po = null;
 
-        String successMessage = processOutput.getLineInSysoutContaining("CWWKD0107I");
-        if (successMessage == null)
-            throw new Exception("Output did not contain success message CWWKD0107I");
+        Properties env = new Properties();
 
-        File outputPath = new File(successMessage.substring(72));
-        if (outputPath.exists() == false)
-            throw new Exception("Output path did not exist: " + outputPath.toString());
+        String scriptName;
+        String installRoot = server.getInstallRoot();
+        Machine machine = server.getMachine();
 
-        String[] ddlFiles = outputPath.list();
-        if (ddlFiles.length == 0)
-            throw new Exception("There was no output in the output directory: " + outputPath.toString());
-
-        File ddlFile = null;
-
-        for (String fileName : ddlFiles) {
-            if ("databaseStore[BatchDatabaseStore]_batchPersistence.ddl".equals(fileName))
-                ddlFile = new File(outputPath, fileName);
+        if (machine.getOperatingSystem() == OperatingSystem.WINDOWS) {
+            scriptName = installRoot + File.separator + "bin" + File.separator + "ddlGen.bat";
+        } else {
+            scriptName = installRoot + File.separator + "bin" + File.separator + "ddlGen";
         }
 
-        if (!ddlFile.equals(null))
-            return ddlFile.getAbsolutePath();
-        else
-            return null;
+        po = server.getMachine().execute(scriptName,
+                                         new String[] {
+                                                        "generate",
+                                                        server.getServerName()
+                                         },
+                                         server.getInstallRoot(),
+                                         env);
+
+        int rc = po.getReturnCode();
+        String stdout = po.getStdout();
+
+        Log.info(BatchFATHelper.class, methodName, "Executed command:" + po.getCommand());
+        Log.info(BatchFATHelper.class, methodName, "stdout:" + stdout);
+        Log.info(BatchFATHelper.class, methodName, "stderr:" + po.getStderr());
+        Log.info(BatchFATHelper.class, methodName, "rc:" + rc);
+        Log.info(BatchFATHelper.class, methodName, "serverRoot:" + server.getServerRoot());
+
+        if (rc != 0)
+            throw new Exception("Expected return code 0, actual return code " + rc);
+
+        if (!stdout.contains("CWWKD0107I")) {
+            throw new Exception("Output did not contain success message CWWKD0107I");
+        }
+
+        RemoteFile file = server.getFileFromLibertyServerRoot("ddl/databaseStore[BatchDatabaseStore]_batchPersistence.ddl");
+
+        if (!file.exists())
+            throw new Exception("There was no output ddl file");
+
+        return file.getAbsolutePath();
+
     }
+
 }

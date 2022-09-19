@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
 
 import componenttest.app.FATServlet;
 
+@SuppressWarnings("serial")
 public class Base2PCCloudServlet extends FATServlet {
 
     /**  */
@@ -515,7 +516,7 @@ public class Base2PCCloudServlet extends FATServlet {
 
             final LastingXAResourceImpl xaRes1 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl();
             xaRes1.setCommitAction(XAResourceImpl.DIE);
-            xaRes1.INTERRUPT_IN_RECOVERY = true;
+            LastingXAResourceImpl.INTERRUPT_IN_RECOVERY = true;
             tx.enlistResource(xaRes1);
 
             final LastingXAResourceImpl xaRes2 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl();

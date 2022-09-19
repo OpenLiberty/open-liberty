@@ -70,21 +70,27 @@ public abstract class CommonLoginModule implements LoginModule {
 
     private void cleanup() {
         cleanUpSubject();
-        if (subject != null && !subject.isReadOnly()) {
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
-                public Object run() {
-                    Set<Principal> principals = subject.getPrincipals();
-                    principals.removeAll(subject.getPrincipals());
-                    Set<Object> publicCredentials = subject.getPublicCredentials();
-                    publicCredentials.removeAll(subject.getPublicCredentials());
-                    Set<Object> privateCredentials = subject.getPrivateCredentials();
-                    privateCredentials.removeAll(subject.getPrivateCredentials());
-                    return null;
-                }
-            });
-            subject = null;
+        try {
+            if (subject != null && !subject.isReadOnly()) {
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    @Override
+                    public Object run() {
+                        Set<Principal> principals = subject.getPrincipals();
+                        principals.removeAll(subject.getPrincipals());
+                        Set<Object> publicCredentials = subject.getPublicCredentials();
+                        publicCredentials.removeAll(subject.getPublicCredentials());
+                        Set<Object> privateCredentials = subject.getPrivateCredentials();
+                        privateCredentials.removeAll(subject.getPrivateCredentials());
+                        return null;
+                    }
+                });
+                subject = null;
+            }
         }
+        catch (Exception e) {
+            //This is to avoid Subject.isReadOnly() error.
+        }
+
     }
 
     /**

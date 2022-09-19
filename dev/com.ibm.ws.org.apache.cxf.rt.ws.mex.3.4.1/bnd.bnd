@@ -8,16 +8,33 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include=~../cnf/resources/bnd/bundle.props
 
 -sub: *.bnd
 
+bVersion=1.0
+cxfVersion=3.4.1
+
+Bundle-ActivationPolicy: lazy
+
+Export-Package: \
+  org.apache.cxf.*;version=${cxfVersion}
+
+Import-Package: \
+  javax.xml.bind.*, \
+  javax.xml.ws.*, \
+  !org.springframework.*;resolution:=optional, \
+  !org.apache.aries.*, \
+  !org.osgi.service.blueprint.*, \
+  org.apache.cxf.*;version="[3.2.4,4.0)", \
+  *
 
 -includeresource: \
-    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/!META-INF/maven/*, \
-    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \
-    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/LICENSE, \
-    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/NOTICE, \
-    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/cxf/*
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVersion};EXACT}!/!META-INF/maven/*, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVersion};EXACT}!/META-INF/cxf/*
 
--buildpath: org.apache.cxf:cxf-rt-ws-mex;strategy=exact;version=3.4.1
+-buildpath: \
+  org.apache.cxf:cxf-rt-ws-mex;strategy=exact;version=${cxfVersion}

@@ -15,18 +15,18 @@ import java.net.URLEncoder;
 import java.security.Principal;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Random;
 
 import javax.security.auth.Subject;
-import javax.servlet.http.Cookie;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.CookieHelper;
+
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 
 /**
  * Collection of utility methods for String to byte[] conversion.
@@ -206,49 +206,13 @@ public class OidcUtil {
         }
     }
 
-    static String[] zeroFillers = new String[] {
-            "", "0", "00", "000", "0000", "00000", "000000"
-    };
-
-    public static String getTimeStamp() {
-        long lNumber = (new Date()).getTime();
-        return getTimeStamp(lNumber);
-    }
-
-    // for unit test
-    public static String getTimeStamp(long lNumber) {
-        String timeStamp = "" + lNumber;
-        int iIndex = TIMESTAMP_LENGTH - timeStamp.length(); // this is enough for 3000 years
-        return zeroFillers[iIndex] + timeStamp;
-    }
-
-    public static long convertNormalizedTimeStampToLong(String input) {
-        // no need to check the input since the caller already check it. see verifyState() in OidcClientAuthenticator
-        String timeStamp = input.substring(0, TIMESTAMP_LENGTH);
-        long lTimeStamp = Long.parseLong(timeStamp);
-        return lTimeStamp;
-    }
-
-    @Trivial
-    public static void createNonceCookie(OidcClientRequest oidcClientRequest, String nonceValue, String state, ConvergedClientConfig clientConfig) {
-        String cookieName = HashUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig, state);
-        String cookieValue = createNonceCookieValue(nonceValue, state, clientConfig);
-        Cookie cookie = OidcClientUtil.createCookie(cookieName, cookieValue, oidcClientRequest.getRequest());
-        oidcClientRequest.getResponse().addCookie(cookie);
-    }
-
     @Trivial
     public static boolean verifyNonce(OidcClientRequest oidcClientRequest, String nonceInIDToken, ConvergedClientConfig clientConfig, String responseState) {
-        String cookieName = HashUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, clientConfig, responseState);
-        String cookieValue = createNonceCookieValue(nonceInIDToken, responseState, clientConfig);
+        String cookieName = OidcStorageUtils.getNonceStorageKey(clientConfig.getClientId(), responseState);
+        String cookieValue = OidcStorageUtils.createNonceStorageValue(nonceInIDToken, responseState, clientConfig.getClientSecret());
         String oldCookieValue = CookieHelper.getCookieValue(oidcClientRequest.getRequest().getCookies(), cookieName);
         OidcClientUtil.invalidateReferrerURLCookie(oidcClientRequest.getRequest(), oidcClientRequest.getResponse(), cookieName);
         return cookieValue.equals(oldCookieValue);
-    }
-
-    // calculate the cookie value of Nonce
-    public static String createNonceCookieValue(String nonceValue, String state, ConvergedClientConfig clientConfig) {
-        return HashUtils.digest(nonceValue + state + clientConfig.getClientSecret());
     }
 
 }

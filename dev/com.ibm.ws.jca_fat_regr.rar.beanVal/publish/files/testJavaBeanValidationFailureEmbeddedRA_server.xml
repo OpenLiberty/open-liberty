@@ -1,0 +1,14 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+
+    <application type="ear" location="sampleapp_jca16_jbv_embeddedra.ear" id="sampleapp_jca16_jbv_embeddedra">
+      <resourceAdapter id="adapter_jca16_jbv_ResourceAdapterValidation_Embedded">
+        <properties.sampleapp_jca16_jbv_embeddedra.adapter_jca16_jbv_ResourceAdapterValidation_Embedded idleTimeout="1000" />
+      </resourceAdapter>
+    </application>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+	<javaPermission actions="read" className="java.util.PropertyPermission" name="*"/>
+    <variable name="onError" value="FAIL"/>
+</server>

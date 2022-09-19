@@ -20,6 +20,7 @@ import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -80,7 +81,7 @@ public class CpuInfo {
         executor.scheduleAtFixedRate(activeTask, INTERVAL, INTERVAL, TimeUnit.MINUTES);
         cpuCount = new CPUCount();
         CheckpointPhase phase = CheckpointPhase.getPhase();
-        if (phase != null) {
+        if (phase != CheckpointPhase.INACTIVE) {
             phase.addMultiThreadedHook(activeTask);
         }
         int runtimeAvailableProcessors = Runtime.getRuntime().availableProcessors();
@@ -115,7 +116,7 @@ public class CpuInfo {
         cpuNSFactor = nsFactor;
     }
 
-    private double getSystemCPU() {
+    private synchronized double getSystemCPU() {
         double cpuUsage = -1;
 
         // Get the system cpu usage
@@ -294,15 +295,27 @@ public class CpuInfo {
         java.lang.management.OperatingSystemMXBean mbean = ManagementFactory.getOperatingSystemMXBean();
 
         if (mbean == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning NullCpuInfoAccessor");
+            }
             return new NullCpuInfoAccessor();
         }
         try {
             if (JavaInfo.isSystemClassAvailable("com.ibm.lang.management.OperatingSystemMXBean")) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Returning IBMJavaCpuInfoAccessor");
+                }
                 return new IBMJavaCpuInfoAccessor(mbean);
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning ModernJavaCpuInfoAccessor");
             }
             return new ModernJavaCpuInfoAccessor(mbean);
 
         } catch (NoClassDefFoundError e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Returning StandardAPICpuInfoAccessor");
+            }
             return new StandardAPICpuInfoAccessor(mbean);
         }
 
@@ -400,6 +413,23 @@ public class CpuInfo {
     class IntervalTask implements Runnable, CheckpointHook {
 
         @Override
+        // In checkpoint mode force initialization of osmx variable to complete
+        // prior to checkpoint dump. (this avoids possible deadlock on restore).
+        public void prepare() {
+            synchronized (CpuInfo.this) {
+                try {
+                    if (osmx == null) {
+                        osmx = createCpuInfoAccessor();
+                    }
+                } catch (Exception e) {
+                    // Fail the checkpoint to avoid possible deadlock on restore
+                    FFDCFilter.processException(e, getClass().getName(), "prepare()");
+                    throw new RuntimeException("e.getMessage()", e);
+                }
+            }
+        }
+
+        @Override
         public void restore() {
             run();
         }
@@ -434,15 +464,18 @@ public class CpuInfo {
         }
 
         public void notifyListeners(int processors) {
-            synchronized (listeners) {
-                for (AvailableProcessorsListener listener : listeners) {
-                    try {
-                        listener.setAvailableProcessors(processors);
-                    } catch (Throwable t) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Caught exception: " + t.getMessage() + ".");
-                        FFDCFilter.processException(t, getClass().getName(), "notifyListeners");
-                    }
+            // copy the set of listeners to call.
+            // 1 We don't want to hold a lock while calling the listeners
+            // 2 We need to avoid iterating over listeners collection while calling the listeners because they
+            //   may get removed as part of calling them, causing a ConcurrentModificationException
+            Collection<AvailableProcessorsListener> listenersCopy = new ArrayList<>(listeners);
+            for (AvailableProcessorsListener listener : listenersCopy) {
+                try {
+                    listener.setAvailableProcessors(processors);
+                } catch (Throwable t) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Caught exception: " + t.getMessage() + ".");
+                    FFDCFilter.processException(t, getClass().getName(), "notifyListeners");
                 }
             }
         }

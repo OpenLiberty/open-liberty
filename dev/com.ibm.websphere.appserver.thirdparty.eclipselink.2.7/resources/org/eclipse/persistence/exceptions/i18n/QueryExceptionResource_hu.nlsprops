@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -192,7 +193,8 @@
 
 6100=T\u00f6bb \u00e9rt\u00e9k tal\u00e1lhat\u00f3 egy egyetlen objektumot beolvas\u00f3 lek\u00e9rdez\u00e9shez.
 
-6101=A lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1sa megs\u00e9rten\u00e9 a glob\u00e1lis munkamenet gyors\u00edt\u00f3t\u00e1r integrit\u00e1s\u00e1t, amelynek csak az objektumok legfrissebb v\u00e1ltozatait szabad tartalmaznia.  Egy olyan lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz, amely r\u00e9gebbi objektumokat ad vissza, pr\u00f3b\u00e1lkozzon a k\u00f6vetkez\u0151vel: Haszn\u00e1ljon egy HistoricalSession (acquireSessionAsOf) met\u00f3dust, minden objektum beolvas\u00e1s\u00e1t gyors\u00edt\u00f3t\u00e1razza, \u00e9s automatikusan a megegyez\u0151 id\u0151pontban v\u00e9gezze a beolvas\u00e1st.  Ez \u00e9rv\u00e9nyes lesz az objektumviszonyok aktiv\u00e1l\u00e1s\u00e1ra is.  \u00c1ll\u00edtsa be a shouldMaintainCache tulajdons\u00e1got false \u00e9rt\u00e9kre.  B\u00e1rmely objektum kifejez\u00e9st m\u00faltidej\u0171v\u00e9 tehet, felt\u00e9ve, hogy a mez\u0151i k\u00f6z\u00fcl egy sincs \u00e1br\u00e1zolva az eredm\u00e9nyhalmazba (vagyis csak a where r\u00e9szkifejez\u00e9sben szerepel).
+6101=A lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1sa megs\u00e9rten\u00e9 a glob\u00e1lis munkamenet gyors\u00edt\u00f3t\u00e1r integrit\u00e1s\u00e1t, amelynek csak az objektumok legfrissebb v\u00e1ltozatait szabad tartalmaznia.  Egy olyan lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz, amely r\u00e9gebbi objektumokat ad vissza, pr\u00f3b\u00e1lkozzon a k\u00f6vetkez\u0151vel: Haszn\u00e1ljon egy HistoricalSession (acquireSessionAsOf) met\u00f3dust, minden objektum beolvas\u00e1s\u00e1t gyors\u00edt\u00f3t\u00e1razza, \u00e9s automatikusan a megegyez\u0151 id\u0151pontban v\u00e9gezze a beolvas\u00e1st.  Ez \u00e9rv\u00e9nyes lesz az objektumviszonyok aktiv\u00e1l\u00e1s\u00e1ra is.  \u00c1ll\u00edtsa be a shouldMaintainCache tulajdons\u00e1got false \u00e9rt\u00e9kre.  B\u00e1rmely objektum kifejez\u00e9st m\u00faltidej\u0171v\u00e9 tehet, felt\u00e9ve, hogy a mez\u0151i k\u00f6z\u00fcl egy sincs \u00e1br\u00e1zolva az eredm\u00e9nyhalmazba (vagyis csak a where r\u00e9szkifejez\u00e9\
+    sben szerepel).
 
 6102=A jelenlegi t\u00f6rt\u00e9neti lek\u00e9rdez\u00e9sek csak Oracle 9R2 vagy \u00fajabb adatb\u00e1zisokkal m\u0171k\u00f6dnek, mivel ez az Oracle Flashback szolg\u00e1ltat\u00e1s\u00e1t haszn\u00e1lja.
 
@@ -260,7 +262,7 @@
 
 6134=Az addUpdate met\u00f3dusnak els\u0151 param\u00e9terk\u00e9nt \u00e1tadott attrib\u00fatumn\u00e9v vagy kifejez\u00e9s nem hat\u00e1roz meg egy mez\u0151t. {1}Attrib\u00fatumn\u00e9v vagy kifejez\u00e9s: [{2}]{1}Le\u00edr\u00f3: [{0}]
 
-6135=Az addUpdate met\u00f3dusnak els\u0151 param\u00e9terk\u00e9nt \u00e1tadott attrib\u00fatumn\u00e9v vagy kifejez\u00e9s egy olyan t\u00e1bl\u00e1b\u00f3l hat\u00e1roz meg egy mez\u0151t, amely nincs lek\u00e9pezve a lek\u00e9rdez\u00e9sle\u00edr\u00f3ra. {1}Attrib\u00fatumn\u00e9v vagy kifejez\u00e9s: [{2}]{1}Hib\u00e1s mez\u0151: [{3}]{1}Le\u00edr\u00f3: [{0}]
+6135=Az addUpdate met\u00f3dusnak els\u0151 param\u00e9terek\u00e9nt \u00e1tadott attrib\u00fatumn\u00e9v vagy kifejez\u00e9s egy, a lek\u00e9rdez\u00e9sle\u00edr\u00f3nak nem megfeleltetett t\u00e1blamez\u0151t hat\u00e1roz meg. {1}Attrib\u00fatumn\u00e9v vagy kifejez\u00e9s: [{2}]{1}A nem megfelel\u0151 mez\u0151: [{3}]{1}Le\u00edr\u00f3: [{0}]
 
 6136=A t\u00f6bb t\u00e1bl\u00e1s \u00f6r\u00f6kl\u00e9ssel lek\u00e9pzett oszt\u00e1lyok nem lehetnek ReportQuery elemek. Elem: {0}, Kifejez\u00e9s: {1}.
 

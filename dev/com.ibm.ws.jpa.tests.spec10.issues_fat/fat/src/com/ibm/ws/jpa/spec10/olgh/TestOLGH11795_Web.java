@@ -28,6 +28,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.olgh11795.web.TestOLGH11795Servlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

@@ -29,11 +29,11 @@ tested.features: jdbc-4.1, restfulwsclient-3.0, restfulws-3.0, jsonp-2.0, \
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.json4j;version=latest,\
-	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
+	io.openliberty.com.google.gson;version=latest,\
 	com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest,\
 	com.ibm.ws.org.joda.time.1.6.2;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
-	com.ibm.ws.security.saml.sso.2.0;version=latest,\
+	com.ibm.ws.security.saml.websso.2.0;version=latest,\
 	com.ibm.ws.security.sso.common;version=latest, \
 	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
 	com.ibm.websphere.security;version=latest,\

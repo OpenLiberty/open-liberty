@@ -419,8 +419,9 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, com.ibm.ws.ker
         ArtifactNotification newListenerPaths,
         ArtifactListener newListener) {
 
-        if ( newListenerPaths.getContainer().getRoot() != rootContainer ) {
-            throw new IllegalArgumentException();
+        ArtifactContainer registrationRoot = newListenerPaths.getContainer().getRoot();
+        if ( registrationRoot != rootContainer ) {
+            throw new IllegalArgumentException("Registration root [ " + registrationRoot + " ] does not match notification root [ " + rootContainer + " ]");
         }
 
         synchronized ( listenersLock ) {

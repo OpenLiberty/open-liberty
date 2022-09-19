@@ -1,0 +1,259 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="bcl_mainPath_confClient_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_confClient" />
+	</authFilter>
+
+	<authFilter id="bcl_mainPath_publicClient_withSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_publicClient_withSecret" />
+	</authFilter>
+
+	<authFilter id="bcl_mainPath_publicClient_withoutSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_publicClient_withoutSecret" />
+	</authFilter>
+
+	<authFilter id="bcl_defaultBCLTimeout_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_defaultBCLTimeout" />
+	</authFilter>
+
+	<authFilter id="bcl_otherDefaultBCLTimeout_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_otherDefaultBCLTimeout" />
+	</authFilter>
+
+	<authFilter id="bcl_shortBCLTimeout_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_shortBCLTimeout" />
+	</authFilter>
+
+	<authFilter id="bcl_otherShortBCLTimeout_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_otherShortBCLTimeout" />
+	</authFilter>
+
+	<authFilter id="bcl_invalidBCLUri_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_invalidBCLUri" />
+	</authFilter>
+
+	<authFilter id="bcl_omittedBCLUri_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_omittedBCLUri" />
+	</authFilter>
+
+	<authFilter id="bcl_returns400_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_returns400" />
+	</authFilter>
+
+	<authFilter id="bcl_returns501_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_returns501" />
+	</authFilter>
+
+	<authFilter id="bcl_logsMsg_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_logsMsg" />
+	</authFilter>
+
+	<authFilter id="loggerClient1-1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient1-1" />
+	</authFilter>
+
+	<authFilter id="loggerClient1-2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient1-2" />
+	</authFilter>
+
+	<authFilter id="loggerClient1-3_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient1-3" />
+	</authFilter>
+
+	<authFilter id="loggerClient1-4_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient1-4" />
+	</authFilter>
+
+	<authFilter id="loggerClient2-1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient2-1" />
+	</authFilter>
+
+	<authFilter id="loggerClient2-2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient2-2" />
+	</authFilter>
+
+	<authFilter id="loggerClient2-3_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient2-3" />
+	</authFilter>
+
+	<authFilter id="loggerClient2-4_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient2-4" />
+	</authFilter>
+
+	<authFilter id="loggerClient3-1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient3-1" />
+	</authFilter>
+
+	<authFilter id="loggerClient4-1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/loggerClient4-1" />
+	</authFilter>
+
+	<authFilter id="useLogoutTokenForAccess_introspect_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/useLogoutTokenForAccess_introspect" />
+	</authFilter>
+
+	<authFilter id="useLogoutTokenForAccess_userinfo_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/useLogoutTokenForAccess_userinfo" />
+	</authFilter>
+
+	<authFilter id="bcl_client1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_client1" />
+	</authFilter>
+
+	<authFilter id="bcl_client2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_client2" />
+	</authFilter>
+
+	<authFilter id="nobcl_client1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/nobcl_client1" />
+	</authFilter>
+
+	<authFilter id="checkDupBcl_client1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/checkDupBcl_client1" />
+	</authFilter>
+
+	<authFilter id="checkDupBcl_client2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/checkDupBcl_client2" />
+	</authFilter>
+
+	<authFilter id="bcl_httpConfClient_httpsRequired_true_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_confClient_httpsRequired_true" />
+	</authFilter>
+
+	<authFilter id="bcl_httpPublicClient_httpsRequired_true_withSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_publicClient_httpsRequired_true_withSecret" />
+	</authFilter>
+
+	<authFilter id="bcl_httpPublicClient_httpsRequired_true_withoutSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_publicClient_httpsRequired_true_withoutSecret" />
+	</authFilter>
+
+	<authFilter id="bcl_httpConfClient_httpsRequired_false_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_confClient_httpsRequired_false" />
+	</authFilter>
+
+	<authFilter id="bcl_httpPublicClient_httpsRequired_false_withSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_publicClient_httpsRequired_false_withSecret" />
+	</authFilter>
+
+	<authFilter id="bcl_httpPublicClient_httpsRequired_false_withoutSecret_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_http_publicClient_httpsRequired_false_withoutSecret" />
+	</authFilter>
+
+	<authFilter id="idTokenCacheEnabledFalseClient-1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/idTokenCacheEnabledFalseClient-1" />
+	</authFilter>
+
+	<authFilter id="idTokenCacheEnabledFalseClient-2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/idTokenCacheEnabledFalseClient-2" />
+	</authFilter>
+
+	<authFilter id="idTokenCacheEnabledFalseClient-3_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/idTokenCacheEnabledFalseClient-3" />
+	</authFilter>
+
+	<authFilter id="accessTokenCacheEnabledFalseClient-1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/accessTokenCacheEnabledFalseClient-1" />
+	</authFilter>
+
+	<authFilter id="accessTokenCacheEnabledFalseClient-2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/accessTokenCacheEnabledFalseClient-2" />
+	</authFilter>
+
+	<authFilter id="accessTokenCacheEnabledFalseClient-3_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/accessTokenCacheEnabledFalseClient-3" />
+	</authFilter>
+
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import static com.ibm.ws.ejbcontainer.timer.persistent.fat.tests.PersistentTimer
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import java.util.Locale;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -42,6 +44,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -53,6 +56,8 @@ public class PersistentTimerCoreTest extends FATServletClient {
     public static final String CORE_WAR_NAME = "PersistentTimerCoreWeb";
     public static final String MISSED_ACTION_WAR_NAME = "MissedTimerActionWeb";
 
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
     @Server("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")
     @TestServlets({ @TestServlet(servlet = TimerAccessOperationsServlet.class, contextRoot = CORE_WAR_NAME),
                     @TestServlet(servlet = TimerSFOperationsServlet.class, contextRoot = CORE_WAR_NAME),
@@ -60,7 +65,9 @@ public class PersistentTimerCoreTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer"));
+    public static RepeatTests r = isWindows //
+                    ? RepeatTests.with(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")).andWith(new JakartaEE10Action().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")) //
+                    : RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")).andWith(new JakartaEE10Action().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {

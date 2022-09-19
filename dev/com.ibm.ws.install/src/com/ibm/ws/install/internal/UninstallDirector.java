@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,7 +111,10 @@ public class UninstallDirector extends AbstractDirector {
             fireProgressEvent(InstallProgressEvent.CHECK, 10, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
             Set<File> baseDirs = new HashSet<>();
             for (UninstallAsset uninstallAsset : uninstallAssets) {
-                baseDirs.addAll(getAssetBaseDirectories(uninstallAsset, engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
+                ProvisioningFeatureDefinition provisioningFeatureDefinition = uninstallAsset.getProvisioningFeatureDefinition();
+                if (provisioningFeatureDefinition != null) {
+                    baseDirs.addAll(getAssetBaseDirectories(uninstallAsset, engine.getBaseDir(provisioningFeatureDefinition)));
+                }
             }
 
             Set<Path> lockedPaths = new HashSet<Path>();

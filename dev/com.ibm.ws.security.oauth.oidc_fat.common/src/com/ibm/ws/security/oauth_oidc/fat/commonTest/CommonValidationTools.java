@@ -1017,7 +1017,7 @@ public class CommonValidationTools {
                             String[] splitLine = part1.split(",");
                             if (splitLine != null) {
                                 if (splitLine[0] != null) {
-                                    String token = splitLine[0].replace("with value:", "").trim();
+                                    String token = splitLine[0].replace("with value:", "").trim().replace("}+$", "");
                                     Log.info(thisClass, thisMethod, "token: " + token);
                                     printJWTToken(token);
                                     return token;

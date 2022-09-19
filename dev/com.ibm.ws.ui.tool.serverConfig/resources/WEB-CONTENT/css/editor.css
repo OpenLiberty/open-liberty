@@ -931,6 +931,7 @@ footer  {
 	color: black;
 	transition: none;
 	box-shadow: none;
+	border-color: rgb(222, 226, 230);
 }
 
 #editorForm input:-ms-input-placeholder {
@@ -941,6 +942,10 @@ footer  {
     display: none;
 }
 
+#editorForm input:focus {
+	border-color: rgb(222, 226, 230);
+}
+
 #editorForm input[readonly] {
 	color: #6f7076;
 	background-color: #f8f8f7;
@@ -949,8 +954,8 @@ footer  {
 }
 
 #editorForm .editorFormFieldButton {
-	padding-top: 5px;
-	padding-bottom: 5px;
+	padding-top: 4px;
+	padding-bottom: 2px;
 	padding-left: 16px;
 	padding-right: 16px;
 	border-radius: 0;
@@ -979,6 +984,10 @@ footer  {
 
 #editorForm .clearInputFeedbackAction:hover {
 	color: grey !important;
+}
+
+#editorForm .clearInputFeedbackAction_error {
+	border-color: #a91024 !important;
 }
 
 #editorForm .input-error-message {
@@ -1450,6 +1459,7 @@ footer  {
 	border-bottom: solid 1px #9b9b9b;
 	margin-bottom: 5px;
 	cursor: default;
+	padding-left: 5px;
 }
 
 .popover {
@@ -1463,12 +1473,21 @@ footer  {
 	border-bottom-color: #404e56;
 }
 
+.popover-body {
+	position: relative;
+	left: -160px;
+}
+
 .configurationEditorToggle {
   padding: 2px;
   width: 40px;
   height: 24px;
   border-radius: 12px;
   transition: background 0.3s;
+  position: relative;
+  left: 140px;
+  top: -25px;
+  display: block;
 }
 
 .configurationEditorToggleOn {

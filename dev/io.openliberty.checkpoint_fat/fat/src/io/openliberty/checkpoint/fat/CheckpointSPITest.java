@@ -11,6 +11,7 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -76,7 +77,7 @@ public class CheckpointSPITest {
 
     @Test
     public void testRestoreWithDefaults() throws Exception {
-        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
         findLogMessage("No restore config", "TESTING - restore config: ", "pida=test1 pidb=test1", 0);
         findLogMessage("No RESTORED true found in restore", "TESTING - in restore method RESTORED", " - true -- true", 500);
         findLogMessage("Restore should have null running condition", "TESTING - restore running condition: ", "null", 500);
@@ -85,26 +86,26 @@ public class CheckpointSPITest {
 
     @Test
     public void testRestoreWithEnvSet() throws Exception {
-        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
         findLogMessage("No restore config", "TESTING - modified config: pida=env2 pidb=env2", "", 0);
     }
 
     @Test
     public void testAddImmutableEnvKey() throws Exception {
-        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
         findLogMessage("Unexpected value for mutable key", "TESTING - in restore envs -", " v1 - v2 - v3 - v4", 500);
     }
 
     @Test
     public void testRunningConditionLaunch() throws Exception {
-        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
         findLogMessage("Activate should have non-null running condition", "TESTING - activate running condition: ", "io.openliberty.process.running null", 500);
     }
 
     @Test
     @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
     public void testFailedCheckpoint() throws Exception {
-        ProgramOutput output = server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+        ProgramOutput output = server.startServer(getTestMethodNameOnly(testName) + ".log");
         int retureCode = output.getReturnCode();
         assertEquals("Wrong return code for failed checkpoint.", 72, retureCode);
     }
@@ -112,7 +113,7 @@ public class CheckpointSPITest {
     @Test
     @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
     public void testFailedRestore() throws Exception {
-        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
         ProgramOutput output = server.checkpointRestore();
         int retureCode = output.getReturnCode();
         assertEquals("Wrong return code for failed checkpoint.", 77, retureCode);
@@ -120,7 +121,7 @@ public class CheckpointSPITest {
 
     @Test
     public void testStaticHook() throws Exception {
-        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
         findLogMessage("Static single prepare method", STATIC_SINGLE_RESTORE, "SUCCESS", 500);
         findLogMessage("Static single prepare method", STATIC_MULTI_RESTORE, "SUCCESS", 500);
     }

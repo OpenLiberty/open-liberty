@@ -83,3 +83,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nen\u00ed pot\u0159eba \u017
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: Mezipam\u011b\u0165 ov\u011b\u0159en\u00ed vymazala v\u0161echny polo\u017eky v mezipam\u011bti JCache {0}. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=Mezipam\u011b\u0165 ov\u011b\u0159en\u00ed vyma\u017ee v\u0161echny polo\u017eky v z\u00e1lo\u017en\u00ed mezipam\u011bti JCache, kdy\u017e je upravena konfigurace zabezpe\u010den\u00ed nebo konfigurace registru u\u017eivatel\u016f, nebo kdy\u017e se vol\u00e1 objekt DeleteAuthCache MBean. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: Vlo\u017een\u00ed polo\u017eky pro kl\u00ed\u010d {0} do mezipam\u011bti ov\u011b\u0159en\u00ed JCache {1} se nezda\u0159ilo kv\u016fli chyb\u011b serializace. Polo\u017eka bude m\u00edsto toho vlo\u017eena do mezipam\u011bti ov\u011b\u0159en\u00ed v pam\u011bti. V\u00fdjimka: {2}
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=Obsah polo\u017eky nebyl serializov\u00e1n, tak\u017ee nebyl ulo\u017een do mezipam\u011bti ov\u011b\u0159en\u00ed JCache.
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Prozkoumejte v\u00fdjimku obsa\u017eenou ve zpr\u00e1v\u011b a opravte p\u0159\u00ed\u010dinu chyby.  

@@ -11,7 +11,7 @@
 
 package com.ibm.ws.messaging.service;
 
-import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -23,7 +23,6 @@ import java.util.Vector;
 import javax.management.ObjectName;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.messaging.lifecycle.Singleton;
@@ -37,18 +36,16 @@ import com.ibm.ws.sib.admin.SIBExceptionBusNotFound;
 import com.ibm.ws.sib.admin.internal.JsMainImpl;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
-@Component (configurationPolicy=REQUIRE, property="service.vendor=IBM")
+@Component (configurationPolicy=IGNORE, property={"type=com.ibm.ws.sib.admin.JsAdminService", "service.vendor=IBM"})
 public class JsAdminServiceImpl implements JsAdminService, Singleton {
   private static TraceComponent tc = SibTr.register(JsAdminServiceImpl.class, JsConstants.MSG_GROUP, JsConstants.MSG_BUNDLE);
 
-  // Debugging aid
-  static {
+static {
     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
       SibTr.debug(tc, "Source info: com/ibm/ws/messaging/service/JsAdminServiceImpl.java");
   }
 
-  private JsMainImpl _jsmain = null;
-  private boolean _multipleSet = false;
+  private JsMainImpl jsMain = null;
 
   public String quoteJmxPropertyValue(String s) {
     if (JsAdminService.isValidJmxPropertyValue(s) == true)
@@ -61,62 +58,53 @@ public class JsAdminServiceImpl implements JsAdminService, Singleton {
     return ObjectName.unquote(s);
   }
 
-  public synchronized void setAdminMain(JsMain o) {
-    if (_jsmain != null) {
-      // We have received a second or subsequent set request. This indicates an internal
-      // programming error or some abuse of the interface. Rather than throw exceptions
-      // at this point, we simply remember this and output some RAS. We defer the throwing
-      // of any exception until a get request is received.
-      _multipleSet = true;
-      SibTr.info(tc, "ME_INITIALIZING_SIAS0001");
-    } else
-      _jsmain = (JsMainImpl) o;
+  public synchronized void setAdminMain(JsMain newJsMain) throws IllegalStateException {
+    if (jsMain != null) 
+          throw new IllegalStateException("JsMain is already set:"+jsMain+" new JsMain:"+ newJsMain);
+    jsMain = (JsMainImpl) newJsMain;
     return;
   }
 
   public boolean isInitialized() {
-    return _jsmain != null;
+    return jsMain != null;
   }
 
-  private synchronized void validateEnvironment() throws Exception {
-    if (_multipleSet) {
-      throw new Exception("Invalid object instance for admin service; multiple sets received");
-    } else if (_jsmain == null) {
-      throw new Exception("Object instance for the admin service was never set");
-    }
+  public synchronized void reset() {
+	  jsMain = null;
   }
 
-  public synchronized JsMain getAdminMain() throws Exception {
-    validateEnvironment();
-    return _jsmain;
+  public synchronized JsMain getAdminMain() throws IllegalStateException {
+    if (jsMain == null) 
+    	throw new IllegalStateException("Object instance for the admin service was never set");
+    return jsMain;
   }
 
   public JsBus getBus(String name) throws SIBExceptionBusNotFound {
     if (!isInitialized()) {
       return null;
     }
-    return _jsmain.getBus(name);
+    return jsMain.getBus(name);
   }
 
   public JsBus getDefinedBus(String name) throws SIBExceptionBusNotFound {
     if (!isInitialized()) {
       return null;
     }
-    return _jsmain.getDefinedBus(name);
+    return jsMain.getDefinedBus(name);
   }
 
   public List<String> listDefinedBuses() {
     if (!isInitialized()) {
       return new ArrayList();
     }
-    return _jsmain.listDefinedBuses();
+    return jsMain.listDefinedBuses();
   }
 
   public JsProcessComponent getProcessComponent(String className) {
     if (!isInitialized()) {
       return null;
     }
-    return _jsmain.getProcessComponent(className);
+    return jsMain.getProcessComponent(className);
   }
 
   public Enumeration listMessagingEngines() {
@@ -124,7 +112,7 @@ public class JsAdminServiceImpl implements JsAdminService, Singleton {
       Vector v = new Vector();
       return v.elements();
     }
-    return _jsmain.listMessagingEngines();
+    return jsMain.listMessagingEngines();
   }
 
   public Enumeration listMessagingEngines(String busName) {
@@ -132,21 +120,21 @@ public class JsAdminServiceImpl implements JsAdminService, Singleton {
       Vector v = new Vector();
       return v.elements();
     }
-    return _jsmain.listMessagingEngines(busName);
+    return jsMain.listMessagingEngines(busName);
   }
 
   public Set getMessagingEngineSet(String busName) {
     if (!isInitialized()) {
       return new HashSet();
     }
-    return _jsmain.getMessagingEngineSet(busName);
+    return jsMain.getMessagingEngineSet(busName);
   }
 
   public JsMessagingEngine getMessagingEngine(String busName, String engine) {
     if (!isInitialized()) {
       return null;
     }
-    return _jsmain.getMessagingEngine(busName, engine);
+    return jsMain.getMessagingEngine(busName, engine);
   }
 
   public void activateJMSResource() {}
@@ -157,7 +145,7 @@ public class JsAdminServiceImpl implements JsAdminService, Singleton {
     if (!isInitialized()) {
       return null;
     }
-    return _jsmain.getService(c);
+    return jsMain.getService(c);
   }
 
   public boolean isStandaloneServer() {

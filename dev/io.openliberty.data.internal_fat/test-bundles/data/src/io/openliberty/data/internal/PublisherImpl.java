@@ -13,6 +13,7 @@ package io.openliberty.data.internal;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SubmissionPublisher;
 
 import jakarta.persistence.EntityManager;
@@ -25,29 +26,31 @@ import io.openliberty.data.Param;
  * A real implementation wouldn't do this.
  */
 public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable {
+    private final EntityInfo entityInfo;
     private final String jpql;
     private final Method method;
     private final int numParams; // can differ from args.length due to Pagination and Sort/Sorts
     private final Object[] args;
-    private final QueryHandler<T> queryHandler;
 
-    PublisherImpl(String jpql, QueryHandler<T> queryHandler, Method method, int numParams, Object[] args) {
+    PublisherImpl(String jpql, ExecutorService executor, EntityInfo entityInfo, Method method, int numParams, Object[] args) {
+        super(executor, 200);
+
         this.jpql = jpql;
-        this.queryHandler = queryHandler;
+        this.entityInfo = entityInfo;
         this.method = method;
         this.numParams = numParams;
         this.args = args;
 
-        queryHandler.persistence.executor.submit(this);
+        executor.submit(this);
     }
 
     @Override
     public void run() {
         EntityManager em = null;
         try {
-            em = queryHandler.punit.createEntityManager();
+            em = entityInfo.persister.createEntityManager();
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryHandler.entityClass);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityInfo.type);
             if (args != null) {
                 Parameter[] params = method.getParameters();
                 for (int i = 0; i < numParams; i++) {
@@ -71,7 +74,6 @@ public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable
                     for (T result : results)
                         submit(result);
             }
-            close();
         } catch (Throwable x) {
             closeExceptionally(x);
         } finally {

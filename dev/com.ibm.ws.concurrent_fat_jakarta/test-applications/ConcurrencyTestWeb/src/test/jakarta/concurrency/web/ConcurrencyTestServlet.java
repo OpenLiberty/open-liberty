@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -37,6 +40,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -226,10 +230,11 @@ public class ConcurrencyTestServlet extends FATServlet {
     public void init(ServletConfig config) throws ServletException {
         unmanagedThreads = Executors.newFixedThreadPool(5);
 
-        // This EJB needs to first be used so that its ContextServiceDefinition,
-        // which is relied upon by the other EJB, can be processed
+        // These EJBs need to be used so that their ContextServiceDefinition annotations,
+        // which are relied upon by the web module and the other EJB, can be processed
         try {
             InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ContextServiceDefinerBean!test.jakarta.concurrency.ejb.ContextServiceDefinerBean");
+            Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
         } catch (NamingException x) {
             throw new ServletException(x);
         }
@@ -1089,6 +1094,149 @@ public class ConcurrencyTestServlet extends FATServlet {
                 throw new EJBException(x);
             }
         });
+    }
+
+    /**
+     * Use Future.exceptionNow on a managed completable future that is
+     *
+     * <li>successfully completed
+     * <li>exceptionally completed
+     * <li>running
+     * <li>forcibly completed
+     * <li>has its results replaced
+     * <li>cancelled
+     */
+    @Test
+    public void testExceptionNow() throws Throwable {
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/executor5"); // maxAsync = 1
+
+        CompletableFuture<Long> successfulTaskFuture = executor.supplyAsync(() -> 600L);
+
+        CompletableFuture<Long> failingTaskFuture = executor.supplyAsync(() -> {
+            throw new CompletionException(new IOException("This is an expected exception for testExceptionNow."));
+        });
+
+        // Use up maxConcurrency
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch task3started = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> task3future = executor.supplyAsync(() -> {
+            task3started.countDown();
+            try {
+                return blocker.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        try {
+            assertEquals(true, task3started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Future.exceptionNow on task that completes successfully:
+            // successfulTaskFuture must have completed by now because task3 is using up max concurrency
+            Method exceptionNow = successfulTaskFuture.getClass().getMethod("exceptionNow");
+            try {
+                Throwable exception = (Throwable) exceptionNow.invoke(successfulTaskFuture);
+                if (exception == null)
+                    throw new AssertionError("exceptionNow returned null for successfully completed task");
+                else
+                    throw new AssertionError("exceptionNow returned value for successfully completed task").initCause(exception);
+            } catch (InvocationTargetException x) {
+                if (!(x.getCause() instanceof IllegalStateException))
+                    throw x;
+            } catch (IllegalStateException x) {
+                // pass
+            }
+
+            // Future.exceptionNow on task that failed with an exception:
+            // failingTaskFuture must have completed by now because task3 is using up max concurrency
+            Throwable exception = (Throwable) exceptionNow.invoke(failingTaskFuture);
+            if (!IOException.class.equals(exception.getClass()))
+                throw exception;
+
+            // Future.exceptionNow on running task:
+            try {
+                exception = (Throwable) exceptionNow.invoke(task3future);
+                if (exception == null)
+                    throw new AssertionError("exceptionNow returned null for running task");
+                else
+                    throw new AssertionError("exceptionNow returned value for running task").initCause(exception);
+            } catch (InvocationTargetException x) {
+                if (!(x.getCause() instanceof IllegalStateException))
+                    throw x;
+            } catch (IllegalStateException x) {
+                // pass
+            }
+
+            // Future.exceptionNow on task that is forcibly completed:
+            CompletableFuture<Long> task4future = executor.supplyAsync(() -> 664L);
+            task4future.complete(644L);
+            try {
+                exception = (Throwable) exceptionNow.invoke(task4future);
+                if (exception == null)
+                    throw new AssertionError("exceptionNow returned null for successfully completed task");
+                else
+                    throw new AssertionError("exceptionNow returned value for successfully completed task").initCause(exception);
+            } catch (InvocationTargetException x) {
+                if (!(x.getCause() instanceof IllegalStateException))
+                    throw x;
+            } catch (IllegalStateException x) {
+                // pass
+            }
+
+            // Future.exceptionNow after obtruding the result with exceptional completion
+            task4future.obtrudeException(new SQLException("Not a real error."));
+            exception = (Throwable) exceptionNow.invoke(task4future);
+            if (!SQLException.class.equals(exception.getClass()))
+                throw exception;
+
+            // Future.exceptionNow after obtruding the exceptional result back to successful, but with a different value:
+            task4future.obtrudeValue(640L);
+            try {
+                exception = (Throwable) exceptionNow.invoke(task4future);
+                if (exception == null)
+                    throw new AssertionError("exceptionNow returned null for successfully completed task");
+                else
+                    throw new AssertionError("exceptionNow returned value for successfully completed task").initCause(exception);
+            } catch (InvocationTargetException x) {
+                if (!(x.getCause() instanceof IllegalStateException))
+                    throw x;
+            } catch (IllegalStateException x) {
+                // pass
+            }
+
+            // Future.exceptionNow on cancelled task:
+            assertEquals(true, task3future.cancel(true));
+            try {
+                exception = (Throwable) exceptionNow.invoke(task3future);
+                if (exception == null)
+                    throw new AssertionError("exceptionNow returned null for cancelled task");
+                else
+                    throw new AssertionError("exceptionNow returned value for cancelled task").initCause(exception);
+            } catch (InvocationTargetException x) {
+                if (!(x.getCause() instanceof IllegalStateException))
+                    throw x;
+            } catch (IllegalStateException x) {
+                // pass
+            }
+
+            // Future.exceptionNow on minimal completion stage
+            CompletionStage<Long> task4stage = task4future.minimalCompletionStage();
+            try {
+                exception = (Throwable) exceptionNow.invoke(task4stage);
+                if (exception == null)
+                    throw new AssertionError("Shoud not be able to invoke exceptionNow on a minimal CompletionStage");
+                else
+                    throw new AssertionError("Shoud not be able to invoke exceptionNow on a minimal CompletionStage").initCause(exception);
+            } catch (InvocationTargetException x) {
+                if (!(x.getCause() instanceof UnsupportedOperationException))
+                    throw x;
+            } catch (UnsupportedOperationException x) {
+                // pass - not permitted on completion stages, only futures
+            }
+        } finally {
+            blocker.countDown();
+        }
     }
 
     /**
@@ -2363,6 +2511,131 @@ public class ConcurrencyTestServlet extends FATServlet {
     }
 
     /**
+     * Use Future.resultNow on a managed completable future that is
+     *
+     * <li>successfully completed
+     * <li>exceptionally completed
+     * <li>running
+     * <li>forcibly completed
+     * <li>has its results replaced
+     * <li>cancelled
+     */
+    @Test
+    public void testResultNow() throws Throwable {
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/executor5"); // maxAsync = 1
+
+        CompletableFuture<Long> successfulTaskFuture = executor.supplyAsync(() -> 500L);
+
+        CompletableFuture<Long> failingTaskFuture = executor.supplyAsync(() -> {
+            throw new CompletionException(new IOException("This is an expected exception for the test."));
+        });
+
+        Method resultNow = successfulTaskFuture.getClass().getMethod("resultNow");
+
+        // Use up maxConcurrency
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch task3started = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> task3future = executor.supplyAsync(() -> {
+            task3started.countDown();
+            try {
+                return blocker.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        try {
+            assertEquals(true, task3started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Future.resultNow on task that completes successfully:
+            // successfulTaskFuture must have completed by now because task3 is using up max concurrency
+            Object result = resultNow.invoke(successfulTaskFuture);
+            assertEquals(Long.valueOf(500L), result);
+
+            // Future.resultNow on task that failed with an exception:
+            // failingTaskFuture must have completed by now because task3 is using up max concurrency
+            try {
+                result = resultNow.invoke(failingTaskFuture);
+                throw new AssertionError("resultNow returned " + result + " for failed task");
+            } catch (InvocationTargetException xx) { // Java reflection should not be wrapping IllegalStateException because it is a type of RuntimeException!
+                IllegalStateException x = (IllegalStateException) xx.getCause();
+                if (!(x.getCause() instanceof IOException))
+                    throw x;
+            } catch (IllegalStateException x) {
+                if (!(x.getCause() instanceof IOException))
+                    throw x;
+            }
+
+            // Future.resultNow on running task:
+            try {
+                result = resultNow.invoke(task3future);
+                throw new AssertionError("resultNow returned " + result + " for running task");
+            } catch (InvocationTargetException xx) { // Java reflection should not be wrapping IllegalStateException because it is a type of RuntimeException!
+                IllegalStateException x = (IllegalStateException) xx.getCause();
+                if (x.getCause() != null)
+                    throw x;
+            } catch (IllegalStateException x) {
+                if (x.getCause() != null)
+                    throw x;
+            }
+
+            // Future.resultNow on task that is forcibly completed:
+            CompletableFuture<Long> task4future = executor.supplyAsync(() -> 400L);
+            task4future.complete(444L);
+            result = resultNow.invoke(task4future);
+            assertEquals(Long.valueOf(444L), result);
+
+            // Future.resultNow after obtruding the result with exceptional completion
+            task4future.obtrudeException(new SQLException("Not a real error."));
+            try {
+                result = resultNow.invoke(task4future);
+                throw new AssertionError("resultNow returned " + result + " for task with obtruded result");
+            } catch (InvocationTargetException xx) { // Java reflection should not be wrapping IllegalStateException because it is a type of RuntimeException!
+                IllegalStateException x = (IllegalStateException) xx.getCause();
+                if (!(x.getCause() instanceof SQLException))
+                    throw x;
+            } catch (IllegalStateException x) {
+                if (!(x.getCause() instanceof SQLException))
+                    throw x;
+            }
+
+            // Future.resultNow after obtruding the exceptional result back to successful, but with a different value:
+            task4future.obtrudeValue(440L);
+            result = resultNow.invoke(task4future);
+            assertEquals(Long.valueOf(440L), result);
+
+            // Future.resultNow on cancelled task:
+            assertEquals(true, task3future.cancel(true));
+            try {
+                result = resultNow.invoke(task3future);
+                throw new AssertionError("resultNow returned " + result + " for cancelled task");
+            } catch (InvocationTargetException xx) { // Java reflection should not be wrapping IllegalStateException because it is a type of RuntimeException!
+                IllegalStateException x = (IllegalStateException) xx.getCause();
+                if (!(x.getCause() instanceof CancellationException))
+                    throw x;
+            } catch (IllegalStateException x) {
+                if (!(x.getCause() instanceof CancellationException))
+                    throw x;
+            }
+
+            // Future.resultNow on minimal completion stage
+            CompletionStage<Long> task4stage = task4future.minimalCompletionStage();
+            try {
+                result = resultNow.invoke(task4stage);
+                fail("Shoud not be able to invoke resultNow on a minimal CompletionStage. Result " + result);
+            } catch (InvocationTargetException x) {
+                if (!(x.getCause() instanceof UnsupportedOperationException))
+                    throw x;
+            } catch (UnsupportedOperationException x) {
+                // pass - not permitted on completion stages, only futures
+            }
+        } finally {
+            blocker.countDown();
+        }
+    }
+
+    /**
      * Verify that the ManagedExecutorService runAsync runs the completion stage action
      * with context captured per the java:comp/DefaultContextService when the
      * ManagedExecutorDefinition does not specify any value for context.
@@ -3489,10 +3762,6 @@ public class ConcurrencyTestServlet extends FATServlet {
      */
     @Test
     public void testWebMergedManagedScheduledExecutorDefinitionContext() throws Exception {
-        // Ensure annotations from the EJB are processed
-        Executor bean = InitialContext.doLookup("java:global/ConcurrencyTestApp/ConcurrencyTestEJB/ExecutorBean!java.util.concurrent.Executor");
-        assertNotNull(bean);
-
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:app/concurrent/merged/web/LPScheduledExecutor");
 
         CountDownLatch blocker = new CountDownLatch(1);

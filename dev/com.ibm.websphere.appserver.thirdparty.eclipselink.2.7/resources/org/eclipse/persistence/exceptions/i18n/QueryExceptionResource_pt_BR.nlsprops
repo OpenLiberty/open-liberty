@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -260,7 +261,7 @@
 
 6134=O nome do atributo ou a express\u00e3o transmitida como primeiro par\u00e2metro para o m\u00e9todo addUpdate n\u00e3o define um campo. {1}Nome do atributo ou express\u00e3o: [{2}]{1}Descritor: [{0}]
 
-6135=O nome do atributo ou a express\u00e3o transmitida como primeiro par\u00e2metro para o m\u00e9todo addUpdate define um campo de uma tabela que n\u00e3o est\u00e1 mapeada para o descritor de consulta. {1}Nome do atributo ou express\u00e3o: [{2}]{1}Campo errado: [{3}]{1}Descritor: [{0}]
+6135=O nome de atributo ou express\u00e3o passada como um primeiro par\u00e2metro para o m\u00e9todo addUpdate define um campo a partir de uma tabela que n\u00e3o \u00e9 mapeada para o descritor de consulta. {1}Nome do atributo ou Express\u00e3o: [{2}]{1}Campo Errado: [{3}]{1}Descritor: [{0}]
 
 6136=Classes mapeadas com heran\u00e7a de diversas tabelas n\u00e3o pode ser itens ReportQuery. Item: {0}, Express\u00e3o: {1}.
 

@@ -31,12 +31,14 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.FormLoginReadListenerTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.HttpSessionAttListenerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.JSPServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.NBMultiReadTest;
+import com.ibm.ws.webcontainer.servlet31.fat.tests.PrivateHeaderTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadListenerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadWriteTimeoutHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeWriteListenerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.VHServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerTest;
+import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServletContextUnsupportedOperationExceptionTest;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -67,7 +69,9 @@ import componenttest.topology.impl.JavaInfo;
                 CDIServletFilterListenerDynamicTest.class,
                 CDIServletFilterListenerTest.class,
                 FormLoginReadListenerTest.class,
-                NBMultiReadTest.class
+                NBMultiReadTest.class,
+                WCServletContextUnsupportedOperationExceptionTest.class,
+                PrivateHeaderTest.class
 })
 public class FATSuite {
 
@@ -83,7 +87,7 @@ public class FATSuite {
     public static RepeatTests repeat;
 
     static {
-        // EE10 require Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
+        // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
         // If we are running on Java 8 have EE9 be the lite mode test to run.
         if (JavaInfo.JAVA_VERSION >= 11) {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())

@@ -38,12 +38,14 @@ public class ProduceConsumeTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
-                                                             MicroProfileActions.MP20, //mpRestClient-1.1
+                                                             MicroProfileActions.MP14, // 1.1 + EE7
+                                                             MicroProfileActions.MP20, // 1.1 + EE8
                                                              MicroProfileActions.MP22, // 1.2
                                                              MicroProfileActions.MP30, // 1.3
                                                              MicroProfileActions.MP33, // 1.4
                                                              MicroProfileActions.MP40, // 2.0
-                                                             MicroProfileActions.MP50); // 3.0
+                                                             MicroProfileActions.MP50, // 3.0
+                                                             MicroProfileActions.MP60);// 3.0+EE10
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = ProduceConsumeTestServlet.class, contextRoot = appName)

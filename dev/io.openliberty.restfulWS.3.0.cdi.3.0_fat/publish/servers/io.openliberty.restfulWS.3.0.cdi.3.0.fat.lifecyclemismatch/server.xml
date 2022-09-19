@@ -2,9 +2,17 @@
     <featureManager>
         <feature>restfulWS-3.0</feature>
         <feature>cdi-3.0</feature>
+        <feature>servlet-5.0</feature>
     </featureManager>
 
   	<include location="../fatTestPorts.xml"/>
   	<!-- <javaPermission className="java.util.PropertyPermission" name="resteasy.original.webapplicationexception.behavior" actions="read"/> -->
   	<!-- <javaPermission className="java.lang.RuntimePermission" name="getenv.resteasy.original.webapplicationexception.behavior"/> -->
+
+<!-- Added to allow EE10 to work as-is.  In EE10 the CDI "bean-discovery-mode" was switched from
+     "all" to "annotated" which requires all CDI managed classes to contain a Bean Defining Annotation.
+     Some tests have been changed to account for this while others have had this property
+     added so both scenarios are tested. -->
+    <cdi emptyBeansXmlCDI3Compatibility="true"/>
+
 </server>

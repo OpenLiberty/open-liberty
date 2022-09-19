@@ -6,5 +6,11 @@
 
     <include location="../fatTestPorts.xml"/>
 
-	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+
+<!-- Added to allow EE10 to work as-is.  In EE10 the CDI "bean-discovery-mode" was switched from
+     "all" to "annotated" which requires all CDI managed classes to contain a Bean Defining Annotation.
+     Some tests have been changed to account for this while others have had this property
+     added so both scenarios are tested. -->
+    <cdi emptyBeansXmlCDI3Compatibility="true"/>
 </server>

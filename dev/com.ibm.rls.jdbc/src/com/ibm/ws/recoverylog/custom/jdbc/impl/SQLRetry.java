@@ -41,6 +41,10 @@ public abstract class SQLRetry {
     private static final int DEFAULT_TRANSIENT_RETRY_ATTEMPTS = 180; // We'll keep retrying for 30 minutes. Excessive?
     private static int _transientRetrySleepTime = DEFAULT_TRANSIENT_RETRY_SLEEP_TIME;
     private static int _transientRetryAttempts = DEFAULT_TRANSIENT_RETRY_ATTEMPTS;
+    private static final int LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME = 1000; // In milliseconds, ie 1 second
+    private static final int LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS = 2; // We'll keep retrying for 2 seconds in the lightweight case
+    private static int _lightweightRetrySleepTime = LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME;
+    private static int _lightweightRetryAttempts = LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS;
 
     /**
      * This method provides drives the retry loop in retryAfterSQLException and reports and handles the outcome.
@@ -459,5 +463,33 @@ public abstract class SQLRetry {
      */
     public static void setTransientRetryAttempts(int transientRetryAttempts) {
         SQLRetry._transientRetryAttempts = transientRetryAttempts;
+    }
+
+    /**
+     * @return the _lightweightRetrySleepTime
+     */
+    public static int getLightweightRetrySleepTime() {
+        return _lightweightRetrySleepTime;
+    }
+
+    /**
+     * @param lightweightRetrySleepTime the _lightweightRetrySleepTime to set
+     */
+    public static void setLightweightRetrySleepTime(int lightweightRetrySleepTime) {
+        SQLRetry._lightweightRetrySleepTime = lightweightRetrySleepTime;
+    }
+
+    /**
+     * @return the _lightweightRetryAttempts
+     */
+    public static int getLightweightRetryAttempts() {
+        return _lightweightRetryAttempts;
+    }
+
+    /**
+     * @param lightweightRetryAttempts the _lightweightRetryAttempts to set
+     */
+    public static void setLightweightRetryAttempts(int lightweightRetryAttempts) {
+        SQLRetry._lightweightRetryAttempts = lightweightRetryAttempts;
     }
 }

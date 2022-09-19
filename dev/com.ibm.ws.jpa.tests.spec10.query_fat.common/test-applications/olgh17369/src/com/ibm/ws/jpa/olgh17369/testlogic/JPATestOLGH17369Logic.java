@@ -214,38 +214,6 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             Assert.assertNotNull(dto01);
             Assert.assertEquals(0, dto01.size());
 
-            // Equivalent CriteriaBuilder
-//            CriteriaBuilder cb = em.getCriteriaBuilder();
-//            CriteriaQuery<SimpleEntityOLGH17369> cquery = cb.createQuery(SimpleEntityOLGH17369.class);
-//            Root<SimpleEntityOLGH17369> root = cquery.from(SimpleEntityOLGH17369.class);
-//            cquery.multiselect(root);
-//
-//            ParameterExpression<Integer> checkParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> checkParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<String> resultParam1 = cb.parameter(String.class);
-//            ParameterExpression<String> resultParam2 = cb.parameter(String.class);
-//            ParameterExpression<String> resultParam3 = cb.parameter(String.class);
-//
-//            // Currently unsupported by the JPA API
-//            // https://github.com/eclipse-ee4j/jpa-api/issues/315
-////            Expression<Object> selectCase = cb.selectCase(root.get(SimpleEntityOLGH17369_.itemInteger1))
-////                .when(checkParam1, resultParam1)
-////                .when(checkParam2, resultParam2)
-////                .otherwise(resultParam3);
-////            Predicate pred = cb.equal(root.get(SimpleEntityOLGH17369_.itemString1), selectCase);
-////            cquery.where(pred);
-//
-//            query = em.createQuery(cquery);
-//            query.setParameter(checkParam1, 1000);
-//            query.setParameter(resultParam1, "047010");
-//            query.setParameter(checkParam2, 100);
-//            query.setParameter(resultParam2, "023010");
-//            query.setParameter(resultParam3, "033020");
-//
-//            dto01 = query.getResultList();
-//            Assert.assertNotNull(dto01);
-//            Assert.assertEquals(0, dto01.size());
-
             // test 2
             query = em.createQuery(""
                                    + "SELECT t FROM SimpleEntityOLGH17369 t "
@@ -270,44 +238,6 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             Assert.assertEquals("C", dto01.get(0).getItemString3());
             Assert.assertEquals("D", dto01.get(0).getItemString4());
             Assert.assertEquals(new Integer(1), dto01.get(0).getItemInteger1());
-
-            // Equivalent CriteriaBuilder
-//            cb = em.getCriteriaBuilder();
-//            cquery = cb.createQuery(SimpleEntityOLGH17369.class);
-//            root = cquery.from(SimpleEntityOLGH17369.class);
-//            cquery.multiselect(root);
-//
-//            checkParam1 = cb.parameter(Integer.class);
-//            checkParam2 = cb.parameter(Integer.class);
-//            resultParam1 = cb.parameter(String.class);
-//            resultParam2 = cb.parameter(String.class);
-//            resultParam3 = cb.parameter(String.class);
-//
-//            // Currently unsupported by the JPA API
-//            // https://github.com/eclipse-ee4j/jpa-api/issues/315
-////            selectCase = cb.selectCase(root.get(SimpleEntityOLGH17369_.itemInteger1))
-////                .when(checkParam1, resultParam1)
-////                .when(checkParam2, resultParam2)
-////                .otherwise(resultParam3);
-////            pred = cb.equal(root.get(SimpleEntityOLGH17369_.itemString1), selectCase);
-////            cquery.where(pred);
-//
-//            query = em.createQuery(cquery);
-//            query.setParameter(checkParam1, 1);
-//            query.setParameter(resultParam1, "A");
-//            query.setParameter(checkParam2, 100);
-//            query.setParameter(resultParam2, "B");
-//            query.setParameter(resultParam3, "C");
-//
-//            dto01 = query.getResultList();
-//            Assert.assertNotNull(dto01);
-//            Assert.assertEquals(1, dto01.size());
-//
-//            Assert.assertEquals("A", dto01.get(0).getItemString1());
-//            Assert.assertEquals("B", dto01.get(0).getItemString2());
-//            Assert.assertEquals("C", dto01.get(0).getItemString3());
-//            Assert.assertEquals("D", dto01.get(0).getItemString4());
-//            Assert.assertEquals(new Integer(1), dto01.get(0).getItemInteger1());
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
@@ -741,39 +671,6 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             Assert.assertEquals(2, intList.size());
             Assert.assertEquals(new Integer(100).intValue(), intList.get(0).intValue());
             Assert.assertEquals(new Integer(100).intValue(), intList.get(1).intValue());
-
-            // test equivalent CriteriaBuilder
-//            CriteriaBuilder cb = em.getCriteriaBuilder();
-//            CriteriaQuery<Number> cquery = cb.createQuery(Number.class);
-//            Root<SimpleEntityOLGH17369> root = cquery.from(SimpleEntityOLGH17369.class);
-//
-//            ParameterExpression<String> checkParam1 = cb.parameter(String.class);
-//            ParameterExpression<String> checkParam2 = cb.parameter(String.class);
-//            ParameterExpression<Integer> resultParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam2 = cb.parameter(Integer.class);
-//            ParameterExpression<Integer> resultParam3 = cb.parameter(Integer.class);
-//
-//            // Currently unsupported by the JPA API
-//            // https://github.com/eclipse-ee4j/jpa-api/issues/315
-////            SimpleCase<String, Integer> selectCase = cb.selectCase(root.get(SimpleEntityOLGH17369_.itemString2));
-////            selectCase.when(checkParam1, resultParam1)
-////                .when(checkParam2, resultParam2)
-////                .otherwise(resultParam3);
-////
-////            cquery.select(selectCase);
-//
-//            query = em.createQuery(cquery);
-//            query.setParameter(checkParam1, "A");
-//            query.setParameter(resultParam1, 42);
-//            query.setParameter(checkParam2, "B");
-//            query.setParameter(resultParam2, 100);
-//            query.setParameter(resultParam3, 0);
-//
-//            intList = query.getResultList();
-//            Assert.assertNotNull(intList);
-//            Assert.assertEquals(2, intList.size());
-//            Assert.assertEquals(new Integer(100).intValue(), intList.get(0).intValue());
-//            Assert.assertEquals(new Integer(100).intValue(), intList.get(1).intValue());
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {
@@ -910,33 +807,6 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             List<Boolean> boolList = query.getResultList();
             Assert.assertNotNull(boolList);
             Assert.assertEquals(2, boolList.size());
-
-            // test equivalent CriteriaBuilder
-//            CriteriaBuilder cb = em.getCriteriaBuilder();
-//            CriteriaQuery<Boolean> cquery = cb.createQuery(Boolean.class);
-//            Root<SimpleEntityOLGH17369> root = cquery.from(SimpleEntityOLGH17369.class);
-//
-//            ParameterExpression<Integer> checkParam1 = cb.parameter(Integer.class);
-//            ParameterExpression<Boolean> resultParam1 = cb.parameter(Boolean.class);
-//            ParameterExpression<Boolean> resultParam2 = cb.parameter(Boolean.class);
-//
-//            // Currently unsupported by the JPA API
-//            // https://github.com/eclipse-ee4j/jpa-api/issues/315
-////            SimpleCase<Integer, Boolean> selectCase = cb.selectCase(root.get(SimpleEntityOLGH17369_.itemInteger1));
-////            selectCase.when(checkParam1, resultParam1)
-////                .otherwise(resultParam2);
-////
-////            cquery.select(selectCase);
-//            cquery.orderBy(cb.asc(root.get(SimpleEntityOLGH17369_.itemInteger1)));
-//
-//            query = em.createQuery(cquery);
-//            query.setParameter(checkParam1, 1);
-//            query.setParameter(resultParam1, true);
-//            query.setParameter(resultParam2, false);
-//
-//            boolList = query.getResultList();
-//            Assert.assertNotNull(boolList);
-//            Assert.assertEquals(2, boolList.size());
         } catch (java.lang.AssertionError ae) {
             throw ae;
         } catch (Throwable t) {

@@ -22,6 +22,7 @@ import io.openliberty.data.Data;
 import io.openliberty.data.Delete;
 import io.openliberty.data.Limit;
 import io.openliberty.data.Paginated;
+import io.openliberty.data.Result;
 import io.openliberty.data.Select;
 import io.openliberty.data.Update;
 import io.openliberty.data.Where;
@@ -32,12 +33,13 @@ import io.openliberty.data.Where;
  * and experimenting with how generated repository method implementations
  * fit with asynchronous methods.
  */
-@Data(Person.class) // TODO infer the entity class?
+@Data
 public interface Personnel {
     @Asynchronous
+    @Result(Integer.class)
     @Update("o.lastName = ?2")
     @Where("o.lastName = ?1 AND o.ssn IN ?3")
-    CompletionStage<Long> changeSurnames(String oldSurname, String newSurname, List<Long> ssnList);
+    CompletionStage<Integer> changeSurnames(String oldSurname, String newSurname, List<Long> ssnList);
 
     @Asynchronous
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
@@ -77,7 +79,8 @@ public interface Personnel {
     long setSurname(String newSurname, long ssn);
 
     @Asynchronous
+    @Result(Boolean.class)
     @Update("o.lastName = ?1")
     @Where("o.ssn = ?2")
-    CompletableFuture<Long> setSurnameAsync(String newSurname, long ssn);
+    CompletableFuture<Boolean> setSurnameAsync(String newSurname, long ssn);
 }

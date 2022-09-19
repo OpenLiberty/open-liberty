@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,12 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509migtoken;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.Set;
 
 import javax.crypto.Cipher;
 
@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -34,18 +33,17 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfX509MigSymTests {
@@ -83,20 +81,10 @@ public class CxfX509MigSymTests {
 
         String thisMethod = "setup";
 
-        ServerConfiguration config = server.getServerConfiguration();
-        Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("jaxws-2.2")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
-            errMsgVersion = "EE7";
-        } else if (features.contains("jaxws-2.3")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512_wss4j.xml");
-            errMsgVersion = "EE8";
-        }
-
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
+        errMsgVersion = "EE8";
         ShrinkHelper.defaultDropinApp(server, "x509migclient", "com.ibm.ws.wssecurity.fat.x509migclient", "test.libertyfat.x509mig.contract", "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migbadclient", "com.ibm.ws.wssecurity.fat.x509migbadclient", "test.libertyfat.x509mig.contract",
                                       "test.libertyfat.x509mig.types");
@@ -1457,8 +1445,7 @@ public class CxfX509MigSymTests {
      * Once it's implemented, the test become positive and test in here is set to negative on regular tests
      **/
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBasic192Service() throws Exception {
         String thisMethod = "testBasic192Service";
         methodFull = "testBasic192Service";
@@ -1689,7 +1676,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBadCxfX509KeyIdMigSymEncryptBeforeSigningService() throws Exception {
         String thisMethod = "testCxfX509KeyIdMigSymEncryptBeforeSigningService";
         methodFull = "testBadCxfX509KeyIdMigSymEncryptBeforeSigningService";
@@ -1720,7 +1706,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBadCxfX509IssuerSerialMigSymNoEncryptSignatureService() throws Exception {
         String thisMethod = "testCxfX509IssuerSerialMigSymNoEncryptSignatureService";
         methodFull = "testBadCxfX509IssuerSerialMigSymNoEncryptSignatureService";
@@ -1751,7 +1736,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBadCxfX509ProtectTokensMigSymService() throws Exception {
         String thisMethod = "testCxfX509ProtectTokensMigSymService";
         methodFull = "testBadCxfX509ProtectTokensMigSymService";
@@ -1814,7 +1798,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBadCxfX509KeyIdDerivedMigSymService() throws Exception {
         String thisMethod = "testCxfX509KeyIdDerivedMigSymService";
         methodFull = "testBadCxfX509KeyIdDerivedMigSymService";
@@ -1845,7 +1828,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBadCxfX509ThumbprintDerivedMigSymService() throws Exception {
         String thisMethod = "testCxfX509ThumbprintDerivedMigSymService";
         methodFull = "testBadCxfX509ThumbprintDerivedMigSymService";
@@ -1886,7 +1868,6 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBadX509KeyIdentifierUNTService() throws Exception {
         String thisMethod = "testBadX509KeyIdentifierUNTService";
         methodFull = "testBadX509KeyIdentifierUNTService";
@@ -1929,7 +1910,6 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBadX509SignatureConfirmService() throws Exception {
         String thisMethod = "testBadX509SignatureConfirmService";
         methodFull = "testBadX509SignatureConfirmService";
@@ -1971,8 +1951,7 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBadSymEncSignService() throws Exception {
         String thisMethod = "testBadSymEncSignService";
         methodFull = "testBadSymEncSignService";
@@ -2035,8 +2014,7 @@ public class CxfX509MigSymTests {
      **/
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBadBasic192Service() throws Exception {
         String thisMethod = "testBadBasic192Service";
         methodFull = "testBadBasic192Service";
@@ -2078,8 +2056,7 @@ public class CxfX509MigSymTests {
     //      </ds:SignedInfo>
     //  in tcpmon
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testBadInclusiveC14NService() throws Exception {
         String thisMethod = "testBadInclusiveC14NService";
         methodFull = "testBadInclusiveC14NService";

@@ -28,7 +28,7 @@ JAAS_AUTHENTICATION_FAILED_BADUSERPWD=CWWKS1100A: Die Authentifizierung f\u00fcr
 JAAS_AUTHENTICATION_FAILED_BADUSERPWD.explanation=Die angegebene Benutzer-ID oder das zugeh\u00f6rige Kennwort ist nicht g\u00fcltig.
 JAAS_AUTHENTICATION_FAILED_BADUSERPWD.useraction=Vergewissern Sie sich, dass die Benutzer-ID und das Kennwort korrekt eingegeben wurden. Wenden Sie sich an den Administrator der Benutzerregistry, wenn das Problem weiterhin auftritt.
 
-JAAS_AUTHENTICATION_FAILED_CERTNOMAP=CWWKS1101W: Die CLIENT-CERT-Authentifizierung f\u00fcr das Zertifikat mit den DN {0} war nicht erfolgreich. Der definierte Name (DN) ist keinem Benutzer in der Registry zugeordnet.
+JAAS_AUTHENTICATION_FAILED_CERTNOMAP=CWWKS1101W: Die CLIENT-CERT-Authentifizierung f\u00fcr das Zertifikat mit dem DN {0} war nicht erfolgreich. Der definierte Name (DN) ist keinem Benutzer in der Registry zugeordnet.
 JAAS_AUTHENTICATION_FAILED_CERTNOMAP.explanation=Das angegebene Clientzertifikat ist keinem Benutzer in der Registry zugeordnet.
 JAAS_AUTHENTICATION_FAILED_CERTNOMAP.useraction=Stellen Sie sicher, dass der Client ein Zertifikat bereitstellt, das einem Benutzer in der Registry zugeordnet ist.
 
@@ -44,7 +44,7 @@ JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1104W: F\u00fcr die loginM
 JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=Die Authentifizierung war nicht erfolgreich, weil kein Anmeldemodul f\u00fcr die Anmeldemodulreferenz definiert ist.
 JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Stellen Sie sicher, dass das Element loginModuleRef ein konfiguriertes Element jaasLoginModule hat.
 
-JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: Das JAAS-Anmeldemodul konnte aus der gemeinsam genutzten Bibliothek nicht geladen werden. Es ist eine interne Ausnahme eingetreten.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: Das JAAS-Anmeldemodul konnte nicht aus der gemeinsam genutzten Bibliothek geladen werden.  Es ist eine interne Ausnahme eingetreten.
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=Es ist ein interner Fehler aufgetreten.
 JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).
 
@@ -52,7 +52,7 @@ JAAS_AUTHENTICATION_FAILED_BADUSER=CWWKS1106A: Die Authentifizierung f\u00fcr di
 JAAS_AUTHENTICATION_FAILED_BADUSER.explanation=Die Authentifizierung war nicht erfolgreich, weil die angegebene Benutzer-ID nicht g\u00fcltig ist.
 JAAS_AUTHENTICATION_FAILED_BADUSER.useraction=Vergewissern Sie sich, dass die Benutzer-ID korrekt eingegeben wurde. Wenden Sie sich an den Administrator der Benutzerregistry, wenn das Problem weiterhin auftritt.
 
-JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: Optionen f\u00fcr WSLoginModuleProxy sind null oder leer.
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: Die Optionen f\u00fcr WSLoginModuleProxy sind null oder leer.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=Die Authentifizierung war nicht erfolgreich, weil das WSLoginModuleProxy-Element options null oder leer sind.
 JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Vergewissern Sie sich, dass die WSLoginModuleProxy-Konfiguration das Element options enth\u00e4lt.
 
@@ -83,3 +83,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Es ist keine Aktion erforder
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: Vom Authentifizierungscache wurden alle Eintr\u00e4ge im JCache-Cache {0} gel\u00f6scht. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=Vom Authentifizierungscache werden alle Eintr\u00e4ge im JCache-Sicherungscache bereinigt, wenn die Konfiguration der Sicherheit oder der Benutzerregistry ge\u00e4ndert wird oder wenn die MBean "DeleteAuthCache" aufgerufen wird. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Es ist keine Aktion erforderlich.
+
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: Das Einf\u00fcgen des Eintrags f\u00fcr den Schl\u00fcssel {0} in den JCache-Authentifizierungscache {1} ist aufgrund eines Serialisierungsfehlers fehlgeschlagen. Der Eintrag wird stattdessen in den speicherinternen Authentifizierungscache eingef\u00fcgt. Ausnahme: {2}
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=Der Inhalt des Eintrags wurde nicht serialisiert und daher nicht im JCache-Authentifizierungscache gespeichert.
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Untersuchen Sie die in der Nachricht enthaltene Ausnahme und beheben Sie die Fehlerursache.  

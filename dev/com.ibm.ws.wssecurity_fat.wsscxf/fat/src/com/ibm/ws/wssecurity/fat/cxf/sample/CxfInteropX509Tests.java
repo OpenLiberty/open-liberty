@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,12 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sample;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -37,12 +36,11 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
 
-
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfInteropX509Tests {
@@ -71,18 +69,9 @@ public class CxfInteropX509Tests {
 
         String thisMethod = "setup";
 
-        ServerConfiguration config = server.getServerConfiguration();
-        Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("jaxws-2.2")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509.xml");
-        }
-        if (features.contains("jaxws-2.3")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_wss4j.xml");
-        }
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509.xml");
 
         //apps/webcontent and apps/WSSampleSeiClient are checked in the repo publish/server folder
         ShrinkHelper.defaultDropinApp(server, "WSSampleSei", "com.ibm.was.wssample.sei.echo");
@@ -117,13 +106,19 @@ public class CxfInteropX509Tests {
         WSSampleClientUrl = serviceClientUrl + "/WSSampleSeiClient/ClientServlet";
         Log.info(thisClass, thisMethod, "****portNumber is:" + portNumber + " **portNumberSecure is:" + portNumberSecure);
 
+        //RTC 291296
+        String vendorName = System.getProperty("java.vendor");
+        Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
+
         ibmJDK = true;
         //RTC 290711
-        if (JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) {
+        //RTC 291296 handles the case with java runtime OSX_12_MONTEREY_IBMJDK8 which is hybrid jdk where
+        //Security, ORB and XML components are IBM Java and JVM, JIT, most class libraries are Oracle Java
+        if ((JavaInfo.isSystemClassAvailable("com.ibm.security.auth.module.Krb5LoginModule")) & (vendorName.contains("IBM"))) {
             Log.info(thisClass, thisMethod, "Using an IBM JDK");
         } else {
-            Log.info(thisClass, thisMethod, "Using NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
-            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
             ibmJDK = false;
         }
 
@@ -163,8 +158,8 @@ public class CxfInteropX509Tests {
     public void testEcho22Service() throws Exception {
         String thisMethod = "testEcho22Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
             return;
         }
 
@@ -192,8 +187,8 @@ public class CxfInteropX509Tests {
     public void testEcho23Service() throws Exception {
         String thisMethod = "testEcho23Service";
         if (!ibmJDK) {
-            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!  SKIPPING TEST");
-            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition - this test should not run!");
+            Log.info(thisClass, thisMethod, "Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!  SKIPPING TEST");
+            System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
             return;
         }
 

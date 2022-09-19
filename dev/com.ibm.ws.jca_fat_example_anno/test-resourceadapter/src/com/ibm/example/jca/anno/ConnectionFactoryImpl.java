@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,18 +12,19 @@ package com.ibm.example.jca.anno;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
-import javax.resource.NotSupportedException;
-import javax.resource.ResourceException;
-import javax.resource.cci.Connection;
-import javax.resource.cci.ConnectionFactory;
-import javax.resource.cci.ConnectionSpec;
-import javax.resource.cci.IndexedRecord;
-import javax.resource.cci.MappedRecord;
-import javax.resource.cci.RecordFactory;
-import javax.resource.cci.ResourceAdapterMetaData;
-import javax.resource.spi.ConnectionManager;
 
 import com.ibm.example.jca.anno.ConnectionSpecImpl.ConnectionRequestInfoImpl;
+
+import jakarta.resource.NotSupportedException;
+import jakarta.resource.ResourceException;
+import jakarta.resource.cci.Connection;
+import jakarta.resource.cci.ConnectionFactory;
+import jakarta.resource.cci.ConnectionSpec;
+import jakarta.resource.cci.IndexedRecord;
+import jakarta.resource.cci.MappedRecord;
+import jakarta.resource.cci.RecordFactory;
+import jakarta.resource.cci.ResourceAdapterMetaData;
+import jakarta.resource.spi.ConnectionManager;
 
 /**
  * Example connection factory.
@@ -40,14 +41,18 @@ public class ConnectionFactoryImpl implements ConnectionFactory, RecordFactory {
         this.mcf = mcf;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public IndexedRecord createIndexedRecord(String name) throws ResourceException {
-        throw new NotSupportedException();
+    public IndexedRecord<String> createIndexedRecord(String name) throws ResourceException {
+        IndexedRecord<String> record = new IndexedRecordImpl<String>();
+        record.setRecordName(name);
+        return record;
     }
 
     @Override
-    public MappedRecord createMappedRecord(String name) throws ResourceException {
-        MappedRecord record = new MappedRecordImpl();
+    @SuppressWarnings("unchecked")
+    public MappedRecord<String, String> createMappedRecord(String name) throws ResourceException {
+        MappedRecord<String, String> record = new MappedRecordImpl<String, String>();
         record.setRecordName(name);
         return record;
     }

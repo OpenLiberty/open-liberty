@@ -1,0 +1,13 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+
+    <application type="ear" location="sampleapp_jca16_jbv_ejbvalconfig.ear" id="sampleapp_jca16_jbv_ejbvalconfig">
+    </application>
+    <resourceAdapter id="adapter_jca16_jbv_ResourceAdapterValidation_Success"  location="${server.config.dir}/connectors/adapter_jca16_jbv_ResourceAdapterValidation_Success.rar" autoStart="true">
+    </resourceAdapter>  
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+	<javaPermission actions="read" className="java.util.PropertyPermission" name="*"/>
+    <variable name="onError" value="FAIL"/>
+</server>

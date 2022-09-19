@@ -1,0 +1,28 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="RESTclient server">
+	<applicationManager startTimeout="90s"/>
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+        <feature>cdi-2.0</feature>
+        <feature>mpConfig-2.0</feature>
+        <feature>mpRestClient-2.0</feature>
+        <feature>checkpoint-1.0</feature>
+    </featureManager>
+
+	<variable name="default.http.port" defaultValue="${bvt.prop.HTTP_default}"/>
+	<variable id="testClient" name="testClient/mp-rest/uri" value="http://localhost:${bvt.prop.HTTP_default}/webappWAR/endpoint"/>
+	<webApplication id="webappWAR" location="webappWAR.war" name="webappWAR" contextRoot="webappWAR"/>
+	
+	<include location="../fatTestPorts.xml"/>
+    <applicationManager autoExpand="true"/>
+
+</server>

@@ -17,7 +17,7 @@
     <httpSessionCache cacheManagerRef="CacheManager" />
 
     <cacheManager id="CacheManager">
-        <cachingProvider libraryRef="HazelcastLibB" />
+        <cachingProvider jCacheLibraryRef="HazelcastLibB" />
     </cacheManager>
     
     <!-- 

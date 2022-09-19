@@ -76,12 +76,6 @@
 ### Search on "TBD" for messages that need information from other components ###
  
 # -------------------------------------------------------------------------------------------------
-# {0} Messaging engine name
-ME_INITIALIZING_SIAS0001=CWSID0001I: Se est\u00e1 inicializando el motor de mensajer\u00eda {0}.
-ME_INITIALIZING_SIAS0001.explanation=El motor de mensajer\u00eda especificado est\u00e1 comenzando la inicializaci\u00f3n.
-ME_INITIALIZING_SIAS0001.useraction=No se requiere ninguna acci\u00f3n.
- 
-# -------------------------------------------------------------------------------------------------
 # {0} Internal reason string
 INTERNAL_ERROR_SIAS0003=CWSID0003E: Se ha producido un error interno; raz\u00f3n: {0}.
 INTERNAL_ERROR_SIAS0003.explanation=Se ha producido un error interno inesperado durante la operaci\u00f3n del sistema.
@@ -252,7 +246,7 @@ NO_ID_PROVIDED_SIAS0102.explanation=No se ha especificado el ID del destino, por
 NO_ID_PROVIDED_SIAS0102.useraction=Proporcione el ID del destino.
 
 # -------------------------------------------------------------------------------------------------
-NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  No se ha definido el c\u00f3digo fileStore en el archivo de configuraci\u00f3n del servidor, por lo que se utilizar\u00e1n los valores por omisi\u00f3n.
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I: \ No se ha definido el c\u00f3digo fileStore en el archivo de configuraci\u00f3n del servidor, por lo que se utilizar\u00e1n los valores por omisi\u00f3n.
 NO_FILESTOR_DEFINED_SIAS0104.explanation=No se ha proporcionado el c\u00f3digo fileStore, por lo que se utilizar\u00e1n los valores por omisi\u00f3n durante la creaci\u00f3n del almac\u00e9n de archivos.   
 NO_FILESTOR_DEFINED_SIAS0104.useraction=No se requiere ninguna acci\u00f3n.
 

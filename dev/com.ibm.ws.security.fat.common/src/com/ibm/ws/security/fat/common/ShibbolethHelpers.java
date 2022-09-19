@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -277,9 +277,12 @@ public class ShibbolethHelpers {
         updateConfigFiles(TestHelpers.getFileList_endsWith(spServerHome + "/localhost", ".orig"), spServer, idpServer);
 
         // if default idpMetadata.xml file exists, copy the updated version to serversettings/SAMLServerFiles/localhost/idpMetadata.xml
-        if (LibertyFileManager.libertyFileExists(spServer.getServer().getMachine(), spServerHome + "/localhost/idpMetadata.xml")) {
+        if (LibertyFileManager.libertyFileExists(spServer.getServer().getMachine(), spServerHome + "/imports/localhost/idpMetadata.xml")) {
+            Log.info(thisClass, thisMethod, "doing file save to copy to idp server"); // chc
             String toDir = new File(".").getAbsoluteFile().getCanonicalPath().replace("\\", "/") + "/lib/LibertyFATTestFiles/serversettings/SAMLServerFiles/localhost";
-            LibertyFileManager.copyFileIntoLiberty(spServer.getServer().getMachine(), toDir, spServerHome + "/localhost/idpMetadata.xml");
+            LibertyFileManager.copyFileIntoLiberty(spServer.getServer().getMachine(), toDir, spServerHome + "/imports/localhost/idpMetadata.xml");
+        } else {
+            Log.info(thisClass, thisMethod, "NOT doing file save to copy to idp server"); // chc
         }
 
     }
@@ -481,10 +484,10 @@ public class ShibbolethHelpers {
         // copy the appropriate version of the idp.war file
         if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
             Log.info(thisClass, thisMethod, "################## Copying the 3.1.1 version of Shibbolet ##################h");
-            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/test-apps/idp-war-3.3.1.war");
+            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/idp-apps/idp-war-3.3.1.war");
         } else {
             Log.info(thisClass, thisMethod, "################## Copying the 4.1.0 version of Shibboleth ##################");
-            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/test-apps/idp-war-4.1.0.war");
+            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war");
         }
 
     }

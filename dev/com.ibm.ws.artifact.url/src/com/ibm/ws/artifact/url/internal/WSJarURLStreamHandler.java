@@ -88,7 +88,7 @@ public class WSJarURLStreamHandler extends AbstractURLStreamHandlerService { // 
             try {
                 url = Utils.newURL(Utils.newURL(path), spec);
             } catch (MalformedURLException ex) {
-                throw new RuntimeException(ex);
+                throw new RuntimeException("Malformed URL [ " + path + " ] [ " + spec + " ]", ex);
             }
 
             result = url.toString();
@@ -442,7 +442,7 @@ public class WSJarURLStreamHandler extends AbstractURLStreamHandlerService { // 
         int protocolDelimiterIndex = urlString.indexOf(':');
         String urlProtocol, urlPath;
         if (protocolDelimiterIndex < 0 || !(urlProtocol = urlString.substring(0, protocolDelimiterIndex)).equalsIgnoreCase(protocolPrefix)) {
-            throw new IOException("invalid protocol prefix: the passed urlString: " + urlString + " is not of the specified protocol: " + protocolPrefix);
+            throw new IOException("URL [ " + urlString + " ] does not have protocol [ " + protocolPrefix + " ]");
         }
         urlPath = urlString.substring(protocolDelimiterIndex + 1);
 

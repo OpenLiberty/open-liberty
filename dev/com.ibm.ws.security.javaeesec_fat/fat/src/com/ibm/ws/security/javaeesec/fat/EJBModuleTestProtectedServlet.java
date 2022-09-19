@@ -60,9 +60,9 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
     protected static String EJB_REALM2_WAR_NAME = "AnnotatedEjbinWarServletLdapRealm2.war";
     protected static String EJB_REALM2_WAR_PATH = "/AnnotatedEjbinWarServletLdapRealm2/";
     protected static String EJB_EAR_NAME = "securityejbinwar2.ear";
-    protected static String EJB_APP_NAME = EJB_EAR_NAME;
+    protected static String EJB_APP_NAME = "securityejbinwar2";
     protected static String EJB_EAR_REALM_NAME = "securityejbinwarrealm.ear";
-    protected static String EJB_REALM_APP_NAME = EJB_EAR_REALM_NAME;
+    protected static String EJB_REALM_APP_NAME = "securityejbinwarrealm";
     protected static String XML_NAME = "ejbprotectedserver.xml";
     protected static String XML_REALM_NAME = "ejbprotectedrealmserver.xml";
     protected static String JASPIC_RUN_AS_XML_NAME = "ejbprotectedCustomISRunAsserver.xml";

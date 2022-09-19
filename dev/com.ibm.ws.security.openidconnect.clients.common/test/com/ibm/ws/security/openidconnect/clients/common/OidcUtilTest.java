@@ -13,8 +13,6 @@ package com.ibm.ws.security.openidconnect.clients.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +31,7 @@ import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import test.common.SharedOutputManager;
 
 public class OidcUtilTest {
@@ -78,14 +77,7 @@ public class OidcUtilTest {
     public void testInvalidateReferrerURLCookie() {
         mock.checking(new Expectations() {
             {
-                one(referCookieHandler).createCookie("fred", "", request);
-                will(returnValue(cookie));
-                allowing(webAppSecConfig).createSSOCookieHelper();
-                allowing(webAppSecConfig).getSSODomainList();
-                allowing(webAppSecConfig).getSSOUseDomainFromURL();
-                one(cookie).setMaxAge(-1);
-                one(cookie).setMaxAge(0);
-                one(response).addCookie(cookie);
+                one(referCookieHandler).invalidateCookie(request, response, "fred", true);
             }
         });
         OidcClientUtil.invalidateReferrerURLCookie(request, response, "fred");
@@ -113,17 +105,6 @@ public class OidcUtilTest {
     }
 
     @Test
-    public void testTimeStampInLong() {
-        Date date = new Date();
-        long lNumber = date.getTime();
-        String state = OidcUtil.getTimeStamp(lNumber) + OidcUtil.generateRandom(OidcUtil.RANDOM_LENGTH);
-        long lTmp = OidcUtil.convertNormalizedTimeStampToLong(state);
-        Date newDate = new Date(lTmp);
-        assertTrue("lNumber is " + lNumber + ", lTmp is " + lTmp + " are not equal", lNumber == lTmp);
-        assertTrue("date is " + date + "newDate is " + newDate + " are not equal", date.equals(newDate));
-    }
-
-    @Test
     public void testNonceCookie() {
         String state = "someStateValue";
         String nonceValue = "myNonceValue";
@@ -131,49 +112,29 @@ public class OidcUtilTest {
         mock.checking(new Expectations() {
             {
                 allowing(convClientConfig).getId();
+                will(returnValue("myConfigId"));
+                one(convClientConfig).getClientId();
                 will(returnValue("client01"));
                 allowing(convClientConfig).getClientSecret();
-                will(returnValue("serect"));
+                will(returnValue("secret"));
             }
         });
-        final String expectedNonceCookieName = HashUtils.getCookieName(ClientConstants.WAS_OIDC_NONCE, convClientConfig, state);
-        final String expectedNonceCookieValue = OidcUtil.createNonceCookieValue(nonceValue, state, convClientConfig);
+        final String expectedNonceCookieName = OidcStorageUtils.getNonceStorageKey("client01", state);
+        final String expectedNonceCookieValue = OidcStorageUtils.createNonceStorageValue(nonceValue, state, "secret");
 
         mock.checking(new Expectations() {
             {
                 allowing(convClientRequest).getRequest();
                 will(returnValue(request));
-                one(referCookieHandler).createCookie(with(any(String.class)), with(any(String.class)), with(any(HttpServletRequest.class)));
-                will(returnValue(cookie));
-                one(webAppSecConfig).createSSOCookieHelper();
-                one(webAppSecConfig).getSSODomainList();
-                one(webAppSecConfig).getSSOUseDomainFromURL();
-                one(cookie).setMaxAge(-1);
-                one(convClientRequest).getResponse();
+                allowing(convClientRequest).getResponse();
                 will(returnValue(response));
-                one(response).addCookie(cookie);
-            }
-        });
-        OidcUtil.createNonceCookie(convClientRequest, nonceValue, state, convClientConfig);
-
-        mock.checking(new Expectations() {
-            {
                 one(request).getCookies();
                 will(returnValue(new Cookie[] { cookie }));
                 one(cookie).getName();
                 will(returnValue(expectedNonceCookieName));
                 one(cookie).getValue();
                 will(returnValue(expectedNonceCookieValue));
-                one(convClientRequest).getResponse();
-                will(returnValue(response));
-                one(referCookieHandler).createCookie(expectedNonceCookieName, "", request);
-                will(returnValue(cookie2));
-                allowing(webAppSecConfig).createSSOCookieHelper();
-                allowing(webAppSecConfig).getSSODomainList();
-                allowing(webAppSecConfig).getSSOUseDomainFromURL();
-                one(cookie2).setMaxAge(-1);
-                one(cookie2).setMaxAge(0);
-                one(response).addCookie(cookie2);
+                one(referCookieHandler).invalidateCookie(request, response, expectedNonceCookieName, true);
             }
         });
         boolean validNonceCookie = OidcUtil.verifyNonce(convClientRequest, nonceValue, convClientConfig, state);

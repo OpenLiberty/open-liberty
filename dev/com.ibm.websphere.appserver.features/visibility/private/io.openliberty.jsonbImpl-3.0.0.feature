@@ -1,4 +1,5 @@
-# This private impl feature corresponds to JSON-B 3.0 with the Yasson implementation
+# This private impl feature corresponds to jsonbContainer-3.0, which gives you
+# JSON-B 3.0 spec with the ability to choose the default provider via a bell.
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.jsonbImpl-3.0.0
 singleton=true
@@ -9,6 +10,6 @@ visibility=private
   io.openliberty.jsonp-2.1
 -bundles=\
   io.openliberty.jakarta.jsonb.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json.bind:jakarta.json.bind-api:3.0.0"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

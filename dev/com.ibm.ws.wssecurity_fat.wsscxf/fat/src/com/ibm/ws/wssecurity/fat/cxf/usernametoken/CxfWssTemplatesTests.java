@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
@@ -20,14 +21,12 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfWssTemplatesTests extends CommonTests {
@@ -63,7 +62,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    //@AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordHashOverSSL() throws Exception {
 
         genericTest(
@@ -104,7 +103,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    //@AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordTextOverSSL() throws Exception {
         genericTest(
                     // test name for logging

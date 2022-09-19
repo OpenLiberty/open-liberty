@@ -38,11 +38,11 @@
      -->
 	<cachingProvider id="CachingProvider"
 		providerClass="org.infinispan.jcache.remote.JCachingProvider"
-		libraryRef="InfinispanLib,CustomLoginLib" />
+		jCacheLibraryRef="InfinispanLib" commonLibraryRef="CustomLoginLib" />
 
 	<cacheManager id="CacheManager"
 		cachingProviderRef="CachingProvider"
-		uri="file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props">
+		uri="file:///${shared.resource.dir}/infinispan/${infinispan.hotrod.file}">
 
 		<!-- 
 			The system property can't be read from the Hotrod properties file, so define it here.

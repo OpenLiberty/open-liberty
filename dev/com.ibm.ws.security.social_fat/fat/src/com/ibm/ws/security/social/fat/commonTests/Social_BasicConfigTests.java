@@ -253,7 +253,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
     }
 
-    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "com.ibm.ws.security.openidconnect.clients.common.BadPostRequestException" })
+    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "io.openliberty.security.oidcclientcore.http.BadPostRequestException" })
     @Test
     @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO See note 1 in class javadoc.
     public void Social_BasicConfigTests_badClientSecret() throws Exception {
@@ -262,7 +262,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
     }
 
-    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "com.ibm.ws.security.openidconnect.clients.common.BadPostRequestException" })
+    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "io.openliberty.security.oidcclientcore.http.BadPostRequestException" })
     @Test
     @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO See note 1 in class javadoc.
     public void Social_BasicConfigTests_blankClientSecret() throws Exception {
@@ -270,7 +270,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
         blankEmptyOrBadClientSecret("_blankClientSecret.xml", "/helloworld/rest/helloworld_blankClientSecret", false);
     }
 
-    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "com.ibm.ws.security.openidconnect.clients.common.BadPostRequestException" })
+    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "io.openliberty.security.oidcclientcore.http.BadPostRequestException" })
     @Test
     @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO See note 1 in class javadoc.
     public void Social_BasicConfigTests_emptyClientSecret() throws Exception {
@@ -396,7 +396,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
         genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
-    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "com.ibm.ws.security.openidconnect.clients.common.BadPostRequestException" })
+    @AllowedFFDC({ "com.ibm.ws.security.social.error.SocialLoginException", "io.openliberty.security.oidcclientcore.http.BadPostRequestException" })
     @Test
     @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO See note 1 in class javadoc.
     public void Social_BasicConfigTests_bad_XOR_Secret() throws Exception {

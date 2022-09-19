@@ -10,6 +10,9 @@
  *******************************************************************************/
 package io.openliberty.restfulWS30.cdi30.fat.complex;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class Student implements Person {
 
     @Override

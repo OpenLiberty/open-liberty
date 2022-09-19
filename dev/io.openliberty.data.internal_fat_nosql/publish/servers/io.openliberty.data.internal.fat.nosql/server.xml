@@ -1,0 +1,26 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <!-- Do not add JDBC or Jakarta Persistence/JPA features to this test bucket -->
+    <!-- This test bucket is for testing with Jakarta NoSQL only -->
+    <feature>componenttest-2.0</feature>
+    <!-- TODO <feature>data-1.0</feature> -->
+    <feature>nosql-1.0</feature>
+    <feature>servlet-6.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="DataNoSQLApp.war"/>
+
+</server>

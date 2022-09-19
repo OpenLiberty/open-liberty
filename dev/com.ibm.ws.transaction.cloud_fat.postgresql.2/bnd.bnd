@@ -19,14 +19,14 @@ src: \
 fat.project: true
 fat.test.databases: true
 
+fat.test.container.images: jonhawkes/postgresql-ssl:1.0
+
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, servlet-4.0 is added programmatically at runtime by the RepeatTests rule.
 tested.features:\
-	servlet-4.0,\
-	servlet-5.0,\
-	cdi-2.0,\
-	cdi-3.0,\
-	jdbc-4.2
+  cdi-2.0, cdi-3.0, cdi-4.0,\
+  jdbc-4.2,\
+  servlet-4.0, servlet-5.0, servlet-6.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

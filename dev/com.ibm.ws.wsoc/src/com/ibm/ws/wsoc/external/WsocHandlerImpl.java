@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,9 +31,13 @@ import com.ibm.ws.webcontainer.servlet.WsocHandler;
 import com.ibm.ws.wsoc.AnnotatedEndpoint;
 import com.ibm.ws.wsoc.HandshakeProcessor;
 import com.ibm.ws.wsoc.ParametersOfInterest;
+import com.ibm.ws.wsoc.ServerEndpointConfigCopyPerSession;
 import com.ibm.ws.wsoc.WebSocketContainerManager;
+import com.ibm.ws.wsoc.WebSocketVersionServiceManager;
 import com.ibm.ws.wsoc.WsocUpgradeHandler;
 import com.ibm.ws.wsoc.util.Utils;
+
+import com.ibm.ws.wsoc.servercontainer.ServerContainerExt;
 
 /**
  *
@@ -77,7 +81,7 @@ public class WsocHandlerImpl implements WsocHandler {
     }
 
     private boolean isValidContainer(Object wsocContainer) {
-        if (wsocContainer instanceof com.ibm.ws.wsoc.external.ServerContainerExt) {
+        if (wsocContainer instanceof com.ibm.ws.wsoc.servercontainer.ServerContainerExt) {
             return true;
         } else {
             return false;
@@ -197,6 +201,9 @@ public class WsocHandlerImpl implements WsocHandler {
         }
 
         if (endPointConfig != null) {
+            if(WebSocketVersionServiceManager.isWsoc21rHigher()){
+                endPointConfig = new ServerEndpointConfigCopyPerSession(endPointConfig);
+            }
             endPointClass = endPointConfig.getEndpointClass();
         } else {
             if (tc.isDebugEnabled()) {

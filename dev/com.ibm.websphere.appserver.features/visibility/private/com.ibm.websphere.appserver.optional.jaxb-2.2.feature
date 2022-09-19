@@ -16,6 +16,8 @@ IBM-API-Package: \
   javax.xml.bind.util; type="spec"; require-java:="9"
 -features=\
   com.ibm.websphere.appserver.internal.optional.jaxb-2.2
+-bundles=\
+  com.ibm.websphere.javaee.activation.1.1; require-java:="9"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.activation:activation:1.1"
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

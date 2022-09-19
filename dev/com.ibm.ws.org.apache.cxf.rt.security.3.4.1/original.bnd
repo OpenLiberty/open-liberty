@@ -10,4 +10,5 @@
 #*******************************************************************************
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.security.3.4.1
-
+Bundle-Name: com.ibm.ws.org.apache.cxf.rt.security
+Bundle-Description: cxf rt security, version 3.4.1

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -22,6 +22,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.CookieHelper;
+
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 
 /**
  * Processes the End-User redirection to the Client by the OP.
@@ -133,7 +135,7 @@ public class RedirectionProcessor {
     }
 
     private String getOriginalRequestUrl(String state) {
-        String cookieName = ClientConstants.WAS_REQ_URL_OIDC + HashUtils.getStrHashCode(state);
+        String cookieName = OidcStorageUtils.getOriginalReqUrlStorageKey(state);
         Cookie[] cookies = request.getCookies();
         String requestUrl = CookieHelper.getCookieValue(cookies, cookieName);
         OidcClientUtil.invalidateReferrerURLCookie(request, response, cookieName);
@@ -164,7 +166,7 @@ public class RedirectionProcessor {
             Tr.debug(tc, "Request info: state: " + state + " session_state: " + sessionState);
         }
         boolean isHttpsRequest = requestUrl.toLowerCase().startsWith("https");
-        new OidcClientUtil().setCookieForRequestParameter(request, response, clientId, state, isHttpsRequest, clientCfg);
+        OidcClientUtil.setCookieForRequestParameter(request, response, clientId, state, isHttpsRequest, clientCfg);
         if ((oidcClientId != null && !oidcClientId.isEmpty()) || id_token != null) {
             postToWASReqURLForImplicitFlow(requestUrl, oidcClientId);
         } else {

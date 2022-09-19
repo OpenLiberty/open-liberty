@@ -33,6 +33,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.olgh21204.web.TestOLGH21204Servlet;
 import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -152,7 +153,7 @@ public class TestOLGH21204_Web extends JPAFATServletClient {
          */
         if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("21")
             && DatabaseVendor.ORACLE.equals(getDbVendor())) {
-            webApp.move("/META-INF/persistence-oracle-21.xml", "/META-INF/persistence.xml");
+            webApp.move("/WEB-INF/classes/META-INF/persistence-oracle-21.xml", "/WEB-INF/classes/META-INF/persistence.xml");
         }
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);

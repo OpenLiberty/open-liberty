@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+        <feature>servlet-3.1</feature>
+	    <feature>jca-1.7</feature>
+	    <feature>jndi-1.0</feature>
+	    <feature>jms-2.0</feature>
+    </featureManager>
+   
+    <include location="../fatTestPorts.xml"/>
+    <variable value="FAIL" name="onError"/>
+    
+    <application type="ear" location="annapp.ear" id="annapp">
+        <classloader classProviderRef="TRA_jca16_ann_ConnectionDefinitionsMergeAction_SingleCD" apiTypeVisibility="spec,ibm-api,third-party,api"/>
+    </application>
+    
+   <connectionFactory id="cf1" jndiName="jms/cf1">
+        <properties.TRA_jca16_ann_ConnectionDefinitionsMergeAction_SingleCD />
+    </connectionFactory> 
+    
+    <connectionFactory id="cf2" jndiName="jms/cf2">
+        <properties.TRA_jca16_ann_ConnectionDefinitionsMergeAction_SingleCD.ConnectionFactoryBase />
+    </connectionFactory>
+        
+   <connectionFactory id="jms1" jndiName="jms/cf4">
+     <properties.TRA_jca16_ann_ConnectionDefinitionsMergeAction_NoCD />
+    </connectionFactory>
+    
+	<resourceAdapter id="TRA_jca16_ann_ConnectionDefinitionsMergeAction_NoCD"  location="${server.config.dir}/connectors/TRA_jca16_ann_ConnectionDefinitionsMergeAction_NoCD.rar" >
+	 <customize interface="javax.resource.cci.ConnectionFactory"/>
+	</resourceAdapter> 
+	
+	<resourceAdapter id="TRA_jca16_ann_ConnectionDefinitionsMergeAction_SingleCD"  location="${server.config.dir}/connectors/TRA_jca16_ann_ConnectionDefinitionsMergeAction_SingleCD.rar" >
+	  <customize interface="javax.resource.cci.ConnectionFactory"/>
+      <classloader apiTypeVisibility="spec,ibm-api,third-party,api"/>
+	</resourceAdapter> 
+	
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="resolve"/>
+</server>

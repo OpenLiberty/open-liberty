@@ -37,3 +37,22 @@ RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Die Wiederherstellung des Servers von eine
 RESTORE_FAILED_CWWKC0454E.explanation=Der Versuch, den Server von einem Pr\u00fcfpunkt wiederherzustellen, ist fehlgeschlagen.  Der Server ist nicht aktiv.
 RESTORE_FAILED_CWWKC0454E.useraction=\u00dcberpr\u00fcfen Sie das Pr\u00fcfpunktverzeichnis im Serverprotokollverzeichnis auf weitere Protokolldateien, um festzustellen, warum der Server nicht wiederhergestellt werden konnte.
 
+UKNOWN_FAILURE_CWWKC0455E=CWWKC0455E: Ein unbekannter Fehler ist mit der folgenden Nachricht aufgetreten: {0}
+UKNOWN_FAILURE_CWWKC0455E.explanation=W\u00e4hrend einer Pr\u00fcfpunktanforderung oder w\u00e4hrend des Versuchs, den Server von einem Pr\u00fcfpunkt wiederherzustellen, ist ein unerwarteter Fehler aufgetreten.
+UKNOWN_FAILURE_CWWKC0455E.useraction=\u00dcberpr\u00fcfen Sie das Pr\u00fcfpunktverzeichnis im Serverprotokollverzeichnis auf weitere Protokolldateien, um festzustellen, warum der Fehler aufgetreten ist.
+
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E=CWWKC0456E: Ein Pr\u00fcfpunkt kann nicht erstellt werden, weil die folgenden in der Datei server.xml konfigurierten Features f\u00fcr den Pr\u00fcfpunkt nicht unterst\u00fctzt werden: {0}.
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.explanation=Die Serverpr\u00fcfpunktaktion kann nur mit Funktionen verwendet werden, die Pr\u00fcfpunkte unterst\u00fctzen.  
+CHECKPOINT_FAILED_UNSUPPORTED_FEATURE_CWWKC0456E.useraction=Aktivieren Sie nur Features, die Pr\u00fcfpunkte unterst\u00fctzen, f\u00fcr die Verwendung einer Serverpr\u00fcfpunktaktion. Details zu den Features, die Pr\u00fcfpunkte unterst\u00fctzen, finden Sie in der Dokumentation.
+
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E=CWWKC0457E: Beim Vorbereiten der Pr\u00fcfpunkterstellung ist ein Fehler mit der folgenden Nachricht aufgetreten: {0}
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.explanation=Bei der Vorbereitung eines Pr\u00fcfpunkts ist eine Ausnahme aufgetreten.  
+CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E.useraction=\u00dcberpr\u00fcfen Sie das Serverprotokollverzeichnis auf weitere Protokolldateien, um festzustellen, warum der Serverpr\u00fcfpunkt fehlgeschlagen ist.
+
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E=CWWKC0458E: Beim Wiederherstellen des Serverprozesses ist ein Fehler mit der folgenden Nachricht aufgetreten: {0}
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.explanation=Beim Wiederherstellen des Serverprozesses ist eine Ausnahme aufgetreten.  
+RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=\u00dcberpr\u00fcfen Sie das Serverprotokollverzeichnis auf weitere Protokolldateien, um festzustellen, warum der Server nicht zur\u00fcckgeschrieben werden konnte.
+
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Ein Pr\u00fcfpunkt kann nicht gesetzt werden. Die verwendete Java-Version unterst\u00fctzt keinen Pr\u00fcfpunkt.
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=Die Serverpr\u00fcfpunktaktion kann nur mit einer Java-Version verwendet werden, die Pr\u00fcfpunkte unterst\u00fctzt.  
+CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Verwenden Sie eine Java-Version, die Pr\u00fcfpunkte unterst\u00fctzt. Details zu der erforderlichen Java-Version, die Pr\u00fcfpunkte unterst\u00fctzt, finden Sie in der Dokumentation.

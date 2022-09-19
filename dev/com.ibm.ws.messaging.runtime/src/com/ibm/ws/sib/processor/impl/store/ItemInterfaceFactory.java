@@ -11,7 +11,7 @@
 
 package com.ibm.ws.sib.processor.impl.store;
 
-import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -34,7 +34,7 @@ import com.ibm.ws.sib.processor.impl.store.itemstreams.SourceProtocolItemStream;
 import com.ibm.ws.sib.processor.impl.store.itemstreams.SubscriptionItemStream;
 import com.ibm.ws.sib.processor.impl.store.itemstreams.TargetProtocolItemStream;
 
-@Component(configurationPolicy = REQUIRE, property="service.vendor=IBM")
+@Component(configurationPolicy=IGNORE, property={"type=com.ibm.ws.sib.processor.ItemInterface", "service.vendor=IBM"})
 public class ItemInterfaceFactory implements ItemInterface, Singleton {
     public AbstractItem getItemStreamInstance(String name) {
         switch (name) {

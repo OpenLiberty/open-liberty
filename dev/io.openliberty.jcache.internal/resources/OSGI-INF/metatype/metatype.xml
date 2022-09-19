@@ -31,19 +31,36 @@
 		<AD id="providerClass" type="String" required="false"
 			name="%providerClass" description="%providerClass.desc" />
 
-		<AD id="libraryRef" type="String" required="true" ibm:type="pid"
+        <!-- 
+             commonLibraryRef
+         -->
+		<AD id="commonLibraryRef" type="String" required="false" ibm:type="pid"
 			ibm:reference="com.ibm.ws.classloading.sharedlibrary"
-			cardinality="2147483647" name="%libraryRef"
-			description="%libraryRef.desc" />
+			cardinality="2147483647" name="%commonLibraryRef"
+			description="%commonLibraryRef.desc" />
 
-		<AD id="library.target" type="String"
-			default="${servicePidOrFilter(libraryRef)}" ibm:final="true"
+		<AD id="commonLibrary.target" type="String"
+			default="${servicePidOrFilter(commonLibraryRef)}" ibm:final="true"
 			name="internal" description="internal use only" />
 
-		<AD id="library.cardinality.minimum" type="String" required="false"
+		<AD id="commonLibrary.cardinality.minimum" type="String" required="false"
 			name="internal" description="internal use only" ibm:final="true"
-			default="${count(libraryRef)}" />
+			default="${count(commonLibraryRef)}" />
 
+        <!-- 
+             jCacheLibraryRef
+         -->
+		<AD id="jCacheLibraryRef" type="String" required="true" ibm:type="pid"
+			ibm:reference="com.ibm.ws.classloading.sharedlibrary"
+			name="%jCacheLibraryRef" description="%jCacheLibraryRef.desc" />
+
+		<AD id="jCacheLibrary.target" type="String"
+			default="${servicePidOrFilter(jCacheLibraryRef)}" ibm:final="true"
+			name="internal" description="internal use only" />
+
+		<AD id="jCacheLibrary.cardinality.minimum" type="String" required="false"
+			name="internal" description="internal use only" ibm:final="true"
+			default="${count(jCacheLibraryRef)}" />
 	</OCD>
 
 

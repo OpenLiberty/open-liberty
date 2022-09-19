@@ -18,6 +18,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
+
 /**
  * Helper functions used by oidc client and social login
  * to logout invalidated oidc sessions and cleanup logged out oidc sessions
@@ -47,7 +49,7 @@ public class OidcSessionUtils {
     }
 
     private static boolean requestHasStateCookie(HttpServletRequest request) {
-        return CookieHelper.getCookie(request.getCookies(), ClientConstants.WAS_OIDC_STATE_KEY) != null;
+        return CookieHelper.getCookie(request.getCookies(), OidcClientStorageConstants.WAS_OIDC_STATE_KEY) != null;
     }
 
     public static void removeOidcSession(

@@ -34,6 +34,7 @@ import com.ibm.ws.jpa.ormdiagnostics.FATSuite;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper.JPAClass;
 import com.ibm.ws.ormdiag.example.war.ExampleServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -106,7 +107,7 @@ public class TestExample_EAR extends JPAFATServletClient {
         app.addAsLibrary(jpa_libJar);
         ShrinkHelper.addDirectory(app, RESOURCE_ROOT + "resources/ear");
 
-        ShrinkHelper.exportAppToServer(server, app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         Application appRecord = new Application();
         appRecord.setLocation(appName + "_EAR.ear");

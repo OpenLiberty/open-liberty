@@ -17,5 +17,5 @@ public class HttpResponseNullOrEmptyException extends AbstractHttpResponseExcept
     public HttpResponseNullOrEmptyException(String url, int statusCode, String errMsg) {
         super(url, statusCode, errMsg);
     }
-
+    
 }

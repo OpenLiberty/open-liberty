@@ -85,8 +85,21 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             }
         }
 
+        String buildSpanName = null;
+        if (helper != null) {
+            buildSpanName = helper.getBuildSpanName(incomingRequestContext, resourceInfo);
+            if (buildSpanName == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + " skipping not traced method");
+                }
+                incomingRequestContext.setProperty(SERVER_SPAN_SKIPPED_ID, true);
+                return;
+            }
+        }
+
         URI incomingUri = incomingRequestContext.getUriInfo().getRequestUri();
-        String incomingURL = incomingUri.toURL().toString();
+        String  incomingURL = incomingUri.toURL().toString();
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " incomingURL", incomingURL);
         }
@@ -98,53 +111,34 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             Tr.debug(tc, methodName + " priorContext", priorOutgoingContext);
         }
 
-        /*
-         * Removing filter processing until microprofile spec for it is approved. Expect to add this code
-         * back in 1Q18 - smf
-         */
-        // boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
-        boolean process = true;
-
-        String buildSpanName;
-        if (helper != null) {
-            buildSpanName = helper.getBuildSpanName(incomingRequestContext, resourceInfo);
-            if (buildSpanName == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, methodName + " skipping not traced method");
-                }
-                process = false;
-            }
-        } else {
+        if (buildSpanName == null) {
             buildSpanName = incomingURL;
         }
 
-        if (process) {
-            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
-            spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
-            spanBuilder.withTag(Tags.HTTP_URL.getKey(), incomingURL);
-            spanBuilder.withTag(Tags.HTTP_METHOD.getKey(), incomingRequestContext.getMethod());
-            spanBuilder.withTag(Tags.COMPONENT.getKey(), TAG_COMPONENT_JAXRS);
-            if (priorOutgoingContext != null) {
-                spanBuilder.asChildOf(priorOutgoingContext);
-            }
-
-            try {
-                Scope scope = spanBuilder.startActive(true);
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, methodName + " span", scope.span());
-                }
-
-                incomingRequestContext.setProperty(SERVER_SPAN_PROP_ID, scope);
-            } catch (NoSuchMethodError e) {
-                if (!spanErrorLogged) {
-                    Tr.error(tc, "OPENTRACING_COULD_NOT_START_SPAN", e);
-                    spanErrorLogged = true;
-                }
-            }
+        Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
+        spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
+        spanBuilder.withTag(Tags.HTTP_URL.getKey(), incomingURL);
+        spanBuilder.withTag(Tags.HTTP_METHOD.getKey(), incomingRequestContext.getMethod());
+        spanBuilder.withTag(Tags.COMPONENT.getKey(), TAG_COMPONENT_JAXRS);
+        if (priorOutgoingContext != null) {
+            spanBuilder.asChildOf(priorOutgoingContext);
         }
 
-        incomingRequestContext.setProperty(SERVER_SPAN_SKIPPED_ID, !process);
+        try {
+            Scope scope = spanBuilder.startActive(true);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName + " span", scope.span());
+            }
+
+            incomingRequestContext.setProperty(SERVER_SPAN_PROP_ID, scope);
+        } catch (NoSuchMethodError e) {
+            if (!spanErrorLogged) {
+                Tr.error(tc, "OPENTRACING_COULD_NOT_START_SPAN", e);
+                spanErrorLogged = true;
+            }
+        }
+        incomingRequestContext.setProperty(SERVER_SPAN_SKIPPED_ID, false);
     }
 
     /** {@inheritDoc} */

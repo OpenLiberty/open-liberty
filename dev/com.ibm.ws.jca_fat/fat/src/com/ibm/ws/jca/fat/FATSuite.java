@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,10 @@ import com.ibm.ws.jca.fat.regr.InboundSecurityTest;
 import com.ibm.ws.jca.fat.regr.InboundSecurityTestRapid;
 
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -41,15 +42,28 @@ public class FATSuite {
     public static final String javaeeServer = "com.ibm.ws.jca.fat";
     public static final String jakartaeeServer = "com.ibm.ws.jca.fat.jakarta";
 
-    /*
-     * EE7 will run with full fat only. EE9 will be run with lite and full fat.
-     */
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES());
+    public static RepeatTests repeat;
+
+    static {
+        // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
+        // If we are running on Java 8 have EE9 be the lite mode test to run.
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            // need widen option to handle jar file within a jar file.
+                            .andWith(new JakartaEE9Action().fullFATOnly().withWiden())
+                            // need widen option to handle jar file within a jar file.
+                            .andWith(new JakartaEE10Action().withWiden());
+        } else {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            // need widen option to handle jar file within a jar file.
+                            .andWith(new JakartaEE9Action().withWiden());
+        }
+
+    }
 
     public static LibertyServer getServer() {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             return LibertyServerFactory.getLibertyServer(jakartaeeServer);
         } else {
             return LibertyServerFactory.getLibertyServer(javaeeServer);

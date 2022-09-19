@@ -10,11 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.fat;
 
+import java.io.File;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -60,6 +64,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.ServerFileUtils;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -293,13 +298,11 @@ public class ReplayCookieTests extends CommonSecurityFat {
     @Test
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie() throws Exception {
 
-        server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
+        expandAndUpdateServerConfiguration(server, "server_noFeature.xml", true, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
 
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
-        server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        server.reconfigureServerUsingExpandedConfiguration(_testName, DEFAULT_CONFIG);
+        expandAndUpdateServerConfiguration(server, DEFAULT_CONFIG, true, APP_NAME_JWT_BUILDER, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
 
         // Access the protected again using a new conversation with the LTPA cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -325,12 +328,11 @@ public class ReplayCookieTests extends CommonSecurityFat {
     @Test
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie_useLtpaIfJwtAbsent() throws Exception {
 
-        server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
+        expandAndUpdateServerConfiguration(server, "server_noFeature.xml", true, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
 
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_useLtpaIfJwtAbsent_true.xml");
+        expandAndUpdateServerConfiguration(server, "server_useLtpaIfJwtAbsent_true.xml", true, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
 
         // Access the protected again using a new conversation with the LTPA cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -346,8 +348,6 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
         Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, ltpaCookie);
         validationUtils.validateResult(response, currentAction, expectations);
-
-        server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
     }
 
     /**
@@ -363,8 +363,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
-        server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
+        expandAndUpdateServerConfiguration(server, "server_noFeature.xml", true, JwtFatConstants.APP_FORMLOGIN, JwtFatConstants.APP_TESTMARKER);
 
         // Access the protected again using a new conversation with the JWT SSO cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -374,8 +373,6 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
         Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
-
-        server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
     }
 
     /**
@@ -389,8 +386,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
      */
     @Test
     public void test_obtainJwt_reaccessResourceWithJwtInHeader() throws Exception {
-        server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_mpJwt_mapToUserRegistry_true.xml");
+        expandAndUpdateServerConfiguration(server, "server_mpJwt_mapToUserRegistry_true.xml", false);
 
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
@@ -410,10 +406,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
         Page response = actions.invokeUrlWithBearerToken(_testName, webClient, protectedUrl, jwtCookie.getValue());
         validationUtils.validateResult(response, currentAction, expectations);
 
-        server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-
         actions.destroyWebClient(webClient);
-
     }
 
     /**
@@ -585,6 +578,30 @@ public class ReplayCookieTests extends CommonSecurityFat {
     }
 
     /********************************************** Helper methods **********************************************/
+    
+    /**
+     * Expands any imports in the specified server config and copies the expanded configuration to the server.xml of the server root.
+     * <p>
+     * Sets log marks to just before the config is updated.
+     * <p>
+     * This helper is necessary because {@link LibertyServer#reconfigureServerUsingExpandedConfiguration(String, String, String...)} validates that all applications are started
+     * after the config update, which doesn't work if the config update adds or removes applications.
+     * 
+     * @param server the server
+     * @param configFileName the config file in the publish/configs directory
+     * @param featureUpdate whether this config updates features
+     * @param appNames names of applications which should start after this update completes
+     * @throws Exception 
+     */
+    private void expandAndUpdateServerConfiguration(LibertyServer server, String configFileName, boolean featureUpdate, String... appNames) throws Exception {
+        Set<String> appNameSet = new HashSet<>(Arrays.asList(appNames));
+        ServerFileUtils serverFileUtils = new ServerFileUtils();
+        String newServerCfg = serverFileUtils.expandAndBackupCfgFile(server, "configs/" + configFileName, _testName);
+        Log.info(ReplayCookieTests.class, "reconfigureServerUsingExpandedConfiguration", "Reconfiguring server to use new config: " + configFileName);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(new File(newServerCfg));
+        server.waitForConfigUpdateInLogUsingMark(appNameSet, featureUpdate);
+    }
 
     private Cookie createIdenticalCookieWithNewValue(Cookie cookieToDuplicate, String newCookieValue) {
         return new Cookie(cookieToDuplicate.getDomain(), cookieToDuplicate.getName(), newCookieValue, cookieToDuplicate.getPath(), cookieToDuplicate.getExpires(), cookieToDuplicate

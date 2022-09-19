@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.overlay/resources/com/ibm/ws/artifact/overlay/internal/resources/ArtifactOverlayMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# # A file path.
+overlay.does.not.exist=CWWKM0301E: La cartella overlay {0} non esiste.
+overlay.does.not.exist.explanation=Il file system Liberty non \u00e8 coerente con la configurazione overlay.  Ci\u00f2 pu\u00f2 verificarsi perch\u00e9 il server \u00e8 stato riavviato con le modifiche alla configurazione overlay.
+overlay.does.not.exist.useraction=Riavviare il server con l'opzione '--clean'.
+
+# # A file path.
+overlay.not.directory=CWWKM0302E: La cartella overlay {0} non \u00e8 una directory.
+overlay.not.directory.explanation=Il file system Liberty non \u00e8 coerente con la configurazione overlay.  Ci\u00f2 pu\u00f2 verificarsi perch\u00e9 il server \u00e8 stato riavviato con le modifiche alla configurazione overlay.
+overlay.not.directory.useraction=Riavviare il server con l'opzione '--clean'.
+
+# # A file path.
+overlay.not.empty=CWWKM0303E: La cartella overlay {0} non \u00e8 vuota.
+overlay.not.empty.explanation=Il file system Liberty non \u00e8 coerente con la configurazione overlay.  Ci\u00f2 pu\u00f2 verificarsi perch\u00e9 il server \u00e8 stato riavviato con le modifiche alla configurazione overlay.
+overlay.not.empty.useraction=Riavviare il server con l'opzione '--clean'.
+
+# # A file path.
+overlay.cache.does.not.exist=CWWKM0304E: La cartella cache overlay {0} non esiste.
+overlay.cache.does.not.exist.explanation=Il file system Liberty non \u00e8 coerente con la configurazione overlay.  Ci\u00f2 pu\u00f2 verificarsi perch\u00e9 il server \u00e8 stato riavviato con le modifiche alla configurazione overlay.
+overlay.cache.does.not.exist.useraction=Riavviare il server con l'opzione '--clean'.
+
+# # A file path.
+overlay.cache.not.directory=CWWKM0305E: La cartella cache overlay {0} non \u00e8 una directory.
+overlay.cache.not.directory.explanation=Il file system Liberty non \u00e8 coerente con la configurazione overlay.  Ci\u00f2 pu\u00f2 verificarsi perch\u00e9 il server \u00e8 stato riavviato con le modifiche alla configurazione overlay.
+overlay.cache.not.directory.useraction=Riavviare il server con l'opzione '--clean'.
+
+# # A file path.
+overlay.exists.not.directory=CWWKM0306E: Il file overlay {0} esiste, ma non \u00e8 una directory.
+overlay.exists.not.directory.explanation=Il file system Liberty non \u00e8 coerente con la configurazione overlay.  Ci\u00f2 pu\u00f2 verificarsi perch\u00e9 il server \u00e8 stato riavviato con le modifiche alla configurazione overlay.
+overlay.exists.not.directory.useraction=Riavviare il server con l'opzione '--clean'.

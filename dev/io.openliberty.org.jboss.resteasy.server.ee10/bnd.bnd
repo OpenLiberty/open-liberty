@@ -19,7 +19,7 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 bVersion=1.0
-resteasy-version=6.0.0.Final
+resteasy-version=6.1.0.Final
 
 src: src, resources
 
@@ -73,5 +73,5 @@ Include-Resource:\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   io.openliberty.org.jboss.resteasy.common.ee10,\
-  io.openliberty.jakarta.servlet.5.0,\
-  io.openliberty.jakarta.restfulWS.3.0
+  io.openliberty.jakarta.servlet.6.0, \
+  io.openliberty.jakarta.restfulWS.3.1

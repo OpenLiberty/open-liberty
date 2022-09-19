@@ -16,16 +16,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                MPContextProp1_3_Test.class,
-
-                // TODO eventually, this is intended to test a Jakarta EE 10 server
-                // with MicroProfile Context Propagation 2.0.
-                // In the mean time, we are using it to test the combination of
-                // Concurrency 3.0 (an EE 10 feature) with MP Context Propagation enabled.
-                // At some point, Concurrency 3.0 will be prevented from running with EE 9
-                // features, and this test will need to be disabled for a time, until
-                // the EE 10 compatible version of MP Context Propagation becomes available.
-                MPContextProp2_0_Test.class
+                MPContextProp1_3_EE9_Test.class,
+                MPContextProp1_3_EE10_Test.class
 })
 public class FATSuite {
 }

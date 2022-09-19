@@ -52,7 +52,8 @@ public class ProxySupportTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+        MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
+        MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
         MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
         MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
         MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL

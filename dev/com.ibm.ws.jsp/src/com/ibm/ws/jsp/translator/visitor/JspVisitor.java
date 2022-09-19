@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
 
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JspCoreException;
+import com.ibm.ws.jsp.PagesVersionHandler;
 import com.ibm.ws.jsp.configuration.JspConfiguration;
 import com.ibm.ws.jsp.translator.JspTranslationException;
 import com.ibm.ws.jsp.translator.visitor.configuration.JspVisitorUsage;
@@ -324,9 +325,15 @@ public abstract class JspVisitor {
                     visitJspSetPropertyEnd(jspElement);
                 }
                 else if (jspElementType.equals(Constants.JSP_PLUGIN_TYPE)) {
-                    visitJspPluginStart(jspElement);
-                    processChildren(jspElement);
-                    visitJspPluginEnd(jspElement);
+                    if(PagesVersionHandler.isPages30OrLowerLoaded()){
+                        visitJspPluginStart(jspElement);
+                        processChildren(jspElement);
+                        visitJspPluginEnd(jspElement);
+                    } else {
+                        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
+                            logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping the jsp:plugin element as it is a no operation for Pages 3.1+");
+                        }
+                    }
                 }
                 else if (jspElementType.equals(Constants.JSP_ATTRIBUTE_TYPE)) {
                     visitJspAttributeStart(jspElement);

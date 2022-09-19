@@ -8,44 +8,44 @@
 
     <include location="../fatTestPorts.xml"/>
 
-    <!-- SPI type visibility tests use feature restConnector-2.0 to provide ibm-spi packages -->
+    <!-- SPI visibility tests use feature restConnector-2.0 to provide ibm-spi packages -->
 
-    <library id="testSpiTypeVisible" name="testSpiTypeVisible"
-            description="testSpiTypeVisible">
-        <fileset dir="${server.output.dir}/sharedLib" includes="testSpiTypeVisible.jar" />
+    <library id="testSpiVisible" name="testSpiVisible"
+            description="testSpiVisible">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testSpiVisible.jar" />
     </library>
 
-    <bell libraryRef="testSpiTypeVisible" enableSpiVisibility="true"/>
+    <bell libraryRef="testSpiVisible" spiVisibility="true"/>
 
-    <library id="testNoSpiTypeVisible" name="testNoSpiTypeVisible"
-            description="testNoSpiTypeVisible">
-        <fileset dir="${server.output.dir}/sharedLib" includes="testSpiTypeVisible.jar" />
+    <library id="testNoSpiVisible" name="testNoSpiVisible"
+            description="testNoSpiVisible">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testSpiVisible.jar" />
     </library>
 
-    <bell libraryRef="testNoSpiTypeVisible"/>
+    <bell libraryRef="testNoSpiVisible"/>
 
-    <!-- SPI type visibility not supported for Liberty global shared library -->
+    <!-- SPI visibility not supported for Liberty global shared library -->
 
     <library id="global">
-        <fileset dir="${server.output.dir}/sharedLib" includes="testSpiTypeVisible.jar" />
+        <fileset dir="${server.output.dir}/sharedLib" includes="testSpiVisible.jar" />
     </library>
 
-    <bell libraryRef="global" enableSpiVisibility="true"/>
+    <bell libraryRef="global" spiVisibility="true"/>
 
     <!--  BELL service permissions -->
     <javaPermission
         className="java.util.PropertyPermission"
         name="className"
         actions="read"
-        codebase="${server.config.dir}sharedLib/testSpiTypeVisible.jar"/>
+        codebase="${server.config.dir}sharedLib/testSpiVisible.jar"/>
     <javaPermission
         className="java.util.PropertyPermission"
         name="loadOp"
         actions="read"
-        codebase="${server.config.dir}sharedLib/testSpiTypeVisible.jar"/>
+        codebase="${server.config.dir}sharedLib/testSpiVisible.jar"/>
 
-    <application location="SpiTypeVisibility.war">
-        <classloader commonLibraryRef="testSpiTypeVisible"/>
+    <application location="SpiVisibility.war">
+        <classloader commonLibraryRef="testSpiVisible"/>
     </application>
 
     <logging traceSpecification="com.ibm.ws.classloading.bells.internal.Bell=debug" traceFileName="trace.log" maxFileSize="100" maxFiles="10" />

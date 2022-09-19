@@ -727,6 +727,9 @@ toplink_severe=[EL z\u00e1va\u017en\u00fd]:
 
 toplink_warning=[EL varov\u00e1n\u00ed]: 
 
+unit_of_work_thread_info=Aktu\u00e1ln\u00ed jednotka pr\u00e1ce v relaci ({0}) byla vytvo\u0159ena jin\u00fdm podprocesem (ID: {1} n\u00e1zev: {2}), ne\u017e je aktu\u00e1ln\u00ed podproces (ID: {3} n\u00e1zev: {4})
+
+unit_of_work_thread_info_thread_dump=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku podprocesu vytvo\u0159en\u00ed (ID: {0} n\u00e1zev: {1}): {2} Trasov\u00e1n\u00ed z\u00e1sobn\u00edku aktu\u00e1ln\u00edho podprocesu (ID: {3} n\u00e1zev: {4}): {5}\n
 unitofwork_identity_hashcode={0}Ha\u0161ovac\u00ed k\u00f3d identity UnitOfWork: {1}
 
 update_all_fields_not_supported=Nativn\u00ed funkce Oc4j CMP "update-all-fields" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.

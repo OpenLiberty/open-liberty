@@ -418,9 +418,6 @@ public class LibertyServer implements LogMonitorClient {
 
     protected long serverStartTimeout = SERVER_START_TIMEOUT;
 
-    protected final AtomicInteger stopApplicationMessages = new AtomicInteger(0);
-    protected final AtomicInteger startApplicationMessages = new AtomicInteger(0);
-
     public String getPathToAutoFVTNamedServer() {
         return pathToAutoFVTNamedServer;
     }
@@ -2628,8 +2625,8 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    public ProgramOutput stopServer(String... expectedFailuresRegExps) throws Exception {
-        return this.stopServer(true, expectedFailuresRegExps);
+    public ProgramOutput stopServer(String... ignoredFailuresRegExps) throws Exception {
+        return this.stopServer(true, ignoredFailuresRegExps);
     }
 
     public static void stopMultipleServers(Collection<LibertyServer> servers) throws Exception {
@@ -2653,8 +2650,8 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    public ProgramOutput stopServer(boolean postStopServerArchive, String... expectedFailuresRegExps) throws Exception {
-        return this.stopServer(postStopServerArchive, false, expectedFailuresRegExps);
+    public ProgramOutput stopServer(boolean postStopServerArchive, String... ignoredFailuresRegExps) throws Exception {
+        return this.stopServer(postStopServerArchive, false, ignoredFailuresRegExps);
     }
 
     public ScheduledFuture<?> dumpServerOnSchedule(final String destination,
@@ -2735,34 +2732,34 @@ public class LibertyServer implements LogMonitorClient {
      * Stops the server and checks for any warnings or errors that appeared in logs.
      * If warnings/errors are found, an exception will be thrown after the server stops.
      *
-     * @param  postStopServerArchive true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
-     *                                   would be redundant)
-     * @param  forceStop             Force the server to stop, skipping the quiesce (default/usual value should be false)
-     * @param  regIgnore             A list of reg expressions corresponding to warnings or errors that should be ignored.
-     *                                   If regIgnore is null, logs will not be checked for warnings/errors
-     * @return                       the output of the stop command
-     * @throws Exception             if the stop operation fails or there are warnings/errors found in server
-     *                                   logs that were not in the list of ignored warnings/errors.
+     * @param  postStopServerArchive  true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
+     *                                    would be redundant)
+     * @param  forceStop              Force the server to stop, skipping the quiesce (default/usual value should be false)
+     * @param  ignoredFailuresRegExps A list of reg expressions corresponding to warnings or errors that should be ignored.
+     *                                    If regIgnore is null, logs will not be checked for warnings/errors
+     * @return                        the output of the stop command
+     * @throws Exception              if the stop operation fails or there are warnings/errors found in server
+     *                                    logs that were not in the list of ignored warnings/errors.
      */
-    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, String... expectedFailuresRegExps) throws Exception {
-        return stopServer(postStopServerArchive, forceStop, true, expectedFailuresRegExps);
+    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, String... ignoredFailuresRegExps) throws Exception {
+        return stopServer(postStopServerArchive, forceStop, true, ignoredFailuresRegExps);
     }
 
     /**
      * Stops the server and checks for any warnings or errors that appeared in logs.
      * If warnings/errors are found, an exception will be thrown after the server stops.
      *
-     * @param  postStopServerArchive true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
-     *                                   would be redundant)
-     * @param  forceStop             Force the server to stop, skipping the quiesce (default/usual value should be false)
-     * @param  skipArchives          Skip postStopServer collection of archives (WARs, EARs, JARs, etc.) - only used if postStopServerArchive is true
-     * @param  regIgnore             A list of reg expressions corresponding to warnings or errors that should be ignored.
-     *                                   If regIgnore is null, logs will not be checked for warnings/errors
-     * @return                       the output of the stop command
-     * @throws Exception             if the stop operation fails or there are warnings/errors found in server
-     *                                   logs that were not in the list of ignored warnings/errors.
+     * @param  postStopServerArchive  true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
+     *                                    would be redundant)
+     * @param  forceStop              Force the server to stop, skipping the quiesce (default/usual value should be false)
+     * @param  skipArchives           Skip postStopServer collection of archives (WARs, EARs, JARs, etc.) - only used if postStopServerArchive is true
+     * @param  ignoredFailuresRegExps A list of reg expressions corresponding to warnings or errors that should be ignored.
+     *                                    If ignoredFailuresRegExps is null, logs will not be checked for warnings/errors
+     * @return                        the output of the stop command
+     * @throws Exception              if the stop operation fails or there are warnings/errors found in server
+     *                                    logs that were not in the list of ignored warnings/errors.
      */
-    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, String... expectedFailuresRegExps) throws Exception {
+    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, String... ignoredFailuresRegExps) throws Exception {
         ProgramOutput output = null;
         boolean commandPortEnabled = true;
         final String method = "stopServer";
@@ -2862,7 +2859,7 @@ public class LibertyServer implements LogMonitorClient {
 
             this.isTidy = true;
 
-            checkLogsForErrorsAndWarnings(expectedFailuresRegExps);
+            checkLogsForErrorsAndWarnings(ignoredFailuresRegExps);
         } finally {
             // Issue 4363: If !newLogsOnStart, no longer reset the log offsets because if the
             // server starts again, logs will roll into the existing logs. We also don't clear
@@ -2874,7 +2871,6 @@ public class LibertyServer implements LogMonitorClient {
                 // command port isn't disabled, we won't have shut down the
                 // server, so we don't need to reset the log marks
                 resetLogOffsets();
-                clearMessageCounters();
             }
 
             if (isJava2SecurityEnabled()) {
@@ -2898,11 +2894,11 @@ public class LibertyServer implements LogMonitorClient {
      * Checks server logs for any lines containing errors or warnings that
      * do not match any regular expressions provided in regIgnore.
      *
-     * @param  regIgnore A list of regex strings for errors/warnings that
-     *                       may be safely ignored.
-     * @return           A list of lines containing errors/warnings from server logs
+     * @param  ignoredFailuresRegExps A list of regex strings for errors/warnings that
+     *                                    may be safely ignored.
+     * @return                        A list of lines containing errors/warnings from server logs
      */
-    protected void checkLogsForErrorsAndWarnings(String... regIgnore) throws Exception {
+    protected void checkLogsForErrorsAndWarnings(String... ignoredFailuresRegExps) throws Exception {
         final String method = "checkLogsForErrorsAndWarnings";
 
         // Get all warnings and errors in logs - default to an empty list
@@ -2930,8 +2926,8 @@ public class LibertyServer implements LogMonitorClient {
 
         // Compile set of regex's using input list and universal ignore list
         List<Pattern> ignorePatterns = new ArrayList<Pattern>();
-        if (regIgnore != null && regIgnore.length != 0) {
-            for (String ignoreRegEx : regIgnore) {
+        if (ignoredFailuresRegExps != null && ignoredFailuresRegExps.length != 0) {
+            for (String ignoreRegEx : ignoredFailuresRegExps) {
                 ignorePatterns.add(Pattern.compile(ignoreRegEx));
             }
         }
@@ -3011,12 +3007,6 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(c, method, "No unexpected errors or warnings found in server logs.");
         else
             throw ex;
-    }
-
-    protected void clearMessageCounters() {
-        //this is because we will be getting a new log file
-        stopApplicationMessages.set(0);
-        startApplicationMessages.set(0);
     }
 
     public void restartServer() throws Exception {
@@ -3223,6 +3213,13 @@ public class LibertyServer implements LogMonitorClient {
                 if (l.equals(OSGI_DIR_NAME) || l.startsWith(".s")) {
                     // skip the osgi framework cache, and runtime artifacts: too big / too racy
                     Log.finest(c, method, "Skipping workarea element " + l);
+                    continue;
+                }
+            }
+            if (remoteDirectory.getName().equals("checkpoint")) {
+                if (l.equals("image")) {
+                    // skip the checkpoint image; it is too big
+                    Log.finest(c, method, "Skipping checkpoint/image element " + l);
                     continue;
                 }
             }
@@ -4973,8 +4970,8 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
-     * This method will search the output and trace files for this server
-     * for the specified expression. The default trace prefix is assumed.
+     * This method will search the messages.log for this server
+     * for the specified expression.
      *
      * @param  regexp    pattern to search for
      * @return           A list of the lines in the trace files which contain the matching
@@ -4986,8 +4983,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
-     * This method will search the output and trace files for this server
-     * for the specified expression. The default trace prefix is assumed.
+     * This method will search {@code logFile} for the specified expression.
      *
      * @param  regexp    pattern to search for
      * @return           A list of the lines in the trace files which contain the matching
@@ -5986,62 +5982,87 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected void searchForMessages(String message_code, String message_type, AtomicInteger counter) {
-        final String method = "searchForMessages";
-        // Get a remote file whether it exists yet or not (thus don't use the LibertyFileManager API)
-        if (messageAbsPath == null) {
-            Log.info(c, method, "Messages file path  is null - no check for message in logs");
-        } else {
-            RemoteFile outputFile = new RemoteFile(machine, messageAbsPath);
-            int oldNumber = counter.getAndIncrement();
-            int newNumber = oldNumber + 1;
-            int numberFound = waitForMultipleStringsInLog(newNumber, message_code, serverStartTimeout, outputFile);
-            //waitForStringInLog(REMOVE_APP_MESSAGE_CODE, serverStartTimeout, outputFile);
-            if (numberFound == newNumber) {
-                Log.info(c, method, message_type + " message appears in log " + numberFound + " time(s)");
-            } else if (numberFound > counter.get()) {
-                //need to update stopApplicationMessages
-                Log.info(c, method, "Resetting the number of " + message_type + " messages that appear in the log");
-                counter.set(numberFound);
-            } else {
-                Log.info(c, method, "Incorrect number of " + message_type + " messages in the log.  An error may have occurred.");
+    private enum AppState {
+        STARTED,
+        STOPPED
+    }
+
+    /**
+     * Wait for an application to be started or stopped
+     *
+     * @param  appName          the application name to wait for
+     * @param  state            whether we're waiting for it to start or stop
+     * @param  timeout          the timeout in ms
+     * @throws RuntimeException if the app does not reach the expected state within the timeout
+     */
+    private void waitForAppState(String appName, AppState state, long timeout) {
+        Log.info(c, "waitForAppState", "Starting wait for " + appName + " to be " + state);
+        AppState currentState = null;
+        String lastMessage = null;
+        long waited = 0;
+        while (waited <= timeout) {
+            try {
+                List<String> strings = findStringsInLogs("CWWKZ000(1|9)I:.*" + appName);
+                if (!strings.isEmpty()) {
+                    lastMessage = strings.get(strings.size() - 1);
+                    if (lastMessage.contains("CWWKZ0001I")) {
+                        currentState = AppState.STARTED;
+                    } else {
+                        currentState = AppState.STOPPED;
+                    }
+                } else {
+                    currentState = AppState.STOPPED; // If there's no started message, assume it's stopped
+                }
+                if (currentState == state) {
+                    break;
+                }
+                Thread.sleep(LogMonitor.WAIT_INCREMENT);
+                waited += LogMonitor.WAIT_INCREMENT;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
+        }
+
+        if (currentState != state) {
+            throw new RuntimeException("Timed out waiting for " + appName + " to be in state " + state + ". Actual state: " + currentState + ", Last log message:" + lastMessage);
+        } else {
+            Log.info(c, "waitForAppState", "Application " + appName + " reached " + state + " in " + waited + "ms");
         }
     }
 
     public void addInstalledAppForValidation(String app) {
         final String method = "addInstalledAppForValidation";
-        final String START_APP_MESSAGE_CODE = "CWWKZ0001I:.*" + app;
         Log.info(c, method, "Adding installed app: " + app + " for validation");
         installedApplications.add(app);
 
         if (isStarted) {
-            searchForMessages(START_APP_MESSAGE_CODE, "installApp", startApplicationMessages);
+            waitForAppState(app, AppState.STARTED, APP_START_TIMEOUT);
         }
     }
 
     public void removeInstalledAppForValidation(String app) {
         final String method = "removeInstalledAppForValidation";
-        final String REMOVE_APP_MESSAGE_CODE = "CWWKZ0009I:.*" + app;
         Log.info(c, method, "Removing installed app: " + app + " for validation");
         installedApplications.remove(app);
 
         if (isStarted) {
-            searchForMessages(REMOVE_APP_MESSAGE_CODE, "uninstallApp", stopApplicationMessages);
+            waitForAppState(app, AppState.STOPPED, LOG_SEARCH_TIMEOUT);
         }
     }
 
     public void removeAllInstalledAppsForValidation() {
         final String method = "removeInstalledAppForValidation";
-        final String REMOVE_APP_MESSAGE_CODE = "CWWKZ0009I";
         Log.info(c, method, "Removing following list of installed application for validation");
         for (String app : installedApplications) {
             Log.info(c, method, " -" + app);
         }
+        List<String> appsRemoved = new ArrayList<>(installedApplications);
         installedApplications.clear();
 
         if (isStarted) {
-            searchForMessages(REMOVE_APP_MESSAGE_CODE, "uninstallApp", stopApplicationMessages);
+            for (String app : appsRemoved) {
+                waitForAppState(app, AppState.STOPPED, LOG_SEARCH_TIMEOUT);
+            }
         }
     }
 

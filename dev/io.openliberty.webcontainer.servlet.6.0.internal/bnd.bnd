@@ -27,7 +27,13 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
-    io.openliberty.webcontainer60.session.impl*;provide:=true
+    io.openliberty.webcontainer60.session.impl*;provide:=true,\
+    io.openliberty.webcontainer60.osgi.container.config*;provide:=true,\
+    io.openliberty.webcontainer60.osgi.request*;provide:=true,\
+    io.openliberty.webcontainer60.osgi.response*;provide:=true,\
+    io.openliberty.webcontainer60.osgi.srt*;provide:=true,\
+    io.openliberty.webcontainer60.srt*;provide:=true,\
+    io.openliberty.websphere.servlet60*;provide:=true
 
 Private-Package: \
     com.ibm.websphere.security, \
@@ -41,26 +47,26 @@ Import-Package: \
 instrument.disabled: true
 
 -buildpath: \
-    com.ibm.ws.webcontainer.jakarta;version=latest,\
-    com.ibm.ws.webcontainer.servlet.3.1.jakarta;version=latest,\
-    com.ibm.ws.webcontainer.servlet.4.0.jakarta;version=latest,\
-    com.ibm.ws.logging.core;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    com.ibm.ws.logging;version=latest,\
-    com.ibm.websphere.org.osgi.core;version=latest,\
-    com.ibm.websphere.org.osgi.service.component;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    com.ibm.ws.transport.http;version=latest,\
-    com.ibm.ws.container.service;version=latest,\
-    com.ibm.ws.injection;version=latest,\
-    com.ibm.ws.managedobject;version=latest,\
-    com.ibm.ws.resource;version=latest,\
-    com.ibm.ws.adaptable.module;version=latest,\
-    com.ibm.ws.org.apache.commons.fileupload;version=latest,\
-    com.ibm.ws.session.jakarta;version=latest,\
-    com.ibm.ws.javaee.dd.common;version=latest,\
-    com.ibm.ws.javaee.dd;version=latest,\
-    com.ibm.ws.kernel.boot.core;version=latest,\
-    com.ibm.websphere.security;version=latest,\
-    io.openliberty.jakarta.servlet.6.0;version=latest,\
-    io.openliberty.session.6.0.internal;version=latest
+	com.ibm.ws.webcontainer.jakarta;version=latest,\
+	com.ibm.ws.webcontainer.servlet.3.1.jakarta;version=latest,\
+	com.ibm.ws.webcontainer.servlet.4.0.jakarta;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.org.apache.commons.fileupload;version=latest,\
+	com.ibm.ws.session.jakarta;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	io.openliberty.session.6.0.internal;version=latest

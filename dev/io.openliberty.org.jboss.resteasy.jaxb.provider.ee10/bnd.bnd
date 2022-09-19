@@ -19,7 +19,7 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-resteasy-version=6.0.0.Final
+resteasy-version=6.1.0.Final
 
 instrument.ffdc: false
 instrument.disabled: true
@@ -42,6 +42,10 @@ Export-Package: \
 
 Private-Package: \
   org.jboss.resteasy.plugins.providers.jaxb.i18n;version=${resteasy-version}
+  
+Import-Package: \
+  !com.sun.xml.bind.marshaller, \
+  *
 
 Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-jaxb-provider;${resteasy-version};EXACT}

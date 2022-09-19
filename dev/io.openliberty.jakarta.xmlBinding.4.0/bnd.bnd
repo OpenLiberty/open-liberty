@@ -18,7 +18,14 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-SymbolicName: io.openliberty.jakarta.xmlBinding.4.0; singleton:=true
 
-Export-Package: jakarta.xml.bind.*;version="4.0"
+Export-Package: jakarta.xml.bind.*;thread-context=true;version="4.0"
+
+Service-Component: \
+  io.openliberty.jakarta.xmlBinding._4_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:= "resources=${app-resources}"
 
 Import-Package: \
   jakarta.activation, \
@@ -38,5 +45,6 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version=4.0.0,\
-	io.openliberty.org.glassfish.hk2.osgi-resource-locator
+	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version='4.0.0',\
+	io.openliberty.org.glassfish.hk2.osgi-resource-locator,\
+	com.ibm.ws.logging

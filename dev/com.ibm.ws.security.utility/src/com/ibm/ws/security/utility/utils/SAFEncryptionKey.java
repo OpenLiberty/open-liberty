@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.ibm.ws.kernel.service.util.JavaInfo;
+
 /**
  *
  */
@@ -34,15 +36,23 @@ public class SAFEncryptionKey {
     private static final String racfPass = "password";
     private KeyStore keystore = null;
 
+    // keyring prefixes
+    private static final String PREFIX_SAFKEYRING = "safkeyring:";
+    private static final String PREFIX_SAFKEYRINGHYBRID = "safkeyringhybrid:";
+    private static final String PREFIX_SAFKEYRINGHW = "safkeyringhw:";
+    private static final String PREFIX_SAFKEYRINGJCE = "safkeyringjce:";
+    private static final String PREFIX_SAFKEYRINGJCEHYBRID = "safkeyringjcehybrid:";
+    private static final String PREFIX_SAFKEYRINGJCECCA = "safkeyringjcecca:";
+
     /**
      * SAF keyring URL pattern with two slashes and no username: "safkeyring://My.Keyring"
      */
-    Pattern safKeyringPatternTwoSlashes = Pattern.compile("(safkeyring|(safkeyringhw|safkeyringhybrid))://\\w.*");
+    Pattern safKeyringPatternTwoSlashes = Pattern.compile("(safkeyring|(safkeyringhw|safkeyringhybrid|safkeyringjce|safkeyringjcehybrid|safkeyringjcecca))://\\w.*");
 
     /**
      * SAF keyring URL pattern with three slashes: "safkeyring:///My.Keyring" OR "safkeyring://MyUser1/My.Keyring"
      */
-    Pattern safKeyringPatternThreeSlashes = Pattern.compile("(safkeyring|(safkeyringhw|safkeyringhybrid))://.*/\\w.*");
+    Pattern safKeyringPatternThreeSlashes = Pattern.compile("(safkeyring|(safkeyringhw|safkeyringhybrid|safkeyringjce|safkeyringjcehybrid|safkeyringjcecca))://.*/\\w.*");
 
     /**
      * SAF crypto handlers
@@ -60,7 +70,10 @@ public class SAFEncryptionKey {
         if (saf_label != null)
             this.label = saf_label;
 
-        setSAFHandlers();
+        if (JavaInfo.majorVersion() < 11) {
+            //Starting with Java 11 the JDK does not require handlers to open saf keyrings,  they are built in
+            setSAFHandlers();
+        }
         validateConfig();
 
     }
@@ -148,24 +161,30 @@ public class SAFEncryptionKey {
 
         // Get the appropriate SAF handler
         URLStreamHandler handler = null;
+        URL url = null;
 
         String effectiveLocation = processKeyringURL(keyring);
-        if (effectiveLocation != null) {
-            try {
-                // Get handler
-                String keyringPrefix = effectiveLocation.substring(0, effectiveLocation.indexOf(":"));
-                String jceHandler = handlers.get(keyringPrefix.toLowerCase());
+        if (JavaInfo.majorVersion() < 11) {
 
-                handler = (URLStreamHandler) Class.forName(jceHandler).newInstance();
+            if (effectiveLocation != null) {
+                try {
+                    // Get handler
+                    String keyringPrefix = effectiveLocation.substring(0, effectiveLocation.indexOf(":"));
+                    String jceHandler = handlers.get(keyringPrefix.toLowerCase());
 
-            } catch (Exception e) {
-                String msg = "Failed to set SAF handler associated with the keyring: " + effectiveLocation + ".  Extended error: " + e.getMessage();
-                throw new Exception(msg);
+                    handler = (URLStreamHandler) Class.forName(jceHandler).newInstance();
+
+                } catch (Exception e) {
+                    String msg = "Failed to set SAF handler associated with the keyring: " + effectiveLocation + ".  Extended error: " + e.getMessage();
+                    throw new Exception(msg);
+                }
             }
-        }
 
-        // Create the URL
-        URL url = new URL(null, effectiveLocation, handler);
+            // Create the URL
+            url = new URL(null, effectiveLocation, handler);
+        } else {
+            url = new URL(effectiveLocation);
+        }
 
         // Open the file.
         InputStream fis = url.openStream();
@@ -205,6 +224,7 @@ public class SAFEncryptionKey {
      */
     private String processKeyringURL(String safKeyringURL) {
         String processedUrl = null;
+
         if (safKeyringURL != null) {
             if (safKeyringPatternThreeSlashes.matcher(safKeyringURL).matches()) {
                 // The keyring url is already in the correct format
@@ -216,6 +236,34 @@ public class SAFEncryptionKey {
                 StringBuffer sb = new StringBuffer(safKeyringURL);
                 sb.insert(index, "/");
                 processedUrl = sb.toString();
+            }
+
+            // Todo: Needs to be made common. This code is repeated in other files,  BaseCommandTask.java, SAFEncryptionKey.java
+            //        CollectiveHostAuthInfoImpl.java and KeyStringResolverImpl.java
+            //Check the prefix first,  it may need to be converted first
+            String replacePrefix = null;
+            if (processedUrl != null) {
+                if (JavaInfo.majorVersion() >= 11) {
+                    if (processedUrl.startsWith(PREFIX_SAFKEYRING))
+                        replacePrefix = PREFIX_SAFKEYRINGJCE;
+                    else if (processedUrl.startsWith(PREFIX_SAFKEYRINGHYBRID))
+                        replacePrefix = PREFIX_SAFKEYRINGJCEHYBRID;
+                    else if (processedUrl.startsWith(PREFIX_SAFKEYRINGHW))
+                        replacePrefix = PREFIX_SAFKEYRINGJCECCA;
+                } else {
+                    if (processedUrl.startsWith(PREFIX_SAFKEYRINGJCE))
+                        replacePrefix = PREFIX_SAFKEYRING;
+                    else if (processedUrl.startsWith(PREFIX_SAFKEYRINGJCEHYBRID))
+                        replacePrefix = PREFIX_SAFKEYRINGHYBRID;
+                    else if (processedUrl.startsWith(PREFIX_SAFKEYRINGJCECCA))
+                        replacePrefix = PREFIX_SAFKEYRINGHW;
+                }
+
+                if (replacePrefix != null) {
+                    int index = processedUrl.indexOf(":");
+                    String removedPrefix = processedUrl.substring(index + 1);
+                    processedUrl = replacePrefix + removedPrefix;
+                }
             }
         }
 

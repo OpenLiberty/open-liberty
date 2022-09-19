@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,10 +25,10 @@ import componenttest.rules.repeater.RepeatTests;
 	MultiRecoveryTest4.class,
 })
 public class FATSuite {
-
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly()
-                            .removeFeature("jaxws-2.2").alwaysAddFeature("jaxws-2.3").withID("jaxws-2.3"))
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3")); 
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly())
+                    ;
 }

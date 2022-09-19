@@ -73,7 +73,8 @@ public class DeploymentTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, LITE
+                                                             MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
+                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
                                                              MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
 
     /**

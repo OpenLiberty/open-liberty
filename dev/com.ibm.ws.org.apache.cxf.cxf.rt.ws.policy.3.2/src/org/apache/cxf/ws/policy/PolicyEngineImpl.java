@@ -667,24 +667,35 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                     if (s.isEmpty()) {
                         if (doLog) {
                             LOG.fine("Alternative " + a.getName() + " is not supported");
-                            // Liberty change begin migration of behaviour from CXF 2.6.2
-                            if (ignoreUnsupportedPolicy) {
-                                // Please do not modify log message below, it's been used in PropertySettingTest
-                                LOG.fine("WARNING: Unsupported policy assertions will be ignored because "
-                                                + "property cxf.ignore.unsupported.policy is set to true.");
-                                return true;
-                            } else {
-                                return false;
-                            } // Liberty change end
                         }
-                        return false;
+                        // Liberty change begin migration of behaviour from CXF 2.6.2
+                        if (ignoreUnsupportedPolicy) {
+                            if (doLog) {
+                               // Please do not modify log message below, it's been used in PropertySettingTest
+                               LOG.fine("WARNING: Unsupported policy assertions will be ignored because "
+                                               + "property cxf.ignore.unsupported.policy is set to true.");
+                            }
+                            return true;
+                        } else {
+                            return false;
+                        } // Liberty change end
                     }
                     for (PolicyInterceptorProvider p : s) {
                         if (!p.configurationPresent(m, a)) {
                             if (doLog) {
                                 LOG.fine("Alternative " + a.getName() + " is not supported");
                             }
-                            return false;
+                            // Liberty change begin migration of behaviour from CXF 2.6.2
+                            if (ignoreUnsupportedPolicy) {
+                               if (doLog) {
+                                  // Please do not modify log message below, it's been used in PropertySettingTest
+                                  LOG.fine("WARNING: Unsupported policy assertions will be ignored because "
+                                               + "property cxf.ignore.unsupported.policy is set to true.");
+			       }
+                               return true;
+                            } else {
+                               return false;
+                            } // Liberty change end
                         }
                     }
                 }

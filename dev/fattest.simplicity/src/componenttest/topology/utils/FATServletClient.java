@@ -83,6 +83,15 @@ public class FATServletClient {
     public static void runTest(LibertyServer server, String path, String testName) throws Exception {
         //HttpUtils.findStringInReadyUrl(server, getPathAndQuery(path, testName), FATServletClient.SUCCESS);
         String response = HttpUtils.getHttpResponseAsString(server, getPathAndQuery(path, testName));
+        assertTestResponse(response);
+    }
+
+    /**
+     * Check whether the response from a test servlet indicates a success and throw an exception if not.
+     *
+     * @param response the FATServlet response
+     */
+    public static void assertTestResponse(String response) {
         if (!response.contains(FATServletClient.SUCCESS)) {
             if (response.contains(AssertionErrorSerializer.START_TAG) &&
                 response.contains(AssertionErrorSerializer.END_TAG)) {
@@ -184,6 +193,19 @@ public class FATServletClient {
      * @return test method name without the RepeatTests suffix.
      */
     public String getTestMethodSimpleName() {
+        return getTestMethodSimpleName(testName);
+    }
+
+    /**
+     * Returns the test method name without the RepeatTests suffix.
+     *
+     * For example, when using RepeatTests with EE7_FEATURES, the suffix _EE7_FEATURES is added
+     * to provide unique test names for junit reporting purposes. The simple test method name
+     * dose not include the suffix.
+     *
+     * @return test method name without the RepeatTests suffix.
+     */
+    public static String getTestMethodSimpleName(TestName testName) {
         String testMethodName = testName.getMethodName();
         String currentAction = RepeatTestFilter.getRepeatActionsAsString();
         if (currentAction != null && testMethodName.endsWith(currentAction)) {

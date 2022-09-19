@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 import io.openliberty.microprofile.openapi20.internal.ConfigProcessor;
+import io.openliberty.microprofile.openapi20.internal.services.ConfigFieldProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
@@ -77,6 +78,9 @@ public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListe
 
     private static final String KEY_EXECUTOR_SERVICE_REF = "executorService";
     private final AtomicServiceReference<ScheduledExecutorService> executorServiceRef = new AtomicServiceReference<>(KEY_EXECUTOR_SERVICE_REF);
+
+    @Reference
+    private ConfigFieldProvider configFieldProvider;
 
     private volatile WsLocationAdmin locationAdminProvider;
 
@@ -122,7 +126,7 @@ public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListe
 
     private synchronized void activateFileMonitor(ComponentContext cc) {
         final int pollingInterval;
-        try (ConfigProcessor configProcessor = new ConfigProcessor(CustomCSSProcessor.class.getClassLoader())) {
+        try (ConfigProcessor configProcessor = new ConfigProcessor(CustomCSSProcessor.class.getClassLoader(), configFieldProvider)) {
             pollingInterval = configProcessor.getFilePollingInterval();
         }
         if (LoggingUtils.isEventEnabled(tc)) {

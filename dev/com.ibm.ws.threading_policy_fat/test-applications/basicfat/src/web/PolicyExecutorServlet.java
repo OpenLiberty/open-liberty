@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.Closeable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -960,6 +963,63 @@ public class PolicyExecutorServlet extends FATServlet {
     }
 
     /**
+     * Use ExecutorService.close to shut down the executor and await completion of running tasks, if on Java 19 or above.
+     * Otherwise, use shutdown and awaitCompletion.
+     */
+    @Test
+    public void testClose() throws Exception {
+        PolicyExecutor executor = provider.create("testClose")
+                        .maxConcurrency(2);
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch twoTasksStarted = new CountDownLatch(2);
+        CountDownLatch thirdTaskStarted = new CountDownLatch(1);
+        CountDownLatch fourthTaskStarted = new CountDownLatch(1);
+
+        CountDownTask task1 = new CountDownTask(twoTasksStarted, blocker, TimeUnit.SECONDS.toNanos(2));
+        CountDownTask task2 = new CountDownTask(twoTasksStarted, blocker, TimeUnit.SECONDS.toNanos(2));
+        CountDownTask task3 = new CountDownTask(thirdTaskStarted, thirdTaskStarted, TIMEOUT_NS);
+        CountDownTask task4 = new CountDownTask(fourthTaskStarted, fourthTaskStarted, TIMEOUT_NS);
+
+        // Use up max concurrency by submitting 2 tasks
+        Future<Boolean> task1future = executor.submit(task1);
+        Future<Boolean> task2future = executor.submit(task2);
+
+        assertEquals(true, twoTasksStarted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Third task should remain in the queue for 2 seconds or so
+        Future<Boolean> task3future = executor.submit(task3);
+
+        if (executor instanceof Closeable) {
+            // Java 19+
+            ((Closeable) executor).close();
+        } else {
+            // Java 18-
+            executor.shutdown();
+            assertEquals(true, executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        }
+
+        assertEquals(true, task1future.isDone());
+        assertEquals(true, task2future.isDone());
+        assertEquals(true, task3future.isDone());
+
+        assertEquals(false, task1future.isCancelled());
+        assertEquals(false, task2future.isCancelled());
+        assertEquals(false, task3future.isCancelled());
+
+        assertEquals(Boolean.FALSE, task1future.get(1, TimeUnit.MILLISECONDS));
+        assertEquals(Boolean.FALSE, task2future.get(1, TimeUnit.MILLISECONDS));
+        assertEquals(Boolean.TRUE, task3future.get(1, TimeUnit.MILLISECONDS));
+
+        try {
+            Future<Boolean> task4future = executor.submit(task4);
+            fail("Should not be able to submit task after closing or shutting down the executor: " + task4future);
+        } catch (RejectedExecutionException x) {
+            // pass - the executor was closed or shut down.
+        }
+    }
+
+    /**
      * Use CompletionStageFactory to create CompletableFutures that run on a supplied executor.
      * A policy executor with constraints on max concurrency/queue size is used, which helps to
      * make it obvious that the CompletionStage is running or attempting to run on that executor
@@ -1801,6 +1861,103 @@ public class PolicyExecutorServlet extends FATServlet {
         executor.shutdown();
         assertTrue(executor.isShutdown());
         assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Use Future.exceptionNow on futures for tasks that are:
+     *
+     * <li>successfully completed
+     * <li>exceptionally completed
+     * <li>running
+     * <li>aborted due to exceeding start timeout
+     * <li>cancelled
+     */
+    @Test
+    public void testExceptionNow() throws Throwable {
+        PolicyExecutor executor = provider.create("testExceptionNow")
+                        .maxConcurrency(1);
+
+        FactorialTask sucessfulTask = new FactorialTask(1, executor);
+        Future<Long> successfulTaskFuture = executor.submit(sucessfulTask);
+
+        FactorialTask failingTask = new FactorialTask(6, null); // causes NullPointerException when task runs
+        Future<Long> failingTaskFuture = executor.submit(failingTask);
+
+        // Use up maxConcurrency
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch task3started = new CountDownLatch(1);
+
+        CountDownTask task3 = new CountDownTask(task3started, blocker, TIMEOUT_NS * 2);
+        Future<Boolean> task3future = executor.submit(task3);
+
+        assertEquals(true, task3started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Future.exceptionNow on task that completes successfully:
+        // successfulTask must have completed by now because task3 is using up max concurrency
+        Method exceptionNow = successfulTaskFuture.getClass().getMethod("exceptionNow");
+        try {
+            Throwable exception = (Throwable) exceptionNow.invoke(successfulTaskFuture);
+            if (exception == null)
+                throw new AssertionError("exceptionNow returned null for successfully completed task");
+            else
+                throw new AssertionError("exceptionNow returned value for successfully completed task").initCause(exception);
+        } catch (IllegalStateException x) {
+            // pass
+        }
+
+        // Future.exceptionNow on task that failed with an exception:
+        // failingTask must have completed by now because task3 is using up max concurrency
+        Throwable exception = (Throwable) exceptionNow.invoke(failingTaskFuture);
+        if (!NullPointerException.class.equals(exception.getClass()))
+            throw exception;
+
+        // Future.exceptionNow on running task:
+        try {
+            exception = (Throwable) exceptionNow.invoke(task3future);
+            if (exception == null)
+                throw new AssertionError("exceptionNow returned null for running task");
+            else
+                throw new AssertionError("exceptionNow returned value for running task").initCause(exception);
+        } catch (IllegalStateException x) {
+            // pass
+        }
+
+        // startTimeout is applied after submitting the blocker so that it doesn't ever stop the blocker task from starting
+        executor.startTimeout(300);
+
+        Future<Long> task4future = executor.submit(new FactorialTask(1, executor));
+
+        // Wait long enough to time out the queued task
+        assertEquals(false, blocker.await(400, TimeUnit.MILLISECONDS));
+
+        // Future.exceptionNow on task that times out and is aborted:
+        try {
+            exception = (Throwable) exceptionNow.invoke(task4future);
+            if (exception == null)
+                throw new AssertionError("exceptionNow returned null for aborted task");
+            else
+                throw new AssertionError("exceptionNow returned value for aborted task").initCause(exception);
+        } catch (IllegalStateException x) {
+            if (!(x.getCause() instanceof StartTimeoutException))
+                throw x;
+            // pass
+        }
+
+        // Future.exceptionNow on cancelled task:
+        assertEquals(true, task3future.cancel(true));
+        try {
+            exception = (Throwable) exceptionNow.invoke(task3future);
+            if (exception == null)
+                throw new AssertionError("exceptionNow returned null for cancelled task");
+            else
+                throw new AssertionError("exceptionNow returned value for cancelled task").initCause(exception);
+        } catch (IllegalStateException x) {
+            // pass
+        }
+
+        blocker.countDown();
+
+        assertEquals(Collections.EMPTY_LIST, executor.shutdownNow());
     }
 
     /**
@@ -5047,6 +5204,108 @@ public class PolicyExecutorServlet extends FATServlet {
         }
 
         assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Use Future.resultNow on futures for tasks that are:
+     *
+     * <li>successfully completed
+     * <li>exceptionally completed
+     * <li>running
+     * <li>aborted due to exceeding start timeout
+     * <li>cancelled
+     */
+    @Test
+    public void testResultNow() throws Throwable {
+        PolicyExecutor executor = provider.create("testResultNow")
+                        .maxConcurrency(1);
+
+        FactorialTask sucessfulTask = new FactorialTask(1, executor);
+        Future<Long> successfulTaskFuture = executor.submit(sucessfulTask);
+
+        FactorialTask failingTask = new FactorialTask(6, null); // causes NullPointerException when task runs
+        Future<Long> failingTaskFuture = executor.submit(failingTask);
+
+        // Use up maxConcurrency
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch task3started = new CountDownLatch(1);
+
+        CountDownTask task3 = new CountDownTask(task3started, blocker, TIMEOUT_NS * 2);
+        Future<Boolean> task3future = executor.submit(task3);
+
+        assertEquals(true, task3started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Future.resultNow on task that completes successfully:
+        // successfulTask must have completed by now because task3 is using up max concurrency
+        Method resultNow = successfulTaskFuture.getClass().getMethod("resultNow");
+        Object result = resultNow.invoke(successfulTaskFuture);
+        assertEquals(Long.valueOf(1), result);
+
+        // Future.resultNow on task that failed with an exception:
+        // failingTask must have completed by now because task3 is using up max concurrency
+        try {
+            result = resultNow.invoke(failingTaskFuture);
+            throw new AssertionError("resultNow returned " + result + " for failed task");
+        } catch (InvocationTargetException xx) { // Java reflection should not be wrapping IllegalStateException because it is a type of RuntimeException!
+            IllegalStateException x = (IllegalStateException) xx.getCause();
+            if (!(x.getCause() instanceof NullPointerException))
+                throw x;
+        } catch (IllegalStateException x) {
+            if (!(x.getCause() instanceof NullPointerException))
+                throw x;
+        }
+
+        // Future.resultNow on running task:
+        try {
+            result = resultNow.invoke(task3future);
+            throw new AssertionError("resultNow returned " + result + " for running task");
+        } catch (InvocationTargetException xx) { // Java reflection should not be wrapping IllegalStateException because it is a type of RuntimeException!
+            IllegalStateException x = (IllegalStateException) xx.getCause();
+            if (x.getCause() != null)
+                throw x;
+        } catch (IllegalStateException x) {
+            if (x.getCause() != null)
+                throw x;
+        }
+
+        // startTimeout is applied after submitting the blocker so that it doesn't ever stop the blocker task from starting
+        executor.startTimeout(300);
+
+        Future<Long> task4future = executor.submit(new FactorialTask(1, executor));
+
+        // Wait long enough to time out the queued task
+        assertEquals(false, blocker.await(400, TimeUnit.MILLISECONDS));
+
+        // Future.resultNow on task that times out and is aborted:
+        try {
+            result = resultNow.invoke(task4future);
+            throw new AssertionError("resultNow returned " + result + " for aborted task");
+        } catch (InvocationTargetException xx) { // Java reflection should not be wrapping IllegalStateException because it is a type of RuntimeException!
+            IllegalStateException x = (IllegalStateException) xx.getCause();
+            if (!(x.getCause() instanceof StartTimeoutException))
+                throw x;
+        } catch (IllegalStateException x) {
+            if (!(x.getCause() instanceof StartTimeoutException))
+                throw x;
+        }
+
+        // Future.resultNow on cancelled task:
+        assertEquals(true, task3future.cancel(true));
+        try {
+            result = resultNow.invoke(task3future);
+            throw new AssertionError("resultNow returned " + result + " for cancelled task");
+        } catch (InvocationTargetException xx) { // Java reflection should not be wrapping IllegalStateException because it is a type of RuntimeException!
+            IllegalStateException x = (IllegalStateException) xx.getCause();
+            if (!(x.getCause() instanceof CancellationException))
+                throw x;
+        } catch (IllegalStateException x) {
+            if (!(x.getCause() instanceof CancellationException))
+                throw x;
+        }
+
+        blocker.countDown();
+
+        assertEquals(Collections.EMPTY_LIST, executor.shutdownNow());
     }
 
     // Verify that tasks submitted via the execute and submit methods run on the caller thread when the queue is full

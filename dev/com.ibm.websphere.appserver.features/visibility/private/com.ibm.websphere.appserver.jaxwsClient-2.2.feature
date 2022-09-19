@@ -31,29 +31,30 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.jaxb-2.2, \
   com.ibm.websphere.appserver.injection-1.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
-  com.ibm.websphere.appserver.javax.mail-1.5; ibm.tolerates:="1.6"
+  com.ibm.websphere.appserver.javax.mail-1.5; ibm.tolerates:="1.6", \
+  com.ibm.websphere.appserver.httpcommons-1.0, \
+  com.ibm.websphere.appserver.internal.cxf.common-3.2
 -bundles=\
-  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2, \
-  com.ibm.ws.org.apache.xml.resolver.1.2, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.2.6.2, \
-  com.ibm.ws.org.apache.neethi.3.0.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2, \
+  com.ibm.ws.org.apache.neethi.3.1.1, \
   com.ibm.ws.javaee.ddmodel.wsbnd, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6.2, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.management.2.6.2, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.2.6.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2, \
+  com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2, \
+  com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2, \
   com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12", \
   com.ibm.websphere.javaee.jws.1.0; location:="dev/api/spec/,lib/"; require-java:="9",\
-  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2, \
   com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
-  com.ibm.ws.jaxws.clientcontainer, \
+  com.ibm.ws.jaxws.2.3.clientcontainer, \
   com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
   com.ibm.ws.prereq.wsdl4j.1.6.2, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2, \
-  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
-  com.ibm.ws.org.apache.cxf.cxf.api.2.6.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2, \
   com.ibm.ws.jaxws.tools.2.2.10, \
   com.ibm.ws.com.sun.xml.messaging.saaj; require-java:="9",\
   com.ibm.ws.org.jvnet.mimepull; require-java:="9"

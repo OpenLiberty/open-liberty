@@ -33,6 +33,7 @@ import com.ibm.ws.jpa.ormdiagnostics.FATSuite;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper.JPAClass;
 import com.ibm.ws.ormdiag.example.war.ExampleServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -94,7 +95,7 @@ public class TestExample_WAR extends JPAFATServletClient {
         webApp.addAsLibrary(ejbJar);
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + "resources/war");
 
-        ShrinkHelper.exportAppToServer(server, webApp);
+        ShrinkHelper.exportToServer(server, "apps", webApp);
 
         Application appRecord = new Application();
         appRecord.setLocation(appName + "_WAR.war");

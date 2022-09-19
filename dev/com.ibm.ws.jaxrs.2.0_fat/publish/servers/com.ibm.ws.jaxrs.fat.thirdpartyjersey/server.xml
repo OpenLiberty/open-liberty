@@ -1,6 +1,7 @@
 <server>
     <featureManager>
         <feature>jaxrs-2.0</feature>
+        <feature>servlet-3.1</feature>
     </featureManager>
     
     <application type="war" id="thirdpartyjerseypf" name="thirdpartyjerseypf" location="thirdpartyjerseypf.war">        

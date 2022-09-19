@@ -36,7 +36,13 @@ tested.features: \
     cdi-3.0, \
     connectors-2.0, \
     appsecurity-4.0, \
-    expressionlanguage-4.0
+    expressionlanguage-4.0, \
+    websocket-2.1, \
+    servlet-6.0, \
+    xmlbinding-4.0, \
+    cdi-4.0, \
+    expressionlanguage-5.0, \
+    appsecurity-5.0
 
 -buildpath: \
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\

@@ -273,7 +273,8 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "submitGeneratePluginTask : FrameworkState.isStopping() = " + FrameworkState.isStopping());
 
-        if (!FrameworkState.isStopping() && gpc != null && executorSrvc != null) {
+        ExecutorService currentExecutor = executorSrvc;
+        if (!FrameworkState.isStopping() && gpc != null && currentExecutor != null) {
             Runnable generatePluginTask = new Runnable() {
                 @Override
                 public void run() {
@@ -288,18 +289,18 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
             };
 
             final CheckpointPhase checkpoint = CheckpointPhase.getPhase();
-            if (checkpoint != null) {
+            if (checkpoint != CheckpointPhase.INACTIVE) {
                 CheckpointHook restoreHook = new CheckpointHook() {
                     @Override
                     public void restore() {
-                        executorSrvc.submit(generatePluginTask);
+                        currentExecutor.submit(generatePluginTask);
                     }
                 };
                 if (!checkpoint.addMultiThreadedHook(restoreHook)) {
-                    executorSrvc.submit(generatePluginTask);
+                    currentExecutor.submit(generatePluginTask);
                 }
             } else {
-                executorSrvc.submit(generatePluginTask);
+                currentExecutor.submit(generatePluginTask);
             }
         }
 

@@ -18,7 +18,7 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-resteasy-version=6.0.0.Final
+resteasy-version=6.1.0.Final
 
 src: src, resources
 
@@ -56,25 +56,30 @@ Import-Package: \
   jakarta.enterprise.context;version="[3.0,5.0)", \
   jakarta.enterprise.context.spi;version="[3.0,5.0)", \
   jakarta.enterprise.event;version="[3.0,5.0)", \
+  jakarta.enterprise.inject;version="[3.0,5.0)", \
   jakarta.enterprise.inject.spi;version="[3.0,5.0)", \
   jakarta.enterprise.util;version="[3.0,5.0)", \
   jakarta.interceptor;version="[2.0,3.0)", \
   javax.naming, \
   jakarta.servlet;version="[5.0,7)", \
   jakarta.ws.rs;version="[3.0,4.0)", \
+  jakarta.ws.rs.client;version="[3.0,4.0)", \
+  jakarta.ws.rs.container;version="[3.0,4.0)", \
   jakarta.ws.rs.core;version="[3.0,4.0)", \
   jakarta.ws.rs.ext;version="[3.0,4.0)", \
-  org.jboss.logging;version="[3.4,4)", \
-  org.jboss.resteasy.cdi;version="[6.0,7)", \
-  org.jboss.resteasy.cdi.i18n;version="[6.0,7)", \
-  org.jboss.resteasy.core;version="[6.0,7)", \
-  org.jboss.resteasy.plugins.providers.multipart;version="[6.0,7)", \
-  org.jboss.resteasy.spi;version="[6.0,7)", \
-  org.jboss.resteasy.spi.metadata;version="[6.0,7)", \
-  org.jboss.resteasy.spi.util;version="[6.0,7)", \
-  org.jboss.resteasy.spi.validation;version="[6.0,7)", \
-  org.jboss.resteasy.util;version="[6.0,7)", \
-  org.jboss.weld.proxy
+  jakarta.ws.rs.sse;version="[3.0,4.0)", \
+  org.jboss.logging;version="[3.5,4)", \
+  org.jboss.resteasy.cdi;version="[6.1,7)", \
+  org.jboss.resteasy.cdi.i18n;version="[6.1,7)", \
+  org.jboss.resteasy.core;version="[6.1,7)", \
+  org.jboss.resteasy.plugins.providers.multipart;version="[6.1,7)", \
+  org.jboss.resteasy.spi;version="[6.1,7)", \
+  org.jboss.resteasy.spi.metadata;version="[6.1,7)", \
+  org.jboss.resteasy.spi.util;version="[6.1,7)", \
+  org.jboss.resteasy.spi.validation;version="[6.1,7)", \
+  org.jboss.resteasy.util;version="[6.1,7)", \
+  org.jboss.weld.proxy, \
+  *
 
 Private-Package: \
   io.openliberty.org.jboss.resteasy.common.component
@@ -85,6 +90,7 @@ instrument.disabled: false
 Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-cdi;${resteasy-version};EXACT}, \
   io/openliberty=${bin}/io/openliberty, \
+  org/jboss/resteasy/cdi=${bin}/org/jboss/resteasy/cdi, \
   META-INF=resources/META-INF
 
 -buildpath: \
@@ -95,11 +101,11 @@ Include-Resource:\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.container.service.compat;version=latest,\
   com.ibm.ws.logging.core,\
-  com.ibm.ws.org.jboss.logging,\
+  io.openliberty.org.jboss.logging35,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.webcontainer.jakarta;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   io.openliberty.org.jboss.resteasy.common.ee10,\
-  io.openliberty.jakarta.restfulWS.3.0,\
-  io.openliberty.jakarta.cdi.3.0,\
-  io.openliberty.jakarta.annotation.2.0
+  io.openliberty.jakarta.restfulWS.3.1,\
+  io.openliberty.jakarta.cdi.4.0,\
+  io.openliberty.jakarta.annotation.2.1

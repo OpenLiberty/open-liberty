@@ -12,14 +12,9 @@ package com.ibm.ws.transaction.test.tests;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Arrays;
-
-import org.junit.rules.TestName;
-
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -37,23 +32,16 @@ public class XATestBase {
      * @param server
      * @param servletName
      * @param appName
-     */
-    public XATestBase(String appName, String servletName) {
-        _app = appName;
-        _servlet = servletName;
-    }
-
-    /**
-     * @param server
-     * @param appName
      * @throws Exception
      */
-    public void setup(LibertyServer server) throws Exception {
+    public XATestBase(LibertyServer server, String appName, String servletName) throws Exception {
         _server = server;
+        _app = appName;
+        _servlet = servletName;
 
         ShrinkHelper.defaultApp(_server, _app, "com.ibm.ws.transaction.web.*");
 
-        server.setServerStartTimeout(300000);
+        _server.setServerStartTimeout(300000);
         _server.startServer();
     }
 
@@ -72,9 +60,9 @@ public class XATestBase {
      * @param testName
      * @throws Exception
      */
-    public void testSetTransactionTimeoutReturnsTrue(TestName testName) throws Exception {
+    public void testSetTransactionTimeoutReturnsTrue() throws Exception {
         _server.setMarkToEndOfLog();
-        HttpUtils.findStringInReadyUrl(_server, FATServletClient.getPathAndQuery(_servlet, testName.getMethodName()), FATServletClient.SUCCESS);
+        HttpUtils.findStringInReadyUrl(_server, FATServletClient.getPathAndQuery(_servlet, "testSetTransactionTimeoutReturnsTrue"), FATServletClient.SUCCESS);
         assertNotNull(_server.waitForStringInLogUsingMark(XAResourceImpl.class.getCanonicalName() + ".setTransactionTimeout\\([0-9]*\\): TRUE"),
                       "setTransactionTimeout() does not seem to have been called");
     }
@@ -85,9 +73,9 @@ public class XATestBase {
      * @param testName
      * @throws Exception
      */
-    public void testSetTransactionTimeoutReturnsFalse(TestName testName) throws Exception {
+    public void testSetTransactionTimeoutReturnsFalse() throws Exception {
         _server.setMarkToEndOfLog();
-        HttpUtils.findStringInReadyUrl(_server, FATServletClient.getPathAndQuery(_servlet, testName.getMethodName()), FATServletClient.SUCCESS);
+        HttpUtils.findStringInReadyUrl(_server, FATServletClient.getPathAndQuery(_servlet, "testSetTransactionTimeoutReturnsFalse"), FATServletClient.SUCCESS);
         assertNotNull(_server.waitForStringInLogUsingMark(XAResourceImpl.class.getCanonicalName() + ".setTransactionTimeout\\([0-9]*\\): FALSE"),
                       "setTransactionTimeout() does not seem to have been called");
     }
@@ -98,9 +86,9 @@ public class XATestBase {
      * @param testName
      * @throws Exception
      */
-    public void testSetTransactionTimeoutThrowsException(TestName testName) throws Exception {
+    public void testSetTransactionTimeoutThrowsException() throws Exception {
         _server.setMarkToEndOfLog();
-        HttpUtils.findStringInReadyUrl(_server, FATServletClient.getPathAndQuery(_servlet, testName.getMethodName()), FATServletClient.SUCCESS);
+        HttpUtils.findStringInReadyUrl(_server, FATServletClient.getPathAndQuery(_servlet, "testSetTransactionTimeoutThrowsException"), FATServletClient.SUCCESS);
         assertNotNull(_server.waitForStringInLogUsingMark(XAResourceImpl.class.getCanonicalName() + ".setTransactionTimeout\\([0-9]*\\): javax.transaction.xa.XAException"),
                       "setTransactionTimeout() does not seem to have been called");
     }

@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+ 
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/jbv_web1/src,\
+	test-applications/jbv_ejb2/src,\
+	test-applications/jbv_ejb1/src,\
+	test-resourceadapters/adapter.regr/src,\
+	test-applications/fvtweb/src,\
+	test-applications/Jbvweb/src
+
+fat.project: true
+
+-buildpath: \
+	com.ibm.ws.config;version=latest,\
+	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.ws.jdbc;version=latest,\
+	com.ibm.ws.jca.cm;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.websphere.javaee.jms.1.1;version=latest,\
+	com.ibm.websphere.javaee.validation.1.0;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
+	com.ibm.websphere.javaee.jms.2.0
+	

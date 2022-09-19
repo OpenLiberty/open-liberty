@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.security.RunAs;
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
+import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebListener;
@@ -291,6 +292,10 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         return ( getServletSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_31 );
     }    
 
+    public static boolean isServletSpecLevel50orLower() {
+        return ( getServletSpecLevel() <= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50 );
+    }   
+
     /**
      * Answer the default version level.  Used to assign the version ID to a
      * web configuration which has no associated descriptor.
@@ -514,13 +519,37 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
 
         // PI05845 end
 
-        public SessionCookieConfigImpl getSessionCookieConfig() {
-            SessionCookieConfigImpl sessionCookieConfigImpl = config.getSessionCookieConfig();
+        /*
+         * Servlet 6.0 - refactor to support new SessionCookieConfig APIs
+         */
+        public SessionCookieConfig getSessionCookieConfig() {
+
+            SessionCookieConfig sessionCookieConfigImpl = config.getSessionCookieConfig();
             if (sessionCookieConfigImpl == null) {
-                sessionCookieConfigImpl = new SessionCookieConfigImpl();
-                config.setSessionCookieConfig(sessionCookieConfigImpl);
+                if (isServletSpecLevel50orLower()) {    // For Servlet 6.0 - WebAppConfiguratorHelper60 will create it
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "getSessionCookieConfig was null; created new scc for <= servlet 5.0");
+                    }  
+                    sessionCookieConfigImpl = new SessionCookieConfigImpl();
+                    setSessionCookieConfig(sessionCookieConfigImpl);
+                }
             }
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getSessionCookieConfig return [{0}]", sessionCookieConfigImpl );
+            } 
             return sessionCookieConfigImpl;
+        }
+
+        /*
+         * since Servlet 6.0: support new SessionCookieConfig APIs
+         */
+        public void setSessionCookieConfig(SessionCookieConfig scc) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "setSessionCookieConfig [{0}]", scc);
+            } 
+
+            config.setSessionCookieConfig(scc);
         }
 
         public void cacheResults(ServletConfigurator configurator) {
@@ -2645,7 +2674,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         CookieConfig cookieConfig = sessionConfig.getCookieConfig();
         if (cookieConfig != null) {
 
-            SessionCookieConfigImpl sessionCookieConfigImpl = webAppConfiguration.getSessionCookieConfig();
+            SessionCookieConfigImpl sessionCookieConfigImpl = (SessionCookieConfigImpl) webAppConfiguration.getSessionCookieConfig();
 
             String cookieComment = cookieConfig.getComment();
             if (cookieComment != null) {

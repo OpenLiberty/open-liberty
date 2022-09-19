@@ -9,6 +9,7 @@ visibility = private
 -bundles=\
   com.ibm.ws.security.common, \
   com.ibm.ws.security.openidconnect.clients.common, \
-  com.ibm.ws.security.openidconnect.server
+  com.ibm.ws.security.openidconnect.server, \
+  io.openliberty.security.oidcclientcore.internal
 kind=ga
 edition=core

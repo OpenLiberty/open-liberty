@@ -260,16 +260,21 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     private final CheckpointPhase checkpointPhase;
 
-    @Activate
-    public EJBRuntimeImpl(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
-        if (checkpointPhase != null || !ProductInfo.getBetaEdition()) {
-            this.checkpointPhase = checkpointPhase;
+    public EJBRuntimeImpl() {
+        CheckpointPhase phase = CheckpointPhase.getPhase();
+        if (!ProductInfo.getBetaEdition()) {
+            this.checkpointPhase = phase;
         } else {
-            this.checkpointPhase = CheckpointPhase.getPhase(System.getProperty("io.openliberty.ejb.checkpoint.phase", ""));
+            CheckpointPhase testPhase = CheckpointPhase.getPhase(System.getProperty("io.openliberty.ejb.checkpoint.phase", ""));
+            if (phase == CheckpointPhase.INACTIVE && testPhase != null) {
+                this.checkpointPhase = testPhase;
+            } else {
+                this.checkpointPhase = phase;
+            }
         }
 
         // For any Checkpoint phase, pause all non-persistent timers until checkpoint restored
-        if (checkpointPhase != null && !checkpointPhase.restored()) {
+        if (!checkpointPhase.restored()) {
             TimerNpRunnable.pause();
         }
     }
@@ -281,7 +286,9 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                unbind = "ignoreCheckpointRestored")
     protected final void checkpointRestored(ServiceReference<?> checkpoint) {
         // Resume all non-persistent timers on checkpoint restore
-        TimerNpRunnable.resume();
+        if (checkpointPhase != CheckpointPhase.INACTIVE) {
+            TimerNpRunnable.resume();
+        }
     }
 
     protected final void ignoreCheckpointRestored(ServiceReference<?> checkpoint) {

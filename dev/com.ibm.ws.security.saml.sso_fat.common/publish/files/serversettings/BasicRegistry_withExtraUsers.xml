@@ -57,8 +57,4 @@
 
 	</basicRegistry>
 
-	<keyStore
-		id="defaultKeyStore"
-		password="keyspass" />
-
 </server>

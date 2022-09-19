@@ -11,18 +11,24 @@
 
 package com.ibm.ws.security.backchannelLogout.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
+
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
         AlwaysPassesTest.class,
         HttpMethodsTests.class,
         LogoutTokenValidationTests.class,
-        //  TODO      bclbasictests.class
+        BasicBCLTests.class
 
 })
 /**
@@ -35,10 +41,9 @@ public class FATSuite {
      *
      * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
      */
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-    //            .andWith(new JakartaEE9Action().fullFATOnly());
-    //    @ClassRule
-    //    public static RepeatTests repeat = RepeatTests.withoutModification(); // adding no modification for now to enable the updates to test case naming
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
+            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
+            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().alwaysAddFeature("servlet-5.0").fullFATOnly());
 
 }

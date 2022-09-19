@@ -37,6 +37,8 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
 
     private static boolean propsRead = false;
     private static String productName = null;
+    private static String dbMajorVersion;
+    private static String dbMinorVersion;
     private static String productVersion = null;
     private static String jdbcDriverVersion = null;
     private static String jdbcURL = null;
@@ -72,6 +74,7 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
             final String base64EncodedData = base64Encoder.encodeToString(baos.toByteArray());
 
             final PrintWriter pw = resp.getWriter();
+            System.out.println("AbstractDatabaseManagementServlet: execRequest(): sending " + base64EncodedData.length() + " Base64 characters back to calling client.");
             pw.println(base64EncodedData);
         } else {
             resp.sendError(400);
@@ -88,6 +91,8 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
                 final DatabaseMetaData dbMeta = conn.getMetaData();
 
                 productName = dbMeta.getDatabaseProductName();
+                dbMajorVersion = String.valueOf(dbMeta.getDatabaseMajorVersion());
+                dbMinorVersion = String.valueOf(dbMeta.getDatabaseMinorVersion());
                 productVersion = dbMeta.getDatabaseProductVersion();
                 jdbcDriverVersion = dbMeta.getDatabaseProductVersion();
                 jdbcURL = dbMeta.getURL();
@@ -98,6 +103,8 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
 
             properties = new Properties();
             properties.put("dbproduct_name", productName);
+            properties.put("dbmajor_version", dbMajorVersion);
+            properties.put("dbminor_version", dbMinorVersion);
             properties.put("dbproduct_version", productVersion);
             properties.put("jdbcdriver_version", jdbcDriverVersion);
             properties.put("jdbc_url", jdbcURL);
@@ -253,7 +260,8 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
     }
 
     private static String[] breakApartDDLIntoCommands(String ddl) {
-        return ddl.split(";");
+        // Split on either ';' at the end of a line or ';' at the end of the file
+        return ddl.split("(;\\s*\\n)|(;\\s*$)");
     }
 
     /**
@@ -272,6 +280,8 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
 
     private static void dumpDBMeta(DatabaseMetaData dbMeta) throws SQLException {
         final String dbProductName = dbMeta.getDatabaseProductName();
+        final int dbMajorVersion = dbMeta.getDatabaseMajorVersion();
+        final int dbMinorVersion = dbMeta.getDatabaseMinorVersion();
         final String dbProductVersion = dbMeta.getDatabaseProductVersion();
         final String jdbcDriverVersion = dbMeta.getDriverVersion();
         final String jdbcURL = dbMeta.getURL();
@@ -282,6 +292,8 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
         sb.append("################################################################################\n");
         sb.append("DBMeta Dump:\n");
         sb.append("DB Product Name: ").append(dbProductName).append("\n");
+        sb.append("DB Major Version: ").append(dbMajorVersion).append("\n");
+        sb.append("DB Minor Version: ").append(dbMinorVersion).append("\n");
         sb.append("DB Product Version: ").append(dbProductVersion).append("\n");
         sb.append("JDBC Driver Version: ").append(jdbcDriverVersion).append("\n");
         sb.append("DB URL: ").append(jdbcURL).append("\n");

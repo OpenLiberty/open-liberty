@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,15 @@ package com.ibm.example.jca.anno;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.resource.ResourceException;
-import javax.resource.spi.ActivationSpec;
-import javax.resource.spi.BootstrapContext;
-import javax.resource.spi.Connector;
-import javax.resource.spi.ResourceAdapter;
-import javax.resource.spi.ResourceAdapterInternalException;
-import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.transaction.xa.XAResource;
+
+import jakarta.resource.ResourceException;
+import jakarta.resource.spi.ActivationSpec;
+import jakarta.resource.spi.BootstrapContext;
+import jakarta.resource.spi.Connector;
+import jakarta.resource.spi.ResourceAdapter;
+import jakarta.resource.spi.ResourceAdapterInternalException;
+import jakarta.resource.spi.endpoint.MessageEndpointFactory;
 
 /**
  * Example resource adapter.
@@ -44,8 +45,10 @@ public class ResourceAdapterImpl implements ResourceAdapter {
     }
 
     @Override
-    public void start(BootstrapContext bootstrapContext) throws ResourceAdapterInternalException {}
+    public void start(BootstrapContext bootstrapContext) throws ResourceAdapterInternalException {
+    }
 
     @Override
-    public void stop() {}
+    public void stop() {
+    }
 }

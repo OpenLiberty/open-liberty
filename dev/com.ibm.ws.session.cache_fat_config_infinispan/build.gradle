@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ configurations {
 // Define G:A:V coordinates of each dependency
 dependencies {
   caffeine 'com.github.ben-manes.caffeine:caffeine:2.8.0'
-  gson 'com.google.code.gson:gson:2.8.2'
+  gson project(':io.openliberty.com.google.gson')
   infinispanCommons 'org.infinispan:infinispan-commons:10.0.0.Final'
   infinispanCore 'org.infinispan:infinispan-core:10.0.0.Final'
   infinispanJCache 'org.infinispan:infinispan-jcache:10.0.0.Final'

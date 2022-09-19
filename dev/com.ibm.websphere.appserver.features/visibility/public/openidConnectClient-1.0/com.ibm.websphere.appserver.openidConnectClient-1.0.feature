@@ -24,10 +24,10 @@ Subsystem-Name: OpenID Connect Client 1.0
   io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.security.openidconnect.common, \
   com.ibm.ws.security.common.jsonwebkey, \
-  com.ibm.ws.com.google.gson.2.2.4, \
+  io.openliberty.com.google.gson, \
   com.ibm.ws.org.jose4j, \
   com.ibm.ws.org.json.simple.1.1.1, \
-  io.openliberty.security.oidcclientcore.internal
+  com.ibm.ws.org.apache.commons.lang3
 -jars=\
   com.ibm.websphere.appserver.api.oidc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.oidc_1.0-javadoc.zip

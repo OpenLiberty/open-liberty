@@ -104,6 +104,7 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     @Reference
     private GeneratorUtilsExtFactory generatorUtilsExtFactory;
 
+
     @Reference
     private ClassLoadingService classLoadingService;
     private BundleContext bundleContext;

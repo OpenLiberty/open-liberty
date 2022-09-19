@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-    Copyright (c) 2017, 2018 IBM Corporation and others.
+    Copyright (c) 2017, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -56,12 +56,18 @@
         ParamValues: <ui:repeat var="item" value="#{paramValues.get('message')}"> <h:outputText value="#{item}"/> </ui:repeat> 
         <br/>
         <br/>
-        Session isNew: <h:outputText value="#{session.isNew()}"/>
+        HttpSession isNew: <h:outputText value="#{session.isNew()}"/>
         <br/>
         <br/>
         View viewId: <h:outputText value="#{view.getViewId()}"/>
         <br/>
         <br/>
         ViewScope isEmpty: <h:outputText value="#{viewScope.isEmpty()}"/>
+        <br/>
+        <br/>
+        Request contextPath: <h:outputText value="#{request.contextPath}"/>
+        <br/>
+        <br/>
+        ExternalContext getApplicationContextPath: <h:outputText value="#{externalContext.getApplicationContextPath()}"/>
     </h:body>
 </html>

@@ -11,21 +11,17 @@
 package io.openliberty.el50.fat.servlets;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import jakarta.el.BeanELResolver;
-import jakarta.el.StandardELContext;
-import jakarta.el.ELProcessor;
-import jakarta.el.ELManager;
-import jakarta.el.ELContext;
-import jakarta.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import jakarta.el.BeanELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELManager;
+import jakarta.el.StandardELContext;
+import jakarta.servlet.annotation.WebServlet;
 
 /**
  * Servlet for testing default methods in EL 5.0

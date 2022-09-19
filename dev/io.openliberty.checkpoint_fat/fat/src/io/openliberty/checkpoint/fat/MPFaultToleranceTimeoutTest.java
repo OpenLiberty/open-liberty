@@ -13,16 +13,22 @@ package io.openliberty.checkpoint.fat;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -35,9 +41,12 @@ public class MPFaultToleranceTimeoutTest {
     @Server("timeoutServer")
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests repeatTest = MicroProfileActions.repeat("timeoutServer", TestMode.LITE, MicroProfileActions.MP41, MicroProfileActions.MP50);
+
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "timeoutTest");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "timeoutTest");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 
@@ -45,7 +54,7 @@ public class MPFaultToleranceTimeoutTest {
     public void testCheckpointTimeout() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
 
-        config.getVariables().get(0).setValue("true");
+        config.getVariables().getById("timeout").setValue("true");
         server.updateServerConfiguration(config);
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, server -> {
@@ -63,7 +72,7 @@ public class MPFaultToleranceTimeoutTest {
     public void testCheckpointNoTimeout() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
 
-        config.getVariables().get(0).setValue("false");
+        config.getVariables().getById("timeout").setValue("false");
         server.updateServerConfiguration(config);
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, server -> {
             String result = server.waitForStringInLogUsingMark("TIMEOUT CALLED", 20000);
@@ -78,6 +87,11 @@ public class MPFaultToleranceTimeoutTest {
     @After
     public void stopServer() throws Exception {
         server.stopServer();
+    }
+
+    @AfterClass
+    public static void removeWebApp() throws Exception {
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
 }

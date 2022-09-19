@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,7 +104,7 @@ public class InstallUtils {
     private static final int LINE_WRAP_COLUMNS = 72;
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-
+    public static boolean isOptional = true;
     public static final String SERVER_DIR_NAME = "servers";
     public static final String SERVER_XML = "server.xml";
     public static final List<String> ALL_EDITIONS = Arrays.asList("BASE", "LIBERTY_CORE", "DEVELOPERS", "EXPRESS", "ND",
@@ -697,18 +697,27 @@ public class InstallUtils {
                 Node vl = varList.item(j);
                 Element vlElement = (Element) vl;
                 String varName = vlElement.getAttribute("name");
-                String varVal = vlElement.getAttribute("value");
+                String varVal;
+                if (vlElement.getAttribute("value").isEmpty()) {
+                    varVal = vlElement.getAttribute("defaultValue");
+                } else {
+                    varVal = vlElement.getAttribute("value");
+                }
+//                String varVal = vlElement.getAttribute("value");
                 varMap.put(varName, varVal);
             }
             ConfigParser cp = new ConfigParser(realServerXml, varMap);
 
             // parse include tag
             NodeList includeList = element.getElementsByTagName("include");
+
             for (int i = 0; i < includeList.getLength(); i++) {
                 Node il = includeList.item(i);
                 Element ilElement = (Element) il;
                 String location = ilElement.getAttribute("location");
-
+                if (ilElement.getAttribute("optional").equals("false") || ilElement.getAttribute("optional").isEmpty()) {
+                    isOptional = false;
+                }
                 File f = new File(location);
                 if (!f.isAbsolute()) { // include location is relative
                     if (!isUrl && location.contains("${")) {
@@ -720,6 +729,7 @@ public class InstallUtils {
                 if (!newLocations.contains(location) && !visitedServerXmls.contains(location)) {
                     newLocations.add(location);
                 }
+
             }
 
             // parse featureManager tag
@@ -734,12 +744,24 @@ public class InstallUtils {
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()));
+            if (isOptional == false) {
+                logger.log(Level.WARNING, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()));
+            } else {
+                logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()));
+            }
+
         }
         visitedServerXmls.add(isUrl ? serverXml : realServerXml.toString());
         for (String filepath : newLocations) {
             Path path = Paths.get(filepath);
-            features.addAll(getFeatures(path.toString(), path.getFileName().toString(), visitedServerXmls));
+            if (Files.exists(path)) {
+                features.addAll(getFeatures(path.toString(), path.getFileName().toString(), visitedServerXmls));
+            } else if (isOptional == true) {
+                logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", path));
+            } else {
+                logger.log(Level.WARNING, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", path));
+            }
+
         }
 
         return features;

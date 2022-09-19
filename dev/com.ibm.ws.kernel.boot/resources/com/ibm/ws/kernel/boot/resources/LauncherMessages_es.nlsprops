@@ -96,7 +96,9 @@ error.secPermission=CWWKE0016E: El archivo JAR de programa de arranque requiere 
 error.secPermission.explanation=Los permisos de seguridad de Java 2 no son suficientes para que el archivo JAR de programa de arranque inicie el entorno de ejecuci\u00f3n y la infraestructura OSGi.
 error.secPermission.useraction=Aseg\u00farese de que se haya otorgado al archivo JAR de programa de arranque privilegios AllPermission en el archivo de pol\u00edtica de seguridad de Java 2.
 
-# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+error.badBitmode=CWWKE0017E: El proceso ha detectado una JVM de 31 bits que no est\u00e1 soportada. El entorno de ejecuci\u00f3n requiere una versi\u00f3n de Java 8 de 64 bits o superior.
+error.badBitmode.explanation=La variable de sistema JAVA_HOME est\u00e1 establecida para apuntar a una versi\u00f3n de Java que es de 31 bits.
+error.badBitmode.useraction=Ajuste la variable del sistema JAVA_HOME para que apunte a una versi\u00f3n de Java 8 de 64 bits o superior.
 
 error.unknownException=CWWKE0018E: Se ha producido una excepci\u00f3n al iniciar el entorno de ejecuci\u00f3n: {0}
 error.unknownException.explanation=La excepci\u00f3n ha impedido que se inicie el servidor.

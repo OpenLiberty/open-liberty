@@ -35,7 +35,7 @@ IBM-API-Package: javax.faces; type="spec", \
  org.apache.myfaces.shared.renderkit.html.util; type="third-party"
 IBM-ShortName: jsf-2.3
 Subsystem-Name: JavaServer Faces 2.3
--features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:="2.3", \
+-features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2, \
   com.ibm.websphere.appserver.jsfProvider-2.3.0.MyFaces, \
   com.ibm.websphere.appserver.servlet-4.0, \
   com.ibm.websphere.appserver.jsp-2.3, \

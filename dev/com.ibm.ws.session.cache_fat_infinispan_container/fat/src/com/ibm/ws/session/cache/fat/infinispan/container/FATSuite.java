@@ -31,12 +31,13 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -51,28 +52,37 @@ import componenttest.topology.utils.HttpUtils;
                 SessionCacheTwoServerTimeoutTest.class
 })
 
-public class FATSuite {
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
+public class FATSuite extends TestContainerSuite {
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action()
-                                    .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"))
-                    .andWith(new JakartaEE10Action()
-                                    .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
-                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
+    public static RepeatTests repeat;
+
+    static {
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            repeat = RepeatTests.withoutModificationInFullMode()
+                            .andWith(new JakartaEE9Action()
+                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB")
+                                            .fullFATOnly())
+                            .andWith(new JakartaEE10Action()
+                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
+        } else {
+            repeat = RepeatTests.withoutModificationInFullMode()
+                            .andWith(new JakartaEE9Action()
+                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
+        }
+    }
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
@@ -107,12 +117,12 @@ public class FATSuite {
                                     .build())
                     .withFileFromFile("/opt/infinispan_config/config.xml", new File("lib/LibertyFATTestFiles/infinispan/config.xml"))
                     .withFileFromFile("/opt/infinispan/server/conf/users.properties", new File("lib/LibertyFATTestFiles/infinispan/users.properties")))
-                                    .withCommand("./bin/server.sh -c /opt/infinispan_config/config.xml")
-                                    .withExposedPorts(11222)
-                                    .waitingFor(new LogMessageWaitStrategy()
-                                                    .withRegEx(".*ISPN080001: Infinispan Server.*")
-                                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15)))
-                                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Infinispan"));
+                    .withCommand("./bin/server.sh -c /opt/infinispan_config/config.xml")
+                    .withExposedPorts(11222)
+                    .waitingFor(new LogMessageWaitStrategy()
+                                    .withRegEx(".*ISPN080001: Infinispan Server.*")
+                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15)))
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Infinispan"));
 
     /**
      * Custom runner used by test classes.
@@ -129,6 +139,7 @@ public class FATSuite {
     public static String run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {
         HttpURLConnection con = HttpUtils.getHttpConnection(server, path + '?' + FATServletClient.TEST_METHOD + '=' + testMethod);
         Log.info(FATSuite.class, "run", "HTTP GET: " + con.getURL());
+        Log.info(FATSuite.class, "run", "JAVA_VERSION: " + JavaInfo.JAVA_VERSION);
 
         if (session != null)
             for (String cookie : session)

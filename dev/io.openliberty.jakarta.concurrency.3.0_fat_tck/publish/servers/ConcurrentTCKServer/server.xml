@@ -11,22 +11,22 @@
 <server>
     <featureManager>
         <!-- Features being tested -->
-        <!--TODO one all of EE 10 is beta, could enable <feature>jakartaee-10.0</feature> or leave the individual features -->
+        <!--TODO once all of EE 10 is beta, could enable <feature>jakartaee-10.0</feature> or leave the individual features -->
         <feature>concurrent-3.0</feature>
         <feature>jdbc-4.2</feature>
         <feature>enterpriseBeans-4.0</feature>
-        <feature>cdi-3.0</feature> <!-- TODO once EE 10 feature is beta: <feature>cdi-4.0</feature> -->
-        <feature>pages-3.0</feature> <!-- TODO once EE 10 feature is beta: <feature>pages-3.1</feature> -->
+        <feature>cdi-4.0</feature>
+        <feature>pages-3.1</feature>
         <!-- Supporting features -->
         <feature>jndi-1.0</feature>
-        <feature>appSecurity-4.0</feature> <!-- TODO once EE 10 feature is beta: <feature>appSecurity-5.0</feature> -->
+        <feature>appSecurity-5.0</feature>
         <!-- Features needed for arquillan support -->
         <feature>localConnector-1.0</feature>
         <feature>restConnector-2.0</feature>
     </featureManager>
 
     <!-- Use logging instead of bootstrap for standalone WLP case -->
-    <logging traceSpecification="*=info:concurrent=all:concurrencyPolicy=all:context=all" />
+    <logging traceSpecification="*=info:concurrent=all:concurrencyPolicy=all:context=all:EJBContainer=all" />
 
     <!-- Allow Arquillian to monitor application -->
     <applicationMonitor updateTrigger="mbean"/>

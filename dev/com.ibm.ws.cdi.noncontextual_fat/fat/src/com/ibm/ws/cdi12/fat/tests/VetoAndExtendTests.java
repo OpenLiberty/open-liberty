@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,47 +10,45 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
-import java.io.File;
-
-import org.junit.ClassRule;
-import org.junit.Test;
-
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
-import com.ibm.ws.fat.util.browser.WebResponse;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.cdi12.fat.apps.vetoAndExtendWar.VetoAndExtendTestServlet;
 
-public class VetoAndExtendTests extends LoggingTest {
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
-    @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
+@RunWith(FATRunner.class)
+public class VetoAndExtendTests extends FATServletClient {
 
-        return ShrinkWrap.create(WebArchive.class,"vetoAndExtendNonContextual.war")
-                        .addPackage("test.vetoandextend")
-                        .add(new FileAsset(new File("test-applications/vetoAndExtendNonContextual.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+    private static final String APP_NAME = "vetoAndExtend";
+
+    @Server("vetoAndExtendServer")
+    @TestServlet(contextRoot = APP_NAME, servlet = VetoAndExtendTestServlet.class)
+    public static LibertyServer server;
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        WebArchive vetoAndExtendApp = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                                                .addPackage(VetoAndExtendTestServlet.class.getPackage())
+                                                .addAsWebInfResource(VetoAndExtendTestServlet.class.getResource("beans.xml"), "beans.xml");
+
+        ShrinkHelper.exportDropinAppToServer(server, vetoAndExtendApp, DeployOptions.SERVER_ONLY);
+
+        server.startServer();
     }
 
-    @ClassRule
-    // Create the server.
-    public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("vetoAndExtendServer");
-
-    /** {@inheritDoc} */
-    @Override
-    protected ShrinkWrapSharedServer getSharedServer() {
-        // TODO Auto-generated method stub
-        return SHARED_SERVER;
-    }
-
-    @Test
-    public void testVetoedAndExtendedNonContextual() throws Exception {
-        verifyResponse("/vetoAndExtendNonContextual/", "passed");
+    @AfterClass
+    public static void teardown() throws Exception {
+        server.stopServer();
     }
 
 }

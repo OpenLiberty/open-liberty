@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,22 @@ bell.error.ctor.useraction=Wenn eine Ausnahme im Konstruktor eingetreten ist, \u
 bell.no.services.config=CWWKL0058W: Der Service {0} wurde nicht im META-INF/services der Bibliothek {1} gefunden.
 bell.no.services.config.explanation=Es ist kein \u00fcbereinstimmender Service im Ordner META-INF/services deklariert.
 bell.no.services.config.useraction= Es ist keine Benutzeraktion erforderlich. 
+
+# BETA
+# {0} - library identifier
+bell.spi.visibility.enabled=CWWKL0059I: Die BELL-SPI-Sichtbarkeit ist f\u00fcr die Bibliothek {0} aktiviert. Das BELL referenziert die Bibliothek {0} \u00fcber ein eindeutiges Klassenladeprogramm, das SPI-Pakete anzeigen kann.
+bell.spi.visibility.enabled.explanation=Um zu verhindern, dass Anwendungen und Ressourcen SPI-Pakete sehen, referenziert BELL die Bibliothek \u00fcber einen eindeutigen Klassenlader, der nicht gemeinsam mit Anwendungen genutzt wird, die auf dieselbe Bibliothek verweisen.
+bell.spi.visibility.enabled.useraction=Inaktivieren Sie die SPI-Sichtbarkeit in der BELL-Konfiguration, wenn BELL eine Bibliothek \u00fcber einen Klassenlader referenzieren muss, der mit Anwendungen gemeinsam genutzt wird, die dieselbe Bibliothek referenzieren. Andernfalls ist keine Ma\u00dfnahme erforderlich.
+
+# BETA
+bell.spi.visibility.disabled.libref.global=CWWKL0060E: Die BELL SPI-Sichtbarkeit wird f\u00fcr die globale gemeinsam genutzte Liberty-Bibliothek nicht unterst\u00fctzt.
+bell.spi.visibility.disabled.libref.global.explanation=Die BELL SPI-Sichtbarkeit kann f\u00fcr die globale gemeinsam genutzte Liberty-Bibliothek nicht aktiviert werden.
+bell.spi.visibility.disabled.libref.global.useraction=\u00c4ndern Sie die BELL-Konfiguration so, dass sie auf eine andere Bibliothek als die globale gemeinsam genutzte Liberty-Bibliothek verweist.
+
+# BETA
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.missing.property.injection.methods=CWWKL0062W: Das System hat keine Eigenschaften von BELL in eine Instanz der Implementierung von {0} eingef\u00fcgt. Die Klasse definiert keine Methode, die das Einblenden von Eigenschaften von BELL unterst\u00fctzt. Die Klasse ist eine Implementierung des Service, der in der Datei {1} deklariert und in der Bibliothek {2} registriert ist.
+bell.missing.property.injection.methods.explanation=Das System kann auf keine erforderliche Methode f\u00fcr das Einblenden von Eigenschaften von BELL zugreifen. Die Serviceimplementierungsklasse muss einen \u00f6ffentlichen Konstruktor oder eine \u00f6ffentliche Methode mit dem Namen "updateBell" mit einem Parameter des Typs "java.util.Map"<string,String> definieren, um das Einblenden von Eigenschaften von BELL zu unterst\u00fctzen.
+bell.missing.property.injection.methods.useraction=Stellen Sie sicher, dass die Klasse einen \u00f6ffentlichen Konstruktor oder eine \u00f6ffentliche "updateBell" benannte Methode mit einem einzigen Parameter des Typs "java.util.Map"<String, String> definiert.

@@ -52,6 +52,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     static final String TRANSFORMER_RULES_ROOT = System.getProperty("user.dir") + "/autoFVT-templates/";
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap();
+    private static boolean WIDEN = false;
 
     static {
         // Fill the default transformation rules for the transformer
@@ -134,6 +135,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
         removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
+        removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
     }
@@ -272,6 +274,16 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         return this;
     }
 
+    /**
+     * The widen option in the transformer enables the transformer to handle things like jars
+     * inside of other jars or zips inside of other zips. These are not the usual setup of
+     * of bundles and applications, so it is only enabled by an argument to the transformer.
+     */
+    public JakartaEE9Action withWiden() {
+        WIDEN = true;
+        return this;
+    }
+
     //
 
     @Override
@@ -332,11 +344,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {
-        transformApp(appPath, newAppPath, DEFAULT_TRANSFORMATION_RULES, TRANSFORMATION_RULES_APPEND);
+        transformApp(appPath, newAppPath, DEFAULT_TRANSFORMATION_RULES, TRANSFORMATION_RULES_APPEND, WIDEN);
     }
 
     protected static void transformApp(Path appPath, Path newAppPath, Map<String, String> defaultTransformationRules,
-                                       Map<String, String> transformationRulesAppend) {
+                                       Map<String, String> transformationRulesAppend, boolean widen) {
         final String m = "transformApp";
         Log.info(c, m, "Transforming app: " + appPath);
 
@@ -405,7 +417,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
         try {
             // Invoke the jakarta transformer
-            String[] args = new String[15 + transformationRulesAppend.size() * 2];
+            String[] args = new String[(widen ? 16 : 15) + transformationRulesAppend.size() * 2];
 
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
@@ -426,6 +438,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             args[12] = defaultTransformationRules.get("-td");
             args[13] = "-tf"; // text updates
             args[14] = defaultTransformationRules.get("-tf");
+            // The widen option handles jars inside of jars.
+            if (widen) {
+                args[15] = "-w";
+            }
 
             // Go through the additions
             if (transformationRulesAppend.size() > 0) {
@@ -435,7 +451,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                     additions[index++] = addition.getKey();
                     additions[index++] = addition.getValue();
                 }
-                System.arraycopy(additions, 0, args, 15, transformationRulesAppend.size() * 2);
+                System.arraycopy(additions, 0, args, widen ? 16 : 15, transformationRulesAppend.size() * 2);
             }
 
             Log.info(c, m, "Initializing transformer with args: " + Arrays.toString(args));

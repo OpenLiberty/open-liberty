@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/DataNoSQLApp/src
+
+# TODO 17
+javac.source: 11
+javac.target: 11
+
+fat.minimum.java.level: 11
+fat.project: true
+
+-buildpath: \
+  com.ibm.ws.componenttest.2.0,\
+  io.openliberty.jakarta.annotation.2.1,\
+  io.openliberty.jakarta.cdi.4.0,\
+  io.openliberty.jakarta.interceptor.2.1,\
+  io.openliberty.jakarta.nosql.1.0,\
+  io.openliberty.jakarta.servlet.6.0,\
+  io.openliberty.jakarta.transaction.2.0

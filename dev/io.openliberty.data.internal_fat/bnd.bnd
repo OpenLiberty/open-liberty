@@ -14,6 +14,7 @@ bVersion=1.0
 src: \
   fat/src,\
   test-applications/DataTestApp/src,\
+  test-applications/TemplateTestApp/src,\
   test-bundles/data/src
 
 # TODO 17
@@ -38,10 +39,10 @@ fat.project: true
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.persistence.jakarta;version=latest,\
   com.ibm.ws.tx.embeddable.jakarta;version=latest,\
-  io.openliberty.jakarta.annotation.2.0,\
-  io.openliberty.jakarta.cdi.3.0,\
+  io.openliberty.jakarta.annotation.2.1,\
+  io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.concurrency.3.0,\
-  io.openliberty.jakarta.interceptor.2.0,\
-  io.openliberty.jakarta.persistence.3.0,\
-  io.openliberty.jakarta.servlet.5.0;version=latest,\
+  io.openliberty.jakarta.interceptor.2.1,\
+  io.openliberty.jakarta.persistence.3.1,\
+  io.openliberty.jakarta.servlet.6.0;version=latest,\
   io.openliberty.jakarta.transaction.2.0;version=latest

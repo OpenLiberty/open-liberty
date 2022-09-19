@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,110 +21,47 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.SSLSocketFactory;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpException;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.google.gson.JsonObject;
-import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.genericbnf.PasswordNullifier;
+import com.ibm.ws.security.common.crypto.HashUtils;
+import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
-import com.ibm.ws.webcontainer.security.SSOCookieHelper;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
-import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
+import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
+import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
+
+@SuppressWarnings("restriction")
 public class OidcClientUtil {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = 1L;
     private static final TraceComponent tc = Tr.register(OidcClientUtil.class);
-    private final List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
     OidcClientHttpUtil oidcHttpUtil = null;
+    public HttpUtils httpUtils;
 
     public OidcClientUtil() {
-        commonHeaders.add(new BasicNameValuePair("Accept", "application/json"));
-        // commonHeaders.add(new BasicNameValuePair("Accept-Encoding",
-        // "gzip, deflate"));
         init(OidcClientHttpUtil.getInstance());
+        httpUtils = new HttpUtils();
     }
 
     void init(OidcClientHttpUtil oidcHttpUtil) {
         this.oidcHttpUtil = oidcHttpUtil;
-    }
-
-    /*
-     * get CommonHeaders
-     */
-    final List<NameValuePair> getCommonHeaders() {
-        return commonHeaders;
-    }
-
-    public HashMap<String, String> getTokensFromAuthzCode(String tokenEnpoint,
-            String clientId,
-            @Sensitive String clientSecret,
-            String redirectUri,
-            String code,
-            String grantType,
-            SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification,
-            String authMethod,
-            String resources,
-            HashMap<String, String> customParams,
-            boolean useSystemPropertiesForHttpClientConnections) throws Exception {
-
-        // List<String> result = new ArrayList<String>();
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair(ClientConstants.GRANT_TYPE, grantType));
-        if (resources != null) {
-            params.add(new BasicNameValuePair("resource", resources));
-        }
-        params.add(new BasicNameValuePair(ClientConstants.REDIRECT_URI, redirectUri));
-        params.add(new BasicNameValuePair(Constants.CODE, code));
-        oidcHttpUtil.setClientId(clientId);
-        if (authMethod.equals(ClientConstants.METHOD_POST) || authMethod.equals(ClientConstants.METHOD_CLIENT_SECRET_POST)) {
-            params.add(new BasicNameValuePair(Constants.CLIENT_ID, clientId));
-            params.add(new BasicNameValuePair(Constants.CLIENT_SECRET, clientSecret));
-        }
-
-        handleCustomParams(params, customParams); // custom token ep params
-        Map<String, Object> postResponseMap = postToTokenEndpoint(tokenEnpoint, params, clientId, clientSecret, sslSocketFactory, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
-
-        String tokenResponse = oidcHttpUtil.extractTokensFromResponse(postResponseMap);
-
-        JSONObject jobject = JSONObject.parse(tokenResponse);
-        // result.add(0, (String) jobject.get(Constants.ID_TOKEN));
-        // result.add(1, (String) jobject.get(Constants.ACCESS_TOKEN));
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        Iterator<Entry> it = jobject.entrySet().iterator();
-        HashMap<String, String> tokens = new HashMap<String, String>();
-        while (it.hasNext()) {
-            @SuppressWarnings("rawtypes")
-            Entry obj = it.next();
-            if (obj.getKey() instanceof String) {
-                Object value = obj.getValue();
-                if (value == null) {
-                    value = "";
-                }
-                tokens.put((String) obj.getKey(), value.toString());
-            }
-        }
-
-        return tokens;
     }
 
     /**
@@ -185,7 +121,7 @@ public class OidcClientUtil {
             boolean isHostnameVerification,
             String authMethod, boolean useSystemPropertiesForHttpClientConnections)
             throws Exception {
-        return oidcHttpUtil.postToEndpoint(tokenEnpoint, params, baUsername, baPassword, null, sslSocketFactory, commonHeaders, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
+        return oidcHttpUtil.postToEndpoint(tokenEnpoint, params, baUsername, baPassword, null, sslSocketFactory, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
     }
 
     Map<String, Object> postToCheckTokenEndpoint(String tokenEnpoint,
@@ -198,7 +134,7 @@ public class OidcClientUtil {
             boolean useSystemPropertiesForHttpClientConnections)
             throws Exception {
         return oidcHttpUtil.postToIntrospectEndpoint(tokenEnpoint, params,
-                baUsername, baPassword, null, sslSocketFactory, commonHeaders, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
+                baUsername, baPassword, null, sslSocketFactory, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
     }
 
     Map<String, Object> getFromUserinfoEndpoint(String userInforEndpoint,
@@ -208,55 +144,7 @@ public class OidcClientUtil {
             boolean isHostnameVerification,
             boolean useSystemPropertiesForHttpClientConnections)
             throws HttpException, IOException {
-        return getFromEndpoint(userInforEndpoint, params, null, null, accessToken, sslSocketFactory, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
-    }
-
-    Map<String, Object> getFromEndpoint(String url,
-            List<NameValuePair> params,
-            String baUsername,
-            @Sensitive String baPassword,
-            String accessToken,
-            SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification,
-            boolean useSystemPropertiesForHttpClientConnections)
-            throws HttpException, IOException {
-
-        String query = null;
-        if (params != null) {
-            query = URLEncodedUtils.format(params, Constants.UTF_8);
-        }
-
-        if (query != null) {
-            if (!url.endsWith("?")) {
-                url += "?";
-            }
-            url += query;
-        }
-        HttpGet request = new HttpGet(url);
-        for (NameValuePair nameValuePair : commonHeaders) {
-            request.addHeader(nameValuePair.getName(), nameValuePair.getValue());
-        }
-        if (accessToken != null) {
-            request.setHeader(ClientConstants.AUTHORIZATION, ClientConstants.BEARER + accessToken);
-        }
-
-        HttpClient httpClient = baUsername != null ? oidcHttpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, baUsername, baPassword, useSystemPropertiesForHttpClientConnections) : oidcHttpUtil.createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
-
-        HttpResponse responseCode = null;
-
-        ClassLoader origCL = ThreadContextHelper.getContextClassLoader();
-        ThreadContextHelper.setClassLoader(getClass().getClassLoader());
-        try {
-            responseCode = httpClient.execute(request);
-        } finally {
-            ThreadContextHelper.setClassLoader(origCL);
-        }
-
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put(ClientConstants.RESPONSEMAP_CODE, responseCode);
-        result.put(ClientConstants.RESPONSEMAP_METHOD, request);
-
-        return result;
+        return oidcHttpUtil.getFromEndpoint(userInforEndpoint, params, null, null, accessToken, sslSocketFactory, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
     }
 
     // This assumes the oidcClient is using the same httpEndpoint settings as
@@ -290,40 +178,10 @@ public class OidcClientUtil {
     static AtomicReference<ReferrerURLCookieHandler> referrerURLCookieHandlerRef = new AtomicReference<ReferrerURLCookieHandler>();
     static AtomicReference<WebAppSecurityConfig> webAppSecurityConfigRef = new AtomicReference<WebAppSecurityConfig>();
 
-    /*
-     * In case, the ReferrerURLCookieHandler is dynamic in every request, then we will need to make this into
-     * OidcClientRequest. And do not do static.
-     */
-    public static Cookie createCookie(String cookieName, @Sensitive String cookieValue, HttpServletRequest req) {
-        return createCookie(cookieName, cookieValue, -1, req);
-    }
-
-    public static Cookie createCookie(String cookieName, @Sensitive String cookieValue, int maxAge, HttpServletRequest req) {
-        Cookie cookie = getReferrerURLCookieHandler().createCookie(cookieName, cookieValue, req);
-        String domainName = getSsoDomain(req);
-        if (domainName != null && !domainName.isEmpty()) {
-            cookie.setDomain(domainName);
-        }
-        cookie.setMaxAge(maxAge);
-        return cookie;
-    }
-
     // 240540: rather than call webcontainer code, replace the cookie with an empty one having same cookie and domain name and add to response.
     public static void invalidateReferrerURLCookie(HttpServletRequest req, HttpServletResponse res, String cookieName) {
-        // 240540 getReferrerURLCookieHandler().invalidateReferrerURLCookie(req, res, cookieName); // need to have domain here too
-        if (cookieName == null || req == null || res == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "invalidateReferrerURLCookie param is null, return");
-            }
-            return;
-        }
-        Cookie c = createCookie(cookieName, "", req);
-        String domainName = getSsoDomain(req);
-        if (domainName != null && !domainName.isEmpty()) {
-            c.setDomain(domainName);
-        }
-        c.setMaxAge(0);
-        res.addCookie(c);
+        CookieBasedStorage store = new CookieBasedStorage(req, res, getReferrerURLCookieHandler());
+        store.remove(cookieName);
     }
 
     public static void invalidateReferrerURLCookies(HttpServletRequest req, HttpServletResponse res, String[] cookieNames) {
@@ -334,22 +192,10 @@ public class OidcClientUtil {
             }
             return;
         }
+        CookieBasedStorage store = new CookieBasedStorage(req, res, getReferrerURLCookieHandler());
         for (String name : cookieNames) {
-            invalidateReferrerURLCookie(req, res, name);
+            store.remove(name);
         }
-    }
-
-    /**
-     * @param cookie
-     * @param req
-     */
-    public static String getSsoDomain(HttpServletRequest req) {
-        SSOCookieHelper ssoCookieHelper = getWebAppSecurityConfig().createSSOCookieHelper();
-        String domainName = ssoCookieHelper.getSSODomainName(req,
-                getWebAppSecurityConfig().getSSODomainList(),
-                getWebAppSecurityConfig().getSSOUseDomainFromURL());
-        // config.getSSOUseDomainFromURL() false: if host domainname does not match/exist in domainList, do not use it. Otherwise use it
-        return domainName;
     }
 
     static WebAppSecurityConfig getWebAppSecurityConfig() {
@@ -363,7 +209,7 @@ public class OidcClientUtil {
         //240331 - never return a null even if another thread clears the handler.
         ReferrerURLCookieHandler handler = OidcClientUtil.referrerURLCookieHandlerRef.get();
         if (handler == null) {
-            handler = OidcClientUtil.getWebAppSecurityConfig().createReferrerURLCookieHandler();
+            handler = getWebAppSecurityConfig().createReferrerURLCookieHandler();
             OidcClientUtil.referrerURLCookieHandlerRef.set(handler);
         }
         return handler;
@@ -435,11 +281,12 @@ public class OidcClientUtil {
         if (encodedReqParams != null) {
             encodedHash = calculateOidcCodeCookieValue(encodedReqParams, clientCfg);
         }
-        Cookie c = OidcClientUtil.createCookie(ClientConstants.WAS_OIDC_CODE, encodedHash, request);
+        CookieBasedStorage store = new CookieBasedStorage(request, response, getReferrerURLCookieHandler());
+        CookieStorageProperties cookieProps = new CookieStorageProperties();
         if (clientCfg.isHttpsRequired() && isHttpsRequest) {
-            c.setSecure(true);
+            cookieProps.setSecure(true);
         }
-        response.addCookie(c);
+        store.store(ClientConstants.WAS_OIDC_CODE, encodedHash, cookieProps);
     }
 
     public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {

@@ -243,8 +243,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
      */
 
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { EmptyAction.ID,JakartaEE9Action.ID })
     @Test
     public void basicSAMLTests_noIdAssertNoUser_IDPSignMisMatch_IDPEncrypt() throws Exception {
 
@@ -591,9 +590,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     }
 
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = { EmptyAction.ID })
-    @ExpectedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { JakartaEE9Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Test
     public void basicSAMLTests_mangleSAMLToken_userNameInAssertion_signed() throws Exception {
 
@@ -614,8 +611,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     }
 
-    @ExpectedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException" }, repeatAction = { EmptyAction.ID })
-    @ExpectedFFDC(value = { "org.opensaml.messaging.decoder.MessageDecodingException" }, repeatAction = { JakartaEE9Action.ID })
+    @ExpectedFFDC(value = { "org.opensaml.messaging.decoder.MessageDecodingException" })
     @Test
     public void basicSAMLTests_mangleSAMLToken_badXMLFormatInResponse() throws Exception {
 
@@ -636,8 +632,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     }
 
-    @ExpectedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException" }, repeatAction = { EmptyAction.ID })
-    @ExpectedFFDC(value = { "org.opensaml.messaging.decoder.MessageDecodingException" }, repeatAction = { JakartaEE9Action.ID })
+    @ExpectedFFDC(value = { "org.opensaml.messaging.decoder.MessageDecodingException" })
     @Test
     public void basicSAMLTests_mangleSAMLToken_sendGarbage() throws Exception {
 
@@ -931,8 +926,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Mode(TestMode.LITE)
     // all flows get the SamlException, only the IDP and Unsolicited flows get SecurityPolicyException
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" })
     @Test
     public void basicSAMLTests_badLTPAToken_missingIDPSSODescriptor() throws Exception {
 
@@ -1134,7 +1128,10 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     private List<String> getServerReconfigMessages() {
         List<String> extraMsgs = new ArrayList<String>();
-        extraMsgs.add(MSG_CWWKO0219I_SSL_PORT_READY);
+        // removed the "default" keystore key.p12 - so, this message won't appear for reconfigs now
+        // This method was added to aid in a timing issue, but, hopefully the default keystore was contributing to
+        // that timing issue and its removal will clean up the root cause of the timing problem
+//        extraMsgs.add(MSG_CWWKO0219I_SSL_PORT_READY);
         return extraMsgs;
     }
 

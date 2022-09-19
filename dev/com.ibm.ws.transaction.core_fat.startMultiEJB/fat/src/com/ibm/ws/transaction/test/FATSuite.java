@@ -21,7 +21,6 @@ import com.ibm.ws.transaction.test.tests.EJBNewTxRoSTest;
 import com.ibm.ws.transaction.test.tests.EJBNewTxTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -32,10 +31,10 @@ import componenttest.rules.repeater.RepeatTests;
                 EJBNewTxDBRoSTest.class
 })
 public class FATSuite {
-    // Using the RepeatTests @ClassRule will cause all tests to be run twice.
-    // First without any modifications, then again with all features upgraded to their EE8 equivalents.
+
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES())
-                    .andWith(new JakartaEE9Action());
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
 }

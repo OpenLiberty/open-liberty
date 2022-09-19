@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,18 @@ public class JSTLTests {
     private static final Logger LOG = Logger.getLogger(JSTLTests.class.getName());
 
     private String newLine = System.getProperty("line.separator");
+
+    private final String replacePattern = "["+newLine+"\t ]";
+
+    private final String EXPECTED_NAME_SORTED_STOCK_TABLE = "<h2>Name Sorted Stock Table</h2><table id=\"nameSortedStockTable\" border=\"1\" width=\"100%\">" +
+    "<tr><th style=\"text-align:left\">Sorted Stock</th><th style=\"text-align:left\">Price</th></tr>" +
+    "<tr><td><i>AAPL</i></td><td>131</td></tr><tr><td><i>GME</i></td><td>46</td></tr><tr><td><i>IBM</i></td><td>120</td></tr></table>";
+    private final String EXPECTED_PRICE_SORTED_STOCK_TABLE = "<h2>Price Sorted Stock Table</h2><table id=\"priceSortedStockTable\" border=\"1\" width=\"100%\">" + 
+    "<tr><th style=\"text-align:left\">Sorted Stock</th><th style=\"text-align:left\">Price</th></tr>" + 
+    "<tr><td><i>GME</i></td><td>46</td></tr><tr><td><i>IBM</i></td><td>120</td></tr><tr><td><i>AAPL</i></td><td>131</td></tr></table>";
+    private final String EXPECTED_STOCK_TABLE = "<h2>Stock Table</h2><table id=\"stockTable\" border=\"1\" width=\"100%\">" +
+    "<tr><th style=\"text-align:left\">Stock</th><th style=\"text-align:left\">Price</th></tr>" +
+    "<tr><td><i>AAPL</i></td><td>131</td></tr><tr><td><i>IBM</i></td><td>120</td></tr><tr><td><i>GME</i></td><td>46</td></tr></table>";
 
     @Server("jstlServer")
     public static LibertyServer server;
@@ -136,6 +148,28 @@ public class JSTLTests {
 
         assertTrue("Something went wrong with the xml tags", response.getText().contains("IBM is trading above 100"));
 
+    }
+
+    /**
+     * Basic Test for transform in XML Tags
+     *
+     * @throws Exception if something goes horribly wrong
+     */
+    @Test
+    public void testXMLTransformTag() throws Exception ,Throwable {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        String url = JSPUtils.createHttpUrlString(server, APP_NAME, "xmlTransformTag.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Servlet response : " + response.getText());
+        String cleanedResponse = response.getText().replaceAll(replacePattern, "");
+        assertTrue("Something went wrong with the xml transform tags. Couldn't match expected stock table.", cleanedResponse.contains(EXPECTED_STOCK_TABLE.replaceAll(replacePattern, "")));
+        assertTrue("Something went wrong with the xml transform tags. Couldn't match expected name sorted stock table.", cleanedResponse.contains(EXPECTED_NAME_SORTED_STOCK_TABLE.replaceAll(replacePattern, "")));
+        assertTrue("Something went wrong with the xml transform tags. Couldn't match expected price sorted stock table.", cleanedResponse.contains(EXPECTED_PRICE_SORTED_STOCK_TABLE.replaceAll(replacePattern, "")));
     }
 
     /**

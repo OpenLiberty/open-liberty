@@ -265,7 +265,7 @@ metamodel_class_null_type_instance_for_null_key=Nessun [{0}] \u00e8 stato trovat
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=L''attributo @Id singolo previsto per il tipo identificabile [{0}] fa parte di un @IdClass non previsto.
 
-metamodel_identifiable_id_attribute_type_incorrect=Tipo di attributo ID previsto [{2}] sull''attributo id esistente [{0}] sul tipo identificabile [{1}] ma \u00e8 stato trovato il tipo di attributo [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=Previsto il tipo di attributo id [{2}] negli attributi id esistenti [{0}] sul tipo identificabile [{1}], ma trovati i tipi di attributo [{3}].
 
 metamodel_identifiable_no_id_attribute_present=Nessun attributo @Id esiste sul tipo identificabile [{0}].
 

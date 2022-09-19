@@ -96,7 +96,9 @@ error.secPermission=CWWKE0016E: Die Bootstrap-JAR-Datei erfordert die Sicherheit
 error.secPermission.explanation=Die Java 2 Security-Berechtigungen reichen nicht aus, um die Laufzeitumgebung und das OSGi-Framework \u00fcber die Bootstrap-JAR-Datei zu starten.
 error.secPermission.useraction=Stellen Sie sicher, dass der Bootstrap-JAR-Datei die Berechtigung AllPermission in der Richtliniendatei f\u00fcr die Java 2 Security erteilt wurde.
 
-# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+error.badBitmode=CWWKE0017E: Der Prozess hat eine 31-Bit-JVM erkannt, die nicht unterst\u00fctzt wird. Die Laufzeitumgebung erfordert eine 64-Bit-Version von Java 8 oder h\u00f6her.
+error.badBitmode.explanation=Die Systemvariable JAVA_HOME ist so gesetzt, dass sie auf eine 31-Bit-Version von Java verweist.
+error.badBitmode.useraction=Passen Sie die Systemvariable JAVA_HOME so an, dass sie auf eine 64-Bit-Version von Java 8 oder h\u00f6her verweist.
 
 error.unknownException=CWWKE0018E: Beim Starten der Laufzeitumgebung ist eine Ausnahme eingetreten: {0}
 error.unknownException.explanation=Die Ausnahme verhindert das Starten des Servers.

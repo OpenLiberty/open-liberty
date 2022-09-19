@@ -17,6 +17,10 @@ import static org.junit.Assert.fail;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -747,6 +751,156 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 return null;
             }
         }).get(TIMEOUT * 5, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Test exceptionNow on a ScheduledFuture from a ManagedScheduledExecutorService.
+     */
+    @Test
+    public void testExceptionNowOnScheduledFuture() throws Exception {
+        ScheduledFuture<Integer> neverStartedFuture = mschedxsvcDefaultLookup.schedule(() -> 1910, 10, TimeUnit.DAYS);
+        final Method exceptionNow = neverStartedFuture.getClass().getMethod("exceptionNow");
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            exceptionNow.setAccessible(true);
+            return null;
+        });
+
+        // exceptionNow on cancelled scheduled future
+        assertEquals(true, neverStartedFuture.cancel(true));
+        try {
+            Object exception = exceptionNow.invoke(neverStartedFuture);
+            fail("Cancelled scheduled future should not have a task failure exception now: " + exception);
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof IllegalStateException
+                && x.getCause().getCause() instanceof CancellationException)
+                ; // pass
+            else
+                throw x;
+        }
+
+        // exceptionNow during taskSubmitted and taskStarting
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        mschedxsvcDefaultLookup.schedule(ManagedExecutors.managedTask(() -> 1911, new ManagedTaskListener() {
+            @Override
+            public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+            }
+
+            @Override
+            public void taskDone(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+            }
+
+            @Override
+            public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {
+                try {
+                    results.add(exceptionNow.invoke(future));
+                } catch (InvocationTargetException x) {
+                    results.add(x.getCause());
+                } catch (Throwable x) {
+                    results.add(x);
+                }
+                future.cancel(false);
+            }
+
+            @Override
+            public void taskSubmitted(Future<?> future, ManagedExecutorService executor, Object task) {
+                try {
+                    results.add(exceptionNow.invoke(future));
+                } catch (InvocationTargetException x) {
+                    results.add(x.getCause());
+                } catch (Throwable x) {
+                    results.add(x);
+                }
+            }
+        }), 191, TimeUnit.MILLISECONDS);
+
+        Object result;
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskSubmitted
+        assertEquals(IllegalStateException.class, result.getClass());
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskStarting
+        assertEquals(IllegalStateException.class, result.getClass());
+        assertEquals(null, results.poll());
+
+        // exceptionNow during taskAborted (due to skip)
+        mschedxsvcDefaultLookup.schedule(ManagedExecutors.managedTask(() -> 1912, new ManagedTaskListener() {
+            @Override
+            public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+                try {
+                    results.add(exceptionNow.invoke(future));
+                } catch (InvocationTargetException x) {
+                    results.add(x.getCause());
+                } catch (Throwable x) {
+                    results.add(x);
+                }
+            }
+
+            @Override
+            public void taskDone(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+            }
+
+            @Override
+            public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {
+            }
+
+            @Override
+            public void taskSubmitted(Future<?> future, ManagedExecutorService executor, Object task) {
+            }
+        }), new Trigger() {
+            boolean firstTime = true;
+
+            @Override
+            public Date getNextRunTime(LastExecution lastExecution, Date taskScheduledTime) {
+                Date next = firstTime ? new Date() : null;
+                firstTime = false;
+                return next;
+            }
+
+            @Override
+            public boolean skipRun(LastExecution lastExecution, Date scheduledRunTime) {
+                return true;
+            }
+        });
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskAborted
+        assertEquals(IllegalStateException.class, result.getClass());
+        assertNotNull(((IllegalStateException) result).getCause());
+        assertEquals(SkippedException.class, ((IllegalStateException) result).getCause().getClass());
+
+        // exceptionNow on each execution of the task
+        AtomicInteger countdown = new AtomicInteger(1);
+        Runnable failOnSecondAttempt = () -> {
+            @SuppressWarnings("unused")
+            int i = 1 / countdown.getAndDecrement();
+        };
+        mschedxsvcDefaultLookup.scheduleAtFixedRate(ManagedExecutors.managedTask(failOnSecondAttempt, new ManagedTaskListener() {
+            @Override
+            public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+            }
+
+            @Override
+            public void taskDone(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+                try {
+                    results.add(exceptionNow.invoke(future));
+                } catch (InvocationTargetException x) {
+                    results.add(x.getCause());
+                } catch (Throwable x) {
+                    results.add(x);
+                }
+            }
+
+            @Override
+            public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {
+            }
+
+            @Override
+            public void taskSubmitted(Future<?> future, ManagedExecutorService executor, Object task) {
+            }
+        }), 14, 194, TimeUnit.MILLISECONDS);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskDone #1
+        assertEquals(IllegalStateException.class, result.getClass());
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskDone #2
+        assertEquals(ArithmeticException.class, result.getClass());
     }
 
     /**
@@ -3717,6 +3871,18 @@ public class EEConcurrencyTestServlet extends FATServlet {
         try {
             xsvcDefault.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS);
             throw new Exception("awaitTermination must raise IllegalStateException");
+        } catch (IllegalStateException x) {
+            if (!(x.getCause() instanceof UnsupportedOperationException))
+                throw x;
+        }
+
+        try {
+            xsvcDefaultLookup.getClass().getMethod("close").invoke(xsvcDefaultLookup);
+            throw new Exception("close must raise IllegalStateException");
+        } catch (InvocationTargetException x) {
+            if (!(x.getCause() instanceof IllegalStateException)
+                || !(x.getCause().getCause() instanceof UnsupportedOperationException))
+                throw x;
         } catch (IllegalStateException x) {
             if (!(x.getCause() instanceof UnsupportedOperationException))
                 throw x;
@@ -7610,6 +7776,165 @@ public class EEConcurrencyTestServlet extends FATServlet {
         int count = ((CounterTask) runnable).counter.get();
         if (count != 2)
             throw new Exception("Task should run exactly twice when resubmitted once. Instead: " + count);
+    }
+
+    /**
+     * Test resultNow on a ScheduledFuture from a ManagedScheduledExecutorService.
+     */
+    @Test
+    public void testResultNowOnScheduledFuture() throws Exception {
+        ScheduledFuture<Integer> neverStartedFuture = mschedxsvcDefaultLookup.schedule(() -> 1900, 19, TimeUnit.DAYS);
+        final Method resultNow = neverStartedFuture.getClass().getMethod("resultNow");
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            resultNow.setAccessible(true);
+            return null;
+        });
+
+        // resultNow on cancelled scheduled future
+        assertEquals(true, neverStartedFuture.cancel(true));
+        try {
+            Object result = resultNow.invoke(neverStartedFuture);
+            fail("Cancelled scheduled future should not have a result now: " + result);
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof IllegalStateException
+                && x.getCause().getCause() instanceof CancellationException)
+                ; // pass
+            else
+                throw x;
+        }
+
+        // resultNow during taskSubmitted and taskStarting
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        mschedxsvcDefaultLookup.schedule(ManagedExecutors.managedTask(() -> 1901, new ManagedTaskListener() {
+            @Override
+            public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+            }
+
+            @Override
+            public void taskDone(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+            }
+
+            @Override
+            public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {
+                try {
+                    results.add(resultNow.invoke(future));
+                } catch (InvocationTargetException x) {
+                    results.add(x.getCause());
+                } catch (Throwable x) {
+                    results.add(x);
+                }
+                future.cancel(false);
+            }
+
+            @Override
+            public void taskSubmitted(Future<?> future, ManagedExecutorService executor, Object task) {
+                try {
+                    results.add(resultNow.invoke(future));
+                } catch (InvocationTargetException x) {
+                    results.add(x.getCause());
+                } catch (Throwable x) {
+                    results.add(x);
+                }
+            }
+        }), 191, TimeUnit.MILLISECONDS);
+
+        Object result;
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskSubmitted
+        assertEquals(IllegalStateException.class, result.getClass());
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskStarting
+        assertEquals(IllegalStateException.class, result.getClass());
+        assertEquals(null, results.poll());
+
+        // resultNow during taskAborted (due to skip)
+        mschedxsvcDefaultLookup.schedule(ManagedExecutors.managedTask(() -> 1902, new ManagedTaskListener() {
+            @Override
+            public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+                try {
+                    results.add(resultNow.invoke(future));
+                } catch (InvocationTargetException x) {
+                    results.add(x.getCause());
+                } catch (Throwable x) {
+                    results.add(x);
+                }
+            }
+
+            @Override
+            public void taskDone(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+            }
+
+            @Override
+            public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {
+            }
+
+            @Override
+            public void taskSubmitted(Future<?> future, ManagedExecutorService executor, Object task) {
+            }
+        }), new Trigger() {
+            boolean firstTime = true;
+
+            @Override
+            public Date getNextRunTime(LastExecution lastExecution, Date taskScheduledTime) {
+                Date next = firstTime ? new Date() : null;
+                firstTime = false;
+                return next;
+            }
+
+            @Override
+            public boolean skipRun(LastExecution lastExecution, Date scheduledRunTime) {
+                return true;
+            }
+        });
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskAborted
+        assertEquals(IllegalStateException.class, result.getClass());
+        assertNotNull(((IllegalStateException) result).getCause());
+        assertEquals(SkippedException.class, ((IllegalStateException) result).getCause().getClass());
+
+        // resultNow on each execution of the task
+        AtomicInteger countdown = new AtomicInteger(4);
+        Callable<Integer> failOnFourthAttempt = () -> {
+            return 1 / countdown.decrementAndGet();
+        };
+        mschedxsvcDefaultLookup.schedule(ManagedExecutors.managedTask(failOnFourthAttempt, new ManagedTaskListener() {
+            @Override
+            public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+            }
+
+            @Override
+            public void taskDone(Future<?> future, ManagedExecutorService executor, Object task, Throwable failure) {
+                try {
+                    results.add(resultNow.invoke(future));
+                } catch (InvocationTargetException x) {
+                    results.add(x.getCause());
+                } catch (Throwable x) {
+                    results.add(x);
+                }
+            }
+
+            @Override
+            public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {
+            }
+
+            @Override
+            public void taskSubmitted(Future<?> future, ManagedExecutorService executor, Object task) {
+            }
+        }), new Trigger() {
+            @Override
+            public Date getNextRunTime(LastExecution lastExecution, Date taskScheduledTime) {
+                return new Date();
+            }
+
+            @Override
+            public boolean skipRun(LastExecution lastExecution, Date scheduledRunTime) {
+                return false;
+            }
+        });
+
+        assertEquals(Integer.valueOf(0), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskDone #1
+        assertEquals(Integer.valueOf(0), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskDone #2
+        assertEquals(Integer.valueOf(1), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskDone #3
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // taskDone #4
+        assertEquals(IllegalStateException.class, result.getClass());
     }
 
     /**

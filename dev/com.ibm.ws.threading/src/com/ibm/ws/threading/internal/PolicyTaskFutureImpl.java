@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,12 +94,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
      * Represents the state of the future, and allows for waiters. Initial state is PRESUBMIT.
      * State transitions in one direction only:
      * PRESUBMIT --> ABORTED
-     * PRESUBMIT --> CANCELED
+     * PRESUBMIT --> CANCELLED
      * PRESUBMIT --> SUBMITTED --> ABORTED,
-     * PRESUBMIT --> SUBMITTED --> CANCELED,
-     * PRESUBMIT --> SUBMITTED --> RUNNING --> CANCELING --> CANCELED,
+     * PRESUBMIT --> SUBMITTED --> CANCELLED,
+     * PRESUBMIT --> SUBMITTED --> RUNNING --> CANCELLING --> CANCELLED,
      * PRESUBMIT --> SUBMITTED --> RUNNING --> FAILED,
-     * PRESUBMIT --> SUBMITTED --> RUNNING --> SUCCESSFUL.
+     * PRESUBMIT --> SUBMITTED --> RUNNING --> SUCCESS.
      * Always set the result before updating the state, so that get() operations that await state can rely on the result being available.
      */
     private final State state = new State();
@@ -195,7 +195,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                         if (f.callback != null)
                             f.callback.raiseAbortedException(x);
                         throw new RejectedExecutionException(x);
-                    } else if (s == CANCELED || s == CANCELING)
+                    } else if (s == CANCELLED || s == CANCELLING)
                         canceled = true;
                 }
                 if (canceled)
@@ -257,7 +257,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     /**
      * Awaitable state. Specifically, allows awaiting the transition from PRESUBMIT/SUBMITTED/RUNNING
-     * to an ABORTED/CANCELING/CANCELED/FAILED/SUCCESSFUL state.
+     * to an ABORTED/CANCELLING/CANCELLED/FAILED/SUCCESS state.
      */
     @Trivial
     private static class State extends AbstractQueuedSynchronizer {
@@ -515,11 +515,11 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                             System.nanoTime() - nsAcceptBegin, //
                             nsStartBy - nsAcceptBegin));
 
-        if (result.compareAndSet(state, CANCELED))
+        if (result.compareAndSet(state, CANCELLED))
             try {
                 if (executor.queue.remove(this)) {
                     nsRunEnd = nsQueueEnd = System.nanoTime();
-                    state.releaseShared(CANCELED);
+                    state.releaseShared(CANCELLED);
                     executor.maxQueueSizeConstraint.release();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "canceled from queue");
@@ -527,13 +527,13 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                         callback.onCancel(task, this, false);
                 } else if (state.get() == PRESUBMIT) {
                     nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
-                    state.releaseShared(CANCELED);
+                    state.releaseShared(CANCELLED);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "canceled during pre-submit");
                     if (callback != null)
                         callback.onCancel(task, this, false);
                 } else if (interruptIfRunning) {
-                    state.releaseShared(CANCELING);
+                    state.releaseShared(CANCELLING);
                     Thread t = thread;
                     try {
                         if (t != null) {
@@ -542,12 +542,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                             AccessController.doPrivileged(new InterruptAction(t));
                         }
                     } finally {
-                        state.releaseShared(CANCELED);
+                        state.releaseShared(CANCELLED);
                         if (callback != null)
                             callback.onCancel(task, this, true);
                     }
                 } else {
-                    state.releaseShared(CANCELED);
+                    state.releaseShared(CANCELLED);
                     if (callback != null)
                         callback.onCancel(task, this, true);
                 }
@@ -570,11 +570,34 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         }
     }
 
+    /**
+     * Java 19+ method that immediately returns the exception with which the task completes (not including cancellation)
+     * or otherwise raises IllegalStateException.
+     */
+    public Throwable exceptionNow() {
+        Throwable cause = null;
+        if (isDone()) {
+            int s = state.get();
+            if (s == FAILED) {
+                return (Throwable) result.get();
+            } else if (s == ABORTED) {
+                cause = (Throwable) result.get();
+            } else if (s == CANCELLED || s == CANCELLING) {
+                cause = new CancellationException();
+            }
+        }
+
+        IllegalStateException x = new IllegalStateException(toString());
+        if (cause != null)
+            x.initCause(cause);
+        throw x;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public T get() throws InterruptedException, ExecutionException {
         switch (await()) {
-            case SUCCESSFUL:
+            case SUCCESS:
                 return (T) result.get();
             case ABORTED:
                 if (callback != null)
@@ -582,8 +605,8 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 throw new RejectedExecutionException((Throwable) result.get());
             case FAILED:
                 throw new ExecutionException((Throwable) result.get());
-            case CANCELED:
-            case CANCELING:
+            case CANCELLED:
+            case CANCELLING:
                 throw new CancellationException();
             case RUNNING: // only possible when get() is invoked from thread of execution and therefore blocks completion
             case PRESUBMIT: // only possible when get() is invoked from onStart, which runs on the submitter's thread and therefore blocks completion
@@ -599,7 +622,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     @Override
     public T get(long time, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         switch (await(time, unit)) {
-            case SUCCESSFUL:
+            case SUCCESS:
                 return (T) result.get();
             case ABORTED:
                 if (callback != null)
@@ -607,8 +630,8 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 throw new RejectedExecutionException((Throwable) result.get());
             case FAILED:
                 throw new ExecutionException((Throwable) result.get());
-            case CANCELED:
-            case CANCELING:
+            case CANCELLED:
+            case CANCELLING:
                 throw new CancellationException();
             case TIMEOUT:
                 throw new TimeoutException();
@@ -659,7 +682,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     @Override
     public boolean isCancelled() {
         int s = state.get();
-        return s == CANCELED || s == CANCELING;
+        return s == CANCELLED || s == CANCELLING;
     }
 
     @Override
@@ -673,6 +696,32 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                                   System.nanoTime() - nsAcceptBegin, //
                                   nsStartBy - nsAcceptBegin))
                       || state.get() > RUNNING);
+    }
+
+    /**
+     * Java 19+ method that immediately returns the result or otherwise raises IllegalStateException.
+     */
+    public T resultNow() {
+        Throwable cause = null;
+        if (isDone()) {
+            int s = state.get();
+            if (s == SUCCESS) {
+                @SuppressWarnings("unchecked")
+                T successfulResult = (T) result.get();
+                return successfulResult;
+            } else if (s == CANCELLED || s == CANCELLING) {
+                cause = new CancellationException();
+            } else {
+                Object failure = result.get();
+                if (failure instanceof Throwable)
+                    cause = (Throwable) failure;
+            }
+        }
+
+        IllegalStateException x = new IllegalStateException(toString());
+        if (cause != null)
+            x.initCause(cause);
+        throw x;
     }
 
     /**
@@ -700,7 +749,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 aborted = false;
             else {
                 callbackContext = callback.onStart(task, this);
-                aborted = state.get() == CANCELED;
+                aborted = state.get() == CANCELLED;
             }
 
             if (aborted)
@@ -717,13 +766,13 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 nsRunEnd = System.nanoTime();
 
                 if (result.compareAndSet(state, t)) {
-                    state.releaseShared(SUCCESSFUL);
+                    state.releaseShared(SUCCESS);
                     if (latch != null)
                         latch.countDown(t);
-                } else if (Integer.valueOf(CANCELED).equals(result.get())) {
+                } else if (Integer.valueOf(CANCELLED).equals(result.get())) {
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, "canceled during/after run");
-                    // Prevent dirty read of state during onEnd before the canceling thread transitions the state to CANCELING/CANCELED
+                    // Prevent dirty read of state during onEnd before the canceling thread transitions the state to CANCELLING/CANCELLED
                     while (state.get() == RUNNING)
                         Thread.yield();
                 }
@@ -753,11 +802,18 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 callback.onEnd(task, this, callbackContext, aborted, 0, x);
         } finally {
             thread = null;
-            // Prevent accidental interrupt of subsequent operations by awaiting the transition from CANCELING to CANCELED
-            while (state.get() == CANCELING)
+            // Prevent accidental interrupt of subsequent operations by awaiting the transition from CANCELLING to CANCELLED
+            while (state.get() == CANCELLING)
                 Thread.yield();
         }
     }
+
+    /**
+     * TODO Add a more efficient implementation of this method once Java 21 is the minimum level.
+     * This method of java.util.concurrent.Future was added in Java 19, but has a return type that
+     * makes it incompatible with prior versions of Java.
+     */
+    // Future.State state()
 
     /**
      * @throws InterruptedException if the task failed with InterruptedException.
@@ -778,7 +834,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     /**
      * String representation for debug purposes.
      *
-     * @return output of the form: PolicyTaskFuture@12345678 for org.example.MyTask@23456789 SUCCESSFUL on MyPolicyExecutor: My Successful Task Result
+     * @return output of the form: PolicyTaskFuture@12345678 for org.example.MyTask@23456789 SUCCESS on MyPolicyExecutor: My Successful Task Result
      */
     @Trivial
     @Override
@@ -798,23 +854,23 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             case ABORTED:
                 b.append("ABORTED");
                 break;
-            case CANCELING:
-                b.append("CANCELING");
+            case CANCELLING:
+                b.append("CANCELLING");
                 break;
-            case CANCELED:
-                b.append("CANCELED");
+            case CANCELLED:
+                b.append("CANCELLED");
                 break;
             case FAILED:
                 b.append("FAILED");
                 break;
-            case SUCCESSFUL:
-                b.append("SUCCESSFUL");
+            case SUCCESS:
+                b.append("SUCCESS");
                 break;
             default:
                 b.append(s); // should be unreachable
         }
         b.append(" on ").append(getIdentifier());
-        if (s == SUCCESSFUL || s == FAILED)
+        if (s == SUCCESS || s == FAILED)
             b.append(": ").append(result.get());
         return b.toString();
     }

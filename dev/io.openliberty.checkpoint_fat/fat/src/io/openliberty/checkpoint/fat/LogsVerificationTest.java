@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodName;
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
@@ -41,19 +42,19 @@ public class LogsVerificationTest {
     public TestName testName = new TestName();
     public static final String APP_NAME = "app2";
 
-    @Server("checkpointFATServer")
+    @Server("checkpointfat.log.verification.test")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "app2");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "app2");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 
     @Test
     public void testMessagesAndTraceLogsCreatedNewOnCheckpointRestore() throws Exception {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer(getTestMethodName(testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         server.checkpointRestore();
 
@@ -93,7 +94,7 @@ public class LogsVerificationTest {
         FATSuite.configureBootStrapProperties(server, properties);
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer(getTestMethodName(testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         server.checkpointRestore();
 
@@ -129,7 +130,7 @@ public class LogsVerificationTest {
     @Test
     public void testRestoreWorksAfterMessagesLogIsDeleted() throws Exception {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer(getTestMethodName(testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
         assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
 
         RemoteFile messagesLog = server.getDefaultLogFile();
@@ -146,7 +147,7 @@ public class LogsVerificationTest {
     @Test
     public void testVariableSourceDirUpdateDuringRestore() throws Exception {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
-        server.startServer(getTestMethodName(testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         server.copyFileToLibertyServerRoot("varfiles/server.env");
 

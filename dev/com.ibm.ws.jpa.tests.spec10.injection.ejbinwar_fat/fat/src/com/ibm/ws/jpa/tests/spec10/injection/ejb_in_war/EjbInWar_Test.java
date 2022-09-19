@@ -48,6 +48,7 @@ import com.ibm.ws.jpa.fvt.ejbinwar.tests.web.dmi.noinh.DMI_NoInh_EIW_SF_EJBTestS
 import com.ibm.ws.jpa.fvt.ejbinwar.tests.web.dmi.noinh.DMI_NoInh_EIW_SL_EJBTestServlet;
 import com.ibm.ws.jpa.fvt.ejbinwar.tests.web.jndi.JNDI_EIW_SF_EJBTestServlet;
 import com.ibm.ws.jpa.fvt.ejbinwar.tests.web.jndi.JNDI_EIW_SL_EJBTestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

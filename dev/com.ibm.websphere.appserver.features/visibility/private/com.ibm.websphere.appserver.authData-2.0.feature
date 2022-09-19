@@ -9,4 +9,4 @@ Subsystem-Version: 2.0.0
  io.openliberty.security.jaas.internal.common, \
  io.openliberty.security.auth.internal.data
 kind=ga
-edition=base
+edition=core

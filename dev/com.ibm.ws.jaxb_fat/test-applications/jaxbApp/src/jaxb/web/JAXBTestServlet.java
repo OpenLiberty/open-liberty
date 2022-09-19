@@ -28,7 +28,7 @@ import componenttest.app.FATServlet;
 public class JAXBTestServlet extends FATServlet {
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     public void testJaxbAPILoadedFromLiberty() throws Exception {
         assertNull("System property 'javax.xml.bind.context.factory' effects the entire JVM and should not be set by the Liberty runtime!",
                    System.getProperty("javax.xml.bind.context.factory"));
@@ -45,7 +45,7 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXRS", "JAXB-2.3" })
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testJakartaJaxbAPILoadedFromLiberty() throws Exception {
         assertNull("System property 'jakarta.xml.bind.context.factory' effects the entire JVM and should not be set by the Liberty runtime!",
                    System.getProperty("jakarta.xml.bind.context.factory"));
@@ -56,13 +56,13 @@ public class JAXBTestServlet extends FATServlet {
         System.out.println("Got JAX-B API from loader=  " + apiLoader);
         System.out.println("Got JAX-B API from location=" + apiLocation);
         assertTrue("Expected JAX-B API to come from Liberty bundle, but it came from: " + apiLoader,
-                   apiLoader != null && apiLoader.toString().contains("io.openliberty.jakarta.xmlBinding.3."));
+                   apiLoader != null && apiLoader.toString().contains("io.openliberty.jakarta.xmlBinding."));
         assertTrue("Expected JAX-B API to come from Liberty, but it came from: " + apiLocation,
-                   apiLocation != null && apiLocation.contains("io.openliberty.jakarta.xmlBinding.3."));
+                   apiLocation != null && apiLocation.contains("io.openliberty.jakarta.xmlBinding."));
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     public void testJaxbImplLoadedFromLiberty() throws Exception {
         JAXBContext ctx = JAXBContext.newInstance("jaxb.web", ObjectFactory.class.getClassLoader());
         ClassLoader implLoader = ctx.getClass().getClassLoader();
@@ -78,7 +78,7 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXB-2.3" })
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
     public void testXMLBindingImplLoadedFromLiberty() throws Exception {
         JAXBContext ctx = JAXBContext.newInstance("jaxb.web", ObjectFactory.class.getClassLoader());
         ClassLoader implLoader = ctx.getClass().getClassLoader();
@@ -94,7 +94,7 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     public void testActivationLoaded() throws Exception {
         // Verify Activation API came from the JDK
         ClassLoader apiLoader = javax.activation.DataHandler.class.getClassLoader();
@@ -116,7 +116,7 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXB-2.3" })
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION })
     public void testJakartaActivationLoaded() throws Exception {
         // Verify Activation API came from the JDK
         ClassLoader apiLoader = jakarta.activation.DataHandler.class.getClassLoader();

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,22 @@ bell.error.ctor.useraction=Pokud se v konstruktoru objevila v\u00fdjimka, projd\
 bell.no.services.config=CWWKL0058W: Nelze naj\u00edt slu\u017ebu {0} ve slo\u017ece META-INF/services z knihovny {1}.
 bell.no.services.config.explanation=Ve slo\u017ece META-INF/services nen\u00ed deklarov\u00e1na odpov\u00eddaj\u00edc\u00ed slu\u017eba.
 bell.no.services.config.useraction= Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# BETA
+# {0} - library identifier
+bell.spi.visibility.enabled=CWWKL0059I: Viditelnost rozhran\u00ed SPI BELL je povolena pro knihovnu {0}. BELL odkazuje na knihovnu {0} prost\u0159ednictv\u00edm jedine\u010dn\u00e9ho zavad\u011b\u010de t\u0159\u00edd, kter\u00fd vid\u00ed bal\u00edky rozhran\u00ed SPI.
+bell.spi.visibility.enabled.explanation=K tomu, aby aplikace a prost\u0159edky nevid\u011bly bal\u00edky rozhran\u00ed SPI, odkazuje BELL na knihovnu prost\u0159ednictv\u00edm jedine\u010dn\u00e9ho zavad\u011b\u010de t\u0159\u00edd, kter\u00fd nen\u00ed sd\u00edlen s aplikacemi, kter\u00e9 odkazuj\u00ed na stejnou knihovnu.
+bell.spi.visibility.enabled.useraction=V\u017edy zaka\u017ete viditelnost rozhran\u00ed SPI v konfiguraci BELL, kdy\u017e BELL mus\u00ed odkazovat na knihovnu prost\u0159ednictv\u00edm zavad\u011b\u010de t\u0159\u00edd, kter\u00fd je sd\u00edlen s aplikacemi, kter\u00e9 odkazuj\u00ed na stejnou knihovnu. Jinak nen\u00ed vy\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+# BETA
+bell.spi.visibility.disabled.libref.global=CWWKL0060E: Viditelnost rozhran\u00ed SPI BELL nen\u00ed podporov\u00e1na pro glob\u00e1ln\u011b sd\u00edlenou knihovnu Liberty.
+bell.spi.visibility.disabled.libref.global.explanation=Viditelnost rozhran\u00ed SPI BELL nem\u016f\u017ee b\u00fdt povolena pro glob\u00e1ln\u011b sd\u00edlenou knihovnu Liberty.
+bell.spi.visibility.disabled.libref.global.useraction=Upravte konfiguraci BELL tak, aby odkazovala na jinou knihovnu ne\u017e na glob\u00e1ln\u011b sd\u00edlenou knihovnu Liberty.
+
+# BETA
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.missing.property.injection.methods=CWWKL0062W: Syst\u00e9m nevlo\u017eil vlastnosti BELL do instance implementace produktu {0}. T\u0159\u00edda nedefinuje metodu, kter\u00e1 podporuje vlo\u017een\u00ed vlastnost\u00ed BELL. T\u0159\u00edda je implementace slu\u017eby, kter\u00e1 je deklarov\u00e1na v souboru {1} a registrov\u00e1na z knihovny {2}.
+bell.missing.property.injection.methods.explanation=Syst\u00e9m nem\u016f\u017ee z\u00edskat p\u0159\u00edstup k metod\u011b po\u017eadovan\u00e9 pro vlo\u017een\u00ed vlastnost\u00ed BELL. Implementa\u010dn\u00ed t\u0159\u00edda slu\u017eby mus\u00ed definovat ve\u0159ejn\u00fd konstruktor nebo ve\u0159ejnou metodu s n\u00e1zvem updateBell s jedn\u00edm parametrem typu java.util.Map<string,String> pro podporu vlo\u017een\u00ed vlastnost\u00ed BELL.
+bell.missing.property.injection.methods.useraction=Ujist\u011bte se, \u017ee t\u0159\u00edda definuje ve\u0159ejn\u00fd konstruktor nebo ve\u0159ejnou metodu s n\u00e1zvem updateBell, s jedn\u00edm parametrem typu type java.util.Map<String, String>.

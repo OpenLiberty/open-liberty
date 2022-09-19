@@ -93,7 +93,7 @@ Include-Resource: \
 	com.ibm.ws.security.openidconnect.common;version=latest,\
 	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
 	com.ibm.ws.security.common.jsonwebkey;version=latest,\
-	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
+	io.openliberty.com.google.gson;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\

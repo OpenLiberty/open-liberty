@@ -627,17 +627,7 @@ public final class JAXBUtils {
 
     public static Object setNamespaceMapper(Bus bus, final Map<String, String> nspref,
                                             Marshaller marshaller) throws PropertyException {
-        LOG.info("****@TTJJ className of mapper is: " + marshaller.getClass() + " nspref stands for " + nspref);
         ClassLoaderService classLoaderService = bus.getExtension(ClassLoaderService.class);
-//        if(marshaller.getClass().getName().startsWith("com.ibm")) {
-//            try {
-//                Object mapper = classLoaderService.createNamespaceWrapperInstance(marshaller.getClass(), nspref);  
-//            } catch (NoClassDefFound) {
-//                if(NoClassDefFoundError e) {
-//                    // do nothing since XLXP has messed with the way this property gets read. 
-//                }
-//            }
-//        }
         Object mapper = classLoaderService.createNamespaceWrapperInstance(marshaller.getClass(), nspref);
         if (mapper != null) {
             if ((marshaller.getClass().getName().contains("com.sun") && marshaller.getClass().getName().contains(".internal."))) {
@@ -1144,8 +1134,7 @@ public final class JAXBUtils {
              || className.contains("eclipse"))) {
             //eclipse moxy accepts sun package CharacterEscapeHandler 
             return ".internal";
-        } else if (className.contains("com.sun.xml.bind")
-                   || className.startsWith("com.ibm.xml")) { //Liberty change) {
+        } else if (className.contains("com.sun.xml.bind")) {
             return "";
         }
         return null;
@@ -1203,6 +1192,10 @@ public final class JAXBUtils {
     private static Object createEscapeHandler(Class<?> cls, String simpleClassName) {
         try {
             //Liberty change begin
+            if (cls.getName().startsWith("com.ibm.xml")) {
+                // Do not use escape handlers with XLXP
+                return null;
+            }
             String packageName;
             //Jakarta EE 9
             if (isEE9OrHigher) {

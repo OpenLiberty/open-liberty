@@ -51,7 +51,7 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
     com.ibm.websphere.org.osgi.core;version=latest, \
     com.ibm.websphere.org.osgi.service.component;version=latest, \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-    com.ibm.ws.com.google.gson.2.2.4;version=latest,\
+    io.openliberty.com.google.gson;version=latest,\
     com.ibm.ws.org.jose4j;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest, \
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \
@@ -63,7 +63,8 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
     com.ibm.ws.security.authentication;version=latest, \
     com.ibm.json4j;version=latest, \
     com.ibm.ws.webcontainer.security;version=latest, \
-    com.ibm.ws.org.apache.httpcomponents;version=latest
+    com.ibm.ws.org.apache.httpcomponents;version=latest, \
+    com.ibm.ws.ssl;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

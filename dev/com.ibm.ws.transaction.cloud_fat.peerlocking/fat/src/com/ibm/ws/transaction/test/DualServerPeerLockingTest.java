@@ -13,11 +13,14 @@ package com.ibm.ws.transaction.test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -83,17 +86,17 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         ShrinkHelper.defaultApp(peerLockingDisabledServer1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(peerLockingEnabledServer1, APP_NAME, "com.ibm.ws.transaction.*");
 
-        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
-        defaultAttributesServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        defaultAttributesServer2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        defaultAttributesServer2.setHttpDefaultPort(defaultAttributesServer2.getHttpSecondaryPort());
-        longPeerStaleTimeServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        longPeerStaleTimeServer2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        longPeerStaleTimeServer2.setHttpDefaultPort(longPeerStaleTimeServer2.getHttpSecondaryPort());
-        peerLockingDisabledServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        peerLockingEnabledServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server2.useSecondaryHTTPPort();
+        defaultAttributesServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        defaultAttributesServer2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        defaultAttributesServer2.useSecondaryHTTPPort();
+        longPeerStaleTimeServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        longPeerStaleTimeServer2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        longPeerStaleTimeServer2.useSecondaryHTTPPort();
+        peerLockingDisabledServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        peerLockingEnabledServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }
 
     @After
@@ -711,21 +714,20 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server1, servletName, "setupRec" + testSuffix);
-        } catch (Throwable e) {
+        } catch (IOException e) {
             // as expected
-            Log.error(this.getClass(), method, e); // TODO remove this
         }
         Log.info(this.getClass(), method, "setupRec" + testSuffix + " returned: " + sb);
 
         // wait for 1st server to have gone away
-        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace("Dump State:"));
+        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
 
         // Start Server2
         FATUtils.startServers(server2);
 
         // wait for 2nd server to perform peer recovery
         assertNotNull(server2.getServerName() + " did not perform peer recovery",
-                      server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT));
+                      server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, FATUtils.LOG_SEARCH_TIMEOUT));
 
         // flush the resource states
         try {
@@ -742,7 +744,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         // restart 1st server
         FATUtils.startServers(server1);
 
-        assertNotNull("Recovery incomplete on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0133I", LOG_SEARCH_TIMEOUT));
+        assertNotNull("Recovery incomplete on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0133I", FATUtils.LOG_SEARCH_TIMEOUT));
 
         // check resource states
         Log.info(this.getClass(), method, "calling checkRec" + testSuffix);
@@ -757,8 +759,8 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         // Check log was cleared
 
-        assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I", LOG_SEARCH_TIMEOUT));
-        assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0", LOG_SEARCH_TIMEOUT));
+        assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I", FATUtils.LOG_SEARCH_TIMEOUT));
+        assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0", FATUtils.LOG_SEARCH_TIMEOUT));
 
         FATUtils.stopServers(server1);
 
@@ -767,5 +769,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     }
 
     @Override
-    protected void setUp(LibertyServer server) throws Exception {}
+    public void setUp(LibertyServer server) throws Exception {
+    }
 }

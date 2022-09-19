@@ -2,6 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.passwordUtilities-1.0
 WLP-DisableAllFeatures-OnConflict: false
 visibility=public
+singleton=true
 IBM-ShortName: passwordUtilities-1.0
 IBM-API-Package: \
  com.ibm.websphere.security.jca; type="ibm-api", \

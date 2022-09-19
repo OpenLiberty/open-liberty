@@ -31,6 +31,7 @@ import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.embeddable.basic.web.TestEmbeddableBasicServlet;
 import com.ibm.ws.jpa.spec10.embeddable.FATSuite;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

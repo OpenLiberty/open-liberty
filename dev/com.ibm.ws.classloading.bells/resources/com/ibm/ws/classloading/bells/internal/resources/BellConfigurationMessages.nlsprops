@@ -87,13 +87,14 @@ bell.spi.visibility.enabled.explanation=To prevent applications and resources fr
 bell.spi.visibility.enabled.useraction=Disable SPI visibility in the BELL configuration whenever the BELL must reference a library through a class loader that is shared with applications that reference the same library. Otherwise, no action is required.
 
 # BETA
-bell.spi.visibility.disabled.libref.global=CWWKL0060W: BELL SPI visibility is not enabled for the Liberty global shared library.
-bell.spi.visibility.disabled.libref.global.explanation=BELL SPI visibility is not supported for the Liberty global shared library.
+bell.spi.visibility.disabled.libref.global=CWWKL0060E: BELL SPI visibility is not supported for the Liberty global shared library.
+bell.spi.visibility.disabled.libref.global.explanation=BELL SPI visibility cannot be enabled for the Liberty global shared library.
 bell.spi.visibility.disabled.libref.global.useraction=Modify the BELL configuration to reference a library other than the Liberty global shared library.
 
-# BETA: NOT IMPLEMENTED
-# {0} - application identifier
-# {1} - library identifier
-#bell.spi.visible.share.common.libref=CWWKL0061W: The {0} application and BELL share a common library reference, but do not reference the {1} library through a common class loader because the BELL is enabled for SPI visibility.
-#bell.spi.visible.share.common.libref.explanation=To prevent applications and resources from seeing SPI packages, the BELL references the library through a unique class loader that is not shared with the application.
-#bell.spi.visible.share.common.libref.useraction=Disable SPI visibility in the BELL configuration whenever the application and BELL must share a common library class loader. Otherwise, no action is required.
+# BETA
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.missing.property.injection.methods=CWWKL0062W: The system did not inject BELL properties into an instance of the {0} implementation. The class does not define a method that supports BELL property injection. The class is an implementation of the service that is declared in the {1} file and registered from the {2} library.
+bell.missing.property.injection.methods.explanation=The system cannot access a method required for BELL property injection. The service implementation class must define a public constructor, or a public method named updateBell, with one parameter of type java.util.Map<string,String> in order to support BELL property injection.
+bell.missing.property.injection.methods.useraction=Ensure that the class defines a public constructor, or a public method named updateBell, with a single parameter of type java.util.Map<String, String>.

@@ -431,6 +431,13 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         return updateCount;
     }
 
+    @Trivial
+    public void close() {
+        // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
+        // for ManagedExecutorService and ManagedScheduledExecutorService
+        throw new IllegalStateException(new UnsupportedOperationException("close"));
+    }
+
     public <U> CompletableFuture<U> completedFuture(U value) {
         // Concurrency 3.0 reactive operations cannot be used on
         // persistent executor implementation that spans multiple servers

@@ -76,6 +76,8 @@ public class ServerStartAsServiceTest {
         Log.info(c, METHOD_NAME, "calling server.waitForStringInLog('CWWKF0011I')");
         server.waitForStringInLog("CWWKF0011I");
 
+        callSnoop(server);
+
         assertTrue("the server should have been started", server.isStarted());
 
         Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME_1);
@@ -106,15 +108,7 @@ public class ServerStartAsServiceTest {
 
         assertTrue("the server should have been started", server.isStarted());
 
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/snoop");
-        Log.info(c, METHOD_NAME, "Calling Snoop Application with URL=" + url.toString());
-        HttpURLConnection con = getHttpConnection(url);
-        BufferedReader br = getConnectionStream(con);
-        String line = br.readLine();
-        assertTrue("The response did not contain the \'Snoop Servlet\'",
-                   line.contains("Snoop Servlet"));
-
-        Log.info(c, METHOD_NAME, "return line: " + line);
+        callSnoop(server);
 
         Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME_2);
         server.stopServer();
@@ -153,6 +147,8 @@ public class ServerStartAsServiceTest {
             server.waitForStringInLog("CWWKF0011I");
 
             assertTrue("the server should have been started", server.isStarted());
+
+            callSnoop(server);
 
             Log.info(c, METHOD_NAME, "calling server.stopServer(): " + SERVER_NAME_3);
             server.stopServer();
@@ -240,5 +236,25 @@ public class ServerStartAsServiceTest {
         serverEnvFile.delete();
 
         return serverEnv;
+    }
+
+    /**
+     * Call the snoop app and make sure it responds
+     *
+     * @param server
+     * @throws Exception
+     */
+    private void callSnoop(LibertyServer server) throws Exception {
+        String METHOD_NAME = "callSnoop()";
+        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/snoop");
+
+        Log.info(c, METHOD_NAME, "Calling Snoop Application with URL=" + url.toString());
+        HttpURLConnection con = getHttpConnection(url);
+        BufferedReader br = getConnectionStream(con);
+        String line = br.readLine();
+
+        Log.info(c, METHOD_NAME, "return line: " + line);
+        assertTrue("The response did not contain the \'Snoop Servlet\'", line.contains("Snoop Servlet"));
+
     }
 }

@@ -10,11 +10,6 @@
  *******************************************************************************/
 package io.openliberty.webcontainer60.session.impl;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
 import java.util.logging.Level;
 
 import com.ibm.websphere.ras.TraceComponent;
@@ -26,7 +21,13 @@ import com.ibm.ws.webcontainer31.session.impl.HttpSessionContext31Impl;
 import com.ibm.wsspi.session.ISession;
 import com.ibm.wsspi.session.SessionAffinityContext;
 
-import io.openliberty.session.impl.SessionData60;
+import io.openliberty.session.impl.SessionCookieConfigImpl60;
+import io.openliberty.session.impl.http.HttpSessionImpl60;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.SessionCookieConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Since Servlet 6.0
@@ -35,7 +36,6 @@ import io.openliberty.session.impl.SessionData60;
 public class HttpSessionContextImpl60 extends HttpSessionContext31Impl {
     private static final String methodClassName = "HttpSessionContextImpl60";
 
-
     /**
      * @param smc
      * @param sap
@@ -43,10 +43,15 @@ public class HttpSessionContextImpl60 extends HttpSessionContext31Impl {
      */
     public HttpSessionContextImpl60(SessionManagerConfig smc, SessionApplicationParameters sap, SessionStoreService sessionStoreService) {
         super(smc, sap, sessionStoreService);
-        
-        if (TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + "Constructor");
+
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " Constructor");
         }
+
+        SessionCookieConfig scc = smc.getSessionCookieConfig();
+
+        //override the default sccimpl with version 6 sccimpl
+        smc.setClonedCookieConfig(new SessionCookieConfigImpl60(scc.getName(), scc.getDomain(), scc.getPath(), scc.getComment(), scc.getMaxAge(), scc.isHttpOnly(), scc.isSecure()));
     }
 
     /**
@@ -54,21 +59,21 @@ public class HttpSessionContextImpl60 extends HttpSessionContext31Impl {
      */
     @Override
     public Object createSessionObject(ISession isess, ServletContext servCtx) {
-        if (TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + "createSessionObject");
         }
 
         return new WCHttpSessionImpl60(isess, this, servCtx);
     }
-    
+
     @Override
     public HttpSession generateNewId(HttpServletRequest request, HttpServletResponse response, HttpSession existingSession) {
-        if (TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + "generateNewId");
         }
 
         SessionAffinityContext sac = getSessionAffinityContext(request);
-        HttpSession session = (HttpSession) _coreHttpSessionManager.generateNewId(request, response, sac, ((SessionData60) existingSession).getISession());
+        HttpSession session = (HttpSession) _coreHttpSessionManager.generateNewId(request, response, sac, ((HttpSessionImpl60) existingSession).getISession());
         return session;
     }
 }

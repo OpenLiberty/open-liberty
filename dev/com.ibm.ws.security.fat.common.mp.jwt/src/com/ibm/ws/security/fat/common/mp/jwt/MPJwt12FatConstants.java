@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 package com.ibm.ws.security.fat.common.mp.jwt;
 
 public class MPJwt12FatConstants extends MPJwtFatConstants {
-
-    public static final String COOKIE = "Cookie";
 
     public static final String GOOD_HEADER_AUTHORIZATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodHeaderAuthorizationInMP-ConfigInMETA-INF";
     public static final String GOOD_HEADER_AUTHORIZATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodHeaderAuthorizationInMP-ConfigUnderWEB-INF";

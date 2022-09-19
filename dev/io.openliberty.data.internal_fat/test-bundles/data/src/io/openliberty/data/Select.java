@@ -16,31 +16,72 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Provides the ability to choose the type and columns that are returned by find operations.
+ * Provides the ability to control which columns are returned by
+ * repository method find operations.<p>
+ *
  * Do not combine on a single method with {@link Query @Query}, which is a more advanced way of providing this information.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Select {
     /**
-     * Serves as a marker for automatic detection.
+     * Aggregate functions.
      */
-    public static final class AutoDetect {
+    public static enum Aggregate {
+        AVERAGE,
+        COUNT,
+        MAXIMUM,
+        MINIMUM,
+        SUM,
+        UNSPECIFIED
     }
 
     /**
-     * Specifies a return type for query results.
-     * Instances of this type are constructed with the entity attributes
-     * selected in the order that is specified by {@link #value}.
-     * The default value is the marker class for automatic detection based on the method return type and entity type.
+     * Specifies an aggregate function to apply to the selected entity attribute.
+     * When specifying an aggregate function, select a single entity attribute {@link #value}.
+     * The default is {@link Aggregate#UNSPECIFIED}, which means no aggregate function is applied.<p>
+     *
+     * An example repository method that counts the distinct first names that start with
+     * the specified letter,
+     *
+     * <pre>
+     * &#64;Select(function = Aggregate.COUNT, distinct = true, value = "firstName")
+     * int findByStartsWith(String firstLetter);
+     * </pre>
+     *
+     * @return the aggregate function to apply to the selected entity attribute.
      */
-    Class<?> type() default AutoDetect.class;
+    Aggregate function() default Aggregate.UNSPECIFIED;
+
+    /**
+     * Requests that only distinct values of an entity attribute be returned.
+     * When specifying <code>distinct</code>, select a single entity attribute {@link #value}.
+     * The default is <code>false</code>.
+     *
+     * @return whether only distinct values of an entity attribute should be returned.
+     */
+    boolean distinct() default false;
 
     /**
      * Limits the entity attributes to the names listed.
-     * The order in which the are listed is honored, enabling the attributes to be supplied as
-     * constructor arguments per the {@link #type}.
-     * When specified as empty (the default), all entity attributes are retrieved.
+     * The order in which the attributes are listed is preserved,
+     * enabling them to be supplied as constructor arguments per {@link Result#type}.<p>
+     *
+     * An example of returning a single attribute,
+     *
+     * <pre>
+     * &#64;Select("price")
+     * List&#60;Float&#62; findByProductIdIn(Collection<String> productIds);
+     * </pre>
+     *
+     * An example of returning multiple attributes as a different type,
+     *
+     * <pre>
+     * &#64;Select({ "productId", "available" })
+     * List&#60;SurplusItem&#62; findByAvailableGreaterThan(int targetInventoryLevel);
+     * </pre>
+     *
+     * @return names of entity attributes to select.
      */
-    String[] value() default {};
+    String[] value();
 }

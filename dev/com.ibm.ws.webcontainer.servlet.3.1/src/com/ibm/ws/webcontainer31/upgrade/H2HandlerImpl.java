@@ -51,16 +51,17 @@ public class H2HandlerImpl implements H2Handler {
         // Retrieve the needed header values for this request
         Map<String, String> h2Headers = null;
         HttpServletRequest hsrt = (HttpServletRequest) request;
-        Enumeration<String> headerNames = hsrt.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            if (CONSTANT_connection.equalsIgnoreCase(headerName) || CONSTANT_upgrade.equalsIgnoreCase(headerName)) {
-                if (h2Headers == null) {
-                    h2Headers = new HashMap<String, String>();
-                }
-                h2Headers.put(headerName, hsrt.getHeader(headerName));
+
+        String upgradeHeaders = hsrt.getHeader(CONSTANT_upgrade);
+        if(upgradeHeaders != null) {
+            String connectionHeaders = hsrt.getHeader(CONSTANT_connection);
+            if(connectionHeaders != null) {
+                h2Headers = new HashMap<String, String>();
+                h2Headers.put(CONSTANT_connection,connectionHeaders);
+                h2Headers.put(CONSTANT_upgrade, upgradeHeaders);
             }
         }
+
         return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(h2Headers == null ? Collections.emptyMap() : h2Headers, false);
     }
 

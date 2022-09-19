@@ -60,7 +60,7 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
 
     private static final boolean isZOS() {
         String osName = System.getProperty("os.name");
-        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+        if (osName.toLowerCase().contains("os/") || osName.toLowerCase().contains("z/os") || osName.toLowerCase().contains("zos")) {
             return true;
         }
         return false;

@@ -69,7 +69,7 @@ public class InMemoryPersistenceBatchJobOperatorApiTest extends BatchJobOperator
 
         server.startServer();
 
-        FatUtils.waitForStartupAndSsl(server);
+        FatUtils.waitForStartupSslAndLTPA(server);
         FatUtils.waitForRestAPI(server);
 
         restUtils = new BatchRestUtils(server);

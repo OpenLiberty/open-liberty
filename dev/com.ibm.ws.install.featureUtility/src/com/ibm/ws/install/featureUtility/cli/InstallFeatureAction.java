@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,7 +130,7 @@ public class InstallFeatureAction implements ActionHandler {
                         return rc;
                 }
                 try {
-                        checkAssetsNotInstalled(new ArrayList<>(featureNames));
+					checkAssetsNotInstalled(new ArrayList<>(featureNames), true);
                 } catch (InstallException e) {
                 	logger.log(Level.SEVERE, e.getMessage(), e);
                     return FeatureUtilityExecutor.returnCode(e.getRc());
@@ -210,8 +210,8 @@ public class InstallFeatureAction implements ActionHandler {
         }
 
         // call the install kernel to verify we are installing at least 1 new asset
-        private void checkAssetsNotInstalled(List<String> assetIds) throws InstallException {
-                installKernel.checkAssetsNotInstalled(assetIds);
+		private void checkAssetsNotInstalled(List<String> assetIds, boolean installingFeature) throws InstallException {
+			installKernel.checkAssetsNotInstalled(assetIds, installingFeature);
         }
 
         private ReturnCode validateFromDir(String fromDir) {

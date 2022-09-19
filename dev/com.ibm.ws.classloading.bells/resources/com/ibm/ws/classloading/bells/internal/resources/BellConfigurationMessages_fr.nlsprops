@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,22 @@ bell.error.ctor.useraction=Si une exception s'est produite dans le constructeur,
 bell.no.services.config=CWWKL0058W: Service {0} introuvable dans le dossier META-INF/services de la biblioth\u00e8que {1}.
 bell.no.services.config.explanation=Aucun service correspondant n'a \u00e9t\u00e9 d\u00e9clar\u00e9 dans le dossier META-INF/services.
 bell.no.services.config.useraction= Aucune action de l'utilisateur n'est requise.
+
+# BETA
+# {0} - library identifier
+bell.spi.visibility.enabled=CWWKL0059I: La visibilit\u00e9 BELL SPI est activ\u00e9e pour la biblioth\u00e8que {0}. BELL fait r\u00e9f\u00e9rence \u00e0 la biblioth\u00e8que {0} via un chargeur de classe unique qui peut voir les packages SPI.
+bell.spi.visibility.enabled.explanation=Pour emp\u00eacher les applications et les ressources de voir les paquets SPI, BELL fait r\u00e9f\u00e9rence la biblioth\u00e8que par le biais d'un chargeur de classe unique qui n'est pas partag\u00e9 avec les applications qui r\u00e9f\u00e9rencent la m\u00eame biblioth\u00e8que.
+bell.spi.visibility.enabled.useraction=D\u00e9sactivez la visibilit\u00e9 SPI dans la configuration BELL chaque fois que BELL doit faire r\u00e9f\u00e9rence \u00e0 une biblioth\u00e8que par le biais d'un chargeur de classe qui est partag\u00e9 avec des applications qui r\u00e9f\u00e9rencent la m\u00eame biblioth\u00e8que. Sinon, aucune action n'est requise.
+
+# BETA
+bell.spi.visibility.disabled.libref.global=CWWKL0060E: La visibilit\u00e9 BELL SPI n'est pas prise en charge pour la biblioth\u00e8que partag\u00e9e globale Liberty.
+bell.spi.visibility.disabled.libref.global.explanation=La visibilit\u00e9 de l'interface SPI BELL ne peut pas \u00eatre activ\u00e9e pour la biblioth\u00e8que partag\u00e9e globale Liberty.
+bell.spi.visibility.disabled.libref.global.useraction=Modifiez la configuration BELL pour faire r\u00e9f\u00e9rence \u00e0 une biblioth\u00e8que autre que la biblioth\u00e8que partag\u00e9e globale Liberty.
+
+# BETA
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.missing.property.injection.methods=CWWKL0062W: Le syst\u00e8me n''a pas inject\u00e9 les propri\u00e9t\u00e9s BELL dans une instance de l''impl\u00e9mentation {0}. La classe ne d\u00e9finit pas de m\u00e9thode qui prend en charge l''injection de propri\u00e9t\u00e9s BELL. La classe est une impl\u00e9mentation du service qui est d\u00e9clar\u00e9 dans le fichier {1} et enregistr\u00e9 \u00e0 partir de la biblioth\u00e8que {2}.
+bell.missing.property.injection.methods.explanation=Le syst\u00e8me ne peut pas acc\u00e9der \u00e0 une m\u00e9thode requise pour l'injection de propri\u00e9t\u00e9 BELL. La classe d'impl\u00e9mentation de service doit d\u00e9finir un constructeur public, ou une m\u00e9thode publique nomm\u00e9e updateBell, avec un param\u00e8tre de type java.util.Map<string,String> afin de prendre en charge l'injection de propri\u00e9t\u00e9 BELL.
+bell.missing.property.injection.methods.useraction=Assurez-vous que la classe d\u00e9finit un constructeur public ou une m\u00e9thode publique nomm\u00e9e updateBell avec un param\u00e8tre unique de type java.util.Map<String, String>.

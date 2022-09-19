@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,22 @@ bell.error.ctor.useraction=Dac\u0103 a ap\u0103rut o excep\u0163ie \u00een const
 bell.no.services.config=CWWKL0058W: Nu se poate g\u0103si serviciul {0} \u00een folderul META-INF/services din biblioteca {1}.
 bell.no.services.config.explanation=Nu exist\u0103 niciun serviciu declarat care s\u0103 se potriveasc\u0103 \u00een folderul META-INF/services.
 bell.no.services.config.useraction= Nu este necesar\u0103 nici-o ac\u0163iune din partea utilizatorului.
+
+# BETA
+# {0} - library identifier
+bell.spi.visibility.enabled=CWWKL0059I: Vizibilitatea SPI BELL este activat\u0103 pentru biblioteca {0}. BELL face referire la biblioteca {0} printr-un \u00eenc\u0103rc\u0103tor de clase unic care poate vedea pachetele SPI.
+bell.spi.visibility.enabled.explanation=Pentru a \u00eempiedica aplica\u021biile \u0219i resursele s\u0103 vad\u0103 pachete SPI, BELL face referire la bibliotec\u0103 printr-un \u00eenc\u0103rc\u0103tor de clase unic care nu este partajat cu aplica\u021biile care fac referire la aceea\u0219i bibliotec\u0103.
+bell.spi.visibility.enabled.useraction=Dezactiva\u021bi vizibilitatea SPI \u00een configura\u021bia BELL ori de c\u00e2te ori BELL trebuie s\u0103 fac\u0103 referire la o bibliotec\u0103 printr-un \u00eenc\u0103rc\u0103tor de clase care este partajat cu aplica\u021biile care fac referire la aceea\u0219i bibliotec\u0103. Altfel nu este necesar\u0103 nici o ac\u0163iune.
+
+# BETA
+bell.spi.visibility.disabled.libref.global=CWWKL0060E: Vizibilitatea SPI BELL nu este suportat\u0103 pentru biblioteca partajat\u0103 global\u0103 Liberty.
+bell.spi.visibility.disabled.libref.global.explanation=Vizibilitatea BELL SPI nu poate fi activat\u0103 pentru biblioteca partajat\u0103 global\u0103 Liberty.
+bell.spi.visibility.disabled.libref.global.useraction=Modifica\u021bi configura\u021bia BELL pentru a face referire la alt\u0103 bibliotec\u0103 dec\u00e2t biblioteca partajat\u0103 global\u0103 Liberty.
+
+# BETA
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.missing.property.injection.methods=CWWKL0062W: Sistemul nu a injectat propriet\u0103\u021bi BELL \u00eentr-o instan\u021b\u0103 a implement\u0103rii {0}. Clasa nu define\u0219te o metod\u0103 care accept\u0103 injectarea de propriet\u0103\u021bi BELL. Clasa este o implementare a serviciului care este declarat \u00een fi\u0219ierul {1} \u0219i \u00eenregistrat din biblioteca {2}.
+bell.missing.property.injection.methods.explanation=Sistemul nu poate accesa o metod\u0103 necesar\u0103 pentru injectarea de propriet\u0103\u021bi BELL. Pentru a fi acceptat\u0103 injectarea de propriet\u0103\u021bi BELL, clasa de implementare a serviciului trebuie s\u0103 defineasc\u0103 un constructor public sau o metod\u0103 public\u0103 numit\u0103 updateBell, cu un parametru de tip java.util.Map<string,String>.
+bell.missing.property.injection.methods.useraction=Asigura\u021bi-v\u0103 c\u0103 clasa define\u0219te un constructor public sau o metod\u0103 public\u0103 numit\u0103 updateBell, cu un singur parametru de tip java.util.Map<String, String>.

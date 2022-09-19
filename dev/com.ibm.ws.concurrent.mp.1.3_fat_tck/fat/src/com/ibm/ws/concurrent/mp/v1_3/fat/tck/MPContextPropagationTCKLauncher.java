@@ -14,19 +14,27 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
 @RunWith(FATRunner.class)
 public class MPContextPropagationTCKLauncher {
 
-    @Server("tckServerForMPContextPropagation13")
+    private static final String SERVER_NAME = "tckServerForMPContextPropagation13";
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP50);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass

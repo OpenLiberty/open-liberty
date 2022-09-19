@@ -41,6 +41,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.TestHelpers;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -57,6 +58,7 @@ import io.openliberty.jcache.internal.fat.docker.KeycloakContainer;
  * - com.ibm.ws.security.jwt.internal.JwtTokenConsumerImpl (oidcLogin / org.jose4j.jwx.Headers are not serializable)
  * - com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl (openidConnectClient / org.jose4j.jwt.JwtClaims are not serializable)
  */
+@SkipIfSysProp("skip.tests=true")
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
@@ -81,6 +83,8 @@ public class JCacheOidcClientAuthenticationCacheTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        assumeShouldNotSkipTests();
+
         /*
          * Start the Keycloak IDP.
          */

@@ -31,7 +31,6 @@ import com.ibm.ws.fat.util.browser.WebResponse;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
@@ -82,7 +81,6 @@ public class StatefulSessionBeanInjectionTest extends FATServletClient {
 
     @Test
     @ExpectedFFDC("javax.ejb.NoSuchEJBException")
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) //This must be re-enabled when the session code for EE10 is ready. See issue 20854.
     public void testStatefulEJBRemoveMethod() throws Exception {
         WebBrowser wb = WebBrowserFactory.getInstance().createWebBrowser();
 

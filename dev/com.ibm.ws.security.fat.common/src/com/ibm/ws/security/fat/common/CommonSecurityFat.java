@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,13 +22,18 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.Description;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.FatWatcher;
+import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.servers.ServerTracker;
+import com.ibm.ws.security.fat.common.utils.WebClientTracker;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LibertyServerUtils;
@@ -41,8 +46,10 @@ public class CommonSecurityFat {
 
     @Rule
     public final TestName testName = new TestName();
+    private final TestActions testActions = new TestActions();
 
     protected static ServerTracker serverTracker = new ServerTracker();
+    protected WebClientTracker webClientTracker = new WebClientTracker();
     protected static ServerTracker skipRestoreServerTracker = new ServerTracker();
 
     protected CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
@@ -66,6 +73,14 @@ public class CommonSecurityFat {
     @After
     public void commonAfterTest() {
         restoreTestServers();
+        try {
+
+            // clean up webClients
+            webClientTracker.closeAllWebClients();
+
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
         loggingUtils.printMethodName("ENDING TEST CASE: " + _testName);
         logTestCaseInServerLogs("ENDING");
     }
@@ -163,6 +178,18 @@ public class CommonSecurityFat {
         }
     };
 
+    protected static void testSkipped() {
+
+        String methodName = "testSkipped";
+        Log.info(thisClass, methodName, "");
+        Log.info(thisClass, methodName, "TTTTT EEEEE  SSSS TTTTT   SSSS K   K IIIII PPPP  PPPP  EEEEE DDDD");
+        Log.info(thisClass, methodName, "  T   E     S       T    S     K  K    I   P   P P   P E     D   D");
+        Log.info(thisClass, methodName, "  T   EEE    SSS    T     SSS  KKK     I   PPPP  PPPP  EEE   D   D");
+        Log.info(thisClass, methodName, "  T   E         S   T        S K  K    I   P     P     E     D   D");
+        Log.info(thisClass, methodName, "  T   EEEEE SSSS    T    SSSS  K   K IIIII P     P     EEEEE DDDD");
+        Log.info(thisClass, methodName, "");
+    }
+
     private static void transformAppsInDefaultDirs(LibertyServer server, String appDirName) {
 
         Machine machine = server.getMachine();
@@ -180,7 +207,11 @@ public class CommonSecurityFat {
         }
         if (list != null) {
             for (RemoteFile app : list) {
+                if (JakartaEE9Action.isActive()) {
                 JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+                } else if (JakartaEE10Action.isActive()) {
+                        JakartaEE10Action.transformApp(Paths.get(app.getAbsolutePath()));
+                }
             }
         }
     }
@@ -192,13 +223,20 @@ public class CommonSecurityFat {
      *            The server to transform the applications on.
      */
     public static void transformApps(LibertyServer server) {
-        if (JakartaEE9Action.isActive()) {
+        if (RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID)) {
 
             transformAppsInDefaultDirs(server, "dropins");
             transformAppsInDefaultDirs(server, "apps");
             transformAppsInDefaultDirs(server, "test-apps");
 
         }
+    }
+
+    public WebClient getAndSaveWebClient() throws Exception {
+
+        WebClient webClient = testActions.createWebClient();
+        webClientTracker.addWebClient(webClient);
+        return webClient;
     }
 
 }

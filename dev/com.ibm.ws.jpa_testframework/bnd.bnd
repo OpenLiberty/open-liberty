@@ -9,7 +9,11 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
 bVersion=1.0
+
 
 Bundle-Name: JPA Test Tools
 Bundle-SymbolicName: com.ibm.ws.jpa_testframework
@@ -28,11 +32,13 @@ Export-Package: \
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
-    com.ibm.ws.componenttest,\
     com.ibm.websphere.javaee.annotation.1.1;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
     com.ibm.websphere.javaee.jms.2.0;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     com.ibm.websphere.javaee.persistence.2.1;version=latest,\
-    com.ibm.websphere.javaee.transaction.1.2;version=latest
+    com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+    com.ibm.ws.componenttest;version=latest,\
+    fattest.simplicity;version=latest,\
+    org.jboss.shrinkwrap:shrinkwrap-api;version=latest

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.concurrency;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -24,11 +25,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import test.jakarta.concurrency.ejb.error.AsynchClassBean;
@@ -39,6 +44,7 @@ import test.jakarta.concurrency.ejb.error.GenericLocal;
 import test.jakarta.concurrency.web.error.ConcurrencyBeanErrorServlet;
 import test.jakarta.concurrency.web.error.ConcurrencyClassErrorServlet;
 import test.jakarta.concurrency.web.error.ConcurrencyInterfaceWarningServlet;
+import test.jakarta.concurrency.web.error.config.ResourceDefinitionErrorServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 11)
@@ -53,14 +59,30 @@ public class ConcurrencyErrorTest extends FATServletClient {
     public static final String WAR_NAME_3 = "WebClassError";
 
     @Server("com.ibm.ws.concurrent.fat.jakarta.error")
+    @TestServlet(servlet = ResourceDefinitionErrorServlet.class, contextRoot = "WebResourceDefErrors")
     public static LibertyServer server;
 
     private static EnterpriseArchive AppInterfaceWarning;
     private static EnterpriseArchive AppBeanError;
     private static EnterpriseArchive AppClassError;
+    private static WebArchive WebManagedExecutorDefError;
+    private static WebArchive WebManagedScheduledExecutorDefError;
 
     @BeforeClass
     public static void setUp() throws Exception {
+        //Web archive with invalid resource definition annotation configurations that fail at run time
+        WebArchive WebResourceDefErrors = ShrinkHelper.buildDefaultApp("WebResourceDefErrors",
+                                                                       "test.jakarta.concurrency.web.error.config");
+        ShrinkHelper.exportAppToServer(server, WebResourceDefErrors);
+
+        //Web archive with invalid ManagedExecutorDefinition
+        WebManagedExecutorDefError = ShrinkHelper.buildDefaultApp("WebManagedExecutorDefError",
+                                                                  "test.jakarta.concurrency.web.error.executordef");
+
+        //Web archive with invalid ManagedScheduledExecutorDefinition
+        WebManagedScheduledExecutorDefError = ShrinkHelper.buildDefaultApp("WebManagedScheduledExecutorDefError",
+                                                                           "test.jakarta.concurrency.web.error.scheduledexecutordef");
+
         //Web archive for interface warning
         WebArchive WebInterfaceWarning = ShrinkHelper.buildDefaultApp("WebInterfaceWarning", "test.jakarta.concurrency.web.error")
                         .deleteClasses(ConcurrencyBeanErrorServlet.class, ConcurrencyClassErrorServlet.class);
@@ -112,12 +134,14 @@ public class ConcurrencyErrorTest extends FATServletClient {
         if (server.isStarted()) {
             server.stopServer("CNTR0343W", //Warning Jakarta Concurrent Asynchronous on EJB Interface method
                               "CNTR0342E", //Error Jakarta Concurrent Asynchronous on EJB method
-                              "CNTR0020E" //Generic EJB threw an exception
+                              "CNTR0020E", //Generic EJB threw an exception
+                              "CWNEN0011E" //Resource definition config errors during application startup
             );
         }
     }
 
     @Test
+    @Mode(FULL)
     @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", //Root exception thrown by EJB Container
                     "jakarta.ejb.EJBException", //caused by EJBConfigurationException and thrown to injectionengine
                     "com.ibm.wsspi.injectionengine.InjectionException", //caused by EJBException and thrown to Servlet
@@ -145,6 +169,7 @@ public class ConcurrencyErrorTest extends FATServletClient {
     }
 
     @Test
+    @Mode(FULL)
     @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", //Root exception thrown by EJB Container
                     "jakarta.ejb.EJBException", //caused by EJBConfigurationException and thrown to injectionengine
                     "com.ibm.wsspi.injectionengine.InjectionException", //caused by EJBException and thrown to Servlet
@@ -193,4 +218,25 @@ public class ConcurrencyErrorTest extends FATServletClient {
         runTest(server, WAR_NAME_1, testName);
     }
 
+    @AllowedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
+    @Mode(FULL)
+    @Test
+    public void testMaxAsyncNegativeAppFailsToInstall() throws Exception {
+        server.setMarkToEndOfLog();
+        ShrinkHelper.exportDropinAppToServer(server, WebManagedExecutorDefError, DeployOptions.DISABLE_VALIDATION);
+
+        assertNotNull(server.waitForStringInLogUsingMark("CWNEN0011E.*maxAsync=-10"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKT0017I.*WebManagedExecutorDefError")); // app removed
+    }
+
+    @AllowedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
+    @Mode(FULL)
+    @Test
+    public void testMaxAsyncZeroAppFailsToInstall() throws Exception {
+        server.setMarkToEndOfLog();
+        ShrinkHelper.exportDropinAppToServer(server, WebManagedScheduledExecutorDefError, DeployOptions.DISABLE_VALIDATION);
+
+        assertNotNull(server.waitForStringInLogUsingMark("CWNEN0011E.*maxAsync=0"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKT0017I.*WebManagedScheduledExecutorDefError")); // app removed
+    }
 }

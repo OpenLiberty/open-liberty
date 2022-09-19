@@ -10,13 +10,7 @@
  *******************************************************************************/
 package org.eclipse.microprofile.rest.client.tck;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.HashSet;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,7 +20,6 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -39,16 +32,15 @@ public class RestClientTckPackageTest {
     @Server("FATServer")
     public static LibertyServer server;
 
-//    @BeforeClass
-//    public static void setUp() throws Exception {
-//        server.startServer();
-//    }
-//
+    @BeforeClass
+    public static void setUp() throws Exception {
+        server.startServer();
+    }
+
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.postStopServerArchive(); // must explicitly collect since arquillian is starting/stopping the server
-//            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
+            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
         }
     }
 

@@ -14,6 +14,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -104,8 +108,46 @@ public class BestMatch {
                             }
 
                         });
-
+        manageWSJars(matched, outputDir);
         writePom(matched, outputDir);
+
+    }
+
+    /**
+     * @param matched
+     * @param outputDir
+     * @param path
+     */
+    private static void manageWSJars(Set<Module> matched, String outputDir) {
+
+        new File(outputDir + "/wsJars").mkdirs();
+        matched.forEach(library -> {
+            if (wsLibraries(library)) {
+                manageLibrary(library, outputDir);
+            }
+        });
+    }
+
+    /**
+     * @param library
+     * @param outputDir
+     * @param path
+     */
+    private static void manageLibrary(Module library, String outputDir) {
+
+        // If the proper group name can be detected in the rebundled ibm ws jar, then we will use it for scanning purposes
+
+        String fileName = library.getArtifactId() + "-" + library.getVersion() + ".jar";
+        System.out.println(library);
+
+        Path copied = Paths.get(outputDir + "/wsJars/" + fileName);
+        Path originalPath = library.getOriginalFile().toPath();
+        try {
+            Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
@@ -115,8 +157,8 @@ public class BestMatch {
     private static void writePom(Set<Module> matched, String path) {
 
         matched.forEach(library -> {
-            if (!library.getGroupId().equals("com.ibm.ws")) {
-                List<String> versions = depVersionMap.computeIfAbsent((library.getGroupId() + library.getArtifactId()), k -> new ArrayList<>());
+            if (!filteredLibraries(library)) {
+                List<String> versions = depVersionMap.computeIfAbsent(library.getModuleId(), k -> new ArrayList<>());
                 versions.add(library.getVersion());
                 if (versions.size() > pomFiles)
                     pomFiles = versions.size();
@@ -133,8 +175,8 @@ public class BestMatch {
             new File(path + "/proj_" + count.intValue()).mkdirs(); //Make sure directory is created first
 
             matched.forEach(library -> {
-                if (!library.getGroupId().equals("com.ibm.ws")) {
-                    List<String> versions = depVersionMap.get((library.getGroupId() + library.getArtifactId()));
+                if (!(filteredLibraries(library))) {
+                    List<String> versions = depVersionMap.get(library.getModuleId());
                     if (versions.size() > count.intValue()) {
 
                         class ComparedDependency extends Dependency {
@@ -186,6 +228,22 @@ public class BestMatch {
             }
         }
 
+    }
+
+    /**
+     * @param library
+     * @return
+     */
+    private static boolean filteredLibraries(Module library) {
+        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces")));
+    }
+
+    /**
+     * @param library
+     * @return
+     */
+    private static boolean wsLibraries(Module library) {
+        return library.getGroupId().startsWith("com.ibm.ws");
     }
 
     private static String toMavenCoords(String coords) {

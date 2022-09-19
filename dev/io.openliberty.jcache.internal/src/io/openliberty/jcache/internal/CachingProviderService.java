@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.library.spi.SpiLibrary;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.library.Library;
 
@@ -43,7 +45,8 @@ public class CachingProviderService {
     private static final String KEY_ID = "id";
 
     private CachingProvider cachingProvider = null;
-    private Set<Library> libraries;
+    private Set<Library> commonLibraries = new HashSet<Library>();
+    private Library jCacheLibrary;
     private ClassLoader classLoader = null;
     private String cachingProviderClass = null;
     private String id = null;
@@ -53,6 +56,9 @@ public class CachingProviderService {
     // Flag tells us if the message for a call to a beta method has been issued
     private static boolean issuedBetaMessage = false;
 
+    /** An object that the CachingProviderService, CacheManagerService and CacheService should sync on before closing. */
+    private Object closeSyncObject = null;
+
     /**
      * Activate this OSGi component.
      *
@@ -61,6 +67,8 @@ public class CachingProviderService {
      */
     @Activate
     public void activate(Map<String, Object> configProps) throws Exception {
+        closeSyncObject = new Object();
+
         /*
          * Don't run if not in beta.
          */
@@ -80,10 +88,11 @@ public class CachingProviderService {
          * running with SecurityManager, permissions will need to be granted explicitly.
          */
         try {
+            ClassLoader classloader = getUnifiedClassLoader();
             if (cachingProviderClass != null && !cachingProviderClass.trim().isEmpty()) {
-                cachingProvider = Caching.getCachingProvider(cachingProviderClass, getUnifiedClassLoader());
+                cachingProvider = Caching.getCachingProvider(cachingProviderClass, classloader);
             } else {
-                cachingProvider = Caching.getCachingProvider(getUnifiedClassLoader());
+                cachingProvider = Caching.getCachingProvider(classloader);
             }
         } catch (Throwable e) {
             Tr.error(tc, "CWLJC0004_GET_PROVIDER_FAILED", id, e);
@@ -92,9 +101,27 @@ public class CachingProviderService {
     }
 
     @Deactivate
+    @FFDCIgnore({ Exception.class })
     public void deactivate() {
+        /*
+         * Close the CachingProvider.
+         */
+        if (cachingProvider != null) {
+            synchronized (closeSyncObject) {
+                try {
+                    cachingProvider.close();
+                } catch (Exception e) {
+                    Tr.warning(tc, "CWLJC0014_CLOSE_CACHINGPRVDR_ERR", ((id == null) ? "" : id), e);
+                }
+            }
+        }
+
+        /*
+         * Null out any instance fields.
+         */
         cachingProvider = null;
         classLoader = null;
+        closeSyncObject = null;
     }
 
     /**
@@ -128,6 +155,7 @@ public class CachingProviderService {
      *
      * @return The unified {@link ClassLoader}.
      */
+    @SuppressWarnings("restriction")
     public ClassLoader getUnifiedClassLoader() {
         if (classLoader != null) {
             return classLoader;
@@ -136,10 +164,28 @@ public class CachingProviderService {
         /*
          * Create an array of follow-on classloaders from the libraries.
          */
-        ClassLoader[] followOns = new ClassLoader[libraries.size()];
+        int numFollowOns = ((commonLibraries != null) ? commonLibraries.size() : 0) + 1;
+        ClassLoader[] followOns = new ClassLoader[numFollowOns];
+
+        /*
+         * First add the SpiLibrary ClassLoader for the JCache implementation so it can access the
+         * javax.cache classes. Then add each of the common libraries that may contain user classes
+         * that may be stored in the cache.
+         */
         int idx = 0;
-        for (Library lib : libraries) {
-            followOns[idx++] = lib.getClassLoader();
+        followOns[idx++] = ((SpiLibrary) jCacheLibrary).getSpiClassLoader(CachingProviderService.class.getName());
+        if (commonLibraries != null) {
+            for (Library commonLib : commonLibraries) {
+                /*
+                 * We don't support referencing the same library from the commonLibraryRef and jCacheLibraryRef.
+                 */
+                if (commonLib.id().equalsIgnoreCase(jCacheLibrary.id())) {
+                    String msg = Tr.formatMessage(tc, "CWLJC0006_MULTI_REF_LIB", (this.id == null) ? "" : this.id, commonLib.id());
+                    Tr.error(tc, msg);
+                    throw new IllegalStateException(msg);
+                }
+                followOns[idx++] = commonLib.getClassLoader();
+            }
         }
 
         /*
@@ -169,12 +215,30 @@ public class CachingProviderService {
      *
      * @param library The {@link Library}.
      */
-    @Reference(name = "library", cardinality = ReferenceCardinality.AT_LEAST_ONE, target = "(id=unbound)")
-    public void setLibrary(Library library) {
-        if (libraries == null) {
-            libraries = new HashSet<Library>();
-        }
-        libraries.add(library);
+    @Reference(name = "commonLibrary", cardinality = ReferenceCardinality.MULTIPLE, target = "(id=unbound)")
+    public void setCommonLibrary(Library library) {
+        commonLibraries.add(library);
+        classLoader = null; // Need to reload with new libraries.
+    }
+
+    /**
+     * Unset the {@link Library} for this {@link CachingProviderService}.
+     *
+     * @param library The {@link Library}.
+     */
+    public void unsetCommonLibrary(Library library) {
+        commonLibraries.remove(library);
+        classLoader = null; // Need to reload with remaining libraries.
+    }
+
+    /**
+     * Set the {@link Library} for this {@link CachingProviderService}.
+     *
+     * @param library The {@link Library}.
+     */
+    @Reference(name = "jCacheLibrary", cardinality = ReferenceCardinality.MANDATORY, target = "(id=unbound)")
+    public void setJCacheLibrary(Library library) {
+        jCacheLibrary = library;
         classLoader = null; // Need to reload with new libraries.
     }
 
@@ -184,9 +248,8 @@ public class CachingProviderService {
      * @param library The {@link Library}.
      */
     public void unsetLibrary(Library library) {
-        if (libraries != null) {
-            libraries.remove(library);
-
+        if (jCacheLibrary != null) {
+            jCacheLibrary = null;
             classLoader = null; // Need to reload with remaining libraries.
         }
     }
@@ -212,6 +275,15 @@ public class CachingProviderService {
 
     @Override
     public String toString() {
-        return super.toString() + "{id=" + id + ", cachingProvider=" + cachingProvider + ", libraries=" + libraries + "}";
+        return super.toString() + "{id=" + id + ", cachingProvider=" + cachingProvider + ", jCacheLibrary=" + jCacheLibrary + ", commonLibraries=" + commonLibraries + "}";
+    }
+
+    /**
+     * Get the synch object to be used when closing the CachingProvider, CacheManager or the Cache itself.
+     *
+     * @return The sync object.
+     */
+    Object getCloseSyncObject() {
+        return closeSyncObject;
     }
 }

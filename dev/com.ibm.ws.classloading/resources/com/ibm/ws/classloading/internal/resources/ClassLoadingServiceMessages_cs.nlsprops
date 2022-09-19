@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ cls.classloader.missing.explanation=Chcete-li odkazovat na zavad\u011b\u010d t\u
 cls.classloader.missing.useraction=Zkontrolujte konfiguraci serveru a ujist\u011bte se, \u017ee byl zavad\u011b\u010d t\u0159\u00edd definov\u00e1n a \u017ee je pou\u017eito spr\u00e1vn\u00e9 ID.
 
 cls.fileset.not.ready=CWWKL0011W: Syst\u00e9m nem\u016f\u017ee na\u010d\u00edst sadu soubor\u016f [{0}] pro sd\u00edlenou knihovnu [{1}].
-cls.fileset.not.ready.explanation=Sd\u00edlen\u00e1 knihovna je pou\u017e\u00edv\u00e1na, ale jednu z p\u0159idru\u017een\u00fdch sad soubor\u016f nelze na\u010d\u00edst v\u010das.
+cls.fileset.not.ready.explanation=Je pou\u017e\u00edv\u00e1na sd\u00edlen\u00e1 knihovna, ale jedna z p\u0159idru\u017een\u00fdch sad soubor\u016f nebyla v\u010das na\u010dtena.
 cls.fileset.not.ready.useraction=Vyhledejte a opravte v\u0161echny chyby a varov\u00e1n\u00ed p\u0159idru\u017een\u00e1 k t\u00e9to sad\u011b soubor\u016f.
 
 cls.library.file.invalid=CWWKL0012W: Knihovna [{0}] ur\u010duje soubor s n\u00e1zvem [{1}]. Tento soubor bu\u010f neexistuje, nebo je nespr\u00e1vn\u011b zad\u00e1n.
@@ -97,6 +97,7 @@ cls.library.archive.useraction=Upravte konfiguraci serveru a zajist\u011bte, aby
 cls.library.destroyed=CWWKL0018I: Knihovna [{0}] je nedostupn\u00e1.
 cls.library.destroyed.explanation=Knihovna je nedostupn\u00e1, nap\u0159\u00edklad proto, \u017ee byla odebr\u00e1na z konfigurace serveru.
 cls.library.destroyed.useraction=Pokud je knihovna st\u00e1le po\u017eadov\u00e1na, ujist\u011bte se, \u017ee je st\u00e1le spr\u00e1vn\u011b konfigurov\u00e1na.
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 
@@ -133,9 +134,11 @@ cls.provider.class.space.conflict.useraction=Aktualizujte konfiguraci tak, aby d
 slf.no.cache=CWWKL0070E: Adres\u00e1\u0159 mezipam\u011bti nebyl \u00fasp\u011b\u0161n\u011b vytvo\u0159en.
 slf.no.cache.explanation=Syst\u00e9m nemohl vytvo\u0159it slo\u017eku na disku.
 slf.no.cache.useraction=Ujist\u011bte se, \u017ee jednotka m\u00e1 spr\u00e1vn\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1pisu a na disku je dostatek prostoru.
+
 slf.no.acf=CWWKL0071E: Pro objekt ArtifactContainerFactory byla nalezena hodnota null.
 slf.no.acf.explanation=Objekt ArtifactContainerFactory nesm\u00ed m\u00edt za b\u011bhu serveru hodnotu null.
 slf.no.acf.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support nebo kontaktujte p\u0159\u00edslu\u0161n\u00e9ho dodavatele slu\u017eeb poskytovatele t\u0159\u00edd.
+
 slf.failed.delete=CWWKL0072W: Soubor mezipam\u011bti [{0}] nelze odstranit. Tento v\u00fdsledek m\u016f\u017ee v\u00e9st k po\u0161kozen\u00ed vno\u0159en\u00fdch archiv\u016f.
 slf.failed.delete.explanation=Syst\u00e9mu se nezda\u0159ilo odstranit soubor mezipam\u011bti. Jeliko\u017e tento soubor v syst\u00e9mu i nad\u00e1le existuje, mohl by zp\u016fsobit po\u0161kozen\u00ed ve vno\u0159en\u00fdch archivech.
 slf.failed.delete.useraction=Ov\u011b\u0159te, zda nen\u00ed soubor mezipam\u011bti v uzam\u010den\u00e9m stavu, kter\u00fd by mohl zp\u016fsobit selh\u00e1n\u00ed odstran\u011bn\u00ed tohoto souboru.

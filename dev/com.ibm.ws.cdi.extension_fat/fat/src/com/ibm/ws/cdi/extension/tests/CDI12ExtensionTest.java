@@ -86,18 +86,18 @@ public class CDI12ExtensionTest {
         helloWorldExtensionTest.addClass(HelloWorldExtensionBean.class);
         CDIArchiveHelper.addBeansXML(helloWorldExtensionTest, DiscoveryMode.DEFAULT, CDIVersion.CDI10);
 
-        EnterpriseArchive helloWorldExension = ShrinkWrap.create(EnterpriseArchive.class,
+        EnterpriseArchive helloWorldExtension = ShrinkWrap.create(EnterpriseArchive.class,
                                                                  "helloWorldExension.ear");
-        helloWorldExension.setApplicationXML(HelloWorldExtensionTestServlet.class.getPackage(), "application.xml");
+        helloWorldExtension.setApplicationXML(HelloWorldExtensionTestServlet.class.getPackage(), "application.xml");
 
-        helloWorldExension.addAsModule(helloWorldExtensionTest);
-        helloWorldExension.addAsManifestResource(HelloWorldExtensionTestServlet.class.getPackage(), "permissions.xml", "permissions.xml");
+        helloWorldExtension.addAsModule(helloWorldExtensionTest);
+        helloWorldExtension.addAsManifestResource(HelloWorldExtensionTestServlet.class.getPackage(), "permissions.xml", "permissions.xml");
 
         /**
          * Install the user feature and the bundle
          */
         ShrinkHelper.exportDropinAppToServer(server, multipleWars, DeployOptions.SERVER_ONLY);
-        ShrinkHelper.exportDropinAppToServer(server, helloWorldExension, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, helloWorldExtension, DeployOptions.SERVER_ONLY);
 
         server.startServer(true);
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application helloWorldExension started");

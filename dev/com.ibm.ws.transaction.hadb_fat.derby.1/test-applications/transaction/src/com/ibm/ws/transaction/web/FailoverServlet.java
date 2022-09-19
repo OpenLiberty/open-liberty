@@ -358,20 +358,28 @@ public class FailoverServlet extends FATServlet {
 
         // Access the Database
         boolean rowNotFound = false;
-        boolean isPostgreSQL = false;;
+        boolean isPostgreSQL = false;
+        boolean isSQLServer = false;
         if (dbName.toLowerCase().contains("postgresql")) {
             // we are PostgreSQL
             isPostgreSQL = true;
             System.out.println("insertStaleLease: This is a PostgreSQL Database");
+        } else if (dbName.toLowerCase().contains("microsoft sql")) {
+            // we are MS SQL Server
+            isSQLServer = true;
+            System.out.println("insertStaleLease: This is an MS SQL Server Database");
         }
+
         Statement claimPeerlockingStmt = con.createStatement();
         ResultSet claimPeerLockingRS = null;
 
         try {
             String queryString = "SELECT LEASE_TIME" +
                                  " FROM WAS_LEASES_LOG" +
+                                 (isSQLServer ? " WITH (UPDLOCK)" : "") +
                                  " WHERE SERVER_IDENTITY='cloudstale'" +
-                                 (isPostgreSQL ? "" : " FOR UPDATE OF LEASE_TIME");
+                                 (isSQLServer ? "" : " FOR UPDATE") +
+                                 (isSQLServer || isPostgreSQL ? "" : " OF LEASE_TIME");
             System.out.println("insertStaleLease: Attempt to select the row for UPDATE using - " + queryString);
             claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString);
         } catch (Exception e) {
@@ -382,29 +390,39 @@ public class FailoverServlet extends FATServlet {
         // see if we acquired the row
         if (!rowNotFound && claimPeerLockingRS.next()) {
             // We found an existing lease row
-            long storedLease = claimPeerLockingRS.getLong(1);
-            System.out.println("insertStaleLease: Acquired server row, stored lease value is: " + storedLease);
+            PreparedStatement claimPeerUpdateStmt = null;
+            try {
+                long storedLease = claimPeerLockingRS.getLong(1);
+                System.out.println("insertStaleLease: Acquired server row, stored lease value is: " + storedLease);
 
-            // Construct the UPDATE string
-            String updateString = "UPDATE WAS_LEASES_LOG" +
-                                  " SET LEASE_OWNER = ?, LEASE_TIME = ?" +
-                                  " WHERE SERVER_IDENTITY='cloudstale'";
+                // Construct the UPDATE string
+                String updateString = "UPDATE WAS_LEASES_LOG" +
+                                      " SET LEASE_OWNER = ?, LEASE_TIME = ?" +
+                                      " WHERE SERVER_IDENTITY='cloudstale'";
 
-            System.out.println("insertStaleLease: update lease for cloudstale");
+                System.out.println("insertStaleLease: update lease for cloudstale");
 
-            PreparedStatement claimPeerUpdateStmt = con.prepareStatement(updateString);
+                claimPeerUpdateStmt = con.prepareStatement(updateString);
 
-            // Set the Lease_time
-            long fir1 = System.currentTimeMillis() - (1000 * 300);
-            claimPeerUpdateStmt.setString(1, "cloudstale");
-            claimPeerUpdateStmt.setLong(2, fir1);
+                // Set the Lease_time
+                long fir1 = System.currentTimeMillis() - (1000 * 300);
+                claimPeerUpdateStmt.setString(1, "cloudstale");
+                claimPeerUpdateStmt.setLong(2, fir1);
 
-            System.out.println("insertStaleLease: Ready to UPDATE using string - " + updateString + " and time: " + fir1);
+                System.out.println("insertStaleLease: Ready to UPDATE using string - " + updateString + " and time: " + fir1);
 
-            int ret = claimPeerUpdateStmt.executeUpdate();
+                int ret = claimPeerUpdateStmt.executeUpdate();
 
-            System.out.println("insertStaleLease: Have updated server row with return: " + ret);
-            con.commit();
+                System.out.println("insertStaleLease: Have updated server row with return: " + ret);
+                con.commit();
+            } catch (Exception ex) {
+                System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
+                // attempt rollback
+                con.rollback();
+            } finally {
+                if (claimPeerUpdateStmt != null && !claimPeerUpdateStmt.isClosed())
+                    claimPeerUpdateStmt.close();
+            }
         } else {
             // We didn't find the row in the table
             System.out.println("insertStaleLease: Could not find row");
@@ -430,11 +448,50 @@ public class FailoverServlet extends FATServlet {
                 con.commit();
             } catch (Exception ex) {
                 System.out.println("insertStaleLease: caught exception in testSetup: " + ex);
+                // attempt rollback
+                con.rollback();
             } finally {
                 if (specStatement != null && !specStatement.isClosed())
                     specStatement.close();
             }
         }
+    }
+
+    public void deleteStaleLease(HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
+
+        Connection con = getConnection();
+        con.setAutoCommit(false);
+        DatabaseMetaData mdata = con.getMetaData();
+        String dbName = mdata.getDatabaseProductName();
+
+        // Access the Database
+        boolean isSQLServer = false;
+        if (dbName.toLowerCase().contains("microsoft sql")) {
+            // we are MS SQL Server
+            isSQLServer = true;
+            System.out.println("deleteStaleLease: This is an MS SQL Server Database");
+        }
+
+        Statement deleteStmt = con.createStatement();
+
+        try {
+            String deleteString = "DELETE FROM WAS_LEASES_LOG" +
+                                  (isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                  " WHERE SERVER_IDENTITY='cloudstale'";
+            System.out.println("deleteStaleLease: Attempt to delete the row using - " + deleteString);
+            int ret = deleteStmt.executeUpdate(deleteString);
+            System.out.println("deleteStaleLease: return was - " + ret);
+            con.commit();
+        } catch (Exception e) {
+            System.out.println("deleteStaleLease: Delete failed with exception: " + e);
+            // attempt rollback
+            con.rollback();
+        } finally {
+            if (deleteStmt != null && !deleteStmt.isClosed())
+                deleteStmt.close();
+        }
+
     }
 
     public static String toHexString(byte[] byteSource, int bytes) {
@@ -471,18 +528,34 @@ public class FailoverServlet extends FATServlet {
         return (result.toString());
     }
 
+    /**
+     * This method supports a retry when a connection is required.
+     *
+     * @param dSource
+     * @return
+     * @throws Exception
+     */
     private Connection getConnection() throws Exception {
         Connection conn = null;
-        try {
-            InitialContext context = new InitialContext();
+        int retries = 0;
+        boolean retrievedConn = false;
+        Exception excToThrow = null;
+        while (retries < 2 && !retrievedConn) {
+            try {
+                InitialContext context = new InitialContext();
 
-            DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/tranlogDataSource");
-            System.out.println("FAILOVERSERVLET: getConnection called against resource - " + ds);
-            conn = ds.getConnection();
-        } catch (Exception ex) {
-            System.out.println("FAILOVERSERVLET: getConnection caught exception - " + ex);
-            throw ex;
+                DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/tranlogDataSource");
+                System.out.println("FAILOVERSERVLET: getConnection called against resource - " + ds);
+                conn = ds.getConnection();
+                retrievedConn = true;
+            } catch (Exception ex) {
+                System.out.println("FAILOVERSERVLET: getConnection caught exception - " + ex);
+                excToThrow = ex;
+                retries++;
+            }
         }
+        if (!retrievedConn && excToThrow != null)
+            throw excToThrow;
 
         System.out.println("FAILOVERSERVLET: getConnection returned connection - " + conn);
         return conn;

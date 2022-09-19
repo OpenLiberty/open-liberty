@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,11 +42,13 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -272,6 +274,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testInjectableELImplicitObjects() throws Exception {
         try (WebClient webClient = new WebClient()) {
             checkInjectableELImplicitObjects(webClient);
@@ -324,6 +327,7 @@ public class JSF23CDIGeneralTests {
         assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
         assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
         assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
+        assertTrue(resultPage.asText().contains("Request contextPath: /ELImplicitObjectsViaCDI"));
 
         if (JakartaEE9Action.isActive()) {
             assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: jakarta.faces"));
@@ -379,9 +383,15 @@ public class JSF23CDIGeneralTests {
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("InitParam: ELImplicitObjectsViaCDI"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Param: Hello World"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ParamValues: Hello World"));
-            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Session isNew: true"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("View viewId: /implicit_objects.xhtml "));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ViewScope isEmpty: true"));
+            // See https://issues.apache.org/jira/projects/MYFACES/issues/MYFACES-4432
+            // Note: The request & session objects are not resolved by CDI, but via ImplicitObjectResolver
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Request contextPath: /ELImplicitObjectsViaCDI"));
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("HttpSession isNew: true"));
+            // Additional Requirement (See section 5.6.3)
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ExternalContext getApplicationContextPath: /ELImplicitObjectsViaCDI"));
+
         }
     }
 
@@ -441,7 +451,8 @@ public class JSF23CDIGeneralTests {
         // Use the ELImplicitObjectsViaCDIErrorAppServer.xml server configuration file.
         server.setMarkToEndOfLog();
         server.saveServerConfiguration();
-        ShrinkHelper.defaultApp(server, appName, "com.ibm.ws.jsf23.fat.elimplicit.cdi.error.beans");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.defaultApp(server, appName, options, "com.ibm.ws.jsf23.fat.elimplicit.cdi.error.beans");
         server.setServerConfigurationFile("ELImplicitObjectsViaCDIErrorAppServer.xml");
 
         // Make sure the application doesn't start
@@ -468,8 +479,7 @@ public class JSF23CDIGeneralTests {
         // Ensure that the server configuration has completed before uninstalling the application
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        // Now uninstall the application and archive the logs.
-        server.removeInstalledAppForValidation(appName.substring(0, appName.length() - 4));
+        // Now archive the logs.
         server.postStopServerArchive();
     }
 
@@ -878,6 +888,7 @@ public class JSF23CDIGeneralTests {
      */
     @Mode(TestMode.FULL)
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSpecIssue790Test1() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Use a synchronizing ajax controller to allow proper ajax updating
@@ -1190,6 +1201,7 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSpecIssue1404And1423_JSF23NewAPIMethods() throws Exception {
         try (WebClient webClient = new WebClient()) {
 

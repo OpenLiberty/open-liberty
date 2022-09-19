@@ -138,7 +138,6 @@ public abstract class JPATestServlet extends FATServlet {
         for (Map.Entry<String, String> entry : testResourcesList.entrySet()) {
             jpaPCInfoMap.put(entry.getKey(), jpaPctxMap.get(entry.getValue()));
         }
-//        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get(testResource));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("dbMajorVersion", getDbMajorVersion());
@@ -225,6 +224,7 @@ public abstract class JPATestServlet extends FATServlet {
         final URL dmURL = new URL("http://localhost:" + portNumber + "/DatabaseManagement/DMS?command=GETINFO");
         final HttpURLConnection conn = (HttpURLConnection) dmURL.openConnection();
         conn.setRequestMethod("GET");
+        System.out.println("JPATestServlet sending request for database information...");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
             String buffer;
             while ((buffer = reader.readLine()) != null) {
@@ -325,42 +325,29 @@ public abstract class JPATestServlet extends FATServlet {
         return jdbcDriverVersion;
     }
 
-    // Basing determination off product version using
-    // info from https://www.ibm.com/support/knowledgecenter/en/SSEPEK_11.0.0/java/src/tpc/imjcc_c0053013.html
     public static boolean isDB2ForZOS() throws Exception {
-        String prodVersion = getDbProductVersion();
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("dsn")) {
-            return true;
-        }
-
-        return false;
+        String prodName = getDbProductName();
+        return DatabaseVendor.checkDBProductName(prodName, DatabaseVendor.DB2ZOS);
     }
 
     public static boolean isDB2ForLUW() throws Exception {
-        String prodVersion = getDbProductVersion();
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("sql")) {
-            return true;
-        }
-
-        return false;
+        String prodName = getDbProductName();
+        return DatabaseVendor.checkDBProductName(prodName, DatabaseVendor.DB2LUW);
     }
 
     public static boolean isDB2ForISeries() throws Exception {
-        String prodVersion = getDbProductVersion();
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("qsq")) {
-            return true;
-        }
-
-        return false;
+        String prodName = getDbProductName();
+        return DatabaseVendor.checkDBProductName(prodName, DatabaseVendor.DB2I);
     }
 
     public static boolean isDB2ForVM_VSE() throws Exception {
-        String prodVersion = getDbProductVersion();
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("ari")) {
-            return true;
-        }
+        String prodName = getDbProductName();
+        return DatabaseVendor.checkDBProductName(prodName, DatabaseVendor.DB2VMVSE);
+    }
 
-        return false;
+    public static boolean isDerby() throws Exception {
+        String prodName = getDbProductName();
+        return DatabaseVendor.checkDBProductName(prodName, DatabaseVendor.DERBY);
     }
 
 }

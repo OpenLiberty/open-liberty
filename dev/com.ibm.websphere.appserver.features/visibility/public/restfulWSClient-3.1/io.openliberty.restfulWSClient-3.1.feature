@@ -24,18 +24,14 @@ IBM-ShortName: restfulWSClient-3.1
 WLP-AlsoKnownAs: jaxrsClient-3.1
 Subsystem-Name: Jakarta RESTful Web Services 3.1 Client
 -features=io.openliberty.cdi-4.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
-  com.ibm.websphere.appserver.classloading-1.0, \
   io.openliberty.jakarta.mail-2.1, \
   io.openliberty.jakarta.validation-3.0, \
-  com.ibm.websphere.appserver.injection-2.0, \
   com.ibm.websphere.appserver.globalhandler-1.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
-  com.ibm.websphere.appserver.servlet-6.0, \
+  io.openliberty.servlet.internal-6.0, \
   io.openliberty.jakarta.restfulWS-3.1, \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0, \
   com.ibm.websphere.appserver.jndi-1.0, \
-  io.openliberty.concurrent-3.0, \
   io.openliberty.jsonp-2.1
 # com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \ # not sure about these...
 # com.ibm.websphere.appserver.internal.optional.jaxws-2.2; ibm.tolerates:=2.3, \
@@ -44,13 +40,13 @@ Subsystem-Name: Jakarta RESTful Web Services 3.1 Client
   io.openliberty.org.apache.commons.codec, \
   io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.org.apache.httpcomponents, \
-  com.ibm.ws.org.jboss.logging, \
-  io.openliberty.org.jboss.resteasy.common.jakarta, \
+  io.openliberty.org.jboss.logging35, \
+  io.openliberty.org.jboss.resteasy.common.ee10, \
   io.openliberty.restfulWS.internal.globalhandler
 -jars=\
   io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
 -files=\
   dev/spi/ibm/javadoc/io.openliberty.globalhandler.spi_1.0-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

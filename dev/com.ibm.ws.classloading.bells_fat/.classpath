@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/SpiTypeVisibility.war/src"/>	
-	<classpathentry kind="src" path="test-applications/testSpiTypeVisible.jar/src"/>	
+	<classpathentry kind="src" path="test-applications/testProperties.jar/src"/>
+	<classpathentry kind="src" path="test-applications/SpiVisibility.war/src"/>	
+	<classpathentry kind="src" path="test-applications/testSpiVisible.jar/src"/>
 	<classpathentry kind="src" path="test-applications/testImplClassThrowsException.jar/src"/>
 	<classpathentry kind="src" path="test-applications/testMultipleValidServices.jar/src"/>
 	<classpathentry kind="src" path="test-applications/testMultipleImplsOfSingleService.jar/src"/>

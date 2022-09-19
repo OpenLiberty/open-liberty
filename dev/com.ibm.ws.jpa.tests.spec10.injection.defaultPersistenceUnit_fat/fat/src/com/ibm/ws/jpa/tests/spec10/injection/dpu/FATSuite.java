@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 
@@ -27,16 +27,10 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
                 JPA10InjectionDPU_Earlevel.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";",
                                                 "permission java.lang.RuntimePermission \"accessDeclaredMembers\";" };
-
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();

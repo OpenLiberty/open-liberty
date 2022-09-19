@@ -23,7 +23,8 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                DataTest.class
+                DataTest.class,
+                TemplateTest.class
 })
 public class FATSuite {
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("io.openliberty.data.internal.fat");
@@ -34,7 +35,7 @@ public class FATSuite {
     @BeforeClass
     public static void beforeSuite() throws Exception {
         server.copyFileToLibertyInstallRoot("lib", "bundles/test.jakarta.data.jar");
-        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/data-1.0.mf");
+        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/mockData-1.0.mf");
     }
 
     /**
@@ -43,6 +44,6 @@ public class FATSuite {
     @AfterClass
     public static void cleanUpSuite() throws Exception {
         server.deleteFileFromLibertyInstallRoot("lib/test.jakarta.data.jar");
-        server.deleteFileFromLibertyInstallRoot("lib/features/data-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("lib/features/mockData-1.0.mf");
     }
 }

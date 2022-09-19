@@ -48,9 +48,9 @@ CWLJC0005_MANAGER_LOADED=CWLJC0005I: CacheManager JCache {0} se na\u010detl b\u0
 CWLJC0005_MANAGER_LOADED.explanation=CacheManager JCache byl \u00fasp\u011b\u0161n\u011b na\u010dten.
 CWLJC0005_MANAGER_LOADED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
 
-#
-# CWLJC0006 IS AVAILABLE.
-#
+CWLJC0006_MULTI_REF_LIB=CWLJC0006E: Poskytovatel ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti {0} odkazoval na knihovnu {1} z objekt\u016f jCacheLibaryRef i commonLibraryRef. Tato akce nen\u00ed podporov\u00e1na. 
+CWLJC0006_MULTI_REF_LIB.explanation=Odkazov\u00e1n\u00ed na stejnou knihovnu z objekt\u016f commonLibraryRef a jCacheLibraryRef m\u016f\u017ee v\u00e9st k nedefinovan\u00e9mu chov\u00e1n\u00ed kv\u016fli probl\u00e9m\u016fm s na\u010dten\u00edm t\u0159\u00edd. 
+CWLJC0006_MULTI_REF_LIB.useraction=Objekt commonLibraryRef nem\u016f\u017ee odkazovat na stejnou knihovnu jako objekt jCacheLibraryRef.
 
 CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: Neplatn\u00e1 syntaxe v identifik\u00e1toru URI cacheManager.  P\u0159\u00ed\u010dina: {0}.
 CWLJC0007_URI_INVALID_SYNTAX.explanation=Syntaxe uveden\u00e9ho identifik\u00e1toru URI konfigurace JCache je neplatn\u00e1.
@@ -68,6 +68,14 @@ CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Chyba p\u0159i konfiguraci modulu Cache
 CWLJC0010_MANAGER_CONFIG_ERR.explanation=CacheManager JCache nebyl nakonfigurov\u00e1n kv\u016fli uveden\u00e9 chyb\u011b.
 CWLJC0010_MANAGER_CONFIG_ERR.useraction=Vy\u0159e\u0161te chybu uvedenou ve zpr\u00e1v\u011b a zopakujte operaci.
 
-CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Do\u0161lo k chyb\u011b p\u0159i na\u010d\u00edt\u00e1n\u00ed JCache {0}: {1}.
+CWLJC0011_GET_CACHE_ERR=CWLJC0011W: Do\u0161lo k chyb\u011b p\u0159i na\u010d\u00edt\u00e1n\u00ed objektu JCache {0}. Bude proveden pokus o jeho vytvo\u0159en\u00ed. Chyba: {1}.
 CWLJC0011_GET_CACHE_ERR.explanation=Mezipam\u011b\u0165 ne\u0161lo na\u010d\u00edst kv\u016fli uveden\u00e9 chyb\u011b.
 CWLJC0011_GET_CACHE_ERR.useraction=Vy\u0159e\u0161te chybu uvedenou ve zpr\u00e1v\u011b a zopakujte operaci.
+
+CWLJC0012_CLOSE_CACHE_ERR=CWLJC0012W: P\u0159i pokusu serveru o zav\u0159en\u00ed objektu JCache {0} do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: {1}.
+CWLJC0012_CLOSE_CACHE_ERR.explanation=Zav\u0159en\u00ed objektu JCache se nezda\u0159ilo kv\u016fli uveden\u00e9 chyb\u011b.
+CWLJC0012_CLOSE_CACHE_ERR.useraction=Pokud k t\u00e9to situaci doch\u00e1z\u00ed za b\u011bhu opakovan\u011b, m\u016f\u017ee doj\u00edt k \u00faniku prost\u0159edk\u016f mezipam\u011bti.
+
+CWLJC0013_CLOSE_CACHEMGR_ERR=CWLJC0013W: P\u0159i pokusu serveru o zav\u0159en\u00ed objektu JCache CacheManager {0} do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: {1}.
+CWLJC0013_CLOSE_CACHEMGR_ERR.explanation=Zav\u0159en\u00ed objektu JCache CacheManager se nezda\u0159ilo kv\u016fli uveden\u00e9 chyb\u011b.
+CWLJC0013_CLOSE_CACHEMGR_ERR.useraction=Pokud k t\u00e9to situaci doch\u00e1z\u00ed za b\u011bhu opakovan\u011b, m\u016f\u017ee doj\u00edt k \u00faniku prost\u0159edk\u016f mezipam\u011bti.

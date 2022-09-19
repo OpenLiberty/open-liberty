@@ -27,7 +27,6 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -39,7 +38,6 @@ import componenttest.topology.utils.HttpUtils;
  * Usage of waitForStringInTraceUsingMark cut the runtime significantly
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
 public class LibertyCXFNegativePropertiesTest {
 
     @Server("LibertyCXFNegativePropertiesTestServer")
@@ -66,8 +64,10 @@ public class LibertyCXFNegativePropertiesTest {
                                       "", "image.wsdl");
 
         server.startServer("LibertyCXFNegativePropertiesTestServer.log");
-//        server.resetLogMarks();
+
         server.waitForStringInLog("CWWKF0011I");
+
+        assertNotNull("SSL service needs to be started for tests, but the HTTPS was never started", server.waitForStringInLog("CWWKO0219I.*ssl"));
     }
 
     @AfterClass

@@ -12,8 +12,6 @@ package io.openliberty.security.openidconnect.backchannellogout;
 
 import javax.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

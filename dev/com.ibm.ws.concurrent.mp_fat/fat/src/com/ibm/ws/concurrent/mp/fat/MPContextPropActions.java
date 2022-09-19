@@ -16,6 +16,7 @@ import java.util.Set;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 
 public class MPContextPropActions {
@@ -34,7 +35,7 @@ public class MPContextPropActions {
     }
 
     public static RepeatTests repeat(String server, FeatureSet firstVersion, FeatureSet... otherVersions) {
-        return MicroProfileActions.repeat(server, TestMode.LITE, ALL, firstVersion, otherVersions);
+        return RepeatActions.repeat(server, TestMode.LITE, ALL, firstVersion, otherVersions);
     }
 
 }

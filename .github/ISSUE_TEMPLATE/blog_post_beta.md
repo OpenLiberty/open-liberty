@@ -3,7 +3,7 @@ name: Open Liberty BETA blog post
 about: Information to be included in the Open Liberty BETA blog post.
 title: BETA BLOG - title_of_your_update
 labels: 'Blog, target:beta'
-assignees: ryan-storey
+assignees: ReeceNana
 
 ---
 
@@ -19,7 +19,7 @@ Please provide the following information the week before the GA/beta date (to al
 
 2. Who is the target persona? Who do you expect to use the update? eg application developer, operations.
 
-3. Write a paragraph to summarises the update, including the following points:
+3. Provide a summary of the update, including the following points:
    
    - A sentence or two that introduces the update to someone new to the general technology/concept.
 
@@ -34,4 +34,5 @@ Please provide the following information the week before the GA/beta date (to al
 - Make sure this blog post is linked back to the Epic for this feature/function.
 - Your paragraph will be included in the beta blog post. It might be edited for style and consistency.
 - You will be asked to review a draft before publication.
+    - Once you've approved the code review, close this issue. 
 - If you would _also_ like to write a standalone blog post about your update (highly recommended), raise an issue on the [Open Liberty blogs repo](https://github.com/OpenLiberty/blogs/issues/new/choose). State in the issue that the blog post relates to a specific release so that we can ensure it is published on an appropriate date (it won't be the same day as the beta blog post).

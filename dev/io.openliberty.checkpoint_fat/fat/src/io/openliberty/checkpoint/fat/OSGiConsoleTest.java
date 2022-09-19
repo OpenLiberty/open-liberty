@@ -21,6 +21,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
@@ -36,7 +37,7 @@ public class OSGiConsoleTest {
 
     public static final String APP_NAME = "app2";
 
-    @Server("checkpointFATServer")
+    @Server("checkpointfat.osgi.console.test")
     public static LibertyServer server;
 
     @Rule
@@ -44,7 +45,7 @@ public class OSGiConsoleTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "app2");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "app2");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 

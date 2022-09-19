@@ -1154,8 +1154,9 @@ public class ZipFileReaperTest {
                     // debug(methodName, "Opened " + actionText(reaper, actualActAt));
 
                 } catch ( Exception e ) {
-                    debug(methodName, "Failed to open " + actionText(reaper, actualActAt));
-                    throw new RuntimeException(e);
+                    String message = "Failed to open " + actionText(reaper, actualActAt);
+                    debug(methodName, message);
+                    throw new RuntimeException(message, e);
                 }
 
                 reaper.validate();

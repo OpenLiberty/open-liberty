@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2020 IBM Corporation and others.
+    Copyright (c) 2020, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <title>OAuth 2.0 Refresh Token Request</title>
 </head>
-<body onload="javascript:processAccessToken();">
+<body>
 <%@ include file="header.jsp"%>
 <h1>OAuth 2.0 Refresh Token Request</h1>
 <form name="tokform" method="POST" action="refresh.jsp">
@@ -72,13 +72,16 @@ if (submit) {
 		connToken.setDoOutput(true);
 		OutputStreamWriter wrToken = new OutputStreamWriter(connToken.getOutputStream());
 		StringBuffer sb = new StringBuffer();
-		sb.append("client_id=" + clientId + 
-		         "&client_secret=" + clientSecret +
-		         "&grant_type=refresh_token" +
+		sb.append("client_id=" + clientId);
+		if (clientSecret != null && clientSecret.trim().length() > 0 && !clientSecret.equals("null")) {
+		    sb.append("&client_secret=" + clientSecret) ;
+		}
+		sb.append("&grant_type=refresh_token" +
 		         "&refresh_token=" + refreshToken);
 		if (scope != null && scope.trim().length() > 0) {
 			sb.append("&scope=" + scope);
 		} 
+		System.out.println("refresh.jsp parms: " + sb.toString());
 		wrToken.write(sb.toString());
 		wrToken.flush();
 		wrToken.close();

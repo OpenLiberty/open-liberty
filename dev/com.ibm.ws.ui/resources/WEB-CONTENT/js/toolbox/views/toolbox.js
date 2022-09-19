@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -283,10 +283,6 @@ define(["dojo/parser",
 
       // set translated tab text - Admin Center
       document.getElementById("toolbox_tab_title").innerHTML = i18nL.LIBERTY_HEADER_TITLE;
-
-      // set lang on the <html> tag
-      console.log("locale:" + kernel.locale);
-      document.documentElement.setAttribute("lang", kernel.locale);
 
       ready(function(){
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ public interface InstallKernelInteractive {
     /**
      * Adds a listener with a given notification type
      *
-     * @param listener the listener
+     * @param listener         the listener
      * @param notificationType the notification type
      */
     public void addListener(InstallEventListener listener, String notificationType);
@@ -76,8 +76,8 @@ public interface InstallKernelInteractive {
     /**
      * Resolves a feature from a local file.
      *
-     * @param feature feature to resolve
-     * @param esaFile file where esa is
+     * @param feature     feature to resolve
+     * @param esaFile     file where esa is
      * @param toExtension location of a product extension
      * @throws InstallException
      */
@@ -87,8 +87,8 @@ public interface InstallKernelInteractive {
      * Resolves features and returns true if the class installResources is not empty
      *
      * @param featureNames the features
-     * @param repoDir where the features exist
-     * @param isOverwrite if the features will be overwritten or not
+     * @param repoDir      where the features exist
+     * @param isOverwrite  if the features will be overwritten or not
      * @return true if there are features to install
      * @throws InstallException
      */
@@ -151,8 +151,8 @@ public interface InstallKernelInteractive {
     /**
      * Installs assets
      *
-     * @param toExtension location of a product extension
-     * @param rollbackAll if assets should be rolled back
+     * @param toExtension          location of a product extension
+     * @param rollbackAll          if assets should be rolled back
      * @param downloadDependencies if any dependencies should be downloaded
      * @return map of asset types to a collection of installed assets as Strings of that type
      * @throws InstallException
@@ -186,7 +186,7 @@ public interface InstallKernelInteractive {
 
     /**
      *
-     * @param servers set of ServerAssets
+     * @param servers     set of ServerAssets
      * @param offlineOnly if features should only be acquired offline
      * @return Collection of server features as Strings
      * @throws InstallException
@@ -197,8 +197,8 @@ public interface InstallKernelInteractive {
     /**
      * Deploys the server package given by an archive file
      *
-     * @param archiveFile The archive file to deploy
-     * @param toExtension location of a product extension
+     * @param archiveFile          The archive file to deploy
+     * @param toExtension          location of a product extension
      * @param downloadDependencies if dependencies should be downloaded
      * @return The ServerPackageAsset that is deployed
      * @throws InstallException
@@ -212,4 +212,13 @@ public interface InstallKernelInteractive {
      * @throws InstallException
      */
     public void checkAssetsNotInstalled(Collection<String> assetIds) throws InstallException;
+
+    /**
+     * Checks if the assets are installed. If so throws an Install Exception.
+     *
+     * @param assetIds          Collection of assetIds as String
+     * @param installingFeature True if called from featureUtility
+     * @throws InstallException
+     */
+    public void checkAssetsNotInstalled(Collection<String> assetIds, boolean installingFeature) throws InstallException;
 }

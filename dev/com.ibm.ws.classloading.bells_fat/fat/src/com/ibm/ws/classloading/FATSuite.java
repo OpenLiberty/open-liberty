@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                BellFatTest.class,
-               BellSpiTypeVisibilityTest.class
+               BellSpiVisibilityTest.class,
+               BellPropertiesTest.class
 })
 public class FATSuite {}

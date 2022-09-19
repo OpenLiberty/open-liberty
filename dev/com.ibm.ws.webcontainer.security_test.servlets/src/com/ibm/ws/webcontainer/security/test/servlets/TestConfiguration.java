@@ -109,6 +109,12 @@ public class TestConfiguration {
         currentConfigFile = configFile;
         server.startServer(true);
         assertSecurityFeatureExpectations();
+        /*
+         * Max wait time based on Windows test failure sample: CWWKZ0001I: Application basicauth started in 290.026 seconds.
+         */
+        //assertNotNull("The application " + application + " did not report as started, if this is a Windows run, may need more time to complete",
+        //              server.waitForStringInLog("CWWKZ0001I: Application " + application + " started", 300000));
+
         assertApplicationStarted();
     }
 
@@ -150,7 +156,7 @@ public class TestConfiguration {
      */
     public void assertApplicationStarted() {
         assertNotNull("The application " + application + " should have started",
-                      server.waitForStringInLogUsingMark("CWWKZ0001I.* " + application));
+                      server.waitForStringInLogUsingMark("CWWKZ0001I.* " + application, 300000));
     }
 
     /**
@@ -297,7 +303,7 @@ public class TestConfiguration {
             updateServerConfig(newConfig);
             assertNotNull("Expected to see server configuration was successfully updated",
                           waitForServerConfigurationUpdate());
-            assertNotNull("Expected to see application " +application+ " updated",
+            assertNotNull("Expected to see application " + application + " updated",
                           waitForAppUpdate(application));
         }
     }

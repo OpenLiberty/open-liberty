@@ -151,7 +151,7 @@ public abstract class AbstractHttpSession implements HttpSession {
      * 
      * @see javax.servlet.http.HttpSession#getAttributeNames()
      */
-    public Enumeration getAttributeNames() {
+    public Enumeration<String> getAttributeNames() {
         synchronized (_iSession) {
             if (!_iSession.isValid())
                 throw new IllegalStateException(iseMessage+_iSession.getId());

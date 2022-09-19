@@ -40,6 +40,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.TestHelpers;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -50,6 +51,7 @@ import io.openliberty.jcache.internal.fat.docker.KeycloakContainer;
 /**
  * Test OAuth2 with distributed authentication cache.
  */
+@SkipIfSysProp("skip.tests=true")
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
@@ -74,6 +76,8 @@ public class JCacheOauth20AuthenticationCacheTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        assumeShouldNotSkipTests();
+
         /*
          * Start the Keycloak IDP.
          */
@@ -276,7 +280,7 @@ public class JCacheOauth20AuthenticationCacheTest extends BaseTestCase {
      * @throws Exception If there was an unforeseen error executing the login.
      */
     private Page performKeycloakLogin(WebClient webClient, Page startPage) throws Exception {
-        final String methodName = "performIdpLogin";
+        final String methodName = "performKeycloakLogin";
         Log.info(CLASS, methodName, "ENTERING " + webClient + ", " + startPage);
 
         HtmlForm form = ((HtmlPage) startPage).getForms().get(0);

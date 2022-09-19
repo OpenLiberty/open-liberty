@@ -61,6 +61,7 @@ public class LTPAToken2 implements Token, Serializable {
     private final LTPAPublicKey publicKey;
     private String cipher = null;
     private static final String IBMJCE_NAME = "IBMJCE";
+    private long expirationDifferenceAllowed;
 
     static {
         MessageDigest m1 = null, m2 = null;
@@ -87,11 +88,11 @@ public class LTPAToken2 implements Token, Serializable {
      * An LTPA2 token constructor.
      *
      * @param tokenBytes The byte representation of the LTPA2 token
-     * @param sharedKey The LTPA shared key
+     * @param sharedKey  The LTPA shared key
      * @param privateKey The LTPA private key
-     * @param publicKey The LTPA public key
+     * @param publicKey  The LTPA public key
      */
-    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey) throws InvalidTokenException {
+    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long expDiffAllowed) throws InvalidTokenException {
         checkTokenBytes(tokenBytes);
         this.signature = null;
         this.encryptedBytes = tokenBytes.clone();
@@ -100,6 +101,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.expirationInMilliseconds = 0;
         this.cipher = AES_CBC_CIPHER;
+        this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
     }
 
@@ -107,12 +109,12 @@ public class LTPAToken2 implements Token, Serializable {
      * An LTPA2 token constructor.
      *
      * @param tokenBytes The byte representation of the LTPA2 token
-     * @param sharedKey The LTPA shared key
+     * @param sharedKey  The LTPA shared key
      * @param privateKey The LTPA private key
-     * @param publicKey The LTPA public key
+     * @param publicKey  The LTPA public key
      * @param attributes The list of attributes will be removed from the LTPA2 token
      */
-    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey,
+    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long expDiffAllowed,
                       String... attributes) throws InvalidTokenException, TokenExpiredException {
         checkTokenBytes(tokenBytes);
         this.signature = null;
@@ -122,6 +124,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.expirationInMilliseconds = 0;
         this.cipher = AES_CBC_CIPHER;
+        this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
 
         isValid();
@@ -136,11 +139,11 @@ public class LTPAToken2 implements Token, Serializable {
     /**
      * An LTPA2 token constructor.
      *
-     * @param accessID The unique user identifier
+     * @param accessID            The unique user identifier
      * @param expirationInMinutes Expiration limit of the LTPA2 token in minutes
-     * @param sharedKey The LTPA shared key
-     * @param privateKey The LTPA private key
-     * @param publicKey The LTPA public key
+     * @param sharedKey           The LTPA shared key
+     * @param privateKey          The LTPA private key
+     * @param publicKey           The LTPA public key
      */
     protected LTPAToken2(String accessID, long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey) {
         this.signature = null;
@@ -157,10 +160,10 @@ public class LTPAToken2 implements Token, Serializable {
      * An LTPA2 token constructor (Used for the clone).
      *
      * @param expirationInMinutes Expiration limit of the LTPA2 token in minutes
-     * @param sharedKey The LTPA shared key
-     * @param privateKey The LTPA private key
-     * @param publicKey The LTPA public key
-     * @param userdata The UserData
+     * @param sharedKey           The LTPA shared key
+     * @param privateKey          The LTPA private key
+     * @param publicKey           The LTPA public key
+     * @param userdata            The UserData
      */
     protected LTPAToken2(long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, UserData userdata) {
         this.signature = null;
@@ -230,14 +233,33 @@ public class LTPAToken2 implements Token, Serializable {
             String[] fields = LTPATokenizer.parseToken(tokenString);
             String[] expirationArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_EXPIRATION);
             if (expirationArray != null && expirationArray[expirationArray.length - 1] != null) {
-                // the new expiration value inside the signature
+                // the new expiration value inside the signature for LTPAToken2
                 expirationInMilliseconds = Long.parseLong(expirationArray[expirationArray.length - 1]);
+
+                // Liberty and Traditional WebSphere both create LTPA Tokens with 3 fields. (userData % expiration % sign)
+                // Normally, the expiration value is read from the first field of the token, the userData field.
+                // The expiration value may be read from the second field of the token instead, to maintain legacy support in Traditional WebSphere.
+
+                // If the LTPAToken contains both expiration formats, Compare the values to ensure they are within the expiration difference allowed.
+                // If the difference between the two expiration values is greater than expirationDifferenceAllowed, then an InvalidTokenException will be thrown.
+                // If expirationDifferenceAllowed is 0, then the two expiration values must match.
+                // If expirationDifferenceAllowed is less than 0, then the two expiration values are not compared.
+                // expirationDifferenceAllowed is 3 seconds (3000ms) by default.
+                if (fields.length == 3 && expirationDifferenceAllowed >= 0 && (Math.abs(expirationInMilliseconds - Long.parseLong(fields[1])) > expirationDifferenceAllowed)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Token validation failed due to the expiration fields having a difference greater than: "
+                                 + expirationDifferenceAllowed + " milliseconds\n"
+                                 + "first field expiration: " + expirationInMilliseconds + " milliseconds\n"
+                                 + "second field expiration: " + fields[1] + " milliseconds");
+                    }
+                    throw new InvalidTokenException("Token Validation Failed");
+                }
             } else {
-                // the old expiration value outside of the signature
+                // the old expiration value outside of the signature for LTPAToken
                 expirationInMilliseconds = Long.parseLong(fields[1]);
             }
-
-            byte[] signature = Base64Coder.base64Decode(Base64Coder.getBytes(fields[2]));
+            // the signature will always be the last field, but the fields array length may be 2 or 3.
+            byte[] signature = Base64Coder.base64Decode(Base64Coder.getBytes(fields[fields.length-1]));
             setSignature(signature);
         } catch (BadPaddingException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {

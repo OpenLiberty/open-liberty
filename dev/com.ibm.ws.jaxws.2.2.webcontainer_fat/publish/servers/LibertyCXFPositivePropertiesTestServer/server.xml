@@ -27,8 +27,8 @@
 		<webservices-bnd> 	
 			<webservice-endpoint-properties enableLoggingInOutInterceptor="true"/>  		
             <service-ref name="services/ImageServicePropertyImplService"
-				port-address="http://localhost:${bvt.prop.HTTP_default}/webServiceRefFeatures/ImageServiceImplService"
-				wsdl-location="http://localhost:${bvt.prop.HTTP_default}/webServiceRefFeatures/ImageServiceImplService?wsdl" />
+				port-address="https://localhost:${bvt.prop.HTTP_default.secure}/webServiceRefFeatures/ImageServiceImplService"
+				wsdl-location="https://localhost:${bvt.prop.HTTP_default.secure}/webServiceRefFeatures/ImageServiceImplService?wsdl" />
 		</webservices-bnd>
     </webApplication>
     

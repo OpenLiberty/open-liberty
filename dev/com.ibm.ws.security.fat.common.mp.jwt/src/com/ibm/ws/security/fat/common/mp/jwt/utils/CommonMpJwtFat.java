@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,7 +122,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
      */
     public static String setActionInstance(String repeatActions) throws Exception {
 
-        String[] supportedActions = { MPJwtFatConstants.MP_JWT_11, MPJwtFatConstants.MP_JWT_12, MPJwtFatConstants.MP_JWT_20 };
+        String[] supportedActions = { MPJwtFatConstants.MP_JWT_11, MPJwtFatConstants.MP_JWT_12, MPJwtFatConstants.MP_JWT_20, MPJwtFatConstants.MP_JWT_21 };
         String currentAction = null;
 
         if (repeatActions != null) {

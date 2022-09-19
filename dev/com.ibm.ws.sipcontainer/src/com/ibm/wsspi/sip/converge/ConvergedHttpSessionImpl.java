@@ -19,8 +19,6 @@ import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
 import com.ibm.websphere.servlet.session.IBMApplicationSession;
 import com.ibm.websphere.servlet.session.IBMSession;
-import com.ibm.ws.session.HttpSessionFacade;
-import com.ibm.ws.session.AbstractHttpSessionFacade;
 import com.ibm.ws.session.IBMApplicationSessionImpl;
 import com.ibm.ws.session.SessionContext;
 import com.ibm.ws.session.SessionManager;
@@ -62,7 +60,7 @@ public class ConvergedHttpSessionImpl extends HttpSessionImpl implements Converg
     }
     
     @Override
-    protected AbstractHttpSessionFacade returnFacade() {
+    protected WsHttpSessionFacade returnFacade() {
     	if (c_logger.isTraceDebugEnabled()) {
     		c_logger.traceDebug(this, "returnFacade", " WsHttpSessionFacade");
     	}

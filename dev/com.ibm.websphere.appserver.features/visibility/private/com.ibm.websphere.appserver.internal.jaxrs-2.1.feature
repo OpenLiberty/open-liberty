@@ -6,7 +6,7 @@ singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 Subsystem-Name: Internal Java RESTful Services 2.1
--features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:="2.3", \
+-features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2, \
   com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.httpcommons-1.0, \
   com.ibm.websphere.appserver.injection-1.0, \
@@ -16,7 +16,7 @@ Subsystem-Name: Internal Java RESTful Services 2.1
   com.ibm.websphere.appserver.globalhandler-1.0, \
   com.ibm.websphere.appserver.javax.jaxrs-2.1, \
   com.ibm.websphere.appserver.internal.cxf.common-3.2, \
-  com.ibm.websphere.appserver.internal.optional.jaxws-2.2; ibm.tolerates:="2.3"
+  com.ibm.websphere.appserver.internal.optional.jaxws-2.2
 -bundles=\
  com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
  com.ibm.ws.jaxrs.2.1.common, \

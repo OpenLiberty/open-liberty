@@ -24,9 +24,10 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -45,9 +46,20 @@ import componenttest.topology.utils.HttpUtils;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is (e.g. EE8 features)
-                    .andWith(new JakartaEE9Action()) // run all tests again with EE9 features+packages
-                    .andWith(FeatureReplacementAction.EE10_FEATURES());
+    public static RepeatTests r;
+
+    static {
+        // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
+        // If we are running on Java 8 have EE9 be the lite mode test to run.
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            r = RepeatTests.with(new EmptyAction().fullFATOnly()) // run all tests as-is (e.g. EE8 features)
+                            .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly()) // run all tests again with EE9 features+packages
+                            .andWith(FeatureReplacementAction.EE10_FEATURES());
+        } else {
+            r = RepeatTests.with(new EmptyAction().fullFATOnly()) // run all tests as-is (e.g. EE8 features)
+                            .andWith(FeatureReplacementAction.EE9_FEATURES()); // run all tests again with EE9 features+packages
+        }
+    }
 
     @BeforeClass
     public static void beforeSuite() throws Exception {

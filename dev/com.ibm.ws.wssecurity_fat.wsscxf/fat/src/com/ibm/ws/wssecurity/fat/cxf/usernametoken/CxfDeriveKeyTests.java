@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,10 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -22,24 +22,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
-import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfDeriveKeyTests extends CommonTests {
@@ -55,16 +53,9 @@ public class CxfDeriveKeyTests extends CommonTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ServerConfiguration config = server.getServerConfiguration();
-        Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("jaxws-2.2")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-        } else if (features.contains("jaxws-2.3")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-        }
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
 
         ShrinkHelper.defaultDropinApp(server, "derivekeyclient", "com.ibm.ws.wssecurity.fat.derivekeyclient", "test.wssecfvt.derivekey", "test.wssecfvt.derivekey.types");
         ShrinkHelper.defaultDropinApp(server, "derivekey", "com.ibm.ws.wssecurity.fat.derivekey");
@@ -130,8 +121,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFDeriveKey1WrongPw() throws Exception {
 
         String thisMethod = "testCXFDeriveKey1WrongPw";
@@ -176,7 +166,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFDeriveKey1ClMissingPToken() throws Exception {
 
         String thisMethod = "testCXFDeriveKey1ClMissingPToken";
@@ -220,7 +209,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFDeriveKey1X509NotUNT() throws Exception {
 
         String thisMethod = "testCXFDeriveKey1X509NotUNT";
@@ -308,7 +296,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFDeriveKey2ClMissingReqDerivedKeys() throws Exception {
 
         String thisMethod = "testCXFDeriveKey2ClMissingReqDerivedKeys";
@@ -354,7 +341,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFDeriveKey1ReqDerivedKeysOnlyInClient() throws Exception {
 
         String thisMethod = "testCXFDeriveKey1ReqDerivedKeysOnlyInClient";
@@ -443,7 +429,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey4() throws Exception {
 
         String thisMethod = "testCXFDeriveKey4";
@@ -759,7 +744,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
     public void testCXFDeriveKey5MissingSigned() throws Exception {
 
         String thisMethod = "testCXFDeriveKey5MissingSigned";
@@ -804,7 +788,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFDeriveKey5MissingSignedAddEncrypted() throws Exception {
 
         String thisMethod = "testCXFDeriveKey5MissingSignedAddEncrypted";
@@ -938,7 +921,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFDeriveKey6MissingEncrypted() throws Exception {
 
         String thisMethod = "testCXFDeriveKey6MissingEncrypted";
@@ -984,7 +966,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFDeriveKey6MissingEncryptedAddSigned() throws Exception {
 
         String thisMethod = "testCXFDeriveKey6MissingEncryptedAddSigned";
@@ -1073,7 +1054,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFDeriveKey7MissingEncrypted() throws Exception {
 
         String thisMethod = "testCXFDeriveKey7MissingEncrypted";
@@ -1164,7 +1144,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFDeriveKey7MissingSignedEncrypted() throws Exception {
 
         String thisMethod = "testCXFDeriveKey7MissingSignedEncrypted";

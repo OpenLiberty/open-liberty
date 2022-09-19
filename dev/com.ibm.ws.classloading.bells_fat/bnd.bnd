@@ -14,9 +14,10 @@ bVersion=1.0
 -sub: *.bnd
 
 src: \
-	fat/src,\
-	test-applications/SpiTypeVisibility.war/src, \
-	test-applications/testSpiTypeVisible.jar/src, \
+	fat/src, \
+	test-applications/testProperties.jar/src, \
+	test-applications/SpiVisibility.war/src, \
+	test-applications/testSpiVisible.jar/src, \
 	test-applications/testImplClassNotConstructible.jar/src, \
 	test-applications/testImplClassNotFound.jar/src, \
 	test-applications/testImplClassThrowsException.jar/src, \

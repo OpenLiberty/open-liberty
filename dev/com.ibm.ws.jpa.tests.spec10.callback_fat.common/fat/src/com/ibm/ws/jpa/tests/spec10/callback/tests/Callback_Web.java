@@ -33,6 +33,7 @@ import com.ibm.ws.jpa.fvt.callback.tests.web.TestCallbackListenerExceptionServle
 import com.ibm.ws.jpa.fvt.callback.tests.web.TestCallbackListenerServlet;
 import com.ibm.ws.jpa.fvt.callback.tests.web.TestCallbackOrderOfInvocationServlet;
 import com.ibm.ws.jpa.fvt.callback.tests.web.TestCallbackServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

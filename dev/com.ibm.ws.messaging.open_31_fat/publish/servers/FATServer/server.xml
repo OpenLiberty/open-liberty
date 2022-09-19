@@ -1,0 +1,55 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>componenttest-2.0</feature>
+        <feature>messagingClient-3.0</feature>
+        <feature>messagingServer-3.0</feature>
+        <feature>enterpriseBeansLite-4.0</feature>
+        <feature>cdi-4.0</feature>
+	</featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <application location="repeatedAnnotations.war" />
+    
+    <messagingEngine id="defaultME">
+        <queue id="Queue1" />
+    </messagingEngine>
+    
+    <jmsConnectionFactory jndiName="localConnectionFactory"
+    	connectionManagerRef="localConnMgr">
+    	<properties.wasJms />
+    </jmsConnectionFactory>
+    <connectionManager id="localConnMgr" maxPoolSize="2" />
+    <jmsQueueConnectionFactory jndiName="localQueueConnectionFactory"
+    	connectionManagerRef="ConnMgr1">
+    	<properties.wasJms />
+    </jmsQueueConnectionFactory>
+    <connectionManager id="ConnMgr1" maxPoolSize="2" />
+   
+    <jmsTopicConnectionFactory jndiName="localTopicConnectionFactory"
+    	connectionManagerRef="ConnMgr2">
+    	<properties.wasJms />
+    </jmsTopicConnectionFactory>
+    <connectionManager id="ConnMgr2" maxPoolSize="2"/>
+  
+    <jmsQueue jndiName="Queue1" id="Queue1">
+        <properties.wasJms queueName="Queue1" />
+    </jmsQueue>
+
+    <jmsTopic jndiName="Topic1" id="Topic1">
+    	<properties.wasJms topicName="Topic1"/>
+    </jmsTopic>
+</server>

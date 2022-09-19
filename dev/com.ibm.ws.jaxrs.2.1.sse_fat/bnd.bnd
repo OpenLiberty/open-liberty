@@ -27,10 +27,14 @@ fat.project: true
 tested.features: \
   restfulwsclient-3.0,\
   jsonb-2.0,\
+  jsonb-3.0,\
   restfulws-3.0,\
+  restfulws-3.1,\
   cdi-3.0,\
   jsonp-2.0,\
-  xmlBinding-3.0
+  xmlBinding-3.0,\
+  xmlBinding-4.0,\
+  servlet-5.0
 
 
 -buildpath: \

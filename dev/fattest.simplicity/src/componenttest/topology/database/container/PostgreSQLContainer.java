@@ -1,5 +1,7 @@
 package componenttest.topology.database.container;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,6 +12,9 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
 /**
@@ -30,16 +35,24 @@ public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContain
     private String password = "test";
     private final Map<String, String> options = new HashMap<>();
 
+    private final WaitStrategy defaultWaitStrategy = new LogMessageWaitStrategy()
+                    .withRegEx(".*database system is ready to accept connections.*\\s")
+                    .withTimes(2)
+                    .withStartupTimeout(Duration.of(60, ChronoUnit.SECONDS));
+
     public PostgreSQLContainer(String img) {
         super(img);
+        this.waitStrategy = defaultWaitStrategy; //can be overwritten by calling waitingFor or setWaitStrategy
     }
 
     public PostgreSQLContainer(final Future<String> image) {
         super(image);
+        this.waitStrategy = defaultWaitStrategy; //can be overwritten by calling waitingFor or setWaitStrategy
     }
 
     public PostgreSQLContainer(final DockerImageName image) {
         super(image);
+        this.waitStrategy = defaultWaitStrategy; //can be overwritten by calling waitingFor or setWaitStrategy
     }
 
     /**
@@ -148,6 +161,9 @@ public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContain
     protected void waitUntilContainerStarted() {
         // by Testcontainers waits for being able to establish a JDBC connection
         // use the default wait strategy instead (necessary for the SSL path)
+        if (getWaitStrategy().equals(Wait.defaultWaitStrategy())) {
+            throw new RuntimeException("DefaultWaitStrategy is inadequite to ensure the database is ready for incoming connections.");
+        }
         getWaitStrategy().waitUntilReady(this);
     }
 

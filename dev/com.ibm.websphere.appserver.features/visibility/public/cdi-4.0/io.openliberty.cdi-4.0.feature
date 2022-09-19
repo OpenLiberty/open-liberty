@@ -62,7 +62,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.0
  io.openliberty.org.jboss.weld5.se, \
  com.ibm.ws.org.jboss.jdeparser.1.0.0, \
  com.ibm.ws.managedobject, \
- com.ibm.ws.org.jboss.logging, \
+ io.openliberty.org.jboss.logging35, \
  com.ibm.ws.org.jboss.classfilewriter, \
  com.ibm.ws.cdi.weld.jakarta, \
  com.ibm.ws.cdi.internal.jakarta, \
@@ -70,10 +70,10 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.0
  io.openliberty.cdi.4.0.internal.services.fragment, \
  com.ibm.ws.cdi.interfaces.jakarta, \
  io.openliberty.cdi.spi; location:="dev/spi/ibm/,lib/"
--jars=io.openliberty.cdi.4.0.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:5.0.0.Beta1"
+-jars=io.openliberty.cdi.4.0.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:5.0.1.Final"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd, \
  dev/spi/ibm/javadoc/io.openliberty.cdi.spi_1.1-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

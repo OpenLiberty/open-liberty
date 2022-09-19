@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,22 @@ bell.error.ctor.useraction=Se uma exce\u00e7\u00e3o ocorreu no construtor, revis
 bell.no.services.config=CWWKL0058W: N\u00e3o \u00e9 poss\u00edvel localizar o servi\u00e7o {0} na pasta META-INF/services na biblioteca {1}.
 bell.no.services.config.explanation=N\u00e3o h\u00e1 servi\u00e7os correspondentes declarados na pasta META-INF/services.
 bell.no.services.config.useraction= Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
+
+# BETA
+# {0} - library identifier
+bell.spi.visibility.enabled=CWWKL0059I: A visibilidade de SPI do BELL \u00e9 ativada para a biblioteca {0} . O BELL referencia a biblioteca {0} por meio de um carregador de classe exclusivo que pode ver os pacotes SPI.
+bell.spi.visibility.enabled.explanation=Para evitar que aplicativos e recursos vejam os pacotes SPI, o BELL referencia a biblioteca por meio de um carregador de classe exclusivo n\u00e3o compartilhado com aplicativos que referenciam a mesma biblioteca.
+bell.spi.visibility.enabled.useraction=Desative a visibilidade de SPI na configura\u00e7\u00e3o do BELL sempre que o BELL tiver que referenciar uma biblioteca por meio de um carregador de classes compartilhado com aplicativos que referenciam a mesma biblioteca. Caso contr\u00e1rio,\n\t\t\t\tnenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# BETA
+bell.spi.visibility.disabled.libref.global=CWWKL0060E: A visibilidade de SPI do BELL n\u00e3o \u00e9 suportada para a biblioteca compartilhada global do Liberty.
+bell.spi.visibility.disabled.libref.global.explanation=A visibilidade BELL SPI n\u00e3o pode ser ativada para a biblioteca compartilhada global Liberty.
+bell.spi.visibility.disabled.libref.global.useraction=Modifique a configura\u00e7\u00e3o do BELL para referenciar uma biblioteca diferente da biblioteca compartilhada global do Liberty.
+
+# BETA
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.missing.property.injection.methods=CWWKL0062W: O sistema n\u00e3o injetou propriedades BELL em uma inst\u00e2ncia da implementa\u00e7\u00e3o {0}. A classe n\u00e3o define um m\u00e9todo que suporte a inje\u00e7\u00e3o de propriedade BELL. A classe \u00e9 uma implementa\u00e7\u00e3o do servi\u00e7o que \u00e9 declarado no arquivo {1} e registrado a partir da biblioteca {2}.
+bell.missing.property.injection.methods.explanation=O sistema n\u00e3o pode acessar um m\u00e9todo necess\u00e1rio para a inje\u00e7\u00e3o de propriedade BELL. A classe de implementa\u00e7\u00e3o do servi\u00e7o deve definir um construtor p\u00fablico, ou um m\u00e9todo p\u00fablico denominado updateBell, com um par\u00e2metro do tipo java.util.Map<string,String> a fim de suportar a inje\u00e7\u00e3o de propriedade BELL.
+bell.missing.property.injection.methods.useraction=Certifique-se de que a classe define um construtor p\u00fablico, ou um m\u00e9todo p\u00fablico denominado updateBell, com um \u00fanico par\u00e2metro do tipo java.util.Map<String, String>.

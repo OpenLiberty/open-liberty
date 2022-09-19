@@ -11,6 +11,7 @@
 package com.ibm.ws.messaging.lifecycle;
 
 public class LifecycleError extends Error {
+    private static final long serialVersionUID = 1L;
 
     public LifecycleError(String message, Throwable cause) {
 	super(message, cause);

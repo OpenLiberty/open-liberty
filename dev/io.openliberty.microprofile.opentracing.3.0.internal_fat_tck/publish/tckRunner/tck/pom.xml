@@ -16,7 +16,7 @@
         <microprofile.opentracing.version>3.0</microprofile.opentracing.version>
         <microprofile.config.version>3.0.1</microprofile.config.version>
         <microprofile.rest.client.version>3.0</microprofile.rest.client.version>
-        <arquillian.version>1.7.0.Alpha10</arquillian.version>
+        <arquillian.version>1.7.0.Alpha12</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>2.0.0</version>
+            <version>2.1.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -111,7 +111,23 @@
             <scope>system</scope>
             <systemPath>${io.openliberty.org.jboss.resteasy.common.jakarta_}</systemPath>  
          </dependency>
-         
+
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>com.ibm.ws.org.apache.httpcomponents</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.httpcomponents_}</systemPath>
+         </dependency>
+
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.org.apache.commons.logging</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.apache.commons.logging_}</systemPath>
+         </dependency>
+
          <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>logging</artifactId>

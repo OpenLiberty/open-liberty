@@ -27,6 +27,4 @@
 			password="user2pwd" />
 	</basicRegistry>
 
-	<!--keyStore id="defaultKeyStore" password="keyspass" / -->
-
 </server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
@@ -33,6 +34,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -176,14 +178,16 @@ public class JSF23FaceletVDLTests {
 
         server.setMarkToEndOfLog();
         server.saveServerConfiguration();
-        ShrinkHelper.defaultApp(server, appName);
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.defaultApp(server, appName, options);
         server.setServerConfigurationFile(contextRoot + ".xml");
+        server.addInstalledAppForValidation(contextRoot);
 
         // Ensure the application was installed successfully.
         assertNotNull("The application " + appName + " did not appear to have been installed.",
                       server.waitForStringInLog("CWWKZ0001I.* " + appName.substring(0, appName.indexOf("."))));
 
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             String result = server.waitForStringInLogUsingMark(".*No context init parameter 'jakarta\\.faces\\.FACELETS_REFRESH_PERIOD' found, using default value '-1'.*");
             String result2 = server.waitForStringInLogUsingMark(".*No context init parameter 'jakarta\\.faces\\.STATE_SAVING_METHOD' found, using default value 'server'*");
 
@@ -234,7 +238,7 @@ public class JSF23FaceletVDLTests {
         // restore the original server configuration and uninstall the application
         server.restoreServerConfiguration();
 
-        // Ensure that the server configuration has completed before uninstalling the application
+        // Ensure that the server configuration has completed and that the app then stops
         server.waitForConfigUpdateInLogUsingMark(null);
 
         server.removeInstalledAppForValidation(contextRoot);

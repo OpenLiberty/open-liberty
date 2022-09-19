@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import com.ibm.ws.transaction.test.tests.FailoverTest2;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -31,17 +30,11 @@ import componenttest.topology.database.container.DatabaseContainerType;
 @SuiteClasses({ FailoverTest2.class })
 public class FATSuite {
 
-    // Using the RepeatTests @ClassRule will cause all tests to be run three times.
-    // First without any modifications, then again with all features upgraded to
-    // their EE8 equivalents and finally with the Jakarta EE9 features.
-    //
-    // In this test we allow one of the flavours of supported database to be selected either through
-    // specifying the fat.bucket.db.type property or it is chosen based on the date. That database is
-    // used in all 3 runs of the tests against the different version of EE.
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(new JakartaEE9Action().fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
 
     public static DatabaseContainerType type = DatabaseContainerType.DB2;
     public static JdbcDatabaseContainer<?> testContainer;

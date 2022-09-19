@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -260,7 +261,7 @@
 
 6134=Numele atributului sau expresia transmis\u0103 ca prim parametru pentru metoda addUpdate nu define\u015fte un c\u00e2mp. {1}Numele de atribut sau Expresia: [{2}]{1}Descriptor: [{0}]
 
-6135=Numele atributului sau expresia transmis\u0103 ca prim parametru pentru metoda addUpdate nu define\u015fte un c\u00e2mp dintr-un tabel ce nu este mapat la un descriptor de interogare. {1}Numele de atribut sau Expresia: [{2}]{1}C\u00e2mp gre\u015fit: [{3}]{1}Descriptor: [{0}]
+6135=Numele de atribut sau expresia transmis\u0103 ca primul parametru metodei addUpdate define\u0219te un c\u00e2mp dintr-un tabel care nu este mapat la descriptorul interog\u0103rii. {1}Nume atribut sau expresie: [{2}]{1}C\u00e2mp gre\u0219it: [{3}]{1}Descriptor: [{0}]
 
 6136=Clasele mapate cu mo\u015ftenire din mai multe tabele nu pot fi articole ReportQuery. Articol: {0}, Expresie: {1}.
 

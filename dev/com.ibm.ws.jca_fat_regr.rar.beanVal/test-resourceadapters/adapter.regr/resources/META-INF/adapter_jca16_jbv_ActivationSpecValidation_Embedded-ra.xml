@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connector version="1.6" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee  http://java.sun.com/xml/ns/j2ee/connector_1_5.xsd">
+	<description>WebSphere J2C Testing Resource Adapter</description>
+	<display-name>adapter_jca16_jbv_ActivationSpecValidation_Embedded</display-name> 
+	<vendor-name>IBM</vendor-name> 
+	<eis-type>Test EIS</eis-type>
+	<resourceadapter-version>1.1</resourceadapter-version>
+	<license>
+		<description></description>
+		<license-required>true</license-required>
+	</license>
+	<resourceadapter>
+		<resourceadapter-class>com.ibm.adapter.FVTAdapterImpl</resourceadapter-class>
+
+		<!--Resource Adapter default configuration properties-->
+		<config-property>
+			<config-property-name>adapterName</config-property-name>
+			<config-property-type>java.lang.String</config-property-type>
+			<config-property-value>adapter_jca16_jbv_ActivationSpecValidation_Embedded</config-property-value>
+		</config-property>
+		
+		<!--Outbound resource adapter-->
+		<outbound-resourceadapter>
+			<connection-definition>
+				<managedconnectionfactory-class>com.ibm.adapter.spi.ManagedConnectionFactoryImpl</managedconnectionfactory-class>
+																				
+				<config-property>
+				    <description>the name of the database</description>
+					<config-property-name>databaseName</config-property-name>
+					<config-property-type>java.lang.String</config-property-type>
+					<config-property-value>jtest1</config-property-value>
+				</config-property>
+				
+				<!-- 313344.1 add properties for jcc type 4 -->
+				<config-property>
+				    <description>the datasource implementation class</description>
+				    <config-property-name>dataSourceClass</config-property-name>
+					<config-property-type>java.lang.String</config-property-type>
+					<!-- 313344.1 change to jcc xa datasource, not sure this really matters -->
+					<config-property-value>com.ibm.db2.jcc.DB2XADataSource</config-property-value>
+				</config-property>
+				
+                <config-property>
+                    <description>Specify whether connection handles support implicit reactivation. (Smart Handle support). Value may be "true" or "false".</description>
+                    <config-property-name>InactiveConnectionSupport</config-property-name>
+                    <config-property-type>java.lang.Boolean</config-property-type>
+                    <config-property-value>true</config-property-value>
+                </config-property>
+                
+                <config-property>
+                    <description>Type of transaction resource registration (enlistment).  Valid values are either "static" (immediate) or "dynamic" (deferred).</description>
+                    <config-property-name>TransactionResourceRegistration</config-property-name>
+                    <config-property-type>java.lang.String</config-property-type>
+                    <config-property-value>dynamic</config-property-value>
+                </config-property>
+				
+				<connectionfactory-interface>javax.sql.DataSource</connectionfactory-interface>
+				<connectionfactory-impl-class>com.ibm.adapter.jdbc.JdbcDataSource</connectionfactory-impl-class>
+				<connection-interface>java.sql.Connection</connection-interface>
+				<connection-impl-class>com.adapter.jdbc.JdbcConnection</connection-impl-class>
+			</connection-definition>
+			<transaction-support>XATransaction</transaction-support>
+
+			<authentication-mechanism>
+				<authentication-mechanism-type>BasicPassword</authentication-mechanism-type>
+				<credential-interface>javax.resource.spi.security.PasswordCredential</credential-interface>
+			</authentication-mechanism>
+
+			<reauthentication-support>false</reauthentication-support>
+		</outbound-resourceadapter>
+		<inbound-resourceadapter>
+			<messageadapter>
+				<messagelistener>
+					<messagelistener-type>javax.jms.MessageListener</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.adapter.activationspec.jbv.JBVFATActSpecEmbeddedImpl</activationspec-class>
+						<config-property>
+							<config-property-name>name</config-property-name>
+					                <config-property-type>java.lang.String</config-property-type>
+						        <config-property-value>ABCD</config-property-value>
+						</config-property>												
+						<config-property>
+							<config-property-name>asProperty1</config-property-name>
+					                <config-property-type>java.lang.String</config-property-type>
+						        <config-property-value>ABC</config-property-value>
+						</config-property>
+						<config-property>
+							<config-property-name>asProperty2</config-property-name>
+							<config-property-type>java.lang.Integer</config-property-type>
+							<config-property-value>30</config-property-value>
+						</config-property>
+						<config-property>
+							<config-property-name>asProperty3</config-property-name>Boolean
+							<config-property-type>java.lang.Boolean</config-property-type>
+							<config-property-value>true</config-property-value>
+						</config-property>
+						<config-property>
+							<config-property-name>asProperty4</config-property-name>Double
+							<config-property-type>java.lang.Double</config-property-type>
+							<config-property-value>45</config-property-value>
+						</config-property>
+						<config-property>
+							<config-property-name>asProperty5</config-property-name>
+							<config-property-type>java.lang.Integer</config-property-type>
+							<config-property-value>5</config-property-value>
+						</config-property>
+						
+					</activationspec>
+				</messagelistener>
+			</messageadapter>
+		</inbound-resourceadapter>
+
+
+		<adminobject>
+			<adminobject-interface>com.ibm.adapter.message.FVTMessageProvider</adminobject-interface>
+			<adminobject-class>com.ibm.adapter.message.FVTMessageProviderImpl</adminobject-class>		
+		</adminobject>
+		<adminobject>
+			<adminobject-interface>com.ibm.adapter.message.FVTBaseMessageProvider</adminobject-interface>
+			<adminobject-class>com.ibm.adapter.message.FVTMessageProviderImpl</adminobject-class>
+		</adminobject>
+					
+		<security-permission>
+	        <description>Allows the resource adapter to read the system properties in WAS. 
+	               MessageProviderImpl needs to read the transaction log file path name.
+	               Need to add this security-permission because when Java 2 security is on
+	               MessageProviderImpl cannot read the system properties and throws exceptions.
+	        </description>
+            <security-permission-spec>
+      		    grant {
+      		        permission java.lang.RuntimePermission "*", "modifyThreadGroup";
+      	        };
+            </security-permission-spec>
+        </security-permission>
+
+	</resourceadapter>
+</connector>

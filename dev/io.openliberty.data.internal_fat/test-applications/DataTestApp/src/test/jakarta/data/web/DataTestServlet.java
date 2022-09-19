@@ -23,12 +23,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -55,11 +57,15 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.data.Entities;
+import io.openliberty.data.MappingException;
 import io.openliberty.data.Page;
 import io.openliberty.data.Pagination;
 import io.openliberty.data.Sort;
 import io.openliberty.data.Sorts;
+import io.openliberty.data.Template;
 
+@Entities(WorkAddress.class) // TODO make inheritance work without this
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
@@ -67,6 +73,9 @@ public class DataTestServlet extends FATServlet {
 
     @Inject
     OrderRepo orders;
+
+    @Inject
+    Packages packages;
 
     @Inject
     PersonRepo people;
@@ -89,8 +98,63 @@ public class DataTestServlet extends FATServlet {
     @Inject
     Tariffs tariffs;
 
+    @Inject
+    Template template;
+
     @Resource
     private UserTransaction tran;
+
+    /**
+     * Use repository methods with aggregate functions in the select clause.
+     */
+    @Test
+    public void testAggregateFunctions() {
+        // Remove data from previous test:
+        Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
+        if (allProducts.length > 0)
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+
+        // Add data for this test to use:
+        Product prod1 = new Product();
+        prod1.id = "AF-006E905-LE";
+        prod1.name = "TestAggregateFunctions Lite Edition";
+        prod1.price = 104.99f;
+        products.addOrModify(prod1);
+
+        Product prod2 = new Product();
+        prod2.id = "AF-006E005-RK";
+        prod2.name = "TestAggregateFunctions Repair Kit";
+        prod2.price = 104.99f;
+        products.addOrModify(prod2);
+
+        Product prod3 = new Product();
+        prod3.id = "AF-006E905-CE";
+        prod3.name = "TestAggregateFunctions Classic Edition";
+        prod3.price = 306.99f;
+        products.addOrModify(prod3);
+
+        Product prod4 = new Product();
+        prod4.id = "AF-006E205-CE";
+        prod4.name = "TestAggregateFunctions Classic Edition";
+        prod4.description = "discontinued";
+        prod4.price = 286.99f;
+        products.addOrModify(prod4);
+
+        assertEquals(306.99f, products.highestPrice(), 0.001f);
+
+        assertEquals(104.99f, products.lowestPrice(), 0.001f);
+
+        assertEquals(200.99f, products.meanPrice(), 0.001f);
+
+        assertEquals(698.97f, products.totalOfDistinctPrices(), 0.001f);
+
+        // EclipseLink says that multiple distinct attribute are not support at this time,
+        // so we are testing this with distinct=false
+        ProductCount stats = products.stats();
+        assertEquals(4, stats.totalNames);
+        assertEquals(1, stats.totalDescriptions);
+        assertEquals(4, stats.totalPrices);
+    }
 
     /**
      * Use repository methods that are designated as asynchronous by the Concurrency Asynchronous annotation.
@@ -166,7 +230,7 @@ public class DataTestServlet extends FATServlet {
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
                                                                                  1002003003L, 1002003002L, 1002003001L))
                         .thenCompose(updateCount -> {
-                            assertEquals(Long.valueOf(6), updateCount);
+                            assertEquals(Integer.valueOf(6), updateCount);
 
                             return personnel.findByLastNameOrderByFirstName("Test-Asynchronous");
                         });
@@ -246,6 +310,8 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Long.valueOf(4), avgLengthOfBNames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
+        assertEquals(Boolean.TRUE, personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
         deleted = personnel.removeAll();
         assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
@@ -278,7 +344,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(2, added.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).size());
 
         CompletableFuture<Long> updated2Then1;
-        CompletableFuture<Long> updated2;
+        CompletableFuture<Boolean> updated2;
 
         tran.begin();
         try {
@@ -314,8 +380,8 @@ public class DataTestServlet extends FATServlet {
             updated2 = personnel.setSurnameAsync("TestAsyncPrevents-Deadlock", p2.ssn);
 
             try {
-                Long updateCount = updated2.get(1, TimeUnit.SECONDS);
-                fail("Third thread ought to be blocked by second thread. Instead, updated " + updateCount);
+                Boolean wasUpdated = updated2.get(1, TimeUnit.SECONDS);
+                fail("Third thread ought to be blocked by second thread. Instead, was updated? " + wasUpdated);
             } catch (TimeoutException x) {
                 // expected
             }
@@ -328,7 +394,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Long.valueOf(2), updated2Then1.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         // With the second thread completing, it releases both locks, allowing the third thread to obtain the lock on 2 and complete
-        assertEquals(Long.valueOf(1), updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Boolean.TRUE, updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**
@@ -340,31 +406,82 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "TDM-SE";
         prod1.name = "TestDeleteMultiple Standard Edition";
         prod1.price = 115.99f;
-        products.insert(prod1);
+        products.addOrModify(prod1);
 
         Product prod2 = new Product();
         prod2.id = "TDM-AE";
         prod2.name = "TestDeleteMultiple Advanced Edition";
         prod2.price = 197.99f;
-        products.insert(prod2);
+        products.addOrModify(prod2);
 
         Product prod3 = new Product();
         prod3.id = "TDM-EE";
         prod3.name = "TestDeleteMultiple Expanded Edition";
         prod3.price = 153.99f;
-        products.insert(prod3);
+        products.addOrModify(prod3);
 
         Product prod4 = new Product();
         prod4.id = "TDM-NFE";
         prod4.name = "TestDeleteMultiple Nearly Free Edition";
         prod4.price = 1.99f;
-        products.insert(prod4);
+        products.addOrModify(prod4);
 
         assertEquals(2, products.discontinueProducts(Set.of("TDM-AE", "TDM-NFE", "TDM-NOT-FOUND")));
 
         // expect that 2 remain
         assertNotNull(products.findItem("TDM-SE"));
         assertNotNull(products.findItem("TDM-EE"));
+    }
+
+    /**
+     * Query for distinct values of an attribute.
+     */
+    @Test
+    public void testDistinctAttribute() {
+        Product prod1 = new Product();
+        prod1.id = "TDA-T-L1";
+        prod1.name = "TestDistinctAttribute T-Shirt Size Large";
+        prod1.price = 7.99f;
+        products.addOrModify(prod1);
+
+        Product prod2 = new Product();
+        prod2.id = "TDA-T-M1";
+        prod1.name = "TestDistinctAttribute T-Shirt Size Medium";
+        prod2.price = 7.89f;
+        products.addOrModify(prod2);
+
+        Product prod3 = new Product();
+        prod3.id = "TDA-T-S1";
+        prod3.name = "TestDistinctAttribute T-Shirt Size Small";
+        prod3.price = 7.79f;
+        products.addOrModify(prod3);
+
+        Product prod4 = new Product();
+        prod4.id = "TDA-T-M2";
+        prod4.name = "TestDistinctAttribute T-Shirt Size Medium";
+        prod4.price = 7.49f;
+        products.addOrModify(prod4);
+
+        Product prod5 = new Product();
+        prod5.id = "TDA-T-XS1";
+        prod5.name = "TestDistinctAttribute T-Shirt Size Extra Small";
+        prod5.price = 7.59f;
+        products.addOrModify(prod5);
+
+        Product prod6 = new Product();
+        prod6.id = "TDA-T-L2";
+        prod6.name = "TestDistinctAttribute T-Shirt Size Large";
+        prod6.price = 7.49f;
+        products.addOrModify(prod6);
+
+        List<String> uniqueProductNames = products.findByNameLike("TestDistinctAttribute %");
+
+        // only 4 of the 6 names are unique
+        assertIterableEquals(List.of("TestDistinctAttribute T-Shirt Size Extra Small",
+                                     "TestDistinctAttribute T-Shirt Size Large",
+                                     "TestDistinctAttribute T-Shirt Size Medium",
+                                     "TestDistinctAttribute T-Shirt Size Small"),
+                             uniqueProductNames);
     }
 
     /**
@@ -436,13 +553,72 @@ public class DataTestServlet extends FATServlet {
         prod.price = 3.99f;
         prod.description = "An item for sale.";
 
-        products.insert(prod);
+        products.addOrModify(prod);
 
         Product p = products.findItem("OL306-233F");
         assertEquals(prod.id, p.id);
         assertEquals(prod.name, p.name);
         assertEquals(prod.price, p.price, 0.001f);
         assertEquals(prod.description, p.description);
+    }
+
+    /**
+     * Use the % and _ characters, which are wildcards in JPQL, within query parameters.
+     */
+    @Test
+    public void testFindLike() throws Exception {
+        // Remove data from previous tests:
+        Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
+        if (allProducts.length > 0)
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+
+        Product p1 = new Product();
+        p1.id = "TFL-1";
+        p1.name = "TestFindLike_1";
+        p1.price = 1.00f;
+        products.addOrModify(p1);
+
+        Product p2 = new Product();
+        p2.id = "TFL-2";
+        p2.name = "2% TestFindLike";
+        p2.price = 2.00f;
+        products.addOrModify(p2);
+
+        Product p10 = new Product();
+        p10.id = "TFL-10";
+        p10.name = "TestFindLike 1";
+        p10.price = 10.00f;
+        products.addOrModify(p10);
+
+        Product p100 = new Product();
+        p100.id = "TFL-100";
+        p100.name = "TestFindLike  1";
+        p100.price = 100.00f;
+        products.addOrModify(p100);
+
+        Product p200 = new Product();
+        p200.id = "TFL-200";
+        p200.name = "200 TestFindLike";
+        p200.price = 200.00f;
+        products.addOrModify(p200);
+
+        assertIterableEquals(List.of("2% TestFindLike",
+                                     "200 TestFindLike",
+                                     "TestFindLike  1",
+                                     "TestFindLike 1",
+                                     "TestFindLike_1"),
+                             products.findByNameLike("%TestFindLike%"));
+
+        // _ wildcard matches any single character
+        assertIterableEquals(List.of("TestFindLike 1", "TestFindLike_1"),
+                             products.findByNameLike("TestFindLike_1"));
+
+        // % wildcard matches 0 or more characters
+        assertIterableEquals(List.of("2% TestFindLike", "200 TestFindLike"),
+                             products.findByNameLike("2% TestFindLike"));
+
+        // Escape characters are not possible for the repository Like keyword, however,
+        // consider using JPQL escape characters and ESCAPE '\' clause for StartsWith, EndsWith, and Contains
     }
 
     /**
@@ -464,8 +640,8 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            people.insert(jane);
-            people.insert(joe);
+            people.save(jane);
+            people.save(joe);
         } finally {
             if (tran.getStatus() == Status.STATUS_MARKED_ROLLBACK)
                 tran.rollback();
@@ -522,6 +698,74 @@ public class DataTestServlet extends FATServlet {
         o2 = orders.findById(o2.id).get();
 
         assertEquals(168.89f, o2.total, 0.01f);
+    }
+
+    /**
+     * Use an entity that inherits from another where both are kept in the same table.
+     */
+    @Test
+    public void testInheritance() {
+        shippingAddresses.removeAll();
+
+        ShippingAddress home = new ShippingAddress();
+        home.id = 10L;
+        home.city = "Rochester";
+        home.state = "Minnesota";
+        home.streetAddress = new StreetAddress(1234, "5th St SW");
+        home.zipCode = 55902;
+
+        WorkAddress work = new WorkAddress();
+        work.id = 20L;
+        work.city = "Rochester";
+        work.floorNumber = 2;
+        work.office = "H115";
+        work.state = "Minnesota";
+        work.streetAddress = new StreetAddress(2800, "37th St NW");
+        work.zipCode = 55901;
+
+        shippingAddresses.save(home);
+        shippingAddresses.save(work);
+
+        WorkAddress a = shippingAddresses.forOffice("H115");
+        assertEquals(Long.valueOf(20), a.id);
+        assertEquals("Rochester", a.city);
+        assertEquals(2, a.floorNumber);
+        assertEquals("H115", a.office);
+        assertEquals("Minnesota", a.state);
+        assertEquals("37th St NW", a.streetAddress.streetName);
+        assertEquals(55901, a.zipCode);
+
+        WorkAddress[] secondFloorOfficesOn37th = shippingAddresses.findByStreetNameAndFloorNumber("37th St NW", 2);
+
+        assertArrayEquals(new WorkAddress[] { work }, secondFloorOfficesOn37th,
+                          Comparator.<WorkAddress, Long> comparing(o -> o.id)
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.city))
+                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.floorNumber))
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.office))
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.state))
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.streetAddress.streetName))
+                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
+                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.zipCode)));
+
+        ShippingAddress[] found = shippingAddresses.findByStreetNameOrderByHouseNumber("37th St NW");
+
+        assertArrayEquals(new ShippingAddress[] { work }, found,
+                          Comparator.<ShippingAddress, Long> comparing(o -> o.id)
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> ((WorkAddress) o).floorNumber))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> ((WorkAddress) o).office))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.streetAddress.streetName))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
+
+        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(1000, 3000);
+
+        assertArrayEquals(new StreetAddress[] { work.streetAddress, home.streetAddress }, streetAddresses,
+                          Comparator.<StreetAddress, Integer> comparing(o -> o.houseNumber)
+                                          .thenComparing(Comparator.<StreetAddress, String> comparing(o -> o.streetName)));
+
+        shippingAddresses.removeAll();
     }
 
     /**
@@ -967,14 +1211,14 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
-                             reservations.findByLocationLikeOrderByMeetingID("-2 B1")
+                             reservations.findByLocationContainsOrderByMeetingID("-2 B1")
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030001L, 10030002L, 10030004L, 10030006L, 10030008L),
                              reservations.findByMeetingIDOrLocationLikeAndStartAndStopOrHost(10030006,
-                                                                                             "050-2",
+                                                                                             "050-2 %",
                                                                                              OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT),
                                                                                              OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT),
                                                                                              "testRepositoryCustom-host4@example.org")
@@ -1003,7 +1247,7 @@ public class DataTestServlet extends FATServlet {
         assertArrayEquals(new Reservation[] { r9, r3, r2, r1 }, array,
                           Comparator.<Reservation, Long> comparing(o -> o.meetingID)
                                           .thenComparing(Comparator.<Reservation, String> comparing(o -> o.host))
-                                          .thenComparing(Comparator.<Reservation, String> comparing(o -> o.invitees.toString()))
+                                          .thenComparing(Comparator.<Reservation, String> comparing(o -> new TreeSet<String>(o.invitees).toString()))
                                           .thenComparing(Comparator.<Reservation, String> comparing(o -> o.location))
                                           .thenComparing(Comparator.<Reservation, Instant> comparing(o -> o.start.toInstant()))
                                           .thenComparing(Comparator.<Reservation, Instant> comparing(o -> o.stop.toInstant())));
@@ -1083,7 +1327,7 @@ public class DataTestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        Publisher<Reservation> publisher = reservations.findByHostLikeOrderByMeetingID("testRepositoryCustom-host");
+        Publisher<Reservation> publisher = reservations.findByHostLikeOrderByMeetingID("testRepositoryCustom-host%");
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         publisher.subscribe(new Subscriber<Reservation>() {
             final int REQUEST_SIZE = 3;
@@ -1098,6 +1342,7 @@ public class DataTestServlet extends FATServlet {
 
             @Override
             public void onNext(Reservation item) {
+                System.out.println(Long.toHexString(Thread.currentThread().getId()) + " onNext " + item);
                 results.add(item);
                 if (++count % REQUEST_SIZE == 0)
                     subscription.request(REQUEST_SIZE);
@@ -1110,65 +1355,29 @@ public class DataTestServlet extends FATServlet {
 
             @Override
             public void onComplete() {
-                results.add("DONE");
+                System.out.println(Long.toHexString(Thread.currentThread().getId()) + " onComplete");
             }
         });
 
-        Object result;
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030001L, ((Reservation) result).meetingID);
+        Set<Long> expected = new HashSet<Long>();
+        expected.addAll(List.of(10030001L, 10030002L, 10030003L, 10030004L, 10030005L, 10030006L, 10030007L, 10030008L, 10030009L));
 
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030002L, ((Reservation) result).meetingID);
+        for (int i = 1; i <= 9; i++) {
+            Object result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+            assertNotNull(result);
+            System.out.println("Received " + result);
+            if (result instanceof Throwable)
+                throw new AssertionError("onError notification received", (Throwable) result);
+            else
+                assertEquals(result.toString() + " is not expected", true, expected.remove(((Reservation) result).meetingID));
+        }
 
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030003L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030004L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030005L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030006L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030007L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030008L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals(10030009L, ((Reservation) result).meetingID);
-
-        assertNotNull(result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        if (result instanceof Throwable)
-            throw new AssertionError("onError notification received", (Throwable) result);
-        assertEquals("DONE", result);
+        assertEquals("Some results are missing", Collections.EMPTY_SET, expected);
 
         // Paging where the final page includes less than the maximum page size,
-        Page<Reservation> page1 = reservations.findByHostLike("testRepositoryCustom-host",
-                                                              Pagination.page(1).size(4),
-                                                              Sort.desc("meetingID"));
+        Page<Reservation> page1 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                                    Pagination.page(1).size(4),
+                                                                    Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030009L, 10030008L, 10030007L, 10030006L),
                              page1
                                              .getContent()
@@ -1189,9 +1398,9 @@ public class DataTestServlet extends FATServlet {
         assertEquals(null, page3.next());
 
         // Paging that comes out even:
-        page2 = reservations.findByHostLike("testRepositoryCustom-host",
-                                            Pagination.page(2).size(3),
-                                            Sort.desc("meetingID"));
+        page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                  Pagination.page(2).size(3),
+                                                  Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
                              page2
                                              .getContent()
@@ -1205,6 +1414,51 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
         assertEquals(null, page3.next());
 
+        // find by member of a collection
+        assertIterableEquals(List.of(10030002L, 10030007L),
+                             reservations.findByInviteesContainsOrderByMeetingID("testRepositoryCustom-2b@example.org")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+
+        // find by not a member of a collection
+        Set<Reservation> set = reservations.findByLocationAndInviteesNotContains("050-2 B120", "testRepositoryCustom-2b@example.org");
+        assertNotNull(set);
+        assertEquals(set.toString(), 1, set.size());
+        Reservation found = set.iterator().next();
+        assertEquals(10030005L, found.meetingID);
+
+        // EndsWith, Upper
+        assertIterableEquals(List.of(10030002L, 10030005L, 10030007L),
+                             reservations.findByUpperHostEndsWith("HOST2@EXAMPLE.ORG")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(Collections.EMPTY_LIST,
+                             reservations.findByUpperHostEndsWith("host2@example.org") // should not match with lower case
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // StartsWith
+        assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
+                             reservations.findByLocationStartsWith("050-2 B")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // Lower
+        assertIterableEquals(List.of(10030001L, 10030004L, 10030006L, 10030008L),
+                             reservations.findByLowerLocationIn(List.of("050-2 g105", "030-2 e314", "050-2 h115", "050-3 H103")) // H103 has upper case and should not match
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
         assertEquals(false, reservations.deleteByHostIn(List.of("testRepositoryCustom-host5@example.org")));
 
         assertEquals(true, reservations.deleteByHostIn(List.of("testRepositoryCustom-host1@example.org",
@@ -1216,6 +1470,157 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .sorted()
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use repository updateBy methods.
+     */
+    @Test
+    public void testRepositoryUpdateMethods() {
+        ZoneOffset CDT = ZoneOffset.ofHours(-5);
+
+        // remove data that other tests previously inserted to the same table
+        reservations.deleteByHostNot("unused@example.org");
+
+        Reservation r1 = new Reservation();
+        r1.host = "testRepositoryUpdateMethods-host1@example.org";
+        r1.invitees = Set.of("testRepositoryUpdateMethods-1a@example.org");
+        r1.location = "050-2 A101";
+        r1.meetingID = 1012001;
+        r1.start = OffsetDateTime.of(2022, 8, 25, 8, 0, 0, 0, CDT);
+        r1.stop = OffsetDateTime.of(2022, 8, 25, 9, 30, 0, 0, CDT);
+
+        Reservation r2 = new Reservation();
+        r2.host = "testRepositoryUpdateMethods-host1@example.org";
+        r2.invitees = Set.of("testRepositoryUpdateMethods-2a@example.org", "testRepositoryUpdateMethods-2b@example.org");
+        r2.location = "050-2 B120";
+        r2.meetingID = 1012002;
+        r2.start = OffsetDateTime.of(2022, 8, 25, 9, 0, 0, 0, CDT);
+        r2.stop = OffsetDateTime.of(2022, 8, 25, 10, 0, 0, 0, CDT);
+
+        Reservation r3 = new Reservation();
+        r3.host = "testRepositoryUpdateMethods-host1@example.org";
+        r3.invitees = Set.of("testRepositoryUpdateMethods-3a@example.org", "testRepositoryUpdateMethods-3b@example.org", "testRepositoryUpdateMethods-3c@example.org");
+        r3.location = "050-2 A101";
+        r3.meetingID = 1012003;
+        r3.start = OffsetDateTime.of(2022, 8, 25, 10, 0, 0, 0, CDT);
+        r3.stop = OffsetDateTime.of(2022, 8, 25, 11, 0, 0, 0, CDT);
+
+        Reservation r4 = new Reservation();
+        r4.host = "testRepositoryUpdateMethods-host4@example.org";
+        r4.invitees = Set.of("testRepositoryUpdateMethods-1a@example.org");
+        r4.location = "050-2 A101";
+        r4.meetingID = 1012004;
+        r4.start = OffsetDateTime.of(2022, 8, 25, 13, 0, 0, 0, CDT);
+        r4.stop = OffsetDateTime.of(2022, 8, 25, 14, 30, 0, 0, CDT);
+
+        reservations.save(List.of(r1, r2, r3, r4));
+
+        // Update by primary key
+        assertEquals(true, reservations.updateByMeetingIDSetHost(1012004, "testRepositoryUpdateMethods-host2@example.org"));
+
+        // See if the updated entry is found
+        List<Long> found = new ArrayList<>();
+        reservations.findByHost("testRepositoryUpdateMethods-host2@example.org").forEach(r -> found.add(r.meetingID));
+        assertIterableEquals(List.of(1012004L), found);
+
+        // Update multiple by various conditions
+        assertEquals(2, reservations.updateByHostAndLocationSetLocation("testRepositoryUpdateMethods-host1@example.org",
+                                                                        "050-2 A101",
+                                                                        "050-2 H115"));
+        assertIterableEquals(List.of(1012001L, 1012003L),
+                             reservations.findByLocationContainsOrderByMeetingID("H115")
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+
+        reservations.deleteByHostNot("unused@example.org");
+
+        ;
+    }
+
+    /**
+     * Use repository updateBy methods with multiplication and division,
+     */
+    @Test
+    public void testRepositoryUpdateMethodsMultiplyAndDivide() {
+        Package p1 = new Package();
+        p1.description = "Cereal Box";
+        p1.length = 7.0f;
+        p1.width = 19.1f;
+        p1.height = 28.2f;
+        p1.id = 990001;
+
+        Package p2 = new Package();
+        p2.description = "Pasta Noodle Box";
+        p2.length = 7.0f;
+        p2.width = 10.0f;
+        p2.height = 18.5f;
+        p2.id = 990002;
+
+        Package p3 = new Package();
+        p3.description = "Tissue box";
+        p3.length = 12.0f;
+        p3.width = 23.73f;
+        p3.height = 9.2f;
+        p3.id = 990003;
+
+        Package p4 = new Package();
+        p4.description = "Large Cereal Box";
+        p4.length = 8.2f;
+        p4.width = 21.0f;
+        p4.height = 29.5f;
+        p4.id = 990004;
+
+        Package p5 = new Package();
+        p5.description = "Small Cereal Box";
+        p5.length = 4.8f;
+        p5.width = 18.4f;
+        p5.height = 27.3f;
+        p5.id = 990005;
+
+        Package p6 = new Package();
+        p6.description = "Crackers Box";
+        p6.length = 6.0f;
+        p6.width = 11.5f;
+        p6.height = 19.2f;
+        p6.id = 990006;
+
+        packages.save(List.of(p1, p2, p3, p4, p5, p6));
+
+        // multiply, divide, and add within same update
+        assertEquals(true, packages.updateByIdAddHeightMultiplyLengthDivideWidth(990003, 1.0f, 0.95f, 1.05f));
+
+        Package p = packages.findById(990003).get();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(22.6f, p.width, 0.01f);
+        assertEquals(10.2f, p.height, 0.01f);
+
+        // perform same type of update to multiple columns
+        packages.updateByIdDivideLengthDivideWidthDivideHeight(990005, 1.2f, 1.15f, 1.1375f);
+
+        p = packages.findById(990005).get();
+        assertEquals(4.0f, p.length, 0.01f);
+        assertEquals(16.0f, p.width, 0.01f);
+        assertEquals(24.0f, p.height, 0.01f);
+
+        // multiple conditions and multiple updates
+        assertEquals(2L, packages.updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(7.1f, 18.4f, 19.4f, 1.1f, 1.2f, 19.5f));
+
+        List<Package> results = packages.findByHeightBetween(19.4999f, 19.5001f);
+        assertEquals(results.toString(), 2, results.size());
+
+        p = packages.findById(990002).get();
+        assertEquals(7.7f, p.length, 0.01f);
+        assertEquals(12.0f, p.width, 0.01f);
+        assertEquals(19.5f, p.height, 0.01f);
+
+        p = packages.findById(990006).get();
+        assertEquals(6.6f, p.length, 0.01f);
+        assertEquals(13.8f, p.width, 0.01f);
+        assertEquals(19.5f, p.height, 0.01f);
+
+        packages.deleteById(List.of(990001, 990002, 990003, 990004, 990005, 990006));
     }
 
     /**
@@ -1277,6 +1682,42 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Entity classes that are accessed via repository methods can also be accessed via template.
+     */
+    @Test
+    public void testTemplateUsesRepositoryEntities() {
+        // insert by repository
+        Product prod1 = new Product();
+        prod1.id = "TTU-75-00-6144RE";
+        prod1.name = "testTemplateUsesRepositoryEntities Item";
+        prod1.price = 10.99f;
+        products.addOrModify(prod1);
+
+        // find by template
+        Optional<Product> found = template.find(Product.class, prod1.id);
+        assertEquals(true, found.isPresent());
+        Product p = found.get();
+        assertEquals("TTU-75-00-6144RE", p.id);
+        assertEquals("testTemplateUsesRepositoryEntities Item", p.name);
+        assertEquals(10.99f, p.price, 0.001f);
+
+        // insert by template
+        Order order1 = new Order();
+        order1.purchasedBy = "testTemplateUsesRepositoryEntities Buyer";
+        order1.purchasedOn = OffsetDateTime.now();
+        order1.total = 16.87f;
+        order1 = template.insert(order1);
+        assertNotNull(order1.id);
+
+        // find by repository
+        Optional<Order> ofound = orders.findById(order1.id);
+        assertEquals(true, ofound.isPresent());
+        Order o = ofound.get();
+        assertEquals(order1.id, o.id);
+        assertEquals("testTemplateUsesRepositoryEntities Buyer", o.purchasedBy);
+    }
+
+    /**
      * Update multiple entries.
      */
     @Test
@@ -1287,38 +1728,143 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "800-2024-S";
         prod1.name = "Small size TestUpdateMultiple-matched item";
         prod1.price = 10.00f;
-        products.insert(prod1);
+        products.addOrModify(prod1);
 
         Product prod2 = new Product();
         prod2.id = "800-3024-M";
         prod2.name = "Medium size TestUpdateMultiple-matched item";
         prod2.price = 15.00f;
-        products.insert(prod2);
+        products.addOrModify(prod2);
 
         Product prod3 = new Product();
         prod3.id = "C6000-814BH0003Y";
         prod3.name = "Medium size TestUpdateMultiple non-matching item";
         prod3.price = 18.00f;
-        products.insert(prod3);
+        products.addOrModify(prod3);
 
         Product prod4 = new Product();
         prod4.id = "800-4024-L";
         prod4.name = "Large size TestUpdateMultiple-matched item";
         prod4.price = 20.00f;
-        products.insert(prod4);
+        products.addOrModify(prod4);
 
+        Product[] p = products.findByVersionGreaterThanEqualOrderByPrice(0);
+
+        // JPA knows to update the version even through the JPQL didn't explicitly tell it to
         assertEquals(3, products.putOnSale("TestUpdateMultiple-match", .20f));
 
         Product p1 = products.findItem(prod1.id);
         assertEquals(8.00f, p1.price, 0.001f);
+        assertEquals(p[0].version + 1, p1.version); // updated
 
         Product p2 = products.findItem(prod2.id);
         assertEquals(12.00f, p2.price, 0.001f);
+        assertEquals(p[1].version + 1, p2.version); // updated
 
         Product p3 = products.findItem(prod3.id);
-        assertEquals(prod3.price, p3.price, 0.001f);
+        assertEquals(18.00f, p3.price, 0.001f);
+        assertEquals(p[2].version, p3.version); // not updated, version remains the same
 
         Product p4 = products.findItem(prod4.id);
         assertEquals(16.00f, p4.price, 0.001f);
+        assertEquals(p[3].version + 1, p4.version); // updated
+    }
+
+    /**
+     * Use JPQL query to update based on version.
+     */
+    @Test
+    public void testVersionedUpdateViaQuery() {
+        Product prod1 = new Product();
+        prod1.id = "Q6008-U8-21001";
+        prod1.name = "testVersionedUpdateViaQuery Product 1";
+        prod1.price = 82.99f;
+        products.addOrModify(prod1);
+
+        Product p = products.findItem(prod1.id);
+        long initialVersion = p.version;
+
+        assertEquals(true, products.setPrice(prod1.id, initialVersion, 84.99f));
+        assertEquals(false, products.setPrice(prod1.id, initialVersion, 83.99f));
+        assertEquals(true, products.setPrice(prod1.id, initialVersion + 1, 88.99f));
+
+        p = products.findItem(prod1.id);
+        assertEquals(88.99f, p.price, 0.001f);
+        assertEquals(initialVersion + 2, p.version);
+    }
+
+    /**
+     * Use repository save method to update based on version.
+     */
+    @Test
+    public void testVersionedUpdateViaRepository() {
+        Product prod1 = new Product();
+        prod1.id = "3400R-6120-1";
+        prod1.name = "TestVersionedUpdateViaRepository Product 1";
+        prod1.price = 139.99f;
+        products.addOrModify(prod1);
+
+        Product prod1a = products.findItem(prod1.id);
+        Product prod1b = products.findItem(prod1.id);
+
+        long version;
+        assertEquals(version = prod1a.version, prod1b.version);
+
+        prod1a.price += 15.00f;
+        prod1b.price += 10.00f;
+
+        products.addOrModify(prod1b);
+
+        try {
+            products.addOrModify(prod1a);
+            fail("Able to update using old version.");
+        } catch (RuntimeException x) {
+            if ("jakarta.persistence.OptimisticLockException".equals(x.getClass().getName()))
+                ; // expected;
+            else
+                throw x;
+        }
+
+        Product p = products.findItem(prod1.id);
+        assertEquals(149.99f, p.price, 0.001f);
+        assertEquals(version + 1, p.version);
+    }
+
+    /**
+     * Use template to update based on version.
+     */
+    @Test
+    public void testVersionedUpdateViaTemplate() {
+        Product prod1 = new Product();
+        prod1.id = "G1600-T-90251";
+        prod1.name = "TestVersionedUpdateViaTemplate Product 1";
+        prod1.price = 210.00f;
+        prod1 = template.insert(prod1);
+
+        long version = prod1.version;
+
+        Product prod1a = template.find(Product.class, prod1.id).orElseThrow();
+        Product prod1b = template.find(Product.class, prod1.id).orElseThrow();
+
+        prod1a.price += 25.00f;
+        prod1b.price += 20.00f;
+
+        Product p1b = template.update(prod1b);
+
+        try {
+            Product p1a = template.update(prod1a);
+            fail("Able to update using old version " + p1a);
+        } catch (MappingException x) {
+            Throwable cause = x.getCause();
+            if (cause == null || !"jakarta.persistence.OptimisticLockException".equals(cause.getClass().getName()))
+                throw x;
+        }
+
+        assertEquals(230.00f, p1b.price, 0.001f);
+        assertEquals(version + 1, p1b.version);
+
+        Product p = products.findItem(prod1.id);
+        assertEquals(230.00f, p.price, 0.001f);
+        assertEquals(version + 1, p.version);
     }
 }

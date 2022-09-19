@@ -20,8 +20,8 @@ import java.util.function.Supplier;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
- * Phase which a checkpoint is being taken. This enum is registered as a
- * service when a checkpoint operation is being done.
+ * Phase which a checkpoint of the running process is being taken.
+ * This enum is registered as a service when running in an OSGi framework.
  *
  */
 public enum CheckpointPhase {
@@ -39,12 +39,21 @@ public enum CheckpointPhase {
      * Phase of startup after the applications have been discovered but no
      * code from the application has been executed.
      */
-    DEPLOYMENT;
+    DEPLOYMENT,
+    /**
+     * Phase that indicates there is no checkpoint being done.
+     */
+    INACTIVE(true);
 
     /**
      * The checkpoint phase service property used to store the checkpoint phase when registered as a service.
      */
     public static final String CHECKPOINT_PROPERTY = "io.openliberty.checkpoint";
+
+    /**
+     * A service filter to lookup an active checkpoint phase.
+     */
+    public static final String CHECKPOINT_ACTIVE_FILTER = "(!(" + CHECKPOINT_PROPERTY + "=INACTIVE))";
 
     /**
      * The checkpoint phase service property used to store if the checkpoint process has been restored.
@@ -66,6 +75,21 @@ public enum CheckpointPhase {
         phases = new HashMap<String, CheckpointPhase>();
         for (CheckpointPhase p : CheckpointPhase.values()) {
             phases.put(p.toString(), p);
+        }
+    }
+
+    /**
+     *
+     */
+    private CheckpointPhase() {
+        this(false);
+    }
+
+    private CheckpointPhase(boolean inactive) {
+        if (inactive) {
+            // if inactive then set restored and noMoreAddHooks to true;
+            restored = true;
+            noMoreAddHooks = true;
         }
     }
 
@@ -94,19 +118,20 @@ public enum CheckpointPhase {
      *         is case insensitive.
      */
     static synchronized void setPhase(String p) {
-        if (phaseSet) {
+        if (THE_PHASE != INACTIVE) {
             // This should only be called once. Ignore if called multiple times.
             // For embedded launches this may be called multiple times.
             return;
         }
         debug(() -> "phase set to: " + p);
         CheckpointPhase phase = p == null ? null : phases.get(p.trim().toUpperCase());
+        if (phase == null) {
+            phase = INACTIVE;
+        }
         THE_PHASE = phase;
-        phaseSet = true;
     }
 
-    static boolean phaseSet = false;
-    static CheckpointPhase THE_PHASE = null;
+    static CheckpointPhase THE_PHASE = CheckpointPhase.INACTIVE;
 
     /**
      * Returns true if the process has been restored
@@ -114,17 +139,27 @@ public enum CheckpointPhase {
      * @return true if the process has been restored
      */
     final public boolean restored() {
-        return restored;
+        return this == INACTIVE || restored;
     }
 
     /**
      * Adds a {@code CheckpointHook} for this checkpoint phase.
-     * The hook will be run to prepare and restore a checkpoint
-     * process while the JVM is in single-threaded mode.
+     * The hook will be run to {@link CheckpointHook#prepare() prepare}
+     * and {@link CheckpointHook#restore() restore} a checkpoint
+     * process while the JVM is in single-threaded mode. If the
+     * checkpoint process is already {@link #restored() restored}
+     * then the hook is not added and {@code false} is returned,
+     * indicating that the hook will not be called.
+     * A return value of {@code true} indicates that the hook will
+     * be called for both {@link CheckpointHook#prepare() prepare}
+     * and {@link CheckpointHook#restore() restore}.
+     *
      *
      * @param hook the hook to be used to prepare and restore
      *                 a checkpoint process.
-     * @throws IllegalStateException if the phase is in progress.
+     * @throws IllegalStateException if the phase is not in progress.
+     * @return true if the hook is successfully added; otherwise false
+     *         is returned.
      * @see CheckpointHook#MULTI_THREADED_HOOK
      */
     final public boolean addSingleThreadedHook(CheckpointHook hook) {
@@ -133,12 +168,21 @@ public enum CheckpointPhase {
 
     /**
      * Adds a {@code CheckpointHook} for this checkpoint phase.
-     * The hook will be run to prepare and restore a checkpoint
-     * process while the JVM is in multi-threaded mode.
+     * The hook will be run to {@link CheckpointHook#prepare() prepare}
+     * and {@link CheckpointHook#restore() restore} a checkpoint
+     * process while the JVM is in multi-threaded mode. If the
+     * checkpoint process is already {@link #restored() restored}
+     * then the hook is not added and {@code false} is returned,
+     * indicating that the hook will not be called.
+     * A return value of {@code true} indicates that the hook will
+     * be called for both {@link CheckpointHook#prepare() prepare}
+     * and {@link CheckpointHook#restore() restore}.
      *
      * @param hook the hook to be used to prepare and restore
      *                 a checkpoint process.
-     * @throws IllegalStateException if the phase is in progress.
+     * @throws IllegalStateException if the phase is not in progress.
+     * @return true if the hook is successfully added; otherwise false
+     *         is returned.
      * @see CheckpointHook#MULTI_THREADED_HOOK
      */
     final public boolean addMultiThreadedHook(CheckpointHook hook) {
@@ -149,6 +193,10 @@ public enum CheckpointPhase {
         if (this != THE_PHASE) {
             throw new IllegalStateException("Cannot add hooks to a checkpoint phase that is not in progress.");
         }
+        if (this == INACTIVE) {
+            return false;
+        }
+
         if (noMoreAddHooks) {
             return false;
         }
@@ -176,10 +224,8 @@ public enum CheckpointPhase {
     }
 
     /**
-     * Returns the checkpoint phase in progress. If there is no
-     * checkpoint phase in progress then {@code null} is returned.
-     * Once a non-null result is returned that same phase instance
-     * will always be returned.
+     * Returns the checkpoint phase in progress.
+     * The phase returned is constant for the lifetime of the process.
      *
      * @return the current checkpoint phase in progress.
      */
@@ -222,10 +268,9 @@ public enum CheckpointPhase {
         public void prepare() {
             CheckpointPhase phase = CheckpointPhase.getPhase();
             debug(() -> "prepare phase: " + phase);
-            if (phase != null) {
-                // phase should never be null if prepare is being called!
-                hooks = phase.getAndClearHooks(multiThreaded);
-            }
+
+            hooks = phase.getAndClearHooks(multiThreaded);
+
             for (CheckpointHook hook : hooks) {
                 debug(() -> "prepare operation on static hook: " + hook);
                 hook.prepare();

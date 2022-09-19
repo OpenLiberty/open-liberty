@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jca-1.7</feature>
+        <feature>jndi-1.0</feature>
+        <feature>jms-2.0</feature>
+        <feature>jmsMdb-3.2</feature>
+        <feature>ejbLite-3.2</feature>
+    </featureManager>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+    
+    <application type="ear" name="fvtapp" location="fvtapp.ear" id="fvtapp">
+        <resourceAdapter id="adapter_jca16_insec_AnnotatedInboundSecurity" autoStart="true"/>
+    </application>
+    <!-- Resource adapters for tranlvl tests  -->
+    <resourceAdapter location="${server.config.dir}/connectors/adapter_jca16_tranlvl_Loc_Loc.rar"/>
+    
+    <connectionFactory id="tranlvl_Loc_Loc" jndiName="eis/tranlvl_Loc_Loc">
+        <properties.adapter_jca16_tranlvl_Loc_Loc />
+    </connectionFactory>
+    
+    <resourceAdapter location="${server.config.dir}/connectors/adapter_jca16_tranlvl_Loc_No.rar"/>
+    
+    <connectionFactory id="tranlvl_Loc_No" jndiName="eis/tranlvl_Loc_No">
+        <properties.adapter_jca16_tranlvl_Loc_No />
+    </connectionFactory>
+    
+    <resourceAdapter location="${server.config.dir}/connectors/adapter_jca16_tranlvl_Loc_XA.rar"/>
+    
+    <connectionFactory id="tranlvl_Loc_XA" jndiName="eis/tranlvl_Loc_XA">
+        <properties.adapter_jca16_tranlvl_Loc_XA />
+    </connectionFactory>
+    
+    <resourceAdapter location="${server.config.dir}/connectors/adapter_jca16_tranlvl_No_Loc.rar"/>
+    
+    <connectionFactory id="tranlvl_No_Loc" jndiName="eis/tranlvl_No_Loc">
+        <properties.adapter_jca16_tranlvl_No_Loc />
+    </connectionFactory>
+    
+    <resourceAdapter location="${server.config.dir}/connectors/adapter_jca16_tranlvl_No_No.rar"/>
+    
+    <connectionFactory id="tranlvl_No_No" jndiName="eis/tranlvl_No_No">
+        <properties.adapter_jca16_tranlvl_No_No />
+    </connectionFactory>
+    
+    <resourceAdapter location="${server.config.dir}/connectors/adapter_jca16_tranlvl_No_XA.rar"/>
+    
+    <connectionFactory id="tranlvl_No_XA" jndiName="eis/tranlvl_No_XA">
+        <properties.adapter_jca16_tranlvl_No_XA />
+    </connectionFactory>
+    
+    <resourceAdapter location="${server.config.dir}/connectors/adapter_jca16_tranlvl_TranSupportNotImplemented.rar"/>
+    
+    <connectionFactory id="tranlvl_TranSupportNotImplemented" jndiName="eis/tranlvl_TranSupportNotImplemented">
+        <properties.adapter_jca16_tranlvl_TranSupportNotImplemented />
+    </connectionFactory>
+    
+    <resourceAdapter location="${server.config.dir}/connectors/adapter_jca16_tranlvl_XA_Loc.rar"/>
+    
+    <connectionFactory id="tranlvl_XA_Loc" jndiName="eis/tranlvl_XA_Loc">
+        <properties.adapter_jca16_tranlvl_XA_Loc />
+    </connectionFactory>
+    
+    <resourceAdapter location="${server.config.dir}/connectors/adapter_jca16_tranlvl_XA_No.rar"/>
+    
+    <connectionFactory id="tranlvl_XA_No" jndiName="eis/tranlvl_XA_No">
+        <properties.adapter_jca16_tranlvl_XA_No />
+    </connectionFactory>
+    
+    <resourceAdapter location="${server.config.dir}/connectors/adapter_jca16_tranlvl_XA_XA.rar"/>
+    
+    <connectionFactory id="tranlvl_XA_XA" jndiName="eis/tranlvl_XA_XA">
+        <properties.adapter_jca16_tranlvl_XA_XA />
+    </connectionFactory>
+    
+    <javaPermission className="java.net.SocketPermission" name="*" actions="resolve"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+    
+    <variable value="FAIL" name="onError"/>
+</server>

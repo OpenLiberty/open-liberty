@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.transaction.Transaction;
-
 import org.osgi.service.component.annotations.Component;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl;
 import com.ibm.wsspi.tx.UOWEventEmitter;
 import com.ibm.wsspi.tx.UOWEventListener;
 
@@ -28,8 +25,6 @@ import com.ibm.wsspi.tx.UOWEventListener;
  */
 @Component(service = { UOWEventListener.class })
 public class TestUOWEventListener implements UOWEventListener {
-
-    private static final TraceComponent tc = Tr.register(TestUOWEventListener.class);
 
     private static Hashtable<Long, List<UOWEventDetails>> got = new Hashtable<Long, List<UOWEventDetails>>();
 
@@ -48,42 +43,12 @@ public class TestUOWEventListener implements UOWEventListener {
             if (got.get(key) == null) {
                 final List<UOWEventDetails> l = new ArrayList<UOWEventDetails>();
                 l.add(ed);
-                System.out.println("Adding event to new list for thread " + key + " which now has " + l.size() + " elements");
+                System.out.println("Adding event [" + ed + "] to new list for thread " + key + " which now has " + l.size() + " elements");
                 got.put(key, l);
             } else {
                 got.get(key).add(ed);
-                System.out.println("Adding event to existing list for thread " + key + " which now has " + got.get(key).size() + " elements");
+                System.out.println("Adding event [" + ed + "] to existing list for thread " + key + " which now has " + got.get(key).size() + " elements");
             }
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            final String e;
-
-            switch (event) {
-                case UOWEventListener.POST_BEGIN:
-                    e = "POST_BEGIN";
-                    break;
-                case UOWEventListener.POST_END:
-                    e = "POST_END";
-                    break;
-                case UOWEventListener.REGISTER_SYNC:
-                    e = "REGISTER_SYNC";
-                    break;
-                case UOWEventListener.RESUME:
-                    e = "RESUME";
-                    break;
-                case UOWEventListener.SUSPEND:
-                    e = "SUSPEND";
-                    break;
-                default:
-                    e = "UNKNOWN";
-                    break;
-            }
-
-            System.out.println("UOWEvent on thread " + Thread.currentThread().getId());
-            System.out.println(ed);
-            Tr.entry(tc, "UOWEvent", Thread.currentThread().getId(), ed);
-            Tr.exit(tc, "UOWEvent");
         }
     }
 
@@ -114,8 +79,8 @@ public class TestUOWEventListener implements UOWEventListener {
                 }
 
                 for (UOWEventDetails ed : al) {
-                    if (ed.uow instanceof Transaction) {
-                        System.out.println("Got a global tran event");
+                    if (ed.uow.toString().matches(".*" + EmbeddableTransactionImpl.class.getCanonicalName() + ".*")) { // So we don't need the actual transaction api
+                        System.out.println("Got a global tran event: " + ed.uow);
                         if (need[needIndex] == ed.event) {
                             needIndex++;
                         } else {

@@ -45,6 +45,8 @@
         </layers>
       </clientPolicy.csiv2>
     </orb>
- 
+    
+    <orb id="defaultOrb" orbSSLInitTimeout="90"/>
+   
     <logging traceSpecification="*=info:org.apache.yoko.*=all:Naming=all:IIOP=all:com.ibm.ws.jndi.remote.*=all:Injection=all:com.ibm.ws.clientcontainer.*=all:EJBContainer=all:org.apache.yoko.*=all:com.ibm.ws.security.csiv2.*=all" maxFiles="1" maxFileSize="0"/>
 </server>

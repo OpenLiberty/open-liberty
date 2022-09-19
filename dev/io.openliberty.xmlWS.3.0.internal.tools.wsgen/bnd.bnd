@@ -24,7 +24,7 @@ Require-Bundle:\
  io.openliberty.jakarta.soap.2.0;version="[1,1.0.100)";location="dev/api/spec/", \
  io.openliberty.jakarta.xmlWS.3.0;version="[1,1.0.100)";location="dev/api/spec/", \
  io.openliberty.jakarta.xmlBinding.3.0;version="[1,1.0.100)";location="dev/api/spec/", \
- io.openliberty.com.sun.xml.messaging.saaj; version="[1,1.0.100)", \
+ io.openliberty.com.sun.xml.messaging.saaj.2.0; version="[1,1.0.100)", \
  com.ibm.ws.logging; version="[1,1.0.100)"
  
 Command-Class: io.openliberty.xmlWS30.tools.WsGen

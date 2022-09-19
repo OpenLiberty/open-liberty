@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.internal;
 
+import static io.openliberty.checkpoint.spi.CheckpointPhase.CHECKPOINT_ACTIVE_FILTER;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -39,7 +41,7 @@ public class CheckpointOSGiConsole implements CheckpointHook {
     private final FrameworkWiring fwkWiring;
 
     @Activate
-    public CheckpointOSGiConsole(@Reference CheckpointPhase phase, BundleContext context) {
+    public CheckpointOSGiConsole(@Reference(target = CHECKPOINT_ACTIVE_FILTER) CheckpointPhase phase, BundleContext context) {
         Requirement consolePkg = new Requirement() {
 
             @Override

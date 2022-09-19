@@ -83,3 +83,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=No action is required.
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: The authentication cache cleared all entries in the {0} JCache cache. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=The authentication cache clears all entries in the backing JCache cache when security or user registry configuration is modified, or when the DeleteAuthCache MBean is called. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=No action is required.
+
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: Insertion of entry for the {0} key into the {1} JCache authentication cache failed due to a serialization error. The entry will be inserted into the in-memory authentication cache instead. The exception is: {2}
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=The entry contents were not serialized so they were not stored in the JCache authentication cache.
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Investigate the exception included in the message and fix the cause of the error.  

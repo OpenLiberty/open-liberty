@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jca.fat.app;
-
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
 
@@ -31,8 +29,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jca.fat.FATSuite;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -89,7 +87,7 @@ public class JCATest extends FATServletClient {
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp");
         ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
 
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             /*
              * Need to update the destination type of the topic to ensure it matches the Jakarta FQN.
              */
@@ -137,7 +135,6 @@ public class JCATest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(EE9_FEATURES) //Transformer does not seem to transform jars inside of jars
     public void testLoginModuleInJarInJarInRar() throws Exception {
         runTest();
     }

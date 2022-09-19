@@ -298,5 +298,15 @@ LOGOUT_TOKEN_DUP_JTI=CWWKS1551E: El cliente de [{1}] OpenID Connect ya ha recibi
 LOGOUT_TOKEN_DUP_JTI.explanation=La reclamaci\u00f3n "jti" identifica de forma exclusiva una se\u00f1al de cierre de sesi\u00f3n. Se ha utilizado otra se\u00f1al de cierre de sesi\u00f3n con este "jti", por lo que no se puede volver a utilizar la se\u00f1al.
 LOGOUT_TOKEN_DUP_JTI.useraction=Aseg\u00farese de que la se\u00f1al de cierre de sesi\u00f3n contenga un valor "jti" exclusivo y que las se\u00f1ales de cierre de sesi\u00f3n no se utilicen varias veces.
 
+# Do not translate "iss", "sub", or "sid"
+# 0=OpenID Connect client config ID, 1="iss" claim value, 2="sub" claim value, 3="sid" claim value
+NO_RECENT_SESSIONS_WITH_CLAIMS=CWWKS1552E: El cliente de [{0}] OpenID Connect no puede encontrar ninguna sesi\u00f3n reciente que coincida con la reclamaci\u00f3n [{1}] "iss", la reclamaci\u00f3n "sub" [{2}] y la reclamaci\u00f3n [{3}] "sid".
+NO_RECENT_SESSIONS_WITH_CLAIMS.explanation=El cliente de OpenID Connect no tiene una sesi\u00f3n reciente con un proveedor de OpenID Connect que coincida con todas las reclamaciones especificadas en el mensaje. Las reclamaciones que se especifican en el mensaje deben tener valores en la se\u00f1al de cierre de sesi\u00f3n que coincidan con las mismas reclamaciones de una se\u00f1al de ID recibida recientemente.
+NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Aseg\u00farese de que las reclamaciones especificadas en el mensaje coincidan con una se\u00f1al de ID obtenida recientemente de un proveedor de OpenID Connect.
+
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Se ha producido un error en el cliente de OpenID Connect {0} al enviar una solicitud de autorizaci\u00f3n al proveedor de OpenID Connect. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Puede que falte informaci\u00f3n en la configuraci\u00f3n del cliente de OpenID Connect o que se haya producido un error en el cliente al comunicarse con el proveedor de OpenID Connect.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,9 @@
  *******************************************************************************/
 package com.ibm.example.jca.anno;
 
-import javax.resource.cci.InteractionSpec;
-import javax.resource.spi.AdministeredObject;
-import javax.resource.spi.ConfigProperty;
+import jakarta.resource.cci.InteractionSpec;
+import jakarta.resource.spi.AdministeredObject;
+import jakarta.resource.spi.ConfigProperty;
 
 /**
  * Example InteractionSpec implementation with a single property, functionName,

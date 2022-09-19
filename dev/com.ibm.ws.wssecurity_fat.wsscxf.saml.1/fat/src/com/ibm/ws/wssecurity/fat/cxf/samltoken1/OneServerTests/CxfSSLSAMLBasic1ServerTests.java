@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import componenttest.annotation.SkipForRepeat;
 
 /**
@@ -48,7 +49,7 @@ import componenttest.annotation.SkipForRepeat;
  * 2.0 token in the HTTP POST request.
  */
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -89,12 +90,7 @@ public class CxfSSLSAMLBasic1ServerTests extends CxfSSLSAMLBasicTests {
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
 
         //issue 18363
-        Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures();
-        if (features.contains("jaxws-2.2")) {
-            setFeatureVersion("EE7");
-        } else if (features.contains("jaxws-2.3")) {
-            setFeatureVersion("EE8");
-        }// End of 18363
+        setFeatureVersion("EE7");
         
     }
 }

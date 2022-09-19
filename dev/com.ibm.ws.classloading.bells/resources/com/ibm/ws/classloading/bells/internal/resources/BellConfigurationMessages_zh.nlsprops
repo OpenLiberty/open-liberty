@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,22 @@ bell.error.ctor.useraction=\u5982\u679c\u6784\u9020\u51fd\u6570\u4e2d\u53d1\u751
 bell.no.services.config=CWWKL0058W: \u65e0\u6cd5\u4ece {1} \u5e93\u7684 META-INF/services \u6587\u4ef6\u5939\u4e2d\u627e\u5230 {0} \u670d\u52a1\u3002
 bell.no.services.config.explanation=META-INF/services \u6587\u4ef6\u5939\u4e2d\u672a\u58f0\u660e\u4efb\u4f55\u5339\u914d\u670d\u52a1\u3002
 bell.no.services.config.useraction= \u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+# BETA
+# {0} - library identifier
+bell.spi.visibility.enabled=CWWKL0059I: \u5bf9 {0} \u5e93\u542f\u7528\u4e86 BELL SPI \u53ef\u89c6\u6027\u3002 BELL \u901a\u8fc7\u53ef\u67e5\u770b SPI \u5305\u7684\u552f\u4e00\u7c7b\u88c5\u5165\u5668\u6765\u5f15\u7528 {0} \u5e93\u3002
+bell.spi.visibility.enabled.explanation=\u4e3a\u4e86\u9632\u6b62\u5e94\u7528\u7a0b\u5e8f\u548c\u8d44\u6e90\u770b\u5230 SPI \u5305\uff0cBELL \u901a\u8fc7\u552f\u4e00\u7c7b\u88c5\u5165\u5668\uff08\u4e0d\u4e0e\u5f15\u7528\u540c\u4e00\u5e93\u7684\u5e94\u7528\u7a0b\u5e8f\u5171\u4eab\u6b64\u88c5\u5165\u5668\uff09\u6765\u5f15\u7528\u5e93\u3002
+bell.spi.visibility.enabled.useraction=\u6bcf\u5f53 BELL \u5fc5\u987b\u901a\u8fc7\u7c7b\u88c5\u5165\u5668\uff08\u4e0e\u5f15\u7528\u540c\u4e00\u5e93\u7684\u5e94\u7528\u7a0b\u5e8f\u5171\u4eab\u6b64\u88c5\u5165\u5668\uff09\u6765\u5f15\u7528\u5e93\u65f6\uff0c\u8bf7\u5728 BELL \u914d\u7f6e\u4e2d\u7981\u7528 SPI \u53ef\u89c6\u6027\u3002 \u5426\u5219\uff0c\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+# BETA
+bell.spi.visibility.disabled.libref.global=CWWKL0060E: Liberty \u5168\u5c40\u5171\u4eab\u5e93\u4e0d\u652f\u6301 BELL SPI \u53ef\u89c6\u6027\u3002
+bell.spi.visibility.disabled.libref.global.explanation=\u65e0\u6cd5\u5bf9 Liberty \u5168\u5c40\u5171\u4eab\u5e93\u542f\u7528 BELL SPI \u53ef\u89c6\u6027\u3002
+bell.spi.visibility.disabled.libref.global.useraction=\u8bf7\u4fee\u6539 BELL \u914d\u7f6e\u4ee5\u5f15\u7528 Liberty \u5168\u5c40\u5171\u4eab\u5e93\u4ee5\u5916\u7684\u5e93\u3002
+
+# BETA
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.missing.property.injection.methods=CWWKL0062W: \u7cfb\u7edf\u672a\u5c06 BELL \u5c5e\u6027\u6ce8\u5165\u5230 {0} \u5b9e\u73b0\u7684\u5b9e\u4f8b\u4e2d\u3002 \u8be5\u7c7b\u672a\u5b9a\u4e49\u652f\u6301 BELL \u5c5e\u6027\u6ce8\u5165\u7684\u65b9\u6cd5\u3002 \u8be5\u7c7b\u662f\u5728 {1} \u6587\u4ef6\u4e2d\u58f0\u660e\u4e14\u4ece {2} \u5e93\u4e2d\u6ce8\u518c\u7684\u670d\u52a1\u7684\u5b9e\u73b0\u3002
+bell.missing.property.injection.methods.explanation=\u7cfb\u7edf\u65e0\u6cd5\u8bbf\u95ee BELL \u5c5e\u6027\u6ce8\u5165\u6240\u9700\u7684\u65b9\u6cd5\u3002 \u8be5\u670d\u52a1\u5b9e\u73b0\u7c7b\u5fc5\u987b\u5b9a\u4e49\u4e00\u4e2a\u516c\u5171\u6784\u9020\u51fd\u6570\u6216\u5e26\u6709\u4e00\u4e2a java.util.Map<string,String> \u7c7b\u578b\u53c2\u6570\u4e14\u540d\u4e3a updateBell \u7684\u516c\u5171\u65b9\u6cd5\uff0c\u4ee5\u4fbf\u652f\u6301 BELL \u5c5e\u6027\u6ce8\u5165\u3002
+bell.missing.property.injection.methods.useraction=\u786e\u4fdd\u8be5\u7c7b\u5b9a\u4e49\u4e86\u516c\u5171\u6784\u9020\u51fd\u6570\u6216\u5e26\u6709\u4e00\u4e2a java.util.Map<String, String> \u7c7b\u578b\u53c2\u6570\u4e14\u540d\u4e3a updateBell \u7684\u516c\u5171\u65b9\u6cd5\u3002

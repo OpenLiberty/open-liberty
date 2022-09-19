@@ -153,13 +153,13 @@
 
 7093=\u00cen interogarea numit\u0103 [{0}], clasa [{2}] pentru argumentul numit [{1}] nu poate fi g\u0103sit\u0103. Include\u0163i clasa lips\u0103 \u00een calea dumneavoastr\u0103 de clase.
 
-7095=Resursa sessions.xml [{0}] nu a fost g\u0103sit\u0103 \u00een calea resursei.  Verifica\u0163i dac\u0103 numele/calea resursei \u015fi classloader transmis \u00een SessionManager.getSession sunt corecte.  sessions.xml ar trebui incluse \u00een root al jar-ului implementat al aplica\u0163iei, dac\u0103 sessions.xml este implementat \u00eentr-un subdirector \u00een jar-ul aplica\u0163iei, asigura\u0163i-v\u0103 c\u0103 este utilizat\u0103 calea corect\u0103 a resursei "/" not "\".
+7095=Resursa sessions.xml [{0}] nu a fost g\u0103sit\u0103 \u00een calea resursei.  Verifica\u0163i dac\u0103 numele/calea resursei \u015fi classloader transmis \u00een SessionManager.getSession sunt corecte.  sessions.xml ar trebui incluse \u00een root al jar-ului implementat al aplica\u0163iei, dac\u0103 sessions.xml este implementat \u00eentr-un subdirector \u00een jar-ul aplica\u0163iei, asigura\u0163i-v\u0103 c\u0103 este utilizat\u0103 calea corect\u0103 a resursei "/" not "".
 
 7096=Nu se poate utiliza metoda commit() pentru a comite din nou UnitOfWork.
 
 7097=Opera\u0163ie ce nu e suportat\u0103: [{0}].
 
-7099=Resursa XML a proiectului de implementare [{0}] nu a fost g\u0103sit\u0103 \u00een calea resursei.  Verifica\u0163i dac\u0103 numele/calea resursei \u015fi classloader-ul transmis c\u0103tre XMLProjectReader sunt corecte.  XML-ul proiectului ar trebui inclus \u00een root-ul jar-ului de implementare a aplica\u0163iei, dac\u0103 XML-ul proiectului este implementat \u00eentr-un subdirector din jar-ul aplica\u0163iei, asigura\u0163i-v\u0103 c\u0103 este utilizat\u0103 calea corect\u0103 a resursei utiliz\u00e2nd "/" not "\".
+7099=Resursa XML a proiectului de implementare [{0}] nu a fost g\u0103sit\u0103 \u00een calea resursei.  Verifica\u0163i dac\u0103 numele/calea resursei \u015fi classloader-ul transmis c\u0103tre XMLProjectReader sunt corecte.  XML-ul proiectului ar trebui inclus \u00een root-ul jar-ului de implementare a aplica\u0163iei, dac\u0103 XML-ul proiectului este implementat \u00eentr-un subdirector din jar-ul aplica\u0163iei, asigura\u0163i-v\u0103 c\u0103 este utilizat\u0103 calea corect\u0103 a resursei utiliz\u00e2nd "/" not "".
 
 7100=Nu s-a putut g\u0103si sesiunea cu numele [{0}] \u00een fi\u015fierul session.xml [{1}]
 
@@ -605,7 +605,7 @@
 
 7342=Valoarea boolean\u0103 specificat\u0103 [{0}] pentru setarea permite interog\u0103ri sql native, este invalid\u0103, valoarea trebuie s\u0103 fie ori "true" ori "false".
 
-7343=Au fost specifica\u0163i mai mul\u0163i identificatori VPD (proprietate contextual\u0103 de discriminator chiria\u015f). Entitatea [{1}] utilizeaz\u0103 [{0}] \u015fi Entitatea [{3]} utilizeaz\u0103 [{2}]. Atunci c\u00e2nd utiliza\u0163i o strategie VPD multi-chiria\u015f, poate exista numai o coloan\u0103 discriminator chiria\u015f per entitate \u015fi proprietatea sa cotextual\u0103 trebuie s\u0103 fie consistent\u0103 peste toate entit\u0103\u0163ile VPD mult-chiria\u015f.
+7343=Au fost specifica\u021bi mai mul\u021bi identificatori VPD (proprietatea contextului discriminator de chiria\u0219). Entitatea [{1}] utilizeaz\u0103 [{0}] \u0219i Entitatea [{3}] utilizeaz\u0103 [{2}]. C\u00e2nd se utilizeaz\u0103 o strategie VPD multi-chiria\u0219, poate exista o singur\u0103 coloan\u0103 de discriminator de chiria\u0219 per entitate \u0219i proprietatea sa de context trebuie s\u0103 fie consecvent\u0103 pentru toate entit\u0103\u021bile VPD multi-chiria\u0219.
 
 7344=VPD (conexiuni \u015fi generare DDL) nu este suportat pentru platforma: [{0}].
 

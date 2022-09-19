@@ -197,7 +197,7 @@ noscript {
 
 .login-footer {
     font-size: 14px;
-    color: #F5CF3E;
+    color: black;
     margin: 10px 0 0 0;
 }
 
@@ -222,7 +222,7 @@ footer {
     font-size: 14px;
     margin-left: 20px;
     margin-top: 30px;
-    opacity: 0.5;
+    opacity: 0.6; /* increase to 0.6 to meet the minimum text contrast of 4.5 with its background */
     width: 325px;
     text-align: left;
     vertical-align: top;

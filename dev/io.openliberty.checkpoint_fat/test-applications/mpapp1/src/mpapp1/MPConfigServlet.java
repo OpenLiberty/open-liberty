@@ -24,30 +24,123 @@ public class MPConfigServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    MPConfigBean bean;
+    MPConfigBean reqScopeBean;
 
+    @Inject
+    MPConfigBeanWithApplicationScope appScopeBean;
+
+    @Inject
+    private ApplicationScopedOnCheckpointBean appScopeOnCheckpointBean;
+
+    @Inject
+    ApplicationScopedOnCheckpointBeanWithConfigObject appScopeOnCheckpointWithConfigObject;
+
+    @Inject
+    ApplicationScopedOnCheckpointBeanWithConfigObjectProperties appScopeOnCheckpointWithConfigObjectProperties;
+
+    // MPConfigBean
     @Test
     public void defaultValueTest() {
-        bean.defaultValueTest();
+        reqScopeBean.defaultValueTest();
     }
 
     @Test
     public void envValueTest() {
-        bean.envValueTest();
+        reqScopeBean.envValueTest();
     }
 
     @Test
     public void envValueChangeTest() {
-        bean.envValueChangeTest();
+        reqScopeBean.envValueChangeTest();
     }
 
     @Test
     public void serverValueTest() {
-        bean.serverValueTest();
+        reqScopeBean.serverValueTest();
     }
 
     @Test
     public void annoValueTest() {
-        bean.annoValueTest();
+        reqScopeBean.annoValueTest();
     }
+
+    // MPconfigBeanWithApplicationScope
+    @Test
+    public void appScopeDefaultValueTest() {
+        appScopeBean.appScopeDefaultValueTest();
+    }
+
+    @Test
+    public void appScopeEnvValueTest() {
+        appScopeBean.appScopeEnvValueTest();
+    }
+
+    @Test
+    public void appScopeEnvValueChangeTest() {
+        appScopeBean.appScopeEnvValueChangeTest();
+    }
+
+    @Test
+    public void appScopeServerValueTest() {
+        appScopeBean.appScopeServerValueTest();
+    }
+
+    @Test
+    public void appScopeAnnoValueTest() {
+        appScopeBean.appScopeAnnoValueTest();
+    }
+
+    // ApplicationScopedOnCheckpointBeanWithConfigObject
+    @Test
+    public void configObjectAppScopeDefaultValueTest() {
+        appScopeOnCheckpointWithConfigObject.appScopeDefaultValueTest();
+    }
+
+    @Test
+    public void configObjectAppScopeEnvValueTest() {
+        appScopeOnCheckpointWithConfigObject.appScopeEnvValueTest();
+    }
+
+    @Test
+    public void configObjectAppScopeEnvValueChangeTest() {
+        appScopeOnCheckpointWithConfigObject.appScopeEnvValueChangeTest();
+    }
+
+    @Test
+    public void configObjectAppScopeServerValueTest() {
+        appScopeOnCheckpointWithConfigObject.appScopeServerValueTest();
+    }
+
+    @Test
+    public void configObjectAppScopeAnnoValueTest() {
+        appScopeOnCheckpointWithConfigObject.appScopeAnnoValueTest();
+    }
+
+    // ApplicationScopedOnCheckpointBeanWithConfigObjectProperties
+    @Test
+    public void configObjectPropertiesAppScopeDefaultValueTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeDefaultValueTest();
+    }
+
+    @Test
+    public void configObjectPropertiesAppScopeEnvValueTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeEnvValueTest();
+    }
+
+    @Test
+    public void configObjectPropertiesAppScopeEnvValueChangeTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeEnvValueChangeTest();
+    }
+
+    @Test
+    public void configObjectPropertiesAppScopeServerValueTest() {
+        appScopeOnCheckpointWithConfigObjectProperties.appScopeServerValueTest();
+    }
+
+    // ApplicationScopedOnCheckpointBean
+    @Test
+    public void applicationScopedValueTest() {
+        appScopeOnCheckpointBean.applicationScopedValueTest();
+    }
+
 }

@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 import java.security.PublicKey;
 
+import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,6 +29,8 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.wsspi.ssl.SSLSupport;
+import com.ibm.ws.security.common.http.HttpUtils;
+
 
 import test.common.SharedOutputManager;
 
@@ -49,6 +52,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     private String signatureAlgorithm = "RS256";
     private String publickey;
     private String keyLocation;
+    private HttpUtils httpUtils;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -60,6 +64,7 @@ public class JwKRetrieverTest extends CommonTestClass {
         System.out.println("Entering test: " + testName.getMethodName());
         jwkSet = new JWKSet();
         sslSupport = mockery.mock(SSLSupport.class);
+        httpUtils = mockery.mock(HttpUtils.class);
     }
 
     @After
@@ -174,20 +179,6 @@ public class JwKRetrieverTest extends CommonTestClass {
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
 
         assertNull("There must not be a public key.", publicKey);
-    }
-
-    // check that when useSystemPropertiesForHttpClientConnections is passed in, client gets created with correct option
-    @Test
-    public void testGetPublicKeyFromJwk_useSystemProperties() throws Exception {
-        keyLocation = "badKeyLocation";
-        String jwkEndpointUrl2 = "http://somewheretotallybogusurl";
-        MockJwKRetriever jwkRetriever = new MockJwKRetriever(configId, sslConfigurationName, jwkEndpointUrl2,
-                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
-
-        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
-        // a "real" retriever would through an io exception due to bogus url, but the mock one doesn't.   
-
-        assertTrue("getBuilder method of JwkRetriever was not invoked with useSystemProperties", jwkRetriever.jvmPropWasSet);
     }
 
     @Test

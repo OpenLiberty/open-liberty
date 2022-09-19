@@ -274,6 +274,7 @@ public class DeploymentDescriptorParser {
         NamespaceFilter filter = null;
         if ( !isVersion10 ) {
             filter = new NamespaceFilter();
+            filter.setEntityResolver(stubResolver);
             filter.setParent( parser.getXMLReader() );
         }
 
@@ -326,7 +327,8 @@ public class DeploymentDescriptorParser {
      * @throws UnableToAdaptException Thrown if there was a problem reading
      *     the XML resource.
      */
-    @FFDCIgnore(JAXBException.class)
+    // FIXME - Throwable shouldn't be necessary, but is a work around for the following issue: https://github.com/OpenLiberty/open-liberty/issues/22347
+    @FFDCIgnore({ JAXBException.class, Throwable.class})
     public static Object parseRaDeploymentDescriptor(Entry ddEntry)
         throws JAXBException, SAXException, ParserConfigurationException, UnableToAdaptException {
 

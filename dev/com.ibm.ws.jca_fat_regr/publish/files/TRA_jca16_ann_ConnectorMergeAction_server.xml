@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+	<featureManager>
+        <feature>localConnector-1.0</feature>
+<!--         <feature>servlet-3.0</feature> -->
+		<feature>servlet-3.1</feature>
+<!--         <feature>jca-1.6</feature> -->
+		<feature>jca-1.7</feature>
+        <feature>jndi-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+<!--         <feature>jms-1.1</feature> -->
+		<feature>jms-2.0</feature>
+<!--         <feature>jmsMdb-3.1</feature> -->
+        <feature>jmsMdb-3.2</feature>
+<!--         <feature>ejbLite-3.1</feature> -->
+        <feature>ejbLite-3.2</feature>
+        <feature>jcaInboundSecurity-1.0</feature>
+<!--         <feature>beanvalidation-1.0</feature> -->
+        <feature>beanvalidation-1.1</feature>
+    </featureManager>
+    <include location="../fatTestPorts.xml"/>
+    <resourceAdapter id="TRA_jca16_ann_ConnectorMergeAction_DefaultElement0NoneInDD"   location="${server.config.dir}/connectors/TRA_jca16_ann_ConnectorMergeAction_DefaultElement0NoneInDD.rar" />
+
+    <resourceAdapter id="TRA_jca16_ann_ConnectorMergeAction_MultiElement0NoneInDD"   location="${server.config.dir}/connectors/TRA_jca16_ann_ConnectorMergeAction_MultiElement0NoneInDD.rar" />
+    
+    <resourceAdapter id="TRA_jca16_ann_ConnectorMergeAction_MultiElementSameInDD"   location="${server.config.dir}/connectors/TRA_jca16_ann_ConnectorMergeAction_MultiElementSameInDD.rar" />
+    
+    <resourceAdapter id="TRA_jca16_ann_ConnectorMergeAction_SingleElementNoneInDD"   location="${server.config.dir}/connectors/TRA_jca16_ann_ConnectorMergeAction_SingleElementNoneInDD.rar" />
+    
+    <resourceAdapter id="TRA_jca16_ann_ConnectorMergeAction_SingleElementSameInDD"   location="${server.config.dir}/connectors/TRA_jca16_ann_ConnectorMergeAction_SingleElementSameInDD.rar" />
+    
+    <resourceAdapter id="TRA_jca16_ann_ConnectorMergeAction_SingleElementSingleInDD"   location="${server.config.dir}/connectors/TRA_jca16_ann_ConnectorMergeAction_SingleElementSingleInDD.rar" />
+    
+    <variable value="FAIL" name="onError"/>
+    </server>

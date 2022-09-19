@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.request.timing.fat;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -36,6 +38,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -153,6 +156,7 @@ public class TimingRequestTiming {
      * </requestTiming>
      */
     @Test
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testDynamicTimingEnableDisable() throws Exception {
         //Set to default Configuration of Request Timing feature
         server.setServerConfigurationFile("server_original.xml");
@@ -222,6 +226,7 @@ public class TimingRequestTiming {
      * Verify that an exact match on context info over-rides global defaults.
      */
     @Test
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testContextInfoExactMatchOverrideDefault() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global - slow : 5s , hung : 10s> <timing - Slow : 120s , hung : 120s>");
         server.setServerConfigurationFile("contextInfoPattern/server_timing_1.xml");
@@ -266,6 +271,7 @@ public class TimingRequestTiming {
      * Verify that a wild-card match on context info over-rides global defaults.
      */
     @Test
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testContextInfoWildCardMatchOverrideDefault() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global - slow : 5s , hung : 10s> <timing - Slow : 120s , hung : 120s>");
         server.setServerConfigurationFile("contextInfoPattern/server_timing_3.xml");
@@ -317,6 +323,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testTimingGlobalConfig() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for  <global : slow : 3s , hung : 6s><timing - Slow : 10s , hung : 12s>");
         server.setServerConfigurationFile("server_timing_global.xml");
@@ -356,6 +363,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testTimingLocalConfigOnly() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for  <global : defaults ><timing - Slow : 3s , hung : 5s>");
         server.setServerConfigurationFile("server_timing_localOnly.xml");
@@ -399,6 +407,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testTimingGlobalConfigNotSpecified() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for  <global : defaults ><timing - Slow : 3s , hung : 5s>");
         server.setServerConfigurationFile("server_timing_NoGlobal.xml");
@@ -440,6 +449,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testTimingLocalNegativeSlowThreshold() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for  <global : slow : 9s , hung : 20s ><timing - Slow : -1 , hung : 3s>");
         server.setServerConfigurationFile("server_timing_local_NoSlowReq.xml");
@@ -475,6 +485,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testTimingLocalInheritsGlobalConfig() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for  <global : slow : 2s , hung : 4s ><timing>");
         server.setServerConfigurationFile("server_timing_local_inherits.xml");
@@ -512,6 +523,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testTimingLocalGlobalNoConfig() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global -default> <timing - default>");
         server.setServerConfigurationFile("server_timing_local_global_noConfig.xml");
@@ -541,6 +553,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testTimingLocalDisableSlowHungRequest() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global : slow : 1s , hung : 2s ><timing - slow : 0 , hung : 0>");
         server.setServerConfigurationFile("server_timing_NoSlowHungReqs.xml");
@@ -569,6 +582,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testTimingGlobalConfigFollowsLocal() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global : slow : 3s , hung : 6s ><timing - slow : 2s , hung : 9m>");
         server.setServerConfigurationFile("server_timing_global_follows_local.xml");
@@ -660,6 +674,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testTimingContextInfoConflict() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration ctx info conflict");
         server.setServerConfigurationFile("server_timing_ctxinfo_conflict.xml");
@@ -688,6 +703,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testTimingContextInfoNoConflict() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration ctx info no conflict");
         server.setServerConfigurationFile("server_timing_ctxinfo_no_conflict.xml");
@@ -704,6 +720,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testContextInfoWildCardNoMatch() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global - slow : 120s , hung : 120s> <timing - Slow : 5s , hung : 10s>");
         server.setServerConfigurationFile("contextInfoPattern/server_timing_5.xml");
@@ -748,6 +765,7 @@ public class TimingRequestTiming {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testContextInfoExactMatchDisableDefault() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> server configuration thresholds for - <global - slow : 5s , hung : 10s> <timing - Slow : 120s , hung : 120s>");
         server.setServerConfigurationFile("contextInfoPattern/server_timing_7.xml");

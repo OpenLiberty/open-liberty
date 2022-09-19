@@ -57,6 +57,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 public class JSFFeatureConflictTests {
 
     protected static final Class<?> c = JSFFeatureConflictTests.class;

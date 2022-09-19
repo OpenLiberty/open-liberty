@@ -716,10 +716,6 @@ public class ServerStartTest {
      * environment would be the underlying handler of this scenario, and whatever the mkdir command does
      * with the URL would be the result.
      *
-     * For Windows: The server would not start as the mkdir command causes the server.bat script to exit.
-     *
-     * For Linux: The server should start but the mkdir command will only create the first word as a path
-     * (ie 'not' which should be relative to the ${server.output.dir} location).
      *
      * @throws Exception
      */
@@ -737,7 +733,7 @@ public class ServerStartTest {
         // Cover executing both scripts that utilize this environment variable
         if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) {
             command = "bin" + File.separator + "server.bat";
-            javaCoreLocation = server.getInstallRoot().replace("/", "\\") + File.separator + "not";
+            javaCoreLocation = server.getServerRoot().replace("/", "\\") + File.separator + "not a path";
             isWindows = true;
         } else {
             command = "bin" + File.separator + "server";
@@ -762,45 +758,41 @@ public class ServerStartTest {
         // its started state so it will stop and save logs properly
         server.resetStarted();
 
-        if (isWindows) {
-            assertTrue("The server should NOT have started due to a bad SERVER_WORKING_DIR = not a path", !server.isStarted());
-        } else {
-            String pid = findServerPid();
-            if (pid == null) {
-                Log.info(c, METHOD_NAME, "Unable to execute the jcmd.exe application installed for the current jdk.  Skipping this test!");
-                assumeTrue(false);
-            }
-
-            // Use jcmd to generate a heap dump
-            String[] execParameters = new String[] { "jcmd", pid, "GC.heap_dump", METHOD_NAME + ".hprof" };
-            Process process = Runtime.getRuntime().exec(execParameters);
-
-            try (Reader reader = new InputStreamReader(process.getInputStream());
-                            BufferedReader br = new BufferedReader(reader);) {
-                String output = null;
-                while ((output = br.readLine()) != null) {
-                    Log.info(c, METHOD_NAME, "jcmd output = " + output);
-                }
-            }
-
-            assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
-
-            // Make sure we got the java heap dump at the expected location
-            File core = new File(javaCoreLocation + File.separator + METHOD_NAME + ".hprof");
-            assertTrue("The heap file did not exist at location = " + core.getAbsolutePath(), core.exists());
-            Log.info(c, METHOD_NAME, "Removing file = " + core.getAbsolutePath());
-            core.delete();
-
-            // Stop the server
-            parms[0] = "stop";
-            parms[1] = SERVER_NAME;
-
-            po = server.getMachine().execute(command, parms, executionDir, envVars);
-            Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
-            Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
-
-            server.waitForStringInLog("CWWKE0036I");
+        String pid = findServerPid();
+        if (pid == null) {
+            Log.info(c, METHOD_NAME, "Unable to execute the jcmd.exe application installed for the current jdk.  Skipping this test!");
+            assumeTrue(false);
         }
+
+        // Use jcmd to generate a heap dump
+        String[] execParameters = new String[] { "jcmd", pid, "GC.heap_dump", METHOD_NAME + ".hprof" };
+        Process process = Runtime.getRuntime().exec(execParameters);
+
+        try (Reader reader = new InputStreamReader(process.getInputStream());
+                        BufferedReader br = new BufferedReader(reader);) {
+            String output = null;
+            while ((output = br.readLine()) != null) {
+                Log.info(c, METHOD_NAME, "jcmd output = " + output);
+            }
+        }
+
+        assertEquals("Jcmd didn't return 0.  See jcmd output above for troubleshooting", 0, process.waitFor());
+
+        // Make sure we got the java heap dump at the expected location
+        File core = new File(javaCoreLocation + File.separator + METHOD_NAME + ".hprof");
+        assertTrue("The heap file did not exist at location = " + core.getAbsolutePath(), core.exists());
+        Log.info(c, METHOD_NAME, "Removing file = " + core.getAbsolutePath());
+        core.delete();
+
+        // Stop the server
+        parms[0] = "stop";
+        parms[1] = SERVER_NAME;
+
+        po = server.getMachine().execute(command, parms, executionDir, envVars);
+        Log.info(c, METHOD_NAME, "server stop stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKE0036I");
 
         Log.exiting(c, METHOD_NAME);
 

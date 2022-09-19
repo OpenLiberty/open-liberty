@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,6 +89,8 @@ public class DemoTimerTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKC1501W", "CWWKC1511W");
+        server.stopServer("CWWKC1501W",
+                          "CWWKC1503W", // Timeout method will not be invoked because server is stopping
+                          "CWWKC1511W");
     }
 }

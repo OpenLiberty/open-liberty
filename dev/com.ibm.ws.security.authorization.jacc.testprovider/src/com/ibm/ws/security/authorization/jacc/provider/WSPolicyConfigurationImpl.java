@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.security.authorization.jacc.provider;
 
 import java.security.Permission;
 import java.security.PermissionCollection;
+import java.security.Permissions;
 import java.security.SecurityPermission;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -296,6 +297,44 @@ public class WSPolicyConfigurationImpl implements PolicyConfiguration {
 
     public Map<String, List<Permission>> getRoleToPermMap() {
         return roleToPermMap;
+    }
+
+    public PermissionCollection getExcludedPermissions() {
+        Permissions permissions = new Permissions();
+        List<Permission> excludedPermissionList = getExcludedList();
+        for (Permission p : excludedPermissionList) {
+            permissions.add(p);
+        }
+        return permissions;
+    }
+
+    public PermissionCollection getUncheckedPermissions() {
+        Permissions permissions = new Permissions();
+        List<Permission> uncheckedPermissionList = getUncheckedList();
+        for (Permission p : uncheckedPermissionList) {
+            permissions.add(p);
+        }
+        return permissions;
+    }
+
+    public Map<String, PermissionCollection> getPerRolePermissions() {
+        Map<String, PermissionCollection> permissionsMap = new HashMap<String, PermissionCollection>();
+        PermissionCollection permissions = null;
+
+        Map<String, List<Permission>> roleToPermMap = getRoleToPermMap();
+        if (roleToPermMap != null) {
+            for (Map.Entry<String, List<Permission>> entry : roleToPermMap.entrySet()) {
+                permissions = new Permissions();
+                List<Permission> pList = roleToPermMap.get(entry.getValue());
+                if (pList != null) {
+                    for (Permission p : pList) {
+                        permissions.add(p);
+                    }
+                    permissionsMap.put(entry.getKey(), permissions);
+                }
+            }
+        }
+        return permissionsMap;
     }
 
     private String getStateString(ContextState state) {

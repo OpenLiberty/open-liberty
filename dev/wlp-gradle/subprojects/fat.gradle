@@ -48,7 +48,7 @@ dependencies {
   derby 'org.apache.derby:derby:10.11.1.1'
 
   jdbcDrivers 'com.ibm.db2:jcc:11.1.4.4',
-		'org.postgresql:postgresql:42.2.5',
+		'org.postgresql:postgresql:42.4.2',
 		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
 		'org.apache.derby:derbyclient:10.11.1.1',
 		'org.apache.derby:derby:10.11.1.1',
@@ -58,10 +58,10 @@ dependencies {
        'commons-cli:commons-cli:1.5.0',
        project(':com.ibm.ws.org.slf4j.api'),
        project(':com.ibm.ws.org.slf4j.simple'),
-       'org.eclipse.transformer:org.eclipse.transformer:0.5.0-A1',
-       'org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0-A1',
-       'org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0-A1',
-       'org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer:0.5.0-A1'
+       'org.eclipse.transformer:org.eclipse.transformer:0.5.0',
+       'org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0',
+       'org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0',
+       'org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer:0.5.0'
 
   testcontainers project(':io.openliberty.org.testcontainers'),
         project(':com.ibm.ws.org.slf4j.api')
@@ -515,6 +515,64 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
   }
 }
 
+ext.gitCloneTemp = { proj, branch = 'move-from-smallrye', folder = '', site = 'git@github.com', org = 'yasmin-aumeeruddy' ->
+
+  // We need to know which MP project at least
+  if( proj == null || proj.length() == 0 ){
+    project.logger.lifecycle("The first parameter to task clone is the project name and cannot be defaulted");
+    return
+  }
+
+  /* Default the branch to release but allow -Dbranch= or a parameter coming in
+  if( "NOT_SET".equals( branch ) ){
+    String branchProp = System.getProperty('branch')
+    if( branchProp != null && branchProp.length() > 0 ){
+       branch = branchProp
+    }else{
+       branch = "release"
+    }
+  }*/
+
+  // Default the destination folder to the project name
+  if( folder == null || folder.length() == 0 ){
+    folder = proj
+  }
+
+  //Staging area parent folder to enable copying all subfolders.
+  File gitReposDir = new File(project.buildDir, 'gitRepos')
+
+  // Intended Behavior: If running locally use git directly
+  // TODO add conditional here once EBC cloning is implemented.
+  // Suggestion: !isAutomatedBuild - do not use [fat.test.localrun] as this is only know at runtime and not build time.
+  if( true ) {
+    File repoDir = new File(gitReposDir, folder)
+    String into = repoDir.getAbsolutePath()
+
+    String url = " " + site + ":" + org + "/" + proj + ".git "
+    String cmd = "git clone --depth 1 --single-branch --branch " + branch + " " + url + " " + into
+
+    delete into
+    mkdir into
+
+    def proc = cmd.execute()
+    proc.in.eachLine { line -> println cmd + ':\n' + line }
+    proc.err.eachLine { line -> println cmd + ':\n' + line }
+    proc.waitFor()
+
+  } else { // TODO Non-local cloning is not implemented for now
+    // Make use of the EBC clone mechanism
+    project.logger.lifecycle('ebc clone')
+    ebcClone(url)
+
+    //EBC clones in dev/../../../<repo>
+    File ebcCloneDir = new File( project, "./../../../" )
+    copy {
+      from ebcCloneDir
+      include proj
+      into gitReposDir
+    }
+  }
+}
 def ebcClone(String url, String branch, String repoPath){
   // TODO Non-local cloning is not implemented for now
 }

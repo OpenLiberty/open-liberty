@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.artifact.overlay/resources/com/ibm/ws/artifact/overlay/internal/resources/ArtifactOverlayMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Module API
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# # A file path.
+overlay.does.not.exist=CWWKM0301E: The {0} overlay folder does not exist.
+overlay.does.not.exist.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.does.not.exist.useraction=Restart the server with the '--clean' option.
+
+# # A file path.
+overlay.not.directory=CWWKM0302E: The {0} overlay folder is not a directory.
+overlay.not.directory.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.not.directory.useraction=Restart the server with the '--clean' option.
+
+# # A file path.
+overlay.not.empty=CWWKM0303E: The {0} overlay folder is not empty.
+overlay.not.empty.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.not.empty.useraction=Restart the server with the '--clean' option.
+
+# # A file path.
+overlay.cache.does.not.exist=CWWKM0304E: The {0} overlay cache folder does not exist.
+overlay.cache.does.not.exist.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.cache.does.not.exist.useraction=Restart the server with the '--clean' option.
+
+# # A file path.
+overlay.cache.not.directory=CWWKM0305E: The {0} overlay cache folder is not a directory.
+overlay.cache.not.directory.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.cache.not.directory.useraction=Restart the server with the '--clean' option.
+
+# # A file path.
+overlay.exists.not.directory=CWWKM0306E: The {0} overlay file exists but is not a directory.
+overlay.exists.not.directory.explanation=The Liberty file system is not consistent with the overlay configuration.  This can occur because the server was restarted with changes to the overlay configuration.
+overlay.exists.not.directory.useraction=Restart the server with the '--clean' option.

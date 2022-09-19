@@ -69,7 +69,7 @@
     <javaPermission className="java.lang.RuntimePermission" name="getProtectionDomain"/> <!-- required by Derby, which is packaged within the resource adapter that is embedded within the application -->
     <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
     <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
-    <javaPermission className="java.io.FilePermission" name="*" actions="read,write"/>
+    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write"/>
     <javaPermission className="javax.management.MBeanPermission" name="*" actions="registerMBean"/>
     <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission className="javax.management.MBeanTrustPermission" name="register"/>

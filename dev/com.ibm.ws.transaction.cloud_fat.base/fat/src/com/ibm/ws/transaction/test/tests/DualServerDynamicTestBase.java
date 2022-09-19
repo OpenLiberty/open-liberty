@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,11 @@
 package com.ibm.ws.transaction.test.tests;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
@@ -22,9 +24,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
+import com.ibm.ws.transaction.test.FATSuite;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -33,9 +37,7 @@ import componenttest.topology.utils.FATServletClient;
  * Test plan is attached to RTC WI 213854
  */
 @Mode
-public abstract class DualServerDynamicTestBase extends FATServletClient {
-
-    protected static final int LOG_SEARCH_TIMEOUT = 300000;
+public class DualServerDynamicTestBase extends FATServletClient {
 
     protected static LibertyServer serverTemplate;
     public static final String APP_NAME = "transaction";
@@ -46,7 +48,18 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
     public static String servletName;
     public static String cloud1RecoveryIdentity;
 
-    private static DatabaseContainerType databaseContainerType;
+    public static void setupDriver(LibertyServer server) throws Exception {
+        JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+        //Get driver name
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+
+        //Setup server DataSource properties
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+    }
+
+    public void setUp(LibertyServer server) throws Exception {
+        setupDriver(server);
+    }
 
     private SetupRunner runner = new SetupRunner() {
         @Override
@@ -59,8 +72,10 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         final String method = "dynamicTest";
         final String id = String.format("%03d", test);
 
+        Log.info(getClass(), method, "FATSuite.databaseContainerType: " + FATSuite.databaseContainerType);
+
         // Start Servers
-        if (databaseContainerType != DatabaseContainerType.Derby) {
+        if (FATSuite.databaseContainerType != DatabaseContainerType.Derby) {
             FATUtils.startServers(runner, server1, server2);
         } else {
             FATUtils.startServers(runner, server1);
@@ -69,7 +84,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         try {
             // We expect this to fail since it is gonna crash the server
             runTestWithResponse(server1, servletName, "setupRec" + id);
-        } catch (Throwable e) {
+        } catch (IOException e) {
         }
 
         // wait for 1st server to have gone away
@@ -78,21 +93,16 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         server1.postStopServerArchive(); // must explicitly collect since crashed server
 
         // Now start server2
-        if (databaseContainerType == DatabaseContainerType.Derby) {
+        if (FATSuite.databaseContainerType == DatabaseContainerType.Derby) {
             FATUtils.startServers(runner, server2);
         }
 
         // wait for 2nd server to perform peer recovery
         assertNotNull(server2.getServerName() + " did not perform peer recovery",
-                      server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT));
+                      server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, FATUtils.LOG_SEARCH_TIMEOUT));
 
-        // flush the resource states
-        try {
-            runTestWithResponse(server2, servletName, "dumpState");
-        } catch (Exception e) {
-            Log.error(this.getClass(), method, e);
-            fail(e.getMessage());
-        }
+        // flush the resource states - retry a few times if this fails
+        FATUtils.runWithRetries(() -> runTestWithResponse(server2, servletName, "dumpState").toString());
 
         //Stop server2
         FATUtils.stopServers(server2);
@@ -102,24 +112,17 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
         assertNotNull("Recovery incomplete on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0133I"));
 
-        // check resource states
-        Log.info(this.getClass(), method, "calling checkRec" + id);
-        try {
-            runTestWithResponse(server1, servletName, "checkRec" + id);
-        } catch (Exception e) {
-            Log.error(this.getClass(), "dynamicTest", e);
-            throw e;
-        }
+        // check resource states - retry a few times if this fails
+        FATUtils.runWithRetries(() -> runTestWithResponse(server1, servletName, "checkRec" + id).toString());
 
         // Check log was cleared
         assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I"));
         assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
-
-        // Finally stop server1
-        FATUtils.stopServers(server1);
     }
 
     protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
+
+        FATUtils.stopServers(servers);
 
         for (LibertyServer server : servers) {
             try {
@@ -132,12 +135,6 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
             }
         }
     }
-
-    /**
-     * @param server
-     * @throws Exception
-     */
-    protected abstract void setUp(LibertyServer server) throws Exception;
 
     /**
      * @param firstServer
@@ -154,13 +151,9 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
 
-        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 
         server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
-    }
-
-    public static void setDBType(DatabaseContainerType type) {
-        databaseContainerType = type;
     }
 }

@@ -11,7 +11,6 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.net.URL;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +26,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
@@ -38,13 +38,17 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
+import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
+import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
+
 public class OIDCClientAuthenticatorUtil {
     public static final TraceComponent tc = Tr.register(OIDCClientAuthenticatorUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
     private static int badStateCount = 0;
-    public static final String[] OIDC_COOKIES = { ClientConstants.WAS_OIDC_STATE_KEY, ClientConstants.WAS_REQ_URL_OIDC,
-            ClientConstants.WAS_OIDC_CODE, ClientConstants.WAS_OIDC_NONCE };
+    public static final String[] OIDC_COOKIES = { OidcClientStorageConstants.WAS_OIDC_STATE_KEY, OidcClientStorageConstants.WAS_REQ_URL_OIDC,
+            ClientConstants.WAS_OIDC_CODE, OidcClientStorageConstants.WAS_OIDC_NONCE };
 
     public OIDCClientAuthenticatorUtil() {
     }
@@ -62,8 +66,8 @@ public class OIDCClientAuthenticatorUtil {
      * This method handle the redirect to the OpenID Connect server with query parameters
      */
     public ProviderAuthenticationResult handleRedirectToServer(HttpServletRequest req, HttpServletResponse res, ConvergedClientConfig clientConfig) {
-        OidcAuthorizationRequestCreator authzRequestHelper = new OidcAuthorizationRequestCreator(req, res, clientConfig);
-        return authzRequestHelper.sendAuthorizationEndpointRequest();
+        OidcAuthorizationRequest authzRequestHelper = new OidcAuthorizationRequest(req, res, clientConfig);
+        return authzRequestHelper.sendRequest();
     }
 
     /**
@@ -157,8 +161,19 @@ public class OIDCClientAuthenticatorUtil {
         }
     }
 
+    @FFDCIgnore(AuthenticationResponseException.class)
     boolean verifyState(HttpServletRequest req, HttpServletResponse res, ConvergedClientConfig clientConfig, String responseState) {
-        boolean stateValid = verifyState(req, res, responseState, clientConfig);
+        OidcAuthenticationResponseValidator responseValidator = new OidcAuthenticationResponseValidator(req, res);
+        boolean stateValid = false;
+        try {
+            responseValidator.verifyState(responseState, clientConfig.getClientId(), clientConfig.getClientSecret(), clientConfig.getClockSkewInSeconds(), clientConfig.getAuthenticationTimeLimitInSeconds());
+            stateValid = true;
+        } catch (AuthenticationResponseException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception verifying state: " + e);
+            }
+            stateValid = false;
+        }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Early check of state returns " + stateValid);
         }
@@ -176,7 +191,7 @@ public class OIDCClientAuthenticatorUtil {
 
     ProviderAuthenticationResult redirectToServerOrProcessAuthorizationCode(HttpServletRequest req, HttpServletResponse res, ConvergedClientConfig clientConfig, String authzCode, String responseState) {
         ProviderAuthenticationResult oidcResult;
-        AuthorizationCodeHandler authzCodeHandler = new AuthorizationCodeHandler(sslSupport);
+        AuthorizationCodeHandler authzCodeHandler = new AuthorizationCodeHandler(req, res, clientConfig, sslSupport);
 
         if (authzCodeHandler.isAuthCodeReused(authzCode)) {
             // somehow a previously used code has been re-submitted, along
@@ -189,7 +204,7 @@ public class OIDCClientAuthenticatorUtil {
             oidcResult = handleRedirectToServer(req, res, clientConfig);
         } else {
             // confirm the code and go get the tokens if it's good.
-            oidcResult = authzCodeHandler.handleAuthorizationCode(req, res, authzCode, responseState, clientConfig);
+            oidcResult = authzCodeHandler.handleAuthorizationCode(authzCode, responseState);
         }
         return oidcResult;
     }
@@ -229,9 +244,13 @@ public class OIDCClientAuthenticatorUtil {
         boolean needHttps = clientConfig.getUserInfoEndpointUrl().toLowerCase().startsWith("https");
         SSLSocketFactory sslSocketFactory = null;
         try {
-            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig, sslSupport, false, needHttps);
+            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), sslSupport);
         } catch (com.ibm.websphere.ssl.SSLException e) {
-            //ffdc
+            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, clientConfig.getClientId() });
+        } catch (NoSSLSocketFactoryException e) {
+            if (needHttps) {
+                Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientConfig.getClientId() });
+            }
         }
         new UserInfoHelper(clientConfig, sslSupport).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory, oidcClientRequest);
     }
@@ -407,11 +426,21 @@ public class OIDCClientAuthenticatorUtil {
     /**
      * @return null if ok, otherwise log error and set 401.
      */
+    @FFDCIgnore(AuthenticationResponseException.class)
     public ProviderAuthenticationResult verifyResponseState(HttpServletRequest req, HttpServletResponse res,
             String responseState, ConvergedClientConfig clientConfig) {
         boolean bValidState = false;
         if (responseState != null) {
-            bValidState = verifyState(req, res, responseState, clientConfig);
+            OidcAuthenticationResponseValidator responseValidator = new OidcAuthenticationResponseValidator(req, res);
+            try {
+                responseValidator.verifyState(responseState, clientConfig.getClientId(), clientConfig.getClientSecret(), clientConfig.getClockSkewInSeconds(), clientConfig.getAuthenticationTimeLimitInSeconds());
+                bValidState = true;
+            } catch (AuthenticationResponseException e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Caught exception verifying state: " + e);
+                }
+                bValidState = false;
+            }
         }
         if (!bValidState) { // CWWKS1744E
             Tr.error(tc, "OIDC_CLIENT_RESPONSE_STATE_ERR", new Object[] { responseState, clientConfig.getClientId() });
@@ -419,70 +448,6 @@ public class OIDCClientAuthenticatorUtil {
         }
 
         return null;
-    }
-
-    /**
-     * Determine the name of the state cookie based on the state name key + hashcode of response state.
-     * Retrieve that cookie value, then create a check value by hashing the client config and resonseState again.
-     * If the hash result equals the cookie value, request is valid, proceed to check the clock skew.
-     */
-    public boolean verifyState(HttpServletRequest req, HttpServletResponse res, String responseState, ConvergedClientConfig clientConfig) {
-        if (responseState.length() < OidcUtil.STATEVALUE_LENGTH) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "*** verifyState returns false because length is wrong");
-            }
-            return false; // the state does not even match the length, the verification failed
-        }
-
-        String stateCookieValue = getStateCookieValue(req, res, responseState);
-        String expectedCookieValue = HashUtils.createStateCookieValue(clientConfig, responseState);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "stateKey:'" + stateCookieValue + "' cookieValue:'" + expectedCookieValue + "'");
-        }
-        if (expectedCookieValue.equals(stateCookieValue)) {
-            return isStateTimestampWithinClockSkew(responseState, clientConfig);
-        }
-
-        return false;
-    }
-
-    String getStateCookieValue(HttpServletRequest req, HttpServletResponse res, String responseState) {
-        javax.servlet.http.Cookie[] cookies = req.getCookies();
-
-        String cookieName = ClientConstants.WAS_OIDC_STATE_KEY + HashUtils.getStrHashCode(responseState);
-        String stateCookieValue = CookieHelper.getCookieValue(cookies, cookieName); // this could be null if used
-        OidcClientUtil.invalidateReferrerURLCookie(req, res, cookieName);
-        return stateCookieValue;
-    }
-
-    boolean isStateTimestampWithinClockSkew(String responseState, ConvergedClientConfig clientConfig) {
-        long clockSkewMillSeconds = clientConfig.getClockSkewInSeconds() * 1000;
-
-        long timestampFromStateValue = OidcUtil.convertNormalizedTimeStampToLong(responseState);
-        long currentTime = (new Date()).getTime();
-        long difference = currentTime - timestampFromStateValue;
-        if (difference < 0) {
-            // currentTime can not be earlier than timestampFromStateValue by clockSkewMillSeconds
-            difference *= -1;
-            if (difference >= clockSkewMillSeconds) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "error current: " + currentTime + "  ran at:" + timestampFromStateValue);
-                    Tr.debug(tc, "verifyState returns check against clockSkew: " + (difference < clockSkewMillSeconds));
-                }
-            }
-            return difference < clockSkewMillSeconds;
-        } else {
-            // currentTime can not be later than timestampFromStateValue by clockSkewMllSecond + allowHandleTimeSeconds
-            long allowHandleTimeMillSeconds = (clientConfig.getAuthenticationTimeLimitInSeconds() * 1000) + clockSkewMillSeconds;
-            if (difference >= allowHandleTimeMillSeconds) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "error current: " + currentTime + "  ran at:" + timestampFromStateValue);
-                    Tr.debug(tc, "verifyState returns check against allowHandleTimeMilliseconds: " + (difference < allowHandleTimeMillSeconds));
-                }
-            }
-            return difference < allowHandleTimeMillSeconds;
-        }
     }
 
     public static String getIssuerIdentifier(ConvergedClientConfig clientConfig) {

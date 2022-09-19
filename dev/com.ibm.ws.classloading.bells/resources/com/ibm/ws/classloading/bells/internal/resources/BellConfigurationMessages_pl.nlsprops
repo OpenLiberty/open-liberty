@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2014 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,22 @@ bell.error.ctor.useraction=Je\u015bli wyj\u0105tek wyst\u0105pi\u0142 w konstruk
 bell.no.services.config=CWWKL0058W: Nie mo\u017cna znale\u017a\u0107 us\u0142ugi {0} w folderze META-INF/services z biblioteki {1}.
 bell.no.services.config.explanation=Brak zgodnej us\u0142ugi zadeklarowanej w folderze META-INF/services.
 bell.no.services.config.useraction= Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika. 
+
+# BETA
+# {0} - library identifier
+bell.spi.visibility.enabled=CWWKL0059I: Widoczno\u015b\u0107 interfejsu SPI BELL jest w\u0142\u0105czona dla biblioteki {0}. BELL odwo\u0142uje si\u0119 do biblioteki {0} przy u\u017cyciu unikalnego programu \u0142aduj\u0105cego klasy, kt\u00f3ry ma widoczno\u015b\u0107 pakiet\u00f3w SPI.
+bell.spi.visibility.enabled.explanation=Aby wy\u0142\u0105czy\u0107 widoczno\u015b\u0107 pakiet\u00f3w SPI dla aplikacji i zasob\u00f3w, BELL odwo\u0142uje si\u0119 do biblioteki za pomoc\u0105 unikalnego programu \u0142aduj\u0105cego klasy, kt\u00f3ry nie jest wsp\u00f3\u0142u\u017cytkowany z aplikacjami odwo\u0142uj\u0105cymi si\u0119 do tej samej biblioteki.
+bell.spi.visibility.enabled.useraction=Wy\u0142\u0105cz widoczno\u015b\u0107 interfejsu SPI w konfiguracji BELL za ka\u017cdym razem, gdy BELL musi odwo\u0142ywa\u0107 si\u0119 do biblioteki za po\u015brednictwem programu \u0142aduj\u0105cego klasy, kt\u00f3ry jest wsp\u00f3\u0142u\u017cytkowany z aplikacjami odwo\u0142uj\u0105cymi si\u0119 do tej samej biblioteki. W przeciwnym razie nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# BETA
+bell.spi.visibility.disabled.libref.global=CWWKL0060E: Widoczno\u015b\u0107 interfejsu SPI BELL nie jest obs\u0142ugiwana dla globalnej biblioteki wsp\u00f3\u0142u\u017cytkowanej Liberty.
+bell.spi.visibility.disabled.libref.global.explanation=Widoczno\u015b\u0107 interfejsu SPI BELL nie jest w\u0142\u0105czona dla globalnej biblioteki wsp\u00f3\u0142u\u017cytkowanej Liberty.
+bell.spi.visibility.disabled.libref.global.useraction=Zmodyfikuj konfiguracj\u0119 BELL w taki spos\u00f3b, aby odwo\u0142ywa\u0142a si\u0119 do biblioteki innej ni\u017c globalna biblioteka wsp\u00f3\u0142u\u017cytkowana Liberty.
+
+# BETA
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.missing.property.injection.methods=CWWKL0062W: System nie wstrzykn\u0105\u0142 w\u0142a\u015bciwo\u015bci BELL do instancji implementacji {0}. Klasa nie definiuje metody, kt\u00f3ra obs\u0142uguje wstrzykiwanie w\u0142a\u015bciwo\u015bci BELL. Klasa jest implementacj\u0105 us\u0142ugi, kt\u00f3ra zosta\u0142a zadeklarowana w pliku {1} i zarejestrowana z poziomu biblioteki {2}.
+bell.missing.property.injection.methods.explanation=System nie mo\u017ce uzyska\u0107 dost\u0119pu do metody wymaganej do wstrzykiwania w\u0142a\u015bciwo\u015bci BELL. Klasa implementacji us\u0142ugi musi w celu obs\u0142ugi wstrzykiwania w\u0142a\u015bciwo\u015bci BELL definiowa\u0107 konstruktor publiczny lub metod\u0119 publiczn\u0105 o nazwie updateBell z jednym parametrem typu java.util.Map<string,String>.
+bell.missing.property.injection.methods.useraction=Upewnij si\u0119, \u017ce klasa definiuje konstruktor publiczny lub metod\u0119 publiczn\u0105 o nazwie updateBell z pojedynczym parametrem typu java.util.Map<String, String>.

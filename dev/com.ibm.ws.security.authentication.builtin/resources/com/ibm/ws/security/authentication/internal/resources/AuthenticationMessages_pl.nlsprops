@@ -83,3 +83,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nie jest wymagana \u017cadna
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: Pami\u0119\u0107 podr\u0119czna uwierzytelniania wyczy\u015bci\u0142a wszystkie pozycje w pami\u0119ci podr\u0119cznej JCache {0}. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=Pami\u0119\u0107 podr\u0119czna uwierzytelniania usuwa wszystkie wpisy w pami\u0119ci podr\u0119cznej JCache, gdy konfiguracja zabezpiecze\u0144 lub rejestru u\u017cytkownik\u00f3w jest modyfikowana lub gdy wywo\u0142ywany jest komponent MBean DeleteAuthCache. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: Wstawienie wpisu dla klucza {0} do pami\u0119ci podr\u0119cznej uwierzytelniania JCache {1} nie powiod\u0142o si\u0119 z powodu b\u0142\u0119du przekszta\u0142cania do postaci szeregowej. Zamiast tego wpis zostanie wstawiony do pami\u0119ci podr\u0119cznej uwierzytelniania w pami\u0119ci. Wyj\u0105tek: {2}
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=Tre\u015b\u0107 wpisu nie zosta\u0142a przekszta\u0142cona do postaci szeregowej, dlatego nie zosta\u0142a ona zapisana w pami\u0119ci podr\u0119cznej uwierzytelniania JCache.
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Zbadaj wyj\u0105tek zawarty w komunikacie i usu\u0144 przyczyn\u0119 b\u0142\u0119du.  

@@ -70,7 +70,7 @@ var editorTree = (function() {
         var treeNodeControl = $("<div class=\"editorTreeNode\" " + treeRoleAndExpandedState + " alt=\"" + elementLabel + " " + elementSuffix + "\"></div>");
 
         // Create expansion button control
-        var expandButtonControl = $("<div class=\"editorTreeNodeExpandButton\"><span class=\"sr-only\">" + editorMessages.EXPAND_COLLAPSE + "</span></div>");
+        var expandButtonControl = $("<div class=\"editorTreeNodeExpandButton\"><span class=\"visually-hidden\">" + editorMessages.EXPAND_COLLAPSE + "</span></div>");
         treeNodeControl.append(expandButtonControl);
         if(elementIsRoot) {
             expandButtonControl.addClass("hidden");

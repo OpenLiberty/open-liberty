@@ -1,0 +1,22 @@
+<server description="Generation date: Wed Oct 30 12:49:37 IST 2013">
+    <include location="features.xml"/>
+
+    <application type="ear" location="sampleapp_jca16_jbv_embeddedas.ear" id="sampleapp_jca16_jbv_embeddedas">
+        <resourceAdapter id="adapter_jca16_jbv_ActivationSpecValidation_Embedded" autoStart="true">
+            <properties.sampleapp_jca16_jbv_embeddedas.adapter_jca16_jbv_ActivationSpecValidation_Embedded/>
+        </resourceAdapter>
+    </application>
+
+    <adminObject id="TestASAOEmbedded" jndiName="jms/TestASAOEmbedded">
+        <properties.sampleapp_jca16_jbv_embeddedas.adapter_jca16_jbv_ActivationSpecValidation_Embedded.FVTMessageProvider aoProperty4="2"/>
+    </adminObject>
+
+    <jmsActivationSpec id="sampleapp_jca16_jbv_embeddedas/jbv_ejb2/SampleMdb">
+        <properties.sampleapp_jca16_jbv_embeddedas.adapter_jca16_jbv_ActivationSpecValidation_Embedded asProperty1="ABCDEFG" asProperty2="10" asProperty3="false" asProperty4="43.5" asProperty5="7" />
+    </jmsActivationSpec>
+    
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+	<javaPermission actions="read" className="java.util.PropertyPermission" name="*"/>
+    <variable name="onError" value="FAIL"/>
+</server>

@@ -20,4 +20,6 @@
 
   <include location="../fatTestPorts.xml"/>
 
+  <application location="WebResourceDefErrors.war"/>
+
 </server>

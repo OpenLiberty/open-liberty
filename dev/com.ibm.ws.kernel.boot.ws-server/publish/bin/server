@@ -26,14 +26,13 @@
 #              background via the start action. 
 #              The default value is console.log
 #
-# CRIU_LOG_LEVEL - Set the log level of criu restore operation.
-#TODO need to reflect this to criu checkpoint
+# CRIU_LOG_LEVEL - Set the log level of criu checkpoint and restore operations.
 #                  Set to 1-4 with 4 being max verbosity. Two "2" is the default.
 #
-# CRIU_UNPRIVILEGED - Use criu in unprivileged mode.
-#                     Set to one of true, True, TRUE, 1
-#                     or false, False, FALSE, 0 to continue
-#                     to use criu in privileged mode.
+# CRIU_UNPRIVILEGED - If true, True, TRUE, or 1 the --unprivileged option is 
+#                     passed to criu during checkpoint operations. If set to any other 
+#                     value the switch will not be passed in. 
+#                     If unset, the unprivileged switch is passed in unless the current user is root
 #
 # CRIU_EXTRA_ARGS   - Pass extra arguments to `criu restore`. Extra arguments are
 #                     appended to the end of the list of arguments and can therefore
@@ -41,7 +40,7 @@
 #
 # CRIU_RESTORE_DISABLE_RECOVERY - 
 #              When restoring a server from a checkpoint it is possible
-#              that CRIU will fail to restore the proces.  By default
+#              that CRIU will fail to restore the process.  By default
 #              any failure to restore will result in the server
 #              recovering without using the checkpoint image.
 #              To disable this behavior set this to any value.
@@ -183,12 +182,11 @@ case ${uname} in
     ;;
 
   OS400)
-    # Avoid issues with qsh.
     tryShellExtensions=false
     # os400lib gets unset later if we cannot find WAS_PRODUCT_LIB and WAS_SHARED_LIB
     os400lib=true
-    # on os400 use 'umask -S o=', not 'umask o='
-    UMASK_O='umask -S o='
+    # on os400 determine current umask and replace o value with 7 (deny all permissions for other)
+    UMASK_O="umask `/QOpenSys/usr/bin/umask | sed 's|[0-7]$|7|g'`"
     ;;
 esac
 
@@ -313,15 +311,14 @@ if [ -n "${WLP_SKIP_BOOTSTRAP_AGENT}" ]; then
 fi
 
 ##
-## Determine if CRIU supports unprivileged mode.
-## Determine which CRIU mode to use, based on current euid, whether or not criu supports unprivileged mode, and the value of the CRIU_UNPRIVILEGED env var.
+## Determine which CRIU mode to use, based on current euid, and the value of the CRIU_UNPRIVILEGED env var.
 ## Set DO_CRIU_UNPRIVILEGED based on the above.
 ##
 checkCriuUnprivileged()
 {
+  # Use the environment variable, if it's set, to determine mode.
   if [ -n "$CRIU_UNPRIVILEGED" ]; then
     if [ "${CRIU_UNPRIVILEGED}" = "true" -o "${CRIU_UNPRIVILEGED}" = "1" -o "${CRIU_UNPRIVILEGED}" = "TRUE" -o "${CRIU_UNPRIVILEGED}" = "True" ]; then
-      # Use unprivileged if explicitly requested; if CRIU doesn't support it we'll hit an error later that will be shown to the user
       DO_CRIU_UNPRIVILEGED=true
     else
       DO_CRIU_UNPRIVILEGED=false
@@ -329,16 +326,13 @@ checkCriuUnprivileged()
     return
   fi
 
-  # Determine if CRIU supports unprivileged mode
-  criu --help | grep -q -e '--unprivileged' && CRIU_SUPPORTS_UNPRIVILEGED=true || CRIU_SUPPORTS_UNPRIVILEGED=false
-
-  # Determine which CRIU mode to use, based on current euid and value of CRIU_SUPPORTS_UNPRIVILEGED
-  DO_CRIU_UNPRIVILEGED=false
-  if [ "$(id -u)" != 0 ]; then
-    # Not root, unprivileged by default if CRIU supports it
-    if [ $CRIU_SUPPORTS_UNPRIVILEGED = true ]; then
-      DO_CRIU_UNPRIVILEGED=true
-    fi
+  # Environment variable CRIU_UNPRIVILEGED is not set so determine which CRIU mode to use based on current euid. 
+  if [ "$(id -u)" = 0 ]; then
+    # root user
+    DO_CRIU_UNPRIVILEGED=false
+  else  
+    # Not root, use unprivileged mode in criu
+    DO_CRIU_UNPRIVILEGED=true
   fi
 }
 
@@ -718,7 +712,12 @@ serverEnvAndJVMOptions()
 
   # Avoids HeadlessException on all platforms and Liberty JVMs appearing as applications and stealing focus on Mac.
   # Declare allowAttachSelf=true so that the VM will permit a late self attach if localConnector-1.0 is enabled
-  JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true"
+  # need -Dcom.ibm.tools.attach.enable=yes for java 11 on z/OS
+  if [ "${uname}" = OS/390 ]; then
+    JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true -Dcom.ibm.tools.attach.enable=yes"
+  else
+    JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true"
+  fi
   SERVER_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
 
   rc=0
@@ -858,6 +857,19 @@ readServerEnv()
   fi
 }
 
+## Set the environment varialbes needed by default for criu to work.
+## Mostly these are variables read by the OS libraries to ensure a portable process
+criuEnvDefaults() {
+  if [ -z "$GLIBC_TUNABLES" ]
+  then
+    GLIBC_TUNABLES=glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load
+  else
+    GLIBC_TUNABLES=${GLIBC_TUNABLES}:glibc.cpu.hwcaps=-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load
+  fi
+  export GLIBC_TUNABLES
+  export LD_BIND_NOT=on
+}
+
 ##
 ## Detects the code page of the file and converts to EBCDIC,
 ## if necessary, before cat'ing.
@@ -977,12 +989,25 @@ javaCmd()
       X_WLP_IMMUTABLE_VARS="$X_WLP_IMMUTABLE_VARS,$WLP_IMMUTABLE_VARS"
     fi
 
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport $X_WLP_IMMUTABLE_VARS"
+    # syslog is disabled for checkpoint to allow jvm dumps before a checkpoint.
+    # We expect an enhancement to OpenJ9 to allow syslog to be enabled on restore.
+    # When that becomes available we can remove the -Xsyslog:none option
+    # -Djdk.nativeEC=false disabled nativeEC until some issues are resolved around portability
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode -Xsyslog:none -Djdk.nativeEC=false $X_WLP_IMMUTABLE_VARS"
+
 
     checkCriuUnprivileged
     if [ $DO_CRIU_UNPRIVILEGED = true ]; then
       JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -Dio.openliberty.checkpoint.criu.unprivileged=true"
     fi
+    if [ -n "$CRIU_LOG_LEVEL" ]; then
+      # A system property is used here to avoid having to read env on the 
+      # checkpoint side. If reading the env from the Java checkpoint side we need
+      # to make the env an immutable value but we don't want to force the
+      # same CRIU_LOG_LEVEL on both the checkpoint and restore side here.
+      JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -Dio.openliberty.checkpoint.criu.loglevel=$CRIU_LOG_LEVEL"
+    fi
+    criuEnvDefaults
   fi
   
 
@@ -1026,6 +1051,10 @@ javaCmd()
     trap "killIfRunning $TAIL_PID" EXIT
     "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1 < /dev/null
     rc=$?
+    if [ $rc -eq 20 ]; then
+      # bad checkpoint arg; sleep to allow the message to go to tail
+      sleep 2
+    fi
     kill $TAIL_PID
     # Above JAVA_CMD should terminate after a criu dump and SIGKILL. 
     # Check for expected return code of 137 from the KILL.
@@ -1414,7 +1443,7 @@ restoreServer()
 
   # restore artifacts and environment prior to checkpoint here
     
-  # no good way to check for criu support since fast startup is imperitive
+  # no good way to check for criu support since fast startup is imperative
   #   just let criu invocation fail with a hopefully informative error message.
   mkdirs ${X_LOG_DIR}/checkpoint
 
@@ -1428,22 +1457,22 @@ restoreServer()
   # record the start of restoreTime
   echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
 
+  criuEnvDefaults
+
   # Store the current restored environment into a file that the JVM can read to restore the values.
   # The following are filtered out of the restore env because they could be different from the checkpoint
   # values.  The JVM only allows new values to be set into the restored environment:
-  # - INVOKED - this gets set to the path used to launch the server script, we don't care if this changes
-  saveIFS=$IFS
-  IFS=$newline
-  for line in `env | grep -Ev "^INVOKED="`; do
-    value=${line#*=};
-    key=${line%%=*};
-    if [ "$value" != "$key" ]; then
-      envContent="$envContent$key=$value$newline"
-    fi
-  done
-  IFS=$saveIFS
+  # - INVOKED - this gets set to the path used to launch the server script;
+  # It is not used for restore and we don't care if this changes.
+  # Unsetting it is faster than filtering it out
+  unset INVOKED
+  # REGEX explanation
+  # ^[...] is to negate the match for a specific char
+  # [^\=] matches an '=' at the beginning of the line
+  # *.= matches any '=' in the rest of the line.
+  # We need to filter out lines that start with '=' in case a multi-line output starts with '='
+  env | grep -E "^[^\=]*.=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
 
-  safeEcho "$envContent" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
   rm -f ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreFailedMarker
   
   criuRestore $BACKGROUND_RESTORE
@@ -1519,7 +1548,7 @@ case "$ACTION" in
       fi
 
       # WLP_JAR_CYGWIN is used only in support of java -jar startup of a Liberty server.
-      # When WLP_JAR_CYGWIN=true (or synonym) is specied, the PID of the launching 
+      # When WLP_JAR_CYGWIN=true (or synonym) is specified, the PID of the launching 
       # process (i.e. parent of server process) is determined and stored in the PID file
       # for use by the java -jar shutdown hook to ensure termination of the launching 
       # process. This is necessary because the launching process does not terminate on

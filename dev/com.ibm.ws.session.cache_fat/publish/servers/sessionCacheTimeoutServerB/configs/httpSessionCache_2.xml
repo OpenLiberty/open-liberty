@@ -16,7 +16,7 @@
     <httpSessionCache cacheManagerRef="CacheManager"  writeContents="ALL_SESSION_ATTRIBUTES" />
 
     <cacheManager id="CacheManager" >
-        <cachingProvider libraryRef="HazelcastLib" />
+        <cachingProvider jCacheLibraryRef="HazelcastLib" />
         <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}"/>
     </cacheManager>
 </server>

@@ -23,12 +23,31 @@
         ibm:reference="com.ibm.ws.classloading.sharedlibrary"
     />
     <AD id="library.target" type="String" required="true" default="(service.pid=${libraryRef})" name="internal" description="internal use only" ibm:final="true" />
+
     <AD id="service" name="%service.name" description="%service.name.desc" required="false" type="String" cardinality="2147483647"/>
-    <AD id="enableSpiVisibility" name="%enableSpiVisibility.name" description="%enableSpiVisibility.name.desc" required="false" type="Boolean" default="false" ibm:beta="true"/>
+
+    <AD id="spiVisibility" name="%spiVisibility.name" description="%spiVisibility.desc" required="false" type="Boolean" default="false" ibm:beta="true"/>
+
+    <AD id="properties" name="%properties.name" description="%properties.desc"
+        required="false"
+        type="String"
+        ibm:type="pid"
+        ibm:reference="com.ibm.ws.classloading.bell.properties"
+        ibm:flat="true"
+        ibm:beta="true" />
+
    </OCD>
 
   <Designate factoryPid="com.ibm.ws.classloading.bell">
     <Object ocdref="com.ibm.ws.classloading.bell"/>
+  </Designate>
+
+  <OCD id="com.ibm.ws.classloading.bell.properties" name="%properties.name" description="%properties.desc" ibm:beta="true" ibm:alias="bellProperties">
+    <AD id="config.parentPID" type="String" required="false" name="internal" description="internal use only"/>
+  </OCD>
+
+  <Designate factoryPid="com.ibm.ws.classloading.bell.properties">
+    <Object ocdref="com.ibm.ws.classloading.bell.properties"/>
   </Designate>
 
 </metatype:MetaData>

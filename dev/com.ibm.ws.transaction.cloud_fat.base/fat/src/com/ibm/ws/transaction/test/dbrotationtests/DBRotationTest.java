@@ -15,6 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -87,6 +89,11 @@ public class DBRotationTest extends FATServletClient {
         ShrinkHelper.defaultApp(longLeaseCompeteServer1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(longLeaseLogFailServer1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(noShutdownServer1, APP_NAME, "com.ibm.ws.transaction.*");
+
+        // In log fail tests, server1 will get many FFDCs which we should disregard
+        // Do this here because FFDCs are also checked before tests run
+        longLeaseLogFailServer1.setFFDCChecking(false);
+        noShutdownServer1.setFFDCChecking(false);
     }
 
     public static void setUp(LibertyServer server) throws Exception {
@@ -103,7 +110,7 @@ public class DBRotationTest extends FATServletClient {
     @After
     public void cleanup() throws Exception {
 
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E" }, server1);
+        // Servers should be stopped
 
         // Clean up XA resource files
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -114,6 +121,10 @@ public class DBRotationTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
+
+        // In case any server is left running
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E" }, server1, server2, longLeaseCompeteServer1, longLeaseLogFailServer1, noShutdownServer1);
+
         FATSuite.afterSuite();
     }
 
@@ -130,12 +141,12 @@ public class DBRotationTest extends FATServletClient {
         StringBuilder sb = null;
         String id = "001";
         FATUtils.startServers(runner, server1);
-        try {
-            sb = runTestWithResponse(server1, SERVLET_NAME, "testLeaseTableAccess");
 
-        } catch (Throwable e) {
-        }
+        sb = runTestWithResponse(server1, SERVLET_NAME, "testLeaseTableAccess");
+
         Log.info(c, method, "testLeaseTableAccess" + id + " returned: " + sb);
+
+        FATUtils.stopServers(server1);
     }
 
     /**
@@ -157,7 +168,7 @@ public class DBRotationTest extends FATServletClient {
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
-        } catch (Throwable e) {
+        } catch (IOException e) {
         }
         Log.info(c, method, "back from runTestWithResponse in testDBBaseRecovery, sb is " + sb);
         assertNull("setupRec" + id + " returned: " + sb, sb);
@@ -177,6 +188,8 @@ public class DBRotationTest extends FATServletClient {
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
         assertNotNull("peer recovery failed", server1.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
+
+        FATUtils.stopServers(server1);
     }
 
     /**
@@ -197,8 +210,8 @@ public class DBRotationTest extends FATServletClient {
         FATUtils.startServers(runner, server1);
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
-        } catch (Throwable e) {
+            runTest(server1, SERVLET_NAME, "setupRec" + id);
+        } catch (IOException e) {
         }
 
         assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
@@ -214,11 +227,12 @@ public class DBRotationTest extends FATServletClient {
         try {
             sb = runTestWithResponse(server2, SERVLET_NAME, "testTranlogTableAccess");
 
-        } catch (Throwable e) {
+        } catch (IOException e) {
             Log.info(c, method, "testTranlogTableAccess" + id + " caught exception: " + e);
         }
         Log.info(c, method, "testTranlogTableAccess" + id + " returned: " + sb);
         FATUtils.stopServers(server2);
+
         if (sb != null && sb.toString().contains("Unexpectedly"))
             fail(sb.toString());
     }
@@ -243,16 +257,15 @@ public class DBRotationTest extends FATServletClient {
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
     public void testDBRecoveryCompeteForLog() throws Exception {
         final String method = "testDBRecoveryCompeteForLog";
-        StringBuilder sb = null;
         String id = "001";
 
         FATUtils.startServers(runner, longLeaseCompeteServer1);
         try {
-            runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "modifyLeaseOwner");
+            runTest(longLeaseCompeteServer1, SERVLET_NAME, "modifyLeaseOwner");
 
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupRec" + id);
-        } catch (Throwable e) {
+            runTest(longLeaseCompeteServer1, SERVLET_NAME, "setupRec" + id);
+        } catch (IOException e) {
         }
 
         assertNotNull(longLeaseCompeteServer1.getServerName() + " didn't crash properly", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
@@ -274,7 +287,7 @@ public class DBRotationTest extends FATServletClient {
         }
 
         // Server appears to have failed as expected. Check for log failure string
-        if (longLeaseCompeteServer1.waitForStringInLog("RECOVERY_LOG_FAILED") == null) {
+        if (longLeaseCompeteServer1.waitForStringInLog("RECOVERY_LOG_FAILED", FATUtils.LOG_SEARCH_TIMEOUT) == null) {
             Exception ex = new Exception("Recovery logs should have failed");
             Log.error(c, "recoveryTestCompeteForLock", ex);
             throw ex;
@@ -291,11 +304,11 @@ public class DBRotationTest extends FATServletClient {
     }
 
     @Test
+    @AllowedFFDC(value = { "java.lang.IllegalStateException" })
     public void testLogFailure() throws Exception {
         final String method = "testLogFailure";
-        if (FATSuite.type != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
-            // First server will get loads of FFDCs
-            longLeaseLogFailServer1.setFFDCChecking(false);
+        if (FATSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
+
             server2.setHttpDefaultPort(cloud2ServerPort);
             FATUtils.startServers(runner, longLeaseLogFailServer1, server2);
 
@@ -309,8 +322,8 @@ public class DBRotationTest extends FATServletClient {
             // server1 now attempts some 2PC and will fail and terminate because its logs have been taken
             try {
                 // We expect this to fail since it is gonna crash the server
-                runTestWithResponse(longLeaseLogFailServer1, SERVLET_NAME, "setupRecLostLog");
-            } catch (Throwable e) {
+                runTest(longLeaseLogFailServer1, SERVLET_NAME, "setupRecLostLog");
+            } catch (IOException e) {
             }
 
             int serverStatus = longLeaseLogFailServer1.executeServerScript("status", null).getReturnCode();
@@ -335,9 +348,8 @@ public class DBRotationTest extends FATServletClient {
     @Test
     public void testLogFailureNoShutdown() throws Exception {
         final String method = "testLogFailureNoShutdown";
-        if (FATSuite.type != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
-            // First server will get loads of FFDCs
-            noShutdownServer1.setFFDCChecking(false);
+        if (FATSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
+
             server2.setHttpDefaultPort(cloud2ServerPort);
             FATUtils.startServers(runner, noShutdownServer1, server2);
 
@@ -349,7 +361,7 @@ public class DBRotationTest extends FATServletClient {
             FATUtils.stopServers(server2);
 
             // server1 now attempts some 2PC which will fail because its logs have been taken but the server will NOT terminate
-            runTestWithResponse(noShutdownServer1, SERVLET_NAME, "setupRecLostLog");
+            runTest(noShutdownServer1, SERVLET_NAME, "setupRecLostLog");
 
             int serverStatus = noShutdownServer1.executeServerScript("status", null).getReturnCode();
             Log.info(c, method, "Status of " + noShutdownServer1.getServerName() + " is " + serverStatus);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ public class LTPAToken2Factory implements TokenFactory {
     private byte[] sharedKey;
     private LTPAPublicKey publicKey;
     private LTPAPrivateKey privateKey;
+    private long expDiffAllowed;
 
     /** {@inheritDoc} */
     @Override
@@ -37,6 +38,7 @@ public class LTPAToken2Factory implements TokenFactory {
         sharedKey = (byte[]) tokenFactoryMap.get(LTPAConstants.SECRET_KEY);
         publicKey = (LTPAPublicKey) tokenFactoryMap.get(LTPAConstants.PUBLIC_KEY);
         privateKey = (LTPAPrivateKey) tokenFactoryMap.get(LTPAConstants.PRIVATE_KEY);
+        expDiffAllowed = (Long) tokenFactoryMap.get(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED);
     }
 
     /** {@inheritDoc} */
@@ -59,13 +61,13 @@ public class LTPAToken2Factory implements TokenFactory {
     /** {@inheritDoc} */
     @Override
     public Token validateTokenBytes(byte[] tokenBytes) throws InvalidTokenException, TokenExpiredException {
-        return new LTPAToken2(tokenBytes, sharedKey, privateKey, publicKey);
+        return new LTPAToken2(tokenBytes, sharedKey, privateKey, publicKey, expDiffAllowed);
     }
 
     /** {@inheritDoc} */
     @Override
     public Token validateTokenBytes(byte[] tokenBytes, String... removeAttributes) throws InvalidTokenException, TokenExpiredException {
-        return new LTPAToken2(tokenBytes, sharedKey, privateKey, publicKey, removeAttributes);
+        return new LTPAToken2(tokenBytes, sharedKey, privateKey, publicKey, expDiffAllowed, removeAttributes);
     }
 
 }

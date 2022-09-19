@@ -18,11 +18,12 @@ import javax.servlet.http.HttpSessionContext;
  * Common methods are moved to AbstractHttpSessionFacade
  */
 
+@SuppressWarnings("deprecation")
 public class HttpSessionFacade extends AbstractHttpSessionFacade { // cmd 196151
 
     private static final long serialVersionUID = 3108339284895967670L;
 
-    public HttpSessionFacade(AbstractSessionData data) {
+    public HttpSessionFacade(SessionData data) {
         super(data);
     }
 
@@ -30,33 +31,36 @@ public class HttpSessionFacade extends AbstractHttpSessionFacade { // cmd 196151
      * @see HttpSession#getSessionContext()
      * @deprecated
      */
-    public HttpSessionContext getSessionContext() {
-        return getSessionData().getSessionContext();
+    @Override
+    public final HttpSessionContext getSessionContext() {
+        return _session.getSessionContext();
     }
 
     /**
      * @see HttpSession#getValue(String)
      * @deprecated
      */
-    public Object getValue(String arg0) {
-        return getSessionData().getValue(arg0);
+    @Override
+    public final Object getValue(String arg0) {
+        return _session.getValue(arg0);
     }
-
 
     /**
      * @see HttpSession#getValueNames()
      * @deprecated
      */
-    public String[] getValueNames() {
-        return getSessionData().getValueNames();
+    @Override
+    public final String[] getValueNames() {
+        return _session.getValueNames();
     }
 
     /**
      * @see HttpSession#putValue(String, Object)
      * @deprecated
      */
-    public void putValue(String arg0, Object arg1) {
-        getSessionData().putValue(arg0, arg1);
+    @Override
+    public final void putValue(String arg0, Object arg1) {
+        _session.putValue(arg0, arg1);
     }
 
 
@@ -64,8 +68,8 @@ public class HttpSessionFacade extends AbstractHttpSessionFacade { // cmd 196151
      * @see HttpSession#removeValue(String)
      * @deprecated
      */
-    public void removeValue(String arg0) {
-        getSessionData().removeValue(arg0);
+    @Override
+    public final void removeValue(String arg0) {
+        _session.removeValue(arg0);
     }
-
 }

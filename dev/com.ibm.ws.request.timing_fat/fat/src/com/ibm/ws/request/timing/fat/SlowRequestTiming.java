@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.request.timing.fat;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -36,6 +38,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -227,6 +230,7 @@ public class SlowRequestTiming {
     }
 
     @Test
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testSlowReqTimingTurnOff() throws Exception {
         server.setServerConfigurationFile("server_slowRequestThreshold0.xml");
         server.waitForStringInLog("CWWKG0017I");
@@ -374,6 +378,7 @@ public class SlowRequestTiming {
 //    }
 
     @Test
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testSlowReqSampleRateZero() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> Updating server with configuration : sampleRate=0");
         server.setServerConfigurationFile("server_sampleRate0.xml");
@@ -403,6 +408,7 @@ public class SlowRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testDynamicEnableWithNoContextInfo() throws Exception {
         //Step 1 - Remove Request Timing feature
         CommonTasks.writeLogMsg(Level.INFO, "-----> Updating server configuration to REMOVE Request Timing feature..");
@@ -452,6 +458,7 @@ public class SlowRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testDynamicDisableWithNoContextInfo() throws Exception {
         //Step 1 -  Update server configuration - ContextInfo = false , Threshold = 2s
         CommonTasks.writeLogMsg(Level.INFO, "---> Updating server with ContextInfo = false");
@@ -626,6 +633,7 @@ public class SlowRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testSlowReqSampleRateOdd() throws Exception {
         //Step 1 - Update server configuration - sampleRate=3, Threshold = "3s"
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> Updating server with configuration : sampleRate=3");
@@ -661,6 +669,7 @@ public class SlowRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testSlowReqSampleRateEven() throws Exception {
         //Step 1 - Update server configuration - sampleRate=2, Threshold = "3s"
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> Updating server with configuration : sampleRate=2");
@@ -698,6 +707,7 @@ public class SlowRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testSlowReqSampleRateNegative() throws Exception {
         //Step 1 - Update server configuration - sampleRate=-2, Threshold = "3s"
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> Updating server with configuration : sampleRate=-2");
@@ -716,6 +726,7 @@ public class SlowRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testSlowReqSampleRateDynamicUpdate() throws Exception {
         //Step 1 - Update server configuration - sampleRate=2, Threshold = "3s"
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> Updating server with configuration : sampleRate=2");
@@ -757,6 +768,7 @@ public class SlowRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testSlowReqSampleRateDynamicEnable() throws Exception {
         //Step 1 - Update server configuration - Enable Request Timing
         CommonTasks.writeLogMsg(Level.INFO, "**** Starting server with default Request Timing configuration");
@@ -796,6 +808,7 @@ public class SlowRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testSlowReqSampleRateDynamicDisable() throws Exception {
         //Step 1 - Update server configuration - sampleRate=2, Threshold = "3s"
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> Updating server with configuration : sampleRate=2");

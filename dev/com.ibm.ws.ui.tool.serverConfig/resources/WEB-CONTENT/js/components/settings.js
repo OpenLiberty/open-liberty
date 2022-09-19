@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ var settings = (function() {
             html: true,
             trigger: "manual",
             content: function() {
-                return "<div id=\"settings\">" +
+                return "<div id=\"settings\" class=\"popover\" role=\"tooltip\">" +
                 "<span class=\"settingsTitle\">" + editorMessages.DESIGN + "</span>" +
                 "<a href=\"#\" id=\"settingsShowEnhancedLabels\" class=\"editorSetting clearfix\" role=\"button\" aria-pressed=\"" + (settings.enhanceLabels? "true" : "false") + "\">" + editorMessages.ENHANCED_LABELS + "<span id=\"settingsShowEnhancedLabelsToggle\" class=\"pull-right configurationEditorToggle " + (settings.enhanceLabels? "configurationEditorToggleOn" : "configurationEditorToggleOff") + "\"></span></a>" +
                 "<a href=\"#\" id=\"settingsShowDescriptions\" class=\"editorSetting clearfix\" role=\"button\" aria-pressed=\"" + (settings.showDescriptions? "true" : "false") + "\">" + editorMessages.FIELD_DESCRIPTIONS + "<span id=\"settingsShowDescriptionsToggle\" class=\"pull-right configurationEditorToggle " + (settings.showDescriptions? "configurationEditorToggleOn" : "configurationEditorToggleOff") + "\"></span></a>" +

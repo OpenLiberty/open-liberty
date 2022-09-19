@@ -1088,6 +1088,9 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
         int sharedbucket = 0;
 
+        int hashCode = computeHashCode(subject, requestInfo);
+        int hashMapBucket = hashCode % maxFreePoolHashSize;
+
         /*
          * Check affinity and connectionSharing. We need to check for a shared connection
          * first. If a matching one exists, reuse it.
@@ -1126,6 +1129,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                                                   localConnection, this);
                                         } // end enforceSerialReuse && (mcWrapperTemp.getHandleCount() >= 1)
                                         else {
+                                            localConnection = validateConnection(localConnection, managedConnectionFactory, subject, requestInfo, hashMapBucket, connectionSharing,
+                                                                                 hashCode);
                                             endingAccessToTLSPool();
                                             activeRequest.decrementAndGet();
                                             if (isTracingEnabled && tc.isEntryEnabled())
@@ -1165,6 +1170,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                                                       localConnection, this);
                                             } // end enforceSerialReuse && (mcWrapperTemp.getHandleCount() >= 1)
                                             else {
+                                                localConnection = validateConnection(localConnection, managedConnectionFactory, subject, requestInfo, hashMapBucket,
+                                                                                     connectionSharing, hashCode);
                                                 endingAccessToTLSPool();
                                                 activeRequest.decrementAndGet();
                                                 if (isTracingEnabled && tc.isEntryEnabled())
@@ -1177,6 +1184,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                             }
                         }
                         if (freeLocalConnection != null) {
+                            freeLocalConnection = validateConnection(freeLocalConnection, managedConnectionFactory, subject, requestInfo, hashMapBucket, connectionSharing,
+                                                                     hashCode);
                             freeLocalConnection.setPoolState(MCWrapper.ConnectionState_sharedTLSPool);
                             freeLocalConnection.setSharedPoolCoordinator(affinity);
                             freeLocalConnection.markInUse();
@@ -1286,8 +1295,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
             }
 
-            int hashCode = computeHashCode(subject, requestInfo);
-            int hashMapBucket = hashCode % maxFreePoolHashSize;
+            //int hashCode = computeHashCode(subject, requestInfo);
+            //int hashMapBucket = hashCode % maxFreePoolHashSize;
             /*
              * If we have waiters, we don't have any free connection, move to the
              * create or wait code. If we don't have any waiters, we need to look for
@@ -1548,59 +1557,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
             }
 
-            // if the mcWrapper is null, the following code will not be executed.
-            ManagedConnection mc = mcWrapper.getManagedConnection();
-            if (((managedConnectionFactory instanceof WSManagedConnectionFactory &&
-                  ((WSManagedConnectionFactory) managedConnectionFactory).isPooledConnectionValidationEnabled())
-                 || ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).isPretestThisConnection())
-                && gConfigProps.validatingMCFSupported) {
-                /*
-                 * Reset pretest value
-                 */
-                ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setPretestThisConnection(false);
-                /*
-                 * We need to test the connection before we return the mcWrapper from
-                 * the free pool. Note: We do not need to test shared connections
-                 * because the connection is already being used. If there is a
-                 * connection problem, it should fail in the application using the
-                 * shared connection.
-                 */
-                int poolState = mcWrapper.getPoolState();
-                mcWrapper.setPoolState(50);
-                ValidatingManagedConnectionFactory validatingMCF = ((ValidatingManagedConnectionFactory) managedConnectionFactory);
-                Set<?> invalid = validatingMCF.getInvalidConnections(Collections.singleton(mc));
-                if (invalid.isEmpty())
-                    mcWrapper.setPoolState(poolState);
-                else {
-                    /*
-                     * Before we try to create a new connection, we need to destroy the
-                     * connection that failed the preTestConnection
-                     */
-                    freePool[0].cleanupAndDestroyMCWrapper(mcWrapper);
-
-                    /*
-                     * We are going to try calling the test connection again.
-                     */
-                    try {
-                        /*
-                         * Try to create a new connection.
-                         */
-                        mcWrapper = freePool[0].createManagedConnectionWithMCWrapper(managedConnectionFactory, subject,
-                                                                                     requestInfo,
-                                                                                     connectionSharing,
-                                                                                     hashCode);
-                        mcWrapper.setHashMapBucket(hashMapBucket);
-                    } catch (ResourceException re) {
-                        preTestFailed(managedConnectionFactory, subject, requestInfo, hashMapBucket, re);
-                    }
-                    mc = mcWrapper.getManagedConnection();
-                    invalid = validatingMCF.getInvalidConnections(Collections.singleton(mc));
-                    if (invalid.isEmpty())
-                        allowConnectionRequests = true;
-                    else
-                        preTestFailed(managedConnectionFactory, subject, requestInfo, hashMapBucket, new ResourceAllocationException());
-                }
-            }
+            mcWrapper = validateConnection(mcWrapper, managedConnectionFactory, subject, requestInfo, hashMapBucket, connectionSharing, hashCode);
 
             mcWrapper.markInUse();
             if (gConfigProps.raSupportsReauthentication) {
@@ -1736,6 +1693,85 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Tr.exit(this, tc, "reserve", new Object[] { mcWrapper, mcWrapper.getManagedConnection() });
         return mcWrapper;
 
+    }
+
+    //If validation is enabled (ie there is a connectionTimeout set),
+    //this method will validate the connection, and purge the pool
+    //if the connection (and 1 subsequent connection attempt) fails
+    protected MCWrapper validateConnection(MCWrapper mcWrapper, ManagedConnectionFactory managedConnectionFactory, Subject subject, ConnectionRequestInfo requestInfo,
+                                           int hashMapBucket, boolean connectionSharing, int hashCode) throws ResourceException {
+        if (tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "validateConnection", new Object[] { mcWrapper });
+        }
+        // if the mcWrapper is null, the following code will not be executed.
+        ManagedConnection mc = mcWrapper.getManagedConnection();
+        if (((managedConnectionFactory instanceof WSManagedConnectionFactory &&
+              ((WSManagedConnectionFactory) managedConnectionFactory).isPooledConnectionValidationEnabled())
+             || ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).isPretestThisConnection())
+            && gConfigProps.validatingMCFSupported) {
+
+            /*
+             * Reset pretest value
+             */
+            ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setPretestThisConnection(false);
+            /*
+             * We need to test the connection before we return the mcWrapper from
+             * the free pool. Note: We do not need to test shared connections
+             * because the connection is already being used. If there is a
+             * connection problem, it should fail in the application using the
+             * shared connection.
+             */
+            int poolState = mcWrapper.getPoolState();
+            mcWrapper.setPoolState(50);
+            ValidatingManagedConnectionFactory validatingMCF = ((ValidatingManagedConnectionFactory) managedConnectionFactory);
+            Set<?> invalid = validatingMCF.getInvalidConnections(Collections.singleton(mc));
+            if (invalid.isEmpty())
+                mcWrapper.setPoolState(poolState);
+            else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Connection is invalid, attempt to cleanup and destroy");
+                }
+                /*
+                 * Before we try to create a new connection, we need to destroy the
+                 * connection that failed the preTestConnection
+                 */
+                freePool[0].cleanupAndDestroyMCWrapper(mcWrapper);
+
+                /*
+                 * We are going to try calling the test connection again.
+                 */
+                try {
+                    /*
+                     * Try to create a new connection.
+                     */
+                    mcWrapper = freePool[0].createManagedConnectionWithMCWrapper(managedConnectionFactory, subject,
+                                                                                 requestInfo,
+                                                                                 connectionSharing,
+                                                                                 hashCode);
+                    mcWrapper.setHashMapBucket(hashMapBucket);
+                } catch (ResourceException re) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "ResourceException when trying to get a new connection, call preTestFailed.");
+                    }
+                    preTestFailed(managedConnectionFactory, subject, requestInfo, hashMapBucket, re);
+                }
+                mc = mcWrapper.getManagedConnection();
+                invalid = validatingMCF.getInvalidConnections(Collections.singleton(mc));
+                if (invalid.isEmpty()) {
+                    allowConnectionRequests = true;
+                } else {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "New connection failed validation, call preTestFailed.");
+                    }
+                    preTestFailed(managedConnectionFactory, subject, requestInfo, hashMapBucket, new ResourceAllocationException());
+                }
+            }
+        }
+
+        if (tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "validateConnection");
+        }
+        return mcWrapper;
     }
 
     /**

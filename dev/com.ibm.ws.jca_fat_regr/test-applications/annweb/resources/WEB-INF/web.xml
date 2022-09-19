@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>JCAAnnWeb</display-name>
+
+  <!-- SERVLET DEFINITIONS & MAPPINGS -->
+  <servlet id="Default">
+    <servlet-name>AnnTestServlet</servlet-name>
+    <display-name>JCA Ann FAT REGR Servlet</display-name>
+    <servlet-class>web.AnnTestServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>    
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>AnnTestServlet</servlet-name>
+    <url-pattern>/AnnTestServlet</url-pattern>
+  </servlet-mapping>
+  
+  <!--  END SERVLET DEFINITIONS & MAPPINGS -->
+  
+  <resource-ref>
+    <res-ref-name>jms/cf1</res-ref-name>
+    <res-type>javax.resource.cci.ConnectionFactory</res-type>
+    <lookup-name>jms/cf1</lookup-name>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jms/cf2</res-ref-name>
+    <res-type>javax.resource.cci.ConnectionFactory</res-type>
+    <lookup-name>jms/cf2</lookup-name>
+  </resource-ref>
+  
+   <resource-ref>
+    <res-ref-name>jms/cf3</res-ref-name>
+    <res-type>javax.resource.cci.ConnectionFactory</res-type>
+    <lookup-name>jms/cf3</lookup-name>
+  </resource-ref>
+  
+   <resource-ref>
+    <res-ref-name>jms/cf4</res-ref-name>
+    <res-type>javax.resource.cci.ConnectionFactory</res-type>
+    <lookup-name>jms/cf4</lookup-name>
+  </resource-ref>
+
+</web-app>
