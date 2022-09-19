@@ -326,11 +326,16 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     }
 
     @Trivial
-    public void close() throws Exception {
+    public void close() {
         if (allowLifeCycleMethods) {
             PolicyExecutor executor = getNormalPolicyExecutor();
-            if (executor instanceof AutoCloseable) // Java 19+
-                ((AutoCloseable) executor).close();
+            if (executor instanceof AutoCloseable)
+                try {
+                    ((AutoCloseable) executor).close();
+                } catch (Exception e) {
+                    // Shouldn't happen -- The Java 19 executor's close method does not throw an exception, but AutoCloseable does.
+                    throw new IllegalStateException(e);
+                }
             else // Java 18 or earlier
                 throw new UnsupportedOperationException("close");
         } else { // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
