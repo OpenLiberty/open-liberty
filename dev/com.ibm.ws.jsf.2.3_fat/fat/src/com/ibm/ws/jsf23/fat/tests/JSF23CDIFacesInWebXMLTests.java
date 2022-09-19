@@ -43,7 +43,7 @@ public class JSF23CDIFacesInWebXMLTests extends CDITestBase {
     public static void setup() throws Exception {
         // Include @Named beans if Faces 4.0 is being tested. Include @ManagedBean beans otherwise
         ShrinkHelper.defaultDropinApp(server, "CDIFacesInWebXML.war",
-                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans",
+                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed",

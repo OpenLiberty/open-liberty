@@ -54,7 +54,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
         ShrinkHelper.defaultDropinApp(server, "CDIInjectionTests.war",
                                       "com.ibm.ws.jsf23.fat.cdi.injection.beans.injected",
                                       "com.ibm.ws.jsf23.fat.cdi.injection.beans.viewscope",
-                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans",
+                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed",
@@ -62,7 +62,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
 
         ShrinkHelper.defaultDropinApp(server, "ActionListenerInjection.war",
-                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans",
+                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed",
