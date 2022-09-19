@@ -34,20 +34,30 @@ public class WSPolicyConfigurationFactoryImpl extends PolicyConfigurationFactory
     }
 
     public PolicyConfiguration getPolicyConfiguration() throws PolicyContextException {
-
         String contextID = null;
+
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkPermission(new SecurityPermission("setPolicy"));
         }
 
         contextID = PolicyContext.getContextID();
-        return getPolicyConfiguration(contextID, false);
+
+        WSPolicyConfigurationImpl policyConfig = allConfigs.getPolicyConfig(contextID);
+
+        return policyConfig;
 
     }
 
     public PolicyConfiguration getPolicyConfiguration(String contextID) throws PolicyContextException {
-        return getPolicyConfiguration(contextID, false);
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(new SecurityPermission("setPolicy"));
+        }
+
+        WSPolicyConfigurationImpl policyConfig = allConfigs.getPolicyConfig(contextID);
+
+        return policyConfig;
     }
 
     @Override
