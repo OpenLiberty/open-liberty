@@ -97,7 +97,7 @@ public class TokenValidatorTest {
                     will(returnValue(oidcmd));
                     allowing(oidcmd).getIssuer();
                     will(returnValue(iss_from_config));
-                    one(oidcClientConfig).getClientId();
+                    allowing(oidcClientConfig).getClientId();
                     will(returnValue("oidcclientid"));
                 }
             });
@@ -123,7 +123,7 @@ public class TokenValidatorTest {
                     will(returnValue(oidcmd));
                     allowing(oidcmd).getIssuer();
                     will(returnValue(iss_from_config));
-                    one(oidcClientConfig).getClientId();
+                    allowing(oidcClientConfig).getClientId();
                     will(returnValue("oidcclientid"));
                 }
             });
@@ -171,8 +171,8 @@ public class TokenValidatorTest {
                 {
                     allowing(oidcClientConfig).getProviderMetadata();//.getIssuer();
                     will(returnValue(oidcmd));
-                    one(oidcClientConfig).getClientId();
-                    will(returnValue("oidcclientid"));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("client01"));
                 }
             });
             tokenValidator = tokenValidator.audiences(aud_claim_from_token);
@@ -199,7 +199,7 @@ public class TokenValidatorTest {
                 {
                     allowing(oidcClientConfig).getProviderMetadata();//.getIssuer();
                     will(returnValue(oidcmd));
-                    one(oidcClientConfig).getClientId();
+                    allowing(oidcClientConfig).getClientId();
                     will(returnValue("oidcclientid"));
                 }
             });

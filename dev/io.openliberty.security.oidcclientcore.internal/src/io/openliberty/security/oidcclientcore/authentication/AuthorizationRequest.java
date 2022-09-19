@@ -20,7 +20,6 @@ import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
-import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 
 public abstract class AuthorizationRequest extends EndpointRequest {
@@ -29,7 +28,6 @@ public abstract class AuthorizationRequest extends EndpointRequest {
     protected HttpServletResponse response;
     protected String clientId;
 
-    protected Storage storage;
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
     protected OidcStorageUtils storageUtils = new OidcStorageUtils();

@@ -28,24 +28,17 @@ import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
-import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
-import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 
 public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     public static final TraceComponent tc = Tr.register(JakartaOidcAuthorizationRequest.class);
 
-    private enum StorageType {
-        COOKIE, SESSION
-    }
-
     private OidcClientConfig config = null;
     private OidcProviderMetadata providerMetadata = null;
 
-    private StorageType storageType;
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
 
@@ -53,17 +46,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         super(request, response, config.getClientId());
         this.config = config;
         this.providerMetadata = (config == null) ? null : config.getProviderMetadata();
-        instantiateStorage(config);
-    }
-
-    private void instantiateStorage(OidcClientConfig config) {
-        if (config.isUseSession()) {
-            this.storage = new SessionBasedStorage(request);
-            this.storageType = StorageType.SESSION;
-        } else {
-            this.storage = new CookieBasedStorage(request, response);
-            this.storageType = StorageType.COOKIE;
-        }
+        instantiateStorage(config, request, response);
     }
 
     @Override

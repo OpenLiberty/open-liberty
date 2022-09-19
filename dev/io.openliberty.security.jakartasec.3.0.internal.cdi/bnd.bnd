@@ -76,6 +76,7 @@ src: src, resources
 	io.openliberty.jakarta.authentication.3.0;version=latest,\
 	io.openliberty.jakarta.security.3.0,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	com.ibm.ws.security.common.jsonwebkey;version=latest,\
 	com.ibm.ws.security.javaeesec.1.0,\
 	com.ibm.json4j;version=latest,\
 	com.ibm.websphere.security;version=latest,\
