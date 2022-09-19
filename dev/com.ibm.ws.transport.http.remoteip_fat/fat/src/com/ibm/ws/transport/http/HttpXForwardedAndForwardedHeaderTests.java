@@ -1914,8 +1914,8 @@ public class HttpXForwardedAndForwardedHeaderTests {
 
         assertTrue("Response does not contain Endpoint Information Servlet Test message", response.contains("Endpoint Information Servlet Test"));
         assertTrue("Response does contain the expected Remote Address", response.contains("Remote Address: 127.0.0.1"));
-        assertTrue("Response does not contain expected Remote Host", response.contains("Remote Host: localhost"));
-        assertTrue("Response does not contain valid Scheme", !response.contains("Scheme: https://evil.com/#"));
+        assertTrue("Response does not contain the expected Remote Host", !response.contains("Remote Host: clienttest.com"));
+        assertTrue("Response does contain an invalid Scheme", !response.contains("Scheme: https://evil.com/#"));
         assertTrue("Response does not contain valid Scheme", response.contains("Scheme: http"));
     }
 
