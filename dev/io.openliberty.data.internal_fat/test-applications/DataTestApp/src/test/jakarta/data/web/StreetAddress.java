@@ -10,7 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import io.openliberty.data.Embeddable;
+import jakarta.data.Embeddable;
 
 /**
  *

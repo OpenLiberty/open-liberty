@@ -12,18 +12,18 @@ package test.jakarta.data.web;
 
 import java.util.stream.Stream;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Delete;
-import io.openliberty.data.OrderBy;
-import io.openliberty.data.Param;
-import io.openliberty.data.Select;
-import io.openliberty.data.Update;
-import io.openliberty.data.Where;
+import jakarta.data.Delete;
+import jakarta.data.OrderBy;
+import jakarta.data.Param;
+import jakarta.data.Select;
+import jakarta.data.Update;
+import jakarta.data.Where;
+import jakarta.data.repository.Repository;
 
 /**
  *
  */
-@Data
+@Repository
 public interface Shipments {
     @Update("o.status='CANCELED', o.canceledAt=CURRENT_TIMESTAMP")
     @Where("o.id=:shipmentId AND o.status IN ('PREPARING', 'READY_FOR_PICKUP')")

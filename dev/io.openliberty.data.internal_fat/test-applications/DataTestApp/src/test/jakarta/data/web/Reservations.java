@@ -28,21 +28,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Limit;
-import io.openliberty.data.Page;
-import io.openliberty.data.Pagination;
-import io.openliberty.data.Repository;
-import io.openliberty.data.Result;
-import io.openliberty.data.Select;
-import io.openliberty.data.Sort;
-import io.openliberty.data.Sorts;
+import jakarta.data.Limit;
+import jakarta.data.Page;
+import jakarta.data.Pagination;
+import jakarta.data.Result;
+import jakarta.data.Select;
+import jakarta.data.Sort;
+import jakarta.data.Sorts;
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Repository;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
  */
-@Data
-public interface Reservations extends Repository<Reservation, Long> {
+@Repository
+public interface Reservations extends CrudRepository<Reservation, Long> {
     boolean deleteByHostIn(List<String> hosts);
 
     long deleteByHostNot(String host);

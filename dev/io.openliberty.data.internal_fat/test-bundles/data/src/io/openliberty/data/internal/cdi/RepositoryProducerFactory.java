@@ -10,12 +10,11 @@
  *******************************************************************************/
 package io.openliberty.data.internal.cdi;
 
+import jakarta.data.repository.Repository;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Producer;
 import jakarta.enterprise.inject.spi.ProducerFactory;
-
-import io.openliberty.data.Data;
 
 public class RepositoryProducerFactory<R> implements ProducerFactory<R> {
     final BeanManager beanMgr;
@@ -28,9 +27,9 @@ public class RepositoryProducerFactory<R> implements ProducerFactory<R> {
 
     @Override
     public <T> Producer<T> createProducer(Bean<T> bean) {
-        Data data = bean.getBeanClass().getAnnotation(Data.class);
-        if (data == null) {
-            System.out.println("createProducer null because " + bean + " has no @Data");
+        Repository repository = bean.getBeanClass().getAnnotation(Repository.class);
+        if (repository == null) {
+            System.out.println("createProducer null because " + bean + " has no @Repository");
             return null;
         } else {
             return new RepositoryProducer<T>(bean, beanMgr, entityClass);

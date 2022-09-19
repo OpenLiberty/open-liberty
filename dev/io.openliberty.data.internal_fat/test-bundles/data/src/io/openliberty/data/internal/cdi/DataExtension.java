@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import jakarta.data.Entities;
+import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Repository;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
@@ -34,9 +37,6 @@ import jakarta.enterprise.inject.spi.WithAnnotations;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Entities;
-import io.openliberty.data.Repository;
 import io.openliberty.data.internal.DataPersistence;
 
 public class DataExtension implements Extension {
@@ -44,11 +44,11 @@ public class DataExtension implements Extension {
     private final ArrayList<Bean<?>> repositoryBeans = new ArrayList<>();
     private final HashSet<AnnotatedType<?>> repositoryTypes = new HashSet<>();
 
-    public <T> void processAnnotatedTypeWithData(@Observes @WithAnnotations(Data.class) ProcessAnnotatedType<T> event) {
-        System.out.println("processAnnotatedTypeWithData");
+    public <T> void processAnnotatedTypeWithRepository(@Observes @WithAnnotations(Repository.class) ProcessAnnotatedType<T> event) {
+        System.out.println("processAnnotatedTypeWithRepository");
 
         AnnotatedType<T> type = event.getAnnotatedType();
-        System.out.println("    found " + type.getAnnotation(Data.class) + " on " + type.getJavaClass());
+        System.out.println("    found " + type.getAnnotation(Repository.class) + " on " + type.getJavaClass());
         repositoryTypes.add(type);
     }
 
@@ -70,9 +70,7 @@ public class DataExtension implements Extension {
             Class<?> repositoryInterface = repositoryType.getJavaClass();
             ClassLoader loader = repositoryInterface.getClassLoader();
 
-            Data data = repositoryType.getAnnotation(Data.class);
-
-            EntityGroupKey entityGroupKey = new EntityGroupKey(data.provider(), loader);
+            EntityGroupKey entityGroupKey = new EntityGroupKey("DefaultDataStore", loader); // TODO configuration of different providers in Jakarta Data
             List<Class<?>> entityClasses = entitiesMap.get(entityGroupKey);
             if (entityClasses == null)
                 entitiesMap.put(entityGroupKey, entityClasses = new ArrayList<>());
@@ -81,7 +79,7 @@ public class DataExtension implements Extension {
             for (Type interfaceType : repositoryInterface.getGenericInterfaces()) {
                 if (interfaceType instanceof ParameterizedType) {
                     ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
-                    if (parameterizedType.getRawType().getTypeName().equals(Repository.class.getName())) {
+                    if (parameterizedType.getRawType().getTypeName().startsWith(DataRepository.class.getPackageName())) {
                         Type paramTypes[] = parameterizedType.getActualTypeArguments();
                         if (paramTypes.length == 2 && paramTypes[0] instanceof Class) {
                             System.out.println("    entity type for " + repositoryInterface.getName() + " is " + paramTypes[0].getTypeName());

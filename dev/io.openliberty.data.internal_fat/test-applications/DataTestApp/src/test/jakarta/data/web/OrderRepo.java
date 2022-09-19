@@ -10,16 +10,16 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Param;
-import io.openliberty.data.Query;
-import io.openliberty.data.Repository;
+import jakarta.data.Param;
+import jakarta.data.Query;
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Repository;
 
 /**
  * Experiments with auto-generated keys.
  */
-@Data
-public interface OrderRepo extends Repository<Order, Long> {
+@Repository
+public interface OrderRepo extends CrudRepository<Order, Long> {
 
     @Query("UPDATE Order o SET o.total = o.total * :rate + :shipping WHERE o.id = :id")
     boolean addTaxAndShipping(@Param("id") long orderId,

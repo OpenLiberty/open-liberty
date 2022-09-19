@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
@@ -37,5 +38,14 @@ class EntityInfo {
         this.collectionAttributeNames = collectionAttributeNames;
         this.keyName = keyAttributeName;
         this.persister = persister;
+    }
+
+    String getAttributeName(String name) {
+        String attributeName = attributeNames.get(name.toUpperCase());
+        return attributeName == null ? name : attributeName;
+    }
+
+    Collection<String> getAttributeNames() {
+        return attributeNames.values();
     }
 }
