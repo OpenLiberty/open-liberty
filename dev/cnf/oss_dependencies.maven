@@ -189,6 +189,15 @@ jakarta.json:jakarta.json-api:2.1.0
 jakarta.jws:jakarta.jws-api:3.0.0
 jakarta.mail:jakarta.mail-api:2.0.0
 jakarta.mail:jakarta.mail-api:2.1.0
+jakarta.nosql.communication:communication-column:1.0.0-b4
+jakarta.nosql.communication:communication-core:1.0.0-b4
+jakarta.nosql.communication:communication-document:1.0.0-b4
+jakarta.nosql.communication:communication-key-value:1.0.0-b4
+jakarta.nosql.communication:communication-query:1.0.0-b4
+jakarta.nosql.mapping:mapping-column:1.0.0-b4
+jakarta.nosql.mapping:mapping-core:1.0.0-b4
+jakarta.nosql.mapping:mapping-document:1.0.0-b4
+jakarta.nosql.mapping:mapping-key-value:1.0.0-b4
 jakarta.persistence:jakarta.persistence-api:3.0.0
 jakarta.persistence:jakarta.persistence-api:3.1.0
 jakarta.resource:jakarta.resource-api:2.0.0

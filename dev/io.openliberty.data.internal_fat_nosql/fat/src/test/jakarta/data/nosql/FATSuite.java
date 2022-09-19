@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data;
+package test.jakarta.data.nosql;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -17,25 +17,18 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                DataTest.class,
-                TemplateTest.class
+                DataNoSQLTest.class
 })
 public class FATSuite {
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer("io.openliberty.data.internal.fat");
-
     /**
      * Pre-bucket execution setup.
      */
     @BeforeClass
     public static void beforeSuite() throws Exception {
-        server.copyFileToLibertyInstallRoot("lib", "bundles/test.jakarta.data.jar");
-        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/mockData-1.0.mf");
     }
 
     /**
@@ -43,7 +36,5 @@ public class FATSuite {
      */
     @AfterClass
     public static void cleanUpSuite() throws Exception {
-        server.deleteFileFromLibertyInstallRoot("lib/test.jakarta.data.jar");
-        server.deleteFileFromLibertyInstallRoot("lib/features/mockData-1.0.mf");
     }
 }

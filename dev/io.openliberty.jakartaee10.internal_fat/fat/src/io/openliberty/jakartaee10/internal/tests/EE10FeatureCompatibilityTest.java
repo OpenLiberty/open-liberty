@@ -188,6 +188,9 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         // jcaInboundSecurity-1.0 was removed in Jakarta EE 10 in favor of using an auto feature.
         ee8Features.remove("jcaInboundSecurity-1.0");
 
+        // TODO nosqlUnused-1.0 is a temporary workaround and can eventually be removed
+        ee8Features.remove("nosqlUnused-1.0");
+
         // servlet long name is the same for EE10 so it will fail because the prefixes
         // match and it is marked as a singleton.
         ee8Features.remove("servlet-4.0");
