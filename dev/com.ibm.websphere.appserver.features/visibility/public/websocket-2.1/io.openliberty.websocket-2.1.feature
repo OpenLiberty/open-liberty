@@ -17,6 +17,6 @@ Subsystem-Name: Jakarta WebSocket 2.1
  io.openliberty.wsoc.2.1.internal
 -jars=io.openliberty.wsoc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.wsoc_1.0-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

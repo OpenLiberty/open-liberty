@@ -390,7 +390,6 @@ public class VisibilityTest {
         // If they get marked beta, they should be removed from this list.
         expectedFailures.add("io.openliberty.jakarta.faces-4.0");
         expectedFailures.add("io.openliberty.jakarta.messaging-3.1");
-        expectedFailures.add("io.openliberty.jakarta.websocket-2.1");
         expectedFailures.add("io.openliberty.jakarta.authentication-3.0");
         expectedFailures.add("io.openliberty.jakarta.authorization-2.1");
         expectedFailures.add("io.openliberty.jakarta.security.enterprise-3.0");
