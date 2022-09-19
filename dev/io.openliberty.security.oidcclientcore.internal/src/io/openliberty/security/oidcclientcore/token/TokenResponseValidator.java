@@ -33,6 +33,9 @@ import com.ibm.wsspi.ssl.SSLSupport;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.http.EndpointRequest;
+import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils;
 import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils.TokenSignatureValidationBuilder;
 
@@ -55,6 +58,7 @@ public class TokenResponseValidator {
     private HttpServletRequest request;
     private HttpServletResponse response;
     JSONObject discoveredProviderMetadata = null;
+    private Storage storage;
 
     public TokenResponseValidator() {
         //initialized = true;
@@ -67,6 +71,18 @@ public class TokenResponseValidator {
         this.clientConfig = oidcClientConfig;
     }
     
+    /**
+     * @param oidcClientConfig
+     */
+    private void instantiateStorage(OidcClientConfig oidcClientConfig) {
+        if (oidcClientConfig.isUseSession()) {
+            this.storage = new SessionBasedStorage(this.request);
+        } else {
+            this.storage = new CookieBasedStorage(this.request, this.response);
+        }
+        
+    }
+
     @Reference(name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC)
     protected void setSslSupport(SSLSupport sslSupportSvc) {
         sslSupport = sslSupportSvc;
@@ -79,7 +95,6 @@ public class TokenResponseValidator {
     @Reference(name = KEY_EP_REQUEST, policy = ReferencePolicy.DYNAMIC)
     protected void setEndpointRequest(EndpointRequest eprequestService) {
         eprequest = eprequestService;
-        Tr.debug(tc, "AMMII, service = " + eprequest);
     }
 
     protected void unsetEndpointRequest(EndpointRequest eprequestService) {
@@ -132,12 +147,12 @@ public class TokenResponseValidator {
                         //TODO : throw TokenValidationException if we don't have valid discovered data
                 }
                 tokenValidator.issuer(jwtClaims.getIssuer()).subject(jwtClaims.getSubject()).audiences(jwtClaims.getAudience()).azp(((String) jwtClaims.getClaimValue("azp"))).iat(jwtClaims.getIssuedAt()).exp(jwtClaims.getExpirationTime()).nbf(jwtClaims.getNotBefore());
-                if (jwtClaims.hasClaim("nonce")) {  
+                if (this.clientConfig.isUseNonce()) {  
                     ((IdTokenValidator) tokenValidator).nonce(((String) jwtClaims.getClaimValue("nonce")));
                     ((IdTokenValidator) tokenValidator).state(getStateParameter());
                     ((IdTokenValidator) tokenValidator).secret(clientSecret);
-                    eprequest.instantiateStorage(clientConfig, request, response);
-                    ((IdTokenValidator) tokenValidator).storage(eprequest.getStorage());
+                    instantiateStorage(clientConfig);
+                    ((IdTokenValidator) tokenValidator).storage(storage);
                     ((IdTokenValidator) tokenValidator).validate();
                 } else {
                     tokenValidator.validate();

@@ -28,8 +28,6 @@ public class Client {
 
     private final OidcClientConfig oidcClientConfig;
     private static JWKSet jwkSet = null;
-    HttpServletRequest request;
-    HttpServletResponse response;
 
     public Client(OidcClientConfig oidcClientConfig) {
         this.oidcClientConfig = oidcClientConfig;
@@ -45,16 +43,14 @@ public class Client {
     }
 
     public ProviderAuthenticationResult continueFlow(HttpServletRequest request, HttpServletResponse response) throws AuthenticationResponseException, TokenRequestException {
-        this.request = request;
-        this.response = response;
         Flow flow = AbstractFlow.getInstance(oidcClientConfig);
         return flow.continueFlow(request, response);
     }
 
-    public void validate(TokenResponse tokenResponse) throws TokenValidationException {
+    public void validate(TokenResponse tokenResponse, HttpServletRequest request, HttpServletResponse response) throws TokenValidationException {
         TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
-        tokenResponseValidator.setRequest(this.request);
-        tokenResponseValidator.setResponse(this.response);
+        tokenResponseValidator.setRequest(request);
+        tokenResponseValidator.setResponse(response);
         tokenResponseValidator.setJwkSet(getJwkSet());
         tokenResponseValidator.validate(tokenResponse);
     }
