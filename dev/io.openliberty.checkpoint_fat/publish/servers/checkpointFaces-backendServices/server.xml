@@ -1,0 +1,37 @@
+<server description="Sample Liberty server">
+
+  <featureManager>
+    <feature>jaxrs-2.1</feature>
+    <feature>jsonb-1.0</feature>
+    <feature>jsonp-1.1</feature>
+    <feature>cdi-2.0</feature>
+    <feature>jpa-2.2</feature>
+  </featureManager>
+
+  <include location="../fatTestCommon.xml"/>
+
+  <variable name="default.http.port" defaultValue="5050" />
+  <variable name="default.https.port" defaultValue="5051" />
+
+  <httpEndpoint httpPort="${default.http.port}" httpsPort="${default.https.port}"
+                id="defaultHttpEndpoint" host="*" />
+
+  <application location="backendServices.war" type="war" context-root="/"></application>
+
+  <!-- Derby Library Configuration -->
+  <library id="derbyJDBCLib">
+    <fileset dir="${shared.resource.dir}/derby"/>
+  </library>
+
+  <!-- Derby Java 2 Configuration -->
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+  <!-- Datasource Configuration -->
+  <!-- tag::data-source[] -->
+  <dataSource id="eventjpadatasource" jndiName="jdbc/eventjpadatasource">
+    <jdbcDriver libraryRef="derbyJDBCLib" />
+    <properties.derby.embedded databaseName="EventDB" createDatabase="create" />
+  </dataSource>
+  <!-- end::data-source[] -->
+ 
+</server>
