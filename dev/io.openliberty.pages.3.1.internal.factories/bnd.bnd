@@ -11,6 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Bundle-Name: Open Liberty Pages 3.1 Factories
 Bundle-SymbolicName: io.openliberty.pages.3.1.internal.factories
 Bundle-Description: WAS Pages 3.1, version ${bVersion}
