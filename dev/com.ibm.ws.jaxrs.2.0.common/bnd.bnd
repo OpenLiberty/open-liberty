@@ -83,12 +83,10 @@ Import-Package: \
 	com.ibm.ws.webcontainer.osgi,\
 	com.ibm.websphere.security,\
 	!com.sun.xml.bind.marshaller,\
-	!com.ctc.wstx.*,\
 	!com.sun.msv.*,\
 	!com.sun.xml.fastinfoset.stax.*,\
 	!net.sf.cglib.proxy.*,\
 	!javax.validation.*,\
-	!org.codehaus.stax2.*,\
 	!org.apache.log4j.*,\
 	!org.apache.xerces.dom,\
 	!org.apache.xerces.*,\

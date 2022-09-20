@@ -22,8 +22,8 @@ woodstox-version: 6.2.4
 stax2-version: 4.2
 
 Export-Package: \
-  org.codehaus.stax2.*;version=${stax2-version};thread-context=true, \
-  com.ctc.wstx.*;version=${woodstox-version};thread-context=true
+  org.codehaus.stax2.*;version=${woodstox-version}, \
+  com.ctc.wstx.*;version=${stax2-version}
 
 app-resources= \
   META-INF/services/javax.xml.stream.XMLEventFactory | \

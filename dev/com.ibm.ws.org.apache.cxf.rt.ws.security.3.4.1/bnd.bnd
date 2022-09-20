@@ -30,12 +30,14 @@ Import-Package:  \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
   javax.servlet.*;version="[0.0.0,3.0.0)", \
+  !com.ctc.wstx.*;version="[5,6.1]", \
+  !org.codehaus.stax2.*;version="[3.1,4.1]", \
   *
 
 DynamicImport-Package: \
   org.apache.cxf.*, \
-  com.ctc.wstx.*, \
-  org.codehaus.stax2.*
+  com.ctc.wstx.*;version="[6.2,7)", \
+  org.codehaus.stax2.*;version="[4.2,5)"
   
 Export-Package: \
   org.apache.cxf.ws.security.sts.provider.operation;version=${cxfVersion}, \

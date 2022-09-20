@@ -30,11 +30,13 @@ Import-Package: \
   !org.apache.velocity.*, \
   !org.junit.*, \
   org.apache.cxf;version="[3.0.0,4)", \
+  !com.ctc.wstx.*;version="[5,6.1]", \
+  !org.codehaus.stax2.*;version="[3.1,4.1]", \
   *
 
 DynamicImport-Package: \
-  com.ctc.wstx.*, \
-  org.codehaus.stax2.*
+  com.ctc.wstx.*;version="[6.2,7)", \
+  org.codehaus.stax2.*;version="[4.2,5)"
   
 Export-Package: \
   org.apache.cxf.tools.common;version=${cxfVersion}, \

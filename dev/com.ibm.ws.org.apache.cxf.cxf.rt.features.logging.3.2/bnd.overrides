@@ -36,9 +36,8 @@ Import-Package: \
   !com.sun.xml.bind.api, \
   !org.apache.karaf.jaas.boot.principal, \
   !sun.misc, \
-  !com.ctc.wstx.*, \
   !com.sun.xml.fastinfoset.*;resolution:=optional, \
-  !org.codehaus.stax2.*, \
+  !org.codehaus.stax2.*;version="[4.2,5)", \
   !com.sun.msv.*, \
   !com.sun.xml.bind.marshaller, \
   !org.apache.log4j.*, \

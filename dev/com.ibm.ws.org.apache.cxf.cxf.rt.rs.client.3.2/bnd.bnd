@@ -23,11 +23,13 @@ Import-Package: \
   !org.springframework.*, \
   !javax.cache.*, \
   !org.osgi.service.blueprint.*, \
+  !com.ctc.wstx.*;version="[5,6.1]", \
+  !org.codehaus.stax2.*;version="[3.1,4.1]", \
   *
 
 DynamicImport-Package: \
-  com.ctc.wstx.*, \
-  org.codehaus.stax2.*
+  com.ctc.wstx.*;version="[6.2,7)", \
+  org.codehaus.stax2.*;version="[4.2,5)"
   
 Export-Package: \
   com.ibm.ws.jaxrs21.clientconfig, \

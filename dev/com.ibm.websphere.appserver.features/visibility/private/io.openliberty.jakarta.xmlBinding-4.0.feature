@@ -12,7 +12,8 @@ Subsystem-Name: Jakarta XML Bindings 4.0
   io.openliberty.jakarta.activation-2.1
 -bundles=\
   io.openliberty.jakarta.xmlBinding.4.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.xml.bind:jakarta.xml.bind-api:4.0.0", \
-  io.openliberty.org.glassfish.hk2.osgi-resource-locator
+  io.openliberty.org.glassfish.hk2.osgi-resource-locator, \
+  io.openliberty.com.fasterxml.woodstox.6.2
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

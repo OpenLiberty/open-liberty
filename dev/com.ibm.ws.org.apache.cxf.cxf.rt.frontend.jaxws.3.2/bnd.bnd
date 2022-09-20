@@ -34,12 +34,14 @@ Import-Package: \
   javax.xml.ws.*;version="[2.2,3)", \
   org.apache.cxf.*;version="[3.2.4,4)", \
   com.ibm.ws.ffdc, \
+  !com.ctc.wstx.*;version="[5,6.1]", \
+  !org.codehaus.stax2.*;version="[3.1,4.1]", \
   *
 
 DynamicImport-Package: \
   com.ibm.ws.jaxws.client, \
-  com.ctc.wstx.*, \
-  org.codehaus.stax2.*
+  com.ctc.wstx.*;version="[6.2,7)", \
+  org.codehaus.stax2.*;version="[4.2,5)"
   
 Export-Package: \
   org.apache.cxf.jaxws.*;version=${cxfVersion};-split-package:=merge-last, \

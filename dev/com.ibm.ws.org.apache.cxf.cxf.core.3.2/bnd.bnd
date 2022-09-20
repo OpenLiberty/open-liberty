@@ -42,7 +42,6 @@ Import-Package: \
   !org.apache.karaf.jaas.boot.principal, \
   !sun.misc, \
   !com.sun.xml.fastinfoset.*;resolution:=optional, \
-  !org.codehaus.stax2.*, \
   !com.sun.msv.*, \
   !com.sun.xml.bind.marshaller, \
   !org.apache.log4j.*, \
@@ -60,6 +59,8 @@ Import-Package: \
   org.apache.cxf.helpers;version="[${exportVer},4.0.0)", \
   com.ibm.ws.cxf.jaxrs21.client;version="[${exportVer},${exportVer}]", \
   com.ibm.ws.cxf.jaxrs21.client.component;version="[${exportVer},${exportVer}]", \
+  !com.ctc.wstx.*;version="[5,6.1]", \
+  !org.codehaus.stax2.*;version="[3.1,4.1]", \
   *
 
 Export-Package: \
@@ -140,9 +141,10 @@ Export-Package: \
   com.ibm.ws.cxf.jaxrs21.client;version=${exportVer}, \
   com.ibm.ws.cxf.jaxrs21.client.component;version=${exportVer}
 
+
 DynamicImport-Package: \
-  com.ctc.wstx.*, \
-  org.codehaus.stax2.*, \
+  com.ctc.wstx.*;version="[6.2,7)", \
+  org.codehaus.stax2.*;version="[4.2,5)", \
   com.sun.xml.messaging.saaj.*, \
   com.sun.xml.bind.*, \
   org.glassfish.jaxb.*, \

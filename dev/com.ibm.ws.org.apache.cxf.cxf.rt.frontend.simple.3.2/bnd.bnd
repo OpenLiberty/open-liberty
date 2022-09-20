@@ -30,12 +30,14 @@ Import-Package: \
   !org.osgi.service.blueprint.*, \
   org.apache.cxf.*;version="[3.2,4.0)", \
   !com.sun.tools.xjc.*, \
+  !com.ctc.wstx.*;version="[5,6.1]", \
+  !org.codehaus.stax2.*;version="[3.1,4.1]", \
   *
 
 DynamicImport-Package: \
   javax.servlet.*;version="[0.0,4)", \
-  com.ctc.wstx.*, \
-  org.codehaus.stax2.*
+  com.ctc.wstx.*;version="[6.2,7)", \
+  org.codehaus.stax2.*;version="[4.2,5)"
 
 Export-Package: \
   org.apache.cxf.frontend.*;version=${cxfVersion}, \

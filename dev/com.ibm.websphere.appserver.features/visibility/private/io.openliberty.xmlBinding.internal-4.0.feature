@@ -9,8 +9,7 @@ IBM-Process-Types: client, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   com.ibm.websphere.appserver.classloading-1.0
 -bundles=\
-  io.openliberty.xmlBinding.4.0.internal.tools, \
-  io.openliberty.com.fasterxml.woodstox.6.2
+  io.openliberty.xmlBinding.4.0.internal.tools
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
