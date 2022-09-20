@@ -58,7 +58,7 @@ public class IfxPreparedStatement implements PreparedStatement {
      * Use the _duplicateRows object to store a set of rows that will be duplicated in the DB table
      *
      */
-    private static Map<Integer, List> _duplicateRows;
+    private static Map<Integer, List<Object>> _duplicateRows;
 
     /**
      * Keep track of each stored row in _duplicateRows using _rowNum
@@ -882,9 +882,9 @@ public class IfxPreparedStatement implements PreparedStatement {
             if (!IfxConnection.isDuplicateInfraEnabled()) {
                 IfxConnection.enableDuplicateInfra();
                 System.out.println("IfxPreparedStatement(" + wrappedPS + "): collectDataForDuplicateRows first time in setting a value, the PS: " + this);
-                _columnValues = new ArrayList();
-                _duplicateRows = new HashMap();
-                _cachedRow = new HashMap();
+                _columnValues = new ArrayList<Object>();
+                _duplicateRows = new HashMap<Integer, List<Object>>();
+                _cachedRow = new HashMap<Integer, Object>();
                 _duplicateRows.put(_rowNum, _columnValues);
             }
             if (_columnValues != null) {
@@ -893,7 +893,7 @@ public class IfxPreparedStatement implements PreparedStatement {
 
                 // See if we are handling a new row
                 if (parameterIndex < _lastIndexEntry) {
-                    _columnValues = new ArrayList();
+                    _columnValues = new ArrayList<Object>();
                     _rowNum++;
                     _duplicateRows.put(_rowNum, _columnValues);
 
@@ -926,7 +926,7 @@ public class IfxPreparedStatement implements PreparedStatement {
     private void duplicateAndHalt() throws SQLException {
         if (_duplicateRows != null) {
             System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt there are - " + _duplicateRows.size() + " rows to duplicate");
-            for (List valueList : _duplicateRows.values()) {
+            for (List<Object> valueList : _duplicateRows.values()) {
                 if (valueList != null) {
                     System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt list size - " + valueList.size() + " and list " + valueList);
                     ListIterator<Object> listItr = valueList.listIterator();
