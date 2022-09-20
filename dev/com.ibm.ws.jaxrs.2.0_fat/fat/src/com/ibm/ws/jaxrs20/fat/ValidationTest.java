@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -145,7 +146,7 @@ public class ValidationTest {
         HttpResponse resp = client.execute(getMethod);
         assertEquals(200, resp.getStatusLine().getStatusCode());
         String c = asString(resp);
-        if (JakartaEE9Action.isActive()) {
+        if ((JakartaEE9Action.isActive()) || (JakartaEE10Action.isActive())) {
             assertEquals("default1", c);
         } else {
             assertTrue("Returned message body was: " + c, "context1".equals(c) || "query1".equals(c));
@@ -169,7 +170,7 @@ public class ValidationTest {
         HttpResponse resp = client.execute(getMethod);
         assertEquals(200, resp.getStatusLine().getStatusCode());
         String c = asString(resp);
-        if (JakartaEE9Action.isActive()) {
+        if ((JakartaEE9Action.isActive()) || (JakartaEE10Action.isActive())) {
             assertEquals("default1", c);
         } else {
             assertTrue("Returned message body was: " + c, "queryInt1".equals(c) || "queryString1".equals(c));
@@ -393,7 +394,7 @@ public class ValidationTest {
     public void testNonPublicMethodPathWarning() throws Exception {
         // The CXF impl results in a servlet init error (500) when no resource methods/classes are found
         // whereas RESTEasy correctly (IMO) returns the 404.
-        final int expectedResponseCode = JakartaEE9Action.isActive() ? 404 : 500;
+        final int expectedResponseCode = ((JakartaEE9Action.isActive()) || (JakartaEE10Action.isActive())) ? 404 : 500;
 
         try {
             String uri1 = getBaseTestUri(valwar, "pathmethod", "pathwarnings/private");

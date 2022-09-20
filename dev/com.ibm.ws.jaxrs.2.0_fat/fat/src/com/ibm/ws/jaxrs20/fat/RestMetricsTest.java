@@ -41,6 +41,7 @@ import com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
@@ -205,6 +206,7 @@ public class RestMetricsTest {
         ensureEmptyMonitorStats(ABORT_METHOD_INDEX);
     }
 
+    @SkipForRepeat("EE10_FEATURES") //Skipping until MP Metrics is upgraded for MP 6.0
     @Test
     @AllowedFFDC({"org.apache.cxf.interceptor.Fault", "org.jboss.resteasy.spi.UnhandledException"})
     public void testCheckedExceptions() throws IOException {
@@ -223,6 +225,7 @@ public class RestMetricsTest {
         runCheckMonitorStats(200, CHECKED_METHOD_INDEX);
     }
 
+    @SkipForRepeat("EE10_FEATURES") //Skipping until MP Metrics is upgraded for MP 6.0
     @Test
     @AllowedFFDC({"com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testUncheckedExceptions() throws IOException {

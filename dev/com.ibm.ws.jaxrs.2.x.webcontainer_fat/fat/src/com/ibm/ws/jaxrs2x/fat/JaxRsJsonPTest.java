@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -29,7 +27,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -44,11 +41,6 @@ public class JaxRsJsonPTest {
     public static void setup() throws Exception {
 
         ShrinkHelper.defaultDropinApp(server, jsonpwar, "com.ibm.ws.jaxrs2x.fat.jsonp.service");
-
-        if (JakartaEE9Action.isActive()) {
-            Path someArchive = Paths.get("publish/servers/" + server.getServerName() + "/dropins/jsonp.war");
-            JakartaEE9Action.transformApp(someArchive);
-        }
 
         // Make sure we don't fail because we try to start an
         // already started server

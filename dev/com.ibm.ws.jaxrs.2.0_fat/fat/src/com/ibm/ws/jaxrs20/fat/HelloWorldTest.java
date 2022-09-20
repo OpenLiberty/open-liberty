@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -101,7 +102,7 @@ public class HelloWorldTest {
         // the spec doesn't mention charsets in terms of matching to resources...
         // RESTEasy says an invalid charset is a client error, and returns 400
         // CXF says it doesn't match any resource methods and returns 415
-        if (JakartaEE9Action.isActive()) {
+        if ((JakartaEE9Action.isActive()) || (JakartaEE10Action.isActive())) {
             assertEquals(400, status);
         } else {
             assertEquals(415, status);

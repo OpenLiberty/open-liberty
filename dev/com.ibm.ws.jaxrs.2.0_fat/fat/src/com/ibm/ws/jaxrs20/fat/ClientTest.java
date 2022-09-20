@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -170,7 +170,7 @@ public class ClientTest extends AbstractTest {
      */
     @Mode(TestMode.FULL)
     @Test
-    @SkipForRepeat("EE9_FEATURES") // RESTEasy does not honor CXF properties
+    @SkipForRepeat({"EE9_FEATURES", "EE10_FEATURES"}) // RESTEasy does not honor CXF properties
     public void testReadTimeoutTimeout_cxfProp() throws Exception {
         this.runTestOnServer(target, "testReadTimeoutTimeout_cxfProp", null, "OK");
     }
