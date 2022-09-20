@@ -403,6 +403,7 @@ public class VisibilityTest {
         expectedFailures.add("io.openliberty.adminCenter1.0.internal.ee-10.0");
         expectedFailures.add("io.openliberty.openidConnectServer1.0.internal.ee-10.0");
         expectedFailures.add("io.openliberty.webCache1.0.internal.ee-10.0");
+        expectedFailures.add("io.openliberty.facesContainer-4.0");
 
 
         StringBuilder errorMessage = new StringBuilder();
