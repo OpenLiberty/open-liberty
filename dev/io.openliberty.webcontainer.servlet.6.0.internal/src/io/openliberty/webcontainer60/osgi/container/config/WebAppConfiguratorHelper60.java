@@ -16,9 +16,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.config.ServletConfigurator;
+import com.ibm.ws.javaee.dd.web.WebApp;
+import com.ibm.ws.javaee.dd.web.common.SessionConfig;
 import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer40.osgi.container.config.WebAppConfiguratorHelper40;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 import io.openliberty.session.impl.SessionCookieConfigImpl60;
 import jakarta.servlet.SessionCookieConfig;
@@ -46,5 +49,16 @@ public class WebAppConfiguratorHelper60 extends WebAppConfiguratorHelper40 {
                 Tr.debug(tc, " Created sessionCookieConfig [{0}]", sessionCookieConfig);
             }
         }
+    }
+
+    @Override
+    public void configureFromWebApp(WebApp webApp) throws UnableToAdaptException {
+        super.configureFromWebApp(webApp);
+
+        configureSessionConfig(webApp.getSessionConfig());
+    }
+
+    private void configureSessionConfig(SessionConfig sessionConfig) {
+
     }
 }
