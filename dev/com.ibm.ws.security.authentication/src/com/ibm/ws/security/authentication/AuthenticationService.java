@@ -97,6 +97,7 @@ public interface AuthenticationService {
      * @return
      *
      */
-    public Boolean isUseDisplayName();
+    public Boolean isUseDisplayNameForSecurityName();
+
 
 }

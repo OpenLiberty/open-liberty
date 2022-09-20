@@ -112,6 +112,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
 
     }
 
+
     /**
      * Common method called by all login modules that use the UserRegistry (UsernameAndPasswordLoginModule,
      * CertificateLoginModule, HashtableLoginModule and TokenLoginModule). Determines the securityName to use
@@ -126,26 +127,23 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      * @throws RegistryException
      */
     protected String getSecurityName(String loginName, String urAuthenticatedId,
-                                     boolean useDisplayNameProp) throws EntryNotFoundException, RegistryException {
+                                     boolean useDisplayNameForSecurityName) throws EntryNotFoundException, RegistryException {
 
         UserRegistry ur = getUserRegistry();
-        
+
             if (ur != null) { // Preserve the existing behavior for CUSTOM user registries
-            if (ur.getType() != "CUSTOM"){
-                String securityName = ur.getUserSecurityName(urAuthenticatedId);
-                if (securityName != null) {
-                    return securityName;
+                if (ur.getType() != "CUSTOM"){
+                    String securityName = ur.getUserSecurityName(urAuthenticatedId);
+                    if (securityName != null) {
+                        return securityName;
+                    }
                 }
-            }
-            else 
-            {
-                if (useDisplayNameProp){
-                String uniqueId = ur.getUniqueUserId(urAuthenticatedId);
-                if (uniqueId !=null)
-                    return uniqueId;
+                else if (useDisplayNameForSecurityName){
+                    String displayName = ur.getUserDisplayName(urAuthenticatedId);
+                    if (displayName != null)
+                        return displayName;
                 }
-            }
-        }
+             }
 
         // If a loginName was provided, use it.
         if (loginName != null) {

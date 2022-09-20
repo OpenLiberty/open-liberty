@@ -60,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     static final String CFG_ALLOW_HASHTABLE_LOGIN_WITH_ID_ONLY = "allowHashtableLoginWithIdOnly";
     static final String CFG_CACHE_ENABLED = "cacheEnabled";
-    static final String CFG_USE_DISPLAYNAME = "useDisplayName";
+    static final String CFG_USE_DISPLAYNAME_FOR_SECURITYNAME = "useDisplayNameForSecurityName";
     static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";
     static final String KEY_USER_REGISTRY_SERVICE = "userRegistryService";
     static final String KEY_DELEGATION_PROVIDER = "delegationProvider";
@@ -78,7 +78,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private ComponentContext cc;
     private boolean cacheEnabled = true;
     private boolean allowHashtableLoginWithIdOnly = false;
-    private boolean useDisplayName = false;
+    private boolean useDisplayNameForSecurityName = false;
     private String invalidDelegationUser = "";
 
     private final AuthenticationGuard authenticationGuard = new AuthenticationGuard();
@@ -166,9 +166,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             cacheEnabled = state;
         }
 
-        Boolean useDisplayNameState = (Boolean) props.get(CFG_USE_DISPLAYNAME);
-        if (useDisplayNameState != null) {
-            useDisplayName = useDisplayNameState;
+        Boolean useDisplayNameForSecurityNameState = (Boolean) props.get(CFG_USE_DISPLAYNAME_FOR_SECURITYNAME);
+        if (useDisplayNameForSecurityNameState != null) {
+            useDisplayNameForSecurityName = useDisplayNameForSecurityNameState;
         }
     }
 
@@ -653,7 +653,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     /** {@inheritDoc} */
     @Override
-    public Boolean isUseDisplayName() {
-        return useDisplayName;
+    public Boolean isUseDisplayNameForSecurityName() {
+        return useDisplayNameForSecurityName;
     }
+    
 }
