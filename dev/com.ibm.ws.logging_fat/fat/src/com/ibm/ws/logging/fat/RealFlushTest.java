@@ -216,7 +216,7 @@ public class RealFlushTest {
         Log.info(c, testName, "------- PrintlnFloat ------");
         server.setMarkToEndOfLog();
         getHttpServlet("/RealFlushTestApp/printTests/printlnFloat");
-        if (JavaInfo.forServer(server).majorVersion() >= 18) {
+        if (JavaInfo.forServer(server).majorVersion() >= 19) {
             Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.2222222E8"));
         }
         else {
@@ -226,7 +226,7 @@ public class RealFlushTest {
         Log.info(c, testName, "------- PrintFloat ------");
         server.setMarkToEndOfLog();
         getHttpServlet("/RealFlushTestApp/printTests/printFloat");
-        if (JavaInfo.forServer(server).majorVersion() >= 18) {
+        if (JavaInfo.forServer(server).majorVersion() >= 19) {
             Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.2222222E8"));
         }
         else {
