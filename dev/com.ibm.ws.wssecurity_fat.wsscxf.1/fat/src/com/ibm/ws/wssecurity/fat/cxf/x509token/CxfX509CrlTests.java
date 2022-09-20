@@ -26,7 +26,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -50,9 +50,14 @@ public class CxfX509CrlTests extends CommonTests {
     @Server(serverName)
     public static LibertyServer server;
     static private final Class<?> thisClass = CxfX509CrlTests.class;
+    //RTC 291274
+    private static Boolean sunJDK8;
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        //RTC 291274
+        String thisMethod = "setup";
 
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
@@ -73,6 +78,24 @@ public class CxfX509CrlTests extends CommonTests {
         clientHttpUrl = "http://localhost:" + portNumber +
                         "/x509crlclient/CxfX509CrlSvcClient";
 
+        //RTC 291274
+        sunJDK8 = true;
+        String vendorName = System.getProperty("java.vendor");
+        Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
+        String javaRuntime = System.getProperty("java.runtime.version");
+        Log.info(thisClass, thisMethod, "The  current runtime java version is: " + javaRuntime);
+        //Example:
+        //JDK Vendor Name is: IBM Corporation; The  current runtime java version is: 8.0.7.15 - pwa6480sr7fp15-20220818_01(SR7 FP15)
+        //JDK Vendor Name is: Oracle Corporation; The  current runtime java version is: 1.8.0_341-b10 13_Jul_2022_11_14 Mac OS X x64(SR7 FP15)
+
+        if (vendorName.contains("Oracle") & javaRuntime.contains("1.8")) {
+            Log.info(thisClass, thisMethod, "Using NON-IBM JDK Version 8 - this test should not run!");
+        } else {
+            Log.info(thisClass, thisMethod, "Using Other JDK except NON-IBM JDK 8");
+            System.err.println("Using other JDK except NON-IBM JDK Version 8");
+            sunJDK8 = false;
+        }
+
     }
 
     /**
@@ -91,6 +114,14 @@ public class CxfX509CrlTests extends CommonTests {
     public void testCXFClientCRLPNotInList() throws Exception {
 
         String thisMethod = "testCXFClientCRLPNotInList";
+
+        //RTC 291274
+        if (sunJDK8) {
+            Log.info(thisClass, thisMethod, "Using NON-IBM JDK Version 8 - this test should not run!  SKIPPING TEST");
+            System.err.println("Using Non-IBM JDK Version 8 - this test should not run!");
+            return;
+        }
+
         //issue 18363
         if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certp.xml");
@@ -145,10 +176,20 @@ public class CxfX509CrlTests extends CommonTests {
      */
 
     @Test
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    //RTC 291274
+    //Changed from previous @ExpectedFFDC
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientCRLNInList() throws Exception {
 
         String thisMethod = "testCXFClientCRLNInList";
+
+        //RTC 291274
+        if (sunJDK8) {
+            Log.info(thisClass, thisMethod, "Using NON-IBM JDK Version 8 - this test should not run!  SKIPPING TEST");
+            System.err.println("Using NON-IBM JDK Version 8 - this test should not run!");
+            return;
+        }
+
         //issue 18363
         if (featureVersion.equals("EE7")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certn.xml");
