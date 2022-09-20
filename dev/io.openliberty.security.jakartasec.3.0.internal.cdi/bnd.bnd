@@ -80,4 +80,5 @@ src: src, resources
 	com.ibm.ws.security.javaeesec.1.0,\
 	com.ibm.json4j;version=latest,\
 	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.container.service;version=latest
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest

@@ -20,31 +20,31 @@ import com.ibm.json.java.JSONObject;
 public class TokenResponse {
 
     private final JSONObject rawResponse;
-    private final String idToken;
-    private final String accessToken;
-    private final String refreshToken;
+    private final String idTokenString;
+    private final String accessTokenString;
+    private final String refreshTokenString;
     private final Instant responseGenerationTime;
 
     private Map<String, String> responseAsMap = null;
 
     public TokenResponse(JSONObject rawResponse, String idToken, String accessToken, String refreshToken) {
         this.rawResponse = rawResponse;
-        this.idToken = idToken;
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
+        this.idTokenString = idToken;
+        this.accessTokenString = accessToken;
+        this.refreshTokenString = refreshToken;
         this.responseGenerationTime = Instant.now();
     }
 
-    public String getIdToken() {
-        return idToken;
+    public String getIdTokenString() {
+        return idTokenString;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public String getAccessTokenString() {
+        return accessTokenString;
     }
 
-    public String getRefreshToken() {
-        return refreshToken;
+    public String getRefreshTokenString() {
+        return refreshTokenString;
     }
 
     @SuppressWarnings("unchecked")

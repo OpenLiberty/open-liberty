@@ -111,9 +111,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
         assertNotNull("The token response generation time must be set.", tokenResponse.getResponseGenerationTime());
     }
 
@@ -134,9 +134,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
     @Test
@@ -155,9 +155,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
     @Test
@@ -179,9 +179,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
     @Test
@@ -207,9 +207,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
     @Test
@@ -229,9 +229,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
     @Test
@@ -254,9 +254,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
 }
