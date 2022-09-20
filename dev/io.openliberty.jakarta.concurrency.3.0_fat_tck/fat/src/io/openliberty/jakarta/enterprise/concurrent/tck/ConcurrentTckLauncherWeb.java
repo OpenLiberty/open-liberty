@@ -51,8 +51,8 @@ public class ConcurrentTckLauncherWeb {
     @BeforeClass
     public static void setUp() throws Exception {
         //UNCOMMENT - To test against a local snapshot of TCK
-        //additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-        additionalProps.put("jakarta.concurrent.tck.version", "3.0.2-SNAPSHOT"); //TODO comment out once 3.0.2 is on maven central
+//        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
+//        additionalProps.put("jakarta.concurrent.tck.version", "3.0.2-SNAPSHOT");
 
         //username and password for Arquillian to authenticate to restConnect
         additionalProps.put("tck_username", "arquillian");

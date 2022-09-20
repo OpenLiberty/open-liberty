@@ -11,7 +11,7 @@
 <server>
     <featureManager>
         <!-- Features being tested -->
-		<feature>webProfile-10.0</feature>
+		<feature>jakartaee-10.0</feature>
         <!-- Features needed for arquillan support -->
         <feature>localConnector-1.0</feature>
         <feature>restConnector-2.0</feature>
