@@ -23,6 +23,15 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
+import jakarta.data.Column;
+import jakarta.data.DiscriminatorColumn;
+import jakarta.data.DiscriminatorValue;
+import jakarta.data.Embeddable;
+import jakarta.data.Entity;
+import jakarta.data.Generated;
+import jakarta.data.Id;
+import jakarta.data.Inheritance;
+import jakarta.data.MappedSuperclass;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -44,16 +53,6 @@ import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
-
-import io.openliberty.data.Column;
-import io.openliberty.data.DiscriminatorColumn;
-import io.openliberty.data.DiscriminatorValue;
-import io.openliberty.data.Embeddable;
-import io.openliberty.data.Entity;
-import io.openliberty.data.Generated;
-import io.openliberty.data.Id;
-import io.openliberty.data.Inheritance;
-import io.openliberty.data.MappedSuperclass;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = DataPersistence.class)
@@ -290,20 +289,6 @@ public class DataPersistence {
         } finally {
             em.close();
         }
-    }
-
-    String getAttributeName(String name, Class<?> entityClass, String provider) {
-        Map<Class<?>, EntityInfo> entityInfoMap = entityInfoPerProvider.get(provider);
-        EntityInfo entityInfo = entityInfoMap == null ? null : entityInfoMap.get(entityClass);
-        String attributeName = entityInfo == null ? null : entityInfo.attributeNames.get(name.toUpperCase());
-        return attributeName == null ? name : attributeName;
-    }
-
-    Collection<String> getAttributeNames(Class<?> entityClass, String provider) {
-        Map<Class<?>, EntityInfo> entityInfoMap = entityInfoPerProvider.get(provider);
-        EntityInfo entityInfo = entityInfoMap == null ? null : entityInfoMap.get(entityClass);
-        LinkedHashMap<String, String> attributeNames = entityInfo == null ? null : entityInfo.attributeNames;
-        return attributeNames.values();
     }
 
     // For use by Template only. For other patterns, use the signature that also supplies the provider name

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package io.openliberty.data.internal.cdi;
 
+import jakarta.data.Template;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
-import io.openliberty.data.Template;
 import io.openliberty.data.internal.TemplateImpl;
 
 public class TemplateProducer {

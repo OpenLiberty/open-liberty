@@ -5,7 +5,7 @@ package test.jakarta.data.template.web;
 
 import java.time.Year;
 
-import io.openliberty.data.Id;
+import jakarta.data.Id;
 
 /**
  *

@@ -47,6 +47,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
+import jakarta.data.Entities;
+import jakarta.data.MappingException;
+import jakarta.data.Page;
+import jakarta.data.Pagination;
+import jakarta.data.Sort;
+import jakarta.data.Sorts;
+import jakarta.data.Template;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.NotSupportedException;
@@ -57,13 +64,6 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import io.openliberty.data.Entities;
-import io.openliberty.data.MappingException;
-import io.openliberty.data.Page;
-import io.openliberty.data.Pagination;
-import io.openliberty.data.Sort;
-import io.openliberty.data.Sorts;
-import io.openliberty.data.Template;
 
 @Entities(WorkAddress.class) // TODO make inheritance work without this
 @SuppressWarnings("serial")
@@ -119,26 +119,26 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "AF-006E905-LE";
         prod1.name = "TestAggregateFunctions Lite Edition";
         prod1.price = 104.99f;
-        products.addOrModify(prod1);
+        products.save(prod1);
 
         Product prod2 = new Product();
         prod2.id = "AF-006E005-RK";
         prod2.name = "TestAggregateFunctions Repair Kit";
         prod2.price = 104.99f;
-        products.addOrModify(prod2);
+        products.save(prod2);
 
         Product prod3 = new Product();
         prod3.id = "AF-006E905-CE";
         prod3.name = "TestAggregateFunctions Classic Edition";
         prod3.price = 306.99f;
-        products.addOrModify(prod3);
+        products.save(prod3);
 
         Product prod4 = new Product();
         prod4.id = "AF-006E205-CE";
         prod4.name = "TestAggregateFunctions Classic Edition";
         prod4.description = "discontinued";
         prod4.price = 286.99f;
-        products.addOrModify(prod4);
+        products.save(prod4);
 
         assertEquals(306.99f, products.highestPrice(), 0.001f);
 
@@ -406,25 +406,25 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "TDM-SE";
         prod1.name = "TestDeleteMultiple Standard Edition";
         prod1.price = 115.99f;
-        products.addOrModify(prod1);
+        products.save(prod1);
 
         Product prod2 = new Product();
         prod2.id = "TDM-AE";
         prod2.name = "TestDeleteMultiple Advanced Edition";
         prod2.price = 197.99f;
-        products.addOrModify(prod2);
+        products.save(prod2);
 
         Product prod3 = new Product();
         prod3.id = "TDM-EE";
         prod3.name = "TestDeleteMultiple Expanded Edition";
         prod3.price = 153.99f;
-        products.addOrModify(prod3);
+        products.save(prod3);
 
         Product prod4 = new Product();
         prod4.id = "TDM-NFE";
         prod4.name = "TestDeleteMultiple Nearly Free Edition";
         prod4.price = 1.99f;
-        products.addOrModify(prod4);
+        products.save(prod4);
 
         assertEquals(2, products.discontinueProducts(Set.of("TDM-AE", "TDM-NFE", "TDM-NOT-FOUND")));
 
@@ -442,37 +442,37 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "TDA-T-L1";
         prod1.name = "TestDistinctAttribute T-Shirt Size Large";
         prod1.price = 7.99f;
-        products.addOrModify(prod1);
+        products.save(prod1);
 
         Product prod2 = new Product();
         prod2.id = "TDA-T-M1";
         prod1.name = "TestDistinctAttribute T-Shirt Size Medium";
         prod2.price = 7.89f;
-        products.addOrModify(prod2);
+        products.save(prod2);
 
         Product prod3 = new Product();
         prod3.id = "TDA-T-S1";
         prod3.name = "TestDistinctAttribute T-Shirt Size Small";
         prod3.price = 7.79f;
-        products.addOrModify(prod3);
+        products.save(prod3);
 
         Product prod4 = new Product();
         prod4.id = "TDA-T-M2";
         prod4.name = "TestDistinctAttribute T-Shirt Size Medium";
         prod4.price = 7.49f;
-        products.addOrModify(prod4);
+        products.save(prod4);
 
         Product prod5 = new Product();
         prod5.id = "TDA-T-XS1";
         prod5.name = "TestDistinctAttribute T-Shirt Size Extra Small";
         prod5.price = 7.59f;
-        products.addOrModify(prod5);
+        products.save(prod5);
 
         Product prod6 = new Product();
         prod6.id = "TDA-T-L2";
         prod6.name = "TestDistinctAttribute T-Shirt Size Large";
         prod6.price = 7.49f;
-        products.addOrModify(prod6);
+        products.save(prod6);
 
         List<String> uniqueProductNames = products.findByNameLike("TestDistinctAttribute %");
 
@@ -553,7 +553,7 @@ public class DataTestServlet extends FATServlet {
         prod.price = 3.99f;
         prod.description = "An item for sale.";
 
-        products.addOrModify(prod);
+        products.save(prod);
 
         Product p = products.findItem("OL306-233F");
         assertEquals(prod.id, p.id);
@@ -576,31 +576,31 @@ public class DataTestServlet extends FATServlet {
         p1.id = "TFL-1";
         p1.name = "TestFindLike_1";
         p1.price = 1.00f;
-        products.addOrModify(p1);
+        products.save(p1);
 
         Product p2 = new Product();
         p2.id = "TFL-2";
         p2.name = "2% TestFindLike";
         p2.price = 2.00f;
-        products.addOrModify(p2);
+        products.save(p2);
 
         Product p10 = new Product();
         p10.id = "TFL-10";
         p10.name = "TestFindLike 1";
         p10.price = 10.00f;
-        products.addOrModify(p10);
+        products.save(p10);
 
         Product p100 = new Product();
         p100.id = "TFL-100";
         p100.name = "TestFindLike  1";
         p100.price = 100.00f;
-        products.addOrModify(p100);
+        products.save(p100);
 
         Product p200 = new Product();
         p200.id = "TFL-200";
         p200.name = "200 TestFindLike";
         p200.price = 200.00f;
-        products.addOrModify(p200);
+        products.save(p200);
 
         assertIterableEquals(List.of("2% TestFindLike",
                                      "200 TestFindLike",
@@ -1691,7 +1691,7 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "TTU-75-00-6144RE";
         prod1.name = "testTemplateUsesRepositoryEntities Item";
         prod1.price = 10.99f;
-        products.addOrModify(prod1);
+        products.save(prod1);
 
         // find by template
         Optional<Product> found = template.find(Product.class, prod1.id);
@@ -1728,25 +1728,25 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "800-2024-S";
         prod1.name = "Small size TestUpdateMultiple-matched item";
         prod1.price = 10.00f;
-        products.addOrModify(prod1);
+        products.save(prod1);
 
         Product prod2 = new Product();
         prod2.id = "800-3024-M";
         prod2.name = "Medium size TestUpdateMultiple-matched item";
         prod2.price = 15.00f;
-        products.addOrModify(prod2);
+        products.save(prod2);
 
         Product prod3 = new Product();
         prod3.id = "C6000-814BH0003Y";
         prod3.name = "Medium size TestUpdateMultiple non-matching item";
         prod3.price = 18.00f;
-        products.addOrModify(prod3);
+        products.save(prod3);
 
         Product prod4 = new Product();
         prod4.id = "800-4024-L";
         prod4.name = "Large size TestUpdateMultiple-matched item";
         prod4.price = 20.00f;
-        products.addOrModify(prod4);
+        products.save(prod4);
 
         Product[] p = products.findByVersionGreaterThanEqualOrderByPrice(0);
 
@@ -1779,7 +1779,7 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "Q6008-U8-21001";
         prod1.name = "testVersionedUpdateViaQuery Product 1";
         prod1.price = 82.99f;
-        products.addOrModify(prod1);
+        products.save(prod1);
 
         Product p = products.findItem(prod1.id);
         long initialVersion = p.version;
@@ -1802,7 +1802,7 @@ public class DataTestServlet extends FATServlet {
         prod1.id = "3400R-6120-1";
         prod1.name = "TestVersionedUpdateViaRepository Product 1";
         prod1.price = 139.99f;
-        products.addOrModify(prod1);
+        products.save(prod1);
 
         Product prod1a = products.findItem(prod1.id);
         Product prod1b = products.findItem(prod1.id);
@@ -1813,10 +1813,10 @@ public class DataTestServlet extends FATServlet {
         prod1a.price += 15.00f;
         prod1b.price += 10.00f;
 
-        products.addOrModify(prod1b);
+        products.save(prod1b);
 
         try {
-            products.addOrModify(prod1a);
+            products.save(prod1a);
             fail("Able to update using old version.");
         } catch (RuntimeException x) {
             if ("jakarta.persistence.OptimisticLockException".equals(x.getClass().getName()))

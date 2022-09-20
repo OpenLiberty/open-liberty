@@ -10,7 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import io.openliberty.data.Entity;
+import jakarta.data.Entity;
 
 /**
  *

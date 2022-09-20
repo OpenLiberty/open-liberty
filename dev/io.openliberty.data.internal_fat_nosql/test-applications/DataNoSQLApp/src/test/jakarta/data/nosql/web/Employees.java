@@ -8,19 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data;
+package test.jakarta.data.nosql.web;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import jakarta.data.repository.Repository;
 
-/**
- * Copied from jakarta.nosql.mapping.Entity to investigate how well the
- * JNoSQL repository-related annotations work for relational database access.
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Entity {
-    String value() default "";
+@Repository
+public interface Employees {
+    public long deleteByLocationLike(String locationPattern);
+
+    public Employee[] findByWageLessThanEqual(float maxWage);
+
+    public Employee save(Employee e);
 }

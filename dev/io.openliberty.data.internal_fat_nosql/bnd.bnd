@@ -26,6 +26,7 @@ fat.project: true
   com.ibm.ws.componenttest.2.0,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\
+  io.openliberty.jakarta.data.1.0,\
   io.openliberty.jakarta.interceptor.2.1,\
   io.openliberty.jakarta.nosql.1.0,\
   io.openliberty.jakarta.servlet.6.0,\

@@ -13,6 +13,8 @@ Subsystem-Name: Jakarta Data 1.0
   com.ibm.websphere.appserver.eeCompatible-10.0,\
   io.openliberty.cdi-4.0,\
   io.openliberty.jakarta.data-1.0
+-bundles=\
+  io.openliberty.data.internal
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

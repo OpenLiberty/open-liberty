@@ -12,14 +12,14 @@ package test.jakarta.data.web;
 
 import java.util.List;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Repository;
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Repository;
 
 /**
  *
  */
-@Data
-public interface Packages extends Repository<Package, Integer> {
+@Repository
+public interface Packages extends CrudRepository<Package, Integer> {
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);

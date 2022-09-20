@@ -10,10 +10,10 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import io.openliberty.data.Column;
-import io.openliberty.data.Generated;
-import io.openliberty.data.Id;
-import io.openliberty.data.MappedSuperclass;
+import jakarta.data.Column;
+import jakarta.data.Generated;
+import jakarta.data.Id;
+import jakarta.data.MappedSuperclass;
 
 /**
  *

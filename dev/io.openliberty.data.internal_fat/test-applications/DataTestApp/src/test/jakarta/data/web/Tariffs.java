@@ -14,14 +14,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Paginated;
-import io.openliberty.data.Pagination;
+import jakarta.data.Paginated;
+import jakarta.data.Pagination;
+import jakarta.data.repository.Repository;
 
 /**
  *
  */
-@Data
+@Repository
 public interface Tariffs {
 
     int deleteByLeviedBy(String country);

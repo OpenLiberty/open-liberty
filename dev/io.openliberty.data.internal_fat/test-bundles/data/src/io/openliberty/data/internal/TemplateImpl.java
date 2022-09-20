@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.data.IdNotFoundException;
+import jakarta.data.MappingException;
+import jakarta.data.Template;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -35,10 +38,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
-
-import io.openliberty.data.IdNotFoundException;
-import io.openliberty.data.MappingException;
-import io.openliberty.data.Template;
 
 /**
  */

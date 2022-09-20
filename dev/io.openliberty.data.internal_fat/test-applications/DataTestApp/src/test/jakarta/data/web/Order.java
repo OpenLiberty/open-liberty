@@ -12,8 +12,8 @@ package test.jakarta.data.web;
 
 import java.time.OffsetDateTime;
 
-import io.openliberty.data.Entity;
-import io.openliberty.data.Generated;
+import jakarta.data.Entity;
+import jakarta.data.Generated;
 
 /**
  *

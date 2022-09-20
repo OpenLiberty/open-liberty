@@ -8,28 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data;
-
-import java.util.Optional;
-
 /**
- * Copied from jakarta.nosql.mapping.Repository to investigate how well
- * the NoSQL repository interface works for relational database access.
+ * @version 1.0
  */
-public interface Repository<T, K> {
-    long count();
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "data", messageBundle = "io.openliberty.data.internal.resources.CWWKDMessages")
+package io.openliberty.data.internal;
 
-    void deleteById(Iterable<K> ids);
-
-    void deleteById(K id);
-
-    boolean existsById(K id);
-
-    Iterable<T> findById(Iterable<K> ids);
-
-    Optional<T> findById(K id);
-
-    <S extends T> Iterable<S> save(Iterable<S> entities);
-
-    <S extends T> S save(S entity);
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;

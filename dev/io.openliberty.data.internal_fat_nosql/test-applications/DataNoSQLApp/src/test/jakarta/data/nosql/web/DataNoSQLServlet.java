@@ -10,6 +10,9 @@
  *******************************************************************************/
 package test.jakarta.data.nosql.web;
 
+import static org.junit.Assert.assertNotNull;
+
+import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -21,6 +24,9 @@ public class DataNoSQLServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
     private static final long TIMEOUT_MINUTES = 2L;
 
+    @Inject
+    Employees employees;
+
     /**
      * Load classes from the Jakarta NoSQL communication layer.
      */
@@ -31,6 +37,14 @@ public class DataNoSQLServlet extends FATServlet {
         Class.forName("jakarta.nosql.document.Document");
         Class.forName("jakarta.nosql.keyvalue.KeyValueEntity");
         Class.forName("jakarta.nosql.query.Query");
+    }
+
+    /**
+     * Verify that implementation of a repository class can be injected. It won't be usable yet.
+     */
+    @Test
+    public void testInjectRepository() {
+        assertNotNull(employees);
     }
 
     /**
