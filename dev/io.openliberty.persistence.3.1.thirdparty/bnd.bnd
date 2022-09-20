@@ -13,7 +13,7 @@ bVersion=1.0
 
 # Eclipselink version info
 eclVersion=4.0.0
-eclFullVersion=${eclVersion}-RC1
+eclFullVersion=${eclVersion}.RC2
 eclPackageVersion=4.0.0
 asmFullVersion=9.3.0
 
@@ -118,25 +118,25 @@ DynamicImport-Package: \
 
 Private-Package: io.openliberty.persistence.internal.helper
 
--maven-dependencies.fix: \
- org.eclipse.persistence:org.eclipse.persistence.core:4.0.0-RC1;\
-   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.core;version=4.0.0,\
- org.eclipse.persistence:org.eclipse.persistence.jpa:4.0.0-RC1;\
-   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.jpa;version=4.0.0,\
- org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:4.0.0-RC1;\
-   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.jpa.jpql;version=4.0.0,\
- org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:4.0.0-RC1;\
-   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.jpa.modelgen.processor;version=4.0.0,\
- org.eclipse.persistence:org.eclipse.persistence.json:4.0.0-RC1;\
-   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.json;version=4.0.0
+#-maven-dependencies.fix: \
+# org.eclipse.persistence:org.eclipse.persistence.core:${eclFullVersion};\
+#   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.core;version=4.0.0,\
+# org.eclipse.persistence:org.eclipse.persistence.jpa:${eclFullVersion};\
+#   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.jpa;version=4.0.0,\
+# org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:${eclFullVersion};\
+#   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.jpa.jpql;version=4.0.0,\
+# org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:${eclFullVersion};\
+#   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.jpa.modelgen.processor;version=4.0.0,\
+# org.eclipse.persistence:org.eclipse.persistence.json:${eclFullVersion};\
+#   groupId=org.eclipse.persistence;artifactId=org.eclipse.persistence.json;version=4.0.0
 
 Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.json;${eclVersion}}!/!META-INF/maven/*
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.json;${eclFullVersion};EXACT}!/!META-INF/maven/*
 
 publish.wlp.jar.suffix: dev/api/third-party
 
@@ -152,8 +152,14 @@ Service-Component: \
     configuration-policy:=ignore; \
     properties:="resources=${app-resources}"
 
+#-buildpath: \
+#    org.eclipse.persistence:org.eclipse.persistence.core;version=${eclVersion};maven-version=${eclFullVersion},\
+#    org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclVersion};maven-version=${eclFullVersion},\
+#    io.openliberty.jakarta.persistence.3.1;version=latest,\
+#    com.ibm.websphere.org.osgi.core
+
 -buildpath: \
-    org.eclipse.persistence:org.eclipse.persistence.core;version=${eclVersion};maven-version=${eclVersion}-RC1,\
-    org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclVersion};maven-version=${eclVersion}-RC1,\
+    org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion};strategy=exact,\
+    org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclFullVersion};strategy=exact,\
     io.openliberty.jakarta.persistence.3.1;version=latest,\
     com.ibm.websphere.org.osgi.core
