@@ -20,7 +20,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
-import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest;
 import io.openliberty.security.oidcclientcore.client.LogoutConfig;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
@@ -36,10 +35,6 @@ public class LogoutHandler extends EndpointRequest {
 
     private OidcProviderMetadata providerMetadata = null;
     private String clientId = null;
-
-    //Move to the common place or user OIDCConstants.java
-    public static final String LOGIN = "login";
-    public static final String OIDC_AUTHZ_PARAM_PROMPT = "prompt";
 
     //Move to OidcDiscoveryConstants
     public static final String METADATA_KEY_ENDSESSION_ENDPOINT = "endSession_endpoint";
@@ -74,7 +69,6 @@ public class LogoutHandler extends EndpointRequest {
             CustomLogoutStrategy customLogoutStrategy = new CustomLogoutStrategy(req, resp, redirectUrl);
             return customLogoutStrategy.logout();
         } else {
-            req.setAttribute(AuthorizationRequestParameters.PROMPT, LOGIN);
             JakartaOidcAuthorizationRequest oidcAuthorizationRequest = new JakartaOidcAuthorizationRequest(req, resp, oidcClientConfig);
             return oidcAuthorizationRequest.sendRequest();
         }
@@ -82,6 +76,7 @@ public class LogoutHandler extends EndpointRequest {
 
     String getEndSessionEndpoint() throws OidcDiscoveryException {
         // Provider metadata overrides properties discovered via providerUri
+        //TODO: move to some util class
         String endSessionEndpoint = getEndSessionEndpointFromProviderMetadata();
         if (endSessionEndpoint == null) {
             endSessionEndpoint = getEndSessionEndpointFromDiscoveryMetadata();
