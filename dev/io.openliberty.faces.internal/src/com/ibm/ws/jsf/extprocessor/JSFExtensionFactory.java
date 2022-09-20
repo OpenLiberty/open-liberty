@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,12 +25,12 @@ import javax.servlet.ServletContextListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.ws.jsf.jsp.shared.util.JspURIMatcher;
 import com.ibm.ws.jsf.shared.JSFConstants;
 import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
 import com.ibm.ws.jsf.shared.cdi.CDIJSFInitializer;
 import com.ibm.ws.jsf.shared.extprocessor.JSFExtensionProcessor;
 import com.ibm.ws.jsf.shared.util.FacesMessages;
-import com.ibm.ws.jsf.shared.util.JspURIMatcher;
 import com.ibm.ws.jsf.shared.util.WSFacesUtil;
 import com.ibm.ws.serialization.SerializationService;
 import com.ibm.wsspi.classloading.ClassLoadingService;

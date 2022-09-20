@@ -19,6 +19,7 @@ import org.apache.myfaces.webapp.StartupServletContextListener;
 
 import com.ibm.ws.jsf.shared.JSFConstants;
 import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
+import com.ibm.wsspi.webcontainer.annotation.AnnotationHelperManager;
 
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
@@ -72,7 +73,7 @@ public class WASMyFacesContainerInitializer extends MyFacesContainerInitializer 
 
         Boolean mappingAdded = (Boolean) servletContext.getAttribute(MyFacesContainerInitializer.FACES_SERVLET_ADDED_ATTRIBUTE);
         if (mappingAdded != null && mappingAdded) {
-            /**
+            /*
              * Add the myfaces lifecycle listener; this is necessary since the StartupServletContextListener registration
              * was moved from the myfaces_core.tld to a web-fragment.
              *
@@ -83,6 +84,23 @@ public class WASMyFacesContainerInitializer extends MyFacesContainerInitializer 
             addLifecycleListener(servletContext);
 
             log.log(Level.INFO, "Added StartupServletContextListener to the servlet context");
+
+            /*
+             * In previous version of Faces/JSF this was done in the AbstractJSPExtensionFactory.createExtensionProcessor.
+             * In Faces 4.0 the Pages/JSP feature is no longer enabled as Pages/JSP support was removed from the Faces 4.0 Specification.
+             * If an AnnotationHandlerManager is not added here then when the WASCDIAnnotationInjectionProvider tries to get an instance
+             * of an AnnotationHelperManager null is returned.
+             *
+             * The JSFExtensionFactory will do this for applications that define a FacesServlet and we'll create the
+             * AnnotationHelperManager here for applications that have a FacesServlet defined dynamically.
+             */
+
+            AnnotationHelperManager aHM =  new AnnotationHelperManager(servletContext);
+            AnnotationHelperManager.addInstance(servletContext, aHM);
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
+                log.logp(Level.FINE,"WASMyFacesContainerInitializer","onStartup", "Added AnnotationHelperManager of: " + aHM);
+                log.logp(Level.FINE,"WASMyFacesContainerInitializer","onStartup", "with ServletContext of: " + servletContext);
+            }
         }
     }
 

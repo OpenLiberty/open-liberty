@@ -50,6 +50,7 @@ Subsystem-Name: JavaServer Faces 2.3
  com.ibm.ws.org.apache.commons.discovery.0.2, \
  io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.jsf.shared, \
+ com.ibm.ws.jsf.jsp.shared, \
  io.openliberty.faces.internal, \
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.apache.commons.digester.1.8, \
