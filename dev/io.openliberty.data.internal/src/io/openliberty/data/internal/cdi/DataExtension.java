@@ -8,16 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal;
+package io.openliberty.data.internal.cdi;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -37,7 +43,7 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 
-public class DataExtension implements Extension {
+public class DataExtension implements Extension, PrivilegedAction<DataExtensionMetadata> {
     private static final TraceComponent tc = Tr.register(DataExtension.class);
 
     private final ArrayList<Entities> entitiesListsForTemplate = new ArrayList<>();
@@ -65,6 +71,8 @@ public class DataExtension implements Extension {
     }
 
     public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
+        DataExtensionMetadata svc = AccessController.doPrivileged(this);
+
         // Group entities by data access provider and class loader
         Map<EntityGroupKey, List<Class<?>>> entityGroups = new HashMap<>();
 
@@ -81,7 +89,7 @@ public class DataExtension implements Extension {
             entityClasses.add(entityClass);
 
             BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
-            Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>(beanMgr, entityClass));
+            Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>(beanMgr, svc, entityClass));
             repositoryBeans.add(bean);
         }
 
@@ -161,5 +169,16 @@ public class DataExtension implements Extension {
         }
 
         return entityClass;
+    }
+
+    /**
+     * Obtain the service that informed CDI of this extension.
+     */
+    @Override
+    @Trivial
+    public DataExtensionMetadata run() {
+        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionMetadata.class).getBundleContext();
+        ServiceReference<DataExtensionMetadata> ref = bundleContext.getServiceReference(DataExtensionMetadata.class);
+        return bundleContext.getService(ref);
     }
 }

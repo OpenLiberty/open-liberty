@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal;
+package io.openliberty.data.internal.cdi;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
@@ -16,19 +16,31 @@ import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
+import io.openliberty.data.internal.DataProvider;
 import jakarta.data.Entities;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.inject.spi.Extension;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           service = CDIExtensionMetadata.class)
-public class DataService implements CDIExtensionMetadata {
+@Component(configurationPid = "io.openliberty.data.internal.cdi.DataExtensionMetadata",
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
+           service = { CDIExtensionMetadata.class, DataExtensionMetadata.class },
+           immediate = true)
+public class DataExtensionMetadata implements CDIExtensionMetadata {
     private static final Set<Class<? extends Annotation>> beanDefiningAnnos = Set.of(Entities.class, Repository.class);
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
+
+    @Reference(name = "NoSQLDataProvider", cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
+    DataProvider noSQLDataProvider;
+
+    @Reference(name = "PersistenceDataProvider", cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
+    DataProvider persistenceDataProvider;
 
     //@Override
     //@Trivial
