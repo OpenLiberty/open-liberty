@@ -13,6 +13,7 @@ package io.openliberty.security.oidcclientcore.client;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.authentication.AbstractFlow;
@@ -26,6 +27,7 @@ import io.openliberty.security.oidcclientcore.token.TokenValidationException;
 public class Client {
 
     private final OidcClientConfig oidcClientConfig;
+    private static JWKSet jwkSet = null;
 
     public Client(OidcClientConfig oidcClientConfig) {
         this.oidcClientConfig = oidcClientConfig;
@@ -45,9 +47,18 @@ public class Client {
         return flow.continueFlow(request, response);
     }
 
-    public void validate(TokenResponse tokenResponse) throws TokenValidationException {
+    public void validate(TokenResponse tokenResponse, HttpServletRequest request, HttpServletResponse response) throws TokenValidationException {
         TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
+        tokenResponseValidator.setRequest(request);
+        tokenResponseValidator.setResponse(response);
+        tokenResponseValidator.setJwkSet(getJwkSet());
         tokenResponseValidator.validate(tokenResponse);
+    }
+    public JWKSet getJwkSet() {
+        if (jwkSet == null) { 
+            jwkSet = new JWKSet();
+        }
+        return jwkSet;
     }
 
     public void logout() {

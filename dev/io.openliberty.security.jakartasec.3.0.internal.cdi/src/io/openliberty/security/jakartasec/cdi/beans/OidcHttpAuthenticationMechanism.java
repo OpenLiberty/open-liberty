@@ -182,7 +182,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
-            status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, client);
+            status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, request, response, client);
         } catch (AuthenticationResponseException e) {
             status = httpMessageContext.notifyContainerAboutLogin(getCredentialValidationResultFromException(e));
         } catch (TokenRequestException e) {
@@ -201,14 +201,14 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     private AuthenticationStatus processContinueFlowResult(ProviderAuthenticationResult providerAuthenticationResult,
-                                                           HttpMessageContext httpMessageContext, Client client) throws AuthenticationException {
+                                                           HttpMessageContext httpMessageContext, HttpServletRequest request, HttpServletResponse response, Client client) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
         if (providerAuthenticationResult != null) {
             AuthResult authResult = providerAuthenticationResult.getStatus();
 
             if (AuthResult.SUCCESS.equals(authResult)) {
-                status = handleOidcLogin(providerAuthenticationResult, httpMessageContext, client);
+                status = handleOidcLogin(providerAuthenticationResult, httpMessageContext, request, response, client);
             }
         }
 
@@ -216,20 +216,20 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     private AuthenticationStatus handleOidcLogin(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext,
-                                                 Client client) throws AuthenticationException {
-        Credential credential = createOidcTokensCredential(providerAuthenticationResult, client);
+                                                 HttpServletRequest request, HttpServletResponse response, Client client) throws AuthenticationException {
+        Credential credential = createOidcTokensCredential(providerAuthenticationResult, request, response, client);
         // TODO: "When available in the "Token Response", the optional fields "refresh_token" and "expires_in" must be stored internally." Store full credential in the subject.
         return validateCredentials(credential, httpMessageContext);
     }
 
-    private Credential createOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult, Client client) {
+    private Credential createOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult, HttpServletRequest request, HttpServletResponse response, Client client) {
         Credential credential = null;
 
         Hashtable<String, Object> customProperties = providerAuthenticationResult.getCustomProperties();
         if (customProperties != null) {
             TokenResponse tokenResponse = (TokenResponse) customProperties.get(JakartaOidcTokenRequest.AUTH_RESULT_CUSTOM_PROP_TOKEN_RESPONSE);
             if (tokenResponse != null) {
-                credential = new OidcTokensCredential(tokenResponse, client);
+                credential = new OidcTokensCredential(tokenResponse, client, request, response);
             }
         }
 

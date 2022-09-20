@@ -42,7 +42,7 @@ public class OidcIdentityStore implements IdentityStore {
             Client client = castCredential.getClient();
             if (tokenResponse != null && client != null) {
                 try {
-                    client.validate(tokenResponse);
+                    client.validate(tokenResponse,castCredential.getRequest(), castCredential.getResponse());
                     return createSuccessfulCredentialValidationResult(client.getOidcClientConfig(), tokenResponse);
                 } catch (Exception e) {
                     return CredentialValidationResult.INVALID_RESULT;

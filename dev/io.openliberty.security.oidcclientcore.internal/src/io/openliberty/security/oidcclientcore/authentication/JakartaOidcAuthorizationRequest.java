@@ -41,11 +41,10 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     private enum StorageType {
         COOKIE, SESSION
     }
-
     private OidcClientConfig config = null;
     private OidcProviderMetadata providerMetadata = null;
-
     private StorageType storageType;
+
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
 
@@ -55,7 +54,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         this.providerMetadata = (config == null) ? null : config.getProviderMetadata();
         instantiateStorage(config);
     }
-
+    
     private void instantiateStorage(OidcClientConfig config) {
         if (config.isUseSession()) {
             this.storage = new SessionBasedStorage(request);

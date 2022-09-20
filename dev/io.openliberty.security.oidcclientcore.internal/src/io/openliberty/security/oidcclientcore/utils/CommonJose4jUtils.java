@@ -85,7 +85,7 @@ public class CommonJose4jUtils {
         private String jwkuri;
         private String clientid;
         private String clientsecret;
-        JWKSet jwkset = new JWKSet(); // TODO: this should be per Client?
+        private JWKSet jwkset;
         private String issuer;
 
         private TokenSignatureValidationBuilder() {
@@ -140,6 +140,15 @@ public class CommonJose4jUtils {
             this.issuer = issuer;
             return this;
         }
+        
+
+        /**
+         * @param jwkset
+         */
+        public TokenSignatureValidationBuilder jwkset(JWKSet jwkset) {
+           this.jwkset = jwkset;
+           return this; 
+        }
 
         /**
          * @return
@@ -150,11 +159,11 @@ public class CommonJose4jUtils {
          * @throws KeyStoreException
          */
         public Key getVerificationKey() throws KeyStoreException, PrivilegedActionException, IOException, InterruptedException, Exception {
-            String kid = this.signature.getKeyIdHeaderValue();
-            String x5t = this.signature.getX509CertSha1ThumbprintHeaderValue();
             if (getSignatureAlgorithm() != null && getSignatureAlgorithm().startsWith("HS")) {
                 return new HmacKey(clientsecret.getBytes("UTF-8"));
             }
+            String kid = this.signature.getKeyIdHeaderValue();
+            String x5t = this.signature.getX509CertSha1ThumbprintHeaderValue();
             return createJwkRetriever().getPublicKeyFromJwk(kid, x5t, "sig", false);
         }
 
