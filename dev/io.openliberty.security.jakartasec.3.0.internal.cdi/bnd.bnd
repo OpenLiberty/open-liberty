@@ -60,8 +60,7 @@ src: src, resources
 	io.openliberty.security.jakartasec.3.0.internal,\
 	io.openliberty.security.oidcclientcore.internal.jakarta,\
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
-	com.ibm.ws.webcontainer.security;version=latest,\
-	com.ibm.ws.security.javaeesec.cdi;version=latest
+	io.openliberty.webcontainer.security.internal;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
@@ -77,7 +76,6 @@ src: src, resources
 	io.openliberty.jakarta.security.3.0,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	com.ibm.ws.security.common.jsonwebkey;version=latest,\
-	com.ibm.ws.security.javaeesec.1.0,\
 	com.ibm.json4j;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
