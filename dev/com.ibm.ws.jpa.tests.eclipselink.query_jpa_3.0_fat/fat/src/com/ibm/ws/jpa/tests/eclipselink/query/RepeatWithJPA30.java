@@ -12,31 +12,32 @@
 package com.ibm.ws.jpa.tests.eclipselink.query;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE7FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 
-public class RepeatWithJPA21 extends EE7FeatureReplacementAction {
-    public static final String ID = "JPA21";
+public class RepeatWithJPA30 extends JakartaEE9Action {
+    public static final String ID = "JPA30";
 
     /**
      * Allow the default repeat action to run on LITE mode
      */
-    public RepeatWithJPA21() {
+    public RepeatWithJPA30() {
         // Used in componenttest.rules.repeater.RepeatTestAction.isEnabled() to determine if the test should run
         withTestMode(TestMode.LITE);
     }
 
     @Override
     public String toString() {
-        return "JPA 2.1";
+        return "JPA 3.0";
     }
 
     @Override
     public void setup() throws Exception {
-        FATSuite.repeatPhase = "jpa21-cfg.xml";
+        FATSuite.repeatPhase = "jpa30-cfg.xml";
     }
 
-    @Override
-    public String getID() {
-        return ID;
-    }
+//    // Overriding this method will disable Jakarta EE9 transformer
+//    @Override
+//    public String getID() {
+//        return ID;
+//    }
 }

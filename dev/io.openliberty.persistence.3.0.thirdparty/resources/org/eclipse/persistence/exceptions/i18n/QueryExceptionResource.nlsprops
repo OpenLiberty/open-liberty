@@ -261,7 +261,7 @@
 
 6134=Attribute name or expression passed as a first parameter to addUpdate method does not define a field. {1}Attribute name or Expression: [{2}]{1}Descriptor: [{0}]
 
-6135=Attribute name or expression passed as a first parameter to addUpdate method defines a field from a table that''s not mapped to query descriptor. {1}Attribute name or Expression: [{2}]{1}Wrong field: [{3}]{1}Descriptor: [{0}]
+6135=Attribute name or expression passed as a first parameter to addUpdate method defines a field from a table that is not mapped to query descriptor. {1}Attribute name or Expression: [{2}]{1}Wrong field: [{3}]{1}Descriptor: [{0}]
 
 6136=Classes mapped with multi table inheritance cannot be ReportQuery items. Item: {0}, Expression: {1}.
 
