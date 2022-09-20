@@ -16,6 +16,8 @@ import static org.junit.Assert.assertNull;
 import java.util.Set;
 
 import org.jmock.Expectations;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,6 +29,7 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
+import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import test.common.SharedOutputManager;
 
 public class OidcIdentityStoreTest extends CommonTestClass {
@@ -36,6 +39,8 @@ public class OidcIdentityStoreTest extends CommonTestClass {
     private final OidcClientConfig config = mockery.mock(OidcClientConfig.class);
     private final ClaimsMappingConfig claimsMappingConfig = mockery.mock(ClaimsMappingConfig.class);
     private final TokenResponse tokenResponse = mockery.mock(TokenResponse.class);
+    private final AccessToken accessToken = mockery.mock(AccessToken.class);
+    private final JwtClaims idTokenClaims = mockery.mock(JwtClaims.class);
 
     private OidcIdentityStore identityStore;
 
@@ -63,28 +68,28 @@ public class OidcIdentityStoreTest extends CommonTestClass {
     // TODO - createSuccessfulCredentialValidationResult
 
     @Test
-    public void test_getCallerName_noClaimsMapping() {
+    public void test_getCallerName_noClaimsMapping() throws MalformedClaimException {
         mockery.checking(new Expectations() {
             {
                 one(config).getClaimsMappingConfig();
                 will(returnValue(null));
             }
         });
-        String result = identityStore.getCallerName(config, tokenResponse);
+        String result = identityStore.getCallerName(config, accessToken, idTokenClaims);
         assertNull("Result should have been null but was [" + result + "].", result);
     }
 
     // TODO - getCallerName
 
     @Test
-    public void test_getCallerGroups_noClaimsMapping() {
+    public void test_getCallerGroups_noClaimsMapping() throws MalformedClaimException {
         mockery.checking(new Expectations() {
             {
                 one(config).getClaimsMappingConfig();
                 will(returnValue(null));
             }
         });
-        Set<String> result = identityStore.getCallerGroups(config, tokenResponse);
+        Set<String> result = identityStore.getCallerGroups(config, accessToken, idTokenClaims);
         assertNull("Result should have been null but was [" + result + "].", result);
     }
 
@@ -171,5 +176,11 @@ public class OidcIdentityStoreTest extends CommonTestClass {
         String result = identityStore.getCallerGroupsClaim(config);
         assertEquals(claim, result);
     }
+    
+
+    // TODO - getClaimValueFromTokens
+    // TODO - getClaimFromAccessToken
+    // TODO - getClaimFromIdToken
+    // TODO - valueExistsAndIsNotEmpty
 
 }

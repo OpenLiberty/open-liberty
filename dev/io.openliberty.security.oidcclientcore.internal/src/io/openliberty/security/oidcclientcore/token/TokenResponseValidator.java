@@ -104,11 +104,11 @@ public class TokenResponseValidator {
     /**
      * @param tokenResponse
      */
-    public void validate(TokenResponse tokenResponse) throws TokenValidationException {
+    public JwtClaims validate(TokenResponse tokenResponse) throws TokenValidationException {
         String idtoken = null;
 
         if (tokenResponse != null) {
-            idtoken = tokenResponse.getIdToken();
+            idtoken = tokenResponse.getIdTokenString();
         }
 
         JwtContext jwtcontext = null;
@@ -173,11 +173,12 @@ public class TokenResponseValidator {
 
                 tokenSignatureValidationBuilder.clientsecret(clientSecret);
                 tokenSignatureValidationBuilder.jwkset(jwkset);
-                tokenSignatureValidationBuilder.parseJwtWithValidation(idtoken);
+                return tokenSignatureValidationBuilder.parseJwtWithValidation(idtoken);
             } catch (Exception e) {
                 throw new TokenValidationException(this.clientConfig.getClientId(), e.getMessage());
             }
         }
+        throw new TokenValidationException(this.clientConfig.getClientId(), "not a valid token to continue the flow");
     }
 
     /**

@@ -12,7 +12,7 @@ package io.openliberty.security.oidcclientcore.client;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.jose4j.jwt.JwtClaims;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
@@ -47,12 +47,12 @@ public class Client {
         return flow.continueFlow(request, response);
     }
 
-    public void validate(TokenResponse tokenResponse, HttpServletRequest request, HttpServletResponse response) throws TokenValidationException {
+    public JwtClaims validate(TokenResponse tokenResponse, HttpServletRequest request, HttpServletResponse response) throws TokenValidationException {
         TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
         tokenResponseValidator.setRequest(request);
         tokenResponseValidator.setResponse(response);
         tokenResponseValidator.setJwkSet(getJwkSet());
-        tokenResponseValidator.validate(tokenResponse);
+        return tokenResponseValidator.validate(tokenResponse);
     }
     public JWKSet getJwkSet() {
         if (jwkSet == null) { 
