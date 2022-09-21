@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.jakarta.restfulWS30api.fat;
+package io.openliberty.jakarta.restfulWS31api.fat;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,16 +27,17 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.jakarta.restfulWS30api.fat.app.canload.ApiTestServlet;
+import io.openliberty.jakarta.restfulWS31api.fat.app.canload.ApiTestServlet;
 
 @RunWith(FATRunner.class)
-public class CanLoadRESTfulWS30APIsTest extends FATServletClient {
+public class CanLoadRESTfulWS31APIsTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new FeatureReplacementAction("restfulWS-3.0", "restfulWSClient-3.0").withID("ClientFeature"));
+                    .andWith(new FeatureReplacementAction("restfulWS-3.1", "restfulWSClient-3.1").withID("EE10-ClientFeature"));
+
                     
-    public static final String APP_NAME = "jaxrs30api";
-    public static final String SERVER_NAME = "jaxrs30api";
+    public static final String APP_NAME = "jaxrs31api";
+    public static final String SERVER_NAME = "jaxrs31api";
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = ApiTestServlet.class, contextRoot = APP_NAME)
