@@ -14,6 +14,12 @@
 	xmlns="http://www.hazelcast.com/schema/config"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+    <!-- 
+         Use the randomly generated cluster names so that each test is not likely to join a cluster
+         that might already exist. Especially, if we had used the default.
+     -->
+    <cluster-name>${hazelcast.cluster.name}</cluster-name>
+
 	<executor-service name="default">
 		<pool-size>12</pool-size>
 	</executor-service>
