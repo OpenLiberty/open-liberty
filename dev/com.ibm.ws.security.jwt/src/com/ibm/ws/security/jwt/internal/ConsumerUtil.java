@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -102,7 +103,7 @@ public class ConsumerUtil {
     JwtContext parseJwtAndGetJwtContext(String jwtString, JwtConsumerConfig config) throws Exception {
         JwtContext jwtContext = parseJwtWithoutValidation(jwtString, config);
         if (config.isValidationRequired()) {
-            validateJwtContext(jwtContext, config);
+            validateJwtContext(jwtContext, jwtString, config);
         }
         return jwtContext;
     }
@@ -414,7 +415,8 @@ public class ConsumerUtil {
         return firstPassJwtConsumer.process(jwtString);
     }
 
-    protected void validateJwtContext(JwtContext jwtContext, JwtConsumerConfig config) throws Exception {
+    protected void validateJwtContext(JwtContext jwtContext, String jwtString, JwtConsumerConfig config)
+            throws Exception {
         Key key = getSigningKey(config, jwtContext);
         JwtClaims jwtClaims = jwtContext.getJwtClaims();
 
@@ -424,10 +426,72 @@ public class ConsumerUtil {
 
         validateClaims(jwtClaims, jwtContext, config);
         validateSignatureAlgorithmWithKey(config, key);
+        validateHeaders(jwtContext, jwtString, config);
 
         JwtConsumerBuilder consumerBuilder = initializeJwtConsumerBuilderWithValidation(config, jwtClaims, key);
         JwtConsumer jwtConsumer = consumerBuilder.build();
         processJwtContextWithConsumer(jwtConsumer, jwtContext);
+    }
+
+    private void validateHeaders(JwtContext jwtContext, String jwtString, JwtConsumerConfig config)
+            throws InvalidTokenException {
+
+        if (isRunningBetaMode() && JweHelper.isJwe(jwtString)) {
+            List<JsonWebStructure> jsonWebStructures = jwtContext.getJoseObjects();
+            JsonWebStructure jsonWebStructureToCheck = null;
+            // Find JWE
+            for (JsonWebStructure jsonWebStructure : jsonWebStructures) {
+                if (jsonWebStructure instanceof JsonWebEncryption) {
+                    jsonWebStructureToCheck = jsonWebStructure;
+                    break;
+                }
+            }
+            String tokenAlg = jsonWebStructureToCheck.getAlgorithmHeaderValue();
+            String keyManagementKeyAlgorithm = null;
+            // Get keyManagementKeyAlgorithm from server.xml
+            keyManagementKeyAlgorithm = config.getKeyManagementKeyAlgorithm();
+            /**
+             * If keyManagementKeyAlgorithm from server.xml is null, then take
+             * the value of keyManagementKeyAlgorithm from mpConfigProps
+             */
+            if (keyManagementKeyAlgorithm == null) {
+                String value = mpConfigProps.get(MpConfigProperties.DECRYPT_KEY_ALGORITHM);
+                if (value != null) {
+                    keyManagementKeyAlgorithm = value;
+                }
+            }
+            /**
+             * If keyManagementKeyAlgorithm is not null, do the following check
+             * if keyManagementKeyAlgorithm is null (i.e. MP JWT < 2.1) skip the
+             * check
+             */
+            if (keyManagementKeyAlgorithm != null) {
+                validateKeyManagementKeyAlgorithm(keyManagementKeyAlgorithm, tokenAlg);
+            }
+        }
+    }
+
+    // To validate KeyManagementKeyAlgorithm
+    void validateKeyManagementKeyAlgorithm(String keyManagementKeyAlgorithm, String tokenAlg)
+            throws InvalidTokenException {
+        if (tokenAlg == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Decrypt key algorithm was not found in the JWT");
+            }
+            // New message needed
+            String msg = Tr.formatMessage(tc, "JWT_MISSING_ALG_HEADER", new Object[] { keyManagementKeyAlgorithm });
+            throw new InvalidTokenException(msg);
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "JWT is signed with algorithm: ", tokenAlg);
+            Tr.debug(tc, "JWT is required to be signed with algorithm: ", keyManagementKeyAlgorithm);
+        }
+        if (!keyManagementKeyAlgorithm.equals(tokenAlg)) {
+            // New message needed
+            String msg = Tr.formatMessage(tc, "JWT_ALGORITHM_MISMATCH",
+                    new Object[] { tokenAlg, keyManagementKeyAlgorithm });
+            throw new InvalidTokenException(msg);
+        }
     }
 
     JwtConsumerBuilder initializeJwtConsumerBuilderWithoutValidation(JwtConsumerConfig config) {
@@ -476,8 +540,8 @@ public class ConsumerUtil {
         // Take tokenAge value from server.xml
         tokenAge = config.getTokenAge();
         /**
-         * If tokenAge from server.xml is zero, then take the value of
-         * clock_skew from mpConfigProps
+         * If tokenAge from server.xml is zero, then take the value of tokenAge
+         * from mpConfigProps
          */
         if (tokenAge == 0) {
             String value = mpConfigProps.get(MpConfigProperties.TOKEN_AGE);
@@ -485,7 +549,6 @@ public class ConsumerUtil {
                 tokenAge = Long.valueOf(value);
             }
         }
-
         validateIssuer(config.getId(), issuer, jwtClaims.getIssuer());
 
         validateAudience(config, jwtClaims.getAudience());
