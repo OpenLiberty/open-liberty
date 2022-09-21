@@ -10,13 +10,19 @@
  *******************************************************************************/
 package io.openliberty.webcontainer60.osgi.container.config;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.config.ServletConfigurator;
+import com.ibm.ws.container.service.config.ServletConfigurator.ConfigItem;
+import com.ibm.ws.container.service.config.WebFragmentInfo;
 import com.ibm.ws.javaee.dd.web.WebApp;
+import com.ibm.ws.javaee.dd.web.common.AttributeValue;
+import com.ibm.ws.javaee.dd.web.common.CookieConfig;
 import com.ibm.ws.javaee.dd.web.common.SessionConfig;
 import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
@@ -55,10 +61,61 @@ public class WebAppConfiguratorHelper60 extends WebAppConfiguratorHelper40 {
     public void configureFromWebApp(WebApp webApp) throws UnableToAdaptException {
         super.configureFromWebApp(webApp);
 
-        configureSessionConfig(webApp.getSessionConfig());
+        configureSessionConfig6(webApp.getSessionConfig());
     }
 
-    private void configureSessionConfig(SessionConfig sessionConfig) {
+    @Override
+    public void configureFromWebFragment(WebFragmentInfo webFragmentItem) throws UnableToAdaptException {
+        super.configureFromWebFragment(webFragmentItem);
 
+        configureSessionConfig6(webFragmentItem.getWebFragment().getSessionConfig());
+    }
+
+    /*
+     * Extend parent configureSessionConfig() to set cookie-config attributes
+     */
+    private void configureSessionConfig6(SessionConfig sessionConfig) {
+        if (sessionConfig == null) {
+            return;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.entry(tc, "configureSessionConfig6", "");
+        }
+
+        Map<String, ConfigItem<String>> sessionConfigItemMap = configurator.getConfigItemMap("session-config");
+        CookieConfig cookieConfig = sessionConfig.getCookieConfig();
+
+        if (cookieConfig != null) {
+            SessionCookieConfigImpl60 sessionCookieConfigImpl = (SessionCookieConfigImpl60) webAppConfiguration.getSessionCookieConfig();
+
+            List<AttributeValue> attributes = cookieConfig.getAttributes();
+            if (attributes != null) {
+                String attName;
+                String attValue;
+                Iterator<AttributeValue> attIterator = attributes.iterator();
+                while (attIterator.hasNext()) {
+                    AttributeValue attribute = attIterator.next();
+                    attName = attribute.getAttributeName();
+                    attValue = attribute.getAttributeValue();
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, " configureSessionConfig6 , attribute name [{0}] , attribute value [{1}]", attName, attValue);
+                    }
+                    ConfigItem<String> existedAttValue = sessionConfigItemMap.get(attName);
+
+                    if (existedAttValue == null) {
+                        sessionCookieConfigImpl.setAttribute(attName, attValue, false);
+                        sessionConfigItemMap.put(attName, createConfigItem(attValue));
+                    } else {
+                        validateDuplicateConfiguration("cookie-config", attName, attValue, existedAttValue);
+                    }
+                }
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.exit(tc, "configureSessionConfig6");
+        }
     }
 }
