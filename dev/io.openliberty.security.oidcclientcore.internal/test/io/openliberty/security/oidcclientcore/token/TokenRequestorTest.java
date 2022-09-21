@@ -53,8 +53,12 @@ public class TokenRequestorTest extends CommonTestClass {
     private static final String idToken = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk";
     private static final String tokenResponseEntity = "{\"access_token\":\"" + accessToken + "\",\"token_type\":\"" + tokenType + "\",\"expires_in\":" + expiresIn + ",\"scope\":\""
                                                       + scope + "\",\"refresh_token\":\"" + refreshToken + "\",\"id_token\":\"" + idToken + "\"}";
+    private static final String tokenRefreshResponseEntity = "{\"access_token\":\"" + accessToken + "\",\"token_type\":\"" + tokenType + "\",\"expires_in\":" + expiresIn
+                                                             + ",\"scope\":\""
+                                                             + scope + "\",\"refresh_token\":\"" + refreshToken + "\"}";
 
     private static final Map<String, Object> postResponseMap;
+    private static final Map<String, Object> postRefreshResponseMap;
 
     static {
         postResponseMap = new HashMap<String, Object>();
@@ -64,12 +68,20 @@ public class TokenRequestorTest extends CommonTestClass {
         postResponseMap.put(TokenConstants.SCOPE, scope);
         postResponseMap.put(TokenConstants.REFRESH_TOKEN, refreshToken);
         postResponseMap.put(TokenConstants.ID_TOKEN, idToken);
+
+        postRefreshResponseMap = new HashMap<String, Object>();
+        postRefreshResponseMap.put(TokenConstants.ACCESS_TOKEN, accessToken);
+        postRefreshResponseMap.put(TokenConstants.TOKEN_TYPE, tokenType);
+        postRefreshResponseMap.put(TokenConstants.EXPIRES_IN, expiresIn);
+        postRefreshResponseMap.put(TokenConstants.SCOPE, scope);
+        postRefreshResponseMap.put(TokenConstants.REFRESH_TOKEN, refreshToken);
     }
 
     private final OidcClientHttpUtil oidcClientHttpUtil = mockery.mock(OidcClientHttpUtil.class);
     private final SSLSocketFactory sslSocketFactory = mockery.mock(SSLSocketFactory.class);
 
     private List<NameValuePair> params;
+    private List<NameValuePair> refreshParams;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -82,6 +94,11 @@ public class TokenRequestorTest extends CommonTestClass {
         params.add(new BasicNameValuePair(TokenConstants.GRANT_TYPE, TokenConstants.AUTHORIZATION_CODE));
         params.add(new BasicNameValuePair(TokenConstants.REDIRECT_URI, redirectUri));
         params.add(new BasicNameValuePair(TokenConstants.CODE, code));
+
+        refreshParams = new ArrayList<NameValuePair>();
+        refreshParams.add(new BasicNameValuePair(TokenConstants.GRANT_TYPE, TokenConstants.REFRESH_TOKEN));
+        refreshParams.add(new BasicNameValuePair(TokenConstants.REDIRECT_URI, redirectUri));
+        refreshParams.add(new BasicNameValuePair(TokenConstants.REFRESH_TOKEN, refreshToken));
     }
 
     @After
@@ -257,6 +274,27 @@ public class TokenRequestorTest extends CommonTestClass {
         assertEquals(accessToken, tokenResponse.getAccessTokenString());
         assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
         assertEquals(idToken, tokenResponse.getIdTokenString());
+    }
+
+    @Test
+    public void test_requestTokensRefresh() throws Exception {
+        TokenRequestor tokenRequestor = new TokenRequestor.Builder(tokenEndpoint, clientId, clientSecret, redirectUri, null).refreshToken(refreshToken).grantType(TokenConstants.REFRESH_TOKEN).build();
+        tokenRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, refreshParams, clientId, clientSecret, null, null, false, TokenConstants.METHOD_BASIC, false);
+                will(returnValue(postRefreshResponseMap));
+                one(oidcClientHttpUtil).extractEntityFromTokenResponse(postRefreshResponseMap);
+                will(returnValue(tokenRefreshResponseEntity));
+            }
+        });
+
+        TokenResponse tokenResponse = tokenRequestor.requestTokens();
+
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertNotNull("The token response generation time must be set.", tokenResponse.getResponseGenerationTime());
     }
 
 }
