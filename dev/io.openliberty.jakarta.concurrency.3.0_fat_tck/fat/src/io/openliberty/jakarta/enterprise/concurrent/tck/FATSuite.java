@@ -39,6 +39,11 @@ import componenttest.custom.junit.runner.TestModeFilter;
 })
 public class FATSuite {
 
+    /**
+     * These test group names are defined in the TCK here:
+     * https://github.com/jakartaee/concurrency/blob/master/tck/src/main/java/ee/jakarta/tck/concurrent/common/TestGroups.java
+     *
+     */
     static enum PROFILE {
         FULL("eefull"),
         WEB("eeweb");
@@ -76,7 +81,8 @@ public class FATSuite {
         Set<String> specExcludes = new HashSet<>();
 
         /**
-         * Exclude certain tests when running in lite mode
+         * Exclude certain tests when running in lite mode.
+         * These tests do not perform well by design.
          */
         if (TestModeFilter.FRAMEWORK_TEST_MODE != Mode.TestMode.FULL) {
             Log.info(ConcurrentTckLauncherFull.class, "createSuiteXML", "Modifying API and Spec packages to exclude specific tests for lite mode.");
@@ -97,6 +103,7 @@ public class FATSuite {
 
         /**
          * If JDK is not in the supported list for signature testing, skip it.
+         * This will protect us from regressions as new JDK versions are released and tested.
          */
         int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
         if (!(javaSpecVersion == 11 || javaSpecVersion == 17)) {

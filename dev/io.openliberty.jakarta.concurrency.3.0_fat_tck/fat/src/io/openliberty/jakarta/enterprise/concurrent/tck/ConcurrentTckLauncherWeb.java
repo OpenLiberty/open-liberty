@@ -31,11 +31,11 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
 /**
- * This is a test class that runs the whole Jakarta Concurrency TCK. The TCK results
- * are copied in the results/junit directory before the Simplicity FAT framework
+ * This is a test class that runs the entire Jakarta Concurrency TCK against Web Profile.
+ *
+ * The TCK results are copied in the results/junit directory before the Simplicity FAT framework
  * generates the html report - so there is detailed information on individual
- * tests as if they were running as simplicity junit FAT tests in the standard
- * location.
+ * tests as if they were running as simplicity junit FAT tests in the standard location.
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 11)
