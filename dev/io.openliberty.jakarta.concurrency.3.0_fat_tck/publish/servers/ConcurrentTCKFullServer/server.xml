@@ -12,6 +12,12 @@
     <featureManager>
         <!-- Features being tested -->
 		<feature>jakartaee-10.0</feature>
+		<!-- Minimum features required 
+			<feature>concurrent-3.0</feature>
+			<feature>enterpriseBeans-4.0</feature>
+			<feature>appSecurity-5.0</feature>
+			<feature>pages-3.1</feature>
+		 -->
         <!-- Features needed for arquillan support -->
         <feature>localConnector-1.0</feature>
         <feature>restConnector-2.0</feature>
