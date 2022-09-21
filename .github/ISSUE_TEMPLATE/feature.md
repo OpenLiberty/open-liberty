@@ -84,6 +84,8 @@ Design preliminaries determine whether a formal design, which will be provided b
   - Follow the instructions in POC-Forum repo
 - [ ] POC Design / UFO review completed.
 - [ ] POC / UFO Review follow-ons completed.
+- [ ] POC Design / UFO approval requested.
+  - Owner adds label `Design Approval Request`
 - [ ] Design / UFO approved. ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) or N/A
   - ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) adds label `Design Approved`
   - Add the public link to the UFO in Box to the [Documents](#documents) section.
