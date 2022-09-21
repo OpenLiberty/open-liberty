@@ -256,23 +256,39 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         else
             sBuilderResponse.append(" getAttribute(\"DOMAIN\") PASS |");
 
-        /*
-         * Activate this when web.xml is updated for <attribute> element
+        //Test set/getAttribute from web.xml.  NPE can happen if the web.xml cannot parse for some reasons; thus the try/catch
         try {
-            if (!(cookieValue = scc.getAttribute("AttName1")).equals("AttValue1")) {
+            if (!(cookieValue = scc.getAttribute("AttName1")).equals("AttValue1_viaWebXML")) {
                 testPass = false;
-                sBuilderResponse.append(" getAttribute(\"AttName1\")) expecting [AttValue1] , actual [" + cookieValue + "] ||");
+                sBuilderResponse.append(" getAttribute(\"AttName1\")) expecting [AttValue1_viaWebXML] , actual [" + cookieValue + "] ||");
                 LOG.info("Test scc.getAttribute(\"AttName1\") FAIL");
             }
             else
                 sBuilderResponse.append(" getAttribute(\"AttName1\") PASS |");
+           
+            //test getAttributes
+            if (!(scc.getAttributes().get("AttName2")).equals("AttValue2_viaWebXML")) {
+                testPass = false;
+                sBuilderResponse.append(" getAttributes().get(\"AttName2\") expecting [AttValue2_viaWebXML] , actual [" + cookieValue + "] ||");
+                LOG.info("Test scc.getAttributes.get(\"AttName2\") FAIL");
+            }
+            else
+                sBuilderResponse.append(" getAttributes().get(\"AttName2\") PASS |");
+                
+            //test getAttributes.get("path") with lower case path
+            if (!(scc.getAttributes().get("path")).equals("CookieConfigPath_viaWebXML")) {
+                testPass = false;
+                sBuilderResponse.append(" getAttributes().get(\"path\") expecting [CookieConfigPath_viaWebXML] , actual [" + cookieValue + "] ||");
+                LOG.info("Test scc.getAttributes.get(\"AttName2\") FAIL");
+            }
+            else
+                sBuilderResponse.append(" getAttributes().get(\"path\") PASS |");
         }
-        catch (Exception e) {
+        catch (Exception e) { 
             testPass = false;
-            sBuilderResponse.append(" getAttribute(\"AttName1\") FAIL with an exception [" + e + "] ||");
-            LOG.info("Test scc.getAttribute(\"AttName1\") FAIL");
+            sBuilderResponse.append(" getAttribute() tests FAIL with an exception [" + e + "] ||");
+            LOG.info("Test scc.getAttribute() FAIL with Exception " + e);
         }
-         */
         
         if (testPass)
             sBuilderResponse.append("]  Result [PASS]");

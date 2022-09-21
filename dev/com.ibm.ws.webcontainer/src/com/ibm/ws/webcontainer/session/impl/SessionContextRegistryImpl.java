@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,7 +80,16 @@ public class SessionContextRegistryImpl extends SessionContextRegistry implement
                 sap.setHasApplicationSession(true);
                 sap.setApplicationSessionName(applicationSessionAppName);
             }
+           
+            //Servlet 6.0 
+            //We need the SessionCookieConfigImpl60 (scc) instance from the webAppConfig before creating createSessionContextObject.
+            //This scc is the uncloned version. createSessionContextObject() below will invoke HttpSessionContextImpl60 which will clone and set it back.
+            if (!com.ibm.ws.webcontainer.osgi.container.config.WebAppConfiguratorHelper.isServletSpecLevel50orLower()) {
+                smc.setClonedCookieConfig(webAppConfig.getSessionCookieConfig());
+            }
+            
             sessCtx = createSessionContextObject(smc, sap);
+            
             scrSessionContexts.put(appName, sessCtx);
         }
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {

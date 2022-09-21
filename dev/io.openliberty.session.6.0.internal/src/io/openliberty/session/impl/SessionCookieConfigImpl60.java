@@ -114,6 +114,9 @@ public class SessionCookieConfigImpl60 extends SessionCookieConfigImpl implement
         temp.attributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         temp.attributes.putAll(this.attributes);
 
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " returns cloned SessionCookieConfig [" + temp + "]");
+        }
         return temp;
     }
 

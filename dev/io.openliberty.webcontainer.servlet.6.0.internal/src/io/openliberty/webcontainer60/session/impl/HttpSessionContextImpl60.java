@@ -48,10 +48,13 @@ public class HttpSessionContextImpl60 extends HttpSessionContext31Impl {
             LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " Constructor");
         }
 
+        //Get the SessionCookieConfigImpl60 from smc, CLONE it, and set the cloned scc back to the smc
         SessionCookieConfig scc = smc.getSessionCookieConfig();
-
-        //override the default sccimpl with version 6 sccimpl
-        smc.setClonedCookieConfig(new SessionCookieConfigImpl60(scc.getName(), scc.getDomain(), scc.getPath(), scc.getComment(), scc.getMaxAge(), scc.isHttpOnly(), scc.isSecure()));
+        try {
+            smc.setClonedCookieConfig(((SessionCookieConfigImpl60) scc).clone());
+        } catch (Exception e) { //This will unlikely happen.
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " Constructor, clone SCC problem. Exception [" + e + "]");
+        }
     }
 
     /**
