@@ -35,7 +35,6 @@ import com.ibm.ws.cdi.extension.apps.multipleWar.war1.WAR1MyBean;
 import com.ibm.ws.cdi.extension.apps.multipleWar.war1.WAR1TestServlet;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -84,10 +83,10 @@ public class CDI12ExtensionTest {
         WebArchive helloWorldExtensionTest = ShrinkWrap.create(WebArchive.class, "helloWorldExtensionTest.war");
         helloWorldExtensionTest.addClass(HelloWorldExtensionTestServlet.class);
         helloWorldExtensionTest.addClass(HelloWorldExtensionBean.class);
-        CDIArchiveHelper.addBeansXML(helloWorldExtensionTest, DiscoveryMode.DEFAULT, CDIVersion.CDI10);
+        CDIArchiveHelper.addBeansXML(helloWorldExtensionTest, DiscoveryMode.DEFAULT, CDIVersion.CDI11);
 
         EnterpriseArchive helloWorldExtension = ShrinkWrap.create(EnterpriseArchive.class,
-                                                                 "helloWorldExension.ear");
+                                                                  "helloWorldExension.ear");
         helloWorldExtension.setApplicationXML(HelloWorldExtensionTestServlet.class.getPackage(), "application.xml");
 
         helloWorldExtension.addAsModule(helloWorldExtensionTest);
@@ -104,7 +103,6 @@ public class CDI12ExtensionTest {
     }
 
     @Test
-    @SkipForRepeat(CDIExtensionRepeatActions.EE10_PLUS_ID) //currently does not work on EE10, don't know why - https://github.com/OpenLiberty/open-liberty/issues/19900
     public void testHelloWorldExtensionServlet() throws Exception {
         HttpUtils.findStringInUrl(server, "/helloWorldExtension/hello", "Hello World CDI 1.2!");
 
