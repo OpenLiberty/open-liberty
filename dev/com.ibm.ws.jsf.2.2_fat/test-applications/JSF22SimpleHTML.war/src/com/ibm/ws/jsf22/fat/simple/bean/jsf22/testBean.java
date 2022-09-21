@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import javax.faces.component.UIViewParameter;
 @ApplicationScoped
 public class testBean {
 
-    public String submittedValue;
+    private String submittedValue;
 
     /**
      * @return the submittedValue
@@ -45,10 +45,7 @@ public class testBean {
         if (!((Boolean) holder.getSubmittedValue())) {
             System.out.println("getSubmittedValue FAIL");
             submittedValue = "getSubmittedValue FAIL";
-        }
-        else
+        } else
             submittedValue = "getSubmittedValue PASS";
-
     }
-
 }

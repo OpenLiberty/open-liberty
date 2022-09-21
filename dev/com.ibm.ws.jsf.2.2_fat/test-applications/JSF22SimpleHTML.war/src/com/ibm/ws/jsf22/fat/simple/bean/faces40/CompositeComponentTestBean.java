@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,14 @@
  */
 package com.ibm.ws.jsf22.fat.simple.bean.faces40;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 /**
  * Simple bean to test the h:commandButton action on first click when
  * there is one composite component with comments on interface section.
  */
-@ManagedBean
+@Named
 @RequestScoped
 public class CompositeComponentTestBean {
 

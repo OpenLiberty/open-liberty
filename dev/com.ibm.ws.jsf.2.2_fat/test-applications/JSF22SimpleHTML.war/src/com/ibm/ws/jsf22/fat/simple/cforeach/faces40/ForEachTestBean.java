@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,15 +14,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+import com.ibm.ws.jsf22.fat.simple.cforeach.SimpleNotSerializableObject;
+import com.ibm.ws.jsf22.fat.simple.cforeach.SimpleOverridenEqualsObject;
+import com.ibm.ws.jsf22.fat.simple.cforeach.SimpleSerializableObject;
 
 /**
  * This bean helps testing the c:forEach tag when using an object with custom equals method (overriden equals)
  * and when using an object that is not serializable.
  */
 @RequestScoped
-@ManagedBean(name = "forEachTest")
+@Named("forEachTest")
 public class ForEachTestBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
