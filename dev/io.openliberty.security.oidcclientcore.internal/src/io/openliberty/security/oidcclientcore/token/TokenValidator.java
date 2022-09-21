@@ -23,8 +23,7 @@ import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 public class TokenValidator {
 
     private String issuer;
-    private String issuerfromdiscovery;
-    private static String tokenepfromdiscovery;
+    private String issuerconfigured;
     private String subject = null;
     private List<String> audiences;
     private String azp = null;
@@ -195,66 +194,17 @@ public class TokenValidator {
      *
      */
     protected void validateIssuer() throws TokenValidationException {
-        String iss = getIssuer(oidcConfig);//oidcConfig.getProviderMetadata().getIssuer();
-        if (!iss.equals(this.issuer)) {
+        if (!issuerconfigured.equals(this.issuer)) {
             throw new TokenValidationException(oidcConfig.getClientId(), "issuer is [ " + this.issuer + " ], expecting  [ " + oidcConfig.getProviderMetadata().getIssuer() + " ]");
         }
-    }
-
-    public static String getIssuer(OidcClientConfig clientConfig) {
-        String issuer = null;
-        issuer = clientConfig.getProviderMetadata().getIssuer();
-        if (issuer == null || issuer.isEmpty()) {
-            issuer = getIssuerFromTokenEndpoint(clientConfig);
-            if (issuer != null) {
-                return issuer;
-            }
-        }
-        return issuer;
-    }
-
-    static String getIssuerFromTokenEndpoint(OidcClientConfig clientConfig) {
-        String issuer = null;
-        String tokenEndpoint = clientConfig.getProviderMetadata().getTokenEndpoint();
-        if (tokenEndpoint == null) {
-            tokenEndpoint = getTokenepFromDiscovery();
-        }
-        if (tokenEndpoint != null) {
-            int endOfSchemeIndex = tokenEndpoint.indexOf("//");
-            int lastSlashIndex = tokenEndpoint.lastIndexOf("/");
-            boolean urlContainsScheme = endOfSchemeIndex > -1;
-            boolean urlContainsSlash = lastSlashIndex > -1;
-            if ((!urlContainsScheme && !urlContainsSlash) || (urlContainsScheme && (lastSlashIndex == (endOfSchemeIndex + 1)))) {
-                issuer = tokenEndpoint;
-            } else {
-                issuer = tokenEndpoint.substring(0, lastSlashIndex);
-            }
-        }
-        return issuer;
-    }
-
-    /**
-     * @return
-     */
-    static String getTokenepFromDiscovery() {
-        return tokenepfromdiscovery;
     }
 
     /**
      * @param issuerFromDiscovery
      * @return
      */
-    public TokenValidator issuerfromdiscovery(String issuerFromDiscovery) {
-        this.issuerfromdiscovery = issuerFromDiscovery;
-        return this;
-    }
-
-    /**
-     * @param tokenepFromDiscovery
-     * @return
-     */
-    public TokenValidator tokenepfromdiscovery(String tokenepFromDiscovery) {
-        this.tokenepfromdiscovery = tokenepFromDiscovery;
+    public TokenValidator issuerconfigured(String issuerFromProviderMetadata) {
+        this.issuerconfigured = issuerFromProviderMetadata;
         return this;
     }
 }

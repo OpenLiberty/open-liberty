@@ -86,7 +86,7 @@ public class CommonJose4jUtils {
         private String clientid;
         private String clientsecret;
         private JWKSet jwkset;
-        private String issuer;
+        private String issuerconfigured;
 
         private TokenSignatureValidationBuilder() {
 
@@ -133,11 +133,11 @@ public class CommonJose4jUtils {
         }
 
         /**
-         * @param issuer
+         * @param issuerFromProviderMetadata
          * @return
          */
-        public TokenSignatureValidationBuilder issuer(String issuer) {
-            this.issuer = issuer;
+        public TokenSignatureValidationBuilder issuer(String issuerFromProviderMetadata) {
+            this.issuerconfigured = issuerFromProviderMetadata;
             return this;
         }
         
@@ -206,7 +206,7 @@ public class CommonJose4jUtils {
             }
             JwtConsumerBuilder builder = new JwtConsumerBuilder();
             builder.setRequireExpirationTime().setAllowedClockSkewInSeconds(120).setExpectedAudience(this.clientid).setExpectedIssuer(false,
-                                                                                                                                      this.issuer).setRequireSubject().setSkipDefaultAudienceValidation().setVerificationKey(key).setRelaxVerificationKeyValidation();
+                                                                                                                                      this.issuerconfigured).setRequireSubject().setSkipDefaultAudienceValidation().setVerificationKey(key).setRelaxVerificationKeyValidation();
 
             JwtConsumer jwtConsumer = builder.build();
 
