@@ -13,8 +13,12 @@ package io.openliberty.security.jakartasec.tokens;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
+import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.JwtClaims;
 import jakarta.security.enterprise.identitystore.openid.Scope;
@@ -27,15 +31,26 @@ public class AccessTokenImpl implements AccessToken, Serializable {
     private final Long expirationTimeInSeconds;
     private final Instant responseGenerationTime;
     private final Long tokenMinValidityInMillis;
-    private final Type type;
+    private Map<String, Object> accessTokenClaimsMap;
+    private JwtClaims jwtClaims;
+    private Type type;
 
     public AccessTokenImpl(String tokenString, Instant responseGenerationTime, Long expirationTimeInSeconds, Long tokenMinValidityInMillis) {
         this.tokenString = tokenString;
         this.expirationTimeInSeconds = expirationTimeInSeconds;
         this.responseGenerationTime = responseGenerationTime;
         this.tokenMinValidityInMillis = tokenMinValidityInMillis;
-        // TODO: Detect if a JWT access token
+        this.accessTokenClaimsMap = Collections.emptyMap();
+        jwtClaims = JwtClaims.NONE;
         type = Type.MAC;
+    }
+
+    public AccessTokenImpl(String tokenString, Map<String, Object> accessTokenClaimsMap, Instant responseGenerationTime, Long expirationTimeInSeconds,
+                           Long tokenMinValidityInMillis) {
+        this(tokenString, responseGenerationTime, expirationTimeInSeconds, tokenMinValidityInMillis);
+        this.accessTokenClaimsMap = accessTokenClaimsMap;
+        jwtClaims = new JwtClaimsImpl(accessTokenClaimsMap);
+        type = Type.BEARER;
     }
 
     @Override
@@ -45,25 +60,21 @@ public class AccessTokenImpl implements AccessToken, Serializable {
 
     @Override
     public boolean isJWT() {
-        // TODO Auto-generated method stub
-        return false;
+        return Type.BEARER.equals(type);
     }
 
     @Override
     public JwtClaims getJwtClaims() {
-        if (Type.BEARER.equals(type)) {
-            // TODO: Create JwtClaims if a JWT access token.
-            return null;
-        } else {
-            return JwtClaims.NONE;
-        }
+        return jwtClaims;
     }
 
     @Override
     public Map<String, Object> getClaims() {
         if (Type.BEARER.equals(type)) {
-            // TODO: Create claims map if a JWT access token.
-            return null;
+            Map<String, Object> result = new HashMap<String, Object>();
+            BiConsumer<? super String, ? super Object> action = new CloneClaimsAction(result);
+            accessTokenClaimsMap.forEach(action);
+            return result;
         } else {
             return Collections.emptyMap();
         }
@@ -71,8 +82,7 @@ public class AccessTokenImpl implements AccessToken, Serializable {
 
     @Override
     public Object getClaim(String key) {
-        // TODO Auto-generated method stub
-        return null;
+        return accessTokenClaimsMap.get(key);
     }
 
     @Override
@@ -82,26 +92,35 @@ public class AccessTokenImpl implements AccessToken, Serializable {
 
     @Override
     public boolean isExpired() {
-        if (expirationTimeInSeconds != null && expirationTimeInSeconds > 0 && tokenMinValidityInMillis > 0) {
+        if (expirationTimeInSeconds != null && !(expirationTimeInSeconds < 0) && !(tokenMinValidityInMillis < 0)) {
             Instant expirationInstant = responseGenerationTime.plusMillis(expirationTimeInSeconds * 1000);
             Instant nowInstant = Instant.now();
             return nowInstant.isAfter(expirationInstant) || nowInstant.plusMillis(tokenMinValidityInMillis).isAfter(expirationInstant);
         } else if (Type.BEARER.equals(type)) {
-            // TODO: Check expiration using 'exp' claim. jwtClaims.isExpired(Clock.systemUTC(), true, Duration.ofMillis(tokenMinValidityInMillis));
+            Optional<Instant> expirationOptionalInstant = jwtClaims.getExpirationTime();
+            if (expirationOptionalInstant.isPresent()) {
+                Instant expirationInstant = expirationOptionalInstant.get();
+                Instant nowInstant = Instant.now();
+                return nowInstant.isAfter(expirationInstant) || nowInstant.plusMillis(tokenMinValidityInMillis).isAfter(expirationInstant);
+            }
         }
 
-        return false;
+        return true;
     }
 
     @Override
     public Scope getScope() {
-        // TODO Auto-generated method stub
+        if (Type.BEARER.equals(type)) {
+            Optional<String> optionalScope = jwtClaims.getStringClaim(OpenIdConstant.SCOPE);
+            if (optionalScope.isPresent()) {
+                return Scope.parse(optionalScope.get());
+            }
+        }
         return null;
     }
 
     @Override
     public Type getType() {
-        // TODO Auto-generated method stub
         return type;
     }
 
