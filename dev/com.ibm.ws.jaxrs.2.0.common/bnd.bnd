@@ -111,6 +111,8 @@ Import-Package: \
 	com.ibm.json.xml,\
 	com.ibm.json.java,\
 	!org.osgi.service.http.*,\
+	!com.ctc.wstx.*, \
+    !org.codehaus.stax2.*, \
 	*
 
 # Use dynamicImport-Package for JAXB APIs, with this, Equonix will have a chance to wire
