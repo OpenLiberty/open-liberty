@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.simple.bean;
+package com.ibm.ws.jsf22.fat.simple.bean.faces40;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
