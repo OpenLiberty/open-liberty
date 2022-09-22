@@ -73,6 +73,14 @@ public class DBRotationTest extends FATServletClient {
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer noShutdownServer1;
 
+    public static String[] serverNames = new String[] {
+    	    "com.ibm.ws.transaction_ANYDBCLOUD001",
+    	    "com.ibm.ws.transaction_ANYDBCLOUD002",
+    	    "com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete",
+    	    "com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail",
+    	    "com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown",
+    };
+
     public static SetupRunner runner = new SetupRunner() {
         @Override
         public void run(LibertyServer s) throws Exception {
