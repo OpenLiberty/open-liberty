@@ -27,6 +27,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 
 /**
  *
@@ -215,12 +216,22 @@ public class RealFlushTest {
         Log.info(c, testName, "------- PrintlnFloat ------");
         server.setMarkToEndOfLog();
         getHttpServlet("/RealFlushTestApp/printTests/printlnFloat");
-        Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.22222224E8"));
+        if (JavaInfo.forServer(server).majorVersion() >= 19) {
+            Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.2222222E8"));
+        }
+        else {
+            Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.22222224E8"));
+        }
 
         Log.info(c, testName, "------- PrintFloat ------");
         server.setMarkToEndOfLog();
         getHttpServlet("/RealFlushTestApp/printTests/printFloat");
-        Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.22222224E8"));
+        if (JavaInfo.forServer(server).majorVersion() >= 19) {
+            Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.2222222E8"));
+        }
+        else {
+            Assert.assertNotNull("222222222 NOT FOUND", server.waitForStringInLogUsingMark("2.22222224E8"));
+        }
 
     }
 
