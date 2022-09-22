@@ -10,9 +10,12 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.client;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.jose4j.jwt.JwtClaims;
+
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -20,7 +23,9 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import io.openliberty.security.oidcclientcore.authentication.AbstractFlow;
 import io.openliberty.security.oidcclientcore.authentication.Flow;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.logout.LogoutHandler;
 import io.openliberty.security.oidcclientcore.token.TokenRefresher;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import io.openliberty.security.oidcclientcore.token.TokenResponseValidator;
@@ -89,14 +94,22 @@ public class Client {
             }
         }
         // The token expiration is ignored when none of the above conditions hold
-        // TODO: is this the correct auth result return here?
         return new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
     }
 
     public ProviderAuthenticationResult logout(HttpServletRequest request, HttpServletResponse response,
                                                LogoutConfig logoutConfig) {
-        // TODO
-        return null;
+        LogoutHandler logoutHandler = new LogoutHandler(request, response, oidcClientConfig, logoutConfig);
+        try {
+            return logoutHandler.logout();
+        } catch (ServletException | OidcDiscoveryException e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            //TODO add debug?
+            //e.printStackTrace();
+            return new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+        }
     }
 
 }
