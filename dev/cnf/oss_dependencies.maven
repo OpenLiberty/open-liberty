@@ -16,7 +16,6 @@ com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.7
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.7
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.12.7
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.12.7
-com.fasterxml.jackson.jr:jackson-jr-objects:2.12.7
 com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.12.7
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.12.7
 com.github.docker-java:docker-java-api:3.2.13

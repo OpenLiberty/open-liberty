@@ -10,11 +10,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.cdi;
 
-import jakarta.annotation.Priority;
-import jakarta.interceptor.AroundInvoke;
-import jakarta.interceptor.Interceptor;
-import jakarta.interceptor.InvocationContext;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
@@ -30,30 +25,29 @@ import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
 import io.opentelemetry.instrumentation.api.instrumenter.SpanNameExtractor;
 import io.opentelemetry.instrumentation.api.util.SpanNames;
-
-import io.opentelemetry.extension.annotations.WithSpan;
+import jakarta.annotation.Priority;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 @WithSpan
 @Interceptor
 @Priority(100)
 public class WithSpanInterceptor {
 
-
-    private String instrumentationName = "io.openliberty.microprofile.telemetry";
-
-    private String instrumentationVersion = "1.0";
+    private final String instrumentationName = "io.openliberty.microprofile.telemetry";
 
     private final Instrumenter<MethodRequest, Void> instrumenter;
 
     public WithSpanInterceptor(final OpenTelemetry openTelemetry) {
         InstrumenterBuilder<MethodRequest, Void> builder = Instrumenter.builder(openTelemetry, instrumentationName, new MethodRequestSpanNameExtractor());
         MethodSpanAttributesExtractor<MethodRequest, Void> attributesExtractor = MethodSpanAttributesExtractor.newInstance(
-            MethodRequest::getMethod,
-            new WithSpanParameterAttributeNamesExtractor(),
-            MethodRequest::getArgs);
+                                                                                                                           MethodRequest::getMethod,
+                                                                                                                           new WithSpanParameterAttributeNamesExtractor(),
+                                                                                                                           MethodRequest::getArgs);
 
         this.instrumenter = builder.addAttributesExtractor(attributesExtractor)
-        .newInstrumenter(methodRequest -> spanKindFromMethod(methodRequest.getMethod()));
+                        .newInstrumenter(methodRequest -> spanKindFromMethod(methodRequest.getMethod()));
     }
 
     private static SpanKind spanKindFromMethod(Method method) {
@@ -127,4 +121,4 @@ public class WithSpanInterceptor {
             return attributeNames;
         }
     }
-} 
+}
