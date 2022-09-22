@@ -61,7 +61,7 @@ public class TokenResponseValidator {
     private Storage storage;
 
     public TokenResponseValidator() {
-        //initialized = true;
+        
     }
 
     /**
@@ -128,6 +128,7 @@ public class TokenResponseValidator {
             if (clientSecretProtectedString != null) {
                 clientSecret = new String(clientSecretProtectedString.getChars());
             }
+            String issuerconfigured = null;
             // must have claims - iat and exp
             try {
                 if (jwtClaims.getIssuedAt() == null) {
@@ -137,16 +138,8 @@ public class TokenResponseValidator {
                     throw new TokenValidationException(this.clientConfig.getClientId(), "token is missing required exp claim");
                 }           
                 TokenValidator tokenValidator = new IdTokenValidator(clientConfig);
-                if ((clientConfig.getProviderMetadata().getIssuer() == null ||  clientConfig.getProviderMetadata().getIssuer().isEmpty())
-                                && (clientConfig.getProviderMetadata().getTokenEndpoint() == null || clientConfig.getProviderMetadata().getTokenEndpoint().isEmpty())) {
-                    this.discoveredProviderMetadata = getProviderDiscoveryMetadadata();//eprequest.getProviderDiscoveryMetadata(clientConfig);
-                    if (discoveredProviderMetadata != null) {
-                        tokenValidator.issuerfromdiscovery(((String)discoveredProviderMetadata.get("issuer")));
-                        tokenValidator.tokenepfromdiscovery(((String)discoveredProviderMetadata.get("token_endpoint")));
-                    }
-                        //TODO : throw TokenValidationException if we don't have valid discovered data
-                }
-                tokenValidator.issuer(jwtClaims.getIssuer()).subject(jwtClaims.getSubject()).audiences(jwtClaims.getAudience()).azp(((String) jwtClaims.getClaimValue("azp"))).iat(jwtClaims.getIssuedAt()).exp(jwtClaims.getExpirationTime()).nbf(jwtClaims.getNotBefore());
+                issuerconfigured = getIssuer();
+                tokenValidator.issuer(jwtClaims.getIssuer()).subject(jwtClaims.getSubject()).audiences(jwtClaims.getAudience()).azp(((String) jwtClaims.getClaimValue("azp"))).iat(jwtClaims.getIssuedAt()).exp(jwtClaims.getExpirationTime()).nbf(jwtClaims.getNotBefore()).issuerconfigured(issuerconfigured);
                 if (this.clientConfig.isUseNonce()) {  
                     ((IdTokenValidator) tokenValidator).nonce(((String) jwtClaims.getClaimValue("nonce")));
                     ((IdTokenValidator) tokenValidator).state(getStateParameter());
@@ -168,7 +161,7 @@ public class TokenResponseValidator {
                 }
                 TokenSignatureValidationBuilder tokenSignatureValidationBuilder = jose4jutil.signaturevalidationbuilder();
                 String jwkuri = getJwkUri();
-                tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(sslSupport).issuer(TokenValidator.getIssuer(clientConfig)).jwkuri(jwkuri)
+                tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(sslSupport).issuer(issuerconfigured).jwkuri(jwkuri)
                                 .clientid(clientConfig.getClientId());
 
                 tokenSignatureValidationBuilder.clientsecret(clientSecret);
@@ -180,6 +173,20 @@ public class TokenResponseValidator {
         }
         throw new TokenValidationException(this.clientConfig.getClientId(), "not a valid token to continue the flow");
     }
+    
+    /**
+     * @param clientConfig
+     * @return
+     */
+    private String getIssuer() {
+        String issuer = null;
+        issuer = clientConfig.getProviderMetadata().getIssuer();
+        if ((issuer == null || issuer.isEmpty()) && getProviderDiscoveryMetadadata() != null) {
+            return ((String)this.discoveredProviderMetadata.get("issuer"));
+        }
+        return issuer;
+    }
+
 
     /**
      * @return
@@ -188,7 +195,7 @@ public class TokenResponseValidator {
         if (this.discoveredProviderMetadata == null) {
             this.discoveredProviderMetadata = eprequest.getProviderDiscoveryMetadata(clientConfig);
         }
-        return this.discoveredProviderMetadata;
+        return this.discoveredProviderMetadata; //TODO : throw TokenValidationException if we don't have valid discovered data
     }
 
     /**

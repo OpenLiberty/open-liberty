@@ -101,9 +101,36 @@ public class TokenValidatorTest {
                     will(returnValue("oidcclientid"));
                 }
             });
-            tokenValidator = tokenValidator.issuer(iss_claim_from_token);
+            tokenValidator = tokenValidator.issuer(iss_claim_from_token).issuerconfigured(iss_from_config);          
             tokenValidator.validateIssuer();
 
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testValidateIssuerNull() {
+        final String methodName = "testValidateIssuerNull";
+        String iss_claim_from_token = null;
+        String iss_from_config = "someotherissuer";
+        try {
+            
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();//.getIssuer();
+                    will(returnValue(oidcmd));
+                    allowing(oidcmd).getIssuer();
+                    will(returnValue(iss_from_config));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            tokenValidator = tokenValidator.issuer(iss_claim_from_token).issuerconfigured(iss_from_config);
+            tokenValidator.validateIssuer();
+        } catch (TokenValidationException e) {
+            String error = e.getMessage();
+            assertTrue("message", error.contains("issuer"));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -127,7 +154,7 @@ public class TokenValidatorTest {
                     will(returnValue("oidcclientid"));
                 }
             });
-            tokenValidator = tokenValidator.issuer(iss_claim_from_token);
+            tokenValidator = tokenValidator.issuer(iss_claim_from_token).issuerconfigured(iss_from_config);
             tokenValidator.validateIssuer();
 
         } catch (TokenValidationException e) {

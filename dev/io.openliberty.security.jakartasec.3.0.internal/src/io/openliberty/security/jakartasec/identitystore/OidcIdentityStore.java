@@ -79,15 +79,38 @@ public class OidcIdentityStore implements IdentityStore {
      * </ul>
      */
     CredentialValidationResult createCredentialValidationResult(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims) throws MalformedClaimException {
-        String storeId = clientConfig.getClientId();
+        String issuer = getIssuer(clientConfig, accessToken, idTokenClaims); //realm
         String caller = getCallerName(clientConfig, accessToken, idTokenClaims);
         if (caller == null) {
             return CredentialValidationResult.INVALID_RESULT;
         }
         Set<String> groups = getCallerGroups(clientConfig, accessToken, idTokenClaims);
-        return new CredentialValidationResult(storeId, caller, null, caller, groups);
+        return new CredentialValidationResult(issuer, caller, null, caller, groups);
     }
     
+    /**
+     * @param clientConfig
+     * @param accessToken
+     * @param idTokenClaims
+     * @return
+     * @throws MalformedClaimException 
+     */
+    String getIssuer(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims) throws MalformedClaimException {      
+        String issuer = getClaimValueFromTokens(OpenIdConstant.ISSUER_IDENTIFIER, accessToken, idTokenClaims, String.class);
+        if (issuer == null || issuer.isEmpty()) {
+            issuer = issuerFromProviderMetadata(clientConfig);
+        }      
+        return issuer;
+    }
+    
+    /**
+     * @param clientConfig
+     * @return
+     */
+    private String issuerFromProviderMetadata(OidcClientConfig clientConfig) {
+        return clientConfig.getProviderMetadata().getIssuer(); //TODO: use discovery data
+    }
+
     String getCallerName(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims) throws MalformedClaimException {
         String callerNameClaim = getCallerNameClaim(clientConfig);
         if (callerNameClaim == null || callerNameClaim.isEmpty()) {
