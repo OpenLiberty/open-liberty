@@ -16,7 +16,7 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-Bundle-SymbolicName: io.openliberty.com.fasterxml.woodstox.6.2
+Bundle-SymbolicName: io.openliberty.com.fasterxml.woodstox
 
 woodstox-version: 6.2.4
 stax2-version: 4.2
