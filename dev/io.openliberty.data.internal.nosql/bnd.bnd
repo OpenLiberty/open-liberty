@@ -16,29 +16,28 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-Bundle-Name: Jakarta Data Liberty Integration
-Bundle-SymbolicName: io.openliberty.data.internal
-Bundle-Description: Provides CDI extensions for Jakarta Data; version=${bVersion}
+Bundle-Name: Jakarta Data Liberty NoSQL Integration
+Bundle-SymbolicName: io.openliberty.data.internal.nosql
+Bundle-Description: Maps Jakarta Data to Jakarta NoSQL; version=${bVersion}
 
 WS-TraceGroup: data
 
-Export-Package: \
-  io.openliberty.data.internal
+Import-Package:\
+  io.openliberty.data.internal,\
+  *
 
 Private-Package: \
-  io.openliberty.data.internal.cdi.*,\
-  io.openliberty.data.internal.resources.*
+  io.openliberty.data.internal.nosql.*,\
+  io.openliberty.data.internal.nosql.resources.*
 
 Include-Resource:\
   OSGI-INF=resources/OSGI-INF
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
--cdiannotations:
+-dsannotations: io.openliberty.data.internal.nosql.NoSQLDataProvider
 
--dsannotations: io.openliberty.data.internal.cdi.DataExtensionMetadata
-
-instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
+instrument.classesExcludes: io/openliberty/data/internal/nosql/resources/*.class
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
@@ -47,10 +46,8 @@ instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
   com.ibm.websphere.org.osgi.service.component,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
   com.ibm.ws.threading,\
+  io.openliberty.data.internal,\
   io.openliberty.jakarta.annotation.2.1,\
-  io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.data.1.0,\
-  io.openliberty.jakarta.interceptor.2.1,\
-  io.openliberty.jakarta.transaction.2.0
+  io.openliberty.jakarta.nosql.1.0

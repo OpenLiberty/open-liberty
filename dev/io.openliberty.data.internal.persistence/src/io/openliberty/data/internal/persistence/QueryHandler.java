@@ -8,23 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal;
+package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import jakarta.enterprise.inject.spi.Bean;
+public class QueryHandler<R, E> implements InvocationHandler {
 
-public class QueryHandler<R> implements InvocationHandler {
+    private final Class<E> defaultEntityClass; // repository methods can return subclasses in the case of @Inheritance
+    private final Class<R> repositoryInterface;
 
-    private final Class<R> beanClass;
-    private final Class<?> defaultEntityClass; // repository methods can return subclasses in the case of @Inheritance
-
-    @SuppressWarnings("unchecked")
-    public QueryHandler(Bean<R> bean, Class<?> entityClass) {
-        beanClass = (Class<R>) bean.getBeanClass();
+    public QueryHandler(Class<R> repositoryInterface, Class<E> entityClass) {
+        this.repositoryInterface = repositoryInterface;
         defaultEntityClass = entityClass;
     }
 
@@ -37,7 +34,7 @@ public class QueryHandler<R> implements InvocationHandler {
             if ("hashCode".equals(methodName))
                 return System.identityHashCode(proxy);
             else if ("toString".equals(methodName))
-                return beanClass.getName() + "[QueryHandler]@" + Integer.toHexString(System.identityHashCode(proxy));
+                return repositoryInterface.getName() + "[QueryHandler]@" + Integer.toHexString(System.identityHashCode(proxy));
         } else if (args.length == 1) {
             if ("equals".equals(methodName))
                 return proxy == args[0];
