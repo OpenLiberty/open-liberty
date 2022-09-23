@@ -46,6 +46,7 @@ Export-Package: \
         componenttest.topology.impl;version=2.0,\
         componenttest.topology.ldap;version=2.0,\
         componenttest.topology.utils;version=2.0,\
+        componenttest.topology.utils.tck;version=2.0,\
         componenttest.vulnerability;version=2.0,\
         io.openliberty.checkpoint.spi
 	

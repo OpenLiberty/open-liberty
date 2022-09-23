@@ -16,14 +16,11 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,8 +38,6 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -68,6 +63,8 @@ import com.ibm.ws.fat.util.Props;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.tck.TCKResultsInfo;
+import componenttest.topology.utils.tck.TCKResultsWriter;
 import junit.framework.AssertionFailedError;
 
 /**
@@ -1168,109 +1165,25 @@ public class MvnUtils {
     public static void preparePublicationFile(Map<String, String> resultInfo) {
         String javaMajorVersion = resultInfo.get("java_major_version");
         String javaVersion = resultInfo.get("java_info");
-        String OLVersion = resultInfo.get("product_version");
+        String openLibertyVersion = resultInfo.get("product_version");
         String type = resultInfo.get("results_type");
-        Path outputPath = Paths.get("results", OLVersion + "-Java" + javaMajorVersion + "-TCKResults.adoc");
-        File outputFile = outputPath.toFile();
-        SAXParserFactory factory = null;
-        SAXParser saxParser = null;
-        try {
-            factory = SAXParserFactory.newInstance();
-            saxParser = factory.newSAXParser();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        }
-        TestSuiteXmlParser xmlParser = new TestSuiteXmlParser();
+        String osVersion = resultInfo.get("os_name");
+        String specName = resultInfo.get("feature_name");
+        String specVersion = resultInfo.get("feature_version");
 
-        try (FileWriter output = new FileWriter(outputFile)) {
-            Path junitPath = Paths.get("results", "junit");
-            File junitDirectory = junitPath.toFile();
-            for (final File xmlFile : junitDirectory.listFiles()) {
-                if (xmlFile.isDirectory()) {
-                    continue; //this shouldn't happen.
-                }
-                if (xmlFile.length() == 0) {
-                    continue; //this probably will happen. We create an empty file then populate it after we're expecting this method to run.
-                }
-                saxParser.parse(xmlFile, xmlParser);
-            }
+        TCKResultsInfo info = new TCKResultsInfo();
+        info.setJavaMajorVersion(javaMajorVersion);
+        info.setJavaVersion(javaVersion);
+        info.setOpenLibertyVersion(openLibertyVersion);
+        info.setType(type);
+        info.setOsVersion(osVersion);
+        info.setSpecName(specName);
+        info.setSpecVersion(specVersion);
+        preparePublicationFile(info);
+    }
 
-            String adocContent = "";
-            String MPversion = "";
-
-            String osVersion = resultInfo.get("os_name");
-            String[] specParts = getSpec();
-            String specName = resultInfo.get("feature_name");
-            String specVersion = resultInfo.get("feature_version");
-            String MPSpecLower = (specName.toLowerCase()).replace(" ", "-");
-            String rcVersion = specParts[2];
-            String[] documentStart = { ":page-layout: certification \n= TCK Results\n\n",
-                                       "As required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of ",
-                                       type //MicroProfile or Jakarta EE
-            };
-            for (String part : documentStart) {
-                adocContent += part;
-            }
-            if (type.equals("MicroProfile")) {
-                String[] documentMain = { " ", specName, " ", specVersion,
-                                          ".\n\n== Open Liberty ", OLVersion, " - MicroProfile ", specName, " ", specVersion,
-                                          " Certification Summary (Java ", javaMajorVersion, ")\n\n",
-                                          "* Product Name, Version and download URL (if applicable):\n",
-                                          "+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",
-                                          OLVersion, "/openliberty-runtime-", OLVersion, ".zip[Open Liberty ", OLVersion, "]\n",
-                                          "* Specification Name, Version and download URL:\n+\n",
-                                          "link:https://download.eclipse.org/microprofile/microprofile-", MPSpecLower, "-", specVersion, rcVersion,
-                                          "/microprofile-", MPSpecLower, "-spec-", specVersion, rcVersion, ".html[MicroProfile ", specName, " ", specVersion,
-                                          rcVersion, "]\n\n* Public URL of TCK Results Summary:\n+\n", "link:", OLVersion, "-Java", javaMajorVersion,
-                                          "-TCKResults.html[TCK results summary]\n\n",
-                                          "* Java runtime used to run the implementation:\n+\nJava ", javaMajorVersion, ": ", javaVersion,
-                                          "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n", "Java ", javaMajorVersion, ": ",
-                                          osVersion, "\n\nTest results:\n\n[source, text]\n----\n" };
-                for (String part : documentMain) {
-                    adocContent += part;
-                }
-            } else {
-                String[] documentMain = { ".\n\n== Open Liberty ", OLVersion, " ", type, " ", specName, " Certification Summary (Java ", javaMajorVersion, ")",
-                                          "\n\n* Product Name, Version and download URL (if applicable):",
-                                          "\n+\nhttps://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/", OLVersion, ".zip[Open Liberty ", OLVersion,
-                                          "]\n\n",
-                                          "* Specification Name, Version and download URL:\n+\n",
-                                          "link:https://jakarta.ee/specifications/", specName, "/", specVersion, "[Jakarta EE ", specName, " ", specVersion, "]\n\n",
-                                          "* TCK Version, digital SHA-256 fingerprint and download URL:\n+\n",
-                                          "https://download.eclipse.org/jakartaee/", ".zip[Jakarta EE]\n",
-                                          "SHA-256: ``\n\n",
-                                          "* Public URL of TCK Results Summary:\n+\n",
-                                          "link:", OLVersion, "-Java", javaMajorVersion, "-TCKResults.html[TCK results summary]\n\n",
-                                          "* Any Additional Specification Certification Requirements:\n\n",
-                                          "+\nJakarta Contexts and Dependency Injection\n",
-                                          "link:https://download.eclipse.org/jakartaee/cdi/", "SHA-256:\n``\n",
-                                          "+\nJakarta Bean Validation\n",
-                                          "link:https://download.eclipse.org/jakartaee/bean-validation/", "SHA-256:\n``\n",
-                                          "+\nDependency Injection\n",
-                                          "link:https://download.eclipse.org/jakartaee/dependency-injection/", "SHA-256:\n``\n",
-                                          "+\nDebugging\n",
-                                          "link:https://download.eclipse.org/jakartaee/debugging/", "SHA-256:\n``\n",
-                                          "* Java runtime used to run the implementation:\n+\n", javaVersion,
-                                          "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n",
-                                          osVersion,
-                                          "\n\nTest results:\n\n[source, text]\n----\n" };
-                for (String part : documentMain) {
-                    adocContent += part;
-                }
-            }
-            output.write(adocContent);
-            for (TestSuiteResult result : xmlParser.getResults()) {
-                output.write(result.toString());
-            }
-            output.write("----");
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        }
+    public static void preparePublicationFile(TCKResultsInfo resultInfo) {
+        TCKResultsWriter.preparePublicationFile(resultInfo, getSpec());
     }
 
     public static String[] getSpec() {
