@@ -36,7 +36,7 @@ public class CommonExpectations {
 
     /**
      * Set success for current action only
-     * 
+     *
      * @param url
      * @return
      */
@@ -87,4 +87,27 @@ public class CommonExpectations {
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, Constants.FORM_LOGIN_HEADING, "Page returned did not match expected value."));
         return expectations;
     }
+
+    /**
+     * Sets expectations that will check:
+     * <ol>
+     * <li>200 status code in the response for the specified test action
+     * <li>Response title is equivalent to expected login page title
+     * </ol>
+     */
+    public static Expectations successfullyReachedOidcLoginPage(String testAction) {
+        Expectations expectations = new Expectations();
+        expectations.addSuccessStatusCodesForActions(new String[] { testAction });
+        expectations.addExpectation(new ResponseTitleExpectation(testAction, Constants.STRING_EQUALS, Constants.LOGIN_TITLE, "Title of page returned during test step " + testAction
+                + " did not match expected value."));
+        return expectations;
+    }
+
+    public static Expectations successfullyReachedOidcLoginPage() {
+        Expectations expectations = new Expectations();
+        expectations.addSuccessCodeForCurrentAction();
+        expectations.addExpectation(new ResponseTitleExpectation(Constants.STRING_EQUALS, Constants.LOGIN_TITLE, "Title of page returned did not match expected value."));
+        return expectations;
+    }
+
 }

@@ -190,7 +190,7 @@ public class CommonSecurityFat {
         Log.info(thisClass, methodName, "");
     }
 
-    private static void transformAppsInDefaultDirs(LibertyServer server, String appDirName) {
+    public static void transformAppsInDefaultDirs(LibertyServer server, String appDirName) {
 
         Machine machine = server.getMachine();
 
@@ -208,9 +208,9 @@ public class CommonSecurityFat {
         if (list != null) {
             for (RemoteFile app : list) {
                 if (JakartaEE9Action.isActive()) {
-                JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+                    JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
                 } else if (JakartaEE10Action.isActive()) {
-                        JakartaEE10Action.transformApp(Paths.get(app.getAbsolutePath()));
+                    JakartaEE10Action.transformApp(Paths.get(app.getAbsolutePath()));
                 }
             }
         }
