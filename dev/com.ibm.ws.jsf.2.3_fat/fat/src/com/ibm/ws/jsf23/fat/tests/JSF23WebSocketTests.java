@@ -36,13 +36,13 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.rules.repeater.JakartaEE10Action;
 
 /**
  * This test class is to be used for the tests that test feature specified
  * in JSF 2.3 specification under the Section 10.4.1.7 “<f:websocket>”.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 public class JSF23WebSocketTests {
 
     protected static final Class<?> c = JSF23WebSocketTests.class;
@@ -89,7 +89,13 @@ public class JSF23WebSocketTests {
 
             // Construct the URL for the test
             String contextRoot = "WebSocket";
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "PushWebSocketTest.jsf");
+            URL url;
+
+            if(JakartaEE10Action.isActive()){
+                url = JSFUtils.createHttpUrl(server, contextRoot, "faces40/PushWebSocketTest.jsf");
+            } else {
+                url = JSFUtils.createHttpUrl(server, contextRoot, "PushWebSocketTest.jsf");
+            }
 
             HtmlPage testPushWebSocketPage = (HtmlPage) webClient.getPage(url);
 
@@ -145,7 +151,13 @@ public class JSF23WebSocketTests {
 
             // Construct the URL for the test
             String contextRoot = "WebSocket";
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "OpenCloseWebSocketTest.jsf");
+            URL url;
+
+            if(JakartaEE10Action.isActive()){
+                url = JSFUtils.createHttpUrl(server, contextRoot, "faces40/OpenCloseWebSocketTest.jsf");
+            } else {
+                url = JSFUtils.createHttpUrl(server, contextRoot, "OpenCloseWebSocketTest.jsf");
+            }
 
             HtmlPage testOpenCloseWebSocketPage = (HtmlPage) webClient.getPage(url);
 
