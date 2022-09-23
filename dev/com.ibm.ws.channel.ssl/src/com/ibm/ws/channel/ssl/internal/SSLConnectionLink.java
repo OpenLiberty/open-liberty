@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,8 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *
+ * 092122   loriad      287316          Add local and remote host:port to handshake error message
  *******************************************************************************/
 package com.ibm.ws.channel.ssl.internal;
 
@@ -606,7 +608,6 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
                 }
                 return;
             }
-
         } catch (IOException ioe) {
             // no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -614,7 +615,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             }
             errorOccurred = true;
             // Handle the handshake error.
-            getChannel().getHandshakeErrorTracker().noteHandshakeError(ioe);
+            getChannel().getHandshakeErrorTracker().noteHandshakeError(ioe, getRemoteAddress(), getRemotePort(), getLocalAddress(), getLocalPort());
             close(inVC, ioe);
         } catch (ReadOnlyBufferException robe) {
             FFDCFilter.processException(robe, getClass().getName(), "359", this);
