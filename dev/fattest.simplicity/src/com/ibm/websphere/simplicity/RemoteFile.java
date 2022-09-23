@@ -91,7 +91,7 @@ public class RemoteFile {
     /**
      * The amount of time to wait before retrying
      */
-    public static final long STANDARD_RETRY_INTERVAL_NS = TimeUnit.MILLISECONDS.toNanos(100); // 0.1s
+    public static final long STANDARD_RETRY_INTERVAL_NS = TimeUnit.MILLISECONDS.toNanos(200); // 0.1s
 
     public interface Operation {
         public boolean act() throws Exception;
