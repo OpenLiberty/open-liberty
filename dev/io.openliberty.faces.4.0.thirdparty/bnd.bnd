@@ -26,10 +26,11 @@ Implementation-Version: 4.0.0
 # org.apache.myfaces.buildtools package is from myfaces-builder-annotations-1.0.9.jar
 Export-Package: \
   org.apache.myfaces.renderkit.html;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.shared.config;version=${Implementation-Version}, \
-  org.apache.myfaces.shared.renderkit;version=${Implementation-Version}, \
-  org.apache.myfaces.shared.renderkit.html;version=${Implementation-Version}, \
-  org.apache.myfaces.shared.renderkit.html.util;version=${Implementation-Version}
+  org.apache.myfaces.config;version=${Implementation-Version}, \
+  org.apache.myfaces.renderkit;version=${Implementation-Version}, \
+  org.apache.myfaces.renderkit.html.base;version=${Implementation-Version}, \
+  org.apache.myfaces.renderkit.html.util;version=${Implementation-Version}, \
+  org.apache.myfaces.core.api.shared;version=${Implementation-Version}
 
 instrument.ffdc: false
 instrument.classesExcludes: \
@@ -39,5 +40,7 @@ publish.wlp.jar.suffix: dev/api/third-party
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
--buildpath: io.openliberty.org.apache.myfaces.4.0;version=project, \
-    org.apache.myfaces.core:myfaces-impl;version=${Implementation-Version},\
+-buildpath: org.apache.myfaces.core:myfaces-impl;version=${Implementation-Version},\
+            org.apache.myfaces.core:myfaces-api;version=${Implementation-Version}, \
+            io.openliberty.jakarta.cdi.4.0;version=latest, \
+            io.openliberty.jakarta.expressionLanguage.5.0;version=latest
