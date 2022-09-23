@@ -24,42 +24,18 @@ import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
-import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
-import jakarta.faces.annotation.FacesConfig;
 
 public class FacesArtifactProducerExtension implements Extension
 {
-    private boolean registerCdiProducers = false;
-    
-    <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event, BeanManager beanManager)
-    {
-        FacesConfig facesConfig = event.getAnnotatedType().getAnnotation(FacesConfig.class);
-        if (facesConfig != null && facesConfig.version() == FacesConfig.Version.JSF_2_3)
-        {
-            registerCdiProducers = true;
-        }
-    }
-    
     void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanManager)
-    {        
-        if (registerCdiProducers)
-        {
+    {
             AnnotatedType<FacesArtifactProducer> jsfArtifactProducer =
                             beanManager.createAnnotatedType(FacesArtifactProducer.class);
             event.addAnnotatedType(jsfArtifactProducer, jsfArtifactProducer.getJavaClass().getName());
-        }
-    }
-    
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
-    {
-        if (registerCdiProducers)
-        {
-            afterBeanDiscovery.addBean(new FacesArtifactFlowMapProducer(beanManager));
-        }
     }
 
-    public boolean isRegisterCdiProducers()
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
     {
-        return registerCdiProducers;
+            afterBeanDiscovery.addBean(new FacesArtifactFlowMapProducer(beanManager));
     }
 }
