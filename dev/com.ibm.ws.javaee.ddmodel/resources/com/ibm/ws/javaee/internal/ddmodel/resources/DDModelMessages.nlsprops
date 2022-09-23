@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011,2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -380,4 +380,28 @@ incorrect.descriptor.namespace.useraction=Change the namespace within the deploy
 incorrect.descriptor.namespace.for.version=CWWCK27789W: The {0} deployment descriptor on line {1} specifies version {2} and namespace {3} but for that version should have namespace {4}.
 incorrect.descriptor.namespace.for.version.explanation=A specific namespace is expected within the deployment descriptor for the specified version. The incorrect namespace was ignored.
 incorrect.descriptor.namespace.for.version.useraction=Change the namespace within the deployment descriptor to the expected value.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of a 'name' attribute within a session configuration 'attribute' element
+#    {3} is the value of the 'value' attribute of a session configuration 'attribute' element
+#    {4} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+duplicate.session.config.attribute.name=CWWCK27790W: The {0} deployment descriptor on line {1} duplicates the ''{2}'' ''name'' of a session configuration attribute elements.  The ''{3}'' ''value'' will be associated with the name instead of the previous ''{4}'' ''value''.
+duplicate.session.config.attribute.name.explanation=The deployment descriptor has multiple attribute elements which have the same name and which are within the same session configuration element. In Request-For-Comments (RFC) 6265, ''HTTP State Management Mechanism'', dated April 2011, the section 4.1.1, ''Syntax'', states ''To maximize compatibility with user agents, servers SHOULD NOT produce two attributes with the same name in the same set-cookie-string.''. Consequently, the descriptor parser ignores all but the last attribute element which have the same name.
+duplicate.session.config.attribute.name.useraction=To remove the warning message, or, if the last attribute element is not the intended attribute element which is to be used, update the deployment descriptor to remove extra attribute elements which have the same name.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+missing.session.config.attribute.name=CWWCK27791W: The {0} deployment descriptor on line {1} has a session configuration attribute which has no name.  That attribute, with ''{2}'' ''value'' was ignored.
+missing.session.config.attribute.name.explanation=A session configuration attribute is required to have a name element. 
+missing.session.config.attribute.name.useraction=Update the deployment descriptor to remove the attribute which does not have a name element, or add name elements to all attribute elements.
+
+
 
