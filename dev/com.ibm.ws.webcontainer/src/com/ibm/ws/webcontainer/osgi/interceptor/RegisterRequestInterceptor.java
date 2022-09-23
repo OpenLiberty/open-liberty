@@ -135,21 +135,36 @@ public class RegisterRequestInterceptor {
                 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "RegisterRequestInterceptor.notifyRequestInterceptors() afps.hasNext() : " + afps.hasNext());
-                }            
-                ArrayList<RequestInterceptor> reverseAfps = new ArrayList<RequestInterceptor>();
+                }  
                 
-                // reverse the order so highest ranked goes last
-                while (afps.hasNext()) {
-                   reverseAfps.add(0,afps.next());
+                RequestInterceptor first = afps.hasNext() ? afps.next() : null;
+                if (first != null) {
+                    // if there is only one interceptor no need to reverse the order
+                    if (!afps.hasNext()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "RegisterRequestInterceptor.notifyRequestInterceptors() notify after filter interceptor.");
+                         }            
+                        result = first.handleRequest(req, resp);
+                    } else {
+                        ArrayList<RequestInterceptor> reverseAfps = new ArrayList<RequestInterceptor>();
+
+                        // reverse the order so highest ranked goes last
+                        reverseAfps.add(0, first);
+                        
+                        do {
+                           reverseAfps.add(0,afps.next());
+                        } while (afps.hasNext());
+
+                        afps = reverseAfps.iterator();
+                        
+                        while (!result && afps.hasNext()) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                               Tr.debug(tc, "RegisterRequestInterceptor.notifyRequestInterceptors() notify after filter interceptor.");
+                            }            
+                            result = afps.next().handleRequest(req, resp); 
+                        }    
+                    }
                 }
-                afps = reverseAfps.iterator();
-                  
-                while (afps.hasNext() && !result) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                       Tr.debug(tc, "RegisterRequestInterceptor.notifyRequestInterceptors() notify after filter interceptor.");
-                    }            
-                    result = afps.next().handleRequest(req, resp); 
-                }    
                 
             }  else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "RegisterRequestInterceptor.notifyRequestInterceptors() no after filter interceptors.");
