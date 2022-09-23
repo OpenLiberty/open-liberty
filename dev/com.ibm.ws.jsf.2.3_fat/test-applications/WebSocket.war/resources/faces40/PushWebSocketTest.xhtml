@@ -18,21 +18,18 @@
 <h:head>
     <title>JSF 2.3 WebSocket test</title>
     
-    <script type="text/javascript" src="faces40/websocketListeners.js"></script>     
+    <script type="text/javascript" src="websocketListeners.js"></script>   
 </h:head>
 <h:body>
-    JSF 2.3 WebSocket - Test that onopen and onclose listener can be triggered manually, that is, when connected attribute is set to false
+    JSF 2.3 WebSocket - Test message pushed from server to client
     <br/>
     <h:form id="form1">
-        <h:commandButton id="openButton" value="Click here to open channel" onclick="faces.push.open('websocketId')">
-            <f:ajax/>
-        </h:commandButton>
-        <h:commandButton id="closeButton" value="Click here to close channel" onclick="faces.push.close('websocketId')">
+        <h:commandButton id="sendButton" value="Click here to send message" action="#{websocketPushBean.send}">
             <f:ajax/>
         </h:commandButton>
     </h:form>
     
-    <f:websocket id="websocketId" channel="myChannel" onmessage="websocketMessageListener" onopen="websocketOpenListener" onclose="websocketCloseListener" connected="false"/>
+    <f:websocket id="websocketId" channel="myChannel" onmessage="websocketMessageListener" onopen="websocketOpenListener" onclose="websocketCloseListener"/>
     
     <div id="messageId"></div>
 </h:body>

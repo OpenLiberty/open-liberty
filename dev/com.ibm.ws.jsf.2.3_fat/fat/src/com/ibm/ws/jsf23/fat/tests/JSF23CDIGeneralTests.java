@@ -441,6 +441,7 @@ public class JSF23CDIGeneralTests {
      *
      * @throws Exception
      */
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // MYFACES-4461; Injection works regardless of @FacesConfig annotation
     @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException" })

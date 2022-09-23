@@ -10,7 +10,7 @@
 */
 function websocketMessageListener(message, channel, event) {
    	document.getElementById("messageId").innerHTML += message + "<br/>";
-	faces.push.close("websocketId");
+	faces.push.close("websocketId"); //4.0: jsf -> faces rename
 }
 
 function websocketOpenListener(channel) {
