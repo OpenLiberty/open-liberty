@@ -25,7 +25,7 @@ dependencies {
 
   arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.0.1'
 
-  //TODO configure WLP dependency, Example below:
+  //TODO Configure WLP dependency if doing verification testing, Example below:
   //wlp 'io.openliberty.beta:openliberty-runtime:22.0.0.3-beta@zip'
 }
 

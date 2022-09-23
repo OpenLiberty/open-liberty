@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2015 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.Hashtable;
 import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
+import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -208,8 +209,8 @@ public class SessionContext {
         // id generator
         sessionMgrCustomizer.setIDGenerator(new IDGeneratorImpl(SessionManagerConfig.getSessionIDLength()));
 
-        // cookie config
-        SessionCookieConfigImpl sessionCookieConfig = _sap.getSessionCookieConfig();
+        //Servlet 6.0 - change to interface SessionCookieConfig
+        SessionCookieConfig sessionCookieConfig = _sap.getSessionCookieConfig();
         if (sessionCookieConfig != null) {
             _smc.updateCookieInfo(sessionCookieConfig);
         }

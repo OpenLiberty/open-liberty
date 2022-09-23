@@ -16,16 +16,15 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
 
+import jakarta.data.Delete;
+import jakarta.data.Limit;
+import jakarta.data.Paginated;
+import jakarta.data.Result;
+import jakarta.data.Select;
+import jakarta.data.Update;
+import jakarta.data.Where;
+import jakarta.data.repository.Repository;
 import jakarta.enterprise.concurrent.Asynchronous;
-
-import io.openliberty.data.Data;
-import io.openliberty.data.Delete;
-import io.openliberty.data.Limit;
-import io.openliberty.data.Paginated;
-import io.openliberty.data.Result;
-import io.openliberty.data.Select;
-import io.openliberty.data.Update;
-import io.openliberty.data.Where;
 
 /**
  * This is a second repository interface for the Person entity,
@@ -33,7 +32,7 @@ import io.openliberty.data.Where;
  * and experimenting with how generated repository method implementations
  * fit with asynchronous methods.
  */
-@Data(Person.class) // TODO infer the entity class?
+@Repository
 public interface Personnel {
     @Asynchronous
     @Result(Integer.class)

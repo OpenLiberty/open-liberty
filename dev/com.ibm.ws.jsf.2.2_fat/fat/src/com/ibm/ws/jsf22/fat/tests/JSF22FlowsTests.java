@@ -10,6 +10,7 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -32,6 +33,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
@@ -52,6 +54,7 @@ import junit.framework.Assert;
  */
 
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE10_FEATURES)
 public class JSF22FlowsTests {
     @Rule
     public TestName name = new TestName();

@@ -192,7 +192,7 @@ public class ConvertRBtoNLSProps {
     
     private static void printHeader(PrintWriter out, File file) {
         println(out, "###############################################################################");
-        println(out, "# Copyright (c) 2014 IBM Corporation and others.");
+        println(out, "# Copyright (c) 2020 IBM Corporation and others.");
         println(out, "# All rights reserved. This program and the accompanying materials");
         println(out, "# are made available under the terms of the Eclipse Public License v1.0");
         println(out, "# which accompanies this distribution, and is available at");

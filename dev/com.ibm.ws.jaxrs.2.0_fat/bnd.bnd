@@ -82,7 +82,20 @@ tested.features: \
   xmlWS-3.0,\
   mpmetrics-4.0,\
   microprofile-5.0,\
-  jakartaee-9.1
+  jakartaee-9.1,\
+  expressionlanguage-5.0,\
+  restfulwsclient-3.1,\
+  appsecurity-5.0,\
+  restfulws-3.1,\
+  xmlbinding-4.0,\
+  cdi-4.0,\
+  servlet-6.0,\
+  pages-3.1,\
+  xmlWS-4.0,\
+  mpmetrics-5.0,\
+  microprofile-6.0,\
+  jakartaee-10.0
+  
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2,\

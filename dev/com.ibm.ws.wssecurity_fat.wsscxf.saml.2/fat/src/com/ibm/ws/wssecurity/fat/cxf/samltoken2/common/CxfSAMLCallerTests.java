@@ -23,6 +23,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 
@@ -102,7 +103,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     }
    
     //scenario 2
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     @Test
     public void testCxfCallerHttpsPolicy() throws Exception {
         
@@ -148,7 +149,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     }
  
     //scenario 3 - done
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     @Test
     public void testCxfCaller_WithRealmName() throws Exception {
         
@@ -194,7 +195,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
 
     }
  
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     //scenario 5
     @Test
     public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalse() throws Exception {

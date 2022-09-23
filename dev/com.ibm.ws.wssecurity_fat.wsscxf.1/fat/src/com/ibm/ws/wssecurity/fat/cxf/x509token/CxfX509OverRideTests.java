@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +41,7 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfX509OverRideTests {

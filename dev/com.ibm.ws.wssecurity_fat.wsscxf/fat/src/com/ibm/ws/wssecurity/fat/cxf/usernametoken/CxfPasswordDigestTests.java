@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertTrue;
 
@@ -46,7 +46,7 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfPasswordDigestTests extends CommonTests {
@@ -106,8 +106,8 @@ public class CxfPasswordDigestTests extends CommonTests {
             //issue 18363
             featureVersion = "EE8";
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-        }        
-        
+        }
+
         WebArchive pwdigestclient_war = ShrinkHelper.buildDefaultApp("pwdigestclient", "com.ibm.ws.wssecurity.fat.pwdigestclient", "fats.cxf.pwdigest.wssec",
                                                                      "fats.cxf.pwdigest.wssec.types");
         WebArchive pwdigest_war = ShrinkHelper.buildDefaultApp("pwdigest", "com.ibm.ws.wssecurity.fat.pwdigest");

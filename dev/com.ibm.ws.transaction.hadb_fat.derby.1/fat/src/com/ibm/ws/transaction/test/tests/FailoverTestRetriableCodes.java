@@ -119,6 +119,11 @@ public class FailoverTestRetriableCodes extends FailoverTest {
     @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer nonRetriableServer;
 
+    public static String[] serverNames = new String[] {
+                                                        "com.ibm.ws.transaction_retriable",
+                                                        "com.ibm.ws.transaction_nonretriable",
+    };
+
     @AfterClass
     public static void afterSuite() {
         FATSuite.afterSuite();
@@ -126,14 +131,12 @@ public class FailoverTestRetriableCodes extends FailoverTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        servers = new LibertyServer[] { retriableServer, nonRetriableServer };
-
-        FailoverTest.commonSetUp();
+        FailoverTest.commonSetUp(FailoverTestRetriableCodes.class.getName());
     }
 
     @After
     public void cleanup() throws Exception {
-        FailoverTest.commonCleanup();
+        FailoverTest.commonCleanup(this.getClass().getName());
     }
 
     /**

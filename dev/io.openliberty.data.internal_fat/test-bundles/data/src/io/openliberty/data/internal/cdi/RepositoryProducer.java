@@ -15,6 +15,7 @@ import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.Set;
 
+import jakarta.data.repository.Repository;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -23,7 +24,6 @@ import jakarta.enterprise.inject.spi.InterceptionFactory;
 import jakarta.enterprise.inject.spi.Producer;
 import jakarta.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator;
 
-import io.openliberty.data.Data;
 import io.openliberty.data.internal.QueryHandler;
 
 public class RepositoryProducer<T> implements Producer<T> {
@@ -52,7 +52,7 @@ public class RepositoryProducer<T> implements Producer<T> {
     public T produce(CreationalContext<T> cc) {
         @SuppressWarnings("unchecked")
         Class<T> c = (Class<T>) bean.getBeanClass();
-        System.out.println("Producer.produce for " + c + " with " + c.getAnnotation(Data.class));
+        System.out.println("Producer.produce for " + c + " with " + c.getAnnotation(Repository.class));
 
         InterceptionFactory<T> interception = beanMgr.createInterceptionFactory(cc, c);
 

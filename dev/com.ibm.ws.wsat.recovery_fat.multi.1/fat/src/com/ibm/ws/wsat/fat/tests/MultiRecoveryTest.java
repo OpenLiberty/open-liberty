@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -74,6 +75,8 @@ public class MultiRecoveryTest {
 		final String method = "recoveryTest";
 		String result = null;
 
+		callClearResourcesServlet();
+
 		try {
 			// We expect this to fail since it is gonna crash the server
 			callSetupServlet(id);
@@ -84,17 +87,17 @@ public class MultiRecoveryTest {
 		final String str = "Performed recovery for ";
 		final String failMsg = " did not perform recovery";
 		//restart server in three modes
-		if(startServer.equals("server1")){
+		if (startServer.equals("server1")) {
 			// wait for 1st server to have gone away
 			assertNotNull(server.getServerName() + " did not crash", server.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
 			FATUtils.startServers(server);
 			assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
-		} else if(startServer.equals("server2")){
+		} else if (startServer.equals("server2")) {
 			// wait for 2nd server to have gone away
 			assertNotNull(server2.getServerName() + " did not crash", server2.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
 			FATUtils.startServers(server2);
 			assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
-		} else if(startServer.equals("both")){
+		} else if(startServer.equals("both")) {
 			// wait for both servers to have gone away
 			assertNotNull(server.getServerName() + " did not crash", server.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
 			assertNotNull(server2.getServerName() + " did not crash", server2.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
@@ -109,34 +112,8 @@ public class MultiRecoveryTest {
 			Log.error(getClass(), method, e);
 			throw e;
 		}
+		
 		Log.info(getClass(), method, "callCheckServlet(" + id + ") returned: " + result);
-	}
-
-	protected void callSetupServlet(String testNumber) throws IOException{
-		final String method = "callSetupServlet";
-		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
-		String servletName = "MultiRecoverySetupServlet";
-		int test_number = Integer.parseInt(testNumber);
-		if (test_number == 1)
-			expectedConnectionCode = HttpURLConnection.HTTP_NOT_FOUND;
-		String urlStr = BASE_URL + "/" + recoveryClient + "/" + servletName
-				+ "?number=" + testNumber + "&baseurl=" + BASE_URL
-				+ "&baseurl2=" + BASE_URL2;
-
-		Log.info(getClass(), method, "callSetupServlet URL: " + urlStr);
-		String result = "";
-		HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), 
-				expectedConnectionCode, REQUEST_TIMEOUT);
-		try{
-			BufferedReader br = HttpUtils.getConnectionStream(con);
-			result = br.readLine();
-		}finally{
-			con.disconnect();
-		}
-		assertNotNull(result);
-		Log.info(getClass(), method, "Recovery test " + testNumber + " Result : " + result);
-		assertTrue("Cannot get expected reply from server",
-				!result.contains("failed"));
 	}
 
 	protected String callCheckServlet(String testNumber) throws IOException {
@@ -215,20 +192,20 @@ public class MultiRecoveryTest {
 		if (testNumber.startsWith("13") || testNumber.startsWith("15") || testNumber.startsWith("16")) {
 			assertTrue("All XAResources should rollback but do not get "
 					+ "allRollback in the result.", result2.contains("allRollback"));
-		}else if (testNumber.startsWith("14")) {
+		} else if (testNumber.startsWith("14")) {
 			assertTrue("All XAResources should commit but do not get "
 					+ "allCommit in the result.", result2.contains("allCommitted"));
-		}else if (testNumber.equals("3011") || testNumber.equals("3021")) {
+		} else if (testNumber.equals("3011") || testNumber.equals("3021")) {
 			assertTrue("Can not get the One Phase XAResource in STARTED state", result1.contains("The One Phase XAResource is in STARTED state."));
 			assertTrue("Can not get the XAResource in ROLLEDBACK state", result2.contains("allRollback"));
-		}else if (testNumber.equals("3012") || testNumber.equals("3022")) {
+		} else if (testNumber.equals("3012") || testNumber.equals("3022")) {
 			assertTrue("Can not get the One Phase XAResource in ROLLEDBACK state on server1", 
 					result1.contains("The One Phase XAResource is in ROLLEDBACK state"));
 			assertTrue("Can not get the XAResource in ROLLEDBACK state on server2", result2.contains("allRollback"));
-		}else if (testNumber.equals("3013") || testNumber.equals("3023")) {
+		} else if (testNumber.equals("3013") || testNumber.equals("3023")) {
 			assertTrue("Can not get the One Phase XAResource in STARTED state", result1.contains("The One Phase XAResource is in STARTED state."));
 			assertTrue("Can not get the XAResource in ROLLEDBACK state on server2", result2.contains("allRollback"));
-		}else if (testNumber.equals("3031")) {
+		} else if (testNumber.equals("3031")) {
 			assertTrue("Can not get the One Phase XAResource in ROLLEDBACK state on server1", 
 					result1.contains("The One Phase XAResource is in ROLLEDBACK state"));
 			assertTrue("Can not get the XAResource in ROLLEDBACK state on server2", result2.contains("allRollback"));
@@ -246,5 +223,52 @@ public class MultiRecoveryTest {
 
 		return	"\n Result1 : " + result1 + 
 				"\n Result2 : " + result2;
+	}
+
+	protected void callSetupServlet(String testNumber) throws IOException{
+		final String method = "callSetupServlet";
+		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
+		String servletName = "MultiRecoverySetupServlet";
+		int test_number = Integer.parseInt(testNumber);
+		if (test_number == 1)
+			expectedConnectionCode = HttpURLConnection.HTTP_NOT_FOUND;
+
+		String urlStr = BASE_URL + "/" + recoveryClient + "/" + servletName
+				+ "?number=" + testNumber + "&baseurl=" + BASE_URL
+				+ "&baseurl2=" + BASE_URL2;
+	
+		Log.info(getClass(), method, "callSetupServlet URL: " + urlStr);
+		String result = "";
+		HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), 
+				expectedConnectionCode, REQUEST_TIMEOUT);
+		try {
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			result = br.readLine();
+		} finally {
+			con.disconnect();
+		}
+		assertNotNull(result);
+		Log.info(getClass(), method, "Recovery test " + testNumber + " Result : " + result);
+		assertTrue("Cannot get expected reply from server",
+				!result.contains("failed"));
+	}
+
+	protected void callClearResourcesServlet() throws IOException{
+		final String method = "callClearResourcesServlet";
+		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
+		String servletName = "ClearResourcesServlet";
+
+		String urlStr = BASE_URL2 + "/" + recoveryServer + "/" + servletName;
+	
+		Log.info(getClass(), method, "callClearResourcesServlet URL: " + urlStr);
+		String result = "";
+		HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), 
+				expectedConnectionCode, REQUEST_TIMEOUT);
+		try {
+			BufferedReader br = HttpUtils.getConnectionStream(con);
+			result = br.readLine();
+		} finally {
+			con.disconnect();
+		}
 	}
 }

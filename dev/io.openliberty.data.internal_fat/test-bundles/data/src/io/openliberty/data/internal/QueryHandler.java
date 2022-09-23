@@ -32,6 +32,24 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import jakarta.data.Delete;
+import jakarta.data.Inheritance;
+import jakarta.data.Limit;
+import jakarta.data.OrderBy;
+import jakarta.data.Page;
+import jakarta.data.Paginated;
+import jakarta.data.Pagination;
+import jakarta.data.Param;
+import jakarta.data.Query;
+import jakarta.data.Result;
+import jakarta.data.Select;
+import jakarta.data.Select.Aggregate;
+import jakarta.data.Sort;
+import jakarta.data.SortType;
+import jakarta.data.Sorts;
+import jakarta.data.Update;
+import jakarta.data.Where;
+import jakarta.data.repository.CrudRepository;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -41,26 +59,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
-
-import io.openliberty.data.Data;
-import io.openliberty.data.Delete;
-import io.openliberty.data.Inheritance;
-import io.openliberty.data.Limit;
-import io.openliberty.data.OrderBy;
-import io.openliberty.data.Page;
-import io.openliberty.data.Paginated;
-import io.openliberty.data.Pagination;
-import io.openliberty.data.Param;
-import io.openliberty.data.Query;
-import io.openliberty.data.Repository;
-import io.openliberty.data.Result;
-import io.openliberty.data.Select;
-import io.openliberty.data.Select.Aggregate;
-import io.openliberty.data.Sort;
-import io.openliberty.data.SortType;
-import io.openliberty.data.Sorts;
-import io.openliberty.data.Update;
-import io.openliberty.data.Where;
 
 public class QueryHandler<T> implements InvocationHandler {
     private static enum Condition {
@@ -110,18 +108,18 @@ public class QueryHandler<T> implements InvocationHandler {
     }
 
     private final Class<T> beanClass;
-    private final Data data;
     private final Class<?> defaultEntityClass; // repository methods can return subclasses in the case of @Inheritance
     private final boolean inheritance;
     private final DataPersistence persistence;
+    private final String provider;
 
     @SuppressWarnings("unchecked")
     public QueryHandler(Bean<T> bean, Class<?> entityClass) {
         beanClass = (Class<T>) bean.getBeanClass();
-        data = beanClass.getAnnotation(Data.class);
         defaultEntityClass = entityClass;
         inheritance = entityClass.getAnnotation(Inheritance.class) != null ||
                       entityClass.getAnnotation(jakarta.persistence.Inheritance.class) != null;
+        provider = "DefaultDataStore"; // TODO configuration of different providers in Jakarta Data, possibly get from annotation: beanClass.getAnnotation(Repository.class);
 
         BundleContext bc = FrameworkUtil.getBundle(DataPersistence.class).getBundleContext();
         persistence = bc.getService(bc.getServiceReference(DataPersistence.class));
@@ -251,7 +249,7 @@ public class QueryHandler<T> implements InvocationHandler {
         else
             a.append("o.");
 
-        String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
+        String name = entityInfo.getAttributeName(attribute);
         a.append(name = name == null ? attribute : name);
 
         if (upper || lower)
@@ -326,7 +324,7 @@ public class QueryHandler<T> implements InvocationHandler {
                 }
 
             String attribute = methodName.substring(i, stopAt);
-            String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
+            String name = entityInfo.getAttributeName(attribute);
             q.append("o.").append(name == null ? attribute : name);
 
             if (desc)
@@ -393,7 +391,7 @@ public class QueryHandler<T> implements InvocationHandler {
                 next = div;
 
             String attribute = next == Integer.MAX_VALUE ? methodName.substring(u) : methodName.substring(u, next);
-            String name = persistence.getAttributeName(attribute, entityInfo.type, data.provider());
+            String name = entityInfo.getAttributeName(attribute);
             q.append(first ? " o." : ", o.").append(name == null ? attribute : name).append("=");
 
             if (op != null)
@@ -443,13 +441,13 @@ public class QueryHandler<T> implements InvocationHandler {
             q.append("NEW ").append(type.getName()).append('(');
             boolean first = true;
             if (cols == null || cols.length == 0)
-                for (String name : persistence.getAttributeNames(entityInfo.type, data.provider())) {
+                for (String name : entityInfo.attributeNames.values()) {
                     generateSelectExpression(q, first, function, distinct, name);
                     first = false;
                 }
             else
                 for (int i = 0; i < cols.length; i++) {
-                    String name = persistence.getAttributeName(cols[i], entityInfo.type, data.provider());
+                    String name = entityInfo.getAttributeName(cols[i]);
                     generateSelectExpression(q, i == 0, function, distinct, name == null ? cols[i] : name);
                 }
             q.append(')');
@@ -500,7 +498,7 @@ public class QueryHandler<T> implements InvocationHandler {
         if (!inheritance || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
             entityClass = defaultEntityClass;
 
-        EntityInfo entityInfo = persistence.getEntityInfo(data.provider(), entityClass);
+        EntityInfo entityInfo = persistence.getEntityInfo(provider, entityClass);
 
         QueryType queryType;
         boolean requiresTransaction;
@@ -513,8 +511,8 @@ public class QueryHandler<T> implements InvocationHandler {
         Query fullQuery = method.getAnnotation(Query.class);
         String jpql = fullQuery == null ? null : fullQuery.value();
 
-        // Repository built-in methods
-        if (jpql == null && Repository.class.equals(method.getDeclaringClass()))
+        // Repository built-in methods // TODO ideally these should not need special handling. A user should be able to copy/paste them onto a custom repository interface
+        if (jpql == null && CrudRepository.class.equals(method.getDeclaringClass()))
             jpql = getBuiltInRepositoryQuery(entityInfo, methodName, args, paramTypes);
 
         // @Delete/@Update/@Where/@OrderBy annotations

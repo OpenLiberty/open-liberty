@@ -230,7 +230,8 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     }
 
     @Test
-    @AllowedFFDC({"jakarta.servlet.ServletException"})
+    @AllowedFFDC({"jakarta.servlet.ServletException",
+        "com.ibm.jbatch.container.exception.PersistenceException"})
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException",
                     "java.lang.Exception" })
     public void testAbandonAsMonitor() throws Exception {

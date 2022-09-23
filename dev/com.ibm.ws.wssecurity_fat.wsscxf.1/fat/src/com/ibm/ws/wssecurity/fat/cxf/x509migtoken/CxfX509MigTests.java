@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509migtoken;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
@@ -38,6 +39,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -80,12 +82,12 @@ public class CxfX509MigTests {
     public static void setUp() throws Exception {
 
         String thisMethod = "setup";
-        
+
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
         copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         errMsgVersion = "EE8";
-        
+
         ShrinkHelper.defaultDropinApp(server, "x509migclient", "com.ibm.ws.wssecurity.fat.x509migclient", "test.libertyfat.x509mig.contract", "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migbadclient", "com.ibm.ws.wssecurity.fat.x509migbadclient", "test.libertyfat.x509mig.contract",
                                       "test.libertyfat.x509mig.types");
@@ -2167,7 +2169,7 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     public void testCxfX509AsymmetricSignatureReplayMigService() throws Exception {
         // This is a negative test case.
         // It ought to fail at the second request.
@@ -2894,7 +2896,7 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     public void testBadCxfX509AsymIssuerSerialMigService() throws Exception {
         String thisMethod = "testBadCxfX509AsymIssuerSerialMigService";
         methodFull = "testBadCxfX509AsymIssuerSerialMigService";
@@ -3478,7 +3480,7 @@ public class CxfX509MigTests {
      * It expects to fail
      **/
     @Test
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     public void testBadAsymEndSignService() throws Exception {
         String thisMethod = "testBadAsymEncSignService";
         methodFull = "testBadAsymEncSignService";
@@ -3539,7 +3541,7 @@ public class CxfX509MigTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     public void testBadTripleDesService() throws Exception {
         String thisMethod = "testBadTripleDesService";
         methodFull = "testBadTripleDesService";
@@ -3590,7 +3592,7 @@ public class CxfX509MigTests {
      *
      */
     //@Test not valid test?
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
     public void testBadBasic128ServiceEE7Only() throws Exception {
         String thisMethod = "testBadBasic128ServiceEE7Only";
         methodFull = "testBadBasic128ServiceEE7Only";
@@ -3614,7 +3616,7 @@ public class CxfX509MigTests {
 
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     public void testBadBasic128Service() throws Exception {
         String thisMethod = "testBadBasic128Service";
         methodFull = "testBadBasic128Service";

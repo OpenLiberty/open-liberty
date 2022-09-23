@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // WADL is not supported in EE9
+@SkipForRepeat({"EE9_FEATURES", "EE10_FEATURES"}) // WADL is not supported in EE9
 public class WADLTest {
 
     @Server("com.ibm.ws.jaxrs.fat.wadl")

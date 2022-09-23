@@ -44,7 +44,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 public class JSF23UIRepeatConditionTests {
 
     protected static final Class<?> c = JSF23UIRepeatConditionTests.class;
@@ -78,6 +77,7 @@ public class JSF23UIRepeatConditionTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testUIRepeatCondition() throws Exception {
         String contextRoot = "UIRepeatConditionCheck";
         try (WebClient webClient = new WebClient()) {

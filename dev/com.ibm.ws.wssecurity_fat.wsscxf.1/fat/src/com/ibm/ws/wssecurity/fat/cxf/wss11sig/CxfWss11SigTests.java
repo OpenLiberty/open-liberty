@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.wss11sig;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
@@ -36,7 +37,7 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfWss11SigTests extends CommonTests {
@@ -296,30 +297,30 @@ public class CxfWss11SigTests extends CommonTests {
                         // msg to issue if do NOT get the expected result
                         "The test expected a succesful message from the server.");
             /*
-            genericTest(
-                        // test name for logging
-                        thisMethod,
-                        // Svc Client Url that generic test code should use
-                        clientHttpUrl,
-                        // Port that svc client code should use
-                        "",
-                        // user that svc client code should use
-                        "user1",
-                        // pw that svc client code should use
-                        "security",
-                        // wsdl sevice that svc client code should use
-                        "WSS11SigService6",
-                        // wsdl that the svc client code should use
-                        newClientWsdl,
-                        // wsdl port that svc client code should use
-                        "WSS11Sig6",
-                        // msg to send from svc client to server
-                        "",
-                        // expected response from server
-                        "Body not SIGNED",
-                        // msg to issue if do NOT get the expected result
-                        "The test expected a succesful message from the server.");
-            */
+             * genericTest(
+             * // test name for logging
+             * thisMethod,
+             * // Svc Client Url that generic test code should use
+             * clientHttpUrl,
+             * // Port that svc client code should use
+             * "",
+             * // user that svc client code should use
+             * "user1",
+             * // pw that svc client code should use
+             * "security",
+             * // wsdl sevice that svc client code should use
+             * "WSS11SigService6",
+             * // wsdl that the svc client code should use
+             * newClientWsdl,
+             * // wsdl port that svc client code should use
+             * "WSS11Sig6",
+             * // msg to send from svc client to server
+             * "",
+             * // expected response from server
+             * "Body not SIGNED",
+             * // msg to issue if do NOT get the expected result
+             * "The test expected a succesful message from the server.");
+             */
 
         } else if (featureVersion.equals("EE8")) {
             genericTest(
@@ -461,29 +462,30 @@ public class CxfWss11SigTests extends CommonTests {
                         // msg to issue if do NOT get the expected result
                         "The test expected a succesful message from the server.");
             /*
-            genericTest(
-                        // test name for logging
-                        thisMethod,
-                        // Svc Client Url that generic test code should use
-                        clientHttpUrl,
-                        // Port that svc client code should use
-                        "",
-                        // user that svc client code should use
-                        "user1",
-                        // pw that svc client code should use
-                        "security",
-                        // wsdl sevice that svc client code should use
-                        "WSS11SigService7",
-                        // wsdl that the svc client code should use
-                        newClientWsdl,
-                        // wsdl port that svc client code should use
-                        "WSS11Sig7",
-                        // msg to send from svc client to server
-                        "",
-                        // expected response from server
-                        "Body not SIGNED",
-                        // msg to issue if do NOT get the expected result
-                        "The test expected a succesful message from the server."); */
+             * genericTest(
+             * // test name for logging
+             * thisMethod,
+             * // Svc Client Url that generic test code should use
+             * clientHttpUrl,
+             * // Port that svc client code should use
+             * "",
+             * // user that svc client code should use
+             * "user1",
+             * // pw that svc client code should use
+             * "security",
+             * // wsdl sevice that svc client code should use
+             * "WSS11SigService7",
+             * // wsdl that the svc client code should use
+             * newClientWsdl,
+             * // wsdl port that svc client code should use
+             * "WSS11Sig7",
+             * // msg to send from svc client to server
+             * "",
+             * // expected response from server
+             * "Body not SIGNED",
+             * // msg to issue if do NOT get the expected result
+             * "The test expected a succesful message from the server.");
+             */
 
         } else if (featureVersion.equals("EE8")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");

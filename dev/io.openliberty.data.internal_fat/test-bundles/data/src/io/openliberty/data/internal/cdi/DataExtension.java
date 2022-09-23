@@ -11,6 +11,8 @@
 package io.openliberty.data.internal.cdi;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import jakarta.data.Entities;
+import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Repository;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
@@ -32,8 +37,6 @@ import jakarta.enterprise.inject.spi.WithAnnotations;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Entities;
 import io.openliberty.data.internal.DataPersistence;
 
 public class DataExtension implements Extension {
@@ -41,11 +44,11 @@ public class DataExtension implements Extension {
     private final ArrayList<Bean<?>> repositoryBeans = new ArrayList<>();
     private final HashSet<AnnotatedType<?>> repositoryTypes = new HashSet<>();
 
-    public <T> void processAnnotatedTypeWithData(@Observes @WithAnnotations(Data.class) ProcessAnnotatedType<T> event) {
-        System.out.println("processAnnotatedTypeWithData");
+    public <T> void processAnnotatedTypeWithRepository(@Observes @WithAnnotations(Repository.class) ProcessAnnotatedType<T> event) {
+        System.out.println("processAnnotatedTypeWithRepository");
 
         AnnotatedType<T> type = event.getAnnotatedType();
-        System.out.println("    found " + type.getAnnotation(Data.class) + " on " + type.getJavaClass());
+        System.out.println("    found " + type.getAnnotation(Repository.class) + " on " + type.getJavaClass());
         repositoryTypes.add(type);
     }
 
@@ -67,32 +70,44 @@ public class DataExtension implements Extension {
             Class<?> repositoryInterface = repositoryType.getJavaClass();
             ClassLoader loader = repositoryInterface.getClassLoader();
 
-            Data data = repositoryType.getAnnotation(Data.class);
-
-            EntityGroupKey entityGroupKey = new EntityGroupKey(data.provider(), loader);
+            EntityGroupKey entityGroupKey = new EntityGroupKey("DefaultDataStore", loader); // TODO configuration of different providers in Jakarta Data
             List<Class<?>> entityClasses = entitiesMap.get(entityGroupKey);
             if (entityClasses == null)
                 entitiesMap.put(entityGroupKey, entityClasses = new ArrayList<>());
 
-            Class<?> entityClass = data.value();
-            if (void.class.equals(entityClass)) {
-                entityClass = null;
+            Class<?> entityClass = null;
+            for (Type interfaceType : repositoryInterface.getGenericInterfaces()) {
+                if (interfaceType instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
+                    if (parameterizedType.getRawType().getTypeName().startsWith(DataRepository.class.getPackageName())) {
+                        Type paramTypes[] = parameterizedType.getActualTypeArguments();
+                        if (paramTypes.length == 2 && paramTypes[0] instanceof Class) {
+                            System.out.println("    entity type for " + repositoryInterface.getName() + " is " + paramTypes[0].getTypeName());
+                            entityClass = (Class<?>) paramTypes[0];
+                        }
+                    }
+                }
+            }
+            if (entityClass == null) {
                 // infer from single-parameter methods that accept an entity class
                 for (Method method : repositoryInterface.getMethods())
                     if (method.getParameterCount() == 1) {
                         // TODO there should be better ways to determine entity classes, but this is close enough for experimentation,
                         Class<?> paramType = method.getParameterTypes()[0];
+                        if (paramType.isArray())
+                            paramType = paramType.getComponentType();
                         String packageName = paramType.getPackageName();
                         if (!paramType.isPrimitive() &&
                             !paramType.isInterface() &&
-                            !paramType.isArray() &&
                             !packageName.startsWith("java") &&
                             !packageName.startsWith("jakarta")) {
                             if ("save".equals(method.getName())) {
                                 entityClass = paramType;
+                                System.out.println("    entity type from " + repositoryInterface.getName() + "." + method.getName() + " is " + entityClass);
                                 break;
                             } else if (entityClass == null || paramType.getName().compareTo(entityClass.getName()) < 0) {
                                 entityClass = paramType;
+                                System.out.println("    entity type from " + repositoryInterface.getName() + "." + method.getName() + " is " + entityClass);
                             }
                         }
                     }

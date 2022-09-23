@@ -32,10 +32,12 @@ Export-Package: \
 	io.openliberty.security.oidcclientcore.utils, \
 	io.openliberty.security.oidcclientcore.http, \
 	io.openliberty.security.oidcclientcore.token, \
-	io.openliberty.security.oidcclientcore.userinfo
+	io.openliberty.security.oidcclientcore.userinfo, \
+        io.openliberty.security.oidcclientcore.logout
 
 -dsannotations: \
-	io.openliberty.security.oidcclientcore.http.EndpointRequest
+	io.openliberty.security.oidcclientcore.http.EndpointRequest,\
+	io.openliberty.security.oidcclientcore.token.TokenResponseValidator
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

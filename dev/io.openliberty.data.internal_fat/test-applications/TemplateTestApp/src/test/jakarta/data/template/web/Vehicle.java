@@ -3,7 +3,7 @@
  */
 package test.jakarta.data.template.web;
 
-import io.openliberty.data.Id;
+import jakarta.data.Id;
 
 /**
  *

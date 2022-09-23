@@ -484,10 +484,10 @@ public class ShibbolethHelpers {
         // copy the appropriate version of the idp.war file
         if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
             Log.info(thisClass, thisMethod, "################## Copying the 3.1.1 version of Shibbolet ##################h");
-            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/test-apps/idp-war-3.3.1.war");
+            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/idp-apps/idp-war-3.3.1.war");
         } else {
             Log.info(thisClass, thisMethod, "################## Copying the 4.1.0 version of Shibboleth ##################");
-            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/test-apps/idp-war-4.1.0.war");
+            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war");
         }
 
     }

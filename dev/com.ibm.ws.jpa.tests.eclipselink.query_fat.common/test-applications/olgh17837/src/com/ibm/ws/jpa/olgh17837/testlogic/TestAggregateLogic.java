@@ -645,10 +645,20 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDerby) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
+                } else if (isDB2) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                }
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;

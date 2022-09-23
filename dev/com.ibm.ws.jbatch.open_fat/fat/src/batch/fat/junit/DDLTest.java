@@ -82,6 +82,7 @@ public class DDLTest extends BatchFATHelper {
             Assert.assertTrue("DDL Generation did not produce a file", ddlFile.exists() && ddlFile.isFile());
             Assert.assertTrue("DDL Generation produced an empty file", ddlFile.length() > 0);
         } catch (Exception exception) {
+            Log.error(DDLTest.class, "testddlGenProducesOutput", exception);
             Assert.fail("An exception occurred while generating DDL file.");
         }
     }
@@ -108,6 +109,7 @@ public class DDLTest extends BatchFATHelper {
             Assert.assertTrue("DDL File is missing table JOBINSTANCE", sqlFromDDL.contains("CREATE TABLE JBATCH.JOBINSTANCE"));
 
         } catch (Exception exception) {
+            Log.error(DDLTest.class, "testddlGenContainsCorrectTables", exception);
             Assert.fail("Test failed due to an unexpected exception.");
         }
     }
@@ -222,6 +224,7 @@ public class DDLTest extends BatchFATHelper {
 
             Assert.assertTrue("Got a good return code when a bad return code was expected.", 200 != rc);
         } catch (Exception exception) {
+            Log.error(DDLTest.class, "testBadDDL", exception);
             Assert.fail("Encountered an unexpected exception.");
         }
     }

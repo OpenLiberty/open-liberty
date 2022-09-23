@@ -59,7 +59,7 @@ public class DB2Test extends FATServletClient {
                     // Use 5m timeout for local runs, 25m timeout for remote runs (extra time since the DB2 container can be slow to start)
                     .waitingFor(new LogMessageWaitStrategy()
                                     .withRegEx(".*DB2 SSH SETUP DONE.*")
-                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25)))
+                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 5 : 25)))
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "db2-ssl"))
                     .withReuse(true);
 

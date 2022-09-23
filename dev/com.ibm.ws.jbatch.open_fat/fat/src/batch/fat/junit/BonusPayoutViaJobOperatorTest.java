@@ -34,6 +34,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 
 /*
@@ -103,7 +104,14 @@ public class BonusPayoutViaJobOperatorTest extends BatchFATHelper {
         ServerConfiguration config = server.getServerConfiguration();
         FeatureManager fm = config.getFeatureManager();
         Set<String> featureList = fm.getFeatures();
-        String cdiFeature = JakartaEE9Action.isActive() ? "cdi-3.0" : "cdi-1.2";
+        String cdiFeature;
+        if (JakartaEE9Action.isActive()) {
+            cdiFeature = "cdi-3.0";
+        } else if (JakartaEE10Action.isActive()) {
+            cdiFeature = "cdi-4.0";
+        } else {
+            cdiFeature = "cdi-1.2";
+        }
         if (featureList.contains(cdiFeature)) {
             featureList.remove(cdiFeature);
             log("turnOffCDIFeature", "turned off cdi");
@@ -146,7 +154,7 @@ public class BonusPayoutViaJobOperatorTest extends BatchFATHelper {
 
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKY0011W");
+            server.stopServer("CWWKY0011W", "CWWKY0041W");
         }
     }
 

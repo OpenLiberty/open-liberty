@@ -123,6 +123,11 @@ public class FailoverTest2 extends FailoverTest {
     @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer recoverServer;
 
+    public static String[] serverNames = new String[] {
+                                                        "com.ibm.ws.transaction",
+                                                        "com.ibm.ws.transaction_recover",
+    };
+
     @AfterClass
     public static void afterSuite() {
         FATSuite.afterSuite();
@@ -130,14 +135,12 @@ public class FailoverTest2 extends FailoverTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        servers = new LibertyServer[] { defaultServer, recoverServer };
-
-        FailoverTest.commonSetUp();
+        FailoverTest.commonSetUp(FailoverTest2.class.getName());
     }
 
     @After
     public void cleanup() throws Exception {
-        FailoverTest.commonCleanup();
+        FailoverTest.commonCleanup(this.getClass().getName());
     }
 
     /**

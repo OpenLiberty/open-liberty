@@ -10,6 +10,7 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertFalse;
@@ -59,6 +60,7 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE10_FEATURES)
 public class JSF22AparTests {
     @Rule
     public TestName name = new TestName();

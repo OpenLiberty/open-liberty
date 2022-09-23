@@ -37,7 +37,7 @@
 
 2005=Wait failure on Sequencing Connection Handler for DatabaseSession.
 
-2006=Attempt to acquire sequencing values through a single Connection({0}) simultaneously in multiple threads
+2006=Attempt to acquire sequencing values through a single Connection({0}) simultaneously in multiple threads.
 
 2007=Max number of attempts to lock object: {0} exceeded.  Failed to clone the object.
 

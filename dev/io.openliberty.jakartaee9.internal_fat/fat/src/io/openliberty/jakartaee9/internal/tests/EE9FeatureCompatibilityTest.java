@@ -181,6 +181,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         // j2eeManagement-1.1 was removed in Jakarta EE 9 so there is no replacement
         ee8Features.remove("j2eeManagement-1.1");
 
+        // TODO nosqlUnused-1.0 is a temporary workaround and can eventually be removed
+        ee8Features.remove("nosqlUnused-1.0");
+
         // servlet long name is the same for EE9 so it will fail because the prefixes
         // match and it is marked as a singleton.
         ee8Features.remove("servlet-4.0");

@@ -10,10 +10,6 @@
  *******************************************************************************/
 package io.openliberty.jakarta.restfulWS30api.fat;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -35,17 +31,9 @@ import io.openliberty.jakarta.restfulWS30api.fat.app.canload.ApiTestServlet;
 
 @RunWith(FATRunner.class)
 public class CanLoadRESTfulWS30APIsTest extends FATServletClient {
-    static String[] ee9Array = {"restfulWSClient-3.0","xmlBinding-3.0"};
-    static Set<String> ee9Set = new HashSet<String>(Arrays.asList(ee9Array));
-    static String[] ee10Array = {"restfulWS-3.1","xmlBinding-4.0"};
-    static Set<String> ee10Set = new HashSet<String>(Arrays.asList(ee10Array));
-    
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new FeatureReplacementAction("restfulWS-3.0", "restfulWSClient-3.0").withID("ClientFeature"))
-                    .andWith(new FeatureReplacementAction(ee9Set, ee10Set).withID("EE10"))
-                    .andWith(new FeatureReplacementAction("restfulWS-3.1", "restfulWSClient-3.1").withID("EE10-ClientFeature"));
-
+                    .andWith(new FeatureReplacementAction("restfulWS-3.0", "restfulWSClient-3.0").withID("ClientFeature"));
                     
     public static final String APP_NAME = "jaxrs30api";
     public static final String SERVER_NAME = "jaxrs30api";

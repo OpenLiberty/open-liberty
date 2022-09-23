@@ -102,11 +102,6 @@
       <version>2.12.7</version>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.jr</groupId>
-      <artifactId>jackson-jr-objects</artifactId>
-      <version>2.12.7</version>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <version>2.12.7</version>
@@ -160,6 +155,11 @@
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
       <version>3.19.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.json-simple</groupId>
+      <artifactId>json-simple</artifactId>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>com.graphql-java</groupId>
@@ -884,7 +884,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
@@ -960,6 +960,51 @@
       <groupId>jakarta.mail</groupId>
       <artifactId>jakarta.mail-api</artifactId>
       <version>2.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-column</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-core</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-document</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-key-value</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-query</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-column</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-core</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-document</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-key-value</artifactId>
+      <version>1.0.0-b4</version>
     </dependency>
     <dependency>
       <groupId>jakarta.persistence</groupId>
@@ -1762,6 +1807,11 @@
       <version>1.2.18</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.maven.indexer</groupId>
+      <artifactId>indexer-core</artifactId>
+      <version>6.2.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
       <version>3.6.3</version>
@@ -2514,7 +2564,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2524,7 +2574,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2534,7 +2584,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2544,7 +2594,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.transformer</groupId>
@@ -3789,7 +3839,7 @@
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
-      <version>1.27</version>
+      <version>1.32</version>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>

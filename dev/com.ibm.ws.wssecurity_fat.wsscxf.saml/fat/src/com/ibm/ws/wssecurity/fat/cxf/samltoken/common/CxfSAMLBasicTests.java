@@ -12,6 +12,7 @@
 package com.ibm.ws.wssecurity.fat.cxf.samltoken.common;
 
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      *
      */
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE9_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
     public void CxfSAMLBasicTests_validUserPw_test() throws Exception {
 
@@ -140,7 +141,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      */
 
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE9_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
     public void CxfSAMLBasicTests_validUserBadPw_test() throws Exception {
  
@@ -170,7 +171,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      */
 
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE9_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
     public void CxfSAMLBasicTests_badUserValidPw_test() throws Exception {
 
@@ -198,7 +199,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      */
 
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE9_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_SAMLTokenMissingSignature_test() throws Exception {
@@ -227,7 +228,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      */
 
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE9_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
     public void CxfSAMLBasicTests_clientUserNameTokenPolicy_test() throws Exception {
 

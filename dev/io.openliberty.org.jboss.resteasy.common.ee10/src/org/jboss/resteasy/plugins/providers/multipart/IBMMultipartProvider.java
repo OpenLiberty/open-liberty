@@ -16,6 +16,9 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -137,7 +140,22 @@ public class IBMMultipartProvider implements MessageBodyReader<Object>, MessageB
         }
         MultipartOutput outputObj = new MultipartOutput();
         for (IAttachment attachment : attachments) {
-            Object content = attachment.getDataHandler().getContent();
+            Object content;
+            boolean java2SecurityEnabled = System.getSecurityManager() != null;
+            if (java2SecurityEnabled) {
+                try {
+                    content = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                       @Override
+                       public Object run() throws Exception
+                       {        return attachment.getDataHandler().getContent();        }
+
+                    });
+                 } catch (PrivilegedActionException pae)
+                 {      throw new RuntimeException(pae);    }
+            } else {
+                content = attachment.getDataHandler().getContent();
+            }
+            
             OutputPart part = outputObj.addPart(content, content.getClass(), null, attachment.getContentType(),
                                                 ((IAttachmentImpl)attachment).getFileName());
             attachment.getHeaders().entrySet().stream().forEach(entry -> {part.getHeaders().put(entry.getKey(), (List)entry.getValue());});

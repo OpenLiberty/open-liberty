@@ -54,6 +54,74 @@ web-common_6_0.xsd:
 
 ---
 
+web-common_6_0.xsd
+
+Updated the type "cookie-configType", which is used by element "cookie-config":
+
+      <xsd:element name="cookie-config"
+                   type="jakartaee:cookie-configType"
+                   minOccurs="0">
+
+Attribute "attribute" of type "attribute-valueType" was added:
+
+  <xsd:complexType name="cookie-configType">
+...
+    <xsd:sequence>
+...
+      <xsd:element name="attribute"
+                   type="jakartaee:attribute-valueType"
+                   minOccurs="0"
+                   maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>
+            The attribute-param element contains a name/value pair to
+            be added as an attribute to every session cookie.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+
+Attribute 'attribute' is a collection attribute with elements of type 'attribute-valueType'.
+The element type has two elements, a description, an attribute value, and an ID:
+
+  <xsd:complexType name="attribute-valueType">
+    <xsd:annotation>
+      <xsd:documentation>
+        This type is a general type that can be used to declare
+        attribute/value lists.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="description"
+                   type="jakartaee:descriptionType"
+                   minOccurs="0"
+                   maxOccurs="unbounded"/>
+      <xsd:element name="attribute-name"
+                   type="jakartaee:string">
+        <xsd:annotation>
+          <xsd:documentation>
+            The attribute-name element contains the name of an
+            attribute.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+
+      <xsd:element name="attribute-value"
+                   type="jakartaee:xsdStringType">
+        <xsd:annotation>
+          <xsd:documentation>
+            The attribute-value element contains the value of a
+            attribute.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="id"
+                   type="xsd:ID"/>
+  </xsd:complexType>
+
+---
+
 Notes:
 
 --

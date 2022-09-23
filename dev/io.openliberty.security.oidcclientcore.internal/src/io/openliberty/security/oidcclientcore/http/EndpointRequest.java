@@ -28,11 +28,11 @@ import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 
+
 @Component(service = EndpointRequest.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class EndpointRequest {
 
     public static final TraceComponent tc = Tr.register(EndpointRequest.class);
-
     private static final String KEY_SSL_SUPPORT = "sslSupport";
     private static volatile SSLSupport sslSupport;
 
@@ -45,7 +45,7 @@ public class EndpointRequest {
         sslSupport = null;
     }
 
-    protected SSLSocketFactory getSSLSocketFactory() {
+    public SSLSocketFactory getSSLSocketFactory() {
         if (sslSupport != null) {
             return sslSupport.getSSLSocketFactory();
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21ReactiveSampleTest;
 import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21TimeoutClientTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -49,5 +50,7 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"));
+                    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"))
+                    .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0"));
+;
 }

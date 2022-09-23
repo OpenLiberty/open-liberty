@@ -28,8 +28,8 @@ public abstract class AuthorizationRequest extends EndpointRequest {
     protected HttpServletRequest request;
     protected HttpServletResponse response;
     protected String clientId;
-
     protected Storage storage;
+
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
     protected OidcStorageUtils storageUtils = new OidcStorageUtils();

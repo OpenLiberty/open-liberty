@@ -56,16 +56,31 @@ public class PagesVersionHandler {
     }
 
     public static boolean isPages30Loaded(){
-        if( PagesVersionHandler.LOADED_SPEC_LEVEL.equals("3.0")) {
+        if(PagesVersionHandler.LOADED_SPEC_LEVEL.equals("3.0")) {
             return true;
         }
         return false;
     }
 
     public static boolean isPages31Loaded(){
-        if( PagesVersionHandler.LOADED_SPEC_LEVEL.equals("3.1")) {
+        if(PagesVersionHandler.LOADED_SPEC_LEVEL.equals("3.1")) {
             return true;
         }
         return false;
     }
+
+    public static boolean isPages31OrHigherLoaded(){
+        if(Double.parseDouble(PagesVersionHandler.LOADED_SPEC_LEVEL) >= 3.1) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isPages30OrLowerLoaded(){
+        if(Double.parseDouble(PagesVersionHandler.LOADED_SPEC_LEVEL) <= 3.0) {
+            return true;
+        }
+        return false;
+    }
+    
 }

@@ -34,6 +34,7 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -82,6 +83,13 @@ public class CxfSampleTests {
             Path WSSampleSeiClient_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "WSSampleSeiClient");
             JakartaEE9Action.transformApp(webcontent_archive);
             JakartaEE9Action.transformApp(WSSampleSeiClient_archive);
+        } else if (JakartaEE10Action.isActive()) {
+            Path webcontent_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "webcontent");
+            Path WSSampleSeiClient_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "WSSampleSeiClient");
+            Path WSSampleSei_archive = Paths.get(server.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "WSSampleSei.war");
+            JakartaEE10Action.transformApp(webcontent_archive);
+            JakartaEE10Action.transformApp(WSSampleSeiClient_archive);
+            JakartaEE10Action.transformApp(WSSampleSei_archive);
         }
 
         // start server "com.ibm.ws.wssecurity_fat.sample"

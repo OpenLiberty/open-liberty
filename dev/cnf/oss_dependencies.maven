@@ -16,7 +16,6 @@ com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.7
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.7
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.12.7
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.12.7
-com.fasterxml.jackson.jr:jackson-jr-objects:2.12.7
 com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.12.7
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.12.7
 com.github.docker-java:docker-java-api:3.2.13
@@ -28,6 +27,7 @@ com.google.inject:guice:2.0
 com.google.j2objc:j2objc-annotations:1.1
 com.google.protobuf:protobuf-java-util:3.19.2
 com.google.protobuf:protobuf-java:3.19.2
+com.googlecode.json-simple:json-simple:1.1.1
 com.graphql-java:graphql-java:16.2
 com.graphql-java:java-dataloader:2.2.3
 com.hazelcast:hazelcast-client:3.12.12
@@ -172,7 +172,7 @@ jakarta.batch:jakarta.batch-api:2.0.0
 jakarta.batch:jakarta.batch-api:2.1.1
 jakarta.ejb:jakarta.ejb-api:4.0.0
 jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0
-jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.0
+jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.2
 jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0
 jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1
 jakarta.enterprise:jakarta.enterprise.lang-model:4.0.1
@@ -188,6 +188,15 @@ jakarta.json:jakarta.json-api:2.1.0
 jakarta.jws:jakarta.jws-api:3.0.0
 jakarta.mail:jakarta.mail-api:2.0.0
 jakarta.mail:jakarta.mail-api:2.1.0
+jakarta.nosql.communication:communication-column:1.0.0-b4
+jakarta.nosql.communication:communication-core:1.0.0-b4
+jakarta.nosql.communication:communication-document:1.0.0-b4
+jakarta.nosql.communication:communication-key-value:1.0.0-b4
+jakarta.nosql.communication:communication-query:1.0.0-b4
+jakarta.nosql.mapping:mapping-column:1.0.0-b4
+jakarta.nosql.mapping:mapping-core:1.0.0-b4
+jakarta.nosql.mapping:mapping-document:1.0.0-b4
+jakarta.nosql.mapping:mapping-key-value:1.0.0-b4
 jakarta.persistence:jakarta.persistence-api:3.0.0
 jakarta.persistence:jakarta.persistence-api:3.1.0
 jakarta.resource:jakarta.resource-api:2.0.0
@@ -348,6 +357,7 @@ org.apache.johnzon:johnzon-jsonb:1.2.18
 org.apache.johnzon:johnzon-mapper:1.1.5
 org.apache.johnzon:johnzon-mapper:1.1.8
 org.apache.johnzon:johnzon-mapper:1.2.18
+org.apache.maven.indexer:indexer-core:6.2.2
 org.apache.maven:maven-artifact:3.6.3
 org.apache.maven:maven-model:3.5.0
 org.apache.maven:maven-model:3.6.3
@@ -498,13 +508,13 @@ org.eclipse.parsson:parsson:1.1.0
 org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.11
 org.eclipse.persistence:org.eclipse.persistence.asm:9.3.0
 org.eclipse.persistence:org.eclipse.persistence.core:2.7.11
-org.eclipse.persistence:org.eclipse.persistence.core:3.0.2
+org.eclipse.persistence:org.eclipse.persistence.core:3.0.3
 org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.7.11
-org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:3.0.2
+org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:3.0.3
 org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.7.11
-org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:3.0.2
+org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:3.0.3
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.11
-org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.2
+org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.3
 org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer:0.5.0
 org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0
 org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0
@@ -753,7 +763,7 @@ org.testcontainers:postgresql:1.17.2
 org.testcontainers:selenium:1.17.2
 org.testcontainers:testcontainers:1.17.2
 org.testng:testng:6.14.3
-org.yaml:snakeyaml:1.27
+org.yaml:snakeyaml:1.32
 wsdl4j:wsdl4j:1.6.2
 xalan:xalan:2.7.2
 xerces:xercesImpl:2.12.2

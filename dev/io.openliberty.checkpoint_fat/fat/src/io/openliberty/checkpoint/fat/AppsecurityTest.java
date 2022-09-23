@@ -82,7 +82,7 @@ public class AppsecurityTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().fullFATOnly());
+                    .andWith(new JakartaEE9Action().forServers("checkpointAppSecurity").fullFATOnly());
 
     @BeforeClass
     public static void createAppAndExportToServer() throws Exception {
