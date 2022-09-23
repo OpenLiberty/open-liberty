@@ -52,8 +52,9 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
 
         transformAppsInDefaultDirs(opServer, "dropins");
 
-        serverTracker.addServer(opServer);
-        serverTracker.addServer(rpServer);
+        // Add servers to server trackers that will be used to clean servers up and prevent servers
+        // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
+        updateTrackers(opServer, rpServer, false);
 
         List<String> waitForMsgs = null;
         opServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);

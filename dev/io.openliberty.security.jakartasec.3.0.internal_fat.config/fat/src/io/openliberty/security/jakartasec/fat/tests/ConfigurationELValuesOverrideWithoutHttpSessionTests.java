@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.tests;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -67,8 +66,6 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps - ShrinkHelper will call transform
 
-        // TODO We should NOT need to allow this error
-        rpServer.addIgnoredErrors(Arrays.asList("SRVE8115W"));
     }
 
     /**
