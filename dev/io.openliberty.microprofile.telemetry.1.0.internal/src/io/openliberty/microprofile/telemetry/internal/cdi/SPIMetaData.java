@@ -13,22 +13,17 @@ package io.openliberty.microprofile.telemetry.internal.cdi;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
-import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.enterprise.inject.spi.Extension;
-
 import org.osgi.service.component.annotations.Component;
 
-import io.openliberty.microprofile.telemetry.internal.cdi.WithSpanInterceptor;
-import io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryProducer;
-
-import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 
+import io.openliberty.cdi.spi.CDIExtensionMetadata;
+
 @Component(service = CDIExtensionMetadata.class, configurationPolicy = IGNORE)
-public class SPIMetaData implements CDIExtensionMetadata, CDIExtensionMetadataInternal { 
+public class SPIMetaData implements CDIExtensionMetadata, CDIExtensionMetadataInternal {
 
     @Override
     public Set<Class<?>> getBeanClasses() {

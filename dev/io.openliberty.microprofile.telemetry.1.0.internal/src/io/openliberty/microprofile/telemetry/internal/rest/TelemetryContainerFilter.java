@@ -12,21 +12,10 @@ package io.openliberty.microprofile.telemetry.internal.rest;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import java.util.HashMap;
 
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.container.ContainerRequestContext;
-import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.container.ContainerResponseContext;
-import jakarta.ws.rs.container.ContainerResponseFilter;
-import jakarta.ws.rs.container.ResourceInfo;
-import jakarta.ws.rs.core.UriBuilder;
-import jakarta.ws.rs.ext.Provider;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.context.Context;
@@ -38,8 +27,15 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttributesGetter;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
-
-import org.eclipse.microprofile.config.Config;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class TelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
@@ -68,14 +64,14 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         ServerAttributesExtractor serverAttributesExtractor = new ServerAttributesExtractor();
 
         InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
-            openTelemetry,
-            INSTRUMENTATION_NAME,
-            HttpSpanNameExtractor.create(serverAttributesExtractor));
+                                                                                                              openTelemetry,
+                                                                                                              INSTRUMENTATION_NAME,
+                                                                                                              HttpSpanNameExtractor.create(serverAttributesExtractor));
 
         this.instrumenter = builder
-            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(serverAttributesExtractor))
-            .addAttributesExtractor(HttpServerAttributesExtractor.create(serverAttributesExtractor))
-            .newServerInstrumenter(new ContainerRequestContextTextMapGetter());
+                        .setSpanStatusExtractor(HttpSpanStatusExtractor.create(serverAttributesExtractor))
+                        .addAttributesExtractor(HttpServerAttributesExtractor.create(serverAttributesExtractor))
+                        .newServerInstrumenter(new ContainerRequestContextTextMapGetter());
     }
 
     @Override
@@ -115,7 +111,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     }
 
     private static class ContainerRequestContextTextMapGetter implements TextMapGetter<ContainerRequestContext> {
-        
+
         @Override
         public Iterable<String> keys(final ContainerRequestContext carrier) {
             return carrier.getHeaders().keySet();
@@ -131,8 +127,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         }
     }
 
-    private static class ServerAttributesExtractor
-            implements HttpServerAttributesGetter<ContainerRequestContext, ContainerResponseContext> {
+    private static class ServerAttributesExtractor implements HttpServerAttributesGetter<ContainerRequestContext, ContainerResponseContext> {
 
         @Override
         public String flavor(final ContainerRequestContext request) {
@@ -163,6 +158,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
             return route;
         }
+
         //required
         @Override
         public String method(final ContainerRequestContext request) {
@@ -208,7 +204,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
         @Override
         public Long requestContentLengthUncompressed(final ContainerRequestContext request,
-                final ContainerResponseContext response) {
+                                                     final ContainerResponseContext response) {
             return null;
         }
 
@@ -219,14 +215,14 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
         @Override
         public Long responseContentLengthUncompressed(final ContainerRequestContext request,
-                final ContainerResponseContext response) {
+                                                      final ContainerResponseContext response) {
             return null;
         }
 
         @Override
         public List<String> responseHeader(final ContainerRequestContext request, final ContainerResponseContext response,
-                final String name) {
+                                           final String name) {
             return response.getStringHeaders().getOrDefault(name, emptyList());
         }
     }
-} 
+}

@@ -10,45 +10,32 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.cdi;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
-
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.inject.Produces;
-import jakarta.enterprise.inject.spi.CDI;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import jakarta.enterprise.context.ApplicationScoped;
-
 import java.util.concurrent.TimeUnit;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.eclipse.microprofile.config.Config;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
+import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
-import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.context.propagation.ContextPropagators;
-import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.exporter.jaeger.JaegerGrpcSpanExporter;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.exporter.zipkin.ZipkinSpanExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
-import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
-
-import io.opentelemetry.sdk.trace.export.SpanExporter;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
-import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
-import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
+import io.opentelemetry.sdk.trace.export.SpanExporter;
+import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 public class OpenTelemetryProducer {
 
@@ -61,6 +48,7 @@ public class OpenTelemetryProducer {
     private static final String CONFIG_JAEGER_TIMEOUT_PROPERTY = "jaeger.timeout";
     private static final String ENV_ENABLE_PROPERTY = "OTEL_EXPERIMENTAL_SDK_ENABLED";
     private static final String CONFIG_ENABLE_PROPERTY = "otel.experimental.sdk.enabled";
+
     @Inject
     Config config;
 
@@ -68,23 +56,22 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetry getOpenTelemetry() {
-        
-        HashMap<String,String> telemetryProperties = getTelemetryProperties();
+
+        HashMap<String, String> telemetryProperties = getTelemetryProperties();
         //Builds tracer provider if user has enabled tracing aspects with config properties
-        if(checkEnabled(telemetryProperties)){
+        if (checkEnabled(telemetryProperties)) {
             SpanExporter exporter = getSpanExporter(telemetryProperties);
             Resource serviceNameResource = getServiceName(telemetryProperties);
-            
-            SdkTracerProvider tracerProvider =
-                SdkTracerProvider.builder()
-                    .addSpanProcessor(BatchSpanProcessor.builder(exporter).build())
-                    .setResource(Resource.getDefault().merge(serviceNameResource))
-                    .build();
+
+            SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
+                            .addSpanProcessor(BatchSpanProcessor.builder(exporter).build())
+                            .setResource(Resource.getDefault().merge(serviceNameResource))
+                            .build();
 
             OpenTelemetrySdk openTelemetry = OpenTelemetrySdk.builder()
-                .setTracerProvider(tracerProvider)
-                .setPropagators(ContextPropagators.create(W3CTraceContextPropagator.getInstance()))
-                .build();
+                            .setTracerProvider(tracerProvider)
+                            .setPropagators(ContextPropagators.create(W3CTraceContextPropagator.getInstance()))
+                            .build();
 
             Runtime.getRuntime().addShutdownHook(new Thread(tracerProvider::close));
             return openTelemetry;
@@ -95,97 +82,92 @@ public class OpenTelemetryProducer {
         return OpenTelemetry.noop();
     }
 
-    private Resource getServiceName(Map<String,String> oTelConfigs){
+    private Resource getServiceName(Map<String, String> oTelConfigs) {
         String serviceName = "open-liberty-service";
 
-        if(oTelConfigs.get("otel.service.name") != null || oTelConfigs.get("OTEL_SERVICE_NAME") != null){
+        if (oTelConfigs.get("otel.service.name") != null || oTelConfigs.get("OTEL_SERVICE_NAME") != null) {
             serviceName = oTelConfigs.get("otel.service.name");
         }
         return Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, serviceName));
     }
-    
+
     @ApplicationScoped
-    private SpanExporter getSpanExporter(Map<String,String> oTelConfigs) {
+    private SpanExporter getSpanExporter(Map<String, String> oTelConfigs) {
 
         //default otlp endpoint
         String endpoint = "http://localhost:4317";
         String timeout = "10000";
 
         //Environment properties take priority
-        if(oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY).equals("jaeger") || oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY).equals("jaeger")){
+        if (oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY).equals("jaeger")
+            || oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY).equals("jaeger")) {
             //default jaeger endpoint
             endpoint = "http://localhost:14250";
-            if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "JAEGER_ENDPOINT")!= null){
-                    endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "JAEGER_ENDPOINT");
-                }
-                else if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "jaeger.endpoint") != null){
-                    endpoint = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "jaeger.endpoint");
-                }
-                if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + ENV_JAEGER_TIMEOUT_PROPERTY)!= null){
-                    timeout = oTelConfigs.get(ENV_EXPORTER_PROPERTY + ENV_JAEGER_TIMEOUT_PROPERTY);
-                }
-                else if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + CONFIG_JAEGER_TIMEOUT_PROPERTY) != null){
-                    timeout = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + CONFIG_JAEGER_TIMEOUT_PROPERTY);
-                }
-                return JaegerGrpcSpanExporter.builder()
+            if (oTelConfigs.get(ENV_EXPORTER_PROPERTY + "JAEGER_ENDPOINT") != null) {
+                endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "JAEGER_ENDPOINT");
+            } else if (oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "jaeger.endpoint") != null) {
+                endpoint = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "jaeger.endpoint");
+            }
+            if (oTelConfigs.get(ENV_EXPORTER_PROPERTY + ENV_JAEGER_TIMEOUT_PROPERTY) != null) {
+                timeout = oTelConfigs.get(ENV_EXPORTER_PROPERTY + ENV_JAEGER_TIMEOUT_PROPERTY);
+            } else if (oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + CONFIG_JAEGER_TIMEOUT_PROPERTY) != null) {
+                timeout = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + CONFIG_JAEGER_TIMEOUT_PROPERTY);
+            }
+            return JaegerGrpcSpanExporter.builder()
                             .setEndpoint(endpoint)
-                            .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
+                            .setTimeout(Integer.valueOf(timeout), TimeUnit.MILLISECONDS)
                             .build();
         }
-        if(oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY).equals("zipkin") || oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY).equals("zipkin")){
+        if (oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(ENV_TRACE_EXPORTER_PROPERTY).equals("zipkin")
+            || oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY) != null && oTelConfigs.get(CONFIG_TRACE_EXPORTER_PROPERTY).equals("zipkin")) {
             //default zipkin endpoint
             endpoint = "http://localhost:9411/api/v2/spans";
-            if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "ZIPKIN_ENDPOINT")!= null){
-                    endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "ZIPKIN_ENDPOINT");
-                }
-            else if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "zipkin.endpoint") != null){
-                    endpoint = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "zipkin.endpoint");
+            if (oTelConfigs.get(ENV_EXPORTER_PROPERTY + "ZIPKIN_ENDPOINT") != null) {
+                endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "ZIPKIN_ENDPOINT");
+            } else if (oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "zipkin.endpoint") != null) {
+                endpoint = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "zipkin.endpoint");
             }
-                return ZipkinSpanExporter.builder()
+            return ZipkinSpanExporter.builder()
                             .setEndpoint(endpoint)
                             .build();
-        }
-        else{
-            if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_ENDPOINT") != null){
+        } else {
+            if (oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_ENDPOINT") != null) {
                 endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_ENDPOINT");
-            }
-            else if(oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_TRACES_ENDPOINT") != null){
+            } else if (oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_TRACES_ENDPOINT") != null) {
                 endpoint = oTelConfigs.get(ENV_EXPORTER_PROPERTY + "OTLP_TRACES_ENDPOINT");
             }
-            if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "otlp.endpoint") != null){
+            if (oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "otlp.endpoint") != null) {
                 endpoint = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "otlp.endpoint");
-            }
-            else if(oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "otlp.traces.endpoint") != null){
+            } else if (oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "otlp.traces.endpoint") != null) {
                 endpoint = oTelConfigs.get(CONFIG_EXPORTER_PROPERTY + "otlp.traces.endpoint");
             }
         }
-            return OtlpGrpcSpanExporter.builder()
-                            .setEndpoint(endpoint)
-                            .setTimeout(Integer.valueOf(timeout),TimeUnit.MILLISECONDS)
-                            .build();
+        return OtlpGrpcSpanExporter.builder()
+                        .setEndpoint(endpoint)
+                        .setTimeout(Integer.valueOf(timeout), TimeUnit.MILLISECONDS)
+                        .build();
     }
 
-    private boolean checkEnabled(Map<String,String> oTelConfigs){
+    private boolean checkEnabled(Map<String, String> oTelConfigs) {
         //In order to enable any of the tracing aspects, the configuration otel.experimental.sdk.enabled=true must be specified in any of the config sources available via MicroProfile Config
-        if(oTelConfigs.get(ENV_ENABLE_PROPERTY) != null){
-            if(oTelConfigs.get(ENV_ENABLE_PROPERTY).equals("true")){
+        if (oTelConfigs.get(ENV_ENABLE_PROPERTY) != null) {
+            if (oTelConfigs.get(ENV_ENABLE_PROPERTY).equals("true")) {
                 return true;
             }
-        }
-        else if(oTelConfigs.get(CONFIG_ENABLE_PROPERTY) != null){
-            if(oTelConfigs.get(CONFIG_ENABLE_PROPERTY).equals("true")){
+        } else if (oTelConfigs.get(CONFIG_ENABLE_PROPERTY) != null) {
+            if (oTelConfigs.get(CONFIG_ENABLE_PROPERTY).equals("true")) {
                 return true;
             }
         }
         return false;
     }
 
-    private HashMap<String,String> getTelemetryProperties(){
-        HashMap<String,String> telemetryProperties = new HashMap<>();
+    private HashMap<String, String> getTelemetryProperties() {
+        HashMap<String, String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
             if (propertyName.startsWith("otel.") || propertyName.startsWith("OTEL_")) {
                 config.getOptionalValue(propertyName, String.class).ifPresent(
-                        value -> telemetryProperties.put(propertyName, value));
+                                                                              value -> telemetryProperties.put(propertyName, value));
             }
         }
         return telemetryProperties;
@@ -207,4 +189,4 @@ public class OpenTelemetryProducer {
     public Baggage getBaggage() {
         return Baggage.current();
     }
-} 
+}
