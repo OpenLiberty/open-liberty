@@ -29,8 +29,7 @@ import jakarta.servlet.SessionCookieConfig;
 public class SessionCookieConfigImpl60 extends SessionCookieConfigImpl implements SessionCookieConfig, Cloneable {
     private static final String methodClassName = "SessionCookieConfigImpl60";
 
-    private static TraceNLS nls = TraceNLS.getTraceNLS(SessionCookieConfigImpl60.class, "com.ibm.ws.webcontainer.resources.Messages");
-
+    private static TraceNLS nls = TraceNLS.getTraceNLS(SessionCookieConfigImpl60.class, "io.openliberty.session60.internal.resources.SessionMessages");
     //Enforced characters NOT for use in Cookie names; see Cookie API for this String
     private static final String TSPECIALS = "/()<>@,;:\\\"[]?={} \t";
 
@@ -90,10 +89,14 @@ public class SessionCookieConfigImpl60 extends SessionCookieConfigImpl implement
             throwWarning();
         }
 
-        if (name == null || name.isEmpty())
-            throw new IllegalArgumentException("err.cookie_attribute_name_blank"); //translation
-        if (hasReservedCharacters(name))
-            throw new IllegalArgumentException("err.cookie_attribute_name_invalid" + name);
+        if (name == null)
+            throw new IllegalArgumentException(nls.getString("cookie.attribute.name.null"));
+
+        if (hasReservedCharacters(name)) {
+            String msg = nls.getFormattedMessage("cookie.attribute.name.invalid.[{0}]", new Object[] { name }, "Cookie attribute name is invalid [" + name + "]");
+            throw new IllegalArgumentException(msg);
+        }
+
         if ("Max-Age".equalsIgnoreCase(name) && value != null) {
             setMaxAge(Integer.parseInt(value), externalCall);
         } else {

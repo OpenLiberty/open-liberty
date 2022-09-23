@@ -28,6 +28,8 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 # for the exported API.
 Export-Package: \
     io.openliberty.session.impl*;provide:=true
+    
+Private-Package: io.openliberty.session60.internal.resources.*
 	
 Import-Package: \
     com.ibm.ws.session.utils, \
