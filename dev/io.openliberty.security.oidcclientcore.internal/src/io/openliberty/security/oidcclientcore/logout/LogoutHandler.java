@@ -41,7 +41,7 @@ public class LogoutHandler extends EndpointRequest {
 
     ProviderAuthenticationResult authResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, 200);
 
-    public LogoutHandler(HttpServletRequest req, HttpServletResponse resp, OidcClientConfig oidcClientConfig, LogoutConfig logoutConfig) throws ServletException {
+    public LogoutHandler(HttpServletRequest req, HttpServletResponse resp, OidcClientConfig oidcClientConfig, LogoutConfig logoutConfig) {
         this.req = req;
         this.resp = resp;
         this.oidcClientConfig = oidcClientConfig;
