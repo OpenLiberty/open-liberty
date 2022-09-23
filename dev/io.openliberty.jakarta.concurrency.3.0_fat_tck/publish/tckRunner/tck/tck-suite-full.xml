@@ -13,6 +13,11 @@
  -->
 <suite name="jakarta-concurrency" verbose="2" configfailurepolicy="continue">
     <test name="jakarta-concurrency">
+        <groups>
+	      <run>
+	        <exclude name="eeweb"/>
+	      </run>
+	    </groups>
         <packages>
             <package name="ee.jakarta.tck.concurrent.api.*"/>
             <package name="ee.jakarta.tck.concurrent.spec.*"/>
