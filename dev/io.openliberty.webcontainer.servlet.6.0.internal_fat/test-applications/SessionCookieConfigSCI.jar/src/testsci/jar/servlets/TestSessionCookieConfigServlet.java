@@ -80,7 +80,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
 
         StringBuilder sBuilderResponse = new StringBuilder("TEST testGetSessionCookieConfigSCI . Message [");
 
-        //Test Domain via specific getDomain()
+        //Validate Domain via specific getDomain()
         if (!(cookieValue = scc.getDomain()).equals("setAttDomain_viaSCI")) {
             testPass = false;
             sBuilderResponse.append(" getDomain() expecting [setAttDomain_viaSCI] , actual [" + cookieValue + "] |");
@@ -138,7 +138,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         else
             sBuilderResponse.append(" getAttribute(\"attname5\") PASS |");
         
-        //Test Domain via getAttribute
+        //Validate Domain via getAttribute
         if (!(cookieValue = scc.getAttribute("DOMAIN")).equals("setAttDomain_viaSCI")) {
             testPass = false;
             sBuilderResponse.append(" getAttribute(\"DOMAIN\") expecting [SCC6_DOMAIN_viaSetAttribute] , actual [" + cookieValue + "] |");
@@ -154,7 +154,27 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         }
         else
             sBuilderResponse.append(" getAttribute(\"path\") PASS |");
+        
+        //Validate setAttribute with null name.  Servlet has verified the translated message code and reports whether PASS or FAIL.
+        if (!(cookieValue = scc.getAttribute("ReportedNullAttName")).equals("PASS")) {
+            testPass = false;
+            sBuilderResponse.append(" getAttribute(\"ReportedNullAttName\") expecting [PASS] , actual [" + cookieValue + "] |");
+            LOG.info("Test scc.getAttribute(\"ReportedNullAttName\") FAIL");
+        }
+        else
+            sBuilderResponse.append(" getAttribute(\"ReportedNullAttName\") PASS |");
+       
+        //Validate setAttribute with invalid name.
+        if (!(cookieValue = scc.getAttribute("ReportedInvalidAttName")).equals("PASS")) {
+            testPass = false;
+            sBuilderResponse.append(" getAttribute(\"ReportedInvalidAttName\") expecting [PASS] , actual [" + cookieValue + "] |");
+            LOG.info("Test scc.getAttribute(\"path\") FAIL");
+        }
+        else
+            sBuilderResponse.append(" getAttribute(\"ReportedInvalidAttName\") PASS |");
       
+        
+        //Final result - any of the above tests fail will make test fail
         if (testPass)
             sBuilderResponse.append("]  Result [PASS]");
         else

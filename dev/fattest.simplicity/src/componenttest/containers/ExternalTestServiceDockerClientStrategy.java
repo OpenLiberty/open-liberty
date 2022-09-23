@@ -398,9 +398,16 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
             //State 4: Earlier version of TestContainers didn't support docker for windows
             // Assume a user on windows with no other preferences will want to use a remote host.
+            // ARM architecture can cause performance/starting issues with x86 containers, so also
+            // assume remote as the default.
             if (System.getProperty("os.name", "unknown").toLowerCase().contains("windows")) {
                 result = true;
                 reason = "Local operating system is Windows. Default container support not guaranteed.";
+                break;
+            }
+            if (FATRunner.ARM_ARCHITECTURE) {
+                result = true;
+                reason = "CPU architecture is ARM. x86 container support and performance not guaranteed.";
                 break;
             }
 

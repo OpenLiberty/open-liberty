@@ -18,6 +18,7 @@ package com.ibm.ws.cdi.extension.apps.helloworld;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.context.RequestScoped;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@ApplicationScoped
 @WebServlet("/hello")
 public class HelloWorldExtensionTestServlet extends HttpServlet {
 
@@ -40,7 +42,8 @@ public class HelloWorldExtensionTestServlet extends HttpServlet {
 
     private static final long serialVersionUID = 8549700799591343964L;
 
-    public static void onStart(@Observes @Initialized(RequestScoped.class) Object e, EventMetadata em) {
+    public static void onStart(@Observes
+    @Initialized(RequestScoped.class) Object e, EventMetadata em) {
 
         if (beanStartMetaData == null) {
 
@@ -52,7 +55,8 @@ public class HelloWorldExtensionTestServlet extends HttpServlet {
 
     }
 
-    public static void onStop(@Observes @Destroyed(RequestScoped.class) Object e, EventMetadata em) {
+    public static void onStop(@Observes
+    @Destroyed(RequestScoped.class) Object e, EventMetadata em) {
 
         if (beanStopMetaData == null) {
 

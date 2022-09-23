@@ -16,7 +16,6 @@ com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.7
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.7
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.12.7
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.12.7
-com.fasterxml.jackson.jr:jackson-jr-objects:2.12.7
 com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.12.7
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.12.7
 com.github.docker-java:docker-java-api:3.2.13
@@ -173,7 +172,7 @@ jakarta.batch:jakarta.batch-api:2.0.0
 jakarta.batch:jakarta.batch-api:2.1.1
 jakarta.ejb:jakarta.ejb-api:4.0.0
 jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0
-jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.0
+jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:3.0.2
 jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0
 jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1
 jakarta.enterprise:jakarta.enterprise.lang-model:4.0.1

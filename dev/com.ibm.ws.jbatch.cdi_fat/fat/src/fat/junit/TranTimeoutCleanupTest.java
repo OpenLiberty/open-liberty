@@ -55,6 +55,7 @@ public class TranTimeoutCleanupTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(new JakartaEE9Action().forServers("TranTimeoutCleanup"));
+    //.andWith(new JakartaEE10Action().forServers("TranTimeoutCleanup"));
 
     @Server("TranTimeoutCleanup")
     @TestServlet(servlet = TranTimeoutCleanupServlet.class, path = "implicit/TranTimeoutCleanupServlet")
@@ -79,7 +80,7 @@ public class TranTimeoutCleanupTest extends FATServletClient {
 
     /**
      * @param implicit archive
-     * @param jslName Batch Job JSL name
+     * @param jslName  Batch Job JSL name
      */
     private static void addBatchJob(WebArchive implicit, String jslName) {
         Log.info(TranTimeoutCleanupTest.class, "addBatchJob", "Adding jslName = " + jslName);

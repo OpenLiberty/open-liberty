@@ -10,9 +10,9 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
 
-Bundle-Name: Square OkHttp Jakarta
+Bundle-Name: Square OkHttp
 Bundle-SymbolicName: io.openliberty.com.squareup.okhttp
-Bundle-Description: Liberty Square OkHttp, version ${bVersion}; Jakarta Enabled
+Bundle-Description: Square OkHttp, version ${bVersion}
 
 bVersion=1.0
 

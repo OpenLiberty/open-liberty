@@ -45,7 +45,7 @@ public class DB2KerberosContainer extends Db2Container {
         withEnv("DB2_KRB5_PRINCIPAL", "db2srvc@EXAMPLE.COM");
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*SETUP SCRIPT COMPLETE.*$")
-                        .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 10 : 25)));
+                        .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 10 : 25)));
         withLogConsumer(new SimpleLogConsumer(c, "DB2"));
     }
 

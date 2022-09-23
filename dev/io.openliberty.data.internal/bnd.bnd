@@ -22,13 +22,21 @@ Bundle-Description: Provides CDI extensions for Jakarta Data; version=${bVersion
 
 WS-TraceGroup: data
 
+Export-Package: \
+  io.openliberty.data.internal
+
 Private-Package: \
-  io.openliberty.data.internal.*,\
+  io.openliberty.data.internal.cdi.*,\
   io.openliberty.data.internal.resources.*
+
+Include-Resource:\
+  OSGI-INF=resources/OSGI-INF
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -cdiannotations:
 
--dsannotations: io.openliberty.data.internal.DataService
+-dsannotations: io.openliberty.data.internal.cdi.DataExtensionMetadata
 
 instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
 

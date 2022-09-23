@@ -102,11 +102,6 @@
       <version>2.12.7</version>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.jr</groupId>
-      <artifactId>jackson-jr-objects</artifactId>
-      <version>2.12.7</version>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <version>2.12.7</version>
@@ -889,7 +884,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
@@ -3844,7 +3839,7 @@
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
-      <version>1.27</version>
+      <version>1.32</version>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>

@@ -8,8 +8,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/transform.props
+-include= ~../cnf/resources/bnd/transform9.props
 
 Bundle-Name: Java Batch RI core runtime implementation Jakarta
-Bundle-SymbolicName: com.ibm.jbatch.container.jakarta
+Bundle-SymbolicName: com.ibm.jbatch.container.jakarta.ee9
 Bundle-Description: Java Batch RI core runtime implementation; Jakarta Enabled

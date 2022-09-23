@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,13 +28,20 @@ import com.ibm.ws.cdi.beansxml.fat.apps.beanDiscoveryModeNone.TestBean1;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 
 @RunWith(FATRunner.class)
 public class BeanDiscoveryModeNoneTest {
 
-    @Server("cdi12BeanDiscoveryModeNoneServer")
+    private static final String SERVER_NAME = "cdi12BeanDiscoveryModeNoneServer";
+
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8, EERepeatActions.EE7);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass

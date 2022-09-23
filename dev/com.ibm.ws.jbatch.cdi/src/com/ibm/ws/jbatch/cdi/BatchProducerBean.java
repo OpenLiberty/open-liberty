@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 International Business Machines Corp.
+ * Copyright 2013, 2022 International Business Machines Corp.
  *
  * See the NOTICE file distributed with this work for additional information
  * regarding copyright ownership. Licensed under the Apache License,
@@ -16,13 +16,19 @@
  */
 package com.ibm.ws.jbatch.cdi;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Set;
 
 import javax.batch.api.BatchProperty;
+import javax.batch.operations.JobOperator;
+import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import com.ibm.jbatch.container.cdi.DependencyInjectionUtilityCdi;
@@ -32,39 +38,103 @@ import com.ibm.jbatch.jsl.model.Property;
 public class BatchProducerBean {
 
     @Produces
-    @BatchProperty
     @Dependent
-    public String produceProperty(InjectionPoint injectionPoint) {
+    @BatchProperty
+    public Boolean produceBooleanProperty(InjectionPoint injectionPoint) {
+        String propValStr = getStringProperty(injectionPoint);
+        return Boolean.valueOf(propValStr);
+    }
+
+    @Produces
+    @Dependent
+    @BatchProperty
+    public Double produceDoubleProperty(InjectionPoint injectionPoint) {
+        String propValStr = getStringProperty(injectionPoint);
+        return Double.valueOf(propValStr);
+    }
+
+    @Produces
+    @Dependent
+    @BatchProperty
+    public Float produceFloatProperty(InjectionPoint injectionPoint) {
+        String propValStr = getStringProperty(injectionPoint);
+        return Float.valueOf(propValStr);
+    }
+
+    @Produces
+    @Dependent
+    @BatchProperty
+    public Integer produceIntProperty(InjectionPoint injectionPoint) {
+        String propValStr = getStringProperty(injectionPoint);
+        return Integer.valueOf(propValStr);
+    }
+
+    @Produces
+    @Dependent
+    @BatchProperty
+    public Long produceLongProperty(InjectionPoint injectionPoint) {
+        String propValStr = getStringProperty(injectionPoint);
+        return Long.valueOf(propValStr);
+    }
+
+    @Produces
+    @Dependent
+    @BatchProperty
+    public Short produceShortProperty(InjectionPoint injectionPoint) {
+        String propValStr = getStringProperty(injectionPoint);
+        return Short.valueOf(propValStr);
+    }
+
+    @Produces
+    @Dependent
+    @BatchProperty
+    public String produceStringProperty(InjectionPoint injectionPoint) {
+        String propValStr = getStringProperty(injectionPoint);
+        return propValStr;
+    }
+
+    private String getStringProperty(InjectionPoint injectionPoint) {
 
         //Seems like this is a CDI bug where null injection points are getting passed in.
         //We should be able to ignore these as a workaround.
         if (injectionPoint != null) {
-
             if (ProxyFactoryCdi.getInjectionReferences() == null) {
                 return null;
             }
 
-            BatchProperty batchPropAnnotation = injectionPoint.getAnnotated().getAnnotation(BatchProperty.class);
-
-            // If a name is not supplied the batch property name defaults to
-            // the field name
+            BatchProperty batchPropAnnotation = null;
             String batchPropName = null;
-            if (batchPropAnnotation.name().equals("")) {
-                batchPropName = injectionPoint.getMember().getName();
+            Annotated annotated = injectionPoint.getAnnotated();
+            if (annotated != null) {
+                batchPropAnnotation = annotated.getAnnotation(BatchProperty.class);
+
+                // If a name is not supplied the batch property name defaults to
+                // the field name
+                if (batchPropAnnotation.name().equals("")) {
+                    batchPropName = injectionPoint.getMember().getName();
+                } else {
+                    batchPropName = batchPropAnnotation.name();
+                }
             } else {
-                batchPropName = batchPropAnnotation.name();
+
+                // No attempt to match by field name in this path.
+                Set<Annotation> qualifiers = injectionPoint.getQualifiers();
+                for (Annotation a : qualifiers.toArray(new Annotation[0])) {
+                    if (a instanceof BatchProperty) {
+                        BatchProperty batchPropertyAnno = (BatchProperty) a;
+                        batchPropName = ((BatchProperty) a).name();
+                        break;
+                    }
+                }
             }
 
-            List<Property> propList = ProxyFactoryCdi.getInjectionReferences().getProps();
-
-            String propValue = DependencyInjectionUtilityCdi.getPropertyValue(propList, batchPropName);
-
-            return propValue;
-
+            if (batchPropName != null) {
+                List<Property> propList = ProxyFactoryCdi.getInjectionReferences().getProps();
+                return DependencyInjectionUtilityCdi.getPropertyValue(propList, batchPropName);
+            }
         }
 
         return null;
-
     }
 
     @Produces

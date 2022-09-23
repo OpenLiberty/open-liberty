@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2021 IBM Corporation and others.
+# Copyright (c) 2018, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,40 +15,6 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/commonLibraryCrossInjectionTestJarOne.jar/src,\
-	test-applications/commonLibraryCrossInjectionTestJarTwo.jar/src,\
-	test-applications/commonLibraryCrossInjectionTest.war/src,\
-	test-applications/jarInRar.jar/src,\
-	test-applications/jarInRar.rar/src,\
-	test-applications/jarInRarEjb.jar/src,\
-	test-applications/maskedClass.ear/src,\
-	test-applications/maskedClassEjb.jar/src,\
-	test-applications/maskedClassLib.jar/src,\
-	test-applications/maskedClassWeb.war/src,\
-	test-applications/maskedClassZAppClient.jar/src,\
-	test-applications/multiModuleAppLib1.jar/src,\
-	test-applications/multiModuleAppLib2.jar/src,\
-	test-applications/multiModuleAppLib3.jar/src,\
-	test-applications/multiModuleAppWeb1.war/src,\
-	test-applications/multiModuleAppWeb2.war/src,\
-	test-applications/packagePrivateAccessApp.war/src,\
-	test-applications/rootClassLoaderApp.war/src,\
-	test-applications/rootClassLoaderExtension.jar/src,\
-	test-applications/sharedLibrary.jar/src,\
-	test-applications/sharedLibraryAppWeb1.war/src,\
-	test-applications/sharedLibraryNoInjectionApp.war/src,\
-        test-applications/TestClassLoadPrereqLogger.war/src,\
-	test-applications/TestValidatorInJar.ear/src,\
-	test-applications/TestValidatorInJar.jar/src,\
-	test-applications/TestValidatorInJar.war/src,\
-	test-applications/warLibAccessBeansInWar.ear/src,\
-	test-applications/warLibAccessBeansInWar.war/src,\
-	test-applications/warLibAccessBeansInWar2.jar/src,\
-	test-applications/warLibAccessBeansInWarJar.jar/src,\
-	test-applications/visTestAppClient.jar/src,\
-	test-applications/visTestEjb.jar/src,\
-	test-applications/visTestWar.war/src
-	
 	
 test.project: true
 
@@ -67,7 +33,11 @@ tested.features:\
 	jdbc-4.2,\
 	enterprisebeanshome-4.0,\
 	enterprisebeanslite-4.0,\
-	enterprisebeanspersistenttimer-4.0
+	enterprisebeanspersistenttimer-4.0,\
+	cdi-4.0,\
+	connectors-2.1,\
+	jakartaee-10.0,\
+	servlet-6.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
