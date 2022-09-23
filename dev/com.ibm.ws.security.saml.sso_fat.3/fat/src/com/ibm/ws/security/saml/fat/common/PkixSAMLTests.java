@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,11 +23,8 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /*
@@ -83,7 +80,7 @@ public class PkixSAMLTests extends SAMLCommonTest {
      * The jks file does not have the self-signed certificates from the tfim IdP.
      * So, the test fails
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Mode(TestMode.LITE)
     @Test
     public void pkixSAMLTests_badTrustAnchorTest() throws Exception {
@@ -106,7 +103,7 @@ public class PkixSAMLTests extends SAMLCommonTest {
      * The jks file does not exit. The runtime should NOT use the IDPMetaData.
      * So, the test fails
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "java.security.KeyStoreException" }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "java.security.KeyStoreException" })
     @Mode(TestMode.LITE)
     @Test
     public void pkixSAMLTests_badTrustAnchorReference() throws Exception {
