@@ -138,6 +138,11 @@ public class HtmlButtonRendererBase extends HtmlRenderer
 
         List<UIParameter> validParams = HtmlRendererUtils.getValidUIParameterChildren(
                 facesContext, getChildren(uiComponent), false, false);
+        
+        if (form != null && (validParams != null && !validParams.isEmpty()))
+        {
+            HtmlRendererUtils.renderFormSubmitScript(facesContext);
+        }
 
         String commandOnclick = (String)uiComponent.getAttributes().get(HTML.ONCLICK_ATTR);
         

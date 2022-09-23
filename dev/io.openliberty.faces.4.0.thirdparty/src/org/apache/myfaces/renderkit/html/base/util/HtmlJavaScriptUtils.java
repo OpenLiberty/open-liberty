@@ -18,14 +18,53 @@
  */
 package org.apache.myfaces.renderkit.html.util;
 
+import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
 
 public final class HtmlJavaScriptUtils
 {
     private static final Logger log = Logger.getLogger(HtmlJavaScriptUtils.class.getName());
     
+    private static final String FIRST_SUBMIT_SCRIPT_ON_PAGE = "org.apache.MyFaces.FIRST_SUBMIT_SCRIPT_ON_PAGE";
+
+    @SuppressWarnings("unchecked")
+    public static void renderFormSubmitScript(FacesContext facesContext)
+            throws IOException
+    {
+        if (facesContext.getPartialViewContext() != null && 
+                (facesContext.getPartialViewContext().isPartialRequest() ||
+                 facesContext.getPartialViewContext().isAjaxRequest() )
+            )
+        {
+            return;
+        }
+
+        Map map = facesContext.getExternalContext().getRequestMap();
+        Boolean firstScript = (Boolean) map.get(FIRST_SUBMIT_SCRIPT_ON_PAGE);
+
+        if (firstScript == null || firstScript.equals(Boolean.TRUE))
+        {
+            map.put(FIRST_SUBMIT_SCRIPT_ON_PAGE, Boolean.FALSE);
+            renderFormSubmitScriptIfNecessary(facesContext);
+        }
+    }
+
+    /**
+     * @param facesContext
+     * @throws IOException
+     */
+    private static void renderFormSubmitScriptIfNecessary(
+            FacesContext facesContext) throws IOException
+    {
+        ResponseWriter writer = facesContext.getResponseWriter();
+        ResourceUtils
+                .renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
+    }
+
     public static void appendClearHiddenCommandFormParamsFunctionCall(
             StringBuilder buf, String formName)
     {

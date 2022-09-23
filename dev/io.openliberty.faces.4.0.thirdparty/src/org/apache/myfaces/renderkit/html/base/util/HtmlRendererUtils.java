@@ -1078,6 +1078,13 @@ public final class HtmlRendererUtils
         HtmlJavaScriptUtils.appendClearHiddenCommandFormParamsFunctionCall(buf, formName);
     }
 
+    @SuppressWarnings("unchecked")
+    public static void renderFormSubmitScript(FacesContext facesContext)
+            throws IOException
+    {
+        HtmlJavaScriptUtils.renderFormSubmitScript(facesContext);
+    }
+
     public static void renderHiddenCommandFormParams(ResponseWriter writer,
             Set dummyFormParams) throws IOException
     {
