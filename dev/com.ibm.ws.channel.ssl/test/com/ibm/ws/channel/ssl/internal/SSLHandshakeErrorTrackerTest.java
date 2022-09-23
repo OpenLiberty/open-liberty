@@ -113,6 +113,9 @@ public class SSLHandshakeErrorTrackerTest {
                     outputMgr.checkForStandardErr("CWWKO0801E"));
     }
 
+    /*
+     * Test to make sure the expected exception reason is in the message.
+     */
     @Test
     public void shouldChangeExceptionText() {
         SSLHandshakeErrorTracker tracker = new SSLHandshakeErrorTracker(true, 100);
@@ -121,6 +124,8 @@ public class SSLHandshakeErrorTrackerTest {
         tracker.noteHandshakeError(failure, localHost, 20, localHost, 40);
         assertTrue("Expected handshake failure error message not logged",
                    outputMgr.checkForStandardErr("CWWKO0801E"));
+        assertTrue("Expected handshake failure reason was not logged",
+                   outputMgr.checkForStandardErr("Exception: javax.net.ssl.SSLException: The WebSphere server received an unencrypted inbound communication on a secure connection."));
 
     }
 
