@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,21 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.fat.logout.IDPInitiated;
 
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_IDPInitiated_LogoutUrl_LTPA_Tests;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_IDPInitiated_LogoutUrl_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.SolicitedSPInitiatedLogin_IDPInitiated_LogoutUrl_LTPA_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.SolicitedSPInitiatedLogin_IDPInitiated_LogoutUrl_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_IDPInitiated_LogoutUrl_LTPA_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_IDPInitiated_LogoutUrl_Tests;
-import com.ibm.ws.security.saml20.fat.commonTest.actions.JakartaEE9SAMLRepeatAction;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -48,7 +50,16 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-            .andWith(new JakartaEE9SAMLRepeatAction().liteFATOnly());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
+            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
+            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().fullFATOnly());
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        /*
+         * Force the tests to use local LDAP server
+         */
+        System.setProperty("fat.test.really.use.local.ldap", "true");
+    }
 
 }
