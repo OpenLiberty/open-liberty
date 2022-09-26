@@ -20,12 +20,14 @@ import java.net.URL;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.wsat.fat.util.WSATTest;
 
 import componenttest.annotation.Server;
 import componenttest.topology.impl.LibertyServer;
@@ -65,6 +67,11 @@ public class MultiRecoveryTest {
 
 		FATUtils.startServers(server1, server2);
 	}
+	
+	@Before
+	public void before() throws IOException {
+		WSATTest.callClearResourcesServlet(recoveryServer, server1, server2);
+	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
@@ -74,8 +81,6 @@ public class MultiRecoveryTest {
 	protected void recoveryTest(LibertyServer server, LibertyServer server2, String id, String startServer) throws Exception {
 		final String method = "recoveryTest";
 		String result = null;
-
-		callClearResourcesServlet();
 
 		try {
 			// We expect this to fail since it is gonna crash the server
@@ -251,24 +256,5 @@ public class MultiRecoveryTest {
 		Log.info(getClass(), method, "Recovery test " + testNumber + " Result : " + result);
 		assertTrue("Cannot get expected reply from server",
 				!result.contains("failed"));
-	}
-
-	protected void callClearResourcesServlet() throws IOException{
-		final String method = "callClearResourcesServlet";
-		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
-		String servletName = "ClearResourcesServlet";
-
-		String urlStr = BASE_URL2 + "/" + recoveryServer + "/" + servletName;
-	
-		Log.info(getClass(), method, "callClearResourcesServlet URL: " + urlStr);
-		String result = "";
-		HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), 
-				expectedConnectionCode, REQUEST_TIMEOUT);
-		try {
-			BufferedReader br = HttpUtils.getConnectionStream(con);
-			result = br.readLine();
-		} finally {
-			con.disconnect();
-		}
 	}
 }

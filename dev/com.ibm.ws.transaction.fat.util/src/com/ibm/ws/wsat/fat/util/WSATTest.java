@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.fat.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
@@ -20,6 +21,9 @@ import java.net.URL;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 
@@ -64,4 +68,25 @@ public abstract class WSATTest {
 
         return newUri;
     }
+
+	public static void callClearResourcesServlet(String app, LibertyServer... servers) throws IOException{
+		final String method = "callClearResourcesServlet";
+		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
+		String servletName = "ClearResourcesServlet";
+
+		for (LibertyServer server : servers) {
+			String urlStr = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + app + "/" + servletName;
+	
+			Log.info(WSATTest.class, method, "callClearResourcesServlet URL: " + urlStr);
+			String result = "";
+			HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), 
+				expectedConnectionCode, REQUEST_TIMEOUT);
+			try {
+				BufferedReader br = HttpUtils.getConnectionStream(con);
+				result = br.readLine();
+			} finally {
+				con.disconnect();
+			}
+		}
+	}
 }
