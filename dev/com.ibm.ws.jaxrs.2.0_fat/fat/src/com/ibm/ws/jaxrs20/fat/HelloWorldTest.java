@@ -102,10 +102,17 @@ public class HelloWorldTest {
         // the spec doesn't mention charsets in terms of matching to resources...
         // RESTEasy says an invalid charset is a client error, and returns 400
         // CXF says it doesn't match any resource methods and returns 415
-        if ((JakartaEE9Action.isActive()) || (JakartaEE10Action.isActive())) {
+        if (JakartaEE9Action.isActive()) {
             assertEquals(400, status);
         } else {
-            assertEquals(415, status);
+            // The 3.1 specification introduces a defaultExceptionmapper with the following:
+            // "A JAX-RS implementation MUST include a default exception mapping provider that
+            // implements ExceptionMapper<Throwable> and which SHOULD set the response status to 500."
+            if (JakartaEE10Action.isActive()) {
+                assertEquals(500, status);
+            } else {
+                assertEquals(415, status);
+            }
         }
     }
 

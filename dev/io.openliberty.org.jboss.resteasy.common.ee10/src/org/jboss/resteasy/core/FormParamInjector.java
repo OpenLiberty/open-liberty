@@ -24,21 +24,26 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.ValueInjector;
+import org.jboss.resteasy.spi.util.Types;
 import org.jboss.resteasy.util.Encode;
 
 import com.ibm.websphere.jaxrs20.multipart.IAttachment;
 
 import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.core.EntityPart;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -52,7 +57,8 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
 
    public FormParamInjector(final Class type, final Type genericType, final AccessibleObject target, final String header, final String defaultValue, final boolean encode, final Annotation[] annotations, final ResteasyProviderFactory factory)
    {
-      super(type, genericType, header, FormParam.class, defaultValue, target, annotations, factory);
+      super(type, genericType, header, FormParam.class, defaultValue, target, annotations, factory,
+              Map.of(FormParam.class, List.of(InputStream.class, EntityPart.class)));
       this.encode = encode;
       this.factory = factory; //Liberty change
       this.annotations = annotations; //Liberty change
@@ -62,7 +68,17 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
    @Override
    public Object inject(HttpRequest request, HttpResponse response, boolean unwrapAsync)
    {
-      // Liberty change start
+      // A @FormParam for multipart/form-data can be a String, InputStream or EntityPart. This type is handled specially.
+      if (EntityPart.class.isAssignableFrom(type)) {
+         return request.getFormEntityPart(paramName).orElse(null);
+      } else if (List.class.isAssignableFrom(type) && Types.isGenericTypeInstanceOf(EntityPart.class, baseGenericType)) {
+         return request.getFormEntityParts();
+      } else if (InputStream.class.isAssignableFrom(type)) {
+         final Optional<EntityPart> part = request.getFormEntityPart(paramName);
+         return part.map(EntityPart::getContent).orElse(null);
+      }
+
+      // Liberty change start for old IBM-specific Multipart support.
       MultivaluedMap<String, String> decodedFormParams = request.getDecodedFormParameters();
       MediaType mediaType = request.getHttpHeaders().getMediaType();
       if (String.class.equals(type) && mediaType != null && mediaType.getType().equalsIgnoreCase("multipart")) {

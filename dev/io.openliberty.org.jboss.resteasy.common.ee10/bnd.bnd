@@ -20,7 +20,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 bVersion=1.0
 
-resteasy-version=6.1.0.Final
+resteasy-version=6.2.0.Final
 resteasy-tracing-api-version=1.1.0.Final
 apache-mime4j-version=0.8.6
 
@@ -30,6 +30,8 @@ app-resources= \
   META-INF/services/jakarta.ws.rs.client.ClientBuilder | \
   META-INF/services/jakarta.ws.rs.sse.SseEventSource\$Builder | \
   META-INF/services/jakarta.ws.rs.sse.SseEventSource.Builder | \
+  META-INF/services/jakarta.ws.rs.ext.MessageBodyReader | \
+  META-INF/services/jakarta.ws.rs.ext.MessageBodyWriter | \
   META-INF/services/jakarta.ws.rs.ext.RuntimeDelegate | \
   META-INF/services/jakarta.ws.rs.ext.Providers
 
@@ -167,6 +169,7 @@ instrument.classesExcludes: \
   org/jboss/resteasy/plugins/delegates/CookieHeaderDelegate.class, \
   org/jboss/resteasy/plugins/delegates/MediaTypeHeaderDelegate.class, \
   org/jboss/resteasy/specimpl/MultivaluedTreeMap.class, \
+  org/jboss/resteasy/spi/EntityOutputStream.class, \
   org/jboss/resteasy/util/snapshot/SnapshotMap.class, \
   org/jboss/resteasy/util/ThreadLocalStack.class
 
