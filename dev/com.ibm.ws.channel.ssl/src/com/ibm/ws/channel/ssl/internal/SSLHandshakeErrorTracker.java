@@ -80,7 +80,7 @@ class SSLHandshakeErrorTracker {
         numberOfLogEntries++;
         Exception ssle = failure;
         // The message issued from java is unclear in one case, change the reason to better guide the WAS customer to self resolution
-        if (failure.getMessage().contains("plaintext connection?")) {
+        if ((null != failure.getMessage()) && (failure.getMessage().contains("plaintext connection?"))) {
             ssle = new SSLException("The WebSphere server received an unencrypted inbound communication on a secure connection.  " +
                                     "This does not indicate a problem with the WebSphere server. To resolve the issue, configure " +
                                     "the client to use SSL or to connect to a port on the WebSphere server that does not require SSL.", failure.getCause());
