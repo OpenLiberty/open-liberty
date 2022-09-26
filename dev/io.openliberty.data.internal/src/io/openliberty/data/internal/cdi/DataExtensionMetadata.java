@@ -63,4 +63,30 @@ public class DataExtensionMetadata implements CDIExtensionMetadata {
         }
         return extensions;
     }
+
+    /**
+     * Get the provider of data repositories for the specified entity class.
+     *
+     * @param entityClass
+     * @return the provider
+     */
+    DataProvider getRepositoryProvider(Class<?> entityClass) {
+        DataProvider provider = persistenceDataProvider;
+        for (Annotation anno : entityClass.getAnnotations()) {
+            String annoClassName = anno.annotationType().getName();
+            if ("jakarta.persistence.Entity".equals(annoClassName)) {
+                break;
+            }
+            if ("jakarta.nosql.mapping.Entity".equals(annoClassName)) {
+                provider = noSQLDataProvider;
+                break;
+            }
+        }
+        if (provider == null) {
+            provider = noSQLDataProvider;
+            if (provider == null)
+                throw new IllegalStateException("Jakarta Data requires either Jakarta Persistence or Jakarta NoSQL"); // TODO
+        }
+        return provider;
+    }
 }
