@@ -29,8 +29,7 @@ Export-Package: \
   org.apache.myfaces.config;version=${Implementation-Version}, \
   org.apache.myfaces.renderkit;version=${Implementation-Version}, \
   org.apache.myfaces.renderkit.html.base;version=${Implementation-Version}, \
-  org.apache.myfaces.renderkit.html.util;version=${Implementation-Version}, \
-  org.apache.myfaces.core.api.shared;version=${Implementation-Version}
+  org.apache.myfaces.renderkit.html.util;version=${Implementation-Version}
 
 instrument.ffdc: false
 instrument.classesExcludes: \
