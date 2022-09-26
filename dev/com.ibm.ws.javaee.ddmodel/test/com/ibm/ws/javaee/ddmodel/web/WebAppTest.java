@@ -344,53 +344,54 @@ public class WebAppTest extends WebAppTestBase {
         DDJakarta10Elements.verify(names, factories.get(0));
     }
 
-    @Test
-    public void testEE10CookieAttribute_Missing() throws Exception {
-        WebApp webApp = parseWebApp(
-                                    webApp(WebApp.VERSION_6_0,
-                                           "<session-config>" +
-                                                               "<cookie-config>" +
-                                                               "<name>CookieConfigName_viaWebXML</name>" +
-                                                               "<domain>CookieConfigDomain_viaWebXML</domain>" +
-                                                               "<path>CookieConfigPath_viaWebXML</path>" +
-                                                               "<max-age>2021</max-age>" +
-                                                               "<http-only>true</http-only>" +
-                                                               "<secure>true</secure>" +
-                                                               "</cookie-config>" +
+    public static final String COOKIE_ATTRIBUTE_PREFIX = "<session-config>\n" +
+                                                         "<cookie-config>\n" +
+                                                         "<name>CookieConfigName_viaWebXML</name>\n" +
+                                                         "<domain>CookieConfigDomain_viaWebXML</domain>\n" +
+                                                         "<path>CookieConfigPath_viaWebXML</path>\n" +
+                                                         "<max-age>2021</max-age>\n" +
+                                                         "<http-only>true</http-only>\n" +
+                                                         "<secure>true</secure>\n";
 
-                                                               "</session-config>"),
-                                    WebApp.VERSION_6_0);
+    public static final String COOKIE_ATTRIBUTE_SUFFIX = "</cookie-config>\n" +
+                                                         "</session-config>\n";
+
+    public static String cookieAttributes(String text) {
+        return COOKIE_ATTRIBUTE_PREFIX + text + COOKIE_ATTRIBUTE_SUFFIX;
+    }
+
+    public WebApp parseCookieAttributes60(String cookieText) throws Exception {
+        return parseWebApp(webApp(WebApp.VERSION_6_0, cookieAttributes(cookieText)),
+                           WebApp.VERSION_6_0);
+    }
+
+    // Verify the parse of a cookie configuration which has no attributes.
+
+    @Test
+    public void testEE10CookieAttributesNone() throws Exception {
+        WebApp webApp = parseCookieAttributes60("");
 
         CookieConfig cookieConfig = webApp.getSessionConfig().getCookieConfig();
         Assert.assertNotNull(cookieConfig);
         Assert.assertEquals(cookieConfig.getName(), "CookieConfigName_viaWebXML");
+
+        List<AttributeValue> attributes = cookieConfig.getAttributes();
+        Assert.assertEquals(attributes.size(), 0);
     }
 
     @Test
-    public void testEE10CookieAttributeNoDescriptions() throws Exception {
-        WebApp webApp = parseWebApp(
-                                    webApp(WebApp.VERSION_6_0,
-                                           "<session-config>" +
-                                                               "<cookie-config>" +
-                                                               "<name>CookieConfigName_viaWebXML</name>" +
-                                                               "<domain>CookieConfigDomain_viaWebXML</domain>" +
-                                                               "<path>CookieConfigPath_viaWebXML</path>" +
-                                                               "<max-age>2021</max-age>" +
-                                                               "<http-only>true</http-only>" +
-                                                               "<secure>true</secure>" +
-
-                                                               "<attribute>" +
-                                                               "<attribute-name>color</attribute-name>" +
-                                                               "<attribute-value>blue</attribute-value>" +
-                                                               "</attribute>" +
-
-                                                               "</cookie-config>" +
-                                                               "</session-config>"),
-                                    WebApp.VERSION_6_0);
+    public void testEE10CookieAttributesNoDescriptions() throws Exception {
+        WebApp webApp = parseCookieAttributes60("<attribute>\n" +
+                                                "<attribute-name>color</attribute-name>\n" +
+                                                "<attribute-value>blue</attribute-value>\n" +
+                                                "</attribute>\n");
 
         CookieConfig cookieConfig = webApp.getSessionConfig().getCookieConfig();
         Assert.assertNotNull(cookieConfig);
+
         List<AttributeValue> attributes = cookieConfig.getAttributes();
+        Assert.assertEquals(attributes.size(), 1);
+
         AttributeValue attribute = attributes.get(0);
 
         Assert.assertEquals(attribute.getAttributeName(), "color");
@@ -398,35 +399,24 @@ public class WebAppTest extends WebAppTestBase {
     }
 
     @Test
-    public void testEE10CookieAttributeOneDescription() throws Exception {
-        WebApp webApp = parseWebApp(
-                                    webApp(WebApp.VERSION_6_0,
-                                           "<session-config>" +
-                                                               "<cookie-config>" +
-                                                               "<name>CookieConfigName_viaWebXML</name>" +
-                                                               "<domain>CookieConfigDomain_viaWebXML</domain>" +
-                                                               "<path>CookieConfigPath_viaWebXML</path>" +
-                                                               "<max-age>2021</max-age>" +
-                                                               "<http-only>true</http-only>" +
-                                                               "<secure>true</secure>" +
-
-                                                               "<attribute>" +
-                                                               "<description xml:lang=\"en\">Hair color</description>" +
-                                                               "<attribute-name>color</attribute-name>" +
-                                                               "<attribute-value>blue</attribute-value>" +
-                                                               "</attribute>" +
-
-                                                               "</cookie-config>" +
-                                                               "</session-config>"),
-                                    WebApp.VERSION_6_0);
+    public void testEE10CookieAttributesOneDescription() throws Exception {
+        WebApp webApp = parseCookieAttributes60("<attribute>\n" +
+                                                "<description xml:lang=\"en\">Hair color</description>\n" +
+                                                "<attribute-name>color</attribute-name>\n" +
+                                                "<attribute-value>blue</attribute-value>\n" +
+                                                "</attribute>\n");
 
         CookieConfig cookieConfig = webApp.getSessionConfig().getCookieConfig();
         Assert.assertNotNull(cookieConfig);
 
         List<AttributeValue> attributes = cookieConfig.getAttributes();
+        Assert.assertEquals(attributes.size(), 1);
+
         AttributeValue attribute = attributes.get(0);
 
         List<Description> descriptions = attribute.getDescriptions();
+        Assert.assertEquals(descriptions.size(), 1);
+
         Description description = descriptions.get(0);
         Assert.assertEquals(description.getLang(), "en");
         Assert.assertEquals(description.getValue(), "Hair color");
@@ -436,36 +426,25 @@ public class WebAppTest extends WebAppTestBase {
     }
 
     @Test
-    public void testEE10CookieAttributeTwoDescriptions() throws Exception {
-        WebApp webApp = parseWebApp(
-                                    webApp(WebApp.VERSION_6_0,
-                                           "<session-config>" +
-                                                               "<cookie-config>" +
-                                                               "<name>CookieConfigName_viaWebXML</name>" +
-                                                               "<domain>CookieConfigDomain_viaWebXML</domain>" +
-                                                               "<path>CookieConfigPath_viaWebXML</path>" +
-                                                               "<max-age>2021</max-age>" +
-                                                               "<http-only>true</http-only>" +
-                                                               "<secure>true</secure>" +
-
-                                                               "<attribute>" +
-                                                               "<description xml:lang=\"en\">Hair color</description>" +
-                                                               "<description xml:lang=\"fr\">Couleur de cheveux</description>" +
-                                                               "<attribute-name>color</attribute-name>" +
-                                                               "<attribute-value>blue</attribute-value>" +
-                                                               "</attribute>" +
-
-                                                               "</cookie-config>" +
-                                                               "</session-config>"),
-                                    WebApp.VERSION_6_0);
+    public void testEE10CookieAttributesTwoDescriptions() throws Exception {
+        WebApp webApp = parseCookieAttributes60("<attribute>\n" +
+                                                "<description xml:lang=\"en\">Hair color</description>\n" +
+                                                "<description xml:lang=\"fr\">Couleur de cheveux</description>\n" +
+                                                "<attribute-name>color</attribute-name>\n" +
+                                                "<attribute-value>blue</attribute-value>\n" +
+                                                "</attribute>\n");
 
         CookieConfig cookieConfig = webApp.getSessionConfig().getCookieConfig();
         Assert.assertNotNull(cookieConfig);
 
         List<AttributeValue> attributes = cookieConfig.getAttributes();
+        Assert.assertEquals(attributes.size(), 1);
+
         AttributeValue attribute = attributes.get(0);
 
         List<Description> descriptions = attribute.getDescriptions();
+        Assert.assertEquals(descriptions.size(), 2);
+
         Description description = descriptions.get(0);
         Assert.assertEquals(description.getLang(), "en");
         Assert.assertEquals(description.getValue(), "Hair color");
@@ -479,51 +458,36 @@ public class WebAppTest extends WebAppTestBase {
     }
 
     @Test
-    public void testEE10CookieAttributeMultiple() throws Exception {
-        WebApp webApp = parseWebApp(
-                                    webApp(WebApp.VERSION_6_0,
-                                           "<session-config>" +
-                                                               "<cookie-config>" +
-                                                               "<name>CookieConfigName_viaWebXML</name>" +
-                                                               "<domain>CookieConfigDomain_viaWebXML</domain>" +
-                                                               "<path>CookieConfigPath_viaWebXML</path>" +
-                                                               "<max-age>2021</max-age>" +
-                                                               "<http-only>true</http-only>" +
-                                                               "<secure>true</secure>" +
+    public void testEE10CookieAttributesMultiple() throws Exception {
+        WebApp webApp = parseCookieAttributes60("<attribute>\n" +
+                                                "<description xml:lang=\"en\">Hair color</description>\n" +
+                                                "<description xml:lang=\"fr\">Couleur de cheveux</description>\n" +
+                                                "<attribute-name>color</attribute-name>\n" +
+                                                "<attribute-value>blue</attribute-value>\n" +
+                                                "</attribute>\n" +
 
-                                                               "<attribute>" +
-                                                               "<description xml:lang=\"en\">Hair color</description>" +
-                                                               "<description xml:lang=\"fr\">Couleur de cheveux</description>" +
-                                                               "<attribute-name>color</attribute-name>" +
-                                                               "<attribute-value>blue</attribute-value>" +
-                                                               "</attribute>" +
-
-                                                               "<attribute>" +
-                                                               "<description xml:lang=\"en\">Facial complecxion</description>" +
-                                                               "<description xml:lang=\"fr\">Complexión facial</description>" +
-                                                               "<attribute-name>complexion</attribute-name>" +
-                                                               "<attribute-value>rough</attribute-value>" +
-                                                               "</attribute>" +
-
-                                                               "</cookie-config>" +
-                                                               "</session-config>"),
-                                    WebApp.VERSION_6_0);
+                                                "<attribute>\n" +
+                                                "<description xml:lang=\"en\">Facial complecxion</description>\n" +
+                                                "<description xml:lang=\"fr\">Complexión facial</description>\n" +
+                                                "<attribute-name>complexion</attribute-name>\n" +
+                                                "<attribute-value>rough</attribute-value>\n" +
+                                                "</attribute>\n");
 
         CookieConfig cookieConfig = webApp.getSessionConfig().getCookieConfig();
         Assert.assertNotNull(cookieConfig);
 
         List<AttributeValue> attributes = cookieConfig.getAttributes();
+        Assert.assertEquals(attributes.size(), 2);
 
-        // First Attribute
         AttributeValue attribute = attributes.get(0);
-        List<Description> descriptions = attribute.getDescriptions();
 
-        //     first description
+        List<Description> descriptions = attribute.getDescriptions();
+        Assert.assertEquals(descriptions.size(), 2);
+
         Description description = descriptions.get(0);
         Assert.assertEquals(description.getLang(), "en");
         Assert.assertEquals(description.getValue(), "Hair color");
 
-        //    second description
         description = descriptions.get(1);
         Assert.assertEquals(description.getLang(), "fr");
         Assert.assertEquals(description.getValue(), "Couleur de cheveux");
@@ -531,21 +495,100 @@ public class WebAppTest extends WebAppTestBase {
         Assert.assertEquals(attribute.getAttributeName(), "color");
         Assert.assertEquals(attribute.getAttributeValue(), "blue");
 
-        // Second Attribute
         attribute = attributes.get(1);
-        descriptions = attribute.getDescriptions();
 
-        //     first description
+        descriptions = attribute.getDescriptions();
+        Assert.assertEquals(descriptions.size(), 2);
+
         description = descriptions.get(0);
         Assert.assertEquals(description.getLang(), "en");
         Assert.assertEquals(description.getValue(), "Facial complecxion");
 
-        //     second description
         description = descriptions.get(1);
         Assert.assertEquals(description.getLang(), "fr");
         Assert.assertEquals(description.getValue(), "Complexión facial");
 
         Assert.assertEquals(attribute.getAttributeName(), "complexion");
         Assert.assertEquals(attribute.getAttributeValue(), "rough");
+    }
+
+    // Only the last of attributes which have a duplicate name is used.
+    // Each duplication produces a warning message.
+
+    public static final String DUPLICATE_ATTRIBUTE_NAME_ALT_MESSAGE = "duplicate.session.config.attribute.name";
+    public static final String[] DUPLICATE_ATTRIBUTE_NAME_MESSAGES = { "CWWCK27790W" };
+
+    // The tests don't capture warnings.  The expected messages, above, are shown for reference.
+
+    @Test
+    public void testEE10CookieAttributesDuplicateName() throws Exception {
+        WebApp webApp = parseCookieAttributes60("<attribute>\n" +
+                                                "<description>Hair color</description>\n" +
+                                                "<attribute-name>color</attribute-name>\n" +
+                                                "<attribute-value>blue</attribute-value>\n" +
+                                                "</attribute>\n" +
+
+                                                "<attribute>\n" +
+                                                "<description>Hair color</description>\n" +
+                                                "<attribute-name>color</attribute-name>\n" +
+                                                "<attribute-value>red</attribute-value>\n" +
+                                                "</attribute>\n");
+
+        CookieConfig cookieConfig = webApp.getSessionConfig().getCookieConfig();
+        Assert.assertNotNull(cookieConfig);
+
+        List<AttributeValue> attributes = cookieConfig.getAttributes();
+        Assert.assertEquals(attributes.size(), 1);
+
+        AttributeValue attribute = attributes.get(0);
+
+        List<Description> descriptions = attribute.getDescriptions();
+        Assert.assertEquals(descriptions.size(), 1);
+
+        Description description = descriptions.get(0);
+        Assert.assertEquals(description.getValue(), "Hair color");
+
+        Assert.assertEquals(attribute.getAttributeName(), "color");
+        Assert.assertEquals(attribute.getAttributeValue(), "red");
+    }
+
+    // Attributes which are missing the 'name' attribute are ignored by the
+    // parser.  Each attribute which is missing 'name' produces a warning message.
+
+    public static final String MISSING_ATTRIBUTE_NAME_ALT_MESSAGE = "missing.session.config.attribute.name";
+    public static final String[] MISSING_ATTRIBUTE_NAME_MESSAGES = { "CWWCK27790W" };
+
+    // The tests don't capture warnings.  The expected messages, above, are shown for reference.
+
+    @Test
+    public void testEE10CookieAttributesMissingName() throws Exception {
+        WebApp webApp = parseCookieAttributes60("<attribute>\n" +
+                                                "<description>Hair color</description>\n" +
+                                                "<attribute-name>color</attribute-name>\n" +
+                                                "<attribute-value>blue</attribute-value>\n" +
+                                                "</attribute>\n" +
+
+                                                "<attribute>\n" +
+                                                "<description>Hair color</description>\n" +
+                                                // "<attribute-name>color</attribute-name>\n" +
+                                                "<attribute-value>red</attribute-value>\n" +
+                                                "</attribute>\n");
+
+        CookieConfig cookieConfig = webApp.getSessionConfig().getCookieConfig();
+        Assert.assertNotNull(cookieConfig);
+
+        List<AttributeValue> attributes = cookieConfig.getAttributes();
+        Assert.assertEquals(attributes.size(), 1);
+
+        AttributeValue attribute = attributes.get(0);
+
+        List<Description> descriptions = attribute.getDescriptions();
+        Assert.assertEquals(descriptions.size(), 1);
+
+        Description description = descriptions.get(0);
+        Assert.assertEquals(description.getValue(), "Hair color");
+
+        Assert.assertEquals(attribute.getAttributeName(), "color");
+        Assert.assertEquals(attribute.getAttributeValue(), "blue");
     }
 }
