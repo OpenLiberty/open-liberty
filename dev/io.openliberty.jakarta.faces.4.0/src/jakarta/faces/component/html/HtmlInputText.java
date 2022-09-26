@@ -57,8 +57,7 @@ public class HtmlInputText extends jakarta.faces.component.UIInput
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST =
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
-             "select"
-            , "click"
+             "click"
             , "dblclick"
             , "keydown"
             , "keypress"
@@ -68,6 +67,7 @@ public class HtmlInputText extends jakarta.faces.component.UIInput
             , "mouseout"
             , "mouseover"
             , "mouseup"
+            , "select"
             , "blur"
             , "focus"
             , "change"
@@ -85,6 +85,7 @@ public class HtmlInputText extends jakarta.faces.component.UIInput
         super.addClientBehavior(eventName, behavior);
         CommonHtmlEvents.markEvent(this, eventName);
     }
+
 
 
     //ClientBehaviorHolder default: valueChange
@@ -129,29 +130,17 @@ public class HtmlInputText extends jakarta.faces.component.UIInput
     {
         getStateHelper().put(PropertyKeys.autocomplete, autocomplete );
     }
-    // Property: accesskey
+    // Property: type
 
-    public String getAccesskey()
+    public String getType()
     {
-        return (String) getStateHelper().eval(PropertyKeys.accesskey);
+        return (String) getStateHelper().eval(PropertyKeys.type);
     }
 
-    public void setAccesskey(String accesskey)
+    public void setType(String type)
     {
-        getStateHelper().put(PropertyKeys.accesskey, accesskey );
-        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.ACCESSKEY);
-    }
-    // Property: onselect
-
-    public String getOnselect()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.onselect);
-    }
-
-    public void setOnselect(String onselect)
-    {
-        getStateHelper().put(PropertyKeys.onselect, onselect );
-        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.ONSELECT);
+        getStateHelper().put(PropertyKeys.type, type );
+        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.TYPE);
     }
     // Property: disabled
 
@@ -297,6 +286,66 @@ public class HtmlInputText extends jakarta.faces.component.UIInput
         getStateHelper().put(PropertyKeys.onmouseup, onmouseup );
         CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.ONMOUSEUP);
     }
+    // Property: dir
+
+    public String getDir()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.dir);
+    }
+
+    public void setDir(String dir)
+    {
+        getStateHelper().put(PropertyKeys.dir, dir );
+        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.DIR);
+    }
+    // Property: lang
+
+    public String getLang()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.lang);
+    }
+
+    public void setLang(String lang)
+    {
+        getStateHelper().put(PropertyKeys.lang, lang );
+        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.LANG);
+    }
+    // Property: title
+
+    public String getTitle()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.title);
+    }
+
+    public void setTitle(String title)
+    {
+        getStateHelper().put(PropertyKeys.title, title );
+        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.TITLE);
+    }
+    // Property: accesskey
+
+    public String getAccesskey()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.accesskey);
+    }
+
+    public void setAccesskey(String accesskey)
+    {
+        getStateHelper().put(PropertyKeys.accesskey, accesskey );
+        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.ACCESSKEY);
+    }
+    // Property: onselect
+
+    public String getOnselect()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.onselect);
+    }
+
+    public void setOnselect(String onselect)
+    {
+        getStateHelper().put(PropertyKeys.onselect, onselect );
+        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.ONSELECT);
+    }
     // Property: style
 
     public String getStyle()
@@ -356,42 +405,6 @@ public class HtmlInputText extends jakarta.faces.component.UIInput
     {
         getStateHelper().put(PropertyKeys.alt, alt );
         CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.ALT);
-    }
-    // Property: dir
-
-    public String getDir()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.dir);
-    }
-
-    public void setDir(String dir)
-    {
-        getStateHelper().put(PropertyKeys.dir, dir );
-        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.DIR);
-    }
-    // Property: lang
-
-    public String getLang()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.lang);
-    }
-
-    public void setLang(String lang)
-    {
-        getStateHelper().put(PropertyKeys.lang, lang );
-        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.LANG);
-    }
-    // Property: title
-
-    public String getTitle()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.title);
-    }
-
-    public void setTitle(String title)
-    {
-        getStateHelper().put(PropertyKeys.title, title );
-        CommonHtmlAttributes.markAttribute(this, CommonHtmlAttributes.TITLE);
     }
     // Property: onblur
 
@@ -453,8 +466,7 @@ public class HtmlInputText extends jakarta.faces.component.UIInput
          maxlength
         , size
         , autocomplete
-        , accesskey
-        , onselect
+        , type
         , disabled
         , readonly
         , onclick
@@ -467,14 +479,16 @@ public class HtmlInputText extends jakarta.faces.component.UIInput
         , onmouseout
         , onmouseover
         , onmouseup
+        , dir
+        , lang
+        , title
+        , accesskey
+        , onselect
         , style
         , styleClass
         , role
         , label
         , alt
-        , dir
-        , lang
-        , title
         , onblur
         , onfocus
         , tabindex
