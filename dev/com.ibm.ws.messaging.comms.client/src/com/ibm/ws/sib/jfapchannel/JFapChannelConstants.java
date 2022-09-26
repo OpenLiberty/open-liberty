@@ -25,14 +25,6 @@ public class JFapChannelConstants {
     public final static String CLIENT_MANAGER_CLASS =
                     "com.ibm.ws.sib.jfapchannel.impl.ClientConnectionManagerImpl";
 
-    // The class name of the server connection manager
-    public final static String SERVER_MANAGER_CLASS =
-                    "com.ibm.ws.sib.jfapchannel.server.impl.ServerConnectionManagerImpl";
-
-    // The class name of the Rich client framework
-    public final static String RICH_CLIENT_FRAMEWORK_CLASS =
-                    "com.ibm.ws.sib.jfapchannel.richclient.framework.impl.RichClientFramework";
-
     // The class name of the Thin client framework
     public final static String THIN_CLIENT_FRAMEWORK_CLASS =
                     "com.ibm.ws.sib.jfapchannel.framework.impl.ThinClientFramework";

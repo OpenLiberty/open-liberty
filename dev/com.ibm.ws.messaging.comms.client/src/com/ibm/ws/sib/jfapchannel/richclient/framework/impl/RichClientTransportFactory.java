@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.richclient.framework.impl;
 
+import static com.ibm.ws.messaging.lifecycle.SingletonsReady.requireService;
+
 import com.ibm.websphere.channelfw.CFEndPoint;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -81,7 +83,7 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         {
             // Get the virtual connection factory from the channel framework using the chain name
 
-            VirtualConnectionFactory vcFactory = CommsClientServiceFacade.getChannelFramewrok().getOutboundVCFactory(chainName);
+            VirtualConnectionFactory vcFactory = requireService(CommsClientServiceFacade.class).getChannelFramework().getOutboundVCFactory(chainName);
 
             connFactory = new CFWNetworkConnectionFactory(vcFactory);
 

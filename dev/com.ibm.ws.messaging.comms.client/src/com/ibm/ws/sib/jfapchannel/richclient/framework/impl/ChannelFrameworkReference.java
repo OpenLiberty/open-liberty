@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.richclient.framework.impl;
 
+import static com.ibm.ws.messaging.lifecycle.SingletonsReady.requireService;
+
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
@@ -192,7 +194,7 @@ public class ChannelFrameworkReference
    * @return Returns the singleton instance of the channel framework.
    */
     public static synchronized ChannelFramework getInstance() {
-       return CommsClientServiceFacade.getChannelFramewrok();
+       return requireService(CommsClientServiceFacade.class).getChannelFramework();
     }
     
     public static boolean isOutboundSSLChainDefinedWithoutProperties()

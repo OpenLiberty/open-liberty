@@ -10,16 +10,26 @@
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.impl;
 
+import static com.ibm.ws.messaging.lifecycle.SingletonsReady.requireService;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ejs.util.am.AlarmManager;
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.sib.SIDestinationAddressFactory;
+import com.ibm.ws.messaging.lifecycle.Singleton;
 import com.ibm.ws.sib.common.service.CommonServiceFacade;
 import com.ibm.ws.sib.comms.ClientConnectionFactory;
 import com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface;
@@ -44,155 +54,62 @@ import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
  * Start JFAP outbound chain and outbound Secure chain inline to Liberty profile Server start.
  * Can consider starting both chains lazily .. this would reduce Liberty profile server start time.
  */
-public class CommsClientServiceFacade implements CommsClientServiceFacadeInterface {
+@Component (
+        service = {CommsClientServiceFacade.class, CommsClientServiceFacadeInterface.class, Singleton.class},
+        configurationPolicy = IGNORE,
+        immediate = true,
+        property= {"type=messaging.comms.client.service","service.vendor=IBM"})
+public class CommsClientServiceFacade implements CommsClientServiceFacadeInterface, Singleton {
     private static final TraceComponent tc = Tr.register(CommsClientServiceFacade.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
 
-    private static final AtomicServiceReference<CHFWBundle> chfwRef = new AtomicServiceReference<CHFWBundle>("chfwBundle");
-    private static final AtomicServiceReference<ExecutorService> exeServiceRef = new AtomicServiceReference<ExecutorService>("executorService");
-    private static final AtomicServiceReference<CommonServiceFacade> _commonServiceFacadeRef = new AtomicServiceReference<CommonServiceFacade>("commonServiceFacade");
-    private static final AtomicServiceReference<AlarmManager> alarmManagerRef = new AtomicServiceReference<AlarmManager>("alarmManager");
+    private final CHFWBundle chfwBundle;
+    private final ExecutorService executorService;
+    private final AlarmManager alarmManager;
+    private final ClientConnectionFactory clientConnectionFactoryInstance = new ClientConnectionFactoryImpl();
 
-    /**
-     * DS method to activate this component.
-     * Best practice: this should be a protected method, not public or private
-     * 
-     * @param properties : Map containing service & config properties
-     *            populated/provided by config admin
-     */
-    public void activate(Map<String, Object> properties, ComponentContext context) {
+    @Activate
+    public CommsClientServiceFacade(
+            @Reference(name="chfwBundle")
+            CHFWBundle chfwBundle,
+            @Reference(name="executorService")
+            ExecutorService executorService,
+            @Reference(name="alarmManager")
+            AlarmManager alarmManager) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "activate");
-        chfwRef.activate(context);
-        _commonServiceFacadeRef.activate(context);
-        alarmManagerRef.activate(context);
-        exeServiceRef.activate(context);
+            SibTr.entry(tc, "CommsClientServiceFacade",new Object[] {chfwBundle, executorService, alarmManager});
 
-        getChannelFramewrok().registerFactory("JFapChannelOutbound", JFapChannelFactory.class);
+        this.chfwBundle = chfwBundle;
+        this.executorService = executorService;
+        this.alarmManager = alarmManager;
+
+        chfwBundle.getFramework().registerFactory("JFapChannelOutbound", JFapChannelFactory.class);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "activate");
+            SibTr.exit(tc, "CommsClientServiceFacade");
     }
 
-    /**
-     * DS method to deactivate this component.
-     * Best practice: this should be a protected method, not public or private
-     * 
-     * @param reason int representation of reason the component is stopping
-     */
-    protected void deactivate(ComponentContext context) {
-        chfwRef.deactivate(context);
-        _commonServiceFacadeRef.deactivate(context);
-        alarmManagerRef.deactivate(context);
-        exeServiceRef.deactivate(context);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-            Tr.event(tc, "CommsClientServiceFacade deactivated");
-    }
-
-    /**
-     * Declarative Services method for setting the ConfigurationAdmin service
-     * reference.
-     * 
-     * @param ref
-     *            reference to the service
-     */
-    protected void setChfwBundle(ServiceReference<CHFWBundle> ref) {
-        chfwRef.setReference(ref);
-    }
-
-    protected void unsetChfwBundle(ServiceReference<CHFWBundle> ref) {
-        chfwRef.unsetReference(ref);
-    }
-
-    protected void setExecutorService(ServiceReference<ExecutorService> ref) {
-        exeServiceRef.setReference(ref);
-    }
-
-    protected void unsetExecutorService(ServiceReference<ExecutorService> ref) {
-        exeServiceRef.unsetReference(ref);
-    }
-
-    protected void setCommonServiceFacade(ServiceReference<CommonServiceFacade> ref) {
-        _commonServiceFacadeRef.setReference(ref);
-    }
-
-    protected void unsetCommonServiceFacade(ServiceReference<CommonServiceFacade> ref) {
-        _commonServiceFacadeRef.unsetReference(ref);
-    }
-
-    //obtain TrmMessageFactory from MFP implementation ( via common bundle) 
-    public static TrmMessageFactory getTrmMessageFactory() {
-        return _commonServiceFacadeRef.getService().getTrmMessageFactory();
-    }
-
-    //obtain getJsDestinationAddressFactory from MFP implementation ( via common bundle)
-    public static JsDestinationAddressFactory getJsDestinationAddressFactory() {
-        return _commonServiceFacadeRef.getService().getJsDestinationAddressFactory();
-    }
-
-    //obtain getJsDestinationAddressFactory from core implementation ( via common bundle)
     public static SelectionCriteriaFactory getSelectionCriteriaFactory() {
-        return _commonServiceFacadeRef.getService().getSelectionCriteriaFactory();
+        return SelectionCriteriaFactory.getInstance();
     }
 
-    protected void setAlarmManager(ServiceReference<AlarmManager> ref) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.entry(tc, "setAlarmManager", ref);
-
-        alarmManagerRef.setReference(ref);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.exit(tc, "setAlarmManager");
+    public AlarmManager getAlarmManager() {
+        return alarmManager;
     }
 
-    protected void unsetAlarmManager(ServiceReference<AlarmManager> ref) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.entry(tc, "unsetAlarmManager", ref);
-
-        alarmManagerRef.unsetReference(ref);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.exit(tc, "unsetAlarmManager");
+    public ChannelFramework getChannelFramework() {
+        return chfwBundle.getFramework();
     }
 
-    public static AlarmManager getAlarmManager() {
-        return alarmManagerRef.getService();
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 
-    public static ChannelFramework getChannelFramewrok() {
-        if (null == chfwRef.getService()) {
-            return ChannelFrameworkFactory.getChannelFramework();
-        }
-        return chfwRef.getService().getFramework();
+    public WsByteBufferPoolManager getBufferPoolManager() {
+        return chfwBundle.getBufferManager();
     }
-
-    public static ExecutorService getExecutorService() {
-        return exeServiceRef.getService();
-    }
-
-    /**
-     * Access the current reference to the bytebuffer pool manager from channel frame work.
-     * 
-     * @return WsByteBufferPoolManager
-     */
-    public static WsByteBufferPoolManager getBufferPoolManager() {
-        if (null == chfwRef.getService()) {
-            return ChannelFrameworkFactory.getBufferManager();
-        }
-        return chfwRef.getService().getBufferManager();
-    }
-
-    //Export implementations of this bundles through CommsClientServiceFacadeInterface
-
-    volatile private ClientConnectionFactory _ClientConnectionFactoryInstance = null;
 
     @Override
     public ClientConnectionFactory getClientConnectionFactory() {
-        if (_ClientConnectionFactoryInstance == null) {
-            synchronized (this) {
-                _ClientConnectionFactoryInstance = new ClientConnectionFactoryImpl();
-            }
-        }
-        return _ClientConnectionFactoryInstance;
+        return clientConnectionFactoryInstance;
     }
-
 }

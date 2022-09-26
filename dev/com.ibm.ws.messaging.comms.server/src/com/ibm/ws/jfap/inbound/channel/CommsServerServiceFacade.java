@@ -10,32 +10,41 @@
  *******************************************************************************/
 package com.ibm.ws.jfap.inbound.channel;
 
+import static com.ibm.websphere.ras.Tr.entry;
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
+import static com.ibm.ws.messaging.lifecycle.SingletonsReady.requireService;
+import static com.ibm.ws.sib.utils.ras.SibTr.debug;
+import static com.ibm.wsspi.kernel.service.utils.MetatypeUtils.parseBoolean;
+import static com.ibm.wsspi.kernel.service.utils.MetatypeUtils.parseInteger;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
+
 import java.util.Map;
 
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;
 import com.ibm.websphere.event.EventEngine;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.messaging.lifecycle.Singleton;
 import com.ibm.ws.sib.admin.JsAdminService;
 import com.ibm.ws.sib.admin.JsConstants;
 import com.ibm.ws.sib.admin.JsEngineComponent;
 import com.ibm.ws.sib.admin.JsMessagingEngine;
 import com.ibm.ws.sib.common.service.CommonServiceFacade;
-import com.ibm.ws.sib.comms.server.AcceptListenerFactoryImpl;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.server.ServerConnectionManager;
 import com.ibm.ws.sib.mfp.trm.TrmMessageFactory;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelConfiguration;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
 /**
  * 
@@ -44,7 +53,17 @@ import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
  * this can happen only if chains are started in the context of SCR thread
  * 
  */
-public class CommsServerServiceFacade {
+
+//dynamic:='tcpOptions,sslOptions,sslSupport';\
+//optional:='commonServiceFacade,sslOptions,sslSupport';\
+//greedy:='tcpOptions,sslOptions,sslSupport';\
+
+@Component(
+        name ="com.ibm.ws.messaging.comms.server",
+        configurationPolicy = REQUIRE, 
+        immediate = true, 
+        property = {"type=messaging.comms.server.service", "service.vendor=IBM"})
+public class CommsServerServiceFacade implements Singleton {
     private static final TraceComponent tc = Tr.register(CommsServerServiceFacade.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
     private final static String Inbound_ConfigAlias = "wasJmsEndpoint";
 
@@ -58,223 +77,127 @@ public class CommsServerServiceFacade {
     private int wasJmsSSLPort;
     private boolean iswasJmsEndpointEnabled = true;
 
-    private static CHFWBundle _chfw_bunlde;
-    private static final AtomicServiceReference<CHFWBundle> _chfwRef = new AtomicServiceReference<CHFWBundle>("chfwBundle");
-
-    private static final AtomicServiceReference<ChannelConfiguration> _tcpOptionsRef = new AtomicServiceReference<ChannelConfiguration>("tcpOptions");
-
-    /** Optional, dynamic reference to an SSL channel factory provider: could be used to start/stop SSL chains */
-    private static final AtomicServiceReference<ChannelFactoryProvider> _sslFactoryProviderRef = new AtomicServiceReference<ChannelFactoryProvider>("sslSupport");
-    private static final AtomicServiceReference<ChannelConfiguration> _sslOptionsRef = new AtomicServiceReference<ChannelConfiguration>("sslOptions");
-
-    private static final AtomicServiceReference<ChannelConfiguration> _commsClientServiceRef = new AtomicServiceReference<ChannelConfiguration>("commsClientService");
-    private static final AtomicServiceReference<CommonServiceFacade> _commonServiceFacadeRef = new AtomicServiceReference<CommonServiceFacade>("commonServiceFacade");
-
-    private static final AtomicServiceReference<EventEngine> _eventSvcRef = new AtomicServiceReference<EventEngine>("eventService");
-
-    private volatile Map<String, Object> Config = null;
+    private final CHFWBundle chfw;
+    private final ChannelConfiguration tcpOptions;
+    private final ChannelConfiguration sslOptions;
+    
+    private final EventEngine events;
 
     /** Lock to guard chain actions (update,stop and sslOnlyStop).. as of now as all chain actions are executed by SCR thread */
-    private final Object actionLock = new Object();
+    private final SynchronizedActions factotum = new SynchronizedActions();
 
-    public void activate(Map<String, Object> properties, ComponentContext context) {
+    @Activate
+    public CommsServerServiceFacade(
+            @Reference(name = "chfw")
+            CHFWBundle chfw,
+            @Reference(name = "tcpOptions", target = "(id=unbound)") // target to be overwritten by metatype
+            ChannelConfiguration tcpOptions,
+            @Reference(name = "sslFactoryProvider", target = "(type=SSLChannel)", cardinality = OPTIONAL)
+            ChannelFactoryProvider sslFactoryProvider,
+            @Reference(name = "sslOptions", target = "(id=unbound)", cardinality = OPTIONAL) // target to be overwritten by metatype
+            ChannelConfiguration sslOptions,
+            @Reference(name = "eventEngine")
+            EventEngine events,
+            Map<String, Object> properties) {
         final String methodName = "activate";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, methodName, new Object[] {this, properties});
+            SibTr.entry(this, tc, methodName, new Object[]{chfw, tcpOptions, sslFactoryProvider, events, properties});
 
-        Config = properties;
-        Object cid = Config.get(ComponentConstants.COMPONENT_ID);
+        this.chfw = chfw;
+        this.tcpOptions = tcpOptions;
+        this.sslOptions = sslOptions; // can be null
+        this.events = events;
+        
+        Object cid = properties.get(ComponentConstants.COMPONENT_ID);
 
         endpointName = (String) properties.get("id");
         if (endpointName == null)
             endpointName = Inbound_ConfigAlias + cid;
 
-        _chfwRef.activate(context);
-        _tcpOptionsRef.activate(context);
-        _sslOptionsRef.activate(context);
-        _sslFactoryProviderRef.activate(context);
-
-        _commonServiceFacadeRef.activate(context);
-        _commsClientServiceRef.activate(context);
-        _eventSvcRef.activate(context);
-
-        _chfw_bunlde = getCHFWBundle();
-
         // Allowing JFAP to accept incoming connections. 
-        ServerConnectionManager.initialise(new AcceptListenerFactoryImpl());
+        ServerConnectionManager.initialise(chfw.getFramework());
 
         //Go ahead and Register JFAPChannel with Channel Framework by providing JFAPServerInboundChannelFactory
-        _chfw_bunlde.getFramework().registerFactory("JFAPChannel", JFAPServerInboundChannelFactory.class);
+        chfw.getFramework().registerFactory("JFAPChannel", JFAPServerInboundChannelFactory.class);
 
-        inboundChain.init(endpointName, getCHFWBundle());
-        inboundSecureChain.init(endpointName + "-ssl", getCHFWBundle());
+        inboundChain.init(endpointName, chfw);
+        inboundSecureChain.init(endpointName + "-ssl", chfw);
 
-        modified(context, properties);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "Activate");
-    }
-
-    protected void deactivate(ComponentContext ctx, int reason) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-            Tr.event(tc, "CommsServerServiceFacade deactivated, reason=" + reason);
-        //First make Config NULL
-        Config = null;
-
-        performAction(stopBasicChainAction);
-        performAction(stopSSLChainAction);
-
-        _chfwRef.deactivate(ctx);
-        _tcpOptionsRef.deactivate(ctx);
-        _sslOptionsRef.deactivate(ctx);
-        _sslFactoryProviderRef.deactivate(ctx);
-
-        _commonServiceFacadeRef.deactivate(ctx);
-        _commsClientServiceRef.deactivate(ctx);
-        _eventSvcRef.deactivate(ctx);
-
-    }
-
-    protected void modified(ComponentContext context,
-                            Map<String, Object> properties) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "modified", properties);
-
-        iswasJmsEndpointEnabled = MetatypeUtils.parseBoolean(Inbound_ConfigAlias, "enabled",
-                                                             properties.get("enabled"),
-                                                             true);
-
-        host = (String) Config.get("host");
-
-        wasJmsPort = MetatypeUtils.parseInteger(Inbound_ConfigAlias, "wasJmsPort",
-                                                properties.get("wasJmsPort"),
-                                                -1);
-
-        wasJmsSSLPort = MetatypeUtils.parseInteger(Inbound_ConfigAlias, "wasJmsSSLPort",
-                                                   properties.get("wasJmsSSLPort"),
-                                                   -1);
-
-        Config = properties;
-
-        if (wasJmsPort >= 0)
-            inboundChain.enable(true);
-
-        if ((wasJmsSSLPort >= 0) && (_sslFactoryProviderRef.getService() != null))
-            inboundSecureChain.enable(true);
-
+        iswasJmsEndpointEnabled = parseBoolean(Inbound_ConfigAlias, "enabled", properties.get("enabled"), true);
+        host = (String) properties.get("host");
+        wasJmsPort = parseInteger(Inbound_ConfigAlias, "wasJmsPort", properties.get("wasJmsPort"), -1);
+        
+        wasJmsSSLPort = parseInteger(Inbound_ConfigAlias, "wasJmsSSLPort", properties.get("wasJmsSSLPort"), -1);
+        
+        if (wasJmsPort >= 0) inboundChain.enable(true);
+        
+        if ((wasJmsSSLPort >= 0) && (sslFactoryProvider != null)) inboundSecureChain.enable(true);
+        
         if (iswasJmsEndpointEnabled) {
-            performAction(updateBasicChainAction);
-            performAction(updateSSLChainAction);
-        }
-        else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(this, tc, "wasjmsEndpoint disabled: .. stopping chains");
-
-            performAction(stopBasicChainAction);
-            performAction(stopSSLChainAction);
+            factotum.updateBasicChain();
+            factotum.updateSSLChain();
+        } else {
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "wasjmsEndpoint disabled: .. stopping chains");
+            factotum.stopBasicChain();
+            factotum.stopSSLChain();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "modified");
+          SibTr.exit(this, tc, "Activate");
     }
 
-    // Four Runnable actions (i.e stopBasicChain,stopSecureChain,updateBasicChain and updateSecureChain). However all these run() are called in-line ( not from other thread) in SCR action thread
-    //in-line means in the context of DS functions (i.e activate,deactivate,modify, set/unset )
-
-    private void performAction(Runnable action) {
-        // As we are running in SCR action thread.. just calling action.run()
-        // depending on the need, in future this may be modified to use a executor service. 
-        action.run();
+    @Deactivate
+    protected void deactivate(ComponentContext ctx, int reason) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) Tr.event(tc, "CommsServerServiceFacade deactivated, reason=" + reason);
+        factotum.stopBasicChain();
+        factotum.stopSSLChain();
     }
 
-    private final Runnable stopBasicChainAction = new Runnable() {
-        @Override
-        @Trivial
-        public void run() {
-            synchronized (actionLock) {
+    private final class SynchronizedActions {
+        synchronized void stopBasicChain() {
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsServerServiceFacade: stopping basic chain ", inboundChain);
+            try {
+                inboundChain.stop();
+            } catch (Exception e) {
+                if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Exception in stopping basic chain", e);
+            }
+        }
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    SibTr.debug(this, tc, "CommsServerServiceFacade: stoppin basic chain ", inboundChain);
+        synchronized void stopSSLChain() {
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsServerServiceFacade: stopping secure chain ", inboundSecureChain);
+            try {
+                inboundSecureChain.stop();
+            } catch (Exception e) {
+                if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Exception in secure chain stopping", e);
+            }
+        }
 
-                //Catch any unchecked/uncaught exceptions so that it would not harm the code flow
+        synchronized void updateSSLChain() {
+            if (iswasJmsEndpointEnabled) {
+                if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsServerServiceFacade: updating secure chain ", inboundSecureChain);
                 try {
-                    inboundChain.stop();
+                    inboundSecureChain.update();
                 } catch (Exception e) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        SibTr.debug(tc, "Exception in stopping Basic chain", e);
+                    if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Exception in updating secure chain", e);
                 }
+
             }
         }
-    };
 
-    private final Runnable stopSSLChainAction = new Runnable() {
-        @Override
-        @Trivial
-        public void run() {
-            synchronized (actionLock) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    SibTr.debug(this, tc, "CommsServerServiceFacade: stopping secure chain ", inboundSecureChain);
-
-                //Catch any unchecked/uncaught exceptions so that it would not harm the code flow
+        synchronized void updateBasicChain() {
+            if (iswasJmsEndpointEnabled) {
+                if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsServerServiceFacade: updating basic chain ", inboundChain);
                 try {
-                    inboundSecureChain.stop();
+                    inboundChain.update();
                 } catch (Exception e) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        SibTr.debug(tc, "Exception in secure chain stopping", e);
+                    if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Exception in updating basic chain", e);
                 }
             }
         }
-    };
-
-    private final Runnable updateSSLChainAction = new Runnable() {
-        @Override
-        @Trivial
-        public void run() {
-            synchronized (actionLock) {
-                //only do in case if Activate is called.
-                if ((Config != null) && iswasJmsEndpointEnabled) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        SibTr.debug(this, tc, "CommsServerServiceFacade: updating secure chain ", inboundSecureChain);
-
-                    //Catch any unchecked/uncaught exceptions so that it would not harm the code flow
-                    try {
-                        inboundSecureChain.update();
-                    } catch (Exception e) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            SibTr.debug(tc, "Exception in updating secure  chain", e);
-                    }
-
-                }
-            }
-        }
-    };
-
-    private final Runnable updateBasicChainAction = new Runnable() {
-        @Override
-        @Trivial
-        public void run() {
-            synchronized (actionLock) {
-                //only do in case if Activate is called.
-                if ((Config != null) && iswasJmsEndpointEnabled) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        SibTr.debug(this, tc, "CommsServerServiceFacade: updating basic chain ", inboundChain);
-
-                    //Catch any unchecked/uncaught exceptions so that it would not harm the code flow
-                    try {
-                        inboundChain.update();
-                    } catch (Exception e) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            SibTr.debug(tc, "Exception in updating badic  chain", e);
-                    }
-                }
-            }
-        }
-    };
-
+    }
+    
     void closeViaCommsMPConnections(int mode) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "CommsServerServiceFacade closeViaCommsMPConnections", mode);
-
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, "CommsServerServiceFacade closeViaCommsMPConnections", mode);
         JsAdminService admnService = getJsAdminService();
         if (null != admnService) {
             // Liberty AdminService returns the ME which is running in-process. No search filter is used.
@@ -286,56 +209,7 @@ public class CommsServerServiceFacade {
                 }
             }
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "closeViaCommsMPConnections");
-
-    }
-
-    protected void setCommsClientService(ServiceReference<ChannelConfiguration> service) {
-        _commsClientServiceRef.setReference(service);
-    }
-
-    protected void unsetCommsClientService(ServiceReference<ChannelConfiguration> service) {
-        _commsClientServiceRef.unsetReference(service);
-    }
-
-    protected void setChfwBundle(ServiceReference<CHFWBundle> ref) {
-        _chfwRef.setReference(ref);
-    }
-
-    protected void unsetChfwBundle(ServiceReference<CHFWBundle> ref) {
-        _chfwRef.unsetReference(ref);
-    }
-
-    private CHFWBundle getCHFWBundle() {
-        return _chfwRef.getService();
-    }
-
-    @Trivial
-    protected void setSslSupport(ServiceReference<ChannelFactoryProvider> ref) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "enable ssl support " + ref.getProperty("type"), this);
-        }
-        _sslFactoryProviderRef.setReference(ref);
-
-        if ((Config != null) && (wasJmsSSLPort >= 0))
-            inboundSecureChain.enable(true);
-
-        performAction(updateSSLChainAction);
-
-    }
-
-    @Trivial
-    public void unsetSslSupport(ServiceReference<ChannelFactoryProvider> ref) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "disable ssl support " + ref.getProperty("type"), this);
-        }
-
-        if (this._sslFactoryProviderRef.unsetReference(ref)) {
-            inboundSecureChain.enable(false);
-        }
-        //CFW disables chain once after coming to know of there is no SSL provider for the given configuration.
-        //So. we will need not do any thing here.
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(tc, "closeViaCommsMPConnections");
     }
 
     /**
@@ -344,109 +218,31 @@ public class CommsServerServiceFacade {
      * @return WsByteBufferPoolManager
      */
     public static WsByteBufferPoolManager getBufferPoolManager() {
-        return _chfw_bunlde.getBufferManager();
+        return requireService(CommsServerServiceFacade.class).chfw.getBufferManager();
     }
-
-    @Trivial
-    protected void setTcpOptions(ServiceReference<ChannelConfiguration> service) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "set tcp options " + service.getProperty("id"), this);
-        }
-        _tcpOptionsRef.setReference(service);
-
-        //TODO: I don't think so, from here updateAction has to be called..Activate() method wud do it
-        //Once tcpOptions are bound .. it is going to static.. only possibility is update to get called
-    }
-
-    @Trivial
-    protected void updatedTcpOptions(ServiceReference<ChannelConfiguration> service) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-            Tr.event(this, tc, "update tcp options " + service.getProperty("id"), this);
-
-        performAction(updateBasicChainAction);
-        performAction(updateSSLChainAction);
-    }
-
-    //TCP is must for JFAP Comms server.. so this scenario would not arise
-    protected void unsetTcpOptions(ServiceReference<ChannelConfiguration> service) {}
 
     Map<String, Object> getTcpOptions() {
-        ChannelConfiguration chanCnfgService = _tcpOptionsRef.getService();
-        return chanCnfgService.getConfiguration();
-    }
-
-    @Trivial
-    protected void setSslOptions(ServiceReference<ChannelConfiguration> service) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "set ssl options " + service.getProperty("id"));
-        }
-        _sslOptionsRef.setReference(service);
-
-        performAction(updateSSLChainAction);
-
-    }
-
-    @Trivial
-    protected void updatedSslOptions(ServiceReference<ChannelConfiguration> service) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "update ssl options " + service.getProperty("id"));
-        }
-
-        performAction(updateSSLChainAction);
-
-    }
-
-    @Trivial
-    protected void unsetSslOptions(ServiceReference<ChannelConfiguration> service) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "unset ssl options " + service.getProperty("id"));
-        }
-
-        if (this._sslOptionsRef.unsetReference(service)) {
-            performAction(stopSSLChainAction);
-        }
-
+        return tcpOptions.getConfiguration();
     }
 
     Map<String, Object> getSslOptions() {
-        ChannelConfiguration chanCnfgService = _sslOptionsRef.getService();
-        if (null != chanCnfgService)
-            return chanCnfgService.getConfiguration();
-        else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(tc, "getSslOptions() returning NULL as _sslOptionsRef.getHighestRankedService() returned NUll _sslOptionsRef: ", _sslOptionsRef);
-            return null;
-        }
-    }
-
-    protected void setCommonServiceFacade(ServiceReference<CommonServiceFacade> ref) {
-        _commonServiceFacadeRef.setReference(ref);
-    }
-
-    protected void unsetCommonServiceFacade(ServiceReference<CommonServiceFacade> ref) {
-        _commonServiceFacadeRef.unsetReference(ref);
-    }
-
-    protected void setEventService(ServiceReference<EventEngine> ref) {
-        _eventSvcRef.setReference(ref);
-    }
-
-    protected void unsetEventService(ServiceReference<EventEngine> ref) {
-        _eventSvcRef.unsetReference(ref);
+        if (null != sslOptions) return sslOptions.getConfiguration();
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "getSslOptions() returning NULL");
+        return null;
     }
 
     //obtain TrmMessageFactory from MFP implementation ( via common bundle) 
     public static TrmMessageFactory getTrmMessageFactory() {
-        return _commonServiceFacadeRef.getService().getTrmMessageFactory();
+        return requireService(CommonServiceFacade.class).getTrmMessageFactory();
     }
 
     //obtain JsAdminService from runtime implementation (directly from runtime bundle) 
     public static JsAdminService getJsAdminService() {
-        return _commonServiceFacadeRef.getService().getJsAdminService();
+        return CommonServiceFacade.getJsAdminService();
     }
 
     public static EventEngine getEventEngine() {
-        return _eventSvcRef.getService();
+        return requireService(CommsServerServiceFacade.class).events;
     }
 
     int getConfigured_wasJmsPort() {

@@ -10,4 +10,5 @@
  -->
 <server>
 	<wasJmsEndpoint />
+    <com.ibm.ws.messaging.lifecycle.SingletonAgent id="messaging.comms.server.service" />
 </server>
