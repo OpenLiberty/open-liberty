@@ -18,16 +18,17 @@
  */
 package org.apache.myfaces.renderkit.html.base;
 
-import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
-import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
-import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
-import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
+
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.component.UIOutput;
@@ -38,13 +39,18 @@ import jakarta.faces.component.html.HtmlOutputText;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
 import jakarta.faces.convert.ConverterException;
+
 import org.apache.myfaces.core.api.shared.AttributeUtils;
 import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
-
 import org.apache.myfaces.renderkit.RendererUtils;
-import org.apache.myfaces.renderkit.html.util.ResourceUtils;
-import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlEventsUtil;
 import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
+import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.util.lang.StringUtils;
 
 public class HtmlTextRendererBase
         extends HtmlRenderer
@@ -52,6 +58,24 @@ public class HtmlTextRendererBase
     private static final Logger log = Logger.getLogger(HtmlTextRendererBase.class.getName());
 
     private static final String AUTOCOMPLETE_VALUE_OFF = "off";
+
+    private static final Map<String, String> RECOMMENDED_COMPONENTS_BY_DISCOMMENDED_TYPES = 
+        mapRecommendedComponentsByDiscommendedTypes();
+
+    private static Map<String, String> mapRecommendedComponentsByDiscommendedTypes()
+    {
+        Map<String, String> map = new HashMap<>(9);
+        map.put("hidden", "<h:inputHidden>");
+        map.put("password", "<h:inputSecret>");
+        map.put("checkbox", "<h:selectBooleanCheckbox> or <h:selectManyCheckbox>");
+        map.put("radio", "<h:selectOneRadio>");
+        map.put("file", "<h:inputFile>");
+        map.put("submit", "<h:commandButton>");
+        map.put("image", "<h:commandButton type=\"image\">");
+        map.put("reset", "<h:commandButton type=\"reset\">");
+        map.put("button", "<h:commandButton type=\"button\"> or <h:button>");
+        return Collections.unmodifiableMap(map);
+    }
 
     @Override
     public void encodeBegin(FacesContext facesContext, UIComponent component) throws IOException
@@ -214,7 +238,7 @@ public class HtmlTextRendererBase
         writer.writeAttribute(HTML.NAME_ATTR, clientId, null);
         
         //allow extending classes to modify html input element's type
-        String inputHtmlType = getInputHtmlType(component);
+        String inputHtmlType = getInputHtmlType(facesContext, component);
         writer.writeAttribute(HTML.TYPE_ATTR, inputHtmlType, null);
 
         renderValue(facesContext, component, writer);
@@ -401,9 +425,31 @@ public class HtmlTextRendererBase
     /**
      * Returns the HTML type attribute of HTML input element, which is being rendered.
      */
-    protected String getInputHtmlType(UIComponent component)
+    protected String getInputHtmlType(FacesContext context, UIComponent component)
     {
+        String type = null;
+        if (component instanceof HtmlInputText)
+        {
+            type = ((HtmlInputText)component).getType();
+        }
+        if (StringUtils.isEmpty(type))
+        {
+            type = HTML.INPUT_TYPE_TEXT;
+        }
+        type = type.trim().toLowerCase();
+        if (context.isProjectStage(ProjectStage.Development))
+        {
+            String recommendedComponent = RECOMMENDED_COMPONENTS_BY_DISCOMMENDED_TYPES.get(type);
+
+            if (recommendedComponent != null)
+            {
+                String message = "<h:inputText type=\"" + type + "\"> is discommended, you should instead use " +
+                    recommendedComponent;
+                context.addMessage(component.getClientId(context), new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    message, message));
+            }
+        }
         //subclasses may act on properties of the component
-        return HTML.INPUT_TYPE_TEXT;
+        return type;
     }
 }
