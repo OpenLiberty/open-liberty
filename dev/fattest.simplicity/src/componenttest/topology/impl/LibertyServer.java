@@ -6944,6 +6944,9 @@ public class LibertyServer implements LogMonitorClient {
         return LibertyFileManager.createRemoteFile(this.machine, this.getOpenLibertyPropertiesFilePath());
     }
 
+    /**
+     * @return the contents of the wlp/lib/versions/openliberty.properties file
+     */
     public Properties getOpenLibertyProperties() {
         if (this.openLibertyProperties == null) {
             this.openLibertyProperties = new Properties();
@@ -6966,6 +6969,9 @@ public class LibertyServer implements LogMonitorClient {
         return this.openLibertyProperties;
     }
 
+    /**
+     * @return the product version value from the openliberty.properties file
+     */
     public String getOpenLibertyVersion() {
         if (this.openLibertyVersion == null) {
             this.openLibertyVersion = (String) getOpenLibertyProperties().get(COM_IBM_WEBSPHERE_PRODUCTVERSION_KEY);

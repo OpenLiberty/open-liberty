@@ -1162,6 +1162,11 @@ public class MvnUtils {
         return version;
     }
 
+    /**
+     * Generate a TCK Results file in AsciiDoc format
+     *
+     * @param resultInfo TCK Results metadata
+     */
     public static void preparePublicationFile(Map<String, String> resultInfo) {
         String javaMajorVersion = resultInfo.get("java_major_version");
         String javaVersion = resultInfo.get("java_info");
@@ -1170,6 +1175,7 @@ public class MvnUtils {
         String osVersion = resultInfo.get("os_name");
         String specName = resultInfo.get("feature_name");
         String specVersion = resultInfo.get("feature_version");
+        String rcVersion = getSpec()[2];
 
         TCKResultsInfo info = new TCKResultsInfo();
         info.setJavaMajorVersion(javaMajorVersion);
@@ -1179,14 +1185,20 @@ public class MvnUtils {
         info.setOsVersion(osVersion);
         info.setSpecName(specName);
         info.setSpecVersion(specVersion);
+        info.setRcVersion(rcVersion);
         preparePublicationFile(info);
     }
 
+    /**
+     * Generate a TCK Results file in AsciiDoc format
+     *
+     * @param resultInfo TCK Results metadata
+     */
     public static void preparePublicationFile(TCKResultsInfo resultInfo) {
-        TCKResultsWriter.preparePublicationFile(resultInfo, getSpec());
+        TCKResultsWriter.preparePublicationFile(resultInfo);
     }
 
-    public static String[] getSpec() {
+    private static String[] getSpec() {
         Pattern specNamePattern = Pattern.compile("microprofile(.*?)-tck:jar", Pattern.DOTALL);
         String specName = "";
         String specVersion = "";

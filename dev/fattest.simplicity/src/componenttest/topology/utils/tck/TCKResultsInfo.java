@@ -11,7 +11,7 @@
 package componenttest.topology.utils.tck;
 
 /**
- *
+ * Metadata about a set of TCK Results
  */
 public class TCKResultsInfo {
 
@@ -22,6 +22,7 @@ public class TCKResultsInfo {
     private String osVersion;// = resultInfo.get("os_name");
     private String specName;// = resultInfo.get("feature_name");
     private String specVersion;// = resultInfo.get("feature_version");
+    private String rcVersion;
 
     /**
      * @return the javaMajorVersion
@@ -119,6 +120,20 @@ public class TCKResultsInfo {
      */
     public void setSpecVersion(String specVersion) {
         this.specVersion = specVersion;
+    }
+
+    /**
+     * @return the rcVersion
+     */
+    public String getRcVersion() {
+        return rcVersion;
+    }
+
+    /**
+     * @param rcVersion the rcVersion to set
+     */
+    public void setRcVersion(String rcVersion) {
+        this.rcVersion = rcVersion;
     }
 
 }
