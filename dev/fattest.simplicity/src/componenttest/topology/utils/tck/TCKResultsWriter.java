@@ -33,7 +33,8 @@ public class TCKResultsWriter {
         String specName = resultInfo.getSpecName();
         String specVersion = resultInfo.getSpecVersion();
 
-        Path outputPath = Paths.get("results", openLibertyVersion + "-Java" + javaMajorVersion + "-" + specName + "-" + specVersion + "-TCKResults.adoc");
+        String filename = openLibertyVersion + "-" + specName.replace(" ", "-") + "-" + specVersion + "-Java" + javaMajorVersion + "-TCKResults.adoc";
+        Path outputPath = Paths.get("results", filename);
         File outputFile = outputPath.toFile();
         SAXParserFactory factory = null;
         SAXParser saxParser = null;
@@ -77,15 +78,14 @@ public class TCKResultsWriter {
                                           ".\n\n== Open Liberty ", openLibertyVersion, " - MicroProfile ", specName, " ", specVersion,
                                           " Certification Summary (Java ", javaMajorVersion, ")\n\n",
                                           "* Product Name, Version and download URL (if applicable):\n",
-                                          "+\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",
+                                          "\nhttps://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/",
                                           openLibertyVersion, "/openliberty-runtime-", openLibertyVersion, ".zip[Open Liberty ", openLibertyVersion, "]\n",
-                                          "* Specification Name, Version and download URL:\n+\n",
+                                          "* Specification Name, Version and download URL:\n\n",
                                           "link:https://download.eclipse.org/microprofile/microprofile-", MPSpecLower, "-", specVersion, rcVersion,
                                           "/microprofile-", MPSpecLower, "-spec-", specVersion, rcVersion, ".html[MicroProfile ", specName, " ", specVersion,
-                                          rcVersion, "]\n\n* Public URL of TCK Results Summary:\n+\n", "link:", openLibertyVersion, "-Java", javaMajorVersion,
-                                          "-TCKResults.html[TCK results summary]\n\n",
-                                          "* Java runtime used to run the implementation:\n+\nJava ", javaMajorVersion, ": ", javaVersion,
-                                          "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n", "Java ", javaMajorVersion, ": ",
+                                          rcVersion, "]\n\n* Public URL of TCK Results Summary:\n\n", "link:", filename, "[TCK results summary]\n\n",
+                                          "* Java runtime used to run the implementation:\n\nJava ", javaMajorVersion, ": ", javaVersion,
+                                          "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n\n", "Java ", javaMajorVersion, ": ",
                                           osVersion, "\n\nTest results:\n\n[source, text]\n----\n" };
                 for (String part : documentMain) {
                     adocContent += part;
@@ -93,27 +93,27 @@ public class TCKResultsWriter {
             } else {
                 String[] documentMain = { ".\n\n== Open Liberty ", openLibertyVersion, " ", type, " ", specName, " Certification Summary (Java ", javaMajorVersion, ")",
                                           "\n\n* Product Name, Version and download URL (if applicable):",
-                                          "\n+\nhttps://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/", openLibertyVersion, ".zip[Open Liberty ",
+                                          "\n\nhttps://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/", openLibertyVersion, ".zip[Open Liberty ",
                                           openLibertyVersion,
                                           "]\n\n",
-                                          "* Specification Name, Version and download URL:\n+\n",
+                                          "* Specification Name, Version and download URL:\n\n",
                                           "link:https://jakarta.ee/specifications/", specName, "/", specVersion, "[Jakarta EE ", specName, " ", specVersion, "]\n\n",
-                                          "* TCK Version, digital SHA-256 fingerprint and download URL:\n+\n",
+                                          "* TCK Version, digital SHA-256 fingerprint and download URL:\n\n",
                                           "https://download.eclipse.org/jakartaee/", ".zip[Jakarta EE]\n",
                                           "SHA-256: ``\n\n",
-                                          "* Public URL of TCK Results Summary:\n+\n",
-                                          "link:", openLibertyVersion, "-Java", javaMajorVersion, "-TCKResults.html[TCK results summary]\n\n",
+                                          "* Public URL of TCK Results Summary:\n\n",
+                                          "link:", filename, "[TCK results summary]\n\n",
                                           "* Any Additional Specification Certification Requirements:\n\n",
-                                          "+\nJakarta Contexts and Dependency Injection\n",
+                                          "\nJakarta Contexts and Dependency Injection\n",
                                           "link:https://download.eclipse.org/jakartaee/cdi/", "SHA-256:\n``\n",
-                                          "+\nJakarta Bean Validation\n",
+                                          "\nJakarta Bean Validation\n",
                                           "link:https://download.eclipse.org/jakartaee/bean-validation/", "SHA-256:\n``\n",
-                                          "+\nDependency Injection\n",
+                                          "\nDependency Injection\n",
                                           "link:https://download.eclipse.org/jakartaee/dependency-injection/", "SHA-256:\n``\n",
-                                          "+\nDebugging\n",
+                                          "\nDebugging\n",
                                           "link:https://download.eclipse.org/jakartaee/debugging/", "SHA-256:\n``\n",
-                                          "* Java runtime used to run the implementation:\n+\n", javaVersion,
-                                          "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n+\n",
+                                          "* Java runtime used to run the implementation:\n\n", javaVersion,
+                                          "\n\n* Summary of the information for the certification environment, operating system, cloud, ...:\n\n",
                                           osVersion,
                                           "\n\nTest results:\n\n[source, text]\n----\n" };
                 for (String part : documentMain) {
