@@ -22,7 +22,9 @@ import java.security.PrivilegedExceptionAction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +37,6 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 import com.ibm.websphere.logging.WsLevel;
@@ -237,7 +236,7 @@ public class BaseTraceService implements TrService {
     protected volatile BufferManagerImpl traceConduit;
     protected volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
     protected volatile Timer earlyMessageTraceKiller_Timer = new Timer();
-    
+
     private volatile Timer timedLogRollover_Timer = new Timer(true);
 
     protected volatile String serverName = null;
@@ -413,9 +412,11 @@ public class BaseTraceService implements TrService {
          */
         isStackTraceSingleEntryEnabled = trConfig.isStackTraceSingleEntry();
 
-        //Retrieve the source lists of both message and console
-        List<String> messageSourceList = new ArrayList<String>(trConfig.getMessageSource());
-        List<String> consoleSourceList = new ArrayList<String>(trConfig.getConsoleSource());
+        /**
+         * Retrieve the source lists of both message and console and convert the lists to lower case.
+         */
+        List<String> messageSourceList = trConfig.getMessageSource().stream().map(String::toLowerCase).collect(Collectors.toList());
+        List<String> consoleSourceList = trConfig.getConsoleSource().stream().map(String::toLowerCase).collect(Collectors.toList());
 
         /*
          * Filter out Message and Trace from messageSourceList
@@ -1325,8 +1326,7 @@ public class BaseTraceService implements TrService {
             //if neither of the rollover attributes change, return without rescheduling
             if (this.rolloverStartTime.equals(rolloverStartTime) && this.rolloverInterval == rolloverInterval) {
                 return;
-            }
-            else {
+            } else {
                 timedLogRollover_Timer.cancel();
                 timedLogRollover_Timer.purge();
                 this.isLogRolloverScheduled = false;
@@ -1334,7 +1334,7 @@ public class BaseTraceService implements TrService {
         }
 
         //if both rolloverStartTime and rolloverInterval are empty, return
-        if ((rolloverStartTime == null || rolloverStartTime.isEmpty()) && (rolloverInterval < 0)) { 
+        if ((rolloverStartTime == null || rolloverStartTime.isEmpty()) && (rolloverInterval < 0)) {
             // Tr.debug(tc, "No time based log rollover is scheduled.");
             // Tr.debug(tc, "rolloverInterval=" + rolloverInterval);
             // Tr.debug(tc, "rolloverStartTime=" + rolloverStartTime);
@@ -1343,7 +1343,7 @@ public class BaseTraceService implements TrService {
 
         //check and set time based log rollover values/defaults
         //if rolloverInterval is less than 1 minute -- value returned from server.xml will round down to 0
-        if (rolloverInterval == 0) { 
+        if (rolloverInterval == 0) {
             Tr.warning(tc, "LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING");
             rolloverInterval = LoggingConstants.ROLLOVER_INTERVAL_DEFAULT;
         }
@@ -1355,11 +1355,10 @@ public class BaseTraceService implements TrService {
             if (!Pattern.matches(ROLLOVER_START_TIME_FORMAT, rolloverStartTime)) {
                 Tr.warning(tc, "LOG_ROLLOVER_START_TIME_FORMAT_WARNING");
                 rolloverStartTime = LoggingConstants.ROLLOVER_START_TIME_DEFAULT;
-            } 
-        }
-        else {
+            }
+        } else {
             //set default of non-existing startTime if interval exists
-            rolloverStartTime = LoggingConstants.ROLLOVER_START_TIME_DEFAULT; 
+            rolloverStartTime = LoggingConstants.ROLLOVER_START_TIME_DEFAULT;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1386,31 +1385,31 @@ public class BaseTraceService implements TrService {
 
         //calculate next rollover after server update
         //if currTime before startTime, firstRollover = startTime - n(interval)
-        if (currCal.before(sched)) { 
+        if (currCal.before(sched)) {
             while (currCal.before(sched)) {
-                sched.add(Calendar.MINUTE, (int)rolloverInterval*(-1));
+                sched.add(Calendar.MINUTE, (int) rolloverInterval * (-1));
             }
-            sched.add(Calendar.MINUTE, (int)rolloverInterval); //add back interval due to time overlap
+            sched.add(Calendar.MINUTE, (int) rolloverInterval); //add back interval due to time overlap
         }
         //if currTime after startTime, firstRollover = startTime + n(interval)
-        else if (currCal.after(sched)) { 
+        else if (currCal.after(sched)) {
             while (currCal.after(sched)) {
-                sched.add(Calendar.MINUTE, (int)rolloverInterval);
+                sched.add(Calendar.MINUTE, (int) rolloverInterval);
             }
         }
         //if currTime == startTime, set first rollover to next rolloverInterval
-        else if (currCal.equals(sched)) { 
-            sched.add(Calendar.MINUTE, (int)rolloverInterval);
+        else if (currCal.equals(sched)) {
+            sched.add(Calendar.MINUTE, (int) rolloverInterval);
         }
 
         Date firstRollover = sched.getTime();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Log rollover settings updated - next rollover will be at ... "+sched.getTime());
+            Tr.debug(tc, "Log rollover settings updated - next rollover will be at ... " + sched.getTime());
         }
         //schedule rollover
         timedLogRollover_Timer = new Timer(true);
         TimedLogRoller tlr = new TimedLogRoller(messagesLog, traceLog);
-        timedLogRollover_Timer.scheduleAtFixedRate(tlr, firstRollover, rolloverInterval*60000);
+        timedLogRollover_Timer.scheduleAtFixedRate(tlr, firstRollover, rolloverInterval * 60000);
         this.isLogRolloverScheduled = true;
     }
 
@@ -2087,8 +2086,8 @@ public class BaseTraceService implements TrService {
      * LogRoller task to be run/scheduled in timed log rollover.
      */
     private class TimedLogRoller extends TimerTask {
-        private FileLogHolder flhMessages;
-        private FileLogHolder flhTrace;
+        private final FileLogHolder flhMessages;
+        private final FileLogHolder flhTrace;
 
         TimedLogRoller(TraceWriter messages, TraceWriter trace) {
             flhMessages = (FileLogHolder) messages;
