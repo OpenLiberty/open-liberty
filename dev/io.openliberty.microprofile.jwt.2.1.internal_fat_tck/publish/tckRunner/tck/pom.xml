@@ -11,14 +11,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ibm.ws.microprofile.mpjwt20</groupId>
+    <groupId>com.ibm.ws.microprofile.mpjwt21</groupId>
     <artifactId>tck.runner.tck</artifactId>
-    <version>2.0-SNAPSHOT</version>
-    <name>MicroProfile JWT 2.0 TCK Runner TCK Module</name>
+    <version>2.1-SNAPSHOT</version>
+    <name>MicroProfile JWT 2.1 TCK Runner TCK Module</name>
 
     <properties>
         <microprofile.config.version>3.0</microprofile.config.version>
         <arquillian.version>1.7.0.Alpha12</arquillian.version>
+        <microprofile.jwt.version>2.1-RC4</microprofile.jwt.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -41,6 +42,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            
+            <dependency>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-bom</artifactId>
+                <version>10.0.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
    
                <!-- Needed for ZOS. Defines the version of this artifact that arquillian-liberty-managed should use -->
             <!-- This doesn't exist for JEE 9 so leaving it out for now, will have to see what happens on ZOS -->
@@ -57,32 +66,31 @@
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-api</artifactId>
-            <version>2.0</version>
+            <version>${microprofile.jwt.version}</version>
         </dependency>
         
-        <!--  impl -->
-        <!-- https://mvnrepository.com/artifact/org.glassfish/javax.json  -->
+        <!-- jsonp impl -->
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.json</artifactId>
-            <version>2.0.0</version>
-        </dependency>  
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.org.eclipse.parsson.1.1</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.eclipse.parsson.1.1_}</systemPath>
+        </dependency>
         
         <!-- This is the MP-JWT TCK base extension and utility classes -->
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>2.0</version>
+            <version>${microprofile.jwt.version}</version>
         </dependency>
        
         <!-- This is the actual MP-JWT TCK test classes -->
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>2.0</version>
-            <type>test-jar</type>        
-            <!--   <systemPath>/Users/mypath/microprofile-jwt-auth-2.0/tck/target/microprofile-jwt-auth-tck-2.0-SNAPSHOT-tests.jar</systemPath>   -->
-            <!--   <scope>system</scope>   -->
+            <version>${microprofile.jwt.version}</version>
+            <type>test-jar</type>
         </dependency>
         
         <!-- You need to specify your JAX-RS client implementation as the unit
@@ -115,21 +123,18 @@
         <dependency>
               <groupId>jakarta.annotation</groupId>
               <artifactId>jakarta.annotation-api</artifactId>
-              <version>2.0.0</version>
               <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
-            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
-            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
  
@@ -137,14 +142,12 @@
         <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
-            <version>2.0.0</version>
             <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>jakarta.json.bind</groupId>
             <artifactId>jakarta.json.bind-api</artifactId>
-            <version>2.0.0</version>
             <scope>provided</scope>
         </dependency>
         
@@ -177,7 +180,6 @@
          <dependency>
               <groupId>jakarta.activation</groupId>
               <artifactId>jakarta.activation-api</artifactId>
-              <version>2.0.1</version>
         </dependency>                  
            <!-- End Additional dependencies -->
          

@@ -27,7 +27,6 @@ import componenttest.topology.utils.MvnUtils;
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test. *
  */
-//@Mode(TestMode.QUARANTINE)
 @RunWith(FATRunner.class)
 public class Mpjwt21TCKLauncher_aud_env {
 
