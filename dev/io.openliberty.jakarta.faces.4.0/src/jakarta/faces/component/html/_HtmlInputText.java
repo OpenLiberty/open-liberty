@@ -38,7 +38,7 @@ abstract class _HtmlInputText extends UIInput implements _AccesskeyProperty,
     _AltProperty, _UniversalProperties, _DisabledReadonlyProperties,
     _FocusBlurProperties, _ChangeProperty, _SelectProperty, 
     _EventProperties, _StyleProperties, _TabindexProperty, _LabelProperty, 
-    _RoleProperty
+    _RoleProperty, _TypeProperty
 {
 
     static public final String COMPONENT_FAMILY = "jakarta.faces.Input";
