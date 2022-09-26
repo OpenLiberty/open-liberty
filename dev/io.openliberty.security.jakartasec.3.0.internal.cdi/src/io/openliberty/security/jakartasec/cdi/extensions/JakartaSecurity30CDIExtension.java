@@ -22,6 +22,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.security.javaeesec.cdi.extensions.HttpAuthenticationMechanismsTracker;
 import com.ibm.ws.security.javaeesec.cdi.extensions.PrimarySecurityCDIExtension;
 
@@ -32,6 +33,7 @@ import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
@@ -57,6 +59,11 @@ public class JakartaSecurity30CDIExtension implements Extension {
 
     public JakartaSecurity30CDIExtension() {
         applicationName = HttpAuthenticationMechanismsTracker.getApplicationName();
+    }
+
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
+        AnnotatedType<OpenIdContextProducer> producer = bm.createAnnotatedType(OpenIdContextProducer.class);
+        bbd.addAnnotatedType(producer, CDIServiceUtils.getAnnotatedTypeIdentifier(producer, this.getClass()));
     }
 
     @SuppressWarnings("static-access")

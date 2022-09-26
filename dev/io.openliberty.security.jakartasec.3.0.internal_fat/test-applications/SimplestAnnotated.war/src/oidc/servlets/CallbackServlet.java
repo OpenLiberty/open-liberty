@@ -12,6 +12,8 @@ package oidc.servlets;
 
 import java.io.IOException;
 
+import jakarta.inject.Inject;
+import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
@@ -24,14 +26,15 @@ public class CallbackServlet extends HttpServlet {
 
     private static final long serialVersionUID = -417476984908088827L;
 
-//    @Inject
-//    private OpenIdContext context;
+    @Inject
+    private OpenIdContext context;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        response.getWriter().println(context.getAccessToken());
         ServletOutputStream sos = response.getOutputStream();
         System.out.println("got here");
+        System.out.println("OpenIdContext is " + context);
         sos.println("got here");
     }
 
