@@ -62,7 +62,6 @@ src: src, resources
 	io.openliberty.security.oidcclientcore.internal.jakarta,\
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
 	io.openliberty.webcontainer.security.internal;version=latest,\
-	com.ibm.ws.security.javaeesec.cdi;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.websphere.security;version=latest
 
