@@ -10,8 +10,10 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.identitystore;
 
+import java.io.StringReader;
 import java.util.Optional;
 
+import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.IdentityToken;
@@ -26,53 +28,70 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class OpenIdContextImpl implements OpenIdContext {
 
-    private static final long serialVersionUID = 1L; // TO-DO, added due to warning, do we need a generated UID?
+    private static final long serialVersionUID = 1L;
 
-    @Override
-    public AccessToken getAccessToken() {
-        // TODO Auto-generated method stub
-        return null;
+    private final String subjectIdentifier;
+    private final String tokenType;
+    private final AccessToken accessToken;
+    private final IdentityToken identityToken;
+    private final OpenIdClaims userinfoClaims;
+    private final JsonObject providerMetadata; // TODO: Store JSON String instead for serialization
+
+    private RefreshToken refreshToken;
+    private Long expiresIn;
+
+    public OpenIdContextImpl(String subjectIdentifier, String tokenType, AccessToken accessToken, IdentityToken identityToken, OpenIdClaims userinfoClaims,
+                             JsonObject providerMetadata) {
+        this.subjectIdentifier = subjectIdentifier;
+        this.tokenType = tokenType;
+        this.accessToken = accessToken;
+        this.identityToken = identityToken;
+        this.userinfoClaims = userinfoClaims;
+        this.providerMetadata = providerMetadata;
     }
 
-    @Override
-    public OpenIdClaims getClaims() {
-        // TODO Auto-generated method stub
-        return null;
+    public void setRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
-    @Override
-    public Optional<Long> getExpiresIn() {
-        // TODO Auto-generated method stub
-        return Optional.empty();
-    }
-
-    @Override
-    public IdentityToken getIdentityToken() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Optional<RefreshToken> getRefreshToken() {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+    public void setExpiresIn(Long expiresIn) {
+        this.expiresIn = expiresIn;
     }
 
     @Override
     public String getSubject() {
-        // TODO Auto-generated method stub
-        return null;
+        return subjectIdentifier;
     }
 
     @Override
     public String getTokenType() {
-        // TODO Auto-generated method stub
-        return null;
+        return tokenType;
     }
 
     @Override
-    public JsonObject getProviderMetadata() {
-        return null;
+    public AccessToken getAccessToken() {
+        return accessToken;
+    }
+
+    @Override
+    public IdentityToken getIdentityToken() {
+        return identityToken;
+    }
+
+    @Override
+    public Optional<RefreshToken> getRefreshToken() {
+        if (refreshToken != null) {
+            return Optional.of(refreshToken);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Long> getExpiresIn() {
+        if (expiresIn != null) {
+            return Optional.of(expiresIn);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -82,7 +101,19 @@ public class OpenIdContextImpl implements OpenIdContext {
     }
 
     @Override
-    public Optional getStoredValue(HttpServletRequest request, HttpServletResponse response, String key) {
+    public OpenIdClaims getClaims() {
+        return userinfoClaims;
+    }
+
+    @Override
+    public JsonObject getProviderMetadata() {
+        // Clone providerMetadata before returning it to avoid modifications.
+        return Json.createReader(new StringReader(providerMetadata.toString())).readObject();
+    }
+
+    @Override
+    public <T> Optional<T> getStoredValue(HttpServletRequest request, HttpServletResponse response, String key) {
+        // TODO: Get value from Storage subsystem.
         return null;
     }
 
