@@ -245,10 +245,11 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
             Exception tempEx = event.getException();
 
             if (tempEx != null) {
-                tempString = tempString + J2CUtilityClass.generateExceptionString(tempEx);
-                Tr.audit(tc, "RA_CONNECTION_ERROR_J2CA0056", tempString, mcWrapper.gConfigProps.cfName);
+                Tr.audit(tc, "RA_FREE_CONNECTION_ERROR_J2CA1004", J2CUtilityClass.generateExceptionString(tempEx), mcWrapper.gConfigProps.cfName,
+                         mcWrapper.getStateString() + (mcWrapper.isParkedWrapper() ? " and parked connection" : ""));
             } else {
-                Tr.audit(tc, "NO_RA_EXCEPTION_J2CA0216", tempString + mcWrapper.gConfigProps.cfName);
+                Tr.audit(tc, "NO_RA_FREE_EXCEPTION_J2CA1005", mcWrapper.gConfigProps.cfName,
+                         mcWrapper.getStateString() + (mcWrapper.isParkedWrapper() ? " and parked connection" : ""));
             }
             return;
 
