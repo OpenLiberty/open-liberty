@@ -271,7 +271,11 @@ public interface SipApplicationSession {
      * @throws IllegalArgumentException - if the protocol is not understood by container.
      * 
      */
+<<<<<<< HEAD
     Iterator getSessions(String string, boolean b) throws IllegalStateException, NullPointerException, IllegalArgumentException; ;
+=======
+    Iterator getSessions(String protocol, boolean create) throws IllegalStateException, NullPointerException, IllegalArgumentException; ;
+>>>>>>> 99428801b7 (new code path to retrieved sip application session in SipLogExtension class)
     
     /**
      * Returns the SipSession with the specified id belonging to this application 

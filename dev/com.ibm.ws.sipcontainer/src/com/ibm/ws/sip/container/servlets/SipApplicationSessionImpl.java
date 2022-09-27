@@ -675,6 +675,7 @@ implements SipApplicationSession {
 
 			//Moti: we create new ArrayList to prevent later any modification
 			// to the iterator on that list.
+<<<<<<< HEAD
 			
 				List<IBMSipSession> result = new ArrayList<IBMSipSession>(size); //approximation only.
 					synchronized (m_transactionUsers) {
@@ -689,6 +690,20 @@ implements SipApplicationSession {
 						}
 					}
 			return result;
+=======
+				List<IBMSipSession> result = new ArrayList<IBMSipSession>(size); //approximation only.
+				synchronized (m_transactionUsers) {
+						TransactionUserWrapper tu = null;
+						for (int i = 0 ; i < size ; i++) {
+							tu = m_transactionUsers.get(i);
+							result.addAll(tu.getAllSipSessions(create));
+						}
+				}
+				if (c_logger.isTraceDebugEnabled()) {
+						c_logger.traceDebug(this, "getAllSIPSessions", "found SIP sessions. count:"+result.size());
+				}	
+				return result;
+>>>>>>> 99428801b7 (new code path to retrieved sip application session in SipLogExtension class)
 			}
 			
 		}
@@ -1807,6 +1822,7 @@ implements SipApplicationSession {
 		m_sessionKeyBaseKey = skbt;
 	}
 	
+<<<<<<< HEAD
 	public Iterator getSessions(String protocol, boolean b) {
 		if (protocol.equalsIgnoreCase("SIP"))  {  //get SIP application sessions  
 			if (c_logger.isTraceDebugEnabled()) {
@@ -1814,6 +1830,15 @@ implements SipApplicationSession {
 			}
 			
 			if (b) {  //boolean is true	
+=======
+	public Iterator getSessions(String protocol, boolean create) {
+		if (protocol.equalsIgnoreCase("SIP"))  {  //get SIP application sessions  
+			if (c_logger.isTraceDebugEnabled()) {
+				c_logger.traceDebug("getSessions(" + protocol + ", " + create + " detected.");
+			}
+			
+			if (create) {  //boolean is true	
+>>>>>>> 99428801b7 (new code path to retrieved sip application session in SipLogExtension class)
 					return (Iterator)getAllSIPSessions(true).iterator();
 				}
 		
