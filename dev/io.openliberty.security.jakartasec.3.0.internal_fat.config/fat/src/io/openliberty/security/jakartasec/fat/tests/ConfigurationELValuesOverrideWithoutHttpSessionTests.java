@@ -16,14 +16,21 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
@@ -34,9 +41,9 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
 
     protected static Class<?> thisClass = ConfigurationELValuesOverrideWithoutHttpSessionTests.class;
 
-    @Server("io.openliberty.security.jakartasec-3.0_fat.config.op")
+    @Server("jakartasec-3.0_fat.config.op")
     public static LibertyServer opServer;
-    @Server("io.openliberty.security.jakartasec-3.0_fat.config.rp")
+    @Server("jakartasec-3.0_fat.config.rp.ELOverrideHttpSession")
     public static LibertyServer rpServer;
 
     protected static ShrinkWrapHelpers swh = null;
@@ -58,7 +65,7 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
 
         transformAppsInDefaultDirs(rpServer, "dropins");
 
-        rpServer.startServerUsingExpandedConfiguration("server_orig_withoutHttpSession.xml", waitForMsgs);
+        rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(rpServer, Constants.BVT_SERVER_2_PORT_NAME_ROOT);
 
         rpHttpBase = "https://localhost:" + rpServer.getBvtPort();
@@ -113,10 +120,31 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void ConfigurationELValuesOverrideWithoutHttpSessionTests_useSession_true_useSessionExpression_true() throws Exception {
 
-        runGoodEndToEndTest("useSessionTrueELTrue", "UseSessionTrueServlet");
+        WebClient webClient = getAndSaveWebClient();
+
+        String url = rpHttpsBase + "/useSessionTrueELTrue/" + "UseSessionTrueServlet";
+
+        Page response = invokeAppReturnLoginPage(webClient, url);
+
+        response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
+
+        Expectations expectations = new Expectations();
+//        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addSuccessCodeForCurrentAction();
+        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, "got here", "Did not land on the callback."));
+////        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
+////                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
+//        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the response could not be verified."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2410E_CANNOT_FIND_STATE, "Did not receive an error message stating that a matching client state could not be found."));
+//        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
+//        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
+
+        validationUtils.validateResult(response, expectations);
 
     }
 
@@ -137,10 +165,31 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void ConfigurationELValuesOverrideWithoutHttpSessionTests_useSession_false_useSessionExpression_true() throws Exception {
 
-        runGoodEndToEndTest("useSessionFalseELTrue", "UseSessionFalseServlet");
+        WebClient webClient = getAndSaveWebClient();
+
+        String url = rpHttpsBase + "/useSessionFalseELTrue/" + "UseSessionFalseServlet";
+
+        Page response = invokeAppReturnLoginPage(webClient, url);
+
+        response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
+
+        Expectations expectations = new Expectations();
+//        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addSuccessCodeForCurrentAction();
+        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, "got here", "Did not land on the callback."));
+////        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
+////                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
+//        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the response could not be verified."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2410E_CANNOT_FIND_STATE, "Did not receive an error message stating that a matching client state could not be found."));
+//        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
+//        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
+
+        validationUtils.validateResult(response, expectations);
 
     }
 

@@ -47,9 +47,9 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
     protected static Class<?> thisClass = ConfigurationTests.class;
 
-    @Server("io.openliberty.security.jakartasec-3.0_fat.config.op")
+    @Server("jakartasec-3.0_fat.config.op")
     public static LibertyServer opServer;
-    @Server("io.openliberty.security.jakartasec-3.0_fat.config.rp")
+    @Server("jakartasec-3.0_fat.config.rp")
     public static LibertyServer rpServer;
 
     protected static ShrinkWrapHelpers swh = null;

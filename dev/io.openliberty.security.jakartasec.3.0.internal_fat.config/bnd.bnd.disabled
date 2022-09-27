@@ -52,3 +52,5 @@ javac.target: 11
 	jakarta.inject.jakarta.inject-api;version=latest,\
 	io.openliberty.jakarta.servlet.5.0
 
+Bundle-Name: Jakarta Sec 3.0 Config Fats
+Bundle-Description: Configuration FAT for Jakarta EE10 Security 3.0

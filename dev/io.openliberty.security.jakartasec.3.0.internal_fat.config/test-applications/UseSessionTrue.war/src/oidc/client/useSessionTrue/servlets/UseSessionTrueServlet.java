@@ -29,7 +29,7 @@ import oidc.client.base.servlets.SimpleServlet;
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub"),
                                          redirectURI = "${baseURL}/Callback",
                                          useSession = true,
-                                         useSessionExpression = "${openIdConfig.useSessionExpression}")
+                                         useSessionExpression = "#{openIdConfig.useSessionExpression}")
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
 public class UseSessionTrueServlet extends SimpleServlet {

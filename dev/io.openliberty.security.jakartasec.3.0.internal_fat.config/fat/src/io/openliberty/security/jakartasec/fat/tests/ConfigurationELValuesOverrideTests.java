@@ -39,9 +39,9 @@ public class ConfigurationELValuesOverrideTests extends CommonAnnotatedSecurityT
 
     protected static Class<?> thisClass = ConfigurationELValuesOverrideTests.class;
 
-    @Server("io.openliberty.security.jakartasec-3.0_fat.config.op")
+    @Server("jakartasec-3.0_fat.config.op")
     public static LibertyServer opServer;
-    @Server("io.openliberty.security.jakartasec-3.0_fat.config.rp")
+    @Server("jakartasec-3.0_fat.config.rp.ELOverride")
     public static LibertyServer rpServer;
 
     protected static ShrinkWrapHelpers swh = null;

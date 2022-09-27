@@ -56,11 +56,17 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
-    public String getUseSessionExpression() {
+    public boolean getUseSessionExpression() {
 
-        String value = String.valueOf(true);
+//        String value = String.valueOf(true);
+//        if (config.containsKey(Constants.USE_SESSION_EXPRESSION)) {
+//            value = getStringValue(Constants.USE_SESSION_EXPRESSION);
+//        }
+//
+//        return value;
+        boolean value = true;
         if (config.containsKey(Constants.USE_SESSION_EXPRESSION)) {
-            value = getStringValue(Constants.USE_SESSION_EXPRESSION);
+            value = getBooleanValue(Constants.USE_SESSION_EXPRESSION);
         }
 
         return value;

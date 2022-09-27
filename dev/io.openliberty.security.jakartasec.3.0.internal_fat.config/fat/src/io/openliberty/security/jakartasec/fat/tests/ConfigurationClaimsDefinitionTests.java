@@ -45,9 +45,9 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
 
     protected static Class<?> thisClass = ConfigurationClaimsDefinitionTests.class;
 
-    @Server("io.openliberty.security.jakartasec-3.0_fat.config.op")
+    @Server("jakartasec-3.0_fat.config.op")
     public static LibertyServer opServer;
-    @Server("io.openliberty.security.jakartasec-3.0_fat.config.rp")
+    @Server("jakartasec-3.0_fat.config.rp.claimsDef")
     public static LibertyServer rpServer;
 
     protected static ShrinkWrapHelpers swh = null;

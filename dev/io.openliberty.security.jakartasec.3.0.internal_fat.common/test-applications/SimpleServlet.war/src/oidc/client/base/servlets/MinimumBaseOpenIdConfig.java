@@ -67,6 +67,24 @@ public class MinimumBaseOpenIdConfig {
         }
     }
 
+    public boolean getBooleanValue(String key) {
+        String value = config.getProperty(key);
+        try {
+            if (value == null) {
+                throw new Exception("Don't know what to do with a null boolean value");
+            }
+            if (!(value.equals(String.valueOf(false)) || value.equals(String.valueOf(true)))) {
+                throw new Exception("Don't know what to do with a " + value + " boolean value");
+            } else {
+                System.out.println("Setting the boolean value for config attribute: " + key + " to: " + value);
+                return Boolean.parseBoolean(value);
+            }
+        } catch (Exception e) {
+            System.out.println("getBooleanValue couldn't handle the value specified in the config properties - setting a defaul to false.");
+            return false;
+        }
+    }
+
     public String getProviderBase() {
 
         String value = "Must be set in openIdConfig.properties before it can be used";;

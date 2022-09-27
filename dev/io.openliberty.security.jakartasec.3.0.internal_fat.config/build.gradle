@@ -63,8 +63,11 @@ autoFVT.doLast {
    }
    
   def servers = [
-	'io.openliberty.security.jakartasec-3.0_fat.config.op',
-	'io.openliberty.security.jakartasec-3.0_fat.config.rp'
+	'jakartasec-3.0_fat.config.op',
+	'jakartasec-3.0_fat.config.rp',
+	'jakartasec-3.0_fat.config.rp.claimsDef',
+	'jakartasec-3.0_fat.config.rp.ELOverride',
+	'jakartasec-3.0_fat.config.rp.ELOverrideHttpSession'
   ]
 
   servers.each { server ->
