@@ -14,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.containers.TestContainerSuite;
+
 import com.ibm.ws.microprofile.reactive.messaging.fat.jsonb.JsonbTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.tests.KafkaTestClientProviderTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.badconfig.KafkaBadConfigTest;
@@ -32,6 +34,6 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.loginModuleClassloading.Lo
                 JsonbTest.class
 })
 
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
 }

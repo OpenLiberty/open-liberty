@@ -40,8 +40,9 @@ public final class ImageVerifier {
 
         //Add images from the fattest.simplicity project
         knownImages.addAll(DatabaseContainerType.images());
+
         //Add images from the testcontainers project
-        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.3.3", "testcontainers/sshd:1.0.0"));
+        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.3.4", "testcontainers/sshd:1.1.0"));
     }
 
     public static DockerImageName collectImage(DockerImageName image) {
@@ -58,6 +59,22 @@ public final class ImageVerifier {
     }
 
     public static void assertImages() throws IllegalStateException {
+        if (forgottenImages.isEmpty())
+            return;
+
+        //Prevent a build break because of a testcontainer image update.
+        //This will allow us to update OL and WL asynchronously in the future.
+        for (String image : forgottenImages) {
+            if (image.startsWith("testcontainers")) {
+                Log.warning(c,
+                            "A testcontainer image used an unknown version."
+                               + " This means the version of testcontainers in Open Liberty was updated and WebSphere Liberty needs to be updated,"
+                               + " or WebSphere Liberty has already been updated and the version of testcontainers in Open Liberty needs to be updated. "
+                               + " Image: " + image);
+                forgottenImages.remove(image);
+            }
+        }
+
         if (forgottenImages.isEmpty())
             return;
 

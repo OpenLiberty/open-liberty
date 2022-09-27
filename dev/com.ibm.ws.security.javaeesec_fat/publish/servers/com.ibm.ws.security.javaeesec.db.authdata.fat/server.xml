@@ -35,13 +35,13 @@
 
     <authData id="DBAuth" user="dbuser1" password="{xor}Oz0vKDtu" />
 
-	<dataSource id="derby1" jndiName="jdbc/derby1fat" containerAuthDataRef="DBAuth"  fat.modify="true" >
+	<dataSource id="derby1" jndiName="jdbc/derby1fat" containerAuthDataRef="DBAuth"   >
     	<jdbcDriver libraryRef="DerbyLib"/>
     	<properties.derby.embedded databaseName="memory:derby1" createDatabase="create" />
     	
     </dataSource>
     
-    <library id="DerbyLib" fat.modify="true">
+    <library id="DerbyLib" >
     	<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
     </library>
 

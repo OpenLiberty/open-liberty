@@ -89,6 +89,7 @@ task addJakartaTransformer(type: Copy) {
 }
 
 task copyTestContainers(type: Copy) {
+  dependsOn ':io.openliberty.org.testcontainers:assembleTestContainerData'
   mustRunAfter jar
   from configurations.testcontainers
   into new File(autoFvtDir, 'lib')
