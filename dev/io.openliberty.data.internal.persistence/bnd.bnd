@@ -22,6 +22,10 @@ Bundle-Description: Maps Jakarta Data to Jakarta Persistence; version=${bVersion
 
 WS-TraceGroup: data
 
+Import-Package: \
+  io.openliberty.data.internal,\
+  *
+
 Private-Package: \
   io.openliberty.data.internal.persistence.*,\
   io.openliberty.data.internal.persistence.resources.*
@@ -36,13 +40,16 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*.class
 
 -buildpath: \
+  com.ibm.tx.jta.jakarta;version=latest,\
   com.ibm.websphere.appserver.spi.logging,\
   com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.component,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.persistence.jakarta;version=latest,\
   com.ibm.ws.threading,\
+  com.ibm.ws.tx.embeddable.jakarta;version=latest,\
   io.openliberty.data.internal,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.data.1.0,\

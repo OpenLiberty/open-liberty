@@ -11,9 +11,12 @@
 package io.openliberty.data.internal.nosql;
 
 import java.lang.reflect.Proxy;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+
+import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.internal.DataProvider;
 
@@ -27,5 +30,10 @@ public class NoSQLDataProvider implements DataProvider {
         return repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
                                                                new Class<?>[] { repositoryInterface },
                                                                new QueryHandler<>(repositoryInterface, entityClass)));
+    }
+
+    @Override
+    @Trivial
+    public void entitiesFound(String databaseId, ClassLoader loader, List<Class<?>> entities) {
     }
 }

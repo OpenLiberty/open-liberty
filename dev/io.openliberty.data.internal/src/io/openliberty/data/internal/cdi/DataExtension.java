@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -29,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.data.internal.DataProvider;
 import jakarta.data.Entities;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
@@ -51,6 +53,39 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
     private final ArrayList<Bean<?>> repositoryBeans = new ArrayList<>();
 
     private final HashSet<AnnotatedType<?>> repositoryTypes = new HashSet<>();
+
+    /**
+     * A key for a group of entities for the same backend database
+     * that are loaded with the same class loader.
+     */
+    @Trivial
+    private static class EntityGroupKey {
+        private final String databaseId;
+        private final int hash;
+        private final ClassLoader loader;
+        private final DataProvider provider;
+
+        EntityGroupKey(String databaseId, ClassLoader loader, DataProvider provider) {
+            this.loader = loader;
+            this.databaseId = databaseId;
+            this.provider = provider;
+            hash = loader.hashCode() + databaseId.hashCode() + provider.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            EntityGroupKey k;
+            return o instanceof EntityGroupKey
+                   && databaseId.equals((k = (EntityGroupKey) o).databaseId)
+                   && loader.equals(k.loader)
+                   && provider.equals(k.provider);
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+    }
 
     @Trivial
     public <T> void annotatedEntitiesForTemplate(@Observes @WithAnnotations(Entities.class) ProcessAnnotatedType<T> event) {
@@ -78,25 +113,28 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
 
         for (AnnotatedType<?> repositoryType : repositoryTypes) {
             Class<?> repositoryInterface = repositoryType.getJavaClass();
+            Class<?> entityClass = getEntityClass(repositoryInterface);
+            DataProvider provider = svc.getRepositoryProvider(entityClass);
             ClassLoader loader = repositoryInterface.getClassLoader();
 
-            EntityGroupKey entityGroupKey = new EntityGroupKey("DefaultDataStore", loader); // TODO configuration of different providers in Jakarta Data
+            EntityGroupKey entityGroupKey = new EntityGroupKey("DefaultDataStore", loader, provider); // TODO configuration of different providers in Jakarta Data
             List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
             if (entityClasses == null)
                 entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());
 
-            Class<?> entityClass = getEntityClass(repositoryInterface);
             entityClasses.add(entityClass);
 
             BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
-            Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>(beanMgr, svc, entityClass));
+            Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>(beanMgr, provider, entityClass));
             repositoryBeans.add(bean);
         }
 
         for (Entities anno : entitiesListsForTemplate) {
             for (Class<?> entityClass : anno.value()) {
+                DataProvider provider = svc.getRepositoryProvider(entityClass);
                 ClassLoader loader = entityClass.getClassLoader();
-                EntityGroupKey entityGroupKey = new EntityGroupKey(anno.provider(), loader);
+
+                EntityGroupKey entityGroupKey = new EntityGroupKey(anno.provider(), loader, provider);
                 List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
                 if (entityClasses == null)
                     entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());
@@ -105,6 +143,17 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
             }
         }
 
+        for (Entry<EntityGroupKey, List<Class<?>>> entry : entityGroups.entrySet()) {
+            EntityGroupKey entityGroupKey = entry.getKey();
+            List<Class<?>> entityClasses = entry.getValue();
+            DataProvider provider = entityGroupKey.provider;
+            try {
+                provider.entitiesFound(entityGroupKey.databaseId, entityGroupKey.loader, entityClasses);
+            } catch (Exception x) {
+                x.printStackTrace();
+                System.err.println("ERROR: Unable to provide entities for " + entityGroupKey.databaseId + ": " + entityClasses);
+            }
+        }
         // TODO copy remaining code for this method
     }
 
