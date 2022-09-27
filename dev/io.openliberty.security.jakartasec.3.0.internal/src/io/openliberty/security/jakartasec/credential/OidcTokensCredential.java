@@ -14,6 +14,7 @@ import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.security.enterprise.credential.Credential;
+import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -21,18 +22,19 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 public class OidcTokensCredential implements Credential {
-    
+
     TokenResponse tokenResponse;
     Client client;
     OidcClientConfig oidcClientConfig;
     private HttpServletRequest request;
     private HttpServletResponse response;
-    
+    private OpenIdContext openIdContext;
+
     public OidcTokensCredential(TokenResponse tokenResponse, Client client) {
         this.tokenResponse = tokenResponse;
         this.client = client;
     }
-    
+
     /**
      * @param tokenResponse
      * @param client
@@ -49,17 +51,25 @@ public class OidcTokensCredential implements Credential {
     public TokenResponse getTokenResponse() {
         return this.tokenResponse;
     }
-    
+
     public Client getClient() {
         return this.client;
     }
-    
+
     public HttpServletRequest getRequest() {
         return this.request;
     }
-    
+
     public HttpServletResponse getResponse() {
         return this.response;
+    }
+
+    public void setOpenIdContext(OpenIdContext openIdContext) {
+        this.openIdContext = openIdContext;
+    }
+
+    public OpenIdContext getOpenIdContext() {
+        return openIdContext;
     }
 
 }

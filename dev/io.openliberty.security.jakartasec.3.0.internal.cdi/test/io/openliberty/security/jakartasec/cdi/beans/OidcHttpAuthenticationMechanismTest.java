@@ -1,7 +1,6 @@
 package io.openliberty.security.jakartasec.cdi.beans;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -28,7 +27,6 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.TestOpenIdAuthenticationMechanismDefinition;
-import io.openliberty.security.jakartasec.identitystore.OpenIdContextImpl;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
@@ -146,7 +144,6 @@ public class OidcHttpAuthenticationMechanismTest {
         AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
 
         assertEquals("The AuthenticationStatus must be SUCCESS.", AuthenticationStatus.SUCCESS, authenticationStatus);
-        assertNotNull("The client subject must have an OpenIdContextImpl instance.", clientSubject.getPrivateCredentials(OpenIdContextImpl.class).iterator().next());
     }
 
     @SuppressWarnings("unchecked")

@@ -26,7 +26,6 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
-import io.openliberty.security.jakartasec.identitystore.OpenIdContextImpl;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.ClientManager;
@@ -39,19 +38,14 @@ import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
 import jakarta.security.enterprise.AuthenticationException;
 import jakarta.security.enterprise.AuthenticationStatus;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
-import jakarta.security.enterprise.credential.Credential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
-import jakarta.security.enterprise.identitystore.openid.AccessToken;
-import jakarta.security.enterprise.identitystore.openid.IdentityToken;
-import jakarta.security.enterprise.identitystore.openid.OpenIdClaims;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -228,14 +222,14 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
     private AuthenticationStatus handleOidcLogin(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext,
                                                  HttpServletRequest request, HttpServletResponse response, Client client) throws AuthenticationException {
-        Credential credential = createOidcTokensCredential(providerAuthenticationResult, request, response, client);
+        OidcTokensCredential credential = createOidcTokensCredential(providerAuthenticationResult, request, response, client);
         // TODO: "When available in the "Token Response", the optional fields "refresh_token" and "expires_in" must be stored internally." Store full credential in the subject.
         return validateCredentials(credential, httpMessageContext);
     }
 
-    private Credential createOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult, HttpServletRequest request, HttpServletResponse response,
-                                                  Client client) {
-        Credential credential = null;
+    private OidcTokensCredential createOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult, HttpServletRequest request, HttpServletResponse response,
+                                                            Client client) {
+        OidcTokensCredential credential = null;
 
         Hashtable<String, Object> customProperties = providerAuthenticationResult.getCustomProperties();
         if (customProperties != null) {
@@ -248,14 +242,14 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         return credential;
     }
 
-    private AuthenticationStatus validateCredentials(Credential credential, HttpMessageContext httpMessageContext) throws AuthenticationException {
+    private AuthenticationStatus validateCredentials(OidcTokensCredential credential, HttpMessageContext httpMessageContext) throws AuthenticationException {
         int rspStatus;
         String issuer = JavaEESecConstants.DEFAULT_REALM; // TODO: Set to "iss" claim from the identity token.
         Subject clientSubject = httpMessageContext.getClientSubject();
         AuthenticationStatus status = utils.handleAuthenticate(getCDI(), issuer, credential, clientSubject, httpMessageContext);
 
         if (status == AuthenticationStatus.SUCCESS) {
-            setOpenIdContextInSubject(clientSubject);
+            setOpenIdContextInSubject(clientSubject, credential.getOpenIdContext());
 
             Map<String, Object> messageInfoMap = httpMessageContext.getMessageInfo().getMap();
             messageInfoMap.put("jakarta.servlet.http.authType", "JAKARTA_OIDC");
@@ -274,17 +268,10 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         return status;
     }
 
-    private void setOpenIdContextInSubject(Subject clientSubject) {
-        // TODO: Get these values from TokenResponse and/or Credential
-        String subjectIdentifier = null;
-        String tokenType = null;
-        AccessToken accessToken = null;
-        IdentityToken identityToken = null;
-        OpenIdClaims userinfoClaims = null;
-        JsonObject providerMetadata = null;
-
-        OpenIdContext openIdContext = new OpenIdContextImpl(subjectIdentifier, tokenType, accessToken, identityToken, userinfoClaims, providerMetadata);
-        clientSubject.getPrivateCredentials().add(openIdContext);
+    private void setOpenIdContextInSubject(Subject clientSubject, OpenIdContext openIdContext) {
+        if (openIdContext != null) {
+            clientSubject.getPrivateCredentials().add(openIdContext);
+        }
     }
 
     private AuthenticationStatus processExpiredTokenResult(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext) {
