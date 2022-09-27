@@ -118,13 +118,15 @@ Include-Resource: \
   @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core;${eclVersion}}!/!META-INF/maven/*,\
   @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa;${eclVersion}}!/!META-INF/maven/*,\
   @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclVersion}}!/!META-INF/maven/*
+  @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclVersion}}!/!META-INF/maven/*,\
+  org/eclipse/persistence/platform/database=${bin}/org/eclipse/persistence/platform/database
 
 publish.wlp.jar.suffix: dev/api/third-party
 
 instrument.classesExcludes: \
   org/eclipse/persistence/exceptions/i18n/*.class, \
-  org/eclipse/persistence/internal/localization/i18n/*.class
+  org/eclipse/persistence/internal/localization/i18n/*.class, \
+  org/eclipse/persistence/platform/database/*.class
 
 -buildpath: \
     io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core;version="[4.0.0,4.1.0)",\
