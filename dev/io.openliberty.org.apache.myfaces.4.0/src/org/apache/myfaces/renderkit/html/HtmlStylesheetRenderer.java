@@ -38,6 +38,7 @@ import jakarta.faces.view.Location;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFRenderer;
 import org.apache.myfaces.renderkit.RendererUtils;
 import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
 import org.apache.myfaces.renderkit.html.util.ResourceUtils;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.view.facelets.el.CompositeComponentELUtils;
@@ -120,7 +121,10 @@ public class HtmlStylesheetRenderer extends Renderer implements
             {
                 ResponseWriter writer = facesContext.getResponseWriter();
                 writer.startElement(HTML.STYLE_ELEM, component);
-                writer.writeAttribute(HTML.TYPE_ATTR, HTML.STYLE_TYPE_TEXT_CSS, null);
+                if (!HtmlRendererUtils.isOutputHtml5Doctype(facesContext)) 
+                {
+                    writer.writeAttribute(HTML.TYPE_ATTR, HTML.STYLE_TYPE_TEXT_CSS, null);
+                }
                 RendererUtils.renderChildren(facesContext, component);
                 writer.endElement(HTML.STYLE_ELEM);
             }
@@ -210,9 +214,19 @@ public class HtmlStylesheetRenderer extends Renderer implements
             {
                 writer.writeAttribute("media", media ,null );
             }
-            writer.writeAttribute(HTML.TYPE_ATTR, 
-                    (resource.getContentType() == null ? HTML.STYLE_TYPE_TEXT_CSS
-                            : resource.getContentType()) , null);
+
+            if (!HtmlRendererUtils.isOutputHtml5Doctype(facesContext)) 
+            {
+                writer.writeAttribute(HTML.TYPE_ATTR, 
+                        (resource.getContentType() == null ? HTML.STYLE_TYPE_TEXT_CSS
+                                : resource.getContentType()) , null);
+            } //  else is HTML5 and content type isn't text/css
+            else if(resource.getContentType() != null 
+                        && !resource.getContentType().equals(HTML.STYLE_TYPE_TEXT_CSS)) 
+            { 
+                writer.writeAttribute(HTML.TYPE_ATTR, resource.getContentType() , null);
+            }
+
             String path = resource.getRequestPath();
             if (additionalQueryParams != null)
             {
