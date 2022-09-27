@@ -13,7 +13,9 @@ package io.openliberty.data.internal.persistence;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import jakarta.data.Inheritance;
@@ -54,5 +56,17 @@ class EntityInfo {
 
     Collection<String> getAttributeNames() {
         return attributeNames.values();
+    }
+
+    /**
+     * Creates a CompletableFuture to represent an EntityInfo in PersistenceDataProvider's entityInfoMap.
+     *
+     * @param entityClass
+     * @return new CompletableFuture.
+     */
+    @Trivial
+    static CompletableFuture<EntityInfo> newFuture(Class<?> entityClass) {
+        // It's okay to use Java SE's CompletableFuture here given that *Async methods are never invoked on it
+        return new CompletableFuture<>();
     }
 }

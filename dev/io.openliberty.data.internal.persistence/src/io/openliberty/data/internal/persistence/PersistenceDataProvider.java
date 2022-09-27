@@ -20,7 +20,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 
@@ -57,12 +56,5 @@ public class PersistenceDataProvider implements DataProvider {
     @Override
     public void entitiesFound(String databaseId, ClassLoader loader, List<Class<?>> entities) {
         executor.submit(new EntityDefiner(this, databaseId, loader, entities));
-    }
-
-    @Trivial
-    CompletableFuture<EntityInfo> futureEntityInfo(Class<?> entityClass) {
-        CompletableFuture<EntityInfo> entityInfoFuture = new CompletableFuture<>();
-        CompletableFuture<EntityInfo> alreadyPresent = entityInfoMap.putIfAbsent(entityClass, entityInfoFuture);
-        return alreadyPresent == null ? entityInfoFuture : alreadyPresent;
     }
 }

@@ -19,11 +19,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow.Publisher;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
@@ -42,6 +44,7 @@ import jakarta.data.Delete;
 import jakarta.data.Inheritance;
 import jakarta.data.Limit;
 import jakarta.data.OrderBy;
+import jakarta.data.Page;
 import jakarta.data.Paginated;
 import jakarta.data.Pagination;
 import jakarta.data.Param;
@@ -72,7 +75,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null ||
                               defaultEntityClass.getAnnotation(jakarta.persistence.Inheritance.class) != null;
 
-        CompletableFuture<EntityInfo> defaultEntityInfoFuture = provider.futureEntityInfo(defaultEntityClass);
+        CompletableFuture<EntityInfo> defaultEntityInfoFuture = provider.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
 
         for (Method method : repositoryInterface.getMethods()) {
             Class<?> returnType = method.getReturnType();
@@ -82,7 +85,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (!inheritance || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
                 entityClass = defaultEntityClass;
 
-            CompletableFuture<EntityInfo> entityInfoFuture = entityClass.equals(defaultEntityClass) ? defaultEntityInfoFuture : provider.futureEntityInfo(entityClass);
+            CompletableFuture<EntityInfo> entityInfoFuture = entityClass.equals(defaultEntityClass) //
+                            ? defaultEntityInfoFuture //
+                            : provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
 
             queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(method), this::createQueryInfo));
         }
@@ -595,6 +600,26 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     pagination = Pagination.page(1).size(paginated.value());
             }
 
+            LocalTransactionCoordinator suspendedLTC = null;
+            EntityManager em = null;
+            Object returnValue;
+            Class<?> returnType = method.getReturnType();
+            boolean failed = true;
+
+            boolean asyncCompatibleResultForPagination = pagination != null &&
+                                                         (void.class.equals(returnType) || CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType));
+
+            if (asyncCompatibleResultForPagination && collector != null)
+                return runAndCollect(queryInfo, pagination, collector, method, paramCount, args, returnType);
+            else if (asyncCompatibleResultForPagination && consumer != null)
+                return runWithConsumer(queryInfo, pagination, consumer, method, paramCount, args, returnType);
+            else if (pagination != null && Iterator.class.equals(returnType))
+                return new PaginatedIterator<E>(queryInfo, pagination, method, paramCount, args);
+            else if (Page.class.equals(returnType))
+                return new PageImpl<E>(queryInfo, pagination, method, paramCount, args);
+            else if (Publisher.class.equals(returnType))
+                return new PublisherImpl<E>(queryInfo, provider.executor, method, paramCount, args);
+
             boolean requiresTransaction;
             switch (queryInfo.type) {
                 case SELECT:
@@ -606,11 +631,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     requiresTransaction = Status.STATUS_NO_TRANSACTION == provider.tranMgr.getStatus();
             }
 
-            LocalTransactionCoordinator suspendedLTC = null;
-            EntityManager em = null;
-            Object returnValue;
-            Class<?> returnType = method.getReturnType();
-            boolean failed = true;
             try {
                 if (requiresTransaction) {
                     suspendedLTC = provider.localTranCurrent.suspend();
@@ -810,6 +830,126 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 Tr.exit(this, tc, "invoke " + method.getName(), x);
             throw x;
         }
+    }
+
+    /**
+     * This is an experiment with allowing a collector to perform reduction
+     * on the contents of each page as the page is read in. This avoids having
+     * all pages loaded at once and gives the application a completion stage
+     * with a final result that can be awaited, or to which dependent stages
+     * can be added to run once the final result is ready.
+     *
+     * @param queryInfo
+     * @param pagination
+     * @param collector
+     * @param method
+     * @param paramCount
+     * @param args
+     * @param returnType
+     * @return completion stage that is already completed if only being used to
+     *         supply the result to an Asynchronous method. If the database supports
+     *         asynchronous patterns, it could be a not-yet-completed completion stage
+     *         that is controlled by the database's async support.
+     */
+    private CompletableFuture<Object> runAndCollect(QueryInfo queryInfo, Pagination pagination,
+                                                    Collector<Object, Object, Object> collector,
+                                                    Method method, int numParams, Object[] args, Class<?> returnType) {
+
+        Object r = collector.supplier().get();
+        BiConsumer<Object, Object> accumulator = collector.accumulator();
+
+        // TODO it would be possible to process multiple pages in parallel if we wanted to and if the collector supports it
+        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
+        try {
+            @SuppressWarnings("unchecked")
+            TypedQuery<E> query = (TypedQuery<E>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
+            if (args != null) {
+                Parameter[] params = method.getParameters();
+                for (int i = 0; i < numParams; i++) {
+                    Param param = params[i].getAnnotation(Param.class);
+                    if (param == null)
+                        query.setParameter(i + 1, args[i]);
+                    else // named parameter
+                        query.setParameter(param.value(), args[i]);
+                }
+            }
+
+            List<E> page;
+            int maxResults;
+            do {
+                // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
+                query.setFirstResult((int) pagination.getSkip());
+                query.setMaxResults(maxResults = (int) pagination.getPageSize());
+                pagination = pagination.next();
+
+                page = query.getResultList();
+
+                for (Object item : page)
+                    accumulator.accept(r, item);
+
+                System.out.println("Processed page with " + page.size() + " results");
+            } while (pagination != null && page.size() == maxResults);
+        } finally {
+            em.close();
+        }
+
+        return void.class.equals(returnType) ? null : CompletableFuture.completedFuture(collector.finisher().apply(r));
+    }
+
+    /**
+     * Copies the Jakarta NoSQL pattern of invoking a Consumer with the value of each result.
+     *
+     * @param queryInfo
+     * @param pagination
+     * @param consumer
+     * @param method
+     * @param paramCount
+     * @param args
+     * @param returnType
+     * @return completion stage that is already completed if only being used to
+     *         run as an Asynchronous method. If the database supports
+     *         asynchronous patterns, it could be a not-yet-completed completion stage
+     *         that is controlled by the database's async support.
+     */
+    private CompletableFuture<Void> runWithConsumer(QueryInfo queryInfo, Pagination pagination, Consumer<Object> consumer,
+                                                    Method method, int numParams, Object[] args, Class<?> returnType) {
+
+        // TODO it would be possible to process multiple pages in parallel if we wanted to and if the consumer supports it
+        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
+        try {
+            @SuppressWarnings("unchecked")
+            TypedQuery<E> query = (TypedQuery<E>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
+            if (args != null) {
+                Parameter[] params = method.getParameters();
+                for (int i = 0; i < numParams; i++) {
+                    Param param = params[i].getAnnotation(Param.class);
+                    if (param == null)
+                        query.setParameter(i + 1, args[i]);
+                    else // named parameter
+                        query.setParameter(param.value(), args[i]);
+                }
+            }
+
+            List<E> page;
+            int maxResults;
+            do {
+                // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
+                query.setFirstResult((int) pagination.getSkip());
+                query.setMaxResults(maxResults = (int) pagination.getPageSize());
+                pagination = pagination.next();
+
+                page = query.getResultList();
+
+                for (Object item : page)
+                    consumer.accept(item);
+
+                System.out.println("Processed page with " + page.size() + " results");
+            } while (pagination != null && page.size() == maxResults);
+        } finally {
+            em.close();
+        }
+
+        return void.class.equals(returnType) ? null : CompletableFuture.completedFuture(null);
     }
 
     @Trivial
