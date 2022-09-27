@@ -11,7 +11,6 @@
 package com.ibm.ws.sip.container.util;
 
 import java.util.Iterator;
-
 import javax.servlet.sip.SipApplicationSession;
 import javax.servlet.sip.SipSession;
 
@@ -141,12 +140,15 @@ public class SipLogExtension {
      * @return SAS ID
      */
     private static String getSasId() {
-    	
+    	try {
     	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	if (sas != null) {
     		return sas.getId(); 
     	}
     	
+    	} catch (NullPointerException e) {
+    		
+    	}
     	//If there's no SAS on ThreadLocal, get the ID from the TU on ThreadLocal
 		TransactionUserWrapper tu = ThreadLocalStorage.getTuWrapper();
 		if (tu != null) {
@@ -167,10 +169,10 @@ public class SipLogExtension {
      * @return call ID
      */
     private static String getCallId() {
-    	
+    	try {
     	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	if (sas != null) {
-    		Iterator<SipSession> i = sas.getSessions("SIP");
+    		Iterator<SipSession> i = sas.getSessions("SIP", false);
     		//Get the first call ID
     		if (i.hasNext()) {
     			SipSession session = i.next();
@@ -188,6 +190,9 @@ public class SipLogExtension {
 			}
 		}
 		
+    	} catch (NullPointerException e ) {
+    		
+    	}
 		//Look for the call ID on the stack's ThreadLocal
 		return com.ibm.ws.sip.stack.util.ThreadLocalStorage.getCallID();
     }
@@ -198,10 +203,10 @@ public class SipLogExtension {
      * @return SIP session ID
      */
     private static String getSessionId() {
-    	
+    	try {
     	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	if (sas != null) {
-    		Iterator<SipSession> i = sas.getSessions("SIP");
+    		Iterator<SipSession> i = sas.getSessions("SIP", false);
     		//Get the first session ID
     		if (i.hasNext()) {
     			SipSession session = i.next();
@@ -217,7 +222,11 @@ public class SipLogExtension {
 			} catch (IllegalStateException e) {
 				// this exception can be thrown when the transaction is in TERMINATED state
 			}
-		}
+		} 
+		
+    	} catch (NullPointerException e ) {
+    		
+    	}
 		
 		return null;
     }
@@ -229,10 +238,12 @@ public class SipLogExtension {
      */
     private static String getSecondCallId() {
     	
+    	try {
     	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	
     	if (sas != null) {
-    		Iterator<SipSession> i = sas.getSessions("SIP");
+    		
+    		Iterator<SipSession> i = sas.getSessions("SIP", false);
     		int sessionsCounter = 0;
     		//When there are several SIP sessions and/or call IDs associated 
     		//with the same SAS, only the first two will be printed.
@@ -246,6 +257,9 @@ public class SipLogExtension {
     		}
     	}
     	
+    	} catch (NullPointerException e ) {
+    		
+    	}
 		return null;
     }
     
@@ -256,10 +270,12 @@ public class SipLogExtension {
      */
     private static String getSecondSessionId() {
     	
-    	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
+    	
+    	try {
+    		SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	
     	if (sas != null) {
-    		Iterator<SipSession> i = sas.getSessions("SIP");
+    		Iterator<SipSession> i = sas.getSessions("SIP", false);
     		int sessionsCounter = 0;
     		//When there are several SIP sessions and/or call IDs associated 
     		//with the same SAS, only the first two will be printed.
@@ -271,8 +287,12 @@ public class SipLogExtension {
     				return session.getId();
     			}
     		}
-    	}
+    	}	
+		
+    } catch (NullPointerException e) {
     	
-		return null;
+    }
+    	return null;
     }
 }
+

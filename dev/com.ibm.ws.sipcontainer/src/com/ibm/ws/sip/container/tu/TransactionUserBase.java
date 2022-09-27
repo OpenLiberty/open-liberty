@@ -611,8 +611,10 @@ public class TransactionUserBase extends ReplicatableImpl {
 	 * @return
 	 */
 	List<IBMSipSession> getAllSipSessions(List<IBMSipSession> sessions, boolean create){
-		if(_sipSession == null){
-			getSipSession(create);
+		if(create) { //boolean is true, create new SIP sessions if there are none
+			if(_sipSession == null){
+				getSipSession(create);
+				}
 		}
 		if(_sipSession != null){
 			sessions.add(_sipSession);	
@@ -620,10 +622,6 @@ public class TransactionUserBase extends ReplicatableImpl {
 		return sessions;
 	}
 
-	/**
-	 * Invalidate the Transaction User and Remove it from the TransactionUserTable
-	 *
-	 */
 	protected void invalidateBase(boolean removeFromAppSession) {
 
 		if (c_logger.isTraceEntryExitEnabled()) {

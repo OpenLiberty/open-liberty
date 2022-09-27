@@ -669,23 +669,28 @@ implements SipApplicationSession {
 				}
 				return Collections.EMPTY_LIST;
 			}
-			int size = m_transactionUsers.size();
+			
+			else {
+				int size = m_transactionUsers.size();
 
 			//Moti: we create new ArrayList to prevent later any modification
 			// to the iterator on that list.
-			List<IBMSipSession> result = new ArrayList<IBMSipSession>(size); //approximation only.
-			synchronized (m_transactionUsers) {
-				TransactionUserWrapper tu = null;
-				for (int i = 0 ; i < size ; i++) {
-					tu = m_transactionUsers.get(i);
-					result.addAll(tu.getAllSipSessions(create));
-				}
-			}
-			if (c_logger.isTraceDebugEnabled()) {
-				c_logger.traceDebug(this, "getAllSIPSessions", "found SIP sessions. count:"+result.size());
-			}
-
+			
+				List<IBMSipSession> result = new ArrayList<IBMSipSession>(size); //approximation only.
+					synchronized (m_transactionUsers) {
+						TransactionUserWrapper tu = null;
+						for (int i = 0 ; i < size ; i++) {
+						tu = m_transactionUsers.get(i);
+						result.addAll(tu.getAllSipSessions(create));
+						}
+			
+						if (c_logger.isTraceDebugEnabled()) {
+							c_logger.traceDebug(this, "getAllSIPSessions", "found SIP sessions. count:"+result.size());
+						}
+					}
 			return result;
+			}
+			
 		}
 	}
 
@@ -721,6 +726,7 @@ implements SipApplicationSession {
 		}
 
 	}
+	
 
 	/**
 	 * @see javax.servlet.sip.SipApplicationSession#getSipSession(java.lang.String)
@@ -1800,4 +1806,36 @@ implements SipApplicationSession {
 		}
 		m_sessionKeyBaseKey = skbt;
 	}
+	
+	public Iterator getSessions(String protocol, boolean b) {
+		if (protocol.equalsIgnoreCase("SIP"))  {  //get SIP application sessions  
+			if (c_logger.isTraceDebugEnabled()) {
+				c_logger.traceDebug("getSessions(" + protocol + ", " + b + " detected.");
+			}
+			
+			if (b) {  //boolean is true	
+					return (Iterator)getAllSIPSessions(true).iterator();
+				}
+		
+			else {  //boolean is false
+					return (Iterator)getAllSIPSessions(false).iterator();
+				}
+		}
+		
+		else if (protocol.equalsIgnoreCase("HTTP")){
+			return Collections.EMPTY_MAP.keySet().iterator();
+		}
+			
+		else { 
+
+			SipAppDesc sipAppDesc = getAppDescriptor();
+			if(sipAppDesc != null && !sipAppDesc.isJSR289Application()){
+				return Collections.EMPTY_MAP.keySet().iterator();				
+			}
+
+			throw new IllegalArgumentException("Unsupported protocol type " + protocol);
+		}
+	}
+
+		
 }
