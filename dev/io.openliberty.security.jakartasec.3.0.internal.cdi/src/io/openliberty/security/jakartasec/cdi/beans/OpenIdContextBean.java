@@ -22,7 +22,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.context.SubjectManager;
 
-import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.jakartasec.identitystore.OpenIdContextImpl;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
@@ -61,24 +60,21 @@ public class OpenIdContextBean implements Serializable {
 
         if (subject != null && !subjectHelper.isUnauthenticated(subject)) {
 
-            Set<OidcTokensCredential> oidcTokensCredentialSet = subject.getPrivateCredentials(OidcTokensCredential.class);
+            Set<OpenIdContextImpl> openIdContextImplSet = subject.getPrivateCredentials(OpenIdContextImpl.class);
 
-            if (oidcTokensCredentialSet == null || oidcTokensCredentialSet.isEmpty()) {
+            if (openIdContextImplSet == null || openIdContextImplSet.isEmpty()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "getOpenIdContext() Got an authenticated subject, but did not find an OidcTokensCredential");
+                    Tr.debug(tc, "getOpenIdContext() Got an authenticated subject, but did not find an OpenIdContextImpl");
                 }
             } else {
-                if (oidcTokensCredentialSet.size() > 1) {
+                if (openIdContextImplSet.size() > 1) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "getOpenIdContext() Multiple OidcTokensCredentials on the subject!");
+                        Tr.debug(tc, "getOpenIdContext() Multiple OpenIdContextImpl instances on the subject!");
                     }
                 }
-                OidcTokensCredential oidcTokensCredential = oidcTokensCredentialSet.iterator().next();
-                // TODO from oidcTokensCredential get or create an OpenIdContext
-            }
 
-            // TODO returning an empty OpenIdContext temporarily
-            openIdContext = new OpenIdContextImpl();
+                openIdContext = openIdContextImplSet.iterator().next();
+            }
         } else if (subject == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "getOpenIdContext The subject is null from SubjectManager.getCallerSubject");
