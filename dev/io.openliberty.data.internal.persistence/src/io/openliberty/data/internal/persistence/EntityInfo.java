@@ -16,12 +16,15 @@ import java.util.Set;
 
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
+import jakarta.data.Inheritance;
+
 /**
  */
 class EntityInfo {
     // upper case attribute name --> properly cased/qualified JPQL attribute name
     final LinkedHashMap<String, String> attributeNames;
     final Set<String> collectionAttributeNames;
+    final boolean inheritance;
     final String keyName;
     final String name;
     final PersistenceServiceUnit persister;
@@ -38,6 +41,10 @@ class EntityInfo {
         this.collectionAttributeNames = collectionAttributeNames;
         this.keyName = keyAttributeName;
         this.persister = persister;
+
+        inheritance = entityClass.getAnnotation(Inheritance.class) != null ||
+                      entityClass.getAnnotation(jakarta.persistence.Inheritance.class) != null;
+
     }
 
     String getAttributeName(String name) {
