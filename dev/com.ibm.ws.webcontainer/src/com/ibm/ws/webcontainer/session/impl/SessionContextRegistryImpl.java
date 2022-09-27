@@ -314,6 +314,7 @@ public class SessionContextRegistryImpl extends SessionContextRegistry implement
         }
 
         //make sure they are the same object
+        //This set the webAppConfig SCC to be the SessionMangerConfig/Session SCC !!
         ctx.getConfiguration().setSessionCookieConfig(iSctx.getWASSessionConfig().getSessionCookieConfig());
         //clone in SessionContext does not update this smc object but the _smc object in SessionContext
         //ctx.getConfiguration().setSessionManagerConfigBase(smc);

@@ -16,6 +16,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.config.ServletConfigurator;
+import com.ibm.ws.javaee.dd.web.common.CookieConfig;
+import com.ibm.ws.javaee.dd.web.common.SessionConfig;
 import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer40.osgi.container.config.WebAppConfiguratorHelper40;
@@ -37,14 +39,35 @@ public class WebAppConfiguratorHelper60 extends WebAppConfiguratorHelper40 {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Constructor , web module--> " + moduleName);
         }
+    }
 
-        if (webAppConfiguration.getSessionCookieConfig() == null) {
-            SessionCookieConfig sessionCookieConfig = new SessionCookieConfigImpl60();
-            webAppConfiguration.setSessionCookieConfig(sessionCookieConfig);
+    @Override
+    protected void configureSessionConfig(SessionConfig sessionConfig) {
+        if (sessionConfig == null) {
+            return;
+        }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, " Created sessionCookieConfig [{0}]", sessionCookieConfig);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "WebAppConfiguratorHelper60, configureSessionConfig");
+        }
+
+        CookieConfig cookieConfig = sessionConfig.getCookieConfig();
+
+        if (cookieConfig != null) {
+            SessionCookieConfig sessionCookieConfigImpl = webAppConfiguration.getSessionCookieConfig();
+
+            //create SessionCookieConfigImpl60 only if the <cookie-config> presents in web.xml
+            // AND if the webApp does not have SCC yet. create here so the super can use it.
+            if (webAppConfiguration.getSessionCookieConfig() == null) {
+                SessionCookieConfig sessionCookieConfig = new SessionCookieConfigImpl60();
+                webAppConfiguration.setSessionCookieConfig(sessionCookieConfig);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, " Created sessionCookieConfig [{0}]", sessionCookieConfig);
+                }
             }
         }
+
+        super.configureSessionConfig(sessionConfig);
     }
 }

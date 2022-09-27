@@ -210,6 +210,8 @@ public class SessionContext {
         sessionMgrCustomizer.setIDGenerator(new IDGeneratorImpl(SessionManagerConfig.getSessionIDLength()));
 
         //Servlet 6.0 - change to interface SessionCookieConfig
+        //_sap.getSessionCookieConfig returns the webAppConfig sessionCookieConfig.
+        //if not null, those cookie info will replace the SMC cookieconfig
         SessionCookieConfig sessionCookieConfig = _sap.getSessionCookieConfig();
         if (sessionCookieConfig != null) {
             _smc.updateCookieInfo(sessionCookieConfig);

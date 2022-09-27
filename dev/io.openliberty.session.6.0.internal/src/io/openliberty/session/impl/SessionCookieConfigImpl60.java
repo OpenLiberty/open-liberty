@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.session.impl;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -56,7 +55,7 @@ public class SessionCookieConfigImpl60 extends SessionCookieConfigImpl implement
 
     @Override
     public Map<String, String> getAttributes() {
-        return (this.attributes == null) ? Collections.<String, String> emptyMap() : Collections.<String, String> unmodifiableMap(this.attributes);
+        return super.getAttributes();
     }
 
     @Override

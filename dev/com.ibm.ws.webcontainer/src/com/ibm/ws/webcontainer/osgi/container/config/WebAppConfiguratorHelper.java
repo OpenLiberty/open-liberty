@@ -2652,9 +2652,13 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         }                
     }
 
-    private void configureSessionConfig(SessionConfig sessionConfig) {
+    protected void configureSessionConfig(SessionConfig sessionConfig) {
         if (sessionConfig == null) {
             return;
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "configureSessionConfig ");
         }
 
         Map<String, ConfigItem<String>> sessionConfigItemMap = configurator.getConfigItemMap("session-config");

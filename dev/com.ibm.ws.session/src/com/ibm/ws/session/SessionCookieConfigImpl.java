@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.session;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -126,6 +127,10 @@ public class SessionCookieConfigImpl implements SessionCookieConfig, Cloneable {
             }
             this.attributes.put(name, value);
         }
+    }
+    
+    protected Map<String, String> getAttributes() {
+        return (this.attributes == null) ? Collections.<String, String> emptyMap() : Collections.<String, String> unmodifiableMap(this.attributes);
     }
    
     @Override

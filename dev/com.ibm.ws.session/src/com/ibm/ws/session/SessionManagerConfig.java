@@ -156,7 +156,10 @@ public class SessionManagerConfig implements Cloneable {
     private final boolean privateSessionCookieSecure = false;
     private final boolean privateSessionCookieHttpOnly = true;
     
-    //Servlet 6.0 - override this cookieConfig in HttpSessionContextImpl60
+    /*Servlet 6.0 - override this cookieConfig in either:
+          (1) if cookie-config presents in web.xml AND the WebAppConfiguratorHelper60.configureSessionConfig is called.
+         or (2) HttpSessionContextImpl60 if webAppconfig still does not have SCC 60 instance before app startup
+    */                         
     protected SessionCookieConfig cookieConfig = new SessionCookieConfigImpl(privateSessionCookieName, privateSessionCookieDomain, privateSessionCookiePath,
                     privateSessionCookieComment, privateSessionCookieMaxAge, privateSessionCookieHttpOnly, privateSessionCookieSecure);
 
@@ -1132,11 +1135,13 @@ public class SessionManagerConfig implements Cloneable {
     }
 
     public void setClonedCookieConfig(SessionCookieConfig scci) {
+        this.cookieConfig = scci;
+
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " setClonedCookieConfig [" + scci + "] , this -> " + this);
+            printSessionManagerConfigForDebug(LoggingUtil.SESSION_LOGGER_CORE);        
+
         }
-        
-        this.cookieConfig = scci;
     }
 
     public void setClonedTrackingModes(EnumSet<SessionTrackingMode> stm) {
@@ -1169,27 +1174,38 @@ public class SessionManagerConfig implements Cloneable {
     public void updateCookieInfo(SessionCookieConfig scc) {
         if (scc != null) {
             SessionCookieConfigImpl sccImpl = (SessionCookieConfigImpl) scc;
+           
+            //Servlet 6 update - webAppConfig SCC should populate this SMC. Any null/unset webAppConfig's SCC field is
+            //replaced with the current SMC's field before webAppConfig SCC replacing the SMC's SCC
+            //The webAppConfig SCC can be an instance of SCC 6 and may have addition attributes (already parsed from web.xml or set later by application via SCI)
+            //Also, a little later after this method is called, the SessionContextRegistryImpl will set both Session SMC and webAppConfig
+            //to the same SCC anyway (around line 318)
+            if (scc.getComment() == null) {
+                ((SessionCookieConfigImpl) scc).setComment(cookieConfig.getComment(),false);
+            }
+            if (scc.getDomain() == null) {
+                ((SessionCookieConfigImpl) scc).setDomain(cookieConfig.getDomain(),false);
+            }
+            if (!((SessionCookieConfigImpl) scc).isMaxAgeSet()) {
+                ((SessionCookieConfigImpl) scc).setMaxAge(cookieConfig.getMaxAge(),false);
+            }
+            if (scc.getName() == null) {
+                ((SessionCookieConfigImpl) scc).setName(cookieConfig.getName(),false);
+            }
+            if (scc.getPath() == null) {
+                ((SessionCookieConfigImpl) scc).setPath(cookieConfig.getPath(),false);
+            }
+            if (!((SessionCookieConfigImpl) scc).isHttpOnlySet()) {
+                ((SessionCookieConfigImpl) scc).setHttpOnly(cookieConfig.isHttpOnly(),false);
+            }
+            if (!((SessionCookieConfigImpl) scc).isSecureSet()) {
+                ((SessionCookieConfigImpl) scc).setSecure(cookieConfig.isSecure(),false);
+            }
+                
+            this.setClonedCookieConfig(scc);
             
-            if (scc.getComment() != null) {
-                this.setSessionCookieComment(scc.getComment());
-            }
-            if (scc.getDomain() != null) {
-                this.setSessionCookieDomain(scc.getDomain());
-            }
-            if (sccImpl.isMaxAgeSet()) {
-                this.setSessionCookieMaxAge(scc.getMaxAge());
-            }
-            if (scc.getName() != null) {
-                this.setSessionCookieName(scc.getName());
-            }
-            if (scc.getPath() != null) {
-                this.setSessionCookiePath(scc.getPath());
-            }
-            if (sccImpl.isHttpOnlySet()) {
-                this.setSessionCookieHttpOnly(scc.isHttpOnly());
-            }
-            if (sccImpl.isSecureSet()) {
-                this.setSessionCookieSecure(scc.isSecure());
+            if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
+                LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " updateCookieInfo , replace [" + cookieConfig +"] with ["+ scc + "] for this -> " + this);
             }
         }
     }
