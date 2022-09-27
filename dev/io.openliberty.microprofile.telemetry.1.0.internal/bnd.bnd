@@ -15,6 +15,11 @@ Bundle-Name: io.openliberty.microprofile.telemetry.1.0.internal
 Bundle-SymbolicName: io.openliberty.microprofile.telemetry.1.0.internal
 Bundle-Description: MicroProfile.telemetry, version 1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 src: src, resources
 
 #-cdiannotations:
@@ -49,8 +54,6 @@ Export-Package: \
 
 Private-Package: \
   io.openliberty.microprofile.telemetry.internal.cdi
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 -buildpath: \
     io.openliberty.jakarta.restfulWS.3.1;version=latest,\
