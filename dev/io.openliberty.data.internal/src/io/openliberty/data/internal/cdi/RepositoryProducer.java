@@ -43,44 +43,17 @@ public class RepositoryProducer<R, P> implements Producer<R> {
     static class Factory<P> implements ProducerFactory<P> {
         private final BeanManager beanMgr;
         private final Class<?> entityClass;
-        private final DataExtensionMetadata mdata;
+        private final DataProvider provider;
 
-        Factory(BeanManager beanMgr, DataExtensionMetadata svc, Class<?> entityClass) {
+        Factory(BeanManager beanMgr, DataProvider provider, Class<?> entityClass) {
             this.beanMgr = beanMgr;
             this.entityClass = entityClass;
-            this.mdata = svc;
+            this.provider = provider;
         }
 
         @Override
         public <R> Producer<R> createProducer(Bean<R> bean) {
             return new RepositoryProducer<>(bean, this);
-        }
-
-        /**
-         * Choose the provider type based on the entity class type.
-         * If the entity is not annotated, choose whichever is available.
-         * TODO If the entity is not annotated and both are available, then what?
-         *
-         * @return the chosen provider.
-         */
-        private DataProvider getProvider() {
-            DataProvider provider = mdata.persistenceDataProvider;
-            for (Annotation anno : entityClass.getAnnotations()) {
-                String annoClassName = anno.annotationType().getName();
-                if ("jakarta.persistence.Entity".equals(annoClassName)) {
-                    break;
-                }
-                if ("jakarta.nosql.mapping.Entity".equals(annoClassName)) {
-                    provider = mdata.noSQLDataProvider;
-                    break;
-                }
-            }
-            if (provider == null) {
-                provider = mdata.noSQLDataProvider;
-                if (provider == null)
-                    throw new IllegalStateException("Jakarta Data requires either Jakarta Persistence or Jakarta NoSQL"); // TODO
-            }
-            return provider;
         }
     }
 
@@ -125,8 +98,7 @@ public class RepositoryProducer<R, P> implements Producer<R> {
                         Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                 }
 
-        DataProvider provider = factory.getProvider();
-        R instance = provider.createRepository(repositoryInterface, factory.entityClass);
+        R instance = factory.provider.createRepository(repositoryInterface, factory.entityClass);
 
         instance = intercept ? interception.createInterceptedInstance(instance) : instance;
 

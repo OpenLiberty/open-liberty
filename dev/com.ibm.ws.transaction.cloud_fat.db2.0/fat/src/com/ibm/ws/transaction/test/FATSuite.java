@@ -33,9 +33,9 @@ public class FATSuite extends FATSuiteBase {
         databaseContainerType = DatabaseContainerType.DB2;
     }
 
-	@ClassRule
+    @ClassRule
 	public static RepeatTests r = RepeatTests.withoutModification()
-				.andWith(FeatureReplacementAction.EE8_FEATURES())
-				.andWith(FeatureReplacementAction.EE9_FEATURES())
-				.andWith(FeatureReplacementAction.EE10_FEATURES());
+				.andWith(FeatureReplacementAction.EE8_FEATURES().forServers(DBRotationTest.serverNames))
+				.andWith(FeatureReplacementAction.EE9_FEATURES().forServers(DBRotationTest.serverNames))
+				.andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DBRotationTest.serverNames));
 }

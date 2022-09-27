@@ -64,6 +64,7 @@ Service-Component: com.ibm.ws.transaction; \
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
+ com.ibm.ws.kernel.launch.service, \
   !com.ibm.ws.transaction.services, \
   !com.ibm.wsspi.webcontainer.collaborator, \
  	javax.transaction; version=1.1.0, \
@@ -117,6 +118,7 @@ instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.kernel.boot,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.logging.core;version=latest,\

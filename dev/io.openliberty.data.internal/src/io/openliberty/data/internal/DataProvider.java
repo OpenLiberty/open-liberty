@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal;
 
+import java.util.List;
+
 /**
  * Implementations of this interface are made available in the OSGi service registry
  * and made mandatory if and only if the providing feature is enabled.
@@ -26,4 +28,15 @@ public interface DataProvider {
      * @return repository instance
      */
     <R> R createRepository(Class<R> repositoryInterface, Class<?> entityClass);
+
+    /**
+     * Notifies the provider of the entity classes that it is expected to handle.
+     *
+     * @param databaseId identifier for database-related configuration
+     * @param loader     class loader
+     * @param classList  entity classes
+     * @throws Exception // TODO remove this?
+     */
+    void entitiesFound(String databaseId, ClassLoader loader, List<Class<?>> entities) throws Exception;
+
 }

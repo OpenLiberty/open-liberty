@@ -179,7 +179,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "java.lang.IllegalStateException" })
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     // defect 227411, if FScloud002 starts slowly, then access to FScloud001's indoubt tx
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
     public void testFSRecoveryCompeteForLog() throws Exception {

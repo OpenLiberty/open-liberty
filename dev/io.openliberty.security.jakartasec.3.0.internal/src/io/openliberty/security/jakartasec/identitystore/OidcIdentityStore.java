@@ -12,19 +12,27 @@ package io.openliberty.security.jakartasec.identitystore;
 
 import java.util.Map;
 import java.util.Set;
+
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
+
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.jakartasec.tokens.AccessTokenImpl;
+import io.openliberty.security.jakartasec.tokens.IdentityTokenImpl;
+import io.openliberty.security.jakartasec.tokens.RefreshTokenImpl;
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
+import jakarta.json.JsonObject;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.credential.Credential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.identitystore.IdentityStore;
 import jakarta.security.enterprise.identitystore.openid.AccessToken;
+import jakarta.security.enterprise.identitystore.openid.IdentityToken;
+import jakarta.security.enterprise.identitystore.openid.OpenIdClaims;
+import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 
 /**
  *
@@ -47,8 +55,23 @@ public class OidcIdentityStore implements IdentityStore {
             if (tokenResponse != null && client != null) {
                 try {
                     JwtClaims idTokenClaims = client.validate(tokenResponse, castCredential.getRequest(), castCredential.getResponse());
-                    AccessToken accessToken = createAccessTokenFromTokenResponse(client.getOidcClientConfig(), tokenResponse);
-                    return createCredentialValidationResult(client.getOidcClientConfig(), accessToken, idTokenClaims);
+
+                    OidcClientConfig oidcClientConfig = client.getOidcClientConfig();
+                    long tokenMinValidityInMillis = oidcClientConfig.getTokenMinValidity();
+                    AccessToken accessToken = createAccessTokenFromTokenResponse(tokenMinValidityInMillis, tokenResponse);
+                    IdentityToken identityToken = createIdentityTokenFromTokenResponse(tokenMinValidityInMillis, tokenResponse, idTokenClaims);
+                    OpenIdClaims userinfoClaims = createOpenIdClaimsFromUserInfoResponse(); // TODO: Use this interface when creating the CredentialValidationResult
+
+                    CredentialValidationResult credentialValidationResult = createCredentialValidationResult(client.getOidcClientConfig(), accessToken, idTokenClaims);
+
+                    JsonObject providerMetadata = getProviderMetadataAsJsonObject();
+
+                    OpenIdContext openIdContext = createOpenIdContext(credentialValidationResult.getCallerUniqueId(), tokenResponse, accessToken, identityToken, userinfoClaims,
+                                                                      providerMetadata);
+
+                    castCredential.setOpenIdContext(openIdContext);
+
+                    return credentialValidationResult;
                 } catch (Exception e) {
                     return CredentialValidationResult.INVALID_RESULT;
                 }
@@ -56,18 +79,46 @@ public class OidcIdentityStore implements IdentityStore {
         }
         return CredentialValidationResult.INVALID_RESULT;
     }
-    
-    AccessToken createAccessTokenFromTokenResponse(OidcClientConfig oidcClientConfig, TokenResponse tokenResponse) {
+
+    private OpenIdContext createOpenIdContext(String subjectIdentifier, TokenResponse tokenResponse, AccessToken accessToken, IdentityToken identityToken,
+                                              OpenIdClaims userinfoClaims, JsonObject providerMetadata) {
+        Map<String, String> tokenResponseRawMap = tokenResponse.asMap();
+        // TODO: Move getting expires_in to TokenResponse
+        long expiresIn = 0L;
+        if (tokenResponseRawMap.containsKey(OpenIdConstant.EXPIRES_IN)) {
+            expiresIn = Long.parseLong(tokenResponseRawMap.get(OpenIdConstant.EXPIRES_IN));
+        }
+
+        OpenIdContextImpl openIdContext = new OpenIdContextImpl(subjectIdentifier, tokenResponseRawMap.get(OpenIdConstant.TOKEN_TYPE), accessToken, identityToken, userinfoClaims, providerMetadata);
+        openIdContext.setExpiresIn(expiresIn);
+
+        String refreshTokenString = tokenResponse.getRefreshTokenString();
+        if (refreshTokenString != null) {
+            openIdContext.setRefreshToken(new RefreshTokenImpl(refreshTokenString));
+        }
+
+        return openIdContext;
+    }
+
+    private AccessToken createAccessTokenFromTokenResponse(long tokenMinValidityInMillis, TokenResponse tokenResponse) {
         Map<String, String> tokenResponseRawMap = tokenResponse.asMap();
         long expiresIn = 0L;
         if (tokenResponseRawMap.containsKey(OpenIdConstant.EXPIRES_IN)) {
             expiresIn = Long.parseLong(tokenResponseRawMap.get(OpenIdConstant.EXPIRES_IN));
         }
-        
-        long tokenMinValidityInMillis =  oidcClientConfig.getTokenMinValidity();
+
+        // TODO: Determine if this is a JWT Access Token and use proper constructor.
         return new AccessTokenImpl(tokenResponse.getAccessTokenString(), tokenResponse.getResponseGenerationTime(), expiresIn, tokenMinValidityInMillis);
     }
-    
+
+    private IdentityToken createIdentityTokenFromTokenResponse(long tokenMinValidityInMillis, TokenResponse tokenResponse, JwtClaims idTokenClaims) {
+        return new IdentityTokenImpl(tokenResponse.getIdTokenString(), idTokenClaims.getClaimsMap(), tokenMinValidityInMillis);
+    }
+
+    private OpenIdClaims createOpenIdClaimsFromUserInfoResponse() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     /**
      * Per https://jakarta.ee/specifications/security/3.0/jakarta-security-spec-3.0.html#caller-name-and-groups, the claim name
@@ -87,22 +138,27 @@ public class OidcIdentityStore implements IdentityStore {
         Set<String> groups = getCallerGroups(clientConfig, accessToken, idTokenClaims);
         return new CredentialValidationResult(issuer, caller, null, caller, groups);
     }
-    
+
+    private JsonObject getProviderMetadataAsJsonObject() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /**
      * @param clientConfig
      * @param accessToken
      * @param idTokenClaims
      * @return
-     * @throws MalformedClaimException 
+     * @throws MalformedClaimException
      */
-    String getIssuer(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims) throws MalformedClaimException {      
+    String getIssuer(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims) throws MalformedClaimException {
         String issuer = getClaimValueFromTokens(OpenIdConstant.ISSUER_IDENTIFIER, accessToken, idTokenClaims, String.class);
         if (issuer == null || issuer.isEmpty()) {
             issuer = issuerFromProviderMetadata(clientConfig);
-        }      
+        }
         return issuer;
     }
-    
+
     /**
      * @param clientConfig
      * @return
@@ -143,7 +199,7 @@ public class OidcIdentityStore implements IdentityStore {
         }
         return null;
     }
-    
+
     /**
      * Per https://jakarta.ee/specifications/security/3.0/jakarta-security-spec-3.0.html#caller-name-and-groups, the following
      * logic is used to determine the value of the Caller Name and Caller Groups:
@@ -165,7 +221,7 @@ public class OidcIdentityStore implements IdentityStore {
         // TODO - get claimValue from User Info
         return null;
     }
-    
+
     @SuppressWarnings("unchecked")
     <T> T getClaimFromAccessToken(AccessToken accessToken, String claim) {
         if (accessToken.isJWT()) {

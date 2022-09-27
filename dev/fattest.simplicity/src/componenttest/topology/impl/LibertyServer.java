@@ -2471,25 +2471,6 @@ public class LibertyServer implements LogMonitorClient {
 
         boolean serverStarted = false;
 
-        if (checkForRestConnector.get()) {
-            //since this is going to connect to the secure port, that needs to be ready
-            //before an attempt to make the JMX connection
-            Log.info(c, method, "Checking that the JMX RestConnector is available and secured");
-            assertNotNull("CWWKO0219I.*ssl not received", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
-
-            assertNotNull("IBMJMXConnectorREST app did not report as ready", waitForStringInLogUsingMark("CWWKT0016I.*IBMJMXConnectorREST"));
-
-            assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
-
-            //backup the key file
-
-            try {
-                copyFileToTempDir("resources/security/key.jks", "key.jks");
-            } catch (Exception e) {
-                copyFileToTempDir("resources/security/key.p12", "key.p12");
-            }
-        }
-
         Log.info(c, method, "Waiting up to " + (serverStartTimeout / 1000)
                             + " seconds for server confirmation:  "
                             + START_MESSAGE_CODE.toString() + " to be found in " + consoleAbsPath);
@@ -2524,6 +2505,25 @@ public class LibertyServer implements LogMonitorClient {
             // (but the opposite isn't true since the server could already have been running)
             if (serverStarted) {
                 isStarted = true;
+            }
+
+            if (checkForRestConnector.get()) {
+                //since this is going to connect to the secure port, that needs to be ready
+                //before an attempt to make the JMX connection
+                Log.info(c, method, "Checking that the JMX RestConnector is available and secured");
+                assertNotNull("CWWKO0219I.*ssl not received", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
+
+                assertNotNull("IBMJMXConnectorREST app did not report as ready", waitForStringInLogUsingMark("CWWKT0016I.*IBMJMXConnectorREST"));
+
+                assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
+
+                //backup the key file
+
+                try {
+                    copyFileToTempDir("resources/security/key.jks", "key.jks");
+                } catch (Exception e) {
+                    copyFileToTempDir("resources/security/key.p12", "key.p12");
+                }
             }
         } catch (Exception e) {
             Log.error(c, method, e, "Exception thrown confirming server started in " + consoleAbsPath);

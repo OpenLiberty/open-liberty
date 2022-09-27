@@ -19,6 +19,8 @@ bVersion=1.0
 javac.source: 11
 javac.target: 11
 
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 publish.wlp.jar.disabled: true
 
 
@@ -37,16 +39,9 @@ WS-TraceGroup: wsbatch
 Export-Package:\
  com.ibm.jbatch.container.persistence.jpa.extractor;provide:=true;version=2.0.0
 
-# Using version=! in order to not have a version attached to the import for packages that were removed
-# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
-# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
-##
-# Using '*' below causes problems with our two separate src dirs
-##
 Import-Package: org.eclipse.persistence.descriptors,\
     org.eclipse.persistence.sessions,\
 	*
-#Private-Package: com.ibm.jbatch.internal.*
 
 -buildpath: \
 	io.openliberty.persistence.3.1.thirdparty;version=latest,\

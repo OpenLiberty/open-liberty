@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -835,6 +835,7 @@ public class LDAPUtils {
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.PROVIDER_URL, "ldap://" + hostname + ":" + port);
         env.put(Context.SECURITY_AUTHENTICATION, "none");
+        env.put("com.sun.jndi.ldap.connect.timeout", "5000");
         if (useSsl) {
             env.put(Context.PROVIDER_URL, "ldaps://" + hostname + ":" + port);
             if (bindDn != null && bindPwd != null) {
