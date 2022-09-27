@@ -1,0 +1,161 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.netty.internal.tcp;
+
+import java.net.SocketAddress;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.AttributeKey;
+
+@Trivial
+public class LibertyLoggingHandler extends LoggingHandler{
+
+	protected static final TraceComponent tc = Tr.register(LibertyLoggingHandler.class, new String[]{TCPMessageConstants.TCP_TRACE_NAME,TCPMessageConstants.NETTY_TRACE_NAME},
+			TCPMessageConstants.TCP_BUNDLE, LibertyLoggingHandler.class.getName());
+	
+	protected final static AttributeKey<Integer> BYTES_READ_KEY = AttributeKey.valueOf("BYTES_READ");
+
+	public LibertyLoggingHandler(){
+		super(LibertyLoggingHandler.class);
+		//TODO Check mapping between logger level in Netty and TraceComponent
+	}
+	
+	@Override
+	public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "handler added to" + ctx + ", channel " + ctx.channel());
+		}
+		ctx.channel().attr(BYTES_READ_KEY).getAndSet(0);
+		super.handlerAdded(ctx);
+	}
+
+	@Override
+	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "registered " + ctx.channel() + ", key is " + null); //TODO Can't get selection key for Netty, check if this is actually necessary
+		}
+		ctx.fireChannelRegistered();
+	}
+
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "SocketChannel accepted, local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress());
+		}
+		ctx.fireChannelActive();
+	}
+
+
+	@Override
+	public void bind(ChannelHandlerContext ctx, SocketAddress localAddress, ChannelPromise promise) throws Exception {
+		// Used when binding a Channel to a port to accept connections
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "Calling bind, local: " + localAddress);
+		}
+		super.bind(ctx, localAddress, promise);
+	}
+
+	@Override
+	public void connect(
+			ChannelHandlerContext ctx,
+			SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) throws Exception {
+		// Used when connecting a channel to an endpoint
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "Calling connect, local: " +localAddress + " remote: " + remoteAddress);
+		}
+		super.connect(ctx, remoteAddress, localAddress, promise);
+	}
+
+
+	@Override
+	public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "SocketChannel closing, local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress());
+		}
+		ctx.close(promise);
+	}
+
+	@Override
+	public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "Channel disconnected, local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress());
+		}
+		ctx.disconnect(promise);
+	}
+
+	@Override
+	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "read completed. Read: " + ctx.channel().attr(BYTES_READ_KEY).getAndSet(0) + " bytes");
+		}
+		ctx.fireChannelReadComplete();
+	}
+
+	@Override
+	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "read (async) called for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ (msg instanceof ByteBuf ? " bytes read: "+((ByteBuf) msg).readableBytes() : " object read: " + msg));
+		}
+		if(msg instanceof ByteBuf) {
+			ctx.channel().attr(BYTES_READ_KEY).getAndSet(ctx.channel().attr(BYTES_READ_KEY).get() + ((ByteBuf) msg).readableBytes());
+		}else {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(ctx.channel(), tc, "Could not get bytes for object: " + msg);
+			}
+		}
+		ctx.fireChannelRead(msg);
+	}
+
+	@Override
+	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "write (async) requested for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ (msg instanceof ByteBuf ? " bytes to be written: "+((ByteBuf) msg).readableBytes() : " object to write: " + msg));
+		}
+		Integer bytesToWrite = (msg instanceof ByteBuf ? ((ByteBuf) msg).readableBytes() : null);
+		ctx.write(msg, promise).addListener(new ChannelFutureListener() {
+			@Override
+			public void operationComplete(ChannelFuture future) throws Exception {
+				if(future.isSuccess())
+					Tr.event(ctx.channel(), tc, "write (async) finished sucessfully for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ " wrote: " + (bytesToWrite == null ? msg : bytesToWrite + " bytes"));
+				else
+					Tr.event(ctx.channel(), tc, "write (async) FAILED for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+" did not write : "+ (bytesToWrite == null ? msg : bytesToWrite + " bytes"));
+			}
+		});
+	}
+
+	@Override
+	public void flush(ChannelHandlerContext ctx) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "flush requested for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress());
+		}
+		ctx.flush();
+	}
+	
+	@Override
+	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "userEvent triggered for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress() +" event: " + evt);
+		}
+		super.userEventTriggered(ctx, evt);
+	}
+
+
+
+}

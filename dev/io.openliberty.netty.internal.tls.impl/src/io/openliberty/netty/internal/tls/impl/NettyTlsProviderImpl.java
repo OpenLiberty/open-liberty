@@ -141,7 +141,6 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
 
         SSLContext jdkContext;
         try {
-        	// TODO: Check alias being sent here
             jdkContext = getSSLContext(port, createProps(sslOptions), true, host, port, port, false);
         } catch (Exception e) {
             e.printStackTrace();

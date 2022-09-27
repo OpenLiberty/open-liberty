@@ -37,8 +37,8 @@ import io.openliberty.netty.internal.impl.NettyConstants;
 
 public class TCPUtils {
 
-    private static final TraceComponent tc = Tr.register(TCPUtils.class, TCPMessageConstants.NETTY_TRACE_NAME,
-            TCPMessageConstants.TCP_BUNDLE);
+    private static final TraceComponent tc = Tr.register(TCPUtils.class, new String[]{TCPMessageConstants.TCP_TRACE_NAME,TCPMessageConstants.NETTY_TRACE_NAME},
+            TCPMessageConstants.TCP_BUNDLE, TCPUtils.class.getName());
     private static final int timeBetweenRetriesMsec = 1000; // make this non-configurable
 
     /**
@@ -118,7 +118,7 @@ public class TCPUtils {
                 channel.attr(ConfigConstants.IsInboundKey).set(config.isInbound());
 
                 // set up a helpful log message
-                String hostLogString = newHost == NettyConstants.INADDR_ANY ? "*" : newHost;
+                String hostLogString = newHost;
                 SocketAddress addr = channel.localAddress();
                 InetSocketAddress inetAddr = (InetSocketAddress)addr;
                 String IPvType = "IPv4";
@@ -130,6 +130,15 @@ public class TCPUtils {
                 } else {
                     hostLogString = config.getHostname() + "  (" + IPvType + ": "
                                + inetAddr.getAddress().getHostAddress() + ")";
+                }
+
+                if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                	Tr.debug(tc, "serverSocket getInetAddress is: " + inetAddr);
+                    Tr.debug(tc, "serverSocket getLocalSocketAddress is: " + channel.localAddress());
+                    Tr.debug(tc, "serverSocket getInetAddress hostname is: " + inetAddr.getAddress().getHostName());
+                    Tr.debug(tc, "serverSocket getInetAddress address is: " + inetAddr.getAddress().getHostAddress());
+                    Tr.debug(tc, "channelConfig.getHostname() is: " + config.getHostname());
+                    Tr.debug(tc, "channelConfig.getPort() is: " + config.getPort());
                 }
 
                 if (config.isInbound()) {

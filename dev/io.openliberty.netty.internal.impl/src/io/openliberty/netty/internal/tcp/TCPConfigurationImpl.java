@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 
@@ -38,7 +39,7 @@ import io.openliberty.netty.internal.exception.NettyException;
  * 
  * Adapted from {@link com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration}
  */
-
+@Trivial
 public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigConstants, FFDCSelfIntrospectable {
 
     public static final String NEW_BUFF_SIZE = "newConnectionBufferSize";
@@ -62,7 +63,7 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
     protected static final String ZAIO_FREE_INITIAL_BUFFER_KEY = "zaioFreeInitialBuffers";
 
     private static final TraceComponent tc = Tr.register(TCPConfigurationImpl.class,
-            TCPMessageConstants.NETTY_TRACE_NAME, TCPMessageConstants.TCP_BUNDLE);
+    new String[]{TCPMessageConstants.TCP_TRACE_NAME,TCPMessageConstants.NETTY_TRACE_NAME}, TCPMessageConstants.TCP_BUNDLE, TCPConfigurationImpl.class.getName());
 
     private ChannelData channelData = null;
     private Map<String, Object> channelProperties = null;

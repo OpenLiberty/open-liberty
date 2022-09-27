@@ -23,6 +23,7 @@ public interface TCPMessageConstants {
     String TCP_BUNDLE = "com.ibm.ws.tcpchannel.internal.resources.TCPChannelMessages";
     /** RAS trace group name */
     String NETTY_TRACE_NAME = "Netty";
+    String TCP_TRACE_NAME = "TCPChannel";
     // -------------------------------------------------------------------------
     // NLS Messages
     // -------------------------------------------------------------------------

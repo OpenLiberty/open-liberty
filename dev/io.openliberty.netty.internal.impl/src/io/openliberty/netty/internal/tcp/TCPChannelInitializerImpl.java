@@ -14,6 +14,8 @@ package io.openliberty.netty.internal.tcp;
 
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.netty.channel.Channel;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
@@ -35,6 +37,9 @@ public class TCPChannelInitializerImpl extends ChannelInitializerWrapper {
 
     @Override
     protected void initChannel(Channel channel) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled()) {
+        	channel.pipeline().addFirst(new LibertyLoggingHandler());
+		}
         if (config.getInactivityTimeout() > 0) {
             channel.pipeline().addLast(new InactivityTimeoutHandler(0, 0, config.getInactivityTimeout(), TimeUnit.MILLISECONDS));
         }

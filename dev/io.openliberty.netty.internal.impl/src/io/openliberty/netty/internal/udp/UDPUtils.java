@@ -98,7 +98,7 @@ public class UDPUtils {
                 channel.attr(ConfigConstants.IsInboundKey).set(config.isInboundChannel());
                 
                 // set up a helpful log message
-                String hostLogString = newHost == NettyConstants.INADDR_ANY ? "*" : newHost;
+                String hostLogString = newHost;
                 SocketAddress addr = channel.localAddress();
                 InetSocketAddress inetAddr = (InetSocketAddress)addr;
                 String IPvType = "IPv4";
