@@ -573,7 +573,7 @@ public class ServerConfiguration implements Cloneable {
     /**
      * @return the list of cachingProvider configuration elements
      */
-    public ConfigElementList<CachingProvider> getcachingProviders() {
+    public ConfigElementList<CachingProvider> getCachingProviders() {
         if (this.cachingProviders == null)
             this.cachingProviders = new ConfigElementList<CachingProvider>();
         return this.cachingProviders;
@@ -582,7 +582,7 @@ public class ServerConfiguration implements Cloneable {
     /**
      * @return the list of cacheManagers configuration elements
      */
-    public ConfigElementList<CacheManager> getcacheManagers() {
+    public ConfigElementList<CacheManager> getCacheManagers() {
         if (this.cacheManagers == null)
             this.cacheManagers = new ConfigElementList<CacheManager>();
         return this.cacheManagers;
