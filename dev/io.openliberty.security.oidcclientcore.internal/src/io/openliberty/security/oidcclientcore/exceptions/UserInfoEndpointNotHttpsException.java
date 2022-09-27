@@ -13,20 +13,14 @@ package io.openliberty.security.oidcclientcore.exceptions;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-public class UserInfoEndpointNotHttpsException extends Exception {
+public class UserInfoEndpointNotHttpsException extends UserInfoResponseException {
 
     public static final TraceComponent tc = Tr.register(UserInfoEndpointNotHttpsException.class);
 
     private static final long serialVersionUID = 1L;
 
-    private final String userInfoEndpoint;
-
     public UserInfoEndpointNotHttpsException(String userInfoEndpoint) {
-        this.userInfoEndpoint = userInfoEndpoint;
-    }
-
-    public String getUserInfoEndpoint() {
-        return userInfoEndpoint;
+        super(userInfoEndpoint, Tr.formatMessage(tc, "URL_NOT_HTTPS", userInfoEndpoint));
     }
 
 }

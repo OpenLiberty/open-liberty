@@ -55,7 +55,7 @@ public class UserInfoRequestor {
         this.params = new ArrayList<NameValuePair>();
     }
 
-    public UserInfoResponse requestUserInfo() throws Exception {
+    public UserInfoResponse requestUserInfo() throws UserInfoResponseException {
         if (!userInfoEndpoint.toLowerCase().startsWith(HttpConstants.HTTPS_SCHEME)) {
             throw new UserInfoEndpointNotHttpsException(userInfoEndpoint);
         }
@@ -71,7 +71,7 @@ public class UserInfoRequestor {
             claims = extractClaimsFromResponse(response);
             statusCode = getStatusCodeFromResponse(response);
         } catch (Exception e) {
-            throw new UserInfoResponseException(e);
+            throw new UserInfoResponseException(userInfoEndpoint, e);
         }
 
         if (statusCode != 200) {

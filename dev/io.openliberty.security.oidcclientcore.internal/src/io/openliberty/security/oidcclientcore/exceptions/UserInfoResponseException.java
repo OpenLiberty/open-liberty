@@ -19,8 +19,27 @@ public class UserInfoResponseException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public UserInfoResponseException(Exception e) {
-        super(e);
+    protected final String userInfoEndpoint;
+    protected final String errorMsg;
+
+    public UserInfoResponseException(String userInfoEndpoint, String errorMsg) {
+        this.userInfoEndpoint = userInfoEndpoint;
+        this.errorMsg = errorMsg;
+    }
+
+    public UserInfoResponseException(String userInfoEndpoint, Exception cause) {
+        super(cause);
+        this.userInfoEndpoint = userInfoEndpoint;
+        this.errorMsg = cause.toString();
+    }
+
+    public String getUserInfoEndpoint() {
+        return userInfoEndpoint;
+    }
+
+    @Override
+    public String getMessage() {
+        return Tr.formatMessage(tc, "USERINFO_RESPONSE_ERROR", userInfoEndpoint, errorMsg);
     }
 
 }

@@ -91,3 +91,10 @@ TOKEN_ENDPOINT_MISSING=CWWKS2417E: The {0} OpenID Connect client cannot find a v
 TOKEN_ENDPOINT_MISSING.explanation=The token endpoint URL is missing from the OpenID Connect provider metadata and the OpenID Connect client configuration.
 TOKEN_ENDPOINT_MISSING.useraction=Verify that the OpenID Connect provider metadata contains a token_endpoint value. A token endpoint can also be specified in the OpenID Connect client configuration.
 
+USERINFO_RESPONSE_ERROR=CWWKS2418W: The OpenID Connect client encountered the following error while sending a request to the [{0}] User Info URL of the OpenID Connect provider: {1}
+USERINFO_RESPONSE_ERROR.explanation=The User Info response from the OpenID Connect provider might be malformed or missing information, or the OpenID Connect provider encountered an error while handling the request.
+USERINFO_RESPONSE_ERROR.useraction=See the error in the message for more information. Verify that the User Info URL for the OpenID Connect provider is correct.
+
+USERINFO_RESPONSE_NOT_200=CWWKS2419W: The request to the [{0}] User Info URL of the OpenID Connect provider returned a {1} HTTP status code. The OpenID Connect provider returned the following response: {2}
+USERINFO_RESPONSE_NOT_200.explanation=The OpenID Connect client did not receive a successful response from the OpenID Connect provider.
+USERINFO_RESPONSE_NOT_200.useraction=See the status code and error response in the message for more information.
