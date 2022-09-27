@@ -18,6 +18,4 @@ public class CallbackServlet extends BaseCallbackServlet {
 
     private static final long serialVersionUID = -417476984908088827L;
 
-    // If needed provide a method with unique code here to override doGet
-
 }

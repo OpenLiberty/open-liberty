@@ -91,23 +91,23 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
                                        buildUpdatedConfigMap(opServer, rpServer, "useSessionTrueELTrue", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getUseSessionExpressionTrue()),
                                        "oidc.client.useSessionTrue.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "useSessionTrueELFalse.war", "UseSessionTrue.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "useSessionTrueELFalse", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getUseSessionExpressionFalse()),
                                        "oidc.client.useSessionTrue.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
 
         swh.deployConfigurableTestApps(rpServer, "useSessionFalseELTrue.war", "UseSessionFalse.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "useSessionFalseELTrue", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getUseSessionExpressionTrue()),
                                        "oidc.client.useSessionFalse.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "useSessionFalseELFalse.war", "UseSessionFalse.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "useSessionFalseELFalse", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getUseSessionExpressionFalse()),
                                        "oidc.client.useSessionFalse.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
 
     }
 

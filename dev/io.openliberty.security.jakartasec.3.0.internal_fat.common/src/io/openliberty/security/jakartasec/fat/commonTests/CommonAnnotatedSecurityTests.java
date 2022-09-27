@@ -96,8 +96,11 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         Expectations currentExpectations = new Expectations();
         currentExpectations.addSuccessCodeForCurrentAction();
         currentExpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, "got here", "Did not land on the callback."));
+        currentExpectations
+                        .addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "Callback: OpenIdContext: null", "The context was null and should not have been"));
         Log.info(thisClass, _testName, "TODO Need to add a check for the app: " + app);
         // TODO - update to look for the actual app instead of landing on the callback
+        // Maybe call a method to compare values from the OpenIdContext Logger when it is called from the callback and when it is called from the test servlet
 //        currentExpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, app, "Did not land on the test app."));
 
         response = actions.doFormLogin(response, user, pw);

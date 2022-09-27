@@ -91,30 +91,30 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
 
         // deploy the apps that are defined 100% by the source code tree
-        swh.defaultDropinApp(rpServer, "ClaimsDefinition.war", "oidc.client.claimsDefinition.servlets", "oidc.client.base.servlets");
+        swh.defaultDropinApp(rpServer, "ClaimsDefinition.war", "oidc.client.claimsDefinition.servlets", "oidc.client.base.*");
 
         // deploy the apps that will be updated at runtime (now) (such as deploying the same app runtime with different embedded configs)
         swh.deployConfigurableTestApps(rpServer, "badCallerNameClaim.war", "ClaimsDefinition.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "badCallerNameClaim", "claimDefinitions.openIdConfig.properties",
                                                              TestConfigMaps.getBadCallerNameClaim()),
                                        "oidc.client.claimsDefinition.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "emptyCallerNameClaim.war", "ClaimsDefinition.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "emptyCallerNameClaim", "claimDefinitions.openIdConfig.properties",
                                                              TestConfigMaps.getEmptyCallerNameClaim()),
                                        "oidc.client.claimsDefinition.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
 
         swh.deployConfigurableTestApps(rpServer, "badCallerGroupsClaim.war", "ClaimsDefinition.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "badCallerGroupsClaim", "claimDefinitions.openIdConfig.properties",
                                                              TestConfigMaps.getBadCallerGroupsClaim()),
                                        "oidc.client.claimsDefinition.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "emptyCallerGroupsClaim.war", "ClaimsDefinition.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "emptyCallerGroupsClaim", "claimDefinitions.openIdConfig.properties",
                                                              TestConfigMaps.getEmptyCallerGroupsClaim()),
                                        "oidc.client.claimsDefinition.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
 
     }
 

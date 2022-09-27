@@ -18,15 +18,4 @@ public class CallbackServlet extends BaseCallbackServlet {
 
     private static final long serialVersionUID = -417476984908088827L;
 
-//    @Inject
-//    private OpenIdContext context;
-
-//    @Override
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-////        response.getWriter().println(context.getAccessToken());
-//        ServletOutputStream sos = response.getOutputStream();
-//        System.out.println("got here");
-//        sos.println("got here");
-//    }
-
 }

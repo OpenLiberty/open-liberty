@@ -83,15 +83,15 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
 
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
         // deploy the apps that are defined 100% by the source code tree
-        swh.defaultDropinApp(rpServer, "SimpleServlet.war", "oidc.client.base.servlets");
-        swh.defaultDropinApp(rpServer, "OnlyProviderInAnnotation.war", "oidc.simple.client.onlyProvider.servlets", "oidc.client.base.servlets");
-        swh.defaultDropinApp(rpServer, "SimplestAnnotated.war", "oidc.simple.client.servlets", "oidc.client.base.servlets");
-        swh.defaultDropinApp(rpServer, "SimplestAnnotatedWithEL.war", "oidc.simple.client.withEL.servlets", "oidc.client.base.servlets");
+        swh.defaultDropinApp(rpServer, "SimpleServlet.war", "oidc.client.base.*");
+        swh.defaultDropinApp(rpServer, "OnlyProviderInAnnotation.war", "oidc.simple.client.onlyProvider.servlets", "oidc.client.base.*");
+        swh.defaultDropinApp(rpServer, "SimplestAnnotated.war", "oidc.simple.client.servlets", "oidc.client.base.*");
+        swh.defaultDropinApp(rpServer, "SimplestAnnotatedWithEL.war", "oidc.simple.client.withEL.servlets", "oidc.client.base.*");
 
         // deploy the apps that will be updated at runtime (now) (such as deploying the same app runtime with different embedded configs)
         swh.deployConfigurableTestApps(rpServer, "newApp2.war", "GenericOIDCAuthMechanism.war", TestConfigMaps.getTest1(),
                                        "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
 
     }
 
@@ -145,7 +145,7 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
     //@Test
     public void testSimplestAnnotatedServlet_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar() throws Exception {
 
-        swh.defaultDropinApp(rpServer, "SimplestAnnotatedWithAndWithoutEL" + ".war", "oidc.simple.client.withAndWithoutEL.servlets", "oidc.client.base.servlets");
+        swh.defaultDropinApp(rpServer, "SimplestAnnotatedWithAndWithoutEL" + ".war", "oidc.simple.client.withAndWithoutEL.servlets", "oidc.client.base.*");
 
         Expectations deployExpectations = new Expectations();
         deployExpectations

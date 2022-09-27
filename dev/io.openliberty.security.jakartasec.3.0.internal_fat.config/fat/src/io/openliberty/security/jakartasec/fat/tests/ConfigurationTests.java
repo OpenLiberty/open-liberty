@@ -90,43 +90,43 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
         // deploy the apps that are defined 100% by the source code tree
-        swh.defaultDropinApp(rpServer, "OnlyProviderInAnnotation.war", "oidc.client.onlyProvider.servlets", "oidc.client.base.servlets");
+        swh.defaultDropinApp(rpServer, "OnlyProviderInAnnotation.war", "oidc.client.onlyProvider.servlets", "oidc.client.base.*");
         swh.defaultDropinApp(rpServer, "NoProviderURIInAnnotationWithProviderMetadata.war", "oidc.client.noProviderURIInAnnotationWithProviderMetadata.servlets",
-                             "oidc.client.base.servlets");
+                             "oidc.client.base.*");
         swh.defaultDropinApp(rpServer, "NoProviderURIInAnnotationWithoutProviderMetadata.war", "oidc.client.noProviderURIInAnnotationWithoutProviderMetadata.servlets",
-                             "oidc.client.base.servlets");
-        swh.defaultDropinApp(rpServer, "MinimumAnnotation.war", "oidc.client.minimumAnnotation.servlets", "oidc.client.base.servlets");
-        swh.defaultDropinApp(rpServer, "MaximumAnnotation.war", "oidc.client.maximumAnnotation.servlets", "oidc.client.base.servlets");
-        swh.defaultDropinApp(rpServer, "MaximumAnnotationUsingEL.war", "oidc.client.maximumAnnotationUsingEL.servlets", "oidc.client.base.servlets");
+                             "oidc.client.base.*");
+        swh.defaultDropinApp(rpServer, "MinimumAnnotation.war", "oidc.client.minimumAnnotation.servlets", "oidc.client.base.*");
+        swh.defaultDropinApp(rpServer, "MaximumAnnotation.war", "oidc.client.maximumAnnotation.servlets", "oidc.client.base.*");
+        swh.defaultDropinApp(rpServer, "MaximumAnnotationUsingEL.war", "oidc.client.maximumAnnotationUsingEL.servlets", "oidc.client.base.*");
 
         // deploy the apps that will be updated at runtime (now) (such as deploying the same app runtime with different names and embedded configs)
         swh.deployConfigurableTestApps(rpServer, "badClientId.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "badClientId", "allValues.openIdConfig.properties", TestConfigMaps.getBadClientId()),
                                        "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "omittedClientId.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "omittedClientId", "allValues.openIdConfig.properties", TestConfigMaps.getEmptyClientId()),
                                        "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "badClientSecret.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "badClientSecret", "allValues.openIdConfig.properties", TestConfigMaps.getBadClientSecret()),
                                        "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "omittedClientSecret.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "omittedClientSecret", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getEmptyClientSecret()),
                                        "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "useSessionTrue.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "useSessionTrue", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getUseSessionExpressionTrue()),
                                        "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "useSessionFalse.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "useSessionFalse", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getUseSessionExpressionFalse()),
                                        "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.servlets");
+                                       "oidc.client.base.*");
 
     }
 
