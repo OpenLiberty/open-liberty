@@ -35,7 +35,7 @@ public class FATSuite extends FATSuiteBase {
 
 	@ClassRule
 	public static RepeatTests r = RepeatTests.withoutModification()
-				.andWith(FeatureReplacementAction.EE8_FEATURES())
-				.andWith(FeatureReplacementAction.EE9_FEATURES())
-				.andWith(FeatureReplacementAction.EE10_FEATURES());
+				.andWith(FeatureReplacementAction.EE8_FEATURES().forServers(DualServerDynamicDBRotationTest1.serverNames))
+				.andWith(FeatureReplacementAction.EE9_FEATURES().forServers(DualServerDynamicDBRotationTest1.serverNames))
+				.andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DualServerDynamicDBRotationTest1.serverNames));
 }

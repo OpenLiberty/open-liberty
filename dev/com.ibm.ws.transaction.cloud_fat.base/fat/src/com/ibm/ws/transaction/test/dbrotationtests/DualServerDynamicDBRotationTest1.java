@@ -39,6 +39,11 @@ public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer secondServer;
 
+    public static String[] serverNames = new String[] {
+    	    "com.ibm.ws.transaction_ANYDBCLOUD001",
+    	    "com.ibm.ws.transaction_ANYDBCLOUD002",
+    };
+
     @BeforeClass
     public static void setUp() throws Exception {
         FATSuite.beforeSuite();

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.services;
 
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
@@ -29,6 +34,7 @@ import com.ibm.tx.jta.config.DefaultConfigurationProvider;
 import com.ibm.tx.jta.embeddable.TransactionSettingsProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -655,10 +661,33 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     @Override
     public void shutDownFramework() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "JTMConfigurationProvider shutDownFramework has been called");
-        if (tmsRef != null) {
-            tmsRef.shutDownFramework();
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "shutDownFramework");
+
+        try {
+            if (_cc != null) {
+                final Bundle bundle = _cc.getBundleContext().getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+
+                if (bundle != null)
+                    AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                        @Override
+                        public Void run() throws BundleException {
+                            // Force quick shutdown with no quiesce period
+                            bundle.getBundleContext().registerService(ForcedServerStop.class, new ForcedServerStop(), null);
+                            bundle.stop();
+                            return null;
+                        }
+                    });
+            }
+        } catch (Exception e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "shutDownFramework", e);
+
+            // do not FFDC this.
+            // exceptions during bundle stop occur if framework is already stopping or stopped
+        } finally {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "shutDownFramework");
         }
     }
 
