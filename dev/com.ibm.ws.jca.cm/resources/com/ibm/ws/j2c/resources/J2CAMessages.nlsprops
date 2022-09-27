@@ -342,7 +342,7 @@ RA_FREE_CONNECTION_ERROR_J2CA1004.explanation=The connection manager was notifie
 RA_FREE_CONNECTION_ERROR_J2CA1004.useraction=The connection manager marks the connection as unusable. The connection is removed during the next connection maintenance interval. The purge policy does not apply to this connection. This behavior is normal. If this error appears unexpected, investigate the exception to determine the possible source of the problem.
 
 # ---------------------------------
-NO_RA_FREE_EXCEPTION_J2CA1005=J2CA1005I: The Connection Manager received a fatal connection error from the Resource Adapter for resource {0}. The connections state is: {1}. Information may be available in previous messages or exceptions.
+NO_RA_FREE_EXCEPTION_J2CA1005=J2CA1005I: The Connection Manager received a fatal connection error from the Resource Adapter for the  {0} resource. The connections state is: {1}. Information might be available in previous messages or exceptions.
 NO_RA_FREE_EXCEPTION_J2CA1005.explanation=The connection manager has been notified by the resource adapter that an error has occurred on the connection. This informational message is logged so that the user can see the exception that was returned. 
 NO_RA_FREE_EXCEPTION_J2CA1005.useraction=The connection manager will mark the connection as unusable. The connection will be removed during the next connection maintenance interval. The purge policy does not apply to this connection. This is normal behavior. If this error appears unexpected, investigate the exception to determine the possible source of the problem.
 
