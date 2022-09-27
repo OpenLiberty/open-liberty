@@ -13,12 +13,13 @@ package com.ibm.ws.sib.jfapchannel.impl;
 import static com.ibm.websphere.ras.Tr.entry;
 import static com.ibm.websphere.ras.Tr.exit;
 import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
-import static com.ibm.ws.messaging.lifecycle.SingletonsReady.requireService;
 import static com.ibm.ws.sib.utils.ras.SibTr.debug;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
+import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -41,7 +42,6 @@ import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
-
 
 @Component(
         name = "com.ibm.ws.messaging.comms.wasJmsOutbound",
@@ -67,16 +67,24 @@ public class CommsOutboundChain {
     public CommsOutboundChain(
             @Reference(name="tcpOptions", target="(id=unbound)")
             ChannelConfiguration tcpOptions,
-            @Reference(name="sslOptions", target="(id=unbound)")
+//            @Reference(name="defaultTCPOptions", target="(id=defaultTCPOptions)", cardinality=OPTIONAL)
+//            ChannelConfiguration defaultTCPOptions,
+            @Reference(name="sslOptions", target="(id=unbound)", cardinality=OPTIONAL)
             ChannelConfiguration sslOptions,
+            /* We have preserved the original behaviour of using defaultSSLOptions 
+             * If we want to use ${defaultSSLVar}, use (id=unbound) here and set it in metatype */
+            @Reference(name="defaultSSLOptions", target="(id=defaultSSLOptions)", cardinality=OPTIONAL)
+            ChannelConfiguration defaultSSLOptions,
             @Reference(name="commsClientService")
             CommsClientServiceFacade commsClientService,
             Map<Object, Object> properties) {
 
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "<init>", tcpOptions, sslOptions, commsClientService, properties);
+		if (isAnyTracingEnabled() && tc.isEntryEnabled())
+			entry(this, tc, "<init>", tcpOptions,/* defaultTCPOptions, */sslOptions, defaultSSLOptions, commsClientService, properties);
 
+        //this.tcpOptions = Optional.ofNullable(tcpOptions).orElse(defaultTCPOptions);
         this.tcpOptions = tcpOptions;
-        this.sslOptions = sslOptions;
+        this.sslOptions = Optional.ofNullable(sslOptions).orElse(defaultSSLOptions);
         this.commsClientService = commsClientService;
 
         isSSLChain = MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useSSL", properties.get("useSSL"), false);
@@ -99,13 +107,6 @@ public class CommsOutboundChain {
         return tcpProps;
     }
 
-    private Map<String, Object> getSslOptions() {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "getSslOptions");
-        Map<String, Object> sslprops = sslOptions.getConfiguration();
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "getSslOptions", sslprops);
-        return sslprops;
-    }
-
     private synchronized void createJFAPChain() {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "createJFAPChain", chainName, isSSLChain);
         try {
@@ -121,20 +122,16 @@ public class CommsOutboundChain {
                 tcpChannel = cfw.addChannel(tcpChannelName, cfw.lookupFactory(typeName), new HashMap<Object, Object>(tcpOptions));
             }
 
-            // SSL Channel
             if (isSSLChain) {
-                Map<String, Object> sslOptions = getSslOptions();
-
                 // Now we are actually trying to create an ssl channel in the chain. Which requires sslOptions and that isSSLEnabled is true.
-                if (sslOptions == null) {
-                    if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "_sslOptions not set, continue waiting");
-                    throw new ChainException(new Throwable(nls.getFormattedMessage("missingSslOptions.ChainNotStarted", new Object[] { chainName }, null)));
-                    // TcpChannel is created but keep waiting for sslOptions.
+                if (sslOptions == null) {			
+                    throw new ChainException(new Throwable(nls.getFormattedMessage("missingSslOptions.ChainNotStarted", new Object[] { chainName }, null)));              
                 }
+                Map<String, Object> sslprops = sslOptions.getConfiguration();
                 
-             ChannelData sslChannel = cfw.getChannel(sslChannelName);
+                ChannelData sslChannel = cfw.getChannel(sslChannelName);
                 if (sslChannel == null) {
-                    sslChannel = cfw.addChannel(sslChannelName, cfw.lookupFactory("SSLChannel"), new HashMap<Object, Object>(sslOptions));
+                    sslChannel = cfw.addChannel(sslChannelName, cfw.lookupFactory("SSLChannel"), new HashMap<Object, Object>(sslprops));
                 }
             }
 
@@ -178,7 +175,7 @@ public class CommsOutboundChain {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "terminateConnectionsAssociatedWithChain", chainName);
 
         try {
-            ChannelFramework cfw = requireService(CommsClientServiceFacade.class).getChannelFramework();
+            ChannelFramework cfw = commsClientService.getChannelFramework();
             OutboundConnectionTracker oct = ClientConnectionManager.getRef().getOutboundConnectionTracker();
             if (oct == null) {
                 // if we dont have any oct that means there were no connections established
@@ -217,8 +214,7 @@ public class CommsOutboundChain {
         if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "removeChannel", channelName);
         
-        ChannelFramework cfw = requireService(CommsClientServiceFacade.class).getChannelFramework();
-
+        ChannelFramework cfw = commsClientService.getChannelFramework();
         try {
             if (cfw.getChannel(channelName) != null)
                 cfw.removeChannel(channelName);

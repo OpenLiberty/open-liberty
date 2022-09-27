@@ -78,11 +78,11 @@ public class CommonServiceFacade implements Singleton {
         return TrmMessageFactory.getInstance();
     }
 
-    public JsDestinationAddressFactory getJsDestinationAddressFactory() {
+    public static JsDestinationAddressFactory getJsDestinationAddressFactory() {
         return (JsDestinationAddressFactory) SIDestinationAddressFactory.getInstance();
     }
 
-    public SelectionCriteriaFactory getSelectionCriteriaFactory() {
+    public static SelectionCriteriaFactory getSelectionCriteriaFactory() {
         return SelectionCriteriaFactory.getInstance();
     }
 }
