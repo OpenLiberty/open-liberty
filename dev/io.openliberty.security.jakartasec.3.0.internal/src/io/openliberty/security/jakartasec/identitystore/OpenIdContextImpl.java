@@ -13,8 +13,13 @@ package io.openliberty.security.jakartasec.identitystore;
 import java.io.StringReader;
 import java.util.Optional;
 
+import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
+import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.Storage;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.IdentityToken;
 import jakarta.security.enterprise.identitystore.openid.OpenIdClaims;
@@ -36,18 +41,22 @@ public class OpenIdContextImpl implements OpenIdContext {
     private final IdentityToken identityToken;
     private final OpenIdClaims userinfoClaims;
     private final JsonObject providerMetadata; // TODO: Store JSON String instead for serialization
+    private final String state; // TODO: Determine if storage values can be obtained without relying on state.
+    private final boolean useSession;
 
     private RefreshToken refreshToken;
     private Long expiresIn;
 
     public OpenIdContextImpl(String subjectIdentifier, String tokenType, AccessToken accessToken, IdentityToken identityToken, OpenIdClaims userinfoClaims,
-                             JsonObject providerMetadata) {
+                             JsonObject providerMetadata, String state, boolean useSession) {
         this.subjectIdentifier = subjectIdentifier;
         this.tokenType = tokenType;
         this.accessToken = accessToken;
         this.identityToken = identityToken;
         this.userinfoClaims = userinfoClaims;
         this.providerMetadata = providerMetadata;
+        this.state = state;
+        this.useSession = useSession;
     }
 
     public void setRefreshToken(RefreshToken refreshToken) {
@@ -111,10 +120,26 @@ public class OpenIdContextImpl implements OpenIdContext {
         return Json.createReader(new StringReader(providerMetadata.toString())).readObject();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> Optional<T> getStoredValue(HttpServletRequest request, HttpServletResponse response, String key) {
-        // TODO: Get value from Storage subsystem.
-        return null;
+        T value = null;
+        Storage storage = getStorage(request, response);
+
+        if (OpenIdConstant.ORIGINAL_REQUEST.equals(key)) {
+            String storageName = OidcStorageUtils.getOriginalReqUrlStorageKey(state);
+            value = (T) storage.get(storageName);
+        }
+
+        return Optional.of(value);
+    }
+
+    private Storage getStorage(HttpServletRequest request, HttpServletResponse response) {
+        if (useSession) {
+            return new SessionBasedStorage(request);
+        } else {
+            return new CookieBasedStorage(request, response);
+        }
     }
 
 }
