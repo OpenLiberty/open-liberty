@@ -210,7 +210,10 @@ public class OidcIdentityStore implements IdentityStore {
             return null;
         }
         List<String> groups = getClaimValueFromTokens(callerGroupClaim, accessToken, idTokenClaims, userInfoClaims, List.class);
-        return Set.copyOf(groups);
+        if (groups != null) {
+            return Set.copyOf(groups);
+        }
+        return null;
     }
 
     String getCallerNameClaim(OidcClientConfig clientConfig) {
