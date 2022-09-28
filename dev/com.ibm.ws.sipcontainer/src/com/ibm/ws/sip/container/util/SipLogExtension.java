@@ -169,6 +169,9 @@ public class SipLogExtension {
      * @return call ID
      */
     private static String getCallId() {
+    	//try catch block needed to catch NPE thrown by logger
+    	//in case ThreadLocalStorage.getApplicationSession() returns NULL
+    	//see open-liberty issue #21770
     	try {
     	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	if (sas != null) {
@@ -203,6 +206,9 @@ public class SipLogExtension {
      * @return SIP session ID
      */
     private static String getSessionId() {
+    	//try catch block needed to catch NPE thrown by logger
+    	//in case ThreadLocalStorage.getApplicationSession() returns NULL
+    	//see open-liberty issue #21770
     	try {
     	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	if (sas != null) {
@@ -237,7 +243,9 @@ public class SipLogExtension {
      * @return second call ID
      */
     private static String getSecondCallId() {
-    	
+    	//try catch block needed to catch NPE thrown by logger
+    	//in case ThreadLocalStorage.getApplicationSession() returns NULL
+    	//see open-liberty issue #21770
     	try {
     	SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	
@@ -269,8 +277,9 @@ public class SipLogExtension {
      * @return second SIP session ID
      */
     private static String getSecondSessionId() {
-    	
-    	
+    	//try catch block needed to catch NPE thrown by logger
+    	//in case ThreadLocalStorage.getApplicationSession() returns NULL
+    	//see open-liberty issue #21770
     	try {
     		SipApplicationSession sas = ThreadLocalStorage.getApplicationSession();
     	

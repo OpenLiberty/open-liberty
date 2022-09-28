@@ -1814,11 +1814,10 @@ implements SipApplicationSession {
 		if (protocol.equalsIgnoreCase("SIP"))  {  //get SIP application sessions  
 			if (create) {  //boolean is true	
 					return (Iterator)getAllSIPSessions(true).iterator();
-				}
-		
+			} 
 			else {  //boolean is false
 					return (Iterator)getAllSIPSessions(false).iterator();
-				}
+			}
 		}
 		
 		else if (protocol.equalsIgnoreCase("HTTP")){ //protocol is HTTP
@@ -1830,7 +1829,6 @@ implements SipApplicationSession {
 			if(sipAppDesc != null && !sipAppDesc.isJSR289Application()){
 				return Collections.EMPTY_MAP.keySet().iterator();				
 			}
-
 			throw new IllegalArgumentException("Unsupported protocol type " + protocol);
 		}
 	}

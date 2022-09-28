@@ -620,6 +620,10 @@ public class TransactionUserBase extends ReplicatableImpl {
 		return sessions;
 	}
 
+	/**
+	 * Invalidate the Transaction User and Remove it from the TransactionUserTable
+	 *
+	 */
 	protected void invalidateBase(boolean removeFromAppSession) {
 
 		if (c_logger.isTraceEntryExitEnabled()) {
