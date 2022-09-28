@@ -99,6 +99,8 @@ io.jaegertracing:jaeger-thrift:0.34.0
 io.jaegertracing:jaeger-thrift:1.6.0
 io.jaegertracing:jaeger-tracerresolver:0.34.0
 io.jaegertracing:jaeger-tracerresolver:1.6.0
+io.micrometer:micrometer-core:1.9.3
+io.micrometer:micrometer-registry-prometheus:1.9.3
 io.netty:netty-buffer:4.1.77.Final
 io.netty:netty-codec-http2:4.1.77.Final
 io.netty:netty-codec-http:4.1.77.Final
@@ -140,6 +142,11 @@ io.opentracing:opentracing-mock:0.31.0
 io.opentracing:opentracing-mock:0.33.0
 io.opentracing:opentracing-util:0.30.0
 io.projectreactor:reactor-core:3.4.19
+io.prometheus:simpleclient:0.15.0
+io.prometheus:simpleclient_common:0.15.0
+io.prometheus:simpleclient_tracer_common:0.15.0
+io.prometheus:simpleclient_tracer_otel:0.15.0
+io.prometheus:simpleclient_tracer_otel_agent:0.15.0
 io.reactivex.rxjava2:rxjava:2.2.19
 io.reactivex:rxjava:1.3.8
 io.smallrye.common:smallrye-common-annotation:1.6.0
@@ -158,6 +165,7 @@ io.smallrye:smallrye-graphql-schema-builder:1.0.26
 io.smallrye:smallrye-graphql-schema-model:1.0.26
 io.smallrye:smallrye-graphql-servlet:1.0.26
 io.smallrye:smallrye-graphql:1.0.26
+io.smallrye:smallrye-metrics:5.0.0-M2
 io.zipkin.reporter2:zipkin-reporter:2.16.3
 io.zipkin.reporter2:zipkin-sender-okhttp3:2.16.3
 io.zipkin.zipkin2:zipkin:2.23.2
@@ -484,6 +492,7 @@ org.eclipse.microprofile.metrics:microprofile-metrics-api:2.2
 org.eclipse.microprofile.metrics:microprofile-metrics-api:2.3
 org.eclipse.microprofile.metrics:microprofile-metrics-api:3.0
 org.eclipse.microprofile.metrics:microprofile-metrics-api:4.0
+org.eclipse.microprofile.metrics:microprofile-metrics-api:5.0.0-RC2
 org.eclipse.microprofile.openapi:microprofile-openapi-api:1.0.1
 org.eclipse.microprofile.openapi:microprofile-openapi-api:1.1.1
 org.eclipse.microprofile.openapi:microprofile-openapi-api:2.0
@@ -568,6 +577,7 @@ org.glassfish:javax.faces:2.3.9
 org.glassfish:javax.json:1.0.4
 org.glassfish:javax.json:1.1.4
 org.hamcrest:hamcrest-all:1.3
+org.hdrhistogram:HdrHistogram:2.1.12
 org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
 org.hibernate.validator:hibernate-validator-cdi:6.1.7.Final
 org.hibernate.validator:hibernate-validator-cdi:7.0.4.Final
@@ -588,6 +598,8 @@ org.jboss.arquillian.container:arquillian-container-test-spi:1.3.0.Final
 org.jboss.arquillian.core:arquillian-core-api:1.3.0.Final
 org.jboss.arquillian.core:arquillian-core-spi:1.3.0.Final
 org.jboss.arquillian.test:arquillian-test-spi:1.3.0.Final
+org.jboss.logging:jboss-logging-annotations:2.2.1.Final
+org.jboss.logging:jboss-logging-processor:2.2.1.Final
 org.jboss.logging:jboss-logging:3.4.3.Final
 org.jboss.logging:jboss-logging:3.5.0.Final
 org.jboss.narayana.arjunacore:arjuna:5.10.6.Final
@@ -652,6 +664,7 @@ org.jmockit:jmockit:1.25
 org.json:json:20080701
 org.jsoup:jsoup:1.7.2
 org.jvnet.staxex:stax-ex:1.7.7
+org.latencyutils:LatencyUtils:2.0.3
 org.mock-server:mockserver-client-java:3.10.7
 org.mock-server:mockserver-client-java:5.11.2
 org.mock-server:mockserver-core:3.10.7
