@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.Closeable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -990,9 +989,9 @@ public class PolicyExecutorServlet extends FATServlet {
         // Third task should remain in the queue for 2 seconds or so
         Future<Boolean> task3future = executor.submit(task3);
 
-        if (executor instanceof Closeable) {
+        if (executor instanceof AutoCloseable) {
             // Java 19+
-            ((Closeable) executor).close();
+            ((AutoCloseable) executor).close();
         } else {
             // Java 18-
             executor.shutdown();

@@ -15,7 +15,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.Closeable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
@@ -171,9 +170,9 @@ public class MPContextProp1_3_EE10_TestServlet extends FATServlet {
         // Third task should remain in the queue for 2 seconds or so
         Future<Integer> task3future = executor.submit(() -> 3);
 
-        if (executor instanceof Closeable) {
+        if (executor instanceof AutoCloseable) {
             // Java 19+
-            ((Closeable) executor).close();
+            ((AutoCloseable) executor).close();
         } else {
             // Java 18-
             executor.shutdown();

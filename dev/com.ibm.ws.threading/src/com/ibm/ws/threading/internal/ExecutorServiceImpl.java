@@ -336,6 +336,11 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         throw new UnsupportedOperationException();
     }
 
+    // Java 19 Method
+    public void close() {
+        throw new UnsupportedOperationException();
+    }
+
     /** {@inheritDoc} */
     @Override
     public <T> Future<T> submit(Callable<T> task) {
