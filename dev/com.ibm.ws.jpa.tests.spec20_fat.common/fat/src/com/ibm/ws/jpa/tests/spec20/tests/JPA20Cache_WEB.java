@@ -158,6 +158,17 @@ public class JPA20Cache_WEB extends JPAFATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
+            // Clean up database
+            try {
+                final Set<String> ddlSet = new HashSet<String>();
+                for (String ddlName : dropSet) {
+                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                }
+                executeDDL(server, ddlSet, true);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
             server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
                               "WTRN0074E: Exception caught from before_completion synchronization operation", // RuntimeException test, expected
                               "DSRA0080E", "DSRA0010E" // Can happen with Oracle + OpenJPA
