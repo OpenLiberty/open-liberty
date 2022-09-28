@@ -44,14 +44,9 @@ Subsystem-Name: Jakarta Server Faces 4.0
   io.openliberty.jakarta.cdi-4.0, \
   io.openliberty.jakarta.faces-4.0
 -bundles=io.openliberty.org.apache.myfaces.4.0, \
- com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
- com.ibm.ws.org.apache.commons.collections, \
- com.ibm.ws.org.apache.commons.discovery.0.2, \
- io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.jsf.shared.jakarta, \
  io.openliberty.faces.4.0.internal, \
  com.ibm.ws.cdi.interfaces.jakarta, \
- com.ibm.ws.org.apache.commons.digester.1.8, \
  io.openliberty.jakarta.tags.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0", \
  io.openliberty.faces.4.0.thirdparty; location:="dev/api/third-party/"
 kind=noship
