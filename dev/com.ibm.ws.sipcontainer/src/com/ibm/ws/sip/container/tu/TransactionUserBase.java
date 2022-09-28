@@ -611,10 +611,8 @@ public class TransactionUserBase extends ReplicatableImpl {
 	 * @return
 	 */
 	List<IBMSipSession> getAllSipSessions(List<IBMSipSession> sessions, boolean create){
-		if(create) { //boolean is true, create new SIP sessions if there are none
-			if(_sipSession == null){
+		if(create && _sipSession == null) { //boolean is true, create new SIP sessions when there are none
 				getSipSession(create);
-				}
 		}
 		if(_sipSession != null){
 			sessions.add(_sipSession);	
