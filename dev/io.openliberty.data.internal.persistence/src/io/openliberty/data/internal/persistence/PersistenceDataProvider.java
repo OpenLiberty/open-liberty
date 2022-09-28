@@ -24,6 +24,7 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 
 import io.openliberty.data.internal.DataProvider;
+import jakarta.data.Template;
 
 /**
  * Simulates a provider for relational databases by delegating
@@ -56,5 +57,10 @@ public class PersistenceDataProvider implements DataProvider {
     @Override
     public void entitiesFound(String databaseId, ClassLoader loader, List<Class<?>> entities) {
         executor.submit(new EntityDefiner(this, databaseId, loader, entities));
+    }
+
+    @Override
+    public Template getTemplate() {
+        return new TemplateImpl(this);
     }
 }

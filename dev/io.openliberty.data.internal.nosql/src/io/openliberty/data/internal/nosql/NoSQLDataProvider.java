@@ -19,6 +19,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.internal.DataProvider;
+import jakarta.data.Template;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = DataProvider.class)
@@ -35,5 +36,11 @@ public class NoSQLDataProvider implements DataProvider {
     @Override
     @Trivial
     public void entitiesFound(String databaseId, ClassLoader loader, List<Class<?>> entities) {
+    }
+
+    @Override
+    @Trivial
+    public Template getTemplate() {
+        return null; // TODO return a Jakarta NoSQL Template
     }
 }

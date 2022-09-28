@@ -33,6 +33,7 @@ import jakarta.enterprise.inject.spi.Extension;
            service = { CDIExtensionMetadata.class, DataExtensionMetadata.class },
            immediate = true)
 public class DataExtensionMetadata implements CDIExtensionMetadata {
+    private static final Set<Class<?>> beanClasses = Set.of(TemplateProducer.class);
     private static final Set<Class<? extends Annotation>> beanDefiningAnnos = Set.of(Entities.class, Repository.class);
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
 
@@ -42,11 +43,11 @@ public class DataExtensionMetadata implements CDIExtensionMetadata {
     @Reference(name = "PersistenceDataProvider", cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
     DataProvider persistenceDataProvider;
 
-    //@Override
+    @Override
     //@Trivial
-    //public Set<Class<?>> getBeanClasses() {
-    //    return Set.of(TemplateProducer.class);
-    //}
+    public Set<Class<?>> getBeanClasses() {
+        return beanClasses;
+    }
 
     @Override
     @Trivial
@@ -70,7 +71,7 @@ public class DataExtensionMetadata implements CDIExtensionMetadata {
      * @param entityClass
      * @return the provider
      */
-    DataProvider getRepositoryProvider(Class<?> entityClass) {
+    DataProvider getProvider(Class<?> entityClass) {
         DataProvider provider = persistenceDataProvider;
         for (Annotation anno : entityClass.getAnnotations()) {
             String annoClassName = anno.annotationType().getName();
