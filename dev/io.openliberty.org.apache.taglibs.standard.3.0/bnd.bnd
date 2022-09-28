@@ -25,6 +25,10 @@ Import-Package: \
    !org.eclipse.tags.shaded.org.apache.xml.serialize,\
    !org.eclipse.tags.shaded.org.apache.xml.serializer,\
    !org.apache.xerces*, \
+   !jline.*, \
+   !com.thaiopensource.*, \
+   !org.apache.hc.*, \
+   !org.slf4j*,\
    *
 
 Export-Package: \
@@ -36,9 +40,13 @@ Export-Package: \
   !org.eclipse.tags.shaded.org.apache.xalan.xsltc.*,\
   org.eclipse.tags.shaded.org.apache.xalan.*, \
   org.eclipse.tags.shaded.org.apache.xml.*, \
-  org.eclipse.tags.shaded.org.apache.xpath.*
+  org.eclipse.tags.shaded.org.apache.xpath.*, \
+  org.eclipse.tags.shaded.net.sf.saxon.*
+
+-includeresource: \
+   @lib/xmlresolver-4.4.3.jar!/!META-INF/*
 
 -buildpath: \
-  org.glassfish.web:jakarta.servlet.jsp.jstl;version=3.0, \
+  ./jakarta.servlet.jsp.jstl-3.0.1-SNAPSHOT.jar;version=file, \
   io.openliberty.jakarta.servlet.6.0;version=latest,\
   io.openliberty.jakarta.pages.3.0;version=latest
