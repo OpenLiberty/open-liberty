@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.Optional;
 
+import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
@@ -23,6 +24,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
@@ -31,6 +33,9 @@ import jakarta.security.enterprise.identitystore.openid.IdentityToken;
 import jakarta.security.enterprise.identitystore.openid.OpenIdClaims;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 import jakarta.security.enterprise.identitystore.openid.RefreshToken;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 public class OpenIdContextImplTest {
 
@@ -38,6 +43,7 @@ public class OpenIdContextImplTest {
     private static final String TOKEN_TYPE_BEARER = "Bearer";
     private static final String TOKEN_TYPE_MAC = "MAC";
     private static final Long ONE_HOUR = Long.valueOf(3600);
+    private static final String STATE = "1234567890";
 
     private final Mockery mockery = new JUnit4Mockery();
 
@@ -48,6 +54,8 @@ public class OpenIdContextImplTest {
     private JsonObject providerMetadata;
     private JsonObject jsonObject;
     private OpenIdContext openIdContext;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -65,7 +73,7 @@ public class OpenIdContextImplTest {
         userinfoClaims = mockery.mock(OpenIdClaims.class);
         providerMetadata = Json.createObjectBuilder().add(OpenIdConstant.ISSUER, "https://localhost:9443/oidc/endpoint/OP/authorize").build();
 
-        openIdContext = new OpenIdContextImpl(SUBJECT_IN_ID_TOKEN, TOKEN_TYPE_BEARER, accessToken, identityToken, userinfoClaims, providerMetadata);
+        openIdContext = new OpenIdContextImpl(SUBJECT_IN_ID_TOKEN, TOKEN_TYPE_BEARER, accessToken, identityToken, userinfoClaims, providerMetadata, STATE, true);
     }
 
     @After
@@ -137,10 +145,26 @@ public class OpenIdContextImplTest {
     public void testGetProviderMetadata() {
         assertEquals("The provider metadata must be set.", providerMetadata, openIdContext.getProviderMetadata());
     }
-//
-//    @Test
-//    public void testGetStoredValue() {
-//        fail("Not yet implemented");
-//    }
+
+    @Test
+    public void testGetStoredValue_sessionBasedStorage() {
+        request = mockery.mock(HttpServletRequest.class);
+        response = mockery.mock(HttpServletResponse.class);
+        HttpSession session = mockery.mock(HttpSession.class);
+        String originalRequestUrl = "originalRequestUrl";
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(request).getSession();
+                will(returnValue(session));
+                allowing(session).getAttribute(OidcStorageUtils.getOriginalReqUrlStorageKey(STATE));
+                will(returnValue(originalRequestUrl));
+            }
+        });
+
+        Optional<String> originalRequestStringOptional = openIdContext.getStoredValue(request, response, OpenIdConstant.ORIGINAL_REQUEST);
+
+        assertEquals("The original request must be found in the OpenIdContext.", originalRequestUrl, originalRequestStringOptional.get());
+    }
 
 }

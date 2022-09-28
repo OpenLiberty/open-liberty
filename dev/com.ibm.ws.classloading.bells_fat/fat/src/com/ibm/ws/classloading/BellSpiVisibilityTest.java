@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -60,11 +59,6 @@ public class BellSpiVisibilityTest {
         } catch (final Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Before
-    public void beforeTest() throws Throwable {
-        // nada
     }
 
     @After
@@ -172,7 +166,6 @@ public class BellSpiVisibilityTest {
                         server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader", TimeOut));
             }
         } finally {
-            stopServer();
             removeSysProps(server, props);
         }
     }
@@ -217,7 +210,6 @@ public class BellSpiVisibilityTest {
             assertNotNull("IBM-SPI packages should not be visible to the BELL service, but are.",
                     server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is not visible to the BELL library classloader"));
         } finally {
-            stopServer();
             removeSysProps(server, props);
         }
     }
@@ -283,7 +275,6 @@ public class BellSpiVisibilityTest {
             HttpUtils.findStringInUrl(server, "/SpiVisibility/TestServlet?loadOp=" + loadOp + "&className=" + LIB_IBMSPI_IMPL_CLASS_NAME,
                                       LIB_IBMSPI_IMPL_CLASS_NAME + " is not visible to the application classloader");
         } finally {
-            stopServer();
             removeSysProps(server, props);
         }
     }
@@ -328,7 +319,6 @@ public class BellSpiVisibilityTest {
                            server.waitForStringInLog(".*CWWKL0059I: ", 10));
             }
         } finally {
-            stopServer();
             removeSysProps(server, props);
         }
     }

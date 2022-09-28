@@ -13,6 +13,7 @@ package com.ibm.ws.webcontainer.security.internal;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.security.LoggedOutCookieCache;
+import com.ibm.ws.webcontainer.security.TraceConstants;
 
 import io.openliberty.jcache.CacheService;
 
@@ -21,7 +22,7 @@ import io.openliberty.jcache.CacheService;
  */
 public class JCacheLoggedOutCookieCache implements LoggedOutCookieCache {
 
-    private static final TraceComponent tc = Tr.register(JCacheLoggedOutCookieCache.class, "LoggedOutCookieCache");
+    private static final TraceComponent tc = Tr.register(JCacheLoggedOutCookieCache.class, "LoggedOutCookieCache", TraceConstants.MESSAGE_BUNDLE);
     private final CacheService cacheService;
 
     public JCacheLoggedOutCookieCache(CacheService cacheService) {

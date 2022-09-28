@@ -33,6 +33,7 @@ import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.IdentityToken;
 import jakarta.security.enterprise.identitystore.openid.OpenIdClaims;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -54,7 +55,8 @@ public class OidcIdentityStore implements IdentityStore {
             Client client = castCredential.getClient();
             if (tokenResponse != null && client != null) {
                 try {
-                    JwtClaims idTokenClaims = client.validate(tokenResponse, castCredential.getRequest(), castCredential.getResponse());
+                    HttpServletRequest request = castCredential.getRequest();
+                    JwtClaims idTokenClaims = client.validate(tokenResponse, request, castCredential.getResponse());
 
                     OidcClientConfig oidcClientConfig = client.getOidcClientConfig();
                     long tokenMinValidityInMillis = oidcClientConfig.getTokenMinValidity();
@@ -67,7 +69,7 @@ public class OidcIdentityStore implements IdentityStore {
                     JsonObject providerMetadata = getProviderMetadataAsJsonObject();
 
                     OpenIdContext openIdContext = createOpenIdContext(credentialValidationResult.getCallerUniqueId(), tokenResponse, accessToken, identityToken, userinfoClaims,
-                                                                      providerMetadata);
+                                                                      providerMetadata, request.getParameter(OpenIdConstant.STATE), oidcClientConfig.isUseSession());
 
                     castCredential.setOpenIdContext(openIdContext);
 
@@ -81,7 +83,7 @@ public class OidcIdentityStore implements IdentityStore {
     }
 
     private OpenIdContext createOpenIdContext(String subjectIdentifier, TokenResponse tokenResponse, AccessToken accessToken, IdentityToken identityToken,
-                                              OpenIdClaims userinfoClaims, JsonObject providerMetadata) {
+                                              OpenIdClaims userinfoClaims, JsonObject providerMetadata, String state, boolean useSession) {
         Map<String, String> tokenResponseRawMap = tokenResponse.asMap();
         // TODO: Move getting expires_in to TokenResponse
         long expiresIn = 0L;
@@ -89,7 +91,7 @@ public class OidcIdentityStore implements IdentityStore {
             expiresIn = Long.parseLong(tokenResponseRawMap.get(OpenIdConstant.EXPIRES_IN));
         }
 
-        OpenIdContextImpl openIdContext = new OpenIdContextImpl(subjectIdentifier, tokenResponseRawMap.get(OpenIdConstant.TOKEN_TYPE), accessToken, identityToken, userinfoClaims, providerMetadata);
+        OpenIdContextImpl openIdContext = new OpenIdContextImpl(subjectIdentifier, tokenResponseRawMap.get(OpenIdConstant.TOKEN_TYPE), accessToken, identityToken, userinfoClaims, providerMetadata, state, useSession);
         openIdContext.setExpiresIn(expiresIn);
 
         String refreshTokenString = tokenResponse.getRefreshTokenString();

@@ -761,7 +761,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // contents of Host and $WS* headers..
         if (useTrustedHeaders()) {
             // If the plugin provided a header, prefer that..
-            String pluginHost = request.getHeader(HttpHeaderKeys.HDR_$WSSN.getName());
+            String pluginHost = request.getHeader(HttpHeaderKeys.HDR_$WSSN);
             if (pluginHost != null)
                 return pluginHost;
         }
@@ -793,7 +793,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // Get the requested port: this takes into consideration whether or not we should trust the
         // contents of Host and $WS* headers..
         if (useTrustedHeaders()) {
-            String pluginPort = request.getHeader(HttpHeaderKeys.HDR_$WSSP.getName());
+            String pluginPort = request.getHeader(HttpHeaderKeys.HDR_$WSSP);
             if (pluginPort != null)
                 return Integer.parseInt(pluginPort);
         }
@@ -811,10 +811,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
             if (scheme == null && isc != null && !isc.useForwardedHeaders()) {
                 //if remoteIp is not enabled, still verify for the x-forwarded-proto
-                scheme = getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
+                scheme = getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
             }
 
-            if (scheme == null && request.getHeader(HttpHeaderKeys.HDR_HOST.getName()) != null) {
+            if (scheme == null && request.getHeader(HttpHeaderKeys.HDR_HOST) != null) {
                 scheme = request.getScheme();
 
             }
@@ -847,6 +847,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public String getTrustedHeader(String headerName) {
         if (useTrustedHeaders() && request != null) {
             return request.getHeader(headerName);
+        }
+        return null;
+    }
+
+    private String getTrustedHeader(HttpHeaderKeys headerKey) {
+        if (useTrustedHeaders() && request != null) {
+            return request.getHeader(headerKey);
         }
         return null;
     }
@@ -918,7 +925,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         }
         if (remoteAddr == null) {
-            remoteAddr = getTrustedHeader(HttpHeaderKeys.HDR_$WSRA.getName());
+            remoteAddr = getTrustedHeader(HttpHeaderKeys.HDR_$WSRA);
             if (remoteAddr != null) {
                 if (!validateRemoteAddress(remoteAddr)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1002,7 +1009,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
         if (remoteHost == null) {
 
-            remoteHost = getTrustedHeader(HttpHeaderKeys.HDR_$WSRH.getName());
+            remoteHost = getTrustedHeader(HttpHeaderKeys.HDR_$WSRH);
             if (remoteHost != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "getRemoteHost isTrusted --> true, host --> " + remoteHost);

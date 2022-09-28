@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.logout;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.webcontainer.security.AuthResult;
@@ -20,7 +19,7 @@ public class CustomLogoutStrategy {
 
     String redirectUrl;
 
-    public CustomLogoutStrategy(HttpServletRequest req, HttpServletResponse resp, String redirectUrl) {
+    public CustomLogoutStrategy(String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
 

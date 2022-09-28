@@ -30,12 +30,14 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee7.HttpOutputStreamEE7;
 
+import io.openliberty.http.ext.HttpResponseExt;
+
 /**
  * Implementation of the public HTTP transport response message for the dispatcher
  * and container traffic.
  */
 @Trivial
-public class HttpResponseImpl implements HttpResponse {
+public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
     private HttpInboundServiceContext isc = null;
     private HttpResponseMessage message = null;
     private HttpOutputStreamImpl body = null;
@@ -145,11 +147,27 @@ public class HttpResponseImpl implements HttpResponse {
     }
 
     /*
+     * @see com.ibm.websphere.http.HttpResponseExt#setHeader(com.ibm.wsspi.http.channel.values.HttpHeaderKeys, java.lang.String)
+     */
+    @Override
+    public void setHeader(HttpHeaderKeys key, String value) {
+        this.message.setHeader(key, value);
+    }
+
+    /*
      * @see com.ibm.websphere.http.HttpResponse#removeHeader(java.lang.String)
      */
     @Override
     public void removeHeader(String name) {
         this.message.removeHeader(name);
+    }
+
+    /*
+     * @see io.openliberty.http.ext.HttpHeaderResponseExt#removeHeader(com.ibm.wsspi.http.channel.values.HttpHeaderKeys)
+     */
+    @Override
+    public void removeHeader(HttpHeaderKeys key) {
+        this.message.removeHeader(key);
     }
 
     /*
@@ -196,6 +214,14 @@ public class HttpResponseImpl implements HttpResponse {
     @Override
     public String getHeader(String name) {
         return this.message.getHeader(name).asString();
+    }
+
+    /*
+     * @see io.openliberty.http.ext.HttpHeaderResponseExt#getHeader(com.ibm.wsspi.http.channel.values.HttpHeaderKeys)
+     */
+    @Override
+    public String getHeader(HttpHeaderKeys key) {
+        return this.message.getHeader(key).asString();
     }
 
     /*

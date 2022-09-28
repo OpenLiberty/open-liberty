@@ -134,6 +134,7 @@ Import-Package: \
 	com.ibm.wsspi.injectionengine, \
 	com.ibm.ws.runtime.metadata, \
 	com.ibm.ws.runtime.update, \
+	io.openliberty.http.ext, \
 	com.ibm.ejs.util, \
     com.ibm.ws.threadContext, \
     com.ibm.ejs.j2c, \

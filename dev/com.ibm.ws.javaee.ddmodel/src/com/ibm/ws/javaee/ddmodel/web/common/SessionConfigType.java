@@ -12,7 +12,9 @@ package com.ibm.ws.javaee.ddmodel.web.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.common.AttributeValue;
@@ -260,15 +262,58 @@ public class SessionConfigType extends DDParser.ElementContentParsable implement
             if ((parser.version >= WebApp.VERSION_6_0) && "attribute".equals(localName)) {
                 AttributeValueType attribute_value = new AttributeValueType();
                 parser.parse(attribute_value);
-                addAttribute(attribute_value);
+                addAttribute(parser, attribute_value);
                 return true;
             }
             return false;
         }
 
-        private void addAttribute(AttributeValueType attribute) {
+        private void warn(DDParser parser, String msgId, Object... parms) {
+            parser.warning(parser.formatMessage(msgId, parms));
+        }
+
+        private void addAttribute(DDParser parser, AttributeValueType attribute) {
+            String attributeName = attribute.getAttributeName();
+
+            // Per request from the web container, do not allow attributes which
+            // either have a null name or which have duplicate names.
+            //
+            // An attribute with a null name cannot be used, and is not allowed
+            // by the schema (although, we will parse it).
+            //
+            // Attributes with the same names are allowed by the schema, but
+            // RFC 6265, HTTP State Management Mechanism, dated April 2011,
+            // section 4.1.1, Syntax, states:
+            // "To maximize compatibility with user agents, servers SHOULD NOT produce
+            // two attributes with the same name in the same set-cookie-string."
+
+            if (attributeName == null) {
+                warn(parser,
+                     "missing.session.config.attribute.name",
+                     parser.describeEntry(), parser.getLineNumber(),
+                     attribute.getAttributeValue());
+                return;
+            }
+
             if (this.attribute == null) {
                 this.attribute = new AttributeValueType.ListType();
+            } else {
+                // Attributes with null names are never added, per the attribute name
+                // test, above.
+                AttributeValueType priorAttribute = this.attribute.lookup(attributeName);
+                if (priorAttribute != null) {
+                    warn(parser,
+                         "duplicate.session.config.attribute.name",
+                         parser.describeEntry(), parser.getLineNumber(),
+                         attributeName, attribute.getAttributeValue(),
+                         priorAttribute.getAttributeValue());
+
+                    // 'add' will handle both adding the new attribute to
+                    // the list, and updating the internal table of attributes.
+                    // However, the prior attribute must still be removed
+                    // from the list.
+                    this.attribute.remove(priorAttribute);
+                }
             }
             this.attribute.add(attribute);
         }
@@ -302,6 +347,28 @@ public class SessionConfigType extends DDParser.ElementContentParsable implement
             @Override
             public AttributeValueType newInstance(DDParser parser) {
                 return new AttributeValueType();
+            }
+
+            // Hard to tell if this is worth having.
+            // I've added it in case the attribute lists are large.
+            private Map<String, AttributeValueType> attributes;
+
+            @Override
+            public void add(AttributeValueType attributeValue) {
+                super.add(attributeValue);
+
+                if (attributes == null) {
+                    attributes = new HashMap<String, AttributeValueType>();
+                }
+                attributes.put(attributeValue.getAttributeName(), attributeValue);
+            }
+
+            protected AttributeValueType lookup(String attributeName) {
+                return ((attributes == null) ? null : attributes.get(attributeName));
+            }
+
+            protected void remove(AttributeValueType attributeValue) {
+                list.remove(attributeValue);
             }
         }
 

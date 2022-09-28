@@ -28,8 +28,11 @@ import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.HttpInboundConnection;
 import com.ibm.wsspi.http.HttpResponse;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.util.WrappingEnumeration;
+
+import io.openliberty.http.ext.HttpResponseExt;
 
 /**
  * Implementation of a servlet response wrapping the HTTP dispatcher provided
@@ -157,6 +160,11 @@ public class IResponseImpl implements IResponse
     return (null != this.response.getHeader(name));
   }
 
+  public boolean containsHeader(HttpHeaderKeys key)
+  {
+    return (null != ((HttpResponseExt)this.response).getHeader(key));
+  }
+
   public boolean containsHeader(byte[] name)
   {
     return containsHeader(new String(name));
@@ -202,6 +210,11 @@ public class IResponseImpl implements IResponse
     this.response.removeHeader(name);
   }
 
+  public void removeHeader(HttpHeaderKeys key)
+  {
+      ((HttpResponseExt)this.response).removeHeader(key);
+  }
+
   public void removeHeader(byte[] name)
   {
     this.response.removeHeader(new String(name));
@@ -216,14 +229,14 @@ public class IResponseImpl implements IResponse
   public void setContentLanguage(String value)
   {
       //PM25421
-      if (response.getHeader("Content-Language") != null){
+      if (((HttpResponseExt)response).getHeader(HttpHeaderKeys.HDR_CONTENT_LANGUAGE) != null){
           if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
               Tr.debug(tc, "setContentLanguage(String)", "Ignored as the Content-Language already set");
           }
           return;
       }
 
-    this.response.setHeader("Content-Language", value);
+      ((HttpResponseExt)this.response).setHeader(HttpHeaderKeys.HDR_CONTENT_LANGUAGE, value);
   }
   
   public void setContentLength(int length) {
@@ -233,24 +246,24 @@ public class IResponseImpl implements IResponse
   public void setContentLanguage(byte[] value)
   {
       //PM25421
-      if (response.getHeader("Content-Language") != null){
+      if (((HttpResponseExt)response).getHeader(HttpHeaderKeys.HDR_CONTENT_LANGUAGE) != null){
           if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
               Tr.debug(tc, "setContentLanguage(byte[])", "Ignored as the Content-Language already set");
           }
           return;
       }
 
-      this.response.setHeader("Content-Language", new String(value));
+      ((HttpResponseExt)this.response).setHeader(HttpHeaderKeys.HDR_CONTENT_LANGUAGE, new String(value));
   }
 
   public void setContentType(String value)
   {
-    this.response.setHeader("Content-Type", value);
+      ((HttpResponseExt)this.response).setHeader(HttpHeaderKeys.HDR_CONTENT_TYPE, value);
   }
 
   public void setContentType(byte[] value)
   {
-    this.response.setHeader("Content-Type", new String(value));
+      ((HttpResponseExt)this.response).setHeader(HttpHeaderKeys.HDR_CONTENT_TYPE, new String(value));
   }
 
   public void setDateHeader(String name, long t)
@@ -271,6 +284,11 @@ public class IResponseImpl implements IResponse
   public void setHeader(String name, String s)
   {
     this.response.setHeader(name, s);
+  }
+
+  public void setHeader(HttpHeaderKeys key, String s)
+  {
+      ((HttpResponseExt)this.response).setHeader(key, s);
   }
 
   public void setHeader(byte[] name, byte[] bs)
@@ -377,6 +395,11 @@ public class IResponseImpl implements IResponse
   public String getHeader(String name)
   {
     return this.response.getHeader(name);
+  }
+
+  public String getHeader(HttpHeaderKeys key)
+  {
+    return ((HttpResponseExt)this.response).getHeader(key);
   }
 
   public String getHeader(byte[] name)

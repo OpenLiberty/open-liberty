@@ -103,10 +103,16 @@ public class JCacheAuthCache implements AuthCache {
         if (!FrameworkState.isStopping() && authCacheService.isServerStarted()) {
             Cache<Object, Object> jCache = getJCache();
             if (jCache != null) {
-                jCache.removeAll(); // Notifies listeners, clear() does not.
+                try {
+                    jCache.removeAll(); // Notifies listeners, clear() does not.
+                    Tr.info(tc, "JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES", jCache.getName());
+                } catch (Exception e) {
+                    /*
+                     * Handle any exceptions so they doen't abort the overall request.
+                     */
+                    Tr.error(tc, "JCACHE_AUTH_CACHE_CLEAR_FAILED", jCache.getName(), e);
+                }
             }
-
-            Tr.info(tc, "JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES", cacheService.getCache().getName());
         }
     }
 
@@ -139,6 +145,11 @@ public class JCacheAuthCache implements AuthCache {
                  * version.
                  */
                 Tr.error(tc, e.getMessage());
+            } catch (Exception e) {
+                /*
+                 * Handle any exceptions so they doen't abort the overall request.
+                 */
+                Tr.error(tc, "JCACHE_AUTH_CACHE_GET_FAILED", key, jCache.getName(), e);
             }
         }
 
@@ -181,8 +192,8 @@ public class JCacheAuthCache implements AuthCache {
         }
 
         if (!forceInMemory) {
+            Cache<Object, Object> jCache = getJCache();
             try {
-                Cache<Object, Object> jCache = getJCache();
                 if (jCache != null) {
                     jCache.put(key, value);
                 }
@@ -193,7 +204,7 @@ public class JCacheAuthCache implements AuthCache {
                  * We will always log a warning if the cause was NOT a NotSerializableException. If the cause was
                  * a NotSerializableException, we will only log it once for the class listed in the exception. This
                  * will stop these messages from overwhelming the logs when the user is OK with the issue.
-                 * 
+                 *
                  * If debug is enabled, we will log all instances where the the warning is not emitted.
                  */
                 String notSerializableClass = e.getNotSerializableClass();
@@ -201,13 +212,18 @@ public class JCacheAuthCache implements AuthCache {
                     if (notSerializableClass != null) {
                         notSerializableClassesLogged.add(notSerializableClass);
                     }
-                    Tr.warning(tc, "JCACHE_AUTH_CACHE_SERIALIZATION_FAILED", key, getJCache().getName(), e.getMessage());
+                    Tr.warning(tc, "JCACHE_AUTH_CACHE_SERIALIZATION_FAILED", key, jCache.getName(), e.getMessage());
                 } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Insertion of entry for the " + key + " key into the " + getJCache().getName()
+                    Tr.debug(tc, "Insertion of entry for the " + key + " key into the " + jCache.getName()
                                  + " JCache failed due to a serialization error. The entry will be inserted into the in-memory cache instead.",
                              e);
                 }
                 inMemoryCache.insert(key, value);
+            } catch (Exception e) {
+                /*
+                 * Handle any exceptions so they doen't abort the overall request.
+                 */
+                Tr.error(tc, "JCACHE_AUTH_CACHE_INSERT_FAILED", key, jCache.getName(), e);
             }
         } else {
             /*
@@ -233,7 +249,14 @@ public class JCacheAuthCache implements AuthCache {
          */
         Cache<Object, Object> jCache = getJCache();
         if (jCache != null) {
-            jCache.remove(key);
+            try {
+                jCache.remove(key);
+            } catch (Exception e) {
+                /*
+                 * Handle any exceptions so they doen't abort the overall request.
+                 */
+                Tr.error(tc, "JCACHE_AUTH_CACHE_REMOVE_FAILED", key, jCache.getName(), e);
+            }
         }
     }
 

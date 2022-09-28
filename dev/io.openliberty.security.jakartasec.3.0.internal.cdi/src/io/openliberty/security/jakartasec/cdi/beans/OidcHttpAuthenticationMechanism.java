@@ -12,7 +12,9 @@ package io.openliberty.security.jakartasec.cdi.beans;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 
@@ -46,7 +48,9 @@ import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthentic
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
+import jakarta.security.enterprise.identitystore.openid.IdentityToken;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
+import jakarta.security.enterprise.identitystore.openid.RefreshToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -119,11 +123,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         } else if (isCallbackRequest(request)) {
             status = processCallback(client, request, response, httpMessageContext);
         } else if (alreadyAuthenticated) {
-            status = processExpiredTokenResult(client.processExpiredToken(request, response), httpMessageContext);
+            status = processExpiredTokenResult(processExpiredToken(client, request, response, httpMessageContext), httpMessageContext);
         }
-
-        // Else if isAuthenticationSessionEstablished
-        //   status = processTokenExpirationIfNeeded - client.processExpiredToken() / logout();
 
         return status;
     }
@@ -288,6 +289,43 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         }
 
         return status;
+    }
+
+    private ProviderAuthenticationResult processExpiredToken(Client client, HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
+        OpenIdContext openIdContext = getOpenIdContextFromSubject(httpMessageContext);
+
+        if (openIdContext == null) {
+            // TODO add debug. should not be here.
+            return new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        IdentityToken idToken = openIdContext.getIdentityToken();
+        boolean isAccessTokenExpired = openIdContext.getAccessToken().isExpired();
+        boolean isIdTokenExpired = idToken.isExpired();
+        String idTokenString = idToken.getToken();
+        String refreshTokenString = getRefreshToken(openIdContext);
+        return client.processExpiredToken(request, response, isAccessTokenExpired, isIdTokenExpired, idTokenString, refreshTokenString);
+
+    }
+
+    private OpenIdContext getOpenIdContextFromSubject(HttpMessageContext httpMessageContext) {
+        Subject clientSubject = httpMessageContext.getClientSubject();
+        Set<OpenIdContext> creds = clientSubject.getPrivateCredentials(OpenIdContext.class);
+        for (OpenIdContext openIdContext : creds) {
+            // there should only be one OpenIdContext in the clientSubject.getPrivateCredentials(OpenIdContext.class) set.
+            return openIdContext;
+        }
+        return null;
+    }
+
+    private String getRefreshToken(OpenIdContext openIdContext) {
+        Optional<RefreshToken> optionalRefreshToken = openIdContext.getRefreshToken();
+        if (optionalRefreshToken.isPresent()) {
+            RefreshToken refreshToken = optionalRefreshToken.get();
+            if (refreshToken != null) {
+                return refreshToken.getToken();
+            }
+        }
+        return null;
     }
 
     @Override

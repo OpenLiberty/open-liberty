@@ -48,4 +48,5 @@ tested.features: \
 	com.ibm.ws.logging, \
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.serialization, \
-	fattest.simplicity
+	fattest.simplicity,\
+	org.hamcrest:hamcrest-all;version=1.3
