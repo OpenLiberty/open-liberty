@@ -1135,7 +1135,7 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
     public void setSessionCookieConfig(SessionCookieConfig scc) {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
         {
-            logger.logp(Level.FINE, CLASS_NAME, "setSessionCookieConfig", " scc [" + scc + "] for application [" + this.getApplicationName() + "] , this -> " + this);
+            logger.logp(Level.FINE, CLASS_NAME, "setSessionCookieConfig", " scc [" + scc + "] for application [" + this.getApplicationName() + "] , replaced [" + sessionCookieConfig + "] , this -> " + this);
         }
         this.sessionCookieConfig = scc;
     }

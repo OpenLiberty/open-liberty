@@ -84,12 +84,13 @@ public class ServletContainerInitializerImpl implements ServletContainerInitiali
         scc.setSecure(true);
 
         //Servlet 6.0 new API
-        scc.setAttribute("AttName1", "AttValue1");
-        scc.setAttribute("AttName2", "AttValue2");
+        scc.setAttribute("AttName1", "AttValue1SCI");      //overwrite web.xml setting - precendence test
+        scc.setAttribute("AttName2", "AttValue2SCI");      //overwrite web.xml setting - precendence test
         scc.setAttribute("AttName5", "AttToBeReplaced");
-        scc.setAttribute("AttName5", "AttValue5");        
+        scc.setAttribute("AttName5", "AttValue5");         //replace attribute 
+        
+        //Set specific attributes using setAttribute()
         scc.setAttribute("SameSite", "None");        
-
         scc.setAttribute("Domain", "setAttDomain_viaSCI");        
         
         //Test null and invalid  attribute names
