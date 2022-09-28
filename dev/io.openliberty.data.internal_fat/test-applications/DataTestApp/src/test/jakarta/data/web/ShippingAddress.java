@@ -10,9 +10,9 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import io.openliberty.data.DiscriminatorColumn;
-import io.openliberty.data.DiscriminatorValue;
-import io.openliberty.data.Inheritance;
+import jakarta.data.DiscriminatorColumn;
+import jakarta.data.DiscriminatorValue;
+import jakarta.data.Inheritance;
 
 /**
  *

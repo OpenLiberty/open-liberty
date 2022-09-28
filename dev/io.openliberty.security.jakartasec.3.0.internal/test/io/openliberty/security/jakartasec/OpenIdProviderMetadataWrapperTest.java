@@ -10,11 +10,13 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
 import static junit.framework.Assert.assertEquals;
 
-import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdProviderMetadata;
@@ -25,149 +27,176 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdPr
  */
 public class OpenIdProviderMetadataWrapperTest {
 
-    private static String EMPTY_DEFAULT = "";
-    private static String AUTHORIZATION_ENDPOINT = "authorizationEndpoint";
-    private static String TOKEN_ENDPOINT = "tokenEndpoint";
-    private static String USERINFO_ENDPOINT = "userinfoEndpoint";
-    private static String END_SESSION_ENDPOINT = "endSessionEndpoint";
-    private static String JWKS_URI = "jwksURI";
-    private static String ISSUER = "issuer";
-    private static String SUBJECT_TYPE_SUPPORTED = "subjectTypeSupported";
-    private static String ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED = "idTokenSigningAlgorithmsSupported";
-    private static String RESPONSE_TYPE_SUPPORTED = "responseTypeSupported";
-    private static String SUBJECT_TYPE_SUPPORTED_DEFAULT = "public";
-    private static String ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED_DEFAULT = "RS256";
-    private static String RESPONSE_TYPE_SUPPORTED_DEFAULT = "code,id_token,token id_token";
+    private Map<String, Object> overrides;
+
+    private static final String STRING_EL_EXPRESSION = "#{'blah'.concat('blah')}";
+    private static final String EVALUATED_EL_EXPRESSION_STRING_RESULT = "blahblah";
+
+    @Before
+    public void setUp() {
+        overrides = new HashMap<String, Object>();
+    }
 
     @Test
     public void testGetAuthorizationEndpoint() {
-        OpenIdProviderMetadata providerMetadata = getInstanceofAnnotation(null);
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
         assertEquals(EMPTY_DEFAULT, wrapper.getAuthorizationEndpoint());
     }
 
     @Test
+    public void testGetAuthorizationEndpoint_EL() {
+        overrides.put(TestOpenIdProviderMetadataDefinition.AUTHORIZATION_ENDPOINT, STRING_EL_EXPRESSION);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getAuthorizationEndpoint());
+    }
+
+    @Test
     public void testGetTokenEndpoint() {
-        OpenIdProviderMetadata providerMetadata = getInstanceofAnnotation(null);
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
         assertEquals(EMPTY_DEFAULT, wrapper.getTokenEndpoint());
     }
 
     @Test
+    public void testGetTokenEndpoint_EL() {
+        overrides.put(TestOpenIdProviderMetadataDefinition.TOKEN_ENDPOINT, STRING_EL_EXPRESSION);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getTokenEndpoint());
+    }
+
+    @Test
     public void testGetUserinfoEndpoint() {
-        OpenIdProviderMetadata providerMetadata = getInstanceofAnnotation(null);
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
         assertEquals(EMPTY_DEFAULT, wrapper.getUserinfoEndpoint());
     }
 
     @Test
+    public void testGetUserinfoEndpoint_EL() {
+        overrides.put(TestOpenIdProviderMetadataDefinition.USERINFO_ENDPOINT, STRING_EL_EXPRESSION);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getUserinfoEndpoint());
+    }
+
+    @Test
     public void testGetEndSessionEndpoint() {
-        OpenIdProviderMetadata providerMetadata = getInstanceofAnnotation(null);
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
         assertEquals(EMPTY_DEFAULT, wrapper.getEndSessionEndpoint());
     }
 
     @Test
+    public void testGetEndSessionEndpoint_EL() {
+        overrides.put(TestOpenIdProviderMetadataDefinition.END_SESSION_ENDPOINT, STRING_EL_EXPRESSION);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getEndSessionEndpoint());
+    }
+
+    @Test
     public void testGetJwksURI() {
-        OpenIdProviderMetadata providerMetadata = getInstanceofAnnotation(null);
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
         assertEquals(EMPTY_DEFAULT, wrapper.getJwksURI());
     }
 
     @Test
+    public void testGetJwksURI_EL() {
+        overrides.put(TestOpenIdProviderMetadataDefinition.JWKS_URI, STRING_EL_EXPRESSION);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getJwksURI());
+    }
+
+    @Test
     public void testGetIssuer() {
-        OpenIdProviderMetadata providerMetadata = getInstanceofAnnotation(null);
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
         assertEquals(EMPTY_DEFAULT, wrapper.getIssuer());
     }
 
     @Test
-    public void testGetSubjectTypeSupported() {
-        OpenIdProviderMetadata providerMetadata = getInstanceofAnnotation(null);
+    public void testGetIssuer_EL() {
+        overrides.put(TestOpenIdProviderMetadataDefinition.ISSUER, STRING_EL_EXPRESSION);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
-        assertEquals(SUBJECT_TYPE_SUPPORTED_DEFAULT, wrapper.getSubjectTypeSupported());
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getIssuer());
+    }
+
+    @Test
+    public void testGetSubjectTypeSupported() {
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals(TestOpenIdProviderMetadataDefinition.SUBJECT_TYPE_SUPPORTED_DEFAULT, wrapper.getSubjectTypeSupported());
+    }
+
+    @Test
+    public void testGetSubjectTypeSupported_EL() {
+        overrides.put(TestOpenIdProviderMetadataDefinition.SUBJECT_TYPE_SUPPORTED, STRING_EL_EXPRESSION);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getSubjectTypeSupported());
     }
 
     @Test
     public void testGetIdTokenSigningAlgorithmsSupported() {
-        OpenIdProviderMetadata providerMetadata = getInstanceofAnnotation(null);
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
-        assertEquals(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED_DEFAULT, wrapper.getIdTokenSigningAlgorithmsSupported());
+        assertEquals(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED_DEFAULT, wrapper.getIdTokenSigningAlgorithmsSupported());
+    }
+
+    @Test
+    public void testGetIdTokenSigningAlgorithmsSupported_EL() {
+        overrides.put(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED, STRING_EL_EXPRESSION);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getIdTokenSigningAlgorithmsSupported());
     }
 
     @Test
     public void testGetResponseTypeSupported() {
-        OpenIdProviderMetadata providerMetadata = getInstanceofAnnotation(null);
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
-        assertEquals(RESPONSE_TYPE_SUPPORTED_DEFAULT, wrapper.getResponseTypeSupported());
+        assertEquals(TestOpenIdProviderMetadataDefinition.RESPONSE_TYPE_SUPPORTED_DEFAULT, wrapper.getResponseTypeSupported());
     }
 
-    private OpenIdProviderMetadata getInstanceofAnnotation(final Map<String, Object> overrides) {
-        OpenIdProviderMetadata annotation = new OpenIdProviderMetadata() {
+    @Test
+    public void testGetResponseTypeSupported_EL() {
+        overrides.put(TestOpenIdProviderMetadataDefinition.RESPONSE_TYPE_SUPPORTED, STRING_EL_EXPRESSION);
 
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return null;
-            }
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
-            @Override
-            public String authorizationEndpoint() {
-                return (overrides != null && overrides.containsKey(AUTHORIZATION_ENDPOINT)) ? (String) overrides.get(AUTHORIZATION_ENDPOINT) : EMPTY_DEFAULT;
-            }
-
-            @Override
-            public String tokenEndpoint() {
-                return (overrides != null && overrides.containsKey(TOKEN_ENDPOINT)) ? (String) overrides.get(TOKEN_ENDPOINT) : EMPTY_DEFAULT;
-            }
-
-            @Override
-            public String userinfoEndpoint() {
-                return (overrides != null && overrides.containsKey(USERINFO_ENDPOINT)) ? (String) overrides.get(USERINFO_ENDPOINT) : EMPTY_DEFAULT;
-            }
-
-            @Override
-            public String endSessionEndpoint() {
-                return (overrides != null && overrides.containsKey(END_SESSION_ENDPOINT)) ? (String) overrides.get(END_SESSION_ENDPOINT) : EMPTY_DEFAULT;
-            }
-
-            @Override
-            public String jwksURI() {
-                return (overrides != null && overrides.containsKey(JWKS_URI)) ? (String) overrides.get(JWKS_URI) : EMPTY_DEFAULT;
-            }
-
-            @Override
-            public String issuer() {
-                return (overrides != null && overrides.containsKey(ISSUER)) ? (String) overrides.get(ISSUER) : EMPTY_DEFAULT;
-            }
-
-            @Override
-            public String subjectTypeSupported() {
-                return (overrides != null && overrides.containsKey(SUBJECT_TYPE_SUPPORTED)) ? (String) overrides.get(SUBJECT_TYPE_SUPPORTED) : SUBJECT_TYPE_SUPPORTED_DEFAULT;
-            }
-
-            @Override
-            public String idTokenSigningAlgorithmsSupported() {
-                return (overrides != null
-                        && overrides.containsKey(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED)) ? (String) overrides.get(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED) : ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED_DEFAULT;
-            }
-
-            @Override
-            public String responseTypeSupported() {
-                return (overrides != null && overrides.containsKey(RESPONSE_TYPE_SUPPORTED)) ? (String) overrides.get(RESPONSE_TYPE_SUPPORTED) : RESPONSE_TYPE_SUPPORTED_DEFAULT;
-            }
-
-        };
-
-        return annotation;
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getResponseTypeSupported());
     }
 
 }

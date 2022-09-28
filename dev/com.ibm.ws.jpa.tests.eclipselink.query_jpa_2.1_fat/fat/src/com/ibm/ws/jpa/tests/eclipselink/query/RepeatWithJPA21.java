@@ -11,17 +11,18 @@
 
 package com.ibm.ws.jpa.tests.eclipselink.query;
 
-import componenttest.rules.repeater.RepeatTestAction;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE7FeatureReplacementAction;
 
-/**
- *
- */
-public class RepeatWithJPA21 implements RepeatTestAction {
+public class RepeatWithJPA21 extends EE7FeatureReplacementAction {
     public static final String ID = "JPA21";
 
-    @Override
-    public boolean isEnabled() {
-        return true;
+    /**
+     * Allow the default repeat action to run on LITE mode
+     */
+    public RepeatWithJPA21() {
+        // Used in componenttest.rules.repeater.RepeatTestAction.isEnabled() to determine if the test should run
+        withTestMode(TestMode.LITE);
     }
 
     @Override

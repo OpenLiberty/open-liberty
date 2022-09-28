@@ -10,7 +10,13 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.javaeesec.identitystore.ELHelper;
+
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdProviderMetadata;
 
 /*
@@ -18,64 +24,141 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdPr
  */
 public class OpenIdProviderMetadataWrapper implements OidcProviderMetadata {
 
+    private static final TraceComponent tc = Tr.register(LogoutDefinitionWrapper.class);
+
     private final OpenIdProviderMetadata providerMetadata;
+
+    private final ELHelper elHelper;
+
+    private final String authorizationEndpoint;
+    private final String tokenEndpoint;
+    private final String userinfoEndpoint;
+    private final String endSessionEndpoint;
+    private final String jwksURI;
+    private final String issuer;
+    private final String subjectTypeSupported;
+    private final String idTokenSigningAlgorithmsSupported;
+    private final String responseTypeSupported;
 
     public OpenIdProviderMetadataWrapper(OpenIdProviderMetadata providerMetadata) {
         this.providerMetadata = providerMetadata;
+
+        this.elHelper = new ELHelper();
+        this.authorizationEndpoint = evaluateAuthorizationEndpoint(true);
+        this.tokenEndpoint = evaluateTokenEndpoint(true);
+        this.userinfoEndpoint = evaluateUserinfoEndpoint(true);
+        this.endSessionEndpoint = evaluateEndSessionEndpoint(true);
+        this.jwksURI = evaluateJwksURI(true);
+        this.issuer = evaluateIssuer(true);
+        this.subjectTypeSupported = evaluateSubjectTypeSupported(true);
+        this.idTokenSigningAlgorithmsSupported = evaluateIdTokenSigningAlgorithmsSupported(true);
+        this.responseTypeSupported = evaluateResponseTypeSupported(true);
     }
 
-    // TODO: Evaluate EL expression.
     @Override
     public String getAuthorizationEndpoint() {
-        return providerMetadata.authorizationEndpoint();
+        return (authorizationEndpoint != null) ? authorizationEndpoint : evaluateAuthorizationEndpoint(false);
     }
 
-    // TODO: Evaluate EL expression.
+    private String evaluateAuthorizationEndpoint(boolean immediateOnly) {
+        return evaluateStringAttribute("authorizationEndpoint", providerMetadata.authorizationEndpoint(), JakartaSec30Constants.EMPTY_DEFAULT, immediateOnly);
+    }
+
     @Override
     public String getTokenEndpoint() {
-        return providerMetadata.tokenEndpoint();
+        return (tokenEndpoint != null) ? tokenEndpoint : evaluateTokenEndpoint(false);
     }
 
-    // TODO: Evaluate EL expression.
+    private String evaluateTokenEndpoint(boolean immediateOnly) {
+        return evaluateStringAttribute("tokenEndpoint", providerMetadata.tokenEndpoint(), JakartaSec30Constants.EMPTY_DEFAULT, immediateOnly);
+    }
+
     @Override
     public String getUserinfoEndpoint() {
-        return providerMetadata.userinfoEndpoint();
+        return (userinfoEndpoint != null) ? userinfoEndpoint : evaluateUserinfoEndpoint(false);
     }
 
-    // TODO: Evaluate EL expression.
+    private String evaluateUserinfoEndpoint(boolean immediateOnly) {
+        return evaluateStringAttribute("userinfoEndpoint", providerMetadata.userinfoEndpoint(), JakartaSec30Constants.EMPTY_DEFAULT, immediateOnly);
+    }
+
     @Override
     public String getEndSessionEndpoint() {
-        return providerMetadata.endSessionEndpoint();
+        return (endSessionEndpoint != null) ? endSessionEndpoint : evaluateEndSessionEndpoint(false);
     }
 
-    // TODO: Evaluate EL expression.
+    private String evaluateEndSessionEndpoint(boolean immediateOnly) {
+        return evaluateStringAttribute("endSessionEndpoint", providerMetadata.endSessionEndpoint(), JakartaSec30Constants.EMPTY_DEFAULT, immediateOnly);
+    }
+
     @Override
     public String getJwksURI() {
-        return providerMetadata.jwksURI();
+        return (jwksURI != null) ? jwksURI : evaluateJwksURI(false);
     }
 
-    // TODO: Evaluate EL expression.
+    private String evaluateJwksURI(boolean immediateOnly) {
+        return evaluateStringAttribute("jwksURI", providerMetadata.jwksURI(), JakartaSec30Constants.EMPTY_DEFAULT, immediateOnly);
+    }
+
     @Override
     public String getIssuer() {
-        return providerMetadata.issuer();
+        return (issuer != null) ? issuer : evaluateIssuer(false);
     }
 
-    // TODO: Evaluate EL expression.
+    private String evaluateIssuer(boolean immediateOnly) {
+        return evaluateStringAttribute("issuer", providerMetadata.issuer(), JakartaSec30Constants.EMPTY_DEFAULT, immediateOnly);
+    }
+
     @Override
     public String getSubjectTypeSupported() {
-        return providerMetadata.subjectTypeSupported();
+        return (subjectTypeSupported != null) ? subjectTypeSupported : evaluateSubjectTypeSupported(false);
     }
 
-    // TODO: Evaluate EL expression.
+    private String evaluateSubjectTypeSupported(boolean immediateOnly) {
+        return evaluateStringAttribute("subjectTypeSupported", providerMetadata.subjectTypeSupported(), JakartaSec30Constants.SUBJECT_TYPE_SUPPORTED_DEFAULT, immediateOnly);
+    }
+
     @Override
     public String getIdTokenSigningAlgorithmsSupported() {
-        return providerMetadata.idTokenSigningAlgorithmsSupported();
+        return (idTokenSigningAlgorithmsSupported != null) ? idTokenSigningAlgorithmsSupported : evaluateIdTokenSigningAlgorithmsSupported(false);
     }
 
-    // TODO: Evaluate EL expression.
+    private String evaluateIdTokenSigningAlgorithmsSupported(boolean immediateOnly) {
+        return evaluateStringAttribute("idTokenSigningAlgorithmsSupported", providerMetadata.idTokenSigningAlgorithmsSupported(), OpenIdConstant.DEFAULT_JWT_SIGNED_ALGORITHM,
+                                       immediateOnly);
+    }
+
     @Override
     public String getResponseTypeSupported() {
-        return providerMetadata.responseTypeSupported();
+        return (responseTypeSupported != null) ? responseTypeSupported : evaluateResponseTypeSupported(false);
     }
 
+    private String evaluateResponseTypeSupported(boolean immediateOnly) {
+        return evaluateStringAttribute("responseTypeSupported", providerMetadata.responseTypeSupported(), JakartaSec30Constants.RESPONSE_TYPE_SUPPORTED_DEFAULT, immediateOnly);
+    }
+
+    @SuppressWarnings("static-access")
+    @FFDCIgnore(IllegalArgumentException.class)
+    private String evaluateStringAttribute(String attributeName, String attribute, String attributeDefault, boolean immediateOnly) {
+        try {
+            return elHelper.processString(attributeName, attribute, immediateOnly);
+        } catch (IllegalArgumentException e) {
+            if (immediateOnly && elHelper.isDeferredExpression(attribute)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, attributeName, "Returning null since " + attributeName + " is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+
+            issueWarningMessage(attributeName, attribute, attributeDefault);
+
+            return attributeDefault;
+        }
+    }
+
+    private void issueWarningMessage(String attributeName, Object valueProvided, Object attributeDefault) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+            Tr.warning(tc, "JAKARTASEC_WARNING_PROV_METADATA_CONFIG", new Object[] { attributeName, valueProvided, attributeDefault });
+        }
+    }
 }

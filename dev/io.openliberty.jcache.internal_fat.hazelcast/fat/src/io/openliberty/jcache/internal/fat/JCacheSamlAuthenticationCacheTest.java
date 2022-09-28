@@ -47,6 +47,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -57,6 +58,7 @@ import io.openliberty.jcache.internal.fat.docker.KeycloakContainer;
 /**
  * Test SAML with distributed authentication cache.
  */
+@SkipIfSysProp("skip.tests=true")
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
@@ -80,6 +82,8 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        assumeShouldNotSkipTests();
+
         /*
          * Start the Keycloak IDP.
          */

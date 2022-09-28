@@ -39,13 +39,13 @@ Subsystem-Name: Jakarta Server Pages 3.1
   io.openliberty.expressionLanguage-5.0
 -bundles=com.ibm.ws.org.eclipse.jdt.core, \
  io.openliberty.jakarta.tags.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0", \
- com.ibm.ws.jsp.3.1.jakarta, \
+ io.openliberty.pages.3.1.internal.factories, \
  com.ibm.ws.jsp.jakarta, \
  io.openliberty.tags.3.0.facade; start-phase:=CONTAINER_EARLY, \
  io.openliberty.org.apache.taglibs.standard.3.0
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
  io.openliberty.jakarta.pages.tld.3.0; location:=dev/api/spec/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

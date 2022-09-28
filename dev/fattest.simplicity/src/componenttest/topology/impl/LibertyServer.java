@@ -258,6 +258,8 @@ public class LibertyServer implements LogMonitorClient {
 
     protected static final String SERVER_CONFIG_FILE_NAME = "server.xml";
     protected static final String JVM_OPTIONS_FILE_NAME = "jvm.options";
+    protected static final String OPENLIBERTY_PROPERTIES_FILE_NAME = "openliberty.properties";
+    protected static final String COM_IBM_WEBSPHERE_PRODUCTVERSION_KEY = "com.ibm.websphere.productVersion";
 
     protected static final String EBCDIC_CHARSET_NAME = "IBM1047";
 
@@ -311,6 +313,10 @@ public class LibertyServer implements LogMonitorClient {
     private boolean logOnUpdate = true;
 
     protected boolean debuggingAllowed = true;
+
+    private Properties openLibertyProperties;
+
+    private String openLibertyVersion;
 
     /**
      * This returns whether or not debugging is "programatically" allowed
@@ -2471,25 +2477,6 @@ public class LibertyServer implements LogMonitorClient {
 
         boolean serverStarted = false;
 
-        if (checkForRestConnector.get()) {
-            //since this is going to connect to the secure port, that needs to be ready
-            //before an attempt to make the JMX connection
-            Log.info(c, method, "Checking that the JMX RestConnector is available and secured");
-            assertNotNull("CWWKO0219I.*ssl not received", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
-
-            assertNotNull("IBMJMXConnectorREST app did not report as ready", waitForStringInLogUsingMark("CWWKT0016I.*IBMJMXConnectorREST"));
-
-            assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
-
-            //backup the key file
-
-            try {
-                copyFileToTempDir("resources/security/key.jks", "key.jks");
-            } catch (Exception e) {
-                copyFileToTempDir("resources/security/key.p12", "key.p12");
-            }
-        }
-
         Log.info(c, method, "Waiting up to " + (serverStartTimeout / 1000)
                             + " seconds for server confirmation:  "
                             + START_MESSAGE_CODE.toString() + " to be found in " + consoleAbsPath);
@@ -2524,6 +2511,25 @@ public class LibertyServer implements LogMonitorClient {
             // (but the opposite isn't true since the server could already have been running)
             if (serverStarted) {
                 isStarted = true;
+            }
+
+            if (checkForRestConnector.get()) {
+                //since this is going to connect to the secure port, that needs to be ready
+                //before an attempt to make the JMX connection
+                Log.info(c, method, "Checking that the JMX RestConnector is available and secured");
+                assertNotNull("CWWKO0219I.*ssl not received", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
+
+                assertNotNull("IBMJMXConnectorREST app did not report as ready", waitForStringInLogUsingMark("CWWKT0016I.*IBMJMXConnectorREST"));
+
+                assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
+
+                //backup the key file
+
+                try {
+                    copyFileToTempDir("resources/security/key.jks", "key.jks");
+                } catch (Exception e) {
+                    copyFileToTempDir("resources/security/key.p12", "key.p12");
+                }
             }
         } catch (Exception e) {
             Log.error(c, method, e, "Exception thrown confirming server started in " + consoleAbsPath);
@@ -6928,5 +6934,48 @@ public class LibertyServer implements LogMonitorClient {
             }
         }
         return checkpointSupported;
+    }
+
+    protected String getOpenLibertyPropertiesFilePath() {
+        return this.getInstallRoot() + "/lib/versions/" + OPENLIBERTY_PROPERTIES_FILE_NAME;
+    }
+
+    protected RemoteFile getOpenLibertyPropertiesFile() throws Exception {
+        return LibertyFileManager.createRemoteFile(this.machine, this.getOpenLibertyPropertiesFilePath());
+    }
+
+    /**
+     * @return the contents of the wlp/lib/versions/openliberty.properties file
+     */
+    public Properties getOpenLibertyProperties() {
+        if (this.openLibertyProperties == null) {
+            this.openLibertyProperties = new Properties();
+            InputStream is = null;
+            try {
+                is = getOpenLibertyPropertiesFile().openForReading();
+                this.openLibertyProperties.load(is);
+            } catch (Exception e) {
+                LOG.warning("Unable to read openliberty.properties file: " + e.getMessage());
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        LOG.warning("Unable to close input stream for openliberty.properties file: " + e.getMessage());
+                    }
+                }
+            }
+        }
+        return this.openLibertyProperties;
+    }
+
+    /**
+     * @return the product version value from the openliberty.properties file
+     */
+    public String getOpenLibertyVersion() {
+        if (this.openLibertyVersion == null) {
+            this.openLibertyVersion = (String) getOpenLibertyProperties().get(COM_IBM_WEBSPHERE_PRODUCTVERSION_KEY);
+        }
+        return this.openLibertyVersion;
     }
 }

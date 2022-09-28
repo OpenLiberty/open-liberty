@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,12 @@ import static com.ibm.ws.jaxrs20.fat.TestUtils.getBaseTestUri;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 
@@ -43,6 +49,7 @@ import com.ibm.ws.jaxrs.fat.subresource.CommentError;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -417,10 +424,20 @@ public class ExceptionsSubresourcesTest {
         putMethod.setEntity(entity);
 
         HttpResponse resp = client.execute(putMethod);
-        String str = asString(resp);
         // Status.INTERNAL_SERVER_ERROR
         assertEquals(500, resp.getStatusLine().getStatusCode());
-        assertTrue(str.contains("com.ibm.ws.jaxrs.fat.subresource.GuestbookException: Unexpected ID"));
+
+        //EE10 and beyond has a default exception mapper that returns the message within the Throwable
+        if (JakartaEE10Action.isActive()) {
+            InputStream is = resp.getEntity().getContent();
+            InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(isr);
+            String text = br.lines().collect(Collectors.joining("\n"));
+            assertEquals("Unexpected ID.", text);
+        } else {  //EE9 and before
+            String str = asString(resp);
+            assertTrue(str.contains("com.ibm.ws.jaxrs.fat.subresource.GuestbookException: Unexpected ID"));
+        }
     }
 
     /**
@@ -436,9 +453,20 @@ public class ExceptionsSubresourcesTest {
         HttpDelete deleteMethod = new HttpDelete(getSubresTestUri() + "/commentdata/afdsfsdf");
 
         HttpResponse resp = client.execute(deleteMethod);
-        String str = asString(resp);
         // Status.INTERNAL_SERVER_ERROR
         assertEquals(500, resp.getStatusLine().getStatusCode());
-        assertTrue(str.contains("java.lang.NumberFormatException.forInputString"));
+
+        //EE10 and beyond has a default exception mapper that returns the message within the Throwable
+        if (JakartaEE10Action.isActive()) {
+            InputStream is = resp.getEntity().getContent();
+            InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(isr);
+            String text = br.lines().collect(Collectors.joining("\n"));
+            assertEquals("For input string: \"afdsfsdf\"", text);
+
+        } else {  //EE9 and before
+            String str = asString(resp);
+            assertTrue(str.contains("java.lang.NumberFormatException.forInputString"));
+        }
     }
 }

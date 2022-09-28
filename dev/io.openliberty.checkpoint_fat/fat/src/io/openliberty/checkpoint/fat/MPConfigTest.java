@@ -10,15 +10,14 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.configureEnvVariable;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Before;
@@ -51,9 +50,6 @@ public class MPConfigTest extends FATServletClient {
 
     public TestMethod testMethod;
 
-    private static final Properties serverEnvProperties = new Properties();
-    private static File serverEnvFile;
-
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, APP_NAME);
@@ -79,30 +75,19 @@ public class MPConfigTest extends FATServletClient {
         Log.info(getClass(), testName.getMethodName(), "configureBeforeCheckpoint: " + testMethod);
         switch (testMethod) {
             case envValueChangeTest:
-                configureEnvVariable("req_scope_key", "envValue");
+                configureEnvVariable(server, singletonMap("req_scope_key", "envValue"));
                 break;
             case appScopeEnvValueChangeTest:
-                configureEnvVariable("app_scope_key", "envValue");
+                configureEnvVariable(server, singletonMap("app_scope_key", "envValue"));
                 break;
             case configObjectAppScopeEnvValueChangeTest:
-                configureEnvVariable("config_object_app_scope_key", "envValue");
+                configureEnvVariable(server, singletonMap("config_object_app_scope_key", "envValue"));
                 break;
             case configObjectPropertiesAppScopeEnvValueChangeTest:
-                configureEnvVariable("config_object_properties_app_scope_key", "envValue");
+                configureEnvVariable(server, singletonMap("config_object_properties_app_scope_key", "envValue"));
                 break;
             default:
                 break;
-        }
-    }
-
-    private void configureEnvVariable(String key, String value) throws Exception {
-        serverEnvProperties.clear();
-        if (key != null && value != null) {
-            serverEnvProperties.put(key, value);
-        }
-        serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
-        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
-            serverEnvProperties.store(out, "");
         }
     }
 
@@ -113,7 +98,7 @@ public class MPConfigTest extends FATServletClient {
             switch (testMethod) {
                 // MPConfigBean bean
                 case envValueTest:
-                    configureEnvVariable("req_scope_key", "envValue");
+                    configureEnvVariable(server, singletonMap("req_scope_key", "envValue"));
                     break;
                 case serverValueTest:
                     updateVariableConfig("req_scope_key", "serverValue");
@@ -122,12 +107,12 @@ public class MPConfigTest extends FATServletClient {
                     removeVariableConfig("req_scope_key");
                     break;
                 case envValueChangeTest:
-                    configureEnvVariable("req_scope_key", "envValueChange");
+                    configureEnvVariable(server, singletonMap("req_scope_key", "envValueChange"));
                     break;
 
                 // MPConfigBeanWithApplicationScope bean
                 case appScopeEnvValueTest:
-                    configureEnvVariable("app_scope_key", "envValue");
+                    configureEnvVariable(server, singletonMap("app_scope_key", "envValue"));
                     break;
                 case appScopeServerValueTest:
                     updateVariableConfig("app_scope_key", "serverValue");
@@ -136,12 +121,12 @@ public class MPConfigTest extends FATServletClient {
                     removeVariableConfig("app_scope_key");
                     break;
                 case appScopeEnvValueChangeTest:
-                    configureEnvVariable("app_scope_key", "envValueChange");
+                    configureEnvVariable(server, singletonMap("app_scope_key", "envValueChange"));
                     break;
 
                 // ApplicationScopedOnCheckpointBeanWithConfigObject bean
                 case configObjectAppScopeEnvValueTest:
-                    configureEnvVariable("config_object_app_scope_key", "envValue");
+                    configureEnvVariable(server, singletonMap("config_object_app_scope_key", "envValue"));
                     break;
                 case configObjectAppScopeServerValueTest:
                     updateVariableConfig("config_object_app_scope_key", "serverValue");
@@ -150,18 +135,18 @@ public class MPConfigTest extends FATServletClient {
                     removeVariableConfig("config_object_app_scope_key");
                     break;
                 case configObjectAppScopeEnvValueChangeTest:
-                    configureEnvVariable("config_object_app_scope_key", "envValueChange");
+                    configureEnvVariable(server, singletonMap("config_object_app_scope_key", "envValueChange"));
                     break;
 
                 // ApplicationScopedOnCheckpointBeanWithConfigObjectProperties bean
                 case configObjectPropertiesAppScopeEnvValueTest:
-                    configureEnvVariable("config_object_properties_app_scope_key", "envValue");
+                    configureEnvVariable(server, singletonMap("config_object_properties_app_scope_key", "envValue"));
                     break;
                 case configObjectPropertiesAppScopeServerValueTest:
                     updateVariableConfig("config_object_properties_app_scope_key", "serverValue");
                     break;
                 case configObjectPropertiesAppScopeEnvValueChangeTest:
-                    configureEnvVariable("config_object_properties_app_scope_key", "envValueChange");
+                    configureEnvVariable(server, singletonMap("config_object_properties_app_scope_key", "envValueChange"));
                     break;
 
                 // ApplicationScopedOnCheckpointBean bean
@@ -277,7 +262,7 @@ public class MPConfigTest extends FATServletClient {
             checkForLogsAndStopServer();
         } finally {
             server.restoreServerConfiguration();
-            configureEnvVariable(null, null);
+            configureEnvVariable(server, emptyMap());
         }
     }
 

@@ -27,43 +27,43 @@ missing.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepopraw
 missing.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, dodaj\u0105c adnotacj\u0119 @OnOpen i/lub @OnMessage. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 morethanonepong.annotation=CWWKH0003E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami {0} zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnMessage o typie komunikatu Pong.
-morethanonepong.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnMessage o typie komunikatu Pong. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+morethanonepong.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnMessage o typie komunikatu Pong. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 morethanonepong.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, definiuj\u0105c tylko jedn\u0105 metod\u0119 @OnMessage o typie komunikatu Pong. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 morethanonebinary.annotation=CWWKH0004E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami {0} zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnMessage o typie komunikatu binary.
-morethanonebinary.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnMessage o typie komunikatu binary. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+morethanonebinary.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnMessage o typie komunikatu binary. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 morethanonebinary.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, definiuj\u0105c tylko jedn\u0105 metod\u0119 @OnMessage o typie komunikatu binary. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 missing.msgtype.param=CWWKH0005E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c metoda @OnMessage w klasie punktu ko\u0144cowego z adnotacjami {0} nie ma parametru komunikatu typu pong, binary lub text.
-missing.msgtype.param.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c metoda @OnMessage nie ma parametru komunikatu typu pong, binary lub text. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+missing.msgtype.param.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c metoda @OnMessage nie ma parametru komunikatu typu pong, binary lub text. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 missing.msgtype.param.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, deklaruj\u0105c metod\u0119 @OnMessage z parametrem komunikatu typu text, binary lub pong. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 morethanonetext.annotation=CWWKH0006E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami {0} zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnMessage o typie komunikatu text.
-morethanonetext.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnMessage o typie komunikatu text. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+morethanonetext.annotation.explanation=Klasa\nServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu\nko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnMessage o typie\nkomunikatu text. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 morethanonetext.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, definiuj\u0105c tylko jedn\u0105 metod\u0119 @OnMessage o typie komunikatu text. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 invalid.onopen.annotation=CWWKH0007E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c metoda @OnOpen {0} w klasie punktu ko\u0144cowego z adnotacjami {1} ma parametry inne ni\u017c Session, EndpointConfig lub @PathParam.
-invalid.onopen.annotation.explanation=W metodzie @OnOpen znaleziono niepoprawny typ parametru. Metoda @OnOpen mo\u017ce mie\u0107 tylko opcjonalne parametry Session, EndpointConfig i @PathParam. 
+invalid.onopen.annotation.explanation=W metodzie @OnOpen znaleziono niepoprawny typ parametru. Metoda @OnOpen mo\u017ce mie\u0107 tylko opcjonalny parametr Session, opcjonalny parametr EndpointConfig i opcjonalne parametry @PathParam.
 invalid.onopen.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, usuwaj\u0105c niepoprawny typ parametru w metodzie @OnOpen. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 morethanoneclose.annotation=CWWKH0008E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami {0} zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnClose. Metodami @OnClose s\u0105 {1} i {2}.
-morethanoneclose.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnClose. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+morethanoneclose.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnClose. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 morethanoneclose.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, definiuj\u0105c tylko jedn\u0105 metod\u0119 @OnClose. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 invalid.onclose.annotation=CWWKH0009E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c metoda @OnClose {0} w klasie punktu ko\u0144cowego z adnotacjami {1} ma parametry inne ni\u017c Session, CloseReason lub @PathParam.
-invalid.onclose.annotation.explanation=W metodzie @OnClose znaleziono niepoprawny typ parametru. Metoda @OnClose mo\u017ce mie\u0107 tylko opcjonalne parametry Session, CloseReason i @PathParam. 
+invalid.onclose.annotation.explanation=W metodzie @OnClose znaleziono niepoprawny typ parametru. Metoda @OnClose mo\u017ce mie\u0107 tylko opcjonalny parametr Session, opcjonalny parametr CloseReason i opcjonalne parametry @PathParam.
 invalid.onclose.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, usuwaj\u0105c niepoprawny typ parametru w metodzie @OnClose. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 morethanoneerror.annotation=CWWKH0010E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami {0} zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnError. Metodami @OnError s\u0105 {1} i {2}.
-morethanoneerror.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnError. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+morethanoneerror.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnError. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 morethanoneerror.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, definiuj\u0105c tylko jedn\u0105 metod\u0119 @OnError. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 invalid.onerror.annotation=CWWKH0011E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c metoda @OnError {0} w klasie punktu ko\u0144cowego z adnotacjami {1} ma parametry inne ni\u017c Throwable, Session lub @PathParam.
-invalid.onerror.annotation.explanation=W metodzie @OnError znaleziono niepoprawny typ parametru. Metoda @OnError mo\u017ce mie\u0107 tylko obowi\u0105zkowy parametr Throwable oraz opcjonalne parametry Session i @PathParam. 
+invalid.onerror.annotation.explanation=W metodzie @OnError znaleziono niepoprawny typ parametru. Metoda @OnError mo\u017ce mie\u0107 tylko obowi\u0105zkowy parametr Throwable, opcjonalny parametr Session i opcjonalne parametry @PathParam.
 invalid.onerror.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, usuwaj\u0105c niepoprawny typ parametru w metodzie @OnError. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 missing.throwable=CWWKH0012E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c w metodzie @OnError {0} w klasie punktu ko\u0144cowego z adnotacjami {1} brakuje obowi\u0105zkowego parametru typu Throwable.
-missing.throwable.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w metodzie @OnError brakuje obowi\u0105zkowego parametru typu Throwable. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+missing.throwable.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w metodzie @OnError brakuje obowi\u0105zkowego parametru typu Throwable. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 missing.throwable.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, dodaj\u0105c obowi\u0105zkowy parametr typu Throwable w metodzie @OnError. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 invalid.pong.annotation=CWWKH0013E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c metoda @OnMessage {0} w klasie punktu ko\u0144cowego z adnotacjami {1} ma niepoprawny parametr {2}.
@@ -71,7 +71,7 @@ invalid.pong.annotation.explanation=W metodzie @OnMessage znaleziono niepoprawny
 invalid.pong.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, usuwaj\u0105c niepoprawny typ parametru w metodzie @OnMessage. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 morethanone.binary.param=CWWKH0014E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c metoda @OnMessage {0} w klasie punktu ko\u0144cowego z adnotacjami {1} ma wi\u0119cej ni\u017c jeden parametr o typie komunikatu binary.
-morethanone.binary.param.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c metoda @OnMessage ma wi\u0119cej ni\u017c jeden parametr o typie komunikatu binary. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+morethanone.binary.param.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c metoda @OnMessage ma wi\u0119cej ni\u017c jeden parametr o typie komunikatu binary. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 morethanone.binary.param.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, definiuj\u0105c tylko jeden parametr o typie komunikatu binary. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 invalid.decoderclass=CWWKH0015E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c klasa dekodera {0} u\u017cywana w metodzie @OnMessage {1} klasy punktu ko\u0144cowego z adnotacjami {2} nie jest publiczna, konkretna ani nie ma publicznego konstruktora bezargumentowego.
@@ -79,7 +79,7 @@ invalid.decoderclass.explanation=Klasa dekodera u\u017cywana w klasie ServerEndp
 invalid.decoderclass.useraction=Popraw klas\u0119 dekodera, tak aby by\u0142a publiczna i konkretna oraz mia\u0142a publiczny konstruktor bezargumentowy. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 morethanone.message.param=CWWKH0016E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c metoda @OnMessage {0} w klasie punktu ko\u0144cowego z adnotacjami {1} ma wi\u0119cej ni\u017c jeden parametr typu komunikatu {2}.
-morethanone.message.param.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c metoda @OnMessage ma wi\u0119cej ni\u017c jeden parametr typu komunikatu. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+morethanone.message.param.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c metoda @OnMessage ma wi\u0119cej ni\u017c jeden parametr typu komunikatu. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 morethanone.message.param.useraction=Popraw metod\u0119 @OnMessage, definiuj\u0105c tylko jeden parametr typu komunikatu zgodnie z dokumentacj\u0105 interfejsu API javax.websocket.OnMessage. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 invalid.binary.param=CWWKH0017E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c metoda @OnMessage {0} w klasie punktu ko\u0144cowego z adnotacjami {1} ma niepoprawny parametr {2}.
@@ -87,7 +87,7 @@ invalid.binary.param.explanation=W metodzie @OnMessage znaleziono niepoprawny pa
 invalid.binary.param.useraction=Popraw metod\u0119 @OnMessage, usuwaj\u0105c niepoprawny typ parametru zgodnie z dokumentacj\u0105 interfejsu API javax.websocket.OnMessage. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 morethanone.text.param=CWWKH0018E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c metoda @OnMessage {0} w klasie punktu ko\u0144cowego z adnotacjami {1} ma wi\u0119cej ni\u017c jeden parametr o typie komunikatu text {2}.
-morethanone.text.param.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c metoda @OnMessage ma wi\u0119cej ni\u017c jeden parametr o typie komunikatu text. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+morethanone.text.param.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c metoda @OnMessage ma wi\u0119cej ni\u017c jeden parametr o typie komunikatu text. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 morethanone.text.param.useraction=Popraw metod\u0119 @OnMessage, definiuj\u0105c tylko jeden parametr o typie komunikatu text zgodnie z dokumentacj\u0105 interfejsu API javax.websocket.OnMessage. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 invalid.text.param=CWWKH0019E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c metoda @OnMessage {0} w klasie punktu ko\u0144cowego z adnotacjami {1} ma niepoprawny parametr {2}.
@@ -95,7 +95,7 @@ invalid.text.param.explanation=W metodzie @OnMessage znaleziono niepoprawny para
 invalid.text.param.useraction=Popraw metod\u0119 @OnMessage, usuwaj\u0105c niepoprawny typ parametru zgodnie z dokumentacj\u0105 interfejsu API javax.websocket.OnMessage. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 missing.path.segment=CWWKH0020E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania punktu ko\u0144cowego serwera WebSocket. Parametr @PathParam {0} zdefiniowany w metodzie {1} nie ma odpowiadaj\u0105cego mu segmentu \u015bcie\u017cki w identyfikatorze URI @ServerEndpoint w klasie punktu ko\u0144cowego z adnotacjami {2}.
-missing.path.segment.explanation=Parametr @PathParam nie ma odpowiadaj\u0105cego mu segmentu \u015bcie\u017cki w identyfikatorze URI @ServerEndpoint. 
+missing.path.segment.explanation=Parametr @PathParam nie ma odpowiadaj\u0105cego mu segmentu \u015bcie\u017cki w identyfikatorze URI @ServerEndpoint.
 missing.path.segment.useraction=Popraw nazw\u0119 parametru @PathParam, tak aby by\u0142a zgodna z jednym z segment\u00f3w \u015bcie\u017cki w identyfikatorze URI @ServerEndpoint. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 missing.pathparam.value=CWWKH0021E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c w adnotacji @PathParam {0} zdefiniowanej w metodzie {1} brakuje warto\u015bci w klasie punktu ko\u0144cowego z adnotacjami {2}.
@@ -119,7 +119,7 @@ onmessage.notdefined.explanation=Nie mo\u017cna wykona\u0107 \u017c\u0105dania k
 onmessage.notdefined.useraction=Powiadom klienta, dodaj metod\u0119 @OnMessage do punktu ko\u0144cowego serwera z adnotacjami albo dodaj procedur\u0119 obs\u0142ugi komunikatu, aby umo\u017cliwi\u0107 obs\u0142ug\u0119 \u017c\u0105dania klienta, i wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 decoder.ioexception=CWWKH0026E: Nie mo\u017cna wykona\u0107 \u017c\u0105dania klienta WebSocket, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek IOException podczas wywo\u0142ywania metody onMessage w klasie {0} w trakcie dekodowania danych komunikatu {1}. Komunikat o wyj\u0105tku: {2}
-decoder.ioexception.explanation=Nie mo\u017cna wykona\u0107 \u017c\u0105dania klienta WebSocket, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek IOException podczas wywo\u0142ywania metody onMessage w trakcie dekodowania danych komunikatu. 
+decoder.ioexception.explanation=Nie mo\u017cna wykona\u0107 \u017c\u0105dania klienta WebSocket, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek IOException podczas wywo\u0142ywania metody onMessage w trakcie dekodowania danych komunikatu.
 decoder.ioexception.useraction=Sprawd\u017a dane komunikatu przychodz\u0105cego i sprawd\u017a dekoder.
 
 decoder.create.exception=CWWKH0027E: Nie mo\u017cna wykona\u0107 \u017c\u0105dania WebSocket, poniewa\u017c wyst\u0105pi\u0142 problem podczas tworzenia nowej instancji klasy dekodera {0}. Wyj\u0105tek to {1}
@@ -129,7 +129,7 @@ decoder.create.exception.useraction=Sprawd\u017a klas\u0119 dekodera.
 fin1.processing.error=CWWKH0028E: Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket w klasie ServerEndpoint {0} z powodu b\u0142\u0119du w trakcie przetwarzania warto\u015bci FIN r\u00f3wnej 1.
 fin1.processing.error.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket z powodu b\u0142\u0119du w trakcie przetwarzania warto\u015bci FIN r\u00f3wnej 1.
 fin1.processing.error.useraction=Sprawd\u017a poprawno\u015b\u0107 danych ramki komunikatu przychodz\u0105cego WebSocket.
- 
+
 fin0.processing.error=CWWKH0029E: Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket w klasie ServerEndpoint {0} z powodu b\u0142\u0119du w trakcie przetwarzania warto\u015bci FIN r\u00f3wnej 0.
 fin0.processing.error.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket z powodu b\u0142\u0119du w trakcie przetwarzania warto\u015bci FIN r\u00f3wnej 0.
 fin0.processing.error.useraction=Sprawd\u017a poprawno\u015b\u0107 danych ramki komunikatu przychodz\u0105cego WebSocket.
@@ -140,18 +140,18 @@ invalid.opcode.useraction=Sprawd\u017a poprawno\u015b\u0107 danych ramki komunik
 
 invalid.continue.opcode=CWWKH0031E: Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket w klasie ServerEndpoint {0} z powodu niepoprawnego kodu operacji kontynuacji z niepofragmentowanym komunikatem.
 invalid.continue.opcode.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket z powodu niepoprawnego kodu operacji kontynuacji z niepofragmentowanym komunikatem.
-invalid.continue.opcode.useraction=Sprawd\u017a poprawno\u015b\u0107 danych ramki komunikatu przychodz\u0105cego WebSocket.  
+invalid.continue.opcode.useraction=Sprawd\u017a poprawno\u015b\u0107 danych ramki komunikatu przychodz\u0105cego WebSocket.
 
 incorrect.maskflag=CWWKH0032E: Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket w klasie ServerEndpoint {0}, poniewa\u017c w ramce komunikatu nie ustawiono poprawnej flagi maski.
 incorrect.maskflag.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket, poniewa\u017c w ramce komunikatu nie ustawiono poprawnej flagi maski.
-incorrect.maskflag.useraction=Sprawd\u017a poprawno\u015b\u0107 danych ramki komunikatu przychodz\u0105cego WebSocket. 
+incorrect.maskflag.useraction=Sprawd\u017a poprawno\u015b\u0107 danych ramki komunikatu przychodz\u0105cego WebSocket.
 
 invalid.maskflag.value=CWWKH0033E: Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket w klasie ServerEndpoint {0}, poniewa\u017c flaga maski nie jest ustawiona na poprawn\u0105 warto\u015b\u0107.
 invalid.maskflag.value.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket, poniewa\u017c flaga maski w ramce komunikatu nie zosta\u0142a ustawiona na poprawn\u0105 warto\u015b\u0107.
 invalid.maskflag.value.useraction=Sprawd\u017a poprawno\u015b\u0107 danych ramki komunikatu przychodz\u0105cego WebSocket.
 
 duplicate.uri=CWWKH0034E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c wiele punkt\u00f3w ko\u0144cowych serwera ma ten sam identyfikator URI {0}.
-duplicate.uri.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c wiele punkt\u00f3w ko\u0144cowych serwera ma ten sam identyfikator URI. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+duplicate.uri.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c wiele punkt\u00f3w ko\u0144cowych serwera ma ten sam identyfikator URI. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 duplicate.uri.useraction=Zdefiniuj unikalne identyfikatory URI punkt\u00f3w ko\u0144cowych serwera w aplikacji WebSocket. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 invalid.nonzero.opcode=CWWKH0035E: Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania komunikatu przychodz\u0105cego WebSocket w klasie ServerEndpoint {0} z powodu niepoprawnego niezerowego kodu operacji w ramce innej ni\u017c pierwsza.
@@ -159,7 +159,7 @@ invalid.nonzero.opcode.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas odczy
 invalid.nonzero.opcode.useraction=Sprawd\u017a poprawno\u015b\u0107 danych ramki komunikatu przychodz\u0105cego WebSocket.
 
 morethanoneonopen.annotation=CWWKH0036E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania aplikacji WebSocket, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami {0} zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnOpen.
-morethanoneonopen.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnOpen. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona. 
+morethanoneonopen.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnOpen. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 morethanoneonopen.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, definiuj\u0105c tylko jedn\u0105 metod\u0119 @OnOpen. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
 invalid.message.toobig=CWWKH0037E: Niepoprawny przychodz\u0105cy komunikat WebSocket w klasie ServerEndpoint {0}. Wielko\u015b\u0107 przychodz\u0105cego komunikatu wynosi {1} i jest wi\u0119ksza ni\u017c warto\u015b\u0107 maxMessageSize {2} zdefiniowana w metodzie adnotacji @OnMessage {3}.
@@ -172,24 +172,24 @@ maxidletimeout.closesession.useraction=Sprawd\u017a, dlaczego klient nie wysy\u0
 
 client.invalid.returncode=CWWKH0039E: Po wys\u0142aniu \u017c\u0105dania wychodz\u0105cego gniazda WebSocket do punktu ko\u0144cowego {1} na serwerze docelowym zwr\u00f3cona zosta\u0142a odpowied\u017a {0} zamiast odpowiedzi 101.
 client.invalid.returncode.explanation=Wychodz\u0105ce operacje gniazda WebSocket wymagaj\u0105 kodu odpowiedzi 101 dla operacji gniazda WebSocket.
-client.invalid.returncode.useraction=U\u017cyj niepoprawnego kodu odpowiedzi, aby okre\u015bli\u0107, czy docelowy punkt ko\u0144cowy jest poprawny i czy jest to dzia\u0142aj\u0105cy punkt ko\u0144cowy gniazda WebSocket oraz aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia \u017c\u0105dania wychodz\u0105cego gniazda WebSocket. 
+client.invalid.returncode.useraction=U\u017cyj niepoprawnego kodu odpowiedzi, aby okre\u015bli\u0107, czy docelowy punkt ko\u0144cowy jest poprawny i czy jest to dzia\u0142aj\u0105cy punkt ko\u0144cowy gniazda WebSocket oraz aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia \u017c\u0105dania wychodz\u0105cego gniazda WebSocket.
 
-client.invalid.acceptkey=CWWKH0040E: Serwer docelowy odpowiedzia\u0142 przy u\u017cyciu niepoprawnego klucza akceptacji gniazda WebSocket podczas wysy\u0142ania \u017c\u0105dania gniazda WebSocket do punktu ko\u0144cowego {1}.  
+client.invalid.acceptkey=CWWKH0040E: Serwer docelowy odpowiedzia\u0142 przy u\u017cyciu niepoprawnego klucza akceptacji gniazda WebSocket podczas wysy\u0142ania \u017c\u0105dania gniazda WebSocket do punktu ko\u0144cowego {1}.
 client.invalid.acceptkey.explanation=Wychodz\u0105ce operacje gniazda WebSocket wymagaj\u0105, aby serwer docelowy zwr\u00f3ci\u0142 poprawny klucz akceptacji gniazda WebSocket na potrzeby operacji gniazda WebSocket.
 client.invalid.acceptkey.useraction=Sprawd\u017a, czy serwer docelowy jest zgodny z protoko\u0142em gniazda WebSocket.
 
 client.invalid.endpoint=CWWKH0041E: Okre\u015blono niepoprawny punkt ko\u0144cowy {0} podczas \u017c\u0105dania wychodz\u0105cego gniazda WebSocket.
 client.invalid.endpoint.explanation=\u017b\u0105danie wychodz\u0105ce gniazda WebSocket wymaga poprawnego punktu ko\u0144cowego.
-client.invalid.endpoint.useraction=Sprawd\u017a, czy parametr ClientEndpoint u\u017cywany w metodzie connectToServer wywo\u0142ania funkcji API gniazda WebSocket jest punktem ko\u0144cowym klienta z adnotacj\u0105. 
+client.invalid.endpoint.useraction=Sprawd\u017a, czy parametr ClientEndpoint u\u017cywany w metodzie connectToServer wywo\u0142ania funkcji API gniazda WebSocket jest punktem ko\u0144cowym klienta z adnotacj\u0105.
 
 client.invalid.scheme=CWWKH0042E: U\u017cyto niepoprawnego schematu {0} dla wychodz\u0105cego po\u0142\u0105czenia klienta. Poprawne schematy dla protoko\u0142u gniazda WebSocket to ws lub wss.
 client.invalid.scheme.explanation=Poprawne schematy gniazda WebSocket to ws lub wss.
 client.invalid.scheme.useraction=U\u017cyj poprawnego schematu podczas wychodz\u0105cego \u017c\u0105dania gniazda WebSocket.
 
-client.invalid.configurator=CWWKH0043E: Nie utworzono klasy Configurator {0} podczas \u017c\u0105dania wychodz\u0105cego. Wyj\u0105tek: {1}. 
+client.invalid.configurator=CWWKH0043E: Nie utworzono klasy Configurator {0} podczas \u017c\u0105dania wychodz\u0105cego. Wyj\u0105tek:\n{1}.
 client.invalid.configurator.explanation=Nie utworzono klasy Configuration podczas \u017c\u0105dania wychodz\u0105cego, prawdopodobnie poniewa\u017c publiczny konstruktor bezargumentowy klasy Configurator nie istnieje lub by\u0142 niedost\u0119pny.
 client.invalid.configurator.useraction=Sprawd\u017a poprawno\u015b\u0107 klasy konfiguratora oraz czy klasa ma dost\u0119pny publiczny konstruktor bezargumentowy.
- 
+
 client.connection.error=CWWKH0044E: Przetworzenie punktu ko\u0144cowego {0} podczas \u017c\u0105dania wychodz\u0105cego gniazda WebSocket by\u0142o niemo\u017cliwe.  Wyj\u0105tek: {1}.
 client.connection.error.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by nawi\u0105zania po\u0142\u0105czenia z serwerem docelowym przez punkt ko\u0144cowy podczas wychodz\u0105cego \u017c\u0105dania gniazda WebSocket.
 client.connection.error.useraction=U\u017cyj szczeg\u00f3\u0142\u00f3w wyj\u0105tku, aby okre\u015bli\u0107 przyczyn\u0119 i wyeliminowa\u0107 problem.
@@ -200,7 +200,7 @@ client.invalid.endpointclass.useraction=Sprawd\u017a, czy parametr punktu ko\u01
 
 adding.endpoint=CWWKH0046I: Dodawanie punktu ko\u0144cowego serwera WebSocket o nast\u0119puj\u0105cym identyfikatorze URI: {0}
 adding.endpoint.explanation=Punkt ko\u0144cowy serwera WebSocket o okre\u015blonym identyfikatorze URI jest dost\u0119pny na potrzeby u\u017cywania przez klient WebSocket.
-adding.endpoint.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+adding.endpoint.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 invalid.endpoint.context=CWWKH0047E: Punkty ko\u0144cowe serwera WebSocket o \u015bcie\u017cce kontekstu {0} nie s\u0105 dost\u0119pne na potrzeby klienta.
 invalid.endpoint.context.explanation=Punkty ko\u0144cowe serwera WebSocket o okre\u015blonej \u015bcie\u017cce kontekstu nie s\u0105 dost\u0119pne na potrzeby obs\u0142ugi klienta WebSocket.
@@ -222,9 +222,10 @@ endpoint.instance.error=CWWKH0051E: Serwer nie mo\u017ce uzyska\u0107 dost\u0119
 endpoint.instance.error.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, kiedy serwer pr\u00f3bowa\u0142 uzyska\u0107 dost\u0119p do okre\u015blonej klasy punktu ko\u0144cowego.
 endpoint.instance.error.useraction=Przejrzyj szczeg\u00f3\u0142owe informacje o wyj\u0105tku, aby okre\u015bli\u0107, dlaczego nie mo\u017cna uzyska\u0107 dost\u0119pu do klasy punktu ko\u0144cowego, a nast\u0119pnie usu\u0144 problem.
 
-missingslashornull.uri=CWWKH0052E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania/uruchamiania punktu ko\u0144cowego serwera {0} o identyfikatorze URI {1}. Identyfikator URI punktu ko\u0144cowego ma warto\u015b\u0107 NULL lub nie rozpoczyna si\u0119 od znaku /.
-missingslashornull.uri.explanation=Punkt ko\u0144cowy serwera jest niepoprawny, poniewa\u017c identyfikator URI punktu ko\u0144cowego ma warto\u015b\u0107 NULL lub nie rozpoczyna si\u0119 od znaku / w klasie punktu ko\u0144cowego. Aplikacja WebSocket jest niedost\u0119pna dla \u017c\u0105da\u0144. 
+missingslashornull.uri=CWWKH0052E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wdra\u017cania/uruchamiania punktu ko\u0144cowego serwera: {0} z identyfikatorem URI: {1}. Identyfikator URI punktu ko\u0144cowego ma warto\u015b\u0107 NULL lub nie rozpoczyna si\u0119 od znaku /.
+missingslashornull.uri.explanation=Punkt ko\u0144cowy serwera jest niepoprawny, poniewa\u017c identyfikator URI punktu ko\u0144cowego ma warto\u015b\u0107 NULL lub nie rozpoczyna si\u0119 od znaku / w klasie punktu ko\u0144cowego. Aplikacja WebSocket jest niedost\u0119pna dla \u017c\u0105da\u0144.
 missingslashornull.uri.useraction=Zdefiniuj identyfikator URI punktu ko\u0144cowego r\u00f3\u017cny od warto\u015bci NULL i rozpoczynaj\u0105cy si\u0119 od znaku /. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
-
-
+wsoc.feature.not.loaded.correctly=CWWKH0053E: Sk\u0142adnik WebSocket nie zosta\u0142 za\u0142adowany w odpowiedniej wersji.
+wsoc.feature.not.loaded.correctly.explanation=Sk\u0142adnik WebSocket zosta\u0142 za\u0142adowany w wersji odpowiadaj\u0105cej specyfikacji Java [Jakarta] EE sk\u0142adnika WebSocket. Sk\u0142adnik zosta\u0142 za\u0142adowany bez zdefiniowanej wersji.
+wsoc.feature.not.loaded.correctly.useraction=Sprawd\u017a, czy plik server.xml zawiera wiele sk\u0142adnik\u00f3w WebSocket. Nale\u017cy okre\u015bli\u0107 tylko jeden element.

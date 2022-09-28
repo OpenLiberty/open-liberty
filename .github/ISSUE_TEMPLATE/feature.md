@@ -84,6 +84,8 @@ Design preliminaries determine whether a formal design, which will be provided b
   - Follow the instructions in POC-Forum repo
 - [ ] POC Design / UFO review completed.
 - [ ] POC / UFO Review follow-ons completed.
+- [ ] POC Design / UFO approval requested.
+  - Owner adds label `Design Approval Request`
 - [ ] Design / UFO approved. ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) or N/A
   - ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) adds label `Design Approved`
   - Add the public link to the UFO in Box to the [Documents](#documents) section.
@@ -140,6 +142,7 @@ In order to facilitate early feedback from users, all new features and functiona
 ### **Beta Blog** (Complete 1.5 weeks before beta eGA)
 - [ ] Beta blog issue created and populated using the [Open Liberty BETA blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose) template.
   - Add a link to the beta blog issue in the [Documents](#documents) section.
+  - Note: This is for inclusion into the overall [beta release blog post](https://openliberty.io/blog/?search=beta&key=tag).  If, in addition, you'd also like to create a dedicated blog post about your feature, then follow the "Standalone Feature Blog Post" instructions under the [Other Deliverables](#other-deliverables) section.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **GA**
@@ -194,6 +197,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 ### **GA Blog** (Complete by Feature Complete Date)
 - [ ] GA Blog issue created and populated using the [Open Liberty GA release blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose) template.
   - Add a link to the GA Blog issue in the [Documents](#documents) section.
+  - Note: This is for inclusion into the overall [release blog post](https://openliberty.io/blog/?search=release&key=tag).  If, in addition, you'd also like to create a dedicated blog post about your feature, then follow the "Standalone Feature Blog Post" instructions under the [Other Deliverables](#other-deliverables) section.
 
 ### **Post GA**
 - [ ] Replace `target:YY00X` label with the appropriate `release:YY00X`. ([OpenLiberty/release-manager](https://github.com/orgs/OpenLiberty/teams/release-manager))

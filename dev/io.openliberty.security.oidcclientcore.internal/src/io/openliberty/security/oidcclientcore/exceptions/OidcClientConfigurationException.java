@@ -19,8 +19,17 @@ public class OidcClientConfigurationException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
+    private final String clientId;
+    private final String nlsMessage;
+
     public OidcClientConfigurationException(String clientId, String nlsMessage) {
-        super(Tr.formatMessage(tc, "OIDC_CLIENT_CONFIGURATION_ERROR", clientId, nlsMessage));
+        this.clientId = clientId;
+        this.nlsMessage = nlsMessage;
+    }
+
+    @Override
+    public String getMessage() {
+        return Tr.formatMessage(tc, "OIDC_CLIENT_CONFIGURATION_ERROR", clientId, nlsMessage);
     }
 
 }

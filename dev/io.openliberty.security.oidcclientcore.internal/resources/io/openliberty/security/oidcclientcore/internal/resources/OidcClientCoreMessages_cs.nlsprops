@@ -16,3 +16,35 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2400 - CWWKS2499
+
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS2400E: Klient protokolu OpenID Connect {0} zjistil chybu p\u0159i odes\u00edl\u00e1n\u00ed po\u017eadavku na autorizaci poskytovateli protokolu OpenID Connect. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Konfigurace klienta protokolu OpenID Connect m\u016f\u017ee postr\u00e1dat informace, nebo klient zjistil chybu p\u0159i komunikaci s poskytovatelem protokolu OpenID Connect.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b.
+
+OIDC_CLIENT_CONFIGURATION_ERROR=CWWKS2401E: Konfigurace klienta protokolu OpenID Connect {0} nen\u00ed platn\u00e1, nebo v n\u00ed chyb\u00ed data. {1}
+OIDC_CLIENT_CONFIGURATION_ERROR.explanation=V konfiguraci klienta protokolu OpenID Connect chyb\u00ed informace, kter\u00e9 jsou pot\u0159ebn\u00e9.
+OIDC_CLIENT_CONFIGURATION_ERROR.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, zda je konfigurace klienta protokolu OpenID Connect \u00fapln\u00e1 a p\u0159esn\u00e1.
+
+URL_NOT_HTTPS=CWWKS2402E: Adresa URL koncov\u00e9ho bodu {0}, kter\u00e1 je nakonfigurov\u00e1na pro klienta protokolu OpenID Connect {1}, nepou\u017e\u00edv\u00e1 protokol HTTPS, ale protokol HTTPS je po\u017eadov\u00e1n.
+URL_NOT_HTTPS.explanation=Adresa URL koncov\u00e9ho bodu mus\u00ed pou\u017e\u00edvat protokol HTTPS, aby bylo zaji\u0161t\u011bno, \u017ee jsou po\u017eadavky zabezpe\u010den\u00e9.
+URL_NOT_HTTPS.useraction=Aktualizujte adresu URL koncov\u00e9ho bodu, aby pou\u017e\u00edvala protokol HTTPS.
+
+DISCOVERY_EXCEPTION=CWWKS2403E: Klient protokolu OpenID Connect {0} zjistil p\u0159i zji\u0161\u0165ov\u00e1n\u00ed metadat pro poskytovatele protokolu OpenID Connect z adresy URL [{1}] n\u00e1sleduj\u00edc\u00ed chybu: {2}
+DISCOVERY_EXCEPTION.explanation=Konfigurace klienta protokolu OpenID Connect m\u016f\u017ee postr\u00e1dat informace, nebo klient zjistil chybu p\u0159i komunikaci s poskytovatelem protokolu OpenID Connect.
+DISCOVERY_EXCEPTION.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b.
+
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: Atribut providerURI pro klienta protokolu OpenID Connect {0} m\u00e1 hodnotu null nebo je pr\u00e1zdn\u00fd a pro poskytovatele protokolu OpenID Connect nejsou k dispozici \u017e\u00e1dn\u00e1 metadata.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=Klient protokolu OpenID Connect mus\u00ed zji\u0161\u0165ovat metadata pro poskytovatele protokolu OpenID Connect, ale klient nem\u00e1 nakonfigurovan\u00fd atribut providerURI nebo metadata poskytovatele.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Zadejte hodnotu pro atribut providerURI v konfiguraci klienta protokolu OpenID Connect, nebo zadejte metadata poskytovatele protokolu OpenID Connect v konfiguraci klienta.
+
+DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: V metadatech poskytovatele protokolu OpenID Connect chyb\u00ed po\u017eadovan\u00e1 vlastnost [{0}].
+DISCOVERY_METADATA_MISSING_VALUE.explanation=Vlastnost uveden\u00e1 ve zpr\u00e1v\u011b mus\u00ed b\u00fdt p\u0159\u00edtomn\u00e1 v metadatech poskytovatele protokolu OpenID Connect, ale chyb\u00ed.
+DISCOVERY_METADATA_MISSING_VALUE.useraction=Ov\u011b\u0159te, \u017ee je atribut providerURI pro klienta protokolu OpenID Connect nastaven na spr\u00e1vnou adresu URL pro zji\u0161\u0165ov\u00e1n\u00ed pro poskytovatele protokolu OpenID Connect.
+
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL=CWWKS2406E: Klient protokolu OpenID Connect {0} nem\u016f\u017ee p\u0159esm\u011brovat u\u017eivatele na koncov\u00fd bod autorizace, proto\u017ee klient nem\u016f\u017ee ur\u010dit adresu URL koncov\u00e9ho bodu autorizace. {1}
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.explanation=Adresa URL koncov\u00e9ho bodu autorizace v konfiguraci klienta protokolu OpenID Connect m\u016f\u017ee b\u00fdt chybn\u00e1, nebo m\u016f\u017ee chyb\u011bt, nebo klient protokolu OpenID Connect nez\u00edskal adresu URL koncov\u00e9ho bodu autorizace od poskytovatele protokolu OpenID Connect.
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, zda je konfigurace klienta protokolu OpenID Connect \u00fapln\u00e1 a p\u0159esn\u00e1.
+
+AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: Klient protokolu OpenID Connect {0} zjistil n\u00e1sleduj\u00edc\u00ed chybu p\u0159i ov\u011b\u0159ov\u00e1n\u00ed odpov\u011bdi ov\u011b\u0159en\u00ed od poskytovatele protokolu OpenID Connect: {1}
+AUTHENTICATION_RESPONSE_ERROR.explanation=V odpov\u011bdi od poskytovatele protokolu OpenID Connect mohou chyb\u011bt informace. Je mo\u017en\u00e9, \u017ee do\u0161lo k probl\u00e9mu s k\u00f3dem vr\u00e1cen\u00fdm od poskytovatele protokolu OpenID Connect.
+AUTHENTICATION_RESPONSE_ERROR.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b.

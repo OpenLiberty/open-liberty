@@ -1276,6 +1276,10 @@ public class ToolboxAPIv1Test extends CommonRESTTest implements APIConstants {
         final String catalogURL = API_V1_CATALOG;
         final String toolURL = API_V1_TOOLBOX + "/toolEntries/" + bookmark.getId();
 
+        // make sure the toolbox for admin is loaded, otherwise post will fail if running as
+        // the first test.
+        get(toolURL, adminUser, adminPassword, 404);
+
         post(catalogURL + "/bookmarks", adminUser, adminPassword, bookmarkString, 201);
 
         ToolEntry newToolEntry = new ToolEntry(bookmark.getId(), bookmark.getType());
@@ -1322,7 +1326,8 @@ public class ToolboxAPIv1Test extends CommonRESTTest implements APIConstants {
         final String catalogURL = API_V1_CATALOG;
         final String toolURL = API_V1_TOOLBOX + "/toolEntries/" + bookmark.getId();
 
-        // make sure the toolboxes for admin and reader are loaded
+        // make sure the toolboxes for admin and reader are loaded, otherwise post will fail if running
+        // as the first test.
         get(toolURL, adminUser, adminPassword, 404);
         get(toolURL, readerUser, readerPassword, 404);
 

@@ -2,6 +2,9 @@ package io.openliberty.security.jakartasec.cdi.beans;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.security.auth.Subject;
@@ -16,6 +19,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.security.javaeesec.cdi.beans.Utils;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -23,11 +28,19 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.TestOpenIdAuthenticationMechanismDefinition;
 import io.openliberty.security.oidcclientcore.client.Client;
+import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
+import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.token.JakartaOidcTokenRequest;
+import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.security.auth.message.MessageInfo;
+import jakarta.security.enterprise.AuthenticationException;
 import jakarta.security.enterprise.AuthenticationStatus;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
+import jakarta.security.enterprise.credential.Credential;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -51,6 +64,10 @@ public class OidcHttpAuthenticationMechanismTest {
     @SuppressWarnings("rawtypes")
     private CDI cdi;
     private ModulePropertiesProvider mpp;
+    private Utils utils;
+    private MessageInfo messageInfo;
+    private Map<String, Object> messageInfoMap;
+    private TokenResponse tokenResponse;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -64,10 +81,15 @@ public class OidcHttpAuthenticationMechanismTest {
     public void setUp() throws Exception {
         cdi = mockery.mock(CDI.class);
         mpp = mockery.mock(ModulePropertiesProvider.class);
+        utils = mockery.mock(Utils.class);
+        messageInfo = mockery.mock(MessageInfo.class);
         request = mockery.mock(HttpServletRequest.class);
         response = mockery.mock(HttpServletResponse.class);
         httpMessageContext = mockery.mock(HttpMessageContext.class);
         client = mockery.mock(Client.class);
+        tokenResponse = mockery.mock(TokenResponse.class);
+        messageInfoMap = new HashMap<String, Object>();
+        clientSubject = new Subject();
     }
 
     @After
@@ -79,7 +101,7 @@ public class OidcHttpAuthenticationMechanismTest {
     public void testValidateRequest_authenticationRequest_redirects() throws Exception {
         OpenIdAuthenticationMechanismDefinition openIdAuthenticationMechanismDefinition = TestOpenIdAuthenticationMechanismDefinition.getInstanceofAnnotation(null);
         setModulePropertiesProvider(openIdAuthenticationMechanismDefinition);
-        setHttpMessageContextExpectations(true);
+        setHttpMessageContextExpectations(true, false);
         withoutJaspicSessionPrincipal();
         clientStartsFlow(REDIRECTION_PROVIDER_AUTH_RESULT);
         mechanismRedirectsTo(REDIRECTION_URL);
@@ -94,7 +116,7 @@ public class OidcHttpAuthenticationMechanismTest {
     public void testValidateRequest_authenticationRequest_fails() throws Exception {
         OpenIdAuthenticationMechanismDefinition openIdAuthenticationMechanismDefinition = TestOpenIdAuthenticationMechanismDefinition.getInstanceofAnnotation(null);
         setModulePropertiesProvider(openIdAuthenticationMechanismDefinition);
-        setHttpMessageContextExpectations(true);
+        setHttpMessageContextExpectations(true, false);
         withoutJaspicSessionPrincipal();
         clientStartsFlow(FAILURE_AUTH_RESULT);
         mechanismSetsResponseUnauthorized();
@@ -103,6 +125,25 @@ public class OidcHttpAuthenticationMechanismTest {
         AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
 
         assertEquals("The AuthenticationStatus must be SEND_FAILURE.", AuthenticationStatus.SEND_FAILURE, authenticationStatus);
+    }
+
+    @Test
+    public void testValidateRequest_callbackRequest() throws Exception {
+        OpenIdAuthenticationMechanismDefinition openIdAuthenticationMechanismDefinition = TestOpenIdAuthenticationMechanismDefinition.getInstanceofAnnotation(null);
+        setModulePropertiesProvider(openIdAuthenticationMechanismDefinition);
+        setHttpMessageContextExpectations(false, false);
+        withoutJaspicSessionPrincipal();
+        withCallbackRequest();
+        clientContinuesFlow(createSuccessfulProviderAuthenticationResult());
+        mechanismValidatesTokens(AuthenticationStatus.SUCCESS);
+        withMessageInfo();
+        mechanismSetsResponseStatus(HttpServletResponse.SC_OK);
+
+        OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
+
+        AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
+
+        assertEquals("The AuthenticationStatus must be SUCCESS.", AuthenticationStatus.SUCCESS, authenticationStatus);
     }
 
     @SuppressWarnings("unchecked")
@@ -122,7 +163,7 @@ public class OidcHttpAuthenticationMechanismTest {
         });
     }
 
-    private void setHttpMessageContextExpectations(final boolean protectedResource) {
+    private void setHttpMessageContextExpectations(boolean protectedResource, boolean authenticationRequest) {
         mockery.checking(new Expectations() {
             {
                 allowing(httpMessageContext).getClientSubject();
@@ -133,6 +174,19 @@ public class OidcHttpAuthenticationMechanismTest {
                 will(returnValue(response));
                 allowing(httpMessageContext).isProtected();
                 will(returnValue(protectedResource));
+                allowing(httpMessageContext).isAuthenticationRequest();
+                will(returnValue(authenticationRequest));
+            }
+        });
+    }
+
+    private void withMessageInfo() {
+        mockery.checking(new Expectations() {
+            {
+                allowing(httpMessageContext).getMessageInfo();
+                will(returnValue(messageInfo));
+                allowing(messageInfo).getMap();
+                will(returnValue(messageInfoMap));
             }
         });
     }
@@ -146,10 +200,28 @@ public class OidcHttpAuthenticationMechanismTest {
         });
     }
 
+    private void withCallbackRequest() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getParameter(OpenIdConstant.STATE);
+                will(returnValue("aStateValue"));
+            }
+        });
+    }
+
     private void clientStartsFlow(ProviderAuthenticationResult providerAuthenticationResult) {
         mockery.checking(new Expectations() {
             {
                 one(client).startFlow(request, response);
+                will(returnValue(providerAuthenticationResult));
+            }
+        });
+    }
+
+    private void clientContinuesFlow(ProviderAuthenticationResult providerAuthenticationResult) throws AuthenticationResponseException, TokenRequestException {
+        mockery.checking(new Expectations() {
+            {
+                one(client).continueFlow(request, response);
                 will(returnValue(providerAuthenticationResult));
             }
         });
@@ -173,12 +245,41 @@ public class OidcHttpAuthenticationMechanismTest {
         });
     }
 
+    private void mechanismValidatesTokens(AuthenticationStatus status) throws AuthenticationException {
+        mockery.checking(new Expectations() {
+            {
+                // TODO: Check for issuer as the realm name
+                one(utils).handleAuthenticate(with(cdi), with(JavaEESecConstants.DEFAULT_REALM), with(aNonNull(Credential.class)), with(clientSubject), with(httpMessageContext));
+                will(returnValue(status));
+            }
+        });
+    }
+
+    private void mechanismSetsResponseStatus(int responseStatus) {
+        mockery.checking(new Expectations() {
+            {
+                one(response).setStatus(responseStatus);
+            }
+        });
+    }
+
+    private ProviderAuthenticationResult createSuccessfulProviderAuthenticationResult() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        customProperties.put(JakartaOidcTokenRequest.AUTH_RESULT_CUSTOM_PROP_TOKEN_RESPONSE, tokenResponse);
+        return new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, null, null, customProperties, null);
+    }
+
     private class TestOidcHttpAuthenticationMechanism extends OidcHttpAuthenticationMechanism {
 
         @SuppressWarnings("rawtypes")
         @Override
         protected CDI getCDI() {
             return cdi;
+        }
+
+        @Override
+        protected Utils getUtils() {
+            return utils;
         }
 
         @Override

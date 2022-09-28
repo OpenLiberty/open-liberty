@@ -38,6 +38,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -48,6 +49,7 @@ import io.openliberty.jcache.internal.fat.testresource.KdcResource;
 /**
  * Test the distributed authentication cache with GSS credentials generated from SPNEGO authentication.
  */
+@SkipIfSysProp("skip.tests=true")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
@@ -105,6 +107,8 @@ public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        assumeShouldNotSkipTests();
+
         /*
          * Transform apps for EE9+.
          */

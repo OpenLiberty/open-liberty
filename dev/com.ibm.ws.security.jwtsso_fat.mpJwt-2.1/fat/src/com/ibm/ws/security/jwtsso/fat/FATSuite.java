@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE10RepeatAction;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 
 import componenttest.rules.repeater.RepeatTests;
@@ -34,6 +34,6 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new SecurityTestFeatureEE9RepeatAction(JwtFatConstants.MPJWT_VERSION_21));
+    public static RepeatTests r = RepeatTests.with(new SecurityTestFeatureEE10RepeatAction(JwtFatConstants.MPJWT_VERSION_21));
 
 }

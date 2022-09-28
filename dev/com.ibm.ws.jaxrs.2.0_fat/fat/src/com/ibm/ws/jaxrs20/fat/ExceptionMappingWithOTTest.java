@@ -42,7 +42,7 @@ import componenttest.topology.impl.LibertyServer;
  * the MP OT mapper.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(JakartaEE10Action.ID) // MP Open Tracing doesn't support EE10 until MP 6
+@SkipForRepeat(JakartaEE10Action.ID) //MP Open Tracing replace with MP Telemetry so this test is not valid beyond EE9
 public class ExceptionMappingWithOTTest {
 
     @Server("com.ibm.ws.jaxrs.fat.exceptionMappingWithOT")

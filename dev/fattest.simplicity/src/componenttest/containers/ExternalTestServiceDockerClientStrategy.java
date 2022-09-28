@@ -154,7 +154,8 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Log.info(c, m, "Original contents:\n" + contents);
+
+            logConfigContents(m, "Original contents", contents);
             if (contents.contains(registry)) {
                 Log.info(c, m, "Config already contains private registry");
                 return;
@@ -180,10 +181,21 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                            + configFile.getAbsolutePath());
             contents = "{\n\t\"auths\": {\n" + privateAuth + "\n\t}\n}";
         }
-        Log.info(c, m, "New config.json contents are:\n" + contents);
+        logConfigContents(m, "New config.json contents are", contents);
         configFile.delete();
         writeFile(configFile, contents);
+    }
 
+    /**
+     * Log the contents of a config file that may contain authentication data which should be redacted.
+     *
+     * @param method
+     * @param msg
+     * @param contents
+     */
+    private static void logConfigContents(String method, String msg, String contents) {
+        String sanitizedContents = contents.replaceAll("\"auth\": \".*\"", "\"auth\": \"****Token Redacted****\"");
+        Log.info(c, method, msg + ":\n" + sanitizedContents);
     }
 
     private static void generateArtifactorySubstitutorConfig() {
@@ -386,9 +398,16 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
             //State 4: Earlier version of TestContainers didn't support docker for windows
             // Assume a user on windows with no other preferences will want to use a remote host.
+            // ARM architecture can cause performance/starting issues with x86 containers, so also
+            // assume remote as the default.
             if (System.getProperty("os.name", "unknown").toLowerCase().contains("windows")) {
                 result = true;
                 reason = "Local operating system is Windows. Default container support not guaranteed.";
+                break;
+            }
+            if (FATRunner.ARM_ARCHITECTURE) {
+                result = true;
+                reason = "CPU architecture is ARM. x86 container support and performance not guaranteed.";
                 break;
             }
 

@@ -304,5 +304,9 @@ NO_RECENT_SESSIONS_WITH_CLAIMS=CWWKS1552E: Il client [{0}] OpenID Connect non ri
 NO_RECENT_SESSIONS_WITH_CLAIMS.explanation=Il client OpenID Connect non ha una sessione recente con un provider OpenID Connect che corrisponda a tutte le richieste specificate nel messaggio. Le richieste specificate nel messaggio devono avere dei valori nel token di disconnessione che corrispondono alle stesse richieste di un token ID ricevuto di recente.
 NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Assicurarsi che le richieste specificate nel messaggio corrispondano a un token ID ottenuto recentemente da un provider OpenID Connect.
 
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Il client OpenID Connect {0} ha rilevato un errore durante l''invio di una richiesta di autorizzazione al provider OpenID Connect. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=La configurazione del client OpenID Connect potrebbe avere un'informazione mancante oppure il client ha rilevato un errore durante la comunicazione con il provider OpenID Connect.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

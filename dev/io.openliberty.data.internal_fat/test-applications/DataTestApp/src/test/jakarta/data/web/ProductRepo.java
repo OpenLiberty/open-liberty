@@ -13,28 +13,26 @@ package test.jakarta.data.web;
 import java.util.List;
 import java.util.Set;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.OrderBy;
-import io.openliberty.data.Param;
-import io.openliberty.data.Query;
-import io.openliberty.data.Select;
-import io.openliberty.data.Select.Aggregate;
-import io.openliberty.data.Update;
-import io.openliberty.data.Where;
+import jakarta.data.OrderBy;
+import jakarta.data.Param;
+import jakarta.data.Query;
+import jakarta.data.Select;
+import jakarta.data.Select.Aggregate;
+import jakarta.data.Update;
+import jakarta.data.Where;
+import jakarta.data.repository.Repository;
 
 /**
  *
  */
-@Data
+@Repository
 public interface ProductRepo {
-    void addOrModify(Product p);
-
     @Query("DELETE FROM Product o WHERE o.id IN ?1")
     int discontinueProducts(Set<String> ids);
 
     @Select(value = "name", distinct = true)
     @OrderBy("name")
-    List<String> findByNameLike(String nameContains);
+    List<String> findByNameLike(String namePattern);
 
     Product[] findByVersionGreaterThanEqualOrderByPrice(long minVersion);
 
@@ -52,6 +50,8 @@ public interface ProductRepo {
 
     @Query("UPDATE Product o SET o.price = o.price - (?2 * o.price) WHERE o.name LIKE CONCAT('%', ?1, '%')")
     long putOnSale(String nameContains, float discount);
+
+    void save(Product p);
 
     @Update("o.price=?3")
     @Where("o.id=?1 AND o.version=?2")

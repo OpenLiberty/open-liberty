@@ -19,8 +19,8 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Bundle-SymbolicName: io.openliberty.jakarta.concurrency.3.0; singleton:=true
 
 Export-Package: \
-  jakarta.enterprise.concurrent;version="3.0.0",\
-  jakarta.enterprise.concurrent.spi;version="3.0.0"
+  jakarta.enterprise.concurrent;version="3.0.2",\
+  jakarta.enterprise.concurrent.spi;version="3.0.2"
 
 DynamicImport-Package: \
   jakarta.enterprise.util,\
@@ -32,11 +32,11 @@ Import-Package: \
   *
 
 Include-Resource: \
-  @${repo;jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.0.0}!/META-INF/NOTICE
+  @${repo;jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.0.2}!/META-INF/NOTICE
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.0.0
+  jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.0.2

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf23.fat.CDITestBase;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -45,7 +47,13 @@ public class JSF23CDIConfigByACPTests extends CDITestBase {
 
         // Create the CDIConfigByACP jar that is used in CDIConfigByACP.war,
         JavaArchive cdiConfigByACPJar = ShrinkWrap.create(JavaArchive.class, "CDIConfigByACP.jar");
-        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans");
+        if (JakartaEE10Action.isActive()) {
+            // Include @Named beans.
+            cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.faces40");
+        } else {
+            // Include @ManagedBean beans.
+            cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans");
+        }
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.factory");
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.injected");
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed");
@@ -83,6 +91,7 @@ public class JSF23CDIConfigByACPTests extends CDITestBase {
      *
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testNavigationHandlerInjection_CDIConfigByACP() throws Exception {
         testNavigationHandlerInjectionByApp("CDIConfigByACP", server);
     }

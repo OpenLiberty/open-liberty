@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,9 +62,11 @@ public class JsonConfigBootstrapTest {
     public static final String SERVER_XML_JSON_MESSAGE_MAXFILESIZE = "jsonMessageMaxFileSize.xml";
     public static final String SERVER_XML_TRACE_CONSOLE_ACCESSTRACE_MESSAGE = "traceConsoleAccessTraceMessage.xml";
     public static final String SERVER_XML_CLEAR_LOGGING_SOURCES = "clearLoggingSources.xml";
+    public static final String SERVER_XML_JSON_CONSOLE_SOURCE_CASE_INSENSITIVE = "jsonConsoleSourceCaseInsensitive.xml";
     public static final String SERVER_XML_BASIC = "basicServer.xml";
     public static final String SERVER_XML_JSON_SOURCE_MESSAGETRACEACCESS = "jsonSourceMessageTraceAccess.xml";
     public static final String SERVER_XML_JSON_MESSAGE_ACCESS = "jsonMessageSourceAccessLog.xml";
+    public static final String SERVER_XML_JSON_MESSAGE_ACCESS_CASE_INSENSITIVE = "jsonMessageSourceAccessLogCaseInsensitive.xml";
     public static final String SERVER_XML_JSON_CONFIG_FIELD_EXT = "jsonConfigFieldExt.xml";
     public static final String SERVER_XML_APPS_WRITE_JSON_ENABLED = "appsWriteJsonEnabled.xml";
 
@@ -222,6 +224,50 @@ public class JsonConfigBootstrapTest {
     }
 
     /*
+     * This test verifies messageSource when the attribute's values are case insensitive
+     * bootstrap.properties: com.ibm.ws.logging.message.source=MESSAGE
+     * server.xml: <logging messageFormat="json" messageSource="ACCESSlog"/>
+     */
+    @Test
+    public void testMessageSourceValuesCaseInsensitive() throws Exception {
+
+        // Get the bootstrap.properties file and store the original content
+        RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
+        FileInputStream in = getFileInputStreamForRemoteFile(bootstrapFile);
+        Properties initialBootstrapProps = loadProperties(in);
+
+        try {
+
+            // Set messageSource to message in bootstrap.properties
+            // Start the server with the server.env file configured with the messageSource=message,trace
+            setInBootstrapPropertiesFile(server, bootstrapFile, "com.ibm.ws.logging.message.format", JSON_FORMAT);
+            // Set message source value to all upper case letters
+            setInBootstrapPropertiesFile(server, bootstrapFile, "com.ibm.ws.logging.message.source", "MESSAGE");
+            server.startServer();
+            RemoteFile consoleLogFile = server.getConsoleLogFile();
+            runApplication(server, consoleLogFile);
+
+            // Check in messages.log file to see if only message is enabled
+            ArrayList<String> messageSourceList = new ArrayList<String>(Arrays.asList("message"));
+            checkMessageLogUpdate(true, messageSourceList, "");
+
+            // Set messageSource to accessLogging in server.xml
+            setServerConfig(server, SERVER_XML_JSON_MESSAGE_ACCESS_CASE_INSENSITIVE);
+
+            runApplication(server, consoleLogFile);
+
+            // Check in messages.log file to see if the format is in json format and has accessLogging enabled
+            messageSourceList = new ArrayList<String>(Arrays.asList("accesslog"));
+            checkMessageLogUpdate(true, messageSourceList, "");
+
+        } finally {
+            // Restore the initial contents of bootstrap.properties
+            FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
+            writeProperties(initialBootstrapProps, out);
+        }
+    }
+
+    /*
      * This test verifies consoleSource when the attribute is set in all server.env, bootstrap.properties and server.xml
      * server.env: WLP_LOGGING_CONSOLE_SOURCE=trace
      * bootstrap.properties: com.ibm.ws.logging.console.source=message
@@ -250,6 +296,52 @@ public class JsonConfigBootstrapTest {
 
             // Set the consoleFormat to JSON in server.xml
             setServerConfig(server, SERVER_XML_CLEAR_LOGGING_SOURCES);
+
+            runApplication(server, consoleLogFile);
+
+            // Check in console.log file to see if the format is in json format and has trace enabled
+            consolesourceList = new ArrayList<String>(Arrays.asList("trace"));
+            checkConsoleLogUpdate(true, consoleLogFile, "INFO", consolesourceList, "");
+
+            //set server.xml to a basic config so that when server stops, it can successfully check for CWWKE0036I in console log
+            setServerConfig(server, SERVER_XML_BASIC);
+
+        } finally {
+            // Restore the initial contents of bootstrap.properties
+            FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
+            writeProperties(initialBootstrapProps, out);
+        }
+    }
+
+    /*
+     * This test verifies consoleSource when the attribute's values are case insensitive
+     * bootstrap.properties: com.ibm.ws.logging.console.source=MESSAGE
+     * server.xml: <logging consoleFormat="json" consoleSource="tRaCe"/>
+     */
+    @Test
+    public void testConsoleSourceValuesCaseInsensitive() throws Exception {
+
+        // Get the bootstrap.properties file and store the original content
+        RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
+        FileInputStream in = getFileInputStreamForRemoteFile(bootstrapFile);
+        Properties initialBootstrapProps = loadProperties(in);
+
+        try {
+            // Set the consoleSource to message in bootstrap.properties
+            // Start the server with the server.env file configured with the consoleSource=message,trace
+            setInBootstrapPropertiesFile(server, bootstrapFile, "com.ibm.ws.logging.console.format", JSON_FORMAT);
+            // Set console source value to all upper case letters
+            setInBootstrapPropertiesFile(server, bootstrapFile, "com.ibm.ws.logging.console.source", "MESSAGE");
+            server.startServer();
+            RemoteFile consoleLogFile = server.getConsoleLogFile();
+            runApplication(server, consoleLogFile);
+
+            // Check in console.log file to see if the format is in json format and has message enabled
+            ArrayList<String> consolesourceList = new ArrayList<String>(Arrays.asList("message"));
+            checkConsoleLogUpdate(true, consoleLogFile, "INFO", consolesourceList, "");
+
+            // Set the consoleFormat to JSON in server.xml
+            setServerConfig(server, SERVER_XML_JSON_CONSOLE_SOURCE_CASE_INSENSITIVE);
 
             runApplication(server, consoleLogFile);
 

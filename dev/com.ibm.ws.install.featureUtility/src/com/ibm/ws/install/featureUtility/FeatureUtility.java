@@ -72,6 +72,7 @@ public class FeatureUtility {
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private final static String WEBSPHERE_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
     private final static String BETA_EDITION = "EARLY_ACCESS";
+    private final static String CONNECTION_FAILED_ERROR = "CWWKF1390E";
     private static String to;
     private boolean isInstallServerFeature = false;
 
@@ -164,10 +165,11 @@ public class FeatureUtility {
         
         updateProgress(progressBar.getMethodIncrement("fetchJsons"));
         fine("Finished finding jsons");
-
+	progressBar.manuallyUpdate();
         initializeMap(jsonPaths);
         updateProgress(progressBar.getMethodIncrement("initializeMap"));
         fine("Initialized install kernel map");
+	progressBar.manuallyUpdate();
     }
     
     public void setFeatureToExt(Map<String, String> featureToExt) {
@@ -242,24 +244,8 @@ public class FeatureUtility {
 						Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PORT_MISSING"),
 						InstallException.MISSING_CONTENT);
 			}
-
-			String decodedPwd = password;
-			if (decodedPwd != null && !decodedPwd.isEmpty()) {
-				try {
-					// Decode encrypted proxy server password
-					decodedPwd = PasswordUtil.decode(password);
-				} catch (InvalidPasswordDecodingException ipde) {
-					decodedPwd = password;
-					logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES
-							.getLogMessage("LOG_PASSWORD_NOT_ENCODED_PROXY", host + ":" + port) + InstallUtils.NEWLINE);
-				} catch (UnsupportedCryptoAlgorithmException ucae) {
-					throw new InstallException(
-							Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED"),
-							ucae, InstallException.RUNTIME_EXCEPTION);
-				}
-			}
 			overrideMap.put(protocol + ".proxyUser", username);
-			overrideMap.put(protocol + ".proxyPassword", decodedPwd);
+			overrideMap.put(protocol + ".proxyPassword", password);
 
 		}
 
@@ -471,10 +457,8 @@ public class FeatureUtility {
         	
         }
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
-
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
         Collection<File> artifacts = fromDir != null ? downloadFeaturesFrom(resolvedFeatures, fromDir) : downloadFeatureEsas((List<String>) resolvedFeatures);
-        updateProgress(progressBar.getMethodIncrement("downloadArtifacts")); // expect this to be 0 after download all features
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
         Collection<String> actionReturnResult = new ArrayList<String>();
@@ -482,7 +466,7 @@ public class FeatureUtility {
         try {
 
             for (File esaFile : artifacts) {
-				double increment = ((progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
+		double increment = ((progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
             	String featureName = extractFeature(esaFile.getName());
                 fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING", featureName));
                 map.put("license.accept", true);
@@ -590,6 +574,9 @@ public class FeatureUtility {
         if (map.get("action.error.message") != null) {
             fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
             String exceptionMessage = (String) map.get("action.error.message");
+	    if (exceptionMessage.contains(CONNECTION_FAILED_ERROR)) {
+		throw new InstallException(exceptionMessage, InstallException.CONNECTION_FAILED);
+	    }
             throw new InstallException(exceptionMessage);
         }
         return result;

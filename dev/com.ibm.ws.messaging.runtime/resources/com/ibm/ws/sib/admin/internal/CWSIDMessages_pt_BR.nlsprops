@@ -76,12 +76,6 @@
 ### Search on "TBD" for messages that need information from other components ###
  
 # -------------------------------------------------------------------------------------------------
-# {0} Messaging engine name
-ME_INITIALIZING_SIAS0001=CWSID0001I: O mecanismo do sistema de mensagens {0} est\u00e1 inicializando.
-ME_INITIALIZING_SIAS0001.explanation=O mecanismo de sistema de mensagens especificado est\u00e1 come\u00e7ando a inicializa\u00e7\u00e3o.
-ME_INITIALIZING_SIAS0001.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
- 
-# -------------------------------------------------------------------------------------------------
 # {0} Internal reason string
 INTERNAL_ERROR_SIAS0003=CWSID0003E: Ocorreu um erro interno; raz\u00e3o: {0}
 INTERNAL_ERROR_SIAS0003.explanation=Ocorreu um erro interno inesperado durante a opera\u00e7\u00e3o do sistema.
@@ -252,7 +246,7 @@ NO_ID_PROVIDED_SIAS0102.explanation=O ID n\u00e3o est\u00e1 especificado para o 
 NO_ID_PROVIDED_SIAS0102.useraction=Forne\u00e7a o ID para o destino.
 
 # -------------------------------------------------------------------------------------------------
-NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  A tag fileStore n\u00e3o foi definida no arquivo de configura\u00e7\u00e3o do servidor; portanto, os padr\u00f5es ser\u00e3o usados.
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I: \ A tag fileStore n\u00e3o foi definida no arquivo de configura\u00e7\u00e3o do servidor; portanto, os padr\u00f5es ser\u00e3o usados.
 NO_FILESTOR_DEFINED_SIAS0104.explanation=A tag fileStore n\u00e3o foi fornecida; portanto, os valores padr\u00e3o ser\u00e3o obtidos durante a cria\u00e7\u00e3o do armazenamento de arquivos.   
 NO_FILESTOR_DEFINED_SIAS0104.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 

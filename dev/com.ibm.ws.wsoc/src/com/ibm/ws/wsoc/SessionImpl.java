@@ -126,7 +126,6 @@ public class SessionImpl {
 
         // doPriv is needed if this method  is called from client/User code, since the user code on the stack will not have the right privileges.
         // if called form server code, then all modules on the stack should have the right privileges, and no use to slow down the code with doPriv blocks
-        ClassLoader originalCL = null;
 
         ComponentMetaDataAccessorImpl cmdai = null;
         boolean appActivateResult = false;
@@ -137,13 +136,13 @@ public class SessionImpl {
 
         connLink.setEndpointManager(things.getEndpointManager());
 
-        if(WebSocketVersionServiceManager.isWsoc21rHigher()){
+        if (WebSocketVersionServiceManager.isWsoc21rHigher()) {
             things.setUserProperties(endpointConfig.getUserProperties());
         } else {
             userProperties = new HashMap<String, Object>();
             things.setUserProperties(userProperties);
         }
-        
+
         things.setSessionID(sessionID);
 
         // add session to the list of open endpoints
@@ -154,6 +153,7 @@ public class SessionImpl {
 
         // setup the context class loader and Component Metadata for the app to use during onOpen
         // also need to store and restore the current context classloader and not leak out the Component Metadata
+        final ClassLoader originalCL;
         if (runWithDoPriv) {
             final Thread t = Thread.currentThread();
             originalCL = AccessController.doPrivileged(
@@ -237,7 +237,17 @@ public class SessionImpl {
             if (cmdai != null) {
                 cmdai.endContext();
             }
-            Thread.currentThread().setContextClassLoader(originalCL);
+            if (runWithDoPriv) {
+                AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                    @Override
+                    public Void run() {
+                        Thread.currentThread().setContextClassLoader(originalCL);
+                        return null;
+                    }
+                });
+            } else {
+                Thread.currentThread().setContextClassLoader(originalCL);
+            }
         }
 
         // Once we do this, we could return on another thread right away with read data.  So be careful about putting any session logic after

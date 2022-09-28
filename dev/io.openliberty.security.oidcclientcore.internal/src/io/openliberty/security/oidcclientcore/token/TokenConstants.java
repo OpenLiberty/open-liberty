@@ -20,9 +20,6 @@ public class TokenConstants {
     public static final String GRANT_TYPE = "grant_type";
     public static final String REDIRECT_URI = "redirect_uri";
 
-    public static final String ACCEPT = "Accept";
-    public static final String APPLICATION_JSON = "application/json";
-
     public static final String RESOURCE = "resource";
     public static final String METHOD_BASIC = "basic";
     public static final String METHOD_POST = "post";

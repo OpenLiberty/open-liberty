@@ -29,6 +29,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.ServletClient;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -39,6 +40,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test failover to the local in-memory authentication cache when there are failures with retrieving
  * objects from the JCache.
  */
+@SkipIfSysProp("skip.tests=true")
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JCacheAuthCacheFailureTest extends BaseTestCase {
@@ -53,6 +55,8 @@ public class JCacheAuthCacheFailureTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() {
+        assumeShouldNotSkipTests();
+
         /*
          * Transform apps for EE9+.
          */

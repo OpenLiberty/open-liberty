@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -310,8 +310,8 @@ public class HttpMessageContextImpl implements HttpMessageContext {
     @Override
     public AuthenticationStatus redirect(String location) {
         try {
-            response.sendRedirect(response.encodeURL(location));
             response.setStatus(HttpServletResponse.SC_FOUND);
+            response.sendRedirect(response.encodeURL(location));
         } catch (IOException e) {
             // TODO: Determine if this needs a serviceability message
         }

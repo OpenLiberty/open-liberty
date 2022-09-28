@@ -16,6 +16,7 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.common.structures.SingleTableCache;
 
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 
@@ -23,25 +24,39 @@ public class DiscoveryHandler {
 
     public static final TraceComponent tc = Tr.register(DiscoveryHandler.class);
 
+    // TODO Discovery metadata will be cleared from the cache after 5 minutes
+    private static SingleTableCache cachedDiscoveryMetadata = new SingleTableCache(1000 * 60 * 5);
+
     private final SSLSocketFactory sslSocketFactory;
-    public HttpUtils httpUtils;
+    protected HttpUtils httpUtils;
 
     public DiscoveryHandler(SSLSocketFactory sslSocketFactory) {
         this.sslSocketFactory = sslSocketFactory;
-        this.httpUtils = new HttpUtils();
+        this.httpUtils = getHttpUtils();
     }
 
     public JSONObject fetchDiscoveryDataJson(String discoveryUri, String clientId) throws OidcDiscoveryException {
+        // See if we already have cached metadata for this endpoint to avoid sending discovery requests too frequently
+        JSONObject discoveryData = (JSONObject) cachedDiscoveryMetadata.get(discoveryUri);
+        if (discoveryData != null) {
+            return discoveryData;
+        }
         try {
             String jsonString = fetchDiscoveryDataString(discoveryUri, true, false);
-            return JSONObject.parse(jsonString);
+            discoveryData = JSONObject.parse(jsonString);
         } catch (Exception e) {
-            throw new OidcDiscoveryException(clientId, discoveryUri, e.getMessage());
+            throw new OidcDiscoveryException(clientId, discoveryUri, e.toString());
         }
+        cachedDiscoveryMetadata.put(discoveryUri, discoveryData);
+        return discoveryData;
     }
 
     public String fetchDiscoveryDataString(String discoveryUrl, boolean hostNameVerificationEnabled, boolean useSystemProperties) throws Exception {
         return httpUtils.getHttpJsonRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemProperties);
+    }
+
+    protected HttpUtils getHttpUtils() {
+        return new HttpUtils();
     }
 
 }

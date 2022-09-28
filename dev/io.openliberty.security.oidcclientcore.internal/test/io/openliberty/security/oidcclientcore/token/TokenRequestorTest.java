@@ -11,6 +11,7 @@
 package io.openliberty.security.oidcclientcore.token;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,15 +51,12 @@ public class TokenRequestorTest extends CommonTestClass {
     private static final String scope = "openid profile";
     private static final String refreshToken = "QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv";
     private static final String idToken = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk";
-    private static final String tokenResponseEntity = "{\"access_token\":\"" + accessToken + "\",\"token_type\":\"" + tokenType + "\",\"expires_in\":" + expiresIn + ",\"scope\":\"" + scope + "\",\"refresh_token\":\"" + refreshToken + "\",\"id_token\":\"" + idToken + "\"}";
+    private static final String tokenResponseEntity = "{\"access_token\":\"" + accessToken + "\",\"token_type\":\"" + tokenType + "\",\"expires_in\":" + expiresIn + ",\"scope\":\""
+                                                      + scope + "\",\"refresh_token\":\"" + refreshToken + "\",\"id_token\":\"" + idToken + "\"}";
 
-    private static final List<NameValuePair> commonHeaders;
     private static final Map<String, Object> postResponseMap;
 
     static {
-        commonHeaders = new ArrayList<NameValuePair>();
-        commonHeaders.add(new BasicNameValuePair(TokenConstants.ACCEPT, TokenConstants.APPLICATION_JSON));
-
         postResponseMap = new HashMap<String, Object>();
         postResponseMap.put(TokenConstants.ACCESS_TOKEN, accessToken);
         postResponseMap.put(TokenConstants.TOKEN_TYPE, tokenType);
@@ -104,7 +102,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, commonHeaders, false, TokenConstants.METHOD_BASIC, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, false, TokenConstants.METHOD_BASIC, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -113,9 +111,10 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
+        assertNotNull("The token response generation time must be set.", tokenResponse.getResponseGenerationTime());
     }
 
     @Test
@@ -125,7 +124,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpointSecure, params, clientId, clientSecret, null, sslSocketFactory, commonHeaders, false,
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpointSecure, params, clientId, clientSecret, null, sslSocketFactory, false,
                                                        TokenConstants.METHOD_BASIC, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
@@ -135,9 +134,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
     @Test
@@ -147,7 +146,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, commonHeaders, true, TokenConstants.METHOD_BASIC, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, true, TokenConstants.METHOD_BASIC, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -156,9 +155,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
     @Test
@@ -171,7 +170,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, commonHeaders, false, TokenConstants.METHOD_POST, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, false, TokenConstants.METHOD_POST, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -180,9 +179,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
     @Test
@@ -199,7 +198,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, commonHeaders, false, TokenConstants.METHOD_BASIC, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, false, TokenConstants.METHOD_BASIC, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -208,9 +207,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
     @Test
@@ -221,7 +220,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, commonHeaders, false, TokenConstants.METHOD_BASIC, true);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, params, clientId, clientSecret, null, null, false, TokenConstants.METHOD_BASIC, true);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -230,19 +229,14 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
     @Test
     public void test_requestTokens_multipleBuilderMethodsUsed() throws Exception {
-        TokenRequestor tokenRequestor = new TokenRequestor.Builder(tokenEndpointSecure, clientId, clientSecret, redirectUri, code)
-                                                            .sslSocketFactory(sslSocketFactory)
-                                                            .isHostnameVerification(true)
-                                                            .authMethod(TokenConstants.METHOD_POST)
-                                                            .useSystemPropertiesForHttpClientConnections(true)
-                                                            .build();
+        TokenRequestor tokenRequestor = new TokenRequestor.Builder(tokenEndpointSecure, clientId, clientSecret, redirectUri, code).sslSocketFactory(sslSocketFactory).isHostnameVerification(true).authMethod(TokenConstants.METHOD_POST).useSystemPropertiesForHttpClientConnections(true).build();
 
         tokenRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
@@ -251,8 +245,7 @@ public class TokenRequestorTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpointSecure, params, clientId, clientSecret, null, sslSocketFactory, commonHeaders, true,
-                                                       TokenConstants.METHOD_POST, true);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpointSecure, params, clientId, clientSecret, null, sslSocketFactory, true, TokenConstants.METHOD_POST, true);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -261,9 +254,9 @@ public class TokenRequestorTest extends CommonTestClass {
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
 
-        assertEquals(accessToken, tokenResponse.getAccessToken());
-        assertEquals(refreshToken, tokenResponse.getRefreshToken());
-        assertEquals(idToken, tokenResponse.getIdToken());
+        assertEquals(accessToken, tokenResponse.getAccessTokenString());
+        assertEquals(refreshToken, tokenResponse.getRefreshTokenString());
+        assertEquals(idToken, tokenResponse.getIdTokenString());
     }
 
 }

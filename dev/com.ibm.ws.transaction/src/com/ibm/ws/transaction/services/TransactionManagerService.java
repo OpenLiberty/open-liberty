@@ -465,31 +465,6 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         ((EmbeddableTranManagerSet) etm()).registerLTCCallback(arg0);
     }
 
-    public void shutDownFramework() {
-        try {
-            if (_bundleContext != null) {
-                final Bundle bundle = _bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
-
-                if (bundle != null)
-                    AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
-                        @Override
-                        public Void run() throws BundleException {
-                            bundle.stop();
-                            return null;
-                        }
-                    });
-            }
-        } catch (Exception e) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "shutDownFramework", e);
-
-            // do not FFDC this.
-            // exceptions during bundle stop occur if framework is already stopping or stopped
-        }
-
-        throw new IllegalStateException("Shutting down framework");
-    }
-
     /**
      * Returns an application identifier key which can be used as a unique component
      * within the global identifier and branch qualifier of an XID.

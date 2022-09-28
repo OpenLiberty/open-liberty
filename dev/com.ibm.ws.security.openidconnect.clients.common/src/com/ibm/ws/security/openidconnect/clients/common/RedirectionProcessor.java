@@ -23,8 +23,7 @@ import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
-import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
-import io.openliberty.security.oidcclientcore.utils.Utils;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 
 /**
  * Processes the End-User redirection to the Client by the OP.
@@ -136,7 +135,7 @@ public class RedirectionProcessor {
     }
 
     private String getOriginalRequestUrl(String state) {
-        String cookieName = OidcClientStorageConstants.WAS_REQ_URL_OIDC + Utils.getStrHashCode(state);
+        String cookieName = OidcStorageUtils.getOriginalReqUrlStorageKey(state);
         Cookie[] cookies = request.getCookies();
         String requestUrl = CookieHelper.getCookieValue(cookies, cookieName);
         OidcClientUtil.invalidateReferrerURLCookie(request, response, cookieName);

@@ -14,8 +14,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,6 +31,7 @@ import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -40,6 +41,7 @@ import componenttest.topology.impl.LibertyServer;
  * Contains distributed JCache test dynamic server.xml changes
  */
 @SuppressWarnings("restriction")
+@SkipIfSysProp("skip.tests=true")
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -52,8 +54,10 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
      */
     private static ServerConfiguration emptyConfiguration = null;
 
-    @BeforeClass
-    public static void setup() throws Exception {
+    @Before
+    public void setup() throws Exception {
+        assumeShouldNotSkipTests();
+
         String groupName = UUID.randomUUID().toString();
         /*
          * Start server 1.
@@ -63,8 +67,8 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         emptyConfiguration = server1.getServerConfiguration();
     }
 
-    @AfterClass
-    public static void after() throws Exception {
+    @After
+    public void after() throws Exception {
         /*
          * Stop the servers in the reverse order they were started.
          */
@@ -90,10 +94,20 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
 
         CachingProvider cachingProvider = new CachingProvider("CachingProvider", jCacheLibraryRef, commonLibraryRef, providerClass);
 
+        /*
+         * Remove any duplicates of the Cache, CacheManager or CachingProviders and add in the new ones.
+         */
+        server.getCaches().removeIf(c -> cache.getId().equals(c.getId()));
         server.getCaches().add(cache);
+
+        server.getCacheManagers().removeIf(cm -> cacheManager.getId().equals(cm.getId()));
+        server.getCacheManagers().add(cacheManager);
+
+        server.getCachingProviders().removeIf(cp -> cachingProvider.getId().equals(cp.getId()));
+        server.getCachingProviders().add(cachingProvider);
+
+        server.getAuthCaches().clear();
         server.getAuthCaches().add(authCache);
-        server.getcacheManagers().add(cacheManager);
-        server.getcachingProviders().add(cachingProvider);
 
         updateConfigDynamically(server1, server);
     }
@@ -107,7 +121,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
     public void addAndRemoveCaches() throws Exception {
         // Create a working cache configuration
         updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props");
+                            "file:///${shared.resource.dir}/infinispan/${infinispan.hotrod.file}");
         ServerConfiguration current = server1.getServerConfiguration();
 
         // Add second and third cache
@@ -274,7 +288,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          * ***********************************************************************
          */
         updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod.props");
+                            "file:///${shared.resource.dir}/infinispan/${infinispan.hotrod.file}");
 
         /*
          * All issues have been fixed, so wait for the auth cache to start.

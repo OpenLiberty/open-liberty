@@ -5,7 +5,7 @@ visibility=private
 singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
--features=com.ibm.websphere.appserver.optional.jaxb-2.2; ibm.tolerates:="2.3", \
+-features=com.ibm.websphere.appserver.optional.jaxb-2.2, \
   com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.httpcommons-1.0, \
   com.ibm.websphere.appserver.jsonbInternal-1.0, \

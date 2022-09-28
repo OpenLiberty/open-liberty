@@ -83,3 +83,7 @@ JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Non \u00e8 richiesta alcuna 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES=CWWKS1125I: La cache di autenticazione ha cancellato tutte le voci nella cache JCache {0}. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.explanation=La cache di autenticazione cancella tutte le voci nella cache JCache di backup quando viene modificata la configurazione della sicurezza o del registro utenti o quando viene richiamato l'MBean DeleteAuthCache. 
 JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Non \u00e8 richiesta alcuna azione.
+
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: L''inserimento della voce per la chiave {0} nella cache di autenticazione JCache {1} non \u00e8 riuscito a causa di un errore di serializzazione. La voce verr\u00e0 inserita invece nella cache di autenticazione in memoria. L''eccezione \u00e8: {2}
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=I contenuti della voce non sono stati serializzati quindi non sono stati memorizzati nella cache di autenticazione JCache.
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Indagare sull'eccezione inclusa nel messaggio e correggere la causa dell'errore.  

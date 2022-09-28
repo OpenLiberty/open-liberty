@@ -16,11 +16,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import jakarta.data.Pagination;
+import jakarta.data.Param;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-
-import io.openliberty.data.Pagination;
-import io.openliberty.data.Param;
 
 /**
  */

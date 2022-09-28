@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.security.SecurityPermission;
 
 import javax.security.jacc.PolicyConfiguration;
 import javax.security.jacc.PolicyConfigurationFactory;
+import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
 
 import com.ibm.websphere.ras.Tr;
@@ -30,6 +31,17 @@ public class WSPolicyConfigurationFactoryImpl extends PolicyConfigurationFactory
         if (allConfigs == null) {
             allConfigs = AllPolicyConfigs.getInstance();
         }
+    }
+
+    public PolicyConfiguration getPolicyConfiguration() {
+        String contextID = null;
+        contextID = PolicyContext.getContextID();
+        return allConfigs.getPolicyConfig(contextID);
+
+    }
+
+    public PolicyConfiguration getPolicyConfiguration(String contextID) {
+        return allConfigs.getPolicyConfig(contextID);
     }
 
     @Override

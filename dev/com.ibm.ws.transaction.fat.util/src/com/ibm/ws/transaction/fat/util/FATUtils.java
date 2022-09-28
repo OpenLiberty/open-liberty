@@ -143,7 +143,9 @@ public class FATUtils {
                     if (r != null) {
                         r.run(server);
                     }
+                    Instant serverStart = Instant.now();
                     po = server.startServerAndValidate(false, false, true);
+                    Log.info(c, method, server.getServerName() + " started in " + Duration.between(serverStart, Instant.now()));
                 } catch (Exception e) {
                     Log.error(c, method, e, "Server start attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
                 }

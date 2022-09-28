@@ -20,10 +20,8 @@ import componenttest.topology.impl.LibertyServer;
  */
 public class HazelcastTestPlugin implements TestPlugin {
 
-    private static final String HAZELCAST_GROUP_PASSWORD = "groupPassword";
-
     @Override
-    public void setupServer1(LibertyServer server, String hazelcastGroupName, Integer authCacheMaxSize, Integer authCacheTtlSecs) throws Exception {
+    public void setupServer1(LibertyServer server, String hazelcastClusterName, Integer authCacheMaxSize, Integer authCacheTtlSecs) throws Exception {
         /*
          * Default the cache size and TTL to the default values for authCache->maxSize and authCache->timeout
          * from server.xml.
@@ -46,26 +44,26 @@ public class HazelcastTestPlugin implements TestPlugin {
         /*
          * Set JVM options.
          */
-        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + hazelcastGroupName,
-                                           "-Dhazelcast.group.password=" + HAZELCAST_GROUP_PASSWORD,
+        server.setJvmOptions(Arrays.asList("-Dhazelcast.cluster.name=" + hazelcastClusterName,
                                            "-Dhazelcast.authcache.max.size=" + authCacheMaxSize,
                                            "-Dhazelcast.authcache.entry.ttl=" + authCacheTtlSecs,
                                            "-Dhazelcast.config.file=" + hazecastConfigFile,
-                                           "-Dhazelcast.jcache.provider.type=server",
+                                           "-Dhazelcast.jcache.provider.type=server", // Start as a member
+                                           "-Dhazelcast.phone.home.enabled=false", // Don't phone home
                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when GA'd
     }
 
     @Override
-    public void setupServer2(LibertyServer server, String hazelcastGroupName) throws Exception {
+    public void setupServer2(LibertyServer server, String hazelcastClusterName) throws Exception {
         String hazecastConfigFile = "hazelcast-client-localhost-only.xml";
 
         /*
          * Set JVM options.
          */
-        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + hazelcastGroupName,
-                                           "-Dhazelcast.group.password=" + HAZELCAST_GROUP_PASSWORD,
+        server.setJvmOptions(Arrays.asList("-Dhazelcast.cluster.name=" + hazelcastClusterName,
                                            "-Dhazelcast.config.file=" + hazecastConfigFile,
-                                           "-Dhazelcast.jcache.provider.type=client",
+                                           "-Dhazelcast.jcache.provider.type=client", // Start as a client
+                                           "-Dhazelcast.phone.home.enabled=false", // Don't phone home
                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when GA'd
     }
 

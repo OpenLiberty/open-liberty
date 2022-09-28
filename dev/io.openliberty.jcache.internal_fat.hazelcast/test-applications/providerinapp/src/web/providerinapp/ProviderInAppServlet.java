@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 
 /**
  * A servlet that will run tests with a JCache provider to ensure there is no regression.
@@ -49,9 +49,14 @@ public class ProviderInAppServlet extends HttpServlet {
 
         /*
          * Connect to the Hazelcast cache and insert a value.
+         * 
+         * The cluster name must be unique from what we are using for our JCache testing, otherwise
+         * the configuration from the JCache testing cluster will be deserialized by Hazelcast and
+         * the javax.cache JCache classes will result in ClassNotFoundExceptions.
          */
-        Config config = new Config("TestInstance");
-        HazelcastInstance instance = Hazelcast.getOrCreateHazelcastInstance(config);
+        Config config = new Config();
+        config.setClusterName("ProviderInAppServletTest");
+        HazelcastInstance instance = Hazelcast.newHazelcastInstance(config);
         IMap<Object, Object> distributedMap = instance.getMap(methodName);
         distributedMap.put(KEY, VALUE);
 

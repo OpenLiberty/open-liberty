@@ -1324,21 +1324,27 @@ public class XAResourceImpl implements XAResource, Serializable {
         int committed = 0;
         int prepared = 0;
         int rolledback = 0;
+        int numResources = 0;
 
         for (XAResourceData res : _resources.values()) {
-            if (res.inState(COMMITTED)) {
-                committed++;
-            } else if (res.inState(ROLLEDBACK)) {
-                rolledback++;
-            } else if (res.inState(PREPARED)) {
-                prepared++;
-            } else {
-                rolledback++;
-            }
+        	if (null != res.getXid()) {
+        		numResources++;
+        		if (res.inState(COMMITTED)) {
+        			committed++;
+        		} else if (res.inState(ROLLEDBACK)) {
+        			rolledback++;
+        		} else if (res.inState(PREPARED)) {
+        			prepared++;
+        		} else {
+        			rolledback++;
+        		}
+        	} else {
+        		System.out.println("Resource has null Xid. Ignoring in checkAtomicity(): " + res);
+        	}
         }
 
         if (committed > 0) {
-            if (committed != _resources.size()) {
+            if (committed != numResources) {
                 return "Unatomic";
             }
 
@@ -1346,7 +1352,7 @@ public class XAResourceImpl implements XAResource, Serializable {
         }
 
         if (rolledback > 0) {
-            if (rolledback != _resources.size()) {
+            if (rolledback != numResources) {
                 return "Unatomic";
             }
 

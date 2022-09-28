@@ -26,7 +26,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
-import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 
 /**
@@ -207,16 +206,9 @@ public class OidcUtil {
         }
     }
 
-    public static long convertNormalizedTimeStampToLong(String input) {
-        // no need to check the input since the caller already check it. see verifyState() in OidcClientAuthenticator
-        String timeStamp = input.substring(0, TIMESTAMP_LENGTH);
-        long lTimeStamp = Long.parseLong(timeStamp);
-        return lTimeStamp;
-    }
-
     @Trivial
     public static boolean verifyNonce(OidcClientRequest oidcClientRequest, String nonceInIDToken, ConvergedClientConfig clientConfig, String responseState) {
-        String cookieName = OidcStorageUtils.getStorageKey(OidcClientStorageConstants.WAS_OIDC_NONCE, clientConfig.getClientId(), responseState);
+        String cookieName = OidcStorageUtils.getNonceStorageKey(clientConfig.getClientId(), responseState);
         String cookieValue = OidcStorageUtils.createNonceStorageValue(nonceInIDToken, responseState, clientConfig.getClientSecret());
         String oldCookieValue = CookieHelper.getCookieValue(oidcClientRequest.getRequest().getCookies(), cookieName);
         OidcClientUtil.invalidateReferrerURLCookie(oidcClientRequest.getRequest(), oidcClientRequest.getResponse(), cookieName);

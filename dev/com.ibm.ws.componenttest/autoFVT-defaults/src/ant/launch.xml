@@ -380,6 +380,8 @@
 						<istrue value="${is.windows.platform}" />
 					</condition>
 
+					<echo>Waiting 30 seconds in case the server has not finished starting...</echo>
+					<sleep seconds="30"/>
 					<echo>Executing ${libertyInstallPath}/bin/${script.exec} ${script.cmd} stop ${serverDir}</echo>
 					<exec failonerror="false" executable="${script.exec}" dir="${libertyInstallPath}/bin" timeout="300000">
 						<arg line="${script.cmd}" />

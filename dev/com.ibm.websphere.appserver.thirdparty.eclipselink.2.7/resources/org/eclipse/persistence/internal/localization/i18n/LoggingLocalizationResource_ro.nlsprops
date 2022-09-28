@@ -727,6 +727,9 @@ toplink_severe=[EL Severe]:
 
 toplink_warning=[EL Warning]: 
 
+unit_of_work_thread_info=Unitatea curent\u0103 de lucru din sesiunea ({0}) a fost creat\u0103 de un fir (id: {1} nume: {2}), diferit de firul curent (id: {3} nume: {4})
+
+unit_of_work_thread_info_thread_dump=Creare fir (id: {0} nume: {1}): urm\u0103rire stiv\u0103 {2}Fir curent (id: {3} nume: {4}): urm\u0103rire stiv\u0103 {5}\n
 unitofwork_identity_hashcode={0}Cod hash identitate UnitOfWork: {1}
 
 update_all_fields_not_supported=Caracteristica Oc4j native CMP "update-all-fields" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.

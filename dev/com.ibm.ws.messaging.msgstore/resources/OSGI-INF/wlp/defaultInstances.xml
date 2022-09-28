@@ -9,5 +9,5 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-    <com.ibm.ws.sib.msgstore.impl.MessageStoreImpl />
+    <com.ibm.ws.messaging.lifecycle.SingletonAgent id="com.ibm.ws.sib.msgstore.MessageStore" />
 </server>

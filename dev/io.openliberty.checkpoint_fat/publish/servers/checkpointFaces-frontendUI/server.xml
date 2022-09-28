@@ -1,0 +1,40 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Faces test server">
+
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+        <feature>jsonb-1.0</feature>
+        <feature>jsonp-1.1</feature>
+        <feature>cdi-2.0</feature>
+        <feature>jsf-2.3</feature>
+        <feature>mpConfig-2.0</feature>
+        <feature>mpRestClient-2.0</feature>
+        <feature>checkpoint-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+        
+    <!--
+    <variable name="default.http.port" defaultValue="9090"/>
+    <variable name="default.https.port" defaultValue="9091"/>
+    <httpEndpoint httpPort="${default.http.port}"
+            httpsPort="${default.https.port}"
+            id="defaultHttpEndpoint" host="*" />
+    --> 
+    <httpEndpoint httpPort="${bvt.prop.HTTP_secondary}"
+            httpsPort="${bvt.prop.HTTP_secondary.secure}"
+            id="defaultHttpEndpoint" host="*" />
+
+    <application location="frontendUI.war" context-root="/">
+    </application>
+
+</server>

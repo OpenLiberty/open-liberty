@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,9 +63,6 @@ public class MultiRecoveryCheckServlet extends HttpServlet {
 				}
 				output = XAResourceImpl.checkAtomicity();
 				break;
-
-			
-			
 			case 10101:
 			case 10102:
 			case 10201:
@@ -156,36 +153,13 @@ public class MultiRecoveryCheckServlet extends HttpServlet {
 			case 302202: //WSTXLPS302BFVT subordinate
 			case 303102: //WSTXLPS303AFVT subordinate
 			case 302302: //WSTXLPS302CFVT subordinate
-//				if (XAResourceImpl.resourceCount() != 2) {
-//					System.out.println("!!!!!!!!!!!" + 
-//							"XARerouce number is not as expected."
-//							+ " Expected Two but get " + 
-//							XAResourceImpl.resourceCount()
-//							+ " !!!!!!!!!!!!!");
-//					}
-//				if (!XAResourceImpl.allInState(XAResourceImpl.RECOVERED)) {
-//					System.out.println("!!!!!!!!!!!" + 
-//							"There are XAResources not recovered!!!!!!!!!!!!!");
-//					}
 				output = XAResourceImpl.checkAtomicity();
-//				boolean allCommitted = XAResourceImpl.allInState(XAResourceImpl.COMMITTED);
-//				boolean allRollback = XAResourceImpl.allInState(XAResourceImpl.ROLLEDBACK);
-//				if (allCommitted == true)
-//					output = "allCommitted";
-//				else if (allRollback == true)
-//					output = "allRollback";
-//				else output = "Unatomic";
 				break;
 			case 301101://WSTXLPS301AFVT root
 			case 301301://WSTXLPS301CFVT root
 			case 302101://WSTXLPS302AFVT root
 			case 302301://WSTXLPS302CFVT root
 				//One Phase XAResource cannot recover, so XAResourceImpl.resourceCount() is 0?
-				/*if (XAResourceImpl.resourceCount() == 1) {
-					output += "Get expected one XAResource.";
-				} else {
-					output += "XAResource number is: " + XAResourceImpl.resourceCount();
-				}*/
 				if (XAResourceImpl.allInState(XAResourceImpl.STARTED)) {
 					output += " The One Phase XAResource is in STARTED state.";
 					}
@@ -193,48 +167,6 @@ public class MultiRecoveryCheckServlet extends HttpServlet {
 					output += " XAResource state is not as expected.";
 				}
 				break;
-//			case 301102:
-//			case 302102:
-//			case 303102:
-//				if (XAResourceImpl.resourceCount() == 1) {
-//					output += "Get expected one XAResource.";
-//				} else {
-//					output += "XAResource number is: " + XAResourceImpl.resourceCount();
-//				}
-//				if (XAResourceImpl.allInState(XAResourceImpl.ROLLEDBACK)) {
-//					output += " The XAResource is in ROLLEDBACK state.";
-//					}
-//				else {
-//					output += " XAResource state is not as expected.";
-//				}
-//				if (number == 303102){
-//				int waitForRollback = 0;
-//				while (waitForRollback <= 10) {
-//					waitForRollback++;
-//					output = "Wait " + waitForRollback * 15
-//							+ " seconds and check again. ";
-//					try {
-//						Thread.sleep(waitForRollback * 1000);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//					if (XAResourceImpl.resourceCount() == 1) {
-//						output += "Get expected one XAResource.";
-//					} else {
-//						output += "XAResource number is: "
-//								+ XAResourceImpl.resourceCount();
-//					}
-//					if (XAResourceImpl.allInState(XAResourceImpl.ROLLEDBACK)) {
-//						output += " The XAResource is in ROLLEDBACK state.";
-//					} else {
-//						output += " XAResource state is not as expected.";
-//					}
-//					if (output.contains("The XAResource is in ROLLEDBACK state"))
-//						break;
-//				}
-//				}
-//				//XAResourceImpl.printState();
-//				break;
 			case 301201: //WSTXLPS301BFVT root
 			case 302201: //WSTXLPS302BFVT root
 			case 303101: //WSTXLPS303AFVT root
@@ -245,34 +177,11 @@ public class MultiRecoveryCheckServlet extends HttpServlet {
 					output += " XAResource state is not as expected.";
 				}
 				break;
-//			case 301202:
-//			case 302202:
-//			case 301302:
-//			case 302302:
-//				if (XAResourceImpl.allInState(XAResourceImpl.ROLLEDBACK)) {
-//					output += " The XAResource is in ROLLEDBACK state.";
-//					}
-//				else {
-//					output += " XAResource state is not as expected.";
-//				}
-//				output += XAResourceImpl.checkAtomicity();
-				//XAResourceImpl.printState();
-//				break;
-//				if (XAResourceImpl.resourceCount() != 1) {
-//					output = "Rec" + number + " failed: " + XAResourceImpl.resourceCount()
-//							+ " resources";
-//					}
-//				if (!XAResourceImpl.allInState(XAResourceImpl.RECOVERED)) {
-//					output = "Rec" + number + " failed";
-//					}
-//				break;
-				
 			}
 			response.getWriter().println(
 					"<html><header></header><body>" + output + "</body></html>");
 			response.getWriter().flush();
 		System.out.println("end dispatch: " + output);
-		XAResourceImpl.clear();
 	}
 
 	protected void doPost(HttpServletRequest request,

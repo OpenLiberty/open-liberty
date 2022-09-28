@@ -904,8 +904,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                             encountered when accessing the
-     *                             Database.
+     *                encountered when accessing the
+     *                Database.
      */
     private void createLeaseTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -989,13 +989,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         // For exception handling
         Throwable nonTransientException = null;
         SQLException currentSqlEx = null;
-
-        // if the server is stopping, we should simply return
-        if (FrameworkState.isStopping()) {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "deleteServerLease", "server stopping");
-            return;
-        }
 
         try {
             // Get a connection to the DB
@@ -1368,12 +1361,11 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         } else {
             // We didn't find the row in the table
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Could not find row");
-            throw new InternalLogException("Could not find lease", null);
+                Tr.debug(tc, "Could not find lease in table");
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "claimPeerLeaseForRecovery");
+            Tr.exit(tc, "claimPeerLeaseFromTable");
         return peerClaimed;
     }
 

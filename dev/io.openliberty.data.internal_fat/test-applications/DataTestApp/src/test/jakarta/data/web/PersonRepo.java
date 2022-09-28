@@ -12,13 +12,13 @@ package test.jakarta.data.web;
 
 import java.util.List;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Query;
+import jakarta.data.Query;
+import jakarta.data.repository.Repository;
 
 /**
  *
  */
-@Data
+@Repository
 public interface PersonRepo {
     @Query("SELECT o FROM Person o WHERE o.lastName=?1")
     List<Person> find(String lastName);

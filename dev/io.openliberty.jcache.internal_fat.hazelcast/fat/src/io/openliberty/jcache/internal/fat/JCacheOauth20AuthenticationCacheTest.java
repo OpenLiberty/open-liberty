@@ -40,6 +40,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.TestHelpers;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -50,6 +51,7 @@ import io.openliberty.jcache.internal.fat.docker.KeycloakContainer;
 /**
  * Test OAuth2 with distributed authentication cache.
  */
+@SkipIfSysProp("skip.tests=true")
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
@@ -74,6 +76,8 @@ public class JCacheOauth20AuthenticationCacheTest extends BaseTestCase {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        assumeShouldNotSkipTests();
+
         /*
          * Start the Keycloak IDP.
          */

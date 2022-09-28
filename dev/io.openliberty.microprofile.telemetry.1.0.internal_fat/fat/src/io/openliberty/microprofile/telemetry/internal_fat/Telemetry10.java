@@ -10,31 +10,24 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat;
 
-import java.util.Collections;
+import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
-import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-
-import jakarta.servlet.annotation.WebServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.Telemetry10Servlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.PatchTestApp;
-import java.io.File;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.Telemetry10Servlet;
 
 @RunWith(FATRunner.class)
 public class Telemetry10 extends FATServletClient {
@@ -50,8 +43,8 @@ public class Telemetry10 extends FATServletClient {
     public static void setUp() throws Exception {
         DeployOptions[] deployOptions = { DeployOptions.SERVER_ONLY };
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-        .addAsManifestResource(new File("publish/resources/permissions.xml"), "permissions.xml")
-        .addAsManifestResource(new File("publish/resources/META-INF/microprofile-config.properties"),"microprofile-config.properties");
+                        .addAsManifestResource(new File("publish/resources/permissions.xml"), "permissions.xml")
+                        .addAsManifestResource(new File("publish/resources/META-INF/microprofile-config.properties"), "microprofile-config.properties");
         app.addClasses(Telemetry10Servlet.class);
         app.addClasses(PatchTestApp.class);
         ShrinkHelper.exportDropinAppToServer(server, app, deployOptions);

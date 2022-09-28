@@ -69,6 +69,7 @@ public class CookieBasedStorage implements Storage {
         return null;
     }
 
+    @Override
     public void remove(String name) {
         if (name == null) {
             if (tc.isDebugEnabled()) {

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -10,13 +10,11 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
+-sub: *.bnd
+
+
 bVersion=1.0
 
-Bundle-Name: JAX-WS Web
-Bundle-SymbolicName: com.ibm.ws.jaxws.web
-Bundle-Description: IBM JAX-WS Web support; version=${bVersion}
-
-exportVer=2.2
 
 -dsannotations: com.ibm.ws.jaxws.web.WebXMLEndpointInfoConfigurator
 
@@ -43,17 +41,14 @@ Service-Component: \
      properties:="service.vendor=IBM"
 
 Export-Package: \
-    com.ibm.ws.jaxws.web;version=${exportVer}
+    com.ibm.ws.jaxws.web
 
 Import-Package: \
-   !com.ibm.ws.jaxws.web, \
    com.ibm.wsspi.adaptable.module.adapters, \
    com.ibm.wsspi.webcontainer.collaborator, \
    com.ibm.ws.container.service.metadata, \
    javax.xml.ws.*;version="[2.2,3)", \
-   org.apache.cxf.*;version="[2.6.2,3)", \
-   com.ibm.ws.jaxws;version="[2.0,2.4)", \
-   com.ibm.ws.jaxws.*;version="[2.0,2.4)", \
+   org.apache.cxf.*;version="[3.2,4)", \
    *
 
 Private-Package:\
@@ -62,17 +57,19 @@ Private-Package:\
 instrument.classesExcludes: com/ibm/ws/jaxws/web/internal/resources/*.class
 
 -buildpath: \
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
+	com.ibm.ws.webcontainer;version=latest, \
 	javax.jws:jsr181-api;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
-    com.ibm.ws.org.apache.cxf.cxf.api.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.management.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2,\
-	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2,\
+    com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
@@ -82,7 +79,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/web/internal/resources/*.class
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.jaxws.common;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
-	com.ibm.ws.webcontainer;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	
+

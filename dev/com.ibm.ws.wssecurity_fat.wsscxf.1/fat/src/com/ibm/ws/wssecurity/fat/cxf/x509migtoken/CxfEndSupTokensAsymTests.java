@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509migtoken;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
@@ -26,17 +27,15 @@ import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({ EE9_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfEndSupTokensAsymTests extends CommonTests {

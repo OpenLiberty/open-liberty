@@ -28,21 +28,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Limit;
-import io.openliberty.data.Page;
-import io.openliberty.data.Pagination;
-import io.openliberty.data.Repository;
-import io.openliberty.data.Result;
-import io.openliberty.data.Select;
-import io.openliberty.data.Sort;
-import io.openliberty.data.Sorts;
+import jakarta.data.Limit;
+import jakarta.data.Page;
+import jakarta.data.Pagination;
+import jakarta.data.Result;
+import jakarta.data.Select;
+import jakarta.data.Sort;
+import jakarta.data.Sorts;
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Repository;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
  */
-@Data(Reservation.class)
-public interface Reservations extends Repository<Reservation, Long> {
+@Repository
+public interface Reservations extends CrudRepository<Reservation, Long> {
     boolean deleteByHostIn(List<String> hosts);
 
     long deleteByHostNot(String host);
@@ -51,7 +51,7 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     Iterable<Reservation> findByHost(String host);
 
-    Collection<Reservation> findByLocationLikeOrderByMeetingID(String locationSubstring);
+    Collection<Reservation> findByLocationContainsOrderByMeetingID(String locationSubstring);
 
     List<Reservation> findByMeetingIDOrLocationLikeAndStartAndStopOrHost(long meetingID,
                                                                          String location,
@@ -96,9 +96,9 @@ public interface Reservations extends Repository<Reservation, Long> {
     // @Select({ "start", "stop" })
     // Stream<ReservedTimeSlot> findByStopOrStopOrStart(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
 
-    Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostSubstring);
+    Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostMatcher);
 
-    Page<Reservation> findByHostLike(String hostSubstring, Pagination pagination, Sort sort);
+    Page<Reservation> findByHostStartsWith(String hostPrefix, Pagination pagination, Sort sort);
 
     LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
 

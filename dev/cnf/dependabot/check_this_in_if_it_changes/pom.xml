@@ -102,11 +102,6 @@
       <version>2.12.7</version>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.jr</groupId>
-      <artifactId>jackson-jr-objects</artifactId>
-      <version>2.12.7</version>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <version>2.12.7</version>
@@ -162,6 +157,11 @@
       <version>3.19.2</version>
     </dependency>
     <dependency>
+      <groupId>com.googlecode.json-simple</groupId>
+      <artifactId>json-simple</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
       <groupId>com.graphql-java</groupId>
       <artifactId>graphql-java</artifactId>
       <version>16.2</version>
@@ -180,6 +180,11 @@
       <groupId>com.hazelcast</groupId>
       <artifactId>hazelcast</artifactId>
       <version>3.12.12</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+      <version>5.1.3</version>
     </dependency>
     <dependency>
       <groupId>com.ibm.async</groupId>
@@ -318,18 +323,8 @@
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-jxc</artifactId>
-      <version>2.3.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
       <version>2.2.10</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-      <version>2.3.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.fastinfoset</groupId>
@@ -340,6 +335,11 @@
       <groupId>com.sun.xml.messaging.saaj</groupId>
       <artifactId>saaj-impl</artifactId>
       <version>2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.messaging.saaj</groupId>
+      <artifactId>saaj-impl</artifactId>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
@@ -884,7 +884,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
@@ -960,6 +960,51 @@
       <groupId>jakarta.mail</groupId>
       <artifactId>jakarta.mail-api</artifactId>
       <version>2.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-column</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-core</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-document</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-key-value</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.communication</groupId>
+      <artifactId>communication-query</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-column</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-core</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-document</artifactId>
+      <version>1.0.0-b4</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.nosql.mapping</groupId>
+      <artifactId>mapping-key-value</artifactId>
+      <version>1.0.0-b4</version>
     </dependency>
     <dependency>
       <groupId>jakarta.persistence</groupId>
@@ -1192,11 +1237,6 @@
       <version>2.3.0</version>
     </dependency>
     <dependency>
-      <groupId>javax.xml.ws</groupId>
-      <artifactId>jaxws-api</artifactId>
-      <version>2.3.0</version>
-    </dependency>
-    <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
       <version>7.0</version>
@@ -1393,11 +1433,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-api</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-core</artifactId>
       <version>3.1.18</version>
     </dependency>
@@ -1410,11 +1445,6 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-soap</artifactId>
       <version>3.4.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-bindings-xml</artifactId>
-      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1444,22 +1474,12 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxws</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-jaxws</artifactId>
       <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-simple</artifactId>
       <version>3.4.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-management</artifactId>
-      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1519,11 +1539,6 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-transports-http</artifactId>
       <version>3.1.18</version>
     </dependency>
     <dependency>
@@ -1545,11 +1560,6 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-policy</artifactId>
       <version>3.4.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-ws-security</artifactId>
-      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1795,6 +1805,11 @@
       <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-mapper</artifactId>
       <version>1.2.18</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.indexer</groupId>
+      <artifactId>indexer-core</artifactId>
+      <version>6.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -2269,7 +2284,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.config</groupId>
       <artifactId>microprofile-config-api</artifactId>
-      <version>3.0.1</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.context-propagation</groupId>
@@ -2314,7 +2329,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
       <artifactId>microprofile-fault-tolerance-api</artifactId>
-      <version>4.0</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.graphql</groupId>
@@ -2375,6 +2390,11 @@
       <groupId>org.eclipse.microprofile.jwt</groupId>
       <artifactId>microprofile-jwt-auth-api</artifactId>
       <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.jwt</groupId>
+      <artifactId>microprofile-jwt-auth-api</artifactId>
+      <version>2.1-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.lra</groupId>
@@ -2544,7 +2564,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2554,7 +2574,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2564,7 +2584,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -2574,7 +2594,27 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.transformer</groupId>
+      <artifactId>org.eclipse.transformer.bnd.analyzer</artifactId>
+      <version>0.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.transformer</groupId>
+      <artifactId>org.eclipse.transformer.cli</artifactId>
+      <version>0.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.transformer</groupId>
+      <artifactId>org.eclipse.transformer.jakarta</artifactId>
+      <version>0.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.transformer</groupId>
+      <artifactId>org.eclipse.transformer</artifactId>
+      <version>0.5.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse</groupId>
@@ -3799,7 +3839,7 @@
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
-      <version>1.27</version>
+      <version>1.32</version>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>
@@ -3835,11 +3875,6 @@
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>3.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.2.4</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -4178,26 +4213,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-bindings-soap</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-core</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-databinding-jaxb</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-simple</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-rs-mp-client</artifactId>
       <version>3.2.6</version>
     </dependency>
@@ -4215,16 +4230,6 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-hc</artifactId>
       <version>3.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-ws-addr</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-ws-policy</artifactId>
-      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -4380,11 +4385,6 @@
       <groupId>org.jvnet.mimepull</groupId>
       <artifactId>mimepull</artifactId>
       <version>1.9.7</version>
-    </dependency>
-    <dependency>
-      <groupId>org.opensaml</groupId>
-      <artifactId>xmltooling</artifactId>
-      <version>1.4.4</version>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>

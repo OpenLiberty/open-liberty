@@ -48,9 +48,9 @@ CWLJC0005_MANAGER_LOADED=CWLJC0005I: A(z) {0} JCache CacheManager {1} ezredm\u00
 CWLJC0005_MANAGER_LOADED.explanation=A JCache CacheManager sikeresen bet\u00f6lt\u00e9sre ker\u00fclt.
 CWLJC0005_MANAGER_LOADED.useraction=Semmit sem kell tennie.
 
-#
-# CWLJC0006 IS AVAILABLE.
-#
+CWLJC0006_MULTI_REF_LIB=CWLJC0006E: A(z) {0} gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 mind a jCacheLibaryRef, mind a commonLibraryRef  {1} k\u00f6nyvt\u00e1r\u00e1ra hivatkozott. Ez nem t\u00e1mogatott. 
+CWLJC0006_MULTI_REF_LIB.explanation=A commonLibraryRef \u00e9s a jCacheLibraryRef ugyanazon k\u00f6nyvt\u00e1r\u00e1ra val\u00f3 hivatkoz\u00e1s oszt\u00e1lybet\u00f6lt\u00e9si probl\u00e9m\u00e1k miatt bel\u00e1thatatlan viselked\u00e9shez vezethet. 
+CWLJC0006_MULTI_REF_LIB.useraction=A commonLibraryRef nem hivatkozhat ugyanarra a k\u00f6nyvt\u00e1rra, mint a jCacheLibraryRef.
 
 CWLJC0007_URI_INVALID_SYNTAX=CWLJC0007E: \u00c9rv\u00e9nytelen szintaxis tal\u00e1lhat\u00f3 a cacheManager URI-azonos\u00edt\u00f3ban.  Ok: {0}.
 CWLJC0007_URI_INVALID_SYNTAX.explanation=A megadott JCache konfigur\u00e1ci\u00f3s URI szintaxisa \u00e9rv\u00e9nytelen.
@@ -68,6 +68,14 @@ CWLJC0010_MANAGER_CONFIG_ERR=CWLJC0010E: Hiba t\u00f6rt\u00e9nt a JCache CacheMa
 CWLJC0010_MANAGER_CONFIG_ERR.explanation=A JCache CacheManager nem volt konfigur\u00e1lhat\u00f3 a megadott hiba miatt.
 CWLJC0010_MANAGER_CONFIG_ERR.useraction=Kezelje az \u00fczenetben szerepl\u0151 hib\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra.
 
-CWLJC0011_GET_CACHE_ERR=CWLJC0011E: Hiba t\u00f6rt\u00e9nt a(z) {0} JCache lek\u00e9r\u00e9se sor\u00e1n: {1}.
+CWLJC0011_GET_CACHE_ERR=CWLJC0011W: Hiba t\u00f6rt\u00e9nt a(z) {0} JCache lek\u00e9r\u00e9sekor. Ehelyett a l\u00e9trehoz\u00e1st k\u00eds\u00e9rli meg a rendszer. A hiba a k\u00f6vetkez\u0151 volt: {1}.
 CWLJC0011_GET_CACHE_ERR.explanation=A gyors\u00edt\u00f3t\u00e1r a megadott hiba miatt nem volt lek\u00e9rhet\u0151.
 CWLJC0011_GET_CACHE_ERR.useraction=Kezelje az \u00fczenetben szerepl\u0151 hib\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra.
+
+CWLJC0012_CLOSE_CACHE_ERR=CWLJC0012W: A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt, amikor a kiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lta bez\u00e1rni a(z) {0} JCache api-t: {1}.
+CWLJC0012_CLOSE_CACHE_ERR.explanation=A JCache bez\u00e1r\u00e1sa a jelzett hiba miatt meghi\u00fasult.
+CWLJC0012_CLOSE_CACHE_ERR.useraction=Ha ez fut\u00e1s k\u00f6zben t\u00f6bbsz\u00f6r el\u0151fordul, akkor az sziv\u00e1rg\u00f3 gyors\u00edt\u00f3t\u00e1r er\u0151forr\u00e1sokat okozhat.
+
+CWLJC0013_CLOSE_CACHEMGR_ERR=CWLJC0013W: A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt, amikor a kiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lta bez\u00e1rni a(z) {0} JCache CacheManager fel\u00fcletet: {1}.
+CWLJC0013_CLOSE_CACHEMGR_ERR.explanation=A jelzett hiba miatt nem siker\u00fclt bez\u00e1rni a JCache CacheManager fel\u00fcletet.
+CWLJC0013_CLOSE_CACHEMGR_ERR.useraction=Ha ez fut\u00e1s k\u00f6zben t\u00f6bbsz\u00f6r el\u0151fordul, akkor az sziv\u00e1rg\u00f3 gyors\u00edt\u00f3t\u00e1r er\u0151forr\u00e1sokat okozhat.

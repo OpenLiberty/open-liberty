@@ -29,12 +29,14 @@ import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -67,7 +69,7 @@ public class ArtifactDownloader implements AutoCloseable {
     private final ExecutorService executor;
 
     ArtifactDownloader() {
-        this.downloadedFiles = new ArrayList<File>();
+        this.downloadedFiles = Collections.synchronizedList(new ArrayList<>());
         this.progressBar = ProgressBar.getInstance();
         this.executor = Executors.newFixedThreadPool(ArtifactDownloaderUtils.getNumThreads());
     }
@@ -119,7 +121,6 @@ public class ArtifactDownloader implements AutoCloseable {
         final List<Future<?>> futures = new ArrayList<>();
         // we have downloaded mavenCoords.length * 2 (esa and pom) amount of features.
         double individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (2 * mavenCoords.size());
-        progressBar.updateMethodMap("downloadArtifacts", individualSize);
         info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
         for (String coords : mavenCoords) {
             Future<?> future1 = submitDownloadRequest(coords, "esa", dLocation, repository);
@@ -138,10 +139,7 @@ public class ArtifactDownloader implements AutoCloseable {
                         downloadedCoords = (String) future.get();
                         // update progress bar, drain the downloadArtifacts total size
                         updateProgress(individualSize);
-                        progressBar.updateMethodMap("downloadArtifacts",
-                                                    progressBar.getMethodIncrement("downloadArtifacts") - individualSize);
                         fine("Finished downloading artifact: " + downloadedCoords);
-
                         iter.remove();
                     }
                 }
@@ -221,7 +219,8 @@ public class ArtifactDownloader implements AutoCloseable {
             boolean someChecksumExists = false;
             boolean checksumFail = false;
             boolean checksumSuccess = false;
-            HashMap<String, String> checkSumCache = new HashMap<String, String>();
+            ConcurrentHashMap<String, String> checkSumCache = new ConcurrentHashMap<>();
+
             for (String checksumFormat : checksumFormats) {
                 if (!checksumSuccess) {
                     if (checksumIsAvailable(urlLocation, checksumFormat, checkSumCache)) {
@@ -254,7 +253,7 @@ public class ArtifactDownloader implements AutoCloseable {
         }
     }
 
-    private boolean checksumIsAvailable(String urlLocation, String checksumFormat, HashMap<String, String> checkSumCache) {
+    private boolean checksumIsAvailable(String urlLocation, String checksumFormat, ConcurrentHashMap<String, String> checkSumCache) {
         boolean result = true;
         try {
             if (checkSumCache.containsKey(checksumFormat))
@@ -267,7 +266,8 @@ public class ArtifactDownloader implements AutoCloseable {
         return result;
     }
 
-    private boolean isIncorrectChecksum(String localFile, String urlLocation, String checksumFormat, HashMap<String, String> checkSumCache) throws NoSuchAlgorithmException {
+    private boolean isIncorrectChecksum(String localFile, String urlLocation, String checksumFormat,
+                                        ConcurrentHashMap<String, String> checkSumCache) throws NoSuchAlgorithmException {
         boolean result = false;
         String checksumLocal;
         try {
@@ -282,14 +282,26 @@ public class ArtifactDownloader implements AutoCloseable {
         return result;
     }
 
-    private void configureProxyAuthentication() {
+    private void configureProxyAuthentication() throws InstallException {
         //set up basic auth HTTP proxy tunnel
         System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
 
         if (envMap.get("https.proxyUser") != null) {
-            Authenticator.setDefault(new SystemPropertiesProxyAuthenticator());
+            final String encodedPassword = formatAndCheckRepositoryPassword((String) envMap.get("https.proxyPassword"));
+            Authenticator.setDefault(new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication((String) envMap.get("https.proxyUser"), PasswordUtil.passwordDecode(encodedPassword).toCharArray());
+                }
+            });
         } else if (envMap.get("http.proxyUser") != null) {
-            Authenticator.setDefault(new SystemPropertiesProxyHttpAuthenticator());
+            final String encodedPassword = formatAndCheckRepositoryPassword((String) envMap.get("http.proxyPassword"));
+            Authenticator.setDefault(new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication((String) envMap.get("http.proxyUser"), PasswordUtil.passwordDecode(encodedPassword).toCharArray());
+                }
+            });
         }
     }
 
@@ -437,14 +449,14 @@ public class ArtifactDownloader implements AutoCloseable {
     private static class SystemPropertiesProxyAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication((String) envMap.get("https.proxyUser"), ((String) envMap.get("https.proxyPassword")).toCharArray());
+            return new PasswordAuthentication((String) envMap.get("https.proxyUser"), PasswordUtil.passwordDecode((String) envMap.get("https.proxyPassword")).toCharArray());
         }
     }
 
     private static class SystemPropertiesProxyHttpAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication((String) envMap.get("http.proxyUser"), ((String) envMap.get("http.proxyPassword")).toCharArray());
+            return new PasswordAuthentication((String) envMap.get("http.proxyUser"), PasswordUtil.passwordDecode((String) envMap.get("http.proxyPassword")).toCharArray());
         }
     }
 

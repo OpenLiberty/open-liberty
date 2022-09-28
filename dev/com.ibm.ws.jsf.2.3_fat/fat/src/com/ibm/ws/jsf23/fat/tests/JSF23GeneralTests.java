@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,9 +41,11 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -173,30 +175,36 @@ public class JSF23GeneralTests {
 
             // Check the value of each API constant
             String output = page.getElementById("out1").getTextContent();
-            assertTrue("The value of javax.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME was incorrect: " + output,
-                       output.equals("jsf.js"));
+
+            if (JakartaEE10Action.isActive()) {
+                assertTrue("The value of jakarta.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME was incorrect: " + output,
+                           output.equals("faces.js"));
+            } else {
+                assertTrue("The value of javax.faces.application.ResourceHandler.JSF_SCRIPT_RESOURCE_NAME was incorrect: " + output,
+                           output.equals("jsf.js"));
+            }
 
             output = page.getElementById("out2").getTextContent();
 
             String expected = "javax.faces";
 
-            if (JakartaEE9Action.isActive()) {
+            if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
                 expected = "jakarta.faces";
             }
 
-            assertTrue("The value of javax.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME was incorrect: " + output,
+            assertTrue("The value of " + expected + ".faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME was incorrect: " + output,
                        output.equals(expected));
 
             output = page.getElementById("out3").getTextContent();
-            assertTrue("The value of javax.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME was incorrect: " + output,
+            assertTrue("The value of " + expected + ".faces.component.behavior.ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME was incorrect: " + output,
                        output.equals(expected + ".source"));
 
             output = page.getElementById("out4").getTextContent();
-            assertTrue("The value of javax.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME was incorrect: " + output,
+            assertTrue("The value of " + expected + ".faces.component.behavior.ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME was incorrect: " + output,
                        output.equals(expected + ".behavior.event"));
 
             output = page.getElementById("out5").getTextContent();
-            assertTrue("The value of javax.faces.context.PartialViewContext.PARTIAL_EVENT_PARAM_NAME was incorrect: " + output,
+            assertTrue("The value of " + expected + ".faces.context.PartialViewContext.PARTIAL_EVENT_PARAM_NAME was incorrect: " + output,
                        output.equals(expected + ".partial.event"));
         }
     }
@@ -381,6 +389,7 @@ public class JSF23GeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testRepeated_ListenerFor_ResourceDependency_SpecIssue1430() throws Exception {
         String contextRoot = "JSF23Spec1430";
         try (WebClient webClient = new WebClient()) {
@@ -624,24 +633,27 @@ public class JSF23GeneralTests {
             assertTrue("The onselect attribute was rendered in a facelet.", !pageXml.contains("onselect=\"jsFunction\""));
 
             // Construct the URL for the test, in this case: faces/selectManyListboxSelectItems.jsp
-            url = JSFUtils.createHttpUrl(server, contextRoot, "faces/selectManyListboxSelectItems.jsp");
+            // Faces 4.0 does not support Pages any longer!
+            if (!JakartaEE10Action.isActive()) {
+                url = JSFUtils.createHttpUrl(server, contextRoot, "faces/selectManyListboxSelectItems.jsp");
 
-            try {
-                Log.info(c, name.getMethodName(), "Invoking JSP page");
-                page = (HtmlPage) webClient.getPage(url);
-            } catch (FailingHttpStatusCodeException e) {
-                String response = e.getResponse().getContentAsString();
-                int statusCode = e.getStatusCode();
+                try {
+                    Log.info(c, name.getMethodName(), "Invoking JSP page");
+                    page = (HtmlPage) webClient.getPage(url);
+                } catch (FailingHttpStatusCodeException e) {
+                    String response = e.getResponse().getContentAsString();
+                    int statusCode = e.getStatusCode();
 
-                Log.info(c, name.getMethodName(), "Caught FailingHttpStatusCodeException");
-                Log.info(c, name.getMethodName(), "FailingHttpStatusCodeException response: " + response);
-                Log.info(c, name.getMethodName(), "FailingHttpStatusCodeException statusCode: " + statusCode);
+                    Log.info(c, name.getMethodName(), "Caught FailingHttpStatusCodeException");
+                    Log.info(c, name.getMethodName(), "FailingHttpStatusCodeException response: " + response);
+                    Log.info(c, name.getMethodName(), "FailingHttpStatusCodeException statusCode: " + statusCode);
 
-                /*
-                 * com.ibm.ws.jsp.translator.JspTranslationException:
-                 * JSPG0123E: Unable to locate tag attribute info for tag attribute onselect.<br>
-                 */
-                assertTrue("The JSP was rendered successfully and it should not have been.", response.contains("JSPG0123E") && statusCode == 500);
+                    /*
+                     * com.ibm.ws.jsp.translator.JspTranslationException:
+                     * JSPG0123E: Unable to locate tag attribute info for tag attribute onselect.<br>
+                     */
+                    assertTrue("The JSP was rendered successfully and it should not have been.", response.contains("JSPG0123E") && statusCode == 500);
+                }
             }
 
             // Construct the URL for the test, in this case: faces/selectManyListboxSelectItems.jsp

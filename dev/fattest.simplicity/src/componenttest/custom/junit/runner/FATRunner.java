@@ -70,6 +70,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     // Used to reduce timeouts to a sensible level when FATs are running locally
     public static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun") && !Boolean.parseBoolean(System.getenv("CI"));
 
+    public static final boolean ARM_ARCHITECTURE = System.getProperty("os.arch").equals("aarch64") || System.getProperty("os.arch").equals("arm");
+
     private static final int MAX_FFDC_LINES = 1000;
     private static final boolean DISABLE_FFDC_CHECKING = Boolean.getBoolean("disable.ffdc.checking");
 

@@ -546,6 +546,7 @@
 7311=Niepoprawna klasa docelowa jest u\u017cywana z atrybutem kolekcji element\u00f3w [{0}] w klasie [{1}].  Dozwolone s\u0105 tylko typy podstawowe i mo\u017cliwe do osadzenia klasy.
 
 7312=Niepoprawna mo\u017cliwa do osadzenia klasa [{0}] jest u\u017cywana z atrybutem kolekcji element\u00f3w [{1}] w klasie [{2}]. Zobacz sekcj\u0119 2.6 specyfikacji: Mo\u017cliwa do osadzenia klasa (w tym mo\u017cliwa do osadzenia klasa w innej mo\u017cliwej do osadzenia klasie) zawarta w kolekcji element\u00f3w nie mo\u017ce zawiera\u0107 kolekcji element\u00f3w ani nie mo\u017ce zawiera\u0107 relacji do obiektu innego ni\u017c relacja wiele do jednego lub jeden do jednego. Mo\u017cliwa do osadzenia klasa musi znajdowa\u0107 si\u0119 po stronie b\u0119d\u0105cej w\u0142a\u015bcicielem takiej relacji, a relacja musi by\u0107 odwzorowana przez odwzorowanie klucza obcego. Odwzorowanie atrybutu [{3}] w mo\u017cliwej do osadzenia klasie narusza to ograniczenie.
+
 7313=Atrybut [{1}] nie zosta\u0142 znaleziony w mo\u017cliwej do osadzenia klasie [{0}]. Jest on przywo\u0142ywany w przes\u0142oni\u0119ciu powi\u0105zania dla osadzonego atrybutu [{3}] w klasie [{2}].
 
 7314=Odwzorowanie [{0}] jest u\u017cywane do odwzorowania klucza w MappedKeyMapContainerPolicy i korzysta z po\u015brednictwa.  Odwzorowania u\u017cywane na potrzeby kluczy odwzorowa\u0144 nie mog\u0105 korzysta\u0107 z po\u015brednictwa.
@@ -604,7 +605,7 @@
 
 7342=Podana warto\u015b\u0107 boolowska [{0}] ustawienia zezwolenia na zapytania w rodzimym j\u0119zyku SQL jest niepoprawna. Warto\u015bci\u0105 musi by\u0107 true lub false.
 
-7343=Okre\u015blono wiele identyfikator\u00f3w VPD (w\u0142a\u015bciwo\u015b\u0107 kontekstu wyr\u00f3\u017cnika klienta). Obiekt [{1}] u\u017cywa [{0}], a obiekt [{3]} u\u017cywa [{2}]. Podczas stosowania strategii Multitenant VPD mo\u017ce istnie\u0107 tylko jedna kolumna wyr\u00f3\u017cnika klienta na obiekt, a jej w\u0142a\u015bciwo\u015b\u0107 kontekstu musi by\u0107 sp\u00f3jna dla wszystkich obiekt\u00f3w Multitenant VPD.
+7343=Okre\u015blono wiele identyfikator\u00f3w VPD (w\u0142a\u015bciwo\u015b\u0107 kontekstu wyr\u00f3\u017cnika klienta). Obiekt [{1}] u\u017cywa [{0}], a obiekt [{3}] u\u017cywa [{2}]. Podczas stosowania strategii Multitenant VPD mo\u017ce istnie\u0107 tylko jedna kolumna wyr\u00f3\u017cnika klienta na obiekt, a jej w\u0142a\u015bciwo\u015b\u0107 kontekstu musi by\u0107 sp\u00f3jna dla wszystkich obiekt\u00f3w Multitenant VPD.
 
 7344=Strategia VPD (po\u0142\u0105czenia i generowanie kodu DDL) nie jest obs\u0142ugiwana dla platformy [{0}].
 

@@ -83,6 +83,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
                                                   "cdi-4.0",
                                                   "concurrent-3.0",
                                                   "connectors-2.1",
+                                                  "data-1.0", // TODO temporarily enabled with EE10 for testing/experimentation. Later, switch this to EE11
                                                   "expressionLanguage-5.0",
                                                   "enterpriseBeans-4.0",
                                                   "enterpriseBeansHome-4.0",
@@ -106,6 +107,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
                                                   "messagingClient-3.0",
                                                   "messagingServer-3.0",
                                                   "messagingSecurity-3.0",
+                                                  "nosql-1.0", // TODO temporarily enabled with EE10 for testing/experimentation. Later, switch this to EE11 or whichever release Jakarta NoSQL goes into
                                                   "restfulWS-3.1",
                                                   "restfulWSClient-3.1",
                                                   "servlet-6.0",

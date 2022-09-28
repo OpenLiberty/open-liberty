@@ -30,8 +30,6 @@ import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 
 public class TokenRequestor {
 
-    private static final List<NameValuePair> commonHeaders;
-
     private final String tokenEndpoint;
     private final String clientId;
     @Sensitive
@@ -39,6 +37,7 @@ public class TokenRequestor {
     private final String grantType;
     private final String redirectUri;
     private final String code;
+    private final String refreshToken;
     private final SSLSocketFactory sslSocketFactory;
 
     private final boolean isHostnameVerification;
@@ -50,11 +49,6 @@ public class TokenRequestor {
 
     OidcClientHttpUtil oidcClientHttpUtil = OidcClientHttpUtil.getInstance();
 
-    static {
-        commonHeaders = new ArrayList<NameValuePair>();
-        commonHeaders.add(new BasicNameValuePair(TokenConstants.ACCEPT, TokenConstants.APPLICATION_JSON));
-    }
-
     private TokenRequestor(Builder builder) {
         this.tokenEndpoint = builder.tokenEndpoint;
         this.clientId = builder.clientId;
@@ -62,6 +56,7 @@ public class TokenRequestor {
         this.grantType = builder.grantType;
         this.redirectUri = builder.redirectUri;
         this.code = builder.code;
+        this.refreshToken = builder.refreshToken;
         this.sslSocketFactory = builder.sslSocketFactory;
         this.isHostnameVerification = builder.isHostnameVerification;
         this.authMethod = builder.authMethod;
@@ -82,7 +77,14 @@ public class TokenRequestor {
             params.add(new BasicNameValuePair(TokenConstants.RESOURCE, resources));
         }
         params.add(new BasicNameValuePair(TokenConstants.REDIRECT_URI, redirectUri));
-        params.add(new BasicNameValuePair(TokenConstants.CODE, code));
+        if (code != null) {
+            params.add(new BasicNameValuePair(TokenConstants.CODE, code));
+        }
+
+        if (refreshToken != null) {
+            params.add(new BasicNameValuePair(TokenConstants.REFRESH_TOKEN, refreshToken));
+        }
+
         if (authMethod.equals(TokenConstants.METHOD_POST) || authMethod.equals(TokenConstants.METHOD_CLIENT_SECRET_POST)) {
             params.add(new BasicNameValuePair(TokenConstants.CLIENT_ID, clientId));
             params.add(new BasicNameValuePair(TokenConstants.CLIENT_SECRET, clientSecret));
@@ -117,7 +119,6 @@ public class TokenRequestor {
                                                  clientSecret,
                                                  null,
                                                  sslSocketFactory,
-                                                 commonHeaders,
                                                  isHostnameVerification,
                                                  authMethod,
                                                  useSystemPropertiesForHttpClientConnections);
@@ -151,6 +152,7 @@ public class TokenRequestor {
         private final String redirectUri;
         private final String code;
 
+        private String refreshToken = null;
         private SSLSocketFactory sslSocketFactory = null;
         private boolean isHostnameVerification = false;
         private String authMethod = TokenConstants.METHOD_BASIC;
@@ -183,6 +185,11 @@ public class TokenRequestor {
 
         public Builder grantType(String grantType) {
             this.grantType = grantType;
+            return this;
+        }
+
+        public Builder refreshToken(String refreshToken) {
+            this.refreshToken = refreshToken;
             return this;
         }
 

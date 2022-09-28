@@ -46,7 +46,7 @@ instrument.disabled: true
 -buildpath: \
 	com.sun.xml.ws:jaxws-tools;strategy=exact;version=3.0.0, \
     com.ibm.ws.jaxws.tools.2.2.10;version=latest,\
-    io.openliberty.com.sun.xml.messaging.saaj;version=latest,\
+    io.openliberty.com.sun.xml.messaging.saaj.2.0;version=latest,\
 	io.openliberty.jakarta.xmlBinding.3.0;version=latest,\
 	io.openliberty.xmlBinding.3.0.internal.tools;version=latest,\
 	io.openliberty.jakarta.xmlWS.3.0;version=latest,\

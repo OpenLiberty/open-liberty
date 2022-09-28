@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -38,7 +36,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -58,11 +55,6 @@ public class MultipartTest {
 
         WebArchive app = ShrinkHelper.buildDefaultApp(thirdpartylibwar, "com.ibm.ws.jaxrs2x.fat.thirdparty.multipart");
         ShrinkHelper.exportAppToServer(server, app);
-        if (JakartaEE9Action.isActive()) {
-            Path someArchive = Paths.get("publish/servers/" + server.getServerName() + "/apps/thirdpartylib.war");
-            JakartaEE9Action.transformApp(someArchive);
-        }
-        server.addInstalledAppForValidation(thirdpartylibwar);
 
         // Make sure we don't fail because we try to start an
         // already started server

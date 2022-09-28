@@ -79,8 +79,7 @@ dependencies {
                   project(':com.ibm.ws.com.unboundid'),
                   project(':com.ibm.ws.com.meterware.httpunit.1.7'),
 //                  project(':com.ibm.ws.org.apache.commons.lang'),   NOT IN OPEN LIBERTY
-                  project(':com.ibm.ws.org.joda.time'),
-                  project(':com.ibm.ws.org.opensaml.xmltooling')
+                  project(':com.ibm.ws.org.joda.time')
 }
 
 /*
@@ -293,6 +292,7 @@ task updateIdp_4_1_x_WAR(type: Zip, dependsOn: copy_41x_IDP) {
 
   from (zipTree(originalWar)) {
   		exclude("WEB-INF/web.xml") // fix <auth-constraint/> - looks likr 4.1 isn't fixed yet
+  		exclude("WEB-INF/jsp/status.jsp")
   }
  
   from (downloadDir) {

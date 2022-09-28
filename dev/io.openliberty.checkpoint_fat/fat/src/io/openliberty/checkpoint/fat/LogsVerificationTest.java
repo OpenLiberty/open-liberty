@@ -10,16 +10,24 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.configureEnvVariable;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.json.Json;
+import javax.json.JsonReader;
+import javax.json.stream.JsonParsingException;
+
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -32,9 +40,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -46,11 +51,8 @@ public class LogsVerificationTest {
     public TestName testName = new TestName();
     public static final String APP_NAME = "app2";
 
-    @Server("checkpointFATServer")
+    @Server("checkpointfat.log.verification.test")
     public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointFATServer", TestMode.LITE, MicroProfileActions.MP41, MicroProfileActions.MP50);
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -156,7 +158,7 @@ public class LogsVerificationTest {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
 
-        server.copyFileToLibertyServerRoot("varfiles/server.env");
+        configureEnvVariable(server, singletonMap("VARIABLE_SOURCE_DIRS", "testSrcDir"));
 
         server.checkpointRestore();
         // CWWKG0017I: The server configuration was successfully updated
@@ -164,9 +166,42 @@ public class LogsVerificationTest {
 
     }
 
+    @Test
+    public void testEnvMessageFormatUpdateOnRestore() throws Exception {
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
+
+        RemoteFile messagesLog = new RemoteFile(server.getMachine(), server.getLogsRoot() + "/messages.log");
+        try (JsonReader jsonReader = Json.createReader(new FileReader(messagesLog.getAbsolutePath()))) {
+            assertFalse("Message format should not be json", isValidJson(jsonReader));
+        }
+
+        // Updating the message format to json using server.env
+        configureEnvVariable(server, singletonMap("WLP_LOGGING_MESSAGE_FORMAT", "json"));
+
+        server.checkpointRestore();
+
+        try (JsonReader jsonReader = Json.createReader(new FileReader(messagesLog.getAbsolutePath()))) {
+            assertTrue("Message format should be json", isValidJson(jsonReader));
+        }
+    }
+
+    private boolean isValidJson(JsonReader reader) {
+        try {
+            reader.readObject();
+        } catch (JsonParsingException e) {
+            return false;
+        }
+        return true;
+    }
+
     @After
     public void tearDown() throws Exception {
-        server.stopServer();
+        try {
+            server.stopServer();
+        } finally {
+            configureEnvVariable(server, emptyMap());
+        }
     }
 
 }

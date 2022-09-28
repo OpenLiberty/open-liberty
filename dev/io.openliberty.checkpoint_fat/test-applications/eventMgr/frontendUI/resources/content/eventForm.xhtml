@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  Copyright (c) 2018 IBM Corp.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://xmlns.jcp.org/jsf/core"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<head jsf:id="head">
+<title>Event Form</title>
+</head>
+<body jsf:id="body">
+  <ui:composition>
+    <div class="forms">
+      <div class="forms_title" style="line-height: 0;">
+        <h2>Create An Event</h2>
+      </div>
+      <br />
+      <h:form id="eventform">
+        <f:event listener="#{eventBean.checkTime}" type="postValidate" />
+        <f:event listener="#{eventBean.setCurrentComponent}" type="postValidate" />
+        Name
+        <br />
+        <h:inputText id="eventNameField" value="#{eventBean.name}"
+          maxlength="65" required="true"
+          requiredMessage="Event name is required" />
+        <h:message for="eventNameField" style="color:red" />
+        <br />
+        <br />
+        Location
+        <br />
+        <h:inputText id="eventLocationField" value="#{eventBean.location}"
+          maxlength="65" required="true"
+          requiredMessage="Event location is required" />
+        <h:message for="eventLocationField" style="color:red" />
+        <br />
+        <br />
+        Time
+        <br />
+        <br />
+        <h:panelGroup id="eventTime">
+          <label>Hour: </label>
+          <h:selectOneMenu id="eventHour" class="time" value="#{eventBean.hour}">
+            <f:selectItems value="#{eventBean.getHoursMap()}" />
+          </h:selectOneMenu>
+          <label>Day: </label>
+          <h:selectOneMenu id="eventDay" class="time" value="#{eventBean.day}">
+            <f:selectItems value="#{eventBean.getDaysMap()}" />
+          </h:selectOneMenu>
+          <label>Month: </label>
+          <h:selectOneMenu id="eventMonth" class="time"
+            value="#{eventBean.month}">
+            <f:selectItems value="#{eventBean.getMonthsMap()}" />
+          </h:selectOneMenu>
+          <label>Year: </label>
+          <h:selectOneMenu id="eventYear" class="time" value="#{eventBean.year}">
+            <f:selectItems value="#{eventBean.getYearsMap()}" />
+          </h:selectOneMenu>
+          <br />
+        </h:panelGroup>
+        <h:panelGroup rendered="#{eventBean.notValid}">
+          <br />
+          <h:message for="eventTime" style="color:red" />
+          <br />
+          <h:inputHidden id="eventSubmit" ></h:inputHidden>
+        </h:panelGroup>
+        <br />
+        <h:commandButton value="Submit" type="submit"
+          action="#{eventBean.submitToService()}">
+          <f:ajax execute="eventform" render=":content header"
+            resetValues="true" />
+        </h:commandButton>
+      </h:form>
+    </div>
+  </ui:composition>
+</body>
+</html>

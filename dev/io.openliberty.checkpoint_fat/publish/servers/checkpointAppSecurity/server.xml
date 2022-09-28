@@ -1,0 +1,62 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <applicationManager startTimeout="90s"/>
+    <featureManager>
+    	<feature>checkpoint-1.0</feature>
+        <feature>appSecurity-3.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    <keyStore id="defaultKeyStore" password="liberty"/>
+    
+    <application location="appsecurity.war" type="war"
+               id="appsecurity"
+               name="appsecurity" context-root="/">
+               
+    <application-bnd>
+      <security-role name="admin">
+        <group name="Manager" />
+      </security-role>
+
+      <security-role name="user">
+        <group name="Employee" />
+      </security-role>
+    </application-bnd>
+    
+    </application>
+    
+    <basicRegistry id="basic" realm="WebRealm">
+    <user id = "bob" name="bob"
+      password="bobpwd" />
+    <user id = "alice" name="alice"
+      password="alicepwd" />
+    <user id = "dave" name="dave"
+      password="davepwd" />
+
+    <group id="Manager" name="Manager">
+      <member name="bob" />
+    </group>
+
+    <group id="Employee" name="Employee">
+      <member name="alice" />
+      <member name="bob" />
+    </group>
+
+    <group id="PartTime" name="PartTime">
+      <member name="dave" />
+    </group>
+  </basicRegistry>
+    
+  <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.applicationReadCredential"/>
+</server>

@@ -16,3 +16,35 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2400 - CWWKS2499
+
+ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS2400E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy jogosults\u00e1gk\u00e9r\u00e9s elk\u00fcld\u00e9sekor az OpenID Connect szolg\u00e1ltat\u00f3nak. {1}
+ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Lehet, hogy hi\u00e1nyoznak az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3 inform\u00e1ci\u00f3k, vagy az \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OpenID Connect szolg\u00e1ltat\u00f3val folytatott kommunik\u00e1ci\u00f3 sor\u00e1n.
+ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t.
+
+OIDC_CLIENT_CONFIGURATION_ERROR=CWWKS2401E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3ja \u00e9rv\u00e9nytelen, vagy adatok hi\u00e1nyoznak bel\u0151le. {1}
+OIDC_CLIENT_CONFIGURATION_ERROR.explanation=Az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3b\u00f3l hi\u00e1nyoznak a sz\u00fcks\u00e9ges inform\u00e1ci\u00f3k.
+OIDC_CLIENT_CONFIGURATION_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t. Ellen\u0151rizze, hogy az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3 teljes \u00e9s pontos-e.
+
+URL_NOT_HTTPS=CWWKS2402E: A(z) {1} OpenID Connect \u00fcgyf\u00e9lhez be\u00e1ll\u00edtott {0} v\u00e9gpont URL nem HTTPS protokollt haszn\u00e1l, de a HTTPS k\u00f6telez\u0151.
+URL_NOT_HTTPS.explanation=A v\u00e9gpont URL csak HTTPS protokollt haszn\u00e1lhat a k\u00e9r\u00e9sek biztons\u00e1g\u00e1nak biztos\u00edt\u00e1s\u00e1ra.
+URL_NOT_HTTPS.useraction=Friss\u00edtse a v\u00e9gpont URL-c\u00edmet, hogy az HTTPS protokollt haszn\u00e1ljon.
+
+DISCOVERY_EXCEPTION=CWWKS2403E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l a k\u00f6vetkez\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OpenID Connect szolg\u00e1ltat\u00f3 metaadatainak felt\u00e9rk\u00e9pez\u00e9se sor\u00e1n a(z) [{1}] URL-c\u00edmen: {2}
+DISCOVERY_EXCEPTION.explanation=Lehet, hogy hi\u00e1nyoznak az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3 inform\u00e1ci\u00f3k, vagy az \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OpenID Connect szolg\u00e1ltat\u00f3val folytatott kommunik\u00e1ci\u00f3 sor\u00e1n.
+DISCOVERY_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t.
+
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l providerURI attrib\u00fatuma vagy null\u00e9rt\u00e9k, vagy \u00fcres, \u00e9s az OpenID Connect szolg\u00e1ltat\u00f3hoz nem \u00e1llnak rendelkez\u00e9sre metaadatok.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=Az OpenID Connect \u00fcgyf\u00e9lnek fel kell t\u00e9rk\u00e9peznie az OpenID Connect szolg\u00e1ltat\u00f3 metaadatait, de az \u00fcgyf\u00e9l nem rendelkezik be\u00e1ll\u00edtott providerURI attrib\u00fatummal vagy szolg\u00e1ltat\u00f3i metaadatokkal.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Adjon meg egy providerURI attrib\u00fatum\u00e9rt\u00e9ket az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban, illetve adja meg az OpenID Connect szolg\u00e1ltat\u00f3 metaadatait az \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban.
+
+DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: Az OpenID Connect szolg\u00e1ltat\u00f3 metaadataib\u00f3l hi\u00e1nyzik a k\u00f6telez\u0151 [{0}] tulajdons\u00e1g.
+DISCOVERY_METADATA_MISSING_VALUE.explanation=Az \u00fczenetben megadott tulajdons\u00e1gnak szerepelnie kell az OpenID Connect szolg\u00e1ltat\u00f3 metaadataiban, de hi\u00e1nyzik.
+DISCOVERY_METADATA_MISSING_VALUE.useraction=Ellen\u0151rizze, hogy az OpenID Connect \u00fcgyf\u00e9l providerURI attrib\u00fatuma az OpenID Connect szolg\u00e1ltat\u00f3 megfelel\u0151 felt\u00e9rk\u00e9pez\u00e9si URL-c\u00edm\u00e9hez van-e be\u00e1ll\u00edtva.
+
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL=CWWKS2406E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l nem tudja \u00e1tir\u00e1ny\u00edtani a felhaszn\u00e1l\u00f3t a hiteles\u00edt\u00e9si v\u00e9gpontra, mert az \u00fcgyf\u00e9l nem tudja meg\u00e1llap\u00edtani a hiteles\u00edt\u00e9si v\u00e9gpont URL-c\u00edm\u00e9t. {1}
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.explanation=Az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban a hiteles\u00edt\u00e9si v\u00e9gpont URL-c\u00edm\u00e9nek nem megfelel\u0151 a form\u00e1tuma, vagy hi\u00e1nyzik, illetve az OpenID Connect \u00fcgyf\u00e9l nem tudta lek\u00e9rni a hiteles\u00edt\u00e9si v\u00e9gpont URL-c\u00edm\u00e9t az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l.
+ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t. Ellen\u0151rizze, hogy az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3 teljes \u00e9s pontos-e.
+
+AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l a k\u00f6vetkez\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OpenID Connect szolg\u00e1ltat\u00f3 hiteles\u00edt\u00e9si v\u00e1lasz\u00e1nak ellen\u0151rz\u00e9se sor\u00e1n: {1}
+AUTHENTICATION_RESPONSE_ERROR.explanation=Lehet, hogy az OpenID Connect szolg\u00e1ltat\u00f3 v\u00e1lasz\u00e1b\u00f3l inform\u00e1ci\u00f3k hi\u00e1nyoznak. Lehet, hogy a probl\u00e9ma lehet az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l visszakapott k\u00f3dban van.
+AUTHENTICATION_RESPONSE_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t.

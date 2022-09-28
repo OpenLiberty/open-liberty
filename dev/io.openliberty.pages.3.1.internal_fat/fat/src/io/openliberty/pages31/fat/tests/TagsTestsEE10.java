@@ -51,7 +51,7 @@ public class TagsTestsEE10 {
 
     private String newLine = System.getProperty("line.separator");
 
-    @Server("tagsServer")
+    @Server("pagesServer")
     public static LibertyServer server;
 
     @BeforeClass

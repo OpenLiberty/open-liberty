@@ -42,6 +42,7 @@ import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
+import io.openliberty.security.oidcclientcore.http.HttpConstants;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 import test.common.SharedOutputManager;
 
@@ -171,31 +172,6 @@ public class OidcClientUtilTest extends CommonTestClass {
 
     /**
      * Test method for
-     * {@link com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil#getFromEndpoint(java.lang.String, java.util.List, java.lang.String, java.lang.String, java.lang.String)}.
-     */
-    @Test
-    public void testGetFromEndpoint() {
-        OidcClientUtil oicu = new OidcClientUtil();
-        try {
-            final HttpGet getMethod = new HttpGet("http://localhost:8010/oidc/someEndPoint");
-
-            createHttpClientExpectations(true);
-
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            oicu.oidcHttpUtil = oidcHttpUtil;
-            oicu.httpUtils = mockHttpUtils;
-            Map<String, Object> result = oicu.getFromEndpoint("http://localhost:8010/oidc/someEndPoint", params, "baUsername", "baPassword", access_token_content, sslSocketFactory, false, false);
-            HttpResponse responseCode = (HttpResponse) result.get(ClientConstants.RESPONSEMAP_CODE);
-            assertNotNull("Expect to see valid response code", responseCode);
-            HttpGet getMethod2 = (HttpGet) result.get(ClientConstants.RESPONSEMAP_METHOD);
-            assertEquals("HttpGet method ", getMethod.getMethod(), getMethod2.getMethod());
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Test method for
      * {@link com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil#getUserinfo(java.lang.String, java.lang.String)}.
      */
     @Test
@@ -206,9 +182,22 @@ public class OidcClientUtilTest extends CommonTestClass {
             oicu.oidcHttpUtil = oidcHttpUtil;
             oicu.httpUtils = mockHttpUtils;
             final Map<String, Object> postResponseMap = new HashMap<String, Object>();
-            postResponseMap.put(token_type, "bearer");
+            postResponseMap.put(HttpConstants.RESPONSEMAP_CODE, mockHttpResponse);
+            postResponseMap.put(HttpConstants.RESPONSEMAP_METHOD, mockHttpGet);
 
-            createHttpClientExpectations(false);
+            mock.checking(new Expectations() {
+                {
+                    one(oidcHttpUtil).getFromEndpoint(with(any(String.class)),
+                            with(any(List.class)),
+                            with(any(String.class)),
+                            with(any(String.class)),
+                            with(any(String.class)),
+                            with(any(SSLSocketFactory.class)),
+                            with(any(Boolean.class)),
+                            with(any(Boolean.class)));
+                    will(returnValue(postResponseMap));
+                }
+            });
 
             Map<String, Object> userInfoResponse = oicu.getUserinfo(userInfoEndpoint, access_token_content, sslSocketFactory, false, false);
             assertNotNull("Expected to get an instance of userInfo map", userInfoResponse);
@@ -251,7 +240,6 @@ public class OidcClientUtilTest extends CommonTestClass {
                             with(any(String.class)), // strClientSecret,
                             with(any(String.class)), // (String) null,
                             with(any(SSLSocketFactory.class)), // sslContext,
-                            with(any(List.class)), // commonHeaders
                             with(any(Boolean.class)), //isHostnameVerification
                             with(any(String.class)),
                             with(any(Boolean.class))); // use jvm props
@@ -296,7 +284,6 @@ public class OidcClientUtilTest extends CommonTestClass {
                             with(any(String.class)), // strClientSecret,
                             with(any(String.class)), // (String) null,
                             with(any(SSLSocketFactory.class)), // sslContext,
-                            with(any(List.class)), // commonHeaders
                             with(any(Boolean.class)), //isHostnameVerification
                             with(any(String.class)),
                             with(any(Boolean.class)));

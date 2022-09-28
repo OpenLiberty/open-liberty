@@ -16,10 +16,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SubmissionPublisher;
 
+import jakarta.data.Param;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-
-import io.openliberty.data.Param;
 
 /**
  * Using Java's SubmissionPublisher to try this path in the simplest way possible.

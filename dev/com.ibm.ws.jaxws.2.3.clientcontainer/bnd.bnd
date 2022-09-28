@@ -104,8 +104,8 @@ instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	javax.jws:jsr181-api;version=latest,\
-	com.ibm.websphere.javaee.jaxb.2.3;version=latest,\
-	com.ibm.websphere.javaee.jaxws.2.3;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\

@@ -187,10 +187,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY", sql.remove(0));
+                }
             }
 
             // -----------------------
@@ -221,10 +229,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY", sql.remove(0));
+                }
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;
@@ -531,10 +547,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (0 < AVG(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (0 < AVG(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                }
             }
 
             query = em.createQuery("SELECT AVG(1) FROM OLGH17837Entity s HAVING ?1 < AVG(?2)");
@@ -543,12 +567,20 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDerby) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
-            } else if (isDB2) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
+                } else if (isDB2) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                }
             }
 
             // -----------------------
@@ -585,10 +617,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (0.0 < AVG(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (0.0 < AVG(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                }
             }
 
             CriteriaBuilder cb3 = em.getCriteriaBuilder();
@@ -605,12 +645,20 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDerby) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
-            } else if (isDB2) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
+                } else if (isDB2) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(?))", sql.remove(0));
+                }
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;
@@ -1282,10 +1330,20 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (0 < AVG(DISTINCT(1)))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2) {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(1)))", sql.remove(0));
+                } else if (isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(1)))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(?)))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(?)))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (0 < AVG(DISTINCT(1)))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(?)))", sql.remove(0));
+                }
             }
 
             query = em.createQuery("SELECT AVG(1) FROM OLGH17837Entity s HAVING ?1 < AVG(DISTINCT ?2)");
@@ -1294,10 +1352,20 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(1)))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(1)))", sql.remove(0));
+                } else if (isDB2) {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(1)))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(?)))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(?)))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(1)))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(?)))", sql.remove(0));
+                }
             }
 
             // -----------------------
@@ -2024,10 +2092,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (0 < COUNT(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (? < COUNT(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (0 < COUNT(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(?))", sql.remove(0));
+                }
             }
 
             query = em.createQuery("SELECT COUNT(1) FROM OLGH17837Entity s HAVING ?1 < COUNT(?2)");
@@ -2076,10 +2152,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (0 < COUNT(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (? < COUNT(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (0 < COUNT(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(?))", sql.remove(0));
+                }
             }
 
             CriteriaBuilder cb3 = em.getCriteriaBuilder();
@@ -2750,10 +2834,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (0 < COUNT(DISTINCT(1)))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (? < COUNT(DISTINCT(1)))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(DISTINCT(?)))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(DISTINCT(?)))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (0 < COUNT(DISTINCT(1)))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(DISTINCT(?)))", sql.remove(0));
+                }
             }
 
             query = em.createQuery("SELECT COUNT(1) FROM OLGH17837Entity s HAVING ?1 < COUNT(DISTINCT ?2)");
@@ -2802,10 +2894,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (0 < COUNT(DISTINCT(1)))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (? < COUNT(DISTINCT(1)))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(DISTINCT(?)))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(DISTINCT(?)))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (0 < COUNT(DISTINCT(1)))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT COUNT(?) FROM OLGH17837ENTITY HAVING (? < COUNT(DISTINCT(?)))", sql.remove(0));
+                }
             }
 
             CriteriaBuilder cb3 = em.getCriteriaBuilder();
@@ -3137,10 +3237,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT DISTINCT 'HELLO' FROM OLGH17837ENTITY WHERE (STRVAL1 = 'WORLD')", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT DISTINCT 'HELLO' FROM OLGH17837ENTITY WHERE (STRVAL1 = ?)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT DISTINCT ? FROM OLGH17837ENTITY WHERE (STRVAL1 = ?)", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT DISTINCT ? FROM OLGH17837ENTITY WHERE (STRVAL1 = ?)", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT DISTINCT 'HELLO' FROM OLGH17837ENTITY WHERE (STRVAL1 = 'WORLD')", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT DISTINCT ? FROM OLGH17837ENTITY WHERE (STRVAL1 = ?)", sql.remove(0));
+                }
             }
 
             // -----------------------
@@ -3175,10 +3283,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT DISTINCT 'HELLO' FROM OLGH17837ENTITY WHERE (STRVAL1 = 'WORLD')", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT DISTINCT 'HELLO' FROM OLGH17837ENTITY WHERE (STRVAL1 = ?)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT DISTINCT ? FROM OLGH17837ENTITY WHERE (STRVAL1 = ?)", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT DISTINCT ? FROM OLGH17837ENTITY WHERE (STRVAL1 = ?)", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT DISTINCT 'HELLO' FROM OLGH17837ENTITY WHERE (STRVAL1 = 'WORLD')", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT DISTINCT ? FROM OLGH17837ENTITY WHERE (STRVAL1 = ?)", sql.remove(0));
+                }
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;
@@ -3491,10 +3607,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT MAX(1) FROM OLGH17837ENTITY HAVING (0 < MAX(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT MAX(1) FROM OLGH17837ENTITY HAVING (? < MAX(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT MAX(?) FROM OLGH17837ENTITY HAVING (? < MAX(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT MAX(?) FROM OLGH17837ENTITY HAVING (? < MAX(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT MAX(1) FROM OLGH17837ENTITY HAVING (0 < MAX(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT MAX(?) FROM OLGH17837ENTITY HAVING (? < MAX(?))", sql.remove(0));
+                }
             }
 
             query = em.createQuery("SELECT MAX(1) FROM OLGH17837Entity s HAVING ?1 < MAX(?2)");
@@ -3543,10 +3667,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT MAX(1) FROM OLGH17837ENTITY HAVING (0 < MAX(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT MAX(1) FROM OLGH17837ENTITY HAVING (? < MAX(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT MAX(?) FROM OLGH17837ENTITY HAVING (? < MAX(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT MAX(?) FROM OLGH17837ENTITY HAVING (? < MAX(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT MAX(1) FROM OLGH17837ENTITY HAVING (0 < MAX(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT MAX(?) FROM OLGH17837ENTITY HAVING (? < MAX(?))", sql.remove(0));
+                }
             }
 
             CriteriaBuilder cb3 = em.getCriteriaBuilder();
@@ -3767,10 +3899,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > 8)", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > 8)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                }
             }
 
             // -----------------------
@@ -3801,10 +3941,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > 8)", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > 8)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                }
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;
@@ -3864,10 +4012,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > 8)", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > 8)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                }
             }
 
             // -----------------------
@@ -3898,10 +4054,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > 8)", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > 8)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
+                }
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;
@@ -4191,10 +4355,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT MIN(1) FROM OLGH17837ENTITY HAVING (0 < MIN(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT MIN(1) FROM OLGH17837ENTITY HAVING (? < MIN(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT MIN(?) FROM OLGH17837ENTITY HAVING (? < MIN(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT MIN(?) FROM OLGH17837ENTITY HAVING (? < MIN(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT MIN(1) FROM OLGH17837ENTITY HAVING (0 < MIN(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT MIN(?) FROM OLGH17837ENTITY HAVING (? < MIN(?))", sql.remove(0));
+                }
             }
 
             query = em.createQuery("SELECT MIN(1) FROM OLGH17837Entity s HAVING ?1 < MIN(?2)");
@@ -4243,10 +4415,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT MIN(1) FROM OLGH17837ENTITY HAVING (0 < MIN(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT MIN(1) FROM OLGH17837ENTITY HAVING (? < MIN(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT MIN(?) FROM OLGH17837ENTITY HAVING (? < MIN(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT MIN(?) FROM OLGH17837ENTITY HAVING (? < MIN(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT MIN(1) FROM OLGH17837ENTITY HAVING (0 < MIN(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT MIN(?) FROM OLGH17837ENTITY HAVING (? < MIN(?))", sql.remove(0));
+                }
             }
 
             CriteriaBuilder cb3 = em.getCriteriaBuilder();
@@ -4467,10 +4647,14 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > 8)", sql.remove(0));
-            } else {
+            if (isUsingJPA31Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
+            } else {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > 8)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
+                }
             }
 
             // -----------------------
@@ -4501,10 +4685,14 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > 8)", sql.remove(0));
-            } else {
+            if (isUsingJPA31Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
+            } else {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > 8)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
+                }
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;
@@ -4564,10 +4752,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > 8)", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > 8)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
+                }
             }
 
             // -----------------------
@@ -4598,10 +4794,14 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > 8)", sql.remove(0));
-            } else {
+            if (isUsingJPA31Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
+            } else {
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > 8)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
+                }
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;
@@ -4849,10 +5049,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY", sql.remove(0));
+                }
             }
 
             // -----------------------
@@ -4883,10 +5091,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY", sql.remove(0));
+                }
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;
@@ -5193,10 +5409,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (0 < SUM(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (0 < SUM(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                }
             }
 
             query = em.createQuery("SELECT SUM(1) FROM OLGH17837Entity s HAVING ?1 < SUM(?2)");
@@ -5205,12 +5429,22 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDerby) {
-                Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
-            } else if (isDB2) {
-                Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
+                } else if (isDB2) {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
+                } else if (isDB2) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                }
             }
 
             // -----------------------
@@ -5247,10 +5481,18 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (0 < SUM(1))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                if (isDB2Z || isDB2 || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (0 < SUM(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                }
             }
 
             CriteriaBuilder cb3 = em.getCriteriaBuilder();
@@ -5267,12 +5509,20 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDerby) {
-                Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
-            } else if (isDB2) {
-                Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+            if (isUsingJPA31Feature()) {
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                }
             } else {
-                Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                if (isDB2Z || isDerby) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
+                } else if (isDB2) {
+                    Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT SUM(?) FROM OLGH17837ENTITY HAVING (? < SUM(?))", sql.remove(0));
+                }
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;

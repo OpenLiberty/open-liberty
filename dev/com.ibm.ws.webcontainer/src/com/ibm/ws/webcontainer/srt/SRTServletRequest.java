@@ -346,7 +346,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
 
             this._request = req;
             _srtRequestHelper = getRequestHelper();
-            
+
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
                 logger.logp(Level.FINE, CLASS_NAME,"initForNextRequest", "this->"+this+" , _srtRequestHelper [" + _srtRequestHelper +"]");
             }

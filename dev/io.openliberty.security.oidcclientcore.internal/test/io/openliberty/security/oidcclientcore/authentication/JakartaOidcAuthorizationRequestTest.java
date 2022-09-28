@@ -10,10 +10,15 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
+import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_HEADERS;
+import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_METHOD;
+import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_PARAMS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,8 +37,9 @@ import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
-import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
+import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
+import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
 
 public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
@@ -46,10 +52,9 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
     private final OidcProviderMetadata providerMetadata = mockery.mock(OidcProviderMetadata.class);
     private final DiscoveryHandler discoveryHandler = mockery.mock(DiscoveryHandler.class);
     private final AuthorizationRequestParameters authzParameters = mockery.mock(AuthorizationRequestParameters.class);
+    private final SessionBasedStorage sessionBasedStorage = mockery.mock(SessionBasedStorage.class);
 
-    private final String CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR = "CWWKS2401E";
     private final String CWWKS2403E_DISCOVERY_EXCEPTION = "CWWKS2403E";
-    private final String CWWKS2404E_OIDC_CLIENT_MISSING_PROVIDER_URI = "CWWKS2404E";
     private final String CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE = "CWWKS2405E";
 
     private final String clientId = "myOidcClientId";
@@ -86,7 +91,7 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
     private JakartaOidcAuthorizationRequest createJakartaOidcAuthorizationRequest(OidcProviderMetadata providerMetadata) {
         mockery.checking(new Expectations() {
             {
-                one(config).getClientId();
+                allowing(config).getClientId();
                 will(returnValue(clientId));
                 one(config).getProviderMetadata();
                 will(returnValue(providerMetadata));
@@ -95,8 +100,13 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
             }
         });
         return new JakartaOidcAuthorizationRequest(request, response, config) {
+
+            {
+                this.storage = sessionBasedStorage;
+            }
+
             @Override
-            DiscoveryHandler getDiscoveryHandler() {
+            public DiscoveryHandler getDiscoveryHandler() {
                 return discoveryHandler;
             }
         };
@@ -164,120 +174,6 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
         } catch (Exception e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
         }
-    }
-
-    @Test
-    public void test_getProviderMetadata_missingProviderUri() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(config).getProviderURI();
-                    will(returnValue(null));
-                }
-            });
-            JSONObject result = authzRequest.getProviderMetadata();
-            fail("Should have thrown an exception but didn't. Got: " + result);
-        } catch (OidcClientConfigurationException e) {
-            verifyException(e, CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR + ".+" + CWWKS2404E_OIDC_CLIENT_MISSING_PROVIDER_URI);
-        } catch (Exception e) {
-            outputMgr.failWithThrowable(testName.getMethodName(), e);
-        }
-    }
-
-    @Test
-    public void test_getProviderMetadata_providerURIMissingWellKnownSuffix() throws OidcDiscoveryException {
-        final String expectedDiscoveryUrl = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        final JSONObject discoveryData = new JSONObject();
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(config).getProviderURI();
-                    will(returnValue(providerUrl));
-                    one(discoveryHandler).fetchDiscoveryDataJson(expectedDiscoveryUrl, clientId);
-                    will(returnValue(discoveryData));
-                }
-            });
-            JSONObject result = authzRequest.getProviderMetadata();
-            assertEquals(discoveryData, result);
-        } catch (Exception e) {
-            outputMgr.failWithThrowable(testName.getMethodName(), e);
-        }
-    }
-
-    @Test
-    public void test_getProviderMetadata_discoveryThrowsException() throws OidcDiscoveryException {
-        providerUrl = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(config).getProviderURI();
-                    will(returnValue(providerUrl));
-                    one(discoveryHandler).fetchDiscoveryDataJson(providerUrl, clientId);
-                    will(throwException(new OidcDiscoveryException(clientId, providerUrl, defaultExceptionMsg)));
-                }
-            });
-            JSONObject result = authzRequest.getProviderMetadata();
-            fail("Should have thrown an exception but didn't. Got: " + result);
-        } catch (OidcDiscoveryException e) {
-            verifyException(e, CWWKS2403E_DISCOVERY_EXCEPTION + ".+" + Pattern.quote(defaultExceptionMsg));
-        } catch (Exception e) {
-            outputMgr.failWithThrowable(testName.getMethodName(), e);
-        }
-    }
-
-    @Test
-    public void test_getProviderMetadata_goldenPath() throws OidcDiscoveryException {
-        providerUrl = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        final JSONObject discoveryData = new JSONObject();
-        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT, authorizationEndpointUrl);
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    allowing(config).getProviderURI();
-                    will(returnValue(providerUrl));
-                    one(discoveryHandler).fetchDiscoveryDataJson(providerUrl, clientId);
-                    will(returnValue(discoveryData));
-                }
-            });
-            JSONObject result = authzRequest.getProviderMetadata();
-            assertEquals(discoveryData, result);
-
-            // Should get metadata from the cache, so shouldn't need another discoveryHandler call
-            JSONObject result2 = authzRequest.getProviderMetadata();
-            assertEquals(discoveryData, result2);
-        } catch (Exception e) {
-            outputMgr.failWithThrowable(testName.getMethodName(), e);
-        }
-    }
-
-    @Test
-    public void test_addWellKnownSuffixIfNeeded_noSuffix_noTrailingSlash() throws OidcDiscoveryException {
-        String input = providerUrl;
-        String result = authzRequest.addWellKnownSuffixIfNeeded(input);
-        String expectedValue = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        assertEquals(expectedValue, result);
-    }
-
-    @Test
-    public void test_addWellKnownSuffixIfNeeded_noSuffix_withTrailingSlash() throws OidcDiscoveryException {
-        String input = providerUrl + "/";
-        String result = authzRequest.addWellKnownSuffixIfNeeded(input);
-        String expectedValue = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        assertEquals(expectedValue, result);
-    }
-
-    @Test
-    public void test_addWellKnownSuffixIfNeeded_includesSuffix_notAsSeparatePath() throws OidcDiscoveryException {
-        String input = providerUrl + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        String result = authzRequest.addWellKnownSuffixIfNeeded(input);
-        assertEquals(input, result);
-    }
-
-    @Test
-    public void test_addWellKnownSuffixIfNeeded_includesSuffix() throws OidcDiscoveryException {
-        String input = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        String result = authzRequest.addWellKnownSuffixIfNeeded(input);
-        assertEquals(input, result);
     }
 
     @Test
@@ -366,6 +262,45 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
             }
         });
         authzRequest.addExtraParameters(authzParameters);
+    }
+
+    @Test
+    public void test_storeFullRequest() throws Exception {
+        String state = "12345";
+        String stateHash = Utils.getStrHashCode(state);
+
+        String requestMethod = "POST";
+
+        Enumeration<String> headerNames = Collections.enumeration(Arrays.asList("Content-Type"));
+        Enumeration<String> contentTypes = Collections.enumeration(Arrays.asList("application/x-www-form-urlencoded"));
+
+        Enumeration<String> paramNames = Collections.enumeration(Arrays.asList("id", "language"));
+        String[] ids = new String[] { "1234" };
+        String[] languages = new String[] { "Java" };
+
+        mockery.checking(new Expectations() {
+            {
+                one(request).getMethod();
+                will(returnValue(requestMethod));
+                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_METHOD + stateHash)), with(any(String.class)));
+
+                one(request).getHeaderNames();
+                will(returnValue(headerNames));
+                one(request).getHeaders("Content-Type");
+                will(returnValue(contentTypes));
+                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_HEADERS + stateHash)), with(any(String.class)));
+
+                one(request).getParameterNames();
+                will(returnValue(paramNames));
+                one(request).getParameterValues("id");
+                will(returnValue(ids));
+                one(request).getParameterValues("language");
+                will(returnValue(languages));
+                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_PARAMS + stateHash)), with(any(String.class)));
+            }
+        });
+
+        authzRequest.storeFullRequest(state);
     }
 
 }

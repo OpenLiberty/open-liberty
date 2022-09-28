@@ -333,11 +333,7 @@ public class VersioningTestLogic extends AbstractTestLogic {
             return;
         }
 
-        //TODO: Disable test until EclipseLink 2.1 OR 3.0 are updated to include the fix
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
-        if ((isUsingJPA30Feature() || isUsingJPA31Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
-            return;
-        }
 
         final int entity_one_pkey = 2;
         final int entity_two_pkey = 3;
@@ -601,12 +597,6 @@ public class VersioningTestLogic extends AbstractTestLogic {
         if (targetEntityType == null) {
             // Oops, unknown type
             Assert.fail("Invalid Entity-A type specified ('" + entityName + "').  Cannot execute the test.");
-            return;
-        }
-
-        //TODO: Disable test until EclipseLink 2.1 OR 3.0 are updated to include the fix
-        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
-        if ((isUsingJPA30Feature() || isUsingJPA31Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             return;
         }
 

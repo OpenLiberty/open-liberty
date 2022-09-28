@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,10 @@ import org.junit.rules.TestRule;
 import com.ibm.wsspi.http.HttpInboundConnection;
 import com.ibm.wsspi.http.HttpRequest;
 import com.ibm.wsspi.http.SSLContext;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 
+import io.openliberty.http.ext.HttpRequestExt;
 import test.common.SharedOutputManager;
 
 /**
@@ -45,7 +47,7 @@ public class IRequestImplTest {
         }
     };
     private final HttpInboundConnection conn = mock.mock(HttpInboundConnection.class);
-    private final HttpRequest request = mock.mock(HttpRequest.class);
+    private final HttpRequestExt request = mock.mock(HttpRequestExt.class);
     private final SSLContext sslCtx = mock.mock(SSLContext.class);
 
     @Rule
@@ -73,11 +75,11 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(true));
-                one(conn).getTrustedHeader("$WSSC");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSSC);
                 will(returnValue(null));
-                one(conn).getTrustedHeader("$WSIS");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSIS);
                 will(returnValue(null));
-                one(conn).getTrustedHeader("X-Forwarded-Proto");
+                one(request).getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
                 will(returnValue(null));
                 one(request).getScheme();
                 will(returnValue("http"));
@@ -106,7 +108,7 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(true));
-                one(request).getHeader("Host");
+                one(request).getHeader(HttpHeaderKeys.HDR_HOST);
                 will(returnValue("localhost:9080"));
                 one(request).getHeader("myPrivateHeader");
                 will(returnValue("true"));
@@ -135,12 +137,12 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(true));
-                one(conn).getTrustedHeader("$WSSC");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSSC);
                 will(returnValue("wssc-scheme"));
-                one(conn).getTrustedHeader("$WSIS");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSIS);
                 will(returnValue("true"));
-                one(conn).getTrustedHeader("X-Forwarded-Proto");
-                will(returnValue("XFP_scheme"));
+                one(request).getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
+                will(returnValue("XFP-scheme"));
                 one(request).getScheme();
                 will(returnValue("http"));
             }
@@ -168,12 +170,12 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(true));
-                one(conn).getTrustedHeader("$WSSC");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSSC);
                 will(returnValue(null));
-                one(conn).getTrustedHeader("$WSIS");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSIS);
                 will(returnValue("true"));
-                one(conn).getTrustedHeader("X-Forwarded-Proto");
-                will(returnValue("XFP_scheme"));
+                one(request).getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
+                will(returnValue("XFP-scheme"));
                 one(request).getScheme();
                 will(returnValue("http"));
             }
@@ -201,12 +203,12 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(true));
-                one(conn).getTrustedHeader("$WSSC");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSSC);
                 will(returnValue(null));
-                one(conn).getTrustedHeader("$WSIS");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSIS);
                 will(returnValue(null));
-                one(conn).getTrustedHeader("X-Forwarded-Proto");
-                will(returnValue("XFP_scheme"));
+                one(request).getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
+                will(returnValue("XFP-scheme"));
                 one(request).getScheme();
                 will(returnValue("http"));
             }
@@ -219,7 +221,7 @@ public class IRequestImplTest {
         IRequestImpl iRequestImpl = new IRequestImpl(conn);
         String scheme = iRequestImpl.getScheme();
 
-        assertEquals("XFP_scheme", scheme);
+        assertEquals("XFP-scheme", scheme);
     }
 
     @Test
@@ -234,12 +236,12 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(false)); // <------
-                one(conn).getTrustedHeader("$WSSC");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSSC);
                 will(returnValue("WSSC_scheme"));
-                one(conn).getTrustedHeader("$WSIS");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSIS);
                 will(returnValue("true"));
-                one(conn).getTrustedHeader("X-Forwarded-Proto");
-                will(returnValue("XFP_scheme"));
+                one(request).getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
+                will(returnValue("XFP-scheme"));
                 one(request).getScheme();
                 will(returnValue("http"));
             }
@@ -277,9 +279,9 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(true));
-                one(conn).getTrustedHeader("$WSIS");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSIS);
                 will(returnValue(null));
-                one(conn).getTrustedHeader("X-Forwarded-Proto");
+                one(request).getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
                 will(returnValue(null));
                 one(conn).getSSLContext();
                 will(returnValue(null));
@@ -308,7 +310,7 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(true));
-                one(request).getHeader("Host");
+                one(request).getHeader(HttpHeaderKeys.HDR_HOST);
                 will(returnValue("localhost:9080"));
                 one(request).getHeader("myPrivateHeader");
                 will(returnValue("true"));
@@ -337,12 +339,12 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(true));
-                one(conn).getTrustedHeader("$WSSC");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSSC);
                 will(returnValue(null));
-                one(conn).getTrustedHeader("$WSIS");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSIS);
                 will(returnValue("true"));
-                one(conn).getTrustedHeader("X-Forwarded-Proto");
-                will(returnValue("XFP_scheme"));
+                one(request).getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
+                will(returnValue("XFP-scheme"));
                 one(conn).getSSLContext();
                 will(returnValue(null));
             }
@@ -370,11 +372,11 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(true));
-                one(conn).getTrustedHeader("$WSSC");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSSC);
                 will(returnValue(null));
-                one(conn).getTrustedHeader("$WSIS");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSIS);
                 will(returnValue(null));
-                one(conn).getTrustedHeader("X-Forwarded-Proto");
+                one(request).getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
                 will(returnValue("https"));
                 one(conn).getSSLContext();
                 will(returnValue(null));
@@ -403,11 +405,11 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(false)); // <------
-                one(conn).getTrustedHeader("$WSSC");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSSC);
                 will(returnValue("https"));
-                one(conn).getTrustedHeader("$WSIS");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSIS);
                 will(returnValue("true"));
-                one(conn).getTrustedHeader("X-Forwarded-Proto");
+                one(request).getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
                 will(returnValue("wss"));
                 one(conn).getSSLContext();
                 will(returnValue(null));
@@ -436,11 +438,11 @@ public class IRequestImplTest {
                 // called by getScheme()
                 one(conn).useTrustedHeaders();
                 will(returnValue(false)); // <------
-                one(conn).getTrustedHeader("$WSSC");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSSC);
                 will(returnValue("https"));
-                one(conn).getTrustedHeader("$WSIS");
+                one(request).getHeader(HttpHeaderKeys.HDR_$WSIS);
                 will(returnValue("true"));
-                one(conn).getTrustedHeader("X-Forwarded-Proto");
+                one(request).getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
                 will(returnValue("wss"));
                 one(conn).getSSLContext();
                 will(returnValue(sslCtx));

@@ -69,6 +69,7 @@ public class ConnectorValidatorTest {
             LOGGER.entering(CLASSNAME, "setUp");
         }
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.regr", null, false);
+        TestSetupUtils.setUpGwcApp(server);
 
 //      Package TRA_jca16_ann_ConnectorValidator_NonRA0.rar
         JavaArchive traAnnEjsResourceAdapter_jar = TestSetupUtils.getTraAnnEjsResourceAdapter_jar();

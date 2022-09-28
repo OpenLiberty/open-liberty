@@ -32,6 +32,7 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -76,6 +77,7 @@ public class JSF23UIRepeatConditionTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testUIRepeatCondition() throws Exception {
         String contextRoot = "UIRepeatConditionCheck";
         try (WebClient webClient = new WebClient()) {

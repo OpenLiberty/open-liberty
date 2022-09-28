@@ -1,0 +1,49 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+Bundle-Name: Java Batch Internal EE10
+Bundle-SymbolicName: com.ibm.jbatch.internal.ee10
+Bundle-Description: Java Batch internal components for EE10
+
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+publish.wlp.jar.disabled: true
+
+
+WS-TraceGroup: wsbatch
+
+
+#######################################################################
+# Please be careful and circulate the idea in a design discussion
+# before exporting any new packages here.
+#
+# Though we've forked the open source RI in this project, we still are
+# responsible for maintaining it.   Changes to and dependencies we make upon
+# the internals in com.ibm.jbatch.container from other parts of the WAS project
+# should be kept in some part of our minds as we work in open source.
+#######################################################################
+Export-Package:\
+ com.ibm.jbatch.container.persistence.jpa.extractor;provide:=true;version=2.0.0
+
+Import-Package: org.eclipse.persistence.descriptors,\
+    org.eclipse.persistence.sessions,\
+	*
+
+-buildpath: \
+	io.openliberty.persistence.3.1.thirdparty;version=latest,\
+	com.ibm.ws.logging,\
+	com.ibm.ws.logging.core

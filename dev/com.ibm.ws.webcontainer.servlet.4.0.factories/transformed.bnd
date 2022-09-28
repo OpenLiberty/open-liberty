@@ -14,5 +14,21 @@ Bundle-Name: WAS WebContainer Jakarta
 Bundle-SymbolicName: com.ibm.ws.webcontainer.servlet.4.0.factories.jakarta
 Bundle-Description: WAS WebContainer 8.1 with object factories for Servlet 4.0 support; Jakarta Enabled
 
+# If you add new Service Components to this bnd file, you need to determine if you need to add to
+# the original.bnd as well.
+Service-Component: \
+  com.ibm.ws.webcontainer.v40.dd; \
+    implementation:=com.ibm.ws.javaee.version.ServletVersion; \
+    provide:=com.ibm.ws.javaee.version.ServletVersion; \
+    properties:="version:Integer=50", \
+  com.ibm.ws.webcontainer.v40.httpTransportBehavior; \
+    implementation:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
+    provide:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
+    properties:="useEE7Streams:Boolean=true,useIOEBehavior:Boolean=true", \
+  com.ibm.ws.webcontainer.v40.httpProtocolBehavior; \
+  	implementation:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
+  	provide:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
+  	properties:="httpVersionSetting:String=2.0_Optional_On"
+
 -includeresource: \
   com/ibm/ws/webcontainer/speclevel=resources/50

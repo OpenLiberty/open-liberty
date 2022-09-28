@@ -324,23 +324,27 @@ task createGeneratedReplacementProjects {
             if (bsnCount > 0) {
                 String classpathEntries = ""
                 String suffix = ""
-                File transformedBnd = bndProject.getFile('transformed.bnd')
-                String excludeBsn = null
-                if (transformedBnd != null && transformedBnd.exists()) {
-                    Properties p = new Properties();
-                    p.load(new FileInputStream(transformedBnd))
-                    excludeBsn = p.getProperty("Bundle-SymbolicName")
-                    if (excludeBsn != null) {
-                        int index = excludeBsn.indexOf(";")
-                        if (index != -1) {
-                            excludeBsn = excludeBsn.substring(0, index).trim()
-                        }
-                    }
+                ArrayList transformedBnds = [bndProject.getFile('transformed.bnd'),bndProject.getFile('transformed10.bnd')]
+                List excludeBsns = new ArrayList()
+                for (File transformedBnd : transformedBnds) {
+                	String excludeBsn = null;
+                	if (transformedBnd != null && transformedBnd.exists()) {
+                    	Properties p = new Properties();
+                    	p.load(new FileInputStream(transformedBnd))
+                    	excludeBsn = p.getProperty("Bundle-SymbolicName")
+                    	if (excludeBsn != null) {
+                        	int index = excludeBsn.indexOf(";")
+                        	if (index != -1) {
+                            	excludeBsn = excludeBsn.substring(0, index).trim()
+                        	}
+                    	}
+                    	excludeBsns.add(excludeBsn)
+                	}
                 }
 
                 for (String bsn : bsns) {
                     // Do not include the transformed bsn in the replacement
-                    if (bsn.equals(excludeBsn)) {
+                    if (excludeBsns.contains(bsn)) {
                         continue;
                     }
                     String artifact = bsn + '.jar'

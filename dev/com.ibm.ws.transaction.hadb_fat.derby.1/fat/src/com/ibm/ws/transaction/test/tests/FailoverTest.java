@@ -27,6 +27,7 @@ import com.ibm.ws.transaction.test.FATSuite;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
@@ -37,8 +38,6 @@ public class FailoverTest extends TxFATServletClient {
     public static final String SERVLET_NAME = "transaction/FailoverServlet";
 
     protected static final int START_TIMEOUT = 30000;
-
-    public static LibertyServer[] servers;
 
     public void runInServletAndCheck(LibertyServer server, String path, String method) throws Exception {
         StringBuilder sb = runInServlet(server, path, method);
@@ -76,19 +75,23 @@ public class FailoverTest extends TxFATServletClient {
         }
     };
 
-    protected static void commonSetUp() throws Exception {
+    protected static void commonSetUp(String testClassName) throws Exception {
         FATSuite.beforeSuite();
 
-        for (LibertyServer server : servers) {
+        for (LibertyServer server : LibertyServerFactory.getKnownLibertyServers(testClassName)) {
             ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.*");
         }
     }
 
-    protected static void commonCleanup() throws Exception {
-        // Clean up XA resource files
-        servers[0].deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+    protected static void commonCleanup(String testClassName) throws Exception {
+        for (LibertyServer server : LibertyServerFactory.getKnownLibertyServers(testClassName)) {
+            // Clean up XA resource files
+            server.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
 
-        // Remove tranlog DB
-        servers[0].deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
+            // Remove tranlog DB
+            server.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
+
+            break;
+        }
     }
 }

@@ -15,6 +15,11 @@ Bundle-Name: io.openliberty.microprofile.telemetry.1.0.internal
 Bundle-SymbolicName: io.openliberty.microprofile.telemetry.1.0.internal
 Bundle-Description: MicroProfile.telemetry, version 1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 src: src, resources
 
 #-cdiannotations:
@@ -41,10 +46,7 @@ Service-Component: \
         configuration-policy:=optional; \
 	properties:="resources=${app-resources}" 
 
-# Tolerate CDI 3.0 + 4.0
 Import-Package: \
-	jakarta.enterprise.context;version="[3.0.0,5.0.0)", \
-	jakarta.enterprise.inject;version="[3.0.0,5.0.0)", \
 	*
 
 Export-Package: \
@@ -54,17 +56,13 @@ Private-Package: \
   io.openliberty.microprofile.telemetry.internal.cdi
 
 -buildpath: \
-    com.ibm.websphere.appserver.api.servlet;version=latest,\
-    io.openliberty.jakarta.servlet.5.0;version=latest,\
-    io.openliberty.jakarta.restfulWS.3.0;version=latest,\
-    io.openliberty.jakarta.annotation.2.0;version=latest,\
-    io.openliberty.jakarta.interceptor.2.0;version=latest,\
-    io.openliberty.jakarta.cdi.3.0;version=latest,\
+    io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+    io.openliberty.jakarta.annotation.2.1;version=latest,\
+    io.openliberty.jakarta.interceptor.2.1;version=latest,\
+    io.openliberty.jakarta.cdi.4.0;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
-    com.ibm.ws.injection;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    com.ibm.ws.logging;version=latest, \
     io.openliberty.io.opentelemetry.internal;version=latest, \
     io.openliberty.io.opentelemetry;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.3.0

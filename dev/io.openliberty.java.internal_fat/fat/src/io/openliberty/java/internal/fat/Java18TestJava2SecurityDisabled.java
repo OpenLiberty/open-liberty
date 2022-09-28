@@ -13,6 +13,7 @@ package io.openliberty.java.internal.fat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -21,6 +22,7 @@ import junit.framework.Assert;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 18)
+@MaximumJavaLevel(javaLevel = 18)
 public class Java18TestJava2SecurityDisabled {
     @Server("java18-java2sec-disabled-server")
     public static LibertyServer server;

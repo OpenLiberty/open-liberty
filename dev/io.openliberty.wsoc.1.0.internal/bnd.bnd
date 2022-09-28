@@ -21,4 +21,4 @@ Export-Package: \
  io.openliberty.wsoc.speclevel
 
 -buildpath: \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+ 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

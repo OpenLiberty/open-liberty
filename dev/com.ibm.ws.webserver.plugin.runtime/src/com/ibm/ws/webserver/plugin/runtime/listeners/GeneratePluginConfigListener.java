@@ -67,6 +67,8 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
     private WsLocationAdmin locationService;
 
     private static GeneratePluginConfigListener theListener = null;
+    private static final String CHECKPOINT_GEN_PLUGIN = "io.openliberty.checkpoint.generate.plugin";
+    private boolean enablePlugin;
 
     public static GeneratePluginConfigListener getGeneratePluginConfigListener() {
         return theListener;
@@ -81,6 +83,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "GPCL: activate called.");
         theListener = this;
+        enablePlugin = (CheckpointPhase.getPhase() == CheckpointPhase.INACTIVE || Boolean.valueOf(bc.getProperty(CHECKPOINT_GEN_PLUGIN)));
     }
 
     @Deactivate
@@ -274,7 +277,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
             Tr.debug(this, tc, "submitGeneratePluginTask : FrameworkState.isStopping() = " + FrameworkState.isStopping());
 
         ExecutorService currentExecutor = executorSrvc;
-        if (!FrameworkState.isStopping() && gpc != null && currentExecutor != null) {
+        if (!FrameworkState.isStopping() && enablePlugin && gpc != null && currentExecutor != null) {
             Runnable generatePluginTask = new Runnable() {
                 @Override
                 public void run() {

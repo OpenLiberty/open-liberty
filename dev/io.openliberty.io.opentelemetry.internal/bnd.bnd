@@ -15,6 +15,9 @@ openTelemetryVersion=1.14.0
 
 Bundle-SymbolicName: io.openliberty.io.opentelemetry.internal; singleton:=true
 
+javac.source: 11
+javac.target: 11
+
 Import-Package: \
   javax.net,\
   javax.net.ssl,\
@@ -27,7 +30,8 @@ Import-Package: \
   zipkin2.reporter.okhttp3,\
   io.opentelemetry.api.trace,\
   io.opentelemetry.api,\
-  io.opentelemetry.api.baggage
+  io.opentelemetry.api.baggage,\
+  io.opentelemetry.context
 
 Export-Package: \
   io.opentelemetry.api.baggage.propagation; version=${openTelemetryVersion},\
@@ -42,6 +46,8 @@ Export-Package: \
   io.opentelemetry.sdk.*; version=${openTelemetryVersion},\
   io.opentelemetry.semconv.*; version=${openTelemetryVersion},\
   io.opentelemetry.proto.*; version=${openTelemetryVersion}
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 -buildpath: \
   io.opentelemetry.instrumentation:opentelemetry-instrumentation-api;version=1.14.0.alpha,\

@@ -59,9 +59,10 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
-public class Jose4jUtil {
+public class Jose4jUtil extends CommonJose4jUtils {
 
     private static final TraceComponent tc = Tr.register(Jose4jUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     private static final String SIGNATURE_ALG_HS = "HS";
@@ -88,6 +89,7 @@ public class Jose4jUtil {
     };
 
     public Jose4jUtil(SSLSupport sslSupport) {
+        super();
         this.sslSupport = sslSupport;
     }
 
@@ -262,17 +264,6 @@ public class Jose4jUtil {
         }
     }
 
-    //Just parse without validation for now
-    public static JwtContext parseJwtWithoutValidation(String jwtString) throws Exception {
-        JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
-                .setSkipAllValidators()
-                .setDisableRequireSignature()
-                .setSkipSignatureVerification()
-                .build();
-
-        return firstPassJwtConsumer.process(jwtString);
-    }
-
     @FFDCIgnore({ Exception.class })
     public JwtClaims parseJwtWithValidation(ConvergedClientConfig clientConfig,
             String jwtString,
@@ -298,22 +289,7 @@ public class Jose4jUtil {
             throw e;
         }
     }
-
-    public JsonWebStructure getJsonWebStructureFromJwtContext(JwtContext jwtContext) throws Exception {
-        List<JsonWebStructure> jsonStructures = jwtContext.getJoseObjects();
-        if (jsonStructures == null || jsonStructures.isEmpty()) {
-            throw new Exception("Invalid JsonWebStructure");
-        }
-        JsonWebStructure jsonStruct = jsonStructures.get(0);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "JsonWebStructure class: " + jsonStruct.getClass().getName() + " data:" + jsonStruct);
-            if (jsonStruct instanceof JsonWebSignature) {
-                JsonWebSignature signature = (JsonWebSignature) jsonStruct;
-                Tr.debug(tc, "JsonWebSignature alg: " + signature.getAlgorithmHeaderValue() + " 3rd:'" + signature.getEncodedSignature() + "'");
-            }
-        }
-        return jsonStruct;
-    }
+    
 
     @FFDCIgnore({ Exception.class })
     public Key getSignatureVerificationKeyFromJsonWebStructure(JsonWebStructure jsonStruct, ConvergedClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws JWTTokenValidationFailedException {
@@ -491,7 +467,7 @@ public class Jose4jUtil {
         if (JweHelper.isJwe(jwtString)) {
             jwtString = JweHelper.extractJwsFromJweToken(jwtString, clientConfig, null);
         }
-        return Jose4jUtil.parseJwtWithoutValidation(jwtString);
+        return parseJwtWithoutValidation(jwtString);
     }
 
     public JwtClaims validateJwsSignature(JwtContext jwtContext, ConvergedClientConfig clientConfig) throws Exception {

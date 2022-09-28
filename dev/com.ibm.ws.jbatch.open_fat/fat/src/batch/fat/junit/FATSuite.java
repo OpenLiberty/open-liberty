@@ -70,5 +70,5 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action());
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action()); 
 }

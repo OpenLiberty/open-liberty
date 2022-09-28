@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,10 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.rules.repeater.JakartaEE10Action;
 
 /**
  * This test class is to be used for the tests that test feature specified
@@ -87,7 +89,13 @@ public class JSF23WebSocketTests {
 
             // Construct the URL for the test
             String contextRoot = "WebSocket";
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "PushWebSocketTest.jsf");
+            URL url;
+
+            if(JakartaEE10Action.isActive()){
+                url = JSFUtils.createHttpUrl(server, contextRoot, "faces40/PushWebSocketTest.jsf");
+            } else {
+                url = JSFUtils.createHttpUrl(server, contextRoot, "PushWebSocketTest.jsf");
+            }
 
             HtmlPage testPushWebSocketPage = (HtmlPage) webClient.getPage(url);
 
@@ -143,7 +151,13 @@ public class JSF23WebSocketTests {
 
             // Construct the URL for the test
             String contextRoot = "WebSocket";
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "OpenCloseWebSocketTest.jsf");
+            URL url;
+
+            if(JakartaEE10Action.isActive()){
+                url = JSFUtils.createHttpUrl(server, contextRoot, "faces40/OpenCloseWebSocketTest.jsf");
+            } else {
+                url = JSFUtils.createHttpUrl(server, contextRoot, "OpenCloseWebSocketTest.jsf");
+            }
 
             HtmlPage testOpenCloseWebSocketPage = (HtmlPage) webClient.getPage(url);
 

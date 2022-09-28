@@ -11,27 +11,26 @@
 
 package io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
+
 import componenttest.app.FATServlet;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
-
-import org.junit.Test;
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.api.trace.Tracer;
-
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
 
 @WebServlet("/")
 @ApplicationScoped
 public class Telemetry10Servlet extends FATServlet {
-    
+
     @Inject
     Tracer tracer;
 
@@ -50,23 +49,23 @@ public class Telemetry10Servlet extends FATServlet {
 
     private void doWork() {
         try {
-          Thread.sleep(500);
-          span.addEvent("Doing work");
+            Thread.sleep(500);
+            span.addEvent("Doing work");
         } catch (InterruptedException e) {
-          //do the right thing here
+            //do the right thing here
         }
     }
 
     @Test
-    public void testTracerNotNull(){
+    public void testTracerNotNull() {
         assertNotNull(tracer);
     }
 
     @Test
-    public void testSpanNotNull(){
+    public void testSpanNotNull() {
         assertNotNull(span);
     }
-    
+
     @Test
     public void testJAXRS(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         Client client = ClientBuilder.newBuilder().build();

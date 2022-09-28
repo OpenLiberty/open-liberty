@@ -15,7 +15,8 @@ javac.source: 11
 javac.target: 11
 
 src: \
-    fat/src
+    fat/src,\
+    test-applications/Misc.war/src
 
 fat.project: true
 

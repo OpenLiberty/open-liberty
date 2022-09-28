@@ -19,8 +19,27 @@ public class AuthenticationResponseException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public AuthenticationResponseException(String clientId, String nlsMessage) {
-        super(Tr.formatMessage(tc, "AUTHENTICATION_RESPONSE_ERROR", clientId, nlsMessage));
+    public static enum ValidationResult {
+        INVALID_RESULT, NOT_VALIDATED_RESULT
+    }
+
+    private final ValidationResult result;
+    private final String clientId;
+    private final String nlsMessage;
+
+    public AuthenticationResponseException(ValidationResult result, String clientId, String nlsMessage) {
+        this.result = result;
+        this.clientId = clientId;
+        this.nlsMessage = nlsMessage;
+    }
+
+    public ValidationResult getValidationResult() {
+        return result;
+    }
+
+    @Override
+    public String getMessage() {
+        return Tr.formatMessage(tc, "AUTHENTICATION_RESPONSE_ERROR", clientId, nlsMessage);
     }
 
 }

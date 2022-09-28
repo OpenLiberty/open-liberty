@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.random.RandomUtils;
+import com.ibm.ws.security.common.web.WebUtils;
 
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
@@ -53,36 +54,68 @@ public class AuthorizationRequestUtils {
 
     public String getRequestUrl(HttpServletRequest request) {
         // due to some longstanding webcontainer strangeness, we have to do some extra things for certain behind-proxy cases to get the right port.
-        boolean rewritePort = false;
-        Integer realPort = null;
-        if (request.getScheme().toLowerCase().contains("https")) {
-            realPort = new com.ibm.ws.security.common.web.WebUtils().getRedirectPortFromRequest(request);
-        }
-        int port = request.getServerPort();
-        if (realPort != null && realPort.intValue() != port) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "serverport = " + port + "real port is " + realPort.toString() + ", url will be rewritten to use real port");
-            }
-            rewritePort = true;
-        }
+        Integer realPort = getRealPort(request);
+        int serverPort = request.getServerPort();
 
         StringBuffer requestURL = request.getRequestURL();
-        if (rewritePort) {
-            requestURL = rewritePortInRequestUrl(request, realPort);
+        if (shouldRewritePort(realPort, serverPort)) {
+            requestURL = rewritePortInRequestOrigin(request, realPort);
         }
         requestURL = appendQueryString(request, requestURL);
         return requestURL.toString();
     }
 
-    StringBuffer rewritePortInRequestUrl(HttpServletRequest request, int realPort) {
-        StringBuffer requestURL = new StringBuffer();
-        requestURL.append(request.getScheme());
-        requestURL.append("://");
-        requestURL.append(request.getServerName());
-        requestURL.append(":");
-        requestURL.append(realPort);
+    public String getBaseURL(HttpServletRequest request) {
+        // due to some longstanding webcontainer strangeness, we have to do some extra things for certain behind-proxy cases to get the right port.
+        Integer realPort = getRealPort(request);
+        int serverPort = request.getServerPort();
+
+        StringBuffer baseURL = rewritePortInBaseURL(request, shouldRewritePort(realPort, serverPort) ? realPort : serverPort);
+        return baseURL.toString();
+    }
+
+    Integer getRealPort(HttpServletRequest request) {
+        Integer realPort = null;
+        if (request.getScheme().toLowerCase().contains("https")) {
+            realPort = getWebUtils().getRedirectPortFromRequest(request);
+        }
+        return realPort;
+    }
+
+    WebUtils getWebUtils() {
+        return new WebUtils();
+    }
+
+    boolean shouldRewritePort(Integer realPort, int serverPort) {
+        if (realPort != null && realPort.intValue() != serverPort) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "serverport = " + serverPort + "real port is " + realPort.toString() + ", url will be rewritten to use real port");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    StringBuffer rewritePortInRequestURL(HttpServletRequest request, int realPort) {
+        StringBuffer requestURL = rewritePortInRequestOrigin(request, realPort);
         requestURL.append(request.getRequestURI());
         return requestURL;
+    }
+
+    StringBuffer rewritePortInBaseURL(HttpServletRequest request, int realPort) {
+        StringBuffer baseURL = rewritePortInRequestOrigin(request, realPort);
+        baseURL.append(request.getContextPath());
+        return baseURL;
+    }
+
+    StringBuffer rewritePortInRequestOrigin(HttpServletRequest request, int realPort) {
+        StringBuffer requestOrigin = new StringBuffer();
+        requestOrigin.append(request.getScheme());
+        requestOrigin.append("://");
+        requestOrigin.append(request.getServerName());
+        requestOrigin.append(":");
+        requestOrigin.append(realPort);
+        return requestOrigin;
     }
 
     StringBuffer appendQueryString(HttpServletRequest request, StringBuffer requestURL) {

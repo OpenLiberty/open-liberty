@@ -31,6 +31,7 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.FormLoginReadListenerTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.HttpSessionAttListenerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.JSPServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.NBMultiReadTest;
+import com.ibm.ws.webcontainer.servlet31.fat.tests.PrivateHeaderTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadListenerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadWriteTimeoutHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeWriteListenerHttpUnit;
@@ -69,7 +70,8 @@ import componenttest.topology.impl.JavaInfo;
                 CDIServletFilterListenerTest.class,
                 FormLoginReadListenerTest.class,
                 NBMultiReadTest.class,
-                WCServletContextUnsupportedOperationExceptionTest.class
+                WCServletContextUnsupportedOperationExceptionTest.class,
+                PrivateHeaderTest.class
 })
 public class FATSuite {
 

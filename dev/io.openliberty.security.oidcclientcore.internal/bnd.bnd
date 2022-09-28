@@ -31,7 +31,13 @@ Export-Package: \
 	io.openliberty.security.oidcclientcore.storage, \
 	io.openliberty.security.oidcclientcore.utils, \
 	io.openliberty.security.oidcclientcore.http, \
-	io.openliberty.security.oidcclientcore.token
+	io.openliberty.security.oidcclientcore.token, \
+	io.openliberty.security.oidcclientcore.userinfo, \
+        io.openliberty.security.oidcclientcore.logout
+
+-dsannotations: \
+	io.openliberty.security.oidcclientcore.http.EndpointRequest,\
+	io.openliberty.security.oidcclientcore.token.TokenResponseValidator
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
@@ -48,7 +54,11 @@ Export-Package: \
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.common.encoder;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.websphere.org.osgi.core;version=latest
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	com.ibm.ws.security.common.jsonwebkey;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
@@ -68,5 +78,6 @@ Export-Package: \
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
-	com.ibm.ws.org.slf4j.api;version=latest
+	com.ibm.ws.org.slf4j.api;version=latest,\
+	com.ibm.websphere.security;version=latest
 	

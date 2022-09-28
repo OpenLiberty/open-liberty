@@ -234,7 +234,7 @@ public class ConnectionDefinitionsMergeActionTest {
             LOGGER.entering(CLASSNAME, "tearDown");
         }
         if (server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKE0701E");// EXPECTED
         }
     }
 

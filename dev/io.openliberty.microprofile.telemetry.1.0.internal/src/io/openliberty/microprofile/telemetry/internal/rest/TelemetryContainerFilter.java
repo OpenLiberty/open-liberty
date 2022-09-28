@@ -12,21 +12,10 @@ package io.openliberty.microprofile.telemetry.internal.rest;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import java.util.HashMap;
 
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.container.ContainerRequestContext;
-import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.container.ContainerResponseContext;
-import jakarta.ws.rs.container.ContainerResponseFilter;
-import jakarta.ws.rs.container.ResourceInfo;
-import jakarta.ws.rs.core.UriBuilder;
-import jakarta.ws.rs.ext.Provider;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.context.Context;
@@ -38,18 +27,30 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttributesGetter;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
-
-import org.eclipse.microprofile.config.Config;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class TelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
+    private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
+
+    private static final String REST_RESOURCE_CLASS = "rest.resource.class";
+    private static final String REST_RESOURCE_METHOD = "rest.resource.method";
+    private static final String REST_RESOURCE_ROUTE = "rest.resource.route";
+
+    private static final String SPAN_CONTEXT = "otel.span.server.context";
+    private static final String SPAN_PARENT_CONTEXT = "otel.span.server.parentContext";
+    private static final String SPAN_SCOPE = "otel.span.server.scope";
+
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> instrumenter;
-
-    private String configString = "otel.span.server.";
-    private static String resourceString = "rest.resource.";
-
-    private String instrumentationName = "io.openliberty.microprofile.telemetry";
 
     @jakarta.ws.rs.core.Context
     ResourceInfo resourceInfo;
@@ -63,54 +64,54 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         ServerAttributesExtractor serverAttributesExtractor = new ServerAttributesExtractor();
 
         InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
-            openTelemetry,
-            instrumentationName,
-            HttpSpanNameExtractor.create(serverAttributesExtractor));
+                                                                                                              openTelemetry,
+                                                                                                              INSTRUMENTATION_NAME,
+                                                                                                              HttpSpanNameExtractor.create(serverAttributesExtractor));
 
         this.instrumenter = builder
-            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(serverAttributesExtractor))
-            .addAttributesExtractor(HttpServerAttributesExtractor.create(serverAttributesExtractor))
-            .newServerInstrumenter(new ContainerRequestContextTextMapGetter());
+                        .setSpanStatusExtractor(HttpSpanStatusExtractor.create(serverAttributesExtractor))
+                        .addAttributesExtractor(HttpServerAttributesExtractor.create(serverAttributesExtractor))
+                        .newServerInstrumenter(new ContainerRequestContextTextMapGetter());
     }
 
     @Override
     public void filter(final ContainerRequestContext request) {
         Context parentContext = Context.current();
         if (instrumenter.shouldStart(parentContext, request)) {
-            request.setProperty(resourceString + "class", resourceInfo.getResourceClass());
-            request.setProperty(resourceString + "method", resourceInfo.getResourceMethod());
+            request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
+            request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 
             Context spanContext = instrumenter.start(parentContext, request);
             Scope scope = spanContext.makeCurrent();
-            request.setProperty(configString + "context", spanContext);
-            request.setProperty(configString + "parentContext", parentContext);
-            request.setProperty(configString + "scope", scope);
+            request.setProperty(SPAN_CONTEXT, spanContext);
+            request.setProperty(SPAN_PARENT_CONTEXT, parentContext);
+            request.setProperty(SPAN_SCOPE, scope);
         }
     }
 
     @Override
     public void filter(final ContainerRequestContext request, final ContainerResponseContext response) {
-        Scope scope = (Scope) request.getProperty(configString + "scope");
+        Scope scope = (Scope) request.getProperty(SPAN_SCOPE);
         if (scope == null) {
             return;
         }
 
-        Context spanContext = (Context) request.getProperty(configString + "context");
+        Context spanContext = (Context) request.getProperty(SPAN_CONTEXT);
         try {
             instrumenter.end(spanContext, request, response, null);
         } finally {
             scope.close();
 
-            request.removeProperty(resourceString + "class");
-            request.removeProperty(resourceString + "method");
-            request.removeProperty(configString + "context");
-            request.removeProperty(configString + "parentContext");
-            request.removeProperty(configString + "scope");
+            request.removeProperty(REST_RESOURCE_CLASS);
+            request.removeProperty(REST_RESOURCE_METHOD);
+            request.removeProperty(SPAN_CONTEXT);
+            request.removeProperty(SPAN_PARENT_CONTEXT);
+            request.removeProperty(SPAN_SCOPE);
         }
     }
 
     private static class ContainerRequestContextTextMapGetter implements TextMapGetter<ContainerRequestContext> {
-        
+
         @Override
         public Iterable<String> keys(final ContainerRequestContext carrier) {
             return carrier.getHeaders().keySet();
@@ -126,8 +127,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         }
     }
 
-    private static class ServerAttributesExtractor
-            implements HttpServerAttributesGetter<ContainerRequestContext, ContainerResponseContext> {
+    private static class ServerAttributesExtractor implements HttpServerAttributesGetter<ContainerRequestContext, ContainerResponseContext> {
 
         @Override
         public String flavor(final ContainerRequestContext request) {
@@ -136,21 +136,29 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
         @Override
         public String route(final ContainerRequestContext request) {
-            Class<?> resourceClass = (Class<?>) request.getProperty(resourceString + "class");
-            Method method = (Method) request.getProperty(resourceString + "method");
 
-            UriBuilder template = UriBuilder.fromResource(resourceClass);
-            String contextRoot = request.getUriInfo().getBaseUri().getPath();
-            if (contextRoot != null) {
-                template.path(contextRoot);
+            String route = (String) request.getProperty(REST_RESOURCE_ROUTE);
+
+            if (route == null) {
+                Class<?> resourceClass = (Class<?>) request.getProperty(REST_RESOURCE_CLASS);
+                Method method = (Method) request.getProperty(REST_RESOURCE_METHOD);
+
+                String contextRoot = request.getUriInfo().getBaseUri().getPath();
+                UriBuilder template = UriBuilder.fromPath(contextRoot);
+
+                template.path(resourceClass);
+
+                if (method.isAnnotationPresent(Path.class)) {
+                    template.path(method);
+                }
+
+                route = template.toTemplate();
+                request.setProperty(REST_RESOURCE_ROUTE, route);
             }
 
-            if (method.isAnnotationPresent(Path.class)) {
-                template.path(method);
-            }
-
-            return template.toTemplate();
+            return route;
         }
+
         //required
         @Override
         public String method(final ContainerRequestContext request) {
@@ -196,7 +204,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
         @Override
         public Long requestContentLengthUncompressed(final ContainerRequestContext request,
-                final ContainerResponseContext response) {
+                                                     final ContainerResponseContext response) {
             return null;
         }
 
@@ -207,14 +215,14 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
         @Override
         public Long responseContentLengthUncompressed(final ContainerRequestContext request,
-                final ContainerResponseContext response) {
+                                                      final ContainerResponseContext response) {
             return null;
         }
 
         @Override
         public List<String> responseHeader(final ContainerRequestContext request, final ContainerResponseContext response,
-                final String name) {
+                                           final String name) {
             return response.getStringHeaders().getOrDefault(name, emptyList());
         }
     }
-} 
+}

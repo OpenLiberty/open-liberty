@@ -17,9 +17,26 @@ Bundle-Name: WebSocket
 Bundle-SymbolicName: io.openliberty.wsoc.2.1.internal
 Bundle-Description: WebSocket, version ${bVersion}
 
+Service-Component: \
+  io.openliberty.wsoc.servercontainer21; \
+    implementation:=io.openliberty.wsoc.servercontainer21.ServerContainerImplFactory21; \
+    provide:=com.ibm.ws.wsoc.servercontainer.ServletContainerFactory; \
+    configuration-policy:=ignore;\
+    immediate:=true;\
+    properties:="service.vendor=IBM"
+
 Export-Package: \
  io.openliberty.wsoc.speclevel
 
--buildpath: \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+ Private-Package: \
+  io.openliberty.wsoc.servercontainer21
 
+-buildpath: \
+ 	com.ibm.ws.wsoc.jakarta;version=latest,\
+ 	io.openliberty.jakarta.websocket.client.2.1;version=latest,\
+ 	io.openliberty.jakarta.websocket.2.1;version=latest,\
+ 	io.openliberty.jakarta.servlet.6.0;version=latest,\
+ 	com.ibm.ws.webcontainer;version=latest, \
+ 	com.ibm.ws.logging;version=latest,\
+ 	com.ibm.wsspi.org.osgi.service.component.annotations, \
+ 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

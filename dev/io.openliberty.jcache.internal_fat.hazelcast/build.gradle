@@ -11,7 +11,7 @@
 
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
-def hazelcastVersion = '3.12.12' // '3.9.2' // '3.12.12' // '4.2'
+def hazelcastVersion = '5.1.3'
 
 /* 
  * This is where all application JARs will be built.
@@ -43,9 +43,7 @@ dependencies {
                'net.sourceforge.htmlunit:htmlunit:2.59.0'
   
 
-  hazelcast "com.hazelcast:hazelcast:${hazelcastVersion}" 
-  hazelcastClient "com.hazelcast:hazelcast-client:${hazelcastVersion}"
-  hazelcastAll "com.hazelcast:hazelcast-all:${hazelcastVersion}"
+  hazelcast "com.hazelcast:hazelcast:${hazelcastVersion}"
 }
 
 addRequiredLibraries.dependsOn copyTestContainers
@@ -59,23 +57,8 @@ task addHazelcastToSharedDir(type: Copy) {
   rename "hazelcast-${hazelcastVersion}.jar", 'hazelcast.jar'
 }
 
-task addHazelcastClientToSharedDir(type: Copy) {
-  from configurations.hazelcastClient
-  into new File(autoFvtDir, 'publish/shared/resources/hazelcast')
-  rename "hazelcast-client-${hazelcastVersion}.jar", 'hazelcast-client.jar'
-  exclude "hazelcast-${hazelcastVersion}.jar"
-}
-
-task addHazelcastAllToSharedDir(type: Copy) {
-  from configurations.hazelcastAll
-  into new File(autoFvtDir, 'publish/shared/resources/hazelcast')
-  rename "hazelcast-all-${hazelcastVersion}.jar", 'hazelcast-all.jar'
-}
-
 addRequiredLibraries {
   dependsOn addHazelcastToSharedDir
-  dependsOn addHazelcastClientToSharedDir
-  dependsOn addHazelcastAllToSharedDir
 }
 
 
@@ -138,12 +121,6 @@ task ProviderInApp_WAR(type: War, dependsOn: classes) {
     }
   }
   webInf {
-    from configurations.hazelcastClient {
-      include "hazelcast-client-${hazelcastVersion}.jar"
-      into 'lib'
-    }
-  }
-  webInf {
     from configurations.hazelcast {
       include "hazelcast-${hazelcastVersion}.jar"
       into 'lib'
@@ -151,7 +128,7 @@ task ProviderInApp_WAR(type: War, dependsOn: classes) {
   }
   
   manifest {
-    attributes("Class-Path": "WEB-INF/lib/hazelcast-client-${hazelcastVersion}.jar WEB-INF/lib/hazelcast-${hazelcastVersion}.jar")
+    attributes("Class-Path": "WEB-INF/lib/hazelcast-${hazelcastVersion}.jar")
   }
 }
 

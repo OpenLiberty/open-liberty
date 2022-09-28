@@ -10,9 +10,11 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
+import java.util.Base64;
+import java.util.Enumeration;
 import java.util.Set;
+import java.util.StringJoiner;
 
-import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,13 +23,11 @@ import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
-import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
@@ -36,22 +36,23 @@ import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
+import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     public static final TraceComponent tc = Tr.register(JakartaOidcAuthorizationRequest.class);
 
-    // TODO Discovery metadata will be cleared from the cache after 5 minutes
-    private static SingleTableCache cachedDiscoveryMetadata = new SingleTableCache(1000 * 60 * 5);
+    public static final String STORED_REQUEST_METHOD = "STORED_REQUEST_METHOD";
+    public static final String STORED_REQUEST_HEADERS = "STORED_REQUEST_HEADERS";
+    public static final String STORED_REQUEST_PARAMS = "STORED_REQUEST_PARAMS";
 
     private enum StorageType {
         COOKIE, SESSION
     }
-
-    private final OidcClientConfig config;
-    private final OidcProviderMetadata providerMetadata;
-
+    private OidcClientConfig config = null;
+    private OidcProviderMetadata providerMetadata = null;
     private StorageType storageType;
+
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
 
@@ -61,10 +62,10 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         this.providerMetadata = (config == null) ? null : config.getProviderMetadata();
         instantiateStorage(config);
     }
-
+    
     private void instantiateStorage(OidcClientConfig config) {
         if (config.isUseSession()) {
-            this.storage = new SessionBasedStorage();
+            this.storage = new SessionBasedStorage(request);
             this.storageType = StorageType.SESSION;
         } else {
             this.storage = new CookieBasedStorage(request, response);
@@ -89,21 +90,14 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         if (authzEndpoint != null) {
             return authzEndpoint;
         }
-        // Provider metadata is empty or authz endpoint is not in it, so perform discovery
-        JSONObject discoveryData = getProviderMetadata();
-        authzEndpoint = (String) discoveryData.get(OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
-        if (authzEndpoint == null) {
-            String nlsMessage = Tr.formatMessage(tc, "DISCOVERY_METADATA_MISSING_VALUE", OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
-            throw new OidcDiscoveryException(clientId, config.getProviderURI(), nlsMessage);
-        }
-        return authzEndpoint;
+        return getAuthorizationEndpointFromDiscoveryMetadata();
     }
 
     String getAuthorizationEndpointFromProviderMetadata() {
         if (providerMetadata != null) {
             // Provider metadata overrides properties discovered via providerUri
             String authzEndpoint = providerMetadata.getAuthorizationEndpoint();
-            if (authzEndpoint != null) {
+            if (authzEndpoint != null && !authzEndpoint.isEmpty()) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Authorization endpoint found in the provider metadata: [" + authzEndpoint + "]");
                 }
@@ -113,57 +107,17 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         return null;
     }
 
-    JSONObject getProviderMetadata() throws OidcClientConfigurationException, OidcDiscoveryException {
-        String discoveryrUri = config.getProviderURI();
-        if (discoveryrUri == null || discoveryrUri.isEmpty()) {
-            String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_MISSING_PROVIDER_URI", clientId);
-            throw new OidcClientConfigurationException(clientId, nlsMessage);
-        }
-        discoveryrUri = addWellKnownSuffixIfNeeded(discoveryrUri);
-
-        // See if we already have cached metadata for this endpoint to avoid sending discovery requests too frequently
-        JSONObject discoveryData = (JSONObject) cachedDiscoveryMetadata.get(discoveryrUri);
+    String getAuthorizationEndpointFromDiscoveryMetadata() throws OidcDiscoveryException {
+        String authzEndpoint = null;
+        JSONObject discoveryData = getProviderDiscoveryMetadata(config);
         if (discoveryData != null) {
-            return discoveryData;
+            authzEndpoint = (String) discoveryData.get(OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
         }
-        discoveryData = fetchProviderMetadataFromDiscoveryUrl(discoveryrUri);
-
-        cachedDiscoveryMetadata.put(discoveryrUri, discoveryData);
-
-        return discoveryData;
-    }
-
-    /**
-     * Per https://github.com/jakartaee/security/blob/master/spec/src/main/asciidoc/authenticationMechanism.adoc#metadata-configuration,
-     * the providerURI "defines the base URL of the OpenID Connect Provider where the /.well-known/openid-configuration is
-     * appended to (or used as-is when it is the well known configuration URL itself)."
-     *
-     * @param providerUri
-     * @return
-     */
-    String addWellKnownSuffixIfNeeded(String providerUri) {
-        if (!providerUri.endsWith(OidcDiscoveryConstants.WELL_KNOWN_SUFFIX)) {
-            if (!providerUri.endsWith("/")) {
-                providerUri += "/";
-            }
-            providerUri += OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
+        if (authzEndpoint == null) {
+            String nlsMessage = Tr.formatMessage(tc, "DISCOVERY_METADATA_MISSING_VALUE", OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
+            throw new OidcDiscoveryException(clientId, config.getProviderURI(), nlsMessage);
         }
-        return providerUri;
-    }
-
-    JSONObject fetchProviderMetadataFromDiscoveryUrl(String discoveryrUri) throws OidcDiscoveryException {
-        DiscoveryHandler discoveryHandler = getDiscoveryHandler();
-        return discoveryHandler.fetchDiscoveryDataJson(discoveryrUri, clientId);
-    }
-
-    DiscoveryHandler getDiscoveryHandler() {
-        SSLSocketFactory sslSocketFactory = getSSLSocketFactory();
-        return new DiscoveryHandler(sslSocketFactory);
-    }
-
-    SSLSocketFactory getSSLSocketFactory() {
-        // TODO
-        return null;
+        return authzEndpoint;
     }
 
     @Override
@@ -198,29 +152,45 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     @Override
     protected StorageProperties getStateStorageProperties() {
+        StorageProperties superProps = super.getStateStorageProperties();
         if (storageType == StorageType.COOKIE) {
             // Per https://jakarta.ee/specifications/security/3.0/jakarta-security-spec-3.0.html#authentication-dialog,
             // "In the case of storage through a Cookie, the Cookie must be defined as HTTPonly and must have the Secure flag set."
-            CookieStorageProperties props = (CookieStorageProperties) super.getStateStorageProperties();
+            CookieStorageProperties props = new CookieStorageProperties();
+            props.setStorageLifetimeSeconds(superProps.getStorageLifetimeSeconds());
             props.setHttpOnly(true);
             props.setSecure(true);
             return props;
         } else {
-            return super.getStateStorageProperties();
+            return superProps;
         }
     }
 
     @Override
     protected StorageProperties getNonceStorageProperties() {
+        StorageProperties superProps = super.getNonceStorageProperties();
         if (storageType == StorageType.COOKIE) {
             // Per https://jakarta.ee/specifications/security/3.0/jakarta-security-spec-3.0.html#authentication-dialog,
             // "In the case of storage through a Cookie, the Cookie must be defined as HTTPonly and must have the Secure flag set."
-            CookieStorageProperties props = (CookieStorageProperties) super.getNonceStorageProperties();
+            CookieStorageProperties props = new CookieStorageProperties();
+            props.setStorageLifetimeSeconds(superProps.getStorageLifetimeSeconds());
             props.setHttpOnly(true);
             props.setSecure(true);
             return props;
         } else {
-            return super.getNonceStorageProperties();
+            return superProps;
+        }
+    }
+
+    @Override
+    protected StorageProperties getOriginalRequestUrlStorageProperties() {
+        StorageProperties superProps = super.getOriginalRequestUrlStorageProperties();
+        if (storageType == StorageType.COOKIE) {
+            CookieStorageProperties props = new CookieStorageProperties();
+            props.setStorageLifetimeSeconds(superProps.getStorageLifetimeSeconds());
+            return props;
+        } else {
+            return superProps;
         }
     }
 
@@ -237,7 +207,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         }
         storeOriginalRequestUrl(state);
         if (shouldFullRequestBeStored()) {
-            storeFullRequest();
+            storeFullRequest(state);
         }
         return new ProviderAuthenticationResult(AuthResult.REDIRECT_TO_PROVIDER, HttpServletResponse.SC_OK, null, null, null, authzEndPointUrlWithQuery);
     }
@@ -315,9 +285,62 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         return false;
     }
 
-    void storeFullRequest() {
-        // TODO
+    void storeFullRequest(String state) {
+        Base64.Encoder encoder = Base64.getEncoder();
+        String stateHash = Utils.getStrHashCode(state);
+        storeRequestCookies(encoder, stateHash);
+        storeRequestMethod(encoder, stateHash);
+        storeRequestHeaders(encoder, stateHash);
+        storeRequestParameters(encoder, stateHash);
+    }
 
+    void storeRequestCookies(Base64.Encoder encoder, String stateHash) {
+        // cookies should be automatically restored during redirection to original resource
+    }
+
+    void storeRequestMethod(Base64.Encoder encoder, String stateHash) {
+        String method = request.getMethod();
+        String encodedMethod = encoder.encodeToString(method.getBytes());
+        storage.store(STORED_REQUEST_METHOD + stateHash, encodedMethod);
+    }
+
+    void storeRequestHeaders(Base64.Encoder encoder, String stateHash) {
+        StringJoiner headerJoiner = new StringJoiner("&");
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String encodedHeaderName = encoder.encodeToString(headerName.getBytes());
+            StringJoiner valueJoiner = new StringJoiner(".");
+            Enumeration<String> headerValues = request.getHeaders(headerName);
+            while (headerValues.hasMoreElements()) {
+                String headerValue = headerValues.nextElement();
+                String encodedHeaderValue = encoder.encodeToString(headerValue.getBytes());
+                valueJoiner.add(encodedHeaderValue);
+            }
+            String encodedHeaderValues = valueJoiner.toString();
+            headerJoiner.add(encodedHeaderName + ":" + encodedHeaderValues);
+        }
+        String encodedHeaders = headerJoiner.toString();
+        storage.store(STORED_REQUEST_HEADERS + stateHash, encodedHeaders);
+    }
+
+    void storeRequestParameters(Base64.Encoder encoder, String stateHash) {
+        StringJoiner paramJoiner = new StringJoiner("&");
+        Enumeration<String> paramNames = request.getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String paramName = paramNames.nextElement();
+            String encodedParamName = encoder.encodeToString(paramName.getBytes());
+            StringJoiner valueJoiner = new StringJoiner(".");
+            String[] paramValues = request.getParameterValues(paramName);
+            for (String paramValue : paramValues) {
+                String encodedParamValue = encoder.encodeToString(paramValue.getBytes());
+                valueJoiner.add(encodedParamValue);
+            }
+            String encodedParamValues = valueJoiner.toString();
+            paramJoiner.add(encodedParamName + ":" + encodedParamValues);
+        }
+        String encodedParams = paramJoiner.toString();
+        storage.store(STORED_REQUEST_PARAMS + stateHash, encodedParams);
     }
 
 }
