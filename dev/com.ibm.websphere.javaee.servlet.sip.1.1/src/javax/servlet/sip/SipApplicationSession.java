@@ -252,6 +252,28 @@ public interface SipApplicationSession {
     Iterator getSessions(String protocol) throws IllegalStateException, NullPointerException, IllegalArgumentException;
     
     
+    
+    /**
+     * Returns an <code>Iterator</code> over the "protocol" session objects
+     * associated of the specified protocol associated with this application
+     * session. If the specified protocol is not supported, an empty
+     * <code>Iterator</code> is returned.
+     * If "SIP" is specified the result will be an <code>Iterator</code>
+     * over the set of {@link SipSession} objects belonging to this application
+     * session. For "HTTP" the result will be a list of
+     * <code>javax.servlet.http.HttpSession</code> objects.
+     * @param protocol a string identifying the protocol name, e.g. "SIP"
+     * @param boolean representing if SIP sessions should be created if none exist
+     * @return <code>Iterator</code> over protocol sessions of the
+     *      specified protocol  
+     * @throws IllegalStateException - if this application session is not valid
+     * @throws NullPointerException - if the protocol is null 
+     * @throws IllegalArgumentException - if the protocol is not understood by container.
+     * 
+     */
+
+    Iterator getSessions(String protocol, boolean create) throws IllegalStateException, NullPointerException, IllegalArgumentException; ;
+    
     /**
      * Returns the SipSession with the specified id belonging to this application 
      * session, or null if not found.
@@ -399,5 +421,8 @@ public interface SipApplicationSession {
      * @throws IllegalStateException
      */
     void setInvalidateWhenReady(boolean invalidateWhenReady) throws IllegalStateException;
+
+	
+    
 
 }
