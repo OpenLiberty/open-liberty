@@ -120,6 +120,7 @@ public class EJBInWarServiceTest {
     protected void runTest(String responseString) throws ProtocolException, MalformedURLException, IOException {
         // Strip the Test Rerun id's out of the method name
         String testMethod = testName.getMethodName().replace("_EE9_FEATURES", "");
+        testMethod = testMethod.replace("_EE10_FEATURES", "");
 
         StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testMethod).append("&hostName=").append(server.getHostname());
         String urlStr = sBuilder.toString();

@@ -32,6 +32,7 @@ import javax.xml.ws.BindingProvider;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -227,15 +228,19 @@ public class TestUtils {
     public static void installUserFeature(LibertyServer server, String featureManifestFile) throws Exception {
         if (JakartaEE9Action.isActive()) {
             server.installUserFeature("ee9/" + featureManifestFile);
+        } else if (JakartaEE10Action.isActive()) {
+            server.installUserFeature("ee10/" + featureManifestFile);
         } else {
             server.installUserFeature(featureManifestFile);
         }
     }
 
     public static void setServerConfigurationFile(LibertyServer server, String newConfigFile) throws Exception {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             server.setServerConfigurationFile(newConfigFile + ".ee9");
-        } else {
+        } else if (JakartaEE10Action.isActive()) {
+            server.setServerConfigurationFile(newConfigFile + ".ee10");
+        }  else {
             server.setServerConfigurationFile(newConfigFile);
         }
     }

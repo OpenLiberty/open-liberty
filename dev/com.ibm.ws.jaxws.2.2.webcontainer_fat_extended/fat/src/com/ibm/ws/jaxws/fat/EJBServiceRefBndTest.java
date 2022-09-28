@@ -73,6 +73,8 @@ public class EJBServiceRefBndTest {
         server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/jaxwsTest-2.3.mf");
 
         server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/xmlwsTest-3.0.mf");
+
+        server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/xmlwsTest-4.0.mf");
     }
 
     @AfterClass
@@ -82,6 +84,8 @@ public class EJBServiceRefBndTest {
         server.deleteFileFromLibertyInstallRoot("lib/features/jaxwsTest-2.3.mf");
 
         server.deleteFileFromLibertyInstallRoot("lib/features/xmlwsTest-3.0.mf");
+
+        server.deleteFileFromLibertyInstallRoot("lib/features/xmlwsTest-4.0.mf");
     }
 
     @Before

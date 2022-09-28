@@ -57,6 +57,10 @@ public class EJBBasicClientServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String testMethod = req.getParameter("testMethod");
+
+        // Remove automatically added extension to match proper method name
+        testMethod = testMethod.replace("_EE10_FEATURES", "");
+
         if (testMethod == null || testMethod.isEmpty()) {
             throw new ServletException("Unable to detect the testMethod from the request");
         }

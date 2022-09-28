@@ -71,7 +71,7 @@ public class EJBWebServiceServlet extends HttpServlet {
             } else if ("testInvokeOtherFromPojo".equals(queryMethod)) {
                 out.write(pojoSayHello.invokeOther());
             } else {
-                out.write("Inexistent method: " + queryMethod);
+                throw new ServletException("Unable to recognize the test method " + queryMethod);
             }
         } catch (Exception e) {
             out.write(e.getMessage());

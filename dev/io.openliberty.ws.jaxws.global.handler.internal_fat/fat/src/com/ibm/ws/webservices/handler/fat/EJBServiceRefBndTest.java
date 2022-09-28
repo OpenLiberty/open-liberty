@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -50,7 +51,7 @@ public class EJBServiceRefBndTest {
     private static String testFeatureName;
     @BeforeClass
     public static void setup() throws Exception {
-        testFeatureName = JakartaEE9Action.isActive() ? "xmlWSTest-3.0.mf" : "jaxwsTest-2.2.mf";
+        testFeatureName = JakartaEE9Action.isActive() ? "xmlWSTest-3.0.mf" : (JakartaEE10Action.isActive() ? "xmlWSTest-4.0.mf" :"jaxwsTest-2.2.mf");
         server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/" + testFeatureName);
 
         //server.installUserBundle("TestHandler1_1.0.0.201311011652");

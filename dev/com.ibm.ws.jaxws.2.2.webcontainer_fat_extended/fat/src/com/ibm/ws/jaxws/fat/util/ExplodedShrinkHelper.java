@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -59,6 +60,8 @@ public class ExplodedShrinkHelper {
         File explodedFile = archive.as(ExplodedExporter.class).exportExploded(outputFile, archive.getName());
         if (JakartaEE9Action.isActive()) {
             JakartaEE9Action.transformApp(explodedFile.toPath());
+        } else if (JakartaEE10Action.isActive()) {
+            JakartaEE10Action.transformApp(explodedFile.toPath());
         }
         copyFileToDirectory(server, outputFile, dest);
         return archive;

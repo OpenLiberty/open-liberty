@@ -252,6 +252,7 @@ public class EJBJndiTest {
     protected void runTest(String responseString) throws Exception {
 
         String testMethod = testName.getMethodName().replace("_EE9_FEATURES", "");
+        testMethod = testMethod.replace("_EE10_FEATURES", "");
 
         String target = null;
         String remoteTestMethod = null;
