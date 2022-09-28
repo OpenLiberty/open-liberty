@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
-//import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,10 +18,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
-//import io.openliberty.security.jakartasec.identitystore.OpenIdContextImpl;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
-//import jakarta.security.enterprise.identitystore.openid.RefreshToken;
 
 public class TokenRefresher {
 
@@ -32,36 +28,30 @@ public class TokenRefresher {
     private HttpServletRequest request = null;
     private OidcClientConfig oidcClientConfig = null;
 
-    //private OpenIdContextImpl openIdContextImpl = null;
-
     private Boolean accessTokenExpired = null;
     private Boolean idTokenExpired = null;
+    private String refreshTokenString = null;
 
-    public TokenRefresher(HttpServletRequest req, OidcClientConfig clientConfig) {
-        //this(req, clientConfig, null);
-        request = req;
-        oidcClientConfig = clientConfig;
+    public TokenRefresher(HttpServletRequest request, OidcClientConfig oidcClientConfig,
+                          boolean accessTokenExpired,
+                          boolean idTokenExpired,
+                          String refreshTokenString) {
+        this.request = request;
+        this.oidcClientConfig = oidcClientConfig;
+        this.accessTokenExpired = accessTokenExpired;
+        this.idTokenExpired = idTokenExpired;
+        this.refreshTokenString = refreshTokenString;
     }
-
-    //public TokenRefresher(HttpServletRequest req, OidcClientConfig clientConfig, OpenIdContextImpl oidcContextImpl) {
-    //    request = req;
-    //    oidcClientConfig = clientConfig;
-    //    openIdContextImpl = oidcContextImpl;
-    //}
 
     public boolean isTokenExpired() {
         return isAccessTokenExpired() || isIdTokenExpired();
     }
 
     public boolean isAccessTokenExpired() {
-        if (accessTokenExpired == null)
-            accessTokenExpired = false; //openIdContextImpl.getAccessToken().isExpired();
         return accessTokenExpired;
     }
 
     public boolean isIdTokenExpired() {
-        if (idTokenExpired == null)
-            idTokenExpired = false; //openIdContextImpl.getIdentityToken().isExpired();
         return idTokenExpired;
     }
 
@@ -69,22 +59,11 @@ public class TokenRefresher {
         JakartaOidcTokenRequest tokenRequest = new JakartaOidcTokenRequest(oidcClientConfig, request);
         ProviderAuthenticationResult authResult;
         try {
-            authResult = tokenRequest.sendTokenRefreshRequest(getRefreshToken());
+            authResult = tokenRequest.sendTokenRefreshRequest(refreshTokenString);
         } catch (TokenRequestException e) {
             authResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
         }
         return authResult;
-    }
-
-    public String getRefreshToken() {
-//        Optional<RefreshToken> optionalRefreshToken = openIdContextImpl.getRefreshToken();
-//        if (optionalRefreshToken.isPresent()) {
-//            RefreshToken refreshToken = optionalRefreshToken.get();
-//            if (refreshToken != null) {
-//                return refreshToken.getToken();
-//            }
-//        }
-        return null;
     }
 
 }

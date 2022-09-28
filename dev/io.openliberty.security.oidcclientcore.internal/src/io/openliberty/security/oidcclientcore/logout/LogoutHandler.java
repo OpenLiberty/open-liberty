@@ -35,17 +35,19 @@ public class LogoutHandler extends EndpointRequest {
 
     private OidcProviderMetadata providerMetadata = null;
     private String clientId = null;
+    private String idTokenString = null;
 
     //Move to OidcDiscoveryConstants
-    public static final String METADATA_KEY_ENDSESSION_ENDPOINT = "endSession_endpoint";
+    public static final String METADATA_KEY_ENDSESSION_ENDPOINT = "end_session_endpoint";
 
     ProviderAuthenticationResult authResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, 200);
 
-    public LogoutHandler(HttpServletRequest req, HttpServletResponse resp, OidcClientConfig oidcClientConfig, LogoutConfig logoutConfig) {
+    public LogoutHandler(HttpServletRequest req, HttpServletResponse resp, OidcClientConfig oidcClientConfig, LogoutConfig logoutConfig, String idTokenString) {
         this.req = req;
         this.resp = resp;
         this.oidcClientConfig = oidcClientConfig;
         this.logoutConfig = logoutConfig;
+        this.idTokenString = idTokenString;
         if (oidcClientConfig != null) {
             this.providerMetadata = oidcClientConfig.getProviderMetadata();
             clientId = oidcClientConfig.getClientId();
@@ -63,10 +65,10 @@ public class LogoutHandler extends EndpointRequest {
         String redirectUrl = logoutConfig.getRedirectURI();
 
         if (logoutConfig.isNotifyProvider() && endSessionEndPoint != null) {
-            RPInitiatedLogoutStrategy rpInitiatedLogoutStrategy = new RPInitiatedLogoutStrategy(req, oidcClientConfig, endSessionEndPoint);
+            RPInitiatedLogoutStrategy rpInitiatedLogoutStrategy = new RPInitiatedLogoutStrategy(oidcClientConfig, endSessionEndPoint, idTokenString);
             return rpInitiatedLogoutStrategy.logout();
         } else if (!logoutConfig.isNotifyProvider() && redirectUrl != null) {
-            CustomLogoutStrategy customLogoutStrategy = new CustomLogoutStrategy(req, resp, redirectUrl);
+            CustomLogoutStrategy customLogoutStrategy = new CustomLogoutStrategy(redirectUrl);
             return customLogoutStrategy.logout();
         } else {
             JakartaOidcAuthorizationRequest oidcAuthorizationRequest = new JakartaOidcAuthorizationRequest(req, resp, oidcClientConfig);

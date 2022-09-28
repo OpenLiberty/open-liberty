@@ -69,37 +69,41 @@ public class Client {
         return jwkSet;
     }
 
-    public ProviderAuthenticationResult processExpiredToken(HttpServletRequest request, HttpServletResponse response) {
-        //TODO: pass in OpenIdContextImpl to TokenRefresher
-        TokenRefresher tokenRefresher = new TokenRefresher(request, oidcClientConfig);
+    public ProviderAuthenticationResult processExpiredToken(HttpServletRequest request, HttpServletResponse response,
+                                                            boolean isAccessTokenExpired,
+                                                            boolean isIdTokenExpired,
+                                                            String idTokenString,
+                                                            String refreshTokenString) {
+        TokenRefresher tokenRefresher = new TokenRefresher(request, oidcClientConfig, isAccessTokenExpired, isIdTokenExpired, refreshTokenString);
         LogoutConfig logoutConfig = oidcClientConfig.getLogoutConfig();
-
         if (tokenRefresher.isTokenExpired()) {
             if (oidcClientConfig.isTokenAutoRefresh()) {
                 // when there is no previously stored refresh_token field of the Token Response, a logout should be initiated
-                if (tokenRefresher.getRefreshToken() == null) {
-                    return logout(request, response, logoutConfig);
+                if (refreshTokenString == null) {
+                    return logout(request, response, logoutConfig, idTokenString);
                 }
                 ProviderAuthenticationResult providerAuthResult = tokenRefresher.refreshToken();
                 if (AuthResult.SUCCESS.equals(providerAuthResult.getStatus())) {
                     return providerAuthResult;
                 }
                 // When the call is not successful, ... a logout should be initiated.
-                return logout(request, response, logoutConfig);
+                return logout(request, response, logoutConfig, idTokenString);
             } else {
                 if ((logoutConfig.isAccessTokenExpiry() && tokenRefresher.isAccessTokenExpired()) ||
                     (logoutConfig.isIdentityTokenExpiry() && tokenRefresher.isIdTokenExpired())) {
-                    return logout(request, response, logoutConfig);
+                    return logout(request, response, logoutConfig, idTokenString);
                 }
             }
         }
+
         // The token expiration is ignored when none of the above conditions hold
         return new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
     }
 
     public ProviderAuthenticationResult logout(HttpServletRequest request, HttpServletResponse response,
-                                               LogoutConfig logoutConfig) {
-        LogoutHandler logoutHandler = new LogoutHandler(request, response, oidcClientConfig, logoutConfig);
+                                               LogoutConfig logoutConfig,
+                                               String idTokenString) {
+        LogoutHandler logoutHandler = new LogoutHandler(request, response, oidcClientConfig, logoutConfig, idTokenString);
         try {
             return logoutHandler.logout();
         } catch (ServletException | OidcDiscoveryException e) {
