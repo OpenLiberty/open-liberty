@@ -25,12 +25,6 @@
 <link rel="stylesheet" href="gridx/resources/claro/Gridx.css" />
 <link rel="stylesheet" href="css/javabatch.css" />
 
-<%
-// Set security headers	
-response.setHeader("X-XSS-Protection", "1");	
-response.setHeader("X-Content-Type-Options", "nosniff");	
-response.setHeader("X-Frame-Options", "SAMEORIGIN");
-%>
 
 <%@ include file="jsShared/bidiConfig.jsp"%>
 <script src="jsShared/utils/globalization.js"></script>
