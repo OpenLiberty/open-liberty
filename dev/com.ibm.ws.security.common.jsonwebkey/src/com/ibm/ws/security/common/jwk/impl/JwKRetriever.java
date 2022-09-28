@@ -20,7 +20,6 @@ import java.net.URI;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.Key;
-import java.security.KeyStoreException;
 import java.security.PrivateKey;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -36,18 +35,8 @@ import javax.net.ssl.SSLSocketFactory;
 
 // import java.util.Base64; // or could use
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.json.java.JSONArray;
@@ -60,17 +49,14 @@ import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
+import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.common.http.SocialLoginWrapperException;
 import com.ibm.ws.security.common.jwk.impl.PemKeyUtil.KeyType;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
 import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
-import com.ibm.ws.security.common.http.HttpResponseNot200Exception;
-import com.ibm.ws.security.common.http.HttpResponseNullOrEmptyException;
-import com.ibm.ws.security.common.http.HttpUtils;
-import com.ibm.ws.security.common.http.SocialLoginWrapperException;
 import com.ibm.wsspi.ssl.SSLSupport;
-import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 /**
  *
@@ -176,24 +162,21 @@ public class JwKRetriever {
     }
 
     @Sensitive
-    public PrivateKey getPrivateKeyFromJwk(String kid, boolean useSystemPropertiesForHttpClientConnections)
-            throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException {
+    public PrivateKey getPrivateKeyFromJwk(String kid, boolean useSystemPropertiesForHttpClientConnections) throws IOException {
         return (PrivateKey) getKeyFromJwk(kid, null, null, useSystemPropertiesForHttpClientConnections, JwkKeyType.PRIVATE);
     }
 
     /**
      * Either kid or x5t will work. But not both
      */
-    public PublicKey getPublicKeyFromJwk(String kid, String x5t, boolean useSystemPropertiesForHttpClientConnections)
-            throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException {
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t, boolean useSystemPropertiesForHttpClientConnections) throws IOException {
         return getPublicKeyFromJwk(kid, x5t, null, useSystemPropertiesForHttpClientConnections);
     }
 
     /**
      * Either kid, x5t, or use will work, but not all
      */
-    public PublicKey getPublicKeyFromJwk(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections)
-            throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException {
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections) throws IOException {
         return (PublicKey) getKeyFromJwk(kid, x5t, use, useSystemPropertiesForHttpClientConnections, JwkKeyType.PUBLIC);
     }
 
@@ -201,33 +184,13 @@ public class JwKRetriever {
      * Either kid, x5t, or use will work, but not all
      */
     @Sensitive
-    @FFDCIgnore({ KeyStoreException.class })
-    Key getKeyFromJwk(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType)
-            throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException {
+    Key getKeyFromJwk(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws IOException {
         Key key = null;
-        KeyStoreException errKeyStoreException = null;
-        InterruptedException errInterruptedException = null;
-
         boolean isHttp = remoteHttpCall(this.jwkEndpointUrl, keyText, this.keyLocation);
-        try {
-            if (isHttp) {
-                key = this.getJwkRemote(kid, x5t, use, useSystemPropertiesForHttpClientConnections, keyType);
-            } else {
-                key = this.getJwkLocal(kid, x5t, keyText, keyLocation, use, keyType);
-            }
-        } catch (KeyStoreException e) {
-            errKeyStoreException = e;
-        } catch (InterruptedException e) {
-            errInterruptedException = e;
-        }
-
-        if (key == null) {
-            if (errKeyStoreException != null) {
-                throw errKeyStoreException;
-            }
-            if (errInterruptedException != null) {
-                throw errInterruptedException;
-            }
+        if (isHttp) {
+            key = this.getJwkRemote(kid, x5t, use, useSystemPropertiesForHttpClientConnections, keyType);
+        } else {
+            key = this.getJwkLocal(kid, x5t, keyText, keyLocation, use, keyType);
         }
         return key;
     }
@@ -423,8 +386,7 @@ public class JwKRetriever {
     }
 
     @Sensitive
-    @FFDCIgnore({ KeyStoreException.class })
-    protected Key getJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws KeyStoreException, InterruptedException {
+    protected Key getJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws IOException {
         locationUsed = jwkEndpointUrl;
         if (locationUsed == null) {
             locationUsed = keyLocation;
@@ -433,21 +395,17 @@ public class JwKRetriever {
             return null;
         }
         Key key = null;
-        try {
-            synchronized (jwkSet) {
-                key = getJwkFromJWKSet(locationUsed, kid, x5t, use, null, keyType);
-                if (key == null) {
-                    key = doJwkRemote(kid, x5t, use, useSystemPropertiesForHttpClientConnections, keyType);
-                }
+        synchronized (jwkSet) {
+            key = getJwkFromJWKSet(locationUsed, kid, x5t, use, null, keyType);
+            if (key == null) {
+                key = doJwkRemote(kid, x5t, use, useSystemPropertiesForHttpClientConnections, keyType);
             }
-        } catch (KeyStoreException e) {
-            throw e;
         }
         return key;
     }
 
-    @FFDCIgnore({ Exception.class })
-    protected Key doJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws KeyStoreException {
+    @FFDCIgnore({ IOException.class, Exception.class })
+    protected Key doJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws IOException {
 
         String jsonString = null;
         locationUsed = jwkEndpointUrl;
@@ -475,6 +433,8 @@ public class JwKRetriever {
                 }
             }
 
+        } catch (IOException e) {
+            throw e;
         } catch (Exception e) {
             // could be ignored
             if (tc.isDebugEnabled()) {
@@ -497,19 +457,24 @@ public class JwKRetriever {
         return message;
     }
     
-    @FFDCIgnore({ SocialLoginWrapperException.class })
+    @FFDCIgnore({ SocialLoginWrapperException.class, IOException.class })
     protected String getHTTPRequestAsString(HttpClient client, String url) throws Exception, IOException {
         String jsonString = null;
-        
+
         try {
             jsonString = httpUtils.getHttpJsonRequest(client, url);
-        } catch (SocialLoginWrapperException sle) {
-            throw new Exception(logCWWKS6049E(url, sle.getStatusCode(), sle.getNlsMessage()));
         } catch (IOException ioex) {
             logCWWKS6049E(url, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
             throw ioex;
+        } catch (SocialLoginWrapperException sle) {
+            Throwable cause = sle.getCause();
+            if (cause != null && cause instanceof IOException) {
+                throw (IOException) cause;
+            } else {
+                throw new Exception(logCWWKS6049E(url, sle.getStatusCode(), sle.getNlsMessage()), sle);
+            }
         }
-        
+
         return jsonString;
     }
 
