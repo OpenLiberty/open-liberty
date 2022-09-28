@@ -80,13 +80,6 @@ public class SessionContextRegistryImpl extends SessionContextRegistry implement
                 sap.setHasApplicationSession(true);
                 sap.setApplicationSessionName(applicationSessionAppName);
             }
-           
-            //Servlet 6.0 
-            //We need the SessionCookieConfigImpl60 (scc) instance from the webAppConfig before creating createSessionContextObject.
-            //This scc is the uncloned version. createSessionContextObject() below will invoke HttpSessionContextImpl60 which will clone and set it back.
-            if (!com.ibm.ws.webcontainer.osgi.container.config.WebAppConfiguratorHelper.isServletSpecLevel50orLower()) {
-                smc.setClonedCookieConfig(webAppConfig.getSessionCookieConfig());
-            }
             
             sessCtx = createSessionContextObject(smc, sap);
             
