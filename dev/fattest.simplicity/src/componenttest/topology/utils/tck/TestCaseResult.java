@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.topology.utils;
+package componenttest.topology.utils.tck;
 
 public class TestCaseResult {
     private boolean failure = false;

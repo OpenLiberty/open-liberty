@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.topology.utils;
+package componenttest.topology.utils.tck;
 
 import java.util.List;
 import java.util.LinkedList;
@@ -16,6 +16,7 @@ import java.util.Scanner;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

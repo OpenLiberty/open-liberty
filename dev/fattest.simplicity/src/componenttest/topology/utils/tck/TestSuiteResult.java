@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.topology.utils;
+package componenttest.topology.utils.tck;
 
 import java.util.List;
 import java.util.LinkedList;
