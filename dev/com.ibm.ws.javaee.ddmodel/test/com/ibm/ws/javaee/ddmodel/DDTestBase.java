@@ -35,7 +35,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 /**
  * Duplicated as com.ibm.ws.javaee.ddmodel.ws.DDTestBase_Webservices.
  *
- * Copied for simplicity.  I'm not sure how to setup a
+ * Copied for simplicity. I'm not sure how to setup a
  * dependency of test code in a project on other test code
  * in another project.
  */
@@ -43,7 +43,7 @@ public class DDTestBase implements PlatformVersion {
     public static String getDottedVersionText(int version) {
         return PlatformVersion.getDottedVersionText(version);
     }
-    
+
     public static String getVersionText(int version) {
         return PlatformVersion.getVersionText(version);
     }
@@ -68,7 +68,7 @@ public class DDTestBase implements PlatformVersion {
 
         private Exception failure;
 
-        public Failable( FailableProducer<T> producer) {
+        public Failable(FailableProducer<T> producer) {
             this.producer = producer;
         }
 
@@ -79,8 +79,8 @@ public class DDTestBase implements PlatformVersion {
         }
 
         public T get() throws Exception {
-            if ( didProduce ) {
-                if ( failure != null ) {
+            if (didProduce) {
+                if (failure != null) {
                     throw failure;
                 } else {
                     return produced;
@@ -92,7 +92,7 @@ public class DDTestBase implements PlatformVersion {
                 didProduce = true;
                 return produced;
 
-            } catch ( Exception e ) {
+            } catch (Exception e) {
                 failure = e;
                 didProduce = true;
                 throw e;
@@ -101,59 +101,59 @@ public class DDTestBase implements PlatformVersion {
     }
 
     //
-    
+
     public enum HeaderLine {
         NS(1),
         SI(2),
         SL(3),
-        XSI(2,3),
+        XSI(2, 3),
         V(4);
-        
+
         public final int lineNo0;
         public final int lineNo1;
-        
+
         private static final int UNUSED_LINE = -1;
-        
+
         private HeaderLine(int lineNo0) {
             this.lineNo0 = lineNo0;
             this.lineNo1 = UNUSED_LINE;
         }
-        
+
         private HeaderLine(int lineNo0, int lineNo1) {
             this.lineNo0 = lineNo0;
             this.lineNo1 = lineNo1;
-        }        
+        }
 
         public String adjust(String header) {
             int startOffset = -1;
             int endOffset = -1;
-            
+
             for ( int lineNo = 0, lastOffset = 0, nextOffset = 0;
                   (nextOffset = header.indexOf('\n', lastOffset)) != -1;
                   lineNo++ ) {
 
                 nextOffset++; // Include the end-of-line in the region.
 
-                if ( startOffset == -1 ) {
-                    if ( lineNo == lineNo0 ) {
+                if (startOffset == -1) {
+                    if (lineNo == lineNo0) {
                         startOffset = lastOffset; // Everything before and including the last end-of-line
-                        if ( lineNo1 == UNUSED_LINE ) {
+                        if (lineNo1 == UNUSED_LINE) {
                             endOffset = nextOffset; // Everything after this end-of-line
                             break;
                         }
                     }
 
                 } else {
-                    if ( lineNo == lineNo1 ) { // Can't get here if 'lineNo1 == UNUSED_LINE'
+                    if (lineNo == lineNo1) { // Can't get here if 'lineNo1 == UNUSED_LINE'
                         endOffset = nextOffset; // Everything after this end-of-line
                         break;
                     }
                 }
-                
+
                 lastOffset = nextOffset;
             }
 
-            if ( (startOffset == -1) || (endOffset == -1) ) {
+            if ((startOffset == -1) || (endOffset == -1)) {
                 throw new IllegalArgumentException("Too few lines; [ " + lineNo0 + " : " + lineNo1 + " ]");
             }
 
@@ -162,7 +162,7 @@ public class DDTestBase implements PlatformVersion {
     }
 
     //
-    
+
     // 1.2
     // 1.3
     //
@@ -173,18 +173,18 @@ public class DDTestBase implements PlatformVersion {
     // 8,   http://xmlns.jcp.org/xml/ns/javaee
     //
     // 9,   https://jakarta.ee/xml/ns/jakartaee    
-    
+
     protected static final List<Boolean[]> TEST_DATA;
-    
+
     static {
         List<Boolean[]> testData = new ArrayList<Boolean[]>(2);
-        testData.add( new Boolean[] { Boolean.FALSE });
-        testData.add( new Boolean[] { Boolean.TRUE });
+        testData.add(new Boolean[] { Boolean.FALSE });
+        testData.add(new Boolean[] { Boolean.TRUE });
         TEST_DATA = testData;
     }
 
     //
-    
+
     protected static final Mockery mockery = new Mockery();
     protected static int mockId;
 
@@ -193,11 +193,11 @@ public class DDTestBase implements PlatformVersion {
     }
 
     //
-    
+
     protected static class ClassKeyedData {
         public final Class<?> classKey;
         public final Object value;
-        
+
         public ClassKeyedData(Class<?> classKey, Object value) {
             this.classKey = classKey;
             this.value = value;
@@ -205,18 +205,18 @@ public class DDTestBase implements PlatformVersion {
     }
 
     protected static ClassKeyedData[] asDataArray(Class<?> adaptKey, Object adaptValue) {
-        if ( adaptKey == null ) {
+        if (adaptKey == null) {
             return null;
         } else {
             return new ClassKeyedData[] { new ClassKeyedData(adaptKey, adaptValue) };
         }
     }
 
-    // Parse using a container adapter.    
+    // Parse using a container adapter.
 
     protected static <T> T parse(
-            String appPath, String modulePath, String fragmentPath,
-            String ddText, ContainerAdapter<T> ddAdapter, String ddPath) throws Exception {
+                                 String appPath, String modulePath, String fragmentPath,
+                                 String ddText, ContainerAdapter<T> ddAdapter, String ddPath) throws Exception {
 
         return parse(appPath, modulePath, fragmentPath,
                      ddText, ddAdapter, ddPath,
@@ -224,9 +224,9 @@ public class DDTestBase implements PlatformVersion {
     }
 
     protected static <T> T parse(
-            String appPath, String modulePath, String fragmentPath,            
-            String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
-            String altMessage, String... messages) throws Exception {
+                                 String appPath, String modulePath, String fragmentPath,
+                                 String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
+                                 String altMessage, String... messages) throws Exception {
 
         return parse(appPath, modulePath, fragmentPath,
                      ddText, ddAdapter, ddPath,
@@ -235,52 +235,52 @@ public class DDTestBase implements PlatformVersion {
     }
 
     protected static <T> T parse(
-            String appPath, String modulePath, String fragmentPath,            
-            String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
-            Class<?> extraAdaptClass, Object extraAdaptValue) throws Exception {
-        
+                                 String appPath, String modulePath, String fragmentPath,
+                                 String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
+                                 Class<?> extraAdaptClass, Object extraAdaptValue) throws Exception {
+
         return parse(
-                appPath, modulePath, fragmentPath,
-                ddText, ddAdapter, ddPath,
-                extraAdaptClass, extraAdaptValue,
-                null);
+                     appPath, modulePath, fragmentPath,
+                     ddText, ddAdapter, ddPath,
+                     extraAdaptClass, extraAdaptValue,
+                     null);
     }
 
     protected static <T> T parse(
-            String appPath, String modulePath, String fragmentPath,            
-            String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
-            Class<?> extraAdaptClass, Object extraAdaptValue,
-            String altMessage, String... messages) throws Exception {
+                                 String appPath, String modulePath, String fragmentPath,
+                                 String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
+                                 Class<?> extraAdaptClass, Object extraAdaptValue,
+                                 String altMessage, String... messages) throws Exception {
 
         return parse(
-                appPath, modulePath, fragmentPath,
-                ddText, ddAdapter, ddPath,
-                extraAdaptClass, extraAdaptValue,
-                null, null,
-                altMessage, messages);
+                     appPath, modulePath, fragmentPath,
+                     ddText, ddAdapter, ddPath,
+                     extraAdaptClass, extraAdaptValue,
+                     null, null,
+                     altMessage, messages);
     }
 
     protected static <T> T parse(
-            String appPath, String modulePath, String fragmentPath,                        
-            String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
-            Class<?> extraAdaptClass, Object extraAdaptValue,
-            Class<?> npCacheKey, Object npCacheValue,
-            String altMessage, String... messages) throws Exception {
+                                 String appPath, String modulePath, String fragmentPath,
+                                 String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
+                                 Class<?> extraAdaptClass, Object extraAdaptValue,
+                                 Class<?> npCacheKey, Object npCacheValue,
+                                 String altMessage, String... messages) throws Exception {
 
         return parse(appPath, modulePath, fragmentPath,
-                ddText, ddAdapter, ddPath,
-                asDataArray(extraAdaptClass, extraAdaptValue),
-                asDataArray(npCacheKey, npCacheValue),
-                altMessage, messages);
+                     ddText, ddAdapter, ddPath,
+                     asDataArray(extraAdaptClass, extraAdaptValue),
+                     asDataArray(npCacheKey, npCacheValue),
+                     altMessage, messages);
     }
-        
+
     protected static <T> T parse(
-                String appPath, String modulePath, String fragmentPath,                        
-                String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
-                ClassKeyedData[] adaptData,
-                ClassKeyedData[] cacheData,
-                String altMessage, String... messages) throws Exception {        
-        
+                                 String appPath, String modulePath, String fragmentPath,
+                                 String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
+                                 ClassKeyedData[] adaptData,
+                                 ClassKeyedData[] cacheData,
+                                 String altMessage, String... messages) throws Exception {
+
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
 
@@ -301,53 +301,53 @@ public class DDTestBase implements PlatformVersion {
              ddText,
              adaptData, cacheData);
 
-        Container ddRoot = ( (fragmentRoot == null) ? moduleRoot : fragmentRoot );
+        Container ddRoot = ((fragmentRoot == null) ? moduleRoot : fragmentRoot);
 
         try {
             T returnValue = ddAdapter.adapt(ddRoot, rootOverlay, artifactContainer, ddRoot);
             verifySuccess(altMessage, messages);
             return returnValue;
 
-        } catch ( UnableToAdaptException e ) {
-            verifyFailure( getCause(e), altMessage, messages );
+        } catch (UnableToAdaptException e) {
+            verifyFailure(getCause(e), altMessage, messages);
             return null;
         }
-    }            
+    }
 
     // Parse using an entry adapter.
-    
+
     protected static <T> T parse(
-            String appPath, String modulePath, String fragmentPath,            
-            String xmlText, EntryAdapter<T> adapter, String ddPath,
-            String altMessage, String... messages) throws Exception {
+                                 String appPath, String modulePath, String fragmentPath,
+                                 String xmlText, EntryAdapter<T> adapter, String ddPath,
+                                 String altMessage, String... messages) throws Exception {
 
         return parse(
-                appPath, modulePath, fragmentPath,
-                xmlText, adapter, ddPath,
-                null, null,
-                null, null,
-                altMessage, messages);
-    }
-    
-    protected static <T> T parse(
-            String appPath, String modulePath, String fragmentPath,
-            String ddText, EntryAdapter<T> ddAdapter, String ddPath,
-            Class<?> extraAdaptClass, Object extraAdapt,
-            Class<?> npCacheClass, Object npCache,            
-            String altMessage, String... messages) throws Exception {
-        return parse(appPath, modulePath, fragmentPath,
-                ddText, ddAdapter, ddPath,
-                asDataArray(extraAdaptClass, extraAdapt),
-                asDataArray(npCacheClass, npCache),
-                altMessage, messages);
+                     appPath, modulePath, fragmentPath,
+                     xmlText, adapter, ddPath,
+                     null, null,
+                     null, null,
+                     altMessage, messages);
     }
 
     protected static <T> T parse(
-            String appPath, String modulePath, String fragmentPath,
-            String ddText, EntryAdapter<T> ddAdapter, String ddPath,
-            ClassKeyedData[] adaptData,
-            ClassKeyedData[] cacheData,
-            String altMessage, String... messages) throws Exception {
+                                 String appPath, String modulePath, String fragmentPath,
+                                 String ddText, EntryAdapter<T> ddAdapter, String ddPath,
+                                 Class<?> extraAdaptClass, Object extraAdapt,
+                                 Class<?> npCacheClass, Object npCache,
+                                 String altMessage, String... messages) throws Exception {
+        return parse(appPath, modulePath, fragmentPath,
+                     ddText, ddAdapter, ddPath,
+                     asDataArray(extraAdaptClass, extraAdapt),
+                     asDataArray(npCacheClass, npCache),
+                     altMessage, messages);
+    }
+
+    protected static <T> T parse(
+                                 String appPath, String modulePath, String fragmentPath,
+                                 String ddText, EntryAdapter<T> ddAdapter, String ddPath,
+                                 ClassKeyedData[] adaptData,
+                                 ClassKeyedData[] cacheData,
+                                 String altMessage, String... messages) throws Exception {
 
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
@@ -360,7 +360,7 @@ public class DDTestBase implements PlatformVersion {
         Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
 
         Entry fragmentEntry = ((fragmentPath == null) ? null : mockery.mock(Entry.class, "fragmentEntry" + mockId++));
-        Container fragmentRoot = ((fragmentPath == null) ? null : mockery.mock(Container.class, "fragmentRoot" + mockId++));        
+        Container fragmentRoot = ((fragmentPath == null) ? null : mockery.mock(Container.class, "fragmentRoot" + mockId++));
 
         Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
 
@@ -374,45 +374,45 @@ public class DDTestBase implements PlatformVersion {
             verifySuccess(altMessage, messages);
             return returnValue;
 
-        } catch ( UnableToAdaptException e ) {
-            verifyFailure( getCause(e), altMessage, messages );
+        } catch (UnableToAdaptException e) {
+            verifyFailure(getCause(e), altMessage, messages);
             return null;
         }
     }
 
-    protected static Exception getCause(UnableToAdaptException e ) {
+    protected static Exception getCause(UnableToAdaptException e) {
         Throwable cause = e.getCause();
-        return ( (cause instanceof Exception) ? (Exception) cause : e );
+        return ((cause instanceof Exception) ? (Exception) cause : e);
     }
-    
+
     protected static void wire(
-            OverlayContainer rootOverlay,
-            ArtifactContainer artifactContainer,
-            ArtifactEntry artifactEntry, String ddPath,
-            ClassKeyedData[] cacheData) {
+                               OverlayContainer rootOverlay,
+                               ArtifactContainer artifactContainer,
+                               ArtifactEntry artifactEntry, String ddPath,
+                               ClassKeyedData[] cacheData) {
 
         mockery.checking(new Expectations() {
             {
-                if ( cacheData != null ) {
-                    for ( ClassKeyedData nextCacheData : cacheData ) {
-                        allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with( nextCacheData.classKey ));
-                        will(returnValue( nextCacheData.value ));
+                if (cacheData != null) {
+                    for (ClassKeyedData nextCacheData : cacheData) {
+                        allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(nextCacheData.classKey));
+                        will(returnValue(nextCacheData.value));
                     }
                 }
 
                 allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
                 allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
                 will(returnValue(null));
-                
+
                 // An artifact container is provided when parsing
                 // using container adapt.  An artifact entry is
                 // provided when parsing using entry adapt.
 
-                if ( artifactContainer != null ) {
+                if (artifactContainer != null) {
                     allowing(artifactContainer).getPath();
                     will(returnValue("/"));
                 }
-                if ( artifactEntry != null ) {
+                if (artifactEntry != null) {
                     allowing(artifactEntry).getPath();
                     will(returnValue('/' + ddPath));
                 }
@@ -422,16 +422,16 @@ public class DDTestBase implements PlatformVersion {
 
     @SuppressWarnings("deprecation")
     protected static void wire(
-            String appPath, String modulePath, String fragmentPath, String ddPath,
-            Container appRoot, Entry moduleEntry,
-            Container moduleRoot, Entry fragmentEntry,
-            Container fragmentRoot, Entry ddEntry,
-            String ddText,
-            ClassKeyedData[] adaptData,
-            ClassKeyedData[] cacheData) throws UnsupportedEncodingException, UnableToAdaptException {
-        
+                               String appPath, String modulePath, String fragmentPath, String ddPath,
+                               Container appRoot, Entry moduleEntry,
+                               Container moduleRoot, Entry fragmentEntry,
+                               Container fragmentRoot, Entry ddEntry,
+                               String ddText,
+                               ClassKeyedData[] adaptData,
+                               ClassKeyedData[] cacheData) throws UnsupportedEncodingException, UnableToAdaptException {
+
         mockery.checking(new Expectations() {
-            {        
+            {
                 // Wire up the root-of-roots.
                 // If the module root is not the root-of-roots,
                 // wire the module root to the app root.
@@ -439,7 +439,7 @@ public class DDTestBase implements PlatformVersion {
                 Container rootOfRoots;
                 String rootPath;
 
-                if ( appRoot != null ) {
+                if (appRoot != null) {
                     rootOfRoots = appRoot;
                     rootPath = appPath;
 
@@ -455,31 +455,31 @@ public class DDTestBase implements PlatformVersion {
 
                     allowing(moduleRoot).adapt(Entry.class);
                     will(returnValue(moduleEntry));
-                    
+
                 } else {
                     rootOfRoots = moduleRoot;
                     rootPath = modulePath;
                 }
-                
+
                 allowing(rootOfRoots).getPhysicalPath();
-                will(returnValue(rootPath));                
+                will(returnValue(rootPath));
                 allowing(rootOfRoots).adapt(Entry.class);
                 will(returnValue(null));
 
-                if ( cacheData != null ) {
-                    NonPersistentCache npCache = mockery.mock(NonPersistentCache.class, "npCache" + mockId++);                    
+                if (cacheData != null) {
+                    NonPersistentCache npCache = mockery.mock(NonPersistentCache.class, "npCache" + mockId++);
 
                     allowing(moduleRoot).adapt(NonPersistentCache.class);
                     will(returnValue(npCache));
 
-                    for ( ClassKeyedData nextCacheData : cacheData ) {
-                        allowing(npCache).getFromCache( nextCacheData.classKey );
-                        will(returnValue( nextCacheData.value ));
+                    for (ClassKeyedData nextCacheData : cacheData) {
+                        allowing(npCache).getFromCache(nextCacheData.classKey);
+                        will(returnValue(nextCacheData.value));
                     }
                     // allowing(npCache).getFromCache(with(any(Class.class)));
-                    // will(returnValue(null));                    
+                    // will(returnValue(null));
                 }
-                
+
                 allowing(moduleRoot).getPath();
                 will(returnValue("/"));
 
@@ -491,13 +491,13 @@ public class DDTestBase implements PlatformVersion {
                 // Otherwise, set the module as the descriptor root.
 
                 Container ddRoot;
-                
-                if ( fragmentEntry != null ) {
+
+                if (fragmentEntry != null) {
                     ddRoot = fragmentRoot;
 
                     allowing(moduleRoot).getEntry(fragmentPath);
                     will(returnValue(fragmentEntry));
-                    
+
                     allowing(fragmentEntry).getRoot();
                     will(returnValue(moduleRoot));
                     allowing(fragmentEntry).getPath();
@@ -507,7 +507,7 @@ public class DDTestBase implements PlatformVersion {
                     will(returnValue(fragmentEntry));
                     allowing(fragmentRoot).getPath();
                     will(returnValue("/"));
-                    
+
                 } else {
                     ddRoot = moduleRoot;
                 }
@@ -516,10 +516,10 @@ public class DDTestBase implements PlatformVersion {
 
                 allowing(ddRoot).getEntry(ddPath);
                 will(returnValue(ddEntry));
-                if ( adaptData != null ) {
-                    for ( ClassKeyedData nextAdaptData : adaptData ) {
-                        allowing(ddRoot).adapt( nextAdaptData.classKey );
-                        will(returnValue( nextAdaptData.value ));
+                if (adaptData != null) {
+                    for (ClassKeyedData nextAdaptData : adaptData) {
+                        allowing(ddRoot).adapt(nextAdaptData.classKey);
+                        will(returnValue(nextAdaptData.value));
                     }
                 }
 
@@ -539,17 +539,17 @@ public class DDTestBase implements PlatformVersion {
             "missing.descriptor.namespace";
     public static final String[] MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGES =
             { "CWWKC2264E" };    
-    
+
     public static final String UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE =
             "unsupported.descriptor.namespace";
     public static final String[] UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES =
             { "CWWKC2262E" };
-    
+
     public static final String UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE =
             "unsupported.descriptor.version";
     public static final String[] UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES =
             { "CWWKC2261E" };
-            
+
     public static final String UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE =    
             "unprovisioned.descriptor.version";            
     public static final String[] UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES =
@@ -563,48 +563,41 @@ public class DDTestBase implements PlatformVersion {
     //
 
     public static void verifySuccess(String altMessage, String... requiredMessages) {
-        if ( (requiredMessages != null) && (requiredMessages.length > 0) ) {
-            Assert.fail("Expected failure did not occur." +
-                        " Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] were expected.");
+        if ((requiredMessages != null) && (requiredMessages.length > 0)) {
+            Assert.fail("Obtained no exception; expected [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ]");
         }
     }
-    
-    public static void verifyFailure(Exception e, String altMessage, String... requiredMessages) throws Exception {
-        System.out.println("Validating exception [ " + e.getClass().getName() + " ] [ " + e + " ]");
-        System.out.println("  [ " + e.getMessage() + " ]");
 
-        if ( (requiredMessages == null) || (requiredMessages.length == 0) ) {
-            System.out.println("Unexpected exception [ " + e.getClass() + " ] [ " + e + " ]");
+    public static void verifyFailure(Exception e, String altMessage, String... requiredMessages) throws Exception {
+        if ((requiredMessages == null) || (requiredMessages.length == 0)) {
+            System.out.println("Obtained incorrect exception [ " + e.getClass() + " ] [ " + e + " ]");
             throw e;
         }
 
         String errorMsg = e.getMessage();
-        if ( errorMsg == null ) {
-            System.out.println(
-                    "Exception [ " + e.getClass() + " ] [ " + e + " ] has a null message." +
-                    "Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
+        if (errorMsg == null) {
+            System.out.println("Obtained exception with null message [ " + e.getClass() + " ] [ " + e + " ]");
+            System.out.println("Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
             throw e;
         }
 
-        if ( errorMsg.contains(altMessage) ) {
+        if (errorMsg.contains(altMessage)) {
             return;
         }
 
         List<String> missingMessages = null;
-        for ( String requiredMessage : requiredMessages ) {
-            if ( !errorMsg.contains(requiredMessage) ) {
-                if ( missingMessages == null ) {
+        for (String requiredMessage : requiredMessages) {
+            if (!errorMsg.contains(requiredMessage)) {
+                if (missingMessages == null) {
                     missingMessages = new ArrayList<String>(1);
                 }
                 missingMessages.add(requiredMessage);
             }
         }
-        if ( missingMessages != null ) {
-            System.out.println(
-                "Exception [ " + e.getClass() + " ] [ " + e + " ] does not contain [ " + Arrays.toString(requiredMessages) + " ].");
-            System.out.println(
-                "Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
+        if (missingMessages != null) {
+            System.out.println("Missing exception message [ " + e.getClass() + " ] [ " + e + " ]: " + " [ " + missingMessages + " ]");
+            System.out.println("Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
             throw e;
         }
-    }    
+    }
 }
