@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.ToLongFunction;
 
@@ -179,16 +178,37 @@ public class FeaturesStartTestBase {
      *
      * @param lastShortName The previously configured feature.
      * @param shortName     The feature to set in the server configuration.
+     * @param timingResult  Storage for timing data. (Not currently used.)
      *
      * @throws Exception Thrown if the update failed.
      */
-    public static void setFeature(String lastShortName, String shortName) throws Exception {
+    public static void setFeature(String lastShortName, String shortName, TimingResult timingResult) throws Exception {
         String m = "setFeature";
 
         logInfo(m, "Configuring server [ " + serverName + " ] for feature [ " + shortName + " ]");
         if (lastShortName != null) {
             logInfo(m, "Prior feature [ " + lastShortName + " ]");
         }
+
+        // Performance notes: The original, unfixed 'updateServerConfiguration' took
+        // just over 10s on Windows to perform an update.  That is because the
+        // implementation attempted to rename the newly written configuration onto the
+        // server configuration.  That failed, but was performed with full retries.
+        //
+        // With a fix to 'updateServerConfiguration' the update time is reduced to just
+        // over 1s.  Much better, but not as good as possible.
+        //
+        // With either direct rewrite implementation ('changeFeatures' or 'FileRewriter')
+        // the update time plummets to about 0.03s.
+
+        // A direct rewrite API is already present in LibertyServer!  Since the server is
+        // stopped for this update, a direct rewrite is usable.
+
+        // This implementation mixes the read and write steps too tightly to
+        // collect separate timings.
+        server.changeFeatures(Collections.singletonList(shortName));
+
+        // Alternate, rewrite implementation.  Used before 'changeFeatures' was discovered.
 
         // Initially, the server configuration has an empty feature manager
         // element.
@@ -197,32 +217,27 @@ public class FeaturesStartTestBase {
         //
         // Subsequent updates replace the feature.
 
-        String matchLine;
-        Set<Integer> additions;
-        if (lastShortName == null) {
-            matchLine = "<featureManager>";
-            additions = Collections.singleton(Integer.valueOf(0));
-        } else {
-            matchLine = "<feature>" + lastShortName + "</feature>";
-            additions = Collections.emptySet();
-        }
-        String featureLine = "<feature>" + shortName + "</feature>";
+        // String matchLine;
+        // Set<Integer> additions;
+        // if (lastShortName == null) {
+        //     matchLine = "<featureManager>";
+        //     additions = Collections.singleton(Integer.valueOf(0));
+        // } else {
+        //     matchLine = "<feature>" + lastShortName + "</feature>";
+        //     additions = Collections.emptySet();
+        // }
+        // String featureLine = "<feature>" + shortName + "</feature>";
+        // String[] matchLines = new String[] { matchLine };
+        // String[] updateLines = new String[] { featureLine };
+        // FileRewriter.update(serverConfigPath, matchLines, updateLines, additions);
 
-        String[] matchLines = new String[] { matchLine };
-        String[] updateLines = new String[] { featureLine };
+        // The original implementation, which uses XML serialization.
 
-        FileRewriter.update(serverConfigPath, matchLines, updateLines, additions);
-
-        // The following takes a very long time.
-
+        // ServerConfiguration config = server.getServerConfiguration();
         // Set<String> features = config.getFeatureManager().getFeatures();
         // features.clear();
         // features.add(shortName);
         // server.updateServerConfiguration(config);
-
-        // As a third alternative, the server could be obtained as a
-        // resource and always written anew.  That would avoid the update
-        // dependency on the last short name.
     }
 
     /**
@@ -785,6 +800,8 @@ public class FeaturesStartTestBase {
         public final String shortName;
 
         public long updateNs = UNSET_NS;
+        // public long readNs = UNSET_NS; // Subset of 'update'; no longer used
+        // public long writeNs = UNSET_NS; // Subset of 'update'; no longer used
         public long startNs = UNSET_NS;
         public long pidNs = UNSET_NS;
         public long verifyNs = UNSET_NS;
@@ -806,6 +823,14 @@ public class FeaturesStartTestBase {
         public void setUpdateNsFromInitial(long initialNs) {
             updateNs = getTimeNs(initialNs);
         }
+
+        // public void setReadNsFromInitial(long initialNs) {
+        //     readNs = getTimeNs(initialNs);
+        // }
+
+        // public void setWriteNsFromInitial(long initialNs) {
+        //     writeNs = getTimeNs(initialNs);
+        // }
 
         public void setStartNsFromInitial(long initialNs) {
             startNs = getTimeNs(initialNs);
@@ -971,7 +996,7 @@ public class FeaturesStartTestBase {
         long initialUpdateNs = timingResult.getTimeNs();
 
         try {
-            setFeature(lastShortName, shortName);
+            setFeature(lastShortName, shortName, timingResult);
 
         } catch (Exception e) {
             addFailure(m, failures, shortName, "Failed to set feature", e);
@@ -1080,6 +1105,8 @@ public class FeaturesStartTestBase {
         Map<String, TimingSummary> summaries = new LinkedHashMap<>();
 
         summaries.put("Update", statistics("Update", timingResults, (TimingResult result) -> result.updateNs));
+        // summaries.put("Read", statistics("Read", timingResults, (TimingResult result) -> result.readNs));
+        // summaries.put("Write", statistics("Write", timingResults, (TimingResult result) -> result.writeNs));
         summaries.put("Start", statistics("Start", timingResults, (TimingResult result) -> result.startNs));
         summaries.put("PID", statistics("PID", timingResults, (TimingResult result) -> result.pidNs));
         summaries.put("Verify", statistics("Verify", timingResults, (TimingResult result) -> result.verifyNs));
