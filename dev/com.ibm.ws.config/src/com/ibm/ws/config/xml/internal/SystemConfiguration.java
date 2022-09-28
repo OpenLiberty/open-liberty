@@ -147,12 +147,12 @@ class SystemConfiguration implements CheckpointHook {
 
     @Override
     public void restore() {
-        if (serverXMLConfig.isModified()) {
-            configRefresher.refreshConfiguration();
+        Map<String, DeltaType> deltaTypes = variableRegistry.variablesChanged();
+        if (!deltaTypes.isEmpty()) {
+            configRefresher.variableRefresh(deltaTypes);
         } else {
-            Map<String, DeltaType> deltaTypes = variableRegistry.variablesChanged();
-            if (!deltaTypes.isEmpty()) {
-                configRefresher.variableRefresh(deltaTypes);
+            if (serverXMLConfig.isModified()) {
+                configRefresher.refreshConfiguration();
             }
         }
     }
