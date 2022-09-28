@@ -58,10 +58,6 @@ public class DataExtensionMetadata implements CDIExtensionMetadata {
     @Override
     @Trivial
     public Set<Class<? extends Extension>> getExtensions() {
-        if ("TRUE".equalsIgnoreCase(System.getProperty("io.openliberty.data.internal_fat.TemporarilyUseOwnExtension"))) {
-            System.out.println("io.openliberty.data.internal.DataExtension is temporarily disabled to use the one provided by the test case");
-            return Collections.EMPTY_SET; // TODO remove once the nonship Liberty feature is ready for the test bucket to use it
-        }
         return extensions;
     }
 

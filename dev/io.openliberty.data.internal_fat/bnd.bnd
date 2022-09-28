@@ -14,8 +14,7 @@ bVersion=1.0
 src: \
   fat/src,\
   test-applications/DataTestApp/src,\
-  test-applications/TemplateTestApp/src,\
-  test-bundles/data/src
+  test-applications/TemplateTestApp/src
 
 # TODO 17
 javac.source: 11
