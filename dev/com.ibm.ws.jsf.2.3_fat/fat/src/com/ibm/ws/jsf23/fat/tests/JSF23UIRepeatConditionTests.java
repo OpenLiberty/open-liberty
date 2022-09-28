@@ -148,6 +148,7 @@ public class JSF23UIRepeatConditionTests {
     @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC({ "javax.servlet.ServletException" })
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testUIRepeatConditionErrorEndTooLarge() throws Exception {
         String contextRoot = "UIRepeatConditionCheck";
         String errorText = "end cannot be greater than collection size";

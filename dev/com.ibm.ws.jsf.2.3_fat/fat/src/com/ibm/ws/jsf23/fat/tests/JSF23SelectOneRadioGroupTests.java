@@ -702,6 +702,7 @@ public class JSF23SelectOneRadioGroupTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSelectOneRadioGroup_uiRepeat() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
