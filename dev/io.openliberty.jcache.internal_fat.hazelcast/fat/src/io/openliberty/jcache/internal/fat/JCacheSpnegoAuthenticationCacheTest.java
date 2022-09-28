@@ -128,7 +128,6 @@ public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
         startServer1(server1, groupName, null, null);
         basicAuthClient1 = new BasicAuthClient(server1, DEFAULT_REALM, "SimpleServlet", DEFAULT_CONTEXT_ROOT);
         waitForDefaultHttpsEndpoint(server1);
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
     }
 

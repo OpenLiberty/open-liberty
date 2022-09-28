@@ -122,7 +122,6 @@ public class JCacheOidcLoginAuthenticationCacheTest extends BaseTestCase {
          */
         startServer1(server1, groupName, null, null);
         waitForDefaultHttpsEndpoint(server1);
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
 //        /*
@@ -130,7 +129,6 @@ public class JCacheOidcLoginAuthenticationCacheTest extends BaseTestCase {
 //         */
 //        startServer2(server2, groupName);
 //        waitForDefaultHttpsEndpoint(server2);
-//        waitForCachingProvider(server2, AUTH_CACHE_NAME);
 //        waitForExistingJCache(server2, AUTH_CACHE_NAME);
 
         /*

@@ -433,19 +433,9 @@ public abstract class BaseTestCase {
      * @param cacheName The name of the cache to check for the message.
      */
     protected static void waitForCreatedOrExistingJCache(LibertyServer server, String cacheName) {
-        String pattern = "CWLJC0001I:.*" + cacheName + ".*was created|CWLJC0002I:.*" + cacheName + ".*was found";
+        String pattern = "(CWLJC0001I:.*" + cacheName + ".*was created|CWLJC0002I:.*" + cacheName + ".*was found) in .+ ms and is using the "
+                         + TestPluginHelper.getTestPlugin().getCachingProviderName() + " caching provider";
         assertNotNull("Expected message indicating cache " + cacheName + " was found or created.", server.waitForStringInLog(pattern, 60000));
-    }
-
-    /**
-     * Wait for a message indicating the JCache provider that was used for the named cache.
-     *
-     * @param server    The server to check the logs for the message.
-     * @param cacheName The name of the cache to check for the message.
-     */
-    protected static void waitForCachingProvider(LibertyServer server, String cacheName) {
-        assertNotNull("Expected caching provider would be loaded for " + cacheName + ".",
-                      server.waitForStringInLog("CWLJC0003I:.*" + cacheName + ".*" + TestPluginHelper.getTestPlugin().getCachingProviderName()));
     }
 
     /**

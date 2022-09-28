@@ -76,7 +76,6 @@ public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
         server1.addInstalledAppForValidation("basicauth");
         startServer1(server1, groupName.toString(), 25000, TTL_SECONDS);
         waitForDefaultHttpsEndpoint(server1);
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
@@ -85,7 +84,6 @@ public class JCacheJwtAuthenticationCacheTest extends BaseTestCase {
         server2.addInstalledAppForValidation("basicauth");
         startServer2(server2, groupName.toString());
         waitForDefaultHttpsEndpoint(server2);
-        waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
 
         basicAuthClient1 = new SSLBasicAuthClient(server1);

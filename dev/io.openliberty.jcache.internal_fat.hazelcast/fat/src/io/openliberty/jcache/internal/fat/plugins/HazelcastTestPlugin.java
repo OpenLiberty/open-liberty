@@ -69,7 +69,7 @@ public class HazelcastTestPlugin implements TestPlugin {
 
     @Override
     public String getCachingProviderName() {
-        return "HazelcastCachingProvider";
+        return "com.hazelcast.cache.HazelcastCachingProvider";
     }
 
     /**
