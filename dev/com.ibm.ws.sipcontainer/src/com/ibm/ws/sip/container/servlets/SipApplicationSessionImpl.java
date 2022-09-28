@@ -675,22 +675,6 @@ implements SipApplicationSession {
 
 			//Moti: we create new ArrayList to prevent later any modification
 			// to the iterator on that list.
-<<<<<<< HEAD
-			
-				List<IBMSipSession> result = new ArrayList<IBMSipSession>(size); //approximation only.
-					synchronized (m_transactionUsers) {
-						TransactionUserWrapper tu = null;
-						for (int i = 0 ; i < size ; i++) {
-						tu = m_transactionUsers.get(i);
-						result.addAll(tu.getAllSipSessions(create));
-						}
-			
-						if (c_logger.isTraceDebugEnabled()) {
-							c_logger.traceDebug(this, "getAllSIPSessions", "found SIP sessions. count:"+result.size());
-						}
-					}
-			return result;
-=======
 				List<IBMSipSession> result = new ArrayList<IBMSipSession>(size); //approximation only.
 				synchronized (m_transactionUsers) {
 						TransactionUserWrapper tu = null;
@@ -703,7 +687,7 @@ implements SipApplicationSession {
 						c_logger.traceDebug(this, "getAllSIPSessions", "found SIP sessions. count:"+result.size());
 				}	
 				return result;
->>>>>>> 99428801b7 (new code path to retrieved sip application session in SipLogExtension class)
+
 			}
 			
 		}
@@ -1822,23 +1806,13 @@ implements SipApplicationSession {
 		m_sessionKeyBaseKey = skbt;
 	}
 	
-<<<<<<< HEAD
-	public Iterator getSessions(String protocol, boolean b) {
+	public Iterator getSessions(String protocol, boolean create){
+		if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug("getSessions(" + protocol + ", " + create + " detected.");
+		}
+
 		if (protocol.equalsIgnoreCase("SIP"))  {  //get SIP application sessions  
-			if (c_logger.isTraceDebugEnabled()) {
-				c_logger.traceDebug("getSessions(" + protocol + ", " + b + " detected.");
-			}
-			
-			if (b) {  //boolean is true	
-=======
-	public Iterator getSessions(String protocol, boolean create) {
-		if (protocol.equalsIgnoreCase("SIP"))  {  //get SIP application sessions  
-			if (c_logger.isTraceDebugEnabled()) {
-				c_logger.traceDebug("getSessions(" + protocol + ", " + create + " detected.");
-			}
-			
 			if (create) {  //boolean is true	
->>>>>>> 99428801b7 (new code path to retrieved sip application session in SipLogExtension class)
 					return (Iterator)getAllSIPSessions(true).iterator();
 				}
 		
@@ -1847,12 +1821,11 @@ implements SipApplicationSession {
 				}
 		}
 		
-		else if (protocol.equalsIgnoreCase("HTTP")){
+		else if (protocol.equalsIgnoreCase("HTTP")){ //protocol is HTTP
 			return Collections.EMPTY_MAP.keySet().iterator();
 		}
 			
-		else { 
-
+		else { //protocol is not SIP and not HTTP, we don't handle it
 			SipAppDesc sipAppDesc = getAppDescriptor();
 			if(sipAppDesc != null && !sipAppDesc.isJSR289Application()){
 				return Collections.EMPTY_MAP.keySet().iterator();				
