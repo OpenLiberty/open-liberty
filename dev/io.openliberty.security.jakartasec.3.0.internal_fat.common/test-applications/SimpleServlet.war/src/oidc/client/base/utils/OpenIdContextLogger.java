@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
+import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import jakarta.json.JsonObject;
 import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.IdentityToken;
@@ -21,14 +22,20 @@ import jakarta.security.enterprise.identitystore.openid.OpenIdClaims;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 import jakarta.security.enterprise.identitystore.openid.RefreshToken;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class OpenIdContextLogger {
 
     protected String caller = null;
     protected OpenIdContext context = null;
+    HttpServletRequest req;
+    HttpServletResponse resp;
 
-    public OpenIdContextLogger(String callingClass, OpenIdContext openidContext) {
+    public OpenIdContextLogger(HttpServletRequest request, HttpServletResponse response, String callingClass, OpenIdContext openidContext) {
 
+        req = request;
+        resp = response;
         caller = callingClass;
         context = openidContext;
 
@@ -44,6 +51,16 @@ public class OpenIdContextLogger {
 
         }
 
+        /*
+         * // Method descriptor #18 ()Ljakarta/json/JsonObject;
+         * public abstract jakarta.json.JsonObject getProviderMetadata();
+         *
+         * // Method descriptor #23 (Ljakarta/servlet/http/HttpServletRequest;Ljakarta/servlet/http/HttpServletResponse;Ljava/lang/String;)Ljava/util/Optional;
+         * // Signature: <T:Ljava/lang/Object;>(Ljakarta/servlet/http/HttpServletRequest;Ljakarta/servlet/http/HttpServletResponse;Ljava/lang/String;)Ljava/util/Optional<TT;>;
+         * public abstract java.util.Optional getStoredValue(jakarta.servlet.http.HttpServletRequest arg0, jakarta.servlet.http.HttpServletResponse arg1, java.lang.String arg2);
+         * }
+         */
+
         logSubject(ps);
 
         logAccessTokenClaims(ps);
@@ -58,39 +75,39 @@ public class OpenIdContextLogger {
 
         logExpiresIn(ps);
 
-        printLine(ps, caller, "Token Type: " + context.getTokenType());
+        logTokenType(ps);
 
         // TODO compare atClaims to jsonClaims - should they be the same?
 
         // TODO what can we validate with getStoredValue???
-        //context.getStoredValue(null, null, claimsSub);
+        logStoredValues(ps);
     }
 
     protected void logSubject(ServletOutputStream ps) throws IOException {
 
         String claimsSub = null;
         String contextSub = context.getSubject();
-        printLine(ps, caller, "OpenIdContext subject: " + contextSub);
+        printLine(ps, caller, ServletMessageConstants.CONTEXT_SUBJECT + contextSub);
 
         OpenIdClaims claims = context.getClaims();
         if (claims != null) {
             claimsSub = claims.getSubject();
-            printLine(ps, caller, "Claims Subject: " + claimsSub);
+            printLine(ps, caller, ServletMessageConstants.CLAIMS_SUBJECT + claimsSub);
         } else {
-            printLine(ps, caller, "OpenIdContext subjects do NOT match since there are no claims");
+            printLine(ps, caller, ServletMessageConstants.SUBS_MISMATCH_NULL);
         }
 
         // compare context subject to cliams subject???
         if (contextSub == null && claimsSub == null) {
-            printLine(ps, caller, "OpenIdContext subjects are null");
+            printLine(ps, caller, ServletMessageConstants.SUBS_MISMATCH_BOTH_NULL);
         } else {
             if (claimsSub == null) {
-                printLine(ps, caller, "OpenIdContext subjects do NOT match: claimsSub is null and does not match the contextSub:" + contextSub);
+                printLine(ps, caller, ServletMessageConstants.SUBS_CLAIMS_SUB_NULL + contextSub);
             } else {
                 if (claimsSub.equals(contextSub)) {
-                    printLine(ps, caller, "OpenIdContext subjects match");
+                    printLine(ps, caller, ServletMessageConstants.SUBS_MATCH);
                 } else {
-                    printLine(ps, caller, "OpenIdContext subjects do NOT match: claimsSub: " + claimsSub + " does not match contextSub: " + contextSub);
+                    printLine(ps, caller, ServletMessageConstants.SUBS_MISMATCH_PART1 + claimsSub + ServletMessageConstants.SUBS_MISMATCH_PART2 + contextSub);
                 }
             }
         }
@@ -161,6 +178,12 @@ public class OpenIdContextLogger {
 
     }
 
+    protected void logTokenType(ServletOutputStream ps) throws IOException {
+
+        printLine(ps, caller, "Token Type: " + context.getTokenType());
+
+    }
+
     protected void logClaims(ServletOutputStream ps) throws IOException {
 
         // TODO - do something with this
@@ -168,7 +191,26 @@ public class OpenIdContextLogger {
         if (claims == null) {
             printLine(ps, caller, "Claims are null");
         }
-        // TODO - do something with the claims
+        // TODO - do something with the claims - many individual get methods...
+
+    }
+
+    protected void logStoredValues(ServletOutputStream ps) throws IOException {
+
+//        logStoredValue(ps, OpenIdConstant.ORIGINAL_REQUEST);
+//        logStoredValue(ps, OpenIdConstant.SUBJECT_IDENTIFIER); is throwing an npe
+//        logStoredValue(ps, OpenIdConstant.CLIENT_ID);
+//        logStoredValue(ps, OpenIdConstant.CLIENT_SECRET);
+
+    }
+
+    protected void logStoredValue(ServletOutputStream ps, String storedValue) throws IOException {
+
+        System.out.println("req: " + req);
+        System.out.println("resp: " + resp);
+        System.out.println("storedValue: " + storedValue);
+
+        printLine(ps, caller, "StoredValue: " + storedValue + ":" + context.getStoredValue(req, resp, storedValue));
 
     }
 

@@ -114,6 +114,7 @@ public class ShrinkWrapHelpers {
     public WebArchive addUtilClassesToApp(WebArchive war) throws Exception {
 
         war.addClass("io.openliberty.security.jakartasec.fat.utils.Constants");
+        war.addClass("io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants");
         // add any other classes to the war
 
         return war;

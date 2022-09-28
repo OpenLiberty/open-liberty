@@ -33,7 +33,7 @@ public class BaseCallbackServlet extends HttpServlet {
 
         ServletOutputStream ps = response.getOutputStream();
 
-        OpenIdContextLogger contextLogger = new OpenIdContextLogger("Callback", context);
+        OpenIdContextLogger contextLogger = new OpenIdContextLogger(request, response, "Callback", context);
         contextLogger.printLine(ps, "Class: " + this.getClass().getName());
 
         contextLogger.logContext(ps);

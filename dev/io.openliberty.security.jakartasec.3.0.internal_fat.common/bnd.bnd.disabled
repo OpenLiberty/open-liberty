@@ -20,6 +20,12 @@ src: \
 test.project: true
 publish.wlp.jar.disabled: true
 
+-dependson: \
+    build.changeDetector,\
+    io.openliberty.security.jakartasec.3.0.internal,\
+    io.openliberty.security.jakartasec.3.0.internal.cdi,\
+    com.ibm.ws.security.fat.common,\
+
 javac.source: 11
 javac.target: 11
 
