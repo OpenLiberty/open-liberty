@@ -26,12 +26,14 @@ import com.ibm.wsspi.http.ee7.HttpInputStreamEE7;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 import com.ibm.wsspi.http.ee8.Http2Request;
 
+import io.openliberty.http.ext.HttpRequestExt;
+
 /**
  * Implementation of an HTTP request message provided by the HTTP dispatcher to
  * various containers.
  */
 @Trivial
-public class HttpRequestImpl implements Http2Request {
+public class HttpRequestImpl implements Http2Request, HttpRequestExt {
     private HttpRequestMessage message = null;
     private HttpInputStreamImpl body = null;
     private boolean useEE7Streams = false;
@@ -110,6 +112,15 @@ public class HttpRequestImpl implements Http2Request {
     @Override
     public String getHeader(String name) {
         return this.message.getHeader(name).asString();
+    }
+
+    /*
+     * @see com.ibm.websphere.http.HttpRequestExt#getHeader(com.ibm.wsspi.http.channel.values.HttpHeaderKeys)
+     */
+
+    @Override
+    public String getHeader(HttpHeaderKeys key) {
+        return this.message.getHeader(key).asString();
     }
 
     /*

@@ -41,7 +41,8 @@ Export-Package: \
     com.ibm.ws.http.channel.inputstream, \
     com.ibm.ws.http.logging.source, \
     com.ibm.ws.http2, \
-    com.ibm.ws.http2.upgrade
+    com.ibm.ws.http2.upgrade, \
+    io.openliberty.http.ext
 
 Import-Package: \
     !com.ibm.ws.http.logging.source, \
