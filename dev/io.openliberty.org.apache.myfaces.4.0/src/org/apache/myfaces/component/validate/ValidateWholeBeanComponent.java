@@ -83,7 +83,13 @@ public class ValidateWholeBeanComponent extends UIInput
     {
         // No-op. It does not make sense to allow a converter to be installed.
     }
-    
+
+    @Override
+    public void updateModel(FacesContext context)
+    {
+        // Do nothing! See the following specification issue: https://github.com/eclipse-ee4j/mojarra/issues/4313
+    }
+
     @JSFProperty
     public String getValidationGroups()
     {
