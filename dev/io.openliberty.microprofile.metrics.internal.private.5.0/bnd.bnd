@@ -11,6 +11,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-Name: MicroProfile Metrics Private REST API 5.0
 Bundle-SymbolicName: io.openliberty.microprofile.metrics.internal.private.5.0
@@ -42,7 +46,7 @@ Include-Resource: \
 WS-TraceGroup: METRICS
 
 -buildpath: \
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.org.eclipse.microprofile.metrics.5.0;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.ws.logging;version=latest,\

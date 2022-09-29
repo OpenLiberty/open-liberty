@@ -23,7 +23,7 @@ import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.container.ResourceInfo;
 
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Metadata;

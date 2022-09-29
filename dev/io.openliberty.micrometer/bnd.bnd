@@ -15,6 +15,10 @@ Bundle-Name: io.openliberty.micrometer
 Bundle-SymbolicName: io.openliberty.micrometer
 Bundle-Description: Micrometer libraries and necessary dependencies, version ${bVersion}
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Import-Package: \
 	io.micrometer.core.*;version=1.9.3,\
 	io.micrometer.prometheus;version=1.9.3,\

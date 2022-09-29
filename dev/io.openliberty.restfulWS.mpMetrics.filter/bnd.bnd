@@ -8,9 +8,13 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Bundle-Name: io.openliberty.restfulWS.mpMetrics.filter
 Bundle-SymbolicName: io.openliberty.restfulWS.mpMetrics.filter
 Bundle-Description: io.openliberty.restfulWS.mpMetrics.filter; version=${bVersion}
@@ -56,11 +60,10 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
 
 -buildpath: \
 	com.ibm.ws.classloading,\
-	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	com.ibm.ws.monitor,\
-	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.websphere.javaee.jaxrs.2.0,\
-	io.openliberty.jakarta.restfulWS.3.0, \
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	io.openliberty.jakarta.restfulWS.3.1, \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
@@ -69,6 +72,6 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
 	com.ibm.ws.logging.core,\
 	io.openliberty.microprofile.metrics.internal.5.0,\
 	io.openliberty.org.eclipse.microprofile.metrics.5.0;version=latest,\
-	com.ibm.ws.jaxrs.defaultexceptionmapper;version=latest, \
+	com.ibm.ws.jaxrs.defaultexceptionmapper.jakarta;version=latest, \
 	com.ibm.ws.microprofile.metrics.common;version=latest,\
-	com.ibm.ws.jaxrs.2.0.common
+	io.openliberty.org.jboss.resteasy.common.ee10

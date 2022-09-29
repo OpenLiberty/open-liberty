@@ -18,7 +18,7 @@ Subsystem-Name: MicroProfile Metrics 5.0
 -bundles=com.ibm.ws.microprofile.metrics.common, \
  io.openliberty.io.smallrye.common.jakarta, \
  com.ibm.ws.cdi.interfaces.jakarta, \
- io.openliberty.microprofile.metrics.internal.5.0.jakarta, \
+ io.openliberty.microprofile.metrics.internal.5.0, \
  io.openliberty.microprofile.metrics.internal.private.5.0, \
  io.openliberty.microprofile.metrics.internal.public.5.0
 kind=noship
