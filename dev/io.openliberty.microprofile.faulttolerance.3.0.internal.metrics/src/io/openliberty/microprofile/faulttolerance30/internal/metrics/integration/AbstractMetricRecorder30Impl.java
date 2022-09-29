@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,17 +19,16 @@ import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.EXC
 import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.MAX_DURATION_REACHED;
 import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.MAX_RETRIES_REACHED;
 import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.NO_EXCEPTION;
-import static org.eclipse.microprofile.metrics.MetricType.COUNTER;
 
 import java.util.EnumMap;
 import java.util.function.LongSupplier;
+import java.util.function.Supplier;
 
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Tag;
 
@@ -57,7 +56,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
  * <p>
  * In other cases, where a metric has few or no possible tag values, we just use a separate field for each tag combination.
  */
-public class MetricRecorder30Impl implements MetricRecorder {
+public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
 
     /**
      * Constant map from a {@link RetryResultCategory} to its corresponding metric {@link Tag}
@@ -124,8 +123,8 @@ public class MetricRecorder30Impl implements MetricRecorder {
         OPEN
     }
 
-    public MetricRecorder30Impl(String methodName, MetricRegistry registry, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
-                                BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
+    public AbstractMetricRecorder30Impl(String methodName, MetricRegistry registry, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
+                                        BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
 
         /*
          * Register all of the metrics required for this method and store them in fields
@@ -135,7 +134,7 @@ public class MetricRecorder30Impl implements MetricRecorder {
         Tag methodTag = new Tag("method", methodName);
 
         if (retryPolicy != null || timeoutPolicy != null || circuitBreakerPolicy != null || bulkheadPolicy != null || fallbackPolicy != null) {
-            Metadata invocationsMetadata = Metadata.builder().withName("ft.invocations.total").withType(COUNTER).build();
+            Metadata invocationsMetadata = metadata("ft.invocations.total", Type.COUNTER);
             Tag valueReturnedTag = new Tag("result", "valueReturned");
             Tag exceptionThrownTag = new Tag("result", "exceptionThrown");
             invocationSuccessCounter = new EnumMap<>(FallbackOccurred.class);
@@ -188,10 +187,10 @@ public class MetricRecorder30Impl implements MetricRecorder {
         }
 
         if (timeoutPolicy != null) {
-            Metadata timeoutDurationMetadata = Metadata.builder().withName("ft.timeout.executionDuration").withType(MetricType.HISTOGRAM).withUnit(MetricUnits.NANOSECONDS).build();
+            Metadata timeoutDurationMetadata = metadata("ft.timeout.executionDuration", Type.HISTOGRAM, MetricUnits.NANOSECONDS);
             timeoutDurationHistogram = registry.histogram(timeoutDurationMetadata, methodTag);
 
-            Metadata timeoutCallsMetadata = Metadata.builder().withName("ft.timeout.calls.total").withType(COUNTER).build();
+            Metadata timeoutCallsMetadata = metadata("ft.timeout.calls.total", Type.COUNTER);
             timeoutTrueCalls = registry.counter(timeoutCallsMetadata, methodTag, new Tag("timedOut", "true"));
             timeoutFalseCalls = registry.counter(timeoutCallsMetadata, methodTag, new Tag("timedOut", "false"));
         } else {
@@ -201,12 +200,12 @@ public class MetricRecorder30Impl implements MetricRecorder {
         }
 
         if (circuitBreakerPolicy != null) {
-            Metadata cbCallsMetadata = Metadata.builder().withName("ft.circuitbreaker.calls.total").withType(COUNTER).build();
+            Metadata cbCallsMetadata = metadata("ft.circuitbreaker.calls.total", Type.COUNTER);
             circuitBreakerCallsFailureCounter = registry.counter(cbCallsMetadata, methodTag, new Tag("circuitBreakerResult", "failure"));
             circuitBreakerCallsSuccessCounter = registry.counter(cbCallsMetadata, methodTag, new Tag("circuitBreakerResult", "success"));
             circuitBreakerCallsOpenCounter = registry.counter(cbCallsMetadata, methodTag, new Tag("circuitBreakerResult", "circuitBreakerOpen"));
 
-            Metadata cbStateTimeMetadata = Metadata.builder().withName("ft.circuitbreaker.state.total").withType(MetricType.GAUGE).withUnit(MetricUnits.NANOSECONDS).build();
+            Metadata cbStateTimeMetadata = metadata("ft.circuitbreaker.state.total", Type.GAUGE, MetricUnits.NANOSECONDS);;
             circuitBreakerOpenTime = gauge(registry, cbStateTimeMetadata, this::getCircuitBreakerAccumulatedOpen, methodTag, new Tag("state", "open"));
             circuitBreakerHalfOpenTime = gauge(registry, cbStateTimeMetadata, this::getCircuitBreakerAccumulatedHalfOpen, methodTag, new Tag("state", "halfOpen"));
             circuitBreakerClosedTime = gauge(registry, cbStateTimeMetadata, this::getCircuitBreakerAccumulatedClosed, methodTag, new Tag("state", "closed"));
@@ -223,14 +222,14 @@ public class MetricRecorder30Impl implements MetricRecorder {
         }
 
         if (bulkheadPolicy != null) {
-            Metadata bulkheadCallsMetadata = Metadata.builder().withName("ft.bulkhead.calls.total").withType(COUNTER).build();
+            Metadata bulkheadCallsMetadata = metadata("ft.bulkhead.calls.total", Type.COUNTER);
             bulkheadAcceptedCounter = registry.counter(bulkheadCallsMetadata, methodTag, new Tag("bulkheadResult", "accepted"));
             bulkheadRejectionsCounter = registry.counter(bulkheadCallsMetadata, methodTag, new Tag("bulkheadResult", "rejected"));
 
-            Metadata executionsRunningMetadata = Metadata.builder().withName("ft.bulkhead.executionsRunning").withType(MetricType.GAUGE).build();
+            Metadata executionsRunningMetadata = metadata("ft.bulkhead.executionsRunning", Type.GAUGE);
             bulkheadConcurrentExecutions = gauge(registry, executionsRunningMetadata, this::getConcurrentExecutions, methodTag);
 
-            Metadata runningDurationMetadata = Metadata.builder().withName("ft.bulkhead.runningDuration").withType(MetricType.HISTOGRAM).withUnit(MetricUnits.NANOSECONDS).build();
+            Metadata runningDurationMetadata = metadata("ft.bulkhead.runningDuration", Type.HISTOGRAM, MetricUnits.NANOSECONDS);
             bulkheadExecutionDuration = registry.histogram(runningDurationMetadata, methodTag);
         } else {
             bulkheadRejectionsCounter = null;
@@ -240,10 +239,10 @@ public class MetricRecorder30Impl implements MetricRecorder {
         }
 
         if (bulkheadPolicy != null && isAsync == AsyncType.ASYNC) {
-            Metadata executionsWaitingMetadata = Metadata.builder().withName("ft.bulkhead.executionsWaiting").withType(MetricType.GAUGE).build();
+            Metadata executionsWaitingMetadata = metadata("ft.bulkhead.executionsWaiting", Type.GAUGE);
             bulkheadQueuePopulation = gauge(registry, executionsWaitingMetadata, this::getQueuePopulation, methodTag);
 
-            Metadata waitingDurationMetadata = Metadata.builder().withName("ft.bulkhead.waitingDuration").withType(MetricType.HISTOGRAM).withUnit(MetricUnits.NANOSECONDS).build();
+            Metadata waitingDurationMetadata = metadata("ft.bulkhead.waitingDuration", Type.HISTOGRAM, MetricUnits.NANOSECONDS);
             bulkheadQueueWaitTimeHistogram = registry.histogram(waitingDurationMetadata, methodTag);
         } else {
             bulkheadQueuePopulation = null;
@@ -252,6 +251,10 @@ public class MetricRecorder30Impl implements MetricRecorder {
 
         lastCircuitBreakerTransitionTime = System.nanoTime();
     }
+
+    public abstract Metadata metadata(String name, Type type, String unit);
+
+    public abstract Metadata metadata(String name, Type type);
 
     /** {@inheritDoc} */
     @Trivial
@@ -486,10 +489,10 @@ public class MetricRecorder30Impl implements MetricRecorder {
     }
 
     @FFDCIgnore(IllegalArgumentException.class)
-    private Gauge<Long> gauge(MetricRegistry registry, Metadata gaugeMeta, Gauge<Long> supplier, Tag... tags) {
+    private Gauge<Long> gauge(MetricRegistry registry, Metadata gaugeMeta, Supplier<Long> supplier, Tag... tags) {
         Gauge<Long> result = null;
         try {
-            result = registry.register(gaugeMeta, supplier, tags);
+            result = registry.gauge(gaugeMeta, supplier, tags);
         } catch (IllegalArgumentException ex) {
             // Thrown if metric already exists
         }
