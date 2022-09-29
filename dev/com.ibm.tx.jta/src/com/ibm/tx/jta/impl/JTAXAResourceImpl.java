@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,7 @@ package com.ibm.tx.jta.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import java.io.Serializable;
 
@@ -48,9 +47,11 @@ public class JTAXAResourceImpl extends JTAResourceBase implements JTAXAResource 
     private Integer _priority;
 
     private static final TraceComponent tc = Tr.register(JTAXAResourceImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
-    // TODO - reinstate this
-    // private static final TraceComponent tcSummary = Tr.register("TRANSUMMARY", TranConstants.SUMMARY_TRACE_GROUP, null);
-    private static final TraceComponent tcSummary = tc;
+
+    private class TransactionSummary {
+    }
+
+    private static final TraceComponent tcSummary = Tr.register(TransactionSummary.class, TranConstants.SUMMARY_TRACE_GROUP, TranConstants.NLS_FILE);
 
     /**
      * Construct an JTAXAResource object.
@@ -61,7 +62,7 @@ public class JTAXAResourceImpl extends JTAResourceBase implements JTAXAResource 
      */
     public JTAXAResourceImpl(Xid xid, XAResource resource, XARecoveryData recoveryData) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "JTAXAResourceImpl", new Object[] { xid, resource, recoveryData });
+            Tr.entry(tc, "JTAXAResourceImpl", xid, resource, recoveryData);
         _xid = xid;
         _resource = resource;
         _recoveryData = recoveryData;
@@ -79,8 +80,7 @@ public class JTAXAResourceImpl extends JTAResourceBase implements JTAXAResource 
      */
     public JTAXAResourceImpl(PartnerLogTable plt, byte[] tid, byte[] logData) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "JTAXAResourceImpl",
-                     new Object[] { plt, Util.toHexString(tid), Util.toHexString(logData) });
+            Tr.entry(tc, "JTAXAResourceImpl", plt, Util.toHexString(tid), Util.toHexString(logData));
 
         final byte[] stoken = Util.duplicateByteArray(logData, 0, 8);
         final int recoveryId = Util.getIntFromBytes(logData, 8, 4);
@@ -128,7 +128,7 @@ public class JTAXAResourceImpl extends JTAResourceBase implements JTAXAResource 
     @Override
     public final int prepare() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "prepare", new Object[] { _resource, _xid });
+            Tr.entry(tc, "prepare", _resource, _xid);
         if (tcSummary.isDebugEnabled())
             Tr.debug(tcSummary, "xa_prepare", this);
 
@@ -201,7 +201,7 @@ public class JTAXAResourceImpl extends JTAResourceBase implements JTAXAResource 
     @Override
     public final void commit() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "commit", new Object[] { _resource, _xid, getPriority() });
+            Tr.entry(tc, "commit", _resource, _xid, getPriority());
         if (tcSummary.isDebugEnabled())
             Tr.debug(tcSummary, "xa_commit", this);
         if (tc.isDebugEnabled())
@@ -239,7 +239,7 @@ public class JTAXAResourceImpl extends JTAResourceBase implements JTAXAResource 
     @Override
     public final void commit_one_phase() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "commit_one_phase", new Object[] { _resource, _xid });
+            Tr.entry(tc, "commit_one_phase", _resource, _xid);
         if (tcSummary.isDebugEnabled())
             Tr.debug(tcSummary, "commit_one_phase", this);
 
@@ -273,7 +273,7 @@ public class JTAXAResourceImpl extends JTAResourceBase implements JTAXAResource 
     @Override
     public final void rollback() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "rollback", new Object[] { _resource, _xid });
+            Tr.entry(tc, "rollback", _resource, _xid);
         if (tcSummary.isDebugEnabled())
             Tr.debug(tcSummary, "xa_rollback", this);
 
@@ -305,7 +305,7 @@ public class JTAXAResourceImpl extends JTAResourceBase implements JTAXAResource 
     @Override
     public final void forget() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "forget", new Object[] { _resource, _xid });
+            Tr.entry(tc, "forget", _resource, _xid);
         if (tcSummary.isDebugEnabled())
             Tr.debug(tcSummary, "xa_forget", this);
 
@@ -339,7 +339,7 @@ public class JTAXAResourceImpl extends JTAResourceBase implements JTAXAResource 
     @Override
     public void log(RecoverableUnitSection rus) throws SystemException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "log", new Object[] { this, rus });
+            Tr.entry(tc, "log", this, rus);
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "about to log stoken " + Util.toHexString(((XidImpl) _xid).getStoken()));
@@ -409,7 +409,7 @@ public class JTAXAResourceImpl extends JTAResourceBase implements JTAXAResource 
     @Override
     public final void destroy() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "destroy", new Object[] { _resource, _xid });
+            Tr.entry(tc, "destroy", _resource, _xid);
 
         if (!_completed) {
             // If we created an XAResource by reconnectRM we need to destroy it

@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,7 @@ package com.ibm.tx.jta.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
@@ -31,9 +30,10 @@ import com.ibm.ws.Transaction.JTA.XAReturnCodeHelper;
 public class OnePhaseResourceImpl extends JTAResourceBase {
     private static final TraceComponent tc = Tr.register(OnePhaseResourceImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
-    // TODO - reinstate this
-    // private static final TraceComponent tcSummary = Tr.register("TRANSUMMARY", TranConstants.SUMMARY_TRACE_GROUP, null);
-    private static final TraceComponent tcSummary = tc;
+    private class TransactionSummary {
+    }
+
+    private static final TraceComponent tcSummary = Tr.register(TransactionSummary.class, TranConstants.SUMMARY_TRACE_GROUP, TranConstants.NLS_FILE);
 
     /**
      * Construct an OnePhaseResourceImpl object.
@@ -42,7 +42,7 @@ public class OnePhaseResourceImpl extends JTAResourceBase {
      */
     public OnePhaseResourceImpl(OnePhaseXAResource xares, Xid xid) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "OnePhaseResourceImpl", new java.lang.Object[] { xares, xid });
+            Tr.entry(tc, "OnePhaseResourceImpl", xares, xid);
         _resource = xares;
         _xid = xid;
         traceCreate();
