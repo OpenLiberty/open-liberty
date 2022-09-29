@@ -20,7 +20,7 @@ Bundle-Name: io.openliberty.smallrye.metrics
 Bundle-SymbolicName: io.openliberty.smallrye.metrics
 Bundle-Description: MicroProfile Metrics SmallRye Implementation, version ${bVersion}
 
-src: src, resource
+src: src
 
 Export-Package: \
   !io.smallrye.metrics.jaxrs.*,\

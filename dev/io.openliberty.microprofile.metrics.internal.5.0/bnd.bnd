@@ -37,17 +37,15 @@ Private-Package: \
 
 Export-Package: \
 	io.openliberty.microprofile.metrics50.internal,\
-	io.openliberty.microprofile.metrics50.internal.impl,\
 	io.openliberty.microprofile.metrics50.helper,\
 	io.openliberty.smallrye.metrics.adapters,\
-	io.openliberty.smallrye.metrics.cdi.adapters,\
-	io.openliberty.metrics
+	io.openliberty.smallrye.metrics.cdi.adapters
 
 -dsannotations-inherit: true
 -dsannotations: \
 	io.openliberty.microprofile.metrics50.internal.MetricsConfig,\
-	io.openliberty.microprofile.metrics50.internal.impl.SharedMetricRegistries,\
-	io.openliberty.metrics.SmallryeMetricsCDIMetadata,\
+	io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries,\
+	io.openliberty.microprofile.metrics50.internal.SmallryeMetricsCDIMetadata,\
 	io.openliberty.microprofile.metrics50.internal.ApplicationListener30
 
 WS-TraceGroup: METRICS

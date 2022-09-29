@@ -25,7 +25,6 @@ import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 
 import io.openliberty.microprofile.metrics50.helper.Util;
-import io.openliberty.microprofile.metrics50.internal.impl.SharedMetricRegistries;
 import io.openliberty.smallrye.metrics.adapters.SRMetricRegistryAdapter;
 
 @Component(service = { ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE,

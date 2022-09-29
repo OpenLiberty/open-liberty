@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.metrics;
+package io.openliberty.microprofile.metrics50.internal;
 
 import java.io.File;
 import java.io.FileNotFoundException;

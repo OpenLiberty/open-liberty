@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 
-import io.openliberty.microprofile.metrics50.internal.impl.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries;
 import io.openliberty.restfulws.mpmetrics.RestfulWsMonitorFilter.RestMetricInfo;
 
 @Component(immediate = true, property = {

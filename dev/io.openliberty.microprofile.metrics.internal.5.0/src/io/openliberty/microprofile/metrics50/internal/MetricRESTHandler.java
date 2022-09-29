@@ -30,7 +30,6 @@ import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
 
 import io.openliberty.microprofile.metrics50.helper.Util;
-import io.openliberty.microprofile.metrics50.internal.impl.SharedMetricRegistries;
 
 /**
  *

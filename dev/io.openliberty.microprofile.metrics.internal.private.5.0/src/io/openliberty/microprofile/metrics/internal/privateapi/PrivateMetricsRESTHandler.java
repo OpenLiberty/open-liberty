@@ -24,9 +24,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 
 import io.openliberty.microprofile.metrics50.internal.MetricRESTHandler;
+import io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries;
 import io.openliberty.microprofile.metrics50.internal.Constants;
 import io.openliberty.microprofile.metrics50.helper.Util;
-import io.openliberty.microprofile.metrics50.internal.impl.SharedMetricRegistries;
 
 @Component(service = { RESTHandler.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM",
                                                                                                                              RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "="

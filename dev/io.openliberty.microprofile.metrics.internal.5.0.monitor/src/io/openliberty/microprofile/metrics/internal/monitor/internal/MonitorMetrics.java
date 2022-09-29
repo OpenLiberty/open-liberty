@@ -29,7 +29,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.metrics50.helper.Util;
-import io.openliberty.microprofile.metrics50.internal.impl.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries;
 import io.openliberty.smallrye.metrics.adapters.SRMetricRegistryAdapter;
 
 public class MonitorMetrics {

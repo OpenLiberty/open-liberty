@@ -15,7 +15,7 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchRegistryException;
 
 import io.openliberty.microprofile.metrics50.internal.Constants;
-import io.openliberty.microprofile.metrics50.internal.impl.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries;
 
 /**
  *

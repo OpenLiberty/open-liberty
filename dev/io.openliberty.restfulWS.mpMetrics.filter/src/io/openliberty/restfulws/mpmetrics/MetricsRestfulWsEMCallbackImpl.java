@@ -16,7 +16,7 @@ import com.ibm.ws.jaxrs.defaultexceptionmapper.DefaultExceptionMapperCallback;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
-import io.openliberty.microprofile.metrics50.internal.impl.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries;
 
 import java.lang.reflect.Method;
 import java.util.AbstractMap;
