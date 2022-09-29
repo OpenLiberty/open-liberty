@@ -34,7 +34,8 @@
 			<client
 				name="client_1"
 				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
-				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotated/Callback"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotated/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotatedWithEL/Callback"
 				scope="ALL_SCOPES"
 				enabled="true"
 			>
