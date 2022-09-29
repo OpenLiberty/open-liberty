@@ -35,8 +35,8 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * This test class is to be used for the tests that test feature specified
@@ -91,7 +91,7 @@ public class JSF23WebSocketTests {
             String contextRoot = "WebSocket";
             URL url;
 
-            if(JakartaEE10Action.isActive()){
+            if (JakartaEE10Action.isActive()) {
                 url = JSFUtils.createHttpUrl(server, contextRoot, "faces40/PushWebSocketTest.jsf");
             } else {
                 url = JSFUtils.createHttpUrl(server, contextRoot, "PushWebSocketTest.jsf");
@@ -145,6 +145,7 @@ public class JSF23WebSocketTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testOpenAndCloseWebsocket() throws Exception {
         try (WebClient webClient = new WebClient()) {
             webClient.getOptions().setThrowExceptionOnScriptError(false);
@@ -153,7 +154,7 @@ public class JSF23WebSocketTests {
             String contextRoot = "WebSocket";
             URL url;
 
-            if(JakartaEE10Action.isActive()){
+            if (JakartaEE10Action.isActive()) {
                 url = JSFUtils.createHttpUrl(server, contextRoot, "faces40/OpenCloseWebSocketTest.jsf");
             } else {
                 url = JSFUtils.createHttpUrl(server, contextRoot, "OpenCloseWebSocketTest.jsf");
