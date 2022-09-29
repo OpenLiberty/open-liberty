@@ -30,6 +30,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.webcontainer.osgi.metadata.WebModuleMetaDataImpl;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
@@ -40,7 +41,8 @@ public class ModulePropertiesUtils {
     private final Map<MetaData, HamObject> ModuleToHam = Collections.synchronizedMap(new WeakHashMap<MetaData, HamObject>());
     private final Map<MetaData, HamLookupObject> ModuleToHamLookup = Collections.synchronizedMap(new WeakHashMap<MetaData, HamLookupObject>());
 
-    protected ModulePropertiesUtils() {}
+    protected ModulePropertiesUtils() {
+    }
 
     public static ModulePropertiesUtils getInstance() {
         return self;
@@ -88,7 +90,20 @@ public class ModulePropertiesUtils {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private HttpAuthenticationMechanism getHttpAuthenticationMechanism(boolean logError) {
-        MetaData metadata = getMetaData();
+        MetaData metadata = null;
+
+        // if we already know this web module doesn't have HAM, we can skip it
+        WebModuleMetaDataImpl wmmd = (WebModuleMetaDataImpl) getWebModuleMetaData();
+        if (wmmd != null) {
+            metadata = wmmd;
+            if (!wmmd.checkForHAM()) {
+                return null;
+            }
+        }
+
+        if (metadata == null) {
+            metadata = getComponentMetaData();
+        }
         Class hamClass = null;
         HttpAuthenticationMechanism ham = null;
 
@@ -120,7 +135,7 @@ public class ModulePropertiesUtils {
                                         ham = (HttpAuthenticationMechanism) beanManager.getReference(bean, hamClass, beanManager.createCreationalContext(bean));
                                         isCacheable = isCacheable(bean);
                                         if (tc.isDebugEnabled()) {
-                                           Tr.debug(tc, "HAM from the current CDI : " + ham);
+                                            Tr.debug(tc, "HAM from the current CDI : " + ham);
                                         }
                                     } else {
                                         BeanManager moduleBeanManager = CDIHelper.getBeanManager();
@@ -147,7 +162,7 @@ public class ModulePropertiesUtils {
                                 } else {
                                     if (tc.isDebugEnabled()) {
                                         Tr.debug(tc, "Number of HAM implementation class is more than one : " + implClassList.size() + ", Module Name : " + getJ2EEModuleName()
-                                                    + ", Application Name : " + getJ2EEApplicationName());
+                                                     + ", Application Name : " + getJ2EEApplicationName());
                                     }
                                 }
                             } else {
@@ -163,9 +178,18 @@ public class ModulePropertiesUtils {
                 if (!isCacheable) {
                     // when isCacheable is false, beanManager and hamClass always exist.
                     ModuleToHamLookup.put(metadata, new HamLookupObject(beanManager, hamClass));
+
+                    if (wmmd != null) {
+                        wmmd.setHasHAM(true);
+                    }
+
                 } else {
                     // in order to avoid filling up the same error message, cache the data even though there is an error
                     ModuleToHam.put(metadata, new HamObject(ham));
+
+                    if (wmmd != null) {
+                        wmmd.setHasHAM(ham != null);
+                    }
                 }
             }
         }
@@ -225,7 +249,7 @@ public class ModulePropertiesUtils {
         return isCacheable;
     }
 
-    //This is here so it can be overriden by a unit test.
+    //This is here so it can be overridden by a unit test.
     protected CDI getCDI() {
         return CDIHelper.getCDI();
     }
