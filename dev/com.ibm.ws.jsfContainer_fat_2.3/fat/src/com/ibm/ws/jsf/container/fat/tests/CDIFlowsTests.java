@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,9 +25,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+
+import componenttest.rules.repeater.JakartaEE10Action;
 
 /**
  * A collection of tests for the JSF 2.2 Faces Flows feature
@@ -63,19 +66,22 @@ public class CDIFlowsTests extends FATServletClient {
         ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
         server.addInstalledAppForValidation(MOJARRA_APP);
 
-        WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
+        if(!JakartaEE10Action.isActive()){
+            WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
                         .addPackage("jsf.cdi.flow.beans");
-        myfacesApp = FATSuite.addMyFaces(myfacesApp);
-        myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
-        myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "publish/files/permissions");
-        ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
-        server.addInstalledAppForValidation(MYFACES_APP);
+            myfacesApp = FATSuite.addMyFaces(myfacesApp);
+            myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
+            myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "publish/files/permissions");
+            ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
+            server.addInstalledAppForValidation(MYFACES_APP);
+        }
 
         server.startServer(CDIFlowsTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
+        // CWWKZ0002E - WELD-001408: Unsatisfied dependencies is ignored for MyFaces 4.0-RC1 due to MYFACES-MYFACES-4461
         server.stopServer();
     }
 
@@ -100,6 +106,7 @@ public class CDIFlowsTests extends FATServletClient {
         JSF22FlowsTests.testSimpleCase("simpleBean", MOJARRA_APP);
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22Flows_TestSimpleBean_MyFaces() throws Exception {
         JSF22FlowsTests.testSimpleCase("simpleBean", MYFACES_APP);
@@ -113,6 +120,7 @@ public class CDIFlowsTests extends FATServletClient {
         JSF22FlowsTests.testSimpleCase("simpleFlowBuilder", MOJARRA_APP);
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22Flows_TestFlowBuilder_MyFaces() throws Exception {
         JSF22FlowsTests.testSimpleCase("simpleFlowBuilder", MYFACES_APP);
@@ -127,6 +135,7 @@ public class CDIFlowsTests extends FATServletClient {
         JSF22FlowsTests.testNestedFlows("mixedNested1", "mixedNested2", "mixedNested", MOJARRA_APP);
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22Flows_TestMixedConfiguration_MyFaces() throws Exception {
         JSF22FlowsTests.testNestedFlows("mixedNested1", "mixedNested2", "mixedNested", MYFACES_APP);
@@ -146,6 +155,7 @@ public class CDIFlowsTests extends FATServletClient {
         testInitializerAndFinalizer(MOJARRA_APP);
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22Flows_TestInitializerAndFinalizer_MyFaces() throws Exception {
         testInitializerAndFinalizer(MYFACES_APP);
@@ -159,6 +169,7 @@ public class CDIFlowsTests extends FATServletClient {
         JSF22FlowsTests.testFlowSwitch("programmaticSwitch", MOJARRA_APP);
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22Flows_TestProgrammaticSwitch_MyFaces() throws Exception {
         JSF22FlowsTests.testFlowSwitch("programmaticSwitch", MYFACES_APP);

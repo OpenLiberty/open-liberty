@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -190,6 +191,7 @@ public class JSF22FlowsTests extends FATServletClient {
         JSF22Flows_TestDeclarativeNavigation(MOJARRA_APP);
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22Flows_TestDeclarativeNavigation_MyFaces() throws Exception {
         JSF22Flows_TestDeclarativeNavigation(MYFACES_APP);
@@ -316,12 +318,14 @@ public class JSF22FlowsTests extends FATServletClient {
      * explicitly-defined inbound parameters. This test is related to this issue --->
      * https://issues.apache.org/jira/browse/MYFACES-3969 (Also see Defect 169488)
      */
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22Flows_TestDeclarativeNestedFlows_Mojarra() throws Exception {
         // Navigate to the index
         testNestedFlows("declarativeNested1", "declarativeNested2", "declarativeNested", MOJARRA_APP);
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22Flows_TestDeclarativeNestedFlows_MyFaces() throws Exception {
         // Navigate to the index

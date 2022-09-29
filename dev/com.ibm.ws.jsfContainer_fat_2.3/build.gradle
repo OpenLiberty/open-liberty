@@ -15,6 +15,8 @@ configurations {
     myfacesLibs
     mojarra30
     myfaces30
+    mojarra40
+    myfaces40
 }
 
 dependencies {
@@ -52,6 +54,9 @@ dependencies {
     mojarra30 'org.glassfish:jakarta.faces:3.0.1'
     myfaces30 'org.apache.myfaces.core:myfaces-api:3.0.1',
       'org.apache.myfaces.core:myfaces-impl:3.0.1'
+    mojarra40 'org.glassfish:jakarta.faces:4.0.0'
+    myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.0-RC1',
+      'org.apache.myfaces.core:myfaces-impl:4.0.0-RC1'
     }
 
 task addMojarra(type: Copy) {
@@ -64,6 +69,11 @@ task addMojarra30(type: Copy) {
     into "${buildDir}/autoFVT/publish/files/mojarra30/"
 }
 
+task addMojarra40(type: Copy) {
+    from configurations.mojarra40
+    into "${buildDir}/autoFVT/publish/files/mojarra40/"
+}
+
 task addMyFaces(type: Copy) {
     from configurations.myfaces
     into "${buildDir}/autoFVT/publish/files/myfaces"
@@ -72,6 +82,11 @@ task addMyFaces(type: Copy) {
 task addMyFaces30(type: Copy) {
     from configurations.myfaces30
     into "${buildDir}/autoFVT/publish/files/myfaces30"
+}
+
+task addMyFaces40(type: Copy) {
+    from configurations.myfaces40
+    into "${buildDir}/autoFVT/publish/files/myfaces40"
 }
 
 task addMyFacesLibs(type: Copy) {
@@ -87,8 +102,10 @@ task copyPermissionFile(type: Copy) {
 addRequiredLibraries {
     dependsOn addMojarra
     dependsOn addMojarra30
+    dependsOn addMojarra40
     dependsOn addMyFaces
     dependsOn addMyFaces30
+    dependsOn addMyFaces40
     dependsOn addMyFacesLibs
     dependsOn copyPermissionFile
     dependsOn addJakartaTransformer

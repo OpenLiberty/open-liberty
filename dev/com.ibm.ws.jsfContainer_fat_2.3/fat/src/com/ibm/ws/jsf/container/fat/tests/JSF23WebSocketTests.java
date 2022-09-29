@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import com.ibm.ws.jsf.container.fat.utils.UseImplementation;
 import com.ibm.ws.jsf.container.fat.utils.WebArchiveInfo;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -43,6 +44,7 @@ import componenttest.topology.utils.FATServletClient;
  * This test class is to be used for the tests that test feature specified
  * in JSF 2.3 specification under the Section 10.4.1.7 “<f:websocket>”.
  */
+@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 @RunWith(FATRunner.class)
 @WebArchiveInfo(name = "WebSocket", pkgs = { "com.ibm.ws.jsf23.fat.websocket" })
 @UseImplementation(JSFImplementation.MYFACES)
