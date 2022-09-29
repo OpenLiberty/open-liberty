@@ -47,14 +47,12 @@ public class AccessLogRequestHeaderValue extends AccessLogData {
             if (0 == count) {
                 accessLogEntry.append("-");
             } else {
-                //accessLogEntry.append(" \"");
                 Iterator<HeaderField> it = request.getHeaders(headerName).iterator();
                 accessLogEntry.append(it.next().asString());
                 while (it.hasNext()) {
                     accessLogEntry.append(", ");
                     accessLogEntry.append(it.next().asString());
                 }
-                //accessLogEntry.append('\"');
             }
 
         }
