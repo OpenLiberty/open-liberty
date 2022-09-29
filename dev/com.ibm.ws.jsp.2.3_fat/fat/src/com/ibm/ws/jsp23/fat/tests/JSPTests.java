@@ -288,7 +288,7 @@ public class JSPTests {
      * @throws Exception
      */
     @Test
-    @ExpectedFFDC("javax.el.ELException")
+    @ExpectedFFDC("com.ibm.ws.jsp.translator.JspTranslationException")
     @AllowedFFDC("java.security.PrivilegedActionException")
     @Mode(TestMode.FULL)
     public void testEL30ReservedWords() throws Exception {

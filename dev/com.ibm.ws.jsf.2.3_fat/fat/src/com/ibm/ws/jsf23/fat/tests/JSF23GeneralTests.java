@@ -40,6 +40,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -614,6 +615,7 @@ public class JSF23GeneralTests {
      */
     @Test
     @AllowedFFDC("java.security.PrivilegedActionException")
+    @ExpectedFFDC({"com.ibm.ws.jsp.translator.JspTranslationException"})
     public void testSpecIssue1113() throws Exception {
         String contextRoot = "JSF23Spec1113";
         try (WebClient webClient = new WebClient()) {
