@@ -26,11 +26,12 @@ import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.PassivationCapable;
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.enterprise.util.TypeLiteral;
 import jakarta.security.enterprise.identitystore.IdentityStore;
 
-public class OidcIdentityStoreBean implements Bean<IdentityStore> {
+public class OidcIdentityStoreBean implements Bean<IdentityStore>, PassivationCapable {
 
     private static final TraceComponent tc = Tr.register(OidcIdentityStoreBean.class);
 
@@ -98,6 +99,11 @@ public class OidcIdentityStoreBean implements Bean<IdentityStore> {
     @Override
     public Set<InjectionPoint> getInjectionPoints() {
         return Collections.emptySet();
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
 }
