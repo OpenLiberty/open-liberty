@@ -10,15 +10,11 @@
  *******************************************************************************/
 package test.jakarta.data;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -27,23 +23,4 @@ import componenttest.topology.impl.LibertyServerFactory;
                 TemplateTest.class
 })
 public class FATSuite {
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer("io.openliberty.data.internal.fat");
-
-    /**
-     * Pre-bucket execution setup.
-     */
-    @BeforeClass
-    public static void beforeSuite() throws Exception {
-        server.copyFileToLibertyInstallRoot("lib", "bundles/test.jakarta.data.jar");
-        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/mockData-1.0.mf");
-    }
-
-    /**
-     * Post-bucket execution setup.
-     */
-    @AfterClass
-    public static void cleanUpSuite() throws Exception {
-        server.deleteFileFromLibertyInstallRoot("lib/test.jakarta.data.jar");
-        server.deleteFileFromLibertyInstallRoot("lib/features/mockData-1.0.mf");
-    }
 }

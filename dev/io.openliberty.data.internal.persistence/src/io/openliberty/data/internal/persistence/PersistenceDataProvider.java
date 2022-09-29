@@ -20,11 +20,11 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 
 import io.openliberty.data.internal.DataProvider;
+import jakarta.data.Template;
 
 /**
  * Simulates a provider for relational databases by delegating
@@ -59,10 +59,8 @@ public class PersistenceDataProvider implements DataProvider {
         executor.submit(new EntityDefiner(this, databaseId, loader, entities));
     }
 
-    @Trivial
-    CompletableFuture<EntityInfo> futureEntityInfo(Class<?> entityClass) {
-        CompletableFuture<EntityInfo> entityInfoFuture = new CompletableFuture<>();
-        CompletableFuture<EntityInfo> alreadyPresent = entityInfoMap.putIfAbsent(entityClass, entityInfoFuture);
-        return alreadyPresent == null ? entityInfoFuture : alreadyPresent;
+    @Override
+    public Template getTemplate() {
+        return new TemplateImpl(this);
     }
 }

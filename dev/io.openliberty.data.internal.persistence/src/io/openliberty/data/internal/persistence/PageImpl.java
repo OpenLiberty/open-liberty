@@ -8,14 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal;
+package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
+import jakarta.data.Page;
 import jakarta.data.Pagination;
 import jakarta.data.Param;
 import jakarta.persistence.EntityManager;
@@ -23,34 +25,26 @@ import jakarta.persistence.TypedQuery;
 
 /**
  */
-public class PaginatedIterator<T> implements Iterator<T> {
+public class PageImpl<T> implements Page<T> {
     private final Object[] args;
-    private final EntityInfo entityInfo;
-    private int index;
-    private Boolean hasNext;
-    private final String jpql;
     private final Method method;
-    private final int numParams; // can differ from args.length due to Pagination and Sort/Sorts
-    private List<T> page;
-    private Pagination pagination;
+    private final int numParams; // can differ from args.length due to Consumer/Pagination/Sort/Sorts parameters
+    private final Pagination pagination;
+    private final QueryInfo queryInfo;
+    private final List<T> results;
 
-    PaginatedIterator(String jpql, Pagination pagination, EntityInfo entityInfo,
-                      Method method, int numParams, Object[] args) {
-        this.jpql = jpql;
+    PageImpl(QueryInfo queryInfo, Pagination pagination,
+             Method method, int numParams, Object[] args) {
+        this.queryInfo = queryInfo;
         this.pagination = pagination == null ? Pagination.page(1).size(100) : pagination;
-        this.entityInfo = entityInfo;
         this.method = method;
         this.numParams = numParams;
         this.args = args;
 
-        getPage();
-    }
-
-    private void getPage() {
-        EntityManager em = entityInfo.persister.createEntityManager();
+        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityInfo.type);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
             if (args != null) {
                 Parameter[] params = method.getParameters();
                 for (int i = 0; i < numParams; i++) {
@@ -64,35 +58,44 @@ public class PaginatedIterator<T> implements Iterator<T> {
             // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
             query.setFirstResult((int) pagination.getSkip());
             query.setMaxResults((int) pagination.getPageSize());
-            pagination = pagination.next();
 
-            page = query.getResultList();
-            index = -1;
-            hasNext = !page.isEmpty();
+            results = query.getResultList();
         } finally {
             em.close();
         }
     }
 
     @Override
-    public boolean hasNext() {
-        if (hasNext == null)
-            if (index + 1 < page.size())
-                hasNext = true;
-            else if (pagination == null) // no more pages
-                hasNext = false;
-            else
-                getPage();
-
-        return hasNext;
+    public Stream<T> get() {
+        return results.stream();
     }
 
     @Override
-    public T next() {
-        if (!hasNext())
-            throw new NoSuchElementException();
+    public Stream<T> getContent() {
+        return results.stream();
+    }
 
-        hasNext = null;
-        return page.get(++index);
+    @Override
+    public <C extends Collection<T>> C getContent(Supplier<C> collectionFactory) {
+        C collection = collectionFactory.get();
+        collection.addAll(results);
+        return collection;
+    }
+
+    @Override
+    public Pagination getPagination() {
+        return pagination;
+    }
+
+    @Override
+    public Page<T> next() {
+        if (results.isEmpty())
+            return null;
+
+        PageImpl<T> next = new PageImpl<T>(queryInfo, pagination.next(), method, numParams, args);
+
+        if (next.results.isEmpty())
+            return null;
+        return next;
     }
 }

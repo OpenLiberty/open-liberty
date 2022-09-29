@@ -10,11 +10,6 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
-import java.util.function.Consumer;
-import java.util.stream.Collector;
-
-import jakarta.data.Pagination;
-
 /**
  */
 class QueryInfo {
@@ -22,54 +17,31 @@ class QueryInfo {
         COUNT, DELETE, EXISTS, MERGE, SELECT, UPDATE
     }
 
-    final Collector<Object, Object, Object> collector;
-    final Consumer<Object> consumer;
     final EntityInfo entityInfo;
     final String jpql;
-    final Pagination pagination;
-    final int paramCount;
     final Class<?> returnArrayType;
     final Class<?> saveParamType;
     final Type type;
 
-    QueryInfo(String jpql, int paramCount, EntityInfo entityInfo, Pagination pagination,
-              Collector<Object, Object, Object> collector, Consumer<Object> consumer,
+    QueryInfo(Type type, String jpql, EntityInfo entityInfo,
               Class<?> saveParamType, Class<?> returnArrayType) {
         this.jpql = jpql;
-        this.paramCount = paramCount;
         this.entityInfo = entityInfo;
-        this.pagination = pagination;
-        this.collector = collector;
-        this.consumer = consumer;
         this.returnArrayType = returnArrayType;
         this.saveParamType = saveParamType;
 
-        if (jpql == null) {
-            type = Type.MERGE;
-        } else {
+        if (type == null) {
             String q = jpql.toUpperCase();
             if (q.startsWith("SELECT"))
-                type = Type.SELECT;
+                this.type = Type.SELECT;
             else if (q.startsWith("UPDATE"))
-                type = Type.UPDATE;
+                this.type = Type.UPDATE;
             else if (q.startsWith("DELETE"))
-                type = Type.DELETE;
+                this.type = Type.DELETE;
             else
                 throw new UnsupportedOperationException(jpql);
+        } else {
+            this.type = type;
         }
-    }
-
-    QueryInfo(String jpql, int paramCount, EntityInfo entityInfo, Pagination pagination,
-              Collector<Object, Object, Object> collector, Consumer<Object> consumer,
-              Class<?> saveParamType, Class<?> returnArrayType, Type type) {
-        this.jpql = jpql;
-        this.paramCount = paramCount;
-        this.entityInfo = entityInfo;
-        this.pagination = pagination;
-        this.collector = collector;
-        this.consumer = consumer;
-        this.returnArrayType = returnArrayType;
-        this.saveParamType = saveParamType;
-        this.type = type;
     }
 }

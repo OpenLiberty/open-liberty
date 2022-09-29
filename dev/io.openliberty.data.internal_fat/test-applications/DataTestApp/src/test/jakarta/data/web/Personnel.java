@@ -19,7 +19,6 @@ import java.util.stream.Collector;
 import jakarta.data.Delete;
 import jakarta.data.Limit;
 import jakarta.data.Paginated;
-import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Update;
 import jakarta.data.Where;
@@ -35,10 +34,9 @@ import jakarta.enterprise.concurrent.Asynchronous;
 @Repository
 public interface Personnel {
     @Asynchronous
-    @Result(Integer.class)
     @Update("o.lastName = ?2")
     @Where("o.lastName = ?1 AND o.ssn IN ?3")
-    CompletionStage<Integer> changeSurnames(String oldSurname, String newSurname, List<Long> ssnList);
+    CompletionStage<Long> changeSurnames(String oldSurname, String newSurname, List<Long> ssnList);
 
     @Asynchronous
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
@@ -78,8 +76,7 @@ public interface Personnel {
     long setSurname(String newSurname, long ssn);
 
     @Asynchronous
-    @Result(Boolean.class)
     @Update("o.lastName = ?1")
     @Where("o.ssn = ?2")
-    CompletableFuture<Boolean> setSurnameAsync(String newSurname, long ssn);
+    CompletableFuture<Long> setSurnameAsync(String newSurname, long ssn);
 }

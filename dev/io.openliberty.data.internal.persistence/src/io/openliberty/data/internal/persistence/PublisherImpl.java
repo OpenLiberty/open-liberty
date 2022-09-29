@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal;
+package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -25,17 +25,15 @@ import jakarta.persistence.TypedQuery;
  * A real implementation wouldn't do this.
  */
 public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable {
-    private final EntityInfo entityInfo;
-    private final String jpql;
-    private final Method method;
-    private final int numParams; // can differ from args.length due to Pagination and Sort/Sorts
     private final Object[] args;
+    private final Method method;
+    private final int numParams; // can differ from args.length due to Consumer/Pagination/Sort/Sorts parameters
+    private final QueryInfo queryInfo;
 
-    PublisherImpl(String jpql, ExecutorService executor, EntityInfo entityInfo, Method method, int numParams, Object[] args) {
+    PublisherImpl(QueryInfo queryInfo, ExecutorService executor, Method method, int numParams, Object[] args) {
         super(executor, 200);
 
-        this.jpql = jpql;
-        this.entityInfo = entityInfo;
+        this.queryInfo = queryInfo;
         this.method = method;
         this.numParams = numParams;
         this.args = args;
@@ -47,9 +45,9 @@ public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable
     public void run() {
         EntityManager em = null;
         try {
-            em = entityInfo.persister.createEntityManager();
+            em = queryInfo.entityInfo.persister.createEntityManager();
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, entityInfo.type);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
             if (args != null) {
                 Parameter[] params = method.getParameters();
                 for (int i = 0; i < numParams; i++) {

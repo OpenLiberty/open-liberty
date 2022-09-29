@@ -230,7 +230,7 @@ public class DataTestServlet extends FATServlet {
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
                                                                                  1002003003L, 1002003002L, 1002003001L))
                         .thenCompose(updateCount -> {
-                            assertEquals(Integer.valueOf(6), updateCount);
+                            assertEquals(Long.valueOf(6), updateCount);
 
                             return personnel.findByLastNameOrderByFirstName("Test-Asynchronous");
                         });
@@ -310,7 +310,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Long.valueOf(4), avgLengthOfBNames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
-        assertEquals(Boolean.TRUE, personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(1), personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         deleted = personnel.removeAll();
         assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
@@ -344,7 +344,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(2, added.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).size());
 
         CompletableFuture<Long> updated2Then1;
-        CompletableFuture<Boolean> updated2;
+        CompletableFuture<Long> updated2;
 
         tran.begin();
         try {
@@ -380,8 +380,8 @@ public class DataTestServlet extends FATServlet {
             updated2 = personnel.setSurnameAsync("TestAsyncPrevents-Deadlock", p2.ssn);
 
             try {
-                Boolean wasUpdated = updated2.get(1, TimeUnit.SECONDS);
-                fail("Third thread ought to be blocked by second thread. Instead, was updated? " + wasUpdated);
+                Long updateCount = updated2.get(1, TimeUnit.SECONDS);
+                fail("Third thread ought to be blocked by second thread. Instead, update count is " + updateCount);
             } catch (TimeoutException x) {
                 // expected
             }
@@ -394,7 +394,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Long.valueOf(2), updated2Then1.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         // With the second thread completing, it releases both locks, allowing the third thread to obtain the lock on 2 and complete
-        assertEquals(Boolean.TRUE, updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(1), updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**

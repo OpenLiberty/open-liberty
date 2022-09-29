@@ -254,7 +254,7 @@ class EntityDefiner implements Runnable {
                                 keyAttributeNames.get(entityClass), //
                                 punit);
 
-                provider.futureEntityInfo(entityClass).complete(entityInfo);
+                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
             }
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities");

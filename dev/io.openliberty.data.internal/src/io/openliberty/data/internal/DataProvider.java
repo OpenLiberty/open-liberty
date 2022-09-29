@@ -12,6 +12,8 @@ package io.openliberty.data.internal;
 
 import java.util.List;
 
+import jakarta.data.Template;
+
 /**
  * Implementations of this interface are made available in the OSGi service registry
  * and made mandatory if and only if the providing feature is enabled.
@@ -39,4 +41,10 @@ public interface DataProvider {
      */
     void entitiesFound(String databaseId, ClassLoader loader, List<Class<?>> entities) throws Exception;
 
+    /**
+     * Obtains the Template implementation for this type of provider.
+     *
+     * @return the Template implementation.
+     */
+    Template getTemplate();
 }
