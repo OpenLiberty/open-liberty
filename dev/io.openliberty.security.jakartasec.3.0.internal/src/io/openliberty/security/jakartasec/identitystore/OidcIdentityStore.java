@@ -10,20 +10,28 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.identitystore;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.jakartasec.tokens.AccessTokenImpl;
 import io.openliberty.security.jakartasec.tokens.IdentityTokenImpl;
+import io.openliberty.security.jakartasec.tokens.OpenIdClaimsImpl;
 import io.openliberty.security.jakartasec.tokens.RefreshTokenImpl;
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
+import io.openliberty.security.oidcclientcore.userinfo.UserInfoHandler;
 import jakarta.json.JsonObject;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.credential.Credential;
@@ -39,6 +47,8 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  */
 public class OidcIdentityStore implements IdentityStore {
+
+    public static final TraceComponent tc = Tr.register(OidcIdentityStore.class);
 
     public OidcIdentityStore() {
 
@@ -62,13 +72,14 @@ public class OidcIdentityStore implements IdentityStore {
                     long tokenMinValidityInMillis = oidcClientConfig.getTokenMinValidity();
                     AccessToken accessToken = createAccessTokenFromTokenResponse(tokenMinValidityInMillis, tokenResponse);
                     IdentityToken identityToken = createIdentityTokenFromTokenResponse(tokenMinValidityInMillis, tokenResponse, idTokenClaims);
-                    OpenIdClaims userinfoClaims = createOpenIdClaimsFromUserInfoResponse(); // TODO: Use this interface when creating the CredentialValidationResult
+                    OpenIdClaims userInfoClaims = createOpenIdClaimsFromUserInfoResponse(oidcClientConfig, accessToken);
 
-                    CredentialValidationResult credentialValidationResult = createCredentialValidationResult(client.getOidcClientConfig(), accessToken, idTokenClaims);
+                    CredentialValidationResult credentialValidationResult = createCredentialValidationResult(client.getOidcClientConfig(), accessToken, idTokenClaims,
+                                                                                                             userInfoClaims);
 
                     JsonObject providerMetadata = getProviderMetadataAsJsonObject();
 
-                    OpenIdContext openIdContext = createOpenIdContext(credentialValidationResult.getCallerUniqueId(), tokenResponse, accessToken, identityToken, userinfoClaims,
+                    OpenIdContext openIdContext = createOpenIdContext(credentialValidationResult.getCallerUniqueId(), tokenResponse, accessToken, identityToken, userInfoClaims,
                                                                       providerMetadata, request.getParameter(OpenIdConstant.STATE), oidcClientConfig.isUseSession());
 
                     castCredential.setOpenIdContext(openIdContext);
@@ -117,9 +128,23 @@ public class OidcIdentityStore implements IdentityStore {
         return new IdentityTokenImpl(tokenResponse.getIdTokenString(), idTokenClaims.getClaimsMap(), tokenMinValidityInMillis);
     }
 
-    private OpenIdClaims createOpenIdClaimsFromUserInfoResponse() {
-        // TODO Auto-generated method stub
-        return null;
+    private OpenIdClaims createOpenIdClaimsFromUserInfoResponse(OidcClientConfig oidcClientConfig, AccessToken accessToken) {
+        UserInfoHandler userInfoHandler = getUserInfoHandler();
+        Map<String, Object> userInfoClaims = null;
+        try {
+            userInfoClaims = userInfoHandler.getUserInfoClaims(oidcClientConfig, accessToken.getToken());
+        } catch (UserInfoResponseException e) {
+            Tr.warning(tc, e.toString());
+            return null;
+        }
+        if (userInfoClaims == null) {
+            return null;
+        }
+        return new OpenIdClaimsImpl(userInfoClaims);
+    }
+
+    UserInfoHandler getUserInfoHandler() {
+        return new UserInfoHandler();
     }
 
     /**
@@ -131,13 +156,14 @@ public class OidcIdentityStore implements IdentityStore {
      * <li>Caller Groups: OpenIdAuthenticationMechanismDefinition.claimsDefinition.callerGroupsClaim</li>
      * </ul>
      */
-    CredentialValidationResult createCredentialValidationResult(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims) throws MalformedClaimException {
-        String issuer = getIssuer(clientConfig, accessToken, idTokenClaims); //realm
-        String caller = getCallerName(clientConfig, accessToken, idTokenClaims);
+    CredentialValidationResult createCredentialValidationResult(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims,
+                                                                OpenIdClaims userInfoClaims) throws MalformedClaimException {
+        String issuer = getIssuer(clientConfig, accessToken, idTokenClaims, userInfoClaims); //realm
+        String caller = getCallerName(clientConfig, accessToken, idTokenClaims, userInfoClaims);
         if (caller == null) {
             return CredentialValidationResult.INVALID_RESULT;
         }
-        Set<String> groups = getCallerGroups(clientConfig, accessToken, idTokenClaims);
+        Set<String> groups = getCallerGroups(clientConfig, accessToken, idTokenClaims, userInfoClaims);
         return new CredentialValidationResult(issuer, caller, null, caller, groups);
     }
 
@@ -153,8 +179,8 @@ public class OidcIdentityStore implements IdentityStore {
      * @return
      * @throws MalformedClaimException
      */
-    String getIssuer(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims) throws MalformedClaimException {
-        String issuer = getClaimValueFromTokens(OpenIdConstant.ISSUER_IDENTIFIER, accessToken, idTokenClaims, String.class);
+    String getIssuer(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims, OpenIdClaims userInfoClaims) throws MalformedClaimException {
+        String issuer = getClaimValueFromTokens(OpenIdConstant.ISSUER_IDENTIFIER, accessToken, idTokenClaims, userInfoClaims, String.class);
         if (issuer == null || issuer.isEmpty()) {
             issuer = issuerFromProviderMetadata(clientConfig);
         }
@@ -169,21 +195,25 @@ public class OidcIdentityStore implements IdentityStore {
         return clientConfig.getProviderMetadata().getIssuer(); //TODO: use discovery data
     }
 
-    String getCallerName(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims) throws MalformedClaimException {
+    String getCallerName(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims, OpenIdClaims userInfoClaims) throws MalformedClaimException {
         String callerNameClaim = getCallerNameClaim(clientConfig);
         if (callerNameClaim == null || callerNameClaim.isEmpty()) {
             return null;
         }
-        return getClaimValueFromTokens(callerNameClaim, accessToken, idTokenClaims, String.class);
+        return getClaimValueFromTokens(callerNameClaim, accessToken, idTokenClaims, userInfoClaims, String.class);
     }
 
     @SuppressWarnings("unchecked")
-    Set<String> getCallerGroups(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims) throws MalformedClaimException {
+    Set<String> getCallerGroups(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims, OpenIdClaims userInfoClaims) throws MalformedClaimException {
         String callerGroupClaim = getCallerGroupsClaim(clientConfig);
         if (callerGroupClaim == null || callerGroupClaim.isEmpty()) {
             return null;
         }
-        return getClaimValueFromTokens(callerGroupClaim, accessToken, idTokenClaims, Set.class);
+        List<String> groups = getClaimValueFromTokens(callerGroupClaim, accessToken, idTokenClaims, userInfoClaims, List.class);
+        if (groups != null) {
+            return Set.copyOf(groups);
+        }
+        return null;
     }
 
     String getCallerNameClaim(OidcClientConfig clientConfig) {
@@ -211,7 +241,7 @@ public class OidcIdentityStore implements IdentityStore {
      * <li>If not resolved yet, and the specified claim exists and has a non-empty value in the User Info Token, this User Info Token claim value is taken.
      * </ul>
      */
-    <T> T getClaimValueFromTokens(String claim, AccessToken accessToken, JwtClaims idTokenClaims, Class<T> claimType) throws MalformedClaimException {
+    <T> T getClaimValueFromTokens(String claim, AccessToken accessToken, JwtClaims idTokenClaims, OpenIdClaims userInfoClaims, Class<T> claimType) throws MalformedClaimException {
         T claimValue = getClaimFromAccessToken(accessToken, claim);
         if (valueExistsAndIsNotEmpty(claimValue, claimType)) {
             return claimValue;
@@ -220,7 +250,10 @@ public class OidcIdentityStore implements IdentityStore {
         if (valueExistsAndIsNotEmpty(claimValue, claimType)) {
             return claimValue;
         }
-        // TODO - get claimValue from User Info
+        claimValue = getClaimFromUserInfo(userInfoClaims, claim, claimType);
+        if (valueExistsAndIsNotEmpty(claimValue, claimType)) {
+            return claimValue;
+        }
         return null;
     }
 
@@ -236,6 +269,25 @@ public class OidcIdentityStore implements IdentityStore {
         return idTokenClaims.getClaimValue(claim, claimType);
     }
 
+    @SuppressWarnings("unchecked")
+    <T> T getClaimFromUserInfo(OpenIdClaims userInfoClaims, String claim, Class<T> claimType) {
+        if (userInfoClaims == null) {
+            return null;
+        }
+        if (claimType.equals(String.class)) {
+            Optional<String> claimValue = userInfoClaims.getStringClaim(claim);
+            if (claimValue.isPresent()) {
+                return (T) claimValue.get();
+            }
+            return null;
+        }
+        if (claimType.equals(List.class)) {
+            return (T) userInfoClaims.getArrayStringClaim(claim);
+        }
+        // Other types can be supported later if needed
+        return null;
+    }
+
     @SuppressWarnings("rawtypes")
     <T> boolean valueExistsAndIsNotEmpty(T claimValue, Class<T> claimType) {
         if (claimValue == null) {
@@ -245,6 +297,9 @@ public class OidcIdentityStore implements IdentityStore {
             return false;
         }
         if (claimType.equals(Set.class) && ((Set) claimValue).isEmpty()) {
+            return false;
+        }
+        if (claimType.equals(List.class) && ((List) claimValue).isEmpty()) {
             return false;
         }
         return true;
