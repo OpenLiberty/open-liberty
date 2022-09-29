@@ -1,0 +1,55 @@
+<server description="RemoteEJBServer">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestCommon.xml" />
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.secondary}">
+        <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secondary.secure}" sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+
+    <transaction
+      dataSourceRef="tranlogDataSource"
+      recoverOnStartup="true"
+      waitForRecovery="false"
+      heuristicRetryInterval="10"
+    />
+	
+    <logging
+      traceSpecification="Transaction=all"
+      traceFileName="trace.log"
+      maxFileSize="2000"
+      maxFiles="20"
+      traceFormat="BASIC"
+    />
+
+    <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
+    <library id="PostgresLib">
+        <file name="${shared.resource.dir}/postgres/postgresql.jar"/>
+    </library>
+
+    <dataSource id="tranlogDataSource" jndiName="jdbc/tranlogDataSource" transactional="false">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${POSTGRES_HOST}" portNumber="${POSTGRES_PORT}" databaseName="${POSTGRES_DB}" user="${POSTGRES_USER}" password="${POSTGRES_PASS}"
+                             ssl="true" sslfactory="org.postgresql.ssl.DefaultJavaSSLFactory" sslMode="verify-ca"/>
+    </dataSource>
+
+    <!-- Default SSL configuration enables trust for default certificates from the Java runtime --> 
+    <ssl id="defaultSSLConfig" trustDefaultCerts="true"/>
+
+    <sslDefault outboundSSLRef="outboundConfig"/>
+    <ssl id="outboundConfig" keyStoreRef="outboundKeyStore"/>
+    <keyStore id="outboundKeyStore" location="resources/security/outboundKeys.p12" password="liberty"/>
+
+	<application location="TestBeanApp.ear">
+	        <classloader commonLibraryRef="PostgresLib"/>
+	</application>
+</server>
