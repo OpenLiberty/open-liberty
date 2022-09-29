@@ -28,6 +28,7 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.wsat.fat.util.WSATTest;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -38,7 +39,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
 @AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException" })
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class LPSTest {
 	private static LibertyServer server1;
@@ -69,6 +69,7 @@ public class LPSTest {
 	@Before
 	public void beforeTest() throws Exception {
 		FATUtils.startServers(server1, server2);
+		WSATTest.callClearResourcesServlet("recoveryServer", server1, server2);
 	}
 	
 	@After
@@ -95,7 +96,6 @@ public class LPSTest {
 		}
 	}
 	
-	@Mode(TestMode.LITE)
 	@Test
 	public void WSTXLPS301CFVT() throws Exception {
 		recoveryTest("3013","both");

@@ -42,6 +42,7 @@ tested.features: \
   com.ibm.ws.transaction.fat.util;version=latest,\
   com.ibm.ws.tx.embeddable;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
-  com.ibm.ws.wsat.recovery_fat.single;version=latest
+  com.ibm.ws.wsat.recovery_fat.single.1;version=latest,\
+  com.ibm.ws.wsat.recovery_fat.multi.1;version=latest
 
 -sub: *.bnd
