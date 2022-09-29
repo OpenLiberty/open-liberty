@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.restfulWS3.0-mpMetrics-monitor1.0
+symbolicName=io.openliberty.restfulWS3.1-mpMetrics-monitor1.0
 Manifest-Version: 1.0
 IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.monitor-1.0))", \
@@ -8,4 +8,4 @@ IBM-Provision-Capability: \
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.restfulWS.mpMetrics.filter
 kind=noship
-edition=core
+edition=full

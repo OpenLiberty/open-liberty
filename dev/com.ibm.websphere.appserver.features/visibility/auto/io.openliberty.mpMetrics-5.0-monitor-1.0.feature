@@ -7,4 +7,4 @@ IBM-Provision-Capability: \
 -bundles=io.openliberty.microprofile.metrics.internal.5.0.monitor
 IBM-Install-Policy: when-satisfied
 kind=noship
-edition=core
+edition=full
