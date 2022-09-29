@@ -44,6 +44,10 @@ public interface JwtConsumerConfig {
         return 0;
     }
 
+    default String getKeyManagementKeyAlgorithm() {
+        return null;
+    }
+
     boolean getJwkEnabled();
 
     String getJwkEndpointUrl();
