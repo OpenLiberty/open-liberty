@@ -162,6 +162,7 @@ IBM-API-Package: org.eclipse.persistence.descriptors.changetracking; type="inter
  org.eclipse.persistence.jpa.jpql.utility; type="third-party", \
  org.eclipse.persistence.jpa.jpql; type="third-party", \
  org.eclipse.persistence.jpa.metadata; type="third-party", \
+ org.eclipse.persistence.json; type="internal", \
  org.eclipse.persistence.logging; type="third-party", \
  org.eclipse.persistence.mappings.converters; type="third-party", \
  org.eclipse.persistence.mappings.foundation; type="third-party", \
@@ -227,7 +228,7 @@ Subsystem-Name: Jakarta Persistence 3.1
 -features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   io.openliberty.persistenceContainer-3.1, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
-  io.openliberty.jsonpInternal-2.1, \
+  io.openliberty.jsonp-2.1, \
   io.openliberty.jakarta.persistence-3.1, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=io.openliberty.persistence.3.1.thirdparty; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:3.1.0", \

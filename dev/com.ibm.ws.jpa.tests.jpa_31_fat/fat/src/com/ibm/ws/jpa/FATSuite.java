@@ -19,6 +19,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.ws.jpa.jpa31.JPA31Test;
 import com.ibm.ws.jpa.jpa31.JPABootstrapTest;
+import com.ibm.ws.jpa.jpa31.JPAJSONTest;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -29,8 +30,10 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 @SuiteClasses({
                 JPABootstrapTest.class,
                 JPA31Test.class,
+                JPAJSONTest.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
+
 public class FATSuite extends TestContainerSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";" };
