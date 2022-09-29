@@ -34,9 +34,8 @@ import com.ibm.wsspi.ssl.SSLSupport;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.http.EndpointRequest;
-import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
-import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.Storage;
+import io.openliberty.security.oidcclientcore.storage.StorageFactory;
 import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils;
 import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils.TokenSignatureValidationBuilder;
 
@@ -71,19 +70,7 @@ public class TokenResponseValidator {
     public TokenResponseValidator(OidcClientConfig oidcClientConfig) {
         this.clientConfig = oidcClientConfig;
     }
-
-    /**
-     * @param oidcClientConfig
-     */
-    private void instantiateStorage(OidcClientConfig oidcClientConfig) {
-        if (oidcClientConfig.isUseSession()) {
-            this.storage = new SessionBasedStorage(this.request);
-        } else {
-            this.storage = new CookieBasedStorage(this.request, this.response);
-        }
-
-    }
-
+    
     @Reference(name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC)
     protected void setSslSupport(SSLSupport sslSupportSvc) {
         sslSupport = sslSupportSvc;
@@ -147,7 +134,7 @@ public class TokenResponseValidator {
                     ((IdTokenValidator) tokenValidator).nonce(((String) jwtClaims.getClaimValue("nonce")));
                     ((IdTokenValidator) tokenValidator).state(getStateParameter());
                     ((IdTokenValidator) tokenValidator).secret(clientSecret);
-                    instantiateStorage(clientConfig);
+                    storage = StorageFactory.instantiateStorage(request, response, clientConfig.isUseSession());
                     ((IdTokenValidator) tokenValidator).storage(storage);
                     
                     ((IdTokenValidator) tokenValidator).validateNonce();

@@ -27,7 +27,9 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.TestOpenIdAuthenticationMechanismDefinition;
+import io.openliberty.security.oidcclientcore.authentication.OriginalResourceRequest;
 import io.openliberty.security.oidcclientcore.client.Client;
+import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException.ValidationResult;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
@@ -38,6 +40,7 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.security.auth.message.MessageInfo;
 import jakarta.security.enterprise.AuthenticationException;
 import jakarta.security.enterprise.AuthenticationStatus;
+import jakarta.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
@@ -71,6 +74,9 @@ public class OidcHttpAuthenticationMechanismTest {
     private MessageInfo messageInfo;
     private Map<String, Object> messageInfoMap;
     private TokenResponse tokenResponse;
+    private OidcClientConfig oidcClientConfig;
+    private AuthenticationParameters authParams;
+    private OriginalResourceRequest originalResourceRequest;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -91,6 +97,9 @@ public class OidcHttpAuthenticationMechanismTest {
         httpMessageContext = mockery.mock(HttpMessageContext.class);
         client = mockery.mock(Client.class);
         tokenResponse = mockery.mock(TokenResponse.class);
+        oidcClientConfig = mockery.mock(OidcClientConfig.class);
+        authParams = mockery.mock(AuthenticationParameters.class);
+        originalResourceRequest = mockery.mock(OriginalResourceRequest.class);
         messageInfoMap = new HashMap<String, Object>();
         clientSubject = new Subject();
     }
@@ -130,6 +139,7 @@ public class OidcHttpAuthenticationMechanismTest {
         clientContinuesFlow(createSuccessfulProviderAuthenticationResult());
         mechanismValidatesTokens(AuthenticationStatus.SUCCESS);
         withMessageInfo();
+        withRestoreOriginalRequest();
         mechanismSetsResponseStatus(HttpServletResponse.SC_OK);
 
         OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
@@ -147,6 +157,7 @@ public class OidcHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequest_callbackRequest_continueFlowAuthenticationResponseException_fails() throws Exception {
         mechanismReceivesCallbackFromOP();
+        withoutRestoreOriginalRequest();
         clientContinuesFlowThrowsException(AUTHENTICATION_RESPONSE_EXCEPTION_INVALID_RESULT);
         mechanismSetsResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
@@ -165,6 +176,7 @@ public class OidcHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequest_callbackRequest_continueFlowTokenResponseException_fails() throws Exception {
         mechanismReceivesCallbackFromOP();
+        withoutRestoreOriginalRequest();
         clientContinuesFlowThrowsException(TOKEN_REQUEST_EXCEPTION);
         mechanismSetsResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
@@ -229,6 +241,40 @@ public class OidcHttpAuthenticationMechanismTest {
                 will(returnValue(messageInfo));
                 allowing(messageInfo).getMap();
                 will(returnValue(messageInfoMap));
+            }
+        });
+    }
+
+    private void withRestoreOriginalRequest() {
+        mockery.checking(new Expectations() {
+            {
+                one(client).getOidcClientConfig();
+                will(returnValue(oidcClientConfig));
+                one(httpMessageContext).getAuthParameters();
+                will(returnValue(authParams));
+                one(oidcClientConfig).isRedirectToOriginalResource();
+                will(returnValue(true));
+                one(authParams).isNewAuthentication();
+                will(returnValue(false));
+                one(oidcClientConfig).isUseSession();
+                will(returnValue(true));
+                one(httpMessageContext).setRequest(originalResourceRequest);
+                one(messageInfo).setRequestMessage(originalResourceRequest);
+            }
+        });
+    }
+
+    private void withoutRestoreOriginalRequest() {
+        mockery.checking(new Expectations() {
+            {
+                one(client).getOidcClientConfig();
+                will(returnValue(oidcClientConfig));
+                one(httpMessageContext).getAuthParameters();
+                will(returnValue(authParams));
+                one(oidcClientConfig).isRedirectToOriginalResource();
+                will(returnValue(false));
+                one(authParams).isNewAuthentication();
+                will(returnValue(true));
             }
         });
     }
@@ -336,6 +382,11 @@ public class OidcHttpAuthenticationMechanismTest {
         @Override
         protected Client getClient(HttpServletRequest request) {
             return client;
+        }
+
+        @Override
+        protected OriginalResourceRequest getOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
+            return originalResourceRequest;
         }
 
     }

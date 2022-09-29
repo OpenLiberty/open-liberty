@@ -10,6 +10,10 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_HEADERS;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_METHOD;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_PARAMS;
+
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.Set;
@@ -31,20 +35,15 @@ import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
-import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
-import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.StorageFactory;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     public static final TraceComponent tc = Tr.register(JakartaOidcAuthorizationRequest.class);
-
-    public static final String STORED_REQUEST_METHOD = "STORED_REQUEST_METHOD";
-    public static final String STORED_REQUEST_HEADERS = "STORED_REQUEST_HEADERS";
-    public static final String STORED_REQUEST_PARAMS = "STORED_REQUEST_PARAMS";
 
     private enum StorageType {
         COOKIE, SESSION
@@ -64,13 +63,9 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     }
     
     private void instantiateStorage(OidcClientConfig config) {
-        if (config.isUseSession()) {
-            this.storage = new SessionBasedStorage(request);
-            this.storageType = StorageType.SESSION;
-        } else {
-            this.storage = new CookieBasedStorage(request, response);
-            this.storageType = StorageType.COOKIE;
-        }
+        boolean useSession = config.isUseSession();
+        this.storage = StorageFactory.instantiateStorage(request, response, useSession);
+        this.storageType = useSession ? StorageType.SESSION : StorageType.COOKIE;
     }
 
     @Override
@@ -301,7 +296,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     void storeRequestMethod(Base64.Encoder encoder, String stateHash) {
         String method = request.getMethod();
         String encodedMethod = encoder.encodeToString(method.getBytes());
-        storage.store(STORED_REQUEST_METHOD + stateHash, encodedMethod);
+        storage.store(WAS_OIDC_REQ_METHOD + stateHash, encodedMethod);
     }
 
     void storeRequestHeaders(Base64.Encoder encoder, String stateHash) {
@@ -321,7 +316,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
             headerJoiner.add(encodedHeaderName + ":" + encodedHeaderValues);
         }
         String encodedHeaders = headerJoiner.toString();
-        storage.store(STORED_REQUEST_HEADERS + stateHash, encodedHeaders);
+        storage.store(WAS_OIDC_REQ_HEADERS + stateHash, encodedHeaders);
     }
 
     void storeRequestParameters(Base64.Encoder encoder, String stateHash) {
@@ -340,7 +335,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
             paramJoiner.add(encodedParamName + ":" + encodedParamValues);
         }
         String encodedParams = paramJoiner.toString();
-        storage.store(STORED_REQUEST_PARAMS + stateHash, encodedParams);
+        storage.store(WAS_OIDC_REQ_PARAMS + stateHash, encodedParams);
     }
 
 }

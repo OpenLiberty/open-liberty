@@ -10,9 +10,9 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
-import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_HEADERS;
-import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_METHOD;
-import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_PARAMS;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_HEADERS;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_METHOD;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_PARAMS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -282,13 +282,13 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
             {
                 one(request).getMethod();
                 will(returnValue(requestMethod));
-                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_METHOD + stateHash)), with(any(String.class)));
+                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_METHOD + stateHash)), with(any(String.class)));
 
                 one(request).getHeaderNames();
                 will(returnValue(headerNames));
                 one(request).getHeaders("Content-Type");
                 will(returnValue(contentTypes));
-                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_HEADERS + stateHash)), with(any(String.class)));
+                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_HEADERS + stateHash)), with(any(String.class)));
 
                 one(request).getParameterNames();
                 will(returnValue(paramNames));
@@ -296,7 +296,7 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
                 will(returnValue(ids));
                 one(request).getParameterValues("language");
                 will(returnValue(languages));
-                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_PARAMS + stateHash)), with(any(String.class)));
+                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_PARAMS + stateHash)), with(any(String.class)));
             }
         });
 

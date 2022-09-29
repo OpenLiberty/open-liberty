@@ -30,8 +30,10 @@ import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitio
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
+import io.openliberty.security.oidcclientcore.authentication.OriginalResourceRequest;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.ClientManager;
+import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.token.JakartaOidcTokenRequest;
@@ -43,6 +45,7 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.AuthenticationException;
 import jakarta.security.enterprise.AuthenticationStatus;
+import jakarta.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
@@ -189,15 +192,40 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     private AuthenticationStatus processCallback(Client client, HttpServletRequest request, HttpServletResponse response,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
-
+        Optional<HttpServletRequest> originalResourceRequest = getOriginalResourceRequest(client, httpMessageContext);
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, request, response, client);
         } catch (AuthenticationResponseException | TokenRequestException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-
+        if (status == AuthenticationStatus.SUCCESS && originalResourceRequest.isPresent()) {
+            httpMessageContext.setRequest(originalResourceRequest.get());
+            httpMessageContext.getMessageInfo().setRequestMessage(originalResourceRequest.get());
+        }
         return status;
+    }
+
+    private Optional<HttpServletRequest> getOriginalResourceRequest(Client client, HttpMessageContext context) {
+        OidcClientConfig config = client.getOidcClientConfig();
+        AuthenticationParameters authParams = context.getAuthParameters();
+        HttpServletRequest originalResourceRequest = null;
+        if (shouldRestoreOriginalRequest(config, authParams)) {
+            HttpServletRequest request = context.getRequest();
+            HttpServletResponse response = context.getResponse();
+            originalResourceRequest = getOriginalResourceRequest(request, response, config.isUseSession());
+        }
+        return Optional.ofNullable(originalResourceRequest);
+    }
+
+    private boolean shouldRestoreOriginalRequest(OidcClientConfig config, AuthenticationParameters authParams) {
+        boolean isRedirectToOriginalResource = config.isRedirectToOriginalResource();
+        boolean isContainerInitiatedFlow = (authParams == null || !authParams.isNewAuthentication());
+        return isRedirectToOriginalResource && isContainerInitiatedFlow;
+    }
+
+    protected OriginalResourceRequest getOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
+        return new OriginalResourceRequest(request, response, useSession);
     }
 
     private AuthenticationStatus processContinueFlowResult(ProviderAuthenticationResult providerAuthenticationResult,
