@@ -12,6 +12,7 @@ package web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.management.ManagementFactory;
@@ -642,8 +643,16 @@ public class DerbyRAServlet extends FATServlet {
         }
     }
 
+    /**
+     * Make sure that when a connection error event notification is sent to the
+     * connection event listener and the connection is "STATE_ACTIVE_FREE"
+     * That the only that connection is marked as unusable, and nothing is purged.
+     */
     public void testErrorInFreeConn() throws Exception {
         DataSource ds = (DataSource) new InitialContext().lookup("eis/ds4");
+        SQLException sqe = new SQLException("APP_SPECIFIED_CONN_ERROR");
+
+        //Get and close connection
         Object managedConn1 = null;
         Connection con1 = null;
         Class<?> derbyConnClass1 = null;
@@ -658,32 +667,26 @@ public class DerbyRAServlet extends FATServlet {
             con1.close();
         }
 
-        SQLException sqe = new SQLException("APP_SPECIFIED_CONN_ERROR");
-
+        //Connection in free pool: Report an error
         Class<?> c = managedConn1.getClass();
         Method m = c.getMethod("notify", int.class, derbyConnClass1, Exception.class);
         m.invoke(managedConn1, 5, con1, sqe); //5 indicates connection error
 
-        String contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "showPoolContents", null, null);
-        int begin = contents.indexOf("size=");
-        int end = contents.indexOf(System.lineSeparator(), begin);
-        int poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
+        //Get pool size
+        long poolSizeAfterError = (long) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "getSize", null, null);
 
         //After the error, there should be 1 connections in the pool.  Delaying the remove of a free managed connection.
-        if (poolSizeAfterError != 1)
-            throw new Exception("Unexpected number of connections found.  Expected 1 but found " + poolSizeAfterError);
-        m.invoke(managedConn1, 5, con1, sqe); //5 indicates connection error
+        assertEquals("Unexpected number of connections found, connection should not have been purged.", 1, poolSizeAfterError);
 
-        contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "showPoolContents", null, null);
-        begin = contents.indexOf("size=");
-        end = contents.indexOf(System.lineSeparator(), begin);
-        poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
+        //Report a duplicate error
+        m.invoke(managedConn1, 5, con1, sqe); //5 indicates connection error
+        poolSizeAfterError = (long) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "getSize", null, null);
 
         //After the error, there should be 1 connections in the pool.  Its not safe to remove the managed connection if its free.
         //The free connection is only marked to not be reused.  Next use will remove this managed connection.
-        if (poolSizeAfterError != 1)
-            throw new Exception("Unexpected number of connections found.  Expected 1 but found " + poolSizeAfterError);
+        assertEquals("Unexpected number of connections found, connection should not have been purged.", 1, poolSizeAfterError);
 
+        //Get and close another connection
         Object managedConn2 = null;
         Connection con2 = null;
         Class<?> derbyConnClass2 = null;
@@ -697,17 +700,59 @@ public class DerbyRAServlet extends FATServlet {
         } finally {
             con2.close();
         }
-        if (managedConn2 == managedConn1)
-            throw new Exception("We must have a new managed connection, review trace log");
 
-        contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "showPoolContents", null, null);
-        begin = contents.indexOf("size=");
-        end = contents.indexOf(System.lineSeparator(), begin);
-        poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
+        //Ensure these two connections are not the same connection
+        assertNotSame("We must have a new managed connection, review trace log", managedConn1, managedConn2);
 
         //After the failing connection is removed and a new one is created, there should be 1 connections in the pool.
-        if (poolSizeAfterError != 1)
-            throw new Exception("Unexpected number of connections found.  Expected 1 but found " + poolSizeAfterError);
+        poolSizeAfterError = (long) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "getSize", null, null);
+        assertEquals("Unexpected number of connections found, failing connection should have been replaced.", 1, poolSizeAfterError);
+    }
+
+    /**
+     * Make sure that when a connection error event notification is sent to the
+     * connection event listener and the connection is "STATE_ACTIVE_INUSE"
+     * That the only that connection is marked as unusable, and nothing is purged.
+     */
+    public void testErrorInUsedConn() throws Exception {
+        DataSource ds = (DataSource) new InitialContext().lookup("eis/ds4");
+        SQLException sqe = new SQLException("APP_SPECIFIED_CONN_ERROR");
+
+        //Get first connection
+        Object managedConn1 = null;
+        Class<?> derbyConnClass1 = null;
+        try (Connection con1 = ds.getConnection(); Statement stmt1 = con1.createStatement();) {
+            derbyConnClass1 = con1.getClass();
+            Field f1 = derbyConnClass1.getDeclaredField("mc");
+            managedConn1 = f1.get(con1);
+
+            //get second connection
+            Object managedConn2 = null;
+            Class<?> derbyConnClass2 = null;
+            try (Connection con2 = ds.getConnection(); Statement stmt2 = con2.createStatement();) {
+                derbyConnClass2 = con2.getClass();
+                Field f2 = derbyConnClass2.getDeclaredField("mc");
+                managedConn2 = f2.get(con2);
+
+                //Assert that connections are not the same.
+                assertNotSame("Connections should not be the same", managedConn1, managedConn2);
+                long poolSizeBeforeError = (long) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "getSize", null, null);
+
+                //Close first connection so that it gets returned to free pool
+                stmt1.close();
+                con1.close();
+
+                //Now cause an error on the in-use connection
+                Class<?> c = managedConn2.getClass();
+                Method m = c.getMethod("notify", int.class, derbyConnClass2, Exception.class);
+                m.invoke(managedConn2, 5, con2, sqe); //5 indicates connection error
+                long poolSizeAfterError = (long) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "getSize", null, null);
+
+                //Assert pool sizes before and after error
+                assertEquals("Incorrect pool size before error.", 2, poolSizeBeforeError);
+                assertEquals("Incorrect pool size after error. All connections should have been purged.", 0, poolSizeAfterError);
+            }
+        }
 
     }
 

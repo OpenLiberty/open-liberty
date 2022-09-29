@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jca.fat.derbyra;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -235,6 +237,15 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
     @Test
     public void testErrorInFreeConn() throws Exception {
+        server.setTraceMarkToEndOfDefaultTrace();
         runTest(DerbyRAServlet);
+        assertEquals("J2CA1004I should have been found in logs", 1, server.findStringsInLogsUsingMark("J2CA1004I", server.getDefaultTraceFile()).size());
+    }
+
+    @Test
+    public void testErrorInUsedConn() throws Exception {
+        server.setTraceMarkToEndOfDefaultTrace();
+        runTest(DerbyRAServlet);
+        assertEquals("J2CA0056I should have been found in logs", 1, server.findStringsInLogsUsingMark("J2CA0056I", server.getDefaultTraceFile()).size());
     }
 }
