@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,9 +7,14 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *
+ * PH49305 LLA 09/29/22 - Allow header multiples
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.values;
 
+import java.util.Iterator;
+
+import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 
@@ -34,16 +39,24 @@ public class AccessLogRequestHeaderValue extends AccessLogData {
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request, Object data) {
         String headerName = (String) data;
-        String headerValue = null;
 
         if (headerName != null) {
-            headerValue = getHeaderValue(response, request, data);
-        }
+            // Some headers are allowed to have multiples such as X-Forwarded-For, get them all
+            int count = request.getNumberOfHeaderInstances(headerName);
 
-        if (headerValue != null) {
-            accessLogEntry.append(headerValue);
-        } else {
-            accessLogEntry.append("-");
+            if (0 == count) {
+                accessLogEntry.append("-");
+            } else {
+                //accessLogEntry.append(" \"");
+                Iterator<HeaderField> it = request.getHeaders(headerName).iterator();
+                accessLogEntry.append(it.next().asString());
+                while (it.hasNext()) {
+                    accessLogEntry.append(", ");
+                    accessLogEntry.append(it.next().asString());
+                }
+                //accessLogEntry.append('\"');
+            }
+
         }
 
         return true;
