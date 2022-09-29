@@ -69,7 +69,6 @@ public class JCacheProviderInAppTest extends BaseTestCase {
         server1.addInstalledAppForValidation("providerinapp");
         startServer1(server1, groupName, null, null);
         waitForDefaultHttpsEndpoint(server1);
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
     }
 

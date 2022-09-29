@@ -267,23 +267,16 @@ public class CacheServiceImpl implements CacheService {
                             loadTimeMs = System.currentTimeMillis() - loadTimeMs;
 
                             if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
-                                Tr.info(tc, "CWLJC0001_CACHE_CREATED", cacheName, loadTimeMs);
+                                Tr.info(tc, "CWLJC0001_CACHE_CREATED", cacheName, loadTimeMs,
+                                        cacheManagerService.getCachingProviderService().getCachingProvider().getClass().getName());
                             }
                         } else {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
-                                Tr.info(tc, "CWLJC0002_CACHE_FOUND", cacheName, loadTimeMs);
+                                Tr.info(tc, "CWLJC0002_CACHE_FOUND", cacheName, loadTimeMs,
+                                        cacheManagerService.getCachingProviderService().getCachingProvider().getClass().getName());
                             }
                         }
 
-                        /*
-                         * Output trace to mark the caching provider class in use for this cache.
-                         */
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
-                            Tr.info(tc, "CWLJC0003_USING_PROVIDER", cacheName, cacheManagerService.getCachingProviderService()
-                                            .getCachingProvider()
-                                            .getClass()
-                                            .getName());
-                        }
                         return tCache;
                     });
                 }

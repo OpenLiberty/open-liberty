@@ -293,7 +293,6 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         /*
          * All issues have been fixed, so wait for the auth cache to start.
          */
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
     }
 }

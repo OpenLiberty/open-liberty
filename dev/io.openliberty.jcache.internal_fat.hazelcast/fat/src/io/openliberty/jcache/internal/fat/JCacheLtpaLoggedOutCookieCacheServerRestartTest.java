@@ -58,7 +58,6 @@ public class JCacheLtpaLoggedOutCookieCacheServerRestartTest extends BaseTestCas
          */
         server1.addInstalledAppForValidation("formlogin");
         startServer1(server1, groupName.toString(), null, null);
-        waitForCachingProvider(server1, COOKIE_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
         waitForDefaultHttpsEndpoint(server1);
 
@@ -145,7 +144,6 @@ public class JCacheLtpaLoggedOutCookieCacheServerRestartTest extends BaseTestCas
          * 5. Restart the server
          */
         server1.restartServer();
-        waitForCachingProvider(server1, COOKIE_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
         waitForDefaultHttpsEndpoint(server1);
 

@@ -146,7 +146,6 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         startServer1(server1, groupName, null, null);
         basicAuthClient1 = new BasicAuthClient(server1, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
         waitForDefaultHttpsEndpoint(server1);
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
@@ -157,7 +156,6 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         startServer2(server2, groupName);
         basicAuthClient2 = new BasicAuthClient(server2, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
         waitForDefaultHttpsEndpoint(server2);
-        waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
 
         /*
@@ -229,7 +227,6 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         startServer1(server1, groupName, null, null);
         basicAuthClient1 = new BasicAuthClient(server1, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
         waitForDefaultHttpsEndpoint(server1);
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
@@ -245,7 +242,6 @@ public class JCacheCustomPrincipalCastingTest extends BaseTestCase {
         startServer2(server2, groupName);
         basicAuthClient2 = new BasicAuthClient(server2, "Basic Authentication", "ServletName: SubjectCastServlet", CONTEXT_ROOT);
         waitForDefaultHttpsEndpoint(server2);
-        waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
 
         /*
