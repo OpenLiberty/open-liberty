@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.beanvalidation.fat.cdi;
 
 import java.util.Collections;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,6 +38,8 @@ public class BeanValidation20CDITest extends BeanValidationCDI_Common {
     @Server("com.ibm.ws.beanvalidation.cdi_2.0.fat")
     public static LibertyServer server;
 
+    private static Set<String> installedApps;
+
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, PrivHelper.JAXB_PERMISSION);
@@ -44,6 +47,7 @@ public class BeanValidation20CDITest extends BeanValidationCDI_Common {
         createAndExportCommonWARs(server);
         createAndExportCDIWARs(server);
         server.startServer();
+        installedApps = server.listAllInstalledAppsForValidation();
     }
 
     @AfterClass
@@ -106,6 +110,7 @@ public class BeanValidation20CDITest extends BeanValidationCDI_Common {
             //Make sure all test applications are up and running after toggling the CDI feature.
             config.getFeatureManager().getFeatures().add("cdi-2.0");
             server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(installedApps);
             server.stopServer();
             server.startServer();
         }
