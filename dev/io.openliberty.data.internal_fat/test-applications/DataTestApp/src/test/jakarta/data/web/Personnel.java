@@ -15,10 +15,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 import jakarta.data.Delete;
-import jakarta.data.Limit;
 import jakarta.data.Paginated;
+import jakarta.data.Query;
 import jakarta.data.Select;
 import jakarta.data.Update;
 import jakarta.data.Where;
@@ -36,7 +37,7 @@ public interface Personnel {
     @Asynchronous
     @Update("o.lastName = ?2")
     @Where("o.lastName = ?1 AND o.ssn IN ?3")
-    CompletionStage<Long> changeSurnames(String oldSurname, String newSurname, List<Long> ssnList);
+    CompletionStage<Integer> changeSurnames(String oldSurname, String newSurname, List<Long> ssnList);
 
     @Asynchronous
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
@@ -50,8 +51,15 @@ public interface Personnel {
     CompletableFuture<Void> findByOrderBySsnDesc(Consumer<Person> callback);
 
     @Asynchronous
-    @Limit(1) // indicates single result (rather than list) for the completion stage
     CompletableFuture<Person> findBySsn(long ssn);
+
+    @Asynchronous
+    @Query("SELECT o.firstName FROM Person o WHERE o.lastName=?1 ORDER BY o.firstName")
+    CompletableFuture<Stream<String>> firstNames(String lastName);
+
+    @Asynchronous
+    @Query("SELECT DISTINCT o.lastName FROM Person o ORDER BY o.lastName")
+    CompletionStage<String[]> lastNames();
 
     @Asynchronous
     @Select("firstName")
@@ -78,5 +86,5 @@ public interface Personnel {
     @Asynchronous
     @Update("o.lastName = ?1")
     @Where("o.ssn = ?2")
-    CompletableFuture<Long> setSurnameAsync(String newSurname, long ssn);
+    CompletableFuture<Boolean> setSurnameAsync(String newSurname, long ssn);
 }
