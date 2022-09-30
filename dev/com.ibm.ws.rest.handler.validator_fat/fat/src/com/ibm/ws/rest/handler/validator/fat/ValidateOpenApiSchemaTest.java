@@ -52,7 +52,6 @@ import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
 public class ValidateOpenApiSchemaTest extends FATServletClient {
-
     @Server("com.ibm.ws.rest.handler.validator.openapi.fat")
     public static LibertyServer server;
 
@@ -93,12 +92,29 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
     }
 
     /**
+     * Test the validation schema is available under the ibm/api/platform/vaidation endpoint and
+     * honors the format=json parameter.
+     */
+    @Test
+    public void testAllValidatorsAsJSON_ibmApi() throws Exception {
+        testAllValidatorsAsJSON("/ibm/api");
+    }
+
+    /**
      * Test the validation schema is available under the openapi/platform/vaidation endpoint and
      * honors the format=json parameter.
      */
     @Test
-    public void testAllValidatorsAsJSON() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation?format=json");
+    public void testAllValidatorsAsJSON_openApi() throws Exception {
+        testAllValidatorsAsJSON("/openapi");
+    }
+
+    /**
+     * Test the validation schema is available under the ${contextRoot}/platform/vaidation endpoint and
+     * honors the format=json parameter.
+     */
+    private void testAllValidatorsAsJSON(String contextRoot) throws Exception {
+        HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation?format=json");
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
         JsonObject paths = json.getJsonObject("paths");
@@ -120,12 +136,29 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
     }
 
     /**
+     * Test the validation schema is available under the ibm/api/platform/vaidation endpoint and
+     * is returned in YAML format by default.
+     */
+    @Test
+    public void testAllValidatorsAsYAML_ibmApi() throws Exception {
+        testAllValidatorsAsYAML("/ibm/api");
+    }
+
+    /**
      * Test the validation schema is available under the openapi/platform/vaidation endpoint and
      * is returned in YAML format by default.
      */
     @Test
-    public void testAllValidatorsAsYAML() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
+    public void testAllValidatorsAsYAML_openApi() throws Exception {
+        testAllValidatorsAsYAML("/openapi");
+    }
+
+    /**
+     * Test the validation schema is available under the ${contextRoot}/platform/vaidation endpoint and
+     * is returned in YAML format by default.
+     */
+    private void testAllValidatorsAsYAML(String contextRoot) throws Exception {
+        HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation");
         String yaml = request.run(String.class);
         SwaggerParseResult result = new OpenAPIParser().readContents(yaml, null, null, null);
         assertNotNull(result);
@@ -198,12 +231,29 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      * doesn't return cloudant API data when cloudant isn't enabled.
      */
     @Test
-    public void testDisableCloudantValidator() throws Exception {
+    public void testDisableCloudantValidator_ibmApi() throws Exception {
+        testDisableCloudantValidator("/ibm/api");
+    }
+
+    /**
+     * Test the validation OpenAPI endpoint honors the Accept header of application/json and
+     * doesn't return cloudant API data when cloudant isn't enabled.
+     */
+    @Test
+    public void testDisableCloudantValidator_openApi() throws Exception {
+        testDisableCloudantValidator("/openapi");
+    }
+
+    /**
+     * Test the validation OpenAPI endpoint honors the Accept header of application/json and
+     * doesn't return cloudant API data when cloudant isn't enabled.
+     */
+    private void testDisableCloudantValidator(String contextRoot) throws Exception {
         //Disable cloudant.
         try (AutoCloseable x = withoutFeatures("cloudant-1.0")) {
 
             //Test that cloudant elements have been removed from the OpenAPI document.
-            HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
+            HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation");
             JsonObject json = request.requestProp("Accept", "application/json").run(JsonObject.class);
             String err = "Unexpected json response: " + json.toString();
             JsonObject paths = json.getJsonObject("paths");
@@ -229,13 +279,28 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      * Test the validation OpenAPI doesn't return JCA or JMS API data when JCA isn't enabled in the server.
      */
     @Test
-    public void testDisableJCAValidator() throws Exception {
+    public void testDisableJCAValidator_ibmApi() throws Exception {
+        testDisableJCAValidator("/ibm/api");
+    }
+
+    /**
+     * Test the validation OpenAPI doesn't return JCA or JMS API data when JCA isn't enabled in the server.
+     */
+    @Test
+    public void testDisableJCAValidator_openApi() throws Exception {
+        testDisableJCAValidator("/openapi");
+    }
+
+    /**
+     * Test the validation OpenAPI doesn't return JCA or JMS API data when JCA isn't enabled in the server.
+     */
+    private void testDisableJCAValidator(String contextRoot) throws Exception {
         //Disable JCA (JMS 2.0 implicitly enabled it).
         try (AutoCloseable x = withoutFeatures("jca", "jms", "wasjmsclient", "wasjmsserver",
                                                "connectors", "messaging", "messagingClient", "messagingServer")) {
 
             //Test that JCA and JMS elements have been removed from the OpenAPI document.
-            HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
+            HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation");
             String yaml = request.run(String.class);
             SwaggerParseResult result = new OpenAPIParser().readContents(yaml, null, null, null);
             assertNotNull(result);
@@ -265,11 +330,26 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      * Test the validation OpenAPI doesn't return JDBC API data when JDBC isn't enabled in the server.
      */
     @Test
-    public void testDisableJDBCValidator() throws Exception {
+    public void testDisableJDBCValidator_ibmApi() throws Exception {
+        testDisableJDBCValidator("/ibm/api");
+    }
+
+    /**
+     * Test the validation OpenAPI doesn't return JDBC API data when JDBC isn't enabled in the server.
+     */
+    @Test
+    public void testDisableJDBCValidator_openApi() throws Exception {
+        testDisableJDBCValidator("/openapi");
+    }
+
+    /**
+     * Test the validation OpenAPI doesn't return JDBC API data when JDBC isn't enabled in the server.
+     */
+    private void testDisableJDBCValidator(String contextRoot) throws Exception {
         //Disable JDBC.
         try (AutoCloseable x = withoutFeatures("jdbc")) {
             //Test that JDBC elements have been removed from the OpenAPI document.
-            HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
+            HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation");
             String yaml = request.run(String.class);
             SwaggerParseResult result = new OpenAPIParser().readContents(yaml, null, null, null);
             assertNotNull(result);
@@ -299,12 +379,27 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      * Test the validation OpenAPI doesn't return JMS API data when JMS isn't enabled in the server.
      */
     @Test
-    public void testDisableJMSValidator() throws Exception {
+    public void testDisableJMSValidator_ibmApi() throws Exception {
+        testDisableJMSValidator("/ibm/api");
+    }
+
+    /**
+     * Test the validation OpenAPI doesn't return JMS API data when JMS isn't enabled in the server.
+     */
+    @Test
+    public void testDisableJMSValidator_openApi() throws Exception {
+        testDisableJMSValidator("/openapi");
+    }
+
+    /**
+     * Test the validation OpenAPI doesn't return JMS API data when JMS isn't enabled in the server.
+     */
+    private void testDisableJMSValidator(String contextRoot) throws Exception {
         // Remove JMS
         try (AutoCloseable x = withoutFeatures("jms", "wasjmsclient", "wasjmsserver",
                                                "messaging", "messagingClient", "messagingServer")) {
             //Test that JMS elements have been removed from the OpenAPI document.
-            HttpsRequest request = new HttpsRequest(server, "/openapi/platform/validation");
+            HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation");
             String yaml = request.run(String.class);
             SwaggerParseResult result = new OpenAPIParser().readContents(yaml, null, null, null);
             assertNotNull(result);

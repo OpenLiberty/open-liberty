@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ import com.ibm.wsspi.validator.Validator;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { RESTHandler.class },
            property = { RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=/openapi/platform",
+                        RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=/ibm/api/platform",
                         RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/validation" })
 public class ValidatorSchemaRESTHandler implements RESTHandler {
     private static final TraceComponent tc = Tr.register(ValidatorSchemaRESTHandler.class);

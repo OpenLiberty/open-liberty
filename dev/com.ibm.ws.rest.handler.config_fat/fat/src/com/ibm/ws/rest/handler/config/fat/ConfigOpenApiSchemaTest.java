@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,12 +66,29 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
     }
 
     /**
+     * Test the config schema is available under the ibm/api/platform/config endpoint, and
+     * honors both the "format=json" query parameter and "Accept application/json" http header.
+     */
+    @Test
+    public void testConfigOpenAPIAsJSON_ibmApi() throws Exception {
+        testConfigOpenAPIAsJSON("/ibm/api");
+    }
+
+    /**
      * Test the config schema is available under the openapi/platform/config endpoint, and
      * honors both the "format=json" query parameter and "Accept application/json" http header.
      */
     @Test
-    public void testConfigOpenAPIAsJSON() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/openapi/platform/config?format=json");
+    public void testConfigOpenAPIAsJSON_openApi() throws Exception {
+        testConfigOpenAPIAsJSON("/openapi");
+    }
+
+    /**
+     * Test the config schema is available under the ${contextRoot}/platform/config endpoint, and
+     * honors both the "format=json" query parameter and "Accept application/json" http header.
+     */
+    private void testConfigOpenAPIAsJSON(String contextRoot) throws Exception {
+        HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/config?format=json");
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
         JsonObject paths = json.getJsonObject("paths");
@@ -83,7 +100,7 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
         assertTrue(err, paths.size() == 3);
 
         //test again with json specified in the header
-        request = new HttpsRequest(server, "/openapi/platform/config");
+        request = new HttpsRequest(server, contextRoot + "/platform/config");
         json = request.requestProp("Accept", "application/json").run(JsonObject.class);
         err = "Unexpected json response: " + json.toString();
         paths = json.getJsonObject("paths");
@@ -96,12 +113,29 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
     }
 
     /**
+     * Test the config schema is available under the ibm/api/platform/config endpoint, and
+     * is returned as YAML by default.
+     */
+    @Test
+    public void testConfigOpenAPIAsYAML_ibmApi() throws Exception {
+        testConfigOpenAPIAsYAML("/ibm/api");
+    }
+
+    /**
      * Test the config schema is available under the openapi/platform/config endpoint, and
      * is returned as YAML by default.
      */
     @Test
-    public void testConfigOpenAPIAsYAML() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/openapi/platform/config");
+    public void testConfigOpenAPIAsYAML_openApi() throws Exception {
+        testConfigOpenAPIAsYAML("/openapi");
+    }
+
+    /**
+     * Test the config schema is available under the ${contextRoot}/platform/config endpoint, and
+     * is returned as YAML by default.
+     */
+    private void testConfigOpenAPIAsYAML(String contextRoot) throws Exception {
+        HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/config");
         String yaml = request.run(String.class);
         SwaggerParseResult result = new OpenAPIParser().readContents(yaml, null, null, null);
         assertNotNull(result);
