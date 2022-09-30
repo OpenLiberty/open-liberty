@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsp.translator.visitor.generator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -215,14 +216,28 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
     protected void generateClassSection(ValidateTagFileResult validatorResult) {
         writer.println();
         writer.print("public class " + tagFileFiles.getClassName() + " extends javax.servlet.jsp.tagext.SimpleTagSupport");
+        
+        ArrayList<String> implementingInterfaces = new ArrayList<String>();
+
         if(PagesVersionHandler.isPages31OrHigherLoaded()){
-            writer.print(" implements com.ibm.ws.jsp.runtime.JspDirectiveInfo");
+            implementingInterfaces.add("com.ibm.ws.jsp.runtime.JspDirectiveInfo");
         }
+
         TagFileInfo tfi = (TagFileInfo)inputMap.get("TagFileInfo");
         TagInfo ti = tfi.getTagInfo();
         if (ti.hasDynamicAttributes()) {
-            writer.println();
-            writer.print(" implements javax.servlet.jsp.tagext.DynamicAttributes");
+            implementingInterfaces.add("javax.servlet.jsp.tagext.DynamicAttributes");
+        }
+
+        if(implementingInterfaces.size() > 0){
+            writer.print(" implements");
+            int size = implementingInterfaces.size();
+            for(int i = 0; i < size; i++){
+                writer.print(" " + implementingInterfaces.get(i));
+                if(i < size -1 ){
+                    writer.print(",");
+                }
+            }
         }
         
         writer.println(" {");
