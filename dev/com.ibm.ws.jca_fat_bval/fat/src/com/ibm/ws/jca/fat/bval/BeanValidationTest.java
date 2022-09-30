@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.AfterClass;
@@ -70,7 +71,9 @@ public class BeanValidationTest extends FATServletClient {
         else
             server.waitForConfigUpdateInLogUsingMark(appNames);
 
-        assertNotNull(server.waitForStringInLog("J2CA7001I.*" + BVAL_RAR));
+        //Match the number of RAR installed (J2CA7001I) messages to the number of RAR uninstalled messages.
+        List<String> rarUninstallMessages = server.findStringsInLogs("J2CA7009I.*");
+        server.waitForMultipleStringsInLogUsingMark(rarUninstallMessages.size() + 1, "J2CA7001I.*" + BVAL_RAR);
     }
 
     @AfterClass
