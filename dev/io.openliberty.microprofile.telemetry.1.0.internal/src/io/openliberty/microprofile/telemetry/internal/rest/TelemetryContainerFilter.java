@@ -126,29 +126,21 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     }
 
     private static class RestRouteKeyWeakReference<T> extends WeakReference<T> {
-        private final int hash;
         private final RestRouteKey owningKey;
 
         RestRouteKeyWeakReference(T referent, RestRouteKey owningKey) {
             super(referent);
             this.owningKey = owningKey;
-            hash = referent.hashCode();
         }
 
         RestRouteKeyWeakReference(T referent, RestRouteKey owningKey,
                                   ReferenceQueue<T> referenceQueue) {
             super(referent, referenceQueue);
             this.owningKey = owningKey;
-            hash = referent.hashCode();
         }
 
         RestRouteKey getOwningKey() {
             return owningKey;
-        }
-
-        @Override
-        public int hashCode() {
-            return hash;
         }
 
         @SuppressWarnings("rawtypes")
