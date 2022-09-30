@@ -106,6 +106,14 @@ public class RepeatFaultTolerance {
         return repeat(server, TestMode.FULL, MicroProfileActions.MP60, MicroProfileActions.MP40, MicroProfileActions.MP20);
     }
 
+    /*
+     * Temporary usage by com.ibm.ws.microprofile.faulttolerance.cdi_fat_metrics to merge mpMetrics-5.0
+     * This does not contain MicroProfileActions.MP60
+     */
+    public static RepeatTests repeatDefaultNoMp60Set(String server) {
+        return repeat(server, TestMode.FULL, MicroProfileActions.MP40, MicroProfileActions.MP20);
+    }
+
     /**
      * Return a rule to repeat tests for FT 1.0, 1.1, 2.0, 2.1, 3.0 and 4.0.
      * All will be run in LITE mode

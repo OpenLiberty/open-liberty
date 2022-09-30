@@ -16,9 +16,10 @@ Subsystem-Name: MicroProfile Metrics 5.0
   com.ibm.websphere.appserver.anno-2.0, \
   com.ibm.websphere.appserver.monitor-1.0
 -bundles=com.ibm.ws.microprofile.metrics.common, \
- io.openliberty.microprofile.metrics.internal.3.0.jakarta, \
- io.openliberty.microprofile.metrics.internal.cdi.3.0.jakarta, \
- io.openliberty.microprofile.metrics.internal.private, \
- io.openliberty.microprofile.metrics.internal.public
+ io.openliberty.io.smallrye.common.jakarta, \
+ com.ibm.ws.cdi.interfaces.jakarta, \
+ io.openliberty.microprofile.metrics.internal.5.0, \
+ io.openliberty.microprofile.metrics.internal.private.5.0, \
+ io.openliberty.microprofile.metrics.internal.public.5.0
 kind=noship
 edition=full

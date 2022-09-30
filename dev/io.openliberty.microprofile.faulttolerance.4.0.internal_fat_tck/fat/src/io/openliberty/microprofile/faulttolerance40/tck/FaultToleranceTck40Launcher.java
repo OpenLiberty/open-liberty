@@ -46,8 +46,9 @@ public class FaultToleranceTck40Launcher {
 
     private static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
+    //Temporarily removed MicroProfileActions.MP60 to accommodate merging MP Metrics 5
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP50);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP50);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

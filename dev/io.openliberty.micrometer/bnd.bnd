@@ -1,0 +1,57 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.${libertyBundleMicroVersion}
+
+Bundle-Name: io.openliberty.micrometer
+Bundle-SymbolicName: io.openliberty.micrometer
+Bundle-Description: Micrometer libraries and necessary dependencies, version ${bVersion}
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+Import-Package: \
+	io.micrometer.core.*;version=1.9.3,\
+	io.micrometer.prometheus;version=1.9.3,\
+	org.LatencyUtils;version=2.0.3,\
+    org.HdrHistogram.*;version=2.1.12,\
+    io.prometheus.*;version=0.15.0,\
+    com.ibm.*,\
+    org.osgi.*
+
+# do not import all
+
+Export-Package: \
+    io.micrometer.prometheus;version=1.8.5,\
+	io.micrometer.core.*;version=1.8.5,\
+	org.LatencyUtils;version=2.0.3,\
+    org.HdrHistogram.*;version=2.1.12,\
+    io.prometheus.*;version=0.15.0
+
+publish.wlp.jar.suffix: lib
+
+-buildpath: \
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	io.micrometer:micrometer-core;version=1.9.3,\
+    io.micrometer:micrometer-registry-prometheus;version=1.9.3,\
+    org.hdrhistogram:HdrHistogram;version=2.1.12,\
+    org.latencyutils:LatencyUtils;version=2.0.3,\
+    io.prometheus:simpleclient_common;version=0.15.0,\
+    io.prometheus:simpleclient;version=0.15.0,\
+    io.prometheus:simpleclient_tracer_otel;version=0.15.0,\
+	io.prometheus:simpleclient_tracer_otel_agent;version=0.15.0,\
+	io.prometheus:simpleclient_tracer_common;version=0.15.0
