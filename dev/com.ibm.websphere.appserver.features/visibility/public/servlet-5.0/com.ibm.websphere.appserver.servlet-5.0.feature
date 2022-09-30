@@ -33,12 +33,34 @@ IBM-SPI-Package: com.ibm.wsspi.webcontainer, \
  com.ibm.ws.webcontainer.spiadapter.collaborator, \
  com.ibm.websphere.webcontainer.async
 Subsystem-Category: JakartaEE9Application
--features=com.ibm.websphere.appserver.eeCompatible-9.0, \
-  io.openliberty.servlet.internal-5.0, \
-  io.openliberty.servlet-servletSpi2.0
+-features=io.openliberty.jakartaeePlatform-9.0, \
+  io.openliberty.servlet.api-5.0, \
+  com.ibm.websphere.appserver.javaeeddSchema-1.0, \
+  com.ibm.websphere.appserver.injection-2.0, \
+  io.openliberty.servlet-servletSpi2.0, \
+  com.ibm.websphere.appserver.httptransport-1.0, \
+  com.ibm.websphere.appserver.requestProbes-1.0, \
+  com.ibm.websphere.appserver.eeCompatible-9.0
+-bundles=com.ibm.ws.app.manager.war.jakarta, \
+ com.ibm.ws.managedobject, \
+ com.ibm.ws.org.apache.commons.io, \
+ com.ibm.websphere.security, \
+ com.ibm.ws.org.apache.commons.fileupload.jakarta, \
+ com.ibm.ws.webcontainer.servlet.4.0.jakarta, \
+ com.ibm.ws.webcontainer.servlet.4.0.factories.jakarta, \
+ com.ibm.ws.webcontainer.servlet.3.1.jakarta, \
+ com.ibm.ws.session.jakarta, \
+ com.ibm.ws.webcontainer.jakarta, \
+ com.ibm.ws.webcontainer.cors.jakarta, \
+ com.ibm.ws.http.plugin.merge, \
+ com.ibm.ws.webserver.plugin.runtime.jakarta, \
+ com.ibm.ws.webserver.plugin.runtime.interfaces
 -jars=com.ibm.ws.webserver.plugin.utility, \
  io.openliberty.servlet; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/io.openliberty.servlet_1.1-javadoc.zip
+-files=bin/tools/ws-webserverPluginutil.jar, \
+ bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
+ bin/pluginUtility.bat, \
+ dev/api/ibm/javadoc/io.openliberty.servlet_1.1-javadoc.zip
 Subsystem-Name: Jakarta Servlet 5.0
 kind=ga
 edition=core
