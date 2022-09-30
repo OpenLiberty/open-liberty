@@ -9,5 +9,5 @@ visibility = private
   com.ibm.ws.wsat.common.jakarta; start-phase:=CONTAINER_LATE, \
   com.ibm.ws.wsat.webclient.jakarta, \
   com.ibm.ws.wsat.webservice.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=base
