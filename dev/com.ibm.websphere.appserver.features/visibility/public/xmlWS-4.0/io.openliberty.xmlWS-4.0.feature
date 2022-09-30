@@ -31,7 +31,7 @@ IBM-API-Package: \
  dev/spi/ibm/javadoc/io.openliberty.globalhandler.spi_1.0-javadoc.zip
 -jars=\
   io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
-kind=noship
-edition=full
+kind=beta
+edition=base
 WLP-AlsoKnownAs: jaxws-4.0
 WLP-Activation-Type: parallel
