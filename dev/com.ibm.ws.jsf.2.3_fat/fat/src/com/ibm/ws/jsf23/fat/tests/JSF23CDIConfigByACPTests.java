@@ -52,7 +52,7 @@ public class JSF23CDIConfigByACPTests extends CDITestBase {
             cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.faces40");
         } else {
             // Include @ManagedBean beans.
-            cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans");
+            cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23");
         }
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.factory");
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.injected");

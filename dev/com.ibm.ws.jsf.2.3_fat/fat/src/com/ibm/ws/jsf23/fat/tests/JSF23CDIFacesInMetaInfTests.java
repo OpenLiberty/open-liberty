@@ -41,25 +41,14 @@ public class JSF23CDIFacesInMetaInfTests extends CDITestBase {
 
     @BeforeClass
     public static void setup() throws Exception {
-        if (JakartaEE10Action.isActive()) {
-            // Include @Named beans.
-            ShrinkHelper.defaultDropinApp(server, "CDIFacesInMetaInf.war",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.managed",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
-        } else {
-            // Include @ManagedBean beans.
-            ShrinkHelper.defaultDropinApp(server, "CDIFacesInMetaInf.war",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.beans",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.managed",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
-                                          "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
-        }
+        // Include @Named beans if Faces 4.0 is being tested. Include @ManagedBean beans otherwise.
+        ShrinkHelper.defaultDropinApp(server, "CDIFacesInMetaInf.war",
+                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.managed",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
+                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(JSF23CDIFacesInMetaInfTests.class.getSimpleName() + ".log");

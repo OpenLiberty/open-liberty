@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf23.fat.cdi.common.beans;
+package com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23;
 
 import java.io.Serializable;
 
