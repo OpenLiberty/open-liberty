@@ -230,7 +230,7 @@ public class DataTestServlet extends FATServlet {
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
                                                                                  1002003003L, 1002003002L, 1002003001L))
                         .thenCompose(updateCount -> {
-                            assertEquals(Long.valueOf(6), updateCount);
+                            assertEquals(Integer.valueOf(6), updateCount);
 
                             return personnel.findByLastNameOrderByFirstName("Test-Asynchronous");
                         });
@@ -250,6 +250,21 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Betty", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
         assertEquals("Ben", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
         assertEquals("Alexander", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // Async find as CompletableFuture<Stream<String>>
+        CompletableFuture<Stream<String>> futureStream = personnel.firstNames("TestAsynchronous");
+        assertIterableEquals(List.of("Alexander", "Ben", "Betty", "Brian"),
+                             futureStream.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).collect(Collectors.toList()));
+
+        // Async find as CompletionStage<String[]>
+        names.clear();
+        personnel.lastNames().thenAccept(lastNames -> {
+            for (String lastName : lastNames)
+                names.add(lastName);
+        }).toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+        assertEquals("Test-Asynchronous", names.poll());
+        assertEquals("TestAsynchronous", names.poll());
+        assertEquals(null, names.poll());
 
         // Paginated async find with Consumer and CompletableFuture to track completion
         Queue<Long> ids = new LinkedList<Long>();
@@ -310,7 +325,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Long.valueOf(4), avgLengthOfBNames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
-        assertEquals(Long.valueOf(1), personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Boolean.TRUE, personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         deleted = personnel.removeAll();
         assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
@@ -344,7 +359,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(2, added.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).size());
 
         CompletableFuture<Long> updated2Then1;
-        CompletableFuture<Long> updated2;
+        CompletableFuture<Boolean> updated2;
 
         tran.begin();
         try {
@@ -380,8 +395,8 @@ public class DataTestServlet extends FATServlet {
             updated2 = personnel.setSurnameAsync("TestAsyncPrevents-Deadlock", p2.ssn);
 
             try {
-                Long updateCount = updated2.get(1, TimeUnit.SECONDS);
-                fail("Third thread ought to be blocked by second thread. Instead, update count is " + updateCount);
+                Boolean wasUpdated = updated2.get(1, TimeUnit.SECONDS);
+                fail("Third thread ought to be blocked by second thread. Instead, was updated? " + wasUpdated);
             } catch (TimeoutException x) {
                 // expected
             }
@@ -394,7 +409,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Long.valueOf(2), updated2Then1.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         // With the second thread completing, it releases both locks, allowing the third thread to obtain the lock on 2 and complete
-        assertEquals(Long.valueOf(1), updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Boolean.TRUE, updated2.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**
@@ -638,10 +653,15 @@ public class DataTestServlet extends FATServlet {
         joe.lastName = "TestFindMultiple";
         joe.ssn = 987654321;
 
+        Person jude = new Person();
+        jude.firstName = "Jude";
+        jude.lastName = "Test-FindMultiple";
+        jude.ssn = 11235813;
+
         tran.begin();
         try {
-            people.save(jane);
-            people.save(joe);
+            people.save(List.of(jane, joe));
+            people.save(List.of(jude));
         } finally {
             if (tran.getStatus() == Status.STATUS_MARKED_ROLLBACK)
                 tran.rollback();
@@ -668,6 +688,11 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p2expected.lastName, p2.lastName);
         assertEquals(p2expected.firstName, p2.firstName);
         assertEquals(p2expected.ssn, p2.ssn);
+
+        found = people.find("Test-FindMultiple");
+        assertNotNull(found);
+        assertEquals(1, found.size());
+        assertEquals(jude.ssn, found.get(0).ssn);
     }
 
     /**

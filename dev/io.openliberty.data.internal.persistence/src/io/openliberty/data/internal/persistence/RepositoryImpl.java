@@ -12,9 +12,12 @@ package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,8 +83,24 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         for (Method method : repositoryInterface.getMethods()) {
             Class<?> returnType = method.getReturnType();
             Class<?> returnArrayType = returnType.getComponentType();
+            Class<?> returnParamType = null;
+            Class<?> entityClass = returnType;
+            if (returnArrayType == null) {
+                Type type = method.getGenericReturnType();
+                Type typeParams[] = type instanceof ParameterizedType ? ((ParameterizedType) type).getActualTypeArguments() : null;
+                if (typeParams != null && typeParams.length == 1) {
+                    Type paramType = typeParams[0] instanceof ParameterizedType ? ((ParameterizedType) typeParams[0]).getRawType() : typeParams[0];
+                    if (paramType instanceof Class) {
+                        entityClass = returnParamType = (Class<?>) paramType;
+                        returnArrayType = returnParamType.getComponentType();
+                        if (returnArrayType != null)
+                            entityClass = returnArrayType;
+                    }
+                }
+            } else {
+                entityClass = returnArrayType;
+            }
 
-            Class<?> entityClass = returnArrayType == null ? returnType : returnArrayType;
             if (!inheritance || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
                 entityClass = defaultEntityClass;
 
@@ -89,15 +108,28 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             ? defaultEntityInfoFuture //
                             : provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
 
-            queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(method), this::createQueryInfo));
+            queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(new GenericDeclaration[] { method, returnArrayType, returnParamType }),
+                                                             this::createQueryInfo));
         }
     }
 
-    private QueryInfo createQueryInfo(EntityInfo entityInfo, Method method) {
+    /**
+     * Gathers the information that is needed to perform the query that the repository method represents.
+     *
+     * @param entityInfo entity information
+     * @param args       consisting of: method, array element type of return value or null, parameterized type of return value or null
+     * @return information about the query.
+     */
+    @Trivial
+    private QueryInfo createQueryInfo(EntityInfo entityInfo, GenericDeclaration[] args) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "createQueryInfo", entityInfo, Arrays.toString(args));
 
         StringBuilder q = null;
-        Class<?> returnType = method.getReturnType();
-        Class<?> returnArrayType = returnType.getComponentType();
+        Method method = (Method) args[0];
+        Class<?> returnArrayType = (Class<?>) args[1];
+        Class<?> returnParamType = (Class<?>) args[2];
         Class<?> saveParamType = null;
         QueryInfo.Type type = null;
 
@@ -181,7 +213,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         jpql = q == null ? jpql : q.toString();
 
-        return new QueryInfo(type, jpql, entityInfo, saveParamType, returnArrayType);
+        QueryInfo queryInfo = new QueryInfo(type, jpql, entityInfo, saveParamType, returnArrayType, returnParamType);
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "createQueryInfo", queryInfo);
+        return queryInfo;
     }
 
     private String generateRepositoryQuery(EntityInfo entityInfo, Method method) {
@@ -206,8 +242,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             return null;
         }
 
-        System.out.println("Generated query for Repository method " + methodName);
-        System.out.println("  " + q);
         return q.toString();
     }
 
@@ -547,7 +581,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "invoke " + method.getName(), args);
+            Tr.entry(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), args);
         try {
             QueryInfo queryInfo = queryInfoFuture.join();
 
@@ -588,7 +622,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         q.append(" DESC");
                     first = false;
                 }
-                queryInfo = new QueryInfo(queryInfo.type, q.toString(), queryInfo.entityInfo, queryInfo.saveParamType, queryInfo.returnArrayType);
+                queryInfo = new QueryInfo(queryInfo.type, q.toString(), queryInfo.entityInfo, queryInfo.saveParamType, queryInfo.returnArrayType, queryInfo.returnTypeParam);
             }
 
             // The Pagination parameter is from JNoSQL.
@@ -690,6 +724,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         }
 
                         List<?> results = query.getResultList();
+                        Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
+                                                                              || CompletableFuture.class.equals(returnType)
+                                                                              || CompletionStage.class.equals(returnType)) //
+                                                                                              ? queryInfo.returnTypeParam //
+                                                                                              : returnType;
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, results.size() + " results to be returned as " + type.getName());
 
                         if (collector != null) {
                             // Collector is more useful on the other path, when combined with pagination
@@ -698,17 +739,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             for (Object item : results)
                                 accumulator.accept(r, item);
                             returnValue = collector.finisher().apply(r);
-                            if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
-                                returnValue = CompletableFuture.completedFuture(returnValue);
                         } else if (consumer != null) {
                             for (Object result : results)
                                 consumer.accept(result);
-                            return CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType) //
-                                            ? CompletableFuture.completedFuture(null) //
-                                            : null;
-                        } else if (queryInfo.entityInfo.type.equals(returnType)) {
+                            returnValue = null;
+                        } else if (queryInfo.entityInfo.type.equals(type)) {
                             returnValue = results.isEmpty() ? null : results.get(0);
-                        } else if (returnType.isInstance(results)) {
+                        } else if (type.isInstance(results)) {
                             returnValue = results;
                         } else if (queryInfo.returnArrayType != null) {
                             Object r = Array.newInstance(queryInfo.returnArrayType, results.size());
@@ -716,66 +753,64 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             for (Object o : results)
                                 Array.set(r, i++, o);
                             returnValue = r;
-                        } else if (Optional.class.equals(returnType)) {
-                            returnValue = results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
-                        } else if (Collection.class.isAssignableFrom(returnType)) {
+                        } else if (Collection.class.isAssignableFrom(type)) {
                             try {
                                 @SuppressWarnings("unchecked")
-                                Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) returnType.getConstructor();
+                                Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) type.getConstructor();
                                 Collection<Object> list = c.newInstance();
                                 list.addAll(results);
                                 returnValue = list;
                             } catch (NoSuchMethodException x) {
-                                throw new UnsupportedOperationException(returnType + " lacks public zero parameter constructor.");
+                                throw new UnsupportedOperationException(type + " lacks public zero parameter constructor.");
                             }
-                        } else if (Stream.class.isAssignableFrom(returnType)) {
+                        } else if (Stream.class.equals(type)) {
                             Stream.Builder<Object> builder = Stream.builder();
                             for (Object result : results)
                                 builder.accept(result);
                             returnValue = builder.build();
-                        } else if (IntStream.class.isAssignableFrom(returnType)) {
+                        } else if (IntStream.class.equals(type)) {
                             IntStream.Builder builder = IntStream.builder();
                             for (Object result : results)
                                 builder.accept((Integer) result);
                             returnValue = builder.build();
-                        } else if (LongStream.class.isAssignableFrom(returnType)) {
+                        } else if (LongStream.class.equals(type)) {
                             LongStream.Builder builder = LongStream.builder();
                             for (Object result : results)
                                 builder.accept((Long) result);
                             returnValue = builder.build();
-                        } else if (DoubleStream.class.isAssignableFrom(returnType)) {
+                        } else if (DoubleStream.class.equals(type)) {
                             DoubleStream.Builder builder = DoubleStream.builder();
                             for (Object result : results)
                                 builder.accept((Double) result);
                             returnValue = builder.build();
-                        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
-                            Limit limit = method.getAnnotation(Limit.class);
-                            if (limit != null && limit.value() == 1) // single result
-                                returnValue = CompletableFuture.completedFuture(results.isEmpty() ? null : results.get(0));
-                            else // multiple
-                                returnValue = CompletableFuture.completedFuture(results);
                         } else if (results.isEmpty()) {
                             returnValue = null;
                         } else if (results.size() == 1) {
                             // single result
                             returnValue = results.get(0);
-                            if (returnValue != null && !returnType.isAssignableFrom(returnValue.getClass())) {
+                            if (returnValue != null && !type.isAssignableFrom(returnValue.getClass())) {
                                 // TODO these conversions are not all safe
-                                if (double.class.equals(returnType) || Double.class.equals(returnType))
+                                if (double.class.equals(type) || Double.class.equals(type))
                                     returnValue = ((Number) returnValue).doubleValue();
-                                else if (float.class.equals(returnType) || Float.class.equals(returnType))
+                                else if (float.class.equals(type) || Float.class.equals(type))
                                     returnValue = ((Number) returnValue).floatValue();
-                                else if (long.class.equals(returnType) || Long.class.equals(returnType))
+                                else if (long.class.equals(type) || Long.class.equals(type))
                                     returnValue = ((Number) returnValue).longValue();
-                                else if (int.class.equals(returnType) || Integer.class.equals(returnType))
+                                else if (int.class.equals(type) || Integer.class.equals(type))
                                     returnValue = ((Number) returnValue).intValue();
-                                else if (short.class.equals(returnType) || Short.class.equals(returnType))
+                                else if (short.class.equals(type) || Short.class.equals(type))
                                     returnValue = ((Number) returnValue).shortValue();
-                                else if (byte.class.equals(returnType) || Byte.class.equals(returnType))
+                                else if (byte.class.equals(type) || Byte.class.equals(type))
                                     returnValue = ((Number) returnValue).byteValue();
                             }
                         } else { // TODO convert other return types?
                             returnValue = results;
+                        }
+
+                        if (Optional.class.equals(returnType)) {
+                            returnValue = results.isEmpty() ? Optional.empty() : Optional.of(returnValue);
+                        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+                            returnValue = CompletableFuture.completedFuture(returnValue);
                         }
                         break;
                     case UPDATE:
@@ -794,7 +829,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         int updateCount = update.executeUpdate();
 
-                        returnValue = toReturnValue(updateCount, returnType);
+                        returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
                     default:
                         throw new UnsupportedOperationException(queryInfo.type.name());
@@ -823,11 +858,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
 
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "invoke " + method.getName(), returnValue);
+                Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
             return returnValue;
         } catch (Throwable x) {
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "invoke " + method.getName(), x);
+                Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);
             throw x;
         }
     }
@@ -854,6 +889,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private CompletableFuture<Object> runAndCollect(QueryInfo queryInfo, Pagination pagination,
                                                     Collector<Object, Object, Object> collector,
                                                     Method method, int numParams, Object[] args, Class<?> returnType) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         Object r = collector.supplier().get();
         BiConsumer<Object, Object> accumulator = collector.accumulator();
@@ -887,7 +923,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 for (Object item : page)
                     accumulator.accept(r, item);
 
-                System.out.println("Processed page with " + page.size() + " results");
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Processed page with " + page.size() + " results");
             } while (pagination != null && page.size() == maxResults);
         } finally {
             em.close();
@@ -913,6 +950,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      */
     private CompletableFuture<Void> runWithConsumer(QueryInfo queryInfo, Pagination pagination, Consumer<Object> consumer,
                                                     Method method, int numParams, Object[] args, Class<?> returnType) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // TODO it would be possible to process multiple pages in parallel if we wanted to and if the consumer supports it
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
@@ -943,7 +981,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 for (Object item : page)
                     consumer.accept(item);
 
-                System.out.println("Processed page with " + page.size() + " results");
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Processed page with " + page.size() + " results");
             } while (pagination != null && page.size() == maxResults);
         } finally {
             em.close();
@@ -968,7 +1007,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
     }
 
-    private static final Object toReturnValue(int i, Class<?> returnType) {
+    private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {
         Object result;
         if (int.class.equals(returnType) || Integer.class.equals(returnType) || Number.class.equals(returnType))
             result = i;
@@ -979,7 +1018,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         else if (void.class.equals(returnType) || Void.class.equals(returnType))
             result = null;
         else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
-            result = CompletableFuture.completedFuture(Long.valueOf(i)); // default for completion stages
+            result = CompletableFuture.completedFuture(toReturnValue(i, queryInfo.returnTypeParam, null));
         else
             throw new UnsupportedOperationException("Return update count as " + returnType);
 

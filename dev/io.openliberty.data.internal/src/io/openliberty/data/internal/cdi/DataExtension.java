@@ -186,9 +186,9 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
             if (interfaceType instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
                 if (parameterizedType.getRawType().getTypeName().startsWith(DataRepository.class.getPackageName())) {
-                    Type paramTypes[] = parameterizedType.getActualTypeArguments();
-                    if (paramTypes.length == 2 && paramTypes[0] instanceof Class) {
-                        entityClass = (Class<?>) paramTypes[0];
+                    Type typeParams[] = parameterizedType.getActualTypeArguments();
+                    if (typeParams.length == 2 && typeParams[0] instanceof Class) {
+                        entityClass = (Class<?>) typeParams[0];
                     }
                 }
             }
@@ -197,16 +197,24 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
         if (entityClass == null) {
             for (Method method : repositoryInterface.getMethods())
                 if (method.getParameterCount() == 1 && "save".equals(method.getName())) {
-                    Class<?> paramType = method.getParameterTypes()[0];
-                    if (paramType.isArray())
-                        paramType = paramType.getComponentType();
-                    String packageName = paramType.getPackageName();
-                    if (!paramType.isPrimitive() &&
-                        !paramType.isInterface() &&
-                        !packageName.startsWith("java") &&
-                        !packageName.startsWith("jakarta")) {
-                        entityClass = paramType;
-                        break;
+                    Type type = method.getGenericParameterTypes()[0];
+                    if (type instanceof ParameterizedType) {
+                        Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
+                        if (typeParams.length == 1) // for example, List<Product> vs. Map<Long, String>
+                            type = typeParams[0];
+                    }
+                    if (type instanceof Class) {
+                        Class<?> paramClass = (Class<?>) type;
+                        if (paramClass.isArray())
+                            paramClass = paramClass.getComponentType();
+                        String packageName = paramClass.getPackageName();
+                        if (!paramClass.isPrimitive() &&
+                            !paramClass.isInterface() &&
+                            !packageName.startsWith("java") &&
+                            !packageName.startsWith("jakarta")) {
+                            entityClass = paramClass;
+                            break;
+                        }
                     }
                 }
 
