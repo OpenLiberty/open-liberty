@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.annotation.RegistryType;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -34,6 +35,7 @@ public class MetricRegistryProducerAdapter {
     static Object srMetricsProducerObj;
 
     static {
+        // MetricRegistry.Type.
         srMetricsProducerClass = Util.SR_METRIC_REGISTRY_PRODUCER_CLASS;
 
         if (srMetricsProducerClass == null) {
@@ -79,6 +81,65 @@ public class MetricRegistryProducerAdapter {
              */
         }
         return mr;
+    }
 
+    @Produces
+    @RegistryType(type = MetricRegistry.Type.APPLICATION)
+    public static MetricRegistry getApplicationRegistry() {
+        if (srMetricsProducerObj == null)
+            return null;
+
+        MetricRegistry mr = null;
+        try {
+            Method method = srMetricsProducerObj.getClass().getMethod("getApplicationRegistry");
+            mr = (MetricRegistry) method.invoke(srMetricsProducerObj);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            /*
+             * If this fails, this is due to changed API. This is the issue with using
+             * reflection to load.
+             */
+        }
+        return mr;
+    }
+
+    @Produces
+    @RegistryType(type = MetricRegistry.Type.BASE)
+    public static MetricRegistry getBaseRegistry() {
+        if (srMetricsProducerObj == null)
+            return null;
+
+        MetricRegistry mr = null;
+        try {
+            Method method = srMetricsProducerObj.getClass().getMethod("getBaseRegistry");
+            mr = (MetricRegistry) method.invoke(srMetricsProducerObj);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            /*
+             * If this fails, this is due to changed API. This is the issue with using
+             * reflection to load.
+             */
+        }
+        return mr;
+    }
+
+    @Produces
+    @RegistryType(type = MetricRegistry.Type.VENDOR)
+    public static MetricRegistry getVendorRegistry() {
+        if (srMetricsProducerObj == null)
+            return null;
+
+        MetricRegistry mr = null;
+        try {
+            Method method = srMetricsProducerObj.getClass().getMethod("getVendorRegistry");
+            mr = (MetricRegistry) method.invoke(srMetricsProducerObj);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            /*
+             * If this fails, this is due to changed API. This is the issue with using
+             * reflection to load.
+             */
+        }
+        return mr;
     }
 }
