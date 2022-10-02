@@ -1,0 +1,34 @@
+<server description="Sample Liberty server">
+
+  <featureManager>
+    <feature>jaxrs-2.1</feature>
+    <feature>jsonb-1.0</feature>
+    <feature>jsonp-1.1</feature>
+    <feature>cdi-2.0</feature>
+    <feature>jpa-2.2</feature>
+    <feature>osgiConsole-1.0</feature>
+    <feature>checkpoint-1.0</feature>
+  </featureManager>
+
+  
+  <include location="../fatTestPorts.xml"/>
+
+  
+  <application location="jpafat.war" type="war" context-root="/"></application>
+
+  <library id="DB2Lib">
+    <fileset dir="${shared.resource.dir}/db2"/>
+  </library>
+
+  <javaPermission codebase="${shared.resource.dir}db2/jcc-11.1.4.4.jar" className="java.security.AllPermission"/>
+  
+  <dataSource jndiName="jdbc/eventjpadatasource">
+   <jdbcDriver libraryRef="DB2Lib"/>
+   <properties.db2.jcc
+     databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"
+     user="${DB2_USER}" password="${DB2_PASS}"
+     affinityFailbackInterval="1h20m30s" allowNullResultSetForExecuteQuery="1"
+     commandTimeout="2m30s" connectionTimeout="90s" memberConnectTimeout="100000ms"/>
+  </dataSource>
+  
+</server>
