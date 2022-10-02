@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.simple.bean;
+package com.ibm.ws.jsf22.fat.simple.bean.faces40;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIViewParameter;
+import javax.inject.Named;
 
 /**
  *
  */
-@ManagedBean(name = "testBean")
+@Named
 @ApplicationScoped
 public class testBean {
 
-    public String submittedValue;
+    private String submittedValue;
 
     /**
      * @return the submittedValue
@@ -45,10 +45,7 @@ public class testBean {
         if (!((Boolean) holder.getSubmittedValue())) {
             System.out.println("getSubmittedValue FAIL");
             submittedValue = "getSubmittedValue FAIL";
-        }
-        else
+        } else
             submittedValue = "getSubmittedValue PASS";
-
     }
-
 }

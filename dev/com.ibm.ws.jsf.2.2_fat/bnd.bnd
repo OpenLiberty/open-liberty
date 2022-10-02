@@ -78,7 +78,8 @@ tested.features: \
     expressionlanguage-5.0,\
     pages-3.1,\
     servlet-6.0,\
-    faces-4.0
+    faces-4.0,\
+    cdi-4.0
 
 
 -buildpath: \
