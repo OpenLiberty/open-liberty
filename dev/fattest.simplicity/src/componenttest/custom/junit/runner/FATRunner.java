@@ -514,8 +514,10 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
                 // If the server has the FFDC checking flag set to false, skip it.
                 if (server.getFFDCChecking() == false) {
-                    Log.finer(c, "retrieveFFDCCounts", "FFDC log collection for server: " + server.getServerName() + " is skipped. FFDC Checking is disabled for this server.");
+                    Log.info(c, "retrieveFFDCCounts", "FFDC log collection for server: " + server + " is skipped. FFDC Checking is disabled for this server.");
                     continue;
+                } else {
+                    Log.info(c, "retrieveFFDCCounts", "FFDC log collection for server: " + server + " is NOT skipped. FFDC Checking is enabled for this server.");
                 }
 
                 int readAttempts = 0;
