@@ -1240,6 +1240,19 @@ Default value is false.</longDesc>
   </component>
   <component>
     <modelId>myfaces-api</modelId>
+    <className>jakarta.faces.component.UISelectItemGroup</className>
+    <sourceClassName>jakarta.faces.component._UISelectItemGroup</sourceClassName>
+    <sourceClassParentClassName>UISelectItem</sourceClassParentClassName>
+    <name>f:selectItemGroup</name>
+    <type>jakarta.faces.SelectItemGroup</type>
+    <bodyContent>empty</bodyContent>
+    <family>jakarta.faces.SelectItemGroup</family>
+    <generatedComponentClass>true</generatedComponentClass>
+    <template>true</template>
+    <desc>no description</desc>
+  </component>
+  <component>
+    <modelId>myfaces-api</modelId>
     <className>jakarta.faces.component.UISelectItemGroups</className>
     <sourceClassName>jakarta.faces.component._UISelectItemGroups</sourceClassName>
     <sourceClassParentClassName>UISelectItems</sourceClassParentClassName>

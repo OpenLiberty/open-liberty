@@ -1415,6 +1415,13 @@ component. The id is not necessarily unique across all components in the current
     <component-extension>
       <component-family>jakarta.faces.SelectItem</component-family>
     </component-extension>
+  </component> 
+  <component>
+    <component-type>jakarta.faces.SelectItemGroup</component-type>
+    <component-class>jakarta.faces.component.UISelectItemGroup</component-class>
+    <component-extension>
+      <component-family>jakarta.faces.SelectItemGroup</component-family>
+    </component-extension>
   </component>    
   <component>
     <component-type>jakarta.faces.SelectItemGroups</component-type>

@@ -19,34 +19,24 @@
 package jakarta.faces.component;
 
 import jakarta.faces.context.FacesContext;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 
-@JSFComponent(clazz = "jakarta.faces.component.UISelectItemGroups",
+@JSFComponent(clazz = "jakarta.faces.component.UISelectItemGroup",
               template = true,
-              name = "f:selectItemGroups",
+              name = "f:selectItemGroup",
               bodyContent = "empty")
-abstract class _UISelectItemGroups extends UISelectItems
+abstract class _UISelectItemGroup extends UISelectItem
 {
-
-    static public final String COMPONENT_FAMILY = "jakarta.faces.SelectItems";
-    static public final String COMPONENT_TYPE = "jakarta.faces.SelectItemGroups";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.SelectItem";
+    static public final String COMPONENT_TYPE = "jakarta.faces.SelectItemGroup";
 
     @Override
     public Object getValue() {
         FacesContext context = getFacesContext();
-        java.util.List<jakarta.faces.model.SelectItemGroup> groups = new java.util.ArrayList<>();
-
-        org.apache.myfaces.core.api.shared.SelectItemsUtil.createSelectItems(context,
-                this,
-                super.getValue(),
-                jakarta.faces.model.SelectItemGroup::new,
-                selectItemGroup ->
-        {
-            selectItemGroup.setSelectItems(
-                    org.apache.myfaces.core.api.shared.SelectItemsUtil.collectSelectItems(context, this));
-            groups.add(selectItemGroup);
-        });
-        
-        return groups;
+        jakarta.faces.model.SelectItemGroup group = org.apache.myfaces.core.api.shared.SelectItemsUtil.createSelectItem(this,null,
+                jakarta.faces.model.SelectItemGroup::new);
+        group.setSelectItems(org.apache.myfaces.core.api.shared.SelectItemsUtil.collectSelectItems(context, this));
+        return group;
     }
 }

@@ -26,42 +26,32 @@ import org.apache.myfaces.core.api.shared.CommonHtmlEvents;
 import org.apache.myfaces.core.api.shared.CommonHtmlAttributes;
 
 
-// Generated from class jakarta.faces.component._UISelectItemGroups.
+// Generated from class jakarta.faces.component._UISelectItemGroup.
 //
 // WARNING: This file was automatically generated. Do not edit it directly,
 //          or you will lose your changes.
-public class UISelectItemGroups extends UISelectItems
+public class UISelectItemGroup extends UISelectItem
 {
 
     static public final String COMPONENT_FAMILY =
-        "jakarta.faces.SelectItems";
+        "jakarta.faces.SelectItem";
     static public final String COMPONENT_TYPE =
-        "jakarta.faces.SelectItemGroups";
+        "jakarta.faces.SelectItemGroup";
 
-    //BEGIN CODE COPIED FROM jakarta.faces.component._UISelectItemGroups
+    //BEGIN CODE COPIED FROM jakarta.faces.component._UISelectItemGroup
     public java.lang.Object getValue()
     {
         FacesContext context = getFacesContext();
-        java.util.List<jakarta.faces.model.SelectItemGroup> groups = new java.util.ArrayList<>();
-
-        org.apache.myfaces.core.api.shared.SelectItemsUtil.createSelectItems(context,
-                this,
-                super.getValue(),
-                jakarta.faces.model.SelectItemGroup::new,
-                selectItemGroup ->
-        {
-            selectItemGroup.setSelectItems(
-                    org.apache.myfaces.core.api.shared.SelectItemsUtil.collectSelectItems(context, this));
-            groups.add(selectItemGroup);
-        });
-        
-        return groups;
+        jakarta.faces.model.SelectItemGroup group = org.apache.myfaces.core.api.shared.SelectItemsUtil.createSelectItem(this,null,
+                jakarta.faces.model.SelectItemGroup::new);
+        group.setSelectItems(org.apache.myfaces.core.api.shared.SelectItemsUtil.collectSelectItems(context, this));
+        return group;
     }
 
 
-    //END CODE COPIED FROM jakarta.faces.component._UISelectItemGroups
+    //END CODE COPIED FROM jakarta.faces.component._UISelectItemGroup
 
-    public UISelectItemGroups()
+    public UISelectItemGroup()
     {
         setRendererType(null);
     }
