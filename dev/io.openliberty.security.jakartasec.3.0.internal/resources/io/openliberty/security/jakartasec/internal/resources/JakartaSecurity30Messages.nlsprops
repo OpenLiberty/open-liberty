@@ -34,3 +34,7 @@ JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.useraction=Make sure that the annotation co
 JAKARTASEC_WARNING_PROV_METADATA_CONFIG=CWWKS2502W: The Expression Language (EL) expression for the {0} attribute of the OpenID provider metadata annotation cannot be resolved to a valid value. The value provided was ''{1}''. Ensure that the EL expression and the result are valid and ensure that any referenced beans that are used in the expression are resolvable. The default attribute value of ''{2}'' is used.
 JAKARTASEC_WARNING_PROV_METADATA_CONFIG.explanation=The attribute cannot be resolved as an expression. The EL result and the expected attribute value type might be mismatched. For example, if the expected attribute type is String, then the EL result must be a String.
 JAKARTASEC_WARNING_PROV_METADATA_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. Ensure that the EL expressions are valid, that any referenced beans in the expression are resolvable, and that the type of the result corresponds with the attribute.
+
+CREDENTIAL_VALIDATION_ERROR=CWWKS2503E: The {0} OpenID Connect client encountered the following error while validating the credential for the authenticated user: {1}
+CREDENTIAL_VALIDATION_ERROR.explanation=The OpenID Connect client encountered an error while validating the tokens that were returned from the OpenID Connect provider, or an error occurred while using the information in the tokens to build the credential.
+CREDENTIAL_VALIDATION_ERROR.useraction=For more information, see the error in the message.

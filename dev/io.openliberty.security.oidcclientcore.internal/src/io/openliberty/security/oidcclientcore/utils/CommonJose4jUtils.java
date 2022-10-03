@@ -10,13 +10,14 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.utils;
 
-
-import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.security.Key;
-import java.security.KeyStoreException;
-import java.security.PrivilegedActionException;
 import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -28,34 +29,33 @@ import org.jose4j.keys.HmacKey;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.oidcclientcore.exceptions.VerificationKeyException;
 
 /**
  *
  */
 public class CommonJose4jUtils {
-    
+
     public static final TraceComponent tc = Tr.register(CommonJose4jUtils.class);
     TokenSignatureValidationBuilder tokenSignatureValidationBuilder = new TokenSignatureValidationBuilder();
+
     public CommonJose4jUtils() {
-        
+
     }
-    
+
     //Just parse without validation for now
     public static JwtContext parseJwtWithoutValidation(String jwtString) throws Exception {
-        JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
-                .setSkipAllValidators()
-                .setDisableRequireSignature()
-                .setSkipSignatureVerification()
-                .build();
+        JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder().setSkipAllValidators().setDisableRequireSignature().setSkipSignatureVerification().build();
 
         return firstPassJwtConsumer.process(jwtString);
     }
-    
-    
+
     public JsonWebStructure getJsonWebStructureFromJwtContext(JwtContext jwtContext) throws Exception {
         List<JsonWebStructure> jsonStructures = jwtContext.getJoseObjects();
         if (jsonStructures == null || jsonStructures.isEmpty()) {
@@ -71,12 +71,12 @@ public class CommonJose4jUtils {
         }
         return jsonStruct;
     }
-    
+
     public TokenSignatureValidationBuilder signaturevalidationbuilder() {
         return this.tokenSignatureValidationBuilder;
     }
-    
-  //TODO: use this in regular OIDC flow to do token signature validation
+
+    //TODO: use this in regular OIDC flow to do token signature validation
 
     public static class TokenSignatureValidationBuilder {
 
@@ -87,6 +87,8 @@ public class CommonJose4jUtils {
         private String clientsecret;
         private JWKSet jwkset;
         private String issuerconfigured;
+        private int jwksConnectTimeout = 500;
+        private int jwksReadTimeout = 500;
 
         private TokenSignatureValidationBuilder() {
 
@@ -140,25 +142,26 @@ public class CommonJose4jUtils {
             this.issuerconfigured = issuerFromProviderMetadata;
             return this;
         }
-        
 
         /**
          * @param jwkset
          */
         public TokenSignatureValidationBuilder jwkset(JWKSet jwkset) {
-           this.jwkset = jwkset;
-           return this; 
+            this.jwkset = jwkset;
+            return this;
         }
 
-        /**
-         * @return
-         * @throws Exception
-         * @throws InterruptedException
-         * @throws IOException
-         * @throws PrivilegedActionException
-         * @throws KeyStoreException
-         */
-        public Key getVerificationKey() throws KeyStoreException, PrivilegedActionException, IOException, InterruptedException, Exception {
+        public TokenSignatureValidationBuilder jwksConnectTimeout(int jwksConnectTimeout) {
+            this.jwksConnectTimeout = jwksConnectTimeout;
+            return this;
+        }
+
+        public TokenSignatureValidationBuilder jwksReadTimeout(int jwksReadTimeout) {
+            this.jwksReadTimeout = jwksReadTimeout;
+            return this;
+        }
+
+        public Key getVerificationKey() throws Exception {
             if (getSignatureAlgorithm() != null && getSignatureAlgorithm().startsWith("HS")) {
                 return new HmacKey(clientsecret.getBytes("UTF-8"));
             }
@@ -167,10 +170,6 @@ public class CommonJose4jUtils {
             return createJwkRetriever().getPublicKeyFromJwk(kid, x5t, "sig", false);
         }
 
-        /**
-         * @return
-         * @throws Exception
-         */
         private String getSignatureAlgorithm() throws Exception {
             String algorithm = null;
             if (this.signature != null && this.signature instanceof JsonWebSignature) {
@@ -188,20 +187,32 @@ public class CommonJose4jUtils {
         private JwKRetriever createJwkRetriever() throws Exception {
 
             String algorithm = getSignatureAlgorithm();
-            return new JwKRetriever(this.clientid, null, this.jwkuri, this.jwkset, this.sslsupport, false, null, null, algorithm);
+            JwKRetriever jwkRetriever = new JwKRetriever(this.clientid, null, this.jwkuri, this.jwkset, this.sslsupport, false, null, null, algorithm);
+            // Override the retriever's HttpUtils member so we can set connection and read timeouts
+            jwkRetriever.httpUtils = new HttpUtils() {
+                @Override
+                public HttpGet createHttpGetMethod(String url, final List<NameValuePair> commonHeaders) {
+                    HttpGet request = super.createHttpGetMethod(url, commonHeaders);
+                    RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(jwksConnectTimeout).setSocketTimeout(jwksReadTimeout).build();
+                    request.setConfig(requestConfig);
+                    return request;
+                }
+            };
+            return jwkRetriever;
         }
 
-        /**
-         * @throws Exception
-         * @throws InterruptedException
-         * @throws IOException
-         * @throws PrivilegedActionException
-         * @throws KeyStoreException
-         *
-         */
-        public JwtClaims parseJwtWithValidation(String jwtString) throws KeyStoreException, PrivilegedActionException, IOException, InterruptedException, Exception {
-            Key key = getVerificationKey();
+        @FFDCIgnore({ ConnectTimeoutException.class, SocketTimeoutException.class })
+        public JwtClaims parseJwtWithValidation(String jwtString) throws Exception {
+            Key key = null;
+            try {
+                key = getVerificationKey();
+            } catch (ConnectTimeoutException e) {
+                throw new VerificationKeyException(clientid, Tr.formatMessage(tc, "JWK_CONNECTION_TIMED_OUT", jwkuri, jwksConnectTimeout));
+            } catch (SocketTimeoutException e) {
+                throw new VerificationKeyException(clientid, Tr.formatMessage(tc, "JWK_READ_TIMED_OUT", jwkuri, jwksReadTimeout));
+            }
             if (key == null) {
+                // TODO - NLS message
                 throw new Exception("error getting verification key");
             }
             JwtConsumerBuilder builder = new JwtConsumerBuilder();
