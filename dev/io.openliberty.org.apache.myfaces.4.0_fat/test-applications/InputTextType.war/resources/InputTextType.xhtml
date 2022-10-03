@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>InputTextType</title>
+    </h:head>
+    <h:body>
+        <h:form id="form1">
+            <!--  Use the default value (text) for the type attribute. -->
+            <h:inputText id="defaultType"/>
+            <br/>
+
+            <!--  Use email as a value for the type attribute. -->
+            <h:inputText id="emailType" type="email"/>
+            <br/>
+
+            <!--  Should cause a warning when Project Stage is Development.  -->
+            <h:inputText id="hiddenType" type="hidden"/>
+            <br/>
+            <h:inputText id="passwordType" type="password"/>
+            <br/>
+            <h:inputText id="checkboxType" type="checkbox"/>
+            <br/>
+            <h:inputText id="radioType" type="radio"/>
+            <br/>
+            <h:inputText id="fileType" type="file"/>
+            <br/>
+            <h:inputText id="submitType" type="submit"/>
+            <br/>
+            <h:inputText id="imageType" type="image"/>
+            <br/>
+            <h:inputText id="resetType" type="reset"/>
+            <br/>
+            <h:inputText id="buttonType" type="button"/>
+            <br/>
+
+            <h:messages id="messages"/>
+        </h:form>
+    </h:body>
+</html>
