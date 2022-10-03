@@ -16,11 +16,10 @@
         <feature>checkpoint-1.0</feature>
         <feature>usr:test.checkpoint.config-1.0</feature>
     </featureManager>
-    
     <include location="../fatTestPorts.xml"/>
     
-    <variable name="pida_value" defaultValue="test1" />
-    <variable name="pidb_value" defaultValue="test1" />
-    <checkpoint.pid.a pida="${pida_value}" />
-    <checkpoint.pid.b pidb="${pidb_value}" />
+    <variable name="a_value" defaultValue="test1" />
+    <variable name="b_value" defaultValue="test1" />
+
+    <checkpoint.pid a="${a_value}" b="${b_value}" c="${c_value}" />
 </server>
