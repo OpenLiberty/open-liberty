@@ -13,9 +13,6 @@ package com.ibm.ws.microprofile.mpjwt20.tck;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,10 +20,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.utils.MvnUtils;
 
 /**
@@ -34,6 +31,7 @@ import componenttest.topology.utils.MvnUtils;
  *
  */
 //@Mode(TestMode.QUARANTINE)
+@MaximumJavaLevel(javaLevel = 18)
 @RunWith(FATRunner.class)
 public class Mpjwt20TCKLauncher_aud_noenv {
 
