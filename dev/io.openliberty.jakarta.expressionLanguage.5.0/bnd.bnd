@@ -36,4 +36,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-   org.apache.tomcat:tomcat-el-api;version=10.1.0
+   org.apache.tomcat:tomcat-el-api;strategy=exact;version=10.1.0.M16
