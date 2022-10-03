@@ -100,6 +100,6 @@ JCACHE_AUTH_CACHE_REMOVE_FAILED=CWWKS1129E: Removal of entry for the {0} key int
 JCACHE_AUTH_CACHE_REMOVE_FAILED.explanation=The entry was not removed from the JCache authentication cache.
 JCACHE_AUTH_CACHE_REMOVE_FAILED.useraction=Investigate the exception included in the message and fix the cause of the error.
 
-JCACHE_AUTH_CACHE_CLEAR_FAILED=CWWKS1130E: Clear of the {1} JCache authentication cache failed due to an error. The exception is: {2}
+JCACHE_AUTH_CACHE_CLEAR_FAILED=CWWKS1130E: Clear of the {0} JCache authentication cache failed due to an error. The exception is: {1}
 JCACHE_AUTH_CACHE_CLEAR_FAILED.explanation=The entries were not cleared from the JCache authentication cache.
 JCACHE_AUTH_CACHE_CLEAR_FAILED.useraction=Investigate the exception included in the message and fix the cause of the error.
