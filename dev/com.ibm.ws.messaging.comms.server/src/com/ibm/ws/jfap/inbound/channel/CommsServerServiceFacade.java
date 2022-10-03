@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,11 +53,6 @@ import com.ibm.wsspi.channelfw.ChannelConfiguration;
  * this can happen only if chains are started in the context of SCR thread
  * 
  */
-
-//dynamic:='tcpOptions,sslOptions,sslSupport';\
-//optional:='commonServiceFacade,sslOptions,sslSupport';\
-//greedy:='tcpOptions,sslOptions,sslSupport';\
-
 @Component(
         name ="com.ibm.ws.messaging.comms.server",
         configurationPolicy = REQUIRE, 
@@ -77,17 +72,21 @@ public class CommsServerServiceFacade implements Singleton {
     private int wasJmsSSLPort;
     private boolean iswasJmsEndpointEnabled = true;
 
+    private final JsAdminService jsAdminService;
+    
     private final CHFWBundle chfw;
     private final ChannelConfiguration tcpOptions;
     private final ChannelConfiguration sslOptions;
     
-    private final EventEngine events;
+    private final EventEngine eventEngine;
 
     /** Lock to guard chain actions (update,stop and sslOnlyStop).. as of now as all chain actions are executed by SCR thread */
     private final SynchronizedActions factotum = new SynchronizedActions();
 
     @Activate
-    public CommsServerServiceFacade(
+    public CommsServerServiceFacade (
+    	    @Reference(name = "jsAdminService")
+            JsAdminService jsAdminService,
             @Reference(name = "chfw")
             CHFWBundle chfw,
             @Reference(name = "tcpOptions", target = "(id=unbound)") // target to be overwritten by metatype
@@ -97,16 +96,17 @@ public class CommsServerServiceFacade implements Singleton {
             @Reference(name = "sslOptions", target = "(id=unbound)", cardinality = OPTIONAL) // target to be overwritten by metatype
             ChannelConfiguration sslOptions,
             @Reference(name = "eventEngine")
-            EventEngine events,
+            EventEngine eventEngine,
             Map<String, Object> properties) {
-        final String methodName = "activate";
+        final String methodName = "<init>";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, methodName, new Object[]{chfw, tcpOptions, sslFactoryProvider, events, properties});
+            SibTr.entry(this, tc, methodName, new Object[]{jsAdminService, chfw, tcpOptions, sslFactoryProvider, eventEngine, properties});
 
+        this.jsAdminService = jsAdminService;
         this.chfw = chfw;
         this.tcpOptions = tcpOptions;
         this.sslOptions = sslOptions; // can be null
-        this.events = events;
+        this.eventEngine = eventEngine;
         
         Object cid = properties.get(ComponentConstants.COMPONENT_ID);
 
@@ -134,12 +134,10 @@ public class CommsServerServiceFacade implements Singleton {
         if ((wasJmsSSLPort >= 0) && (sslFactoryProvider != null)) inboundSecureChain.enable(true);
         
         if (iswasJmsEndpointEnabled) {
-            factotum.updateBasicChain();
-            factotum.updateSSLChain();
+            factotum.updateChains();
         } else {
             if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "wasjmsEndpoint disabled: .. stopping chains");
-            factotum.stopBasicChain();
-            factotum.stopSSLChain();
+            factotum.stopChains(false);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -149,67 +147,73 @@ public class CommsServerServiceFacade implements Singleton {
     @Deactivate
     protected void deactivate(ComponentContext ctx, int reason) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) Tr.event(tc, "CommsServerServiceFacade deactivated, reason=" + reason);
-        factotum.stopBasicChain();
-        factotum.stopSSLChain();
+        factotum.stopChains(true);
     }
 
     private final class SynchronizedActions {
-        synchronized void stopBasicChain() {
+    	boolean deactivated;
+    	
+        synchronized void stopChains(boolean deactivate) {
+            //TODO Would it be better to stop the chains in the inverse order to startup?
             if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsServerServiceFacade: stopping basic chain ", inboundChain);
             try {
                 inboundChain.stop();
             } catch (Exception e) {
                 if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Exception in stopping basic chain", e);
             }
-        }
-
-        synchronized void stopSSLChain() {
+            
             if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsServerServiceFacade: stopping secure chain ", inboundSecureChain);
             try {
                 inboundSecureChain.stop();
             } catch (Exception e) {
                 if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Exception in secure chain stopping", e);
             }
+            
+            deactivated = deactivate;
         }
 
-        synchronized void updateSSLChain() {
-            if (iswasJmsEndpointEnabled) {
-                if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsServerServiceFacade: updating secure chain ", inboundSecureChain);
-                try {
-                    inboundSecureChain.update();
-                } catch (Exception e) {
-                    if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Exception in updating secure chain", e);
-                }
+        synchronized void updateChains() {
+        	if (iswasJmsEndpointEnabled) {
+        		if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsServerServiceFacade: updating basic chain ", inboundChain);
+        		try {
+        			inboundChain.update();
+        		} catch (Exception e) {
+        			if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Exception in updating basic chain", e);
+        		}
 
-            }
+        		if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsServerServiceFacade: updating secure chain ", inboundSecureChain);
+        		try {
+        			inboundSecureChain.update();
+        		} catch (Exception e) {
+        			if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Exception in updating secure chain", e);
+        		}
+
+        	}
         }
 
-        synchronized void updateBasicChain() {
-            if (iswasJmsEndpointEnabled) {
-                if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsServerServiceFacade: updating basic chain ", inboundChain);
-                try {
-                    inboundChain.update();
-                } catch (Exception e) {
-                    if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Exception in updating basic chain", e);
-                }
-            }
-        }
+		synchronized void closeViaCommsMPConnection(int mode) {
+			if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, "CommsServerServiceFacade.SynchronizedActions closeViaCommsMPConnection", deactivated, mode);
+
+			// We can only rely on jsAdminService until deactivation. 
+			if (deactivated)
+				return;
+			
+	    	// Liberty AdminService returns the ME which is running in-process. No search filter is used.
+	    	JsMessagingEngine local_ME = jsAdminService.getMessagingEngine(JsConstants.DEFAULT_BUS_NAME, JsConstants.DEFAULT_ME_NAME);
+	    	if (null != local_ME) {
+	    		JsEngineComponent _mp = local_ME.getMessageProcessor();
+	    		if (null != _mp) { //_mp can not be NULL. But checking it.
+	    			_mp.stop(mode);
+	    		}
+	    	}
+
+	    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(tc, "closeViaCommsMPConnection");
+			
+		}
     }
     
     void closeViaCommsMPConnections(int mode) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, "CommsServerServiceFacade closeViaCommsMPConnections", mode);
-        JsAdminService admnService = getJsAdminService();
-        if (null != admnService) {
-            // Liberty AdminService returns the ME which is running in-process. No search filter is used.
-            JsMessagingEngine local_ME = admnService.getMessagingEngine(JsConstants.DEFAULT_BUS_NAME, JsConstants.DEFAULT_ME_NAME);
-            if (null != local_ME) {
-                JsEngineComponent _mp = local_ME.getMessageProcessor();
-                if (null != _mp) { //_mp can not be NULL. But checking it.
-                    _mp.stop(mode);
-                }
-            }
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(tc, "closeViaCommsMPConnections");
+    	factotum.closeViaCommsMPConnection(mode);
     }
 
     /**
@@ -231,9 +235,8 @@ public class CommsServerServiceFacade implements Singleton {
         return null;
     }
 
-    //obtain TrmMessageFactory from MFP implementation ( via common bundle) 
-    public static TrmMessageFactory getTrmMessageFactory() {
-        return requireService(CommonServiceFacade.class).getTrmMessageFactory();
+    public static TrmMessageFactory getTrmMessageFactory() {        
+        return TrmMessageFactory.getInstance();
     }
 
     //obtain JsAdminService from runtime implementation (directly from runtime bundle) 
@@ -241,8 +244,8 @@ public class CommsServerServiceFacade implements Singleton {
         return CommonServiceFacade.getJsAdminService();
     }
 
-    public static EventEngine getEventEngine() {
-        return requireService(CommsServerServiceFacade.class).events;
+    public EventEngine getEventEngine() {
+        return eventEngine;
     }
 
     int getConfigured_wasJmsPort() {
