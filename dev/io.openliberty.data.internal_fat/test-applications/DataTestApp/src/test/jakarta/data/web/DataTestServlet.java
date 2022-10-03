@@ -52,7 +52,6 @@ import jakarta.data.MappingException;
 import jakarta.data.Page;
 import jakarta.data.Pagination;
 import jakarta.data.Sort;
-import jakarta.data.Sorts;
 import jakarta.data.Template;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -1304,13 +1303,12 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
-        // Reverse ordering to the above using Sorts:
+        // Reverse ordering to the above using Sort:
         assertIterableEquals(List.of(10030008L, 10030004L, 10030009L, 10030006L, 10030003L, 10030002L, 10030007L, 10030005L, 10030001L),
                              reservations.findByStopLessThan(OffsetDateTime.of(2022, 5, 26, 0, 0, 0, 0, CDT),
-                                                             Sorts.sorts()
-                                                                             .add(Sort.desc("host"))
-                                                                             .add(Sort.asc("location"))
-                                                                             .add(Sort.desc("start")))
+                                                             Sort.desc("host"),
+                                                             Sort.asc("location"),
+                                                             Sort.desc("start"))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));

@@ -11,10 +11,8 @@
 package jakarta.data;
 
 /**
- * Copied from jakarta.nosql.SortType to investigate how well the
- * JNoSQL repository-related classes work for relational database access.
+ * Copied from jakarta.data.repository.Direction.
  */
-public enum SortType {
-    ASC,
-    DESC
+public enum Direction {
+    ASC, DESC
 }
