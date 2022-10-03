@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.html5;
+package com.ibm.ws.jsf22.fat.html5.jsf22;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;

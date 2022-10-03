@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.html5;
+package com.ibm.ws.jsf22.fat.html5.faces40;
 
 import java.io.Serializable;
 
