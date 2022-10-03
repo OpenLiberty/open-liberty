@@ -10,61 +10,44 @@
  *******************************************************************************/
 package jakarta.data;
 
-import java.util.function.BiFunction;
-
 /**
- * Copied from jakarta.nosql.Sort to investigate how well the
- * JNoSQL repository-related classes work for relational database access.
- * Unable to copy the of method because it depends on a JNoSQL class, ServiceLoaderProvider.
+ * Method signatures copied from jakarta.data.repository.Sort
  */
-public interface Sort {
-    String getName();
+public class Sort {
+    private final boolean asc;
+    private final String prop;
 
-    SortType getType();
-
-    static Sort of(String name, SortType type) {
-        // We don't have the JNoSQL ServiceLoaderProvider here.
-        return new SortImpl.Provider().apply(name, type);
+    private Sort(boolean ascending, String property) {
+        asc = ascending;
+        prop = property;
     }
 
-    static Sort asc(String name) {
-        return of(name, SortType.ASC);
+    public static Sort asc(String property) {
+        return new Sort(true, property);
     }
 
-    static Sort desc(String name) {
-        return of(name, SortType.DESC);
+    public static Sort desc(String property) {
+        return new Sort(false, property);
     }
 
-    interface SortProvider extends BiFunction<String, SortType, Sort> {
+    public static Sort of(String property, Direction direction) {
+        return new Sort(direction == Direction.ASC, property);
     }
-}
 
-/**
- * Fake implementation:
- */
-class SortImpl implements Sort {
-    private final String name;
-    private final SortType type;
+    public boolean isAscending() {
+        return asc;
+    }
 
-    private SortImpl(String name, SortType type) {
-        this.name = name;
-        this.type = type;
+    public boolean isDescending() {
+        return !asc;
+    }
+
+    public String getProperty() {
+        return prop;
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public SortType getType() {
-        return type;
-    }
-
-    public static class Provider implements Sort.SortProvider {
-        @Override
-        public Sort apply(String name, SortType type) {
-            return new SortImpl(name, type);
-        }
+    public String toString() {
+        return "Sort by " + prop + (asc ? " ASC" : " DESC");
     }
 }
