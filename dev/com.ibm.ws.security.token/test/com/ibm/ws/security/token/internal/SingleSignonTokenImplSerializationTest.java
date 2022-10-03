@@ -30,10 +30,10 @@ import com.ibm.ws.security.token.TokenService;
  * Each new version should be able to deserialze every previous version.
  * This is necessary to maintain version to version compatibility for the distributed authentication cache.
  */
-public class SerializationTest {
+public class SingleSignonTokenImplSerializationTest {
     /**
      * Test to deserialize SingleSignonTokenImpl_1.ser.
-     * Validate version and name.
+     * Validate token, version, and name.
      */
     @Test
     public void deserializeSingleSignonTokenImpl_1() throws Exception {
@@ -48,7 +48,8 @@ public class SerializationTest {
         assertEquals("The version number should be: 2.", 2, object.getVersion());
         assertEquals("The name should be: LtpaToken", "LtpaToken", object.getName());
 
-        //Check Token
+        //Check token and token expiration
+        assertEquals("The token string should be: tokenstring: 0.5967827720935945.", "tokenstring: 0.5967827720935945", object.getToken().toString());
         assertEquals("The token expiration should be: 123456789L.", 123456789L, object.getToken().getExpiration());
 
     }
@@ -63,7 +64,7 @@ public class SerializationTest {
      * Then write a test that deserializes that version and all
      * previous SingleSignonTokenImpl_x.ser files.
      */
-    public void writeSingleSignonTokenImpl() throws Exception {
+    public static void main() throws Exception {
         //Create TokenService
         TokenService ts = new TestTokenServiceImpl();
 
@@ -71,7 +72,7 @@ public class SerializationTest {
         SingleSignonTokenImpl object = new SingleSignonTokenImpl(ts, "tokenType_1");
         object.initializeToken(new byte[] {});
 
-        String filename = "test-resources/ser-files/SingleSignonTokenImpl_1.ser";
+        String filename = "test-resources/ser-files/SingleSignonTokenImpl_x.ser";
 
         // Serialization
         //Saving of object in a file
