@@ -92,6 +92,8 @@ public class JSF22MiscellaneousTests {
 
         ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "ViewScopeLeak.war", "com.ibm.ws.jsf22.fat.viewscopedleak");
 
+        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "OLGH22397.war");
+
         jsf22MiscellaneousServer.startServer(JSF22MiscellaneousTests.class.getSimpleName() + ".log");
     }
 
@@ -564,6 +566,52 @@ public class JSF22MiscellaneousTests {
             }
 
             assertTrue("WELD_S# attribute size differed! Leak Detected!", size1.equals(size2));
+
+        }
+    }
+
+    /*
+     * https://github.com/OpenLiberty/open-liberty/issues/22397
+     * https://issues.apache.org/jira/projects/MYFACES/issues/MYFACES-4450
+     * 
+     *  Verify tabindex (and other attributes) are rendered
+     *
+     */
+    @Test
+    public void testMyFaces4450() throws Exception {
+        try (WebClient webClient = new WebClient()) {
+
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, "OLGH22397", "index.xhtml");
+            
+            Log.info(c, name.getMethodName(), "MYFACES-4433: Making a request to " + url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            Log.info(c, name.getMethodName(), page.asXml());
+
+            String[] expected = { "onclick=\"onclick\"",
+                                "ondblclick=\"ondblclick\"",
+                                "onmousedown=\"onmousedown\"",
+                                "onmouseup=\"onmouseup\"",
+                                "onmouseover=\"onmouseover\"",
+                                "onmousemove=\"onmousemove\"",
+                                "onmouseout=\"onmouseout\"",
+                                "onkeypress=\"onkeypress\"",
+                                "onkeydown=\"onkeydown\"",
+                                "onkeyup=\"onkeyup\"",
+                                "onfocus=\"onfocus\"",
+                                "onblur=\"onblur\"",
+                                "accesskey=\"accesskey\"",
+                                "tabindex=\"tabindex\"",
+                                "style=\"color:red\"",
+                                "class=\"styleClass\"",
+                                "dir=\"dir\"",
+                                "lang=\"lang\"",
+                                "title=\"title\"",
+                                "role=\"role\"" };
+
+            for(String attribute : expected){
+                assertTrue("Failed to render expected attribute: \n" + attribute, page.asXml().contains(attribute));
+            }
 
         }
     }

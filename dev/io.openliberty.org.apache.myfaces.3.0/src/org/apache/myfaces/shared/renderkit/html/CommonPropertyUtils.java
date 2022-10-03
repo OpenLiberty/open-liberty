@@ -20,9 +20,9 @@ package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ResponseWriter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ResponseWriter;
 
 public final class CommonPropertyUtils
 {
@@ -441,6 +441,15 @@ public final class CommonPropertyUtils
         renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
     }
     
+    public static void renderAnchorPassthroughPropertiesDisabled(ResponseWriter writer,
+            long commonPropertiesMarked, UIComponent component)
+    throws IOException
+    {
+        renderAccesskeyTabindexProperties(writer, commonPropertiesMarked, component);
+        renderCommonPassthroughProperties(writer, commonPropertiesMarked, component);
+        renderFocusBlurEventProperties(writer, commonPropertiesMarked, component);
+    }
+    
     public static void renderAnchorPassthroughPropertiesWithoutEvents(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
     throws IOException
@@ -449,6 +458,15 @@ public final class CommonPropertyUtils
         renderStyleProperties(writer, commonPropertiesMarked, component);
         renderUniversalProperties(writer, commonPropertiesMarked, component);
     }
+    
+    public static void renderAnchorPassthroughPropertiesDisabledWithoutEvents(ResponseWriter writer,
+            long commonPropertiesMarked, UIComponent component)
+    throws IOException
+    {
+        renderAccesskeyTabindexProperties(writer, commonPropertiesMarked, component);
+        renderStyleProperties(writer, commonPropertiesMarked, component);
+        renderUniversalProperties(writer, commonPropertiesMarked, component);
+    }    
     
     public static void renderAnchorPassthroughPropertiesWithoutStyleAndEvents(ResponseWriter writer,
             long commonPropertiesMarked, UIComponent component)
