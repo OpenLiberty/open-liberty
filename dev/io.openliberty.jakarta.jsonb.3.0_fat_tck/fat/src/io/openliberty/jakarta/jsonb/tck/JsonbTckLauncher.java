@@ -10,9 +10,6 @@
  *******************************************************************************/
 package io.openliberty.jakarta.jsonb.tck;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +24,8 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs the whole Jakarta JSON-B TCK. The TCK results
@@ -69,28 +67,14 @@ public class JsonbTckLauncher {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchJsonbTCK() throws Exception {
+    public void launchJsonb30TCK() throws Exception {
 
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(DONOTSTART);
+        String bucketName = "io.openliberty.jakarta.jsonb.3.0_fat_tck";
+        String testName = this.getClass() + ":launchJsonb30TCK";
+        Type type = Type.JAKARTA;
+        String specName = "JSON Binding";
+        String specVersion = "3.0";
+        TCKUtils.runTCKMvnCmd(DONOTSTART, bucketName, testName, type, specName, specVersion, additionalProps);
 
-        /**
-         * The runTCKMvnCmd will set the following properties for use by arquillian
-         * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
-         * and then run the mvn test command.
-         */
-        int result = MvnUtils.runTCKMvnCmd(
-                                           DONOTSTART, //server to run on
-                                           "io.openliberty.jakarta.jsonb.3.0_fat_tck", //bucket name
-                                           this.getClass() + ":launchJsonbTCK", //launching method
-                                           null, //suite file to run
-                                           additionalProps, //additional props
-                                           Collections.emptySet() //additional jars
-        );
-
-        resultInfo.put("results_type", "Jakarta");
-        resultInfo.put("feature_name", "jsonb");
-        resultInfo.put("feature_version", "3.0");
-        MvnUtils.preparePublicationFile(resultInfo);
-        assertEquals(0, result);
     }
 }

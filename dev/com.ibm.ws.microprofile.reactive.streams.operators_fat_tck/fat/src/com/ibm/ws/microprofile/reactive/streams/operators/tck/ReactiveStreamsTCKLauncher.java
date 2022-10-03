@@ -12,9 +12,6 @@ package com.ibm.ws.microprofile.reactive.streams.operators.tck;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -27,8 +24,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -58,13 +55,13 @@ public class ReactiveStreamsTCKLauncher {
     @Test
     @Mode(TestMode.FULL)
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchReactiveStreamsTck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.reactive.streams.operators_fat_tck", this.getClass() + ":launchReactiveStreamsTck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Reactive Streams");
-        resultInfo.put("feature_version", "1.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+    public void launchReactiveStreams10Tck() throws Exception {
+        String bucketName = "com.ibm.ws.microprofile.reactive.streams.operators_fat_tck";
+        String testName = this.getClass() + ":launchReactiveStreams10Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Reactive Streams";
+        String specVersion = "1.0";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion);
     }
 
 }

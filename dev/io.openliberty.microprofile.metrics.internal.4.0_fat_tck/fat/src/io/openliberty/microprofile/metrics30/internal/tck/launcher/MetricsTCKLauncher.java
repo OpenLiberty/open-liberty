@@ -14,9 +14,6 @@ import static org.junit.Assume.assumeTrue;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -28,7 +25,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -53,7 +51,7 @@ public class MetricsTCKLauncher {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchTck() throws Exception {
+    public void launchMetrics40Tck() throws Exception {
 
         //disable tests for Java versions 11.0.0 - 11.0.3 since there's a bug in TLS 1.3 implementation
         JavaInfo javaInfo = JavaInfo.forServer(server);
@@ -69,12 +67,12 @@ public class MetricsTCKLauncher {
         additionalProps.put("test.user", "theUser");
         additionalProps.put("test.pwd", "thePassword");
 
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.metrics.internal.4.0_fat_tck", "launchTck", additionalProps);
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Metrics");
-        resultInfo.put("feature_version", "4.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "io.openliberty.microprofile.metrics.internal.4.0_fat_tck";
+        String testName = this.getClass() + ":launchMetrics40Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Metrics";
+        String specVersion = "4.0";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, additionalProps);
     }
 
 }

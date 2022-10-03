@@ -10,19 +10,36 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
+import componenttest.topology.impl.JavaInfo;
+
 /**
  * Metadata about a set of TCK Results
  */
 public class TCKResultsInfo {
 
+    public static enum Type {
+        MICROPROFILE, JAKARTA
+    }
+
     private String javaMajorVersion;// = resultInfo.get("java_major_version");
     private String javaVersion;// = resultInfo.get("java_info");
     private String openLibertyVersion;// = resultInfo.get("product_version");
-    private String type;// = resultInfo.get("results_type");
+    private Type type;// = resultInfo.get("results_type");
     private String osVersion;// = resultInfo.get("os_name");
     private String specName;// = resultInfo.get("feature_name");
     private String specVersion;// = resultInfo.get("feature_version");
     private String rcVersion;
+
+    public TCKResultsInfo(Type type, String specName, String specVersion, String openLibertyVersion) {
+        setType(type);
+        setSpecName(specName);
+        setSpecVersion(specVersion);
+        setJavaVersion(System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") + ')');
+        JavaInfo javaInfo = JavaInfo.forCurrentVM();
+        setJavaMajorVersion(String.valueOf(javaInfo.majorVersion()));
+        setOsVersion(System.getProperty("os.name"));
+        setOpenLibertyVersion(openLibertyVersion);
+    }
 
     /**
      * @return the javaMajorVersion
@@ -34,7 +51,7 @@ public class TCKResultsInfo {
     /**
      * @param javaMajorVersion the javaMajorVersion to set
      */
-    public void setJavaMajorVersion(String javaMajorVersion) {
+    void setJavaMajorVersion(String javaMajorVersion) {
         this.javaMajorVersion = javaMajorVersion;
     }
 
@@ -48,7 +65,7 @@ public class TCKResultsInfo {
     /**
      * @param javaVersion the javaVersion to set
      */
-    public void setJavaVersion(String javaVersion) {
+    void setJavaVersion(String javaVersion) {
         this.javaVersion = javaVersion;
     }
 
@@ -62,21 +79,21 @@ public class TCKResultsInfo {
     /**
      * @param openLibertyVersion the openLibertyVersion to set
      */
-    public void setOpenLibertyVersion(String openLibertyVersion) {
+    void setOpenLibertyVersion(String openLibertyVersion) {
         this.openLibertyVersion = openLibertyVersion;
     }
 
     /**
      * @return the type
      */
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
     /**
      * @param type the type to set
      */
-    public void setType(String type) {
+    void setType(Type type) {
         this.type = type;
     }
 
@@ -90,7 +107,7 @@ public class TCKResultsInfo {
     /**
      * @param osVersion the osVersion to set
      */
-    public void setOsVersion(String osVersion) {
+    void setOsVersion(String osVersion) {
         this.osVersion = osVersion;
     }
 
@@ -104,7 +121,7 @@ public class TCKResultsInfo {
     /**
      * @param specName the specName to set
      */
-    public void setSpecName(String specName) {
+    void setSpecName(String specName) {
         this.specName = specName;
     }
 
@@ -118,7 +135,7 @@ public class TCKResultsInfo {
     /**
      * @param specVersion the specVersion to set
      */
-    public void setSpecVersion(String specVersion) {
+    void setSpecVersion(String specVersion) {
         this.specVersion = specVersion;
     }
 
@@ -132,7 +149,7 @@ public class TCKResultsInfo {
     /**
      * @param rcVersion the rcVersion to set
      */
-    public void setRcVersion(String rcVersion) {
+    void setRcVersion(String rcVersion) {
         this.rcVersion = rcVersion;
     }
 

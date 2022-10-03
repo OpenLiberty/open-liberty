@@ -22,7 +22,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -53,6 +54,11 @@ public class JakartaRest31TckPackageTest {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testJakarta31RestTck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.jakarta.rest.3.1.internal_fat_tck", this.getClass() + ":testJakartaRest31Tck");
+        String bucketName = "io.openliberty.jakarta.rest.3.1.internal_fat_tck";
+        String testName = this.getClass() + ":testJakarta31RestTck";
+        Type type = Type.JAKARTA;
+        String specName = "Restful Web Services";
+        String specVersion = "3.1";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion);
     }
 }

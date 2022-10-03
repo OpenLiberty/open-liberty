@@ -10,13 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.opentracing13.tck;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,8 +19,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -53,15 +46,13 @@ public class OpentracingTCKLauncherMicroProfile {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchOpentracingTck() throws Exception {
-        // Use default tck-suite.xml
-        
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.3_fat", this.getClass() + ":launchOpentracingRestClientTck", "tck-and-rest-client-tck.xml", Collections.emptyMap(), Collections.emptySet());
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Open Tracing");
-        resultInfo.put("feature_version", "1.3");
-        MvnUtils.preparePublicationFile(resultInfo);
-
+    public void launchOpenTracing13RestClientTck() throws Exception {
+        String suiteName = "tck-and-rest-client-tck.xml";
+        String bucketName = "com.ibm.ws.opentracing.1.3_fat_tck";
+        String testName = this.getClass() + ":launchOpenTracing13RestClientTck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Open Tracing";
+        String specVersion = "1.3";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, suiteName);
     }
 }

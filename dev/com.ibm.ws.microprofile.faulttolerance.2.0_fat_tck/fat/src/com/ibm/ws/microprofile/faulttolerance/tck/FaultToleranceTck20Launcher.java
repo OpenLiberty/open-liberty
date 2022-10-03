@@ -10,13 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.tck;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,7 +31,8 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs the whole Fault Tolerance TCK. The TCK results
@@ -126,7 +121,7 @@ public class FaultToleranceTck20Launcher {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchFaultToleranceTCK() throws Exception {
+    public void launchFaultTolerance20TCK() throws Exception {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
 
         String suiteFileName;
@@ -149,12 +144,11 @@ public class FaultToleranceTck20Launcher {
                 suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
         }
 
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
-                              Collections.emptyMap(), Collections.emptySet());
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Fault Tolerance");
-        resultInfo.put("feature_version", "2.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck";
+        String testName = this.getClass() + ":launchFaultTolerance20TCK";
+        Type type = Type.MICROPROFILE;
+        String specName = "Fault Tolerance";
+        String specVersion = "2.0";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, suiteFileName);
     }
 }
