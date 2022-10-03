@@ -78,7 +78,7 @@ Export-Package: \
   com.ibm.ws.adaptable.module;version=latest,\
   com.ibm.ws.anno;version=latest,\
   com.ibm.ws.managedobject;version=latest,\
-  com.ibm.ws.jsp;version=latest,\
+  com.ibm.ws.jsp.jakarta;version=latest,\
   io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
   io.openliberty.jakarta.servlet.6.0;version=latest,\
   io.openliberty.jakarta.cdi.4.0;version=latest,\
