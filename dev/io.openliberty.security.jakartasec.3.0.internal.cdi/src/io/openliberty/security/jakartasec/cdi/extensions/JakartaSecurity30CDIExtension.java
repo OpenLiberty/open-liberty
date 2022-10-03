@@ -34,7 +34,6 @@ import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
@@ -62,11 +61,6 @@ public class JakartaSecurity30CDIExtension implements Extension {
         applicationName = HttpAuthenticationMechanismsTracker.getApplicationName();
     }
 
-    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
-        AnnotatedType<OpenIdContextProducer> producer = bm.createAnnotatedType(OpenIdContextProducer.class);
-        bbd.addAnnotatedType(producer, CDIServiceUtils.getAnnotatedTypeIdentifier(producer, this.getClass()));
-    }
-
     @SuppressWarnings("static-access")
     @Reference
     protected void setPrimarySecurityCDIExtension(PrimarySecurityCDIExtension primarySecurityCDIExtension) {
@@ -85,6 +79,7 @@ public class JakartaSecurity30CDIExtension implements Extension {
         Class<?> annotatedClass = annotatedType.getJavaClass();
         addOidcHttpAuthenticationMechanismBean(oidcAnnotation, annotatedClass);
         addOidcIdentityStore(beanManager);
+        addOpenIdContext(beanManager);
     }
 
     private void addOidcHttpAuthenticationMechanismBean(Annotation annotation, Class<?> annotatedClass) {
@@ -96,6 +91,11 @@ public class JakartaSecurity30CDIExtension implements Extension {
     private void addOidcIdentityStore(BeanManager beanManager) {
         // TODO: Check for duplicates
         beansToAdd.add(new OidcIdentityStoreBean(beanManager));
+    }
+
+    private void addOpenIdContext(BeanManager beanManager) {
+        // TODO: Check for duplicates
+        beansToAdd.add(new OpenIdContextBean(beanManager));
     }
 
     public void processOidcHttpAuthMechNeeded(@Observes ProcessBeanAttributes<OidcHttpAuthenticationMechanism> processBeanAttributes, BeanManager beanManager) {
