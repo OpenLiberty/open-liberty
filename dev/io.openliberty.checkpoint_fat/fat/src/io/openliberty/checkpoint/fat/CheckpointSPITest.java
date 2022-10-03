@@ -78,7 +78,7 @@ public class CheckpointSPITest {
     @Test
     public void testRestoreWithDefaults() throws Exception {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
-        findLogMessage("No restore config", "TESTING - restore config: ", "pida=test1 pidb=test1", 0);
+        findLogMessage("No restore config", "TESTING - restore config: ", "a=test1 b=test1 c=${c_value}", 0);
         findLogMessage("No RESTORED true found in restore", "TESTING - in restore method RESTORED", " - true -- true", 500);
         findLogMessage("Restore should have null running condition", "TESTING - restore running condition: ", "null", 500);
         findLogMessage("Bind should have non-null running condition", "TESTING - bind running condition: ", "io.openliberty.process.running APPLICATIONS", 500);
@@ -87,7 +87,7 @@ public class CheckpointSPITest {
     @Test
     public void testRestoreWithEnvSet() throws Exception {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
-        findLogMessage("No restore config", "TESTING - modified config: pida=env2 pidb=env2", "", 0);
+        findLogMessage("No restore config", "TESTING - modified config: ", "a=env2 b=env2 c=env2", 500);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class CheckpointSPITest {
             expectRestoreFailure = true;
         }
         server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, autoRestore, expectCheckpointFailure, expectRestoreFailure, server -> {
-            findLogMessage("No prepare config", "TESTING - prepare config:", " pida=test1 pidb=test1", 0);
+            findLogMessage("No prepare config", "TESTING - prepare config: ", "a=test1 b=test1 c=${c_value}", 0);
             findLogMessage("No RESTORED false found in prepare", "TESTING - in prepare method RESTORED", " - false -- false", 500);
             findLogMessage("Activate should have null running condition", "TESTING - activate running condition: ", "null", 500);
             findLogMessage("Prepare should have null running condition", "TESTING - prepare running condition: ", "null", 500);
