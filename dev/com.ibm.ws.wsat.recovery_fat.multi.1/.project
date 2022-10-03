@@ -22,14 +22,14 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>com.ibm.ws.wsat.recovery_fat.single-recoveryClient</name>
+			<name>com.ibm.ws.wsat.recovery_fat.single.1-recoveryClient</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.recovery_fat.single/test-applications/recoveryClient/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.recovery_fat.single.1/test-applications/recoveryClient/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.wsat.recovery_fat.single-recoveryServer</name>
+			<name>com.ibm.ws.wsat.recovery_fat.single.1-recoveryServer</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.recovery_fat.single/test-applications/recoveryServer/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.recovery_fat.single.1/test-applications/recoveryServer/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
