@@ -7,6 +7,7 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.jdbc-4.3)(osgi.identity=com.ibm.websphere.appserver.jdbc-4.2)))"
 -features=\
   com.ibm.websphere.appserver.transaction-2.0,\
+  com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3",\
   io.openliberty.persistenceService-2.0
 -bundles=\
   io.openliberty.data.internal.persistence
