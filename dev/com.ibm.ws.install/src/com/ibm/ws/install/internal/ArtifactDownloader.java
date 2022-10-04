@@ -32,6 +32,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,10 +69,13 @@ public class ArtifactDownloader implements AutoCloseable {
 
     private final ExecutorService executor;
 
+    private Map<String, File> mavenCoordMap = null;
+
     ArtifactDownloader() {
         this.downloadedFiles = Collections.synchronizedList(new ArrayList<>());
         this.progressBar = ProgressBar.getInstance();
         this.executor = Executors.newFixedThreadPool(ArtifactDownloaderUtils.getNumThreads());
+        this.mavenCoordMap = new Hashtable<>();
     }
 
     private Future<String> submitDownloadRequest(String coords, String fileType, String dLocation, MavenRepository repository) {
@@ -199,7 +203,7 @@ public class ArtifactDownloader implements AutoCloseable {
                 }
             }
 
-            download(urlLocation, dLocation, checksumFormats, repository);
+            download(mavenCoords, filetype, urlLocation, dLocation, checksumFormats, repository);
 
         } catch (IOException e) {
             throw new InstallException(e.getMessage());
@@ -207,7 +211,8 @@ public class ArtifactDownloader implements AutoCloseable {
 
     }
 
-    private void download(String urlLocation, String dLocation, String[] checksumFormats, MavenRepository mavenRepository) throws IOException, InstallException {
+    private void download(String mavenCoords, String filetype, String urlLocation, String dLocation, String[] checksumFormats,
+                          MavenRepository mavenRepository) throws IOException, InstallException {
         try {
             URI uriLoc = new URI(urlLocation);
             File fileLoc = new File(urlLocation.replace(mavenRepository.toString(), dLocation));
@@ -216,6 +221,9 @@ public class ArtifactDownloader implements AutoCloseable {
             downloadInternal(uriLoc, fileLoc, mavenRepository);
 
             downloadedFiles.add(fileLoc);
+            if (filetype.equals("esa")) {
+                mavenCoordMap.put(mavenCoords, fileLoc);
+            }
             boolean someChecksumExists = false;
             boolean checksumFail = false;
             boolean checksumSuccess = false;
@@ -241,6 +249,7 @@ public class ArtifactDownloader implements AutoCloseable {
                 if (checksumFail) {
                     ArtifactDownloaderUtils.deleteFiles(downloadedFiles, dLocation, fileLoc);
                     downloadedFiles.clear();
+                    mavenCoordMap.clear();
                     throw ExceptionUtils.createByKey("ERROR_CHECKSUM_FAILED_MAVEN", filename);
                 }
             } else {
@@ -460,11 +469,20 @@ public class ArtifactDownloader implements AutoCloseable {
         }
     }
 
-    public List<File> getDownloadedEsas() {
+    /*
+     * Returns the list of downloaded esa files in the order provided by the resolver.
+     *
+     * @param featureList List of missing features in the order returned by the resolver
+     *
+     * @return esaFiles
+     */
+    public List<File> getDownloadedEsas(List<String> featureList) {
         List<File> esaFiles = new ArrayList<File>();
-        for (File f : downloadedFiles) {
-            if (f.getName().endsWith(".esa")) {
-                esaFiles.add(f);
+        for (String coord : featureList) {
+            //return downloaded esa files in the same order as featureList
+            File artifactPath = mavenCoordMap.get(coord);
+            if (artifactPath != null) {
+                esaFiles.add(artifactPath);
             }
         }
         return esaFiles;
