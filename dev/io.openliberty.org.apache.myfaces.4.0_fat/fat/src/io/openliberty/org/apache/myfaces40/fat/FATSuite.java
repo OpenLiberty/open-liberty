@@ -16,13 +16,15 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import io.openliberty.org.apache.myfaces40.fat.tests.ExternalContextAddResponseCookieTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesConfigTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.InputTextTypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 SimpleTest.class,
                 ExternalContextAddResponseCookieTest.class,
-                FacesConfigTest.class
+                FacesConfigTest.class,
+                InputTextTypeTest.class
 })
 public class FATSuite {
 
