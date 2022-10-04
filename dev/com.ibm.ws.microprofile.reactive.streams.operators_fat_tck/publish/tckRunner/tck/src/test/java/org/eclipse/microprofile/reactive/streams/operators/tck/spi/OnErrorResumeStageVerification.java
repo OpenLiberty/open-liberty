@@ -209,10 +209,11 @@ public class OnErrorResumeStageVerification extends AbstractStageVerification {
         }
         
         /**
-         * Fix to defect 286531
-         * This overrides the method required_spec109_mustIssueOnSubscribeForNonNullSubscriber()
-         * in org.reactivestreams.tck.PublisherVerification and org.reactivestreams.tck.IdentityProcessorVerification, 
-         * which has been failing with an illegalstateexception 
+         * 
+         * Liberty Change:
+         * Disable this test due to very infrequent intermittent failures
+         * See defect 286531
+         * 
          */
         @Override
         @Test
