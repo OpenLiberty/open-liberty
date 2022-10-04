@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2016  IBM Corporation and others.
+ * Copyright (c) 2015, 2022  IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,13 @@ package com.ibm.ws.jsf22.fat.html5.faces40;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 /**
  *
  */
-@ManagedBean(name = "testPassthroughTextareaBean")
+@Named("testPassthroughTextareaBean")
 @RequestScoped
 public class TestPassthroughTextareaBean implements Serializable {
     /**  */
@@ -55,8 +55,7 @@ public class TestPassthroughTextareaBean implements Serializable {
         this.complainText = complainText;
     }
 
-    public void submit()
-    {
+    public void submit() {
         System.out.println("phone: " + phone);
         System.out.println("complainText: " + complainText);
     }
