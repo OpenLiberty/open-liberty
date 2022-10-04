@@ -34,40 +34,40 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-@Component(service = {DefaultExceptionMapperCallback.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = {"service.vendor=IBM" })
+@Component(service = { DefaultExceptionMapperCallback.class }, configurationPolicy = ConfigurationPolicy.IGNORE,
+        property = { "service.vendor=IBM" })
 public class MetricsRestfulWsEMCallbackImpl implements DefaultExceptionMapperCallback {
 
     static SharedMetricRegistries sharedMetricRegistry;
-    
+
     private static final TraceComponent tc = Tr.register(MetricsRestfulWsEMCallbackImpl.class);
 
     public static final String EXCEPTION_KEY = MetricsRestfulWsEMCallbackImpl.class.getName() + ".Exception";
-    
-    private static final String[] metricCDIBundles = { "io.astefanutti.metrics.cdi30",
-            "io.openliberty.microprofile.metrics.internal.cdi30.interceptors" };
+
+    private static final String[] metricCDIBundles = { "io.openliberty.smallrye.metrics.cdi.adapters",
+            "io.smallrye.metrics.legacyapi.interceptors", "io.smallrye.metrics" };
 
     public synchronized static Counter registerOrRetrieveRESTUnmappedExceptionMetric(String fullyQualifiedClassName,
             String methodSignature) {
 
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();      
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
 
-        return registerOrRetrieveRESTUnmappedExceptionMetric(fullyQualifiedClassName, methodSignature, cmd.getJ2EEName().getApplication());
+        return registerOrRetrieveRESTUnmappedExceptionMetric(fullyQualifiedClassName, methodSignature,
+                cmd.getJ2EEName().getApplication());
     }
-    
+
     public synchronized static Counter registerOrRetrieveRESTUnmappedExceptionMetric(String fullyQualifiedClassName,
             String methodSignature, String appName) {
         MetricRegistry baseMetricRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.BASE_SCOPE);
 
-        Metadata metadata = Metadata.builder()
-                .withName("REST.request.unmappedException.total")
-                .withDescription("REST.request.unmappedException.description")
-                .build();
+        Metadata metadata = Metadata.builder().withName("REST.request.unmappedException.total")
+                .withDescription("REST.request.unmappedException.description").build();
 
         Tag classTag = new Tag("class", fullyQualifiedClassName);
         Tag methodTag = new Tag("method", methodSignature);
 
-        Counter counter = baseMetricRegistry.counter(metadata, classTag, methodTag); 
-                
+        Counter counter = baseMetricRegistry.counter(metadata, classTag, methodTag);
+
         sharedMetricRegistry.associateMetricIDToApplication(new MetricID(metadata.getName(), classTag, methodTag),
                 appName, baseMetricRegistry);
 
@@ -90,12 +90,12 @@ public class MetricsRestfulWsEMCallbackImpl implements DefaultExceptionMapperCal
                 || ste[0].getClassName().startsWith(metricCDIBundles[1]))) {
             Map.Entry<String, String> classXmethod = resolveClassMethodTags(resourceInfo);
             if (classXmethod != null) {
-                //increment exception count
+                // increment exception count
                 registerOrRetrieveRESTUnmappedExceptionMetric(classXmethod.getKey(), classXmethod.getValue()).inc();
             }
         }
 
-        //Todo: update reference to message
+        // Todo: update reference to message
         Tr.warning(tc, "METRICS_UNHANDLED_JAXRS_EXCEPTION", throwable);
 
         return Collections.singletonMap(EXCEPTION_KEY, throwable);
