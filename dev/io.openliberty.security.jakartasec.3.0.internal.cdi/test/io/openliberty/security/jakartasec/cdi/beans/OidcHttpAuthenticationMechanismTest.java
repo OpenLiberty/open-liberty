@@ -29,6 +29,7 @@ import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.TestOpenIdAuthenticationMechanismDefinition;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
+import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException.ValidationResult;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.token.JakartaOidcTokenRequest;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
@@ -49,6 +50,8 @@ public class OidcHttpAuthenticationMechanismTest {
     private static final String REDIRECTION_URL = "authzEndPointUrlWithQuery";
     private static final ProviderAuthenticationResult REDIRECTION_PROVIDER_AUTH_RESULT = new ProviderAuthenticationResult(AuthResult.REDIRECT_TO_PROVIDER, HttpServletResponse.SC_OK, null, null, null, REDIRECTION_URL);
     private static final ProviderAuthenticationResult FAILURE_AUTH_RESULT = new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+    private static final AuthenticationResponseException AUTHENTICATION_RESPONSE_EXCEPTION_INVALID_RESULT = new AuthenticationResponseException(ValidationResult.INVALID_RESULT, "clientId", "nlsMessage");
+    private static final TokenRequestException TOKEN_REQUEST_EXCEPTION = new TokenRequestException("clientId", "message");
 
     private final Mockery mockery = new JUnit4Mockery() {
         {
@@ -99,10 +102,7 @@ public class OidcHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequest_authenticationRequest_redirects() throws Exception {
-        OpenIdAuthenticationMechanismDefinition openIdAuthenticationMechanismDefinition = TestOpenIdAuthenticationMechanismDefinition.getInstanceofAnnotation(null);
-        setModulePropertiesProvider(openIdAuthenticationMechanismDefinition);
-        setHttpMessageContextExpectations(true, false);
-        withoutJaspicSessionPrincipal();
+        mechanismValidatesRequestForProtectedResource();
         clientStartsFlow(REDIRECTION_PROVIDER_AUTH_RESULT);
         mechanismRedirectsTo(REDIRECTION_URL);
         OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
@@ -114,10 +114,7 @@ public class OidcHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequest_authenticationRequest_fails() throws Exception {
-        OpenIdAuthenticationMechanismDefinition openIdAuthenticationMechanismDefinition = TestOpenIdAuthenticationMechanismDefinition.getInstanceofAnnotation(null);
-        setModulePropertiesProvider(openIdAuthenticationMechanismDefinition);
-        setHttpMessageContextExpectations(true, false);
-        withoutJaspicSessionPrincipal();
+        mechanismValidatesRequestForProtectedResource();
         clientStartsFlow(FAILURE_AUTH_RESULT);
         mechanismSetsResponseUnauthorized();
         OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
@@ -129,11 +126,7 @@ public class OidcHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequest_callbackRequest() throws Exception {
-        OpenIdAuthenticationMechanismDefinition openIdAuthenticationMechanismDefinition = TestOpenIdAuthenticationMechanismDefinition.getInstanceofAnnotation(null);
-        setModulePropertiesProvider(openIdAuthenticationMechanismDefinition);
-        setHttpMessageContextExpectations(false, false);
-        withoutJaspicSessionPrincipal();
-        withCallbackRequest();
+        mechanismReceivesCallbackFromOP();
         clientContinuesFlow(createSuccessfulProviderAuthenticationResult());
         mechanismValidatesTokens(AuthenticationStatus.SUCCESS);
         withMessageInfo();
@@ -144,6 +137,57 @@ public class OidcHttpAuthenticationMechanismTest {
         AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
 
         assertEquals("The AuthenticationStatus must be SUCCESS.", AuthenticationStatus.SUCCESS, authenticationStatus);
+    }
+
+    /**
+     * Expect SEND_CONTINUE rather than SEND_FAILURE since JaspiServiceImpl converts a SEND_FAILURE to AuthenticationResult(AuthResult.RETURN, detail)
+     * and the WebContainerSecurityCollaboratorImpl allows access to unprotected resources for AuthResult.RETURN. SEND_CONTINUE will prevent this by properly
+     * returning a 401 and not continue to the redirectUri.
+     */
+    @Test
+    public void testValidateRequest_callbackRequest_continueFlowAuthenticationResponseException_fails() throws Exception {
+        mechanismReceivesCallbackFromOP();
+        clientContinuesFlowThrowsException(AUTHENTICATION_RESPONSE_EXCEPTION_INVALID_RESULT);
+        mechanismSetsResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+        OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
+
+        AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
+
+        assertEquals("The AuthenticationStatus must be SEND_CONTINUE.", AuthenticationStatus.SEND_CONTINUE, authenticationStatus);
+    }
+
+    /**
+     * Expect SEND_CONTINUE rather than SEND_FAILURE since JaspiServiceImpl converts a SEND_FAILURE to AuthenticationResult(AuthResult.RETURN, detail)
+     * and the WebContainerSecurityCollaboratorImpl allows access to unprotected resources for AuthResult.RETURN. SEND_CONTINUE will prevent this by properly
+     * returning a 401 and not continue to the redirectUri.
+     */
+    @Test
+    public void testValidateRequest_callbackRequest_continueFlowTokenResponseException_fails() throws Exception {
+        mechanismReceivesCallbackFromOP();
+        clientContinuesFlowThrowsException(TOKEN_REQUEST_EXCEPTION);
+        mechanismSetsResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+        OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
+
+        AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
+
+        assertEquals("The AuthenticationStatus must be SEND_CONTINUE.", AuthenticationStatus.SEND_CONTINUE, authenticationStatus);
+    }
+
+    private void mechanismValidatesRequestForProtectedResource() {
+        OpenIdAuthenticationMechanismDefinition openIdAuthenticationMechanismDefinition = TestOpenIdAuthenticationMechanismDefinition.getInstanceofAnnotation(null);
+        setModulePropertiesProvider(openIdAuthenticationMechanismDefinition);
+        setHttpMessageContextExpectations(true, false);
+        withoutJaspicSessionPrincipal();
+    }
+
+    private void mechanismReceivesCallbackFromOP() {
+        OpenIdAuthenticationMechanismDefinition openIdAuthenticationMechanismDefinition = TestOpenIdAuthenticationMechanismDefinition.getInstanceofAnnotation(null);
+        setModulePropertiesProvider(openIdAuthenticationMechanismDefinition);
+        setHttpMessageContextExpectations(false, false);
+        withoutJaspicSessionPrincipal();
+        withCallbackRequest();
     }
 
     @SuppressWarnings("unchecked")
@@ -157,8 +201,6 @@ public class OidcHttpAuthenticationMechanismTest {
                 will(returnValue(mppi));
                 one(mppi).get();
                 will(returnValue(mpp));
-//                one(mpp).getAuthMechProperties(OidcHttpAuthenticationMechanism.class);
-//                will(returnValue(props));
             }
         });
     }
@@ -223,6 +265,15 @@ public class OidcHttpAuthenticationMechanismTest {
             {
                 one(client).continueFlow(request, response);
                 will(returnValue(providerAuthenticationResult));
+            }
+        });
+    }
+
+    private void clientContinuesFlowThrowsException(Exception exception) throws AuthenticationResponseException, TokenRequestException {
+        mockery.checking(new Expectations() {
+            {
+                one(client).continueFlow(request, response);
+                will(throwException(exception));
             }
         });
     }

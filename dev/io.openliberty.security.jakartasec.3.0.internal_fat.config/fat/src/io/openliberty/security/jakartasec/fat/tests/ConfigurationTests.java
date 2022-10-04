@@ -306,7 +306,6 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationTests_badClientSecret() throws Exception {
 
-        // TODO - we shouldn't get a 200 status code - we shouldn't get to the callback - update when 22582 is resolved
         WebClient webClient = getAndSaveWebClient();
 
         String app = "GenericOIDCAuthMechanism";
@@ -316,13 +315,11 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, "got here", "Did not land on the callback."));
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
 //        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
 //                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
 
         validationUtils.validateResult(response, expectations);
@@ -338,7 +335,6 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationTests_omittedClientSecret() throws Exception {
 
-        // TODO - we shouldn't get a 200 status code - we shouldn't get to the callback - update when 22582 is resolved
         WebClient webClient = getAndSaveWebClient();
 
         String app = "GenericOIDCAuthMechanism";
@@ -348,13 +344,11 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, "got here", "Did not land on the callback."));
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
 //        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
 //                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
 
         validationUtils.validateResult(response, expectations);
