@@ -14,6 +14,6 @@ Subsystem-Name: OpenID 2.0
   io.openliberty.org.apache.commons.codec, \
   io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.com.google.guice.2.0, \
-  io.openliberty.net.sourceforge.nekohtml
+  com.ibm.ws.org.cyberneko.html.1.9.18
 kind=ga
 edition=core
