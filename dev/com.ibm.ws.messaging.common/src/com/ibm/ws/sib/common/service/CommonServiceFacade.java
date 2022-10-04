@@ -41,19 +41,15 @@ public class CommonServiceFacade implements Singleton {
     private static final String CLASS_NAME = "com.ibm.ws.sib.common.service.CommonServiceFacade";
 
     private final CommsClientServiceFacadeInterface commsClient;
-    private final RuntimeSecurityService runtimeSecurity;
 
     @Activate
     public CommonServiceFacade(
             @Reference(name = "commsClient")
-            CommsClientServiceFacadeInterface commsClient,
-            @Reference(name = "runtimeSecurity")
-            RuntimeSecurityService runtimeSecurity
+            CommsClientServiceFacadeInterface commsClient
             ) {
         final String methodName = "<init>";
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, methodName, new Object[]{commsClient, runtimeSecurity});
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, methodName, commsClient);
         this.commsClient = commsClient;
-        this.runtimeSecurity = runtimeSecurity;
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, methodName);
     }
 
@@ -65,12 +61,6 @@ public class CommonServiceFacade implements Singleton {
 
     public static JsAdminService getJsAdminService() {
         return SingletonsReady.findService(JsAdminService.class)
-                .orElse(null);
-    }
-
-    public static RuntimeSecurityService getRuntimeSecurityService() {
-        return SingletonsReady.findService(CommonServiceFacade.class)
-                .map(f -> f.runtimeSecurity)
                 .orElse(null);
     }
 
