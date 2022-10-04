@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 import jakarta.data.Limit;
 import jakarta.data.Page;
-import jakarta.data.Pagination;
+import jakarta.data.Pageable;
 import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Sort;
@@ -97,7 +97,7 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
 
     Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostMatcher);
 
-    Page<Reservation> findByHostStartsWith(String hostPrefix, Pagination pagination, Sort sort);
+    Page<Reservation> findByHostStartsWith(String hostPrefix, Pageable pagination, Sort sort);
 
     LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
 
