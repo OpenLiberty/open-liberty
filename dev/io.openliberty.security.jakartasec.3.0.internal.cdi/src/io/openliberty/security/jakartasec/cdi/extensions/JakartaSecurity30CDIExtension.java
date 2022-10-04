@@ -27,6 +27,7 @@ import com.ibm.ws.security.javaeesec.cdi.extensions.HttpAuthenticationMechanisms
 import com.ibm.ws.security.javaeesec.cdi.extensions.PrimarySecurityCDIExtension;
 
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
+import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionHolder;
 import io.openliberty.security.jakartasec.cdi.beans.OidcHttpAuthenticationMechanism;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
@@ -83,7 +84,7 @@ public class JakartaSecurity30CDIExtension implements Extension {
 
     private void addOidcHttpAuthenticationMechanismBean(Annotation annotation, Class<?> annotatedClass) {
         Properties props = new Properties();
-        props.put(JakartaSec30Constants.OIDC_ANNOTATION, annotation);
+        props.put(JakartaSec30Constants.OIDC_ANNOTATION, new OpenIdAuthenticationMechanismDefinitionHolder((OpenIdAuthenticationMechanismDefinition) annotation));
         primarySecurityCDIExtension.addAuthMech(applicationName, annotatedClass, OidcHttpAuthenticationMechanism.class, props);
     }
 
