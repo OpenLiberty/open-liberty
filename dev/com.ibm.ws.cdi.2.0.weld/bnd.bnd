@@ -18,7 +18,8 @@ bVersion=1.0
 
 -dsannotations: com.ibm.ws.cdi.impl.DefaultCDI20SecurityService,\
                 com.ibm.ws.cdi.impl.CDI20BeansXmlParserImpl,\
-                com.ibm.ws.cdi.impl.CDI20AggregatedConfigurationImpl
+                com.ibm.ws.cdi.impl.CDI20AggregatedConfigurationImpl,\
+                com.ibm.ws.cdi.impl.CDI20WeldDevelopmentModeImpl
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \
@@ -35,12 +36,14 @@ WS-TraceGroup: JCDI
 
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.ws.org.jboss.weld3;version=latest, \
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.logging.core,\
+	com.ibm.ws.injection,\
 	com.ibm.ws.cdi.internal;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.container.service;version=latest,\

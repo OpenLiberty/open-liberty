@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,12 @@ package com.ibm.ws.cdi.web.interfaces;
 
 import javax.enterprise.inject.spi.BeanManager;
 
+import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 
 /**
- *
+ * A set of CDI runtime methods used by the web container integrations
  */
 public interface CDIWebRuntime {
 
@@ -27,20 +28,25 @@ public interface CDIWebRuntime {
     public static final String SESSION_NEEDS_PERSISTING = "com.ibm.ws.cdi.web.WeldServletRequestListener.SESSION_NEEDS_PERSISTING";
 
     /**
-     * @param moduleMetaData
-     * @return
+     * @see CDIRuntime.getModuleBeanManager(ModuleMetaData)
      */
-    BeanManager getModuleBeanManager(ModuleMetaData moduleMetaData);
+    public BeanManager getModuleBeanManager(ModuleMetaData moduleMetaData);
 
     /**
-     * @param isc
-     * @return
+     * Check if CDI is enabled for this module
+     *
+     * @param isc the IServletContext
+     * @return true if CDI is enabled
      */
-    boolean isCdiEnabled(IServletContext isc);
+    public boolean isCdiEnabled(IServletContext isc);
 
     /**
-     * @return
+     * @see CDIRuntime.getCurrentBeanManager()
      */
-    BeanManager getCurrentBeanManager();
+    public BeanManager getCurrentBeanManager();
 
+    /**
+     * @see CDIRuntime.getWeldDevelopmentMode()
+     */
+    public WeldDevelopmentMode getWeldDevelopmentMode();
 }
