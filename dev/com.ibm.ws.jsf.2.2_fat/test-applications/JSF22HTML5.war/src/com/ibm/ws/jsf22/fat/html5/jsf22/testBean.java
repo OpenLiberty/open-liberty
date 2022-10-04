@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.html5;
+package com.ibm.ws.jsf22.fat.html5.jsf22;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -45,8 +45,7 @@ public class testBean {
         if (!((Boolean) holder.getSubmittedValue())) {
             System.out.println("getSubmittedValue FAIL");
             submittedValue = "getSubmittedValue FAIL";
-        }
-        else
+        } else
             submittedValue = "getSubmittedValue PASS";
 
     }
