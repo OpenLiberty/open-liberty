@@ -218,7 +218,7 @@ public class OnErrorResumeStageVerification extends AbstractStageVerification {
         @Override
         @Test
         public void required_spec109_mustIssueOnSubscribeForNonNullSubscriber() {
-            System.out.println("The test case that is failing is called required_spec109_mustIssueOnSubscribeForNonNullSubscriber");
+            System.out.println("Not running required_spec109_mustIssueOnSubscribeForNonNullSubscriber");
         }
     }
 
