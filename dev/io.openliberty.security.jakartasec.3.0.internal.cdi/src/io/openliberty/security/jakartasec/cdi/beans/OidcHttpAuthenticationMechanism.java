@@ -46,7 +46,6 @@ import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticat
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
-import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
 import jakarta.security.enterprise.identitystore.openid.IdentityToken;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
@@ -181,28 +180,23 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         return request.getParameter(OpenIdConstant.STATE) != null;
     }
 
+    /**
+     * Use SEND_CONTINUE rather than SEND_FAILURE for failures since JaspiServiceImpl converts a SEND_FAILURE to AuthenticationResult(AuthResult.RETURN, detail)
+     * and the WebContainerSecurityCollaboratorImpl allows access to unprotected resources for AuthResult.RETURN. SEND_CONTINUE will prevent this by properly
+     * returning a 401 and not continue to the redirectUri.
+     */
     private AuthenticationStatus processCallback(Client client, HttpServletRequest request, HttpServletResponse response,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
-        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
+        AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
 
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, request, response, client);
-        } catch (AuthenticationResponseException e) {
-            status = httpMessageContext.notifyContainerAboutLogin(getCredentialValidationResultFromException(e));
-        } catch (TokenRequestException e) {
-            status = httpMessageContext.notifyContainerAboutLogin(CredentialValidationResult.INVALID_RESULT);
+        } catch (AuthenticationResponseException | TokenRequestException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         return status;
-    }
-
-    private CredentialValidationResult getCredentialValidationResultFromException(AuthenticationResponseException exception) {
-        if (AuthenticationResponseException.ValidationResult.NOT_VALIDATED_RESULT == exception.getValidationResult()) {
-            return CredentialValidationResult.NOT_VALIDATED_RESULT;
-        } else {
-            return CredentialValidationResult.INVALID_RESULT;
-        }
     }
 
     private AuthenticationStatus processContinueFlowResult(ProviderAuthenticationResult providerAuthenticationResult,
@@ -224,7 +218,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     private AuthenticationStatus handleOidcLogin(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext,
                                                  HttpServletRequest request, HttpServletResponse response, Client client) throws AuthenticationException {
         OidcTokensCredential credential = createOidcTokensCredential(providerAuthenticationResult, request, response, client);
-        // TODO: "When available in the "Token Response", the optional fields "refresh_token" and "expires_in" must be stored internally." Store full credential in the subject.
+
         return validateCredentials(credential, httpMessageContext);
     }
 
