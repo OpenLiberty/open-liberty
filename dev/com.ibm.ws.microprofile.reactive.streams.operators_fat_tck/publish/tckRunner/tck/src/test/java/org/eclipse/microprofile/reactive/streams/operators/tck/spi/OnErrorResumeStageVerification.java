@@ -14,9 +14,13 @@ import java.util.stream.LongStream;
 import static org.testng.Assert.assertEquals;
 
 /**
- * Test cases for OnErrorResume stages. This includes the
- * {@link org.eclipse.microprofile.reactive.streams.operators.spi.Stage.OnErrorResume} and
- * {@link org.eclipse.microprofile.reactive.streams.operators.spi.Stage.OnErrorResumeWith} stages.
+ * 
+ * This class is a copy of the same class name OnErrorResumeStageVerification and package name 
+ * org.eclipse.microprofile.reactive.streams.operators.tck.spi of eclipse project 
+ * microprofile-reactive-streams-operators. The class has however been slightly modified to 
+ * override the required_spec109_mustIssueOnSubscribeForNonNullSubscriber() testcase. This test
+ * case is implemented in the classes PublisherVerification and IdentityProcessorVerification
+ * 
  */
 public class OnErrorResumeStageVerification extends AbstractStageVerification {
 
@@ -204,6 +208,12 @@ public class OnErrorResumeStageVerification extends AbstractStageVerification {
             return element;
         }
         
+        /**
+         * Fix to defect 286531
+         * This overrides the method required_spec109_mustIssueOnSubscribeForNonNullSubscriber()
+         * in org.reactivestreams.tck.PublisherVerification and org.reactivestreams.tck.IdentityProcessorVerification, 
+         * which has been failing with an illegalstateexception 
+         */
         @Override
         @Test
         public void required_spec109_mustIssueOnSubscribeForNonNullSubscriber() {
