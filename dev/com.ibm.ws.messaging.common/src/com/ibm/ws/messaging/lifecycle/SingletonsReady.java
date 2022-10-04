@@ -182,7 +182,7 @@ public final class SingletonsReady {
         try {
             return Optional.of(requireService(type));
         } catch (LifecycleError e) {
-            FFDCFilter.processException(e, SingletonsReady.class.getName(), "findService-LifecycleError", new Object[] {type});
+            FFDCFilter.processException(e, SingletonsReady.class.getName(), "findService-LifecycleError", new Object[] {type.getCanonicalName(), CURRENT.get()});
             return Optional.empty();
         }
     }
