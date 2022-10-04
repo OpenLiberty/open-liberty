@@ -478,7 +478,7 @@ public class JwKRetriever {
         } catch (Exception e) {
             // could be ignored
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Fail to retrieve remote key: ", e.getCause());
+                Tr.debug(tc, "Fail to retrieve remote key: " + e.getMessage());
             }
         }
 
