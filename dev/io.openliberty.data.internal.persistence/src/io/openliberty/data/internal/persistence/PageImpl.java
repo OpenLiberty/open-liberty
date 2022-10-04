@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import jakarta.data.Page;
-import jakarta.data.Pagination;
+import jakarta.data.Pageable;
 import jakarta.data.Param;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -29,14 +29,14 @@ public class PageImpl<T> implements Page<T> {
     private final Object[] args;
     private final Method method;
     private final int numParams; // can differ from args.length due to Consumer/Pagination/Sort/Sorts parameters
-    private final Pagination pagination;
+    private final Pageable pagination;
     private final QueryInfo queryInfo;
     private final List<T> results;
 
-    PageImpl(QueryInfo queryInfo, Pagination pagination,
+    PageImpl(QueryInfo queryInfo, Pageable pagination,
              Method method, int numParams, Object[] args) {
         this.queryInfo = queryInfo;
-        this.pagination = pagination == null ? Pagination.page(1).size(100) : pagination;
+        this.pagination = pagination == null ? Pageable.of(1, 100) : pagination;
         this.method = method;
         this.numParams = numParams;
         this.args = args;
@@ -55,9 +55,10 @@ public class PageImpl<T> implements Page<T> {
                         query.setParameter(param.value(), args[i]);
                 }
             }
-            // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
-            query.setFirstResult((int) pagination.getSkip());
-            query.setMaxResults((int) pagination.getPageSize());
+            // TODO possible overflow with both of these.
+            long maxPageSize = pagination.getSize();
+            query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+            query.setMaxResults((int) maxPageSize);
 
             results = query.getResultList();
         } finally {
@@ -83,7 +84,7 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public Pagination getPagination() {
+    public Pageable getPagination() {
         return pagination;
     }
 

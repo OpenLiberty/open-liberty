@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * JNoSQL repository-related annotations work for relational database access.
  */
 public interface Page<T> extends Supplier<Stream<T>> {
-    Pagination getPagination();
+    Pageable getPagination();
 
     Page<T> next();
 
