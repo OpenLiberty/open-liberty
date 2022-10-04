@@ -119,6 +119,15 @@ public class GenericParametersHeaderImpl extends ParametersHeaderImpl
 		super.encodeValue(buffer);
 	}
 
+        /**
+         * @return false in Generic Parameters
+         */
+        protected boolean escapeParameters() {
+           return false;
+        }
+
+
+
 	/**
 	 * copies parameters from one header to another.
 	 * upon return from this call, both headers will have the exact
