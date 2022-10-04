@@ -142,16 +142,16 @@ public class TokenResponseValidator {
                 TokenValidator tokenValidator = new IdTokenValidator(clientConfig);
                 issuerconfigured = getIssuer();
                 tokenValidator.issuer(jwtClaims.getIssuer()).subject(jwtClaims.getSubject()).audiences(jwtClaims.getAudience()).azp(((String) jwtClaims.getClaimValue("azp"))).iat(jwtClaims.getIssuedAt()).exp(jwtClaims.getExpirationTime()).nbf(jwtClaims.getNotBefore()).issuerconfigured(issuerconfigured);
+                tokenValidator.validate();
                 if (this.clientConfig.isUseNonce()) {
                     ((IdTokenValidator) tokenValidator).nonce(((String) jwtClaims.getClaimValue("nonce")));
                     ((IdTokenValidator) tokenValidator).state(getStateParameter());
                     ((IdTokenValidator) tokenValidator).secret(clientSecret);
                     instantiateStorage(clientConfig);
                     ((IdTokenValidator) tokenValidator).storage(storage);
-                    ((IdTokenValidator) tokenValidator).validate();
-                } else {
-                    tokenValidator.validate();
-                }
+                    
+                    ((IdTokenValidator) tokenValidator).validateNonce();
+                } 
             } catch (MalformedClaimException e) {
                 throw new TokenValidationException(this.clientConfig.getClientId(), e.getMessage());
             }

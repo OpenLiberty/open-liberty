@@ -61,12 +61,7 @@ public class IdTokenValidator extends TokenValidator {
         return this;   
     }
 
-    @Override
-    public void validate() throws TokenValidationException {
-        super.validate();
-        validateNonce();  
-    }
-    protected void validateNonce() throws TokenValidationException {
+    public void validateNonce() throws TokenValidationException {
         String cookieName = OidcStorageUtils.getNonceStorageKey(this.oidcConfig.getClientId(), state);
         String cookieValue = OidcStorageUtils.createNonceStorageValue(nonce, state, secret);
         String storedCookieValue = storage.get(cookieName);
