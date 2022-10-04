@@ -45,8 +45,7 @@ public class testBean {
         if (!((Boolean) holder.getSubmittedValue())) {
             System.out.println("getSubmittedValue FAIL");
             submittedValue = "getSubmittedValue FAIL";
-        }
-        else
+        } else
             submittedValue = "getSubmittedValue PASS";
 
     }
