@@ -62,7 +62,6 @@ javax.websocket:javax.websocket-api:1.0
 javax.websocket:javax.websocket-api:1.1
 javax.xml.soap:javax.xml.soap-api:1.4.0
 net.jodah:failsafe:1.0.4
-net.sourceforge.nekohtml:nekohtml:1.9.23.ibm
 org.apache.aries.jmx:org.apache.aries.jmx.api:1.1.5
 org.apache.aries.jmx:org.apache.aries.jmx.core.whiteboard:1.1.5
 org.apache.aries.jndi:org.apache.aries.jndi.api:1.1.0
