@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,8 +57,6 @@ import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
 import jakarta.data.Sort;
-import jakarta.data.SortType;
-import jakarta.data.Sorts;
 import jakarta.data.Update;
 import jakarta.data.Where;
 import jakarta.data.repository.CrudRepository;
@@ -589,11 +588,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             Collector<Object, Object, Object> collector = null;
             Consumer<Object> consumer = null;
             Pagination pagination = null;
-            Sorts sorts = null;
+            LinkedList<Sort> sorts = null;
 
-            // Jakarta NoSQL allows the last 3 parameter positions to be used for Pagination, Sorts, and Consumer
+            // Jakarta Data allows the method parameters positions after those used as query parameters
+            // to be used for purposes such as pagination and sorting.
             // Collector is added here for experimentation.
-            for (paramCount = args == null ? 0 : args.length; paramCount > 0 && paramCount > args.length - 3;) {
+            for (paramCount = args == null ? 0 : args.length; paramCount > 0;) {
                 Object param = args[--paramCount];
                 if (param instanceof Collector)
                     collector = (Collector<Object, Object, Object>) param;
@@ -602,10 +602,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 else if (param instanceof Pagination)
                     pagination = (Pagination) param;
                 else if (param instanceof Sort)
-                    sorts = Sorts.sorts().add((Sort) param);
-                else if (param instanceof Sorts)
-                    sorts = (Sorts) param;
-                else {
+                    (sorts = sorts == null ? new LinkedList<>() : sorts).addFirst((Sort) param);
+                else if (param instanceof Sort[]) {
+                    sorts = sorts == null ? new LinkedList<>() : sorts;
+                    Sort[] s = (Sort[]) param;;
+                    for (int i = s.length - 1; i >= 0; i--)
+                        if (s[i] == null)
+                            throw new NullPointerException("Sort: null");
+                        else
+                            sorts.addFirst(s[i]);
+                } else {
+                    // TODO null values for Sort and/or other special parameters could cause prior special parameters to be missed
                     paramCount++;
                     break;
                 }
@@ -616,9 +623,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 StringBuilder q = queryInfo.jpql == null ? new StringBuilder(200) : new StringBuilder(queryInfo.jpql);
                 if (queryInfo.jpql == null)
                     generateSelect(queryInfo.entityInfo, q, method);
-                for (Sort sort : sorts.getSorts()) {
-                    q.append(first ? " ORDER BY o." : ", o.").append(sort.getName());
-                    if (sort.getType() == SortType.DESC)
+                for (Sort sort : sorts) {
+                    q.append(first ? " ORDER BY o." : ", o.").append(sort.getProperty());
+                    if (sort.isDescending())
                         q.append(" DESC");
                     first = false;
                 }

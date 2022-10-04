@@ -34,7 +34,6 @@ import jakarta.data.Pagination;
 import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Sort;
-import jakarta.data.Sorts;
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Repository;
 
@@ -72,7 +71,7 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
 
     Stack<Reservation> findByStopGreaterThanOrderByLocationDescOrderByHostOrderByStopAsc(OffsetDateTime endAfter);
 
-    UserDefinedCollection<Reservation> findByStopLessThan(OffsetDateTime maxEndTime, Sorts sorts);
+    UserDefinedCollection<Reservation> findByStopLessThan(OffsetDateTime maxEndTime, Sort... sortBy);
 
     AbstractCollection<Reservation> findByStopLessThanEqual(OffsetDateTime maxEndTime);
 
