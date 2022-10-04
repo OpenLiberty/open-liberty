@@ -87,7 +87,8 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
     @Override
     public void filter(ContainerRequestContext reqCtx) throws IOException {
         /*
-         *  Store the start time in the ContainerRequestContext that can be accessed in the response filter method.
+         * Store the start time in the ContainerRequestContext that can be accessed in
+         * the response filter method.
          */
         reqCtx.setProperty(START_TIME, System.nanoTime());
         reqCtx.setProperty(CMD, ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData());
@@ -196,7 +197,8 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
             addKeyToMetricInfo(appName, key);
 
             /*
-             *  Check if exception header was present, if not continue setting value for Timer
+             * Check if exception header was present, if not continue setting value for
+             * Timer
              */
             if (metricsHeader == null) {
                 restTimer.update(Duration.ofNanos(elapsedTime));
