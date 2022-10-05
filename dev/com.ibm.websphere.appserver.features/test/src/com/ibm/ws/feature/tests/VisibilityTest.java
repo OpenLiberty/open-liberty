@@ -389,15 +389,12 @@ public class VisibilityTest {
         // The following features are marked no ship, but are not ready for beta yet.
         // If they get marked beta, they should be removed from this list.
         expectedFailures.add("io.openliberty.jakarta.faces-4.0");
-        expectedFailures.add("io.openliberty.jakarta.messaging-3.1");
         expectedFailures.add("io.openliberty.jakarta.authentication-3.0");
         expectedFailures.add("io.openliberty.jakarta.authorization-2.1");
         expectedFailures.add("io.openliberty.jakarta.security.enterprise-3.0");
         expectedFailures.add("io.openliberty.org.eclipse.microprofile.jwt-2.1");
         expectedFailures.add("io.openliberty.persistentExecutor.internal.ee-10.0"); // the persistentExecutor feature is no ship
         expectedFailures.add("io.openliberty.socialLogin1.0.internal.ee-10.0");
-        expectedFailures.add("io.openliberty.batch-2.1");
-        expectedFailures.add("io.openliberty.xmlWSClient-4.0");
 
         expectedFailures.add("io.openliberty.openidConnectClient1.0.internal.ee-10.0");
         expectedFailures.add("io.openliberty.adminCenter1.0.internal.ee-10.0");
