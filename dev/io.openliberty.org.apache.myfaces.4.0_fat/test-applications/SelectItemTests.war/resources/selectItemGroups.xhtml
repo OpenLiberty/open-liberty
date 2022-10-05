@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ <html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:ui="http://java.sun.com/jsf/facelets"
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:f="http://java.sun.com/jsf/core">
+ <body>
+ 
+ <h:form id="form">
+    <h:selectOneMenu id="menu">
+        <f:selectItemGroups value="#{selectItemGroupsBean.destinationGroupList}" var="destinationGroup" itemValue="#{destinationGroup.region}" itemLabel="#{destinationGroup.region}">
+            <f:selectItems value="#{destinationGroup.countries}" var="country" itemValue="#{country.id}" itemLabel="#{country.name}" />
+        </f:selectItemGroups>
+    </h:selectOneMenu>
+ </h:form>
+ 
+ </body>
+ </html>
