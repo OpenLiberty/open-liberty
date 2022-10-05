@@ -11,8 +11,8 @@
 package test.jakarta.data.web;
 
 import jakarta.data.Delete;
-import jakarta.data.Query;
 import jakarta.data.Select;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data;
+package jakarta.data.repository;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;

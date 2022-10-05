@@ -10,17 +10,20 @@
  *******************************************************************************/
 package jakarta.data;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * Copied from jakarta.nosql.mapping.Param to investigate how well the
- * JNoSQL repository-related annotations work for relational database access.
+ * Method signatures copied from jakarta.data.DataException.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface Param {
-    String value();
+public class DataException extends RuntimeException {
+
+    public DataException(String message) {
+        super(message);
+    }
+
+    public DataException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DataException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -18,8 +18,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import jakarta.data.Page;
-import jakarta.data.Pageable;
-import jakarta.data.Param;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Param;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 

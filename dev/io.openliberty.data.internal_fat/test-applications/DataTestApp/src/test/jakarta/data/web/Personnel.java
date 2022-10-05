@@ -18,11 +18,11 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import jakarta.data.Delete;
-import jakarta.data.Pageable;
-import jakarta.data.Query;
 import jakarta.data.Select;
 import jakarta.data.Update;
 import jakarta.data.Where;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.concurrent.Asynchronous;
 

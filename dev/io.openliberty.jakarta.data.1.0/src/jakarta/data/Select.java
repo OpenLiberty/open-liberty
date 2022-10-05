@@ -15,6 +15,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Query;
+
 /**
  * Provides the ability to control which columns are returned by
  * repository method find operations.<p>
