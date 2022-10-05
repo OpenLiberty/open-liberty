@@ -12,7 +12,7 @@ package test.jakarta.data.web;
 
 import java.util.List;
 
-import jakarta.data.Query;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**

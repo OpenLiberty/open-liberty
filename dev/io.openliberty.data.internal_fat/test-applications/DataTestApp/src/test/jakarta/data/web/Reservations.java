@@ -28,14 +28,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import jakarta.data.Limit;
 import jakarta.data.Page;
-import jakarta.data.Pageable;
 import jakarta.data.Result;
 import jakarta.data.Select;
-import jakarta.data.Sort;
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Limit;
+import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Sort;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
@@ -60,8 +60,7 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
 
     ArrayList<Reservation> findByStartBetweenAndLocationIn(OffsetDateTime minStart, OffsetDateTime maxStart, List<String> locations);
 
-    @Limit(4)
-    CopyOnWriteArrayList<Reservation> findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime startAfter);
+    CopyOnWriteArrayList<Reservation> findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime startAfter, Limit maxResults);
 
     Reservation[] findByStartLessThanOrStartGreaterThanOrderByMeetingIDDesc(OffsetDateTime startBefore, OffsetDateTime startAfter);
 
