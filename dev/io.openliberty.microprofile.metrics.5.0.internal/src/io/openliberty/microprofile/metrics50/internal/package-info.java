@@ -9,11 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.0
+ *
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "METRICS",
-        messageBundle = "com.ibm.ws.microprofile.metrics.monitor.resources.MonitorMetrics")
-package io.openliberty.restfulws.mpmetrics;
+@TraceOptions(traceGroup = "METRICS", messageBundle = "com.ibm.ws.microprofile.metrics.resources.Metrics")
+package io.openliberty.microprofile.metrics50.internal;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

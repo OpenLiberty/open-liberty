@@ -70,7 +70,7 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.logging.core,\
-	io.openliberty.microprofile.metrics.internal.5.0,\
+	io.openliberty.microprofile.metrics.5.0.internal,\
 	io.openliberty.org.eclipse.microprofile.metrics.5.0;version=latest,\
 	com.ibm.ws.jaxrs.defaultexceptionmapper.jakarta;version=latest, \
 	com.ibm.ws.microprofile.metrics.common;version=latest,\
