@@ -165,6 +165,7 @@ io.smallrye:smallrye-graphql-schema-model:1.0.26
 io.smallrye:smallrye-graphql-servlet:1.0.26
 io.smallrye:smallrye-graphql:1.0.26
 io.smallrye:smallrye-metrics:5.0.0-M2
+io.smallrye:smallrye-metrics:5.0.0-M3
 io.zipkin.reporter2:zipkin-reporter:2.16.3
 io.zipkin.reporter2:zipkin-sender-okhttp3:2.16.3
 io.zipkin.zipkin2:zipkin:2.23.2
@@ -492,6 +493,7 @@ org.eclipse.microprofile.metrics:microprofile-metrics-api:2.3
 org.eclipse.microprofile.metrics:microprofile-metrics-api:3.0
 org.eclipse.microprofile.metrics:microprofile-metrics-api:4.0
 org.eclipse.microprofile.metrics:microprofile-metrics-api:5.0.0-RC2
+org.eclipse.microprofile.metrics:microprofile-metrics-api:5.0.0-RC3
 org.eclipse.microprofile.openapi:microprofile-openapi-api:1.0.1
 org.eclipse.microprofile.openapi:microprofile-openapi-api:1.1.1
 org.eclipse.microprofile.openapi:microprofile-openapi-api:2.0
