@@ -145,19 +145,11 @@ class GatewayConfigurationImpl implements GatewayConfiguration {
         return this;
     }
 
-    final boolean isBeta = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
-
     public boolean getSpiVisibility() {
-        if (!isBeta) {
-           return false; // no-op
-        }
         return spiVisibility;
     }
 
     public GatewayConfiguration setSpiVisibility(boolean spiVisibility) {
-        if (!isBeta) {
-            return this; // no-op
-        }
         this.spiVisibility = spiVisibility;
         return this;
     }
