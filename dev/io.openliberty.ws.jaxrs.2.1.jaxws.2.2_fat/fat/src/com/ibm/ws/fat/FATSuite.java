@@ -27,5 +27,5 @@ public class FATSuite {
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
                     .andWith(FeatureReplacementAction.EE9_FEATURES())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().liteFATOnly());
+                    .andWith(FeatureReplacementAction.EE10_FEATURES());
 }
