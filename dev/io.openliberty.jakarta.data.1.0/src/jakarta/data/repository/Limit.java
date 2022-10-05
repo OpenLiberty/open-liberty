@@ -11,7 +11,7 @@
 package jakarta.data.repository;
 
 /**
- * Copied from jakarta.data.repository.Limit
+ * Method signatures are copied from the jakarta.data.repository.Limit from the Jakarta Data repo.
  */
 public class Limit {
     private final long max, start;
