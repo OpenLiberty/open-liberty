@@ -42,7 +42,7 @@ import componenttest.rules.repeater.RepeatTests;
                 WebServiceRefTest.class
 })
 public class FATSuite {
-
+    // Changed some of the repeats to liteFATOnly since addition of EE10 add extra workload
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction()).andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxwstest-2.2").addFeature("xmlwstest-3.0")).andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("xmlwstest-3.0").addFeature("xmlwstest-4.0"));
+    public static RepeatTests r = RepeatTests.with(new EmptyAction()).andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxwstest-2.2").addFeature("xmlwstest-3.0")).andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("xmlwstest-3.0").addFeature("xmlwstest-4.0").liteFATOnly());
 }
