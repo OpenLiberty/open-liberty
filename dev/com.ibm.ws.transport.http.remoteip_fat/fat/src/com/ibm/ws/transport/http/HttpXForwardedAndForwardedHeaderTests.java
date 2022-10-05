@@ -1955,6 +1955,43 @@ public class HttpXForwardedAndForwardedHeaderTests {
     }
 
     /**
+     * Test multiple same named headers in the request and response to be logged in the
+     * access log file.
+     *
+     * The multiple IP addresses should be logged in the http_access.log in list format.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testMultipleSameNamedHeadersWithAccessLogSameHeaderName() throws Exception {
+        String variation = "accessLogSameHeaderName";
+        String testName = "testMultipleSameNamedHeadersWithAccessLogSameHeaderName";
+        String servletName = "EndpointInformationServlet";
+        startServer(variation);
+
+        List<BasicHeader> headerList = new ArrayList<BasicHeader>();
+        headerList.addAll(Arrays.asList(new BasicHeader("My-Request-Header", "reqHeader1"),
+                                        new BasicHeader("My-Request-Header", "reqHeader2")));
+
+        HttpResponse httpResponse = execute(APP_NAME, servletName, headerList, testName);
+        String response = getResponseAsString(httpResponse);
+
+        Log.info(ME, testName, "Response: " + response);
+
+        assertTrue("Response does not contain Endpoint Information Servlet Test message", response.contains("Endpoint Information Servlet Test"));
+
+        RemoteFile accessLog = server.getFileFromLibertyServerRoot("logs/http_access.log");
+
+        // In the request, multiple same named headers are allowed and will be added to a list
+        String stringToSearchForRequestHeader = "reqHeader1, reqHeader2";
+
+        // There should be a match so fail if there is not.
+        assertNotNull("The following string was not found in the access log: " + stringToSearchForRequestHeader,
+                      server.waitForStringInLog(stringToSearchForRequestHeader, SERVER_LOG_SEARCH_TIMEOUT, accessLog));
+
+    }
+
+    /**
      * Private method to start a server.
      *
      * Please look at publish/files/remoteIPConfig directory for the different server names.
