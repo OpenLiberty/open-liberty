@@ -55,6 +55,8 @@ public class AccessLogRequestHeaderValue extends AccessLogData {
                 }
             }
 
+        } else {
+            accessLogEntry.append("-");
         }
 
         return true;
