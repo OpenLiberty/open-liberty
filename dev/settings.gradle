@@ -59,6 +59,21 @@ pluginManagement {
                   +';index=${build}/oss_source_dependencies.maven')
   props.setProperty('fetch.oss.source.repository', fetchRepoSource)
 
+  String fetchRepoIBMSource = !isUsingArtifactory ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
+                  +'name = RemoteIBMSource'
+                  +';local=~/.ibmdhe/repository'
+                  +';releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
+                  +';index=${build}/oss_ibm_source_dependencies.maven') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemoteIBMSource'
+                  +';local=~/.ibmartifactory/repository'
+                  +';releaseUrl=' + ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-source-built-maven-local')
+                  +';snapshotUrl=' + ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-source-built-maven-local')
+                  +';index=${build}/oss_ibm_source_dependencies.maven')
+  props.setProperty('fetch.oss.ibm.source.repository', fetchRepoIBMSource)
+
   // Bnd configuration for where to download open source software binaries from.
   // Note: no non-artifactory snapshotUrl because we must not rely on public snapshots
   String fetchRepoPublic = !isUsingArtifactory ?
