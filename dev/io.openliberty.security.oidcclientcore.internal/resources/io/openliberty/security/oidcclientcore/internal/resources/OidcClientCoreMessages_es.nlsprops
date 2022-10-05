@@ -48,3 +48,46 @@ ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Consulte el error en el men
 AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: El cliente de OpenID Connect {0} ha encontrado el siguiente error al verificar la respuesta de autenticaci\u00f3n del proveedor de OpenID Connect: {1}
 AUTHENTICATION_RESPONSE_ERROR.explanation=Puede que falte informaci\u00f3n en la respuesta del proveedor de OpenID Connect. Puede haber un problema con el c\u00f3digo devuelto por el proveedor de OpenID Connect.
 AUTHENTICATION_RESPONSE_ERROR.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.
+
+CALLBACK_MISSING_STATE_PARAMETER=CWWKS2408E: A la solicitud de devoluci\u00f3n de llamada del proveedor de OpenID Connect le falta el par\u00e1metro de estado.
+CALLBACK_MISSING_STATE_PARAMETER.explanation=La solicitud de autorizaci\u00f3n al proveedor de OpenID Connect no inclu\u00eda un par\u00e1metro de estado.
+CALLBACK_MISSING_STATE_PARAMETER.useraction=Aseg\u00farese de que la solicitud de autorizaci\u00f3n al proveedor de OpenID Connect incluye un par\u00e1metro de estado.
+
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH=CWWKS2409E: El par\u00e1metro de estado [{0}] que est\u00e1 en la solicitud de devoluci\u00f3n de llamada del proveedor de OpenID Connect no tiene la longitud correcta. Se espera que el par\u00e1metro tenga {1} caracteres de longitud.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.explanation=El valor de estado puede estar truncado o no se ha originado en este cliente de OpenID Connect.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.useraction=Compruebe el formato del par\u00e1metro de estado. Compare el valor con los par\u00e1metros de estado de las solicitudes de OpenID Connect recientes manejadas por este cliente de OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_NOT_STORED=CWWKS2410E: El cliente de OpenID Connect no puede encontrar un valor de estado que coincida con el par\u00e1metro de estado [{0}] en la solicitud de devoluci\u00f3n de llamada del proveedor de OpenID Connect.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.explanation=El par\u00e1metro de estado puede ser de una solicitud de autorizaci\u00f3n antigua o el valor del par\u00e1metro de estado es incorrecto.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.useraction=Verifique que el par\u00e1metro de estado en la solicitud de devoluci\u00f3n de llamada coincide con un valor de estado para una solicitud de OpenID Connect reciente.
+
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE=CWWKS2411E: El par\u00e1metro de estado [{0}] que se incluye en la solicitud de devoluci\u00f3n de llamada no coincide con el valor de estado almacenado por el cliente de OpenID Connect.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.explanation=El par\u00e1metro de estado puede ser de una solicitud de autorizaci\u00f3n antigua o el valor del par\u00e1metro de estado es incorrecto.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.useraction=Verifique que el par\u00e1metro de estado en la solicitud de devoluci\u00f3n de llamada coincide con un valor de estado para una solicitud de OpenID Connect reciente.
+
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME=CWWKS2412E: El par\u00e1metro de estado [{0}] incluido en la solicitud de devoluci\u00f3n de llamada est\u00e1 fuera de su marco de tiempo v\u00e1lido. El valor de estado se ha creado en {1} y es v\u00e1lido de {2} a {3}. La hora actual es {4}.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.explanation=El proveedor de OpenID Connect ha tardado demasiado en responder o el usuario ha tardado demasiado en autenticarse con el proveedor de OpenID Connect.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.useraction=Aseg\u00farese de que el usuario no tarda demasiado tiempo en autenticarse con el proveedor de OpenID Connect.
+
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI=CWWKS2413E: El URL de solicitud de devoluci\u00f3n de llamada [{0}] no coincide con el URI de redirecci\u00f3n [{1}] configurado para el cliente de OpenID Connect {2}.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.explanation=Es posible que el cliente de OpenID Connect haya utilizado un valor diferente para el par\u00e1metro redirect_uri en la solicitud de autorizaci\u00f3n que se ha enviado al proveedor de OpenID Connect.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.useraction=Compruebe la configuraci\u00f3n del cliente de OpenID Connect para asegurarse de que el URI de redirecci\u00f3n se ha configurado correctamente.
+
+# Do not translate "error"
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER=CWWKS2414E: La solicitud de devoluci\u00f3n de llamada del proveedor de OpenID Connect contiene el siguiente valor de par\u00e1metro de error: [{0}]
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.explanation=El proveedor de OpenID Connect ha encontrado un error al intentar procesar la solicitud de autenticaci\u00f3n.
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.useraction=Consulte el valor que aparece en el mensaje para obtener m\u00e1s informaci\u00f3n. Los c\u00f3digos de error se definen mediante RFC 6749.
+
+TOKEN_VALIDATION_EXCEPTION=CWWKS2415E: El cliente de OpenID Connect {0} ha encontrado el siguiente error durante la validaci\u00f3n de la se\u00f1al que se ha recibido del proveedor de OpenID Connect: {1}
+TOKEN_VALIDATION_EXCEPTION.explanation=Es posible que exista un problema con la validaci\u00f3n de reclamaci\u00f3n del emisor, azp, iat o exp, o con la validaci\u00f3n de firma de se\u00f1al.
+TOKEN_VALIDATION_EXCEPTION.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el error en el mensaje.
+
+TOKEN_REQUEST_ERROR=CWWKS2416E: El cliente de OpenID Connect {0} ha encontrado el siguiente error al enviar una solicitud al punto final de se\u00f1al del proveedor de OpenID Connect: {1}
+TOKEN_REQUEST_ERROR.explanation=Es posible que al cliente de OpenID Connect le falte informaci\u00f3n, que la solicitud al punto final de se\u00f1al haya fallado o que se haya producido otro error al procesar la respuesta del punto final de se\u00f1al.
+TOKEN_REQUEST_ERROR.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n. Verifique que el proveedor de OpenID Connect ha devuelto un c\u00f3digo en la respuesta de autenticaci\u00f3n.
+
+# Do not translate "token_endpoint"
+TOKEN_ENDPOINT_MISSING=CWWKS2417E: El cliente de OpenID Connect {0} no puede encontrar un valor para el punto final de se\u00f1al del proveedor de OpenID Connect.
+TOKEN_ENDPOINT_MISSING.explanation=Falta el URL de punto final de se\u00f1al en los metadatos del proveedor de OpenID Connect y la configuraci\u00f3n del cliente de OpenID Connect.
+TOKEN_ENDPOINT_MISSING.useraction=Verifique que los metadatos del proveedor de OpenID Connect contienen un valor token_endpoint. Tambi\u00e9n se puede especificar un punto final de se\u00f1al en la configuraci\u00f3n del cliente de OpenID Connect.
+

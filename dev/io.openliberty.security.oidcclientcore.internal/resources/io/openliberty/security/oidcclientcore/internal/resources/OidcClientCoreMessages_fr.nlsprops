@@ -48,3 +48,46 @@ ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Pour plus d'informations, r
 AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: Le client {0} OpenID Connect a rencontr\u00e9 l''erreur suivante lors de la v\u00e9rification de la r\u00e9ponse d''authentification du fournisseur OpenID Connect : {1}
 AUTHENTICATION_RESPONSE_ERROR.explanation=Il se peut que des informations soient manquantes dans la r\u00e9ponse du fournisseur OpenID Connect. Il peut y avoir un probl\u00e8me avec le code renvoy\u00e9 par le fournisseur OpenID Connect.
 AUTHENTICATION_RESPONSE_ERROR.useraction=Pour plus d'informations, reportez-vous au message d'erreur.
+
+CALLBACK_MISSING_STATE_PARAMETER=CWWKS2408E: Le param\u00e8tre d'\u00e9tat est manquant dans la demande de rappel du fournisseur OpenID Connect.
+CALLBACK_MISSING_STATE_PARAMETER.explanation=La demande d'autorisation adress\u00e9e au fournisseur OpenID Connect n'incluait pas de param\u00e8tre d'\u00e9tat.
+CALLBACK_MISSING_STATE_PARAMETER.useraction=V\u00e9rifiez que la demande d'autorisation envoy\u00e9e au fournisseur OpenID Connect inclut un param\u00e8tre d'\u00e9tat.
+
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH=CWWKS2409E: Le param\u00e8tre d''\u00e9tat [{0}] qui se trouve dans la demande de rappel du fournisseur OpenID Connect n''a pas la bonne longueur. Le param\u00e8tre doit comporter {1} caract\u00e8res.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.explanation=La valeur d'\u00e9tat est peut-\u00eatre tronqu\u00e9e ou ne provient pas de ce client OpenID Connect.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.useraction=V\u00e9rifiez le format du param\u00e8tre d'\u00e9tat. Comparez la valeur aux param\u00e8tres d'\u00e9tat des demandes OpenID Connect r\u00e9centes qui ont \u00e9t\u00e9 trait\u00e9es par ce client OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_NOT_STORED=CWWKS2410E: Le client OpenID Connect ne trouve pas de valeur d''\u00e9tat correspondant au param\u00e8tre d''\u00e9tat [{0}] dans la demande de rappel du fournisseur OpenID Connect.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.explanation=Le param\u00e8tre d'\u00e9tat provient peut-\u00eatre d'une ancienne demande d'autorisation ou sa valeur est incorrecte.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.useraction=V\u00e9rifiez que le param\u00e8tre d'\u00e9tat de la demande de rappel correspond \u00e0 une valeur d'\u00e9tat pour une demande OpenID Connect r\u00e9cente.
+
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE=CWWKS2411E: Le param\u00e8tre d''\u00e9tat [{0}] inclus dans la demande de rappel ne correspond pas \u00e0 la valeur d''\u00e9tat stock\u00e9e par le client OpenID Connect.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.explanation=Le param\u00e8tre d'\u00e9tat provient peut-\u00eatre d'une ancienne demande d'autorisation ou sa valeur est incorrecte.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.useraction=V\u00e9rifiez que le param\u00e8tre d'\u00e9tat de la demande de rappel correspond \u00e0 une valeur d'\u00e9tat pour une demande OpenID Connect r\u00e9cente.
+
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME=CWWKS2412E: Le param\u00e8tre d''\u00e9tat [{0}] inclus dans la demande de rappel est en dehors de son intervalle de temps valide. La valeur d''\u00e9tat a \u00e9t\u00e9 cr\u00e9\u00e9e \u00e0 {1} et est valide de {2} \u00e0 {3}. L''heure actuelle est {4}.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.explanation=Le fournisseur OpenID Connect a mis trop de temps \u00e0 r\u00e9pondre ou l'utilisateur a mis trop de temps \u00e0 s'authentifier aupr\u00e8s du fournisseur OpenID Connect.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.useraction=Assurez-vous que l'utilisateur ne prend pas trop de temps pour s'authentifier aupr\u00e8s du fournisseur OpenID Connect.
+
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI=CWWKS2413E: L''URL de demande de rappel [{0}] ne correspond pas \u00e0 l''URI de redirection [{1}] configur\u00e9 pour le client OpenID Connect {2}.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.explanation=Le client OpenID Connect a peut-\u00eatre utilis\u00e9 une valeur diff\u00e9rente pour le param\u00e8tre redirect_uri dans la demande d'autorisation qui a \u00e9t\u00e9 envoy\u00e9e au fournisseur OpenID Connect.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.useraction=V\u00e9rifiez la configuration du client OpenID Connect pour vous assurer que l'URI de redirection est correctement configur\u00e9.
+
+# Do not translate "error"
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER=CWWKS2414E: La demande de rappel du fournisseur OpenID Connect contient la valeur de param\u00e8tre d''erreur suivante : [{0}]
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.explanation=Le fournisseur OpenID Connect a rencontr\u00e9 une erreur lors de la tentative de traitement de la demande d'authentification.
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.useraction=Pour plus d'informations, voir la valeur contenue dans le message. Les codes d'erreur sont d\u00e9finis par RFC 6749.
+
+TOKEN_VALIDATION_EXCEPTION=CWWKS2415E: Le client {0} OpenID Connect a rencontr\u00e9 l''erreur suivante lors de la validation du jeton re\u00e7u du fournisseur OpenID Connect : {1}
+TOKEN_VALIDATION_EXCEPTION.explanation=Un probl\u00e8me peut survenir lors de la validation de la r\u00e9clamation \u00e9metteur, azp, iat ou exp, ou lors de la validation de la signature du jeton.
+TOKEN_VALIDATION_EXCEPTION.useraction=Pour plus d'informations, voir l'erreur dans le message.
+
+TOKEN_REQUEST_ERROR=CWWKS2416E: Le client {0} OpenID Connect a rencontr\u00e9 l''erreur suivante lors de l''envoi d''une demande au noeud final de jeton du fournisseur OpenID Connect : {1}
+TOKEN_REQUEST_ERROR.explanation=Il se peut que des informations soient manquantes pour le client OpenID Connect, que la demande adress\u00e9e au noeud final de jeton ait \u00e9chou\u00e9 ou qu'une autre erreur se soit produite lors du traitement de la r\u00e9ponse du noeud final de jeton.
+TOKEN_REQUEST_ERROR.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que le fournisseur OpenID Connect a renvoy\u00e9 un code dans la r\u00e9ponse d'authentification.
+
+# Do not translate "token_endpoint"
+TOKEN_ENDPOINT_MISSING=CWWKS2417E: Le client {0} OpenID Connect ne trouve pas de valeur pour le noeud final de jeton du fournisseur OpenID Connect.
+TOKEN_ENDPOINT_MISSING.explanation=L'URL du noeud final de jeton est manquante dans les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect et dans la configuration du client OpenID Connect.
+TOKEN_ENDPOINT_MISSING.useraction=V\u00e9rifiez que les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect contiennent une valeur token_endpoint. Un noeud final de jeton peut \u00e9galement \u00eatre sp\u00e9cifi\u00e9 dans la configuration du client OpenID Connect.
+

@@ -161,6 +161,8 @@ do_select_before_insert_not_supported=La funci\u00f3n CMP nativa Oc4j "seleccion
 
 drop_connection_on_error=Aviso: Descartando conexi\u00f3n de mandato remoto para {0} en error {1}
 
+eclipselink_version_error=El archivo: {0} no existe o est\u00e1 da\u00f1ado.
+
 ejbSelect2=EjbSelect: {0}
 
 ejb_jar_xml_not_found_in_input=El ejb-jar.xml no est\u00e1 presente en el directorio de entrada ({0}).
@@ -316,6 +318,10 @@ jpars_could_not_find_persistence_context=Una llamada JPA-RS est\u00e1 solicitand
 jpars_could_not_find_session_bean=Se est\u00e1 realizando una llamada a un bean de sesi\u00f3n con nombre JNDI: [{0}].  Dicho bean no se puede encontrar.
 
 jta_cannot_be_disabled_in_cmp=Al utilizar la persistencia gestionada por contenedor (CMP), no se puede inhabilitar JTA. EclipseLink actuar\u00e1 como si JTA estuviera habilitado.
+
+jta_duplicate_ctrl_property=Clase de controlador de transacciones JTA definida en las propiedades "eclipselink.target-server" y "eclipselink.jta.controller". Utilizando el valor de "eclipselink.target-server".
+
+jta_tsr_lookup_failure=No se puede buscar la instancia de TransactionSynchronizationRegistry: {0}
 
 key_identity_hash_code_object={0}Clave: {1}{2}C\u00f3digo hash de identidad: {3}{2}Objeto: {4}
 
@@ -517,7 +523,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Se ignora el valor de la c
 
 metadata_warning_ignore_mapped_superclass_read_only=Se ignora el valor de solo lectura en la superclase gestionada [{1}] para la clase de entidad [{0}] puesto que se hab\u00edan descubierto previamente metadatos de solo lectura para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
 
-metadata_warning_ignore_mapping_metadata=Se ignoran los metadatos javax.persistence aplicados al atributo [{0}] desde la clase [{1}]. Los metadatos javax.persistence se ignoran en los campos o propiedades que son transitorios, est\u00e1ticos o abstractos.
+metadata_warning_ignore_mapping_metadata=Se ignoran los metadatos jakarta.persistence aplicados al atributo [{0}] de la clase [{1}]. Los metadatos jakarta.persistence se ignoran en campos o propiedades que son transitorios, est\u00e1ticos o abstractos.
 
 metadata_warning_ignore_serialized=Se ignora el elemento de serializaci\u00f3n predeterminado [{1}] en la clase de entidad [{0}] puesto que se han especificado metadatos de conversi\u00f3n EclipseLink.
 
@@ -727,6 +733,9 @@ toplink_severe=[EL Grave]:
 
 toplink_warning=[Aviso de EL]: 
 
+unit_of_work_thread_info=La unidad de trabajo actual en la sesi\u00f3n ({0}) ha sido creada por una hebra (id: {1}, nombre: {2}) distinta de la hebra actual (id: {3}, nombre: {4})
+
+unit_of_work_thread_info_thread_dump=Rastreo de pila de la hebra de creaci\u00f3n (id: {0}, nombre: {1}): {2}Rastreo de pila de la hebra actual (id: {3}, nombre: {4}):{5}\n
 unitofwork_identity_hashcode={0}C\u00f3digo hash de identidad de UnitOfWork: {1}
 
 update_all_fields_not_supported=La funci\u00f3n CMP nativa de Oc4j "actualizar-todos-campos" en la entidad ({0}) no est\u00e1 soportada directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.

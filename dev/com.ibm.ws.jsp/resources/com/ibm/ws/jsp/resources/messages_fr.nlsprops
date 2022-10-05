@@ -9,8 +9,8 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
-#COMPONENTPREFIX JSPG
-#COMPONENTNAMEFOR JSPG jsp
+#COMPONENTPREFIX JSPG CWWJS
+#COMPONENTNAMEFOR JSPG CWWJS jsp
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
@@ -310,8 +310,8 @@ jsp.error.usebean.class.must.be.assignable.to.type.explanation=
 jsp.error.usebean.class.must.be.assignable.to.type.useraction=
 
 jsp.error.usebean.cannot.locate.class.to.validate.assignable=JSPG0074E: Impossible de localiser la classe afin de d\u00e9terminer si la classe useBean "{0}" doit pouvoir \u00eatre attribu\u00e9e au type "{1}" pour l''\u00e9l\u00e9ment jsp {2}
-jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
-jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
+#jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
+#jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
 
 jsp.error.multiple.attribute.definitions=JSPG0075E: Il n''est pas admis d''avoir plusieurs occurrences de l''attribut {0} pour l''\u00e9l\u00e9ment jsp {1}
 jsp.error.multiple.attribute.definitions.explanation=
@@ -922,25 +922,25 @@ jsp.error.failed.load.tlv.class=JSPG0236E: Le conteneur JSP n''a pas r\u00e9ussi
 jsp.error.failed.load.tlv.class.explanation=Le conteneur JSP ne parvient pas \u00e0 charger la classe TagLibraryValidator sp\u00e9cifi\u00e9e dans le descripteur TLD (Tag Library Descriptor).
 jsp.error.failed.load.tlv.class.useraction=V\u00e9rifiez que la classe TagLibraryValidator existe et qu'elle est accessible par ce module Web.
 
-jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: Impossible de trouver une directive d''attribut avec un nom d''attribut ayant une valeur \"{0}\", la valeur de cet attribut name-from-attribut.
+jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: Impossible de trouver une directive d''attribut avec un nom d''attribut ayant une valeur "{0}", la valeur de cet attribut name-from-attribut.
 jsp.error.tagfile.nameFrom.noAttribute.explanation=Explication
 jsp.error.tagfile.nameFrom.noAttribute.useraction=Action utilisateur
 
-jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: La directive d''attribut (d\u00e9clar\u00e9e \u00e0 la ligne {0} et dont l''attribut de nom est \"{1}\", la valeur de cet attribut name-from-attribute) doit \u00eatre de type java.lang.String. Elle est \"required\" et non pas \"rtexprvalue\".
+jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: La directive d''attribut (d\u00e9clar\u00e9e \u00e0 la ligne {0} et dont l''attribut de nom est "{1}", la valeur de cet attribut name-from-attribute) doit \u00eatre de type java.lang.String. Elle est "required" et non pas "rtexprvalue".
 jsp.error.tagfile.nameFrom.badAttribute.explanation=Explication
 jsp.error.tagfile.nameFrom.badAttribute.useraction=Action utilisateur
 
-jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output> : il n''est pas admis d''avoir plusieurs occurrences de \"{0}\" avec des valeurs diff\u00e9rentes (ancien : {1}, nouveau : {2})
+jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output> : il n''est pas admis d''avoir plusieurs occurrences de "{0}" avec des valeurs diff\u00e9rentes (ancien : {1}, nouveau : {2})
 jsp.error.jspoutput.conflict.explanation=<jsp:output> contient plusieurs occurrences de l'attribut et ces occurrences ont des valeurs diff\u00e9rentes.
 jsp.error.jspoutput.conflict.useraction=Veillez \u00e0 ce que des occurrences multiples de l'attribut aient la m\u00eame valeur.
 
 # defect 396002
-jsp.error.prefix.redefined=JSPG0240E: Tentative de nouvelle d\u00e9finition du pr\u00e9fixe \"{0}\" sur \"{1}\", alors qu''il \u00e9tait d\u00e9j\u00e0 d\u00e9fini sur \"{2}\" dans l''\u00e9tendue actuelle.
+jsp.error.prefix.redefined=JSPG0240E: Tentative de nouvelle d\u00e9finition du pr\u00e9fixe "{0}" sur "{1}", alors qu''il \u00e9tait d\u00e9j\u00e0 d\u00e9fini sur "{2}" dans l''\u00e9tendue actuelle.
 jsp.error.prefix.redefined.explanation= Le pr\u00e9fixe taglibrary \u00e9tait d\u00e9j\u00e0 d\u00e9fini avec une URI diff\u00e9rente.
 jsp.error.prefix.redefined.useraction= V\u00e9rifiez que le pr\u00e9fixe est d\u00e9fini avec une seule URI.
 
 # defect 396002
-jsp.error.prefix.use_before_dcl=JSPG0241E: Le pr\u00e9fixe \"{0}\" sp\u00e9cifi\u00e9 dans cette directive tag a d\u00e9j\u00e0 \u00e9t\u00e9 utilis\u00e9 par une action dans le fichier {1}.
+jsp.error.prefix.use_before_dcl=JSPG0241E: Le pr\u00e9fixe "{0}" sp\u00e9cifi\u00e9 dans cette directive tag a d\u00e9j\u00e0 \u00e9t\u00e9 utilis\u00e9 par une action dans le fichier {1}.
 jsp.error.prefix.use_before_dcl.explanation= Le pr\u00e9fixe taglibrary \u00e9tait utilis\u00e9 avant la directive tag qui d\u00e9finit le pr\u00e9fixe.
 jsp.error.prefix.use_before_dcl.useraction= D\u00e9placez la directive tag au-dessus de toutes les actions qui utilisent le pr\u00e9fixe.
 
@@ -955,7 +955,7 @@ jsp.error.page.invalid.deferredsyntaxallowedasliteral.explanation=
 jsp.error.page.invalid.deferredsyntaxallowedasliteral.useraction=
 
 # jsp2.1ELwork
-jsp.error.el.template.deferred=JSPG0244E: \"{0}\" n''est pas autoris\u00e9 dans un texte de mod\u00e8le.
+jsp.error.el.template.deferred=JSPG0244E: "{0}" n''est pas autoris\u00e9 dans un texte de mod\u00e8le.
 jsp.error.el.template.deferred.explanation=
 jsp.error.el.template.deferred.useraction=
 
@@ -980,7 +980,7 @@ jsp.error.tag.conflict.trimdirectivewhitespaces.explanation=
 jsp.error.tag.conflict.trimdirectivewhitespaces.useraction=
 
 # jsp2.1ELwork
-jsp.error.tag.conflict.attr=JSPG0249E: Directive tag : il n''est pas admis d''avoir plusieurs occurrences de l''attribut \"{0}\" avec des valeurs diff\u00e9rentes (ancien : {1}, nouveau : {2})
+jsp.error.tag.conflict.attr=JSPG0249E: Directive tag : il n''est pas admis d''avoir plusieurs occurrences de l''attribut "{0}" avec des valeurs diff\u00e9rentes (ancien : {1}, nouveau : {2})
 jsp.error.tag.conflict.attr.explanation=
 jsp.error.tag.conflict.attr.useraction=
 
@@ -1030,7 +1030,7 @@ jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.explanation=
 jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.versionNotSupported=JSPG0259E: La version XML \"{0}\" n''est pas prise en charge, seul XML 1.0 est pris en charge.
+jsp.error.xml.versionNotSupported=JSPG0259E: La version XML "{0}" n''est pas prise en charge, seul XML 1.0 est pris en charge.
 jsp.error.xml.versionNotSupported.explanation=
 jsp.error.xml.versionNotSupported.useraction=
 
@@ -1055,22 +1055,22 @@ jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.explanation=
 jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: Le caract\u00e8re '' = '' doit suivre \"{0}\" dans la d\u00e9claration texte.
+jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: Le caract\u00e8re '' = '' doit suivre "{0}" dans la d\u00e9claration texte.
 jsp.error.xml.eqRequiredInTextDecl.explanation=
 jsp.error.xml.eqRequiredInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: Le caract\u00e8re '' = '' doit suivre \"{0}\" dans la d\u00e9claration XML.
+jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: Le caract\u00e8re '' = '' doit suivre "{0}" dans la d\u00e9claration XML.
 jsp.error.xml.eqRequiredInXMLDecl.explanation=
 jsp.error.xml.eqRequiredInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: La valeur qui suit \"{0}\" dans la d\u00e9claration texte doit \u00eatre une cha\u00eene de caract\u00e8res d\u00e9limit\u00e9e.
+jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: La valeur qui suit "{0}" dans la d\u00e9claration texte doit \u00eatre une cha\u00eene de caract\u00e8res d\u00e9limit\u00e9e.
 jsp.error.xml.quoteRequiredInTextDecl.explanation=
 jsp.error.xml.quoteRequiredInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: La valeur qui suit \"{0}\" dans la d\u00e9claration XML doit \u00eatre une cha\u00eene de caract\u00e8res d\u00e9limit\u00e9.
+jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: La valeur qui suit "{0}" dans la d\u00e9claration XML doit \u00eatre une cha\u00eene de caract\u00e8res d\u00e9limit\u00e9.
 jsp.error.xml.quoteRequiredInXMLDecl.explanation=
 jsp.error.xml.quoteRequiredInXMLDecl.useraction=
 
@@ -1085,22 +1085,22 @@ jsp.error.xml.invalidCharInXMLDecl.explanation=
 jsp.error.xml.invalidCharInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: Il manque un guillemet de fermeture dans la valeur qui suit \"{0}\" dans la d\u00e9claration texte.
+jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: Il manque un guillemet de fermeture dans la valeur qui suit "{0}" dans la d\u00e9claration texte.
 jsp.error.xml.closeQuoteMissingInTextDecl.explanation=
 jsp.error.xml.closeQuoteMissingInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: Il manque un guillemet de fermeture dans la valeur qui suit \"{0}\" dans la d\u00e9claration XML.
+jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: Il manque un guillemet de fermeture dans la valeur qui suit "{0}" dans la d\u00e9claration XML.
 jsp.error.xml.closeQuoteMissingInXMLDecl.explanation=
 jsp.error.xml.closeQuoteMissingInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: L''ordre des octets fourni pour le codage \"{0}\" n''est pas pris en charge.
+jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: L''ordre des octets fourni pour le codage "{0}" n''est pas pris en charge.
 jsp.error.xml.encodingByteOrderUnsupported.explanation=
 jsp.error.xml.encodingByteOrderUnsupported.useraction=
 
 # jsp2.1work
-jsp.error.xml.encodingDeclInvalid=JSPG0273E: Nom de codage \"{0}\" non valide.
+jsp.error.xml.encodingDeclInvalid=JSPG0273E: Nom de codage "{0}" non valide.
 jsp.error.xml.encodingDeclInvalid.explanation=
 jsp.error.xml.encodingDeclInvalid.useraction=
 
@@ -1110,7 +1110,7 @@ jsp.error.xml.spaceRequiredBeforeStandalone.explanation=
 jsp.error.xml.spaceRequiredBeforeStandalone.useraction=
 
 # jsp2.1work
-jsp.error.xml.sdDeclInvalid=JSPG0275E: La valeur de la d\u00e9claration de document autonome doit \u00eatre \"yes\" ou \"no\", et pas \"{0}\".
+jsp.error.xml.sdDeclInvalid=JSPG0275E: La valeur de la d\u00e9claration de document autonome doit \u00eatre "yes" ou "no", et pas "{0}".
 jsp.error.xml.sdDeclInvalid.explanation=
 jsp.error.xml.sdDeclInvalid.useraction=
 
@@ -1125,7 +1125,7 @@ jsp.error.xml.morePseudoAttributes.explanation=
 jsp.error.xml.morePseudoAttributes.useraction=
 
 # jsp2.1work
-jsp.error.xml.xmlDeclUnterminated=JSPG0278E: La d\u00e9claration XML doit se terminer par \"?>\".
+jsp.error.xml.xmlDeclUnterminated=JSPG0278E: La d\u00e9claration XML doit se terminer par "?>".
 jsp.error.xml.xmlDeclUnterminated.explanation=
 jsp.error.xml.xmlDeclUnterminated.useraction=
 
@@ -1135,7 +1135,7 @@ jsp.error.xml.pseudoAttrNameExpected.explanation=
 jsp.error.xml.pseudoAttrNameExpected.useraction=
 
 # jsp2.1work
-jsp.error.xml.reservedPITarget=JSPG0280E: La cible de l'instruction de traitement correspondant \u00e0 \"[xX][mM][lL]\" n'est pas autoris\u00e9e.
+jsp.error.xml.reservedPITarget=JSPG0280E: La cible de l'instruction de traitement correspondant \u00e0 "[xX][mM][lL]" n'est pas autoris\u00e9e.
 jsp.error.xml.reservedPITarget.explanation=
 jsp.error.xml.reservedPITarget.useraction=
 
@@ -1155,12 +1155,12 @@ jsp.error.xml.invalidCharInContent.explanation=
 jsp.error.xml.invalidCharInContent.useraction=
 
 # jsp2.1work
-jsp.error.xml.operationNotSupported=JSPG0284E: L''op\u00e9ration \"{0}\" n''est pas prise en charge par le programme de lecture {1}.
+jsp.error.xml.operationNotSupported=JSPG0284E: L''op\u00e9ration "{0}" n''est pas prise en charge par le programme de lecture {1}.
 jsp.error.xml.operationNotSupported.explanation=
 jsp.error.xml.operationNotSupported.useraction=
 
 # jsp2.1work
-jsp.error.xml.invalidASCII=JSPG0285E: L''octet \"{0}\" n''est pas un caract\u00e8re ASCII 7 bits.
+jsp.error.xml.invalidASCII=JSPG0285E: L''octet "{0}" n''est pas un caract\u00e8re ASCII 7 bits.
 jsp.error.xml.invalidASCII.explanation=
 jsp.error.xml.invalidASCII.useraction=
 
@@ -1185,7 +1185,7 @@ jsp.error.prolog_config_encoding_mismatch.explanation=
 jsp.error.prolog_config_encoding_mismatch.useraction=
 
 # jsp2.1work
-jsp.error.invalid.tagdir=JSPG0290E: Le r\u00e9pertoire de fichier de code {0} ne commence pas par \"/WEB-INF/tags\"
+jsp.error.invalid.tagdir=JSPG0290E: Le r\u00e9pertoire de fichier de code {0} ne commence pas par "/WEB-INF/tags"
 jsp.error.invalid.tagdir.explanation=
 jsp.error.invalid.tagdir.useraction=
 
@@ -1247,9 +1247,9 @@ jsp.load.class.exception=JSPG0302W: Impossible de charger la classe JSP suivante
 jsp.load.class.exception.explanation=Un probl\u00e8me est survenu lors du chargement de la classe JSP.  Le conteneur JSP tentera de charger le fichier de classe avec le nom de module org.apache.jsp \u00e0 la place.
 jsp.load.class.exception.useraction=Si le probl\u00e8me persiste, red\u00e9marrez l'application.
 
-jsp.jdksourcelevel.value =JSPG8502I: La valeur de l''attribut JSP jdkSourceLevel est \"{0}\".
-jsp.jdksourcelevel.value.explanation =
-jsp.jdksourcelevel.value.useraction =
+jsp.jdksourcelevel.value=JSPG8502I: La valeur de l''attribut JSP jdkSourceLevel est "{0}".
+jsp.jdksourcelevel.value.explanation=
+jsp.jdksourcelevel.value.useraction=
 
 jsp.parse.tld.exception=JSPG0303W: Le syst\u00e8me n''a pas pu analyser le descripteur de biblioth\u00e8que d''\u00e9tiquettes JSP suivant : {0}. Exception pour l''erreur d''analyse : {1}
 jsp.parse.tld.exception.explanation=Un probl\u00e8me est survenu lors de l'analyse du fichier de descripteur de biblioth\u00e8que d'\u00e9tiquettes JSP. Cette erreur peut \u00eatre due \u00e0 un fichier XML syntaxiquement incorrect.
@@ -1259,6 +1259,14 @@ system.java.compiler.not.found=JSPG0304W: L''attribut JSP, useJDKCompiler, est d
 system.java.compiler.not.found.explanation=Le conteneur JSP n'a pas pu trouver le compilateur syst\u00e8me, ce qui indique g\u00e9n\u00e9ralement que le fichier jar SDK Java, tools.jar, est introuvable dans le chemin de classe.
 system.java.compiler.not.found.useraction=Assurez-vous que le fichier jar SDK Java, tools.jar, se trouve dans le chemin de classe et v\u00e9rifiez que SDK Java prend en charge l'API Java Compiler. Pour plus de d\u00e9tails, consultez la Java Specification Request 199.
 
-jsp.feature.not.loaded.correctly=CWWJS0001 : La fonction JSP [Pages] ne s'est pas charg\u00e9e avec une version acceptable.
+jsp.feature.not.loaded.correctly=CWWJS0001E: La fonction JSP [Pages] n'a pas \u00e9t\u00e9 charg\u00e9e avec une version acceptable.
 jsp.feature.not.loaded.correctly.explanation=La fonction JSP [Pages] est charg\u00e9e avec une version qui correspond \u00e0 la sp\u00e9cification Java [Jakarta] EE de cette fonction JSP [Pages]. La fonction a \u00e9t\u00e9 charg\u00e9e sans version d\u00e9finie.
-jsp.feature.not.loaded.correctly.useraction=V\u00e9rifiez dans le fichier server.xml l'existence d'une fonction JSP [Pages]. Une seule fonction doit \u00eatre sp\u00e9cifi\u00e9e.
+jsp.feature.not.loaded.correctly.useraction=Recherchez dans le fichier server.xml l'existence de plusieurs fonctions JSP [Pages]. Le fichier ne doit pas sp\u00e9cifier plus d'une fonction Pages.
+
+jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Valeur non valide pour l'attribut errorOnELNotFound
+jsp.error.page.invalid.erroronelnotfound.explanation=
+jsp.error.page.invalid.erroronelnotfound.useraction=
+
+jsp.isthreadsafe.warning=CWWJS0003W: La sp\u00e9cification Pages 3.1 recommande fortement aux d\u00e9veloppeurs Pages de ne pas utiliser la directive de page obsol\u00e8te isThreadSafe.
+jsp.isthreadsafe.warning.explanation=SingleThreadModel a \u00e9t\u00e9 supprim\u00e9 de Servlet 6.0. Pages 3.1 a d\u00e9pr\u00e9ci\u00e9 isThreadSafe et pr\u00e9voit de le supprimer dans une future mise \u00e0 jour de Pages.
+jsp.isthreadsafe.warning.useraction=Supprimez la directive isThreadSafe de toutes les pages.

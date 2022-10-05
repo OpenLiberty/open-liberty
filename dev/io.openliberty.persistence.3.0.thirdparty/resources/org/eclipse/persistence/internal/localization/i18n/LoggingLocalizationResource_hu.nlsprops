@@ -161,6 +161,8 @@ do_select_before_insert_not_supported=Az Oc4j "do-select-before-insert" nat\u00e
 
 drop_connection_on_error=Figyelmeztet\u00e9s: T\u00e1voli parancs kapcsolat megsz\u00fcntet\u00e9se {0} fel\u00e9 {1} hib\u00e1val
 
+eclipselink_version_error=F\u00e1jl: {0} nem l\u00e9tezik vagy s\u00e9r\u00fclt.
+
 ejbSelect2=EjbSelect: {0}
 
 ejb_jar_xml_not_found_in_input=Az ejb-jar.xml nincs jelen a(z) ({0}) bemeneti k\u00f6nyvt\u00e1rban.
@@ -316,6 +318,10 @@ jpars_could_not_find_persistence_context=Egy JPA-RS h\u00edv\u00e1s perzisztenci
 jpars_could_not_find_session_bean=H\u00edv\u00e1s ker\u00fclt v\u00e9grehajt\u00e1sra egy munkamenet-komponensre a k\u00f6vetkez\u0151 JNDI n\u00e9vvel: [{0}].  Ez a komponens nem tal\u00e1lhat\u00f3.
 
 jta_cannot_be_disabled_in_cmp=T\u00e1rol\u00f3vez\u00e9relt megmarad\u00e1s (CMP) haszn\u00e1lata eset\u00e9n a JTA nem tilthat\u00f3. Az EclipseLink \u00fagy fog m\u0171k\u00f6dni, mintha a JTA enged\u00e9lyezett lenne.
+
+jta_duplicate_ctrl_property=A JTA tranzakci\u00f3vez\u00e9rl\u0151 oszt\u00e1ly az "eclipselink.target-server" \u00e9s az "eclipselink.jta.controller" tulajdons\u00e1gokban egyar\u00e1nt meg van hat\u00e1rozva. Az "eclipselink.target-server" \u00e9rt\u00e9ke ker\u00fcl alkalmaz\u00e1sra.
+
+jta_tsr_lookup_failure=A TransactionSynchronizationRegistry p\u00e9ld\u00e1nyban nem v\u00e9gezhet\u0151 kikeres\u00e9s: {0}
 
 key_identity_hash_code_object={0}Kulcs: {1}{2}Azonoss\u00e1g kivonatk\u00f3d: {3}{2}Objektum: {4}
 
@@ -517,7 +523,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=A(z) [{0}] entit\u00e1s os
 
 metadata_warning_ignore_mapped_superclass_read_only=A(z) [{0}] entit\u00e1s oszt\u00e1lyhoz tartoz\u00f3 [{1}] lek\u00e9pezett sz\u00fcl\u0151oszt\u00e1lyon a csak olvashat\u00f3 be\u00e1ll\u00edt\u00e1s figyelmen k\u00edv\u00fcl hagy\u00e1sa, mivel az adott entit\u00e1shoz csak olvashat\u00f3 metaadatok el\u0151z\u0151leg felt\u00e9rk\u00e9pez\u00e9sre ker\u00fcltek (mag\u00e1n az entit\u00e1son vagy egy m\u00e1sik lek\u00e9pezett sz\u00fcl\u0151oszt\u00e1lyon).
 
-metadata_warning_ignore_mapping_metadata=A(z) [{1}] oszt\u00e1lyb\u00f3l a(z) [{0}] attrib\u00fatumra alkalmazott javax.persistence metaadatok figyelmen k\u00edv\u00fcl hagy\u00e1sa. A javax.persistence metaadatok az \u00e1tmeneti, statikus \u00e9s absztrakt mez\u0151k vagy \u00e1tmeneti eset\u00e9ben figyelmen k\u00edv\u00fcl maradnak.
+metadata_warning_ignore_mapping_metadata=A(z) [{0}] attrib\u00fatumra alkalmazott jakarta.persistence metaadatok figyelmen k\u00edv\u00fcl hagy\u00e1sa a(z) [{1}] oszt\u00e1ly eset\u00e9n. A jakarta.persistence metaadatok figyelmen k\u00edv\u00fcl maradnak az \u00e1tmeneti, statikus vagy absztrakt mez\u0151k vagy tulajdons\u00e1gok eset\u00e9ben.
 
 metadata_warning_ignore_serialized=A(z) [{0}] entit\u00e1s oszt\u00e1lyon bel\u00fcli [{1}] elemen az alap\u00e9rtelmezett soros\u00edt\u00e1s figyelmen k\u00edv\u00fcl hagy\u00e1sa, mivel EclipseLink \u00e1talak\u00edt\u00e1si metaadatok lettek megadva.
 
@@ -727,6 +733,9 @@ toplink_severe=[EL Severe]:
 
 toplink_warning=[EL Warning]: 
 
+unit_of_work_thread_info=A(z) ({0}) munkamenet aktu\u00e1lis egys\u00e9g\u00e9t egy, az aktu\u00e1list\u00f3l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) elt\u00e9r\u0151 sz\u00e1l hozta l\u00e9tre (azonos\u00edt\u00f3: {1} n\u00e9v: {2}).
+
+unit_of_work_thread_info_thread_dump=Sz\u00e1l l\u00e9trehoz\u00e1sa (azonos\u00edt\u00f3: {0} n\u00e9v: {1}) veremnyomk\u00f6vet\u00e9s: {2} Aktu\u00e1lis sz\u00e1l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) veremnyomk\u00f6vet\u00e9s:{5}\n
 unitofwork_identity_hashcode={0}UnitOfWork azonoss\u00e1g kivonatk\u00f3d: {1}
 
 update_all_fields_not_supported=Az Oc4j "update-all-fields" nat\u00edv CMP funkci\u00f3j\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokkument\u00e1ci\u00f3t.
