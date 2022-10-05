@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.actionlistener.bean;
+package com.ibm.ws.jsf22.fat.actionlistener.bean.jsf22;
 
 import java.io.Serializable;
 
