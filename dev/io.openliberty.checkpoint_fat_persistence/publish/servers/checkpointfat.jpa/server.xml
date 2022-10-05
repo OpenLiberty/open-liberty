@@ -20,6 +20,15 @@
     <fileset dir="${shared.resource.dir}/db2"/>
   </library>
 
+  <dataSource jndiName="jdbc/eventjpadatasource">
+   <jdbcDriver libraryRef="DB2Lib"/>
+   <properties.db2.jcc
+     databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"
+     user="${DB2_USER}" password="${DB2_PASS}"
+     affinityFailbackInterval="1h20m30s" allowNullResultSetForExecuteQuery="1"
+     commandTimeout="2m30s" connectionTimeout="90s" memberConnectTimeout="100000ms"/>
+  </dataSource>
+
   <javaPermission codebase="${shared.resource.dir}db2/jcc-11.1.4.4.jar" className="java.security.AllPermission"/>
   
 </server>
