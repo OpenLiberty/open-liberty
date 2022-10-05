@@ -43,7 +43,7 @@ import java.lang.annotation.Target;
  * </pre>
  *
  * Do not combine on a method with {@link Paginated &#64;Paginated} or
- * {@link Pagination}, which limits results per page instead of per query.
+ * {@link Pageable}, which limits results per page instead of per query.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

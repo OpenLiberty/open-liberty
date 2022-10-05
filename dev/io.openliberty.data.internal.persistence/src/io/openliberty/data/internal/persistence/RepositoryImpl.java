@@ -49,8 +49,7 @@ import jakarta.data.Inheritance;
 import jakarta.data.Limit;
 import jakarta.data.OrderBy;
 import jakarta.data.Page;
-import jakarta.data.Paginated;
-import jakarta.data.Pagination;
+import jakarta.data.Pageable;
 import jakarta.data.Param;
 import jakarta.data.Query;
 import jakarta.data.Result;
@@ -587,7 +586,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             int paramCount;
             Collector<Object, Object, Object> collector = null;
             Consumer<Object> consumer = null;
-            Pagination pagination = null;
+            Pageable pagination = null;
             LinkedList<Sort> sorts = null;
 
             // Jakarta Data allows the method parameters positions after those used as query parameters
@@ -599,8 +598,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     collector = (Collector<Object, Object, Object>) param;
                 else if (param instanceof Consumer)
                     consumer = (Consumer<Object>) param;
-                else if (param instanceof Pagination)
-                    pagination = (Pagination) param;
+                else if (param instanceof Pageable)
+                    pagination = (Pageable) param;
                 else if (param instanceof Sort)
                     (sorts = sorts == null ? new LinkedList<>() : sorts).addFirst((Sort) param);
                 else if (param instanceof Sort[]) {
@@ -630,15 +629,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     first = false;
                 }
                 queryInfo = new QueryInfo(queryInfo.type, q.toString(), queryInfo.entityInfo, queryInfo.saveParamType, queryInfo.returnArrayType, queryInfo.returnTypeParam);
-            }
-
-            // The Pagination parameter is from JNoSQL.
-            // The @Paginated annotation is not - I just wanted to experiment with how it could work
-            // if defined annotatively, which turns out to be possible, but not as flexible.
-            if (pagination == null) {
-                Paginated paginated = method.getAnnotation(Paginated.class);
-                if (paginated != null)
-                    pagination = Pagination.page(1).size(paginated.value());
             }
 
             LocalTransactionCoordinator suspendedLTC = null;
@@ -725,9 +715,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             if (limit != null)
                                 query.setMaxResults(limit.value());
                         } else {
-                            // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
-                            query.setFirstResult((int) pagination.getSkip());
-                            query.setMaxResults((int) pagination.getPageSize());
+                            // TODO possible overflow with both of these.
+                            long maxPageSize = pagination.getSize();
+                            query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+                            query.setMaxResults((int) maxPageSize);
                         }
 
                         List<?> results = query.getResultList();
@@ -893,7 +884,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *         asynchronous patterns, it could be a not-yet-completed completion stage
      *         that is controlled by the database's async support.
      */
-    private CompletableFuture<Object> runAndCollect(QueryInfo queryInfo, Pagination pagination,
+    private CompletableFuture<Object> runAndCollect(QueryInfo queryInfo, Pageable pagination,
                                                     Collector<Object, Object, Object> collector,
                                                     Method method, int numParams, Object[] args, Class<?> returnType) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -918,11 +909,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
 
             List<E> page;
-            int maxResults;
+            long maxPageSize;
             do {
-                // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
-                query.setFirstResult((int) pagination.getSkip());
-                query.setMaxResults(maxResults = (int) pagination.getPageSize());
+                // TODO possible overflow with both of these.
+                maxPageSize = pagination.getSize();
+                query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+                query.setMaxResults((int) maxPageSize);
                 pagination = pagination.next();
 
                 page = query.getResultList();
@@ -932,7 +924,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Processed page with " + page.size() + " results");
-            } while (pagination != null && page.size() == maxResults);
+            } while (pagination != null && page.size() == maxPageSize);
         } finally {
             em.close();
         }
@@ -955,7 +947,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *         asynchronous patterns, it could be a not-yet-completed completion stage
      *         that is controlled by the database's async support.
      */
-    private CompletableFuture<Void> runWithConsumer(QueryInfo queryInfo, Pagination pagination, Consumer<Object> consumer,
+    private CompletableFuture<Void> runWithConsumer(QueryInfo queryInfo, Pageable pagination, Consumer<Object> consumer,
                                                     Method method, int numParams, Object[] args, Class<?> returnType) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
@@ -976,11 +968,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
 
             List<E> page;
-            int maxResults;
+            long maxPageSize;
             do {
-                // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
-                query.setFirstResult((int) pagination.getSkip());
-                query.setMaxResults(maxResults = (int) pagination.getPageSize());
+                // TODO possible overflow with both of these.
+                maxPageSize = pagination.getSize();
+                query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+                query.setMaxResults((int) maxPageSize);
                 pagination = pagination.next();
 
                 page = query.getResultList();
@@ -990,7 +983,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Processed page with " + page.size() + " results");
-            } while (pagination != null && page.size() == maxResults);
+            } while (pagination != null && page.size() == maxPageSize);
         } finally {
             em.close();
         }
