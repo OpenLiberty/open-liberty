@@ -261,7 +261,7 @@
 
 6134=Der Attributname oder der Ausdruck, der als erster Parameter an die Methode addUpdate \u00fcbergeben wurde, definiert kein Feld. {1}Attributname oder Ausdruck: [{2}]{1}Deskriptor: [{0}]
 
-6135=Der Attributname oder der Ausdruck, der als erster Parameter an die Methode addUpdate \u00fcbergeben wurde, definiert ein Feld aus einer Tabelle, die keinem Abfragedeskriptor zugeordnet ist. {1}Attributname oder Ausdruck: [{2}]{1}Falsches Feld: [{3}]{1}Deskriptor: [{0}]
+6135=Der Attributname oder Ausdruck, der als erster Parameter an die Methode addUpdate \u00fcbergeben wird, definiert ein Feld aus einer Tabelle, die nicht dem Abfragedeskriptor zugeordnet ist. {1}Attributname oder Ausdruck: [{2}]{1}Falsches Feld: [{3}]{1}Deskriptor: [{0}]
 
 6136=Einer Vererbung mit mehreren Tabellen zugeordnete Klassen k\u00f6nnen keine ReportQuery-Elemente sein. Element: {0}, Ausdruck: {1}.
 

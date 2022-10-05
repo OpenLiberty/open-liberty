@@ -135,7 +135,7 @@
 
 45207=A survenit o eroare la \u00eencercarea de rezolvare a unei scheme utiliz\u00e2nd SchemaResolver furnizor.
 
-45208=Nu se poate mapa proprietatea {0} din tipul {1}. Pachetele javax.activation \u015fi javax.mail sunt necesare pentru maparea propriet\u0103\u0163ilor de tip DataHandler. Asigura\u0163i-v\u0103 c\u0103 ambele sunt disponibile \u00een calea de clase.
+45208=Nu se poate mapa proprietatea {0} din tipul {1}. Pachetele jakarta.activation \u0219i jakarta.mail sunt necesare pentru pentru maparea propriet\u0103\u021bilor de tipul DataHandler. Asigura\u0163i-v\u0103 c\u0103 ambele sunt disponibile \u00een calea de clase.
 
 45209=A fost f\u0103cut\u0103 o \u00eencercare de resetare a instan\u0163ei ApplicationResolver \u00een SDOHelperContext.  Numai o setare este permis\u0103.
 

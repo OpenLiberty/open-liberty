@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.3.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity30Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2500-2519
+
+#Note to translator, do not translate EL or OpenID
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG=CWWKS2500W: Az OpenID hiteles\u00edt\u00e9si mechanizmus meghat\u00e1roz\u00e1s annot\u00e1ci\u00f3 {0} attrib\u00fatum\u00e1nak kifejez\u00e9snyelv (EL) kifejez\u00e9se nem oldhat\u00f3 fel \u00e9rv\u00e9nyes \u00e9rt\u00e9kre. A megadott \u00e9rt\u00e9k: ''{1}''. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9s \u00e9s az eredm\u00e9ny \u00e9rv\u00e9nyes-e, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k legyenek. A(z) ''{2}'' alap\u00e9rtelmezett attrib\u00fatum\u00e9rt\u00e9ke ker\u00fcl alkalmaz\u00e1sra.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.explanation=Az attrib\u00fatum nem oldhat\u00f3 fel kifejez\u00e9sk\u00e9nt. Lehet, hogy az EL eredm\u00e9ny \u00e9s a v\u00e1rt attrib\u00fatum\u00e9rt\u00e9k t\u00edpusa elt\u00e9r. Ha p\u00e9ld\u00e1ul a v\u00e1rt attrib\u00fatumt\u00edpus karaktersorozat, akkor az EL eredm\u00e9nynek is karaktersorozat t\u00edpus\u00fanak kell lennie.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a feljegyz\u00e9s \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ket tartalmazzon. A kifejez\u00e9sben hivatkozott komponensek feloldhat\u00f3s\u00e1ga \u00e9rdek\u00e9ben, \u00e9s hogy az eredm\u00e9ny t\u00edpusa megfeleljen az attrib\u00fatumnak gondoskodj\u00e9k az EL kifejez\u00e9sek \u00e9rv\u00e9nyess\u00e9g\u00e9r\u0151l.
+
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG=CWWKS2501W: Az \u00e1ll\u00edt\u00e1smeghat\u00e1roz\u00e1s annot\u00e1ci\u00f3j\u00e1hoz tartoz\u00f3 {0} attrib\u00fatum kifejez\u00e9snyelv (EL) kifejez\u00e9se nem oldhat\u00f3 fel \u00e9rv\u00e9nyes \u00e9rt\u00e9kre. A megadott \u00e9rt\u00e9k: ''{1}''. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9s \u00e9s az eredm\u00e9ny \u00e9rv\u00e9nyes-e, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k legyenek. A(z) ''{2}'' alap\u00e9rtelmezett attrib\u00fatum\u00e9rt\u00e9ke ker\u00fcl alkalmaz\u00e1sra.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.explanation=Az attrib\u00fatum nem oldhat\u00f3 fel kifejez\u00e9sk\u00e9nt. Lehet, hogy az EL eredm\u00e9ny \u00e9s a v\u00e1rt attrib\u00fatum\u00e9rt\u00e9k t\u00edpusa elt\u00e9r. Ha p\u00e9ld\u00e1ul a v\u00e1rt attrib\u00fatumt\u00edpus karaktersorozat, akkor az EL eredm\u00e9nynek is karaktersorozat t\u00edpus\u00fanak kell lennie.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a feljegyz\u00e9s \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ket tartalmazzon. A kifejez\u00e9sben hivatkozott komponensek feloldhat\u00f3s\u00e1ga \u00e9rdek\u00e9ben, \u00e9s hogy az eredm\u00e9ny t\u00edpusa megfeleljen az attrib\u00fatumnak gondoskodj\u00e9k az EL kifejez\u00e9sek \u00e9rv\u00e9nyess\u00e9g\u00e9r\u0151l.
+
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG=CWWKS2502W: A kijelentkez\u00e9smeghat\u00e1roz\u00e1s annot\u00e1ci\u00f3j\u00e1hoz tartoz\u00f3 {0} attrib\u00fatum kifejez\u00e9snyelv (EL) kifejez\u00e9se nem oldhat\u00f3 fel \u00e9rv\u00e9nyes \u00e9rt\u00e9kre. A megadott \u00e9rt\u00e9k: ''{1}''. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9s \u00e9s az eredm\u00e9ny \u00e9rv\u00e9nyes-e, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k legyenek. A(z) ''{2}'' alap\u00e9rtelmezett attrib\u00fatum\u00e9rt\u00e9ke ker\u00fcl alkalmaz\u00e1sra.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.explanation=Az attrib\u00fatum nem oldhat\u00f3 fel kifejez\u00e9sk\u00e9nt. Lehet, hogy az EL eredm\u00e9ny \u00e9s a v\u00e1rt attrib\u00fatum\u00e9rt\u00e9k t\u00edpusa elt\u00e9r. Ha p\u00e9ld\u00e1ul a v\u00e1rt attrib\u00fatumt\u00edpus karaktersorozat, akkor az EL eredm\u00e9nynek is karaktersorozat t\u00edpus\u00fanak kell lennie.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a feljegyz\u00e9s \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ket tartalmazzon. A kifejez\u00e9sben hivatkozott komponensek feloldhat\u00f3s\u00e1ga \u00e9rdek\u00e9ben, \u00e9s hogy az eredm\u00e9ny t\u00edpusa megfeleljen az attrib\u00fatumnak gondoskodj\u00e9k az EL kifejez\u00e9sek \u00e9rv\u00e9nyess\u00e9g\u00e9r\u0151l.
+
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG=CWWKS2502W: Az OpenID szolg\u00e1ltat\u00f3 metaadat annot\u00e1ci\u00f3j\u00e1hoz tartoz\u00f3 {0} attrib\u00fatum kifejez\u00e9snyelv (EL) kifejez\u00e9se nem oldhat\u00f3 fel \u00e9rv\u00e9nyes \u00e9rt\u00e9kre. A megadott \u00e9rt\u00e9k: ''{1}''. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9s \u00e9s az eredm\u00e9ny \u00e9rv\u00e9nyes-e, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k legyenek. A(z) ''{2}'' alap\u00e9rtelmezett attrib\u00fatum\u00e9rt\u00e9ke ker\u00fcl alkalmaz\u00e1sra.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.explanation=Az attrib\u00fatum nem oldhat\u00f3 fel kifejez\u00e9sk\u00e9nt. Lehet, hogy az EL eredm\u00e9ny \u00e9s a v\u00e1rt attrib\u00fatum\u00e9rt\u00e9k t\u00edpusa elt\u00e9r. Ha p\u00e9ld\u00e1ul a v\u00e1rt attrib\u00fatumt\u00edpus karaktersorozat, akkor az EL eredm\u00e9nynek is karaktersorozat t\u00edpus\u00fanak kell lennie.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a feljegyz\u00e9s \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ket tartalmazzon. A kifejez\u00e9sben hivatkozott komponensek feloldhat\u00f3s\u00e1ga \u00e9rdek\u00e9ben, \u00e9s hogy az eredm\u00e9ny t\u00edpusa megfeleljen az attrib\u00fatumnak gondoskodj\u00e9k az EL kifejez\u00e9sek \u00e9rv\u00e9nyess\u00e9g\u00e9r\u0151l.

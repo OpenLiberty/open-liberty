@@ -37,7 +37,7 @@
 
 2005=Wartezyklusfehler bei Sequencing Connection Handler f\u00fcr DatabaseSession.
 
-2006=Es wurde versucht, sequenziell erzeugte Werte \u00fcber eine einzelne Connection({0}) gleichzeitig in mehreren Threads anzufordern.
+2006=Es wurde versucht, Werte f\u00fcr die Reihenfolgeplanung \u00fcber eine einzelne Verbindung ({0}) gleichzeitig in mehreren Threads zu beziehen.
 
 2007=Die maximal zul\u00e4ssige Anzahl von Versuchen, das Objekt {0} zu sperren, wurde \u00fcberschritten. Das Objekt konnte nicht geklont werden.
 

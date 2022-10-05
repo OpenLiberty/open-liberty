@@ -153,7 +153,7 @@
 
 50063=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}] XmlAdapterClass p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. Egy lehets\u00e9ges ok az, hogy az illeszt\u0151 oszt\u00e1lynak nincs argumentumok n\u00e9lk\u00fcli konstruktora.
 
-50064=A(z) [{0}] XmlAdapterClass nem terjeszti ki a "javax.xml.bind.annotation.adapters.XmlAdapter" oszt\u00e1lyt az elv\u00e1rtnak megfelel\u0151en.  Az illeszt\u0151 oszt\u00e1lynak ki kell terjesztenie a "javax.xml.bind.annotation.adapters.XmlAdapter" oszt\u00e1lyt, \u00e9s deklar\u00e1lnia kell "public abstract BoundType unmarshal(ValueType v)" \u00e9s a "public abstract ValueType marshal(BoundType v)" met\u00f3dusokat.
+50064=A(z) [{0}] XmlAdapterClass nem a v\u00e1rt m\u00f3don terjeszti ki a jakarta.xml.bind.annotation.adapters.XmlAdapter" csomagokat.  Az adapteroszt\u00e1lynak ki kell b\u0151v\u00edtenie a "jakarta.xml.bind.annotation.adapters.XmlAdapter" csomagot, \u00e9s deklar\u00e1lnia kell a "public abstract BoundType unMarshal(ValueType v)" \u00e9s "public abstract ValueType marshal(BoundType v)" met\u00f3dusokat.
 
 50065=\u00c9rv\u00e9nytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] csomaghoz. A lehets\u00e9ges okok: helytelen illeszt\u0151 oszt\u00e1lyn\u00e9v vagy helytelen bet\u00f6lt\u0151 lett be\u00e1ll\u00edtva.
 

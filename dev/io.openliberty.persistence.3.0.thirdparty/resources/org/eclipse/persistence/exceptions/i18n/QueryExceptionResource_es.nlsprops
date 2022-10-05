@@ -261,7 +261,7 @@
 
 6134=El nombre de atributo o la expresi\u00f3n que se pasado como primer par\u00e1metro al m\u00e9todo addupdate no define un campo. {1}Nombre de atributo o expresi\u00f3n: [{2}]{1}Descriptor: [{0}]
 
-6135=El nombre de atributo o la expresi\u00f3n que se ha pasado como primer par\u00e1metro al m\u00e9todo addupdate define un campo de una tabla que no est\u00e1 correlacionada con el descriptor de consulta. {1}Nombre de atributo o expresi\u00f3n: [{2}]{1}Campo incorrecto: [{3}]{1}Descriptor: [{0}]
+6135=El nombre de atributo o expresi\u00f3n pasados como primer par\u00e1metro al m\u00e9todo addUpdate definen un campo de una tabla sin correlaci\u00f3n con un descriptor de consulta. {1}Nombre de atributo o expresi\u00f3n: [{2}]{1}Campo incorrecto: [{3}]{1}Descriptor: [{0}]
 
 6136=Las clases correlacionadas con la herencia de multitabla no pueden ser elementos de ReportQuery. Elemento: {0}, Expresi\u00f3n: {1}.
 

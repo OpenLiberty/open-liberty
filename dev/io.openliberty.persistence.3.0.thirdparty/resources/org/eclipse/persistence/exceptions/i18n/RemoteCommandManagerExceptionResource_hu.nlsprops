@@ -63,3 +63,5 @@
 
 22118=JGroups kapcsolat l\u00e9trehoz\u00e1sa meghi\u00fasult a konfigur\u00e1ci\u00f3s f\u00e1jl haszn\u00e1lat\u00e1val: {0}
 
+22119=Hiba t\u00f6rt\u00e9nt a(z) {0} inicializ\u00e1l\u00e1sakor, adja hozz\u00e1 az org.eclipse.persistence.corba.jar f\u00e1jlt az oszt\u00e1ly\u00fatvonalhoz.
+

@@ -65,7 +65,7 @@
 
 25020=O m\u00e9todo "getResult()" n\u00e3o deve ser chamado antes da chamada do evento "endDocument()".
 
-25021=Classe {0} inv\u00e1lida para SwaRef. Deve ser javax.activation.DataHandler.
+25021=Classe {0} inv\u00e1lida para SwaRef. Deve ser jakarta.activation.DataHandler.
 
 25022=N\u00e3o \u00e9 poss\u00edvel serializar a imagem. Nenhum codificador dispon\u00edvel para mimeType {0}.
 

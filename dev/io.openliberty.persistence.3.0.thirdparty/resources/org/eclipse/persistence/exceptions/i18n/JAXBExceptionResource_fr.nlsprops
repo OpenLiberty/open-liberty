@@ -153,7 +153,7 @@
 
 50063=Une exception est survenue lors de la tentative d''instanciation de l''\u00e9l\u00e9ment XmlAdapterClass [{0}]. Cause possible : la classe d''adaptateur n''a aucun constructeur d''argument z\u00e9ro.
 
-50064=XmlAdapterClass [{0}] n''\u00e9tend pas "javax.xml.bind.annotation.adapters.XmlAdapter" comme pr\u00e9vu.  Il est obligatoire que la classe adaptateur \u00e9tendre "javax.xml.bind.annotation.adapters.XmlAdapter", et d\u00e9clare les m\u00e9thodes "public abstract BoundType unmarshal(ValueType v)" et "public abstract ValueType marshal(BoundType v)".
+50064=XmlAdapterClass [{0}] n''\u00e9tend pas "jakarta.xml.bind.annotation.adapters.XmlAdapter" comme pr\u00e9vu.  La classe d''adaptateur doit \u00e9tendre "jakarta.xml.bind.annotation.adapters.XmlAdapter" et d\u00e9clarer les m\u00e9thodes "public abstract BoundType unmarshal (ValueType v)" et "public abstract ValueType marshal (BoundType v)".
 
 50065=Un XmlJavaTypeAdapter non valide [{0}] a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour le package [{1}]. Causes possible : nom de classe adaptateur incorrect ou chargeur erron\u00e9 d\u00e9fini.
 

@@ -605,7 +605,7 @@
 
 7342=Podana warto\u015b\u0107 boolowska [{0}] ustawienia zezwolenia na zapytania w rodzimym j\u0119zyku SQL jest niepoprawna. Warto\u015bci\u0105 musi by\u0107 true lub false.
 
-7343=Okre\u015blono wiele identyfikator\u00f3w VPD (w\u0142a\u015bciwo\u015b\u0107 kontekstu wyr\u00f3\u017cnika klienta). Obiekt [{1}] u\u017cywa [{0}], a obiekt [{3]} u\u017cywa [{2}]. Podczas stosowania strategii Multitenant VPD mo\u017ce istnie\u0107 tylko jedna kolumna wyr\u00f3\u017cnika klienta na obiekt, a jej w\u0142a\u015bciwo\u015b\u0107 kontekstu musi by\u0107 sp\u00f3jna dla wszystkich obiekt\u00f3w Multitenant VPD.
+7343=Okre\u015blono wiele identyfikator\u00f3w VPD (w\u0142a\u015bciwo\u015b\u0107 kontekstu wyr\u00f3\u017cnika klienta). Obiekt [{1}] u\u017cywa [{0}], a obiekt [{3}] u\u017cywa [{2}]. Podczas stosowania strategii Multitenant VPD mo\u017ce istnie\u0107 tylko jedna kolumna wyr\u00f3\u017cnika klienta na obiekt, a jej w\u0142a\u015bciwo\u015b\u0107 kontekstu musi by\u0107 sp\u00f3jna dla wszystkich obiekt\u00f3w Multitenant VPD.
 
 7344=Strategia VPD (po\u0142\u0105czenia i generowanie kodu DDL) nie jest obs\u0142ugiwana dla platformy [{0}].
 
@@ -621,7 +621,7 @@
 
 7351=Nie znaleziono klasy konwertera [{2}] okre\u015blonej w atrybucie odwzorowania [{1}] z klasy [{0}]. Upewnij si\u0119, \u017ce nazwa klasy konwertera jest poprawna i istnieje z definicj\u0105 jednostki trwa\u0142o\u015bci.
 
-7352=Klasa konwertera [{0}] musi implementowa\u0107 interfejs javax.persistence.AttributeConverter<X, Y>, aby by\u0142a poprawn\u0105 klas\u0105 konwertera.
+7352=Klasa konwertera [{0}] musi implementowa\u0107 interfejs JPA jakarta.persistence.AttributeConverter<X, Y>, aby by\u0142a poprawn\u0105 klas\u0105 konwertera.
 
 7353=Atrybut odwzorowania [{1}] z klasy [{0}] nie jest poprawnym typem odwzorowania dla specyfikacji konwersji.
 
@@ -630,4 +630,6 @@
 7355=Atrybut odwzorowania [{1}] z klasy [{0}] nie jest poprawnym typem odwzorowania dla specyfikacji konwersji z u\u017cyciem nazwy atrybutu. Nazwa atrybutu powinna by\u0107 okre\u015blona tylko w celu przej\u015bcia osadzonego typu odwzorowania.
 
 7356=Nie mo\u017cna wykona\u0107 procedury [{1}], poniewa\u017c {0} nie obs\u0142uguje wielu parametr\u00f3w wyj\u015bciowych
+
+7357=Adres URL "[{0}]" dla zasobu [{1}] nie nale\u017cy do poprawnego elementu g\u0142\u00f3wnego trwa\u0142o\u015bci (zgodnie ze specyfikacj\u0105 JPA)
 

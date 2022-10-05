@@ -65,7 +65,7 @@
 
 25020=El m\u00e9todo "getResult()" no debe invocarse antes que el suceso "endDocument()".
 
-25021=La clase {0} no es v\u00e1lida para SwaRef. Debe ser javax.activation.DataHandler.
+25021=La clase {0} no es v\u00e1lida para SwaRef. Debe ser jakarta.activation.DataHandler.
 
 25022=No se ha podido ordenar la imagen. No hay ning\u00fan codificador disponible para mimeType {0}.
 
