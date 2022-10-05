@@ -27,6 +27,7 @@ import java.util.Dictionary;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,6 +88,7 @@ import com.ibm.ws.javaee.dd.common.ResourceRef;
 import com.ibm.ws.javaee.dd.common.wsclient.ServiceRef;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.WebFragment;
+import com.ibm.ws.javaee.dd.web.common.AttributeValue;
 import com.ibm.ws.javaee.dd.web.common.CookieConfig;
 import com.ibm.ws.javaee.dd.web.common.Filter;
 import com.ibm.ws.javaee.dd.web.common.FilterMapping;
@@ -201,7 +203,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
 
     private static final ManagedThreadFactoryComparator MANAGED_THREAD_FACTORY_COMPARATOR = new ManagedThreadFactoryComparator();
 
-    private final ServletConfigurator configurator;
+    protected final ServletConfigurator configurator;
 
     private final List<Class<?>> listenerInterfaces;
     
@@ -2652,9 +2654,13 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         }                
     }
 
-    private void configureSessionConfig(SessionConfig sessionConfig) {
+    protected void configureSessionConfig(SessionConfig sessionConfig) {
         if (sessionConfig == null) {
             return;
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "configureSessionConfig ");
         }
 
         Map<String, ConfigItem<String>> sessionConfigItemMap = configurator.getConfigItemMap("session-config");
@@ -3361,7 +3367,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
     // Convenience methods that forward to the configurator
     //
 
-    private <T> ConfigItem<T> createConfigItem(T value) {
+    protected <T> ConfigItem<T> createConfigItem(T value) {
         return this.configurator.createConfigItem(value);
     }
 
@@ -3369,7 +3375,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         return this.configurator.createConfigItem(value, comparator);
     }
 
-    private <T> void validateDuplicateConfiguration(String parentElementName,
+    protected <T> void validateDuplicateConfiguration(String parentElementName,
                                                     String elementName,
                                                     T currentValue,
                                                     ConfigItem<T> existedConfigItem) {

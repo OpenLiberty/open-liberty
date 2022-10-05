@@ -10,8 +10,12 @@
  *******************************************************************************/
 package io.openliberty.webcontainer60.session.impl;
 
+import java.util.logging.Level;
+
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.session.SessionApplicationParameters;
 import com.ibm.ws.session.SessionManagerConfig;
+import com.ibm.ws.session.utils.LoggingUtil;
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer31.session.impl.SessionContextRegistry31Impl;
@@ -20,6 +24,7 @@ import com.ibm.ws.webcontainer31.session.impl.SessionContextRegistry31Impl;
  *
  */
 public class SessionContextRegistryImpl60 extends SessionContextRegistry31Impl {
+    private static final String methodClassName = "SessionContextRegistryImpl60";
 
     /**
      * @param smgr
@@ -36,7 +41,10 @@ public class SessionContextRegistryImpl60 extends SessionContextRegistry31Impl {
      */
     @Override
     protected IHttpSessionContext createSessionContextObject(SessionManagerConfig smc, SessionApplicationParameters sap) {
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " createSessionContextObject to create HttpSessionContextImpl60 with smc [" + smc + "]");
+        }
         return new HttpSessionContextImpl60(smc, sap, this.smgr.getSessionStoreService());
     }
-    
+
 }

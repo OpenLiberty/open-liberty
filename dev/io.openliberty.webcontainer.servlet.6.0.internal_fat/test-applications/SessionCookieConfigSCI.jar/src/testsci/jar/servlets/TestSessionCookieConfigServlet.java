@@ -83,7 +83,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         //Validate Domain via specific getDomain()
         if (!(cookieValue = scc.getDomain()).equals("setAttDomain_viaSCI")) {
             testPass = false;
-            sBuilderResponse.append(" getDomain() expecting [setAttDomain_viaSCI] , actual [" + cookieValue + "] |");
+            sBuilderResponse.append(" FAIL getDomain() expecting [setAttDomain_viaSCI] , actual [" + cookieValue + "] |");
             LOG.info("Test scc.getDomain() FAIL");
         }
         else
@@ -91,7 +91,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         
         if ( !((cookieInt = scc.getMaxAge()) == 2022) ) {
             testPass = false;
-            sBuilderResponse.append(" getMaxAge() expecting [2022] , actual [" + cookieInt + "] |");
+            sBuilderResponse.append(" FAIL getMaxAge() expecting [2022] , actual [" + cookieInt + "] |");
             LOG.info("Test scc.getMaxAge() FAIL");
         }
         else
@@ -99,7 +99,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         
         if (!(cookieValue = scc.getName()).equals("SessionCookieConfig6_viaSCI")) {
             testPass = false;
-            sBuilderResponse.append(" getName() expecting [SessionCookieConfig6_viaSCI] , actual [" + cookieValue + "] |");
+            sBuilderResponse.append(" FAIL getName() expecting [SessionCookieConfig6_viaSCI] , actual [" + cookieValue + "] |");
             LOG.info("Test scc.getName() FAIL");
         }
         else
@@ -107,7 +107,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         
         if (!(cookieValue = scc.getPath()).equals("setPATH_viaSCI")) {
             testPass = false;
-            sBuilderResponse.append(" getPath() expecting [setPATH_viaSCI] , actual [" + cookieValue + "] |");
+            sBuilderResponse.append(" FAIL getPath() expecting [setPATH_viaSCI] , actual [" + cookieValue + "] |");
             LOG.info("Test scc.getPath() FAIL");
         }
         else
@@ -115,63 +115,73 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         
         if (!scc.isHttpOnly()) {
             testPass = false;
-            sBuilderResponse.append(" isHttpOnly() expecting [true] , actual [" + scc.isHttpOnly() + "] |");
+            sBuilderResponse.append(" FAIL isHttpOnly() expecting [true] , actual [" + scc.isHttpOnly() + "] |");
             LOG.info("Test scc.isHttpOnly() FAIL");
         }
         else
             sBuilderResponse.append(" isHttpOnly() PASS |");
         
-        if (!(cookieValue = scc.getAttribute("AttName1")).equals("AttValue1")) {
+        //Test precedence - SCI overwrite web.xml
+        if (!(cookieValue = scc.getAttribute("AttName1")).equals("AttValue1SCI")) {
             testPass = false;
-            sBuilderResponse.append(" getAttribute(\"AttName1\") expecting [AttValue1] , actual [" + cookieValue + "] |");
-            LOG.info("Test scc.getAttribute(\"AttName1\") FAIL");
+            sBuilderResponse.append(" FAIL getAttribute(\"AttName1\") expecting [AttValue1SCI] , actual [" + cookieValue + "] |");
+            LOG.info("Test precedence order FAIL");
         }
         else
-            sBuilderResponse.append(" getAttribute(\"AttName1\") PASS |");
+            sBuilderResponse.append(" Test precedence order PASS |");
+       
+        //Test getAttribute from web.xml
+        if (!(cookieValue = scc.getAttribute("AttNameUnique")).equals("AttValueUnique_viaWebXML")) {
+            testPass = false;
+            sBuilderResponse.append(" FAIL getAttribute(\"AttNameUnique\") expecting [AttValueUnique_viaWebXML] , actual [" + cookieValue + "] |");
+            LOG.info("Test getAttribute web.xml FAIL");
+        }
+        else
+            sBuilderResponse.append(" Test getAttribute web.xml PASS |"); 
         
         //Note the lower case att name
         if (!(cookieValue = scc.getAttribute("attname5")).equals("AttValue5")) {
             testPass = false;
-            sBuilderResponse.append(" getAttribute(\"attname5\") expecting [AttValue5] , actual [" + cookieValue + "] |");
-            LOG.info("Test scc..getAttribute(\"attname5\") FAIL");
+            sBuilderResponse.append(" FAIL getAttribute(\"attname5\") expecting [AttValue5] , actual [" + cookieValue + "] |");
+            LOG.info(" Test lower case att name FAIL");
         } 
         else
-            sBuilderResponse.append(" getAttribute(\"attname5\") PASS |");
+            sBuilderResponse.append(" Test lower case att name PASS |");
         
-        //Validate Domain via getAttribute
+        //Test specific Domain that set via setAttribute and retrieve via getAttribute
         if (!(cookieValue = scc.getAttribute("DOMAIN")).equals("setAttDomain_viaSCI")) {
             testPass = false;
-            sBuilderResponse.append(" getAttribute(\"DOMAIN\") expecting [SCC6_DOMAIN_viaSetAttribute] , actual [" + cookieValue + "] |");
-            LOG.info("Test scc.getAttribute(\"DOMAIN\") FAIL");
+            sBuilderResponse.append(" FAIL getAttribute(\"DOMAIN\") expecting [setAttDomain_viaSCI] , actual [" + cookieValue + "] |");
+            LOG.info(" Test getAttribute(\"DOMAIN\") FAIL");
         }
         else
-            sBuilderResponse.append(" getAttribute(\"DOMAIN\") PASS |");
+            sBuilderResponse.append(" Test getAttribute(\"DOMAIN\") PASS |");
         
         if (!(cookieValue = scc.getAttribute("path")).equals("setPATH_viaSCI")) {
             testPass = false;
-            sBuilderResponse.append(" getAttribute(\"path\") expecting [setPATH_viaSCI] , actual [" + cookieValue + "] |");
-            LOG.info("Test scc.getAttribute(\"path\") FAIL");
+            sBuilderResponse.append(" FAIL getAttribute(\"path\") expecting [setPATH_viaSCI] , actual [" + cookieValue + "] |");
+            LOG.info("Test getAttribute(\"path\") FAIL");
         }
         else
-            sBuilderResponse.append(" getAttribute(\"path\") PASS |");
+            sBuilderResponse.append(" Test getAttribute(\"path\") PASS |");
         
         //Validate setAttribute with null name.  Servlet has verified the translated message code and reports whether PASS or FAIL.
         if (!(cookieValue = scc.getAttribute("ReportedNullAttName")).equals("PASS")) {
             testPass = false;
-            sBuilderResponse.append(" getAttribute(\"ReportedNullAttName\") expecting [PASS] , actual [" + cookieValue + "] |");
-            LOG.info("Test scc.getAttribute(\"ReportedNullAttName\") FAIL");
+            sBuilderResponse.append(" FAIL getAttribute(\"ReportedNullAttName\") expecting [PASS] , actual [" + cookieValue + "] |");
+            LOG.info(" Test NULL att name FAIL");
         }
         else
-            sBuilderResponse.append(" getAttribute(\"ReportedNullAttName\") PASS |");
+            sBuilderResponse.append(" Test NULL att name PASS |");
        
         //Validate setAttribute with invalid name.
         if (!(cookieValue = scc.getAttribute("ReportedInvalidAttName")).equals("PASS")) {
             testPass = false;
-            sBuilderResponse.append(" getAttribute(\"ReportedInvalidAttName\") expecting [PASS] , actual [" + cookieValue + "] |");
-            LOG.info("Test scc.getAttribute(\"path\") FAIL");
+            sBuilderResponse.append(" FAIL getAttribute(\"ReportedInvalidAttName\") expecting [PASS] , actual [" + cookieValue + "] |");
+            LOG.info(" Test report invalid att name FAIL");
         }
         else
-            sBuilderResponse.append(" getAttribute(\"ReportedInvalidAttName\") PASS |");
+            sBuilderResponse.append(" Test report invalid att name PASS |");
       
         
         //Final result - any of the above tests fail will make test fail
@@ -204,7 +214,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         //Test Domain via specific getDomain()
         if (!(cookieValue = scc.getDomain()).equals("CookieConfigDomain_viaWebXML")) {
             testPass = false;
-            sBuilderResponse.append(" getDomain() expecting [CookieConfigDomain_viaWebXML] , actual [" + cookieValue + "] ||");
+            sBuilderResponse.append(" FAIL getDomain() expecting [CookieConfigDomain_viaWebXML] , actual [" + cookieValue + "] ||");
             LOG.info("Test scc.getDomain() FAIL");
         }
         else
@@ -213,7 +223,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         
         if ( !((cookieInt = scc.getMaxAge()) == 2021) ) {
             testPass = false;
-            sBuilderResponse.append(" getMaxAge() expecting [2021] , actual [" + cookieInt + "] ||");
+            sBuilderResponse.append(" FAIL getMaxAge() expecting [2021] , actual [" + cookieInt + "] ||");
             LOG.info("Test scc.getMaxAge() FAIL");
         }
         else
@@ -222,7 +232,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         
         if (!(cookieValue = scc.getName()).equals("CookieConfigName_viaWebXML")) {
             testPass = false;
-            sBuilderResponse.append(" getName() expecting [CookieConfigName_viaWebXML] , actual [" + cookieValue + "] ||");
+            sBuilderResponse.append(" FAIL getName() expecting [CookieConfigName_viaWebXML] , actual [" + cookieValue + "] ||");
             LOG.info("Test scc.getName() FAIL");
         }
         else
@@ -231,7 +241,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         
         if (!(cookieValue = scc.getPath()).equals("CookieConfigPath_viaWebXML")) {
             testPass = false;
-            sBuilderResponse.append(" getPath() expecting [CookieConfigPath_viaWebXML] , actual [" + cookieValue + "] ||");
+            sBuilderResponse.append(" FAIL getPath() expecting [CookieConfigPath_viaWebXML] , actual [" + cookieValue + "] ||");
             LOG.info("Test scc.getPath() FAIL");
         }
         else
@@ -240,7 +250,7 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
         
         if (!scc.isHttpOnly()) {
             testPass = false;
-            sBuilderResponse.append(" isHttpOnly() expecting [true] , actual [" + scc.isHttpOnly() + "] ||");
+            sBuilderResponse.append(" FAIL isHttpOnly() expecting [true] , actual [" + scc.isHttpOnly() + "] ||");
             LOG.info("Test scc.isHttpOnly() FAIL");
         }
         else
@@ -250,29 +260,45 @@ public class TestSessionCookieConfigServlet extends HttpServlet {
          //Test Domain via getAttribute
         if (!(cookieValue = scc.getAttribute("DOMAIN")).equals("CookieConfigDomain_viaWebXML")) {
             testPass = false;
-            sBuilderResponse.append(" getAttribute(\"DOMAIN\") expecting [CookieConfigDomain_viaWebXML] , actual [" + cookieValue + "] ||");
+            sBuilderResponse.append(" FAIL getAttribute(\"DOMAIN\") expecting [CookieConfigDomain_viaWebXML] , actual [" + cookieValue + "] ||");
             LOG.info("Test scc.getAttribute(\"DOMAIN\") FAIL");
         }
         else
             sBuilderResponse.append(" getAttribute(\"DOMAIN\") PASS |");
 
-        /*
-         * Activate this when web.xml is updated for <attribute> element
+        //Test set/getAttribute from web.xml.  NPE can happen if the web.xml cannot parse for some reasons; thus the try/catch
         try {
-            if (!(cookieValue = scc.getAttribute("AttName1")).equals("AttValue1")) {
+            if (!(cookieValue = scc.getAttribute("AttName1")).equals("AttValue1_viaWebXML")) {
                 testPass = false;
-                sBuilderResponse.append(" getAttribute(\"AttName1\")) expecting [AttValue1] , actual [" + cookieValue + "] ||");
+                sBuilderResponse.append(" FAIL getAttribute(\"AttName1\")) expecting [AttValue1_viaWebXML] , actual [" + cookieValue + "] ||");
                 LOG.info("Test scc.getAttribute(\"AttName1\") FAIL");
             }
             else
                 sBuilderResponse.append(" getAttribute(\"AttName1\") PASS |");
+           
+            //test getAttributes
+            if (!(scc.getAttributes().get("AttName2")).equals("AttValue2_viaWebXML")) {
+                testPass = false;
+                sBuilderResponse.append(" FAIL  getAttributes().get(\"AttName2\") expecting [AttValue2_viaWebXML] , actual [" + cookieValue + "] ||");
+                LOG.info("Test scc.getAttributes.get(\"AttName2\") FAIL");
+            }
+            else
+                sBuilderResponse.append(" getAttributes().get(\"AttName2\") PASS |");
+                
+            //test getAttributes.get("path") with lower case path
+            if (!(scc.getAttributes().get("path")).equals("CookieConfigPath_viaWebXML")) {
+                testPass = false;
+                sBuilderResponse.append(" FAIL getAttributes().get(\"path\") expecting [CookieConfigPath_viaWebXML] , actual [" + cookieValue + "] ||");
+                LOG.info("Test scc.getAttributes.get(\"AttName2\") FAIL");
+            }
+            else
+                sBuilderResponse.append(" getAttributes().get(\"path\") PASS |");
         }
-        catch (Exception e) {
+        catch (Exception e) { 
             testPass = false;
-            sBuilderResponse.append(" getAttribute(\"AttName1\") FAIL with an exception [" + e + "] ||");
-            LOG.info("Test scc.getAttribute(\"AttName1\") FAIL");
+            sBuilderResponse.append(" getAttribute() tests FAIL with an exception [" + e + "] ||");
+            LOG.info("Test scc.getAttribute() FAIL with Exception " + e);
         }
-         */
         
         if (testPass)
             sBuilderResponse.append("]  Result [PASS]");
