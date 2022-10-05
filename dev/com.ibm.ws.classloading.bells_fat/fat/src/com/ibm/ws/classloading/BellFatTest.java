@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.classloading;
 
-import static com.ibm.ws.classloading.TestUtils.BETA_EDITION_JVM_OPTION;
 import static com.ibm.ws.classloading.TestUtils.buildAndExportBellLibrary;
 import static com.ibm.ws.classloading.TestUtils.removeSysProps;
 import static com.ibm.ws.classloading.TestUtils.setSysProps;
@@ -104,8 +103,7 @@ public class BellFatTest {
     public void testNoEntry() throws Exception {
 
         Map<String,String> sysProps = new HashMap<String,String>(3){};
-        sysProps.put(BETA_EDITION_JVM_OPTION, Boolean.FALSE.toString());
-        try {
+         try {
             setSysProps(server, sysProps);
             server.startServer();
 

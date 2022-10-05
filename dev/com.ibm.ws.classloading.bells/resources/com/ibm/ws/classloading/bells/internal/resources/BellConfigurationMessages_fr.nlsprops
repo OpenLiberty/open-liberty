@@ -80,18 +80,15 @@ bell.no.services.config=CWWKL0058W: Service {0} introuvable dans le dossier META
 bell.no.services.config.explanation=Aucun service correspondant n'a \u00e9t\u00e9 d\u00e9clar\u00e9 dans le dossier META-INF/services.
 bell.no.services.config.useraction= Aucune action de l'utilisateur n'est requise.
 
-# BETA
 # {0} - library identifier
 bell.spi.visibility.enabled=CWWKL0059I: La visibilit\u00e9 BELL SPI est activ\u00e9e pour la biblioth\u00e8que {0}. BELL fait r\u00e9f\u00e9rence \u00e0 la biblioth\u00e8que {0} via un chargeur de classe unique qui peut voir les packages SPI.
 bell.spi.visibility.enabled.explanation=Pour emp\u00eacher les applications et les ressources de voir les paquets SPI, BELL fait r\u00e9f\u00e9rence la biblioth\u00e8que par le biais d'un chargeur de classe unique qui n'est pas partag\u00e9 avec les applications qui r\u00e9f\u00e9rencent la m\u00eame biblioth\u00e8que.
 bell.spi.visibility.enabled.useraction=D\u00e9sactivez la visibilit\u00e9 SPI dans la configuration BELL chaque fois que BELL doit faire r\u00e9f\u00e9rence \u00e0 une biblioth\u00e8que par le biais d'un chargeur de classe qui est partag\u00e9 avec des applications qui r\u00e9f\u00e9rencent la m\u00eame biblioth\u00e8que. Sinon, aucune action n'est requise.
 
-# BETA
 bell.spi.visibility.disabled.libref.global=CWWKL0060E: La visibilit\u00e9 BELL SPI n'est pas prise en charge pour la biblioth\u00e8que partag\u00e9e globale Liberty.
 bell.spi.visibility.disabled.libref.global.explanation=La visibilit\u00e9 de l'interface SPI BELL ne peut pas \u00eatre activ\u00e9e pour la biblioth\u00e8que partag\u00e9e globale Liberty.
 bell.spi.visibility.disabled.libref.global.useraction=Modifiez la configuration BELL pour faire r\u00e9f\u00e9rence \u00e0 une biblioth\u00e8que autre que la biblioth\u00e8que partag\u00e9e globale Liberty.
 
-# BETA
 # {0} - the name of the implementation class
 # {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
 # {2} - the name of the library
