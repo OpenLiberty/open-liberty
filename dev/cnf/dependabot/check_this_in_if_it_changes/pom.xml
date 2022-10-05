@@ -3952,6 +3952,11 @@
       <version>1.4.01</version>
     </dependency>
     <dependency>
+      <groupId>net.sourceforge.nekohtml</groupId>
+      <artifactId>nekohtml</artifactId>
+      <version>1.9.23.ibm</version>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml</groupId>
       <artifactId>classmate</artifactId>
       <version>1.3.4</version>
@@ -4270,11 +4275,6 @@
       <groupId>net.jodah</groupId>
       <artifactId>failsafe</artifactId>
       <version>1.0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sourceforge.nekohtml</groupId>
-      <artifactId>nekohtml</artifactId>
-      <version>1.9.23.ibm</version>
     </dependency>
     <dependency>
       <groupId>org.apache.aries.jmx</groupId>
