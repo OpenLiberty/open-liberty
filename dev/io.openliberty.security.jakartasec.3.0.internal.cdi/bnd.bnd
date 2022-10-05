@@ -64,7 +64,8 @@ src: src, resources
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
 	io.openliberty.webcontainer.security.internal;version=latest,\
 	com.ibm.ws.security;version=latest,\
-	com.ibm.websphere.security;version=latest
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.security.token;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\

@@ -24,6 +24,7 @@ import com.ibm.ws.security.javaeesec.cdi.beans.Utils;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
@@ -272,6 +273,13 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     private void setOpenIdContextInSubject(Subject clientSubject, OpenIdContext openIdContext) {
         if (openIdContext != null) {
             clientSubject.getPrivateCredentials().add(openIdContext);
+            Hashtable<String, Object> hashtable = utils.getSubjectExistingHashtable(clientSubject);
+            if (hashtable != null) {
+                IdentityToken idToken = openIdContext.getIdentityToken();
+                if (idToken != null) {
+                    hashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(idToken.hashCode()));
+                }
+            }
         }
     }
 
