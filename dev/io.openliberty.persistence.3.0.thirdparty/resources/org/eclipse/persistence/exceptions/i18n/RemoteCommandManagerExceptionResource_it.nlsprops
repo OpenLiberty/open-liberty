@@ -63,3 +63,5 @@
 
 22118=Impossibile creare la connessione JGroups utilizzando il file di configurazione: {0}
 
+22119=Errore di inizializzazione {0}, aggiungere org.eclipse.persistence.corba.jar al proprio classpath.
+

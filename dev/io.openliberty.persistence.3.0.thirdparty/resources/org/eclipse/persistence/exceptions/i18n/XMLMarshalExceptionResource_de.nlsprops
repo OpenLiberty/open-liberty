@@ -65,7 +65,7 @@
 
 25020=Die Methode "getResult()" darf nicht aufgerufen werden, bevor das Ereignis "endDocument()" aufgerufen wurde.
 
-25021=Die Klasse {0} ist f\u00fcr SwaRef ung\u00fcltig. Sie muss javax.activation.DataHandler sein.
+25021=Die Klasse {0} ist f\u00fcr SwaRef ung\u00fcltig. Sie muss "jakarta.activation.DataHandler" lauten.
 
 25022=Das Marshalling f\u00fcr das Image ist nicht m\u00f6glich. F\u00fcr den MIME-Typ {0} ist kein Encoder verf\u00fcgbar.
 

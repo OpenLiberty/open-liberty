@@ -161,6 +161,8 @@ do_select_before_insert_not_supported=Sk\u0142adnik komponentu CMP rodzimy dla p
 
 drop_connection_on_error=Ostrze\u017cenie: usuwanie zdalnego po\u0142\u0105czenia komend z {0} z powodu b\u0142\u0119du {1}
 
+eclipselink_version_error=Plik {0} nie istnieje lub jest uszkodzony.
+
 ejbSelect2=Wyb\u00f3r komponentu EJB: {0}
 
 ejb_jar_xml_not_found_in_input=Brak pliku ejb-jar.xml w katalogu wej\u015bciowym ({0}).
@@ -316,6 +318,10 @@ jpars_could_not_find_persistence_context=Wywo\u0142anie JPA-RS \u017c\u0105da ko
 jpars_could_not_find_session_bean=Wykonywane jest wywo\u0142anie skierowane do komponentu bean sesji o nazwie JNDI: [{0}].  Nie mo\u017cna znale\u017a\u0107 tego komponentu bean.
 
 jta_cannot_be_disabled_in_cmp=Je\u015bli u\u017cywane jest zarz\u0105dzanie trwa\u0142o\u015bci\u0105 przez kontener (Container Managed Persistence \u2013 CMP), nie mo\u017cna wy\u0142\u0105czy\u0107 transakcji JTA. Produkt EclipseLink b\u0119dzie dzia\u0142a\u0142 z za\u0142o\u017ceniem, \u017ce transakcje JTA s\u0105 w\u0142\u0105czone.
+
+jta_duplicate_ctrl_property=Klasa kontrolera transakcji JTA jest zdefiniowana w obu w\u0142a\u015bciwo\u015bciach: "eclipselink.target-server" oraz "eclipselink.jta.controller". U\u017cywana jest warto\u015b\u0107 z w\u0142a\u015bciwo\u015bci "eclipselink.target-server".
+
+jta_tsr_lookup_failure=Nie mo\u017cna wyszuka\u0107 instancji TransactionSynchronizationRegistry: {0}
 
 key_identity_hash_code_object={0} Klucz: {1}{2} Kod mieszaj\u0105cy to\u017csamo\u015bci: {3}{2} Obiekt: {4}
 
@@ -517,7 +523,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Ustawienie klucza podstawo
 
 metadata_warning_ignore_mapped_superclass_read_only=Ustawienie tylko do odczytu dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostanie zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane tylko do odczytu dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
 
-metadata_warning_ignore_mapping_metadata=Metadane javax.persistence zastosowane do atrybutu [{0}] z klasy [{1}] zostan\u0105 zignorowane. Metadane javax.persistence s\u0105 ignorowane w przypadku p\u00f3l lub w\u0142a\u015bciwo\u015bci, kt\u00f3re s\u0105 przej\u015bciowe, statyczne lub abstrakcyjne.
+metadata_warning_ignore_mapping_metadata=Metadane jakarta.persistence zastosowane do atrybutu [{0}] z klasy [{1}] zostan\u0105 zignorowane. Metadane jakarta.persistence s\u0105 ignorowane dla p\u00f3l lub w\u0142a\u015bciwo\u015bci, kt\u00f3re s\u0105 przej\u015bciowe, statyczne lub abstrakcyjne.
 
 metadata_warning_ignore_serialized=Domy\u015blne szeregowanie dla elementu [{1}] w klasie jednostki [{0}] zostanie zignorowane, poniewa\u017c okre\u015blone s\u0105 metadane przekszta\u0142cania produktu EclipseLink.
 
@@ -727,6 +733,9 @@ toplink_severe=[EL \u2013 powa\u017cne]:
 
 toplink_warning=[EL \u2013 ostrze\u017cenia]: 
 
+unit_of_work_thread_info=Bie\u017c\u0105ca jednostka pracy w sesji ({0}) zosta\u0142a utworzona przez inny w\u0105tek (identyfikator: {1}, nazwa: {2}), ni\u017c bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4})
+
+unit_of_work_thread_info_thread_dump=W\u0105tek tworzenia (identyfikator: {0}, nazwa: {1}), stos wywo\u0142a\u0144: {2}Bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4}), stos wywo\u0142a\u0144:{5}\n
 unitofwork_identity_hashcode={0} Kod mieszaj\u0105cy to\u017csamo\u015bci jednostki pracy: {1}
 
 update_all_fields_not_supported=Sk\u0142adnik komponentu CMP rodzimy dla produktu Oc4j update-all-fields dotycz\u0105cy jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwany w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.

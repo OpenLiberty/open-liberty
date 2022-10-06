@@ -63,3 +63,5 @@
 
 22118=Falha ao criar a conex\u00e3o JGroups usando o arquivo de configura\u00e7\u00e3o: {0}
 
+22119=Erro ao inicializar {0}, inclua org.eclipse.persistence.corba.jar em seu classpath.
+

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -229,3 +229,11 @@ missingslashornull.uri.useraction=Definieren Sie einen Endpunkt-URI ungleich nul
 wsoc.feature.not.loaded.correctly=CWWKH0053E: Das WebSocket-Feature wurde nicht mit einer akzeptablen Version geladen.
 wsoc.feature.not.loaded.correctly.explanation=Das WebSocket-Feature wird mit einer Version geladen, die der Java [Jakarta] EE-Spezifikation dieses WebSocket-Features entspricht. Das Feature wurde ohne definierte Version geladen.
 wsoc.feature.not.loaded.correctly.useraction=\u00dcberpr\u00fcfen Sie, ob die Datei server.xml mehrere WebSocket-Features enth\u00e4lt. Es darf nur ein einziges angegeben werden.
+
+scheme.incorrect.error=CWWKH0054E: Im URI {0} wurde ein nicht identifiziertes Schema verwendet.
+scheme.incorrect.error.explanation=Bei der Verarbeitung der Anforderung wurde ein nicht identifiziertes Schema gefunden. 
+scheme.incorrect.error.useraction=Als Schematyp muss 'http', 'https', 'ws' oder 'wss' verwendet werden. 
+
+upgradeHttpToWebSocket.failed=CWWKH0055E: Der Aufruf "jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket" ist fehlgeschlagen. Ursache: {0}. 
+upgradeHttpToWebSocket.failed.explanation=Der Server konnte die HTTP- oder HTTPS-Anforderung nicht per Upgrade auf das WS-/WSS-Protokoll umstellen.
+upgradeHttpToWebSocket.failed.useraction=\u00dcberpr\u00fcfen Sie den Fehler, um zu ermitteln, aus welchem Grund das Upgrade f\u00fcr die Anforderung fehlgeschlagen ist.

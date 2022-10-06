@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.3.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity30Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2500-2519
+
+#Note to translator, do not translate EL or OpenID
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG=CWWKS2500W: V\u00fdraz EL (Expression Language) pro atribut {0} anotace definice mechanizmu ov\u011b\u0159ov\u00e1n\u00ed OpenID nelze interpretovat na platnou hodnotu. Poskytnut\u00e1 hodnota byla ''{1}''. Ujist\u011bte se, \u017ee v\u00fdraz EL a v\u00fdsledek jsou platn\u00e9 a ujist\u011bte se, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9. Pou\u017eije se v\u00fdchoz\u00ed hodnota atributu ''{2}''.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.explanation=Atribut nelze interpretovat jako v\u00fdraz. V\u00fdsledek EL a o\u010dek\u00e1van\u00fd typ hodnoty atributu se mo\u017en\u00e1 nemus\u00ed shodovat. Pokud se nap\u0159\u00edklad o\u010dek\u00e1v\u00e1 typ atributu \u0158et\u011bzec, v\u00fdsledek EL mus\u00ed b\u00fdt typu \u0158et\u011bzec.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.useraction=Ujist\u011bte se, \u017ee anotace obsahuje platnou konfigura\u010dn\u00ed hodnotu. Ujist\u011bte se, \u017ee v\u00fdrazy EL jsou platn\u00e9, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean ve v\u00fdrazu lze interpretovat a \u017ee typ v\u00fdsledku odpov\u00edd\u00e1 atributu.
+
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG=CWWKS2501W: V\u00fdraz EL (Expression Language) pro atribut {0} anotace definice n\u00e1rok\u016f nelze interpretovat na platnou hodnotu. Poskytnut\u00e1 hodnota byla ''{1}''. Ujist\u011bte se, \u017ee v\u00fdraz EL a v\u00fdsledek jsou platn\u00e9 a ujist\u011bte se, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9. Pou\u017eije se v\u00fdchoz\u00ed hodnota atributu ''{2}''.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.explanation=Atribut nelze interpretovat jako v\u00fdraz. V\u00fdsledek EL a o\u010dek\u00e1van\u00fd typ hodnoty atributu se mo\u017en\u00e1 nemus\u00ed shodovat. Pokud se nap\u0159\u00edklad o\u010dek\u00e1v\u00e1 typ atributu \u0158et\u011bzec, v\u00fdsledek EL mus\u00ed b\u00fdt typu \u0158et\u011bzec.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.useraction=Ujist\u011bte se, \u017ee anotace obsahuje platnou konfigura\u010dn\u00ed hodnotu. Ujist\u011bte se, \u017ee v\u00fdrazy EL jsou platn\u00e9, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean ve v\u00fdrazu lze interpretovat a \u017ee typ v\u00fdsledku odpov\u00edd\u00e1 atributu.
+
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG=CWWKS2502W: V\u00fdraz EL (Expression Language) pro atribut {0} anotace definice odhl\u00e1\u0161en\u00ed nelze interpretovat na platnou hodnotu. Poskytnut\u00e1 hodnota byla ''{1}''. Ujist\u011bte se, \u017ee v\u00fdraz EL a v\u00fdsledek jsou platn\u00e9 a ujist\u011bte se, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9. Pou\u017eije se v\u00fdchoz\u00ed hodnota atributu ''{2}''.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.explanation=Atribut nelze interpretovat jako v\u00fdraz. V\u00fdsledek EL a o\u010dek\u00e1van\u00fd typ hodnoty atributu se mo\u017en\u00e1 nemus\u00ed shodovat. Pokud se nap\u0159\u00edklad o\u010dek\u00e1v\u00e1 typ atributu \u0158et\u011bzec, v\u00fdsledek EL mus\u00ed b\u00fdt typu \u0158et\u011bzec.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.useraction=Ujist\u011bte se, \u017ee anotace obsahuje platnou konfigura\u010dn\u00ed hodnotu. Ujist\u011bte se, \u017ee v\u00fdrazy EL jsou platn\u00e9, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean ve v\u00fdrazu lze interpretovat a \u017ee typ v\u00fdsledku odpov\u00edd\u00e1 atributu.
+
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG=CWWKS2502W: V\u00fdraz EL (Expression Language) pro atribut {0} anotace metadat poskytovatele OpenID nelze interpretovat na platnou hodnotu. Poskytnut\u00e1 hodnota byla ''{1}''. Ujist\u011bte se, \u017ee v\u00fdraz EL a v\u00fdsledek jsou platn\u00e9 a ujist\u011bte se, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9. Pou\u017eije se v\u00fdchoz\u00ed hodnota atributu ''{2}''.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.explanation=Atribut nelze interpretovat jako v\u00fdraz. V\u00fdsledek EL a o\u010dek\u00e1van\u00fd typ hodnoty atributu se mo\u017en\u00e1 nemus\u00ed shodovat. Pokud se nap\u0159\u00edklad o\u010dek\u00e1v\u00e1 typ atributu \u0158et\u011bzec, v\u00fdsledek EL mus\u00ed b\u00fdt typu \u0158et\u011bzec.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.useraction=Ujist\u011bte se, \u017ee anotace obsahuje platnou konfigura\u010dn\u00ed hodnotu. Ujist\u011bte se, \u017ee v\u00fdrazy EL jsou platn\u00e9, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean ve v\u00fdrazu lze interpretovat a \u017ee typ v\u00fdsledku odpov\u00edd\u00e1 atributu.

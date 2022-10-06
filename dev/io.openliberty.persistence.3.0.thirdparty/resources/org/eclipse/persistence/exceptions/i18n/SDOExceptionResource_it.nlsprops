@@ -135,7 +135,7 @@
 
 45207=Si \u00e8 verificato un errore nel tentativo di risolvere un schema utilizzando lo SchemaResolver fornito.
 
-45208=Impossibile associare la propriet\u00e0 {0} dal tipo {1}. I package javax.activation e javax.mail sono richiesti per associare le propriet\u00e0 del tipo DataHandler. Verificare che entrambi siano disponibili nel percorso di classe.
+45208=Impossibile associare la propriet\u00e0 {0} dal tipo {1}. I package jakarta.activation e jakarta.mail devono mappare le propriet\u00e0 di tipo DataHandler. Verificare che entrambi siano disponibili nel percorso di classe.
 
 45209=\u00c8 stato effettuato un tentativo di reimpostare l''istanza ApplicationResolver su SDOHelperContext.  \u00c8 consentita una sola impostazione.
 

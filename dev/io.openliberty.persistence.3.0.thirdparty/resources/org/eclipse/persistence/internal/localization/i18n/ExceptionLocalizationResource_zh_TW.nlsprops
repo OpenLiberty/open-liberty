@@ -119,9 +119,9 @@ ejb30-wrong-query-hint-value=\u67e5\u8a62 {0}\uff0c\u67e5\u8a62\u63d0\u793a {1} 
 
 ejb30-wrong-type-for-query-hint=\u5c0d\u65bc\u9019\u7a2e\u985e\u578b\u7684\u67e5\u8a62\u4f86\u8aaa\uff0c\u67e5\u8a62 {0}\uff0c\u67e5\u8a62\u63d0\u793a {1} \u7121\u6548\u3002
 
-entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager \u5167\u5bb9\u767c\u751f\u885d\u7a81\uff1ajavax.persistence.driver \u53ca/\u6216 javax.persistence.url \u9700\u8981 DefaultConnector\uff0c\u4f46\u662f\u6301\u7e8c\u6027\u55ae\u5143\u537b\u4f7f\u7528\u5916\u90e8\u4ea4\u6613\u63a7\u5236\u5668\uff0c\u56e0\u6b64\u9700\u8981 JNDIConnector\u3002
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager \u5167\u5bb9\u885d\u7a81\uff1ajakarta.persistence.driver \u53ca/\u6216 jakarta.persistence.url \u9700\u8981 DefaultConnector\uff0c\u4f46\u6301\u7e8c\u6027\u55ae\u5143\u4f7f\u7528\u5916\u90e8\u4ea4\u6613\u63a7\u5236\u5668\uff0c\u56e0\u6b64\u9700\u8981 JNDIConnector\u3002
 
-entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager \u5167\u5bb9\u767c\u751f\u885d\u7a81\uff1ajavax.persistence.driver \u53ca/\u6216 javax.persistence.url \u9700\u8981 DefaultConnector\uff0c\u4f46\u662f javax.persistence.jtaDataSource \u53ca/\u6216 javax.persistence.nonjtaDataSource \u9700\u8981 JNDIConnector\u3002
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager \u5167\u5bb9\u885d\u7a81\uff1ajakarta.persistence.driver \u53ca/\u6216 jakarta.persistence.url \u9700\u8981 DefaultConnector\uff0c\u4f46 jakarta.persistence.jtaDataSource \u53ca/\u6216 jakarta.persistence.nonjtaDataSource \u9700\u8981 JNDIConnector\u3002
 
 entity_no_longer_exists_in_db=\u5be6\u9ad4\u5df2\u4e0d\u5b58\u5728\u65bc\u8cc7\u6599\u5eab\uff1a{0}\u3002
 
@@ -203,9 +203,9 @@ jmx_enabled_platform_mbean_runtime_exception=\u5c0d\u986f\u73fe EclipseLink \u96
 
 join_trans_called_on_entity_trans=\u5df2\u5c0d\u7121\u6cd5\u767b\u9304\u4f86\u9032\u884c JTA \u4ea4\u6613\u7684\u8cc7\u6e90\u672c\u7aef EntityManager\uff0c\u547c\u53eb joinTransaction\u3002
 
-jpa21-ddl-create-script-target-not-specified=\u7576\u7522\u751f DDL \u5230 Script \u6642\uff0c\u5fc5\u9808\u4f7f\u7528 [javax.persistence.schema-generation.scripts.create-target] \u5167\u5bb9\u4f86\u6307\u5b9a\u4e00\u500b\u5efa\u7acb Script \u76ee\u6a19\u3002
+jpa21-ddl-create-script-target-not-specified=\u7522\u751f DDL \u81f3 Script \u6642\uff0c\u5fc5\u9808\u4f7f\u7528 [jakarta.persistence.schema-generation.scripts.create-target] \u5167\u5bb9\u4f86\u6307\u5b9a\u5efa\u7acb Script \u76ee\u6a19\u3002
 
-jpa21-ddl-drop-script-target-not-specified=\u7576\u7522\u751f DDL \u5230 Script \u6642\uff0c\u5fc5\u9808\u4f7f\u7528 [javax.persistence.schema-generation.scripts.drop-target] \u5167\u5bb9\u4f86\u6307\u5b9a\u4e00\u500b\u6368\u68c4 Script \u76ee\u6a19\u3002
+jpa21-ddl-drop-script-target-not-specified=\u7522\u751f DDL \u81f3 Script \u6642\uff0c\u5fc5\u9808\u4f7f\u7528 [jakarta.persistence.schema-generation.scripts.drop-target] \u5167\u5bb9\u6307\u5b9a\u6368\u68c4 Script \u76ee\u6a19\u3002
 
 jpa21-ddl-invalid-source-script-type=\u6240\u63d0\u4f9b\u7684\u4f86\u6e90 Script {0} \u662f\u7121\u6548\u7684\u985e\u578b {0}\u3002\u6709\u6548\u7684\u4f86\u6e90 Script \u985e\u578b\u662f java.io.Reader\uff0c\u6216\u662f\u4e00\u500b\u6307\u5b9a\u6a94\u6848 URL \u7684\u5b57\u4e32\u3002
 
@@ -265,7 +265,7 @@ metamodel_class_null_type_instance_for_null_key=\u5728 meta \u6a21\u578b\u4e2d\u
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=\u53ef\u8b58\u5225\u985e\u578b [{0}] \u7684\u9810\u671f\u55ae\u4e00 @Id \u5c6c\u6027\u662f\u975e\u9810\u671f @IdClass \u7684\u4e00\u90e8\u5206\u3002
 
-metamodel_identifiable_id_attribute_type_incorrect=\u5728\u53ef\u8b58\u5225\u985e\u578b [{1}] \u4e0a\u7684\u73fe\u6709 ID \u5c6c\u6027 [{0}] \u4e2d\uff0c\u9810\u671f\u7684 ID \u5c6c\u6027\u985e\u578b\u662f [{2}]\uff0c\u4f46\u537b\u767c\u73fe\u5c6c\u6027\u985e\u578b [{3}]\u3002
+metamodel_identifiable_id_attribute_type_incorrect=\u5728\u53ef\u8b58\u5225\u985e\u578b [{1}] \u4e0a\u7684\u73fe\u6709 ID \u5c6c\u6027 [{0}] \u4e2d\uff0c\u9810\u671f ID \u5c6c\u6027\u985e\u578b [{2}] \uff0c\u4f46\u627e\u5230\u5c6c\u6027\u985e\u578b [{3}]\u3002
 
 metamodel_identifiable_no_id_attribute_present=\u53ef\u8b58\u5225\u985e\u578b [{0}] \u4e0a\u4e0d\u5b58\u5728\u4efb\u4f55 @Id \u5c6c\u6027\u3002
 

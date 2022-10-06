@@ -79,3 +79,7 @@ CWLJC0012_CLOSE_CACHE_ERR.useraction=Ha ez fut\u00e1s k\u00f6zben t\u00f6bbsz\u0
 CWLJC0013_CLOSE_CACHEMGR_ERR=CWLJC0013W: A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt, amikor a kiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lta bez\u00e1rni a(z) {0} JCache CacheManager fel\u00fcletet: {1}.
 CWLJC0013_CLOSE_CACHEMGR_ERR.explanation=A jelzett hiba miatt nem siker\u00fclt bez\u00e1rni a JCache CacheManager fel\u00fcletet.
 CWLJC0013_CLOSE_CACHEMGR_ERR.useraction=Ha ez fut\u00e1s k\u00f6zben t\u00f6bbsz\u00f6r el\u0151fordul, akkor az sziv\u00e1rg\u00f3 gyors\u00edt\u00f3t\u00e1r er\u0151forr\u00e1sokat okozhat.
+
+CWLJC0014_CLOSE_CACHINGPRVDR_ERR=CWLJC0014W: A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt, amikor a kiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lta bez\u00e1rni a k\u00f6vetkez\u0151t: {0} JCache CachingProvider:{1}.
+CWLJC0014_CLOSE_CACHINGPRVDR_ERR.explanation=A JCache CachingProvider bez\u00e1r\u00e1sa a megadott hiba miatt meghi\u00fasult.
+CWLJC0014_CLOSE_CACHINGPRVDR_ERR.useraction=Ha ez fut\u00e1s k\u00f6zben t\u00f6bbsz\u00f6r el\u0151fordul, akkor az sziv\u00e1rg\u00f3 gyors\u00edt\u00f3t\u00e1r er\u0151forr\u00e1sokat okozhat.

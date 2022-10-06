@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.3.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity30Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2500-2519
+
+#Note to translator, do not translate EL or OpenID
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG=CWWKS2500W: Wyra\u017cenie j\u0119zyka wyra\u017ce\u0144 (EL) dla atrybutu {0} adnotacji definicji mechanizmu uwierzytelniania OpenID nie mo\u017ce zosta\u0107 przet\u0142umaczone na poprawn\u0105 warto\u015b\u0107. Podana warto\u015b\u0107: ''{1}''. Upewnij si\u0119, \u017ce wyra\u017cenie EL i wynik s\u0105 poprawne. Ponadto upewnij si\u0119, \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu. U\u017cyta zostanie domy\u015blna warto\u015b\u0107 atrybutu ''{2}''.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.explanation=Atrybut nie mo\u017ce zosta\u0107 rozstrzygni\u0119ty jako wyra\u017cenie. Wynik w j\u0119zyku EL i oczekiwany typ warto\u015bci atrybutu mog\u0105 by\u0107 niezgodne. Na przyk\u0142ad, je\u015bli oczekiwanym typem atrybutu jest String, w\u00f3wczas wynikiem EL musi by\u0107 String.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.useraction=Upewnij si\u0119, \u017ce adnotacja zawiera poprawn\u0105 warto\u015b\u0107 konfiguracyjn\u0105. Upewnij si\u0119, \u017ce wyra\u017cenia EL s\u0105 poprawne, \u017ce wszystkie przywo\u0142ywane w wyra\u017ceniu komponenty bean s\u0105 rozwi\u0105zywalne oraz \u017ce typ wyniku odpowiada atrybutowi.
+
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG=CWWKS2501W: Wyra\u017cenie j\u0119zyka wyra\u017ce\u0144 (EL) dla atrybutu {0} adnotacji definicji roszcze\u0144 nie mo\u017ce zosta\u0107 przet\u0142umaczone na poprawn\u0105 warto\u015b\u0107. Podana warto\u015b\u0107: ''{1}''. Upewnij si\u0119, \u017ce wyra\u017cenie EL i wynik s\u0105 poprawne. Ponadto upewnij si\u0119, \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu. U\u017cyta zostanie domy\u015blna warto\u015b\u0107 atrybutu ''{2}''.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.explanation=Atrybut nie mo\u017ce zosta\u0107 rozstrzygni\u0119ty jako wyra\u017cenie. Wynik w j\u0119zyku EL i oczekiwany typ warto\u015bci atrybutu mog\u0105 by\u0107 niezgodne. Na przyk\u0142ad, je\u015bli oczekiwanym typem atrybutu jest String, w\u00f3wczas wynikiem EL musi by\u0107 String.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.useraction=Upewnij si\u0119, \u017ce adnotacja zawiera poprawn\u0105 warto\u015b\u0107 konfiguracyjn\u0105. Upewnij si\u0119, \u017ce wyra\u017cenia EL s\u0105 poprawne, \u017ce wszystkie przywo\u0142ywane w wyra\u017ceniu komponenty bean s\u0105 rozwi\u0105zywalne oraz \u017ce typ wyniku odpowiada atrybutowi.
+
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG=CWWKS2502W: Wyra\u017cenie j\u0119zyka wyra\u017ce\u0144 (EL) dla atrybutu {0} adnotacji definicji wylogowania nie mo\u017ce zosta\u0107 przet\u0142umaczone na poprawn\u0105 warto\u015b\u0107. Podana warto\u015b\u0107: ''{1}''. Upewnij si\u0119, \u017ce wyra\u017cenie EL i wynik s\u0105 poprawne. Ponadto upewnij si\u0119, \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu. U\u017cyta zostanie domy\u015blna warto\u015b\u0107 atrybutu ''{2}''.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.explanation=Atrybut nie mo\u017ce zosta\u0107 rozstrzygni\u0119ty jako wyra\u017cenie. Wynik w j\u0119zyku EL i oczekiwany typ warto\u015bci atrybutu mog\u0105 by\u0107 niezgodne. Na przyk\u0142ad, je\u015bli oczekiwanym typem atrybutu jest String, w\u00f3wczas wynikiem EL musi by\u0107 String.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.useraction=Upewnij si\u0119, \u017ce adnotacja zawiera poprawn\u0105 warto\u015b\u0107 konfiguracyjn\u0105. Upewnij si\u0119, \u017ce wyra\u017cenia EL s\u0105 poprawne, \u017ce wszystkie przywo\u0142ywane w wyra\u017ceniu komponenty bean s\u0105 rozwi\u0105zywalne oraz \u017ce typ wyniku odpowiada atrybutowi.
+
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG=CWWKS2502W: Wyra\u017cenie j\u0119zyka wyra\u017ce\u0144 (EL) dla atrybutu {0} adnotacji metadanych dostawcy OpenID nie mo\u017ce zosta\u0107 przet\u0142umaczone na poprawn\u0105 warto\u015b\u0107. Podana warto\u015b\u0107: ''{1}''. Upewnij si\u0119, \u017ce wyra\u017cenie EL i wynik s\u0105 poprawne. Ponadto upewnij si\u0119, \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu. U\u017cyta zostanie domy\u015blna warto\u015b\u0107 atrybutu ''{2}''.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.explanation=Atrybut nie mo\u017ce zosta\u0107 rozstrzygni\u0119ty jako wyra\u017cenie. Wynik w j\u0119zyku EL i oczekiwany typ warto\u015bci atrybutu mog\u0105 by\u0107 niezgodne. Na przyk\u0142ad, je\u015bli oczekiwanym typem atrybutu jest String, w\u00f3wczas wynikiem EL musi by\u0107 String.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.useraction=Upewnij si\u0119, \u017ce adnotacja zawiera poprawn\u0105 warto\u015b\u0107 konfiguracyjn\u0105. Upewnij si\u0119, \u017ce wyra\u017cenia EL s\u0105 poprawne, \u017ce wszystkie przywo\u0142ywane w wyra\u017ceniu komponenty bean s\u0105 rozwi\u0105zywalne oraz \u017ce typ wyniku odpowiada atrybutowi.

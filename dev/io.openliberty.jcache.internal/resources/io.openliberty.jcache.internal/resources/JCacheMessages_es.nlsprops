@@ -79,3 +79,7 @@ CWLJC0012_CLOSE_CACHE_ERR.useraction=Si esto se produce repetidamente en tiempo 
 CWLJC0013_CLOSE_CACHEMGR_ERR=CWLJC0013W: Se ha producido el siguiente error cuando el servidor intentaba cerrar el CacheManager {0} de JCache: {1}.
 CWLJC0013_CLOSE_CACHEMGR_ERR.explanation=No se ha podido cerrar el CacheManager de JCache por el error especificado.
 CWLJC0013_CLOSE_CACHEMGR_ERR.useraction=Si esto se produce repetidamente en tiempo de ejecuci\u00f3n, puede provocar fugas de recursos de cach\u00e9.
+
+CWLJC0014_CLOSE_CACHINGPRVDR_ERR=CWLJC0014W: Se ha producido el siguiente error cuando el servidor intentaba cerrar {0} JCache CachingProvider: {1}.
+CWLJC0014_CLOSE_CACHINGPRVDR_ERR.explanation=No se ha podido cerrar JCache CachingProvider debido al error especificado.
+CWLJC0014_CLOSE_CACHINGPRVDR_ERR.useraction=Si esto se produce repetidamente en tiempo de ejecuci\u00f3n, puede provocar fugas de recursos de cach\u00e9.

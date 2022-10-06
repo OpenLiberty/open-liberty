@@ -63,3 +63,5 @@
 
 22118=A e\u015fuat crearea conexiunii JGroups folosind fi\u015fierul config: {0}
 
+22119=Eroare la ini\u021bializarea {0}, ad\u0103uga\u021bi org.eclipse.persistence.corba.jar la classpath.
+

@@ -9,8 +9,8 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
-#COMPONENTPREFIX JSPG
-#COMPONENTNAMEFOR JSPG jsp
+#COMPONENTPREFIX JSPG CWWJS
+#COMPONENTNAMEFOR JSPG CWWJS jsp
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
@@ -310,8 +310,8 @@ jsp.error.usebean.class.must.be.assignable.to.type.explanation=
 jsp.error.usebean.class.must.be.assignable.to.type.useraction=
 
 jsp.error.usebean.cannot.locate.class.to.validate.assignable=JSPG0074E: Nelze naj\u00edt t\u0159\u00eddu pro ur\u010den\u00ed, zda lze t\u0159\u00eddu useBean "{0}" p\u0159i\u0159adit typu "{1}" pro prvek jsp {2}.
-jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
-jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
+#jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
+#jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
 
 jsp.error.multiple.attribute.definitions=JSPG0075E: N\u011bkolik v\u00fdskyt\u016f atributu {0} nen\u00ed povoleno pro prvek jsp {1}.
 jsp.error.multiple.attribute.definitions.explanation=
@@ -922,25 +922,25 @@ jsp.error.failed.load.tlv.class=JSPG0236E: Kontejneru JSP se nepoda\u0159ilo na\
 jsp.error.failed.load.tlv.class.explanation=Kontejneru JSP se nezda\u0159ilo na\u010d\u00edst t\u0159\u00eddu TagLibraryValidator, kter\u00e1 je ur\u010den\u00e1 v deskriptoru knihovny zna\u010dek (TLD).
 jsp.error.failed.load.tlv.class.useraction=Ov\u011b\u0159te, zda existuje t\u0159\u00edda TagLibraryValidator a zda k n\u00ed m\u016f\u017ee p\u0159istupovat tento webov\u00fd modul.
 
-jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: Nelze naj\u00edt direktivu atributu s atributem n\u00e1zvu (name) s hodnotou \"{0}\", co\u017e je hodnota tohoto atributu name-from-attribute.
+jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: Nelze naj\u00edt direktivu atributu s atributem n\u00e1zvu (name) s hodnotou "{0}", co\u017e je hodnota tohoto atributu name-from-attribute.
 jsp.error.tagfile.nameFrom.noAttribute.explanation=Vysv\u011btlen\u00ed
 jsp.error.tagfile.nameFrom.noAttribute.useraction=Akce u\u017eivatele
 
-jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: Direktiva atributu (kter\u00e1 je deklarov\u00e1na na \u0159\u00e1dku {0} a jej\u00ed\u017e atribut n\u00e1zvu (name) je \"{1}\", co\u017e je hodnota atributu name-from-attribute) mus\u00ed b\u00fdt typu java.lang.String, je povinn\u00e1 (\"required\") a nen\u00ed hodnotou typu \"rtexprvalue\".
+jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: Direktiva atributu (kter\u00e1 je deklarov\u00e1na na \u0159\u00e1dku {0} a jej\u00ed\u017e atribut n\u00e1zvu (name) je "{1}", co\u017e je hodnota atributu name-from-attribute) mus\u00ed b\u00fdt typu java.lang.String, je povinn\u00e1 ("required") a nen\u00ed hodnotou typu "rtexprvalue".
 jsp.error.tagfile.nameFrom.badAttribute.explanation=Vysv\u011btlen\u00ed
 jsp.error.tagfile.nameFrom.badAttribute.useraction=Akce u\u017eivatele
 
-jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output>: V\u00edcen\u00e1sobn\u00e9 v\u00fdskyty atributu \"{0}\" s rozd\u00edln\u00fdmi hodnotami (star\u00e1: {1}, nov\u00e1: {2}) jsou nep\u0159\u00edpustn\u00e9.
+jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output>: V\u00edcen\u00e1sobn\u00e9 v\u00fdskyty atributu "{0}" s rozd\u00edln\u00fdmi hodnotami (star\u00e1: {1}, nov\u00e1: {2}) jsou nep\u0159\u00edpustn\u00e9.
 jsp.error.jspoutput.conflict.explanation=<jsp:output> obsahuje v\u00edcen\u00e1sobn\u00e9 v\u00fdskyty atributu s r\u016fzn\u00fdmi hodnotami.
 jsp.error.jspoutput.conflict.useraction=Zajist\u011bte, aby v\u00edcen\u00e1sobn\u00e9 v\u00fdskyty atributu obsahovaly tut\u00e9\u017e hodnotu.
 
 # defect 396002
-jsp.error.prefix.redefined=JSPG0240E: Do\u0161lo k pokusu p\u0159edefinovat p\u0159edponu \"{0}\" na hodnotu \"{1}\", p\u0159i\u010dem\u017e v aktu\u00e1ln\u00edm oboru ji\u017e byla definov\u00e1na jako \"{2}\".
+jsp.error.prefix.redefined=JSPG0240E: Do\u0161lo k pokusu p\u0159edefinovat p\u0159edponu "{0}" na hodnotu "{1}", p\u0159i\u010dem\u017e v aktu\u00e1ln\u00edm oboru ji\u017e byla definov\u00e1na jako "{2}".
 jsp.error.prefix.redefined.explanation= P\u0159edpona knihovny zna\u010dek ji\u017e byla definov\u00e1na s jin\u00fdm identifik\u00e1torem URI.
 jsp.error.prefix.redefined.useraction= Zajist\u011bte, aby p\u0159edpona byla definov\u00e1na pomoc\u00ed jedin\u00e9ho identifik\u00e1toru URI.
 
 # defect 396002
-jsp.error.prefix.use_before_dcl=JSPG0241E: P\u0159edpona \"{0}\" ur\u010den\u00e1 v t\u00e9to direktiv\u011b zna\u010dky byla d\u0159\u00edve pou\u017eita akc\u00ed v souboru {1}.
+jsp.error.prefix.use_before_dcl=JSPG0241E: P\u0159edpona "{0}" ur\u010den\u00e1 v t\u00e9to direktiv\u011b zna\u010dky byla d\u0159\u00edve pou\u017eita akc\u00ed v souboru {1}.
 jsp.error.prefix.use_before_dcl.explanation= P\u0159edpona knihovny zna\u010dek byla pou\u017eita p\u0159ed direktivou zna\u010dky, kter\u00e1 p\u0159edponu definuje.
 jsp.error.prefix.use_before_dcl.useraction= P\u0159esu\u0148te direktivu zna\u010dky nad v\u0161echny akce, kter\u00e9 p\u0159edponu pou\u017e\u00edvaj\u00ed.
 
@@ -955,7 +955,7 @@ jsp.error.page.invalid.deferredsyntaxallowedasliteral.explanation=
 jsp.error.page.invalid.deferredsyntaxallowedasliteral.useraction=
 
 # jsp2.1ELwork
-jsp.error.el.template.deferred=JSPG0244E: V textu \u0161ablony nen\u00ed povolena hodnota \"{0}\"
+jsp.error.el.template.deferred=JSPG0244E: V textu \u0161ablony nen\u00ed povolena hodnota "{0}"
 jsp.error.el.template.deferred.explanation=
 jsp.error.el.template.deferred.useraction=
 
@@ -980,7 +980,7 @@ jsp.error.tag.conflict.trimdirectivewhitespaces.explanation=
 jsp.error.tag.conflict.trimdirectivewhitespaces.useraction=
 
 # jsp2.1ELwork
-jsp.error.tag.conflict.attr=JSPG0249E: Direktiva Tag: V\u00edcen\u00e1sobn\u00fd v\u00fdskyt atributu \"{0}\" s rozd\u00edln\u00fdmi hodnotami (star\u00e1: {1}, nov\u00e1: {2}) nen\u00ed povolen.
+jsp.error.tag.conflict.attr=JSPG0249E: Direktiva Tag: V\u00edcen\u00e1sobn\u00fd v\u00fdskyt atributu "{0}" s rozd\u00edln\u00fdmi hodnotami (star\u00e1: {1}, nov\u00e1: {2}) nen\u00ed povolen.
 jsp.error.tag.conflict.attr.explanation=
 jsp.error.tag.conflict.attr.useraction=
 
@@ -1030,7 +1030,7 @@ jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.explanation=
 jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.versionNotSupported=JSPG0259E: Verze XML \"{0}\" nen\u00ed podporov\u00e1na; jedin\u00e1 podporovan\u00e1 verze je XML 1.0.
+jsp.error.xml.versionNotSupported=JSPG0259E: Verze XML "{0}" nen\u00ed podporov\u00e1na; jedin\u00e1 podporovan\u00e1 verze je XML 1.0.
 jsp.error.xml.versionNotSupported.explanation=
 jsp.error.xml.versionNotSupported.useraction=
 
@@ -1055,22 +1055,22 @@ jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.explanation=
 jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: V textov\u00e9 deklaraci mus\u00ed b\u00fdt atribut \"{0}\" n\u00e1sledov\u00e1n znakem '' = ''.
+jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: V textov\u00e9 deklaraci mus\u00ed b\u00fdt atribut "{0}" n\u00e1sledov\u00e1n znakem '' = ''.
 jsp.error.xml.eqRequiredInTextDecl.explanation=
 jsp.error.xml.eqRequiredInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: V deklaraci XML mus\u00ed b\u00fdt atribut \"{0}\" n\u00e1sledov\u00e1n znakem '' = ''.
+jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: V deklaraci XML mus\u00ed b\u00fdt atribut "{0}" n\u00e1sledov\u00e1n znakem '' = ''.
 jsp.error.xml.eqRequiredInXMLDecl.explanation=
 jsp.error.xml.eqRequiredInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: Hodnotou n\u00e1sleduj\u00edc\u00ed atribut \"{0}\" v textov\u00e9 deklaraci mus\u00ed b\u00fdt uzav\u0159en\u00fd \u0159et\u011bzec.
+jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: Hodnotou n\u00e1sleduj\u00edc\u00ed atribut "{0}" v textov\u00e9 deklaraci mus\u00ed b\u00fdt uzav\u0159en\u00fd \u0159et\u011bzec.
 jsp.error.xml.quoteRequiredInTextDecl.explanation=
 jsp.error.xml.quoteRequiredInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: Hodnotou n\u00e1sleduj\u00edc\u00ed atribut \"{0}\" v deklaraci XML mus\u00ed b\u00fdt uzav\u0159en\u00fd \u0159et\u011bzec.
+jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: Hodnotou n\u00e1sleduj\u00edc\u00ed atribut "{0}" v deklaraci XML mus\u00ed b\u00fdt uzav\u0159en\u00fd \u0159et\u011bzec.
 jsp.error.xml.quoteRequiredInXMLDecl.explanation=
 jsp.error.xml.quoteRequiredInXMLDecl.useraction=
 
@@ -1085,22 +1085,22 @@ jsp.error.xml.invalidCharInXMLDecl.explanation=
 jsp.error.xml.invalidCharInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: V textov\u00e9 deklaraci chyb\u00ed uzav\u00edrac\u00ed uvozovky hodnoty n\u00e1sleduj\u00edc\u00ed atribut \"{0}\".
+jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: V textov\u00e9 deklaraci chyb\u00ed uzav\u00edrac\u00ed uvozovky hodnoty n\u00e1sleduj\u00edc\u00ed atribut "{0}".
 jsp.error.xml.closeQuoteMissingInTextDecl.explanation=
 jsp.error.xml.closeQuoteMissingInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: V deklaraci XML chyb\u00ed uzav\u00edrac\u00ed uvozovky hodnoty n\u00e1sleduj\u00edc\u00ed atribut \"{0}\".
+jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: V deklaraci XML chyb\u00ed uzav\u00edrac\u00ed uvozovky hodnoty n\u00e1sleduj\u00edc\u00ed atribut "{0}".
 jsp.error.xml.closeQuoteMissingInXMLDecl.explanation=
 jsp.error.xml.closeQuoteMissingInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: Dan\u00e9 po\u0159ad\u00ed bajt\u016f pro k\u00f3dov\u00e1n\u00ed \"{0}\" nen\u00ed podporov\u00e1no.
+jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: Dan\u00e9 po\u0159ad\u00ed bajt\u016f pro k\u00f3dov\u00e1n\u00ed "{0}" nen\u00ed podporov\u00e1no.
 jsp.error.xml.encodingByteOrderUnsupported.explanation=
 jsp.error.xml.encodingByteOrderUnsupported.useraction=
 
 # jsp2.1work
-jsp.error.xml.encodingDeclInvalid=JSPG0273E: Neplatn\u00fd n\u00e1zev k\u00f3dov\u00e1n\u00ed \"{0}\".
+jsp.error.xml.encodingDeclInvalid=JSPG0273E: Neplatn\u00fd n\u00e1zev k\u00f3dov\u00e1n\u00ed "{0}".
 jsp.error.xml.encodingDeclInvalid.explanation=
 jsp.error.xml.encodingDeclInvalid.useraction=
 
@@ -1110,7 +1110,7 @@ jsp.error.xml.spaceRequiredBeforeStandalone.explanation=
 jsp.error.xml.spaceRequiredBeforeStandalone.useraction=
 
 # jsp2.1work
-jsp.error.xml.sdDeclInvalid=JSPG0275E: Deklarace samostatn\u00e9ho dokumentu mus\u00ed m\u00edt hodnotu \"ano\" nebo \"ne\", nikoli hodnotu \"{0}\".
+jsp.error.xml.sdDeclInvalid=JSPG0275E: Deklarace samostatn\u00e9ho dokumentu mus\u00ed m\u00edt hodnotu "ano" nebo "ne", nikoli hodnotu "{0}".
 jsp.error.xml.sdDeclInvalid.explanation=
 jsp.error.xml.sdDeclInvalid.useraction=
 
@@ -1125,7 +1125,7 @@ jsp.error.xml.morePseudoAttributes.explanation=
 jsp.error.xml.morePseudoAttributes.useraction=
 
 # jsp2.1work
-jsp.error.xml.xmlDeclUnterminated=JSPG0278E: Deklarace XML mus\u00ed kon\u010dit \u0159et\u011bzcem \"?>\".
+jsp.error.xml.xmlDeclUnterminated=JSPG0278E: Deklarace XML mus\u00ed kon\u010dit \u0159et\u011bzcem "?>".
 jsp.error.xml.xmlDeclUnterminated.explanation=
 jsp.error.xml.xmlDeclUnterminated.useraction=
 
@@ -1135,7 +1135,7 @@ jsp.error.xml.pseudoAttrNameExpected.explanation=
 jsp.error.xml.pseudoAttrNameExpected.useraction=
 
 # jsp2.1work
-jsp.error.xml.reservedPITarget=JSPG0280E: C\u00edl instrukce zpracov\u00e1n\u00ed odpov\u00eddaj\u00edc\u00ed \u0159et\u011bzci \"[xX][mM][lL]\" nen\u00ed povolen.
+jsp.error.xml.reservedPITarget=JSPG0280E: C\u00edl instrukce zpracov\u00e1n\u00ed odpov\u00eddaj\u00edc\u00ed \u0159et\u011bzci "[xX][mM][lL]" nen\u00ed povolen.
 jsp.error.xml.reservedPITarget.explanation=
 jsp.error.xml.reservedPITarget.useraction=
 
@@ -1155,12 +1155,12 @@ jsp.error.xml.invalidCharInContent.explanation=
 jsp.error.xml.invalidCharInContent.useraction=
 
 # jsp2.1work
-jsp.error.xml.operationNotSupported=JSPG0284E: Operace \"{0}\" nen\u00ed podporov\u00e1na \u010dtec\u00edm za\u0159\u00edzen\u00edm {1}.
+jsp.error.xml.operationNotSupported=JSPG0284E: Operace "{0}" nen\u00ed podporov\u00e1na \u010dtec\u00edm za\u0159\u00edzen\u00edm {1}.
 jsp.error.xml.operationNotSupported.explanation=
 jsp.error.xml.operationNotSupported.useraction=
 
 # jsp2.1work
-jsp.error.xml.invalidASCII=JSPG0285E: Bajt \"{0}\" nen\u00ed 7bitovou hodnotu k\u00f3dov\u00e1n\u00ed ASCII.
+jsp.error.xml.invalidASCII=JSPG0285E: Bajt "{0}" nen\u00ed 7bitovou hodnotu k\u00f3dov\u00e1n\u00ed ASCII.
 jsp.error.xml.invalidASCII.explanation=
 jsp.error.xml.invalidASCII.useraction=
 
@@ -1185,7 +1185,7 @@ jsp.error.prolog_config_encoding_mismatch.explanation=
 jsp.error.prolog_config_encoding_mismatch.useraction=
 
 # jsp2.1work
-jsp.error.invalid.tagdir=JSPG0290E: Adres\u00e1\u0159 soubor\u016f zna\u010dek {0} neza\u010d\u00edn\u00e1 \u0159et\u011bzcem \"/WEB-INF/tags\".
+jsp.error.invalid.tagdir=JSPG0290E: Adres\u00e1\u0159 soubor\u016f zna\u010dek {0} neza\u010d\u00edn\u00e1 \u0159et\u011bzcem "/WEB-INF/tags".
 jsp.error.invalid.tagdir.explanation=
 jsp.error.invalid.tagdir.useraction=
 
@@ -1247,9 +1247,9 @@ jsp.load.class.exception=JSPG0302W: Nezda\u0159ilo se na\u010d\u00edst n\u00e1sl
 jsp.load.class.exception.explanation=P\u0159i na\u010d\u00edt\u00e1n\u00ed t\u0159\u00eddy JSP do\u0161lo k probl\u00e9mu. Kontejner JSP se m\u00edsto toho pokus\u00ed na\u010d\u00edst soubor t\u0159\u00eddy s n\u00e1zvem bal\u00edku org.apache.jsp.
 jsp.load.class.exception.useraction=Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, restartujte aplikaci.
 
-jsp.jdksourcelevel.value =JSPG8502I: Hodnota atributu JSP jdkSourceLevel je \"{0}\".
-jsp.jdksourcelevel.value.explanation =
-jsp.jdksourcelevel.value.useraction =
+jsp.jdksourcelevel.value=JSPG8502I: Hodnota atributu JSP jdkSourceLevel je "{0}".
+jsp.jdksourcelevel.value.explanation=
+jsp.jdksourcelevel.value.useraction=
 
 jsp.parse.tld.exception=JSPG0303W: Syst\u00e9m nebyl schopen zanalyzovat n\u00e1sleduj\u00edc\u00ed deskriptor knihovny zna\u010dek: {0}. V\u00fdjimka pro chybu p\u0159i anal\u00fdze: {1}
 jsp.parse.tld.exception.explanation=Do\u0161lo k probl\u00e9mu p\u0159i anal\u00fdze souboru deskriptoru knihovny zna\u010dek. Tato chyba mohla b\u00fdt zp\u016fsobena chybn\u00fdm souborem XML.
@@ -1259,6 +1259,14 @@ system.java.compiler.not.found=JSPG0304W: Atribut JSP useJDKCompiler je nastaven
 system.java.compiler.not.found.explanation=Kontejneru JSP se nezda\u0159ilo naj\u00edt syst\u00e9mov\u00fd kompil\u00e1tor, co\u017e obvykle ozna\u010duje, \u017ee v cest\u011b ke t\u0159\u00edd\u011b nebyl nalezen soubor JAR sady Java SDK (tools.jar).
 system.java.compiler.not.found.useraction=Zkontrolujte, zda se soubor JAR sady Java SDK (tools.jar) nach\u00e1z\u00ed v cest\u011b ke t\u0159\u00edd\u011b, a ov\u011b\u0159te, zda sada Java SDK podporuje rozhran\u00ed API kompil\u00e1toru jazyka Java. Dal\u0161\u00ed informace viz po\u017eadavek specifikace Java 199.
 
-jsp.feature.not.loaded.correctly=CWWJS0001: Funkce JSP [Pages] se nena\u010detla s akceptovatelnou verz\u00ed.
+jsp.feature.not.loaded.correctly=CWWJS0001E: Funkce JSP [Pages] se nena\u010detla s p\u0159ijatelnou verz\u00ed.
 jsp.feature.not.loaded.correctly.explanation=Funkce JSP [Pages] se na\u010detla s verz\u00ed, kter\u00e1 odpov\u00edd\u00e1 specifikaci Java [Jakarta] EE dan\u00e9 funkce JSP [Pages]. Funkce byla na\u010dtena bez definovan\u00e9 verze.
-jsp.feature.not.loaded.correctly.useraction=Zkontrolujte soubor server.xml, zda v n\u011bm existuje funkce JSP [Pages]. M\u011bl by b\u00fdt zad\u00e1n pouze jeden.
+jsp.feature.not.loaded.correctly.useraction=Zkontrolujte soubor server.xml, zda v n\u011bm existuje v\u00edce funkc\u00ed JSP [Pages]. Soubor nesm\u00ed obsahovat v\u00edce ne\u017e jednu funkci Pages.
+
+jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Neplatn\u00e1 hodnota atributu errorOnELNotFound
+jsp.error.page.invalid.erroronelnotfound.explanation=
+jsp.error.page.invalid.erroronelnotfound.useraction=
+
+jsp.isthreadsafe.warning=CWWJS0003W: Specifikace Pages 3.1 d\u016frazn\u011b doporu\u010duje v\u00fdvoj\u00e1\u0159\u016fm Pages, aby nepou\u017e\u00edvali zam\u00edtnutou direktivu str\u00e1nky isThreadSafe.
+jsp.isthreadsafe.warning.explanation=SingleThreadModel byl odebr\u00e1n ze servletu 6.0. V produktu Pages 3.1 byla zam\u00edtnuta direktiva str\u00e1nky isThreadSafe a jej\u00ed odebr\u00e1n\u00ed je napl\u00e1nov\u00e1no v budouc\u00ed aktualizaci produktu Pages.
+jsp.isthreadsafe.warning.useraction=Odeberte direktivu isThreadSafe ze v\u0161ech str\u00e1nek.
