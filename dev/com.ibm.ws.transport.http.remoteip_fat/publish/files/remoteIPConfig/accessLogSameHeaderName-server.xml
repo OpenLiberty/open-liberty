@@ -22,7 +22,7 @@
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}">
     		<remoteIp useRemoteIpInAccessLog="true"/>
-    		<accessLogging logFormat='%a, %h, %H "%{My-Request-Header}i" '/>
+    		<accessLogging logFormat='%a, %h, %H "%{My-Request-Header}i" "%{My-Response-Header}o" '/>
     </httpEndpoint>
     
     <application location="EndpointInformation.war" />

@@ -1984,10 +1984,13 @@ public class HttpXForwardedAndForwardedHeaderTests {
 
         // In the request, multiple same named headers are allowed and will be added to a list
         String stringToSearchForRequestHeader = "reqHeader1, reqHeader2";
+        String stringToSearchForResponseHeader = "resHeader1, resHeader2";
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchForRequestHeader,
                       server.waitForStringInLog(stringToSearchForRequestHeader, SERVER_LOG_SEARCH_TIMEOUT, accessLog));
+        assertNotNull("The following string was not found in the access log: " + stringToSearchForResponseHeader,
+                      server.waitForStringInLog(stringToSearchForResponseHeader, SERVER_LOG_SEARCH_TIMEOUT, accessLog));
 
     }
 
