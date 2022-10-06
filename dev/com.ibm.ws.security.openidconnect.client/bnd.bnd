@@ -68,7 +68,13 @@ Service-Component: \
     optional:='sslSupport,authFilter,userResolver'; \
     multiple:='oidcClientConfig,authFilter,userResolver';\
     greedy:='authFilter'; \
-    properties:="service.vendor=IBM"
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.security.openidconnect.client.classProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="\
+      service.vendor=IBM,\
+      classes=com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl"
 
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \
