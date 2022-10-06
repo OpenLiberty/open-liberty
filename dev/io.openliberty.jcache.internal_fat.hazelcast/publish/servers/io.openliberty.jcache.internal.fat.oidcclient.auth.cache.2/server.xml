@@ -81,4 +81,9 @@
                discoveryEndpointUrl="FILL ME IN"
                signatureAlgorithm="RS256" />
 
+	<!-- 
+		Each server that shares the cache NEEDS to share the same SSO cookie name.
+	 -->
+	<webAppSecurity ssoCookieName="WAS_123456789" />
+	
 </server>
