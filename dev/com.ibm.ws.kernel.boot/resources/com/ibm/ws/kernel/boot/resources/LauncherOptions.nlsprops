@@ -251,3 +251,11 @@ option-desc.stop.force=\
 \teffect if server stop was already invoked. If you use the --force    \n\
 \toption, you might see unexpected exceptions in the messages.log file \n\
 \tthat occur after the server stop command was received by the server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.timeout=\
+\ \ \ \ --timeout
+option-desc.stop.timeout=\
+\tAmount of time to allow for the server to stop before giving up.     \n\
+\tSpecify a positive integer followed by a unit of time, which can be  \n\
+\tminutes (m), or seconds (s). For example, specify 5 minutes as 5m or \n\
+\t300s.

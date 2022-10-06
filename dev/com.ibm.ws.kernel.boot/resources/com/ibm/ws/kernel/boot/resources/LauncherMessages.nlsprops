@@ -128,6 +128,10 @@ error.kernelDefFile=CWWKE0023E: The specified kernel definition ({0}) does not e
 error.kernelDefFile.explanation=The specified kernel definition could not be found.
 error.kernelDefFile.useraction=Ensure that the kernel definition resource exists and can be read by the current user.
 
+error.badOptionValue=CWWKE0024E: The value ({0}) for the option ({1}) is not valid.
+error.badOptionValue.explanation=The specified value is not appropriate for the specified option.
+error.badOptionValue.useraction=Try using the command (server help) for a description of the options.  If the value is a number, ensure it is in the valid range.
+
 error.specifiedLocation=CWWKE0025E: The value of {0} must refer to a directory. The specified value \
  references an existing file resource. Value: {1}
 error.specifiedLocation.explanation=The supplied location refers to an existing file instead of a directory.
@@ -141,6 +145,11 @@ warning.singleServer=CWWKE0027W: Only one server may be specified on the command
   subsequent names will be ignored (server={0}, ignored={1}).
 warning.singleServer.explanation=You may specify only one server on the command line. The first server name has been processed; the remaining names have been ignored.
 warning.singleServer.useraction=No action is required. Specify only one server to avoid this warning.
+
+error.optionNotApplicableToAction=CWWKE0028E: The option ({0}) is not applicable for action ({1}).
+error.optionNotApplicableToAction.explanation=The specified option is not allowed for the specified action.
+# Translate the word action in the command.  Enclose in < >.  User is to substitute the appropriate action, like "start", "stop", etc...
+error.optionNotApplicableToAction.useraction=Try using the command (server <action> help) for valid options.
   
 error.serverAlreadyRunning=CWWKE0029E: An instance of server {0} is already running.
 error.serverAlreadyRunning.explanation=You are trying to start a server that is already running.
@@ -710,7 +719,7 @@ warning.earlyRelease=CWWKE0953W: This version of {0} is an unsupported early rel
 warning.earlyRelease.explanation=New features that are not fully tested are made available in early releases to elicit feedback before they are included in a supported release.
 warning.earlyRelease.useraction=Do not use an early release version on production systems, since early release versions are not supported.
 
-error.invalidPhaseName=CWWKE0954E: The "{0}" checkpoint phase specified is empty or unknown.
+error.invalidPhaseName=CWWKE0954E: The ({0}) checkpoint phase specified is empty or unknown.
 error.invalidPhaseName.explanation=An unknown phase was specified as the value of the checkpoint option.
 error.invalidPhaseName.useraction=Review the documentation to determine valid phase names. Reissue the command using a valid checkpoint phase.
 
