@@ -46,19 +46,19 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.Delete;
 import jakarta.data.Inheritance;
-import jakarta.data.Limit;
-import jakarta.data.OrderBy;
 import jakarta.data.Page;
-import jakarta.data.Pageable;
-import jakarta.data.Param;
-import jakarta.data.Query;
 import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
-import jakarta.data.Sort;
 import jakarta.data.Update;
 import jakarta.data.Where;
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Limit;
+import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Param;
+import jakarta.data.repository.Query;
+import jakarta.data.repository.Sort;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Status;
@@ -586,6 +586,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             int paramCount;
             Collector<Object, Object, Object> collector = null;
             Consumer<Object> consumer = null;
+            Limit limit = null;
             Pageable pagination = null;
             LinkedList<Sort> sorts = null;
 
@@ -598,6 +599,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     collector = (Collector<Object, Object, Object>) param;
                 else if (param instanceof Consumer)
                     consumer = (Consumer<Object>) param;
+                else if (param instanceof Limit)
+                    limit = (Limit) param;
                 else if (param instanceof Pageable)
                     pagination = (Pageable) param;
                 else if (param instanceof Sort)
@@ -647,9 +650,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             else if (pagination != null && Iterator.class.equals(returnType))
                 return new PaginatedIterator<E>(queryInfo, pagination, method, paramCount, args);
             else if (Page.class.equals(returnType))
-                return new PageImpl<E>(queryInfo, pagination, method, paramCount, args);
+                return new PageImpl<E>(queryInfo, pagination, method, paramCount, args); // TODO Limit with Page as return type
             else if (Publisher.class.equals(returnType))
-                return new PublisherImpl<E>(queryInfo, provider.executor, method, paramCount, args);
+                return new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, method, paramCount, args);
 
             boolean requiresTransaction;
             switch (queryInfo.type) {
@@ -710,16 +713,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             }
                         }
 
-                        if (pagination == null) {
-                            Limit limit = method.getAnnotation(Limit.class);
-                            if (limit != null)
-                                query.setMaxResults(limit.value());
-                        } else {
-                            // TODO possible overflow with both of these.
-                            long maxPageSize = pagination.getSize();
-                            query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
-                            query.setMaxResults((int) maxPageSize);
-                        }
+                        long maxResults = limit != null ? limit.maxResults() //
+                                        : pagination != null ? pagination.getSize() //
+                                                        : -1;
+                        long startAt = limit != null ? limit.startAt() - 1 //
+                                        : pagination != null ? (pagination.getPage() - 1) * maxResults //
+                                                        : 0;
+                        // TODO possible overflow with both of these.
+                        if (maxResults > 0)
+                            query.setMaxResults((int) maxResults);
+                        if (startAt > 0)
+                            query.setFirstResult((int) startAt);
 
                         List<?> results = query.getResultList();
                         Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)

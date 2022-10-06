@@ -47,12 +47,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
+import jakarta.data.DataException;
 import jakarta.data.Entities;
-import jakarta.data.MappingException;
 import jakarta.data.Page;
-import jakarta.data.Pageable;
-import jakarta.data.Sort;
 import jakarta.data.Template;
+import jakarta.data.repository.Limit;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Sort;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.NotSupportedException;
@@ -1261,7 +1262,15 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030009L, 10030007L, 10030008L, 10030006L),
-                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT))
+                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
+                                                                                                Limit.of(4))
+                                             .stream()
+                                             .map(r -> r.meetingID)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(10030007L, 10030008L, 10030006L),
+                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
+                                                                                                Limit.of(3, 2))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
@@ -1877,7 +1886,7 @@ public class DataTestServlet extends FATServlet {
         try {
             Product p1a = template.update(prod1a);
             fail("Able to update using old version " + p1a);
-        } catch (MappingException x) {
+        } catch (DataException x) {
             Throwable cause = x.getCause();
             if (cause == null || !"jakarta.persistence.OptimisticLockException".equals(cause.getClass().getName()))
                 throw x;

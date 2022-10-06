@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data;
+package jakarta.data.repository;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,11 +16,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Copied from jakarta.nosql.mapping.Query to investigate how well the
+ * Copied from jakarta.nosql.mapping.Param to investigate how well the
  * JNoSQL repository-related annotations work for relational database access.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Query {
-    String value(); // allow usage of JPQL here for relational, in addition to JNoSQL text query for NoSQL.
+@Target(ElementType.PARAMETER)
+public @interface Param {
+    String value();
 }

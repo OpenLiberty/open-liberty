@@ -10,9 +10,9 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import jakarta.data.Param;
-import jakarta.data.Query;
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Param;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**

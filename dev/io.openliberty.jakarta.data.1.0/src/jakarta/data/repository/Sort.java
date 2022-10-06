@@ -8,10 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data;
+package jakarta.data.repository;
 
 /**
- * Method signatures copied from jakarta.data.repository.Sort
+ * Method signatures copied from jakarta.data.repository.Sort from the Jakarta Data repo.
  */
 public class Sort {
     private final boolean asc;

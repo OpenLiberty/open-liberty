@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import jakarta.data.Pageable;
-import jakarta.data.Param;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Param;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 

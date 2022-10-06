@@ -8,10 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data;
+package jakarta.data.repository;
 
 /**
- * Copied from jakarta.data.repository.Direction.
+ * Copied from the jakarta.data.repository.Direction from the Jakarta Data repo.
  */
 public enum Direction {
     ASC, DESC

@@ -8,10 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data;
+package jakarta.data.repository;
 
 /**
- * Method signatures are copied from jakarta.data.repository.Pageable.
+ * Method signatures are copied from jakarta.data.repository.Pageable from the Jakarta Data repo.
  */
 public class Pageable {
     private final long pageNumber, pageSize;

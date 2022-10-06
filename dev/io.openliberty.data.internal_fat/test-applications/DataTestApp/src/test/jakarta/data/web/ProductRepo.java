@@ -13,13 +13,13 @@ package test.jakarta.data.web;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.data.OrderBy;
-import jakarta.data.Param;
-import jakarta.data.Query;
 import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
 import jakarta.data.Update;
 import jakarta.data.Where;
+import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Param;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**
