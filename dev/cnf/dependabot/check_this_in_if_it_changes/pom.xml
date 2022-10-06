@@ -2514,7 +2514,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>
       <artifactId>microprofile-openapi-api</artifactId>
-      <version>3.1</version>
+      <version>3.1-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.opentracing</groupId>
