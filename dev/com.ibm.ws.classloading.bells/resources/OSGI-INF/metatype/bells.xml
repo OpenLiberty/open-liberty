@@ -9,7 +9,14 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" localization="OSGI-INF/l10n/bells" xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/bells">
+
+  <Designate factoryPid="com.ibm.ws.classloading.bell">
+    <Object ocdref="com.ibm.ws.classloading.bell"/>
+  </Designate>
 
   <OCD name="%bell" description="%bell.desc"
        id="com.ibm.ws.classloading.bell"
@@ -33,20 +40,17 @@
         type="String"
         ibm:type="pid"
         ibm:reference="com.ibm.ws.classloading.bell.properties"
-        ibm:flat="true" />
-
-   </OCD>
-
-  <Designate factoryPid="com.ibm.ws.classloading.bell">
-    <Object ocdref="com.ibm.ws.classloading.bell"/>
-  </Designate>
-
-  <OCD id="com.ibm.ws.classloading.bell.properties" name="%properties.name" description="%properties.desc" ibm:alias="bellProperties" >
-    <AD id="config.parentPID" type="String" required="false" name="internal" description="internal use only"/>
+        ibm:flat="true"
+    />
   </OCD>
 
-  <Designate pid="com.ibm.ws.classloading.bell.properties">
+  <Designate factoryPid="com.ibm.ws.classloading.bell.properties">
     <Object ocdref="com.ibm.ws.classloading.bell.properties"/>
   </Designate>
+
+  <OCD id="com.ibm.ws.classloading.bell.properties" name="%properties.name" description="%properties.desc"
+      ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/bells" >
+    <AD id="config.parentPID" type="String" name="internal" description="internal" />
+  </OCD>
 
 </metatype:MetaData>
