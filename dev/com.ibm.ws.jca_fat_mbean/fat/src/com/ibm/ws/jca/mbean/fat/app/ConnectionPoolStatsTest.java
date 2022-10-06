@@ -148,6 +148,15 @@ public class ConnectionPoolStatsTest {
     }
 
     /**
+     * Test that the MaxConnectionCount value is correct after first connection request.
+     */
+    @Test
+    public void testGetMaxConnectionCount() throws Exception {
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
      * Test that the CreateCount value is correct after obtaining several connections
      */
     @Test

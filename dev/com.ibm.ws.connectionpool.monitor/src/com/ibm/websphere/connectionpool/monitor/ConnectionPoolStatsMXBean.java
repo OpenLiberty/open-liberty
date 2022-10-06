@@ -104,4 +104,11 @@ public interface ConnectionPoolStatsMXBean {
      * @return in use time details
      */
     public StatisticsMeter getInUseTimeDetails();
+
+    /**
+     * The maximum connection allowed in the connection pool
+     *
+     * @return maximum connection count
+     */
+    public long getMaxConnectionCount();
 }

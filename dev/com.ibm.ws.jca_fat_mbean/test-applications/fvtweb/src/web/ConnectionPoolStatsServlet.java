@@ -405,6 +405,22 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
         }
     }
 
+    public void testGetMaxConnectionCount(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        Connection conn = ds1.getConnection();
+        try {
+            ObjectName objName = getConnPoolStatsMBeanObjName("ds1");
+            conn.close();
+            int maxConnectionCount = getMonitorData(objName, "MaxConnectionCount");
+            if (maxConnectionCount != 50) {
+                throw new Exception("Expected maximum connections to be 50, but was: " + maxConnectionCount);
+            }
+
+        } finally {
+            if (conn != null && !conn.isClosed())
+                conn.close();
+        }
+    }
+
     public void testMbeanAttributeList(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         List<String> attributes = new ArrayList<String>(Arrays.asList("CreateCount",
                                                                       "DestroyCount",
@@ -414,7 +430,8 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
                                                                       "FreeConnectionCount",
                                                                       "InUseTime",
                                                                       "WaitTimeDetails",
-                                                                      "InUseTimeDetails"));
+                                                                      "InUseTimeDetails",
+                                                                      "MaxConnectionCount"));
         int attributeListSize = attributes.size();
         ObjectName objName = getConnPoolStatsMBeanObjName("ds1");
         MBeanInfo mi = mbeanServer.getMBeanInfo(objName);

@@ -4882,4 +4882,9 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
     protected AtomicInteger getTotalConnectionCount() {
         return totalConnectionCount;
     }
+
+    @Override
+    public int getMaximumConnectionValue() {
+        return this.maxConnections;
+    }
 }

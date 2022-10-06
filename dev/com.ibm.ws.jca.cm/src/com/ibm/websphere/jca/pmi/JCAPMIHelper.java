@@ -23,4 +23,6 @@ public interface JCAPMIHelper {
     public String getJNDIName();
 
     public boolean getParkedValue();
+
+    public int getMaximumConnectionValue();
 }

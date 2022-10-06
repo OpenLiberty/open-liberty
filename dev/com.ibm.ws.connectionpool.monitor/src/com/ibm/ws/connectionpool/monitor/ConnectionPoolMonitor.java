@@ -96,11 +96,11 @@ public class ConnectionPoolMonitor extends StatisticActions {
 
     /**
      * @param FreePool Object
-     *            This method is responsible for calculating createCount(incremented) = number of connections created and ManagedConnectionCount(incremented) = number of
-     *            connections in use
-     *            This is called when control successfully returns from FreePool createManagedConnectionWithMCWrapper which is an indication that connection is
-     *            successfully created or is being used.
-     *            HookPoints=FreePool.createManagedConnectionWithMCWrapper
+     *                     This method is responsible for calculating createCount(incremented) = number of connections created and ManagedConnectionCount(incremented) = number of
+     *                     connections in use
+     *                     This is called when control successfully returns from FreePool createManagedConnectionWithMCWrapper which is an indication that connection is
+     *                     successfully created or is being used.
+     *                     HookPoints=FreePool.createManagedConnectionWithMCWrapper
      */
     @ProbeAtReturn
     @ProbeSite(clazz = "com.ibm.ejs.j2c.FreePool", method = "createManagedConnectionWithMCWrapper")
@@ -129,6 +129,7 @@ public class ConnectionPoolMonitor extends StatisticActions {
             ConnectionPoolStats cStats = connectionPoolCountByName.get(JNDIName);
             if (cStats == null) {
                 cStats = initializeConnectionPoolStats(JNDIName);
+                cStats.updateMaxConnectionCount(fpobj.getMaximumConnectionValue());
             }
             cStats.incCreateCount();
             cStats.incManagedConnectionCount();
@@ -143,8 +144,8 @@ public class ConnectionPoolMonitor extends StatisticActions {
 
     /**
      * @param MCWrapper Object
-     *            This code is responsible for calculating Destroy Count(incremented)=Number of connections destroyed or released and ManagedConnections(Decremented).
-     *            HookPoints=MCWrapper.destroy.
+     *                      This code is responsible for calculating Destroy Count(incremented)=Number of connections destroyed or released and ManagedConnections(Decremented).
+     *                      HookPoints=MCWrapper.destroy.
      */
     @ProbeAtReturn
     @ProbeAtExceptionExit
@@ -194,8 +195,8 @@ public class ConnectionPoolMonitor extends StatisticActions {
 
     /**
      * @param MCWrapper Object
-     *            This method is responsible for calculating connectionHandleCount(increment)
-     *            HookPoints=MCWrapper.incrementHandleCount
+     *                      This method is responsible for calculating connectionHandleCount(increment)
+     *                      HookPoints=MCWrapper.incrementHandleCount
      */
     @ProbeAtReturn
     @ProbeSite(clazz = "com.ibm.ejs.j2c.MCWrapper", method = "incrementHandleCount")
@@ -239,8 +240,8 @@ public class ConnectionPoolMonitor extends StatisticActions {
 
     /**
      * @param MCWrapper Object
-     *            This method is responsible for calculating connectionHandleCount(decrement)
-     *            HookPoints:MCWrapper.decrementHandleCount
+     *                      This method is responsible for calculating connectionHandleCount(decrement)
+     *                      HookPoints:MCWrapper.decrementHandleCount
      */
     @ProbeAtReturn
     @ProbeSite(clazz = "com.ibm.ejs.j2c.MCWrapper", method = "decrementHandleCount")
@@ -301,7 +302,7 @@ public class ConnectionPoolMonitor extends StatisticActions {
 
     /**
      * @param wtobj
-     *            Code which gets value from ThreadLocal and calculates the time spent in queueRequest which will give the wait time.
+     *                  Code which gets value from ThreadLocal and calculates the time spent in queueRequest which will give the wait time.
      */
     @ProbeAtReturn
     @ProbeAtExceptionExit
@@ -342,9 +343,9 @@ public class ConnectionPoolMonitor extends StatisticActions {
 
     /**
      * @param MCWrapper Object
-     *            This particular Method is called when when a connection going through cleanup was not already in the Free Active
-     *            state. This means the free pool connection count should be incremented. The connection is either going to be
-     *            added to the free pool, or will be destroyed (and the free pool count will be decremented in destroy).
+     *                      This particular Method is called when when a connection going through cleanup was not already in the Free Active
+     *                      state. This means the free pool connection count should be incremented. The connection is either going to be
+     *                      added to the free pool, or will be destroyed (and the free pool count will be decremented in destroy).
      */
     @ProbeAtEntry
     @ProbeSite(clazz = "com.ibm.ejs.j2c.MCWrapper", method = "isNotAlreadyFreeActive")
@@ -405,7 +406,7 @@ public class ConnectionPoolMonitor extends StatisticActions {
 
     /**
      * @param MCWrapper
-     *            This method is called when Connection is being marked "as in use" which means that thread is being pulled from
+     *                      This method is called when Connection is being marked "as in use" which means that thread is being pulled from
      */
     @ProbeAtReturn
     @ProbeSite(clazz = "com.ibm.ejs.j2c.MCWrapper", method = "markInUse")
@@ -458,8 +459,58 @@ public class ConnectionPoolMonitor extends StatisticActions {
 
     /**
      * @param obj
-     *            This code comes when datasource is removed or during server shutdown to clean up the MXBeans created while Monitoring Framework takes care of cleaning up
-     *            injection code.
+     *                This code comes when connection manager is dynamically updated.
+     *                If maximum connections is changed, this code will change the pmi
+     *                maximum connections.
+     */
+    @ProbeAtReturn
+    @ProbeSite(clazz = "com.ibm.ejs.j2c.PoolManager", method = "vetoableChange")
+    public void updatePMIMaxConnectionsIfNeeded(@This Object fpObject) {
+        try {
+            JCAPMIHelper fpobj = (JCAPMIHelper) fpObject;
+            if (tc.isEntryEnabled()) {
+                Tr.entry(tc, "updatePMIMaxConnectionsIfNeeded");
+            }
+            String JNDIName = fpobj.getJNDIName(); //First get the actual JNDIName
+            if (JNDIName == null) { //Check for null
+                JNDIName = fpobj.getUniqueId(); //IF it is null then use getUniqueId.JndiName will be null when no JNDI name is given.
+            }
+            if (JNDIName == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "JNDI Name returned is null this will only come when DS is created but no JNDI name is provided.We Should not handle this case");
+                }
+                if (tc.isEntryEnabled()) {
+                    Tr.exit(tc, "updatePMIMaxConnectionsIfNeeded");
+                }
+                return;
+            }
+            if (JNDIName.contains(":")) {
+                JNDIName = JNDIName.replace(":", "-");
+            }
+            ConnectionPoolStats cStats = connectionPoolCountByName.get(JNDIName);
+            if (cStats != null) {
+                int maxConnections = fpobj.getMaximumConnectionValue();
+                long currentPMIMaxConnections = cStats.getMaxConnectionCount();
+                if (currentPMIMaxConnections != maxConnections) {
+                    cStats.updateMaxConnectionCount(maxConnections);
+                } else {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Did not update pmi maximum connections");
+                    }
+                }
+            }
+            if (tc.isEntryEnabled()) {
+                Tr.exit(tc, "updatePMIMaxConnectionsIfNeeded");
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
+
+    /**
+     * @param obj
+     *                This code comes when datasource is removed or during server shutdown to clean up the MXBeans created while Monitoring Framework takes care of cleaning up
+     *                injection code.
      */
     @ProbeAtReturn
     @ProbeSite(clazz = "com.ibm.ejs.j2c.PoolManager", method = "serverShutDown")
