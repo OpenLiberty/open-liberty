@@ -36,6 +36,8 @@ Import-Package: \
   !com.ibm.ws.sib.api.jms.service, \
   ${defaultPackageImport}
 
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
 -dsannotations: \
      com.ibm.ws.sib.api.jms.service.JmsServiceFacade    
 

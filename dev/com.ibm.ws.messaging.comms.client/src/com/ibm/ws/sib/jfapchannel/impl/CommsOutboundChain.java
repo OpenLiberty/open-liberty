@@ -32,6 +32,7 @@ import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.messaging.lifecycle.SingletonsReady;
 import com.ibm.ws.sib.jfapchannel.ClientConnectionManager;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.impl.octracker.OutboundConnectionTracker;
@@ -77,6 +78,9 @@ public class CommsOutboundChain {
             ChannelConfiguration defaultSSLOptions,
             @Reference(name="commsClientService")
             CommsClientServiceFacade commsClientService,
+            /* Require SingletonsReady so that we will wait for it to ensure its availability at least until the chain is deactivated. */ 
+            @Reference(name="singletonsReady")
+            SingletonsReady singletonsReady,
             Map<Object, Object> properties) {
 
 		if (isAnyTracingEnabled() && tc.isEntryEnabled())
