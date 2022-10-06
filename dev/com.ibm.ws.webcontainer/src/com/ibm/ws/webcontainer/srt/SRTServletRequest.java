@@ -1721,6 +1721,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             _srtRequestHelper._cookiesParsed = true;
         }
 
+        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) { 
+             displayCookies(_srtRequestHelper._cookies);
+        }
+        
         return _srtRequestHelper._cookies;
     }
 
@@ -4388,5 +4392,13 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             threadData = localThreadData;
         }
         return localThreadData;
+    }
+    
+    protected void displayCookies(Cookie[] cookie) {
+        if (cookie == null)
+            return;
+
+        for (int i = 0; i < cookie.length; i++)
+            logger.logp(Level.FINE, CLASS_NAME,"displayCookies", " " + cookie[i]);
     }
 }
