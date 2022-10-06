@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
@@ -48,7 +47,7 @@ public class FATSuite {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         testContainer = DatabaseContainerFactory.createType(type);
         Log.info(FATSuite.class, "beforeSuite", "starting test container of type: " + type);
-        testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).waitingFor(Wait.forHealthcheck()).start();
+        testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).start();
         Log.info(FATSuite.class, "beforeSuite", "started test container of type: " + type);
     }
 

@@ -18,10 +18,12 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.config.AuthData;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
+import com.ibm.websphere.simplicity.config.AuthDataProperties;
 import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DataSourceProperties;
 import com.ibm.websphere.simplicity.config.DatabaseStore;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.config.dsprops.Properties;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -122,6 +124,12 @@ public final class DatabaseContainerUtil {
                 if (ds.getFatModify() != null && ds.getFatModify().equals("true"))
                     datasources.put(ds.getId(), ds);
 
+        //Get datasources that are nested within the transaction stanza
+        Transaction tran = cloneConfig.getTransaction();
+        for (DataSource ds : tran.getDataSources())
+            if (ds.getFatModify() != null && ds.getFatModify().equals("true"))
+                datasources.add(ds);
+
         return datasources;
     }
 
@@ -161,8 +169,18 @@ public final class DatabaseContainerUtil {
 
         //Create general properties
         DataSourceProperties props = new Properties();
-        props.setUser(cont.getUsername());
-        props.setPassword(cont.getPassword());
+
+        for (DataSource ds : datasources) {
+            Log.info(c, "modifyDataSourcePropsGeneric", "FOUND: DataSource to be checked for user/password.  ID: " + ds.getId());
+            if (ds.getContainerAuthDataRef() != null) {
+                Log.info(c, "modifyDataSourcePropsGeneric", "found containerAuthDataRef, don't set user or password");
+            } else {
+                Log.info(c, "modifyDataSourcePropsGeneric", "Set user and password");
+                props.setUser(cont.getUsername());
+                props.setPassword(cont.getPassword());
+            }
+        }
+
         props.setServerName(cont.getHost());
         props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
         try {
@@ -232,7 +250,33 @@ public final class DatabaseContainerUtil {
             entry.getValue().setUser(cont.getUsername());
             entry.getValue().setPassword(cont.getPassword());
         }
+//NEW
+        //Get a list of auth stanzas that need to be updated
+        List<AuthData> auths = new ArrayList<>();
+        //Create auth properties
+        AuthDataProperties authProps = new AuthDataProperties();
 
+        //Get general datasources
+        for (DataSource ds : cloneConfig.getDataSources())
+            if (ds.getFatModify() != null && ds.getFatModify().equals("true"))
+                datasources.add(ds);
+
+        //Get general auth stanzas
+        for (AuthData auth : cloneConfig.getAuthDataElements()) {
+            if (auth.getFatModify() != null && auth.getFatModify().equals("true")) {
+                String uName = cont.getUsername();
+                Log.info(c, "modifyDataSourcePropsGeneric", "Set user in Auth to " + uName);
+                authProps.setUser(uName);
+
+                String pWord = cont.getPassword();
+                Log.info(c, "modifyDataSourcePropsGeneric", "Set password in Auth to " + pWord);
+                authProps.setPassword(pWord);
+                //Replace derby properties
+                auth.updateAuthData(uName, pWord);
+            }
+        }
+
+// eof NEW
         //Update config
         serv.updateServerConfiguration(cloneConfig);
     }
@@ -248,8 +292,18 @@ public final class DatabaseContainerUtil {
 
         //Create properties based on type
         DataSourceProperties props = type.getDataSourceProps();
-        props.setUser(cont.getUsername());
-        props.setPassword(cont.getPassword());
+
+        for (DataSource ds : datasources) {
+            Log.info(c, "modifyDataSourcePropsForDatabase", "FOUND: DataSource to be checked for user/password.  ID: " + ds.getId());
+            if (ds.getContainerAuthDataRef() != null) {
+                Log.info(c, "modifyDataSourcePropsForDatabase", "found containerAuthDataRef, don't set user or password");
+            } else {
+                Log.info(c, "modifyDataSourcePropsForDatabase", "Set user and password");
+                props.setUser(cont.getUsername());
+                props.setPassword(cont.getPassword());
+            }
+        }
+
         props.setServerName(cont.getHost());
         props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
         try {

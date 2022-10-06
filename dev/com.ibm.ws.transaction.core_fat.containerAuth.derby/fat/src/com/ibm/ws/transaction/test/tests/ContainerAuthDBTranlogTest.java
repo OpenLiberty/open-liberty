@@ -25,7 +25,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.FATSuite;
-import com.ibm.ws.transaction.web.SimpleServlet;
+import com.ibm.ws.transaction.web.AuthServlet;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -53,26 +53,26 @@ import componenttest.topology.utils.FATServletClient;
 public class ContainerAuthDBTranlogTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
+    public static final String SERVLET_NAME = APP_NAME + "/AuthServlet";
 
     @Server("com.ibm.ws.transaction.dblog")
-    @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = AuthServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverBase;
 
     @Server("com.ibm.ws.transaction.dblog_containerAuth")
-    @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = AuthServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverConAuth;
 
     @Server("com.ibm.ws.transaction.dblog_containerAuthBadUser")
-    @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = AuthServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverConAuthBadUser;
 
     @Server("com.ibm.ws.transaction.dblog_containerAuthEmbed")
-    @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = AuthServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverEmbed;
 
     @Server("com.ibm.ws.transaction.dblog_containerAuthEmbedBadUser")
-    @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = AuthServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverEmbedBadUser;
 
     @BeforeClass
@@ -91,9 +91,16 @@ public class ContainerAuthDBTranlogTest extends FATServletClient {
         JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
         //Get driver name
         serverBase.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
+        serverConAuth.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+        serverConAuthBadUser.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+        serverEmbed.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+        serverEmbedBadUser.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
         //Setup server DataSource properties
         DatabaseContainerUtil.setupDataSourceProperties(serverBase, testContainer);
+        DatabaseContainerUtil.setupDataSourceProperties(serverConAuth, testContainer);
+        DatabaseContainerUtil.setupDataSourceProperties(serverConAuthBadUser, testContainer);
+        DatabaseContainerUtil.setupDataSourceProperties(serverEmbed, testContainer);
+        DatabaseContainerUtil.setupDataSourceProperties(serverEmbedBadUser, testContainer);
     }
 
     @AfterClass
@@ -122,7 +129,6 @@ public class ContainerAuthDBTranlogTest extends FATServletClient {
         String notConfigStr = serverBase.waitForStringInTrace("ContainerAuthData NOT configured");
         // There should be a match so fail if there is not.
         assertNotNull("Container authentication has been unexpectedly configured", notConfigStr);
-
         // Lastly stop serverBase
         // "WTRN0075W", "WTRN0076W", "CWWKE0701E" error messages are expected/allowed
         FATUtils.stopServers(serverBase);
@@ -141,7 +147,6 @@ public class ContainerAuthDBTranlogTest extends FATServletClient {
         String configStrRestart = serverConAuth.waitForStringInTrace("ContainerAuthData IS configured");
         // There should be a match so fail if there is not.
         assertNotNull("Container authentication has unexpectedly not been configured", configStrRestart);
-
         // Do a little tx work
         runTest(serverConAuth, "testUserTranLookup");
 
@@ -161,7 +166,6 @@ public class ContainerAuthDBTranlogTest extends FATServletClient {
         String configStrRestart = serverConAuthBadUser.waitForStringInTrace("ContainerAuthData IS configured");
         // There should be a match so fail if there is not.
         assertNotNull("Container authentication has unexpectedly not been configured", configStrRestart);
-
         // Do a little tx work
         runTest(serverConAuthBadUser, "testUserTranLookup");
 

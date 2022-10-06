@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.websphere.simplicity.config;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * Lists data source properties. Some properties are generic, others are driver specifc.
@@ -185,6 +186,13 @@ public class Transaction extends ConfigElement {
 
     public String getNonRetriableSqlCodes() {
         return this.nonRetriableSqlCodes;
+    }
+
+    @XmlElement(name = "dataSource")
+    private ConfigElementList<DataSource> dataSources;
+
+    public ConfigElementList<DataSource> getDataSources() {
+        return dataSources == null ? (dataSources = new ConfigElementList<DataSource>()) : dataSources;
     }
 
     /**

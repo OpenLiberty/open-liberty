@@ -13,7 +13,6 @@
 dependencies {
   requiredLibs project(":com.ibm.ws.transaction.fat.util"),
   			   project(":com.ibm.ws.tx.embeddable"),
-			   project(":com.ibm.ws.transaction.core_fat.base"),
 			   project(":com.ibm.ws.transaction.core_fat.containerAuth.derby"),
                project(':io.openliberty.org.apache.commons.logging')
 }
@@ -29,13 +28,13 @@ task copyFAT {
 }
 
 task copyCommonFiles {
-  dependsOn ':com.ibm.ws.transaction.core_fat.base:autoFVT'
+  dependsOn ':com.ibm.ws.transaction.core_fat.containerAuth.derby:autoFVT'
   doLast {
     /*
      * Copy test application resources.
      */
     copy {
-      from project(':com.ibm.ws.transaction.core_fat.base').file('test-applications')
+      from project(':com.ibm.ws.transaction.core_fat.containerAuth.derby').file('test-applications')
       into new File('test-applications')
     }
     
