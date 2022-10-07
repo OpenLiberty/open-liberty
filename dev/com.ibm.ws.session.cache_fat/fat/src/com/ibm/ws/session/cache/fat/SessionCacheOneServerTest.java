@@ -70,8 +70,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
         String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
         server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
                                            "-Dhazelcast.config=" + configLocation,
-                                           "-Dsession.cache.config.file=" + sessionCacheConfigFile,
-                                           "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
+                                           "-Dsession.cache.config.file=" + sessionCacheConfigFile));
 
         server.startServer();
     }
