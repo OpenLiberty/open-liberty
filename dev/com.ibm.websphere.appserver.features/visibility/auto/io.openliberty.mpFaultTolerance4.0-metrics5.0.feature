@@ -5,6 +5,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.microprofile.faulttolerance.3.0.internal.metrics,\
          io.openliberty.microprofile.faulttolerance.4.0.internal.metrics.5.0
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
