@@ -12,6 +12,7 @@ package com.ibm.ws.security.jwt.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -44,7 +45,33 @@ public class MpConfigProperties extends HashMap<String, String> {
 	public final static String CLOCK_SKEW = "mp.jwt.verify.clock.skew";
 	public final static String DECRYPT_KEY_ALGORITHM = "mp.jwt.decrypt.key.algorithm";
 
-	public MpConfigProperties() {
+    public static final Set<String> acceptableMpConfigPropNames11;
+    public static final Set<String> acceptableMpConfigPropNames12;
+    public static final Set<String> acceptableMpConfigPropNames21;
+
+    static {
+        Set<String> mpConfigPropNames = new HashSet<>();
+        mpConfigPropNames.add(ISSUER);
+        mpConfigPropNames.add(PUBLIC_KEY);
+        mpConfigPropNames.add(KEY_LOCATION);
+        acceptableMpConfigPropNames11 = Collections.unmodifiableSet(mpConfigPropNames);
+
+        mpConfigPropNames = new HashSet<>(acceptableMpConfigPropNames11);
+        mpConfigPropNames.add(PUBLIC_KEY_ALG);
+        mpConfigPropNames.add(DECRYPT_KEY_LOCATION);
+        mpConfigPropNames.add(VERIFY_AUDIENCES);
+        mpConfigPropNames.add(TOKEN_HEADER);
+        mpConfigPropNames.add(TOKEN_COOKIE);
+        acceptableMpConfigPropNames12 = Collections.unmodifiableSet(mpConfigPropNames);
+
+        mpConfigPropNames = new HashSet<>(acceptableMpConfigPropNames12);
+        mpConfigPropNames.add(TOKEN_AGE);
+        mpConfigPropNames.add(CLOCK_SKEW);
+        mpConfigPropNames.add(DECRYPT_KEY_ALGORITHM);
+        acceptableMpConfigPropNames21 = Collections.unmodifiableSet(mpConfigPropNames);
+    }
+
+    public MpConfigProperties() {
 		super();
 	}
 
