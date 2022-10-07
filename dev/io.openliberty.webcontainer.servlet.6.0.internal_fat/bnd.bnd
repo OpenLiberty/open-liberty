@@ -17,7 +17,8 @@ src: \
     test-applications/GetRealPathTest.war/src,\
     test-applications/CookieSetAttributeTest.war/src,\
     test-applications/RequestConnectionTest.war/src,\
-    test-applications/SessionCookieConfigSCI.jar/src
+    test-applications/SessionCookieConfigSCI.jar/src,\
+    test-applications/RequestCookieHeaderTest.war/src
 
 fat.project: true
 
