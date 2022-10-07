@@ -578,6 +578,52 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Find the first or first 3 of a list of sorted results.
+     */
+    @Test
+    public void testFindFirst() throws Exception {
+        // Remove data from previous tests:
+        Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
+        if (allProducts.length > 0)
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+
+        Product prod1 = new Product();
+        prod1.id = "TFF-1";
+        prod1.name = "TestFindFirst Item 1";
+        prod1.price = 101.99f;
+        products.save(prod1);
+
+        Product prod2 = new Product();
+        prod2.id = "TFF-2";
+        prod2.name = "TestFindFirst Item 2";
+        prod2.price = 22.99f;
+        products.save(prod2);
+
+        Product prod3 = new Product();
+        prod3.id = "TFF-3";
+        prod3.name = "TestFindFirst Item 3";
+        prod3.price = 13.99f;
+        products.save(prod3);
+
+        Product prod4 = new Product();
+        prod4.id = "TFF-4";
+        prod4.name = "TestFindFirst Item 4";
+        prod4.price = 454.88f;
+        products.save(prod4);
+
+        Product leastExpensive = products.findFirstByNameLikeOrderByPrice("TestFindFirst%");
+        assertNotNull(leastExpensive);
+        assertEquals(prod3.id, leastExpensive.id);
+
+        Product[] p = products.findFirst3ByNameLike("TestFindFirst%"); // descending order by price
+        assertNotNull(p);
+        assertEquals(Arrays.toString(p), 3, p.length);
+        assertEquals(prod4.id, p[0].id);
+        assertEquals(prod1.id, p[1].id);
+        assertEquals(prod2.id, p[2].id);
+    }
+
+    /**
      * Use the % and _ characters, which are wildcards in JPQL, within query parameters.
      */
     @Test

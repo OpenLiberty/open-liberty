@@ -44,6 +44,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.data.DataException;
 import jakarta.data.Delete;
 import jakarta.data.Inheritance;
 import jakarta.data.Page;
@@ -125,6 +126,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             Tr.entry(this, tc, "createQueryInfo", entityInfo, Arrays.toString(args));
 
         StringBuilder q = null;
+        long[] maxResults = new long[1]; // to simulate pass-by-reference
         Method method = (Method) args[0];
         Class<?> returnArrayType = (Class<?>) args[1];
         Class<?> returnParamType = (Class<?>) args[2];
@@ -177,7 +179,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             } else if (jpql == null) {
 
                 // Repository method name pattern queries
-                jpql = generateRepositoryQuery(entityInfo, method);
+                jpql = generateRepositoryQuery(entityInfo, method, maxResults);
 
                 // @Select annotation only
                 if (jpql == null) {
@@ -211,36 +213,43 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         jpql = q == null ? jpql : q.toString();
 
-        QueryInfo queryInfo = new QueryInfo(type, jpql, entityInfo, saveParamType, returnArrayType, returnParamType);
+        QueryInfo queryInfo = new QueryInfo(type, jpql, entityInfo, saveParamType, returnArrayType, returnParamType, maxResults[0]);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "createQueryInfo", queryInfo);
         return queryInfo;
     }
 
-    private String generateRepositoryQuery(EntityInfo entityInfo, Method method) {
+    private String generateRepositoryQuery(EntityInfo entityInfo, Method method, long[] maxResults) {
         String methodName = method.getName();
-        StringBuilder q;
-        if (methodName.startsWith("findBy")) {
-            int orderBy = methodName.indexOf("OrderBy");
-            generateSelect(entityInfo, q = new StringBuilder(200), method);
-            if (orderBy > 6 || orderBy == -1 && methodName.length() > 6) {
-                String s = orderBy > 0 ? methodName.substring(6, orderBy) : methodName.substring(6);
-                generateRepositoryQueryConditions(entityInfo, s, q);
+        StringBuilder q = null;
+        int by;
+        if (methodName.startsWith("find")) {
+            if ((by = methodName.indexOf("By", 4)) > 0) {
+                if (by > 4)
+                    parseFindBy(methodName.substring(4, by), maxResults);
+                int orderBy = methodName.indexOf("OrderBy", by + 2);
+                generateSelect(entityInfo, q = new StringBuilder(200), method);
+                if (orderBy > by + 2 || orderBy == -1 && methodName.length() > by + 2) {
+                    String s = orderBy > 0 ? methodName.substring(by + 2, orderBy) : methodName.substring(by + 2);
+                    generateRepositoryQueryConditions(entityInfo, s, q);
+                }
+                if (orderBy >= by + 2)
+                    generateRepositoryQueryOrderBy(entityInfo, methodName, orderBy, q);
             }
-            if (orderBy >= 6)
-                generateRepositoryQueryOrderBy(entityInfo, methodName, orderBy, q);
-        } else if (methodName.startsWith("deleteBy")) {
-            q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(" o");
-            if (methodName.length() > 8)
-                generateRepositoryQueryConditions(entityInfo, methodName.substring(8), q);
-        } else if (methodName.startsWith("updateBy")) {
-            q = generateRepositoryUpdateQuery(entityInfo, methodName);
-        } else {
-            return null;
+        } else if (methodName.startsWith("delete")) {
+            if ((by = methodName.indexOf("By", 6)) > 0) {
+                q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(" o");
+                if (methodName.length() > by + 2)
+                    generateRepositoryQueryConditions(entityInfo, methodName.substring(by + 2), q);
+            }
+        } else if (methodName.startsWith("update")) {
+            if ((by = methodName.indexOf("By", 6)) > 0) {
+                q = generateRepositoryUpdateQuery(entityInfo, methodName);
+            }
         }
 
-        return q.toString();
+        return q == null ? null : q.toString();
     }
 
     /**
@@ -684,7 +693,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                     q.append(" DESC");
                                 first = false;
                             }
-                            queryInfo = new QueryInfo(queryInfo.type, q.toString(), queryInfo.entityInfo, queryInfo.saveParamType, queryInfo.returnArrayType, queryInfo.returnTypeParam);
+                            queryInfo = new QueryInfo(queryInfo.type, q.toString(), queryInfo.entityInfo, //
+                                            queryInfo.saveParamType, queryInfo.returnArrayType, queryInfo.returnTypeParam, //
+                                            queryInfo.maxResults);
                         }
 
                         boolean asyncCompatibleResultForPagination = pagination != null &&
@@ -718,7 +729,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         long maxResults = limit != null ? limit.maxResults() //
                                         : pagination != null ? pagination.getSize() //
-                                                        : -1;
+                                                        : queryInfo.maxResults;
+
                         long startAt = limit != null ? limit.startAt() - 1 //
                                         : pagination != null ? (pagination.getPage() - 1) * maxResults //
                                                         : 0;
@@ -871,6 +883,36 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);
             throw x;
+        }
+    }
+
+    /**
+     * Parses and handles the text between find___By of a repository method.
+     * Currently this is only "First" or "First#".
+     *
+     * @param s          the portion of the method name between find and By to parse.
+     * @param maxResults pass-by-reference for maxResults
+     */
+    private void parseFindBy(String s, long[] maxResults) {
+        int first = s.indexOf("First");
+        if (first >= 0) {
+            int length = s.length();
+            long num = first + 5 == length ? 1 : 0;
+            if (num == 0)
+                for (int c = first + 5; c < length; c++) {
+                    char ch = s.charAt(c);
+                    if (ch >= '0' && ch <= '9')
+                        num = num * 10 + (ch - '0');
+                    else {
+                        if (c == first + 5)
+                            num = 1;
+                        break;
+                    }
+                }
+            if (num == 0)
+                throw new DataException(s); // First0
+            else
+                maxResults[0] = num;
         }
     }
 
