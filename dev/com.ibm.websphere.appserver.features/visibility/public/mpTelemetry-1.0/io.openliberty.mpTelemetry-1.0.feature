@@ -19,7 +19,8 @@ IBM-API-Package: \
   io.opentelemetry.sdk.autoconfigure.spi;type=stable,\
   io.opentelemetry.semconv.trace.attributes;type=stable,\
   io.opentelemetry.semconv.resource.attributes;type=stable,\
-  io.opentelemetry.sdk.resources;type=stable
+  io.opentelemetry.sdk.resources;type=stable,\
+  io.opentelemetry.instrumentation.annotations;type=stable
 -features=\
   io.openliberty.jakarta.annotation-2.1, \
   io.openliberty.restfulWS-3.1, \
