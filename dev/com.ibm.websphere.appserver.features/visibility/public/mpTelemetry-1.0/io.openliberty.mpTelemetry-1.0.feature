@@ -10,7 +10,10 @@ IBM-API-Package: \
   io.opentelemetry.api.baggage;type="stable",\
   io.opentelemetry.api;type="stable",\
   io.opentelemetry.api.trace;type="stable",\
-  io.opentelemetry.context;type="stable"
+  io.opentelemetry.context;type="stable",\
+  io.opentelemetry.sdk.trace.export;type="stable",\
+  io.opentelemetry.sdk.trace.data;type="stable",\
+  io.opentelemetry.sdk.common;type="stable"
 -features=\
   io.openliberty.jakarta.annotation-2.1, \
   io.openliberty.restfulWS-3.1, \

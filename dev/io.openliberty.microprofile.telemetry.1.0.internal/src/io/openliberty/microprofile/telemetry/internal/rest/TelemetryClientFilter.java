@@ -27,6 +27,7 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttributesGetter;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
@@ -64,7 +65,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
         this.instrumenter = builder
                         .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
                         .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
-                        .newClientInstrumenter(new ClientRequestContextTextMapSetter());
+                        .buildClientInstrumenter(new ClientRequestContextTextMapSetter());
     }
 
     @Override
@@ -121,7 +122,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
         //If one was sent
         @Override
-        public Integer statusCode(final ClientRequestContext request, final ClientResponseContext response) {
+        public Integer statusCode(final ClientRequestContext request, final ClientResponseContext response, @Nullable Throwable error) {
             return response.getStatus();
         }
 
@@ -133,28 +134,6 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
         @Override
         public List<String> requestHeader(final ClientRequestContext request, final String name) {
             return request.getStringHeaders().getOrDefault(name, emptyList());
-        }
-
-        @Override
-        public Long requestContentLength(final ClientRequestContext request, final ClientResponseContext response) {
-            return null;
-        }
-
-        @Override
-        public Long requestContentLengthUncompressed(final ClientRequestContext request,
-                                                     final ClientResponseContext response) {
-            return null;
-        }
-
-        @Override
-        public Long responseContentLength(final ClientRequestContext request, final ClientResponseContext response) {
-            return null;
-        }
-
-        @Override
-        public Long responseContentLengthUncompressed(final ClientRequestContext request,
-                                                      final ClientResponseContext response) {
-            return null;
         }
 
         @Override

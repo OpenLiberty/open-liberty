@@ -16,9 +16,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.microprofile.config.Config;
 
+import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
-import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
@@ -56,7 +56,6 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetry getOpenTelemetry() {
-
         HashMap<String, String> telemetryProperties = getTelemetryProperties();
         //Builds tracer provider if user has enabled tracing aspects with config properties
         if (checkEnabled(telemetryProperties)) {
@@ -74,12 +73,14 @@ public class OpenTelemetryProducer {
                             .build();
 
             Runtime.getRuntime().addShutdownHook(new Thread(tracerProvider::close));
+
             return openTelemetry;
         }
         //By default, MicroProfile Telemetry tracing is off.
         //The absence of an installed SDK is a “no-op” API
         //Operations on a Tracer, or on Spans have no side effects and do nothing
         return OpenTelemetry.noop();
+
     }
 
     private Resource getServiceName(Map<String, String> oTelConfigs) {

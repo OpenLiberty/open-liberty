@@ -31,7 +31,7 @@
         <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
-        <jetty.version>9.4.41.v20210516</jetty.version>
+        <jetty.version>9.4.31.v20200723</jetty.version>
     </properties>
 
     <dependencyManagement>
@@ -58,42 +58,44 @@
         <dependency>
             <groupId>org.eclipse.microprofile.telemetry.tracing</groupId>
             <artifactId>microprofile-telemetry-tracing-tck</artifactId>
-            <version>1.0-RC3</version>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>/Users/yasmin/Documents/open-liberty/dev/io.openliberty.microprofile.telemetry.1.0.internal_fat_tck/publish/tckRunner/tck/src/main/resources/microprofile-telemetry-tracing-tck-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-api</artifactId>
-            <version>1.14.0</version>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-sdk</artifactId>
-            <version>1.14.0</version>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
-            <version>1.14.0-alpha</version>
+            <version>1.18.0-alpha</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-sdk-trace</artifactId>
-            <version>1.14.0</version>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-extension-annotations</artifactId>
-            <version>1.14.0</version>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
             <artifactId>opentelemetry-instrumentation-api</artifactId>
-            <version>1.14.0-alpha</version>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-instrumentation-api-annotation-support</artifactId>
-            <version>1.14.0-alpha</version>
+            <artifactId>opentelemetry-instrumentation-annotations-support</artifactId>
+            <version>1.18.0-alpha</version>
         </dependency>
 
         <dependency>
@@ -235,13 +237,6 @@
             <version>${arquillian.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.junit5</groupId>
-            <artifactId>arquillian-junit5-container</artifactId>
-            <version>${arquillian.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
@@ -334,16 +329,21 @@
         </dependency>
 
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.9.0</version>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.6.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <version>${arquillian.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.9.0</version>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed-jakarta</artifactId>
+            <version>2.1.0</version>
             <scope>test</scope>
         </dependency>
 

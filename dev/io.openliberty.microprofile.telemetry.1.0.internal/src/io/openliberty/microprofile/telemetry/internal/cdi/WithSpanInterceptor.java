@@ -24,7 +24,7 @@ import io.opentelemetry.instrumentation.api.annotation.support.ParameterAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
 import io.opentelemetry.instrumentation.api.instrumenter.SpanNameExtractor;
-import io.opentelemetry.instrumentation.api.util.SpanNames;
+import io.opentelemetry.instrumentation.api.instrumenter.util.SpanNames;
 import jakarta.annotation.Priority;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
@@ -47,7 +47,7 @@ public class WithSpanInterceptor {
                                                                                                                            MethodRequest::getArgs);
 
         this.instrumenter = builder.addAttributesExtractor(attributesExtractor)
-                        .newInstrumenter(methodRequest -> spanKindFromMethod(methodRequest.getMethod()));
+                        .buildInstrumenter(methodRequest -> spanKindFromMethod(methodRequest.getMethod()));
     }
 
     private static SpanKind spanKindFromMethod(Method method) {
