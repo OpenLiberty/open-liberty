@@ -10,46 +10,49 @@
  *******************************************************************************/
 package com.ibm.ws.sib.api.jms.service;
 
-import static com.ibm.websphere.ras.Tr.debug;
-import static com.ibm.websphere.ras.Tr.entry;
-import static com.ibm.websphere.ras.Tr.exit;
-import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
-import static com.ibm.ws.messaging.lifecycle.SingletonsReady.requireService;
 import static java.security.AccessController.doPrivileged;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
-import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Map;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.SIDestinationAddressFactory;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.rar.ResourceAdapterBundleService;
-import com.ibm.ws.messaging.lifecycle.Singleton;
+import com.ibm.ws.messaging.lifecycle.SingletonsReady;
 import com.ibm.ws.sib.common.service.CommonServiceFacade;
 import com.ibm.ws.sib.utils.TraceGroups;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.classloading.ClassLoaderIdentity;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
 
+/**
+ * This component is the point of entry for JCA into SIB messaging.
+ * Any dependencies that need to be in place for JCA to work should be expressed here.
+ */
 @Component (configurationPolicy = IGNORE, immediate = true, property= {"type=wasJms","service.vendor=IBM"})
-public class JmsServiceFacade implements ResourceAdapterBundleService, Singleton {
+public class JmsServiceFacade implements ResourceAdapterBundleService {
 
     private static final TraceComponent tc = SibTr.register(JmsServiceFacade.class, TraceGroups.TRGRP_RA,
                                                             "com.ibm.ws.sib.ra.CWSIVMessages");
     
- 
+    /**
+     * @param singletonsReady force this component to wait for SingletonsReady
+     */
+    @Activate
+    public JmsServiceFacade(@Reference(name = "singletonsReady") SingletonsReady singletonsReady) {
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "<init>",singletonsReady);
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "<init>");
+    }
+    
     public static final SIDestinationAddressFactory getSIDestinationAddressFactory() {      
 		return CommonServiceFacade.getJsDestinationAddressFactory();
     }
