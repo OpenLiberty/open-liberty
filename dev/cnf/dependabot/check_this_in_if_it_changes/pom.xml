@@ -844,12 +844,7 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-metrics</artifactId>
-      <version>5.0.0-M2</version>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-metrics</artifactId>
-      <version>5.0.0-M3</version>
+      <version>5.0.0-M4</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
@@ -2480,11 +2475,6 @@
       <groupId>org.eclipse.microprofile.metrics</groupId>
       <artifactId>microprofile-metrics-api</artifactId>
       <version>4.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile.metrics</groupId>
-      <artifactId>microprofile-metrics-api</artifactId>
-      <version>5.0.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.metrics</groupId>
