@@ -10,11 +10,13 @@
  *******************************************************************************/
 package io.openliberty.security.mp.jwt.v21.config.impl;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -24,42 +26,28 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
-import com.ibm.ws.security.mp.jwt.config.MpConstants;
 
 import io.openliberty.security.mp.jwt.v21.config.TraceConstants;
 
 @Component(service = MpConfigProxyService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "version=2.1", "service.ranking:Integer=21" }, name = "mpConfigProxyService")
-public class MpConfigProxyServiceImpl extends io.openliberty.security.mp.jwt.v12.config.impl.MpConfigProxyServiceImpl implements MpConfigProxyService {
+public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     public static final TraceComponent tc = Tr.register(MpConfigProxyServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     static private String MP_VERSION = "2.1";
 
-    private static final Set<String> acceptableMpConfigPropNames21;
-
-    static {
-        Set<String> mpConfigPropNames = new HashSet<>();
-        mpConfigPropNames.addAll(io.openliberty.security.mp.jwt.v12.config.impl.MpConfigProxyServiceImpl.acceptableMpConfigPropNames12);
-
-        mpConfigPropNames.add(MpConstants.TOKEN_AGE);
-        mpConfigPropNames.add(MpConstants.CLOCK_SKEW);
-        mpConfigPropNames.add(MpConstants.DECRYPT_KEY_ALGORITHM);
-        acceptableMpConfigPropNames21 = Collections.unmodifiableSet(mpConfigPropNames);
-    }
-
-    @Override
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         Tr.info(tc, "MPJWT_21_CONFIG_PROXY_PROCESSED");
     }
 
-    @Override
     @Modified
     protected void modified(ComponentContext cc, Map<String, Object> props) {
         Tr.info(tc, "MPJWT_21_CONFIG_PROXY_MODIFIED");
     }
 
-    @Override
     @Deactivate
     protected void deactivate(ComponentContext cc) {
         Tr.info(tc, "MPJWT_21_CONFIG_PROXY_DEACTIVATED");
@@ -70,9 +58,32 @@ public class MpConfigProxyServiceImpl extends io.openliberty.security.mp.jwt.v12
         return MP_VERSION;
     }
 
+    /**
+     * @return
+     */
+    @Sensitive
     @Override
-    public Set<String> getSupportedConfigPropertyNames() {
-        return acceptableMpConfigPropNames21;
+    public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
+        if (isAcceptableMpConfigProperty(propertyName)) {
+            Optional<T> value = getConfig(cl).getOptionalValue(propertyName, propertyType);
+            if (value != null && value.isPresent()) {
+                return value.get();
+            }
+            return null;
+        }
+        return null;
     }
 
+    @Override
+    public Set<String> getSupportedConfigPropertyNames() {
+        return MpConfigProperties.acceptableMpConfigPropNames21;
+    }
+
+    protected Config getConfig(ClassLoader cl) {
+        if (cl != null) {
+            return ConfigProvider.getConfig(cl);
+        } else {
+            return ConfigProvider.getConfig();
+        }
+    }
 }

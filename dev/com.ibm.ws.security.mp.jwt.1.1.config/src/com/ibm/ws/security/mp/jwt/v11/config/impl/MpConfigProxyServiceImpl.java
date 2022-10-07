@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.v11.config.impl;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -29,8 +27,8 @@ import org.osgi.service.component.annotations.Modified;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
-import com.ibm.ws.security.mp.jwt.config.MpConstants;
 import com.ibm.ws.security.mp.jwt.v11.config.TraceConstants;
 
 @Component(service = MpConfigProxyService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "version=1.1", "service.ranking:Integer=11" }, name = "mpConfigProxyService")
@@ -39,16 +37,6 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     public static final TraceComponent tc = Tr.register(MpConfigProxyServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     static private String MP_VERSION = "1.1";
-
-    protected static final Set<String> acceptableMpConfigPropNames;
-
-    static {
-        Set<String> mpConfigPropNames = new HashSet<>();
-        mpConfigPropNames.add(MpConstants.ISSUER);
-        mpConfigPropNames.add(MpConstants.PUBLIC_KEY);
-        mpConfigPropNames.add(MpConstants.KEY_LOCATION);
-        acceptableMpConfigPropNames = Collections.unmodifiableSet(mpConfigPropNames);
-    }
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
@@ -76,14 +64,6 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     /**
      * @return
      */
-    @Override
-    public boolean isMpConfigAvailable() {
-        return true;
-    }
-
-    /**
-     * @return
-     */
     @Sensitive
     @Override
     public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
@@ -99,11 +79,7 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
 
     @Override
     public Set<String> getSupportedConfigPropertyNames() {
-        return acceptableMpConfigPropNames;
-    }
-
-    protected boolean isAcceptableMpConfigProperty(String propertyName) {
-        return getSupportedConfigPropertyNames().contains(propertyName);
+        return MpConfigProperties.acceptableMpConfigPropNames11;
     }
 
     protected Config getConfig(ClassLoader cl) {
