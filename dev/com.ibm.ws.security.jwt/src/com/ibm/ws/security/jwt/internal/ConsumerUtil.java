@@ -16,12 +16,12 @@ import java.security.Key;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -44,6 +44,7 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.websphere.security.jwt.KeyException;
 import com.ibm.websphere.security.jwt.KeyStoreServiceException;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
@@ -109,9 +110,9 @@ public class ConsumerUtil {
     }
 
     /**
-     * Throws an exception if JWTs are not allowed to be reused (as configured
-     * by the provided config option) AND a token with a matching "jti" and
-     * "issuer" claim already exists in the cache.
+     * Throws an exception if JWTs are not allowed to be reused (as configured by
+     * the provided config option) AND a token with a matching "jti" and "issuer"
+     * claim already exists in the cache.
      */
     void checkForReusedJwt(JwtTokenConsumerImpl jwt, JwtConsumerConfig config) throws InvalidTokenException {
         // Only throw an error if tokens are not allowed to be reused
@@ -133,8 +134,8 @@ public class ConsumerUtil {
     }
 
     /**
-     * Get the appropriate signing key based on the signature algorithm
-     * specified in the config.
+     * Get the appropriate signing key based on the signature algorithm specified in
+     * the config.
      */
     Key getSigningKey(JwtConsumerConfig config, JwtContext jwtContext) throws KeyException {
         Key signingKey = null;
@@ -264,14 +265,14 @@ public class ConsumerUtil {
         JwKRetriever jwkRetriever = createJwkRetriever(config);
         Key signingKey = jwkRetriever.getPublicKeyFromJwk(kid, null,
                 config.getUseSystemPropertiesForHttpClientConnections()); // only
-                                                                          // kid
-                                                                          // or
-                                                                          // x5t
-                                                                          // will
-                                                                          // work
-                                                                          // but
-                                                                          // not
-                                                                          // both
+                                                                                                                                       // kid
+                                                                                                                                       // or
+                                                                                                                                       // x5t
+                                                                                                                                       // will
+                                                                                                                                       // work
+                                                                                                                                       // but
+                                                                                                                                       // not
+                                                                                                                                       // both
         return signingKey;
     }
 
@@ -331,8 +332,8 @@ public class ConsumerUtil {
     }
 
     /**
-     * Creates a Key object from the certificate stored in the trust store and
-     * alias provided.
+     * Creates a Key object from the certificate stored in the trust store and alias
+     * provided.
      */
     Key getPublicKey(String trustedAlias, String trustStoreRef, String signatureAlgorithm)
             throws KeyStoreServiceException, KeyException {
@@ -433,41 +434,43 @@ public class ConsumerUtil {
         processJwtContextWithConsumer(jwtConsumer, jwtContext);
     }
 
-    private void validateHeaders(JwtContext jwtContext, String jwtString, JwtConsumerConfig config)
-            throws InvalidTokenException {
+    @FFDCIgnore(Exception.class)
+    private void validateHeaders(JwtContext jwtContext, String jwtString, JwtConsumerConfig config) throws Exception {
 
         if (isRunningBetaMode() && JweHelper.isJwe(jwtString)) {
-            List<JsonWebStructure> jsonWebStructures = jwtContext.getJoseObjects();
-            JsonWebStructure jsonWebStructureToCheck = null;
-            // Find JWE
-            for (JsonWebStructure jsonWebStructure : jsonWebStructures) {
-                if (jsonWebStructure instanceof JsonWebEncryption) {
-                    jsonWebStructureToCheck = jsonWebStructure;
-                    break;
+            try {
+                String keyManagementKeyAlgorithm = null;
+                // Get keyManagementKeyAlgorithm from server.xml
+                keyManagementKeyAlgorithm = config.getKeyManagementKeyAlgorithm();
+                /**
+                 * If keyManagementKeyAlgorithm from server.xml is null, then take the value of
+                 * keyManagementKeyAlgorithm from mpConfigProps
+                 */
+                if (keyManagementKeyAlgorithm == null) {
+                    String value = mpConfigProps.get(MpConfigProperties.DECRYPT_KEY_ALGORITHM);
+                    if (value != null) {
+                        keyManagementKeyAlgorithm = value;
+                    }
                 }
-            }
-            String tokenAlg = jsonWebStructureToCheck.getAlgorithmHeaderValue();
-            String keyManagementKeyAlgorithm = null;
-            // Get keyManagementKeyAlgorithm from server.xml
-            keyManagementKeyAlgorithm = config.getKeyManagementKeyAlgorithm();
-            /**
-             * If keyManagementKeyAlgorithm from server.xml is null, then take
-             * the value of keyManagementKeyAlgorithm from mpConfigProps
-             */
-            if (keyManagementKeyAlgorithm == null) {
-                String value = mpConfigProps.get(MpConfigProperties.DECRYPT_KEY_ALGORITHM);
-                if (value != null) {
-                    keyManagementKeyAlgorithm = value;
+                /**
+                 * If keyManagementKeyAlgorithm is not null, do the following check if
+                 * keyManagementKeyAlgorithm is null (i.e. MP JWT < 2.1) skip the check
+                 */
+                if (keyManagementKeyAlgorithm != null) {
+                    String[] parts = jwtString.split(("\\."));
+                    String headerParametersAsJsonString = new String(Base64.getDecoder().decode(parts[0]), "UTF-8");
+                    JwtClaims headerParameters = JwtClaims.parse(headerParametersAsJsonString);
+                    String tokenAlg = (String) headerParameters.getClaimValue("alg");
+
+                    validateKeyManagementKeyAlgorithm(keyManagementKeyAlgorithm, tokenAlg);
                 }
+            } catch (Exception e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception validating headers: ", e);
+                }
+                throw e;
             }
-            /**
-             * If keyManagementKeyAlgorithm is not null, do the following check
-             * if keyManagementKeyAlgorithm is null (i.e. MP JWT < 2.1) skip the
-             * check
-             */
-            if (keyManagementKeyAlgorithm != null) {
-                validateKeyManagementKeyAlgorithm(keyManagementKeyAlgorithm, tokenAlg);
-            }
+
         }
     }
 
@@ -524,8 +527,8 @@ public class ConsumerUtil {
 
         long clockSkew = config.getClockSkew();
         /**
-         * If clockSkew from server.xml is negative, then take the value of
-         * clock_skew from mpConfigProps
+         * If clockSkew from server.xml is negative, then take the value of clock_skew
+         * from mpConfigProps
          */
         if (clockSkew < 0) {
             String value = mpConfigProps.get(MpConfigProperties.CLOCK_SKEW);
@@ -536,17 +539,18 @@ public class ConsumerUtil {
             }
         }
 
-        long tokenAge = 0;
+        long tokenAgeInMilliSeconds = 0;
         // Take tokenAge value from server.xml
-        tokenAge = config.getTokenAge();
+        tokenAgeInMilliSeconds = config.getTokenAge();
+
         /**
-         * If tokenAge from server.xml is zero, then take the value of tokenAge
-         * from mpConfigProps
+         * If tokenAge from server.xml is zero (disabled), then take the value of tokenAge from
+         * mpConfigProps
          */
-        if (tokenAge == 0) {
+        if (tokenAgeInMilliSeconds == 0) {
             String value = mpConfigProps.get(MpConfigProperties.TOKEN_AGE);
             if (value != null) {
-                tokenAge = Long.valueOf(value);
+                tokenAgeInMilliSeconds = Long.valueOf(value) * 1000;
             }
         }
         validateIssuer(config.getId(), issuer, jwtClaims.getIssuer());
@@ -561,15 +565,15 @@ public class ConsumerUtil {
 
         // check azp
 
-        validateIatAndExp(jwtClaims, clockSkew, tokenAge);
+        validateIatAndExp(jwtClaims, clockSkew, tokenAgeInMilliSeconds);
         validateNbf(jwtClaims, clockSkew);
 
         validateAlgorithm(jwtContext, mpConfigProps.getConfiguredSignatureAlgorithm(config));
     }
 
     /**
-     * Throws an exception if the provided key is null but the config specifies
-     * a signature algorithm other than "none".
+     * Throws an exception if the provided key is null but the config specifies a
+     * signature algorithm other than "none".
      */
     void validateSignatureAlgorithmWithKey(JwtConsumerConfig config, Key key) throws InvalidClaimException {
         String signatureAlgorithm = mpConfigProps.getConfiguredSignatureAlgorithm(config);
@@ -624,8 +628,8 @@ public class ConsumerUtil {
     }
 
     /**
-     * Verifies that at least one of the values specified in audiences is
-     * contained in the allowedAudiences list.
+     * Verifies that at least one of the values specified in audiences is contained
+     * in the allowedAudiences list.
      */
     boolean validateAudience(List<String> allowedAudiences, List<String> audiences) {
         boolean valid = false;
@@ -650,12 +654,11 @@ public class ConsumerUtil {
     }
 
     /**
-     * Validates the the {@value Claims#ISSUED_AT} and
-     * {@value Claims#EXPIRATION} claims are present and properly formed. Also
-     * verifies that the {@value Claims#ISSUED_AT} time is after the
-     * {@value Claims#EXPIRATION} time.
+     * Validates the the {@value Claims#ISSUED_AT} and {@value Claims#EXPIRATION}
+     * claims are present and properly formed. Also verifies that the
+     * {@value Claims#ISSUED_AT} time is after the {@value Claims#EXPIRATION} time.
      */
-    void validateIatAndExp(JwtClaims jwtClaims, long clockSkewInMilliseconds, long tokenAge)
+    void validateIatAndExp(JwtClaims jwtClaims, long clockSkewInMilliseconds, long tokenAgeInMilliSeconds)
             throws InvalidClaimException {
         if (jwtClaims == null) {
             if (tc.isDebugEnabled()) {
@@ -668,7 +671,7 @@ public class ConsumerUtil {
 
         debugCurrentTimes(clockSkewInMilliseconds, issueAtClaim, expirationClaim);
 
-        validateIssuedAtClaim(issueAtClaim, expirationClaim, clockSkewInMilliseconds, tokenAge);
+        validateIssuedAtClaim(issueAtClaim, expirationClaim, clockSkewInMilliseconds, tokenAgeInMilliSeconds);
         validateExpirationClaim(expirationClaim, clockSkewInMilliseconds);
 
     }
@@ -717,6 +720,14 @@ public class ConsumerUtil {
         if (!isRunningBetaMode()) {
             return;
         }
+
+        if (tokenAgeInMilliSeconds <= 0) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "The JWT's token age verification is disabled because the tokenAge attribute and mp.jwt.verify.token.age property are both 0 or less.", tokenAgeInMilliSeconds);
+            }
+            return;
+        }
+
         long now = (new Date()).getTime();
         NumericDate issueAtClaimPlusTokenAge = issueAtClaim;
         issueAtClaimPlusTokenAge.addSeconds(tokenAgeInMilliSeconds / 1000);
@@ -762,8 +773,8 @@ public class ConsumerUtil {
     }
 
     /**
-     * Validates the the {@value Claims#NOT_BEFORE} claim is present and
-     * properly formed. Also
+     * Validates the the {@value Claims#NOT_BEFORE} claim is present and properly
+     * formed. Also
      */
     void validateNbf(JwtClaims jwtClaims, long clockSkewInMilliseconds) throws InvalidClaimException {
         if (jwtClaims == null) {
@@ -916,9 +927,9 @@ public class ConsumerUtil {
     }
 
     /**
-     * Helper method to get the AMR Claim from the jwtClaims.This method checks
-     * if the value is a string and return singletonList or the ArrayList of
-     * amrClaims. This is called in validateCalims method
+     * Helper method to get the AMR Claim from the jwtClaims.This method checks if
+     * the value is a string and return singletonList or the ArrayList of amrClaims.
+     * This is called in validateCalims method
      *
      */
     List<String> getJwtAMRList(JwtClaims jwtClaims) throws MalformedClaimException {
@@ -936,8 +947,8 @@ public class ConsumerUtil {
 
     /**
      * Verifies that values specified in AMR claim is contained in the
-     * authenticationMethodsReferences list. If allowedAMRClaim is not an array
-     * then jwtClaims can contain more than required values. If not, then the
+     * authenticationMethodsReferences list. If allowedAMRClaim is not an array then
+     * jwtClaims can contain more than required values. If not, then the
      * jwtClaimvalues must be a exact match of an element in the array.
      */
     boolean validateAMRClaim(List<String> allowedAmrClaim, List<String> jwtAMRClaims) {
