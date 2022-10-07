@@ -67,18 +67,11 @@ public class ConsumerUtil {
     private final JtiNonceCache jtiCache = new JtiNonceCache();
     static JwtCache jwtCache = null;
     private static boolean issuedBetaMessage = false;
-    KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
-    private MpConfigProperties mpConfigProps = new MpConfigProperties();
+    private static final MpConfigProperties NO_MP_CONFIG_PROPERTIES = new MpConfigProperties();
 
     public ConsumerUtil(AtomicServiceReference<KeyStoreService> kss) {
         keyStoreService = kss;
-    }
-
-    public void setMpConfigProps(MpConfigProperties props) {
-        if (props != null) {
-            mpConfigProps = new MpConfigProperties(props);
-        }
     }
 
     public JwtToken parseJwt(String jwtString, JwtConsumerConfig config) throws Exception {
@@ -90,8 +83,10 @@ public class ConsumerUtil {
         JwtContext jwtContext = getJwtContextFromCache(jwtString, config);
         boolean isJwtContextAlreadyCached = jwtContext != null;
         if (!isJwtContextAlreadyCached) {
-            setMpConfigProps(properties);
-            jwtContext = parseJwtAndGetJwtContext(jwtString, config);
+            if (properties == null) {
+                properties = NO_MP_CONFIG_PROPERTIES;
+            }
+            jwtContext = parseJwtAndGetJwtContext(jwtString, config, properties);
         }
         JwtTokenConsumerImpl jwtToken = new JwtTokenConsumerImpl(jwtContext);
         checkForReusedJwt(jwtToken, config);
@@ -101,10 +96,11 @@ public class ConsumerUtil {
         return jwtToken;
     }
 
-    JwtContext parseJwtAndGetJwtContext(String jwtString, JwtConsumerConfig config) throws Exception {
-        JwtContext jwtContext = parseJwtWithoutValidation(jwtString, config);
+    JwtContext parseJwtAndGetJwtContext(String jwtString, JwtConsumerConfig config, MpConfigProperties mpConfigProps)
+            throws Exception {
+        JwtContext jwtContext = parseJwtWithoutValidation(jwtString, config, mpConfigProps);
         if (config.isValidationRequired()) {
-            validateJwtContext(jwtContext, jwtString, config);
+            validateJwtContext(jwtContext, jwtString, config, mpConfigProps);
         }
         return jwtContext;
     }
@@ -137,7 +133,8 @@ public class ConsumerUtil {
      * Get the appropriate signing key based on the signature algorithm specified in
      * the config.
      */
-    Key getSigningKey(JwtConsumerConfig config, JwtContext jwtContext) throws KeyException {
+    Key getSigningKey(JwtConsumerConfig config, JwtContext jwtContext, MpConfigProperties mpConfigProps)
+            throws KeyException {
         Key signingKey = null;
         if (config == null) {
             if (tc.isDebugEnabled()) {
@@ -145,7 +142,7 @@ public class ConsumerUtil {
             }
             return null;
         }
-        signingKey = getSigningKeyBasedOnSignatureAlgorithm(config, jwtContext);
+        signingKey = getSigningKeyBasedOnSignatureAlgorithm(config, jwtContext, mpConfigProps);
         if (signingKey == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "A signing key could not be found");
@@ -154,22 +151,23 @@ public class ConsumerUtil {
         return signingKey;
     }
 
-    Key getSigningKeyBasedOnSignatureAlgorithm(JwtConsumerConfig config, JwtContext jwtContext) throws KeyException {
+    Key getSigningKeyBasedOnSignatureAlgorithm(JwtConsumerConfig config, JwtContext jwtContext,
+            MpConfigProperties mpConfigProps) throws KeyException {
         Key signingKey = null;
         String sigAlg = mpConfigProps.getConfiguredSignatureAlgorithm(config);
 
         boolean isAsymmetricAlgorithm = false;
-        if (keyAlgChecker.isHSAlgorithm(sigAlg)) {
+        if (KeyAlgorithmChecker.isHSAlgorithm(sigAlg)) {
             signingKey = getSigningKeyForHS(sigAlg, config);
-        } else if (keyAlgChecker.isRSAlgorithm(sigAlg)) {
-            signingKey = getSigningKeyForRS(config, jwtContext);
+        } else if (KeyAlgorithmChecker.isRSAlgorithm(sigAlg)) {
+            signingKey = getSigningKeyForRS(config, jwtContext, mpConfigProps);
             isAsymmetricAlgorithm = true;
-        } else if (keyAlgChecker.isESAlgorithm(sigAlg)) {
-            signingKey = getSigningKeyForES(config, jwtContext);
+        } else if (KeyAlgorithmChecker.isESAlgorithm(sigAlg)) {
+            signingKey = getSigningKeyForES(config, jwtContext, mpConfigProps);
             isAsymmetricAlgorithm = true;
         }
         if (isAsymmetricAlgorithm) {
-            if (!keyAlgChecker.isPublicKeyValidType(signingKey, sigAlg)) {
+            if (!KeyAlgorithmChecker.isPublicKeyValidType(signingKey, sigAlg)) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Public key " + signingKey + " does not match the parameters of the " + sigAlg
                             + " algorithm");
@@ -224,33 +222,36 @@ public class ConsumerUtil {
         return null;
     }
 
-    boolean isPublicKeyPropsPresent() {
+    boolean isPublicKeyPropsPresent(MpConfigProperties mpConfigProps) {
         return mpConfigProps.get(MpConfigProperties.PUBLIC_KEY) != null
                 || mpConfigProps.get(MpConfigProperties.KEY_LOCATION) != null;
     }
 
-    Key getSigningKeyForRS(JwtConsumerConfig config, JwtContext jwtContext) throws KeyException {
-        return getKeyFromJwkOrTrustStore(config, jwtContext);
+    Key getSigningKeyForRS(JwtConsumerConfig config, JwtContext jwtContext, MpConfigProperties mpConfigProps)
+            throws KeyException {
+        return getKeyFromJwkOrTrustStore(config, jwtContext, mpConfigProps);
     }
 
-    Key getKeyFromJwkOrTrustStore(JwtConsumerConfig config, JwtContext jwtContext) throws KeyException {
+    Key getKeyFromJwkOrTrustStore(JwtConsumerConfig config, JwtContext jwtContext, MpConfigProperties mpConfigProps)
+            throws KeyException {
         Key signingKey = null;
-        if (config.getJwkEnabled() || (config.getTrustedAlias() == null && isPublicKeyPropsPresent())) { // need
-                                                                                                         // change
-                                                                                                         // to
-                                                                                                         // consider
-                                                                                                         // MP-Config
-            signingKey = getKeyForJwkEnabled(config, jwtContext);
+        if (config.getJwkEnabled() || (config.getTrustedAlias() == null && isPublicKeyPropsPresent(mpConfigProps))) { // need
+            // change
+            // to
+            // consider
+            // MP-Config
+            signingKey = getKeyForJwkEnabled(config, jwtContext, mpConfigProps);
         } else {
-            signingKey = getKeyForJwkDisabled(config);
+            signingKey = getKeyForJwkDisabled(config, mpConfigProps);
         }
         return signingKey;
     }
 
-    Key getKeyForJwkEnabled(JwtConsumerConfig config, JwtContext jwtContext) throws KeyException {
+    Key getKeyForJwkEnabled(JwtConsumerConfig config, JwtContext jwtContext, MpConfigProperties mpConfigProps)
+            throws KeyException {
         Key signingKey = null;
         try {
-            signingKey = getJwksKey(config, jwtContext);
+            signingKey = getJwksKey(config, jwtContext, mpConfigProps);
         } catch (Exception e) {
             String msg = Tr.formatMessage(tc, "JWT_ERROR_GETTING_JWK_KEY",
                     new Object[] { config.getJwkEndpointUrl(), e.getLocalizedMessage() });
@@ -259,10 +260,11 @@ public class ConsumerUtil {
         return signingKey;
     }
 
-    protected Key getJwksKey(JwtConsumerConfig config, JwtContext jwtContext) throws Exception {
+    protected Key getJwksKey(JwtConsumerConfig config, JwtContext jwtContext, MpConfigProperties mpConfigProps)
+            throws Exception {
         JsonWebStructure jwtHeader = getJwtHeader(jwtContext);
         String kid = jwtHeader.getKeyIdHeaderValue();
-        JwKRetriever jwkRetriever = createJwkRetriever(config);
+        JwKRetriever jwkRetriever = createJwkRetriever(config, mpConfigProps);
         Key signingKey = jwkRetriever.getPublicKeyFromJwk(kid, null,
                 config.getUseSystemPropertiesForHttpClientConnections()); // only
                                                                                                                                        // kid
@@ -276,7 +278,7 @@ public class ConsumerUtil {
         return signingKey;
     }
 
-    JwKRetriever createJwkRetriever(JwtConsumerConfig config) {
+    JwKRetriever createJwkRetriever(JwtConsumerConfig config, MpConfigProperties mpConfigProps) {
         JwKRetriever jwkRetriever = null;
         String configuredSignatureAlgorithm = mpConfigProps.getConfiguredSignatureAlgorithm(config);
         String publickey = mpConfigProps.get(MpConfigProperties.PUBLIC_KEY);
@@ -316,7 +318,7 @@ public class ConsumerUtil {
         }
     }
 
-    Key getKeyForJwkDisabled(JwtConsumerConfig config) throws KeyException {
+    Key getKeyForJwkDisabled(JwtConsumerConfig config, MpConfigProperties mpConfigProps) throws KeyException {
         Key signingKey = null;
         String trustedAlias = config.getTrustedAlias();
         String trustStoreRef = config.getTrustStoreRef();
@@ -363,22 +365,24 @@ public class ConsumerUtil {
         }
     }
 
-    Key getSigningKeyForES(JwtConsumerConfig config, JwtContext jwtContext) throws KeyException {
-        return getKeyFromJwkOrTrustStore(config, jwtContext);
+    Key getSigningKeyForES(JwtConsumerConfig config, JwtContext jwtContext, MpConfigProperties mpConfigProps)
+            throws KeyException {
+        return getKeyFromJwkOrTrustStore(config, jwtContext, mpConfigProps);
     }
 
-    protected JwtContext parseJwtWithoutValidation(String jwtString, JwtConsumerConfig config) throws Exception {
+    protected JwtContext parseJwtWithoutValidation(String jwtString, JwtConsumerConfig config,
+            MpConfigProperties mpConfigProps) throws Exception {
         if (jwtString == null || jwtString.isEmpty()) {
             String errorMsg = Tr.formatMessage(tc, "JWT_CONSUMER_NULL_OR_EMPTY_STRING",
                     new Object[] { config.getId(), jwtString });
             throw new InvalidTokenException(errorMsg);
         }
-        checkJwtFormatAgainstConfigRequirements(jwtString, config);
-        return parseNewJwtWithoutValidation(jwtString, config);
+        checkJwtFormatAgainstConfigRequirements(jwtString, config, mpConfigProps);
+        return parseNewJwtWithoutValidation(jwtString, config, mpConfigProps);
     }
 
-    void checkJwtFormatAgainstConfigRequirements(String jwtString, JwtConsumerConfig config)
-            throws InvalidTokenException {
+    void checkJwtFormatAgainstConfigRequirements(String jwtString, JwtConsumerConfig config,
+            MpConfigProperties mpConfigProps) throws InvalidTokenException {
         if (JweHelper.isJwsRequired(config, mpConfigProps) && !JweHelper.isJws(jwtString)) {
             String errorMsg = Tr.formatMessage(tc, "JWS_REQUIRED_BUT_TOKEN_NOT_JWS", new Object[] { config.getId() });
             throw new InvalidTokenException(errorMsg);
@@ -406,8 +410,8 @@ public class ConsumerUtil {
         jwtCache.put(jwtString, config.getId(), jwtContext, config.getClockSkew());
     }
 
-    JwtContext parseNewJwtWithoutValidation(@Sensitive String jwtString, JwtConsumerConfig config)
-            throws InvalidTokenException, InvalidJwtException {
+    JwtContext parseNewJwtWithoutValidation(@Sensitive String jwtString, JwtConsumerConfig config,
+            MpConfigProperties mpConfigProps) throws InvalidTokenException, InvalidJwtException {
         if (JweHelper.isJwe(jwtString)) {
             jwtString = JweHelper.extractJwsFromJweToken(jwtString, config, mpConfigProps);
         }
@@ -416,18 +420,18 @@ public class ConsumerUtil {
         return firstPassJwtConsumer.process(jwtString);
     }
 
-    protected void validateJwtContext(JwtContext jwtContext, String jwtString, JwtConsumerConfig config)
-            throws Exception {
-        Key key = getSigningKey(config, jwtContext);
+    protected void validateJwtContext(JwtContext jwtContext, String jwtString, JwtConsumerConfig config,
+            MpConfigProperties mpConfigProps) throws Exception {
+        Key key = getSigningKey(config, jwtContext, mpConfigProps);
         JwtClaims jwtClaims = jwtContext.getJwtClaims();
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Key from config: " + key);
         }
 
-        validateClaims(jwtClaims, jwtContext, config);
-        validateSignatureAlgorithmWithKey(config, key);
-        validateHeaders(jwtContext, jwtString, config);
+        validateClaims(jwtClaims, jwtContext, config, mpConfigProps);
+        validateSignatureAlgorithmWithKey(config, key, mpConfigProps);
+        validateHeaders(jwtContext, jwtString, config, mpConfigProps);
 
         JwtConsumerBuilder consumerBuilder = initializeJwtConsumerBuilderWithValidation(config, jwtClaims, key);
         JwtConsumer jwtConsumer = consumerBuilder.build();
@@ -435,7 +439,8 @@ public class ConsumerUtil {
     }
 
     @FFDCIgnore(Exception.class)
-    private void validateHeaders(JwtContext jwtContext, String jwtString, JwtConsumerConfig config) throws Exception {
+    private void validateHeaders(JwtContext jwtContext, String jwtString, JwtConsumerConfig config,
+            MpConfigProperties mpConfigProps) throws Exception {
 
         if (isRunningBetaMode() && JweHelper.isJwe(jwtString)) {
             try {
@@ -518,7 +523,8 @@ public class ConsumerUtil {
         return builder;
     }
 
-    void validateClaims(JwtClaims jwtClaims, JwtContext jwtContext, JwtConsumerConfig config)
+    void validateClaims(JwtClaims jwtClaims, JwtContext jwtContext, JwtConsumerConfig config,
+            MpConfigProperties mpConfigProps)
             throws MalformedClaimException, InvalidClaimException, InvalidTokenException {
         String issuer = config.getIssuer();
         if (issuer == null) {
@@ -555,7 +561,7 @@ public class ConsumerUtil {
         }
         validateIssuer(config.getId(), issuer, jwtClaims.getIssuer());
 
-        validateAudience(config, jwtClaims.getAudience());
+        validateAudience(config, jwtClaims.getAudience(), mpConfigProps);
 
         if (!validateAMRClaim(config.getAMRClaim(), getJwtAMRList(jwtClaims))) {
             String msg = Tr.formatMessage(tc, "JWT_AMR_CLAIM_NOT_VALID",
@@ -575,7 +581,8 @@ public class ConsumerUtil {
      * Throws an exception if the provided key is null but the config specifies a
      * signature algorithm other than "none".
      */
-    void validateSignatureAlgorithmWithKey(JwtConsumerConfig config, Key key) throws InvalidClaimException {
+    void validateSignatureAlgorithmWithKey(JwtConsumerConfig config, Key key, MpConfigProperties mpConfigProps)
+            throws InvalidClaimException {
         String signatureAlgorithm = mpConfigProps.getConfiguredSignatureAlgorithm(config);
         if (key == null && signatureAlgorithm != null && !signatureAlgorithm.equalsIgnoreCase("none")) {
             String msg = Tr.formatMessage(tc, "JWT_MISSING_KEY", new Object[] { signatureAlgorithm });
@@ -615,7 +622,8 @@ public class ConsumerUtil {
         return isIssuer;
     }
 
-    void validateAudience(JwtConsumerConfig config, List<String> audiences) throws InvalidClaimException {
+    void validateAudience(JwtConsumerConfig config, List<String> audiences, MpConfigProperties mpConfigProps)
+            throws InvalidClaimException {
         List<String> allowedAudiences = mpConfigProps.getConfiguredAudiences(config);
         if (allowedAudiences == null && config.ignoreAudClaimIfNotConfigured()) {
             return;

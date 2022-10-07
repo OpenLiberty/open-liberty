@@ -53,7 +53,6 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidClaimException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.KeyException;
-import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.common.time.TimeUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
@@ -117,6 +116,8 @@ public class ConsumerUtilTest {
 
     private static final String encodedEmptyJsonString = new String(Base64.encodeBase64("{}".getBytes()));
 
+    private static final MpConfigProperties NO_MP_CONFIG_PROPERTIES = new MpConfigProperties();
+
     public final Mockery mockery = new JUnit4Mockery() {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -140,7 +141,6 @@ public class ConsumerUtilTest {
     private final PublicKey publicKey = mockery.mock(PublicKey.class);
     private final RSAPublicKey rsaPublicKey = mockery.mock(RSAPublicKey.class);
     private final X509Certificate cert = mockery.mock(X509Certificate.class);
-    private final KeyAlgorithmChecker keyAlgChecker = mockery.mock(KeyAlgorithmChecker.class);
 
     @Rule
     public final TestName testName = new TestName();
@@ -196,9 +196,8 @@ public class ConsumerUtilTest {
         TestConsumerUtil01 cu = new TestConsumerUtil01();
         MpConfigProperties propsMap = new MpConfigProperties();
         propsMap.put(MpConfigProperties.ISSUER, "issuerFromMap");
-        cu.setMpConfigProps(propsMap);
         try {
-            cu.validateClaims(jwtClaims, jwtContext, null);
+            cu.validateClaims(jwtClaims, jwtContext, null, propsMap);
         } catch (Exception e) {
             if (e instanceof RuntimeException) {
                 valid = true;
@@ -217,7 +216,8 @@ public class ConsumerUtilTest {
     @Test
     public void testGetSigningKey_nullConfig() {
         try {
-            Key result = consumerUtil.getSigningKey((JwtConsumerConfig) null, (JwtContext) null);
+            Key result = consumerUtil.getSigningKey((JwtConsumerConfig) null, (JwtContext) null,
+                    NO_MP_CONFIG_PROPERTIES);
             assertNull("Result was not null when it should have been. Result: " + result, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -236,7 +236,7 @@ public class ConsumerUtilTest {
                     will(returnValue("SomeUnknownAlg"));
                 }
             });
-            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
+            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, NO_MP_CONFIG_PROPERTIES);
             assertNull("Result was not null when it should have been. Result: " + result, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -258,7 +258,7 @@ public class ConsumerUtilTest {
                 }
             });
             try {
-                Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
+                Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown KeyException but did not. Got key: " + result);
             } catch (KeyException e) {
                 validateException(e, MSG_JWT_ERROR_GETTING_SHARED_KEY + ".+" + MSG_JWT_MISSING_SHARED_KEY);
@@ -282,7 +282,7 @@ public class ConsumerUtilTest {
                     will(returnValue(sharedKey));
                 }
             });
-            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
+            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, NO_MP_CONFIG_PROPERTIES);
             assertNotNull("Result was null when it should not have been.", result);
             assertTrue("Result was not an HmacKey. Result was: " + result, result instanceof HmacKey);
         } catch (Throwable t) {
@@ -311,7 +311,7 @@ public class ConsumerUtilTest {
                 }
             });
             try {
-                Key result = testConsumerUtil.getSigningKey(jwtConfig, jwtContext);
+                Key result = testConsumerUtil.getSigningKey(jwtConfig, jwtContext, NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown Exception but did not. Got key: " + result);
             } catch (Exception e) {
                 validateException(e, MSG_JWT_ERROR_GETTING_PRIVATE_KEY + ".+\\[" + trustedAlias + "\\].+\\["
@@ -327,17 +327,12 @@ public class ConsumerUtilTest {
      */
     @Test
     public void testGetSigningKey_RS256Valid() {
-        consumerUtil.keyAlgChecker = keyAlgChecker;
         try {
             mockery.checking(new Expectations() {
                 {
 
                     allowing(jwtConfig).getSignatureAlgorithm();
                     will(returnValue(RS256));
-                    one(keyAlgChecker).isHSAlgorithm(RS256);
-                    will(returnValue(false));
-                    allowing(keyAlgChecker).isRSAlgorithm(RS256);
-                    will(returnValue(true));
                     one(jwtConfig).getJwkEnabled(); // for jwksUri
                     will(returnValue(false)); //
                     allowing(jwtConfig).getTrustedAlias();
@@ -350,11 +345,11 @@ public class ConsumerUtilTest {
                     will(returnValue(cert));
                     one(cert).getPublicKey();
                     will(returnValue(rsaPublicKey));
-                    one(keyAlgChecker).isPublicKeyValidType(rsaPublicKey, RS256);
-                    will(returnValue(true));
+                    one(rsaPublicKey).getAlgorithm();
+                    will(returnValue("RSA"));
                 }
             });
-            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
+            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, NO_MP_CONFIG_PROPERTIES);
             assertNotNull("Resulting key was null when it should not have been.", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -591,7 +586,8 @@ public class ConsumerUtilTest {
                         will(returnValue(configId));
                     }
                 });
-                JwtContext context = consumerUtil.parseJwtWithoutValidation(emptyToken, jwtConfig);
+                JwtContext context = consumerUtil.parseJwtWithoutValidation(emptyToken, jwtConfig,
+                        NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown Exception but did not. Got context: " + context);
             } catch (Exception e) {
                 validateException(e, MSG_JWT_CONSUMER_NULL_OR_EMPTY_STRING + ".+\\[" + configId + "\\]");
@@ -619,7 +615,8 @@ public class ConsumerUtilTest {
                         will(returnValue(configId));
                     }
                 });
-                JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig);
+                JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig,
+                        NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown Exception but did not. Got context: " + context);
             } catch (Exception e) {
                 validateException(e, MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS + ".+" + configId);
@@ -647,7 +644,8 @@ public class ConsumerUtilTest {
                         will(returnValue(configId));
                     }
                 });
-                JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig);
+                JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig,
+                        NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown Exception but did not. Got context: " + context);
             } catch (Exception e) {
                 validateException(e, MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS + ".+" + configId);
@@ -674,7 +672,8 @@ public class ConsumerUtilTest {
                         will(returnValue(0L));
                     }
                 });
-                JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig);
+                JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig,
+                        NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown Exception but did not. Got context: " + context);
             } catch (Exception e) {
                 // TODO - anything we can wrap this open source exception with?
@@ -694,7 +693,8 @@ public class ConsumerUtilTest {
         try {
             final String tokenString = encodedEmptyJsonString + "." + encodedEmptyJsonString + ".test";
             try {
-                JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig);
+                JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig,
+                        NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown Exception but did not. Got context: " + context);
             } catch (Exception e) {
                 // TODO - anything we can wrap this open source exception with?
@@ -724,7 +724,7 @@ public class ConsumerUtilTest {
                         will(returnValue(consumerConfigId));
                     }
                 });
-                consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig);
+                consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig, NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown Exception but did not.");
             } catch (Exception e) {
                 validateException(e, MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS);
@@ -744,7 +744,7 @@ public class ConsumerUtilTest {
                     will(returnValue(null));
                 }
             });
-            consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig);
+            consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig, NO_MP_CONFIG_PROPERTIES);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -763,7 +763,7 @@ public class ConsumerUtilTest {
                         will(returnValue(consumerConfigId));
                     }
                 });
-                consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig);
+                consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig, NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown Exception but did not.");
             } catch (Exception e) {
                 validateException(e, MSG_JWE_REQUIRED_BUT_TOKEN_NOT_JWE);
@@ -783,7 +783,7 @@ public class ConsumerUtilTest {
                     will(returnValue("myAlias"));
                 }
             });
-            consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig);
+            consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig, NO_MP_CONFIG_PROPERTIES);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1328,7 +1328,7 @@ public class ConsumerUtilTest {
                     will(returnValue(true));
                 }
             });
-            consumerUtil.validateAudience(jwtConfig, audiences);
+            consumerUtil.validateAudience(jwtConfig, audiences, NO_MP_CONFIG_PROPERTIES);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1346,7 +1346,7 @@ public class ConsumerUtilTest {
                     will(returnValue(false));
                 }
             });
-            consumerUtil.validateAudience(jwtConfig, audiences);
+            consumerUtil.validateAudience(jwtConfig, audiences, NO_MP_CONFIG_PROPERTIES);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1364,7 +1364,7 @@ public class ConsumerUtilTest {
                     will(returnValue(false));
                 }
             });
-            consumerUtil.validateAudience(jwtConfig, audiences);
+            consumerUtil.validateAudience(jwtConfig, audiences, NO_MP_CONFIG_PROPERTIES);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1382,7 +1382,7 @@ public class ConsumerUtilTest {
                     will(returnValue(true));
                 }
             });
-            consumerUtil.validateAudience(jwtConfig, audiences);
+            consumerUtil.validateAudience(jwtConfig, audiences, NO_MP_CONFIG_PROPERTIES);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1404,7 +1404,7 @@ public class ConsumerUtilTest {
                 }
             });
             try {
-                consumerUtil.validateAudience(jwtConfig, audiences);
+                consumerUtil.validateAudience(jwtConfig, audiences, NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown an exception but didn't.");
             } catch (InvalidClaimException e) {
                 validateExceptionWithInserts(e, MSG_JWT_AUDIENCE_NOT_TRUSTED, configId);
@@ -1428,7 +1428,7 @@ public class ConsumerUtilTest {
                 }
             });
             try {
-                consumerUtil.validateAudience(jwtConfig, audiences);
+                consumerUtil.validateAudience(jwtConfig, audiences, NO_MP_CONFIG_PROPERTIES);
                 fail("Should have thrown an exception but didn't.");
             } catch (InvalidClaimException e) {
                 validateExceptionWithInserts(e, MSG_JWT_AUDIENCE_NOT_TRUSTED, configId);
