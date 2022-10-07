@@ -1316,7 +1316,7 @@ public class DataTestServlet extends FATServlet {
 
         assertIterableEquals(List.of(10030007L, 10030008L, 10030006L),
                              reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
-                                                                                                Limit.of(3, 2))
+                                                                                                Limit.range(2, 4))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
