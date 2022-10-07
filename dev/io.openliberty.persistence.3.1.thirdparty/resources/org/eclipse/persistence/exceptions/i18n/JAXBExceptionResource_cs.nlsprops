@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -153,7 +153,7 @@
 
 50063=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vytvo\u0159en\u00ed instance t\u0159\u00eddy XmlAdapterClass [{0}]. M\u016f\u017ee to b\u00fdt zp\u016fsobeno t\u00edm, \u017ee t\u0159\u00edda adapt\u00e9ru nem\u00e1 \u017e\u00e1dn\u00fd nulov\u00fd konstruktor argumentu.
 
-50064=T\u0159\u00edda XmlAdapterClass [{0}] neroz\u0161i\u0159uje "javax.xml.bind.annotation.adapters.XmlAdapter" podle o\u010dek\u00e1v\u00e1n\u00ed. Je nezbytn\u00e9, aby t\u0159\u00edda adapt\u00e9ru roz\u0161i\u0159ovala "javax.xml.bind.annotation.adapters.XmlAdapter" a deklarovala metody "public abstract BoundType unmarshal(ValueType v)" a "public abstract ValueType marshal(BoundType v)".
+50064=T\u0159\u00edda XmlAdapterClass [{0}] neroz\u0161i\u0159uje "jakarta.xml.bind.annotation.adapters.XmlAdapter" podle o\u010dek\u00e1v\u00e1n\u00ed. Je nezbytn\u00e9, aby t\u0159\u00edda adapt\u00e9ru roz\u0161i\u0159ovala "jakarta.xml.bind.annotation.adapters.XmlAdapter" a deklarovala metody "public abstract BoundType unmarshal(ValueType v)" a "public abstract ValueType marshal(BoundType v)".
 
 50065=Byl ur\u010den neplatn\u00fd adapt\u00e9r XmlJavaTypeAdapter [{0}] pro bal\u00edk [{1}]. Mo\u017enou p\u0159\u00ed\u010dinou je nespr\u00e1vn\u00fd n\u00e1zev t\u0159\u00eddy adapt\u00e9ru nebo nastaven\u00ed chybn\u00e9ho zavad\u011b\u010de.
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -517,7 +517,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Ignorata l''impostazione c
 
 metadata_warning_ignore_mapped_superclass_read_only=Ignorata l''impostazione sola lettura sulla superclasse associata [{1}] per la classe entit\u00e0 [{0}] poich\u00e9 metadati sola lettura sono stati precedentemente rilevati per tale entit\u00e0 (sull''entit\u00e0 stessa oppure un''altra superclasse associata).
 
-metadata_warning_ignore_mapping_metadata=Ignorati i metadati javax.persistence applicati all''attributo [{0}] dalla classe [{1}]. I metadati javax.persistence vengono ignorati in campi o propriet\u00e0 transitori, statici o astratti.
+metadata_warning_ignore_mapping_metadata=Ignorati i metadati jakarta.persistence applicati all''attributo [{0}] dalla classe [{1}]. I metadati jakarta.persistence vengono ignorati in campi o propriet\u00e0 transitori, statici o astratti.
 
 metadata_warning_ignore_serialized=Ignorata la serializzazione predefinita sull''elemento [{1}] nella classe entit\u00e0 [{0}] poich\u00e9 \u00e8 specificata la conversione metadati EclipseLink.
 
@@ -581,7 +581,7 @@ no_jar_entry_migratable_in_ear=Nessuna delle voci jar nel file EAR di input ({0}
 
 no_session_found=Impossibile trovare la sessione con il nome [{0}] nel file session.xml [{1}]
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=L''elemento [{1}] nella classe entit\u00e0 [{0}] utilizza un tipo di raccolta [{2}] quando la specifica JPA supporta solo java.util.Collection, java.util.Set, java.util.List o java.util.Map.  Questo tipo \u00e8 supportato con il caricamento eager; l''utilizzo del caricamento lazy con questo tipo di raccolta richiede una configurazione aggiuntiva e un''implementazione IndirectContainer che estende [{2}] o l''impostazione dell''associazione sull''utilizzo della via indiretta di base e il tipo deve essere ValueholderInterface.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=L''elemento [{1}] nella classe entit\u00e0 [{0}] utilizza un tipo di raccolta [{2}] quando la specifica Jakarta Persistence supporta solo java.util.Collection, java.util.Set, java.util.List o java.util.Map.  Questo tipo \u00e8 supportato con il caricamento eager; l''utilizzo del caricamento lazy con questo tipo di raccolta richiede una configurazione aggiuntiva e un''implementazione IndirectContainer che estende [{2}] o l''impostazione dell''associazione sull''utilizzo della via indiretta di base e il tipo deve essere ValueholderInterface.
 
 objectchangepolicy_turned_off=Traccia della modifica disattivata per: {0}
 

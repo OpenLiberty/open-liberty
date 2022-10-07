@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -153,7 +153,7 @@
 
 50063=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by utworzenia instancji klasy XmlAdapterClass [{0}]. Mo\u017cliw\u0105 przyczyn\u0105 jest brak konstruktora bezargumentowego w klasie adaptera.
 
-50064=Klasa XmlAdapterClass [{0}] nie rozszerza klasy javax.xml.bind.annotation.adapters.XmlAdapter, co jest oczekiwane.  Wymagane jest, aby klasa adaptera rozszerza\u0142a klas\u0119 javax.xml.bind.annotation.adapters.XmlAdapter i deklarowa\u0142a metody: public abstract BoundType unmarshal(ValueType v) oraz public abstract ValueType marshal(BoundType v).
+50064=Klasa XmlAdapterClass [{0}] nie rozszerza klasy jakarta.xml.bind.annotation.adapters.XmlAdapter, co jest oczekiwane.  Wymagane jest, aby klasa adaptera rozszerza\u0142a klas\u0119 jakarta.xml.bind.annotation.adapters.XmlAdapter i deklarowa\u0142a metody: public abstract BoundType unmarshal(ValueType v) oraz public abstract ValueType marshal(BoundType v).
 
 50065=Okre\u015blono niepoprawny adapter XmlJavaTypeAdapter [{0}] dla pakietu [{1}]. Mo\u017cliwe przyczyny to ustawiona niepoprawna nazwa klasy adaptera lub b\u0142\u0119dny program \u0142aduj\u0105cy.
 

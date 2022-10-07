@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -239,9 +239,9 @@ jpa_criteriaapi_no_corresponding_element_in_result=Elementul {0} nu corespunde u
 
 jpa_criteriaapi_null_literal_value=Valoare nul\u0103 transmis\u0103 \u00een CriteriaBuilder.literal().  V\u0103 rug\u0103m s\u0103 folosi\u0163i \u00een schimb nullLiteral(Class<T> resultClass).
 
-jpa_helper_invalid_entity_manager_factory=JPA EntityManagerFactory {0} nu este o EclipseLink EntityManagerFactory \u015fi prin urmare, nu poate fi convertit\u0103.
+jpa_helper_invalid_entity_manager_factory=Jakarta Persistence EntityManagerFactory {0} nu este o EclipseLink EntityManagerFactory \u015fi prin urmare, nu poate fi convertit\u0103.
 
-jpa_helper_invalid_entity_manager_factory_for_refresh=JPA EntityManagerFactory {0} nu este o EclipseLink EntityManagerFactory \u015fi prin urmare, metadatele sale nu pot fi re\u00eemprosp\u0103tate.
+jpa_helper_invalid_entity_manager_factory_for_refresh=Jakarta Persistence EntityManagerFactory {0} nu este o EclipseLink EntityManagerFactory \u015fi prin urmare, metadatele sale nu pot fi re\u00eemprosp\u0103tate.
 
 jpa_helper_invalid_query=Interogarea de tipul {0} nu este o interogare EclipseLink \u015fi, prin urmare, nu a putut fi convertit\u0103.
 

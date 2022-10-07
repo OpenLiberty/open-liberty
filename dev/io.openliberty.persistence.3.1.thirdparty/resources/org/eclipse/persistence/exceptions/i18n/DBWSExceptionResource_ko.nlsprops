@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-47000="[{0}]" \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+47000="[{0}]" \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4
 
 47001=O-R \ud504\ub85c\uc81d\ud2b8\uc5d0\uc11c [{1}] \uc870\uc791\uc5d0 \ub300\ud55c [{0}] \ub514\uc2a4\ud06c\ub9bd\ud130\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc74c
 

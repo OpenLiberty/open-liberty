@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@
 
 2005=Error de espera en el manejador de conexi\u00f3n de secuenciaci\u00f3n para DatabaseSession.
 
-2006=Se han intentado adquirir valores de secuenciaci\u00f3n a trav\u00e9s de una sola conexi\u00f3n ({0}) simult\u00e1neamente en varias hebras
+2006=Se han intentado adquirir valores de secuenciaci\u00f3n a trav\u00e9s de una sola conexi\u00f3n ({0}) simult\u00e1neamente en varias hebras.
 
 2007=Se ha excedido el n\u00famero m\u00e1ximo de intentos de bloquear el objeto: {0}.  No se ha podido clonar el objeto.
 
