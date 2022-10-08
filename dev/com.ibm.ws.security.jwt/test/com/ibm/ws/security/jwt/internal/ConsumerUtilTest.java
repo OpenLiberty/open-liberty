@@ -826,7 +826,7 @@ public class ConsumerUtilTest {
                     will(returnValue(3600L));
                 }
             });
-            consumerUtil.cacheJwtContext(tokenString, jwtContext, jwtConfig);
+            consumerUtil.cacheJwtContext(tokenString, jwtContext, jwtConfig, NO_MP_CONFIG_PROPERTIES);
             JwtContext result = consumerUtil.getJwtContextFromCache(tokenString, jwtConfig);
             assertEquals("Result did not match the expected cache object.", jwtContext, result);
         } catch (Throwable t) {
@@ -850,7 +850,7 @@ public class ConsumerUtilTest {
                     will(returnValue(0L));
                 }
             });
-            consumerUtil.cacheJwtContext(tokenString, jwtContext, jwtConfig);
+            consumerUtil.cacheJwtContext(tokenString, jwtContext, jwtConfig, NO_MP_CONFIG_PROPERTIES);
             JwtContext result = consumerUtil.getJwtContextFromCache(tokenString, jwtConfig);
             assertNull("Should not have found anything in the cache, but got: " + result, result);
         } catch (Throwable t) {
