@@ -36,7 +36,7 @@ public class OpenAPITest {
 
     public static final String SERVER_NAME = "openAPIserver";
 
-    public static final String APP_NAME = "restClient";
+    public static final String APP_NAME = "OpenAPI";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -44,7 +44,7 @@ public class OpenAPITest {
     @BeforeClass
     public static void exportWebApp() throws Exception {
 
-        WebArchive webappWar = ShrinkWrap.create(WebArchive.class, "OpenAPI.war")
+        WebArchive webappWar = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addClass(ApplicationRoot.class)
                         .addClass(Endpoints.class);
 
