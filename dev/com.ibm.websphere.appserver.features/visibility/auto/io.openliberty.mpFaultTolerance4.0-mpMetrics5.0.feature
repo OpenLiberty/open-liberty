@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mpFaultTolerance4.0-metrics5.0
+symbolicName=io.openliberty.mpFaultTolerance4.0-mpMetrics5.0
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.mpFaultTolerance-4.0))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.mpMetrics-5.0)))"
 IBM-Install-Policy: when-satisfied
