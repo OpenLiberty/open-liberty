@@ -50,13 +50,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.docker.KeycloakContainer;
 
 /**
- * Test OIDC with distributed authentication cache using the openidConnectClient configuation element.
- *
- * TODO There are currently limitations with Jose4J and some of the private credentials for OIDC cannot be serialized
- * and therefore, cannot be distributed.
- *
- * - com.ibm.ws.security.jwt.internal.JwtTokenConsumerImpl (oidcLogin / org.jose4j.jwx.Headers are not serializable)
- * - com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl (openidConnectClient / org.jose4j.jwt.JwtClaims are not serializable)
+ * Test OIDC with distributed authentication cache using the openidConnectClient configuration element.
  */
 @SkipIfSysProp("skip.tests=true")
 @SuppressWarnings("restriction")
@@ -68,8 +62,8 @@ public class JCacheOidcClientAuthenticationCacheTest extends BaseTestCase {
     @Server("io.openliberty.jcache.internal.fat.oidcclient.auth.cache.1")
     public static LibertyServer server1;
 
-//    @Server("io.openliberty.jcache.internal.fat.oidcclient.auth.cache.2")
-//    public static LibertyServer server2;
+    @Server("io.openliberty.jcache.internal.fat.oidcclient.auth.cache.2")
+    public static LibertyServer server2;
 
     private static KeycloakContainer keycloak;
 
@@ -96,14 +90,14 @@ public class JCacheOidcClientAuthenticationCacheTest extends BaseTestCase {
          * The oidcLogin in socialLogin requires TLS for some operations, so we need to trust
          * the Keycloak server.
          */
-        keycloak.createTrustFromKeycloak("trustPassword", server1); /* , server2); */
+        keycloak.createTrustFromKeycloak("trustPassword", server1, server2);
 
         /*
          * EE9 transformations.
          */
         if (JakartaEE9Action.isActive()) {
             JakartaEE9Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/helloworld.war"));
-//            JakartaEE9Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/helloworld.war"));
+            JakartaEE9Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/helloworld.war"));
         }
     }
 
@@ -125,12 +119,12 @@ public class JCacheOidcClientAuthenticationCacheTest extends BaseTestCase {
         waitForDefaultHttpsEndpoint(server1);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
-//        /*
-//         * Update and start server 2.
-//         */
-//        startServer2(server2, groupName);
-//        waitForDefaultHttpsEndpoint(server2);
-//        waitForExistingJCache(server2, AUTH_CACHE_NAME);
+        /*
+         * Update and start server 2.
+         */
+        startServer2(server2, groupName);
+        waitForDefaultHttpsEndpoint(server2);
+        waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
 
         /*
          * Register server1 as an OAuth20 client in Keycloak.
@@ -148,11 +142,11 @@ public class JCacheOidcClientAuthenticationCacheTest extends BaseTestCase {
         openidConnectClient.setDiscoveryEndpointUrl(keycloak.getKeycloakAdmin().getOidcDiscoveryEndpoint(TEST_REALM));
         updateConfigDynamically(server1, config);
 
-//        config = server2.getServerConfiguration().clone();
-//        openidConnectClient = config.getOpenidConnectClients().get(0);
-//        openidConnectClient.setClientSecret(keycloakClientSecret);
-//        openidConnectClient.setDiscoveryEndpointUrl(keycloak.getKeycloakAdmin().getOidcDiscoveryEndpoint(TEST_REALM));
-//        updateConfigDynamically(server2, config);
+        config = server2.getServerConfiguration().clone();
+        openidConnectClient = config.getOpenidConnectClients().get(0);
+        openidConnectClient.setClientSecret(keycloakClientSecret);
+        openidConnectClient.setDiscoveryEndpointUrl(keycloak.getKeycloakAdmin().getOidcDiscoveryEndpoint(TEST_REALM));
+        updateConfigDynamically(server2, config);
     }
 
     @After
@@ -176,16 +170,16 @@ public class JCacheOidcClientAuthenticationCacheTest extends BaseTestCase {
              * We should not have cleared the authentication cache's JCache.
              */
             assertAuthCacheJCacheNotCleared(server1);
-//            assertAuthCacheJCacheNotCleared(server2);
+            assertAuthCacheJCacheNotCleared(server2);
         } finally {
             /*
              * Stop the servers in the reverse order they were started.
              */
-//            try {
-//                stopServer(server2);
-//            } finally {
-            stopServer(server1);
-//            }
+            try {
+                stopServer(server2);
+            } finally {
+                stopServer(server1);
+            }
         }
     }
 
@@ -208,7 +202,7 @@ public class JCacheOidcClientAuthenticationCacheTest extends BaseTestCase {
     @Test
     public void authcache_oidc_openidconnectclient() throws Exception {
         final String sp1Resource = "http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/helloworld/rest/helloworld";
-//        final String sp2Resource = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort() + "/helloworld/rest/helloworld";
+        final String sp2Resource = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort() + "/helloworld/rest/helloworld";
 
         WebClient webClient = null;
         try {
@@ -226,40 +220,37 @@ public class JCacheOidcClientAuthenticationCacheTest extends BaseTestCase {
             assertResponseContainsOidcClientCredentials(response);
 
             /*
-             * The LTPA token is stored in the WAS_ cookie.
+             * The SSO cookie is stored in the cookie configured under webAppSecurity->ssoCookieName.
              */
-            String ltpaToken = null;
+            String ssoCookie = null;
             for (Cookie cookie : webClient.getCookies(URI.create(sp1Resource).toURL())) {
-                if (cookie.getName().startsWith("WAS_")) {
-                    ltpaToken = cookie.getValue();
+                if (cookie.getName().equals("WAS_123456789")) {
+                    ssoCookie = cookie.getValue();
                     break;
                 }
             }
 
             /*
              * 2. Use the LTPA token to authenticate with server1. This will result in a hit
-             * to the JCache authentication cache.
+             * to the JCache authentication cache. If the subject was not in the cache, we
+             * will get a redirect to authenticate.
              */
             page = buildGetRequest(webClient, sp1Resource);
             response = page.getWebResponse().getContentAsString();
             assertResponseContainsCustomCredentials(response);
             assertResponseContainsOidcClientCredentials(response);
-            assertJCacheLtpaAuthCacheHit(false, server1, ltpaToken);
-            assertInMemoryLtpaAuthCacheHit(true, server1, ltpaToken);
+            assertJCacheLtpaAuthCacheHit(true, server1, ssoCookie);
 
             /*
-             * TODO Can re-enable this code if/when we support distributing OIDC credentials.
+             * 3. Use the LTPA token to authenticate with server2. This will result in hit
+             * to the JCache authentication cache. If the subject was not in the cache, we
+             * will get a redirect to authenticate.
              */
-//            /*
-//             * 3. Use the LTPA token to authenticate with server2. This will result in hit
-//             * to the JCache authentication cache.
-//             */
-//            page = buildGetRequest(webClient, sp2Resource);
-//            response = page.getWebResponse().getContentAsString();
-//            assertResponseContainsCustomCredentials(response);
-//            assertResponseContainsOidcClientCredentials(response);
-//            assertLtpaAuthCacheHit(true, server2, ltpaToken);
-//            assertInMemoryLtpaAuthCacheHit(false, server2, ltpaToken);
+            page = buildGetRequest(webClient, sp2Resource);
+            response = page.getWebResponse().getContentAsString();
+            assertResponseContainsCustomCredentials(response);
+            assertResponseContainsOidcClientCredentials(response);
+            assertJCacheLtpaAuthCacheHit(true, server2, ssoCookie);
 
         } finally {
             TestHelpers.destroyWebClient(webClient);

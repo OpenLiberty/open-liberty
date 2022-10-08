@@ -33,6 +33,9 @@ public class EndpointInformationServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
+        res.addHeader("My-Response-Header", "resHeader1");
+        res.addHeader("My-Response-Header", "resHeader2");
+
         PrintWriter pw = res.getWriter();
 
         pw.println("Endpoint Information Servlet Test");

@@ -12,6 +12,9 @@ package io.openliberty.microprofile.metrics50.internal;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
+import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -218,6 +221,8 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
          * Create ClassLoaderIdentity
          */
         ClassLoaderConfiguration clConfig = classLoadingService.createClassLoaderConfiguration();
+        clConfig.setProtectionDomain(new ProtectionDomain(new CodeSource(null, new Certificate[] {}),
+                this.getClass().getProtectionDomain().getPermissions()));
         ClassLoaderIdentity cid = classLoadingService.createIdentity("smallrye", "metrics");
         clConfig.setId(cid);
 

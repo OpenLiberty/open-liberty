@@ -33,7 +33,7 @@ Export-Package: \
 	io.openliberty.security.oidcclientcore.http, \
 	io.openliberty.security.oidcclientcore.token, \
 	io.openliberty.security.oidcclientcore.userinfo, \
-        io.openliberty.security.oidcclientcore.logout
+	io.openliberty.security.oidcclientcore.logout
 
 -dsannotations: \
 	io.openliberty.security.oidcclientcore.http.EndpointRequest,\
@@ -51,12 +51,10 @@ Export-Package: \
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
-	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.common.encoder;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.ssl;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.ws.security.common.jsonwebkey;version=latest
 

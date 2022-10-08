@@ -58,8 +58,6 @@ public class JCacheAuthCache implements AuthCache {
         NOT_SERIALIZABLE_CREDS.add("sun.security.jgss.GSSCredentialImpl"); // SPNEGO
         NOT_SERIALIZABLE_CREDS.add("com.ibm.security.jgss.GSSCredentialImpl"); // SPNEGO
         NOT_SERIALIZABLE_CREDS.add("com.sun.security.jgss.ExtendedGSSCredentialImpl"); // SPNEGO
-        NOT_SERIALIZABLE_CREDS.add("com.ibm.ws.security.jwt.internal.JwtTokenConsumerImpl"); // OIDC (oidcLogin)
-        NOT_SERIALIZABLE_CREDS.add("com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl"); // OIDC (openidConnectClient)
     }
 
     /**

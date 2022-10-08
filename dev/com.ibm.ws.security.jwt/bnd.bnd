@@ -103,7 +103,8 @@ Service-Component: \
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="\
       service.vendor=IBM,\
-      classes=com.ibm.ws.security.jwt.internal.ClaimsImpl"
+      classes=com.ibm.ws.security.jwt.internal.ClaimsImpl|\
+              com.ibm.ws.security.jwt.internal.JwtTokenConsumerImpl"
 
 instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
 
