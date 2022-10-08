@@ -979,6 +979,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private void writeFeatureChangeMessages(long startTime, ProvisioningMode provisioningMode) {
         String time = TimestampUtils.getElapsedTimeNanos(startTime);
 
+        if (provisioningMode == ProvisioningMode.INITIAL_PROVISIONING && CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
+            time = TimestampUtils.getElapsedTime();
+        }
+
         if (provisioningMode == ProvisioningMode.UPDATE) {
             Tr.audit(tc, "COMPLETE_AUDIT", time);
         } else {
