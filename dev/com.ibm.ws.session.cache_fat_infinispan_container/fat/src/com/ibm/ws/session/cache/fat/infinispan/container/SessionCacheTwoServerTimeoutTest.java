@@ -85,11 +85,9 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         }
 
         serverA.addEnvVar("INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
-        serverA.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile,
-                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
+        serverA.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile));
         serverB.addEnvVar("INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
-        serverB.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile,
-                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
+        serverB.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile));
 
         // Use HTTP session on serverA before running any tests, so that the time it takes to initialize
         // the JCache provider does not interfere with timing of tests. Invoking this before starting

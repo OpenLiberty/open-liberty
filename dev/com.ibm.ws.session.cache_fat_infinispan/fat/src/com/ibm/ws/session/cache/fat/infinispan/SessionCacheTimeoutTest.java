@@ -70,7 +70,6 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         Map<String, String> options = server.getJvmOptionsAsMap();
         options.put("-Dinfinispan.cluster.name", rand);
         options.put("-Dsession.cache.config.file", sessionCacheConfigFile);
-        options.put("-Dcom.ibm.ws.beta.edition", "true"); // TODO Remove when JCache is GA'd
         server.setJvmOptions(options);
         server.startServer();
 

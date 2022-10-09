@@ -65,12 +65,10 @@ public class HazelcastClientTest extends FATServletClient {
         String rand = UUID.randomUUID().toString();
         serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
                                             "-Dhazelcast.config.file=" + serverAhazelcastConfigFile,
-                                            "-Dsession.cache.config.file=" + sessionCacheConfigFile,
-                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
+                                            "-Dsession.cache.config.file=" + sessionCacheConfigFile));
         serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
                                             "-Dhazelcast.config=" + configLocation,
-                                            "-Dsession.cache.config.file=" + sessionCacheConfigFile,
-                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
+                                            "-Dsession.cache.config.file=" + sessionCacheConfigFile));
     }
 
     @AfterClass
