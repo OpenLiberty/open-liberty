@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,8 +52,6 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     private final EllipticCurve ellipticCurve = mockery.mock(EllipticCurve.class);
     private final ECField ecField = mockery.mock(ECField.class);
 
-    KeyAlgorithmChecker checker;
-
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         outputMgr.captureStreams();
@@ -62,7 +60,6 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     @Before
     public void setUp() throws Exception {
         System.out.println("Entering test: " + testName.getMethodName());
-        checker = new KeyAlgorithmChecker();
     }
 
     @After
@@ -80,42 +77,42 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     @Test
     public void test_isHSAlgorithm_nullAlgorithm() {
         String algorithm = null;
-        boolean result = checker.isHSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isHSAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an HS algorithm.", result);
     }
 
     @Test
     public void test_isHSAlgorithm_emptyString() {
         String algorithm = "";
-        boolean result = checker.isHSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isHSAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an HS algorithm.", result);
     }
 
     @Test
     public void test_isHSAlgorithm_superStringPrefix() {
         String algorithm = "DHS256";
-        boolean result = checker.isHSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isHSAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an HS algorithm.", result);
     }
 
     @Test
     public void test_isHSAlgorithm_superStringSuffix() {
         String algorithm = "HS256A";
-        boolean result = checker.isHSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isHSAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an HS algorithm.", result);
     }
 
     @Test
     public void test_isHSAlgorithm_HS256() {
         String algorithm = "HS256";
-        boolean result = checker.isHSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isHSAlgorithm(algorithm);
         assertTrue("Algorithm [" + algorithm + "] was not considered an HS algorithm.", result);
     }
 
     @Test
     public void test_isHSAlgorithm_HS10240() {
         String algorithm = "HS10240";
-        boolean result = checker.isHSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isHSAlgorithm(algorithm);
         assertTrue("Algorithm [" + algorithm + "] was not considered an HS algorithm.", result);
     }
 
@@ -123,7 +120,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     public void test_isPublicKeyValidType_nullKey() {
         Key key = null;
         String algorithm = "RS256";
-        boolean result = checker.isPublicKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPublicKeyValidType(key, algorithm);
         assertTrue("Call with null Key should have been considered valid; up to the caller to decide what to do with null inputs.", result);
     }
 
@@ -131,7 +128,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     public void test_isPublicKeyValidType_nullAlgorithm() {
         Key key = rsaPublicKey;
         String algorithm = null;
-        boolean result = checker.isPublicKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPublicKeyValidType(key, algorithm);
         assertTrue("Call with null algorithm should have been considered valid; up to the caller to decide what to do with null inputs.", result);
     }
 
@@ -145,7 +142,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("EC"));
             }
         });
-        boolean result = checker.isPublicKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPublicKeyValidType(key, algorithm);
         assertFalse("Key " + key + " should not have been considered valid for algorithm " + algorithm + ".", result);
     }
 
@@ -159,7 +156,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("RSA"));
             }
         });
-        boolean result = checker.isPublicKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPublicKeyValidType(key, algorithm);
         assertTrue("Key " + key + " should have been considered valid for algorithm " + algorithm + ".", result);
     }
 
@@ -173,7 +170,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("RSA"));
             }
         });
-        boolean result = checker.isPublicKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPublicKeyValidType(key, algorithm);
         assertFalse("Key " + key + " should not have been considered valid for algorithm " + algorithm + ".", result);
     }
 
@@ -196,7 +193,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue(fieldSize));
             }
         });
-        boolean result = checker.isPublicKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPublicKeyValidType(key, algorithm);
         assertTrue("Key " + key + " should have been considered valid for algorithm " + algorithm + ".", result);
     }
 
@@ -204,7 +201,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     public void test_isPublicKeyValidType_unknownAlgorithm() {
         Key key = publicKey;
         String algorithm = "HS256";
-        boolean result = checker.isPublicKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPublicKeyValidType(key, algorithm);
         assertFalse("Key " + key + " should not have been considered valid for algorithm " + algorithm + ".", result);
     }
 
@@ -217,7 +214,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("DSA"));
             }
         });
-        boolean result = checker.isValidRSAPublicKey(key);
+        boolean result = KeyAlgorithmChecker.isValidRSAPublicKey(key);
         assertFalse("Key with DSA algorithm should not have been considered a valid RSA public key.", result);
     }
 
@@ -230,7 +227,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("RSA"));
             }
         });
-        boolean result = checker.isValidRSAPublicKey(key);
+        boolean result = KeyAlgorithmChecker.isValidRSAPublicKey(key);
         assertFalse("Generic PublicKey type should not have been considered a valid RSA public key.", result);
     }
 
@@ -243,7 +240,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("RSA"));
             }
         });
-        boolean result = checker.isValidRSAPublicKey(key);
+        boolean result = KeyAlgorithmChecker.isValidRSAPublicKey(key);
         assertTrue("Key " + key + " should have been considered a valid RSA public key.", result);
     }
 
@@ -257,7 +254,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("RSA"));
             }
         });
-        boolean result = checker.isValidECPublicKey(supportedSigAlg, key);
+        boolean result = KeyAlgorithmChecker.isValidECPublicKey(supportedSigAlg, key);
         assertFalse("Key with RSA algorithm should not have been considered a valid EC public key.", result);
     }
 
@@ -271,7 +268,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("EC"));
             }
         });
-        boolean result = checker.isValidECPublicKey(supportedSigAlg, key);
+        boolean result = KeyAlgorithmChecker.isValidECPublicKey(supportedSigAlg, key);
         assertFalse("Key " + key + " should not have been considered a valid EC public key.", result);
     }
 
@@ -295,7 +292,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue(fieldSize));
             }
         });
-        boolean result = checker.isValidECPublicKey(supportedSigAlg, key);
+        boolean result = KeyAlgorithmChecker.isValidECPublicKey(supportedSigAlg, key);
         assertTrue("Key with field size " + fieldSize + " should have been considered a valid " + supportedSigAlg + " public key.", result);
     }
 
@@ -303,7 +300,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     public void test_isPrivateKeyValidType_nullKey() {
         Key key = null;
         String algorithm = "RS256";
-        boolean result = checker.isPrivateKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPrivateKeyValidType(key, algorithm);
         assertTrue("Call with null Key should have been considered valid; up to the caller to decide what to do with null inputs.", result);
     }
 
@@ -311,7 +308,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     public void test_isPrivateKeyValidType_nullAlgorithm() {
         Key key = rsaPrivateKey;
         String algorithm = null;
-        boolean result = checker.isPrivateKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPrivateKeyValidType(key, algorithm);
         assertTrue("Call with null algorithm should have been considered valid; up to the caller to decide what to do with null inputs.", result);
     }
 
@@ -325,7 +322,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("EC"));
             }
         });
-        boolean result = checker.isPrivateKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPrivateKeyValidType(key, algorithm);
         assertFalse("Key " + key + " should not have been considered valid for algorithm " + algorithm + ".", result);
     }
 
@@ -339,7 +336,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("RSA"));
             }
         });
-        boolean result = checker.isPrivateKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPrivateKeyValidType(key, algorithm);
         assertTrue("Key " + key + " should have been considered valid for algorithm " + algorithm + ".", result);
     }
 
@@ -353,7 +350,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("RSA"));
             }
         });
-        boolean result = checker.isPrivateKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPrivateKeyValidType(key, algorithm);
         assertFalse("Key " + key + " should not have been considered valid for algorithm " + algorithm + ".", result);
     }
 
@@ -376,7 +373,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue(fieldSize));
             }
         });
-        boolean result = checker.isPrivateKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPrivateKeyValidType(key, algorithm);
         assertTrue("Key " + key + " should have been considered valid for algorithm " + algorithm + ".", result);
     }
 
@@ -384,49 +381,49 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     public void test_isPrivateKeyValidType_unknownAlgorithm() {
         Key key = privateKey;
         String algorithm = "HS256";
-        boolean result = checker.isPrivateKeyValidType(key, algorithm);
+        boolean result = KeyAlgorithmChecker.isPrivateKeyValidType(key, algorithm);
         assertFalse("Key " + key + " should not have been considered valid for algorithm " + algorithm + ".", result);
     }
 
     @Test
     public void test_isRSAlgorithm_nullAlgorithm() {
         String algorithm = null;
-        boolean result = checker.isRSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isRSAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an RS algorithm.", result);
     }
 
     @Test
     public void test_isRSAlgorithm_emptyString() {
         String algorithm = "";
-        boolean result = checker.isRSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isRSAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an RS algorithm.", result);
     }
 
     @Test
     public void test_isRSAlgorithm_superStringPrefix() {
         String algorithm = "DRS256";
-        boolean result = checker.isRSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isRSAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an RS algorithm.", result);
     }
 
     @Test
     public void test_isRSAlgorithm_superStringSuffix() {
         String algorithm = "RS256A";
-        boolean result = checker.isRSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isRSAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an RS algorithm.", result);
     }
 
     @Test
     public void test_isRSAlgorithm_RS256() {
         String algorithm = "RS256";
-        boolean result = checker.isRSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isRSAlgorithm(algorithm);
         assertTrue("Algorithm [" + algorithm + "] was not considered an RS algorithm.", result);
     }
 
     @Test
     public void test_isRSAlgorithm_RS10240() {
         String algorithm = "RS10240";
-        boolean result = checker.isRSAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isRSAlgorithm(algorithm);
         assertTrue("Algorithm [" + algorithm + "] was not considered an RS algorithm.", result);
     }
 
@@ -439,7 +436,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("DSA"));
             }
         });
-        boolean result = checker.isValidRSAPrivateKey(key);
+        boolean result = KeyAlgorithmChecker.isValidRSAPrivateKey(key);
         assertFalse("Key with DSA algorithm should not have been considered a valid RSA private key.", result);
     }
 
@@ -452,7 +449,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("RSA"));
             }
         });
-        boolean result = checker.isValidRSAPrivateKey(key);
+        boolean result = KeyAlgorithmChecker.isValidRSAPrivateKey(key);
         assertFalse("Generic PrivateKey type should not have been considered a valid RSA private key.", result);
     }
 
@@ -465,49 +462,49 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("RSA"));
             }
         });
-        boolean result = checker.isValidRSAPrivateKey(key);
+        boolean result = KeyAlgorithmChecker.isValidRSAPrivateKey(key);
         assertTrue("Key " + key + " should have been considered a valid RSA private key.", result);
     }
 
     @Test
     public void test_isESAlgorithm_nullAlgorithm() {
         String algorithm = null;
-        boolean result = checker.isESAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isESAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an ES algorithm.", result);
     }
 
     @Test
     public void test_isESAlgorithm_emptyString() {
         String algorithm = "";
-        boolean result = checker.isESAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isESAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an ES algorithm.", result);
     }
 
     @Test
     public void test_isESAlgorithm_superStringPrefix() {
         String algorithm = "DES256";
-        boolean result = checker.isESAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isESAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an ES algorithm.", result);
     }
 
     @Test
     public void test_isESAlgorithm_superStringSuffix() {
         String algorithm = "ES256A";
-        boolean result = checker.isESAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isESAlgorithm(algorithm);
         assertFalse("Algorithm [" + algorithm + "] was considered an ES algorithm.", result);
     }
 
     @Test
     public void test_isESAlgorithm_ES256() {
         String algorithm = "ES256";
-        boolean result = checker.isESAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isESAlgorithm(algorithm);
         assertTrue("Algorithm [" + algorithm + "] was not considered an ES algorithm.", result);
     }
 
     @Test
     public void test_isESAlgorithm_ES10240() {
         String algorithm = "ES10240";
-        boolean result = checker.isESAlgorithm(algorithm);
+        boolean result = KeyAlgorithmChecker.isESAlgorithm(algorithm);
         assertTrue("Algorithm [" + algorithm + "] was not considered an ES algorithm.", result);
     }
 
@@ -521,7 +518,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("RSA"));
             }
         });
-        boolean result = checker.isValidECPrivateKey(supportedSigAlg, key);
+        boolean result = KeyAlgorithmChecker.isValidECPrivateKey(supportedSigAlg, key);
         assertFalse("Key with RSA algorithm should not have been considered a valid EC private key.", result);
     }
 
@@ -535,7 +532,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue("EC"));
             }
         });
-        boolean result = checker.isValidECPrivateKey(supportedSigAlg, key);
+        boolean result = KeyAlgorithmChecker.isValidECPrivateKey(supportedSigAlg, key);
         assertFalse("Key " + key + " should not have been considered a valid EC private key.", result);
     }
 
@@ -558,7 +555,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue(fieldSize));
             }
         });
-        boolean result = checker.isValidECPrivateKey(supportedSigAlg, key);
+        boolean result = KeyAlgorithmChecker.isValidECPrivateKey(supportedSigAlg, key);
         assertTrue("Key with field size " + fieldSize + " should have been considered a valid " + supportedSigAlg + " private key.", result);
     }
 
@@ -579,7 +576,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue(fieldSize));
             }
         });
-        boolean result = checker.isValidECKeyParameters(supportedSigAlg, key);
+        boolean result = KeyAlgorithmChecker.isValidECKeyParameters(supportedSigAlg, key);
         assertFalse("Key with field size " + fieldSize + " should not have been considered a valid " + supportedSigAlg + " private key.", result);
     }
 
@@ -600,7 +597,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue(fieldSize));
             }
         });
-        boolean result = checker.isValidECKeyParameters(supportedSigAlg, key);
+        boolean result = KeyAlgorithmChecker.isValidECKeyParameters(supportedSigAlg, key);
         assertTrue("Key with field size " + fieldSize + " should have been considered a valid " + supportedSigAlg + " private key.", result);
     }
 
@@ -622,35 +619,35 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
                 will(returnValue(fieldSize));
             }
         });
-        boolean result = checker.isValidECKeyParameters(supportedSigAlg, key);
+        boolean result = KeyAlgorithmChecker.isValidECKeyParameters(supportedSigAlg, key);
         assertTrue("Key with field size " + fieldSize + " should have been considered a valid " + supportedSigAlg + " private key.", result);
     }
 
     @Test
     public void test_getHashSizeFromAlgorithm_emptyAlgString() {
         String supportedSigAlg = "";
-        int result = checker.getHashSizeFromAlgorithm(supportedSigAlg);
+        int result = KeyAlgorithmChecker.getHashSizeFromAlgorithm(supportedSigAlg);
         assertEquals("Did not get the expected hash size from the algorithm string [" + supportedSigAlg + "].", KeyAlgorithmChecker.UNKNOWN_HASH_SIZE, result);
     }
 
     @Test
     public void test_getHashSizeFromAlgorithm_randomAlgString() {
         String supportedSigAlg = "Be afraid. Be very afraid.";
-        int result = checker.getHashSizeFromAlgorithm(supportedSigAlg);
+        int result = KeyAlgorithmChecker.getHashSizeFromAlgorithm(supportedSigAlg);
         assertEquals("Did not get the expected hash size from the algorithm string [" + supportedSigAlg + "].", KeyAlgorithmChecker.UNKNOWN_HASH_SIZE, result);
     }
 
     @Test
     public void test_getHashSizeFromAlgorithm_algStringWithShortHashSize() {
         String supportedSigAlg = "RS32";
-        int result = checker.getHashSizeFromAlgorithm(supportedSigAlg);
+        int result = KeyAlgorithmChecker.getHashSizeFromAlgorithm(supportedSigAlg);
         assertEquals("Did not get the expected hash size from the algorithm string [" + supportedSigAlg + "].", KeyAlgorithmChecker.UNKNOWN_HASH_SIZE, result);
     }
 
     @Test
     public void test_getHashSizeFromAlgorithm_algTypeNotValid() {
         String supportedSigAlg = "BLAH256";
-        int result = checker.getHashSizeFromAlgorithm(supportedSigAlg);
+        int result = KeyAlgorithmChecker.getHashSizeFromAlgorithm(supportedSigAlg);
         assertEquals("Did not get the expected hash size from the algorithm string [" + supportedSigAlg + "].", KeyAlgorithmChecker.UNKNOWN_HASH_SIZE, result);
     }
 
@@ -658,7 +655,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     public void test_getHashSizeFromAlgorithm_smallValidHashSize() {
         int supportedAlgSize = 384;
         String supportedSigAlg = "ES" + supportedAlgSize;
-        int result = checker.getHashSizeFromAlgorithm(supportedSigAlg);
+        int result = KeyAlgorithmChecker.getHashSizeFromAlgorithm(supportedSigAlg);
         assertEquals("Did not get the expected hash size from the algorithm string [" + supportedSigAlg + "].", supportedAlgSize, result);
     }
 
@@ -666,7 +663,7 @@ public class KeyAlgorithmCheckerTest extends CommonTestClass {
     public void test_getHashSizeFromAlgorithm_largeValidHashSize() {
         int supportedAlgSize = 4096;
         String supportedSigAlg = "RS" + supportedAlgSize;
-        int result = checker.getHashSizeFromAlgorithm(supportedSigAlg);
+        int result = KeyAlgorithmChecker.getHashSizeFromAlgorithm(supportedSigAlg);
         assertEquals("Did not get the expected hash size from the algorithm string [" + supportedSigAlg + "].", supportedAlgSize, result);
     }
 

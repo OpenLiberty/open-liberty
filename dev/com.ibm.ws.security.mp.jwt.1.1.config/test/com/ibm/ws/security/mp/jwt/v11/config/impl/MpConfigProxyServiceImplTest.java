@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.ibm.ws.security.mp.jwt.config.MpConstants;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 
 import test.common.SharedOutputManager;
 
@@ -153,7 +153,7 @@ public class MpConfigProxyServiceImplTest {
     @Test
     public void testGetConfigValueNoCL_supportedMpJwtConfigProperty() {
         MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
-        String NAME = MpConstants.PUBLIC_KEY;
+        String NAME = MpConfigProperties.PUBLIC_KEY;
         Class CLAZZ = Object.class;
         String VALUE = "value";
 
@@ -185,7 +185,7 @@ public class MpConfigProxyServiceImplTest {
     @Test
     public void testGetConfigValueCL_supportedMpJwtConfigProperty() {
         MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
-        String NAME = MpConstants.ISSUER;
+        String NAME = MpConfigProperties.ISSUER;
         Class CLAZZ = Object.class;
         String VALUE = "value";
 
