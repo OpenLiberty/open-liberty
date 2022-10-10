@@ -81,30 +81,6 @@ public class WeldDevModeTest {
         server.startServer(true);
     }
 
-    @Test
-    public void testExtensionLoaded() throws Exception {
-        assertStringsInLogs("WELD-000411: Observer method \\[BackedAnnotatedMethod\\] public org.jboss.weld.probe.ProbeExtension.processAnnotatedTypes");
-        assertStringsInLogs("Weld Development Mode: ENABLED");
-
-        assertProbeProcessedBDA("multipleWars2#org.jboss.weld.probe.ProbeExtension.additionalClasses");
-        assertProbeProcessedBDA("multipleWars2#multipleWar1.war");
-        assertProbeProcessedBDA("multipleWars2#multipleWar1.war#WEB_INF_LIB#WEB-INF/lib/multipleWarEmbeddedJar.jar");
-        //assertProbeProcessedBDA("multipleWars2#com.ibm.ws.beanvalidation.v11.cdi_1.additionalClasses"); //BDA name is very different in EE9
-        //assertProbeProcessedBDA("multipleWars2#com.ibm.ws.jsf.2.2_1.additionalClasses");                //BDA name is very different in EE9
-        assertProbeProcessedBDA("multipleWars2#multipleWarNoBeans.war");
-        assertProbeProcessedBDA("multipleWars2#cdi.helloworld.extension.*_1.additionalClasses"); //BDA name varies slightly in EE9
-        assertProbeProcessedBDA("multipleWars2#io.openliberty.transaction.internal.cdi.*_1.additionalClasses");//BDA name varies slightly in EE9
-
-    }
-
-    private static void assertStringsInLogs(String msg) throws Exception {
-        Assert.assertFalse("Log Message Not Found: " + msg, server.findStringsInLogs(msg).isEmpty());
-    }
-
-    private static void assertProbeProcessedBDA(String bda) throws Exception {
-        assertStringsInLogs("PROBE-000002: Processing bean deployment archive: " + bda);
-    }
-
     /**
      * Post test processing.
      *
@@ -120,5 +96,28 @@ public class WeldDevModeTest {
         Log.info(WeldDevModeTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
         CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.HELLOWORLD_EXTENSION_BUNDLE_ID);
         CDIExtensionRepeatActions.uninstallSystemFeature(server, CDIExtensionRepeatActions.CDI_INTERNALS_BUNDLE_ID);
+    }
+
+    @Test
+    public void testExtensionLoaded() throws Exception {
+        assertStringsInLogs("WELD-000411: Observer method \\[BackedAnnotatedMethod\\] public org.jboss.weld.probe.ProbeExtension.processAnnotatedTypes");
+        assertStringsInLogs("Weld Development Mode: ENABLED");
+
+        assertProbeProcessedBDA("multipleWars2#org.jboss.weld.probe.ProbeExtension.additionalClasses");
+        assertProbeProcessedBDA("multipleWars2#multipleWar1.war");
+        assertProbeProcessedBDA("multipleWars2#multipleWar1.war#WEB_INF_LIB#WEB-INF/lib/multipleWarEmbeddedJar.jar");
+        assertProbeProcessedBDA("multipleWars2#multipleWarNoBeans.war");
+        //Where the BDA name varies only slightly in EE9, a wildcard is sufficient to check for them
+        assertProbeProcessedBDA("multipleWars2#cdi.helloworld.extension.*_1.additionalClasses");
+        assertProbeProcessedBDA("multipleWars2#io.openliberty.transaction.internal.cdi.*_1.additionalClasses");
+        //Ignoring BDAs which are part of internal components where the names have significantly changed between EE8 and EE9, e.g. Bean Validation and JSF
+    }
+
+    private static void assertStringsInLogs(String msg) throws Exception {
+        Assert.assertFalse("Log Message Not Found: " + msg, server.findStringsInLogs(msg).isEmpty());
+    }
+
+    private static void assertProbeProcessedBDA(String bda) throws Exception {
+        assertStringsInLogs("PROBE-000002: Processing bean deployment archive: " + bda);
     }
 }

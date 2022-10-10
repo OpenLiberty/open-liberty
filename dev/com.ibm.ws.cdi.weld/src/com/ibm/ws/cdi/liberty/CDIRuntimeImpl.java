@@ -706,10 +706,13 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     /** {@inheritDoc} */
     @Override
     public WeldDevelopmentMode getWeldDevelopmentMode() {
-        WeldDevelopmentMode devMode = null;
-        //only return the service if it exists and is enabled
-        if (this.weldDevelopmentMode != null && this.weldDevelopmentMode.enabled()) {
-            devMode = this.weldDevelopmentMode;
+        //Given that this.weldDevelopmentMode is volatile and could change value while this code is running,
+        //copy it to a local variable before checking for null and enablement.
+        WeldDevelopmentMode devMode = this.weldDevelopmentMode;
+        if (devMode != null) {
+            if (!devMode.enabled()) {
+                devMode = null; // if it wasn't enabled then we'll return null
+            }
         }
         return devMode;
     }
