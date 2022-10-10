@@ -63,7 +63,8 @@ instrument.disabled: true
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.event;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+        io.openliberty.wsoc.ssl.internal;version=latest
 
 #  <property name="extra.vmargs" value="-Dexception.log.enabled=false" />
 
