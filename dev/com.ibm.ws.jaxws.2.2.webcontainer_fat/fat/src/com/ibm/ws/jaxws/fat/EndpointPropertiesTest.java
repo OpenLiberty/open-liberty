@@ -42,7 +42,6 @@ public class EndpointPropertiesTest {
     public static void setUp() throws Exception {
 
         ExplodedShrinkHelper.explodedDropinApp(server, "testEndpointPropertiesWeb", "com.ibm.ws.jaxws.test.endpoint.properties.server");
-
     }
 
     @After
@@ -76,7 +75,7 @@ public class EndpointPropertiesTest {
                                       "dropins/testEndpointPropertiesWeb.war/WEB-INF", "ibm-ws-bnd.xml");
 
         server.startServer();
-        server.waitForStringInLog("CWWKF0008I.*testEndpointPropertiesWeb");//CWWKZ0001I
+        server.waitForStringInLog("CWWKZ0001I.*testEndpointPropertiesWeb");
 
         String wsdl = TestUtils.getServletResponse(getBaseUrl() + "/testEndpointPropertiesWeb/HelloService?wsdl");
         assertTrue("Can not access the HelloService's wsdl, the return result is: " + wsdl,

@@ -37,8 +37,8 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                                             .andWith(FeatureReplacementAction.EE8_FEATURES())
-                                             .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxwsTest-2.2").addFeature("xmlWSTest-3.0"))
-                                             .andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("xmlWSTest-3.0").addFeature("xmlWSTest-4.0").liteFATOnly());
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
+                                             .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                                             .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxwsTest-2.2").addFeature("xmlWSTest-3.0").fullFATOnly())
+                                             .andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("jaxwsTest-2.2").removeFeature("xmlWSTest-3.0").addFeature("xmlWSTest-4.0"));
 }

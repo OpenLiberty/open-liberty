@@ -27,8 +27,8 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES())
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE10_FEATURES());
 
 }
