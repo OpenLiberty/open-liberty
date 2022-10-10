@@ -12,7 +12,7 @@
 
 -sub: *.bnd
 
-          
+
 bVersion=1.0
 
 
@@ -20,7 +20,7 @@ bVersion=1.0
 Web-ContextPath: /ibm/wsatservice
 
 WS-TraceGroup: WSAT
-  
+
 Import-Package: \
  !com.ibm.ws.wsat.interceptor, \
  javax.xml.ws.*;version="[2.2,3)", \
@@ -43,11 +43,11 @@ Export-Package:  \
 
 Private-Package: \
   com.ibm.ws.wsat.interceptor
- 
+
 Include-Resource: \
   @./resources!/META-INF/**, \
   index.jsp=resources/WEB-CONTENT/index.jsp
-    
+
 -dsannotations: com.ibm.ws.wsat.utils.CommonService
 
 Service-Component: \
@@ -82,4 +82,5 @@ Service-Component: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.wsat.common;version=latest,\
 	com.ibm.ws.wsat.webclient;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	io.openliberty.jaxws.globalhandler.internal
