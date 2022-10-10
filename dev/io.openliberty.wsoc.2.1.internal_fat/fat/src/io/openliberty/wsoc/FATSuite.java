@@ -22,6 +22,7 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.wsoc.tests.Basic21Test;
+import io.openliberty.wsoc.tests.SSLBasic21Test;
 
 /**
  * WebSocket tests for 2.1 and above
@@ -32,7 +33,8 @@ import io.openliberty.wsoc.tests.Basic21Test;
  * below should represent all of the test cases for this FAT.
  */
 @SuiteClasses({
-    Basic21Test.class
+    Basic21Test.class,
+    SSLBasic21Test.class
 })
 public class FATSuite {
     private static final Class<?> c = FATSuite.class;

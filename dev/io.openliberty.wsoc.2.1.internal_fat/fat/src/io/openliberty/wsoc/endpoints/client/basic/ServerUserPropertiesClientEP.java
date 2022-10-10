@@ -42,7 +42,9 @@ import io.openliberty.wsoc.common.Utils;
 import io.openliberty.wsoc.tests.all.TimeOutTest;
 
 /**
-
+ *  Client Endpoint for the testUserPropertiesOnServer test.
+ *  
+ * 
  */
 public class ServerUserPropertiesClientEP implements TestHelper {
 
