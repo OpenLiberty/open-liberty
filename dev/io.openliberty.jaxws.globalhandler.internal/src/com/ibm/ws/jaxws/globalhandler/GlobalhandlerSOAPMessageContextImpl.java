@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.globalhandler;
 
+
 import javax.xml.soap.SOAPMessage;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
@@ -25,6 +26,7 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.staxutils.W3CDOMStreamReader;
 
 import com.ibm.wsdl.util.xml.DOMUtils;
+
 
 public class GlobalhandlerSOAPMessageContextImpl extends SOAPMessageContextImpl {
 

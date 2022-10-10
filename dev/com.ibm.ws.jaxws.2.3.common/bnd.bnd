@@ -31,7 +31,6 @@ Export-Package: \
     com.ibm.ws.jaxws.client;thread-context=true;version=${exportVer},\
     com.ibm.ws.jaxws.client.injection;version=${exportVer},\
     com.ibm.ws.jaxws.endpoint;version=${exportVer},\
-    com.ibm.ws.jaxws.globalhandler;version=${exportVer},\
     com.ibm.ws.jaxws.jaxb;version=${exportVer},\
     com.ibm.ws.jaxws.injection;version=${exportVer},\
     com.ibm.ws.jaxws.metadata;version=${exportVer},\
@@ -51,7 +50,6 @@ Import-Package: \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
    !com.sun.tools.ws.wscompile.*;version=!, \
    !org.apache.tools.ant;version=!, \
-   !com.ibm.ws.jaxws.globalhandler, \
    !com.ibm.ws.jaxws.threading, \
    !com.sun.tools.ws.ant, \
    org.apache.cxf.*;version="[3.2,4)", \
@@ -62,7 +60,7 @@ Import-Package: \
 Private-Package:\
    com.ibm.ws.jaxws.*,\
    com.ibm.wsspi.jaxws
-   
+
 # Use Dynamic Import Packages for JAXB Context Factory,
 # with that, we could work without ResourceProvider Hook
 DynamicImport-Package: com.sun.xml.bind.v2, \
@@ -76,7 +74,6 @@ DynamicImport-Package: com.sun.xml.bind.v2, \
   com.ibm.ws.jaxws.metadata.builder.WebServicesBndEndpointInfoConfigurator,\
   com.ibm.ws.jaxws.threading.LibertyThreadPoolAdapter,\
   com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory,\
-  com.ibm.ws.jaxws.globalhandler.JaxwsGlobalHandlerServiceImpl,\
   com.ibm.ws.jaxws.JaxwsConduitConfigActivator
 
 
@@ -229,4 +226,3 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest
-	
