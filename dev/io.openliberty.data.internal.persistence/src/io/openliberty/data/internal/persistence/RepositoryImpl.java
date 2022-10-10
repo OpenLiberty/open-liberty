@@ -131,7 +131,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         Class<?> returnArrayType = (Class<?>) args[1];
         Class<?> returnParamType = (Class<?>) args[2];
         Class<?> saveParamType = null;
-        QueryInfo.Type type = null;
+        QueryInfo.Type[] type = new QueryInfo.Type[1]; // to simulate pass-by-reference
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
 
@@ -150,20 +150,20 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (update == null) {
                 if (method.getAnnotation(Delete.class) == null) {
                     if (where != null) {
-                        type = QueryInfo.Type.SELECT;
+                        type[0] = QueryInfo.Type.SELECT;
                         generateSelect(entityInfo, q = new StringBuilder(200), method);
                         q.append(" WHERE ").append(where.value());
                         jpql = q.toString();
                     }
                 } else {
-                    type = QueryInfo.Type.DELETE;
+                    type[0] = QueryInfo.Type.DELETE;
                     q = new StringBuilder(200).append("DELETE FROM ").append(entityInfo.name).append(" o");
                     if (where != null)
                         q.append(" WHERE ").append(where.value());
                     jpql = q.toString();
                 }
             } else {
-                type = QueryInfo.Type.UPDATE;
+                type[0] = QueryInfo.Type.UPDATE;
                 q = new StringBuilder(200).append("UPDATE ").append(entityInfo.name).append(" o SET ").append(update.value());
                 if (where != null)
                     q.append(" WHERE ").append(where.value());
@@ -171,7 +171,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
 
             if (jpql == null && method.getName().startsWith("save")) {
-                type = QueryInfo.Type.MERGE;
+                type[0] = QueryInfo.Type.MERGE;
                 Class<?>[] paramTypes = method.getParameterTypes();
                 if (paramTypes.length == 0)
                     throw new UnsupportedOperationException(method.getName() + " without any parameters");
@@ -179,13 +179,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             } else if (jpql == null) {
 
                 // Repository method name pattern queries
-                jpql = generateRepositoryQuery(entityInfo, method, maxResults);
+                jpql = generateRepositoryQuery(entityInfo, method, type, maxResults);
 
                 // @Select annotation only
                 if (jpql == null) {
                     Select select = method.getAnnotation(Select.class);
                     if (select != null) {
-                        type = QueryInfo.Type.SELECT;
+                        type[0] = QueryInfo.Type.SELECT;
                         generateSelect(entityInfo, q = new StringBuilder(100), method);
                         jpql = q.toString();
                     }
@@ -197,7 +197,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         // The @OrderBy annotation from Jakarta Data defines the same information annotatively.
         OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
         if (orderBy.length > 0) {
-            type = type == null ? QueryInfo.Type.SELECT : type;
+            type[0] = type[0] == null ? QueryInfo.Type.SELECT : type[0];
             if (q == null)
                 if (jpql == null)
                     generateSelect(entityInfo, q = new StringBuilder(200), method);
@@ -213,40 +213,56 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         jpql = q == null ? jpql : q.toString();
 
-        QueryInfo queryInfo = new QueryInfo(type, jpql, entityInfo, saveParamType, returnArrayType, returnParamType, maxResults[0]);
+        QueryInfo queryInfo = new QueryInfo(type[0], jpql, entityInfo, saveParamType, returnArrayType, returnParamType, maxResults[0]);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "createQueryInfo", queryInfo);
         return queryInfo;
     }
 
-    private String generateRepositoryQuery(EntityInfo entityInfo, Method method, long[] maxResults) {
+    private String generateRepositoryQuery(EntityInfo entityInfo, Method method, QueryInfo.Type[] type, long[] maxResults) {
         String methodName = method.getName();
         StringBuilder q = null;
-        int by;
         if (methodName.startsWith("find")) {
-            if ((by = methodName.indexOf("By", 4)) > 0) {
-                if (by > 4)
-                    parseFindBy(methodName.substring(4, by), maxResults);
-                int orderBy = methodName.indexOf("OrderBy", by + 2);
-                generateSelect(entityInfo, q = new StringBuilder(200), method);
-                if (orderBy > by + 2 || orderBy == -1 && methodName.length() > by + 2) {
-                    String s = orderBy > 0 ? methodName.substring(by + 2, orderBy) : methodName.substring(by + 2);
-                    generateRepositoryQueryConditions(entityInfo, s, q);
-                }
-                if (orderBy >= by + 2)
-                    generateRepositoryQueryOrderBy(entityInfo, methodName, orderBy, q);
+            int by = methodName.indexOf("By", 4);
+            int c = by < 0 ? 4 : by + 2;
+            if (by > 4)
+                parseFindBy(methodName.substring(4, by), maxResults);
+            int orderBy = methodName.indexOf("OrderBy", c);
+            generateSelect(entityInfo, q = new StringBuilder(200), method);
+            if (orderBy > c || orderBy == -1 && methodName.length() > c) {
+                String s = orderBy > 0 ? methodName.substring(c, orderBy) : methodName.substring(c);
+                generateRepositoryQueryConditions(entityInfo, s, q);
             }
+            if (orderBy >= c)
+                generateRepositoryQueryOrderBy(entityInfo, methodName, orderBy, q);
+            type[0] = QueryInfo.Type.SELECT;
         } else if (methodName.startsWith("delete")) {
-            if ((by = methodName.indexOf("By", 6)) > 0) {
-                q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(" o");
-                if (methodName.length() > by + 2)
-                    generateRepositoryQueryConditions(entityInfo, methodName.substring(by + 2), q);
-            }
+            int by = methodName.indexOf("By", 6);
+            int c = by < 0 ? 6 : by + 2;
+            q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(" o");
+            if (methodName.length() > c)
+                generateRepositoryQueryConditions(entityInfo, methodName.substring(c), q);
+            type[0] = QueryInfo.Type.DELETE;
         } else if (methodName.startsWith("update")) {
-            if ((by = methodName.indexOf("By", 6)) > 0) {
-                q = generateRepositoryUpdateQuery(entityInfo, methodName);
-            }
+            int by = methodName.indexOf("By", 6);
+            int c = by < 0 ? 6 : by + 2;
+            q = generateRepositoryUpdateQuery(entityInfo, methodName, c);
+            type[0] = QueryInfo.Type.UPDATE;
+        } else if (methodName.startsWith("count")) {
+            int by = methodName.indexOf("By", 5);
+            int c = by < 0 ? 5 : by + 2;
+            q = new StringBuilder(150).append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o");
+            if (methodName.length() > c)
+                generateRepositoryQueryConditions(entityInfo, methodName.substring(c), q);
+            type[0] = QueryInfo.Type.COUNT;
+        } else if (methodName.startsWith("exists")) {
+            int by = methodName.indexOf("By", 6);
+            int c = by < 0 ? 6 : by + 2;
+            q = new StringBuilder(200).append("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM ").append(entityInfo.name).append(" o");
+            if (methodName.length() > c)
+                generateRepositoryQueryConditions(entityInfo, methodName.substring(c), q);
+            type[0] = QueryInfo.Type.EXISTS;
         }
 
         return q == null ? null : q.toString();
@@ -413,11 +429,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     /**
      * Generates JPQL for a repository updateBy method such as updateByProductIdSetProductNameMultiplyPrice
      */
-    private StringBuilder generateRepositoryUpdateQuery(EntityInfo entityInfo, String methodName) {
-        int set = methodName.indexOf("Set", 8);
-        int add = methodName.indexOf("Add", 8);
-        int mul = methodName.indexOf("Multiply", 8);
-        int div = methodName.indexOf("Divide", 8);
+    private StringBuilder generateRepositoryUpdateQuery(EntityInfo entityInfo, String methodName, int c) {
+        int set = methodName.indexOf("Set", c);
+        int add = methodName.indexOf("Add", c);
+        int mul = methodName.indexOf("Multiply", c);
+        int div = methodName.indexOf("Divide", c);
         int uFirst = Integer.MAX_VALUE;
         if (set > 0 && set < uFirst)
             uFirst = set;
@@ -432,7 +448,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
         StringBuilder where = new StringBuilder(150);
-        int paramCount = generateRepositoryQueryConditions(entityInfo, methodName.substring(8, uFirst), where);
+        int paramCount = generateRepositoryQueryConditions(entityInfo, methodName.substring(c, uFirst), where);
 
         StringBuilder q = new StringBuilder(250);
         q.append("UPDATE ").append(entityInfo.name).append(" o SET");
@@ -616,7 +632,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 }
 
                 switch (queryInfo.type) {
-                    case MERGE:
+                    case MERGE: {
                         em = queryInfo.entityInfo.persister.createEntityManager();
 
                         if (queryInfo.saveParamType.isArray()) {
@@ -644,7 +660,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             returnValue = returnType.isInstance(returnValue) ? returnValue : null;
                         }
                         break;
-                    case SELECT:
+                    }
+                    case SELECT: {
                         int paramCount;
                         Collector<Object, Object, Object> collector = null;
                         Consumer<Object> consumer = null;
@@ -830,8 +847,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             returnValue = CompletableFuture.completedFuture(returnValue);
                         }
                         break;
+                    }
                     case UPDATE:
-                    case DELETE:
+                    case DELETE: {
                         em = queryInfo.entityInfo.persister.createEntityManager();
 
                         jakarta.persistence.Query update = em.createQuery(queryInfo.jpql);
@@ -850,6 +868,75 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
+                    }
+                    case COUNT: {
+                        em = queryInfo.entityInfo.persister.createEntityManager();
+
+                        TypedQuery<Long> query = em.createQuery(queryInfo.jpql, Long.class);
+                        if (args != null) {
+                            Parameter[] params = method.getParameters();
+                            for (int i = 0; i < args.length; i++) {
+                                Param param = params[i].getAnnotation(Param.class);
+                                if (param == null)
+                                    query.setParameter(i + 1, args[i]);
+                                else // named parameter
+                                    query.setParameter(param.value(), args[i]);
+                            }
+                        }
+
+                        Long result = query.getSingleResult();
+
+                        Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
+                                                                              || CompletableFuture.class.equals(returnType)
+                                                                              || CompletionStage.class.equals(returnType)) //
+                                                                                              ? queryInfo.returnTypeParam //
+                                                                                              : returnType;
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "result " + result + " to be returned as " + type.getName());
+
+                        returnValue = result;
+
+                        if (!type.isInstance(result) && !type.isAssignableFrom(returnValue.getClass())) {
+                            // TODO these conversions are not all safe
+                            if (int.class.equals(type) || Integer.class.equals(type))
+                                returnValue = result.intValue();
+                            else if (short.class.equals(type) || Short.class.equals(type))
+                                returnValue = result.shortValue();
+                            else if (byte.class.equals(type) || Byte.class.equals(type))
+                                returnValue = result.byteValue();
+                        }
+
+                        if (Optional.class.equals(returnType)) {
+                            returnValue = Optional.of(returnValue);
+                        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+                            returnValue = CompletableFuture.completedFuture(returnValue);
+                        }
+                        break;
+                    }
+                    case EXISTS: {
+                        em = queryInfo.entityInfo.persister.createEntityManager();
+
+                        TypedQuery<Boolean> query = em.createQuery(queryInfo.jpql, Boolean.class);
+                        if (args != null) {
+                            Parameter[] params = method.getParameters();
+                            for (int i = 0; i < args.length; i++) {
+                                Param param = params[i].getAnnotation(Param.class);
+                                if (param == null)
+                                    query.setParameter(i + 1, args[i]);
+                                else // named parameter
+                                    query.setParameter(param.value(), args[i]);
+                            }
+                        }
+
+                        returnValue = query.getSingleResult();
+
+                        if (Optional.class.equals(returnType)) {
+                            returnValue = Optional.of(returnValue);
+                        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+                            returnValue = CompletableFuture.completedFuture(returnValue);
+                        }
+                        break;
+                    }
                     default:
                         throw new UnsupportedOperationException(queryInfo.type.name());
                 }

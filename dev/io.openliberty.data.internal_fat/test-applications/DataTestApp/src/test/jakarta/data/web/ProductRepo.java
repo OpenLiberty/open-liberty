@@ -36,11 +36,6 @@ public interface ProductRepo {
 
     Product[] findByVersionGreaterThanEqualOrderByPrice(long minVersion);
 
-    @OrderBy(value = "price", descending = true)
-    Product[] findFirst3ByNameLike(String namePattern);
-
-    Product findFirstByNameLikeOrderByPrice(String namePattern);
-
     @Query("SELECT o FROM Product o WHERE o.id=:productId")
     Product findItem(@Param("productId") String id);
 
