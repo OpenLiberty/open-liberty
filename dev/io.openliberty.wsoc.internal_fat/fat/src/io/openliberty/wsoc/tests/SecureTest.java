@@ -111,6 +111,9 @@ public class SecureTest {
         } catch (InterruptedException x) {
 
         }
+        LOG.info("ConfigUpdateTimeout before change is: " + LS.getConfigUpdateTimeout());
+        LS.setConfigUpdateTimeout(180 * 1000);
+        LOG.info("ConfigUpdateTimeout update change is: " + LS.getConfigUpdateTimeout());
 
         // test cleanup
         LS.setMarkToEndOfLog();
