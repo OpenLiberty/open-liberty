@@ -15,7 +15,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.websocket.ClientEndpoint;
+import javax.websocket.ClientEndpoint; 
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.ClientEndpointConfig.Builder;
 import javax.websocket.Decoder;
@@ -30,7 +30,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.wsoc.AnnotatedEndpoint;
-import com.ibm.ws.wsoc.ClientEndpointConfigCopyPerSession;
 import com.ibm.ws.wsoc.EndpointHelper;
 import com.ibm.ws.wsoc.ParametersOfInterest;
 import com.ibm.ws.wsoc.SessionImpl;
@@ -64,18 +63,26 @@ public class ClientConnector {
     }
 
     public Session connectClass(Object clazz, URI path, ClientEndpointConfig config, WebSocketContainer wsc) throws DeploymentException, IOException {
+       
+        WsocAddress endpointAddress;
 
-        WsocAddress endpointAddress = new WsocAddress(path);
+        if(WebSocketVersionServiceManager.isWsoc21OrHigher()){
+            endpointAddress  = new Wsoc21Address(path);
+        } else {
+            endpointAddress = new Wsoc10Address(path);
+        }
+        
+        
         endpointAddress.validateURI();
 
         ParametersOfInterest things = new ParametersOfInterest();
 
-        if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
-            config = new ClientEndpointConfigCopyPerSession(config);
+        if(WebSocketVersionServiceManager.isWsoc21OrHigher()){
+            config = WebSocketVersionServiceManager.getClientEndpointConfigCopyFactory().getClientEndpointConfig(config);
             things.setUserProperties(config.getUserProperties());
         }
 
-        HttpRequestor requestor = new HttpRequestor(endpointAddress, config, things);
+        HttpRequestor requestor = WebSocketVersionServiceManager.getHttpRequestorFactory().getHttpRequestor(endpointAddress, config, things);
         WsByteBuffer remainingBuf = null;
 
         try {
