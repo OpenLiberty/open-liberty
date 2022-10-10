@@ -32,7 +32,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  */
 @Component(property = { CheckpointHook.MULTI_THREADED_HOOK + ":Boolean=true" },
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           configurationPid = { "checkpoint.pid.a", "checkpoint.pid.b" },
+           configurationPid = { "checkpoint.pid" },
            immediate = true)
 public class TestCheckpointHook implements CheckpointHook {
     private final ConcurrentHashMap<String, Object> config;
@@ -42,8 +42,8 @@ public class TestCheckpointHook implements CheckpointHook {
 
     @Activate
     public TestCheckpointHook(Map<String, Object> config,
-                              @Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase phase,
-                              @Reference(cardinality = ReferenceCardinality.OPTIONAL, service = CheckpointPhase.class) ServiceReference<CheckpointPhase> phaseRef) {
+                              @Reference CheckpointPhase phase,
+                              @Reference(service = CheckpointPhase.class) ServiceReference<CheckpointPhase> phaseRef) {
         this.config = new ConcurrentHashMap<String, Object>(config);
         this.phase = phase;
         this.phaseRef = phaseRef;
@@ -117,6 +117,6 @@ public class TestCheckpointHook implements CheckpointHook {
     }
 
     private String getConfig() {
-        return "config: pida=" + config.get("pida") + " pidb=" + config.get("pidb");
+        return "config: a=" + config.get("a") + " b=" + config.get("b") + " c=" + config.get("c");
     }
 }

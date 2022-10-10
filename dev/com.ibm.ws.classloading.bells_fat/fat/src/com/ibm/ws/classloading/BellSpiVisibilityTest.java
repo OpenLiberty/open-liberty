@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.classloading;
 
-import static com.ibm.ws.classloading.TestUtils.BETA_EDITION_JVM_OPTION;
 import static com.ibm.ws.classloading.TestUtils.IS_DROPIN;
 import static com.ibm.ws.classloading.TestUtils.buildAndExportBellLibrary;
 import static com.ibm.ws.classloading.TestUtils.buildAndExportWebApp;
@@ -113,58 +112,24 @@ public class BellSpiVisibilityTest {
     })
     public void testSpiIsVisibleToBell() throws Exception
     {
-        doTestSpiIsVisibleToBell(server, Load_Op.loadClass, Boolean.FALSE);
-    }
-
-    @Test
-    @AllowedFFDC({
-        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
-    })
-    public void testSpiIsVisibleToBell_BETA() throws Exception
-    {
-        doTestSpiIsVisibleToBell(server, Load_Op.loadClass, Boolean.TRUE); // beta-edition
-    }
-
-    void doTestSpiIsVisibleToBell(LibertyServer server, Load_Op loadOp, Boolean runAsBetaEdition) throws Exception
-    {
         Map<String,String> props = new HashMap<String,String>(3){};
-        props.put(BETA_EDITION_JVM_OPTION, runAsBetaEdition.toString());
         props.put(BELL_LOAD_CLASSNAME_JVM_OPTION, IBMSPI_CLASS_NAME);
-        props.put(BELL_LOAD_OPERATION_JVM_OPTION, loadOp.toString());
-
+        props.put(BELL_LOAD_OPERATION_JVM_OPTION, Load_Op.loadClass.toString());
         try {
             setSysProps(server, props);
             server.startServer();
 
-            if (runAsBetaEdition) {
-                assertNotNull("The server should report BETA bell spi visibility has been invoked, but did not.",
-                        server.waitForStringInLog(".*BETA: BELL SPI Visibility and BELL Properties "));
+            assertNotNull("The server should report spi visibility is enabled for library 'testSpiVisible', but did not.",
+                    server.waitForStringInLog(".*CWWKL0059I: .*testSpiVisible"));
 
-                assertNotNull("The server should report bell spi visibility is enabled for library 'testSpiVisible', but did not.",
-                        server.waitForStringInLog(".*CWWKL0059I: .*testSpiVisible"));
+            assertNotNull("The server should register the 'SpiVisible' service in the 'testSpiVisible' library, but did not.",
+                    server.waitForStringInLog(".*CWWKL0050I: .*testSpiVisible.*SpiVisible"));
 
-                assertNotNull("The server should register the META-INF service in the 'testSpiVisible' library referenced by the BELL, but did not.",
-                        server.waitForStringInLog(".*CWWKL0050I: .*testSpiVisible.*SpiVisible"));
+            assertNotNull("SPI should be visible to the library classloader when spi visibility is enabled, but is not",
+                    server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader"));
 
-                assertNotNull("SPI should be visible to the BELL service when spi visibility is enabled, but is not",
-                        server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader"));
-
-                assertNotNull("The server should instantiate a BELL service impl that implements/extends SPI when spi visibility is enabled, but did not",
-                        server.waitForStringInLog(".*" + "TestUser: addingService: impl is there, SPI impl class SpiVisibilityRESTHandlerImpl"));
-            }
-            else {
-                assertNull("The server should not report bell spi visibility has been invoked in beta images, but did.",
-                        server.waitForStringInLog(".*BETA: BELL SPI Visibility and BELL Properties has been invoked by class", TimeOut));
-
-                assertNull("The server should not report bell spi visibility is enabled for library 'testSpiVisible', but did.",
-                        server.waitForStringInLog(".*CWWKL0059I: .*testSpiVisible", TimeOut));
-
-                assertNotNull("The server should register the META-INF service in the 'testSpiVisible' library referenced by the BELL, but did not.",
-                        server.waitForStringInLog(".*CWWKL0050I: .*testSpiVisible.*SpiVisible"));
-
-                assertNull("IBM-SPI packages should not be visible to the BELL service, but are.",
-                        server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader", TimeOut));
-            }
+            assertNotNull("The server should instantiate an instance of SpiVisibilityRESTHandlerImpl when spi visibility is enabled, but did not",
+                    server.waitForStringInLog(".*" + "TestUser: addingService: impl is there, SPI impl class SpiVisibilityRESTHandlerImpl"));
         } finally {
             removeSysProps(server, props);
         }
@@ -179,35 +144,20 @@ public class BellSpiVisibilityTest {
     })
     public void testSpiIsNotVisibleToBell() throws Exception
     {
-        doTestSpiIsNotVisibleToBell(server, Load_Op.loadClass, Boolean.FALSE);
-    }
-
-    @Test
-    @AllowedFFDC({
-        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
-    })
-    public void testSpiIsNotVisibleToBell_BETA() throws Exception
-    {
-        doTestSpiIsNotVisibleToBell(server, Load_Op.loadClass, Boolean.TRUE);
-    }
-
-    void doTestSpiIsNotVisibleToBell(LibertyServer server, Load_Op loadOp, Boolean runAsBetaEdition) throws Exception
-    {
         Map<String,String> props = new HashMap<String,String>(3){};
-        props.put(BETA_EDITION_JVM_OPTION, runAsBetaEdition.toString());
         props.put(BELL_LOAD_CLASSNAME_JVM_OPTION, IBMSPI_CLASS_NAME);
-        props.put(BELL_LOAD_OPERATION_JVM_OPTION, loadOp.toString());
+        props.put(BELL_LOAD_OPERATION_JVM_OPTION, Load_Op.loadClass.toString());
         try {
             setSysProps(server, props);
             server.startServer();
 
-            assertNull("The server should not report bell spi visibility is enabled for library 'testNoSpiVisible', but did.",
+            assertNull("The server should not report spi visibility is enabled for library 'testNoSpiVisible', but did.",
                     server.waitForStringInLog(".*CWWKL0059I: .*testNoSpiVisible"));
 
-            assertNotNull("The server should register the META-INF service in the 'testNoSpiVisible' library, but did not.",
+            assertNotNull("The server should register the 'SpiVisible' service in the 'testNoSpiVisible' library, but did not.",
                     server.waitForStringInLog(".*CWWKL0050I: .*testNoSpiVisible.*SpiVisible"));
 
-            assertNotNull("IBM-SPI packages should not be visible to the BELL service, but are.",
+            assertNotNull("IBM-SPI packages should not be visible to the library classloader, but are.",
                     server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is not visible to the BELL library classloader"));
         } finally {
             removeSysProps(server, props);
@@ -233,22 +183,8 @@ public class BellSpiVisibilityTest {
     })
     public void testSpiIsNotVisibleToApp() throws Exception
     {
-        doTestSpiIsNotVisibleToApp(server, Load_Op.forName, Boolean.FALSE);
-    }
-
-    @Test
-    @AllowedFFDC({
-        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
-    })
-    public void testSpiIsNotVisibleToApp_BETA() throws Exception
-    {
-        doTestSpiIsNotVisibleToApp(server, Load_Op.forName, Boolean.TRUE);
-    }
-
-    void doTestSpiIsNotVisibleToApp(LibertyServer server, Load_Op loadOp, Boolean runAsBetaEdition) throws Exception
-    {
+        Load_Op loadOp = Load_Op.forName;
         Map<String,String> props = new HashMap<String,String>(3){};
-        props.put(BETA_EDITION_JVM_OPTION, runAsBetaEdition.toString());
         props.put(BELL_LOAD_CLASSNAME_JVM_OPTION, IBMSPI_CLASS_NAME);
         props.put(BELL_LOAD_OPERATION_JVM_OPTION, loadOp.toString());
         try {
@@ -260,12 +196,6 @@ public class BellSpiVisibilityTest {
             // Library classes should be visible to application, regardless of BELL SPI visibility
             HttpUtils.findStringInUrl(server, "/SpiVisibility/TestServlet?loadOp=" + loadOp + "&className=" + LIB_CLASS_NAME,
                                       LIB_CLASS_NAME + " is visible to the application classloader");
-
-            if (runAsBetaEdition) {
-                // The server need not warn that the application and BELL reference a common shared library,
-                // because neither will access the library using the same class loader instance.
-                // REMOVE MESSAGE "bell.spi.visible.share.common.libref=CWWKL0061W" AFTER BETA
-            }
 
             // SPI should not be visible to the application, regardless of BELL SPI visibility
             HttpUtils.findStringInUrl(server, "/SpiVisibility/TestServlet?loadOp=" + loadOp + "&className=" + IBMSPI_CLASS_NAME,
@@ -288,39 +218,15 @@ public class BellSpiVisibilityTest {
     })
     public void testSpiVisibilityDisabledForGlobalLib() throws Exception
     {
-        doTestSpiVisibilityDisabledForGlobalLib(server, Boolean.FALSE);
-    }
-
-    @Test
-    @AllowedFFDC({
-        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
-    })
-    public void testSpiVisibilityDisabledForGlobalLib_BETA() throws Exception
-    {
-        doTestSpiVisibilityDisabledForGlobalLib(server, Boolean.TRUE);
-    }
-
-    void doTestSpiVisibilityDisabledForGlobalLib(LibertyServer server, Boolean runAsBetaEdition) throws Exception
-    {
         Map<String,String> props = new HashMap<String,String>(3){};
-        props.put(BETA_EDITION_JVM_OPTION, runAsBetaEdition.toString());
         try {
             setSysProps(server, props);
             server.startServer();
 
-            if (runAsBetaEdition) {
-                assertNotNull("The server should disable bell spi visibility for the global shared library, but did not",
-                        server.waitForStringInLog(".*CWWKL0060E: .*global "));
-            } else {
-                assertNull("The server should not disable bell spi visibility for the global shared library, but did",
-                        server.waitForStringInLog(".*CWWKL0060E: .*global", 10));
-
-                assertNull("The server should not enable bell spi visibility for any shared library, but did",
-                           server.waitForStringInLog(".*CWWKL0059I: ", 10));
-            }
+            assertNotNull("The server should disable bell spi visibility for the global shared library, but did not",
+                    server.waitForStringInLog(".*CWWKL0060E: .*global "));
         } finally {
             removeSysProps(server, props);
         }
     }
-
 }

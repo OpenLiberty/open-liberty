@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/SimpleUnprotected.war/src"/>
 	<classpathentry kind="src" path="test-applications/SimplestAnnotated.war/src"/>
 	<classpathentry kind="src" path="test-applications/SimplestAnnotatedWithEL.war/src"/>
 	<classpathentry kind="src" path="test-applications/SimplestAnnotatedWithAndWithoutEL.war/src"/>

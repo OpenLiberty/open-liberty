@@ -48,3 +48,46 @@ ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Tov\u00e1bbi inform\u00e1ci
 AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l a k\u00f6vetkez\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OpenID Connect szolg\u00e1ltat\u00f3 hiteles\u00edt\u00e9si v\u00e1lasz\u00e1nak ellen\u0151rz\u00e9se sor\u00e1n: {1}
 AUTHENTICATION_RESPONSE_ERROR.explanation=Lehet, hogy az OpenID Connect szolg\u00e1ltat\u00f3 v\u00e1lasz\u00e1b\u00f3l inform\u00e1ci\u00f3k hi\u00e1nyoznak. Lehet, hogy a probl\u00e9ma lehet az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l visszakapott k\u00f3dban van.
 AUTHENTICATION_RESPONSE_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t.
+
+CALLBACK_MISSING_STATE_PARAMETER=CWWKS2408E: Az OpenID Connect szolg\u00e1ltat\u00f3 visszah\u00edv\u00e1si k\u00e9r\u00e9s\u00e9b\u0151l hi\u00e1nyzik az \u00e1llapotparam\u00e9ter.
+CALLBACK_MISSING_STATE_PARAMETER.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3ra vonatkoz\u00f3 jogosults\u00e1gk\u00e9r\u00e9s nem tartalmazott \u00e1llapotparam\u00e9tert.
+CALLBACK_MISSING_STATE_PARAMETER.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3ra vonatkoz\u00f3 jogosults\u00e1gk\u00e9r\u00e9s tartalmazzon \u00e1llapot param\u00e9tert.
+
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH=CWWKS2409E: Az OpenID Connect szolg\u00e1ltat\u00f3 visszah\u00edv\u00e1s k\u00e9r\u00e9s\u00e9ben tal\u00e1lhat\u00f3 [{0}] \u00e1llapotparam\u00e9ter nem a megfelel\u0151 hosszal rendelkezik. A param\u00e9ter elv\u00e1rt hossza {1} karakter.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.explanation=Lehet, hogy az \u00e1llapot\u00e9rt\u00e9ket csonkolta a rendszer, illetve nem az adott az OpenID Connect \u00fcgyf\u00e9lt\u0151l sz\u00e1rmazik.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.useraction=Ellen\u0151rizze az \u00e1llapotparam\u00e9ter form\u00e1tum\u00e1t. Hasonl\u00edtsa \u00f6ssze az \u00e9rt\u00e9ket az adott OpenID Connect \u00fcgyf\u00e9l \u00e1ltal nemr\u00e9giben kezelt OpenID Connect k\u00e9r\u00e9sek \u00e1llapotparam\u00e9tereivel.
+
+STATE_VALUE_IN_CALLBACK_NOT_STORED=CWWKS2410E: Az OpenID Connect \u00fcgyf\u00e9l nem tal\u00e1l olyan \u00e1llapot\u00e9rt\u00e9ket, amely megfelel az OpenID Connect szolg\u00e1ltat\u00f3 visszah\u00edv\u00e1si k\u00e9r\u00e9s\u00e9ben tal\u00e1lhat\u00f3 [{0}] \u00e1llapotparam\u00e9ternek.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.explanation=Lehets\u00e9ges, hogy az \u00e1llapotparam\u00e9ter egy r\u00e9gi jogosults\u00e1gk\u00e9r\u00e9sb\u0151l sz\u00e1rmazik, illetve az \u00e1llapotparam\u00e9ter \u00e9rt\u00e9ke nem megfelel\u0151.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.useraction=Ellen\u0151rizze, hogy a visszah\u00edv\u00e1si k\u00e9r\u00e9sben l\u00e9v\u0151 \u00e1llapotparam\u00e9ter megfelel-e valamilyen friss OpenID Connect k\u00e9r\u00e9s \u00e1llapot\u00e9rt\u00e9k\u00e9nek.
+
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE=CWWKS2411E: A visszah\u00edv\u00e1si k\u00e9r\u00e9sben szerepl\u0151 [{0}] \u00e1llapotparam\u00e9ter nem egyezik meg az OpenID Connect \u00fcgyf\u00e9len t\u00e1rolt \u00e1llapot\u00e9rt\u00e9kkel.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.explanation=Lehets\u00e9ges, hogy az \u00e1llapotparam\u00e9ter egy r\u00e9gi jogosults\u00e1gk\u00e9r\u00e9sb\u0151l sz\u00e1rmazik, illetve az \u00e1llapotparam\u00e9ter \u00e9rt\u00e9ke nem megfelel\u0151.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.useraction=Ellen\u0151rizze, hogy a visszah\u00edv\u00e1si k\u00e9r\u00e9sben l\u00e9v\u0151 \u00e1llapotparam\u00e9ter megfelel-e valamilyen friss OpenID Connect k\u00e9r\u00e9s \u00e1llapot\u00e9rt\u00e9k\u00e9nek.
+
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME=CWWKS2412E: A visszah\u00edv\u00e1si k\u00e9r\u00e9sben szerepl\u0151 [{0}] \u00e1llapotparam\u00e9ter k\u00edv\u00fcl esik az \u00e9rv\u00e9nyes id\u0151keret\u00e9n. Az \u00e1llapot\u00e9rt\u00e9k l\u00e9trehoz\u00e1si id\u0151pontja {1} volt, \u00e9s {2} \u00e9s {3} k\u00f6z\u00f6tt \u00e9rv\u00e9nyes. Az aktu\u00e1lis id\u0151 {4}.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 t\u00fal k\u00e9s\u0151n v\u00e1laszolt, illetve t\u00fal sok\u00e1ig tartott a felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9se az OpenID Connect szolg\u00e1ltat\u00f3val.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a felhaszn\u00e1l\u00f3nak ne tartson t\u00fal sok\u00e1ig a hiteles\u00edt\u00e9s az OpenID Connect szolg\u00e1ltat\u00f3val.
+
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI=CWWKS2413E: A(z) [{0}] visszah\u00edv\u00e1si k\u00e9r\u00e9s URL-c\u00edme nem egyezik meg a(z) {2} OpenID Connect \u00fcgyf\u00e9lhez be\u00e1ll\u00edtott [{1}] \u00e1tir\u00e1ny\u00edt\u00e1si URI-azonos\u00edt\u00f3val.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.explanation=Lehet, hogy az OpenID Connect \u00fcgyf\u00e9l az OpenID Connect szolg\u00e1ltat\u00f3hoz k\u00fcld\u00f6tt jogosults\u00e1gk\u00e9r\u00e9sben m\u00e1s \u00e9rt\u00e9ket haszn\u00e1lt a redirect_uri param\u00e9terben.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.useraction=Ellen\u0151rizze az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1t, hogy meggy\u0151z\u0151dj\u00f6n az \u00e1tir\u00e1ny\u00edt\u00e1si URI helyes be\u00e1ll\u00edt\u00e1s\u00e1r\u00f3l.
+
+# Do not translate "error"
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER=CWWKS2414E: Az OpenID Connect szolg\u00e1ltat\u00f3 visszah\u00edv\u00e1si k\u00e9r\u00e9se a k\u00f6vetkez\u0151 hibaparam\u00e9ter-\u00e9rt\u00e9ket tartalmazza: [{0}]
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 hib\u00e1t \u00e9szlelt, amikor megpr\u00f3b\u00e1lta feldolgozni a hiteles\u00edt\u00e9si k\u00e9r\u00e9st.
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben tal\u00e1lhat\u00f3 \u00e9rt\u00e9ket. A hibak\u00f3dokat az RFC 6749 hat\u00e1rozza meg.
+
+TOKEN_VALIDATION_EXCEPTION=CWWKS2415E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l a k\u00f6vetkez\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l kapott token \u00e9rv\u00e9nyes\u00edt\u00e9se sor\u00e1n: {1}
+TOKEN_VALIDATION_EXCEPTION.explanation=Probl\u00e9ma lehet a kibocs\u00e1t\u00f3, azp, iat vagy exp \u00e1ll\u00edt\u00e1s \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9vel, illetve a tokenal\u00e1\u00edr\u00e1s \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9vel.
+TOKEN_VALIDATION_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1t.
+
+TOKEN_REQUEST_ERROR=CWWKS2416E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l a k\u00f6vetkez\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt k\u00e9r\u00e9s k\u00fcld\u00e9sekor az OpenID Connect szolg\u00e1ltat\u00f3 token v\u00e9gpontj\u00e1ra: {1}
+TOKEN_REQUEST_ERROR.explanation=Lehet, hogy az OpenID Connect \u00fcgyf\u00e9lr\u0151l inform\u00e1ci\u00f3k hi\u00e1nyoznak, a k\u00e9r\u00e9s a tokenv\u00e9gpontra meghi\u00fasult, vagy egy\u00e9b hiba t\u00f6rt\u00e9nt a tokenv\u00e9gpont v\u00e1lasz\u00e1nak feldolgoz\u00e1sa sor\u00e1n.
+TOKEN_REQUEST_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t. Ellen\u0151rizze, hogy az OpenID Connect szolg\u00e1ltat\u00f3 a hiteles\u00edt\u00e9si v\u00e1laszban adott-e vissza k\u00f3dot.
+
+# Do not translate "token_endpoint"
+TOKEN_ENDPOINT_MISSING=CWWKS2417E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l nem tal\u00e1lja az OpenID Connect szolg\u00e1ltat\u00f3 tokenv\u00e9gpontj\u00e1nak \u00e9rt\u00e9k\u00e9t.
+TOKEN_ENDPOINT_MISSING.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 metaadataib\u00f3l \u00e9s az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1b\u00f3l hi\u00e1nyzik a tokenv\u00e9gpont URL.
+TOKEN_ENDPOINT_MISSING.useraction=Ellen\u0151rizze, hogy az OpenID Connect szolg\u00e1ltat\u00f3 metaadatai tartalmaznak-e token_endpoint \u00e9rt\u00e9ket. Tokenv\u00e9gpont az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban is megadhat\u00f3.
+

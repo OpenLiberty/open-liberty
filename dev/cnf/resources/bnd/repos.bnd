@@ -42,6 +42,13 @@ fetch.oss.source.repository: \
     releaseUrl        = https://repo.maven.apache.org/maven2/; \
     index             = ${build}/oss_source_dependencies.maven
 
+fetch.oss.ibm.source.repository: \
+  aQute.bnd.repository.maven.provider.MavenBndRepository; \
+    name              = RemoteIBMSource; \
+    local             = ~/.ibmdhe/repository; \
+    releaseUrl        = http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/; \
+    index             = ${build}/oss_ibm_source_dependencies.maven
+
 fetch.oss.repository: \
   aQute.bnd.repository.maven.provider.MavenBndRepository; \
     name              = RemotePublic; \
@@ -60,15 +67,17 @@ fetch.ibm.java.repository:
 
 push.ibm.repository:
 
--plugin.3.RemoteSource:  ${fetch.oss.source.repository}
+-plugin.3.RemoteIBMSource: ${fetch.oss.ibm.source.repository}
 
--plugin.4.RemotePublic:  ${fetch.oss.repository}
+-plugin.4.RemoteSource:  ${fetch.oss.source.repository}
 
--plugin.5.RemoteIBM:     ${fetch.oss.ibm.repository}
+-plugin.5.RemotePublic:  ${fetch.oss.repository}
 
--plugin.6.RemoteIBMJava: ${fetch.ibm.java.repository}
+-plugin.6.RemoteIBM:     ${fetch.oss.ibm.repository}
 
--plugin.7.RemotePublish: ${push.ibm.repository}
+-plugin.7.RemoteIBMJava: ${fetch.ibm.java.repository}
+
+-plugin.8.RemotePublish: ${push.ibm.repository}
 
 -releaserepo: Release
 -baselinerepo: Release

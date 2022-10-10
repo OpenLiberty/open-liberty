@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,22 +46,19 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.Delete;
 import jakarta.data.Inheritance;
-import jakarta.data.Limit;
-import jakarta.data.OrderBy;
 import jakarta.data.Page;
-import jakarta.data.Paginated;
-import jakarta.data.Pagination;
-import jakarta.data.Param;
-import jakarta.data.Query;
 import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
-import jakarta.data.Sort;
-import jakarta.data.SortType;
-import jakarta.data.Sorts;
 import jakarta.data.Update;
 import jakarta.data.Where;
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Limit;
+import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Param;
+import jakarta.data.repository.Query;
+import jakarta.data.repository.Sort;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Status;
@@ -588,24 +586,35 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             int paramCount;
             Collector<Object, Object, Object> collector = null;
             Consumer<Object> consumer = null;
-            Pagination pagination = null;
-            Sorts sorts = null;
+            Limit limit = null;
+            Pageable pagination = null;
+            LinkedList<Sort> sorts = null;
 
-            // Jakarta NoSQL allows the last 3 parameter positions to be used for Pagination, Sorts, and Consumer
+            // Jakarta Data allows the method parameters positions after those used as query parameters
+            // to be used for purposes such as pagination and sorting.
             // Collector is added here for experimentation.
-            for (paramCount = args == null ? 0 : args.length; paramCount > 0 && paramCount > args.length - 3;) {
+            for (paramCount = args == null ? 0 : args.length; paramCount > 0;) {
                 Object param = args[--paramCount];
                 if (param instanceof Collector)
                     collector = (Collector<Object, Object, Object>) param;
                 else if (param instanceof Consumer)
                     consumer = (Consumer<Object>) param;
-                else if (param instanceof Pagination)
-                    pagination = (Pagination) param;
+                else if (param instanceof Limit)
+                    limit = (Limit) param;
+                else if (param instanceof Pageable)
+                    pagination = (Pageable) param;
                 else if (param instanceof Sort)
-                    sorts = Sorts.sorts().add((Sort) param);
-                else if (param instanceof Sorts)
-                    sorts = (Sorts) param;
-                else {
+                    (sorts = sorts == null ? new LinkedList<>() : sorts).addFirst((Sort) param);
+                else if (param instanceof Sort[]) {
+                    sorts = sorts == null ? new LinkedList<>() : sorts;
+                    Sort[] s = (Sort[]) param;;
+                    for (int i = s.length - 1; i >= 0; i--)
+                        if (s[i] == null)
+                            throw new NullPointerException("Sort: null");
+                        else
+                            sorts.addFirst(s[i]);
+                } else {
+                    // TODO null values for Sort and/or other special parameters could cause prior special parameters to be missed
                     paramCount++;
                     break;
                 }
@@ -616,22 +625,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 StringBuilder q = queryInfo.jpql == null ? new StringBuilder(200) : new StringBuilder(queryInfo.jpql);
                 if (queryInfo.jpql == null)
                     generateSelect(queryInfo.entityInfo, q, method);
-                for (Sort sort : sorts.getSorts()) {
-                    q.append(first ? " ORDER BY o." : ", o.").append(sort.getName());
-                    if (sort.getType() == SortType.DESC)
+                for (Sort sort : sorts) {
+                    q.append(first ? " ORDER BY o." : ", o.").append(sort.getProperty());
+                    if (sort.isDescending())
                         q.append(" DESC");
                     first = false;
                 }
                 queryInfo = new QueryInfo(queryInfo.type, q.toString(), queryInfo.entityInfo, queryInfo.saveParamType, queryInfo.returnArrayType, queryInfo.returnTypeParam);
-            }
-
-            // The Pagination parameter is from JNoSQL.
-            // The @Paginated annotation is not - I just wanted to experiment with how it could work
-            // if defined annotatively, which turns out to be possible, but not as flexible.
-            if (pagination == null) {
-                Paginated paginated = method.getAnnotation(Paginated.class);
-                if (paginated != null)
-                    pagination = Pagination.page(1).size(paginated.value());
             }
 
             LocalTransactionCoordinator suspendedLTC = null;
@@ -650,9 +650,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             else if (pagination != null && Iterator.class.equals(returnType))
                 return new PaginatedIterator<E>(queryInfo, pagination, method, paramCount, args);
             else if (Page.class.equals(returnType))
-                return new PageImpl<E>(queryInfo, pagination, method, paramCount, args);
+                return new PageImpl<E>(queryInfo, pagination, method, paramCount, args); // TODO Limit with Page as return type
             else if (Publisher.class.equals(returnType))
-                return new PublisherImpl<E>(queryInfo, provider.executor, method, paramCount, args);
+                return new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, method, paramCount, args);
 
             boolean requiresTransaction;
             switch (queryInfo.type) {
@@ -713,15 +713,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             }
                         }
 
-                        if (pagination == null) {
-                            Limit limit = method.getAnnotation(Limit.class);
-                            if (limit != null)
-                                query.setMaxResults(limit.value());
-                        } else {
-                            // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
-                            query.setFirstResult((int) pagination.getSkip());
-                            query.setMaxResults((int) pagination.getPageSize());
-                        }
+                        long maxResults = limit != null ? limit.maxResults() //
+                                        : pagination != null ? pagination.getSize() //
+                                                        : -1;
+                        long startAt = limit != null ? limit.startAt() - 1 //
+                                        : pagination != null ? (pagination.getPage() - 1) * maxResults //
+                                                        : 0;
+                        // TODO possible overflow with both of these.
+                        if (maxResults > 0)
+                            query.setMaxResults((int) maxResults);
+                        if (startAt > 0)
+                            query.setFirstResult((int) startAt);
 
                         List<?> results = query.getResultList();
                         Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
@@ -886,7 +888,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *         asynchronous patterns, it could be a not-yet-completed completion stage
      *         that is controlled by the database's async support.
      */
-    private CompletableFuture<Object> runAndCollect(QueryInfo queryInfo, Pagination pagination,
+    private CompletableFuture<Object> runAndCollect(QueryInfo queryInfo, Pageable pagination,
                                                     Collector<Object, Object, Object> collector,
                                                     Method method, int numParams, Object[] args, Class<?> returnType) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -911,11 +913,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
 
             List<E> page;
-            int maxResults;
+            long maxPageSize;
             do {
-                // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
-                query.setFirstResult((int) pagination.getSkip());
-                query.setMaxResults(maxResults = (int) pagination.getPageSize());
+                // TODO possible overflow with both of these.
+                maxPageSize = pagination.getSize();
+                query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+                query.setMaxResults((int) maxPageSize);
                 pagination = pagination.next();
 
                 page = query.getResultList();
@@ -925,7 +928,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Processed page with " + page.size() + " results");
-            } while (pagination != null && page.size() == maxResults);
+            } while (pagination != null && page.size() == maxPageSize);
         } finally {
             em.close();
         }
@@ -948,7 +951,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *         asynchronous patterns, it could be a not-yet-completed completion stage
      *         that is controlled by the database's async support.
      */
-    private CompletableFuture<Void> runWithConsumer(QueryInfo queryInfo, Pagination pagination, Consumer<Object> consumer,
+    private CompletableFuture<Void> runWithConsumer(QueryInfo queryInfo, Pageable pagination, Consumer<Object> consumer,
                                                     Method method, int numParams, Object[] args, Class<?> returnType) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
@@ -969,11 +972,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
 
             List<E> page;
-            int maxResults;
+            long maxPageSize;
             do {
-                // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
-                query.setFirstResult((int) pagination.getSkip());
-                query.setMaxResults(maxResults = (int) pagination.getPageSize());
+                // TODO possible overflow with both of these.
+                maxPageSize = pagination.getSize();
+                query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+                query.setMaxResults((int) maxPageSize);
                 pagination = pagination.next();
 
                 page = query.getResultList();
@@ -983,7 +987,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Processed page with " + page.size() + " results");
-            } while (pagination != null && page.size() == maxResults);
+            } while (pagination != null && page.size() == maxPageSize);
         } finally {
             em.close();
         }

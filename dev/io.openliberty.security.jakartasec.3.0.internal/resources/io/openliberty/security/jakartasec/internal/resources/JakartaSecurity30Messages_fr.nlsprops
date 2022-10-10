@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.3.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity30Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2500-2519
+
+#Note to translator, do not translate EL or OpenID
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG=CWWKS2500W: L''expression EL (Expression Language) de l''attribut {0} de l''annotation de d\u00e9finition du m\u00e9canisme d''authentification OpenID ne peut pas \u00eatre r\u00e9solue en une valeur valide. La valeur fournie \u00e9tait ''{1}''. Assurez-vous que l''expression EL et le r\u00e9sultat sont valides et que tout bean r\u00e9f\u00e9renc\u00e9 utilis\u00e9 dans l''expression peut \u00eatre r\u00e9solu. La valeur d''attribut par d\u00e9faut de ''{2}'' est utilis\u00e9e.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.explanation=L'attribut ne peut pas \u00eatre r\u00e9solu en tant qu'expression. Le r\u00e9sultat EL et le type de valeur d'attribut attendu peuvent ne pas correspondre. Par exemple, si le type d'attribut attendu est String, le r\u00e9sultat EL doit \u00eatre une cha\u00eene.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.useraction=Assurez-vous que l'annotation contient une valeur de configuration valide. V\u00e9rifiez que les expressions EL sont valides, que tous les beans r\u00e9f\u00e9renc\u00e9s dans l'expression peuvent \u00eatre r\u00e9solus et que le type du r\u00e9sultat correspond \u00e0 l'attribut.
+
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG=CWWKS2501W: L''expression EL (Expression Language) de l''attribut {0} de l''annotation de d\u00e9finition de r\u00e9clamations ne peut pas \u00eatre r\u00e9solue en une valeur valide. La valeur fournie \u00e9tait ''{1}''. Assurez-vous que l''expression EL et le r\u00e9sultat sont valides et que tout bean r\u00e9f\u00e9renc\u00e9 utilis\u00e9 dans l''expression peut \u00eatre r\u00e9solu. La valeur d''attribut par d\u00e9faut de ''{2}'' est utilis\u00e9e.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.explanation=L'attribut ne peut pas \u00eatre r\u00e9solu en tant qu'expression. Le r\u00e9sultat EL et le type de valeur d'attribut attendu peuvent ne pas correspondre. Par exemple, si le type d'attribut attendu est String, le r\u00e9sultat EL doit \u00eatre une cha\u00eene.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.useraction=Assurez-vous que l'annotation contient une valeur de configuration valide. V\u00e9rifiez que les expressions EL sont valides, que tous les beans r\u00e9f\u00e9renc\u00e9s dans l'expression peuvent \u00eatre r\u00e9solus et que le type du r\u00e9sultat correspond \u00e0 l'attribut.
+
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG=CWWKS2502W: L''expression EL (Expression Language) de l''attribut {0} de l''annotation de d\u00e9finition de d\u00e9connexion ne peut pas \u00eatre r\u00e9solue en une valeur valide. La valeur fournie \u00e9tait ''{1}''. Assurez-vous que l''expression EL et le r\u00e9sultat sont valides et que tout bean r\u00e9f\u00e9renc\u00e9 utilis\u00e9 dans l''expression peut \u00eatre r\u00e9solu. La valeur d''attribut par d\u00e9faut de ''{2}'' est utilis\u00e9e.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.explanation=L'attribut ne peut pas \u00eatre r\u00e9solu en tant qu'expression. Le r\u00e9sultat EL et le type de valeur d'attribut attendu peuvent ne pas correspondre. Par exemple, si le type d'attribut attendu est String, le r\u00e9sultat EL doit \u00eatre une cha\u00eene.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.useraction=Assurez-vous que l'annotation contient une valeur de configuration valide. V\u00e9rifiez que les expressions EL sont valides, que tous les beans r\u00e9f\u00e9renc\u00e9s dans l'expression peuvent \u00eatre r\u00e9solus et que le type du r\u00e9sultat correspond \u00e0 l'attribut.
+
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG=CWWKS2502W: L''expression EL (Expression Language) de l''attribut {0} de l''annotation de m\u00e9tadonn\u00e9es du fournisseur OpenID ne peut pas \u00eatre r\u00e9solue en une valeur valide. La valeur fournie \u00e9tait ''{1}''. Assurez-vous que l''expression EL et le r\u00e9sultat sont valides et que tout bean r\u00e9f\u00e9renc\u00e9 utilis\u00e9 dans l''expression peut \u00eatre r\u00e9solu. La valeur d''attribut par d\u00e9faut de ''{2}'' est utilis\u00e9e.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.explanation=L'attribut ne peut pas \u00eatre r\u00e9solu en tant qu'expression. Le r\u00e9sultat EL et le type de valeur d'attribut attendu peuvent ne pas correspondre. Par exemple, si le type d'attribut attendu est String, le r\u00e9sultat EL doit \u00eatre une cha\u00eene.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.useraction=Assurez-vous que l'annotation contient une valeur de configuration valide. V\u00e9rifiez que les expressions EL sont valides, que tous les beans r\u00e9f\u00e9renc\u00e9s dans l'expression peuvent \u00eatre r\u00e9solus et que le type du r\u00e9sultat correspond \u00e0 l'attribut.

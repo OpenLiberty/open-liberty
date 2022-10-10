@@ -844,7 +844,7 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-metrics</artifactId>
-      <version>5.0.0-M2</version>
+      <version>5.0.0-M4</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
@@ -2414,7 +2414,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.health</groupId>
       <artifactId>microprofile-health-api</artifactId>
-      <version>4.0</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
@@ -2434,7 +2434,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
       <artifactId>microprofile-jwt-auth-api</artifactId>
-      <version>2.1-RC2</version>
+      <version>2.1-RC5</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.lra</groupId>
@@ -2479,7 +2479,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.metrics</groupId>
       <artifactId>microprofile-metrics-api</artifactId>
-      <version>5.0.0-RC2</version>
+      <version>5.0.0-RC3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>
@@ -2500,11 +2500,6 @@
       <groupId>org.eclipse.microprofile.openapi</groupId>
       <artifactId>microprofile-openapi-api</artifactId>
       <version>3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile.openapi</groupId>
-      <artifactId>microprofile-openapi-api</artifactId>
-      <version>3.1-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.opentracing</groupId>
@@ -2584,7 +2579,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.rest.client</groupId>
       <artifactId>microprofile-rest-client-api</artifactId>
-      <version>3.0</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.parsson</groupId>
@@ -3950,6 +3945,11 @@
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
       <version>1.4.01</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.nekohtml</groupId>
+      <artifactId>nekohtml</artifactId>
+      <version>1.9.23.ibm</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml</groupId>

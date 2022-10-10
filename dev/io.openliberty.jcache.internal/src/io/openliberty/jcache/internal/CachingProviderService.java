@@ -28,7 +28,6 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.library.spi.SpiLibrary;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.library.Library;
@@ -53,9 +52,6 @@ public class CachingProviderService {
 
     private ClassLoadingService classLoadingService = null;
 
-    // Flag tells us if the message for a call to a beta method has been issued
-    private static boolean issuedBetaMessage = false;
-
     /** An object that the CachingProviderService, CacheManagerService and CacheService should sync on before closing. */
     private Object closeSyncObject = null;
 
@@ -68,11 +64,6 @@ public class CachingProviderService {
     @Activate
     public void activate(Map<String, Object> configProps) throws Exception {
         closeSyncObject = new Object();
-
-        /*
-         * Don't run if not in beta.
-         */
-        betaFenceCheck();
 
         /*
          * Get the cache name and the ID.
@@ -122,30 +113,6 @@ public class CachingProviderService {
         cachingProvider = null;
         classLoader = null;
         closeSyncObject = null;
-    }
-
-    /**
-     * Prevent beta functionality from being used when not running the beta edition.
-     *
-     * @throws UnsupportedOperationException if we are not running the beta edition.
-     */
-    private void betaFenceCheck() throws UnsupportedOperationException {
-        /*
-         * Not running beta edition, throw exception
-         */
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("The cachingProvider feature is beta and is not available.");
-        } else {
-            /*
-             * Running beta exception, issue message if we haven't already issued one for
-             * this class
-             */
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName()
-                            + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-        }
     }
 
     /**

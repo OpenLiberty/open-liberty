@@ -9,8 +9,8 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
-#COMPONENTPREFIX JSPG
-#COMPONENTNAMEFOR JSPG jsp
+#COMPONENTPREFIX JSPG CWWJS
+#COMPONENTNAMEFOR JSPG CWWJS jsp
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
@@ -310,8 +310,8 @@ jsp.error.usebean.class.must.be.assignable.to.type.explanation=
 jsp.error.usebean.class.must.be.assignable.to.type.useraction=
 
 jsp.error.usebean.cannot.locate.class.to.validate.assignable=JSPG0074E: Nu poate localiza clasa pentru a determina dac\u0103 clasei useBean "{0}" i se poate atribui tipul "{1}" pentru elementul jsp {2}
-jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
-jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
+#jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
+#jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
 
 jsp.error.multiple.attribute.definitions=JSPG0075E: Apari\u0163iile multiple ale atributului {0} nu sunt permise pentru elementul jsp {1}
 jsp.error.multiple.attribute.definitions.explanation=
@@ -922,25 +922,25 @@ jsp.error.failed.load.tlv.class=JSPG0236E: Containerul JSP a e\u015fuat la \u00e
 jsp.error.failed.load.tlv.class.explanation=Containerul JSP nu poate \u00eenc\u0103rca clasa TagLibraryValidator care este specificat\u0103 \u00een descriptorul bibliotecii de taguri (TLD).
 jsp.error.failed.load.tlv.class.useraction=Verifica\u0163i c\u0103 clasa TagLibraryValidator exist\u0103 \u015fi este accesibil\u0103 pentru acest modul web.
 
-jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: Nu poate g\u0103si o directiv\u0103 de atribut cu un atribut nume cu o valoare \"{0}\", valoarea acestui atribut name-from-attribut.
+jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: Nu poate g\u0103si o directiv\u0103 de atribut cu un atribut nume cu o valoare "{0}", valoarea acestui atribut name-from-attribut.
 jsp.error.tagfile.nameFrom.noAttribute.explanation=Explica\u0163ie
 jsp.error.tagfile.nameFrom.noAttribute.useraction=Ac\u0163iune utilizator
 
-jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: Directiva atribut (declarat\u0103 \u00een linia {0} \u015fi a c\u0103rui nume de atribut este \"{1}\", valoarea acestui atribut name-from-attribute) trebuie s\u0103 fie de tipul java.lang.String, este \"required\" \u015fi nu un \"rtexprvalue\".
+jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: Directiva atribut (declarat\u0103 \u00een linia {0} \u015fi a c\u0103rui nume de atribut este "{1}", valoarea acestui atribut name-from-attribute) trebuie s\u0103 fie de tipul java.lang.String, este "required" \u015fi nu un "rtexprvalue".
 jsp.error.tagfile.nameFrom.badAttribute.explanation=Explica\u0163ie
 jsp.error.tagfile.nameFrom.badAttribute.useraction=Ac\u0163iune utilizator
 
-jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output>: este ilegal s\u0103 aib\u0103 mai multe apari\u0163ii de \"{0}\"valori diferite (vechi: {1}, nou: {2})
+jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output>: este ilegal s\u0103 aib\u0103 mai multe apari\u0163ii de "{0}"valori diferite (vechi: {1}, nou: {2})
 jsp.error.jspoutput.conflict.explanation=<jsp:output> con\u0163ine mai multe apari\u0163ii ale atributului \u015fi acestea au valori diferite.
 jsp.error.jspoutput.conflict.useraction=Asigura\u0163i-v\u0103 c\u0103 apari\u0163iile multiple ale atributului au aceea\u015fi valoare.
 
 # defect 396002
-jsp.error.prefix.redefined=JSPG0240E: \u00cencercarea de a redefini prefixul \"{0}\" \u00een \"{1}\", c\u00e2nd a fost deja definit ca \"{2}\" \u00een domeniul  actual.
+jsp.error.prefix.redefined=JSPG0240E: \u00cencercarea de a redefini prefixul "{0}" \u00een "{1}", c\u00e2nd a fost deja definit ca "{2}" \u00een domeniul  actual.
 jsp.error.prefix.redefined.explanation= Prefixul taglibrary a fost deja definit cu un URI diferit.
 jsp.error.prefix.redefined.useraction= Asigura\u0163i-v\u0103 c\u0103 prefixul este definit cu un singur URI.
 
 # defect 396002
-jsp.error.prefix.use_before_dcl=JSPG0241E: Prefixul \"{0}\" specificat\u0103 \u00een aceast\u0103 directiv\u0103 tag a fost utilizat anterior de o ac\u0163iune \u00een fi\u015fierul {1}.
+jsp.error.prefix.use_before_dcl=JSPG0241E: Prefixul "{0}" specificat\u0103 \u00een aceast\u0103 directiv\u0103 tag a fost utilizat anterior de o ac\u0163iune \u00een fi\u015fierul {1}.
 jsp.error.prefix.use_before_dcl.explanation= Prefixul taglibrary a fost folosit \u00eenainte de directiva tag care define\u015fte prefixul.
 jsp.error.prefix.use_before_dcl.useraction= Muta\u0163i directiva tag deasupra tuturor ac\u0163iunilor care folosesc prefixul.
 
@@ -955,7 +955,7 @@ jsp.error.page.invalid.deferredsyntaxallowedasliteral.explanation=
 jsp.error.page.invalid.deferredsyntaxallowedasliteral.useraction=
 
 # jsp2.1ELwork
-jsp.error.el.template.deferred=JSPG0244E: \"{0}\"  nu este permis\u0103 \u00een textul \u015fablon.
+jsp.error.el.template.deferred=JSPG0244E: "{0}"  nu este permis\u0103 \u00een textul \u015fablon.
 jsp.error.el.template.deferred.explanation=
 jsp.error.el.template.deferred.useraction=
 
@@ -980,7 +980,7 @@ jsp.error.tag.conflict.trimdirectivewhitespaces.explanation=
 jsp.error.tag.conflict.trimdirectivewhitespaces.useraction=
 
 # jsp2.1ELwork
-jsp.error.tag.conflict.attr=JSPG0249E: TDirectiv\u0103 Tag: este ilegal s\u0103 aib\u0103 mai multe apari\u0163ii ale atributului \"{0}\" cu valori diferite (vechi: {1}, nou: {2})
+jsp.error.tag.conflict.attr=JSPG0249E: TDirectiv\u0103 Tag: este ilegal s\u0103 aib\u0103 mai multe apari\u0163ii ale atributului "{0}" cu valori diferite (vechi: {1}, nou: {2})
 jsp.error.tag.conflict.attr.explanation=
 jsp.error.tag.conflict.attr.useraction=
 
@@ -1030,7 +1030,7 @@ jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.explanation=
 jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.versionNotSupported=JSPG0259E: Versiunea XML \"{0}\" nu este suportat\u0103, doar XML 1.0.
+jsp.error.xml.versionNotSupported=JSPG0259E: Versiunea XML "{0}" nu este suportat\u0103, doar XML 1.0.
 jsp.error.xml.versionNotSupported.explanation=
 jsp.error.xml.versionNotSupported.useraction=
 
@@ -1055,22 +1055,22 @@ jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.explanation=
 jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: Caracterul '' = '' trebuie s\u0103 urmeze dup\u0103 \"{0}\" \u00een declara\u0163ia de text.
+jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: Caracterul '' = '' trebuie s\u0103 urmeze dup\u0103 "{0}" \u00een declara\u0163ia de text.
 jsp.error.xml.eqRequiredInTextDecl.explanation=
 jsp.error.xml.eqRequiredInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: Caracterul '' = '' trebuie s\u0103 urmeze dup\u0103 \"{0}\" \u00een declara\u0163ia XML.
+jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: Caracterul '' = '' trebuie s\u0103 urmeze dup\u0103 "{0}" \u00een declara\u0163ia XML.
 jsp.error.xml.eqRequiredInXMLDecl.explanation=
 jsp.error.xml.eqRequiredInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: Valoarea urm\u0103toare \"{0}\" \u00een declara\u0163ia de text trebuie s\u0103 fie un \u015fir pus \u00eentre ghilimele.
+jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: Valoarea urm\u0103toare "{0}" \u00een declara\u0163ia de text trebuie s\u0103 fie un \u015fir pus \u00eentre ghilimele.
 jsp.error.xml.quoteRequiredInTextDecl.explanation=
 jsp.error.xml.quoteRequiredInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: Valoarea urm\u0103toare \"{0}\" \u00een declara\u0163ia XML trebuie s\u0103 fie un \u015fir pus \u00eentre ghilimele.
+jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: Valoarea urm\u0103toare "{0}" \u00een declara\u0163ia XML trebuie s\u0103 fie un \u015fir pus \u00eentre ghilimele.
 jsp.error.xml.quoteRequiredInXMLDecl.explanation=
 jsp.error.xml.quoteRequiredInXMLDecl.useraction=
 
@@ -1085,22 +1085,22 @@ jsp.error.xml.invalidCharInXMLDecl.explanation=
 jsp.error.xml.invalidCharInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: lipse\u015fte ghilimeaua de \u00eenchidere \u00een valoarea urm\u0103toare \"{0}\" \u00een declara\u0163ia de text.
+jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: lipse\u015fte ghilimeaua de \u00eenchidere \u00een valoarea urm\u0103toare "{0}" \u00een declara\u0163ia de text.
 jsp.error.xml.closeQuoteMissingInTextDecl.explanation=
 jsp.error.xml.closeQuoteMissingInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: lipse\u015fte ghilimeaua de \u00eenchidere \u00een valoarea urm\u0103toare \"{0}\" \u00een declara\u0163ia de XML.
+jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: lipse\u015fte ghilimeaua de \u00eenchidere \u00een valoarea urm\u0103toare "{0}" \u00een declara\u0163ia de XML.
 jsp.error.xml.closeQuoteMissingInXMLDecl.explanation=
 jsp.error.xml.closeQuoteMissingInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: Ordinea octe\u0163ilor da\u0163i pentru codarea \"{0}\" nu este siportat\u0103.
+jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: Ordinea octe\u0163ilor da\u0163i pentru codarea "{0}" nu este siportat\u0103.
 jsp.error.xml.encodingByteOrderUnsupported.explanation=
 jsp.error.xml.encodingByteOrderUnsupported.useraction=
 
 # jsp2.1work
-jsp.error.xml.encodingDeclInvalid=JSPG0273E: Nume de codificare nevalid \"{0}\".
+jsp.error.xml.encodingDeclInvalid=JSPG0273E: Nume de codificare nevalid "{0}".
 jsp.error.xml.encodingDeclInvalid.explanation=
 jsp.error.xml.encodingDeclInvalid.useraction=
 
@@ -1110,7 +1110,7 @@ jsp.error.xml.spaceRequiredBeforeStandalone.explanation=
 jsp.error.xml.spaceRequiredBeforeStandalone.useraction=
 
 # jsp2.1work
-jsp.error.xml.sdDeclInvalid=JSPG0275E: Valoarea Declara\u0163iei documentului autonom trebuie s\u0103 fie \"yes\" sau \"no\", nu \"{0}\".
+jsp.error.xml.sdDeclInvalid=JSPG0275E: Valoarea Declara\u0163iei documentului autonom trebuie s\u0103 fie "yes" sau "no", nu "{0}".
 jsp.error.xml.sdDeclInvalid.explanation=
 jsp.error.xml.sdDeclInvalid.useraction=
 
@@ -1125,7 +1125,7 @@ jsp.error.xml.morePseudoAttributes.explanation=
 jsp.error.xml.morePseudoAttributes.useraction=
 
 # jsp2.1work
-jsp.error.xml.xmlDeclUnterminated=JSPG0278E: Declara\u0163ia XML trebuie s\u0103 se termine cu \"?>\".
+jsp.error.xml.xmlDeclUnterminated=JSPG0278E: Declara\u0163ia XML trebuie s\u0103 se termine cu "?>".
 jsp.error.xml.xmlDeclUnterminated.explanation=
 jsp.error.xml.xmlDeclUnterminated.useraction=
 
@@ -1135,7 +1135,7 @@ jsp.error.xml.pseudoAttrNameExpected.explanation=
 jsp.error.xml.pseudoAttrNameExpected.useraction=
 
 # jsp2.1work
-jsp.error.xml.reservedPITarget=JSPG0280E: Destina\u0163ia instruc\u0163iunii de procesare care se potrive\u015fte cu \"[xX][mM][lL]\" nu este permis\u0103.
+jsp.error.xml.reservedPITarget=JSPG0280E: Destina\u0163ia instruc\u0163iunii de procesare care se potrive\u015fte cu "[xX][mM][lL]" nu este permis\u0103.
 jsp.error.xml.reservedPITarget.explanation=
 jsp.error.xml.reservedPITarget.useraction=
 
@@ -1155,12 +1155,12 @@ jsp.error.xml.invalidCharInContent.explanation=
 jsp.error.xml.invalidCharInContent.useraction=
 
 # jsp2.1work
-jsp.error.xml.operationNotSupported=JSPG0284E: Opera\u0163ia \"{0}\" nu este suportat\u0103 de cititorul {1}.
+jsp.error.xml.operationNotSupported=JSPG0284E: Opera\u0163ia "{0}" nu este suportat\u0103 de cititorul {1}.
 jsp.error.xml.operationNotSupported.explanation=
 jsp.error.xml.operationNotSupported.useraction=
 
 # jsp2.1work
-jsp.error.xml.invalidASCII=JSPG0285E: Octetul \"{0}\" nu este un ASCII pe 7 bi\u0163i.
+jsp.error.xml.invalidASCII=JSPG0285E: Octetul "{0}" nu este un ASCII pe 7 bi\u0163i.
 jsp.error.xml.invalidASCII.explanation=
 jsp.error.xml.invalidASCII.useraction=
 
@@ -1185,7 +1185,7 @@ jsp.error.prolog_config_encoding_mismatch.explanation=
 jsp.error.prolog_config_encoding_mismatch.useraction=
 
 # jsp2.1work
-jsp.error.invalid.tagdir=JSPG0290E: Directorul de fi\u015fiere {0} nu \u00eencepe cu \"/WEB-INF/tags\"
+jsp.error.invalid.tagdir=JSPG0290E: Directorul de fi\u015fiere {0} nu \u00eencepe cu "/WEB-INF/tags"
 jsp.error.invalid.tagdir.explanation=
 jsp.error.invalid.tagdir.useraction=
 
@@ -1247,9 +1247,9 @@ jsp.load.class.exception=JSPG0302W: A e\u015fuat \u00eenc\u0103rcarea urm\u0103t
 jsp.load.class.exception.explanation=A fost o problem\u0103 la \u00eenc\u0103rcarea clasei JSP.  Containerul JSP va \u00eencerca s\u0103 \u00eencarce fi\u015fierul clas\u0103 cu numele de pachet org.apache.jsp \u00een schimb.
 jsp.load.class.exception.useraction=Dac\u0103 problema persist\u0103, reporni\u0163i aplica\u0163ia.
 
-jsp.jdksourcelevel.value =JSPG8502I: Valoarea atributului JSP jdkSourceLevel este \"{0}\".
-jsp.jdksourcelevel.value.explanation =
-jsp.jdksourcelevel.value.useraction =
+jsp.jdksourcelevel.value=JSPG8502I: Valoarea atributului JSP jdkSourceLevel este "{0}".
+jsp.jdksourcelevel.value.explanation=
+jsp.jdksourcelevel.value.useraction=
 
 jsp.parse.tld.exception=JSPG0303W: Sistemul nu a putut parsa urm\u0103torul JSP Tag Library Descriptor: {0}. Excep\u0163ia pentru eroarea de parsare este: {1}
 jsp.parse.tld.exception.explanation=A ap\u0103rut o problem\u0103 la parsarea fi\u015fierului JSP Tag Library Descriptor. Aceast\u0103 eroare poate fi cauzat\u0103 de un fi\u015fier XML format gre\u015fit.
@@ -1259,6 +1259,14 @@ system.java.compiler.not.found=JSPG0304W: Atributul JSP, useJDKCompiler, este se
 system.java.compiler.not.found.explanation=Containerul JSP nu a putut g\u0103si compilatorul sistemului, care de obicei indic\u0103 faptul c\u0103 fi\u015fierul Java SDK jar, tools.jar, nu a fost g\u0103sit \u00een calea clasei.
 system.java.compiler.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul Java SDK jar, tools.jar, este \u00een calea clasei \u015fi verifica\u0163i c\u0103 Java SDK suport\u0103 Java Compiler API. Vede\u0163i Java Specification Request 199 pentru informa\u0163ii suplimentare.
 
-jsp.feature.not.loaded.correctly=CWWJS0001: Caracteristica JSP [Pages] nu s-a \u00eenc\u0103rcat cu o versiune acceptabil\u0103.
+jsp.feature.not.loaded.correctly=CWWJS0001E: Caracteristica JSP [Pages] nu s-a \u00eenc\u0103rcat cu o versiune acceptabil\u0103.
 jsp.feature.not.loaded.correctly.explanation=Caracteristica JSP [Pages] este \u00eenc\u0103rcat\u0103 cu o versiune care corespunde specifica\u0163iei Java [Jakarta] EE a acelei caracteristici JSP [Pages]. Caracteristica a fost \u00eenc\u0103rcat\u0103 f\u0103r\u0103 nicio versiune definit\u0103.
-jsp.feature.not.loaded.correctly.useraction=Verifica\u0163i fi\u015fierul server.xml pentru existen\u0163a oric\u0103rei dintre caracteristicile JSP [Pages]. Doar una trebuie s\u0103 fie specificat\u0103.
+jsp.feature.not.loaded.correctly.useraction=Verifica\u021bi fi\u0219ierul server.xml pentru existen\u021ba mai multor caracteristici JSP [Pages]. Fi\u0219ierul nu trebuie s\u0103 specifice mai mult de o caracteristic\u0103 Pages.
+
+jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Valoare invalid\u0103 pentru atributul errorOnELNotFound
+jsp.error.page.invalid.erroronelnotfound.explanation=
+jsp.error.page.invalid.erroronelnotfound.useraction=
+
+jsp.isthreadsafe.warning=CWWJS0003W: Specifica\u021bia Pages 3.1 recomand\u0103 insistent dezvoltatorilor de pagini s\u0103 nu utilizeze directiva de pagin\u0103 depreciat\u0103 isThreadSafe.
+jsp.isthreadsafe.warning.explanation=SingleThreadModel a fost \u00eenl\u0103turat de la Servlet 6.0. Pages 3.1 a perimat isThreadSafe \u0219i are \u00een vedere s\u0103-l \u00eenl\u0103ture \u00eentr-o actualizare Pages viitoare.
+jsp.isthreadsafe.warning.useraction=\u00cenl\u0103tura\u021bi directiva isThreadSafe din toate paginile.

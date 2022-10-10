@@ -65,7 +65,7 @@
 
 25020=Nie wolno wywo\u0142ywa\u0107 metody getResult() przed wywo\u0142aniem zdarzenia endDocument().
 
-25021=Klasa {0} jest niepoprawna dla elementu SwaRef. Wymagana jest klasa javax.activation.DataHandler.
+25021=Klasa {0} jest niepoprawna dla elementu SwaRef. Wymagana jest klasa jakarta.activation.DataHandler.
 
 25022=Nie mo\u017cna zestawi\u0107 obrazu. Brak dost\u0119pnego kodera dla typu mimeType {0}.
 

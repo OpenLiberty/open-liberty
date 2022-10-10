@@ -14,12 +14,14 @@ import java.util.Collection;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.Pageable;
+
 /**
  * Copied from jakarta.nosql.mapping.Page to investigate how well the
  * JNoSQL repository-related annotations work for relational database access.
  */
 public interface Page<T> extends Supplier<Stream<T>> {
-    Pagination getPagination();
+    Pageable getPagination();
 
     Page<T> next();
 

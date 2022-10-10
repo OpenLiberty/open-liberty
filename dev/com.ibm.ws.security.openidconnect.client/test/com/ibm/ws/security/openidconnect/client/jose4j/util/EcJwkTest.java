@@ -28,11 +28,15 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
+import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
@@ -108,6 +112,26 @@ public class EcJwkTest {
             jsonObject = ecJwk.getJsonObject();
         }
     }
+    
+    @Rule
+    public final TestName testName = new TestName();
+    
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.trace("*=all");
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.trace("*=all=disabled");
+        outputMgr.restoreStreams();
+    }
+    
+    @Before
+    public void beforeTest() {
+        System.out.println("Entering test: " + testName.getMethodName());
+    }
+   
 
     @Before
     public void setUp() throws Exception {
@@ -116,6 +140,7 @@ public class EcJwkTest {
 
     @After
     public void tearDown() {
+        System.out.println("Exiting test: " + testName.getMethodName());
         mock.assertIsSatisfied();
         outputMgr.resetStreams();
     }
@@ -212,6 +237,50 @@ public class EcJwkTest {
         }
 
     }
+    // make sure that the CCE is addressed - this issue is blocking users from using this JWK type
+    // TODO need to improve this test, so we can successfully create the ecjwk instance. Right now, I get Certificate exception with the data that I am using here.
+    @SuppressWarnings("static-access")
+    @Test
+    public void testJose4jEllipticCurveJWK_getInstance() {
+        final String methodName = "testJose4jEllipticCurveJWK_getInstance";
+
+        JSONObject jsonObjInstance = new JSONObject();
+        JSONArray x5c = new JSONArray();
+        
+        String str2 = "ZZZZZ";
+        x5c.add(str2);
+        
+        jsonObjInstance.put("kid", "1486996079");
+        jsonObjInstance.put("kty", "EC");
+        jsonObjInstance.put("use",  "sig");
+        jsonObjInstance.put("x",  "xx");
+        jsonObjInstance.put("y",  "YYY");
+        jsonObjInstance.put("crv",  "P-256");
+        jsonObjInstance.put("alg",  "ES256");
+        //jsonObjInstance.put("n", "q");
+        //jsonObjInstance.put("e", "A");
+        jsonObjInstance.put("x5c", x5c);
+
+        jsonObjInstance.put("x5t", "AAA");
+
+        jsonObjInstance.put("x5t#S256", "BBB");
+
+        try {
+
+            final JWK jwk = Jose4jEllipticCurveJWK.getInstance(jsonObjInstance);
+
+        } catch (ClassCastException cce) {
+            outputMgr.failWithThrowable(methodName, cce);
+        } catch (Exception e) {
+            if (e instanceof java.security.cert.CertificateException) {
+                String error = e.getMessage();
+                assertTrue("error is not somethinng expected - ", error.contains("Unable to convert ZZZZZ value to X509Certificate"));
+            }
+            outputMgr.failWithThrowable(methodName, e);
+        }
+
+    }
+
 
     @SuppressWarnings("static-access")
     //@Test

@@ -82,7 +82,7 @@ public class SessionApplicationParameters {
         return sapSessionTimeout;
     }
 
-    SessionCookieConfig getSessionCookieConfig() {
+    public SessionCookieConfig getSessionCookieConfig() {
         return sapSessionCookieConfig;
     }
 

@@ -48,3 +48,46 @@ ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Dal\u0161\u00ed informace v
 AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: Klient protokolu OpenID Connect {0} zjistil n\u00e1sleduj\u00edc\u00ed chybu p\u0159i ov\u011b\u0159ov\u00e1n\u00ed odpov\u011bdi ov\u011b\u0159en\u00ed od poskytovatele protokolu OpenID Connect: {1}
 AUTHENTICATION_RESPONSE_ERROR.explanation=V odpov\u011bdi od poskytovatele protokolu OpenID Connect mohou chyb\u011bt informace. Je mo\u017en\u00e9, \u017ee do\u0161lo k probl\u00e9mu s k\u00f3dem vr\u00e1cen\u00fdm od poskytovatele protokolu OpenID Connect.
 AUTHENTICATION_RESPONSE_ERROR.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b.
+
+CALLBACK_MISSING_STATE_PARAMETER=CWWKS2408E: Po\u017eadavek na zp\u011btn\u00e9 vol\u00e1n\u00ed od poskytovatele OpenID Connect postr\u00e1d\u00e1 parametr stavu.
+CALLBACK_MISSING_STATE_PARAMETER.explanation=Po\u017eadavek na autorizaci k poskytovateli OpenID COnnect nezahrnoval parametr stavu.
+CALLBACK_MISSING_STATE_PARAMETER.useraction=Ujist\u011bte se, \u017ee po\u017eadavek na autorizaci k poskytovateli OpenID Connect obsahuje parametr stavu.
+
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH=CWWKS2409E: Parametr stavu [{0}], kter\u00fd je v po\u017eadavku na zp\u011btn\u00e9 vol\u00e1n\u00ed od poskytovatele OpenID Connect, nem\u00e1 spr\u00e1vnou d\u00e9lku. O\u010dek\u00e1v\u00e1 se, \u017ee parametr bude dlouh\u00fd {1} znak\u016f.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.explanation=Hodnota stavu m\u016f\u017ee b\u00fdt zkr\u00e1cena, nebo hodnota stavu nepoch\u00e1z\u00ed z tohoto klienta OpenID Connect.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.useraction=Zkontrolujte form\u00e1t parametru stavu. Porovnejte hodnotu s parametry stavu z ned\u00e1vn\u00fdch po\u017eadavk\u016f OpenID Connect, kter\u00e9 byly zpracov\u00e1ny t\u00edmto klientem OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_NOT_STORED=CWWKS2410E: Klient OpenID Connect nem\u016f\u017ee naj\u00edt hodnotu stavu, kter\u00e1 odpov\u00edd\u00e1 parametru stavu [{0}] v po\u017eadavku na zp\u011btn\u00e9 vol\u00e1n\u00ed od poskytovatele OpenID Connect.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.explanation=Parametr stavu m\u016f\u017ee poch\u00e1zet ze star\u00e9ho po\u017eadavku na autorizaci, nebo je hodnota parametru stavu chybn\u00e1.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.useraction=Ov\u011b\u0159te, \u017ee se parametr stavu v po\u017eadavku na zp\u011btn\u00e9 vol\u00e1n\u00ed shoduje s hodnotou stavu ned\u00e1vn\u00e9ho po\u017eadavku OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE=CWWKS2411E: Parametr stavu [{0}], kter\u00fd je zahrnut v po\u017eadavku na zp\u011btn\u00e9 vol\u00e1n\u00ed, neodpov\u00edd\u00e1 hodnot\u011b stavu ulo\u017een\u00e9 klientem OpenID Connect.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.explanation=Parametr stavu m\u016f\u017ee poch\u00e1zet ze star\u00e9ho po\u017eadavku na autorizaci, nebo je hodnota parametru stavu chybn\u00e1.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.useraction=Ov\u011b\u0159te, \u017ee se parametr stavu v po\u017eadavku na zp\u011btn\u00e9 vol\u00e1n\u00ed shoduje s hodnotou stavu ned\u00e1vn\u00e9ho po\u017eadavku OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME=CWWKS2412E: Parametr stavu [{0}], kter\u00fd je zahrnut\u00fd v po\u017eadavku na zp\u011btn\u00e9 vol\u00e1n\u00ed, se nach\u00e1z\u00ed mimo sv\u016fj platn\u00fd \u010dasov\u00fd r\u00e1mec. Hodnota stavu byla vytvo\u0159ena v {1} a je platn\u00e1 od {2} do {3}. Aktu\u00e1ln\u00ed \u010das je {4}.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.explanation=Poskytovateli OpenID Connect trvalo p\u0159\u00edli\u0161 dlouho, ne\u017e odpov\u011bd\u011bl, nebo u\u017eivateli trvalo p\u0159\u00edli\u0161 dlouho, ne\u017e se ov\u011b\u0159il v poskytovateli OpenID Connect.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.useraction=Ujist\u011bte se, \u017ee ov\u011b\u0159en\u00ed u\u017eivatele v poskytovateli OpenID Connect nezabere p\u0159\u00edli\u0161 mnoho \u010dasu.
+
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI=CWWKS2413E: Adresa URL po\u017eadavku na zp\u011btn\u00e9 vol\u00e1n\u00ed [{0}] neodpov\u00edd\u00e1 identifik\u00e1toru URI pro p\u0159esm\u011brov\u00e1n\u00ed [{1}], kter\u00fd je nakonfigurov\u00e1n pro klienta OpenID Connect {2}.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.explanation=Klient OpenID Connect mohl v po\u017eadavku na autorizaci, kter\u00fd byl odesl\u00e1n poskytovateli OpenID Connect, pou\u017e\u00edt odli\u0161nou hodnotu pro parametr redirect_uri.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.useraction=Zkontrolujte konfiguraci klienta OpenID Connect a ujist\u011bte se, \u017ee je identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed spr\u00e1vn\u011b nakonfigurov\u00e1n.
+
+# Do not translate "error"
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER=CWWKS2414E: Po\u017eadavek na zp\u011btn\u00e9 vol\u00e1n\u00ed od poskytovatele OpenID Connect obsahuje n\u00e1sleduj\u00edc\u00ed chybovou hodnotu parametru: [{0}]
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.explanation=Poskytovatel OpenID Connect zjistil chybu p\u0159i pokusu o zpracov\u00e1n\u00ed po\u017eadavku na ov\u011b\u0159en\u00ed.
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.useraction=Chcete-li z\u00edskat dal\u0161\u00ed informace, prohl\u00e9dn\u011bte si hodnotu, kter\u00e1 je ve zpr\u00e1v\u011b. K\u00f3dy chyb jsou definov\u00e1ny v RFC 6749.
+
+TOKEN_VALIDATION_EXCEPTION=CWWKS2415E: Klient OpenID Connect {0} zjistil n\u00e1sleduj\u00edc\u00ed chybu b\u011bhem ov\u011b\u0159en\u00ed platnosti tokenu, kter\u00fd byl p\u0159ijat od poskytovatele OpenID Connect: {1}
+TOKEN_VALIDATION_EXCEPTION.explanation=M\u016f\u017ee existovat probl\u00e9m s ov\u011b\u0159en\u00edm platnosti n\u00e1roku vydavatele, azp, iat nebo exp nebo s ov\u011b\u0159en\u00edm platnosti podpisu tokenu.
+TOKEN_VALIDATION_EXCEPTION.useraction=Dal\u0161\u00ed informace viz chyba v t\u00e9to zpr\u00e1v\u011b.
+
+TOKEN_REQUEST_ERROR=CWWKS2416E: Klient OpenID Connect {0} zjistil n\u00e1sleduj\u00edc\u00ed chybu p\u0159i odes\u00edl\u00e1n\u00ed po\u017eadavku na koncov\u00fd bod tokenu poskytovatele OpenID Connect: {1}
+TOKEN_REQUEST_ERROR.explanation=Klient OpenID Connect m\u016f\u017ee postr\u00e1dat informace, po\u017eadavek na koncov\u00fd bod tokenu se nezda\u0159il, nebo se vyskytla jin\u00e1 chyba b\u011bhem zpracov\u00e1n\u00ed odezvy koncov\u00e9ho bodu tokenu.
+TOKEN_REQUEST_ERROR.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee poskytovatel OpenID Connect vr\u00e1til k\u00f3d v odpov\u011bdi ov\u011b\u0159en\u00ed.
+
+# Do not translate "token_endpoint"
+TOKEN_ENDPOINT_MISSING=CWWKS2417E: Klient OpenID Connect {0} nem\u016f\u017ee naj\u00edt hodnotu koncov\u00e9ho bodu tokenu poskytovatele OpenID Connect.
+TOKEN_ENDPOINT_MISSING.explanation=Adresa URL koncov\u00e9ho bodu tokenu chyb\u00ed v metadatech poskytovatele OpenID Connect a v konfiguraci klienta OpenID Connect.
+TOKEN_ENDPOINT_MISSING.useraction=Ov\u011b\u0159te, \u017ee metadata poskytovatele OpenID Connect obsahuj\u00ed hodnotu token_endpoint. Koncov\u00fd bod tokenu lze tak\u00e9 uv\u00e9st v konfiguraci klienta OpenID Connect.
+

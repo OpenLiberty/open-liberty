@@ -28,7 +28,7 @@ import java.util.concurrent.TimeoutException;
 
 import jakarta.annotation.Resource;
 import jakarta.data.Entities;
-import jakarta.data.MappingException;
+import jakarta.data.DataException;
 import jakarta.data.Template;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -122,7 +122,7 @@ public class TemplateTestServlet extends FATServlet {
         try {
             h = template.insert(h3);
             fail("Inserted duplicate: " + h);
-        } catch (MappingException x) {
+        } catch (DataException x) {
             // expected
             if (x.getCause() == null)
                 throw x;

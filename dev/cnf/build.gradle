@@ -75,6 +75,7 @@ void assertAlphabetical(String filename) {
 
 task checkAlphabetical() {
   assertAlphabetical('oss_dependencies.maven')
+  assertAlphabetical('oss_ibm_source_dependencies.maven')
   assertAlphabetical('oss_source_dependencies.maven')
   assertAlphabetical('oss_ibm.maven')
 }
@@ -87,9 +88,10 @@ task copyMavenLibs(type: Copy) {
 task dependabotGenerate() {
   dependsOn checkAlphabetical
   inputs.file('oss_dependencies.maven')
+  inputs.file('oss_ibm_source_dependencies.maven')
   inputs.file('oss_source_dependencies.maven')
   outputs.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')
-  ArrayList inputFiles = [file('oss_dependencies.maven'),file('oss_source_dependencies.maven')]
+  ArrayList inputFiles = [file('oss_dependencies.maven'),file('oss_ibm_source_dependencies.maven'),file('oss_source_dependencies.maven')]
   doLast {
     // Generate pom.xml
     File pom = rootProject.file('cnf/dependabot/check_this_in_if_it_changes/pom.xml')

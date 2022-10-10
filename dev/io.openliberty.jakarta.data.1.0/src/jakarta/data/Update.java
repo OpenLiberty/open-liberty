@@ -15,6 +15,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Query;
+
 /**
  * Annotates a repository method to provide the update items of
  * the <code>UPDATE</code> clause of a JPQL or Jakarta NoSQL text query.

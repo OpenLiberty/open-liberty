@@ -161,8 +161,8 @@ public class Bell implements LibraryChangeListener {
         }
 
         final Set<String> serviceNames = getServiceNames((String[]) config.get(SERVICE_ATT));
-        final boolean spiVisibility = !!!betaFenceCheck() ? false : getSpiVisibility((Boolean) config.get(SPI_VISIBILITY_ATT), libraryRef);
-        final Map<String, String> properties = !!!betaFenceCheck() ? null : getProperties(config); // PROPERTIES_ATT
+        final boolean spiVisibility = getSpiVisibility((Boolean) config.get(SPI_VISIBILITY_ATT), libraryRef);
+        final Map<String, String> properties = getProperties(config); // PROPERTIES_ATT
 
         // create a tracker that will register the services once the library becomes available
         ServiceTracker<Library, List<ServiceRegistration<?>>> newTracker = null;
@@ -214,17 +214,6 @@ public class Bell implements LibraryChangeListener {
             return Collections.emptySet();
         }
         return Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(configuredServices)));
-    }
-
-    private static boolean issuedBetaMessage = false;
-
-    private boolean betaFenceCheck() {
-        boolean isBetaEdition = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
-        if (isBetaEdition && !!!issuedBetaMessage) {
-            Tr.info(tc, "BETA: BELL SPI Visibility and BELL Properties has been invoked by class " + this.getClass().getName() + " for the first time.");
-            issuedBetaMessage = true;
-        }
-        return isBetaEdition;
     }
 
     @SuppressWarnings("restriction")

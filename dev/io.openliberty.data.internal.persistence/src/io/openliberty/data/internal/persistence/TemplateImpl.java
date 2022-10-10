@@ -28,7 +28,7 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.IdNotFoundException;
-import jakarta.data.MappingException;
+import jakarta.data.DataException;
 import jakarta.data.Template;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -177,7 +177,7 @@ public class TemplateImpl implements Template {
         if (failure == null)
             return found;
         else
-            throw new MappingException(failure);
+            throw new DataException(failure);
     }
 
     @Override
@@ -261,7 +261,7 @@ public class TemplateImpl implements Template {
         if (failure == null)
             return entity;
         else
-            throw new MappingException(failure);
+            throw new DataException(failure);
     }
 
     @Override
@@ -353,7 +353,7 @@ public class TemplateImpl implements Template {
         if (failure == null)
             return entities;
         else
-            throw new MappingException(failure);
+            throw new DataException(failure);
     }
 
     // TODO Lock timeout could be more appropriate for inserts, but there is no way to set it in JPA
@@ -442,7 +442,7 @@ public class TemplateImpl implements Template {
         if (failure == null)
             return returnValue;
         else
-            throw new MappingException(failure);
+            throw new DataException(failure);
     }
 
     @FFDCIgnore(Throwable.class)
@@ -521,6 +521,6 @@ public class TemplateImpl implements Template {
         if (failure == null)
             return returnValue;
         else
-            throw new MappingException(failure);
+            throw new DataException(failure);
     }
 }

@@ -18,11 +18,11 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import jakarta.data.Delete;
-import jakarta.data.Paginated;
-import jakarta.data.Query;
 import jakarta.data.Select;
 import jakarta.data.Update;
 import jakarta.data.Where;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.concurrent.Asynchronous;
 
@@ -47,8 +47,7 @@ public interface Personnel {
     void findByLastNameOrderByFirstNameDesc(String lastName, Consumer<String> callback);
 
     @Asynchronous
-    @Paginated(4)
-    CompletableFuture<Void> findByOrderBySsnDesc(Consumer<Person> callback);
+    CompletableFuture<Void> findByOrderBySsnDesc(Consumer<Person> callback, Pageable pagination);
 
     @Asynchronous
     CompletableFuture<Person> findBySsn(long ssn);
@@ -64,8 +63,8 @@ public interface Personnel {
     @Asynchronous
     @Select("firstName")
     @Where("o.firstName LIKE CONCAT(?1, '%')")
-    @Paginated(3)
     CompletableFuture<Long> namesThatStartWith(String beginningOfFirstName,
+                                               Pageable pagination,
                                                Collector<String, ?, Long> collector);
 
     // An alternative to the above would be to make the Collector class a parameter

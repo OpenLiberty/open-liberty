@@ -35,7 +35,11 @@ public class KeyAlgorithmChecker {
 
     public static int UNKNOWN_HASH_SIZE = 0;
 
-    public boolean isHSAlgorithm(String alg) {
+    private KeyAlgorithmChecker() {
+        // no one should new up an instance of this class.
+    }
+
+    public static boolean isHSAlgorithm(String alg) {
         if (alg == null) {
             return false;
         }
@@ -43,7 +47,7 @@ public class KeyAlgorithmChecker {
         return m.matches();
     }
 
-    public boolean isPublicKeyValidType(Key key, String supportedSigAlg) {
+    public static boolean isPublicKeyValidType(Key key, String supportedSigAlg) {
         if (key == null || supportedSigAlg == null) {
             // Rely on caller to do the appropriate checks if the key or algorithm is null
             return true;
@@ -59,7 +63,7 @@ public class KeyAlgorithmChecker {
         return false;
     }
 
-    public boolean isRSAlgorithm(String alg) {
+    public static boolean isRSAlgorithm(String alg) {
         if (alg == null) {
             return false;
         }
@@ -67,13 +71,13 @@ public class KeyAlgorithmChecker {
         return m.matches();
     }
 
-    public boolean isValidRSAPublicKey(Key key) {
+    public static boolean isValidRSAPublicKey(Key key) {
         String keyAlgorithm = key.getAlgorithm();
         // TODO - any way to check hash bit size?
         return (keyAlgorithm.equals("RSA") && key instanceof RSAPublicKey);
     }
 
-    public boolean isESAlgorithm(String alg) {
+    public static boolean isESAlgorithm(String alg) {
         if (alg == null) {
             return false;
         }
@@ -81,14 +85,14 @@ public class KeyAlgorithmChecker {
         return m.matches();
     }
 
-    public boolean isValidECPublicKey(String supportedSigAlg, Key key) {
+    public static boolean isValidECPublicKey(String supportedSigAlg, Key key) {
         if (!("EC".equals(key.getAlgorithm()) && key instanceof ECPublicKey)) {
             return false;
         }
         return isValidECKeyParameters(supportedSigAlg, (ECPublicKey) key);
     }
 
-    boolean isValidECKeyParameters(String supportedSigAlg, ECKey key) {
+    static boolean isValidECKeyParameters(String supportedSigAlg, ECKey key) {
         ECParameterSpec params = key.getParams();
         int fieldSize = params.getCurve().getField().getFieldSize();
         if (tc.isDebugEnabled()) {
@@ -106,7 +110,7 @@ public class KeyAlgorithmChecker {
      * Extracts the hash size from algorithm strings such as RS256, HS384, or ES512.
      */
     @FFDCIgnore(Exception.class)
-    public int getHashSizeFromAlgorithm(String algorithm) {
+    public static int getHashSizeFromAlgorithm(String algorithm) {
         int hashSize = UNKNOWN_HASH_SIZE;
         Matcher algMatcher = ALG_PATTERN.matcher(algorithm);
         if (!algMatcher.matches()) {
@@ -127,7 +131,7 @@ public class KeyAlgorithmChecker {
         return hashSize;
     }
 
-    public boolean isPrivateKeyValidType(Key key, String supportedSigAlg) {
+    public static boolean isPrivateKeyValidType(Key key, String supportedSigAlg) {
         if (key == null || supportedSigAlg == null) {
             // Rely on caller to do the appropriate checks if the key or algorithm is null
             return true;
@@ -143,13 +147,13 @@ public class KeyAlgorithmChecker {
         return false;
     }
 
-    public boolean isValidRSAPrivateKey(Key key) {
+    public static boolean isValidRSAPrivateKey(Key key) {
         String keyAlgorithm = key.getAlgorithm();
         // TODO - any way to check hash bit size?
         return (keyAlgorithm.equals("RSA") && key instanceof RSAPrivateKey);
     }
 
-    public boolean isValidECPrivateKey(String supportedSigAlg, Key key) {
+    public static boolean isValidECPrivateKey(String supportedSigAlg, Key key) {
         if (!("EC".equals(key.getAlgorithm()) && key instanceof ECPrivateKey)) {
             return false;
         }

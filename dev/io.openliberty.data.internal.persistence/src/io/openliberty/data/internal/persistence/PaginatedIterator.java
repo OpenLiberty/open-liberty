@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import jakarta.data.Pagination;
-import jakarta.data.Param;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Param;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -30,13 +30,13 @@ public class PaginatedIterator<T> implements Iterator<T> {
     private final Method method;
     private final int numParams; // can differ from args.length due to Consumer/Pagination/Sort/Sorts parameters
     private List<T> page;
-    private Pagination pagination;
+    private Pageable pagination;
     private final QueryInfo queryInfo;
 
-    PaginatedIterator(QueryInfo queryInfo, Pagination pagination,
+    PaginatedIterator(QueryInfo queryInfo, Pageable pagination,
                       Method method, int numParams, Object[] args) {
         this.queryInfo = queryInfo;
-        this.pagination = pagination == null ? Pagination.page(1).size(100) : pagination;
+        this.pagination = pagination == null ? Pageable.of(1, 100) : pagination;
         this.method = method;
         this.numParams = numParams;
         this.args = args;
@@ -59,9 +59,10 @@ public class PaginatedIterator<T> implements Iterator<T> {
                         query.setParameter(param.value(), args[i]);
                 }
             }
-            // TODO possible overflow with both of these. And what is the difference between getPageSize/getLimit?
-            query.setFirstResult((int) pagination.getSkip());
-            query.setMaxResults((int) pagination.getPageSize());
+            // TODO possible overflow with both of these.
+            long maxPageSize = pagination.getSize();
+            query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+            query.setMaxResults((int) maxPageSize);
             pagination = pagination.next();
 
             page = query.getResultList();

@@ -135,7 +135,7 @@
 
 45207=Une erreur s''est produite lors de la tentative de r\u00e9solution d''un sch\u00e9ma avec l''\u00e9l\u00e9ment SchemaResolver fourni.
 
-45208=Impossible de mapper la propri\u00e9t\u00e9 {0} du type {1}. Les packages javax.activation et javax.mail sont requis pour mapper les propri\u00e9t\u00e9s de type DataHandler. Assurez-vous que ces deux packages sont disponibles dans le chemin d''acc\u00e8s aux classes.
+45208=Impossible de mapper la propri\u00e9t\u00e9 {0} du type {1}. Les packages jakarta.activation et jakarta.mail sont requis pour mapper les propri\u00e9t\u00e9s de type DataHandler. Assurez-vous que ces deux packages sont disponibles dans le chemin d''acc\u00e8s aux classes.
 
 45209=Une tentative a \u00e9t\u00e9 effectu\u00e9e pour r\u00e9initialiser l''instance ApplicationResolver sur l''\u00e9l\u00e9ment SDOHelperContext.  Un seul ensemble est autoris\u00e9.
 

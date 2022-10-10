@@ -153,13 +153,13 @@
 
 7093=Nella query denominata [{0}], la classe [{2}] per l''argomento query denominato [{1}] non pu\u00f2 essere trovato. Includere la classe mancante nel percorso di classe.
 
-7095=La risorsa sessions.xml [{0}] non \u00e8 stata trovata nel percorso della risorsa.  Verificare che il nome/percorso della risorsa e il programma di caricamento classe passati a SessionManager.getSession siano corretti.  Il file sessions.xml deve essere incluso nella root del jar distribuito dell''applicazione, se il file sessions.xml \u00e8 distribuito in una sottodirectory nel jar dell''applicazione assicurarsi che sia specificato il percorso della risorsa corretto utilizzando "/" non "\".
+7095=La risorsa sessions.xml [{0}] non \u00e8 stata trovata nel percorso della risorsa.  Verificare che il nome/percorso della risorsa e il programma di caricamento classe passati a SessionManager.getSession siano corretti.  Il file sessions.xml deve essere incluso nella root del jar distribuito dell''applicazione, se il file sessions.xml \u00e8 distribuito in una sottodirectory nel jar dell''applicazione assicurarsi che sia specificato il percorso della risorsa corretto utilizzando "/" non "".
 
 7096=Impossibile utilizzare il metodo commit() per eseguire nuovamente il commit dell''unit\u00e0 di lavoro.
 
 7097=Operazione non supportata: [{0}].
 
-7099=La risorsa XML del progetto di distribuzione [{0}] non \u00e8 stata trovata nel percorso della risorsa.  Verificare che il nome/percorso della risorsa e il programma di caricamento classe passati a XMLProjectReader siano corretti.  L''XML del progetto deve essere incluso nella root del jar distribuito dell''applicazione, se l''XML del progetto \u00e8 distribuito in una sottodirectory nel jar dell''applicazione assicurarsi che sia specificato il percorso della risorsa corretto utilizzando "/" non "\".
+7099=La risorsa XML del progetto di distribuzione [{0}] non \u00e8 stata trovata nel percorso della risorsa.  Verificare che il nome/percorso della risorsa e il programma di caricamento classe passati a XMLProjectReader siano corretti.  L''XML del progetto deve essere incluso nella root del jar distribuito dell''applicazione, se l''XML del progetto \u00e8 distribuito in una sottodirectory nel jar dell''applicazione assicurarsi che sia specificato il percorso della risorsa corretto utilizzando "/" non "".
 
 7100=Impossibile trovare la sessione con il nome [{0}] nel file session.xml [{1}]
 
@@ -605,7 +605,7 @@
 
 7342=Il valore booleano specificato [{0}] per l''impostazione che consente le query SQL native non \u00e8 valido, il valore deve essere "true" o "false".
 
-7343=Sono stati specificati pi\u00f9 identificativi VPD (propriet\u00e0 contesto discriminatore titolare). L''entit\u00e0 [{1}] utilizza [{0}] e l''entit\u00e0 [{3]} utilizza [{2}]. Quando si utilizza una strategia VPD multititolare, pu\u00f2 esserci solo una colonna discriminatore titolare per entit\u00e0 e la relativa propriet\u00e0 di contesto deve essere congruente in tutte le entit\u00e0 VPD multititolare.
+7343=Sono stati specificati pi\u00f9 identificativi VPD (propriet\u00e0 contesto discriminatore titolare). L''entit\u00e0 [{1}] utilizza [{0}] e l''entit\u00e0 [{3}] utilizza [{2}]. Quando si utilizza una strategia VPD multititolare, pu\u00f2 esserci solo una colonna discriminatore titolare per entit\u00e0 e la relativa propriet\u00e0 di contesto deve essere congruente in tutte le entit\u00e0 VPD multititolare.
 
 7344=VPD (connessioni e generazione DDL) non \u00e8 supportato per la piattaforma: [{0}].
 
@@ -621,7 +621,7 @@
 
 7351=La classe converter [{2}] specificata nell''attributo di associazione [{1}] dalla classe [{0}] non \u00e8 stata trovata. Assicurarsi che il nome classe converter sia corretto e che esista con la definizione dell''unit\u00e0 permanente.
 
-7352=La classe converter [{0}] deve implementare l''interfaccia javax.persistence.AttributeConverter<X, Y> JPA per essere una classe converter valida.
+7352=La classe converter [{0}] deve implementare l''interfaccia JPA javax.persistence.AttributeConverter <X, Y> per essere una classe converter valida.
 
 7353=L''attributo associazione [{1}] dalla classe [{0}] non \u00e8 un tipo di associazione valido per una specifica di conversione.
 
@@ -630,4 +630,6 @@
 7355=L''attributo associazione [{1}] dalla classe [{0}] non \u00e8 un tipo di associazione valido per una conversione che utilizza una specifica nome attributo. Un nome attributo deve essere specificato solo per attraversare un tipo di associazione incorporata.
 
 7356=Procedura: [{1}] non pu\u00f2 essere eseguito perch\u00e9 {0} attualmente non supporta pi\u00f9 parametri out.
+
+7357=L''URL "[{0}]" URL per la risorsa "[{1}]" non appartiene ad una root di persistenza valida (come da specifica JPA)
 

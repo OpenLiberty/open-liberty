@@ -48,3 +48,46 @@ ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Vede\u0163i eroarea din mes
 AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: Clientul OpenID Connect {0} a \u00eent\u00e2mpinat urm\u0103toarea eroare \u00een timp ce verifica r\u0103spunsul de autentificare de la furnizorul OpenID Connect: {1}
 AUTHENTICATION_RESPONSE_ERROR.explanation=Ar putea lipsi informa\u021bii din r\u0103spunsul de la furnizorul OpenID Connect. S-ar putea s\u0103 existe o problem\u0103 cu codul returnat de la furnizorul OpenID Connect.
 AUTHENTICATION_RESPONSE_ERROR.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare.
+
+CALLBACK_MISSING_STATE_PARAMETER=CWWKS2408E: Cererii callback de la furnizorul OpenID Connect \u00eei lipse\u0219te parametrul state.
+CALLBACK_MISSING_STATE_PARAMETER.explanation=Cererea de autorizare la furnizorului OpenID Connect nu a inclus un parametru state.
+CALLBACK_MISSING_STATE_PARAMETER.useraction=Asigura\u021bi-v\u0103 c\u0103 cererea de autorizare la furnizorul OpenID Connect include un parametru state.
+
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH=CWWKS2409E: Parametrul state [{0}] care se afl\u0103 \u00een cererea callback de la furnizorul OpenID Connect nu are lungimea corect\u0103. Parametrul este a\u0219teptat s\u0103 aib\u0103 lungimea de {1} caractere.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.explanation=Valoarea state ar putea fi trunchiat\u0103 sau valoarea state nu a provenit de la acest client OpenID Connect.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.useraction=Verifica\u021bi formatul parametrului state. Compara\u021bi valoarea parametrilor state din cererile recente OpenID Connect care au fost tratate de acest client OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_NOT_STORED=CWWKS2410E: Clientul OpenID Connect nu poate g\u0103si o valoare de parametru state care se potrive\u0219te cu parametrul state [{0}] din cererea callback de la furnizorul OpenID Connect.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.explanation=Parametrul state ar putea fi dintr-o cerere veche de autorizare sau valoarea pentru parametrul state este incorect\u0103.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.useraction=Verifica\u021bi dac\u0103 parametrul state din cererea callback se potrive\u0219te cu o valoare pentru state pentru o cerere recent\u0103 OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE=CWWKS2411E: Parametrul state [{0}] care este inclus \u00een cererea callback nu se potrive\u0219te cu valoarea pentru state care este stocat\u0103 de clientul OpenID Connect.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.explanation=Parametrul state ar putea fi dintr-o cerere veche de autorizare sau valoarea pentru parametrul state este incorect\u0103.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.useraction=Verifica\u021bi dac\u0103 parametrul state din cererea callback se potrive\u0219te cu o valoare pentru state pentru o cerere recent\u0103 OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME=CWWKS2412E: Parametrul state [{0}] care este inclus \u00een cererea callback este \u00een afara cadrului s\u0103u de timp valid. Valoarea pentru state a fost creat\u0103 la {1} \u0219i este valid\u0103 din {2} p\u00e2n\u0103 la {3}. Valoarea de timp curent\u0103 este {4}.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.explanation=Furnizorului OpenID Connect i-a luat prea mult timp pentru a r\u0103spunde sau utilizatorului i-a luat prea mult timp pentru a se autentifica cu furnizorul OpenID Connect.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.useraction=Asigura\u021bi-v\u0103 c\u0103 utilizatorului nu-i ia prea mult timp pentru a se autentifica cu furnizorul OpenID Connect.
+
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI=CWWKS2413E: URL-ul de cerere callback [{0}] nu se potrive\u0219te cu URI-ul de redirec\u021bionare [{1}] care este configurat pentru clientul OpenID Connect {2}.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.explanation=Poate clientul OpenID Connect a folosit o valoare diferit\u0103 pentru parametrul redirect_uri \u00een cererea de autorizare care a fost trimis\u0103 furnizorului OpenID Connect.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.useraction=Verifica\u021bi configura\u021bia clientului OpenID Connect pentru a v\u0103 asigura c\u0103 URI-ul de redirec\u021bionare este configurat corect.
+
+# Do not translate "error"
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER=CWWKS2414E: Cererea callback de la furnizorul OpenID Connect con\u021bine urm\u0103toarea valoare a parametrului error: [{0}]
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.explanation=Furnizorul OpenID Connect a \u00eent\u00e2mpinat o eroare atunci c\u00e2nd a \u00eencercat s\u0103 proceseze cererea de autentificare.
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.useraction=Pentru mai multe informa\u021bii vede\u021bi valoarea care este \u00een mesaj. Codurile de eroare sunt definite de RFC 6749.
+
+TOKEN_VALIDATION_EXCEPTION=CWWKS2415E: Clientul OpenID Connect {0} a \u00eent\u00e2mpinat urm\u0103toarea eroare \u00een timpul valid\u0103rii jetonului care a fost primit de la furnizorul OpenID Connect: {1}
+TOKEN_VALIDATION_EXCEPTION.explanation=O problem\u0103 ar putea exista cu validarea revendic\u0103rii issuer, azp, iat sau exp sau cu validarea semn\u0103turii jetonului.
+TOKEN_VALIDATION_EXCEPTION.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea din mesaj.
+
+TOKEN_REQUEST_ERROR=CWWKS2416E: Clientul OpenID Connect {0} a \u00eent\u00e2mpinat urm\u0103toarea eroare \u00een timp ce trimitea o cerere c\u0103tre punctul final de jeton al furnizorului OpenID Connect: {1}
+TOKEN_REQUEST_ERROR.explanation=Clientului OpenID Connect ar putea s\u0103 \u00eei lipseasc\u0103 informa\u021bii, cererea la punctul final de jeton a e\u0219uat sau a ap\u0103rut o alt\u0103 eroare \u00een timpul proces\u0103rii r\u0103spunsului de la punctul final de jeton.
+TOKEN_REQUEST_ERROR.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u021bi dac\u0103 furnizorul OpenID Connect a returnat un cod \u00een r\u0103spunsul pentru autentificare.
+
+# Do not translate "token_endpoint"
+TOKEN_ENDPOINT_MISSING=CWWKS2417E: Clientul OpenID Connect {0} nu poate g\u0103si o valoare pentru punctul final de jeton pentru furnizorul OpenID Connect.
+TOKEN_ENDPOINT_MISSING.explanation=URL-ul punctului final de jeton lipse\u0219te din metadatele furnizorului OpenID Connect \u0219i din configura\u021bia clientului OpenID Connect.
+TOKEN_ENDPOINT_MISSING.useraction=Verifica\u021bi dac\u0103 metadatele furnizorului OpenID Connect con\u021bin o valoare token_endpoint. Un punct final de jeton poate fi specificat \u0219i \u00een configura\u021bia clientului OpenID Connect.
+

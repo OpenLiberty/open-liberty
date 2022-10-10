@@ -44,14 +44,27 @@ public class HttpSessionContextImpl60 extends HttpSessionContext31Impl {
     public HttpSessionContextImpl60(SessionManagerConfig smc, SessionApplicationParameters sap, SessionStoreService sessionStoreService) {
         super(smc, sap, sessionStoreService);
 
+        /*
+         * Upon super() returns, SessionContext has configured all the necessary for this application.
+         * If the SessionCookieConfig (SCC) has configured (i.e cookie-config presents)
+         * the webapp's SCC 6.0 should have copied/replaced the SMC's SCC (i.e SMC's SCC is now updated to the SessionCookieConfigImpl60)
+         */
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " Constructor");
         }
 
-        SessionCookieConfig scc = smc.getSessionCookieConfig();
-
-        //override the default sccimpl with version 6 sccimpl
-        smc.setClonedCookieConfig(new SessionCookieConfigImpl60(scc.getName(), scc.getDomain(), scc.getPath(), scc.getComment(), scc.getMaxAge(), scc.isHttpOnly(), scc.isSecure()));
+        /*
+         * If the WebAppConfiguration still does not have the SCC at this point, create SCC 6.0, copy over the SMC's SCC info then replace the SMC's SCC.
+         * This only happens if there is no cookie-config in web.xml. We need SCC 6.0 instance by now in case the SCI will
+         * programmatically set it during application startup
+         */
+        if (sap.getSessionCookieConfig() == null) {
+            if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " Constructor , WebAppConfiguration does not have SCC; create SCC 60 version and set to SMC");
+            }
+            SessionCookieConfig scc = smc.getSessionCookieConfig();
+            smc.setClonedCookieConfig(new SessionCookieConfigImpl60(scc.getName(), scc.getDomain(), scc.getPath(), scc.getComment(), scc.getMaxAge(), scc.isHttpOnly(), scc.isSecure()));
+        }
     }
 
     /**

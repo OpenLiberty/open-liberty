@@ -20,6 +20,7 @@ import org.jose4j.jwt.MalformedClaimException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.jakartasec.tokens.AccessTokenImpl;
@@ -55,6 +56,7 @@ public class OidcIdentityStore implements IdentityStore {
     }
 
     @Override
+    @FFDCIgnore(Exception.class)
     public CredentialValidationResult validate(Credential credential) {
         // Use OidcTokensCredential to validate
         if (!(credential instanceof OidcTokensCredential)) {
@@ -86,6 +88,7 @@ public class OidcIdentityStore implements IdentityStore {
 
                     return credentialValidationResult;
                 } catch (Exception e) {
+                    Tr.error(tc, "CREDENTIAL_VALIDATION_ERROR", client.getOidcClientConfig().getClientId(), e.toString());
                     return CredentialValidationResult.INVALID_RESULT;
                 }
             }

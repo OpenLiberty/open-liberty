@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.jose4j.util;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.InvalidJwtException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -22,16 +27,43 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.openidconnect.clients.common.TraceConstants;
 import com.ibm.ws.security.openidconnect.common.Constants;
 
-public class OidcTokenImplBase {
+public class OidcTokenImplBase implements Serializable {
+
+    /*
+     * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+     * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+     *
+     *
+     * WARNING!!!!
+     *
+     * Carefully consider changes to this class. Serialization across different
+     * versions must always be supported. Additionally, any referenced classes
+     * must be available to the JCache provider's serialization.
+     *
+     *
+     * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+     * <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+     */
+
+    private static final long serialVersionUID = 1L;
+
     private static final TraceComponent tc = Tr.register(OidcTokenImplBase.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     protected static final String CLIENT_ID = "azp2";
 
     private static final String BEARER = "Bearer";
-    JwtClaims jwtClaims = null; // this is not serializable
-    String access_token = null;
-    String refresh_token = null;
-    String client_id = null;
-    String tokenTypeNoSpace = null;
+    private transient JwtClaims jwtClaims = null; // this is not serializable
+    private String access_token = null;
+    private String refresh_token = null;
+    private String client_id = null;
+    private String tokenTypeNoSpace = null;
+	
+	/**
+	 * Non-transient field that can be used in the future to determine the
+	 * format of the serialized fields in the
+	 * {@link #readObject(ObjectInputStream)} method.
+	 */
+	@SuppressWarnings("unused")
+	private final short serializationVersion = 1;
 
     public OidcTokenImplBase(JwtClaims jwtClaims, String access_token, String refresh_token, String client_id, String tokenTypeNoSpace) {
         this.jwtClaims = jwtClaims;
@@ -231,4 +263,32 @@ public class OidcTokenImplBase {
         return sb.toString();
     }
 
+    private void readObject(ObjectInputStream input) throws ClassNotFoundException, IOException {
+        /*
+         * Read all non-transient fields.
+         */
+        input.defaultReadObject();
+
+        /*
+         * Read the JwtClaims field back.
+         */
+        try {
+            jwtClaims = JwtClaims.parse((String) input.readObject(), null);
+        } catch (InvalidJwtException e) {
+            throw new IOException("Error deserializing JWT claims.", e);
+        }
+    }
+
+    private void writeObject(ObjectOutputStream output) throws IOException {
+        /*
+         * Write all non-transient fields.
+         */
+        output.defaultWriteObject();
+
+        /*
+         * Since the JwtClaims class is not serializable, we are going to copy the
+         * JSON string instead.
+         */
+        output.writeObject(jwtClaims.toJson());
+    }
 }

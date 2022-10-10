@@ -63,3 +63,5 @@
 
 22118=Nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia po\u0142\u0105czenia JGroups za pomoc\u0105 pliku konfiguracyjnego: {0}
 
+22119=B\u0142\u0105d podczas inicjowania {0}, dodaj plik org.eclipse.persistence.corba.jar do \u015bcie\u017cki klasy.
+

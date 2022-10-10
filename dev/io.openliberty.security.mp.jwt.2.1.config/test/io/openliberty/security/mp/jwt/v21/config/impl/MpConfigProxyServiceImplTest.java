@@ -29,7 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.ibm.ws.security.mp.jwt.config.MpConstants;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 
 import test.common.SharedOutputManager;
 
@@ -119,7 +119,7 @@ public class MpConfigProxyServiceImplTest {
     @Test
     public void testGetConfigValueNoClassLoader_supportedMpJwtConfigProperty() {
         MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
-        String NAME = MpConstants.PUBLIC_KEY;
+        String NAME = MpConfigProperties.PUBLIC_KEY;
         Class CLAZZ = Object.class;
         String VALUE = "value";
 
@@ -151,7 +151,7 @@ public class MpConfigProxyServiceImplTest {
     @Test
     public void testGetConfigValueClassLoader_supportedMpJwtConfigProperty() {
         MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
-        String NAME = MpConstants.ISSUER;
+        String NAME = MpConfigProperties.ISSUER;
         Class CLAZZ = Object.class;
         String VALUE = "value";
 

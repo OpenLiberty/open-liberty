@@ -80,18 +80,15 @@ bell.no.services.config=CWWKL0058W: N\u00e3o \u00e9 poss\u00edvel localizar o se
 bell.no.services.config.explanation=N\u00e3o h\u00e1 servi\u00e7os correspondentes declarados na pasta META-INF/services.
 bell.no.services.config.useraction= Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
 
-# BETA
 # {0} - library identifier
 bell.spi.visibility.enabled=CWWKL0059I: A visibilidade de SPI do BELL \u00e9 ativada para a biblioteca {0} . O BELL referencia a biblioteca {0} por meio de um carregador de classe exclusivo que pode ver os pacotes SPI.
 bell.spi.visibility.enabled.explanation=Para evitar que aplicativos e recursos vejam os pacotes SPI, o BELL referencia a biblioteca por meio de um carregador de classe exclusivo n\u00e3o compartilhado com aplicativos que referenciam a mesma biblioteca.
 bell.spi.visibility.enabled.useraction=Desative a visibilidade de SPI na configura\u00e7\u00e3o do BELL sempre que o BELL tiver que referenciar uma biblioteca por meio de um carregador de classes compartilhado com aplicativos que referenciam a mesma biblioteca. Caso contr\u00e1rio,\n\t\t\t\tnenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
-# BETA
 bell.spi.visibility.disabled.libref.global=CWWKL0060E: A visibilidade de SPI do BELL n\u00e3o \u00e9 suportada para a biblioteca compartilhada global do Liberty.
 bell.spi.visibility.disabled.libref.global.explanation=A visibilidade BELL SPI n\u00e3o pode ser ativada para a biblioteca compartilhada global Liberty.
 bell.spi.visibility.disabled.libref.global.useraction=Modifique a configura\u00e7\u00e3o do BELL para referenciar uma biblioteca diferente da biblioteca compartilhada global do Liberty.
 
-# BETA
 # {0} - the name of the implementation class
 # {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
 # {2} - the name of the library

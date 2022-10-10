@@ -161,6 +161,8 @@ do_select_before_insert_not_supported=La fonction CMP Oc4j "do-select-before-ins
 
 drop_connection_on_error=Avertissement : suppression de commande de connexion \u00e0 distance {0} sur erreur {1}
 
+eclipselink_version_error=Le fichier {0} n''existe pas ou est endommag\u00e9.
+
 ejbSelect2=EjbSelect : {0}
 
 ejb_jar_xml_not_found_in_input=ejb-jar.xml n''est pas pr\u00e9sent sous le r\u00e9pertoire d''entr\u00e9e ({0}).
@@ -316,6 +318,10 @@ jpars_could_not_find_persistence_context=Un appel JPA-RS demande le contexte de 
 jpars_could_not_find_session_bean=Un appel est effectu\u00e9 \u00e0 un bean session avec le nom JNDI : [{0}].  Ce bean est introuvable.
 
 jta_cannot_be_disabled_in_cmp=Lors de l''utilisation de Container Managed Persistence (CMP), JTA ne peut pas \u00eatre d\u00e9sactiv\u00e9. EclipseLink agira comme JTA \u00e9tait activ\u00e9.
+
+jta_duplicate_ctrl_property=Classe de contr\u00f4leur de transaction JTA d\u00e9finie dans les propri\u00e9t\u00e9s "eclipselink.target-server" et "eclipselink.jta.controller". Utilisation de la valeur de "eclipselink.target-server".
+
+jta_tsr_lookup_failure=Impossible de rechercher l''instance TransactionSynchronizationRegistry : {0}
 
 key_identity_hash_code_object={0}Cl\u00e9 : {1}{2}Code de hachage d''identit\u00e9 : {3}{2}Objet : {4}
 
@@ -517,7 +523,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Le param\u00e8tre de cl\u0
 
 metadata_warning_ignore_mapped_superclass_read_only=Le param\u00e8tre en lecture seule sur la superclasse mapp\u00e9e [{1}] pour la classe d''entit\u00e9 [{0}] est ignor\u00e9 car les m\u00e9tadonn\u00e9es en lecture seule ont \u00e9t\u00e9 pr\u00e9alablement d\u00e9couvertes pour cette entit\u00e9 (soit sur l''entit\u00e9 elle-m\u00eame ou une autre superclasse mapp\u00e9e).
 
-metadata_warning_ignore_mapping_metadata=M\u00e9tadonn\u00e9es javax.persistence appliqu\u00e9es \u00e0 l''attribut [{0}] de la classe [{1}] ignor\u00e9es. Les m\u00e9tadonn\u00e9es javax.persistence sont ignor\u00e9es sur les zones ou les propri\u00e9t\u00e9s qui sont transitoires, statiques ou abstraites.
+metadata_warning_ignore_mapping_metadata=Les m\u00e9tadonn\u00e9es jakarta.persistence appliqu\u00e9es \u00e0 l''attribut [{0}] de la classe [{1}] sont ignor\u00e9es. Les m\u00e9tadonn\u00e9es jakarta.persistence sont ignor\u00e9es dans les zones ou les propri\u00e9t\u00e9s transitoires, statiques ou abstraites.
 
 metadata_warning_ignore_serialized=La s\u00e9rialisation par d\u00e9faut sur l''\u00e9l\u00e9ment [{1}] au sein de la classe d''entit\u00e9 [{0}] est ignor\u00e9e car des m\u00e9tadonn\u00e9es de conversion EclipseLink sont sp\u00e9cifi\u00e9es.
 
@@ -727,6 +733,9 @@ toplink_severe=[EL Severe] :
 
 toplink_warning=[EL Warning] : 
 
+unit_of_work_thread_info=L''unit\u00e9 de travail en cours dans la session ({0}) a \u00e9t\u00e9 cr\u00e9\u00e9e par une autre unit\u00e9 d''ex\u00e9cution (ID : {1} nom : {2}), que l''unit\u00e9 d''ex\u00e9cution en cours (ID : {3} nom : {4})
+
+unit_of_work_thread_info_thread_dump=Unit\u00e9 d''ex\u00e9cution de cr\u00e9ation (ID : {0} nom : {1}) trace de pile : {2} Unit\u00e9 d''ex\u00e9cution en cours (ID : {3} nom : {4}) trace de pile : {5}\n
 unitofwork_identity_hashcode={0} Code de hachage identit\u00e9 unit\u00e9 d''oeuvre : {1}
 
 update_all_fields_not_supported=La fonction CMP Oc4j "update-all-fields" sur l''entit\u00e9 ({0}) n''est pas directement prise en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.

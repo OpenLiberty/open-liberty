@@ -23,7 +23,6 @@ import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
-import org.apache.myfaces.application.FacesServletMappingUtils;
 import org.apache.myfaces.context.ExceptionHandlerImpl;
 import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
@@ -45,6 +44,7 @@ import jakarta.faces.event.PostConstructApplicationEvent;
 import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRegistration;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -707,13 +707,15 @@ public class FacesInitializerImpl implements FacesInitializer
      */
     protected void initAutomaticExtensionlessMapping(FacesContext facesContext, ServletContext servletContext)
     {
-        FacesServletMappingUtils.ServletRegistrationInfo facesServletRegistration =
-                FacesServletMappingUtils.getFacesServletRegistration(facesContext, servletContext);
+        ServletRegistration facesServletRegistration =
+                (ServletRegistration) servletContext.getAttribute(
+                    MyFacesContainerInitializer.FACES_SERVLET_SERVLETREGISTRATION);
+
         if (facesServletRegistration != null)
         {
             facesContext.getApplication().getViewHandler().getViews(facesContext, "/", 
                     ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME).forEach(s -> {
-                        facesServletRegistration.getRegistration().addMapping(s);
+                        facesServletRegistration.addMapping(s);
                     });
         }
     }

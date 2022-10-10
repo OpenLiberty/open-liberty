@@ -130,7 +130,6 @@ public class JPATest {
                 serverEnvWriter.println("DB2_USER=" + "db2inst1");
                 serverEnvWriter.println("DB2_PASS=" + "password");
                 serverEnvWriter.flush();
-                checkpointServer.setServerConfigurationFile("jpafat/server_ds_configured.xml");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -138,7 +137,6 @@ public class JPATest {
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, preRestoreLogic);
 
-        //preRestoreLogic.accept(server);
         server.startServer();
     }
 

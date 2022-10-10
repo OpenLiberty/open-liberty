@@ -27,6 +27,7 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.wsspi.ssl.SSLSupport;
 
@@ -61,7 +62,7 @@ public class TokenResponseValidator {
     private Storage storage;
 
     public TokenResponseValidator() {
-        
+
     }
 
     /**
@@ -70,7 +71,7 @@ public class TokenResponseValidator {
     public TokenResponseValidator(OidcClientConfig oidcClientConfig) {
         this.clientConfig = oidcClientConfig;
     }
-    
+
     /**
      * @param oidcClientConfig
      */
@@ -80,7 +81,7 @@ public class TokenResponseValidator {
         } else {
             this.storage = new CookieBasedStorage(this.request, this.response);
         }
-        
+
     }
 
     @Reference(name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC)
@@ -104,6 +105,7 @@ public class TokenResponseValidator {
     /**
      * @param tokenResponse
      */
+    @FFDCIgnore(Exception.class)
     public JwtClaims validate(TokenResponse tokenResponse) throws TokenValidationException {
         String idtoken = null;
 
@@ -136,20 +138,20 @@ public class TokenResponseValidator {
                 }
                 if (jwtClaims.getExpirationTime() == null) {
                     throw new TokenValidationException(this.clientConfig.getClientId(), "token is missing required exp claim");
-                }           
+                }
                 TokenValidator tokenValidator = new IdTokenValidator(clientConfig);
                 issuerconfigured = getIssuer();
                 tokenValidator.issuer(jwtClaims.getIssuer()).subject(jwtClaims.getSubject()).audiences(jwtClaims.getAudience()).azp(((String) jwtClaims.getClaimValue("azp"))).iat(jwtClaims.getIssuedAt()).exp(jwtClaims.getExpirationTime()).nbf(jwtClaims.getNotBefore()).issuerconfigured(issuerconfigured);
-                if (this.clientConfig.isUseNonce()) {  
+                tokenValidator.validate();
+                if (this.clientConfig.isUseNonce()) {
                     ((IdTokenValidator) tokenValidator).nonce(((String) jwtClaims.getClaimValue("nonce")));
                     ((IdTokenValidator) tokenValidator).state(getStateParameter());
                     ((IdTokenValidator) tokenValidator).secret(clientSecret);
                     instantiateStorage(clientConfig);
                     ((IdTokenValidator) tokenValidator).storage(storage);
-                    ((IdTokenValidator) tokenValidator).validate();
-                } else {
-                    tokenValidator.validate();
-                }
+                    
+                    ((IdTokenValidator) tokenValidator).validateNonce();
+                } 
             } catch (MalformedClaimException e) {
                 throw new TokenValidationException(this.clientConfig.getClientId(), e.getMessage());
             }
@@ -161,11 +163,13 @@ public class TokenResponseValidator {
                 }
                 TokenSignatureValidationBuilder tokenSignatureValidationBuilder = jose4jutil.signaturevalidationbuilder();
                 String jwkuri = getJwkUri();
-                tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(sslSupport).issuer(issuerconfigured).jwkuri(jwkuri)
-                                .clientid(clientConfig.getClientId());
+                tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(sslSupport).issuer(issuerconfigured).jwkuri(jwkuri).clientid(clientConfig.getClientId());
 
                 tokenSignatureValidationBuilder.clientsecret(clientSecret);
                 tokenSignatureValidationBuilder.jwkset(jwkset);
+                tokenSignatureValidationBuilder.jwksConnectTimeout(clientConfig.getJwksConnectTimeout());
+                tokenSignatureValidationBuilder.jwksReadTimeout(clientConfig.getJwksReadTimeout());
+
                 return tokenSignatureValidationBuilder.parseJwtWithValidation(idtoken);
             } catch (Exception e) {
                 throw new TokenValidationException(this.clientConfig.getClientId(), e.getMessage());
@@ -173,7 +177,7 @@ public class TokenResponseValidator {
         }
         throw new TokenValidationException(this.clientConfig.getClientId(), "not a valid token to continue the flow");
     }
-    
+
     /**
      * @param clientConfig
      * @return
@@ -182,11 +186,10 @@ public class TokenResponseValidator {
         String issuer = null;
         issuer = clientConfig.getProviderMetadata().getIssuer();
         if ((issuer == null || issuer.isEmpty()) && getProviderDiscoveryMetadadata() != null) {
-            return ((String)this.discoveredProviderMetadata.get("issuer"));
+            return ((String) this.discoveredProviderMetadata.get("issuer"));
         }
         return issuer;
     }
-
 
     /**
      * @return
@@ -205,35 +208,35 @@ public class TokenResponseValidator {
         String jwkuri = null;
         jwkuri = clientConfig.getProviderMetadata().getJwksURI();
         if ((jwkuri == null || jwkuri.isEmpty()) && getProviderDiscoveryMetadadata() != null) {
-            jwkuri = (String)(this.discoveredProviderMetadata.get("jwks_uri"));
+            jwkuri = (String) (this.discoveredProviderMetadata.get("jwks_uri"));
         }
         return jwkuri;
     }
 
     public String getStateParameter() {
         return request.getParameter(AuthorizationRequestParameters.STATE);
-      //TODO: maybe throw an exception right here if this state is not valid
+        //TODO: maybe throw an exception right here if this state is not valid
     }
 
     /**
      * @param jwkSet
      */
     public void setJwkSet(JWKSet jwkSet) {
-        this.jwkset = jwkSet;    
+        this.jwkset = jwkSet;
     }
 
     /**
      * @param request
      */
     public void setRequest(HttpServletRequest request) {
-        this.request = request;       
+        this.request = request;
     }
 
     /**
      * @param response
      */
     public void setResponse(HttpServletResponse response) {
-        this.response = response;        
+        this.response = response;
     }
 
 }

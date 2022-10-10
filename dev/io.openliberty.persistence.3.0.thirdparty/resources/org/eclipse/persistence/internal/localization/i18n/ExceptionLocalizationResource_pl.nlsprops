@@ -119,9 +119,9 @@ ejb30-wrong-query-hint-value=Wskaz\u00f3wka {1} zapytania {0} ma niedozwolon\u01
 
 ejb30-wrong-type-for-query-hint=Wskaz\u00f3wka {1} zapytania {0} nie jest poprawna dla tego typu zapytania.
 
-entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Konflikt w\u0142a\u015bciwo\u015bci interfejsu EntityManager: w\u0142a\u015bciwo\u015b\u0107 javax.persistence.driver i/lub javax.persistence.url wymaga obiektu DefaultConnector, ale jednostka trwa\u0142o\u015bci u\u017cywa zewn\u0119trznego kontrolera transakcji, a wi\u0119c wymagany jest obiekt JNDIConnector.
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Konflikt w\u0142a\u015bciwo\u015bci interfejsu EntityManager: jakarta.persistence.driver i jakarta.persistence.url wymagaj\u0105 obiektu DefaultConnector, ale jednostka trwa\u0142o\u015bci korzysta z zewn\u0119trznego kontrolera transakcji, dlatego wymagany jest obiekt JNDIConnector.
 
-entity_manager_properties_conflict_default_connector_vs_jndi_connector=Konflikt w\u0142a\u015bciwo\u015bci interfejsu EntityManager: w\u0142a\u015bciwo\u015b\u0107 javax.persistence.driver i/lub javax.persistence.url wymaga obiektu DefaultConnector, ale w\u0142a\u015bciwo\u015b\u0107 javax.persistence.jtaDataSource i/lub javax.persistence.nonjtaDataSource wymaga obiektu JNDIConnector.
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=Konflikt w\u0142a\u015bciwo\u015bci interfejsu EntityManager: jakarta.persistence.driver i jakarta.persistence.url wymagaj\u0105 obiektu DefaultConnector, ale jakarta.persistence.jtaDataSource i jakarta.persistence.nonjtaDataSource wymagaj\u0105 obiektu JNDIConnector.
 
 entity_no_longer_exists_in_db=Obiekt ju\u017c nie istnieje w bazie danych: {0}.
 
@@ -203,9 +203,9 @@ jmx_enabled_platform_mbean_runtime_exception=Wyst\u0105pi\u0142 wyj\u0105tek pod
 
 join_trans_called_on_entity_trans=Metod\u0119 joinTransaction wywo\u0142ano wzgl\u0119dem interfejsu EntityManager lokalnego dla zasob\u00f3w, kt\u00f3ry nie mo\u017ce zarejestrowa\u0107 si\u0119 w transakcji JTA.
 
-jpa21-ddl-create-script-target-not-specified=Podczas generowania kodu DDL dla skrypt\u00f3w nale\u017cy poda\u0107 miejsce docelowe skryptu tworzenia za pomoc\u0105 w\u0142a\u015bciwo\u015bci [javax.persistence.schema-generation.scripts.create-target].
+jpa21-ddl-create-script-target-not-specified=Podczas generowania kodu DDL dla skrypt\u00f3w nale\u017cy okre\u015bli\u0107 cel skryptu tworzenia, u\u017cywaj\u0105c w\u0142a\u015bciwo\u015bci [jakarta.persistence.schema-generation.scripts.create-target].
 
-jpa21-ddl-drop-script-target-not-specified=Podczas generowania kodu DDL dla skrypt\u00f3w nale\u017cy poda\u0107 miejsce docelowe skryptu usuwania za pomoc\u0105 w\u0142a\u015bciwo\u015bci [javax.persistence.schema-generation.scripts.drop-target].
+jpa21-ddl-drop-script-target-not-specified=Podczas generowania kodu DDL dla skrypt\u00f3w nale\u017cy okre\u015bli\u0107 cel skryptu usuwana, u\u017cywaj\u0105c w\u0142a\u015bciwo\u015bci [jakarta.persistence.schema-generation.scripts.drop-target].
 
 jpa21-ddl-invalid-source-script-type=Udost\u0119pniony skrypt \u017ar\u00f3d\u0142owy {0} ma niepoprawny typ {0}. Poprawny typ skryptu \u017ar\u00f3d\u0142owego to java.io.Reader lub \u0142a\u0144cuch adresu URL pliku.
 
@@ -265,7 +265,7 @@ metamodel_class_null_type_instance_for_null_key=W metamodelu nie znaleziono wart
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=Oczekiwany pojedynczy atrybut @Id dla identyfikowalnego typu [{0}] jest cz\u0119\u015bci\u0105 nieoczekiwanej adnotacji @IdClass.
 
-metamodel_identifiable_id_attribute_type_incorrect=Oczekiwano typu atrybutu identyfikatora [{2}] istniej\u0105cego atrybutu identyfikatora [{0}] w identyfikowalnym typie [{1}], ale znaleziono typ atrybutu [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=Oczekiwano typu atrybutu identyfikatora [{2}] w istniej\u0105cych atrybutach identyfikatora [{0}] w identyfikowalnym typie [{1}], ale znaleziono typy atrybut\u00f3w [{3}].
 
 metamodel_identifiable_no_id_attribute_present=Brak atrybutu @Id w identyfikowalnym typie [{0}].
 

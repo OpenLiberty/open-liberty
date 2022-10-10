@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  * how well the NoSQL template pattern works for relational database access.
  * Some spelling errors are corrected after copying.
  */
-public class IdNotFoundException extends MappingException {
+public class IdNotFoundException extends DataException {
     public static final Supplier<IdNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = //
                     () -> new IdNotFoundException("To use this resource, you must annotate a field with @Id");
 

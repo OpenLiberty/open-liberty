@@ -119,9 +119,9 @@ ejb30-wrong-query-hint-value=Query {0}, il suggerimento di query {1} ha un valor
 
 ejb30-wrong-type-for-query-hint=Query {0}, il suggerimento di query {1} non \u00e8 valido per questo tipo di query.
 
-entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Conflitto delle propriet\u00e0 EntityManager: javax.persistence.driver e/o javax.persistence.url richiedono DefaultConnector, ma l''unit\u00e0 di persistenza utilizza il controllore di transazioni esterno, perci\u00f2 \u00e8 richiesto JNDIConnector.
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Il conflitto delle propriet\u00e0 entityManager: jakarta.persistence.driver e/o jakarta.persistence.url richiedono DefaultConnector, ma l''unit\u00e0 di persistenza utilizza un controller di transazione esterno, quindi \u00e8 richiesto JNDIConnector.
 
-entity_manager_properties_conflict_default_connector_vs_jndi_connector=Conflitto delle propriet\u00e0 EntityManager: javax.persistence.driver e/o javax.persistence.url richiedono DefaultConnector, ma javax.persistence.jtaDataSource e/o javax.persistence.nonjtaDataSource richiedono JNDIConnector.
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=Il conflitto delle propriet\u00e0 entityManager: jakarta.persistence.driver e/o jakarta.persistence.url richiedono DefaultConnector, ma jakarta.persistence.jtaDataSource e/o jakarta.persistence.nonjtaDataSource richiedono JNDIConnector.
 
 entity_no_longer_exists_in_db=L''entit\u00e0 non esiste pi\u00f9 nel database: {0}.
 
@@ -203,9 +203,9 @@ jmx_enabled_platform_mbean_runtime_exception=Si \u00e8 verificata un''eccezione 
 
 join_trans_called_on_entity_trans=joinTransaction chiamato su un EntityManager locale risorsa che non \u00e8 in grado di registrarsi per una transazione JTA.
 
-jpa21-ddl-create-script-target-not-specified=Durante la generazione di DDL per gli script, deve essere specificata una destinazione di creazione dello script utilizzando la propriet\u00e0 [javax.persistence.schema-generation.scripts.create-target].
+jpa21-ddl-create-script-target-not-specified=Durante la generazione di DDL negli script, \u00e8 necessario specificare una destinazione per lo script di creazione utilizzando la propriet\u00e0 [jakarta.persistence.schema-generation.scripts.create-target].
 
-jpa21-ddl-drop-script-target-not-specified=Durante la generazione di DDL per gli script, deve essere specificata una destinazione di rilascio dello script utilizzando la propriet\u00e0 [javax.persistence.schema-generation.scripts.drop-target].
+jpa21-ddl-drop-script-target-not-specified=Durante la generazione di DDL negli script, \u00e8 necessario specificare una destinazione per lo script di creazione utilizzando la propriet\u00e0 [jakarta.persistence.schema-generation.scripts.drop-target].
 
 jpa21-ddl-invalid-source-script-type=Lo script origine fornito {0} \u00e8 di un tipo non valido {0}. I tipi di script di origine validi sono: java.io.Reader o una stringa che designa un URL di file.
 
@@ -265,7 +265,7 @@ metamodel_class_null_type_instance_for_null_key=Nessun [{0}] \u00e8 stato trovat
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=L''attributo @Id singolo previsto per il tipo identificabile [{0}] fa parte di un @IdClass non previsto.
 
-metamodel_identifiable_id_attribute_type_incorrect=Tipo di attributo ID previsto [{2}] sull''attributo id esistente [{0}] sul tipo identificabile [{1}] ma \u00e8 stato trovato il tipo di attributo [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=Previsto il tipo di attributo id [{2}] negli attributi id esistenti [{0}] sul tipo identificabile [{1}], ma trovati i tipi di attributo [{3}].
 
 metamodel_identifiable_no_id_attribute_present=Nessun attributo @Id esiste sul tipo identificabile [{0}].
 
