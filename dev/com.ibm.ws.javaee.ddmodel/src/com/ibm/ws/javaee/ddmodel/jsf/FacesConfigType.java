@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,6 +105,8 @@ import com.ibm.ws.javaee.ddmodel.jsf.FacesConfigType.ManagedBeanType.ListType;
  *   <xsd:attribute name="id" type="xsd:ID"/>
  *   <xsd:attribute name="version" type="javaee:faces-config-versionType" use="required"/>
  *</xsd:complexType>
+ *
+ *Note: 'managed-bean' is removed by EE 10 / Faces 4.0
  */
 public class FacesConfigType extends DDParser.ElementContentParsable implements FacesConfig, DDParser.RootParsable {
     public FacesConfigType(String path) {
@@ -212,7 +214,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
     Map<XSDTokenType, ConverterType> converterForClassToConverterMap;
     // unique faces-config-validator-ID-uniqueness
     Map<XSDTokenType, ValidatorType> validatorIDToValidatorMap;
-    // unique faces-config-managed-bean-name-uniqueness
+    // unique faces-config-managed-bean-name-uniqueness // Not used at EE 10 / Faces 4.0 or higher
     Map<XSDTokenType, ManagedBeanType> managedBeanNameToManagedBeanMap;
 
     final String path;
@@ -242,14 +244,14 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
     @Override
     public void finish(DDParser parser) throws ParseException {
         super.finish(parser);
-        if ( version == null ) {
+        if (version == null) {
             // Ensure that the local version variable is assigned.
             //
             // Previously, only the two DTD based formats might
             // be missing a version attribute.  Changes to enable
             // more descriptor deviations mean that other cases
             // might also be missing a version attribute.
-            version = parser.parseToken( parser.getDottedVersionText() );            
+            version = parser.parseToken(parser.getDottedVersionText());
         }
     }
 
@@ -291,7 +293,8 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
             this.converter = converter;
             return true;
         }
-        if ("managed-bean".equals(localName)) {
+        // 'managed-bean' was removed by EE 10 / Faces 4.0
+        if ((parser.version < FacesConfig.VERSION_4_0) && "managed-bean".equals(localName)) {
             ManagedBeanType managed_bean = new ManagedBeanType();
             parser.parse(managed_bean);
             addManagedBean(managed_bean);

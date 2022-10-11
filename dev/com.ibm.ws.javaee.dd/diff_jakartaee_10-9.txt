@@ -353,3 +353,51 @@ Details for the new JNDI reference elements:
   </xsd:complexType>
 
 ---
+
+Updates to: web-facesconfig_4_0.xsd:
+
+Removed constraint:
+
+  <xsd:element name="faces-config"
+               type="jakartaee:faces-configType">
+
+    <xsd:unique name="faces-config-managed-bean-name-uniqueness">
+      <xsd:annotation>
+        <xsd:documentation>
+          <![CDATA[
+          <p> Managed bean names must be unique within a document.</p>
+
+          ]]>
+        </xsd:documentation>
+      </xsd:annotation>
+      <xsd:selector xpath="jakartaee:managed-bean"/>
+      <xsd:field xpath="jakartaee:managed-bean-name"/>
+    </xsd:unique>
+
+Removed element:
+
+  <xsd:complexType name="faces-configType">
+      <xsd:element name="managed-bean"
+                   type="jakartaee:faces-config-managed-beanType"/>
+
+Removed elements:
+
+  <xsd:complexType name="faces-config-applicationType">
+
+      <xsd:element name="property-resolver"
+                   type="jakartaee:fully-qualified-classType">
+      <xsd:element name="variable-resolver"
+                   type="jakartaee:fully-qualified-classType">
+
+Removed types:
+
+  <xsd:complexType name="faces-config-managed-beanType">
+  <xsd:complexType name="faces-config-managed-bean-extensionType">
+  <xsd:complexType name="faces-config-managed-bean-scopeOrNoneType">
+  <xsd:complexType name="faces-config-managed-propertyType">
+  <xsd:complexType name="faces-config-map-entryType">
+  <xsd:complexType name="faces-config-map-entriesType">
+  <xsd:complexType name="faces-config-value-classType">
+  <xsd:complexType name="faces-config-list-entriesType">
+
+---
