@@ -182,14 +182,22 @@ public class HttpAuthenticationMechanismsTracker {
 
     public Map<Class<?>, Properties> getAuthMechs(String applicationName, String moduleName) {
         Map<Class<?>, Properties> authMechs = null;
-        Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
-        if (moduleMap.containsKey(moduleName)) {
-            authMechs = moduleMap.get(moduleName).getAuthMechMap();
+
+        if (applicationName != null && !applicationName.isEmpty()) {
+            Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
+            if (moduleMap.containsKey(moduleName)) {
+                authMechs = moduleMap.get(moduleName).getAuthMechMap();
+            }
         }
+
         return authMechs;
     }
 
     public boolean isEmptyModuleMap(String applicationName) {
+        if (applicationName == null || applicationName.isEmpty()) {
+            return true;
+        }
+
         Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
         boolean result = moduleMap != null ? moduleMap.isEmpty() : true;
         if (!result) {
