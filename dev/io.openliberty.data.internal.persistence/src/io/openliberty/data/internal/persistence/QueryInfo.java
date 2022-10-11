@@ -28,6 +28,11 @@ class QueryInfo {
     final String jpql;
 
     /**
+     * Value from findFirst#By, or 1 for findFirstBy, otherwise 0.
+     */
+    final long maxResults;
+
+    /**
      * Array element type if the repository method returns an array, such as,
      * <code>Product[] findByNameLike(String namePattern);</code>
      * or if its parameterized type is an array, such as,
@@ -57,9 +62,11 @@ class QueryInfo {
     final Type type;
 
     QueryInfo(Type type, String jpql, EntityInfo entityInfo,
-              Class<?> saveParamType, Class<?> returnArrayType, Class<?> returnParamType) {
+              Class<?> saveParamType, Class<?> returnArrayType, Class<?> returnParamType,
+              long maxResults) {
         this.jpql = jpql;
         this.entityInfo = entityInfo;
+        this.maxResults = maxResults;
         this.returnArrayType = returnArrayType;
         this.returnTypeParam = returnParamType;
         this.saveParamType = saveParamType;

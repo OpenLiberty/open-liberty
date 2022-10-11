@@ -44,6 +44,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.data.DataException;
 import jakarta.data.Delete;
 import jakarta.data.Inheritance;
 import jakarta.data.Page;
@@ -125,11 +126,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             Tr.entry(this, tc, "createQueryInfo", entityInfo, Arrays.toString(args));
 
         StringBuilder q = null;
+        long[] maxResults = new long[1]; // to simulate pass-by-reference
         Method method = (Method) args[0];
         Class<?> returnArrayType = (Class<?>) args[1];
         Class<?> returnParamType = (Class<?>) args[2];
         Class<?> saveParamType = null;
-        QueryInfo.Type type = null;
+        QueryInfo.Type[] type = new QueryInfo.Type[1]; // to simulate pass-by-reference
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
 
@@ -148,20 +150,20 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (update == null) {
                 if (method.getAnnotation(Delete.class) == null) {
                     if (where != null) {
-                        type = QueryInfo.Type.SELECT;
+                        type[0] = QueryInfo.Type.SELECT;
                         generateSelect(entityInfo, q = new StringBuilder(200), method);
                         q.append(" WHERE ").append(where.value());
                         jpql = q.toString();
                     }
                 } else {
-                    type = QueryInfo.Type.DELETE;
+                    type[0] = QueryInfo.Type.DELETE;
                     q = new StringBuilder(200).append("DELETE FROM ").append(entityInfo.name).append(" o");
                     if (where != null)
                         q.append(" WHERE ").append(where.value());
                     jpql = q.toString();
                 }
             } else {
-                type = QueryInfo.Type.UPDATE;
+                type[0] = QueryInfo.Type.UPDATE;
                 q = new StringBuilder(200).append("UPDATE ").append(entityInfo.name).append(" o SET ").append(update.value());
                 if (where != null)
                     q.append(" WHERE ").append(where.value());
@@ -169,7 +171,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
 
             if (jpql == null && method.getName().startsWith("save")) {
-                type = QueryInfo.Type.MERGE;
+                type[0] = QueryInfo.Type.MERGE;
                 Class<?>[] paramTypes = method.getParameterTypes();
                 if (paramTypes.length == 0)
                     throw new UnsupportedOperationException(method.getName() + " without any parameters");
@@ -177,13 +179,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             } else if (jpql == null) {
 
                 // Repository method name pattern queries
-                jpql = generateRepositoryQuery(entityInfo, method);
+                jpql = generateRepositoryQuery(entityInfo, method, type, maxResults);
 
                 // @Select annotation only
                 if (jpql == null) {
                     Select select = method.getAnnotation(Select.class);
                     if (select != null) {
-                        type = QueryInfo.Type.SELECT;
+                        type[0] = QueryInfo.Type.SELECT;
                         generateSelect(entityInfo, q = new StringBuilder(100), method);
                         jpql = q.toString();
                     }
@@ -195,7 +197,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         // The @OrderBy annotation from Jakarta Data defines the same information annotatively.
         OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
         if (orderBy.length > 0) {
-            type = type == null ? QueryInfo.Type.SELECT : type;
+            type[0] = type[0] == null ? QueryInfo.Type.SELECT : type[0];
             if (q == null)
                 if (jpql == null)
                     generateSelect(entityInfo, q = new StringBuilder(200), method);
@@ -211,36 +213,59 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         jpql = q == null ? jpql : q.toString();
 
-        QueryInfo queryInfo = new QueryInfo(type, jpql, entityInfo, saveParamType, returnArrayType, returnParamType);
+        QueryInfo queryInfo = new QueryInfo(type[0], jpql, entityInfo, saveParamType, returnArrayType, returnParamType, maxResults[0]);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "createQueryInfo", queryInfo);
         return queryInfo;
     }
 
-    private String generateRepositoryQuery(EntityInfo entityInfo, Method method) {
+    private String generateRepositoryQuery(EntityInfo entityInfo, Method method, QueryInfo.Type[] type, long[] maxResults) {
         String methodName = method.getName();
-        StringBuilder q;
-        if (methodName.startsWith("findBy")) {
-            int orderBy = methodName.indexOf("OrderBy");
+        StringBuilder q = null;
+        if (methodName.startsWith("find")) {
+            int by = methodName.indexOf("By", 4);
+            int c = by < 0 ? 4 : by + 2;
+            if (by > 4)
+                parseFindBy(methodName.substring(4, by), maxResults);
+            int orderBy = methodName.indexOf("OrderBy", c);
             generateSelect(entityInfo, q = new StringBuilder(200), method);
-            if (orderBy > 6 || orderBy == -1 && methodName.length() > 6) {
-                String s = orderBy > 0 ? methodName.substring(6, orderBy) : methodName.substring(6);
+            if (orderBy > c || orderBy == -1 && methodName.length() > c) {
+                String s = orderBy > 0 ? methodName.substring(c, orderBy) : methodName.substring(c);
                 generateRepositoryQueryConditions(entityInfo, s, q);
             }
-            if (orderBy >= 6)
+            if (orderBy >= c)
                 generateRepositoryQueryOrderBy(entityInfo, methodName, orderBy, q);
-        } else if (methodName.startsWith("deleteBy")) {
+            type[0] = QueryInfo.Type.SELECT;
+        } else if (methodName.startsWith("delete")) {
+            int by = methodName.indexOf("By", 6);
+            int c = by < 0 ? 6 : by + 2;
             q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(" o");
-            if (methodName.length() > 8)
-                generateRepositoryQueryConditions(entityInfo, methodName.substring(8), q);
-        } else if (methodName.startsWith("updateBy")) {
-            q = generateRepositoryUpdateQuery(entityInfo, methodName);
-        } else {
-            return null;
+            if (methodName.length() > c)
+                generateRepositoryQueryConditions(entityInfo, methodName.substring(c), q);
+            type[0] = QueryInfo.Type.DELETE;
+        } else if (methodName.startsWith("update")) {
+            int by = methodName.indexOf("By", 6);
+            int c = by < 0 ? 6 : by + 2;
+            q = generateRepositoryUpdateQuery(entityInfo, methodName, c);
+            type[0] = QueryInfo.Type.UPDATE;
+        } else if (methodName.startsWith("count")) {
+            int by = methodName.indexOf("By", 5);
+            int c = by < 0 ? 5 : by + 2;
+            q = new StringBuilder(150).append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o");
+            if (methodName.length() > c)
+                generateRepositoryQueryConditions(entityInfo, methodName.substring(c), q);
+            type[0] = QueryInfo.Type.COUNT;
+        } else if (methodName.startsWith("exists")) {
+            int by = methodName.indexOf("By", 6);
+            int c = by < 0 ? 6 : by + 2;
+            q = new StringBuilder(200).append("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM ").append(entityInfo.name).append(" o");
+            if (methodName.length() > c)
+                generateRepositoryQueryConditions(entityInfo, methodName.substring(c), q);
+            type[0] = QueryInfo.Type.EXISTS;
         }
 
-        return q.toString();
+        return q == null ? null : q.toString();
     }
 
     /**
@@ -404,11 +429,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     /**
      * Generates JPQL for a repository updateBy method such as updateByProductIdSetProductNameMultiplyPrice
      */
-    private StringBuilder generateRepositoryUpdateQuery(EntityInfo entityInfo, String methodName) {
-        int set = methodName.indexOf("Set", 8);
-        int add = methodName.indexOf("Add", 8);
-        int mul = methodName.indexOf("Multiply", 8);
-        int div = methodName.indexOf("Divide", 8);
+    private StringBuilder generateRepositoryUpdateQuery(EntityInfo entityInfo, String methodName, int c) {
+        int set = methodName.indexOf("Set", c);
+        int add = methodName.indexOf("Add", c);
+        int mul = methodName.indexOf("Multiply", c);
+        int div = methodName.indexOf("Divide", c);
         int uFirst = Integer.MAX_VALUE;
         if (set > 0 && set < uFirst)
             uFirst = set;
@@ -423,7 +448,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
         StringBuilder where = new StringBuilder(150);
-        int paramCount = generateRepositoryQueryConditions(entityInfo, methodName.substring(8, uFirst), where);
+        int paramCount = generateRepositoryQueryConditions(entityInfo, methodName.substring(c, uFirst), where);
 
         StringBuilder q = new StringBuilder(250);
         q.append("UPDATE ").append(entityInfo.name).append(" o SET");
@@ -583,76 +608,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         try {
             QueryInfo queryInfo = queryInfoFuture.join();
 
-            int paramCount;
-            Collector<Object, Object, Object> collector = null;
-            Consumer<Object> consumer = null;
-            Limit limit = null;
-            Pageable pagination = null;
-            LinkedList<Sort> sorts = null;
-
-            // Jakarta Data allows the method parameters positions after those used as query parameters
-            // to be used for purposes such as pagination and sorting.
-            // Collector is added here for experimentation.
-            for (paramCount = args == null ? 0 : args.length; paramCount > 0;) {
-                Object param = args[--paramCount];
-                if (param instanceof Collector)
-                    collector = (Collector<Object, Object, Object>) param;
-                else if (param instanceof Consumer)
-                    consumer = (Consumer<Object>) param;
-                else if (param instanceof Limit)
-                    limit = (Limit) param;
-                else if (param instanceof Pageable)
-                    pagination = (Pageable) param;
-                else if (param instanceof Sort)
-                    (sorts = sorts == null ? new LinkedList<>() : sorts).addFirst((Sort) param);
-                else if (param instanceof Sort[]) {
-                    sorts = sorts == null ? new LinkedList<>() : sorts;
-                    Sort[] s = (Sort[]) param;;
-                    for (int i = s.length - 1; i >= 0; i--)
-                        if (s[i] == null)
-                            throw new NullPointerException("Sort: null");
-                        else
-                            sorts.addFirst(s[i]);
-                } else {
-                    // TODO null values for Sort and/or other special parameters could cause prior special parameters to be missed
-                    paramCount++;
-                    break;
-                }
-            }
-
-            if (sorts != null) {
-                boolean first = true;
-                StringBuilder q = queryInfo.jpql == null ? new StringBuilder(200) : new StringBuilder(queryInfo.jpql);
-                if (queryInfo.jpql == null)
-                    generateSelect(queryInfo.entityInfo, q, method);
-                for (Sort sort : sorts) {
-                    q.append(first ? " ORDER BY o." : ", o.").append(sort.getProperty());
-                    if (sort.isDescending())
-                        q.append(" DESC");
-                    first = false;
-                }
-                queryInfo = new QueryInfo(queryInfo.type, q.toString(), queryInfo.entityInfo, queryInfo.saveParamType, queryInfo.returnArrayType, queryInfo.returnTypeParam);
-            }
-
             LocalTransactionCoordinator suspendedLTC = null;
             EntityManager em = null;
             Object returnValue;
             Class<?> returnType = method.getReturnType();
             boolean failed = true;
-
-            boolean asyncCompatibleResultForPagination = pagination != null &&
-                                                         (void.class.equals(returnType) || CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType));
-
-            if (asyncCompatibleResultForPagination && collector != null)
-                return runAndCollect(queryInfo, pagination, collector, method, paramCount, args, returnType);
-            else if (asyncCompatibleResultForPagination && consumer != null)
-                return runWithConsumer(queryInfo, pagination, consumer, method, paramCount, args, returnType);
-            else if (pagination != null && Iterator.class.equals(returnType))
-                return new PaginatedIterator<E>(queryInfo, pagination, method, paramCount, args);
-            else if (Page.class.equals(returnType))
-                return new PageImpl<E>(queryInfo, pagination, method, paramCount, args); // TODO Limit with Page as return type
-            else if (Publisher.class.equals(returnType))
-                return new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, method, paramCount, args);
 
             boolean requiresTransaction;
             switch (queryInfo.type) {
@@ -671,10 +631,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     provider.tranMgr.begin();
                 }
 
-                em = queryInfo.entityInfo.persister.createEntityManager();
-
                 switch (queryInfo.type) {
-                    case MERGE:
+                    case MERGE: {
+                        em = queryInfo.entityInfo.persister.createEntityManager();
+
                         if (queryInfo.saveParamType.isArray()) {
                             ArrayList<Object> results = new ArrayList<>();
                             Object a = args[0];
@@ -700,7 +660,78 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             returnValue = returnType.isInstance(returnValue) ? returnValue : null;
                         }
                         break;
-                    case SELECT:
+                    }
+                    case SELECT: {
+                        int paramCount;
+                        Collector<Object, Object, Object> collector = null;
+                        Consumer<Object> consumer = null;
+                        Limit limit = null;
+                        Pageable pagination = null;
+                        LinkedList<Sort> sorts = null;
+
+                        // Jakarta Data allows the method parameters positions after those used as query parameters
+                        // to be used for purposes such as pagination and sorting.
+                        // Collector is added here for experimentation.
+                        for (paramCount = args == null ? 0 : args.length; paramCount > 0;) {
+                            Object param = args[--paramCount];
+                            if (param instanceof Collector)
+                                collector = (Collector<Object, Object, Object>) param;
+                            else if (param instanceof Consumer)
+                                consumer = (Consumer<Object>) param;
+                            else if (param instanceof Limit)
+                                limit = (Limit) param;
+                            else if (param instanceof Pageable)
+                                pagination = (Pageable) param;
+                            else if (param instanceof Sort)
+                                (sorts = sorts == null ? new LinkedList<>() : sorts).addFirst((Sort) param);
+                            else if (param instanceof Sort[]) {
+                                sorts = sorts == null ? new LinkedList<>() : sorts;
+                                Sort[] s = (Sort[]) param;;
+                                for (int i = s.length - 1; i >= 0; i--)
+                                    if (s[i] == null)
+                                        throw new NullPointerException("Sort: null");
+                                    else
+                                        sorts.addFirst(s[i]);
+                            } else {
+                                // TODO null values for Sort and/or other special parameters could cause prior special parameters to be missed
+                                paramCount++;
+                                break;
+                            }
+                        }
+
+                        if (sorts != null) {
+                            boolean first = true;
+                            StringBuilder q = queryInfo.jpql == null ? new StringBuilder(200) : new StringBuilder(queryInfo.jpql);
+                            if (queryInfo.jpql == null)
+                                generateSelect(queryInfo.entityInfo, q, method);
+                            for (Sort sort : sorts) {
+                                q.append(first ? " ORDER BY o." : ", o.").append(sort.getProperty());
+                                if (sort.isDescending())
+                                    q.append(" DESC");
+                                first = false;
+                            }
+                            queryInfo = new QueryInfo(queryInfo.type, q.toString(), queryInfo.entityInfo, //
+                                            queryInfo.saveParamType, queryInfo.returnArrayType, queryInfo.returnTypeParam, //
+                                            queryInfo.maxResults);
+                        }
+
+                        boolean asyncCompatibleResultForPagination = pagination != null &&
+                                                                     (void.class.equals(returnType) || CompletableFuture.class.equals(returnType)
+                                                                      || CompletionStage.class.equals(returnType));
+
+                        if (asyncCompatibleResultForPagination && collector != null)
+                            return runAndCollect(queryInfo, pagination, collector, method, paramCount, args, returnType);
+                        else if (asyncCompatibleResultForPagination && consumer != null)
+                            return runWithConsumer(queryInfo, pagination, consumer, method, paramCount, args, returnType);
+                        else if (pagination != null && Iterator.class.equals(returnType))
+                            return new PaginatedIterator<E>(queryInfo, pagination, method, paramCount, args);
+                        else if (Page.class.equals(returnType))
+                            return new PageImpl<E>(queryInfo, pagination, method, paramCount, args); // TODO Limit with Page as return type
+                        else if (Publisher.class.equals(returnType))
+                            return new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, method, paramCount, args);
+
+                        em = queryInfo.entityInfo.persister.createEntityManager();
+
                         TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
                         if (args != null) {
                             Parameter[] params = method.getParameters();
@@ -715,7 +746,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         long maxResults = limit != null ? limit.maxResults() //
                                         : pagination != null ? pagination.getSize() //
-                                                        : -1;
+                                                        : queryInfo.maxResults;
+
                         long startAt = limit != null ? limit.startAt() - 1 //
                                         : pagination != null ? (pagination.getPage() - 1) * maxResults //
                                                         : 0;
@@ -815,8 +847,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             returnValue = CompletableFuture.completedFuture(returnValue);
                         }
                         break;
+                    }
                     case UPDATE:
-                    case DELETE:
+                    case DELETE: {
+                        em = queryInfo.entityInfo.persister.createEntityManager();
+
                         jakarta.persistence.Query update = em.createQuery(queryInfo.jpql);
                         if (args != null) {
                             Parameter[] params = method.getParameters();
@@ -833,6 +868,75 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
+                    }
+                    case COUNT: {
+                        em = queryInfo.entityInfo.persister.createEntityManager();
+
+                        TypedQuery<Long> query = em.createQuery(queryInfo.jpql, Long.class);
+                        if (args != null) {
+                            Parameter[] params = method.getParameters();
+                            for (int i = 0; i < args.length; i++) {
+                                Param param = params[i].getAnnotation(Param.class);
+                                if (param == null)
+                                    query.setParameter(i + 1, args[i]);
+                                else // named parameter
+                                    query.setParameter(param.value(), args[i]);
+                            }
+                        }
+
+                        Long result = query.getSingleResult();
+
+                        Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
+                                                                              || CompletableFuture.class.equals(returnType)
+                                                                              || CompletionStage.class.equals(returnType)) //
+                                                                                              ? queryInfo.returnTypeParam //
+                                                                                              : returnType;
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "result " + result + " to be returned as " + type.getName());
+
+                        returnValue = result;
+
+                        if (!type.isInstance(result) && !type.isAssignableFrom(returnValue.getClass())) {
+                            // TODO these conversions are not all safe
+                            if (int.class.equals(type) || Integer.class.equals(type))
+                                returnValue = result.intValue();
+                            else if (short.class.equals(type) || Short.class.equals(type))
+                                returnValue = result.shortValue();
+                            else if (byte.class.equals(type) || Byte.class.equals(type))
+                                returnValue = result.byteValue();
+                        }
+
+                        if (Optional.class.equals(returnType)) {
+                            returnValue = Optional.of(returnValue);
+                        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+                            returnValue = CompletableFuture.completedFuture(returnValue);
+                        }
+                        break;
+                    }
+                    case EXISTS: {
+                        em = queryInfo.entityInfo.persister.createEntityManager();
+
+                        TypedQuery<Boolean> query = em.createQuery(queryInfo.jpql, Boolean.class);
+                        if (args != null) {
+                            Parameter[] params = method.getParameters();
+                            for (int i = 0; i < args.length; i++) {
+                                Param param = params[i].getAnnotation(Param.class);
+                                if (param == null)
+                                    query.setParameter(i + 1, args[i]);
+                                else // named parameter
+                                    query.setParameter(param.value(), args[i]);
+                            }
+                        }
+
+                        returnValue = query.getSingleResult();
+
+                        if (Optional.class.equals(returnType)) {
+                            returnValue = Optional.of(returnValue);
+                        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+                            returnValue = CompletableFuture.completedFuture(returnValue);
+                        }
+                        break;
+                    }
                     default:
                         throw new UnsupportedOperationException(queryInfo.type.name());
                 }
@@ -866,6 +970,36 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);
             throw x;
+        }
+    }
+
+    /**
+     * Parses and handles the text between find___By of a repository method.
+     * Currently this is only "First" or "First#".
+     *
+     * @param s          the portion of the method name between find and By to parse.
+     * @param maxResults pass-by-reference for maxResults
+     */
+    private void parseFindBy(String s, long[] maxResults) {
+        int first = s.indexOf("First");
+        if (first >= 0) {
+            int length = s.length();
+            long num = first + 5 == length ? 1 : 0;
+            if (num == 0)
+                for (int c = first + 5; c < length; c++) {
+                    char ch = s.charAt(c);
+                    if (ch >= '0' && ch <= '9')
+                        num = num * 10 + (ch - '0');
+                    else {
+                        if (c == first + 5)
+                            num = 1;
+                        break;
+                    }
+                }
+            if (num == 0)
+                throw new DataException(s); // First0
+            else
+                maxResults[0] = num;
         }
     }
 

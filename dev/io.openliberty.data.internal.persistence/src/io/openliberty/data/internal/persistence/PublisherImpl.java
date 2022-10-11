@@ -83,10 +83,11 @@ public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable
                 // instead of using Java's SubmissionPublisher.
 
                 long startAt = limit == null ? 0 : (limit.startAt() - 1);
+                long maxResults = limit == null ? queryInfo.maxResults : limit.maxResults();
 
                 // TODO possible overflow with both of these.
-                if (limit != null)
-                    query.setMaxResults((int) limit.maxResults());
+                if (maxResults > 0)
+                    query.setMaxResults((int) maxResults);
                 if (startAt > 0)
                     query.setFirstResult((int) startAt);
 

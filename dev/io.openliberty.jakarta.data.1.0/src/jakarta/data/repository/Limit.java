@@ -31,8 +31,8 @@ public class Limit {
         return new Limit(1L, maxResults);
     }
 
-    public static Limit of(long maxResults, long startAt) {
-        return new Limit(startAt, maxResults);
+    public static Limit range(long startAt, long endAt) {
+        return new Limit(startAt, 1 + (endAt - startAt));
     }
 
     public long startAt() {
