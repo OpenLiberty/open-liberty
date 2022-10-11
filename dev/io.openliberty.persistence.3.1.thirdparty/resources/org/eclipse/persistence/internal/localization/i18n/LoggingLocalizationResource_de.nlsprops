@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -517,7 +517,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Die Prim\u00e4rschl\u00fcs
 
 metadata_warning_ignore_mapped_superclass_read_only=Die Schreibschutzeinstellung der zugeordneten Oberklasse [{1}] f\u00fcr die Entit\u00e4tsklasse [{0}] wird ignoriert, weil bereits zuvor Schreibschutzmetadaten f\u00fcr diese Entit\u00e4t erkannt wurden (entweder f\u00fcr die Entit\u00e4t selbst oder f\u00fcr eine andere zugeordnete Oberklasse).
 
-metadata_warning_ignore_mapping_metadata=Die auf das Attribut [{0}] aus der Klasse [{1}] angewendeten javax.persistence-Metadaten werden ignoriert. javax.persistence-Metadaten werden f\u00fcr Felder oder Eigenschaften ignoriert, die transient, statisch oder abstrakt sind.
+metadata_warning_ignore_mapping_metadata=Die auf das Attribut [{0}] aus der Klasse [{1}] angewendeten jakarta.persistence-Metadaten werden ignoriert. jakarta.persistence-Metadaten werden f\u00fcr Felder oder Eigenschaften ignoriert, die transient, statisch oder abstrakt sind.
 
 metadata_warning_ignore_serialized=Die Standardserialisierung f\u00fcr das Element [{1}] in der Entit\u00e4tsklasse [{0}] wird ignoriert, weil EclipseLink-Converter-Metadaten angegeben wurden.
 
@@ -581,7 +581,7 @@ no_jar_entry_migratable_in_ear=Keine der jar-Eintr\u00e4ge in der EAR-Eingabedat
 
 no_session_found=Die Sitzung mit dem Namen [{0}] wurde nicht in der Datei session.xml gefunden [{1}].
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=Das Element [{1}] in der Entit\u00e4tsklasse [{0}] verwendet einen Datensammlungstyp [{2}], w\u00e4hrend die JPA-Spezifikation nur java.util.Collection, java.util.Set, java.util.List oder java.util.Map unterst\u00fctzt. Dieser Typ wird bei aggressivem Laden unterst\u00fctzt. Die Verwendung von verz\u00f6gertem Laden mit diesem Datensammlungstyp erfordert zus\u00e4tzliche Konfigurationsschritte und eine IndirectContainer-Implementierung, die [{2}] erweitert, oder die Zuordnung muss f\u00fcr die Verwendung der Basisdereferenzierung und der Typ auf ValueholderInterface gesetzt werden.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=Das Element [{1}] in der Entit\u00e4tsklasse [{0}] verwendet einen Datensammlungstyp [{2}], w\u00e4hrend die Jakarta Persistence-Spezifikation nur java.util.Collection, java.util.Set, java.util.List oder java.util.Map unterst\u00fctzt. Dieser Typ wird bei aggressivem Laden unterst\u00fctzt. Die Verwendung von verz\u00f6gertem Laden mit diesem Datensammlungstyp erfordert zus\u00e4tzliche Konfigurationsschritte und eine IndirectContainer-Implementierung, die [{2}] erweitert, oder die Zuordnung muss f\u00fcr die Verwendung der Basisdereferenzierung und der Typ auf ValueholderInterface gesetzt werden.
 
 objectchangepolicy_turned_off=\u00c4nderungsprotokollierung inaktiviert f\u00fcr: {0}
 

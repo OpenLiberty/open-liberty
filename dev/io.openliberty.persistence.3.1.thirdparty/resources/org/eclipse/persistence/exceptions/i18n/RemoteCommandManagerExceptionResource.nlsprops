@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -51,8 +51,6 @@
 
 22112=Could not create local JMS connection with Topic {0} and Topic Factory {1}. Also, check your context properties are set correctly.
 
-22113=Could not create Oc4jJGroupsRemoteConnection service ID {0}, topic {1}, using factory {2}. Also, check your context properties are set correctly.
-
 22114={0}: failed to deserialize retrieved message {1}.
 
 22115={0}: failed to process remote command retrieved from message {1}, from {2}, command type {3}
@@ -62,4 +60,6 @@
 22117=Session''s RemoteCommandManager is closed or has not been initialized while processing incoming messages
 
 22118=Failed to create JGroups connection using config file: {0}
+
+22119=Error initializing {0}, add org.eclipse.persistence.corba.jar to your classpath.
 

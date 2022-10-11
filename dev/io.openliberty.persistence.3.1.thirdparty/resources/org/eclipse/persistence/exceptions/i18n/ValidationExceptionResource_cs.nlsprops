@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -535,7 +535,7 @@
 
 7306=Anotovan\u00fd prvek [{0}] z t\u0159\u00eddy [{1}] m\u00e1 ur\u010den\u00fd chybn\u00fd explicitn\u00ed typ p\u0159\u00edstupu. M\u011bl by ur\u010dovat typ p\u0159\u00edstupu [{2}].
 
-7307=Chyb\u00ed \u0159et\u011bzec kontextu protokolov\u00e1n\u00ed pro kontext [{0}]. Jedn\u00e1 se o intern\u00ed v\u00fdjimku, ke kter\u00e9 do\u0161lo p\u0159i na\u010d\u00edt\u00e1n\u00ed zpr\u00e1vy protokolu pro zpracov\u00e1n\u00ed metadat JPA, ohlaste chybu.
+7307=Chyb\u00ed \u0159et\u011bzec kontextu protokolov\u00e1n\u00ed pro kontext [{0}]. Jedn\u00e1 se o intern\u00ed v\u00fdjimku, ke kter\u00e9 do\u0161lo p\u0159i na\u010d\u00edt\u00e1n\u00ed zpr\u00e1vy protokolu pro zpracov\u00e1n\u00ed metadat Jakarta Persistence, ohlaste chybu.
 
 7308=Ur\u010den\u00e1 hodnota [{0}] pro vlastnost perzistence [{1}] je neplatn\u00e1 - [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Pro stejn\u00e9 pole diskrimin\u00e1toru n\u00e1jemce [{1}] pro t\u0159\u00eddu [{0}] je ur\u010deno v\u00edce vlastnost\u00ed kontextu [{2}] a [{3}].
 
-7337=Mapovan\u00fd sloupec diskrimin\u00e1toru n\u00e1jemce [{1}] na t\u0159\u00edd\u011b [{0}] mus\u00ed b\u00fdt ozna\u010den\u00fd jako ur\u010den\u00fd jen pro \u010dten\u00ed. V JPA se to provede nastaven\u00edm hodnoty insertable=false a updatable=false na sloupci, nap\u0159. @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=Mapovan\u00fd sloupec diskrimin\u00e1toru n\u00e1jemce [{1}] na t\u0159\u00edd\u011b [{0}] mus\u00ed b\u00fdt ozna\u010den\u00fd jako ur\u010den\u00fd jen pro \u010dten\u00ed. V Jakarta Persistence API se to provede nastaven\u00edm hodnoty insertable=false a updatable=false na sloupci, nap\u0159. @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=Do t\u0159\u00eddy SessionBroker nelze p\u0159idat posloupnosti.
 
@@ -621,7 +621,7 @@
 
 7351=Nebyla nalezena t\u0159\u00edda p\u0159evodn\u00edku [{2}] ur\u010den\u00e1 na atributu mapov\u00e1n\u00ed [{1}] z t\u0159\u00eddy [{0}]. Ov\u011b\u0159te, zda je n\u00e1zev t\u0159\u00eddy p\u0159evodn\u00edku spr\u00e1vn\u00fd a zda existuje v definici jednotky perzistence.
 
-7352=T\u0159\u00edda p\u0159evodn\u00edku [{0}] mus\u00ed implementovat rozhran\u00ed JPA javax.persistence.AttributeConverter<X, Y>, aby byla platnou t\u0159\u00eddou p\u0159evodn\u00edku.
+7352=T\u0159\u00edda p\u0159evodn\u00edku [{0}] mus\u00ed implementovat rozhran\u00ed Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y>, aby byla platnou t\u0159\u00eddou p\u0159evodn\u00edku.
 
 7353=Atribut mapov\u00e1n\u00ed [{1}] ze t\u0159\u00eddy [{0}] nen\u00ed platn\u00fdm typem mapov\u00e1n\u00ed pro specifikaci p\u0159evodu.
 

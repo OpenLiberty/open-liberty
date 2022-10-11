@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,11 +141,11 @@ staticweave_commandline_help_message_15of19= Zakomponov\u00e1n\u00ed se provede,
 
 staticweave_commandline_help_message_16of19= P\u0159\u00edklad:
 
-staticweave_commandline_help_message_17of19= Chcete-li zakomponovat v\u0161echny entity z C:\\foo-source.jar a persistence.xml, kter\u00fd je sou\u010d\u00e1st\u00ed C:\\foo-containing-persistence-xml.jar,
+staticweave_commandline_help_message_17of19= Chcete-li zakomponovat v\u0161echny entity z C:\foo-source.jar a persistence.xml, kter\u00fd je sou\u010d\u00e1st\u00ed C:\foo-containing-persistence-xml.jar,
 
-staticweave_commandline_help_message_18of19= a zapsat v\u00fdstup do C:\\foo-target.jar, zadejte:
+staticweave_commandline_help_message_18of19= a zapsat v\u00fdstup do C:\foo-target.jar, zadejte:
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= Pou\u017eit\u00ed: StaticWeave [volby] zdroj c\u00edl
 

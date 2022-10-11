@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -535,7 +535,7 @@
 
 7306=O elemento anotado [{0}] da classe [{1}] tem um tipo de acesso expl\u00edcito incorreto especificado. Ele deve especificar um tipo de acesso de [{2}].
 
-7307=Est\u00e1 faltando uma sequ\u00eancia de contexto de cria\u00e7\u00e3o de log para o contexto [{0}]. Essa \u00e9 uma exce\u00e7\u00e3o interna que ocorreu ao recuperar uma mensagem de log para processamento de metadados JPA; relate um erro.
+7307=Est\u00e1 faltando uma sequ\u00eancia de contexto de cria\u00e7\u00e3o de log para o contexto [{0}]. Essa \u00e9 uma exce\u00e7\u00e3o interna que ocorreu ao recuperar uma mensagem de log para processamento de metadados Jakarta Persistence; relate um erro.
 
 7308=O valor especificado [{0}] para a propriedade de persist\u00eancia [{1}] \u00e9 inv\u00e1lido - [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Diversas propriedades de contexto [{2}] e [{3}] especificadas para o mesmo campo de discriminador de locat\u00e1rio [{1}] para a classe [{0}]
 
-7337=A coluna do discriminador de locat\u00e1rio mapeada [{1}] na classe [{0}] deve ser marcada como somente leitura. Em JPA, isso \u00e9 feito configurando insertable=false e updatable=false na coluna, por exemplo, @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=A coluna do discriminador de locat\u00e1rio mapeada [{1}] na classe [{0}] deve ser marcada como somente leitura. Em Jakarta Persistence API, isso \u00e9 feito configurando insertable=false e updatable=false na coluna, por exemplo, @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=N\u00e3o \u00e9 poss\u00edvel incluir sequ\u00eancias em um SessionBroker.
 
@@ -621,7 +621,7 @@
 
 7351=A classe de conversor [{2}] especificada no atributo de mapeamento [{1}] da classe [{0}] n\u00e3o foi localizada. Assegure-se de que o nome da classe de conversor esteja correto e exista com a defini\u00e7\u00e3o de unidade de persist\u00eancia.
 
-7352=A classe de conversor [{0}] deve implementar a interface JPA javax.persistence.AttributeConverter<X, Y> para ser uma classe de conversor v\u00e1lida.
+7352=A classe de conversor [{0}] deve implementar a interface Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> para ser uma classe de conversor v\u00e1lida.
 
 7353=O atributo de mapeamento [{1}] da classe [{0}] n\u00e3o \u00e9 um tipo de mapeamento v\u00e1lido para uma especifica\u00e7\u00e3o de convers\u00e3o.
 

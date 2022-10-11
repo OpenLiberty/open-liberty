@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -239,9 +239,9 @@ jpa_criteriaapi_no_corresponding_element_in_result=Das Element {0} entspricht ke
 
 jpa_criteriaapi_null_literal_value=An CriteriaBuilder.literal() wurde ein Nullwert \u00fcbergeben. Verwenden Sie stattdessen nullLiteral(Class<T> resultClass).
 
-jpa_helper_invalid_entity_manager_factory=Die JPA-EntityManagerFactory {0} ist keine EclipseLink-EntityManagerFactory und konnte daher nicht konvertiert werden.
+jpa_helper_invalid_entity_manager_factory=Die Jakarta Persistence-EntityManagerFactory {0} ist keine EclipseLink-EntityManagerFactory und konnte daher nicht konvertiert werden.
 
-jpa_helper_invalid_entity_manager_factory_for_refresh=Die JPA-EntityManagerFactory {0} ist keine EclipseLink-EntityManagerFactory und daher konnten ihre Metadaten nicht aktualisiert werden.
+jpa_helper_invalid_entity_manager_factory_for_refresh=Die Jakarta Persistence-EntityManagerFactory {0} ist keine EclipseLink-EntityManagerFactory und daher konnten ihre Metadaten nicht aktualisiert werden.
 
 jpa_helper_invalid_query=Die Abfrage vom Typ {0} ist keine EclipseLink-Abfrage und konnte daher nicht konvertiert werden.
 

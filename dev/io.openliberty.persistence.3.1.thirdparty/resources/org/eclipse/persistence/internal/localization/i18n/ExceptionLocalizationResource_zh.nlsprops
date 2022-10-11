@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -239,9 +239,9 @@ jpa_criteriaapi_no_corresponding_element_in_result=\u5143\u7d20 {0} \u672a\u5bf9
 
 jpa_criteriaapi_null_literal_value=\u4f20\u9012\u81f3 CriteriaBuilder.literal() \u7684\u503c\u4e3a\u7a7a\u3002\u8bf7\u6539\u7528 nullLiteral(Class<T> resultClass)\u3002
 
-jpa_helper_invalid_entity_manager_factory=JPA EntityManagerFactory {0} \u4e0d\u662f EclipseLink EntityManagerFactory\uff0c\u56e0\u6b64\u672a\u80fd\u8f6c\u6362\u3002
+jpa_helper_invalid_entity_manager_factory=Jakarta Persistence EntityManagerFactory {0} \u4e0d\u662f EclipseLink EntityManagerFactory\uff0c\u56e0\u6b64\u672a\u80fd\u8f6c\u6362\u3002
 
-jpa_helper_invalid_entity_manager_factory_for_refresh=JPA EntityManagerFactory {0} \u4e0d\u662f EclipseLink EntityManagerFactory\uff0c\u56e0\u6b64\u672a\u80fd\u5237\u65b0\u5176\u5143\u6570\u636e\u3002
+jpa_helper_invalid_entity_manager_factory_for_refresh=Jakarta Persistence EntityManagerFactory {0} \u4e0d\u662f EclipseLink EntityManagerFactory\uff0c\u56e0\u6b64\u672a\u80fd\u5237\u65b0\u5176\u5143\u6570\u636e\u3002
 
 jpa_helper_invalid_query=\u7c7b\u578b\u4e3a {0} \u7684\u67e5\u8be2\u4e0d\u662f EclipseLink \u67e5\u8be2\uff0c\u56e0\u6b64\u65e0\u6cd5\u8f6c\u6362\u3002
 

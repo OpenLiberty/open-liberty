@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -65,7 +65,7 @@
 
 25020=The method "getResult()" must not be called before the "endDocument()" event has been called.
 
-25021=Class {0} invalid for SwaRef. Must be javax.activation.DataHandler.
+25021=Class {0} invalid for SwaRef. Must be jakarta.activation.DataHandler.
 
 25022=Unable to marshal Image. No encoder available for mimeType {0}.
 

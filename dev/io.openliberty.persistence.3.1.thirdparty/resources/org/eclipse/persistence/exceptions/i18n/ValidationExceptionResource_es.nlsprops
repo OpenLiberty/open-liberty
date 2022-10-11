@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -535,7 +535,7 @@
 
 7306=El elemento anotado [{0}] de la clase [{1}] tiene especificado un tipo de acceso expl\u00edcito incorrecto. Debe especificar un tipo de acceso [{2}].
 
-7307=Falta una serie de contexto de registro para el contexto [{0}]. Es una excepci\u00f3n interna que se ha producido al recuperar un mensaje de registro para el proceso de metadatos JPA; informe de un error.
+7307=Falta una serie de contexto de registro para el contexto [{0}]. Es una excepci\u00f3n interna que se ha producido al recuperar un mensaje de registro para el proceso de metadatos Jakarta Persistence; informe de un error.
 
 7308=El valor especificado [{0}] para la propiedad de persistencia [{1}] no es v\u00e1lido: [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Se han especificado varias propiedades de contexto [{2}] y [{3}] para el mismo campo de discriminador de inquilino [{1}] para la clase [{0}]
 
-7337=La columna de discriminador de inquilino correlacionada [{1}] en la clase [{0}] debe marcarse como de s\u00f3lo lectura. En JPA, esto se realiza estableciendo insertable=false y updatable=false en la columna, por ej. @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=La columna de discriminador de inquilino correlacionada [{1}] en la clase [{0}] debe marcarse como de s\u00f3lo lectura. En Jakarta Persistence API, esto se realiza estableciendo insertable=false y updatable=false en la columna, por ej. @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=No puede a\u00f1adir secuencias a un SessionBroker.
 
@@ -621,7 +621,7 @@
 
 7351=No se ha encontrado la clase de conversor [{2}] especificada en el atributo de correlaci\u00f3n [{1}] de la clase [{0}]. Aseg\u00farese de que el nombre de clase de conversor sea correcto y exista con la definici\u00f3n de unidad de persistencia.
 
-7352=La clase de conversor [{0}] debe implementar la interfaz javax.persistence.AttributeConverter<X, Y> JPA para ser una clase de conversor v\u00e1lida.
+7352=La clase de conversor [{0}] debe implementar la interfaz jakarta.persistence.AttributeConverter<X, Y> Jakarta Persistence para ser una clase de conversor v\u00e1lida.
 
 7353=El atributo de correlaci\u00f3n [{1}] de la clase [{0}] no es un tipo de correlaci\u00f3n v\u00e1lido para una especificaci\u00f3n de conversi\u00f3n.
 

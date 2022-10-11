@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -65,7 +65,7 @@
 
 25020=Metoda "getResult()" nesm\u00ed b\u00fdt vol\u00e1na p\u0159ed vol\u00e1n\u00edm ud\u00e1losti "endDocument()".
 
-25021=T\u0159\u00edda {0} je neplatn\u00e1 pro SwaRef. Mus\u00ed to b\u00fdt t\u0159\u00edda javax.activation.DataHandler.
+25021=T\u0159\u00edda {0} je neplatn\u00e1 pro SwaRef. Mus\u00ed to b\u00fdt t\u0159\u00edda jakarta.activation.DataHandler.
 
 25022=Obr\u00e1zek nelze za\u0159adit. Pro typ mimeType {0} nen\u00ed k dispozici \u017e\u00e1dn\u00fd kod\u00e9r.
 

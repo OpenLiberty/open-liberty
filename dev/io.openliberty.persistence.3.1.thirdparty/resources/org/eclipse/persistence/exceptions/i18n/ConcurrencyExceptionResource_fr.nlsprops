@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@
 
 2005=Echec de l''attente sur organisation de gestionnaire de connexion pour DatabaseSession.
 
-2006=Tentative d''acquisition de valeurs d''organisation via une seule connexion({0}) de mani\u00e8re simultan\u00e9e dans plusieurs unit\u00e9s d''ex\u00e9cution
+2006=Tentative d''acquisition de valeurs d''organisation via une seule connexion({0}) de mani\u00e8re simultan\u00e9e dans plusieurs unit\u00e9s d''ex\u00e9cution.
 
 2007=Nombre max de tentatives de verrouillage de l''objet : {0} d\u00e9pass\u00e9.  Echec de clonage de l''objet.
 

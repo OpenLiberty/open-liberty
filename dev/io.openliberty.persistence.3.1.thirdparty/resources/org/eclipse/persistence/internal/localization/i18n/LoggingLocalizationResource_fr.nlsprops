@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -517,7 +517,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Le param\u00e8tre de cl\u0
 
 metadata_warning_ignore_mapped_superclass_read_only=Le param\u00e8tre en lecture seule sur la superclasse mapp\u00e9e [{1}] pour la classe d''entit\u00e9 [{0}] est ignor\u00e9 car les m\u00e9tadonn\u00e9es en lecture seule ont \u00e9t\u00e9 pr\u00e9alablement d\u00e9couvertes pour cette entit\u00e9 (soit sur l''entit\u00e9 elle-m\u00eame ou une autre superclasse mapp\u00e9e).
 
-metadata_warning_ignore_mapping_metadata=M\u00e9tadonn\u00e9es javax.persistence appliqu\u00e9es \u00e0 l''attribut [{0}] de la classe [{1}] ignor\u00e9es. Les m\u00e9tadonn\u00e9es javax.persistence sont ignor\u00e9es sur les zones ou les propri\u00e9t\u00e9s qui sont transitoires, statiques ou abstraites.
+metadata_warning_ignore_mapping_metadata=M\u00e9tadonn\u00e9es jakarta.persistence appliqu\u00e9es \u00e0 l''attribut [{0}] de la classe [{1}] ignor\u00e9es. Les m\u00e9tadonn\u00e9es jakarta.persistence sont ignor\u00e9es sur les zones ou les propri\u00e9t\u00e9s qui sont transitoires, statiques ou abstraites.
 
 metadata_warning_ignore_serialized=La s\u00e9rialisation par d\u00e9faut sur l''\u00e9l\u00e9ment [{1}] au sein de la classe d''entit\u00e9 [{0}] est ignor\u00e9e car des m\u00e9tadonn\u00e9es de conversion EclipseLink sont sp\u00e9cifi\u00e9es.
 
@@ -581,7 +581,7 @@ no_jar_entry_migratable_in_ear=Aucune entr\u00e9e de fichier JAR du fichier EAR 
 
 no_session_found=Impossible de trouver la session nomm\u00e9e [{0}] dans le fichier session.xml [{1}]
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=L''\u00e9l\u00e9ment [{1}] au sein de la classe entit\u00e9 [{0}] utilise un type de collection [{2}] alors que la sp\u00e9cification JPA prend uniquement en charge java.util.Collection, java.util.Set, java.util.List ou java.util.Map.  Ce type est pris en charge avec un chargement rapide ; l''utilisation d''un chargement lent avec ce type de collection n\u00e9cessite une configuration suppl\u00e9mentaire et une impl\u00e9mentation IndirectContainer qui \u00e9tend [{2}] ou la configuration du mappage pour l''utilisation d''un adressage indirect de base et le type doit \u00eatre ValueholderInterface.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=L''\u00e9l\u00e9ment [{1}] au sein de la classe entit\u00e9 [{0}] utilise un type de collection [{2}] alors que la sp\u00e9cification Jakarta Persistence prend uniquement en charge java.util.Collection, java.util.Set, java.util.List ou java.util.Map.  Ce type est pris en charge avec un chargement rapide ; l''utilisation d''un chargement lent avec ce type de collection n\u00e9cessite une configuration suppl\u00e9mentaire et une impl\u00e9mentation IndirectContainer qui \u00e9tend [{2}] ou la configuration du mappage pour l''utilisation d''un adressage indirect de base et le type doit \u00eatre ValueholderInterface.
 
 objectchangepolicy_turned_off=Suivi des modifications d\u00e9sactiv\u00e9 pour : {0}
 
