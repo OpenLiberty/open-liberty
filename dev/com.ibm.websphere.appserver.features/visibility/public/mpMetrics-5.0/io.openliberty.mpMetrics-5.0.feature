@@ -20,7 +20,7 @@ Subsystem-Name: MicroProfile Metrics 5.0
  io.openliberty.microprofile.metrics.5.0.private.internal, \
  io.openliberty.microprofile.metrics.5.0.public.internal, \
  io.openliberty.microprofile.metrics.5.0.monitor.internal
--jars=io.openliberty.smallrye.metrics; location:="lib/", \
- io.openliberty.micrometer; location:="lib/"
+-jars=io.openliberty.io.smallrye.metrics; location:="lib/", \
+ io.openliberty.io.micrometer; location:="lib/"
 kind=beta
 edition=core

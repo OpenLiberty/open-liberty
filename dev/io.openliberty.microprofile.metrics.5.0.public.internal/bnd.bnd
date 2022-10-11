@@ -54,4 +54,4 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	io.openliberty.smallrye.metrics;version=latest
+	io.openliberty.io.smallrye.metrics;version=latest
