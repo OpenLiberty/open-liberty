@@ -51,6 +51,22 @@ import jakarta.enterprise.inject.spi.Extension;
 public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
 
     private static final TraceComponent tc = Tr.register(SmallryeMetricsCDIMetadata.class);
+
+    private static final String SMALLRYE_METRICS_JAR_NAME = "io.openliberty.io.smallrye.metrics";
+    private static final String SMALLRYE_METRICS_JAR_VERSION_RANGE = "[1.0,5.0)";
+    private static final String MICROMETER_JAR_NAME = "io.openliberty.io.micrometer";
+    private static final String MICROMETER_JAR_VERSION_RANGE = "[1.0,5.0)";
+
+    private static final String LEGACY_METRICS_EXTENSION_CLASSNAME = "io.smallrye.metrics.legacyapi.LegacyMetricsExtension";
+    private static final String LEGACY_METRIC_REGISTRY_ADAPTER_CLASSNAME = "io.smallrye.metrics.legacyapi.LegacyMetricRegistryAdapter";
+    private static final String METRIC_REGISTRY_PRODUCER_CLASSNAME = "io.smallrye.metrics.MetricRegistryProducer";
+    private static final String METRIC_PRODUCER_CLASSNAME = "io.smallrye.metrics.MetricProducer";
+    private static final String SHARED_METRIC_REGISTRIES_CLASSNAME = "io.smallrye.metrics.SharedMetricRegistries";
+    private static final String METRICS_REQUEST_HANDLER_CLASSNAME = "io.smallrye.metrics.MetricsRequestHandler";
+    private static final String METRICS_REQUEST_HANDELER_RESPONDER_CLASSNAME = METRICS_REQUEST_HANDLER_CLASSNAME
+            + "$Responder";
+    private static final String APPLICATION_NAME_RESOLVER_CLASSNAME = "io.smallrye.metrics.setup.ApplicationNameResolver";
+
     private ClassLoadingService classLoadingService;
     private volatile Library sharedLib = null;
     private static boolean isSuccesfulActivation = true;
@@ -182,32 +198,22 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
     }
 
     private File resolveSmallRyeMetricsJar() throws FileNotFoundException {
-        ContentBasedLocalBundleRepository cblb = BundleRepositoryRegistry.getInstallBundleRepository();
-        VersionRange vr = VersionRange.valueOf(VersionRange.LEFT_CLOSED + "1,5.0.100" + VersionRange.RIGHT_CLOSED);
-        /*
-         * Sometimes.. the first call returns a null file. Debug shows that the class
-         * loader was unable to load the ContentBasedLocalBundleRepository
-         */
-        cblb.selectBundle("lib/", "io.openliberty.smallrye.metrics", vr);
-        File f = cblb.selectBundle("lib/", "io.openliberty.smallrye.metrics", vr);
-
-        if (f == null) {
-            throw new FileNotFoundException("Could not load the io.openliberty.smallrye.metrics JAR");
-        }
+        File f = resolveLibJar(SMALLRYE_METRICS_JAR_NAME, SMALLRYE_METRICS_JAR_VERSION_RANGE);
         return f;
     }
 
     private File resolveMicrometerJar() throws FileNotFoundException {
+        File f = resolveLibJar(MICROMETER_JAR_NAME, MICROMETER_JAR_VERSION_RANGE);
+        return f;
+    }
+
+    private File resolveLibJar(String jarName, String jarVersionRange) throws FileNotFoundException {
         ContentBasedLocalBundleRepository cblb = BundleRepositoryRegistry.getInstallBundleRepository();
-        VersionRange vr = VersionRange.valueOf(VersionRange.LEFT_CLOSED + "1,5.0.100" + VersionRange.RIGHT_CLOSED);
-        /*
-         * Sometimes.. the first call returns a null file. Debug shows that the class
-         * loader was unable to load the ContentBasedLocalBundleRepository
-         */
-        cblb.selectBundle("lib/", "io.openliberty.micrometer", vr);
-        File f = cblb.selectBundle("lib/", "io.openliberty.micrometer", vr);
+        VersionRange vr = VersionRange.valueOf(jarVersionRange);
+
+        File f = cblb.selectBundle("lib/", jarName, vr);
         if (f == null) {
-            throw new FileNotFoundException("Could not load the io.openliberty.micrometer JAR");
+            throw new FileNotFoundException("Could not load the " + jarName + " jar");
         }
         return f;
     }
@@ -246,37 +252,33 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
          * Loading SmallRye Metric CDI related classes
          */
 
-        Util.SR_LEGACY_METRIC_REGISTRY_EXTENSION_CLASS = Class
-                .forName("io.smallrye.metrics.legacyapi.LegacyMetricsExtension", true, classLoader);
-
-        Class<?> metricRegistryProducerClass = Class.forName("io.smallrye.metrics.MetricRegistryProducer", true,
+        Util.SR_LEGACY_METRIC_REGISTRY_EXTENSION_CLASS = Class.forName(LEGACY_METRICS_EXTENSION_CLASSNAME, true,
                 classLoader);
+
+        Class<?> metricRegistryProducerClass = Class.forName(METRIC_REGISTRY_PRODUCER_CLASSNAME, true, classLoader);
         Util.SR_METRIC_REGISTRY_PRODUCER_CLASS = metricRegistryProducerClass;
 
-        Class<?> metricProducerClass = Class.forName("io.smallrye.metrics.MetricProducer", true, classLoader);
+        Class<?> metricProducerClass = Class.forName(METRIC_PRODUCER_CLASSNAME, true, classLoader);
         Util.SR_METRICS_PRODUCER_CLASS = metricProducerClass;
 
         /*
          * Loading the other SmallRye Metric classes
          */
-        Class<?> sharedMetricRegistriesClass = Class.forName("io.smallrye.metrics.SharedMetricRegistries", true,
-                classLoader);
+        Class<?> sharedMetricRegistriesClass = Class.forName(SHARED_METRIC_REGISTRIES_CLASSNAME, true, classLoader);
         Util.SR_SHARED_METRIC_REGISTRIES_CLASS = sharedMetricRegistriesClass;
 
-        Class<?> LegacyMetricRegistryClass = Class.forName("io.smallrye.metrics.legacyapi.LegacyMetricRegistryAdapter",
-                true, classLoader);
+        Class<?> LegacyMetricRegistryClass = Class.forName(LEGACY_METRIC_REGISTRY_ADAPTER_CLASSNAME, true, classLoader);
         Util.SR_LEGACY_METRIC_REGISTRY_CLASS = LegacyMetricRegistryClass;
 
-        Class<?> MetricRequestHandlerClass = Class.forName("io.smallrye.metrics.MetricsRequestHandler", true,
-                classLoader);
+        Class<?> MetricRequestHandlerClass = Class.forName(METRICS_REQUEST_HANDLER_CLASSNAME, true, classLoader);
         Util.SR_METRICS_REQUEST_HANDLER_CLASS = MetricRequestHandlerClass;
 
-        Class<?> restResponderInterface = Class.forName("io.smallrye.metrics.MetricsRequestHandler$Responder", true,
+        Class<?> restResponderInterface = Class.forName(METRICS_REQUEST_HANDELER_RESPONDER_CLASSNAME, true,
                 classLoader);
         Util.SR_REST_RESPONDER_INTERFACE = restResponderInterface;
 
-        Class<?> ApplicationNameResolverFuncInterface = Class
-                .forName("io.smallrye.metrics.setup.ApplicationNameResolver", true, classLoader);
+        Class<?> ApplicationNameResolverFuncInterface = Class.forName(APPLICATION_NAME_RESOLVER_CLASSNAME, true,
+                classLoader);
         Util.SR_APPLICATION_NAME_RESOLVER_INTERFACE = ApplicationNameResolverFuncInterface;
 
     }

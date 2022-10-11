@@ -11,8 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.${libertyBundleMicroVersion}
 
-Bundle-Name: io.openliberty.micrometer
-Bundle-SymbolicName: io.openliberty.micrometer
+Bundle-Name: io.openliberty.io.micrometer
+Bundle-SymbolicName: io.openliberty.io.micrometer
 Bundle-Description: Micrometer libraries and necessary dependencies, version ${bVersion}
 
 javac.source: 11

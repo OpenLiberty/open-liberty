@@ -16,11 +16,9 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-Bundle-Name: io.openliberty.smallrye.metrics
-Bundle-SymbolicName: io.openliberty.smallrye.metrics
-Bundle-Description: MicroProfile Metrics SmallRye Implementation, version ${bVersion}
-
-src: src
+Bundle-Name: io.openliberty.io.smallrye.metrics
+Bundle-SymbolicName: io.openliberty.io.smallrye.metrics
+Bundle-Description: SmallRye Metrics, version ${bVersion}
 
 Export-Package: \
   !io.smallrye.metrics.jaxrs.*,\

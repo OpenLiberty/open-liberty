@@ -55,6 +55,8 @@ import jakarta.data.repository.Limit;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Sort;
 import jakarta.inject.Inject;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.Status;
@@ -83,6 +85,10 @@ public class DataTestServlet extends FATServlet {
     @Inject
     Personnel personnel;
 
+    // Only add to this repository within the Servlet.init method so that all tests can rely on its data:
+    @Inject
+    Primes primes;
+
     @Inject
     ProductRepo products;
 
@@ -103,6 +109,27 @@ public class DataTestServlet extends FATServlet {
 
     @Resource
     private UserTransaction tran;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        // Do not add or remove from this data in tests.
+        // Tests must be able to rely on this data always being present.
+        primes.save(new Prime(2, "2", "10", "II", "two"),
+                    new Prime(3, "3", "11", "III", "three"),
+                    new Prime(5, "5", "101", "V", "five"),
+                    new Prime(7, "7", "111", "VII", "seven"),
+                    new Prime(11, "B", "1011", "XI", "eleven"),
+                    new Prime(13, "D", "1101", "XIII", "thirteen"),
+                    new Prime(17, "11", "10001", "XVII", "seventeen"),
+                    new Prime(19, "13", "10011", "XIX", "nineteen"),
+                    new Prime(23, "17", "10111", "XXIII", "twenty-three"),
+                    new Prime(29, "1D", "11101", "XXIX", "twenty-nine"),
+                    new Prime(31, "1F", "11111", "XXXI", "thirty-one"),
+                    new Prime(37, "25", "100101", "XXXVII", "thirty-seven"),
+                    new Prime(41, "29", "101001", "XLI", "forty-one"),
+                    new Prime(43, "2B", "101011", "XLIII", "forty-three"),
+                    new Prime(47, "2F", "101111", "XLVII", "forty-seven"));
+    }
 
     /**
      * Use repository methods with aggregate functions in the select clause.
@@ -413,6 +440,21 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Count the number of matching elements in the database.
+     */
+    @Test
+    public void testCount() throws ExecutionException, InterruptedException, TimeoutException {
+
+        assertEquals(15, primes.countByNumberLessThan(50));
+
+        assertEquals(Integer.valueOf(0), primes.countNumberBetween(32, 36));
+
+        assertEquals(Integer.valueOf(3), primes.countNumberBetween(40, 50));
+
+        assertEquals(Short.valueOf((short) 14), primes.countByNumberBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
      * Delete multiple entries.
      */
     @Test
@@ -556,6 +598,18 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Identify whether elements exist in the database.
+     */
+    @Test
+    public void testExists() {
+        assertEquals(true, primes.existsByNumber(19));
+        assertEquals(false, primes.existsByNumber(9));
+
+        assertEquals(Boolean.TRUE, primes.existsNumberBetween(Long.valueOf(14), Long.valueOf(18)));
+        assertEquals(Boolean.FALSE, primes.existsNumberBetween(Long.valueOf(24), Long.valueOf(28)));
+    }
+
+    /**
      * Search for missing item. Insert it. Search again.
      */
     @Test
@@ -575,6 +629,25 @@ public class DataTestServlet extends FATServlet {
         assertEquals(prod.name, p.name);
         assertEquals(prod.price, p.price, 0.001f);
         assertEquals(prod.description, p.description);
+    }
+
+    /**
+     * Find the first or first 3 of a list of sorted results.
+     */
+    @Test
+    public void testFindFirst() throws Exception {
+        Prime prime = primes.findFirstByNameLikeOrderByNumber("%ven");
+        assertNotNull(prime);
+        assertEquals(7, prime.number);
+
+        Prime[] p = primes.findFirst5ByNumberLessThanEqual(25); // descending order by name
+        assertNotNull(p);
+        assertEquals(Arrays.toString(p), 5, p.length);
+        assertEquals("two", p[0].name);
+        assertEquals("twenty-three", p[1].name);
+        assertEquals("three", p[2].name);
+        assertEquals("thirteen", p[3].name);
+        assertEquals("seventeen", p[4].name);
     }
 
     /**
@@ -1270,7 +1343,7 @@ public class DataTestServlet extends FATServlet {
 
         assertIterableEquals(List.of(10030007L, 10030008L, 10030006L),
                              reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
-                                                                                                Limit.of(3, 2))
+                                                                                                Limit.range(2, 4))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
