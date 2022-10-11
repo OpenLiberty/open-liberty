@@ -28,6 +28,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import io.openliberty.jcache.CacheService;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
@@ -101,8 +102,6 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
-import io.openliberty.jcache.CacheService;
-
 public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborator, WebAppAuthorizationHelper {
     private static final TraceComponent tc = Tr.register(WebAppSecurityCollaboratorImpl.class);
 
@@ -168,6 +167,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     private boolean isJaspiEnabled = false;
     private Subject savedSubject = null;
     private boolean isActive = false;
+
+    private final Map<String, Boolean> appsWithAuthentication = new HashMap<String, Boolean>();
 
     /**
      * Zero length constructor required by DS.
@@ -837,9 +838,29 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         if (result != null) {
             return result.booleanValue();
         }
-        if (webRequest.hasAuthenticationData())
+        String mapKey = webRequest.getApplicationName() + webRequest.getHttpServletRequest().getRequestURI();
+        Boolean hasAuth = appsWithAuthentication.get(mapKey);
+
+        if (hasAuth != null) {
+            return hasAuth.booleanValue();
+        } else if (webRequest.hasAuthenticationData()) {
+            Tr.debug(tc, "Appname not in apps and has authentication = true");
+            appsWithAuthentication.put(mapKey, Boolean.TRUE);
             return true;
-        return isUnprotectedResourceAuthenRequired(webRequest);
+        } else {
+            Tr.debug(tc, "Appname not in apps and has authentication = false");
+            //for (Entry<String, Boolean> entry : appsWithAuthentication.entrySet())
+            //    Tr.debug(tc, "appsWithAuthentication key = " + entry.getKey() + " value = " + entry.getValue() + "App name = " + webRequest.getApplicationName());
+            appsWithAuthentication.put(mapKey, Boolean.FALSE);
+            //Tr.debug(tc, "appsWithAutbentication size = " + appsWithAuthentication.size());
+        }
+        if (isUnprotectedResourceAuthenRequired(webRequest)) {
+            appsWithAuthentication.put(mapKey, Boolean.TRUE);
+            return true;
+        } else {
+            appsWithAuthentication.put(mapKey, Boolean.FALSE);
+            return false;
+        }
     }
 
     private WebReply unprotectedResource(WebRequest webRequest) {
