@@ -13,7 +13,8 @@ bVersion=1.0
 
 src: \
     fat/src,\
-    test-applications/ExternalContextAddResponseCookie.war/src
+    test-applications/ExternalContextAddResponseCookie.war/src,\
+    test-applications/SelectItemTests.war/src
 
 fat.project: true
 
