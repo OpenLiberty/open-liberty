@@ -10,7 +10,6 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -29,14 +28,15 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -44,7 +44,6 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22ViewActionAndPhaseIdTests {
     @Rule
     public TestName name = new TestName();
@@ -58,8 +57,18 @@ public class JSF22ViewActionAndPhaseIdTests {
 
     @BeforeClass
     public static void setup() throws Exception {
+        boolean isEE10 = JakartaEE10Action.isActive();
 
-        ShrinkHelper.defaultDropinApp(jsfTestServer1, "TestJSF22ViewAction.war", "com.ibm.ws.jsf22.fat.viewaction.*");
+        ShrinkHelper.defaultDropinApp(jsfTestServer1, "TestJSF22ViewAction.war",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.viewaction.faces40" : "com.ibm.ws.jsf22.fat.viewaction.jsf22",
+                                      "com.ibm.ws.jsf22.fat.viewaction.phaselistener");
+
+        if (isEE10) {
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsfTestServer1.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsfTestServer1.updateServerConfiguration(config);
+        }
 
         jsfTestServer1.startServer(JSF22ViewActionAndPhaseIdTests.class.getSimpleName() + ".log");
     }

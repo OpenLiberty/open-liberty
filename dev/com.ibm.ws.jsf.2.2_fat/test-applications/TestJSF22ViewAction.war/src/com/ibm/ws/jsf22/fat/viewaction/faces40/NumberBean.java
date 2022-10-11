@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2015  IBM Corporation and others.
+ * Copyright (c)  2015, 2022  IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,13 @@ package com.ibm.ws.jsf22.fat.viewaction.faces40;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @SessionScoped
 public class NumberBean implements Serializable {
 
@@ -29,7 +29,8 @@ public class NumberBean implements Serializable {
     protected boolean postback;
     private int count = 0;
 
-    public NumberBean() {}
+    public NumberBean() {
+    }
 
     public Integer getNumber() {
         return number;
@@ -78,7 +79,7 @@ public class NumberBean implements Serializable {
         String phaseGetName = phase.getName();
         //test new phaseIdValueOf() method
         PhaseId phaseIdValueOf = phase.phaseIdValueOf(phaseGetName);
-        
+
         getFacesContext().addMessage(null,
                                      new FacesMessage("PhaseId.getName(): " + phaseGetName + " PhaseId.phaseIdValueOf(): " + phaseIdValueOf));
     }
