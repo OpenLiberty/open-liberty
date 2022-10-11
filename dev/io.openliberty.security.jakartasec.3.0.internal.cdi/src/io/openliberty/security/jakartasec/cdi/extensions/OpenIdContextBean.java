@@ -38,7 +38,6 @@ import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.enterprise.util.TypeLiteral;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 
-@SessionScoped
 public class OpenIdContextBean implements Bean<OpenIdContext>, PassivationCapable {
 
     private static final TraceComponent tc = Tr.register(OpenIdContextBean.class);
@@ -62,7 +61,7 @@ public class OpenIdContextBean implements Bean<OpenIdContext>, PassivationCapabl
 
     @Override
     public OpenIdContext create(CreationalContext<OpenIdContext> arg0) {
-        return new OpenIdContextImpl();
+        return getOpenIdContext();
     }
 
     @Override
@@ -101,7 +100,7 @@ public class OpenIdContextBean implements Bean<OpenIdContext>, PassivationCapabl
 
     @Override
     public Class<?> getBeanClass() {
-        return OpenIdContext.class;
+        return OpenIdContextBean.class;
     }
 
     @Override
@@ -113,6 +112,7 @@ public class OpenIdContextBean implements Bean<OpenIdContext>, PassivationCapabl
     public String getId() {
         return id;
     }
+
 
     public OpenIdContext getOpenIdContext() {
 
