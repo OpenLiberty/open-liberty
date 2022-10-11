@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.ws.jsf.container.fat.utils.UseImplementation;
 import com.ibm.ws.jsf.container.fat.utils.WebArchiveInfo;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -52,6 +53,7 @@ import componenttest.rules.repeater.JakartaEE9Action;
 /**
  * General JSF 2.3 test cases the also require CDI.
  */
+@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 @RunWith(FATRunner.class)
 @UseImplementation(JSFImplementation.MYFACES)
 public class JSF23CDIGeneralTests extends FATServletClient {
@@ -176,6 +178,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      *
      * @throws Exception
      */
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     @WebArchiveInfo(name = "CDIManagedProperty", pkgs = { "com.ibm.ws.jsf23.fat.cdi.managedproperty" })
     public void testCDIManagedProperty() throws Exception {

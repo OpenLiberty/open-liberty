@@ -28,9 +28,12 @@ import com.ibm.ws.jsf.container.fat.tests.JSF23CDIGeneralTests;
 import com.ibm.ws.jsf.container.fat.tests.JSF23WebSocketTests;
 import com.ibm.ws.jsf.container.fat.tests.JSFContainerTest;
 
+import componenttest.topology.impl.JavaInfo;
+
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -49,9 +52,21 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES());
+    public static RepeatTests repeat;
+
+    static {
+        if(JavaInfo.JAVA_VERSION>=11)
+        {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                                // .andWith(FeatureReplacementAction.EE9_FEATURES());
+                                // Use once MyFaces 4.0.0-RC2 is released
+                                // .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE10_FEATURES());
+        } else {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE9_FEATURES());
+        }
+    }
 
     public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.9.jar";
     public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.9.jar";
@@ -62,6 +77,8 @@ public class FATSuite {
     public static WebArchive addMojarra(WebArchive app) throws Exception {
         if (JakartaEE9Action.isActive()) {
             return app.addAsLibraries(new File("publish/files/mojarra30/").listFiles());
+        } else if(JakartaEE10Action.isActive()){
+            return app.addAsLibraries(new File("publish/files/mojarra40/").listFiles());
         }
         return app.addAsLibraries(new File("publish/files/mojarra/").listFiles());
     }
@@ -69,6 +86,8 @@ public class FATSuite {
     public static WebArchive addMyFaces(WebArchive app) throws Exception {
         if (JakartaEE9Action.isActive()) {
             return app.addAsLibraries(new File("publish/files/myfaces30/").listFiles()).addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
+        } else if(JakartaEE10Action.isActive()){
+            return app.addAsLibraries(new File("publish/files/myfaces40/").listFiles());
         }
         return app.addAsLibraries(new File("publish/files/myfaces/").listFiles()).addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
     }
