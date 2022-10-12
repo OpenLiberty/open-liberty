@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="JASPIFormLoginServlet" version="3.0"
+ xmlns="http://java.sun.com/xml/ns/javaee" 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	<display-name>JASPIFormLoginServlet</display-name>
+	
+	<!-- SERVLET DEFINITIONS -->
+	<servlet>
+		<display-name>JASPIFormLoginServlet</display-name>
+		<servlet-name>JASPIFormLoginServlet</servlet-name>
+		<servlet-class>web.JASPIFormLoginServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>JASPIFormLoginServlet</servlet-name>
+		<url-pattern>/JASPIUnprotected</url-pattern>
+		<url-pattern>/JASPIForm</url-pattern>
+	</servlet-mapping>
+
+	
+	<!-- SECURITY CONSTRAINTS -->
+	<security-constraint>
+		<display-name>form_login</display-name>
+		<web-resource-collection>
+			<web-resource-name>form_login_servlet</web-resource-name>
+			<url-pattern>/JASPIForm</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>jaspi_form</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	<!-- ROLES DEFINITION -->
+	<security-role>
+		<role-name>jaspi_form</role-name>
+	</security-role>
+	
+	 <!-- CHALLENGE TYPE -->
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>form_login</realm-name>
+		<form-login-config>
+			<form-login-page>/login.jsp</form-login-page>
+			<form-error-page>/loginError.jsp</form-error-page>
+		</form-login-config>
+	</login-config>
+</web-app>
