@@ -142,8 +142,8 @@ public class HtmlTextRendererBase
         }
         else
         {
-            //default is to escape
-            escape = AttributeUtils.getBooleanAttribute(component, ComponentAttrs.ESCAPE_ATTR, true);
+            //default is NOT to escape
+            escape = AttributeUtils.getBooleanAttribute(component, ComponentAttrs.ESCAPE_ATTR, false);
         }
 
         if (text != null)

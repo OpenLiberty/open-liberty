@@ -481,15 +481,8 @@ public class ViewIdSupport
                 return candidateViewId;
             }
         }
-
-        // Otherwise, if a physical resource exists with the name requestViewId let that value be viewId.
-        if (isViewExistent(context,requestViewId))
-        {
-            return requestViewId;
-        }
         
-        //Otherwise return null.
-        return null;
+        return requestViewId;
     }
     
     /**

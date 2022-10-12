@@ -438,6 +438,22 @@ public final class DefaultFaceletFactory extends FaceletFactory
     public Facelet getViewMetadataFacelet(FacesContext facesContext, String uri) 
         throws IOException
     {
+        Boolean isManagedFacelet = _managedFacelet.get(uri);
+        if (isManagedFacelet == null || isManagedFacelet)
+        {
+            Facelet facelet = null;
+            if (ExternalSpecifications.isCDIAvailable(facesContext.getExternalContext()))
+            {
+                BeanManager bm = CDIUtils.getBeanManager(facesContext);
+                facelet = CDIUtils.get(bm, Facelet.class, true, View.Literal.of(uri));
+            }
+            _managedFacelet.put(uri, facelet != null);
+            if (facelet != null)
+            {
+                return facelet;
+            }
+        }
+        
         URL url = (URL) _relativeLocations.get(uri);
         if (url == null)
         {
