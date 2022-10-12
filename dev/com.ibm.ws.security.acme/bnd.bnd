@@ -17,6 +17,7 @@
 
 bVersion=1.0
 
+Multi-Release: true
 
 bSymbolicName=com.ibm.ws.security.acme
 
@@ -48,9 +49,9 @@ Include-Resource: \
     OSGI-INF=resources/OSGI-INF,\
     @${repo;org.shredzone.acme4j:acme4j-client;2.7;EXACT},\
     @${repo;org.shredzone.acme4j:acme4j-utils;2.7;EXACT},\
-    @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT},\
-    @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT},\
-    @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT},\
+    @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT}!/!META-INF/versions/9/module-info.class,\
+    @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT}!/!META-INF/versions/9/module-info.class,\
+    @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT}!/!META-INF/versions/9/module-info.class,\
     @${repo;org.bitbucket.b_c:jose4j;0.6.5;EXACT},\
     org=${bin}/org
 

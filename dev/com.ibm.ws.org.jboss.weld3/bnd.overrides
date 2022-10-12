@@ -1,6 +1,8 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
+Multi-Release: true
+
 Bundle-Name: weld OSGi bundle
 Bundle-SymbolicName: com.ibm.ws.org.jboss.weld3
 Bundle-Description: Weld OSGi Bundle, version 3.1.8.Final

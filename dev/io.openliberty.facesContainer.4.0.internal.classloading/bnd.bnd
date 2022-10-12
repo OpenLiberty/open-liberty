@@ -18,6 +18,8 @@ Bundle-SymbolicName: io.openliberty.facesContainer.4.0.internal.classloading
 javac.source: 11
 javac.target: 11
 
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF
 

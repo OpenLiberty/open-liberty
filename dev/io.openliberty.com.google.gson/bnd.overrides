@@ -5,6 +5,8 @@ Bundle-Name: google.collection
 Bundle-Description: google.collection; version=2.9.0
 Bundle-SymbolicName: io.openliberty.com.google.gson
 
+-removeheaders.mr=Multi-Release
+
 WS-TraceGroup: GSON
 
 Export-Package: \
