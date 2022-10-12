@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2015 IBM Corporation and others.
+ * Copyright (c) 2003, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ import com.ibm.ws.tx.embeddable.RecoverableXAResourceAccessor;
  * interface for all runtime environments (traditional, liberty, embeddable) and
  * is used by JCA component/resource adapters to create/release a MessageEndpoint
  * proxy object for JCA MessageEndpoint Inflows. <p>
- * 
+ *
  * Internally, this object is also a home object for a MessageDrivenBean. In the
  * EJB specification, a MDB does not have a home object, however, it is convenient
  * for current ejb container implementation to make this object a home so that it
@@ -196,7 +196,7 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
      * Default constructor for a BaseMessageEndpointFactory object.
      * The initialize method must be called to initialize for a
      * specific MDB.
-     * 
+     *
      * @throws RemoteException
      */
     public BaseMessageEndpointFactory() throws RemoteException
@@ -220,15 +220,15 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
     /**
      * This is used to create a message endpoint. The message endpoint is expected
      * to implement the correct message listener type.
-     * 
+     *
      * @param xaResource - is an optional XAResource instance used by resource adapter
      *            to get transaction notifications when the message delivery is transacted.
-     * 
+     *
      * @return a message endpoint proxy instance.
-     * 
+     *
      * @throws UnavailableException - is thrown to indicate a transient failure in creating
      *             a message endpoint. Subsequent attempts to create a message endpoint might succeed.
-     * 
+     *
      * @see javax.resource.spi.endpoint.MessageEndpointFactory#createEndpoint
      */
     @Override
@@ -240,23 +240,23 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
     /**
      * This is used to create a message endpoint. The message endpoint is expected
      * to implement the correct message listener type.
-     * 
+     *
      * @param xaResource - is an optional XAResource instance used by resource adapter
      *            to get transaction notifications when the message delivery is transacted.
-     * 
+     *
      * @param timeout is an optional timeout value that when greater than zero indicates the
      *            maximum time to wait for resources to become available. If time limit is
      *            exceeded, a RetryUnavailableException is thrown if the condition is temporary.
      *            If not temporary, an UnavailableException is thrown.
-     * 
+     *
      * @return a message endpoint proxy instance.
-     * 
+     *
      * @throws RetryableUnavailableException - is thrown to indicate a transient failure in creating
      *             a message endpoint. Subsequent attempts to create a message endpoint might succeed.
-     * 
+     *
      * @throws UnavailableException - is thrown to indicate a permanent failure in creating
      *             a message endpoint. Subsequent attempts to create a message endpoint will not succeed.
-     * 
+     *
      * @see javax.resource.spi.endpoint.MessageEndpointFactory#createEndpoint
      */
     // f743-8212 added entire method.
@@ -588,15 +588,15 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
      * will be transacted or not. The message delivery preferences must not
      * change during the lifetime of a message endpoint. This information is
      * only a hint and may be useful to perform optimizations on message delivery.
-     * 
+     *
      * @param method - description of a target method. This information about
      *            the intended target method allows an application server to
      *            find out whether the target method call will be transacted or not.
-     * 
+     *
      * @return true, if message endpoint requires transacted message delivery.
-     * 
+     *
      * @throws NoSuchMethodException if Method not found for this MessageEndpoint.
-     * 
+     *
      */
     @Override
     public boolean isDeliveryTransacted(Method method) throws NoSuchMethodException
@@ -688,9 +688,9 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
 
     /**
      * Get the EJBMethodInfo object associated with a specified Method object.
-     * 
+     *
      * @param method - the target of this request.
-     * 
+     *
      * @return EJBMethodInfo for target of this request. Note, a null reference
      *         is returned if Method is not a method of this EJB component.
      */
@@ -719,11 +719,11 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
     /**
      * Extends EJSHome.initialize method with processing
      * specific to a MessageEndpointFactory for a specified MDB.
-     * 
+     *
      * @param ejbContainer - the EJSContainer object that owns this factory.
      * @param id - the BeanId for this factory object (eg home bean ID).
      * @param bmd - the BeanMetaData for the MDB.
-     * 
+     *
      * @throws RemoteException - thrown if a failure occurs during initialization.
      */
     @Override
@@ -769,6 +769,27 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
     }
 
     /**
+     * Disable this message endpoint factory instance and free all resources.
+     */
+    @Override
+    public synchronized void destroy()
+    {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "MEF.destroy for bean " + j2eeName);
+
+        if (ivInvocationHandlerPool != null) {
+            ivInvocationHandlerPool.destroy();
+            ivInvocationHandlerPool = null;
+        }
+
+        super.destroy();
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "MEF.destroy");
+    }
+
+    /**
      * Sets the recovery ID assigned to this instance of a WsMessageEndpointFactory
      * object. The recovery ID is used so that a WsMessageEndpointFactory object is
      * able to enlist the XAResource passed to it on the createEndpoint method call
@@ -791,7 +812,7 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
      * post-condition
      * <dd>
      * </dl>
-     * 
+     *
      * @throws ResourceException if this method was previously called for
      *             this MessageEndpointFactory instance.
      */
@@ -827,7 +848,7 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
      * <p>
      * This method indicates that the MessageEndpointFactory should NOT enlist
      * an XAResource in a transaction.
-     * 
+     *
      * @param reason This is the reason code for why the MessageEndpointFactory
      *            does not need to enlist. Valid reason codes are:
      *            <p>
@@ -840,7 +861,7 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
      *            MessageEndpointFactory should throw an exception and log an appropriate
      *            message if the RA attempts to use an XAResource in a transaction. This
      *            can't be allowed since recovery setup has failed.
-     * 
+     *
      */
     public void setTranEnlistmentNotNeeded(int reason)
     {
@@ -867,7 +888,7 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
      * to an appropriate UnavailableException method to throw if a RA had called createEndpoint
      * and passed a non-null XAResource object to it. Also, an appropriate error message is
      * written to the activity log file.
-     * 
+     *
      */
     private UnavailableException mapAndLogTranEnlistmentNotNeeded()
     {
@@ -932,7 +953,7 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
      * Return MessageEndpoint proxy to the pool managed by this factory. This
      * method is expected to be called as a result of the resource adapter
      * calling the release method on the MessageEndpoint proxy.
-     * 
+     *
      * @param endpoint is the MessageEndpointHandler being returned to free pool.
      * @param reuse must be set to true if you want MessageEndpointHandler to
      *            be returned to free pool for future reuse. If false, the MessageEndpointHandler
@@ -1012,7 +1033,7 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
 
     /**
      * Returns true if the endpoint is active. <p>
-     * 
+     *
      * Provides a mechanism to check if the endpoint has been deactivated
      * out from under the MessageEndpointFactory. <p>
      */
@@ -1050,9 +1071,9 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
      * is started). Thus, we can change the state of this MEF to
      * the ACTIVE_STATE and notify any threads that were blocked
      * in createEndpoint method waiting for MEF to become active.
-     * 
+     *
      * @param appName is the name of the application that was started.
-     * 
+     *
      * @see EJBApplicationEventListener#applicationStarted(String)
      * @see #createEndpoint(XAResource)
      */
@@ -1084,9 +1105,9 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
      * application event listener that it is stopping an application.
      * Runtime framework does NOT begin to stop each module of the application
      * until after each application event listener returns.
-     * 
+     *
      * @param appName is the name of the application being stopped.
-     * 
+     *
      * @see EJBApplicationEventListener#applicationStopping(String)
      */
     // d450478 - added entire method
@@ -1208,7 +1229,7 @@ public abstract class BaseMessageEndpointFactory extends EJSHome
      * use this to introspect the message endpoint class to discover annotations, interfaces implemented, etc.
      * and modify the behavior of the resource adapter accordingly. A return value of null indicates that the
      * MessageEndpoint doesn't implement the business methods of underlying message endpoint class.
-     * 
+     *
      */
     // FYI: if the methods did have signatures that depended on new JCA 1.7 API, we would have to use
     // subclasses with factories, which would be much more complicated
