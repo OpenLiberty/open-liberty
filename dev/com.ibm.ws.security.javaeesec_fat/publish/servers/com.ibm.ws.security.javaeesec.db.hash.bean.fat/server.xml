@@ -32,16 +32,16 @@
 		<classloader commonLibraryRef="DerbyLib,CustomHashLibBean" />
 	</application>
 	
-	<dataSource id="DefaultDataSource" fat.modify="true">
+	<dataSource id="DefaultDataSource" >
     	<jdbcDriver libraryRef="DerbyLib"/>
     	<properties.derby.embedded databaseName="memory:hash" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
 
-    <library id="DerbyLib" fat.modify="true">
+    <library id="DerbyLib" >
     	<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
     </library>
     
-    <library id="CustomHashLibBean" fat.modify="true">
+    <library id="CustomHashLibBean" >
     	<fileset dir="${server.config.dir}" includes="CustomPasswordHashBean.jar"/>
     </library>
 

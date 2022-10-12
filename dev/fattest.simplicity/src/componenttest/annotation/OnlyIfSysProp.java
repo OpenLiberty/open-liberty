@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for expressing tests should be skipped if a certain system property is set.
+ * Annotation for expressing tests should be run only if a certain system property is set.
  * An array of string values may be supplied. If multiple values are supplied, tests will
- * be skipped if ANY of the conditions are satisfied (logical OR).
+ * be run only if ALL of the conditions are satisfied (logical AND).
  * <p>
  * If a string is specified with [key]=[value] format, System.getProperty(key) must return
  * a string value that equalsIgnoreCase the [value].
@@ -30,39 +30,38 @@ import java.lang.annotation.Target;
  *
  * <pre>
  * <code>
- * // Skipped if the system property "is.sle" is non-null
+ * // Run only if the system property "is.sle" is non-null
  * {@literal @}Test
- * {@literal @}SkipIfSysProp("is.sle")
+ * {@literal @}OnlyIfSysProp("is.sle")
  * public void testSomething() {}
  *
- * // Skipped if the system property "is.sle" has a value of "true"
+ * // Run only if the system property "is.sle" has a value of "true"
  * {@literal @}Test
- * {@literal @}SkipIfSysProp("is.sle=true")
+ * {@literal @}OnlyIfSysProp("is.sle=true")
  * public void testSomething() {}
  *
- * // Skipped if the system property "favorite.color" has a value of "blue"
+ * // Run only if the system property "favorite.color" has a value of "blue"
  * {@literal @}Test
- * {@literal @}SkipIfSysProp("favorite.color=blue")
+ * {@literal @}OnlyIfSysProp("favorite.color=blue")
  * public void testSomething() {}
  *
- * // Skipped if the system property "is.monday" is non-null
- * // OR the system property "is.raining" has a value of "false"
+ * // Run if the system property "is.monday" is non-null
+ * // AND the system property "is.raining" has a value of "false"
  * {@literal @}Test
- * {@literal @}SkipIfSysProp({"is.monday", "is.raining=false"})
+ * {@literal @}OnlyIfSysProp({"is.monday", "is.raining=false"})
  * public void testSomething() {}
  * </code>
  * </pre>
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SkipIfSysProp {
+public @interface OnlyIfSysProp {
 
     public static final String IS_SLE = "is.sle=true";
 
     /**
-     * Skip tests if any database was configured.
-     * This is useful if you want to exclude tests
-     * from DB Rotation.
+     * Run test only if a different database is configured
+     * besides the default.
      */
     public static final String DB_Not_Default = "fat.bucket.db.type";
 

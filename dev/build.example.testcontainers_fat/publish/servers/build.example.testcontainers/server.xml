@@ -28,10 +28,10 @@
 	  <properties.postgresql URL="${env.PS_URL}" user="${env.PS_USER}" password="${env.PS_PASSWORD}"/>
 	</dataSource>
     
-    <application location="containerApp.war" />
+    <application location="app.war" />
     
     <!-- Depending on the container, you might need certain java permissions -->
     <javaPermission codeBase="${shared.resource.dir}/jdbc/postgresql.jar" className="java.security.AllPermission"/>
-    <javaPermission codeBase="${server.config.dir}/apps/containerApp.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}/apps/app.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
 
 </server>

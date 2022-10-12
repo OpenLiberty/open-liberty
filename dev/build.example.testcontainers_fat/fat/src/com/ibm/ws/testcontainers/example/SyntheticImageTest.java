@@ -47,7 +47,7 @@ import componenttest.custom.junit.runner.Mode;
 @RunWith(FATRunner.class)
 public class SyntheticImageTest {
 
-//    public static final String APP_NAME = "containerApp";
+//    public static final String APP_NAME = "app";
 //
 //    @Server("build.example.testcontainers")
 //    @TestServlet(servlet = ContainersTestServlet.class, contextRoot = APP_NAME)

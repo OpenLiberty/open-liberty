@@ -33,7 +33,7 @@
     <dataSource id="tranlogDataSource" jndiName="jdbc/tranlogDataSource" transactional="false" fat.modify="true">
       <jdbcDriver libraryRef="AnonymousJDBCLib" />
       <!-- Properties modified by fat for database rotation -->
-      <properties  createDatabase="create" databaseName="${shared.resource.dir}/data/tranlogdb"/>
+      <properties  createDatabase="create" databaseName="${shared.resource.dir}/data/tranlogdb" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
