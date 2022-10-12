@@ -117,13 +117,7 @@ io.opentelemetry:opentelemetry-api:1.18.0
 io.opentelemetry:opentelemetry-context:1.18.0
 io.opentelemetry:opentelemetry-exporter-common:1.18.0
 io.opentelemetry:opentelemetry-exporter-jaeger:1.18.0
-io.opentelemetry:opentelemetry-exporter-logging:1.18.0
 io.opentelemetry:opentelemetry-exporter-otlp-common:1.18.0
-io.opentelemetry:opentelemetry-exporter-otlp-http-logs:1.18.0-alpha
-io.opentelemetry:opentelemetry-exporter-otlp-http-metrics:1.18.0
-io.opentelemetry:opentelemetry-exporter-otlp-logs:1.18.0-alpha
-io.opentelemetry:opentelemetry-exporter-otlp-metrics:1.18.0
-io.opentelemetry:opentelemetry-exporter-otlp-trace:1.18.0
 io.opentelemetry:opentelemetry-exporter-otlp:1.18.0
 io.opentelemetry:opentelemetry-exporter-zipkin:1.18.0
 io.opentelemetry:opentelemetry-extension-annotations:1.18.0
