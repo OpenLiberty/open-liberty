@@ -54,7 +54,6 @@ src: src, resources
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.jakarta.authentication.3.0;version=latest,\
 	io.openliberty.jakarta.cdi.4.0,\
-	io.openliberty.jakarta.jsonp.2.1,\
 	io.openliberty.jakarta.security.3.0,\
 	io.openliberty.jakarta.servlet.6.0,\
 	io.openliberty.security.jakartasec.2.0.internal,\

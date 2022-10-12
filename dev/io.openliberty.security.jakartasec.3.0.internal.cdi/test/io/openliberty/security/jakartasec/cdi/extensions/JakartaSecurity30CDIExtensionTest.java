@@ -94,7 +94,7 @@ public class JakartaSecurity30CDIExtensionTest {
     public void testAfterBeanDiscovery() {
         withAnnotatedClassEvent();
         cdiExtensionAddsAuthenticationMechanism();
-        cdiExtensionAddsIdentityStoreBean();
+        cdiExtensionAddsBeans();
 
         jakartaSecurity30CDIExtension.processAnnotatedOidc(event, beanManager);
         jakartaSecurity30CDIExtension.afterBeanDiscovery(afterBeanDiscovery, beanManager);
@@ -126,11 +126,12 @@ public class JakartaSecurity30CDIExtensionTest {
         });
     }
 
-    private void cdiExtensionAddsIdentityStoreBean() {
+    private void cdiExtensionAddsBeans() {
         afterBeanDiscovery = mockery.mock(AfterBeanDiscovery.class);
         mockery.checking(new Expectations() {
             {
                 one(afterBeanDiscovery).addBean(with(aNonNull(OidcIdentityStoreBean.class)));
+                one(afterBeanDiscovery).addBean(with(aNonNull(OpenIdContextBean.class)));
             }
         });
     }
