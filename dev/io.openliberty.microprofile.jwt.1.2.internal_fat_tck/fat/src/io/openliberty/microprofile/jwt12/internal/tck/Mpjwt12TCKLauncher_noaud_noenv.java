@@ -15,9 +15,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKUtils;
@@ -26,7 +26,6 @@ import componenttest.topology.utils.tck.TCKUtils;
  * This is a test class that runs a whole Maven TCK as one test FAT test. *
  */
 //@Mode(TestMode.QUARANTINE)
-@MaximumJavaLevel(javaLevel = 18)
 @RunWith(FATRunner.class)
 public class Mpjwt12TCKLauncher_noaud_noenv {
 
@@ -50,7 +49,7 @@ public class Mpjwt12TCKLauncher_noaud_noenv {
     @Test
     //@AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchMpjwt12TCK_noaud_noenv() throws Exception {
-        String suiteName = "tck_suite_noaud_noenv.xml";
+        String suiteName = JavaInfo.JAVA_VERSION < 19 ? "tck_suite_noaud_noenv.xml" : "tck_suite_noaud_noenv_java19.xml";
         String bucketName = "io.openliberty.microprofile.jwt.1.2.internal_fat_tck";
         String testName = this.getClass() + ":launchMpjwt12TCK_noaud_noenv";
         Type type = Type.MICROPROFILE;
