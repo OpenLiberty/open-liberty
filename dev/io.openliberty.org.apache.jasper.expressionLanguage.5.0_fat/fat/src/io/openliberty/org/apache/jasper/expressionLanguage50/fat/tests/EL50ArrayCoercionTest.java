@@ -24,8 +24,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Tests to ensure jakarta.el.LambdaExpression can be coerced to a functional interface, such as java.util.function.Predicate
- * https://github.com/jakartaee/expression-language/issues/45
+ * Tests to ensure arrays and contents can be coerced to a type
+ * https://github.com/jakartaee/expression-language/issues/172
  */
 @RunWith(FATRunner.class)
 public class EL50ArrayCoercionTest extends FATServletClient {

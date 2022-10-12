@@ -20,12 +20,7 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import jakarta.el.BeanELResolver;
-import jakarta.el.ELContext;
-import jakarta.el.ELManager;
-import jakarta.el.StandardELContext;
 import jakarta.servlet.annotation.WebServlet;
-import java.util.function.Predicate;
 import java.util.Arrays;
 
 import jakarta.el.ELException;
@@ -48,6 +43,12 @@ public class EL50ArrayCoercionServlet extends FATServlet {
         elp.defineBean("arrayBean", new ArrayBean());
     }
 
+    /**
+     * 
+     * Expression Language 5.0 in Jakarta EE10 If `A` is assignable to an array of type `T`, coerce quietly.
+     *
+     * @throws Exception
+     */
     @Test
     public void testSimpleArrayCoercion() throws Exception {
         // Simple array coercion test
@@ -57,7 +58,14 @@ public class EL50ArrayCoercionServlet extends FATServlet {
         assertArrayEquals("The expression did not evaluate to: " + Arrays.toString(expectedResult) + " but was: " + Arrays.toString(result), expectedResult, result);
     }
 
+    /**
+     * 
+     * Expression Language 5.0 in Jakarta EE10 whenever an array is expected but not received an error is thrown.
+     *
+     * @throws Exception
+     */
     @Test
+    @Mode(TestMode.FULL)
     public void testNoArrayCoercion() throws Exception {
         // Array coercion attempt with an invalid parameter
         int[] result = null;
@@ -70,6 +78,12 @@ public class EL50ArrayCoercionServlet extends FATServlet {
         assertEquals("The expression did not throw expected ELException. Got result: " + Arrays.toString(result), true, exceptionCaught);
     }
 
+    /**
+     * 
+     * Expression Language 5.0 in Jakarta EE10 whenever an array is coerced if the array is null then null is expected.
+     *
+     * @throws Exception
+     */
     @Test
     public void testNullArrayCoercion() throws Exception {
         // Array coercion passing a null value which should return null
@@ -77,6 +91,12 @@ public class EL50ArrayCoercionServlet extends FATServlet {
         assertNull("The expression did not evaluate to null but was: " + Arrays.toString(result), result);
     }
 
+    /**
+     * 
+     * Expression Language 5.0 in Jakarta EE10 whenever an array is coerced it goes element by element coercing them to the expected type.
+     *
+     * @throws Exception
+     */
     @Test
     public void testOtherTypesArrayCoercion() throws Exception {
         // Array coercion where each element should coerce to an int value
@@ -86,9 +106,16 @@ public class EL50ArrayCoercionServlet extends FATServlet {
         assertArrayEquals("The expression did not evaluate to: " +  Arrays.toString(expectedResult) + " but was: " + Arrays.toString(result), expectedResult, result);
     }
 
+    /**
+     * 
+     * Expression Language 5.0 in Jakarta EE10 whenever an array is coerced it goes element by element coercing them to the expected type.
+     * According to spec while coercing the elements to integer if A is boolean then an error is thrown.
+     *
+     * @throws Exception
+     */
     @Test
     public void testInvalidTypeArrayCoercion() throws Exception {
-        // Array coercion where an invalid value is found
+        // Array coercion where an invalid value is found (boolean false)
         int[] result = null;
         boolean exceptionCaught = false;
         try {
@@ -99,6 +126,11 @@ public class EL50ArrayCoercionServlet extends FATServlet {
         assertEquals("The expression did not throw expected ELException. Got result: " + Arrays.toString(result), true, exceptionCaught);
     }
 
+    /*
+    * (non-Javadoc)
+    *
+    * Simple bean used to test array coercion 
+    */
     public class ArrayBean {
 
         public int[] testArrayCoercion(int array[]) {
