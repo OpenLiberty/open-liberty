@@ -7,7 +7,6 @@ IBM-App-ForceRestart: install, \
 IBM-ShortName: microProfile-6.0
 Subsystem-Name: MicroProfile 6.0
 -features=\
-  io.openliberty.noShip-1.0, \
   io.openliberty.cdi-4.0, \
   io.openliberty.jsonb-3.0, \
   io.openliberty.jsonp-2.1, \
@@ -23,5 +22,5 @@ Subsystem-Name: MicroProfile 6.0
   io.openliberty.mpMetrics-5.0, \
   io.openliberty.mpRestClient-3.0, \
   io.openliberty.mpTelemetry-1.0
-kind=noship
-edition=full
+kind=beta
+edition=core
