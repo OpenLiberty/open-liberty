@@ -39,6 +39,6 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                                              .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                                             .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxwsTest-2.2").addFeature("xmlWSTest-3.0").fullFATOnly())
+                                             .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxwsTest-2.2").addFeature("xmlWSTest-3.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                                              .andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("jaxwsTest-2.2").removeFeature("xmlWSTest-3.0").addFeature("xmlWSTest-4.0"));
 }
