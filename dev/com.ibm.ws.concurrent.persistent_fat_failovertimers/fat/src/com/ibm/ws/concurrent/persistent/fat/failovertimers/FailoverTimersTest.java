@@ -328,6 +328,7 @@ public class FailoverTimersTest extends FATServletClient {
             newConfig.getApplications().removeBy("location", "failoverTimersApp.war");
             serverOnWhichToStopApp.setMarkToEndOfLog();
             serverOnWhichToStopApp.updateServerConfiguration(newConfig);
+            serverOnWhichToStopApp.waitForStringInTraceUsingMark("CWWKC1556W"); // CWWKC1556W: Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
             try {
                 String nameOfServerForFailover = serverOnWhichToStopApp == serverA ? SERVER_B_NAME : SERVER_A_NAME;
                 LibertyServer serverForFailover = serverOnWhichToStopApp == serverA ? serverB : serverA;
