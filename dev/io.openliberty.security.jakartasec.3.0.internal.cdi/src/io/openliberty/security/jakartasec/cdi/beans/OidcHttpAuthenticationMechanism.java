@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.cdi.beans;
 
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import java.util.Set;
 import javax.security.auth.Subject;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.cdi.beans.Utils;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
@@ -124,7 +127,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         } else if (isCallbackRequest(request)) {
             status = processCallback(client, request, response, httpMessageContext);
         } else if (alreadyAuthenticated) {
-            status = processExpiredTokenResult(processExpiredToken(client, request, response, httpMessageContext), httpMessageContext);
+            status = processExpiredTokenResult(processExpiredToken(client, request, response), httpMessageContext);
         }
 
         return status;
@@ -294,8 +297,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         return status;
     }
 
-    private ProviderAuthenticationResult processExpiredToken(Client client, HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
-        OpenIdContext openIdContext = getOpenIdContextFromSubject(httpMessageContext);
+    private ProviderAuthenticationResult processExpiredToken(Client client, HttpServletRequest request, HttpServletResponse response) {
+        OpenIdContext openIdContext = getOpenIdContextFromSubject();
 
         if (openIdContext == null) {
             // TODO add debug. should not be here.
@@ -310,14 +313,33 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
     }
 
-    private OpenIdContext getOpenIdContextFromSubject(HttpMessageContext httpMessageContext) {
-        Subject clientSubject = httpMessageContext.getClientSubject();
-        Set<OpenIdContext> creds = clientSubject.getPrivateCredentials(OpenIdContext.class);
+    private OpenIdContext getOpenIdContextFromSubject() {
+        Subject sessionSubject = getSessionSubject();
+        if (sessionSubject == null) {
+            return null;
+        }
+        Set<OpenIdContext> creds = sessionSubject.getPrivateCredentials(OpenIdContext.class);
         for (OpenIdContext openIdContext : creds) {
             // there should only be one OpenIdContext in the clientSubject.getPrivateCredentials(OpenIdContext.class) set.
             return openIdContext;
         }
         return null;
+    }
+
+    @FFDCIgnore(PrivilegedActionException.class)
+    private Subject getSessionSubject() {
+        Subject sessionSubject = null;
+        try {
+            sessionSubject = (Subject) java.security.AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    return new SubjectManager().getCallerSubject();
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+
+        }
+        return sessionSubject;
     }
 
     private String getRefreshToken(OpenIdContext openIdContext) {
