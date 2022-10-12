@@ -7,18 +7,26 @@ assignees: ReeceNana
 
 ---
 
-The information you provide here will be included in the Open Liberty beta blog post ([example](https://openliberty.io/blog/2020/08/05/jakarta-grpc-beta-20009.html)), which will be published on [openliberty.io/blog/](https://www.openliberty.io/blog/), and potentially elsewhere, to promote this beta feature/function of Open Liberty. For this post to be included in the beta issue please make sure that this is completed by the end of Friday following the GM (Wednesday). 
+The information you provide here will be included in the Open Liberty beta blog post ([example](https://openliberty.io/blog/2020/08/05/jakarta-grpc-beta-20009.html)), which will be published on [openliberty.io/blog/](https://www.openliberty.io/blog/), and potentially elsewhere, to promote this beta feature/function of Open Liberty. For this post to be included in the beta issue please make sure that this is completed by the end of Friday following the GM (Tuesday). The beta and release blogs are created using automation and rely on you following the template's structure. **DO NOT REMOVE/ALTER THE `<GHA>` TAGS THROUGHOUT THIS TEMPLATE.**
 
-Please provide the following information the week before the GA/beta date (to allow for review and publishing):
-
-1. Which Liberty feature(s) does your update relate to?
+Please provide the following information:
+&#8203;<GHA-BLOG-RELATED-FEATURES>
+1. Which Liberty feature(s) does your update relate to? 
     
-   Human-readable name (eg WebSockets feature):
+    Human-readable name (eg WebSockets feature): 
    
-   Short feature name (eg websockets-1.0): 
+    Short feature name (eg websockets-1.0):  
+   
+   
+    </GHA-BLOG-RELATED-FEATURES>
 
-2. Who is the target persona? Who do you expect to use the update? eg application developer, operations.
-
+    <GHA-BLOG-TARGET-PERSONA>
+2. Who is the target persona? Who do you expect to use the update? eg application developer, operations.  
+    
+    
+    </GHA-BLOG-TARGET-PERSONA>
+   
+    <GHA-BLOG-SUMMARY>
 3. Provide a summary of the update, including the following points:
    
    - A sentence or two that introduces the update to someone new to the general technology/concept.
@@ -27,7 +35,10 @@ Please provide the following information the week before the GA/beta date (to al
    
    - Briefly explain how to make your update work. Include screenshots, diagrams, and/or code snippets, and provide a `server.xml` snippet.
    
-   - Where can they find out more about this specific update (eg Open Liberty docs, Javadoc) and/or the wider technology?
+   - Where can they find out more about this specific update (eg Open Liberty docs, Javadoc) and/or the wider technology?  
+    
+    
+    </GHA-BLOG-SUMMARY>
 
 ## What happens next?
 - Add the label for the beta you're targeting: `target:YY00X-beta`.
