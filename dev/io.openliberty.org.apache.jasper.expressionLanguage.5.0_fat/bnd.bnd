@@ -15,7 +15,8 @@ src: \
     fat/src,\
     test-applications/EL50DefaultMethodBeanELResolverTest.war/src,\
     test-applications/EL50MethodReferenceTest.war/src,\
-    test-applications/EL50Coercion.war/src
+    test-applications/EL50Coercion.war/src,\
+    test-applications/EL50BasicTests.war/src
 
 fat.project: true
 
