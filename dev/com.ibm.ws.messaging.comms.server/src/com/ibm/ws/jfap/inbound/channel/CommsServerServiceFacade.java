@@ -20,6 +20,7 @@ import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE
 import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.ComponentContext;
@@ -91,21 +92,25 @@ public class CommsServerServiceFacade implements Singleton {
             CHFWBundle chfw,
             @Reference(name = "tcpOptions", target = "(id=unbound)") // target to be overwritten by metatype
             ChannelConfiguration tcpOptions,
-            @Reference(name = "sslFactoryProvider", target = "(type=SSLChannel)", cardinality = OPTIONAL)
-            ChannelFactoryProvider sslFactoryProvider,
             @Reference(name = "sslOptions", target = "(id=unbound)", cardinality = OPTIONAL) // target to be overwritten by metatype
             ChannelConfiguration sslOptions,
+            /* We have preserved the original behaviour of using defaultSSLOptions 
+             * If we want to use ${defaultSSLVar}, use (id=unbound) here and set it in metatype */
+            @Reference(name="defaultSSLOptions", target="(id=defaultSSLOptions)", cardinality=OPTIONAL)
+            ChannelConfiguration defaultSSLOptions,
+            @Reference(name = "sslFactoryProvider", target = "(type=SSLChannel)", cardinality = OPTIONAL)
+            ChannelFactoryProvider sslFactoryProvider,
             @Reference(name = "eventEngine")
             EventEngine eventEngine,
             Map<String, Object> properties) {
         final String methodName = "<init>";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, methodName, new Object[]{jsAdminService, chfw, tcpOptions, sslFactoryProvider, eventEngine, properties});
+            SibTr.entry(this, tc, methodName, new Object[]{jsAdminService, chfw, tcpOptions, sslOptions, defaultSSLOptions, sslFactoryProvider, eventEngine, properties});
 
         this.jsAdminService = jsAdminService;
         this.chfw = chfw;
         this.tcpOptions = tcpOptions;
-        this.sslOptions = sslOptions; // can be null
+        this.sslOptions = Optional.ofNullable(sslOptions).orElse(defaultSSLOptions);
         this.eventEngine = eventEngine;
         
         Object cid = properties.get(ComponentConstants.COMPONENT_ID);
