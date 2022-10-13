@@ -236,7 +236,7 @@ public class FailoverTestLease extends FATServletClient {
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
         List<String> recoveredAlready = retriableCloudServer.findStringsInLogs("Have recovered from SQLException when deleting server lease");
         // if not yet recovered, then wait for message
-        if (recoveredAlready == null || !recoveredAlready.isEmpty()) {
+        if (recoveredAlready == null || recoveredAlready.isEmpty()) {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when deleting server lease"));
         }
 
@@ -276,7 +276,7 @@ public class FailoverTestLease extends FATServletClient {
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
         List<String> recoveredAlready = retriableCloudServer.findStringsInLogs("Have recovered from SQLException for server with recovery identity");
         // if not yet recovered, then wait for message
-        if (recoveredAlready == null || !recoveredAlready.isEmpty()) {
+        if (recoveredAlready == null || recoveredAlready.isEmpty()) {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException for server with recovery identity"));
         }
 
@@ -316,7 +316,7 @@ public class FailoverTestLease extends FATServletClient {
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
         List<String> recoveredAlready = retriableCloudServer.findStringsInLogs("Have recovered from SQLException when retrieving server leases");
         // if not yet recovered, then wait for message
-        if (recoveredAlready == null || !recoveredAlready.isEmpty()) {
+        if (recoveredAlready == null || recoveredAlready.isEmpty()) {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when retrieving server leases"));
         }
 
