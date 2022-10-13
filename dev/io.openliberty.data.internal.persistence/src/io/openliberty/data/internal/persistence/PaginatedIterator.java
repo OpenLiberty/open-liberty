@@ -10,14 +10,14 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
+import jakarta.data.DataException;
 import jakarta.data.repository.Pageable;
-import jakarta.data.repository.Param;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -27,38 +27,26 @@ public class PaginatedIterator<T> implements Iterator<T> {
     private final Object[] args;
     private int index;
     private Boolean hasNext;
-    private final Method method;
-    private final int numParams; // can differ from args.length due to Consumer/Pagination/Sort/Sorts parameters
     private List<T> page;
     private Pageable pagination;
     private final QueryInfo queryInfo;
 
-    PaginatedIterator(QueryInfo queryInfo, Pageable pagination,
-                      Method method, int numParams, Object[] args) {
+    PaginatedIterator(QueryInfo queryInfo, Pageable pagination, Object[] args) {
         this.queryInfo = queryInfo;
         this.pagination = pagination == null ? Pageable.of(1, 100) : pagination;
-        this.method = method;
-        this.numParams = numParams;
         this.args = args;
 
         getPage();
     }
 
+    @FFDCIgnore(Exception.class)
     private void getPage() {
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
-            if (args != null) {
-                Parameter[] params = method.getParameters();
-                for (int i = 0; i < numParams; i++) {
-                    Param param = params[i].getAnnotation(Param.class);
-                    if (param == null)
-                        query.setParameter(i + 1, args[i]);
-                    else // named parameter
-                        query.setParameter(param.value(), args[i]);
-                }
-            }
+            queryInfo.setParameters(query, args);
+
             // TODO possible overflow with both of these.
             long maxPageSize = pagination.getSize();
             query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
@@ -68,6 +56,8 @@ public class PaginatedIterator<T> implements Iterator<T> {
             page = query.getResultList();
             index = -1;
             hasNext = !page.isEmpty();
+        } catch (Exception x) {
+            throw new DataException(x);
         } finally {
             em.close();
         }
