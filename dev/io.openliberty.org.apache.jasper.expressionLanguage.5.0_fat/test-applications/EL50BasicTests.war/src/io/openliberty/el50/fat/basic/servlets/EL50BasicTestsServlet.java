@@ -49,14 +49,15 @@ public class EL50BasicTestsServlet extends FATServlet {
      * 
      * Expression Language 5.0 in Jakarta EE10 added generics to methods in multiple classes https://github.com/jakartaee/expression-language/issues/157
      * Classes with changes we tests are ELProcessor, ExpressionFactory, ELContext, ValueExpression, ELResolver (returns null)
-     * Classes with changes we don't test or implicitly test TypeConverter(returns null), CompositeELResolver(returns null)
+     * Classes with changes we don't test TypeConverter(returns null)
+     * Classes with changes we implicitly test CompositeELResolver(returns null) since it is used by StandardELContext internally
      *
      * @throws Exception
      */
     @Test
     @Mode(TestMode.FULL)
     public void testGenerics() throws Exception {
-        // Test generics with ELProcessor uses ValueExpression.getValue under the covers that uses generics
+        // Test generics with ELProcessor uses ValueExpression.getValue internally that uses generics
         // No need to cast this to boolean like previous versions
         assertTrue("The type was expected to be true for ELProcessor but was not", elp.eval("simpleBean.getNumber() == 25"));
 
@@ -67,13 +68,13 @@ public class EL50BasicTestsServlet extends FATServlet {
         assertNotNull(result);
         assertTrue("The type was expected to be coerced to Double for ExpressionFactory but was not: " + result, result.equals(new Double(number)));
 
-        // Test generics with ELContext uses ELResolver.convertToType under the covers
+        // Test generics with ELContext uses ELResolver.convertToType internally
         ELContext elctx = new StandardELContext(ELManager.getExpressionFactory());
-        elctx.convertToType(number, java.lang.Double.class);
+        result = elctx.convertToType(number, java.lang.Double.class);
         assertNotNull(result);
         assertTrue("The type was expected to be converted to Double for ELContext but was not: " + result, result.equals(new Double(number)));
 
-        // Test generics with ValueExpression technically not necessary since it is used in the covers of elprocessor
+        // Test generics with ValueExpression technically not necessary since it is used within the internals of ELProcessor
         ValueExpression valueExp = factory.createValueExpression(number, java.lang.Double.class);
         result = valueExp.getValue(elctx);
         assertNotNull(result);
@@ -89,13 +90,13 @@ public class EL50BasicTestsServlet extends FATServlet {
 
     /**
      * 
-     * Expression Language 5.0 in Jakarta EE10 switched ELResolver getFeatureDescriptors to return a default value of null and deprecate it to remove in EL 6.0.
+     * Expression Language 5.0 in Jakarta EE10 switched ELResolver getFeatureDescriptors to return a default value of null and deprecated it to be remove in EL 6.0.
      * https://github.com/jakartaee/expression-language/issues/167
      * @throws Exception
      */
     @Test
     @Mode(TestMode.FULL)
-    public void testgetFeatureDescriptors_returnsNull() throws Exception {
+    public void testGetFeatureDescriptors_returnsNull() throws Exception {
         ELResolver resolver = new CustomELResolver();
         assertNull("The result was expected to be null for ELResolver getFeatureDescriptors but was not.",resolver.getFeatureDescriptors(new StandardELContext(ELManager.getExpressionFactory()),new Object()));
     }
