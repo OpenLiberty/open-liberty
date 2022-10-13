@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.flashevents.flash;
+package com.ibm.ws.jsf22.fat.flashevents.flash.jsf22;
 
 import java.io.Serializable;
 
