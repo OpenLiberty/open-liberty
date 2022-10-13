@@ -1482,18 +1482,24 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(10030009L, 10030008L, 10030007L, 10030006L),
                              page1
                                              .getContent()
+                                             .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
-        Page<Reservation> page2 = page1.next();
+        Page<Reservation> page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                                    page1.next(),
+                                                                    Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030005L, 10030004L, 10030003L, 10030002L),
                              page2
                                              .get()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
-        Page<Reservation> page3 = page2.next();
+        Page<Reservation> page3 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                                    page2.next(),
+                                                                    Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030001L),
                              page3
                                              .getContent()
+                                             .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
         assertEquals(null, page3.next());
@@ -1505,12 +1511,16 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
                              page2
                                              .getContent()
+                                             .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
-        page3 = page2.next();
+        page3 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                  page2.next(),
+                                                  Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030003L, 10030002L, 10030001L),
                              page3
                                              .getContent()
+                                             .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
         assertEquals(null, page3.next());
