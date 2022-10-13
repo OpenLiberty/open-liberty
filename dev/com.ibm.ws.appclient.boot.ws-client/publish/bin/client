@@ -450,7 +450,7 @@ mergeJVMOptions()
       saveIFS=$IFS
       IFS=$newline
       
-      for option in `readNativeFile "$jvmOptions" '[#-]' | tr -d '\r'`; do
+      for option in `readNativeFile "$jvmOptions" '[#-]' | sed 's/[[:space:]]*$//'`; do
         if [ -n "$option" ]; then
           case $option in
           \#*);;
