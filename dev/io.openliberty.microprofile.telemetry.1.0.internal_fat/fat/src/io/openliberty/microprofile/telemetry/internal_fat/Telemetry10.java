@@ -23,10 +23,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.BaggageServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.PatchTestApp;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.SpanCurrentServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.Telemetry10Servlet;
 
 @RunWith(FATRunner.class)
@@ -36,7 +39,11 @@ public class Telemetry10 extends FATServletClient {
     public static final String APP_NAME = "TelemetryApp";
 
     @Server(SERVER_NAME)
-    @TestServlet(servlet = Telemetry10Servlet.class, contextRoot = APP_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = Telemetry10Servlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = BaggageServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME),
+    })
     public static LibertyServer server;
 
     @BeforeClass
@@ -45,8 +52,10 @@ public class Telemetry10 extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsManifestResource(new File("publish/resources/permissions.xml"), "permissions.xml")
                         .addAsManifestResource(new File("publish/resources/META-INF/microprofile-config.properties"), "microprofile-config.properties");
-        app.addClasses(Telemetry10Servlet.class);
-        app.addClasses(PatchTestApp.class);
+        app.addClasses(Telemetry10Servlet.class,
+                       PatchTestApp.class,
+                       BaggageServlet.class,
+                       SpanCurrentServlet.class);
         ShrinkHelper.exportDropinAppToServer(server, app, deployOptions);
         server.startServer();
     }
