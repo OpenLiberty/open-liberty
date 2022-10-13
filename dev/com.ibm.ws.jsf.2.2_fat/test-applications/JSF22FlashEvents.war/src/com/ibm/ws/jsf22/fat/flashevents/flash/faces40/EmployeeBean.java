@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,21 +12,22 @@ package com.ibm.ws.jsf22.fat.flashevents.flash.faces40;
 
 import java.io.Serializable;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.FactoryFinder;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.faces.context.FlashFactory;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class EmployeeBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String firstName = null;
 
-    public EmployeeBean() {}
+    public EmployeeBean() {
+    }
 
     public String getFirstName() {
         return firstName;
@@ -38,12 +39,12 @@ public class EmployeeBean implements Serializable {
 
     public String goToPage2NoFlash() {
         //simple redirect to page2NoFlash.
-        //This method is called from indexNoFlash        
+        //This method is called from indexNoFlash
         return "page2NoFlash?faces-redirect=true";
     }
 
     public String goToPage2Flash() {
-        //getting the custom FlashFactory and Flash implementation and adding their class names to the 
+        //getting the custom FlashFactory and Flash implementation and adding their class names to the
         //Flash object which will then be displayed on page2Flash.
         //This method is called from indexFlash
         FlashFactory testFlashFactory = (FlashFactory) FactoryFinder.getFactory(FactoryFinder.FLASH_FACTORY);
@@ -56,7 +57,7 @@ public class EmployeeBean implements Serializable {
     }
 
     public String goToPage2FlashAndKeep() {
-        //getting the Flash implementation directly from the ExternalContext and adding its class name to the 
+        //getting the Flash implementation directly from the ExternalContext and adding its class name to the
         //Flash object which will then be displayed on page2FlashAndKeep.
         //This method is called from indexFlashAndKeep
         Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
