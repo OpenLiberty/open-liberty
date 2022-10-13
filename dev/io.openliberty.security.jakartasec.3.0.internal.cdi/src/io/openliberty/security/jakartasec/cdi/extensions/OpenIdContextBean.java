@@ -35,6 +35,7 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.PassivationCapable;
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.enterprise.util.TypeLiteral;
+import jakarta.json.JsonObject;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 
 public class OpenIdContextBean implements Bean<OpenIdContext>, PassivationCapable {
@@ -183,5 +184,10 @@ public class OpenIdContextBean implements Bean<OpenIdContext>, PassivationCapabl
          * TODO: Could be returning null here -- do we want to return an empty or dummy openIdContext or stay with null if not found?
          */
         return openIdContext;
+    }
+
+    // Workaround for CDI proxy dependency on jakarta.json classes.
+    private JsonObject getJsonObject() {
+        return null;
     }
 }
