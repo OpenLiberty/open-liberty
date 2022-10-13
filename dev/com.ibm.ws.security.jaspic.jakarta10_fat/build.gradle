@@ -45,156 +45,7 @@ task JASPIBase_JAR(type: Jar, dependsOn: classes) {
   from ('build/classes/java/main') { 
     include 'web/FlexibleBaseServlet*.class'
   }
-}
-
-
-/******************************************************************
- ******************************************************************
- **
- ** JASPIBasicAuthServlet.war
- **
- ******************************************************************
- ******************************************************************/
-task JASPIBasicAuthServlet_WAR(type: War, dependsOn: JASPIBase_JAR) {
-  destinationDir file("${appBuildDir}")
-  archiveName "JASPIBasicAuthServlet.war"
-  classpath = classpath.filter{ false }
-
-  from ('test-applications/JASPIBasicAuthServlet.war/resources') { 
-  	include 'META-INF/**'
-  	include 'WEB-INF/**'
-  }
-  from ('build/classes/java/main') { 
-    include 'web/JASPIBasicAuthServlet.class'
-    into 'WEB-INF/classes'
-  }
-  from ("${appBuildDir}") { 
-    include "JASPIBase.jar"
-    into 'WEB-INF/lib'
-  }
-}
-
-
-/******************************************************************
- ******************************************************************
- **
- ** JASPICallbackTestBasicAuthServlet.war
- **
- ******************************************************************
- ******************************************************************/
-task JASPICallbackTestBasicAuthServlet_WAR(type: War, dependsOn: JASPIBase_JAR) {
-  destinationDir file("${appBuildDir}")
-  archiveName "JASPICallbackTestBasicAuthServlet.war"
-  classpath = classpath.filter{ false }
-
-  from ('test-applications/JASPICallbackTestBasicAuthServlet.war/resources') { 
-  	include 'META-INF/**'
-  	include 'WEB-INF/**'
-  }
-  from ('build/classes/java/main') { 
-    include 'web/JASPICallbackTestBasicAuthServlet.class'
-    into 'WEB-INF/classes'
-  }
-  from ("${appBuildDir}") { 
-    include "JASPIBase.jar"
-    into 'WEB-INF/lib'
-  }
-}
-
-
-/******************************************************************
- ******************************************************************
- **
- ** JASPICallbackTestFormLoginServlet.war
- **
- ******************************************************************
- ******************************************************************/
-task JASPICallbackTestFormLoginServlet_WAR(type: War, dependsOn: JASPIBase_JAR) {
-  destinationDir file("${appBuildDir}")
-  archiveName "JASPICallbackTestFormLoginServlet.war"
-  classpath = classpath.filter{ false }
-
-  from ('test-applications/JASPICallbackTestFormLoginServlet.war/resources') { 
-  	include 'META-INF/**'
-  	include 'WEB-INF/**'
-  }
-  from ('test-applications/JASPICallbackTestFormLoginServlet.war/resources') { 
-  	include '*.jsp'
-  	include '*.html'
-  }
-  from ('build/classes/java/main') { 
-    include 'web/JASPICallbackTestFormLoginServlet.class'
-    into 'WEB-INF/classes'
-  }
-  from ("${appBuildDir}") { 
-    include "JASPIBase.jar"
-    into 'WEB-INF/lib'
-  }
-}
-
-
-/******************************************************************
- ******************************************************************
- **
- ** JASPIFormLoginServlet.war
- **
- ******************************************************************
- ******************************************************************/
-task JASPIFormLoginServlet_WAR(type: War, dependsOn: JASPIBase_JAR) {
-  destinationDir file("${appBuildDir}")
-  archiveName "JASPIFormLoginServlet.war"
-  classpath = classpath.filter{ false }
-
-  from ('test-applications/JASPIFormLoginServlet.war/resources') { 
-  	include 'META-INF/**'
-  	include 'WEB-INF/**'
-  }
-  from ('test-applications/JASPIFormLoginServlet.war/resources') { 
-  	include '*.jsp'
-  	include '*.html'
-  }
-  from ('build/classes/java/main') { 
-    include 'web/JASPIFormLoginServlet.class'
-    into 'WEB-INF/classes'
-  }
-  from ("${appBuildDir}") { 
-    include "JASPIBase.jar"
-    into 'WEB-INF/lib'
-  }
-}
-
-
-/******************************************************************
- ******************************************************************
- **
- ** JASPIRegistrationTestServlet.war
- **
- ******************************************************************
- ******************************************************************/
-task JASPIRegistrationTestServlet_WAR(type: War, dependsOn: JASPIBase_JAR) {
-  destinationDir file("${appBuildDir}")
-  archiveName "JASPIRegistrationTestServlet.war"
-  classpath = classpath.filter{ false }
-
-  from ('test-applications/JASPIRegistrationTestServlet.war/resources') { 
-  	include 'META-INF/**'
-  	include 'WEB-INF/**'
-  }
-  from ('build/classes/java/main') { 
-    include 'web/JASPIRegistrationTestServlet.class'
-    into 'WEB-INF/classes'
-  }
-  from ('build/classes/java/main') { 
-    include 'web/FlexibleBaseServlet*.class'
-  }
-  from ("${appBuildDir}") { 
-    include "JASPIBase.jar"
-    into 'WEB-INF/lib'
-  }
-  from (project(':com.ibm.ws.security.jaspic.test').buildDir) { 
-     include "com.ibm.ws.security.jaspic.test.jakarta.jar"  
-     into 'WEB-INF/lib' 
-  }
+  
 }
 
 /******************************************************************
@@ -235,51 +86,11 @@ task JASPIServerAuthRegistrationTestServlet_WAR(type: War, dependsOn: JASPIBase_
 /******************************************************************
  ******************************************************************
  **
- ** JASPIWrappingServlet.war
- **
- ******************************************************************
- ******************************************************************/
-task JASPIWrappingServlet_WAR(type: War, dependsOn: JASPIBase_JAR) {
-  destinationDir file("${appBuildDir}")
-  archiveName "JASPIWrappingServlet.war"
-  classpath = classpath.filter{ false }
-
-  from ('test-applications/JASPIWrappingServlet.war/resources') { 
-  	include 'META-INF/**'
-  	include 'WEB-INF/**'
-  }
-  from ('build/classes/java/main') { 
-    include 'web/AnnotatedRequestFilter.class'
-    include 'web/BaseRequestFilter.class'
-    include 'web/DeclaredRequestFilter.class'
-    include 'web/JASPIWrappingServlet.class'
-    include 'web/SCIProgrammaticRequestFilter.class'
-    include 'web/SCLProgrammaticRequestFilter.class'
-    include 'web/ServletContainerInitializerImpl.class'
-    include 'web/ServletContextListenerImpl.class'
-    into 'WEB-INF/classes'
-  }
-  from ("${appBuildDir}") { 
-    include "JASPIBase.jar"
-    into 'WEB-INF/lib'
-  }
-}
-
-
-/******************************************************************
- ******************************************************************
- **
  ** Assemble all of the custom build artifacts.
  **
  ******************************************************************
  ******************************************************************/
-assemble.dependsOn JASPIBasicAuthServlet_WAR
-assemble.dependsOn JASPICallbackTestBasicAuthServlet_WAR
-assemble.dependsOn JASPICallbackTestFormLoginServlet_WAR
-assemble.dependsOn JASPIFormLoginServlet_WAR
-assemble.dependsOn JASPIRegistrationTestServlet_WAR
 assemble.dependsOn JASPIServerAuthRegistrationTestServlet_WAR
-assemble.dependsOn JASPIWrappingServlet_WAR
 
 
 /******************************************************************
@@ -344,63 +155,11 @@ autoFVT.doLast {
      into new File(autoFvtDir, 'publish/features')
   }
   
-  /*
-   * Copy the JASPIBasicAuthServlet WAR into test servers.
-   */
-  def servers = [
-    'com.ibm.ws.security.jaspic11.fat',
-    'com.ibm.ws.security.jaspic11.fat.audit',
-    'com.ibm.ws.security.jaspic11.fat.dynamic',
-    'com.ibm.ws.security.jaspic11.fat.jacc',
-    'com.ibm.ws.security.jaspic11.fat.jacc.audit'
-  ]
-  servers.each { server ->
-    copy { 
-      from new File(project.buildDir, 'test-application')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
-      include 'JASPIBasicAuthServlet.war'
-    }
-  }
-  
-  /*
-   * Copy the JASPIFormLoginServlet WAR into test servers.
-   */
-  servers = [
-    'com.ibm.ws.security.jaspic11.fat',
-    'com.ibm.ws.security.jaspic11.fat.audit',
-    'com.ibm.ws.security.jaspic11.fat.jacc',
-    'com.ibm.ws.security.jaspic11.fat.jacc.audit'
-  ]
-  servers.each { server ->
-    copy { 
-      from new File(project.buildDir, 'test-application')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
-      include 'JASPIFormLoginServlet.war'
-    }
-  }
-  
-  /*
-   * Copy the JASPIRegistrationTestServlet WAR into test servers.
-   */
-  servers = [
-    'com.ibm.ws.security.jaspic11.fat',
-    'com.ibm.ws.security.jaspic11.fat.persistence',
-    'com.ibm.ws.security.jaspic11.fat.registration'
-  ]
-  servers.each { server ->
-    copy { 
-      from new File(project.buildDir, 'test-application')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
-      include 'JASPIRegistrationTestServlet.war'
-    }
-  }
-  
 
   /*
    * Copy the JASPIServerAuthRegistrationTestServlet WAR into test servers.
    */
-  servers = [
-    'com.ibm.ws.security.jaspic11.fat',
+  def servers = [
     'com.ibm.ws.security.jaspic11.fat.serverauthregistration'
   ]
   servers.each { server ->
@@ -408,50 +167,6 @@ autoFVT.doLast {
       from new File(project.buildDir, 'test-application')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       include 'JASPIServerAuthRegistrationTestServlet.war'
-    }
-  }
-
-  /*
-   * Copy the JASPICallbackTestBasicAuthServlet WAR into test servers.
-   */
-  servers = [
-    'com.ibm.ws.security.jaspic11.fat.callback',
-    'com.ibm.ws.security.jaspic11.fat.callback.audit'
-  ]
-  servers.each { server ->
-    copy { 
-      from new File(project.buildDir, 'test-application')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
-      include 'JASPICallbackTestBasicAuthServlet.war'
-    }
-  }
-
-  /*
-   * Copy the JASPICallbackTestFormLoginServlet WAR into test servers.
-   */
-  servers = [
-    'com.ibm.ws.security.jaspic11.fat.callback',
-    'com.ibm.ws.security.jaspic11.fat.callback.audit'
-  ]
-  servers.each { server ->
-    copy { 
-      from new File(project.buildDir, 'test-application')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
-      include 'JASPICallbackTestFormLoginServlet.war'
-    }
-  }
-
-  /*
-   * Copy the JASPIWrappingServlet WAR into test servers.
-   */
-  servers = [
-    'com.ibm.ws.security.jaspic11.fat.wrapping'
-  ]
-  servers.each { server ->
-    copy { 
-      from new File(project.buildDir, 'test-application')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
-      include 'JASPIWrappingServlet.war'
     }
   }
 }

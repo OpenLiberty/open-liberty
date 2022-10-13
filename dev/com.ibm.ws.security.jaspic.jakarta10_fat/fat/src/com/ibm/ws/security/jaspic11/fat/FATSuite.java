@@ -21,11 +21,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.jaspic11.fat.audit.JASPIBasicAuthenticationAuditTest;
-import com.ibm.ws.security.jaspic11.fat.audit.JASPICallbackBasicAuthAuditTest;
-import com.ibm.ws.security.jaspic11.fat.audit.JASPIFormLoginAuditTest;
-import com.ibm.ws.security.jaspic11.fat.audit.JASPIFormLoginJACCAuthorizationAuditTest;
-
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -36,22 +31,7 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({ 
                 AlwaysPassesTest.class,
-		JASPIServerAuthRegistrationModuleTest.class,
-                JASPIBasicAuthenticationTest.class,
-                JASPIFormLoginTest.class,
-                JASPICallbackBasicAuthTest.class,
-                JASPICallbackFormLoginTest.class,
-                JASPIServerPersistenceTest.class,
-                JASPIRuntimeRegistrationTest.class,
-                JASPIBasicAuthJACCAuthorizationTest.class,
-                JASPIFormLoginJACCAuthorizationTest.class,
-                JASPIRegisterSessionTest.class,
-                JASPIWrappingTest.class,
-                JASPIRequestDispatcherTest.class,
-                JASPIBasicAuthenticationAuditTest.class,
-                JASPIFormLoginAuditTest.class,
-                JASPIFormLoginJACCAuthorizationAuditTest.class,
-                JASPICallbackBasicAuthAuditTest.class
+		JASPIServerAuthRegistrationModuleTest.class
                 })
 
 
@@ -72,7 +52,7 @@ public class FATSuite {
     private static final Set<String> EE10_FEATURES;
     private static final String[] EE10_FEATURES_ARRAY = {
 
-                                                         "usr:jaspicUserTestFeature-2.1",
+                                                         "usr:jaspicUserTestFeature-3.0",
                                                          "usr:jaccTestProvider-2.1"
 
     };
@@ -84,8 +64,8 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new JakartaEE10Action());
-    /*
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE10Action().removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES));
+    
+    //public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE10Action().removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES));
 
-    */
+   
 }
