@@ -127,7 +127,7 @@ public class OpenIdContextBean implements Bean<OpenIdContext>, PassivationCapabl
             });
         } catch (PrivilegedActionException pae) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getOpenIdContext() Exception caught: " + pae);
+                Tr.debug(tc, "Exception caught: " + pae);
             }
         }
 
@@ -145,44 +145,36 @@ public class OpenIdContextBean implements Bean<OpenIdContext>, PassivationCapabl
                 });
             } catch (PrivilegedActionException pae) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "getPrivateCredentials() Exception caught: " + pae);
+                    Tr.debug(tc, "getPrivateCredentials(OpenIdContextImpl.class) causes Exception: " + pae);
                 }
             }
 
             if (openIdContextImplSet == null || openIdContextImplSet.isEmpty()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "getOpenIdContext() Got an authenticated subject, but did not find an OpenIdContextImpl");
+                    Tr.debug(tc, "Got an authenticated subject, but did not find an OpenIdContextImpl");
                 }
             } else {
                 if (openIdContextImplSet.size() > 1) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "getOpenIdContext() Multiple OpenIdContextImpl instances on the subject!");
+                        Tr.debug(tc, "Multiple OpenIdContextImpl instances on the subject!");
                     }
                 }
 
                 openIdContext = openIdContextImplSet.iterator().next();
             }
-        } else if (subject == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getOpenIdContext The subject is null from SubjectManager.getCallerSubject");
-            }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getOpenIdContext The subject is not null but is unauthentictaed.");
+                Tr.debug(tc, "The subject is null or unauthentictaed.");
             }
         }
 
         if (openIdContext == null) {
-            // TODO: do we need to log message or throw an exception here or just trace?
-
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getOpenIdContext() Did not find an openIdContext, returning null");
+                Tr.debug(tc, "openIdContext is null, returning an empty openIdContext");
             }
+            return new OpenIdContextImpl();
         }
 
-        /*
-         * TODO: Could be returning null here -- do we want to return an empty or dummy openIdContext or stay with null if not found?
-         */
         return openIdContext;
     }
 
