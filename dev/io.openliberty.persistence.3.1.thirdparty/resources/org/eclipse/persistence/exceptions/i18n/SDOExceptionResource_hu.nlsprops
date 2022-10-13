@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -135,7 +135,7 @@
 
 45207=Hiba t\u00f6rt\u00e9nt egy s\u00e9ma felold\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n a biztos\u00edtott SchemaResolver haszn\u00e1lat\u00e1val.
 
-45208=Nem lehet lek\u00e9pezni a(z) {0} tulajdons\u00e1got a(z) {1} t\u00edpusb\u00f3l. A DataHandler t\u00edpus\u00fa tulajdons\u00e1gok lek\u00e9pz\u00e9s\u00e9hez a javax.activation \u00e9s a javax.mail csomagok sz\u00fcks\u00e9gesek. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindk\u00e9t csomag el\u00e9rhet\u0151 az oszt\u00e1ly\u00fatvonalon.
+45208=Nem lehet lek\u00e9pezni a(z) {0} tulajdons\u00e1got a(z) {1} t\u00edpusb\u00f3l. A DataHandler t\u00edpus\u00fa tulajdons\u00e1gok lek\u00e9pz\u00e9s\u00e9hez a jakarta.activation \u00e9s a jakarta.mail csomagok sz\u00fcks\u00e9gesek. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindk\u00e9t csomag el\u00e9rhet\u0151 az oszt\u00e1ly\u00fatvonalon.
 
 45209=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt az ApplicationResolver p\u00e9ld\u00e1ny alaphelyzetbe \u00e1ll\u00edt\u00e1s\u00e1ra az SDOHelperContext objektumon.  Csak egyetlen be\u00e1ll\u00edt\u00e1s enged\u00e9lyezett.
 

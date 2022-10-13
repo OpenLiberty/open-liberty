@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -239,9 +239,9 @@ jpa_criteriaapi_no_corresponding_element_in_result=Element {0} nie odpowiada ele
 
 jpa_criteriaapi_null_literal_value=Do metody CriteriaBuilder.literal() przekazano warto\u015b\u0107 NULL.  U\u017cyj zamiast niej metody nullLiteral(Class<T> resultClass).
 
-jpa_helper_invalid_entity_manager_factory=Interfejs EntityManagerFactory JPA {0} nie jest interfejsem EntityManagerFactory EclipseLink, a wi\u0119c nie mo\u017cna jej przekszta\u0142ci\u0107.
+jpa_helper_invalid_entity_manager_factory=Interfejs EntityManagerFactory Jakarta Persistence {0} nie jest interfejsem EntityManagerFactory EclipseLink, a wi\u0119c nie mo\u017cna jej przekszta\u0142ci\u0107.
 
-jpa_helper_invalid_entity_manager_factory_for_refresh=Interfejs EntityManagerFactory JPA {0} nie jest interfejsem EntityManagerFactory EclipseLink, a wi\u0119c nie mo\u017cna od\u015bwie\u017cy\u0107 jej metadanych.
+jpa_helper_invalid_entity_manager_factory_for_refresh=Interfejs EntityManagerFactory Jakarta Persistence {0} nie jest interfejsem EntityManagerFactory EclipseLink, a wi\u0119c nie mo\u017cna od\u015bwie\u017cy\u0107 jej metadanych.
 
 jpa_helper_invalid_query=Zapytanie typu {0} nie jest zapytaniem EclipseLink i dlatego nie mo\u017ce zosta\u0107 przekszta\u0142cone.
 

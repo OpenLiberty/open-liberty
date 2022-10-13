@@ -17,6 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
+import componenttest.containers.TestContainerSuite;
+
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.tests.FailoverTestLease;
@@ -30,7 +32,7 @@ import componenttest.topology.database.container.PostgreSQLContainer;
 
 @RunWith(Suite.class)
 @SuiteClasses({ FailoverTestLease.class })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
     private static final String POSTGRES_DB = "testdb";
     private static final String POSTGRES_USER = "postgresUser";
     private static final String POSTGRES_PASS = "superSecret";
@@ -45,8 +47,6 @@ public class FATSuite {
     public static JdbcDatabaseContainer<?> testContainer;
 
     public static void beforeSuite() throws Exception {
-        //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         /*
          * The image here is generated using the Dockerfile in com.ibm.ws.jdbc_fat_postgresql/publish/files/postgresql-ssl
          * The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .

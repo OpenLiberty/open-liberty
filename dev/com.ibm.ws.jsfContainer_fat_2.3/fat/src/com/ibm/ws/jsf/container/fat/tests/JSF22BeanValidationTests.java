@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
@@ -84,11 +85,13 @@ public class JSF22BeanValidationTests extends FATServletClient {
         server.waitForStringInLogUsingMark("MyFaces Bean Validation support enabled");
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void testValidationBeanTagBinding_Mojarra() throws Exception {
         testValidationBeanTagBinding(MOJARRA_APP);
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void testValidationBeanTagBinding_MyFaces() throws Exception {
         testValidationBeanTagBinding(MYFACES_APP);

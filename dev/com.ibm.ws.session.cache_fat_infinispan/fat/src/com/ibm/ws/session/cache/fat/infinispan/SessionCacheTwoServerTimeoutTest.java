@@ -75,14 +75,12 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         Map<String, String> options = serverA.getJvmOptionsAsMap();
         options.put("-Dinfinispan.cluster.name", rand);
         options.put("-Dsession.cache.config.file", sessionCacheConfigFile);
-        options.put("-Dcom.ibm.ws.beta.edition", "true"); // TODO Remove when JCache is GA'd
         options.put("-Djgroups.bind.address", "127.0.0.1"); // Resolves JGroup multicast issues on some OS's.
         serverA.setJvmOptions(options);
 
         options = serverB.getJvmOptionsAsMap();
         options.put("-Dinfinispan.cluster.name", rand);
         options.put("-Dsession.cache.config.file", sessionCacheConfigFile);
-        options.put("-Dcom.ibm.ws.beta.edition", "true"); // TODO Remove when JCache is GA'd
         options.put("-Djgroups.bind.address", "127.0.0.1"); // Resolves JGroup multicast issues on some OS's.
         serverB.setJvmOptions(options);
 

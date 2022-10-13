@@ -48,8 +48,7 @@ public class InfinispanTestPlugin implements TestPlugin {
                                            "-Dauthcache.max.size=" + authCacheMaxSize,
                                            "-Dauthcache.entry.ttl=" + (1000 * authCacheTtlSecs),
                                            "-Dinfinispan.client.hotrod.uri=" + FATSuite.infinispan.getHotRodUri(),
-                                           "-Dinfinispan.hotrod.file=" + hotrodFile,
-                                           "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when GA'd
+                                           "-Dinfinispan.hotrod.file=" + hotrodFile));
     }
 
     @Override
@@ -59,8 +58,7 @@ public class InfinispanTestPlugin implements TestPlugin {
          */
         server.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + clusterName,
                                            "-Dinfinispan.client.hotrod.uri=" + FATSuite.infinispan.getHotRodUri(),
-                                           "-Dinfinispan.hotrod.file=" + hotrodFile,
-                                           "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when GA'd
+                                           "-Dinfinispan.hotrod.file=" + hotrodFile));
     }
 
     @Override

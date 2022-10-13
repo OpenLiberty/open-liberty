@@ -22,6 +22,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+
 public class TCKResultsWriter {
 
     private static final String NEW_LINE = "\n";
@@ -36,7 +38,7 @@ public class TCKResultsWriter {
         String javaMajorVersion = resultInfo.getJavaMajorVersion();
         String javaVersion = resultInfo.getJavaVersion();
         String openLibertyVersion = resultInfo.getOpenLibertyVersion();
-        String type = resultInfo.getType();
+        Type type = resultInfo.getType();
         String osVersion = resultInfo.getOsVersion();
         String specName = resultInfo.getSpecName();
         String specVersion = resultInfo.getSpecVersion();
@@ -58,14 +60,16 @@ public class TCKResultsWriter {
 
         String MPSpecLower = (specName.toLowerCase()).replace(" ", "-");
 
-        String fullSpecName = type + " " + specName + " " + specVersion + rcVersion;
+        String fullSpecName;
         String specURL = null;
         String tckURL = null;
         String tckSHA = null;
-        if (type.equals("MicroProfile")) {
+        if (type.equals(Type.MICROPROFILE)) {
+            fullSpecName = "MicroProfile " + specName + " " + specVersion + rcVersion;
             specURL = "https://download.eclipse.org/microprofile/microprofile-" + MPSpecLower + "-" + specVersion + rcVersion + "/microprofile-" + MPSpecLower + "-spec-"
                       + specVersion + rcVersion + ".html"; //format of this URL is very inconsistent, may need to be manually updated
         } else {
+            fullSpecName = "Jakarta " + specName + " " + specVersion + rcVersion;
             specURL = "https://jakarta.ee/specifications/" + specName + "/" + specVersion;
             tckURL = "https://download.eclipse.org/ee4j/"; //just a placeholder, needs to be manually updated
             tckSHA = "https://download.eclipse.org/ee4j/"; //just a placeholder, needs to be manually updated

@@ -19,45 +19,10 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import componenttest.topology.impl.LibertyServer;
 
 public class TestUtils {
-
-    static final String BETA_EDITION_JVM_OPTION = "-D" + ProductInfo.BETA_EDITION_JVM_PROPERTY;
-
-    /**
-     * Return true whenever the target server is beta edition.
-     */
-    static boolean isBetaEdition(LibertyServer targetServer) {
-        try {
-            return Boolean.valueOf(targetServer.getJvmOptionsAsMap().get(BETA_EDITION_JVM_OPTION));
-        } catch (Exception e) {
-            // Ignore jvm.options FileNotFound and missing key NullPointer
-        }
-        return false;
-    }
-
-    /**
-     * Set the beta edition jvm option on the target server
-     */
-    static void setBetaEdition(LibertyServer targetServer) throws Exception {
-        Map<String,String> options = targetServer.getJvmOptionsAsMap();
-        options.put(BETA_EDITION_JVM_OPTION, Boolean.TRUE.toString());
-        targetServer.setJvmOptions(options);
-    }
-
-    /**
-     * Remove the beta edition jvm option on the target server
-     */
-    static void resetBetaEdition(LibertyServer targetServer) throws Exception {
-        Map<String,String> options = targetServer.getJvmOptionsAsMap();
-        if (options.containsKey(BETA_EDITION_JVM_OPTION)) {
-            options.remove(BETA_EDITION_JVM_OPTION);
-            targetServer.setJvmOptions(options);
-        }
-    }
 
     static void setSysProps(LibertyServer targetServer, Map<String,String> props) throws Exception {
         Map<String,String> options = targetServer.getJvmOptionsAsMap();

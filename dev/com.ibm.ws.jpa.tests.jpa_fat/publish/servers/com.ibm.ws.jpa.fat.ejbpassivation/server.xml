@@ -10,12 +10,12 @@
 
     <application name="ejbpassivation" location="ejbpassivation.ear"/>
 
-    <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS" fat.modify="true" type="javax.sql.XADataSource">
+    <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS"  type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
         <properties.derby.embedded createDatabase="create" databaseName="memory:dsmain" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
-    <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS" transactional="false" fat.modify="true" type="javax.sql.XADataSource">
+    <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS" transactional="false"  type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
         <properties.derby.embedded createDatabase="create" databaseName="memory:dsmain" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
@@ -25,7 +25,7 @@
         <properties.derby.embedded createDatabase="create" databaseName="memory:dsoverride" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
-    <library id="AnonymousJDBCLib" fat.modify="true">
+    <library id="AnonymousJDBCLib" >
         <file name="${shared.resource.dir}/derby/derby.jar"/>
     </library>
   

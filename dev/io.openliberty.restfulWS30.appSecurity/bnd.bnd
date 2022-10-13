@@ -38,10 +38,10 @@ Import-Package: \
  jakarta.ws.rs.container, \
  jakarta.ws.rs.core, \
  jakarta.ws.rs.ext, \
- org.jboss.resteasy.annotations.cache;version="[4.7,6.2.0)", \
- org.jboss.resteasy.plugins.interceptors;version="[4.7,6.2.0)", \
- org.jboss.resteasy.spi;version="[4.7,6.2.0)", \
- org.jboss.resteasy.util;version="[4.7,6.2.0)", \
+ org.jboss.resteasy.annotations.cache;version="[4.7,7.0)", \
+ org.jboss.resteasy.plugins.interceptors;version="[4.7,7.0)", \
+ org.jboss.resteasy.spi;version="[4.7,7.0)", \
+ org.jboss.resteasy.util;version="[4.7,7.0)", \
  jakarta.servlet.*;version="[5.0,7.0)", \
  *
 

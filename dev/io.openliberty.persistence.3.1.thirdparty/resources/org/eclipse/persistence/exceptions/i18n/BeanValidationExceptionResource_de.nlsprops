@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -31,7 +31,8 @@
 
 7501=Bean-Validierungsmodus f\u00fcr {0}Marshaller wurde auf einen nicht unterst\u00fctzten Wert ("{1}") gesetzt.
 
-7510=Einschr\u00e4nkungen f\u00fcr {0}-Marshaling-Bean verletzt: {1}{2}
+7510=Einschr\u00e4nkungen f\u00fcr {0}-Marshaling-Bean verletzt:
+{1}{2}
 
 7525=Die Eigenschaft {0} kann nicht geparst werden, weil sie die Annotation @NotNull und das Attribut "xs:nillable=true" enth\u00e4lt.
 

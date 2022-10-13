@@ -178,14 +178,14 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
                         baseMetricRegistry);
 
                 timerMap.put(key, restTimer);
+                
+                /*
+                 * Need to make sure we register the unmapped exception counter as it is
+                 * expected whether an exception has occurred or not.
+                 */
+                MetricsRestfulWsEMCallbackImpl.registerOrRetrieveRESTUnmappedExceptionMetric(className, methodName,
+                        appName);
             }
-
-            /*
-             * Need to make sure we register the unmapped exception counter as it is
-             * expected whether an exception has occurred or not.
-             */
-            MetricsRestfulWsEMCallbackImpl.registerOrRetrieveRESTUnmappedExceptionMetric(className, methodName,
-                    appName);
 
             /*
              * Explicitly checking for the Metrics Header via hard-coded header string.

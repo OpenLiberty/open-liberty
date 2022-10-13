@@ -37,7 +37,7 @@ Subsystem-Name: Jakarta Server Faces 4.0
 -features=io.openliberty.jakarta.websocket-2.1, \
   io.openliberty.servlet.api-6.0, \
   io.openliberty.jakarta.xmlBinding-4.0, \
-  io.openliberty.facesProvider-3.0.0.MyFaces, \
+  io.openliberty.facesProvider-4.0.0.MyFaces, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   io.openliberty.jakarta.validation-3.0, \
   io.openliberty.pages-3.1, \

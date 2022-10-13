@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,13 +29,16 @@ import com.ibm.ws.jsf.container.fat.FATSuite;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 
+@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class ErrorPathsTest extends FATServletClient {
@@ -54,6 +57,7 @@ public class ErrorPathsTest extends FATServletClient {
     @ExpectedFFDC("java.lang.IllegalArgumentException")
     public void testFeatureConflict() throws Exception {
         ServerConfiguration originalConfig = server.getServerConfiguration().clone();
+        // Address the replacement for EE10, too.
         server.setServerConfigurationFile("server_" + testName.getMethodName().replace("_EE9_FEATURES","") + ".xml");
         try {
 
@@ -65,6 +69,11 @@ public class ErrorPathsTest extends FATServletClient {
                message = ".* CWWKF0033E: " +
                                ".* io.openliberty.facesProvider-3.0.0.[MyFaces|Container]" +
                                ".* io.openliberty.facesProvider-3.0.0.[MyFaces|Container].*";
+            } else if(JakartaEE10Action.isActive()){
+                
+                message = ".* CWWKF0033E: " +
+                                ".* io.openliberty.facesProvider-4.0.0.[MyFaces|Container]" +
+                                ".* io.openliberty.facesProvider-4.0.0.[MyFaces|Container].*";
             }
 
             server.startServer(testName.getMethodName() + ".log", true, true, false);

@@ -63,6 +63,8 @@ public class PackageRunnableTest {
     private static File extractLocation = null;
     private static File outputAutoFVTDirectory = null;
     private static final long DUMMY_MANIFEST_FILE_SIZE = 41;
+    // Wait a few seconds longer than quiesce time
+    private static final int STOP_RETRY_COUNT = 35;
 
     /*
      * return env as array and add WLP_JAR_EXTRACT_DIR=extractDirectory
@@ -95,10 +97,12 @@ public class PackageRunnableTest {
     }
 
     @BeforeClass
-    public static void setupClass() throws Exception {}
+    public static void setupClass() throws Exception {
+    }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+
         deleteDir(extractAndRunDir);
         deleteDir(extractDirectory1);
         deleteDir(extractDirectory2);
@@ -389,9 +393,10 @@ public class PackageRunnableTest {
 
             // Attempt to stop the server
             int retry = 0;
+
             if (useNormalStop == false) {
                 // ensure no process left behind
-                while (proc.isAlive() && retry < 10) {
+                while (proc.isAlive() && retry < STOP_RETRY_COUNT) {
                     Log.info(c, method, "Server is stopping via the proc.destroy() method.  Retry = " + retry);
                     proc.destroy();
                     Thread.sleep(1000);
@@ -399,7 +404,7 @@ public class PackageRunnableTest {
                 }
             } else {
                 // stop normally so shutdown hook is called
-                while (server.isStarted() && retry < 10) {
+                while (server.isStarted() && retry < STOP_RETRY_COUNT) {
                     Log.info(c, method, "Server is stopping via the 'server stop' command, thus the shutdown hook should run.  Retry = " + retry);
                     stopServer(extractLoc);
                     Thread.sleep(1000);
@@ -407,7 +412,7 @@ public class PackageRunnableTest {
                 }
 
                 retry = 0;
-                while (proc.isAlive() && retry < 10) {
+                while (proc.isAlive() && retry < STOP_RETRY_COUNT) {
                     Log.info(c, method, "Server is stopping via the proc.destroy() method.  Retry = " + retry);
                     proc.destroy();
                     Thread.sleep(1000);
@@ -424,10 +429,28 @@ public class PackageRunnableTest {
                                 + server.isStarted() + " proc.isAlive() = " + proc.isAlive() + " retry = " + retry);
 
         } finally {
+
             if (proc.isAlive()) {
+                // Attempt to dump the server if its still alive
+                Log.info(c, method, "Dumping server as it has not stopped by request.");
+                server.dumpServer(extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName);
+
                 Log.info(c, method, "Destroying the process as it was not stopped via the previous attempts.");
                 proc.destroy();
             }
+
+            // Manually copy the logs since the framework does not do this given the extract locations.
+            int loc = extractDirectory.getAbsolutePath().lastIndexOf(File.separator);
+            String folder = extractDirectory.getAbsolutePath().substring(loc);
+            File pathWithFolder = new File(outputAutoFVTDirectory.getAbsolutePath() + File.separator + folder);
+            Log.info(c, method, "Saving logs to " + pathWithFolder.getAbsolutePath());
+            pathWithFolder.mkdirs();
+            Log.info(c, method, "Copying directory from " +
+                                extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + " to " +
+                                pathWithFolder.getAbsolutePath());
+
+            File srcDir = new File(extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName);
+            copyDirectory(srcDir, pathWithFolder.getAbsoluteFile());
         }
         return extractLoc;
     }
@@ -812,6 +835,31 @@ public class PackageRunnableTest {
             }
         } finally {
             reader.close();
+        }
+    }
+
+    public static void copyDirectory(File source, File target) throws IOException {
+        if (source.isDirectory()) {
+            if (!target.exists()) {
+                target.mkdir();
+            }
+
+            String[] children = source.list();
+            for (int i = 0; i < children.length; i++) {
+                copyDirectory(new File(source, children[i]),
+                              new File(target, children[i]));
+            }
+        } else {
+            InputStream in = new FileInputStream(source);
+            OutputStream out = new FileOutputStream(target);
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
         }
     }
 

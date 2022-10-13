@@ -12,9 +12,6 @@ package io.openliberty.microprofile.lra.tck;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -27,8 +24,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs the whole LRA TCK. The TCK results
@@ -76,7 +73,7 @@ public class LraTckLauncher {
      * @throws Exception
      */
     @Test
-    public void launchLRATCK() throws Exception {
+    public void launchLRA10TCK() throws Exception {
 
         // This makes the property lra.tck.base.url available to maven, so that it can pass it on to the
         // arquillian launcher. Not entirely sure if it is needed or not.
@@ -89,13 +86,12 @@ public class LraTckLauncher {
         // This is the currently passing test methods from TckTests
         additionalProps.put("test", "TckTests#*LRA*+join*");
 
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.lra.1.0.internal_fat_tck", this.getClass() + ":launchLRATCK", additionalProps);
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "LRA");
-        resultInfo.put("feature_version", "1.0");
-        MvnUtils.preparePublicationFile(resultInfo);
-
+        String bucketName = "io.openliberty.microprofile.lra.1.0.internal_fat_tck";
+        String testName = this.getClass() + ":launchLRA10TCK";
+        Type type = Type.MICROPROFILE;
+        String specName = "LRA";
+        String specVersion = "1.0";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, additionalProps);
     }
 
     /**
@@ -106,7 +102,7 @@ public class LraTckLauncher {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     @Mode(TestMode.EXPERIMENTAL)
-    public void launchLRATCKFull() throws Exception {
+    public void launchLRA10TCKFull() throws Exception {
 
         // This makes the property lra.tck.base.url available to maven, so that it can pass it on to the
         // arquillian launcher. Not entirely sure if it is needed or not.
@@ -117,12 +113,12 @@ public class LraTckLauncher {
         additionalProps.put("lra.tck.base.url", protocol + "://" + host + ":" + port);
         additionalProps.put("lraTestsToRun", "**/*Test*.java");
 
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.lra.1.0.internal_fat_tck", this.getClass() + ":launchLRATCK", additionalProps);
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "LRA");
-        resultInfo.put("feature_version", "1.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "io.openliberty.microprofile.lra.1.0.internal_fat_tck";
+        String testName = this.getClass() + ":launchLRA10TCKFull";
+        Type type = Type.MICROPROFILE;
+        String specName = "LRA";
+        String specVersion = "1.0";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, additionalProps);
 
     }
 }

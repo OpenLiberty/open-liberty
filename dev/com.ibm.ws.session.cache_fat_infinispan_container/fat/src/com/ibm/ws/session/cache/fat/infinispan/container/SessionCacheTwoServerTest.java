@@ -76,11 +76,9 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         }
 
         serverA.addEnvVar("INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
-        serverA.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile,
-                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
+        serverA.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile));
         serverB.addEnvVar("INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
-        serverB.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile,
-                                            "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
+        serverB.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile));
 
         // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
         // so that the JCache provider has fully initialized on serverA. Otherwise, serverB might start up its own

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -65,7 +65,7 @@
 
 25020=\u5728\u547c\u53eb "endDocument()" \u4e8b\u4ef6\u4e4b\u524d\uff0c\u4e0d\u5f97\u547c\u53eb\u65b9\u6cd5 "getResult()"\u3002
 
-25021=\u985e\u5225 {0} \u5c0d SwaRef \u7121\u6548\u3002\u5fc5\u9808\u662f javax.activation.DataHandler\u3002
+25021=\u985e\u5225 {0} \u5c0d SwaRef \u7121\u6548\u3002\u5fc5\u9808\u662f jakarta.activation.DataHandler\u3002
 
 25022=\u7121\u6cd5\u914d\u7f6e\u6620\u50cf\u6a94\u3002\u6c92\u6709\u53ef\u7528\u65bc mimeType {0} \u7684\u7de8\u78bc\u5668\u3002
 

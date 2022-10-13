@@ -25,6 +25,7 @@ import org.jboss.resteasy.spi.ResteasyConfiguration;
 import java.math.BigDecimal;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -92,6 +93,10 @@ public class DefaultConfiguration implements Configuration {
             typedValue = new BigDecimal(value);
         } else if (type.isEnum()) {
             typedValue = Enum.valueOf(type.asSubclass(Enum.class), value);
+        } else if (type == Path.class) {
+            typedValue = Path.of(value);
+        } else if (type == Threshold.class) {
+            typedValue = Threshold.valueOf(value);
         } else {
             throw Messages.MESSAGES.cannotConvertParameter(value, type, name);
         }

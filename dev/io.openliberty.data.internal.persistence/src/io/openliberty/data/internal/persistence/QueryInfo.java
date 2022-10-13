@@ -10,6 +10,10 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.lang.reflect.Method;
+
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  */
 class QueryInfo {
@@ -20,12 +24,35 @@ class QueryInfo {
     /**
      * Information about the type of entity to which the query pertains.
      */
-    final EntityInfo entityInfo;
+    EntityInfo entityInfo;
 
     /**
      * Generated JPQL for the query. Null if a save operation.
      */
-    final String jpql;
+    String jpql;
+
+    /**
+     * Value from findFirst#By, or 1 for findFirstBy, otherwise 0.
+     */
+    long maxResults;
+
+    /**
+     * Repository method to which this query information pertains.
+     */
+    final Method method;
+
+    /**
+     * Number of parameters to the JPQL query.
+     */
+    int paramCount;
+
+    /**
+     * Indicates that parameters are supplied to the repository method
+     * as entity or Iterable of entity and need conversion to entity id
+     * or list of entity id.
+     * This is currently only used for delete(entity) and delete(Iterable of entities).
+     */
+    boolean paramsNeedConversionToId;
 
     /**
      * Array element type if the repository method returns an array, such as,
@@ -49,33 +76,40 @@ class QueryInfo {
     /**
      * Type of the first parameter to a save operation. Null if not a save operation.
      */
-    final Class<?> saveParamType;
+    Class<?> saveParamType;
 
     /**
      * Categorization of query type.
      */
-    final Type type;
+    Type type;
 
-    QueryInfo(Type type, String jpql, EntityInfo entityInfo,
-              Class<?> saveParamType, Class<?> returnArrayType, Class<?> returnParamType) {
-        this.jpql = jpql;
-        this.entityInfo = entityInfo;
+    /**
+     * Construct partially complete query information.
+     */
+    QueryInfo(Method method, Class<?> returnArrayType, Class<?> returnTypeParam) {
+        this.method = method;
         this.returnArrayType = returnArrayType;
-        this.returnTypeParam = returnParamType;
-        this.saveParamType = saveParamType;
+        this.returnTypeParam = returnTypeParam;
+    }
 
-        if (type == null) {
-            String q = jpql.toUpperCase();
-            if (q.startsWith("SELECT"))
-                this.type = Type.SELECT;
-            else if (q.startsWith("UPDATE"))
-                this.type = Type.UPDATE;
-            else if (q.startsWith("DELETE"))
-                this.type = Type.DELETE;
-            else
-                throw new UnsupportedOperationException(jpql);
-        } else {
-            this.type = type;
-        }
+    @Override
+    @Trivial
+    public String toString() {
+        return new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())).append(':').append(method).toString();
+    }
+
+    /**
+     * Copy of query information, but with updated JPQL.
+     */
+    QueryInfo withJPQL(String jpql) {
+        QueryInfo q = new QueryInfo(method, returnArrayType, returnTypeParam);
+        q.jpql = jpql;
+        q.entityInfo = this.entityInfo;
+        q.maxResults = this.maxResults;
+        q.paramCount = this.paramCount;
+        q.paramsNeedConversionToId = this.paramsNeedConversionToId;
+        q.saveParamType = this.saveParamType;
+        q.type = this.type;
+        return q;
     }
 }

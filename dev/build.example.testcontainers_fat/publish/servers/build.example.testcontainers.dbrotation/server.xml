@@ -33,8 +33,50 @@
 	  <jdbcDriver libraryRef="dbRotationLib"/>
 	  <properties.derby.embedded databaseName="${shared.resource.dir}/data/testcontainersfat" createDatabase="create" user="user" password="password"/>
 	</dataSource>
+	
+	<!-- 
+		Instead of always setting the user/password via datasource properties
+		a test suite may wish to test authData functionality. 
+		fat.modify="true" on an authData element is used to change the attributes that
+		correspond to the containers auth data at runtime. 
+	 -->
+	<authData id="databaseAuth" user="user" password="password" fat.modify="true"/>
+	
+	<dataSource jndiName="jdbc/dbRotationContainerAuth"  containerAuthDataRef="databaseAuth" fat.modify="true">
+	  <jdbcDriver libraryRef="dbRotationLib"/>
+	  <properties.derby.embedded databaseName="${shared.resource.dir}/data/testcontainersfat" createDatabase="create"/>
+	</dataSource>
+	
+	<!-- 
+		Same concept as the previous datasource except using a nested AuthData element
+	 -->
+	<dataSource jndiName="jdbc/dbRotationNestedContainerAuth" fat.modify="true">
+	  <jdbcDriver libraryRef="dbRotationLib"/>
+	  <containerAuthData id="containerAuthData" user="user" password="password" fat.modify="true" />
+	  <properties.derby.embedded databaseName="${shared.resource.dir}/data/testcontainersfat" createDatabase="create"/>
+	</dataSource>
+	
+	<!-- 
+		If no authData is provided, this is a valid configuration for Derby, but not for most databases. 
+		We will make no attempt to add auth data to this datasource's properties.
+		Assume the applicaiton is using a Deployment Descriptor to provide auth data.
+	 -->
+	<dataSource jndiName="jdbc/dbRotationDDAuth" fat.modify="true">
+	  <jdbcDriver libraryRef="dbRotationLib"/>
+	  <properties.derby.embedded databaseName="${shared.resource.dir}/data/testcontainersfat" createDatabase="create"/>
+	</dataSource>
+	
+	<!-- 
+		If no authData is provided, this is a valid configuration for Derby, but not for most databases.
+		We will make no attempt to add auth data to this datasource's properties.
+		In this case there is no Deployment Descriptor so we will expect this datasource to fail!
+	 -->
+	<dataSource jndiName="jdbc/dbRotationNoAuth" fat.modify="true">
+	  <jdbcDriver libraryRef="dbRotationLib"/>
+	  <properties.derby.embedded databaseName="${shared.resource.dir}/data/testcontainersfat" createDatabase="create"/>
+	</dataSource>
     
-    <application location="containerApp.war">
+    <application location="app.war">
     	<classloader commonLibraryRef="dbRotationLib"/>
     </application>
     
@@ -44,7 +86,7 @@
 	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
 	
 	<!-- Permission needed for Postgres driver -->
-	<javaPermission codeBase="${server.config.dir}/apps/containerApp.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+	<javaPermission codeBase="${server.config.dir}/apps/app.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
 
 	<!-- Permission needed for SQLServer driver -->
 	<javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>

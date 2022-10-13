@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.lang.reflect.Member;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -27,6 +28,7 @@ class EntityInfo {
     final LinkedHashMap<String, String> attributeNames;
     final Set<String> collectionAttributeNames;
     final boolean inheritance;
+    final Member keyAccessor;
     final String keyName;
     final String name;
     final PersistenceServiceUnit persister;
@@ -36,12 +38,14 @@ class EntityInfo {
                LinkedHashMap<String, String> attributeNames,
                Set<String> collectionAttributeNames,
                String keyAttributeName,
+               Member keyAccessor,
                PersistenceServiceUnit persister) {
         this.name = entityName;
         this.type = entityClass;
         this.attributeNames = attributeNames;
         this.collectionAttributeNames = collectionAttributeNames;
         this.keyName = keyAttributeName;
+        this.keyAccessor = keyAccessor;
         this.persister = persister;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null ||
@@ -50,8 +54,13 @@ class EntityInfo {
     }
 
     String getAttributeName(String name) {
+        // TODO update per outcome of #44
         String attributeName = attributeNames.get(name.toUpperCase());
-        return attributeName == null ? name : attributeName;
+        if (attributeName == null)
+            attributeName = "Id".equals(name) ? keyName : //
+                            "All".equals(name) ? null : // Special case for CrudRepository.deleteAll and CrudRepository.findAll
+                                            name;
+        return attributeName;
     }
 
     Collection<String> getAttributeNames() {

@@ -80,13 +80,13 @@ public class OidcIdentityStoreBeanTest {
         Set<Type> types = oidcIdentityStoreBean.getTypes();
         String expectedTypeString = new TypeLiteral<IdentityStore>() {
         }.getType().toString();
-    
+
         assertEquals("Must be a TypeLiteral<IdentityStore> type.", expectedTypeString, types.iterator().next().toString());
     }
 
     @Test
     public void testGetBeanClass() {
-        assertEquals("Must be ApplicationScoped.", IdentityStore.class, oidcIdentityStoreBean.getBeanClass());
+        assertEquals("Must be ApplicationScoped.", OidcIdentityStoreBean.class, oidcIdentityStoreBean.getBeanClass());
     }
 
 }

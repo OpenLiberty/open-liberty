@@ -50,6 +50,7 @@ public class OpenIdContextLogger {
             return;
 
         }
+        printLine(ps, caller, "OpenIdContext: " + context);
 
         /*
          * // Method descriptor #18 ()Ljakarta/json/JsonObject;

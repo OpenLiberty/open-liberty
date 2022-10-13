@@ -15,12 +15,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Map;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -46,13 +46,13 @@ public class RestClientTckPackageTest {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void testRestClientTck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.rest.client_fat_tck", this.getClass() + ":testRestClientTck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Rest Client");
-        resultInfo.put("feature_version", "1.4");
-        MvnUtils.preparePublicationFile(resultInfo);
+    public void testRestClient14Tck() throws Exception {
+        String bucketName = "com.ibm.ws.microprofile.rest.client14_fat_tck";
+        String testName = this.getClass() + ":testRestClient14Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Rest Client";
+        String specVersion = "1.4";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion);
     }
 
 }

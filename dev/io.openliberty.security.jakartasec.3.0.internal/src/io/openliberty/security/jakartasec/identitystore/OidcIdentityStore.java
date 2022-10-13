@@ -82,7 +82,8 @@ public class OidcIdentityStore implements IdentityStore {
                     JsonObject providerMetadata = getProviderMetadataAsJsonObject();
 
                     OpenIdContext openIdContext = createOpenIdContext(credentialValidationResult.getCallerUniqueId(), tokenResponse, accessToken, identityToken, userInfoClaims,
-                                                                      providerMetadata, request.getParameter(OpenIdConstant.STATE), oidcClientConfig.isUseSession());
+                                                                      providerMetadata, request.getParameter(OpenIdConstant.STATE), oidcClientConfig.isUseSession(),
+                                                                      client.getOidcClientConfig().getClientId());
 
                     castCredential.setOpenIdContext(openIdContext);
 
@@ -97,7 +98,7 @@ public class OidcIdentityStore implements IdentityStore {
     }
 
     private OpenIdContext createOpenIdContext(String subjectIdentifier, TokenResponse tokenResponse, AccessToken accessToken, IdentityToken identityToken,
-                                              OpenIdClaims userinfoClaims, JsonObject providerMetadata, String state, boolean useSession) {
+                                              OpenIdClaims userinfoClaims, JsonObject providerMetadata, String state, boolean useSession, String clientId) {
         Map<String, String> tokenResponseRawMap = tokenResponse.asMap();
         // TODO: Move getting expires_in to TokenResponse
         long expiresIn = 0L;
@@ -105,7 +106,7 @@ public class OidcIdentityStore implements IdentityStore {
             expiresIn = Long.parseLong(tokenResponseRawMap.get(OpenIdConstant.EXPIRES_IN));
         }
 
-        OpenIdContextImpl openIdContext = new OpenIdContextImpl(subjectIdentifier, tokenResponseRawMap.get(OpenIdConstant.TOKEN_TYPE), accessToken, identityToken, userinfoClaims, providerMetadata, state, useSession);
+        OpenIdContextImpl openIdContext = new OpenIdContextImpl(subjectIdentifier, tokenResponseRawMap.get(OpenIdConstant.TOKEN_TYPE), accessToken, identityToken, userinfoClaims, providerMetadata, state, useSession, clientId);
         openIdContext.setExpiresIn(expiresIn);
 
         String refreshTokenString = tokenResponse.getRefreshTokenString();

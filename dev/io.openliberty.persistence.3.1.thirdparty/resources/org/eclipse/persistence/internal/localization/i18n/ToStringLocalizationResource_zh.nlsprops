@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,11 +141,11 @@ staticweave_commandline_help_message_15of19= \u5982\u679c\u6e90\u548c\u76ee\u680
 
 staticweave_commandline_help_message_16of19= \u793a\u4f8b\uff1a
 
-staticweave_commandline_help_message_17of19= \u8981\u5bf9 C:\\foo-source.jar\uff08\u5176 persistence.xml \u5305\u542b\u5728 C:\\foo-containing-persistence-xml.jar \u5185\uff09\u4e2d\u5305\u542b\u7684\u6240\u6709\u5b9e\u4f53\u6267\u884c\u7f16\u6392\uff0c
+staticweave_commandline_help_message_17of19= \u8981\u5bf9 C:\foo-source.jar\uff08\u5176 persistence.xml \u5305\u542b\u5728 C:\foo-containing-persistence-xml.jar \u5185\uff09\u4e2d\u5305\u542b\u7684\u6240\u6709\u5b9e\u4f53\u6267\u884c\u7f16\u6392\uff0c
 
-staticweave_commandline_help_message_18of19= \u5e76\u8f93\u51fa\u81f3 C:\\foo-target.jar\uff1a
+staticweave_commandline_help_message_18of19= \u5e76\u8f93\u51fa\u81f3 C:\foo-target.jar\uff1a
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= \u7528\u6cd5\uff1aStaticWeave [\u9009\u9879] \u6e90\u76ee\u6807
 

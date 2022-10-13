@@ -10,10 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.jsf;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.jsf.FacesConfig;
+import com.ibm.ws.javaee.dd.jsf.FacesConfigManagedBean;
 
 public class JSFAppTest extends JSFAppTestBase {
     @Test
@@ -349,4 +352,38 @@ public class JSFAppTest extends JSFAppTestBase {
     }
 
     // TODO: JSF 3.0 / Jakarta EE 9 cases
+    //
+
+    // Managed beans tests:
+    //
+    // Support for 'managed-bean' elements was removed by EE 10 / Faces 4.0:
+
+    public static final String MANAGED_BEAN_TEXT =
+        "<managed-bean>" +
+            "<managed-bean-name>TestBean</managed-bean-name>" +
+            "<managed-bean-class>com.Test.TestBean</managed-bean-class>" +
+            "<managed-bean-scope>request</managed-bean-scope>" +
+        "</managed-bean>";
+
+    // The 'managed-bean' element should be parsed at faces 3.0:
+    
+    @Test
+    public void testFaces30_Managedbean() throws Exception {    
+        FacesConfig facesConfig = parse( jsf(FacesConfig.VERSION_3_0, MANAGED_BEAN_TEXT), FacesConfig.VERSION_3_0 );
+        List<FacesConfigManagedBean> mbeans = facesConfig.getManagedBeans();
+
+        Assert.assertNotNull("Failed to parse any managed beans", mbeans);
+        Assert.assertEquals("Expected a single parsed managed bean", 1, mbeans.size());
+    }
+    
+    // The 'managed-bean' element should *not* be parsed at faces 4_0:
+    
+    // CWWKC2259E: Unexpected child element managed-bean of parent element faces-config
+    // encountered in the myWar.war : WEB-INF/faces-config.xml deployment descriptor on line 7.
+    
+    @Test
+    public void testFaces40_Managedbean() throws Exception {    
+        parse( jsf(FacesConfig.VERSION_4_0, MANAGED_BEAN_TEXT), FacesConfig.VERSION_4_0,
+               XML_ERROR_ALT_UNEXPECTED_CHILD, XML_ERROR_UNEXPECTED_CHILD);
+    }    
 }

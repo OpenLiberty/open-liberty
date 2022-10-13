@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -517,7 +517,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Ignorando a configura\u00e
 
 metadata_warning_ignore_mapped_superclass_read_only=Ignorando a configura\u00e7\u00e3o somente leitura na superclasse mapeada [{1}] para a classe de entidade [{0}] desde os metadados somente leitura foram anteriormente descobertos para essa entidade (na pr\u00f3pria entidade ou em outra superclasse mapeada).
 
-metadata_warning_ignore_mapping_metadata=Ignorando os metadados javax.persistence aplicados para o atributo [{0}] da classe [{1}]. Metadados javax.persistence s\u00e3o ignorados em campos ou propriedades que s\u00e3o tempor\u00e1rios, est\u00e1ticos ou abstratos.
+metadata_warning_ignore_mapping_metadata=Ignorando os metadados jakarta.persistence aplicados para o atributo [{0}] da classe [{1}]. Metadados jakarta.persistence s\u00e3o ignorados em campos ou propriedades que s\u00e3o tempor\u00e1rios, est\u00e1ticos ou abstratos.
 
 metadata_warning_ignore_serialized=Ignorando a serializa\u00e7\u00e3o padr\u00e3o no elemento [{1}] dentro da classe de entidade [{0}] j\u00e1 que os metadados EclipseLink convertidos foram especificados.
 
@@ -581,7 +581,7 @@ no_jar_entry_migratable_in_ear=Nenhuma das entradas jar no arquivo EAR de entrad
 
 no_session_found=N\u00e3o foi poss\u00edvel localizar a sess\u00e3o com o nome [{0}] no arquivo session.xml [{1}]
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=O elemento [{1}] dentro da classe de entidade [{0}] usa um tipo de cole\u00e7\u00e3o [{2}] quando a especifica\u00e7\u00e3o JPA suporta apenas java.util.Collection, java.util.Set, java.util.List, ou java.util.Map.  Esse tipo \u00e9 suportado com o carregamento ansioso; usar o carregamento lento com este tipo de cole\u00e7\u00e3o requer configura\u00e7\u00e3o adicional e uma implementa\u00e7\u00e3o do IndirectContainer que estende [{2}] ou configurar o mapeamento para uso indireto b\u00e1sicas e o tipo a ser ValueholderInterface.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=O elemento [{1}] dentro da classe de entidade [{0}] usa um tipo de cole\u00e7\u00e3o [{2}] quando a especifica\u00e7\u00e3o Jakarta Persistence suporta apenas java.util.Collection, java.util.Set, java.util.List, ou java.util.Map.  Esse tipo \u00e9 suportado com o carregamento ansioso; usar o carregamento lento com este tipo de cole\u00e7\u00e3o requer configura\u00e7\u00e3o adicional e uma implementa\u00e7\u00e3o do IndirectContainer que estende [{2}] ou configurar o mapeamento para uso indireto b\u00e1sicas e o tipo a ser ValueholderInterface.
 
 objectchangepolicy_turned_off=Altere o rastreamento desativado para: {0}
 

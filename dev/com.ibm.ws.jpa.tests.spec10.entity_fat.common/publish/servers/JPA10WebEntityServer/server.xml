@@ -14,12 +14,12 @@
 
     <dataSource id="jdbc/JPA_JTA_DS" jndiName="jdbc/JPA_JTA_DS" fat.modify="true" isolationLevel="TRANSACTION_READ_COMMITTED">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
     <dataSource id="jdbc/JPA_NJTA_DS" jndiName="jdbc/JPA_NJTA_DS" fat.modify="true" transactional="false" isolationLevel="TRANSACTION_READ_COMMITTED">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
     <library id="AnonymousJDBCLib">

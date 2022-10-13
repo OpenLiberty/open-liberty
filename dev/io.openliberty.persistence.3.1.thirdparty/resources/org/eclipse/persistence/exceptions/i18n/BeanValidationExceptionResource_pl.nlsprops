@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -31,7 +31,8 @@
 
 7501=Tryb sprawdzania poprawno\u015bci komponentu Bean w programie zestawiaj\u0105cym {0} jest ustawiony na nieobs\u0142ugiwan\u0105 warto\u015b\u0107, "{1}".
 
-7510=Naruszone ograniczenia w zestawionym komponencie bean {0}: {1}{2}
+7510=Naruszone ograniczenia w zestawionym komponencie bean {0}:
+{1}{2}
 
 7525=Nie mo\u017cna przeanalizowa\u0107 w\u0142a\u015bciwo\u015bci {0}, poniewa\u017c zawiera ona zar\u00f3wno adnotacj\u0119 @NotNull, jak i atrybut "xs:nillable=true".
 

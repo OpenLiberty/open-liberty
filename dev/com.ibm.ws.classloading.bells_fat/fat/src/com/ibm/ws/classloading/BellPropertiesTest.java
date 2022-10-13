@@ -11,18 +11,13 @@
 
 package com.ibm.ws.classloading;
 
-import static com.ibm.ws.classloading.TestUtils.BETA_EDITION_JVM_OPTION;
 import static com.ibm.ws.classloading.TestUtils.buildAndExportBellLibrary;
-import static com.ibm.ws.classloading.TestUtils.removeSysProps;
-import static com.ibm.ws.classloading.TestUtils.setSysProps;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,7 +34,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Tests for {@link LibraryServiceExporter}.
  */
-@SuppressWarnings("serial")
 public class BellPropertiesTest {
 
     static final LibertyServer server = LibertyServerFactory.getLibertyServer("bell_props_server");
@@ -119,7 +113,7 @@ public class BellPropertiesTest {
         String servicePropsMsg = ".*" + serviceName + " has" + injectOp.getLogStr() + "properties ";
 
         if (expectedProps == null) {
-            // no injection ==> no <properties/> declaration or non-beta edition
+            // no injection ==> no <properties/> declaration
             servicePropsMsg += "null";
             assertNotNull("The " + serviceName + " does not have \"null\" properties as expected.",
                     server.waitForStringInLog(servicePropsMsg));
@@ -161,67 +155,22 @@ public class BellPropertiesTest {
     })
     public void testProperties() throws Exception
     {
-        doTestProperties(Boolean.FALSE);
-    }
-    @Test
-    @AllowedFFDC({
-        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
-    })
-    public void testProperties_BETA() throws Exception
-    {
-        doTestProperties(Boolean.TRUE);
-    }
+        server.startServer();
 
-    public void doTestProperties(Boolean runAsBetaEdition) throws Exception
-    {
-        Map<String,String> sysProps = new HashMap<String,String>(3){};
-        sysProps.put(BETA_EDITION_JVM_OPTION, runAsBetaEdition.toString());
+        assertNotNull("The server did not register service testPropertiesLib/MultipleValidServices1, but should have.",
+                server.waitForStringInLog(".*CWWKL0050I: .*testPropertiesLib.*MultipleValidServices1"));
 
-        try {
-            setSysProps(server, sysProps);
-            server.startServer();
+        Set<String> expectedProps = Stream.of("TP_P0=TP_P0_VAL", "TP_P1=TP_P1_VAL", "TP_P2=TP_P2_VAL", "TP_P3=TP_P3_VAL")
+                .collect(Collectors.toCollection(HashSet::new));
 
-            Set<String> expectedProps;
+        // Properties inject using single-arg ctor
+        assertBellProps("MultipleValidServices1", Inject_Op.SingleArgCtor, expectedProps);
 
-            if (runAsBetaEdition) {
-                assertNotNull("The server did not report BELL Properties has been invoked for BETA, but should have.",
-                        server.waitForStringInLog(".*BETA: BELL SPI Visibility and BELL Properties"));
+        assertNotNull("The server did not register service testPropertiesLib/MultipleValidServices2, but should have.",
+                server.waitForStringInLog(".*CWWKL0050I: .*testPropertiesLib.*MultipleValidServices2"));
 
-                assertNotNull("The server did not register service testPropertiesLib/MultipleValidServices1, but should have.",
-                        server.waitForStringInLog(".*CWWKL0050I: .*testPropertiesLib.*MultipleValidServices1"));
-
-                expectedProps = Stream.of("TP_P0=TP_P0_VAL", "TP_P1=TP_P1_VAL", "TP_P2=TP_P2_VAL", "TP_P3=TP_P3_VAL")
-                        .collect(Collectors.toCollection(HashSet::new));
-
-                // Properties inject using single-arg ctor
-                assertBellProps("MultipleValidServices1", Inject_Op.SingleArgCtor, expectedProps);
-
-                assertNotNull("The server did not register service testPropertiesLib/MultipleValidServices2, but should have.",
-                        server.waitForStringInLog(".*CWWKL0050I: .*testPropertiesLib.*MultipleValidServices2"));
-
-                // Missing single-arg ctor; properties inject using updateBell()
-                assertBellProps("MultipleValidServices2", Inject_Op.UpdateBellMethod, expectedProps);
-            }
-            else {
-                assertNull("The server reported BELL Properties has been invoked for BETA, but should not.",
-                        server.waitForStringInLog(".*BETA: BELL SPI Visibility and BELL Properties ", TimeOut));
-
-                assertNotNull("The server did not register service testPropertiesLib/MultipleValidServices1, but should have.",
-                        server.waitForStringInLog(".*CWWKL0050I: .*testPropertiesLib.*MultipleValidServices1"));
-
-                expectedProps = null;
-
-                assertBellProps("MultipleValidServices1", Inject_Op.SingleArgCtor, expectedProps);
-
-                assertNotNull("The server did not register service testPropertiesLib/MultipleValidServices2, but should have.",
-                        server.waitForStringInLog(".*CWWKL0050I: .*testPropertiesLib.*MultipleValidServices2"));
-
-                assertBellProps("MultipleValidServices2", Inject_Op.UpdateBellMethod, expectedProps);
-            }
-        }
-        finally {
-            removeSysProps(server, sysProps);
-        }
+        // Missing single-arg ctor; properties inject using updateBell()
+        assertBellProps("MultipleValidServices2", Inject_Op.UpdateBellMethod, expectedProps);
     }
 
     /**
@@ -233,36 +182,14 @@ public class BellPropertiesTest {
     })
     public void testPropertiesEmpty() throws Exception
     {
-        doTestPropertiesEmpty(Boolean.FALSE);
-    }
-    @Test
-    @AllowedFFDC({
-        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
-    })
-    public void testPropertiesEmpty_BETA() throws Exception
-    {
-        doTestPropertiesEmpty(Boolean.TRUE);
-    }
+        server.startServer();
 
-    void doTestPropertiesEmpty(Boolean runAsBetaEdition) throws Exception
-    {
-        Map<String,String> sysProps = new HashMap<String,String>(3){};
-        sysProps.put(BETA_EDITION_JVM_OPTION, runAsBetaEdition.toString());
+        assertNotNull("The server did not register service testEmptyPropertiesLib/EmptyProperties, but should have.",
+                server.waitForStringInLog(".*CWWKL0050I: .*testEmptyPropertiesLib.*EmptyProperties"));
 
-        try {
-            setSysProps(server, sysProps);
-            server.startServer();
+        Set<String> expectedProps = Collections.emptySet();
 
-            assertNotNull("The server did not register service testEmptyPropertiesLib/EmptyProperties, but should have.",
-                    server.waitForStringInLog(".*CWWKL0050I: .*testEmptyPropertiesLib.*EmptyProperties"));
-
-            Set<String> expectedProps = (!!!runAsBetaEdition) ? null : Collections.emptySet();
-
-            assertBellProps("EmptyProperties", Inject_Op.SingleArgCtor, expectedProps);
-        }
-        finally {
-            removeSysProps(server, sysProps);
-        }
+        assertBellProps("EmptyProperties", Inject_Op.SingleArgCtor, expectedProps);
     }
 
     /**
@@ -275,46 +202,20 @@ public class BellPropertiesTest {
     })
     public void testPropertiesMissingInjectionMethods() throws Exception
     {
-        doTestPropertiesMissingInjectionMethods(Boolean.FALSE);
-    }
-    @Test
-    @AllowedFFDC({
-        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
-    })
-    public void testPropertiesMissingInjectionMethods_BETA() throws Exception
-    {
-        doTestPropertiesMissingInjectionMethods(Boolean.TRUE);
-    }
+        server.startServer();
 
-    public void doTestPropertiesMissingInjectionMethods(Boolean runAsBetaEdition) throws Exception
-    {
-        Map<String,String> sysProps = new HashMap<String,String>(3){};
-        sysProps.put(BETA_EDITION_JVM_OPTION, runAsBetaEdition.toString());
+        assertNotNull("The server did not register service testMissingInjectionMethods/testImplClassNotConstructible, but should have.",
+                server.waitForStringInLog(".*CWWKL0050I: .*testMissingInjectionMethods.*testImplClassNotConstructible"));
 
-        try {
-            setSysProps(server, sysProps);
-            server.startServer();
+        // Server attempts to inject using single-arg ctor and updateBell() methods
+        assertNotNull("The server did not warn that class ImplClassNotConstructible is missing methods that support property injection, but should have.",
+                server.waitForStringInLog(".*CWWKL0062W: .*ImplClassNotConstructible"));
 
-            assertNotNull("The server did not register service testMissingInjectionMethods/testImplClassNotConstructible, but should have.",
-                    server.waitForStringInLog(".*CWWKL0050I: .*testMissingInjectionMethods.*testImplClassNotConstructible"));
-
-            if (runAsBetaEdition) {
-                // Server attempts to inject using single-arg ctor and updateBell() methods
-                assertNotNull("The server did not warn that class ImplClassNotConstructible is missing methods that support property injection, but should have.",
-                        server.waitForStringInLog(".*CWWKL0062W: .*ImplClassNotConstructible"));
-            }
-
-            // Server must attempt to create impl with the zero-arg ctor
-            assertNotNull("The server did not warn that class ImplClassNotConstructible failed to instantiate, but should have.",
-                    server.waitForStringInLog(".*CWWKL0053W: .*ImplClassNotConstructible"));
-        }
-        finally {
-            removeSysProps(server, sysProps);
-        }
+        // Server must attempt to create impl with the zero-arg ctor
+        assertNotNull("The server did not warn that class ImplClassNotConstructible failed to instantiate, but should have.",
+                server.waitForStringInLog(".*CWWKL0053W: .*ImplClassNotConstructible"));
     }
 
-    // A beta edition of this test is unnecessary. Malformed BELL properties will cause
-    // the same server failures in any edition.
     /**
      * Verify the server emits a warning for invalid BELL property declarations and does not
      * inject BELL properties.
@@ -328,22 +229,6 @@ public class BellPropertiesTest {
     })
     public void testPropertiesInvalid() throws Exception
     {
-        doTestPropertiesInvalid(Boolean.FALSE);
-    }
-    @Test
-    @AllowedFFDC({
-        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
-    })
-    public void TestPropertiesInvalid_BETA() throws Exception
-    {
-        doTestPropertiesInvalid(Boolean.TRUE);
-    }
-
-    void doTestPropertiesInvalid(Boolean runAsBetaEdition) throws Exception
-    {
-        Map<String,String> sysProps = new HashMap<String,String>(3){};
-        sysProps.put(BETA_EDITION_JVM_OPTION, runAsBetaEdition.toString());
-
         final LibertyServer propsInvalidServer = LibertyServerFactory.getLibertyServer("bell_props_invalid_server");
         try {
             propsInvalidServer.startServerAndValidate(
@@ -363,13 +248,12 @@ public class BellPropertiesTest {
                        propsInvalidServer.waitForStringInLog(".*CWWKL0050I: .*testInvalidPropertiesLib.*MultipleValidServices1", TimeOut));
         }
         finally {
-            removeSysProps(propsInvalidServer, sysProps);
             if (propsInvalidServer.isStarted()) {
                 propsInvalidServer.stopServer(
                         "CWWKG0014E: .*TIP_P0", // xml parse error on malformed property TIP_P0
                         "CWWKF0009W");          // no features installed
             }
-         }
+        }
     }
 
     /**
@@ -381,39 +265,15 @@ public class BellPropertiesTest {
     })
     public void testPropertiesResolveLibertyVars() throws Exception
     {
-       doTestPropertiesResolveLibertyVars(Boolean.FALSE);
-    }
-    @Test
-    @AllowedFFDC({
-        INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION
-    })
-    public void testPropertiesResolveLibertyVars_BETA() throws Exception
-    {
-        doTestPropertiesResolveLibertyVars(Boolean.TRUE);
-    }
+        server.startServer();
 
-    void doTestPropertiesResolveLibertyVars(Boolean runAsBetaEdition) throws Exception
-    {
-        Map<String,String> sysProps = new HashMap<String,String>(3){};
-        sysProps.put(BETA_EDITION_JVM_OPTION, runAsBetaEdition.toString());
+        assertNotNull("The server did not register service testPropertiesResolveLibertyVarsLib/PropertiesResolveLibertyVars, but should have.",
+                server.waitForStringInLog(".*CWWKL0050I: .*testPropertiesResolveLibertyVarsLib.*PropertiesResolveLibertyVars"));
 
-        try {
-            setSysProps(server, sysProps);
-            server.startServer();
+        Set<String> expectedProps = Stream.of("TPCLV_P0=LV_0_VAL", "TPCLV_P1=TPCLV_P1_LV_1_VAL", "TPCLV_P2=TPCLV_P2_VAL")
+                                            .collect(Collectors.toCollection(HashSet::new));
 
-            assertNotNull("The server did not register service testPropertiesResolveLibertyVarsLib/PropertiesResolveLibertyVars, but should have.",
-                    server.waitForStringInLog(".*CWWKL0050I: .*testPropertiesResolveLibertyVarsLib.*PropertiesResolveLibertyVars"));
-
-            Set<String> expectedProps = (!!!runAsBetaEdition)
-                                                ? null
-                                                : Stream.of("TPCLV_P0=LV_0_VAL", "TPCLV_P1=TPCLV_P1_LV_1_VAL", "TPCLV_P2=TPCLV_P2_VAL")
-                                                          .collect(Collectors.toCollection(HashSet::new));
-
-            assertBellProps("PropertiesResolveLibertyVars", Inject_Op.SingleArgCtor, expectedProps);
-        }
-        finally {
-            removeSysProps(server, sysProps);
-        }
+        assertBellProps("PropertiesResolveLibertyVars", Inject_Op.SingleArgCtor, expectedProps);
     }
 
 }

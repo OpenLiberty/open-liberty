@@ -19,7 +19,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
- //               JakartaRest31TckPackageTest.class
+                JakartaRest31TckPackageTest.class
 })
 
 public class FATSuite {}

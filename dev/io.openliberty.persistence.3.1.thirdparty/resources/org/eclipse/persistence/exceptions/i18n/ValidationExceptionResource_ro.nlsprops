@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -535,7 +535,7 @@
 
 7306=Elementul adnotat [{0}] din clasa [{1}] are specificat un tip de acces explicit incorect. Ar trebui s\u0103 specifice un tip de acces de [{2}].
 
-7307=Lipse\u015fte un \u015fir contextual de logare pentru contextul [{0}]. Aceasta este o excep\u0163ie intern\u0103 ce a survenit la extragerea unui mesaj din istoric pentru procesarea metadatelor JPA, v\u0103 rug\u0103m s\u0103 raporta\u0163i un defect ascuns.
+7307=Lipse\u015fte un \u015fir contextual de logare pentru contextul [{0}]. Aceasta este o excep\u0163ie intern\u0103 ce a survenit la extragerea unui mesaj din istoric pentru procesarea metadatelor Jakarta Persistence, v\u0103 rug\u0103m s\u0103 raporta\u0163i un defect ascuns.
 
 7308=Valoarea specificat\u0103 [{0}] pentru proprietatea de persisten\u0163\u0103 [{1}] este invalid\u0103 - [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Mai multe propriet\u0103\u0163i contextuale [{2}] \u015fi [{3}] specificate pentru acela\u015fi c\u00e2mp discriminator chiria\u015f [{1}] pentru clasa [{0}]
 
-7337=Coloana discriminator chiria\u015f mapat\u0103 [{1}] \u00een clasa [{0}] trebuie marcat\u0103 ca \u015fi numai citire. \u00cen JPA, acest lucru este f\u0103cut prin setarea insertable=false \u015fi updatable=false pe coloana e.g. @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=Coloana discriminator chiria\u015f mapat\u0103 [{1}] \u00een clasa [{0}] trebuie marcat\u0103 ca \u015fi numai citire. \u00cen Jakarta Persistence API, acest lucru este f\u0103cut prin setarea insertable=false \u015fi updatable=false pe coloana e.g. @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=Nu pute\u0163i ad\u0103uga secven\u0163a \u00eentr-un SessionBroker.
 
@@ -621,7 +621,7 @@
 
 7351=Convertorul de clas\u0103 [{2}] specificat\u0103 \u00een atributul de mapare [{1}] din clasa [{0}] nu a fost g\u0103sit. V\u0103 rug\u0103m s\u0103 v\u0103 asigura\u0163i c\u0103 numele clasei convertor este corect \u015fi exist\u0103 \u00een defini\u0163ia unit\u0103\u0163ii de persisten\u0163\u0103.
 
-7352=Clasa convertor [{0}] trebuie s\u0103 implementeze interfa\u0163a JPA javax.persistence.AttributeConverter<X, Y> pentru a fi o clas\u0103 convertor valid\u0103.
+7352=Clasa convertor [{0}] trebuie s\u0103 implementeze interfa\u0163a Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> pentru a fi o clas\u0103 convertor valid\u0103.
 
 7353=Atributul de mapare [{1}] din clasa [{0}] nu este un tip de mapare valid pentru o specifica\u0163ie de conversie.
 

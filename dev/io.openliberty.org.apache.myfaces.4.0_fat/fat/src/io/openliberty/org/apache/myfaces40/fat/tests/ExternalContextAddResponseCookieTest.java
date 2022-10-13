@@ -42,7 +42,7 @@ public class ExternalContextAddResponseCookieTest {
     private static final Logger LOG = Logger.getLogger(ExternalContextAddResponseCookieTest.class.getName());
     private static final String APP_NAME = "ExternalContextAddResponseCookie";
 
-    @Server("faces40_ExternalContextAddResponseCookieTest")
+    @Server("faces40_externalContextAddResponseCookieTest")
     public static LibertyServer server;
 
     @BeforeClass

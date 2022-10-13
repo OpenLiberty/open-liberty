@@ -74,7 +74,7 @@
   </dataSource>
 
   <!-- This is a Derby driver with custom implementations added for certain JDBC 4.3 methods -->
-  <library id="D43Lib" fat.modify="true">
+  <library id="D43Lib" >
     <file name="${server.config.dir}/drivers/d43driver.jar"/>
   </library>
 

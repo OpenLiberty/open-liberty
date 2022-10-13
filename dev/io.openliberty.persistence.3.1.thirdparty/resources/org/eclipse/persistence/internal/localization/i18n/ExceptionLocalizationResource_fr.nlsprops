@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -239,9 +239,9 @@ jpa_criteriaapi_no_corresponding_element_in_result=L''\u00e9l\u00e9ment {0} ne c
 
 jpa_criteriaapi_null_literal_value=Valeur nulle transmise dans CriteriaBuilder.literal().  Utilisez plut\u00f4t nullLiteral(Class<T> resultClass).
 
-jpa_helper_invalid_entity_manager_factory=l''\u00e9l\u00e9ment JPA EntityManagerFactory {0} n''est pas un \u00e9l\u00e9ment EclipseLink EntityManagerFactory ; par cons\u00e9quent, il n''a pas pu \u00eatre converti.
+jpa_helper_invalid_entity_manager_factory=l''\u00e9l\u00e9ment Jakarta Persistence EntityManagerFactory {0} n''est pas un \u00e9l\u00e9ment EclipseLink EntityManagerFactory ; par cons\u00e9quent, il n''a pas pu \u00eatre converti.
 
-jpa_helper_invalid_entity_manager_factory_for_refresh=l''\u00e9l\u00e9ment JPA EntityManagerFactory {0} n''est pas un \u00e9l\u00e9ment EclipseLink EntityManagerFactory ; par cons\u00e9quent, ses m\u00e9tadonn\u00e9es n''ont pas pu \u00eatre actualis\u00e9es.
+jpa_helper_invalid_entity_manager_factory_for_refresh=l''\u00e9l\u00e9ment Jakarta Persistence EntityManagerFactory {0} n''est pas un \u00e9l\u00e9ment EclipseLink EntityManagerFactory ; par cons\u00e9quent, ses m\u00e9tadonn\u00e9es n''ont pas pu \u00eatre actualis\u00e9es.
 
 jpa_helper_invalid_query=La requ\u00eate de type {0} n''est pas une requ\u00eate EclipseLink ; par cons\u00e9quent, elle n''a pas pu \u00eatre convertie.
 

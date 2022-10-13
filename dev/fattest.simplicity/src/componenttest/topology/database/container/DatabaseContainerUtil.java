@@ -11,11 +11,13 @@
 package componenttest.topology.database.container;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.websphere.simplicity.config.AuthData;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DataSourceProperties;
 import com.ibm.websphere.simplicity.config.DatabaseStore;
@@ -28,6 +30,20 @@ import componenttest.topology.impl.LibertyServer;
 public final class DatabaseContainerUtil {
     //Logging Constants
     private static final Class<DatabaseContainerUtil> c = DatabaseContainerUtil.class;
+
+    private enum AuthLocation {
+        inProperties,
+        inAuthDataRef,
+        inEmbeddedAuthData,
+        none;
+
+        public String id;
+
+        public AuthLocation withID(String id) {
+            this.id = id;
+            return this;
+        }
+    }
 
     private DatabaseContainerUtil() {
         //No objects should be created from this class
@@ -46,9 +62,11 @@ public final class DatabaseContainerUtil {
         //Get server config
         ServerConfiguration cloneConfig = serv.getServerConfiguration().clone();
         //Get datasources to be changed
-        List<DataSource> datasources = getDataSources(serv, cloneConfig);
+        Map<String, DataSource> datasources = getDataSources(serv, cloneConfig);
+        //Get authdatas to be changed
+        Map<String, AuthData> authDatas = getAuthDatas(serv, cloneConfig);
         //Modify those datasources
-        modifyDataSourcePropsForDatabase(datasources, cloneConfig, serv, cont);
+        modifyDataSourcePropsForDatabase(datasources, authDatas, cloneConfig, serv, cont);
     }
 
     /**
@@ -79,36 +97,64 @@ public final class DatabaseContainerUtil {
         //Get server config
         ServerConfiguration cloneConfig = serv.getServerConfiguration().clone();
         //Get datasources to be changed
-        List<DataSource> datasources = getDataSources(serv, cloneConfig);
+        Map<String, DataSource> datasources = getDataSources(serv, cloneConfig);
+        //Get authdatas to be changed
+        Map<String, AuthData> authDatas = getAuthDatas(serv, cloneConfig);
         //Modify those datasources
-        modifyDataSourcePropsGeneric(datasources, cloneConfig, serv, cont);
+        modifyDataSourcePropsGeneric(datasources, authDatas, cloneConfig, serv, cont);
     }
 
     /*
      * Helper method to get a list of datasources that need to be updated
      */
-    private static List<DataSource> getDataSources(LibertyServer serv, ServerConfiguration cloneConfig) {
+    private static Map<String, DataSource> getDataSources(LibertyServer serv, ServerConfiguration cloneConfig) {
         //Get a list of datasources that need to be updated
-        List<DataSource> datasources = new ArrayList<>();
+        Map<String, DataSource> datasources = new HashMapWithNullKeys<>();
 
         //Get general datasources
         for (DataSource ds : cloneConfig.getDataSources())
             if (ds.getFatModify() != null && ds.getFatModify().equals("true"))
-                datasources.add(ds);
+                datasources.put(ds.getId(), ds);
 
         //Get datasources that are nested under databasestores
         for (DatabaseStore dbs : cloneConfig.getDatabaseStores())
             for (DataSource ds : dbs.getDataSources())
                 if (ds.getFatModify() != null && ds.getFatModify().equals("true"))
-                    datasources.add(ds);
+                    datasources.put(ds.getId(), ds);
 
         return datasources;
     }
 
     /*
+     * Helper method to get a list of AuthData elements that need to be updated
+     */
+    private static Map<String, AuthData> getAuthDatas(LibertyServer serv, ServerConfiguration cloneConfig) {
+        //Get a list of authDatas that need to be updated
+        Map<String, AuthData> authDatas = new HashMapWithNullKeys<>();
+
+        //Get general authDatas
+        for (AuthData ad : cloneConfig.getAuthDataElements())
+            if (ad.getFatModify() != null && ad.getFatModify().equals("true"))
+                authDatas.put(ad.getId(), ad);
+
+        //Get authDatas that are nested under datasources
+        for (DataSource ds : cloneConfig.getDataSources()) {
+            ConfigElementList<AuthData> ads = new ConfigElementList<>();
+            ads.addAll(ds.getContainerAuthDatas());
+            ads.addAll(ds.getRecoveryAuthDatas());
+            for (AuthData ad : ads)
+                if (ad.getFatModify() != null && ad.getFatModify().equals("true"))
+                    authDatas.put(ad.getId(), ad);
+        }
+
+        return authDatas;
+    }
+
+    /*
      * Creates generic properties for each database
      */
-    private static void modifyDataSourcePropsGeneric(List<DataSource> datasources, ServerConfiguration cloneConfig, LibertyServer serv,
+    private static void modifyDataSourcePropsGeneric(Map<String, DataSource> datasources, Map<String, AuthData> authDatas,
+                                                     ServerConfiguration cloneConfig, LibertyServer serv,
                                                      JdbcDatabaseContainer<?> cont) throws Exception {
         //Get database type
         DatabaseContainerType type = DatabaseContainerType.valueOf(cont);
@@ -122,6 +168,9 @@ public final class DatabaseContainerUtil {
         try {
             props.setDatabaseName(cont.getDatabaseName());
         } catch (UnsupportedOperationException e) {
+            if (type.equals(DatabaseContainerType.SQLServer)) {
+                props.setDatabaseName("TEST");
+            }
         }
 
         //TODO this should not be required even when using general datasource properties
@@ -141,10 +190,47 @@ public final class DatabaseContainerUtil {
             props.setExtraAttribute("driverType", "thin");
         }
 
-        for (DataSource ds : datasources) {
-            Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + ds.getId());
-            //Replace derby properties
-            ds.replaceDatasourceProperties(props);
+        // Same properties just without auth data when using containerAuthDataRef, or containerAuthData.
+        DataSourceProperties noAuthProps = (DataSourceProperties) props.clone();
+        noAuthProps.setUser(null);
+        noAuthProps.setPassword(null);
+
+        for (Map.Entry<String, DataSource> entry : datasources.entrySet()) {
+            Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + entry.getKey());
+
+            AuthLocation authLoc = whereIsAuthData(entry.getValue());
+            switch (authLoc) {
+                case inAuthDataRef:
+                    assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                    entry.getValue().replaceDatasourceProperties(noAuthProps);
+                    break;
+                case inEmbeddedAuthData:
+                    assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                    entry.getValue().replaceDatasourceProperties(noAuthProps);
+                    break;
+                case inProperties:
+                    entry.getValue().replaceDatasourceProperties(props);
+                    break;
+                case none:
+                    Log.warning(c,
+                                "The datasource (" + entry.getKey()
+                                   + ") did not have username/password set in properties element, ContainerAuthData element, or ContainerAuthDataRef attribute. "
+                                   + "We will assume you have configured a DeploymentDescriptor that DOES reference a AuthData element that has been modified.");
+                    entry.getValue().replaceDatasourceProperties(noAuthProps);
+                    break;
+                default:
+                    //Replace default properties
+                    entry.getValue().replaceDatasourceProperties(props);
+                    break;
+
+            }
+        }
+
+        for (Map.Entry<String, AuthData> entry : authDatas.entrySet()) {
+            Log.info(c, "setupDataSourceProperties", "FOUND: AuthData to be enlisted in database rotation.  ID: " + entry.getKey());
+            //Replace derby auth data
+            entry.getValue().setUser(cont.getUsername());
+            entry.getValue().setPassword(cont.getPassword());
         }
 
         //Update config
@@ -154,7 +240,8 @@ public final class DatabaseContainerUtil {
     /*
      * Creates properties for specific database
      */
-    private static void modifyDataSourcePropsForDatabase(List<DataSource> datasources, ServerConfiguration cloneConfig, LibertyServer serv,
+    private static void modifyDataSourcePropsForDatabase(Map<String, DataSource> datasources, Map<String, AuthData> authDatas,
+                                                         ServerConfiguration cloneConfig, LibertyServer serv,
                                                          JdbcDatabaseContainer<?> cont) throws Exception {
         //Get database type
         DatabaseContainerType type = DatabaseContainerType.valueOf(cont);
@@ -168,6 +255,9 @@ public final class DatabaseContainerUtil {
         try {
             props.setDatabaseName(cont.getDatabaseName());
         } catch (UnsupportedOperationException e) {
+            if (type.equals(DatabaseContainerType.SQLServer)) {
+                props.setDatabaseName("TEST");
+            }
         }
 
         if (type.equals(DatabaseContainerType.Oracle)) {
@@ -176,13 +266,105 @@ public final class DatabaseContainerUtil {
             props.setDatabaseName((String) getSid.invoke(cont));
         }
 
-        for (DataSource ds : datasources) {
-            Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + ds.getId());
-            //Replace derby properties
-            ds.replaceDatasourceProperties(props);
+        // Same properties just without auth data when using containerAuthDataRef, or containerAuthData.
+        DataSourceProperties noAuthProps = (DataSourceProperties) props.clone();
+        noAuthProps.setUser(null);
+        noAuthProps.setPassword(null);
+
+        for (Map.Entry<String, DataSource> entry : datasources.entrySet()) {
+            Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + entry.getKey());
+
+            AuthLocation authLoc = whereIsAuthData(entry.getValue());
+            switch (authLoc) {
+                case inAuthDataRef:
+                    assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                    entry.getValue().replaceDatasourceProperties(noAuthProps);
+                    break;
+                case inEmbeddedAuthData:
+                    assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                    entry.getValue().replaceDatasourceProperties(noAuthProps);
+                    break;
+                case inProperties:
+                    entry.getValue().replaceDatasourceProperties(props);
+                    break;
+                case none:
+                    Log.warning(c,
+                                "The datasource (" + entry.getKey()
+                                   + ") did not have username/password set in properties element, ContainerAuthData element, or ContainerAuthDataRef attribute. "
+                                   + "We will assume you have configured a DeploymentDescriptor that DOES reference a AuthData element that has been modified.");
+                    entry.getValue().replaceDatasourceProperties(noAuthProps);
+                    break;
+                default:
+                    //Replace default properties
+                    entry.getValue().replaceDatasourceProperties(props);
+                    break;
+
+            }
+        }
+
+        for (Map.Entry<String, AuthData> entry : authDatas.entrySet()) {
+            Log.info(c, "setupDataSourceProperties", "FOUND: AuthData to be enlisted in database rotation.  ID: " + entry.getKey());
+            //Replace derby auth data
+            entry.getValue().setUser(cont.getUsername());
+            entry.getValue().setPassword(cont.getPassword());
         }
 
         //Update config
         serv.updateServerConfiguration(cloneConfig);
+    }
+
+    /**
+     * @param id
+     * @param authDatas
+     */
+    private static void assertAuthDataWillBeModified(String dsID, String authID, Map<String, AuthData> authDatas) {
+        if (!authDatas.containsKey(authID)) {
+            throw new RuntimeException("The datasource (" + dsID + ") references an AuthData element (" + authID + ") but that element is not modifiable.");
+        }
+    }
+
+    /**
+     * Determine if a datasource has a username/password configured on a properties element.
+     *
+     * @param  datasource
+     * @return            true - username/password found, false - assume some other auth data reference was provided.
+     */
+    private static AuthLocation whereIsAuthData(DataSource datasource) {
+        //Ensure server config doesn't container multiple Properties or AuthDatas per datasource. Uncommon.
+        if (datasource.getDataSourceProperties().size() > 1 || datasource.getContainerAuthDatas().size() > 1) {
+            throw new RuntimeException("Database rotation cannot handle cases where multiple DataSource property or Container AuthData elements exist."
+                                       + " This is uncommon configuration and shouldn't be tested on a rotating basis.");
+        }
+
+        for (DataSourceProperties props : datasource.getDataSourceProperties()) {
+            if (props.getUser() != null || props.getPassword() != null) {
+                return AuthLocation.inProperties.withID(props.getId());
+            }
+        }
+
+        if (datasource.getContainerAuthDatas().size() == 1) {
+            return AuthLocation.inEmbeddedAuthData.withID(datasource.getContainerAuthDatas().get(0).getId());
+        }
+
+        if (datasource.getContainerAuthDataRef() != null) {
+            return AuthLocation.inAuthDataRef.withID(datasource.getContainerAuthDataRef());
+        }
+
+        return AuthLocation.none.withID("NONE");
+    }
+
+    // It is possible to have multiple DataSource / AuthData elements with null IDs.
+    // Make sure they all get put into a HashMap so we can modify them.
+    @SuppressWarnings("serial")
+    private static final class HashMapWithNullKeys<V> extends HashMap<String, V> implements Map<String, V> {
+        int nullCounter = 0;
+
+        @Override
+        public V put(String key, V value) {
+            if (key == null) {
+                key = "null" + nullCounter++;
+            }
+            return super.put(key, value);
+        }
     }
 }

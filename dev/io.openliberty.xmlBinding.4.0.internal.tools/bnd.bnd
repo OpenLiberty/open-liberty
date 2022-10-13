@@ -14,6 +14,8 @@
 bVersion=1.0.${libertyBundleMicroVersion}
 bSymbolicName=io.openliberty.xmlBinding.4.0.internal.tools
 
+Multi-Release: true
+
 Bundle-Name: io.openliberty.xmlBinding.4.0.internal.tools
 Bundle-SymbolicName: io.openliberty.xmlBinding.4.0.internal.tools; singleton:=true
     

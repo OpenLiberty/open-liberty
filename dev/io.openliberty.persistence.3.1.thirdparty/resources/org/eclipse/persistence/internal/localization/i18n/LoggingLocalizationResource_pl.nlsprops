@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -517,7 +517,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Ustawienie klucza podstawo
 
 metadata_warning_ignore_mapped_superclass_read_only=Ustawienie tylko do odczytu dla odwzorowanej nadklasy [{1}] dla klasy jednostki [{0}] zostanie zignorowane, poniewa\u017c wcze\u015bniej wykryto metadane tylko do odczytu dla tej jednostki (w samej jednostce lub innej odwzorowanej nadklasie).
 
-metadata_warning_ignore_mapping_metadata=Metadane javax.persistence zastosowane do atrybutu [{0}] z klasy [{1}] zostan\u0105 zignorowane. Metadane javax.persistence s\u0105 ignorowane w przypadku p\u00f3l lub w\u0142a\u015bciwo\u015bci, kt\u00f3re s\u0105 przej\u015bciowe, statyczne lub abstrakcyjne.
+metadata_warning_ignore_mapping_metadata=Metadane jakarta.persistence zastosowane do atrybutu [{0}] z klasy [{1}] zostan\u0105 zignorowane. Metadane jakarta.persistence s\u0105 ignorowane w przypadku p\u00f3l lub w\u0142a\u015bciwo\u015bci, kt\u00f3re s\u0105 przej\u015bciowe, statyczne lub abstrakcyjne.
 
 metadata_warning_ignore_serialized=Domy\u015blne szeregowanie dla elementu [{1}] w klasie jednostki [{0}] zostanie zignorowane, poniewa\u017c okre\u015blone s\u0105 metadane przekszta\u0142cania produktu EclipseLink.
 
@@ -581,7 +581,7 @@ no_jar_entry_migratable_in_ear=\u017badne pozycje jar w wej\u015bciowym pliku EA
 
 no_session_found=Nie mo\u017cna znale\u017a\u0107 sesji o nazwie [{0}] w pliku session.xml [{1}]
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=Element [{1}] w klasie jednostki [{0}] u\u017cywa typu kolekcji [{2}], podczas gdy specyfikacja JPA obs\u0142uguje tylko typy java.util.Collection, java.util.Set, java.util.List lub java.util.Map.  Ten typ jest obs\u0142ugiwany w przypadku szybkiego \u0142adowania. Aby u\u017cywa\u0107 op\u00f3\u017anionego \u0142adowania w przypadku tego typu kolekcji, nale\u017cy wprowadzi\u0107 dodatkow\u0105 konfiguracj\u0119 oraz zaimplementowa\u0107 klas\u0119 IndirectContainer rozszerzaj\u0105c\u0105 [{2}] lub ustawi\u0107 odwzorowanie tak, aby u\u017cywany by\u0142 podstawowy element po\u015bredni i typ ValueholderInterface.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=Element [{1}] w klasie jednostki [{0}] u\u017cywa typu kolekcji [{2}], podczas gdy specyfikacja Jakarta Persistence obs\u0142uguje tylko typy java.util.Collection, java.util.Set, java.util.List lub java.util.Map.  Ten typ jest obs\u0142ugiwany w przypadku szybkiego \u0142adowania. Aby u\u017cywa\u0107 op\u00f3\u017anionego \u0142adowania w przypadku tego typu kolekcji, nale\u017cy wprowadzi\u0107 dodatkow\u0105 konfiguracj\u0119 oraz zaimplementowa\u0107 klas\u0119 IndirectContainer rozszerzaj\u0105c\u0105 [{2}] lub ustawi\u0107 odwzorowanie tak, aby u\u017cywany by\u0142 podstawowy element po\u015bredni i typ ValueholderInterface.
 
 objectchangepolicy_turned_off=\u015aledzenie zmian zosta\u0142o wy\u0142\u0105czone dla: {0}
 
